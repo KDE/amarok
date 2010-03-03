@@ -178,7 +178,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
-    setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
+    setGlobalShortcut( KShortcut( Qt::Key_MediaPlay ) );
     PERF_LOG( "PlayPauseAction: before engineStateChanged" )
     engineStateChanged( The::engineController()->state() );
     PERF_LOG( "PlayPauseAction: after engineStateChanged" )
@@ -490,7 +490,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
-    setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
+    setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
     connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
     setEnabled( false );  // Disable action at startup
 }

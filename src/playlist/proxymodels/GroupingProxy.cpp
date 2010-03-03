@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,301 +33,62 @@
 
 #include <QVariant>
 
+
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
     : ProxyBase( parent )
-    , m_groupingCategory( QString( "Album" ) )
 {
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-    // signal proxies
-    connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( sourceModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+
+    setGroupingCategory( QString( "Album" ) );
+
+
+    // Adjust our internal state based on changes in the source model.
+    //   We connect to our own QAbstractItemModel signals, which are emitted by our
+    //   'QSortFilterProxyModel' parent class.
+    //
+    //   Connect to 'this' instead of 'sourceModel()' for 2 reasons:
+    //     - We happen to be a 1:1 passthrough proxy, but if we filtered/sorted rows,
+    //       we'd want to maintain state for the rows exported by the proxy. The rows
+    //       exported by the source model are of no direct interest to us.
+    //
+    //     - Qt guarantees that our signal handlers on 'this' will be called earlier than
+    //       any other, because we're the first to call 'connect( this )' (hey, we're the
+    //       constructor!). So, we're guaranteed to be able to update our internal state
+    //       before we get any 'data()' calls from "upstream" signal handlers.
+    //
+    //       If we connected to 'sourceModel()', there would be no such guarantee: it
+    //       would be highly likely that an "upstream" signal handler (connected to the
+    //       'this' QSFPM signal) would get called earlier, would call our 'data()'
+    //       function, and we would return wrong answers from our stale internal state.
+    //
+    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( proxyDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( this, SIGNAL( layoutChanged() ), this, SLOT( proxyLayoutChanged() ) );
+    connect( this, SIGNAL( modelReset() ), this, SLOT( proxyModelReset() ) );
+    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
+
+
+    // Proxy the Playlist::AbstractModel signals
+    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );  // Planned for removal, but handle for now 2010-02-11
+    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( proxyLayoutChanged() ) );          // Planned for removal, but handle for now 2010-02-11
+
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( regroupAll() ) );
-
-    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
-    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
-    connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
-
-    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
+    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 
-    int max = m_belowModel->rowCount();
-    for ( int i = 0; i < max; i++ )
-        m_rowGroupMode.append( None );
+    // No need to scan the pre-existing entries in sourceModel(), because we build our
+    // internal state on-the-fly.
 
-    regroupRows( 0, max - 1 );
-
-     setObjectName( "GroupingProxy" );
-
+    setObjectName( "GroupingProxy" );
 }
 
 Playlist::GroupingProxy::~GroupingProxy()
 {
 }
 
-
-QVariant
-Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
-{
-    if( !index.isValid() )
-        return QVariant();
-
-    int row = index.row();
-
-    if( role == Playlist::GroupRole )
-        return m_rowGroupMode.at( row );
-
-    else if( role == Playlist::GroupedTracksRole )
-        return groupRowCount( row );
-
-    else if( role == Playlist::GroupedAlternateRole )
-        return ( row % 2 == 1 );
-    else if( role == Qt::DisplayRole || role == Qt::ToolTipRole )
-    {
-        switch( index.column() )
-        {
-            case GroupLength:
-            {
-                return Meta::msToPrettyTime( lengthOfGroup( row ) );
-            }
-            case GroupTracks:
-            {
-                return i18np ( "1 track", "%1 tracks", tracksInGroup( row ) );
-            }
-            default:
-                return m_belowModel->data( index, role );
-        }
-    }
-    else
-        return m_belowModel->data( index, role );
-}
-
-void
-Playlist::GroupingProxy::setCollapsed( int, bool ) const
-{
-    AMAROK_DEPRECATED
-}
-
-int
-Playlist::GroupingProxy::firstInGroup( int row ) const
-{
-    if ( m_rowGroupMode.at( row ) == None )
-        return row;
-
-    while ( row >= 0 )
-    {
-        if ( m_rowGroupMode.at( row ) == Head )
-            return row;
-        row--;
-    }
-    warning() << "No group head found for row" << row;
-    return row;
-}
-
-int
-Playlist::GroupingProxy::lastInGroup( int row ) const
-{
-    if ( m_rowGroupMode.at( row ) == None )
-        return row;
-
-    while ( row < rowCount() )
-    {
-        if ( m_rowGroupMode.at( row ) == Tail )
-            return row;
-        row++;
-    }
-    warning() << "No group tail found for row" << row;
-    return row;
-}
-
-void
-Playlist::GroupingProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& end )
-{
-    regroupRows( start.row(), end.row() );
-}
-
-void
-Playlist::GroupingProxy::modelRowsInserted( const QModelIndex& idx, int start, int end )
-{
-    beginInsertRows( idx, start, end );
-    for ( int i = start; i <= end; i++ )
-    {
-        m_rowGroupMode.insert( i, None );
-    }
-    endInsertRows();
-}
-
-void
-Playlist::GroupingProxy::modelRowsRemoved( const QModelIndex& idx, int start, int end )
-{
-    beginRemoveRows( idx, start, end );
-    for ( int i = start; i <= end; i++ )
-    {
-        m_rowGroupMode.removeAt( start );
-    }
-    endRemoveRows();
-}
-
-void
-Playlist::GroupingProxy::regroupAll()
-{
-    regroupRows( 0, rowCount() - 1 );
-}
-
-void
-Playlist::GroupingProxy::regroupRows( int first, int last )
-{
-    /* This function maps row numbers to one of the GroupMode enums, according
-     * to the following truth matrix:
-     *
-     *                  Matches Preceding Row
-     *
-     *                     true      false
-     *   Matches      true Body      Head
-     * Following
-     *       Row     false Tail      None
-     *
-     * Non-existent albums are non-matches
-     */
-
-    first = ( first > 0 ) ? ( first - 1 ) : first;
-    last = ( last < ( m_belowModel->rowCount() - 1 ) ) ? ( last + 1 ) : last;
-
-    for ( int row = first; row <= last; row++ )
-    {
-        Meta::TrackPtr thisTrack = m_belowModel->trackAt( row );
-
-        if (( thisTrack == Meta::TrackPtr() ) || ( thisTrack->album() == Meta::AlbumPtr() ) )
-        {
-            m_rowGroupMode[row] = None;
-            continue;
-        }
-
-        int beforeRow = row - 1;
-        bool matchBefore = false;
-        Meta::TrackPtr beforeTrack = m_belowModel->trackAt( beforeRow );
-        if ( beforeTrack != Meta::TrackPtr() )
-            matchBefore = shouldBeGrouped( beforeTrack, thisTrack );
-
-        int afterRow = row + 1;
-        bool matchAfter = false;
-        Meta::TrackPtr afterTrack = m_belowModel->trackAt( afterRow );
-        if ( afterTrack != Meta::TrackPtr() )
-            matchAfter = shouldBeGrouped( afterTrack, thisTrack );
-
-        if ( matchBefore && matchAfter )
-            m_rowGroupMode[row] = Body;
-        else if ( !matchBefore && matchAfter )
-            m_rowGroupMode[row] = Head;
-        else if ( matchBefore && !matchAfter )
-            m_rowGroupMode[row] = Tail;
-        else
-            m_rowGroupMode[row] = None;
-    }
-
-    emit layoutChanged();
-}
-
-int
-Playlist::GroupingProxy::groupRowCount( int row ) const
-{
-    AMAROK_DEPRECATED
-    return lastInGroup( row ) - firstInGroup( row ) + 1;
-}
-
-bool
-Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
-{
-    //An empty grouping category means "no grouping"
-    if ( m_groupingCategory.isEmpty() )
-        return false;
-
-    if( groupableCategories.contains( m_groupingCategory ) )   //sanity
-    {
-        switch( groupableCategories.indexOf( m_groupingCategory ) )
-        {
-            case 0: //Album
-                if( track1 && track1->album() && track2 && track2->album() )
-                    return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
-            case 1: //Artist
-                if( track1 && track1->artist() && track2 && track2->artist() )
-                    return ( *track1->artist().data() ) == ( *track2->artist().data() );
-            case 2: //Composer
-                if( track1 && track1->composer() && track2 && track2->composer() )
-                    return ( *track1->composer().data() ) == ( *track2->composer().data() );
-            case 3: //Genre
-                if( track1 && track1->genre() && track2 && track2->genre() )
-                    return ( *track1->genre().data() ) == ( *track2->genre().data() );
-            case 4: //Rating
-                if( track1 && track1->rating() && track2 && track2->rating() )
-                    return ( track1->rating() ) == ( track2->rating() );
-            case 5: //Source
-                if( track1 && track2 )
-                {
-                    Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
-                    Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
-                    QString source1, source2;
-                    if( sic1 && sic2)
-                    {
-                        source1 = sic1->sourceName();
-                        source2 = sic2->sourceName();
-                        delete sic1;
-                        delete sic2;
-                    }
-                    else
-                    {
-                        // First I make sure I delete sic1 and sic2 if only one of them was
-                        // instantiated:
-                        if( sic1 )
-                            delete sic1;
-                        if( sic2 )
-                            delete sic2;
-
-                        if( track1->collection() && track2->collection() )
-                        {
-                            source1 = track1->collection()->collectionId();
-                            source2 = track2->collection()->collectionId();
-                        }
-                        else
-                            return false;
-                    }
-                    return source1 == source2;
-                }
-            case 6: //Year
-                if( track1 && track1->year() && track2 && track2->year() )
-                    return ( *track1->year().data() ) == ( *track2->year().data() );
-            default:
-                return false;
-        }
-    }
-    return false;
-}
-
-int Playlist::GroupingProxy::tracksInGroup( int row ) const
-{
-    return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
-}
-
-int Playlist::GroupingProxy::lengthOfGroup( int row ) const
-{
-    int totalLength = 0;
-    for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
-    {
-        Meta::TrackPtr track = m_belowModel->trackAt( i );
-        if ( track )
-            totalLength += track->length();
-        else
-            warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << m_belowModel->rowCount();
-    }
-
-    return totalLength;
-}
 
 QString
 Playlist::GroupingProxy::groupingCategory() const
@@ -337,9 +99,261 @@ Playlist::GroupingProxy::groupingCategory() const
 void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
-    if( groupableCategories.contains( groupingCategory ) || groupingCategory == "None" || groupingCategory.isEmpty() )
-    {
-        m_groupingCategory = groupingCategory;
-        regroupAll();
+    m_groupingCategory = groupingCategory;
+    m_groupingCategoryIndex = groupableCategories.indexOf( m_groupingCategory );    // May be -1
+
+    invalidateGrouping();
+}
+
+
+bool
+Playlist::GroupingProxy::isFirstInGroup( const QModelIndex & index )
+{
+    GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Head) || (mode == None) );
+}
+
+bool
+Playlist::GroupingProxy::isLastInGroup( const QModelIndex & index )
+{
+    GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Tail) || (mode == None) );
+}
+
+QModelIndex
+Playlist::GroupingProxy::firstIndexInSameGroup( const QModelIndex & index )
+{
+    QModelIndex currIndex = index;
+    while ( ! isFirstInGroup( currIndex ) )
+        currIndex = currIndex.sibling( currIndex.row() - 1, currIndex.column() );
+    return currIndex;
+}
+
+QModelIndex
+Playlist::GroupingProxy::lastIndexInSameGroup( const QModelIndex & index )
+{
+    QModelIndex currIndex = index;
+    while ( ! isLastInGroup( currIndex ) )
+        currIndex = currIndex.sibling( currIndex.row() + 1, currIndex.column() );
+    return currIndex;
+}
+
+int
+Playlist::GroupingProxy::groupRowCount( const QModelIndex & index )
+{
+    return ( lastIndexInSameGroup( index ).row() - firstIndexInSameGroup( index ).row() ) + 1;
+}
+
+int
+Playlist::GroupingProxy::groupPlayLength( const QModelIndex & index )
+{
+    int totalLength = 0;
+
+    QModelIndex currIndex = firstIndexInSameGroup( index );
+    forever {
+        Meta::TrackPtr track = currIndex.data( TrackRole ).value<Meta::TrackPtr>();
+        if ( track )
+            totalLength += track->length();
+        else
+            warning() << "Playlist::GroupingProxy::groupPlayLength(): TrackPtr is 0!  row =" << currIndex.row() << ", rowCount =" << rowCount();
+
+        if ( isLastInGroup( currIndex ) )
+            break;
+        currIndex = currIndex.sibling( currIndex.row() + 1, currIndex.column() );
     }
+
+    return totalLength;
+}
+
+
+QVariant
+Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
+{
+    if( !index.isValid() )
+        return QVariant();
+
+    // Qt forces 'const' in our signature, but'groupModeForRow()' wants to do caching.
+    GroupingProxy* nonconst_this = const_cast<GroupingProxy*>( this );
+
+    switch ( role )
+    {
+        case Playlist::GroupRole:
+            return nonconst_this->groupModeForIndex( index );
+
+        case Playlist::GroupedTracksRole:
+            return nonconst_this->groupRowCount( index );
+
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            switch( index.column() )
+            {
+                case GroupLength:
+                    return Meta::msToPrettyTime( nonconst_this->groupPlayLength( index ) );
+                case GroupTracks:
+                    return i18np ( "1 track", "%1 tracks", nonconst_this->groupRowCount( index ) );
+            }
+
+            // Fall-through!!
+
+        default:
+            // Nothing to do with us: let our QSortFilterProxyModel parent class handle it.
+            // (which will proxy the data() from the underlying model)
+            return QSortFilterProxyModel::data( index, role );
+    }
+}
+
+
+// Note: being clever in this function is sometimes wasted effort, because 'dataChanged'
+// can cause SortProxy to nuke us with a 'layoutChanged' signal very soon anyway.
+void
+Playlist::GroupingProxy::proxyDataChanged( const QModelIndex& proxyTopLeft, const QModelIndex& proxyBottomRight )
+{
+    // The preceding and succeeding rows may get a different GroupMode too, when our
+    // GroupMode changes.
+    int invalidateFirstRow = proxyTopLeft.row() - 1;    // May be an invalid row number
+    int invalidateLastRow = proxyBottomRight.row() + 1;    // May be an invalid row number
+
+    for (int row = invalidateFirstRow; row <= invalidateLastRow; row++)
+        m_cachedGroupModeForRow.remove( row );    // Won't choke on non-existent rows.
+}
+
+void
+Playlist::GroupingProxy::proxyLayoutChanged()
+{
+    invalidateGrouping();    // Crude but sufficient.
+}
+
+void
+Playlist::GroupingProxy::proxyModelReset()
+{
+    invalidateGrouping();    // Crude but sufficient.
+}
+
+void
+Playlist::GroupingProxy::proxyRowsInserted( const QModelIndex& parent, int proxyStart, int proxyEnd )
+{
+    Q_UNUSED( parent );
+    Q_UNUSED( proxyStart );
+    Q_UNUSED( proxyEnd );
+
+    invalidateGrouping();    // Crude but sufficient.
+}
+
+void
+Playlist::GroupingProxy::proxyRowsRemoved( const QModelIndex& parent, int proxyStart, int proxyEnd )
+{
+    Q_UNUSED( parent );
+    Q_UNUSED( proxyStart );
+    Q_UNUSED( proxyEnd );
+
+    invalidateGrouping();    // Crude but sufficient.
+}
+
+
+Playlist::GroupMode
+Playlist::GroupingProxy::groupModeForIndex( const QModelIndex & thisIndex )
+{
+    GroupMode groupMode;
+
+    groupMode = m_cachedGroupModeForRow.value( thisIndex.row(), Invalid );    // Try to get from cache
+
+    if ( groupMode == Invalid )
+    {   // Not in our cache
+        QModelIndex prevIndex = thisIndex.sibling( thisIndex.row() - 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the first playlist item.
+        QModelIndex nextIndex = thisIndex.sibling( thisIndex.row() + 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the last playlist item.
+
+        Meta::TrackPtr prevTrack = prevIndex.data( TrackRole ).value<Meta::TrackPtr>();    // Invalid index is OK:
+        Meta::TrackPtr thisTrack = thisIndex.data( TrackRole ).value<Meta::TrackPtr>();    //  will just give an
+        Meta::TrackPtr nextTrack = nextIndex.data( TrackRole ).value<Meta::TrackPtr>();    //  invalid TrackPtr.
+
+        bool matchBefore = shouldBeGrouped( prevTrack, thisTrack );    // Accepts invalid TrackPtrs.
+        bool matchAfter  = shouldBeGrouped( thisTrack, nextTrack );    //
+
+        if ( !matchBefore && matchAfter )
+            groupMode = Head;
+        else if ( matchBefore && matchAfter )
+            groupMode = Body;
+        else if ( matchBefore && !matchAfter )
+            groupMode = Tail;
+        else
+            groupMode = None;
+
+        m_cachedGroupModeForRow.insert( thisIndex.row(), groupMode );    // Cache our decision
+    }
+
+    return groupMode;
+}
+
+/**
+ * The current implementation is a bit of a hack, but is what gives the best
+ * user experience.
+ * If a track has no data in the grouping category, it generally causes a non-match.
+ */
+bool
+Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
+{
+    // If the grouping category is empty or invalid, 'm_groupingCategoryIndex' will be -1.
+    // That will cause us to choose "no grouping".
+
+    switch( m_groupingCategoryIndex )
+    {
+        case 0: //Album
+            if( track1 && track1->album() && track2 && track2->album() )
+                return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
+        case 1: //Artist
+            if( track1 && track1->artist() && track2 && track2->artist() )
+                return ( *track1->artist().data() ) == ( *track2->artist().data() );
+        case 2: //Composer
+            if( track1 && track1->composer() && track2 && track2->composer() )
+                return ( *track1->composer().data() ) == ( *track2->composer().data() );
+        case 3: //Genre
+            if( track1 && track1->genre() && track2 && track2->genre() )
+                return ( *track1->genre().data() ) == ( *track2->genre().data() );
+        case 4: //Rating
+            if( track1 && track1->rating() && track2 && track2->rating() )
+                return ( track1->rating() ) == ( track2->rating() );
+        case 5: //Source
+            if( track1 && track2 )
+            {
+                QString source1, source2;
+
+                Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
+                Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
+                if( sic1 && sic2)
+                {
+                    source1 = sic1->sourceName();
+                    source2 = sic2->sourceName();
+                }
+                if( sic1 )
+                    delete sic1;
+                if( sic2 )
+                    delete sic2;
+
+                if( ! (sic1 && sic2) )
+                {
+                    if( track1->collection() && track2->collection() )
+                    {
+                        source1 = track1->collection()->collectionId();
+                        source2 = track2->collection()->collectionId();
+                    }
+                    else
+                        return false;
+                }
+
+                return source1 == source2;
+            }
+            else
+                return false;
+        case 6: //Year
+            if( track1 && track1->year() && track2 && track2->year() )
+                return ( *track1->year().data() ) == ( *track2->year().data() );
+        default:
+            return false;
+    }
+}
+
+void
+Playlist::GroupingProxy::invalidateGrouping()
+{
+    m_cachedGroupModeForRow.clear();
 }

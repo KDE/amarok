@@ -179,7 +179,7 @@ void ScanManager::startIncrementalScan( const QString &directory )
 
             debug() << "GOING TO SCAN:";
             if( dirs.size() > 30 )
-                debug() << "(a *lot*)";
+                debug() << QString( "(a *lot*: %1 directories)" ).arg( dirs.size() );
             else
             {
                 foreach( const QString &dir, dirs )

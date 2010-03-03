@@ -58,6 +58,10 @@ public:
     static Actions* instance();
     static void destroy();
 
+
+    Meta::TrackPtr likelyNextTrack();
+    Meta::TrackPtr likelyPrevTrack();
+
     /**
      * This is called by the engine before the current track ends. It
      * will figure out the next track and enqueue it. This won't
@@ -90,7 +94,7 @@ public:
      * Make sure that there are enough tracks in the current playlist
      * if it is dynamic and the user removed tracks.
      */
-    void normalizeDynamicPlayist();
+    void normalizeDynamicPlaylist();
 
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
@@ -106,6 +110,9 @@ public slots:
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
+
+signals:
+    void navigatorChanged();
 
 private:
     Actions();

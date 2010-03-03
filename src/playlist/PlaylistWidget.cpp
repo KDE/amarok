@@ -106,11 +106,7 @@ Playlist::Widget::Widget( QWidget* parent )
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    ModelStack::instance();
-
-    // the Controller ctor creates the undo/redo actions that we use below, so we want
-    // to make sure that it's been constructed and the the actions registered
-    Controller::instance();
+    ModelStack::instance(); //This also creates the Controller.
 
     { // START Playlist toolbar
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
@@ -124,8 +120,8 @@ Playlist::Widget::Widget( QWidget* parent )
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
         m_saveActions = new KActionCollection( this );
-        connect( m_savePlaylistMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
-                 SLOT( saveCurrentPlaylist() ) );
+        connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
+                 SLOT( slotSaveCurrentPlaylist() ) );
         foreach( PlaylistProvider *provider, The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
         {
@@ -142,17 +138,13 @@ Playlist::Widget::Widget( QWidget* parent )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
-        
+
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
-        //FIXME this action should go in ActionController, but we don't have any visibility to the view
-        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
-        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
-        plBar->addAction( action );
-
+        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
         plBar->addSeparator();
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
@@ -228,10 +220,14 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 
     UserPlaylistProvider *provider =
             action->data().value< QPointer<UserPlaylistProvider> >();
-    if( provider == 0 )
-        return;
 
     The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
+}
+
+void
+Playlist::Widget::showActiveTrack() const
+{
+    m_playlistView->scrollToActiveTrack();
 }
 
 void

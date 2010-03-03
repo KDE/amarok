@@ -31,7 +31,7 @@
 #include "EngineController.h"
 #include "MetaUtility.h"
 #include "PlaylistActions.h"
-#include "PlaylistController.h"
+#include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
 #include "PlaylistFileSupport.h"
 #include "UndoCommands.h"
@@ -45,10 +45,9 @@
 #include <QStringList>
 #include <QTextDocument>
 
-
-
 #include <typeinfo>
 #include <ReadLabelCapability.h>
+
 
 Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
@@ -81,10 +80,8 @@ Playlist::Model::Model( QObject *parent )
         {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( track == Meta::TrackPtr() )
-            {
+            if ( ! track )
                 i.remove();
-            }
             else if( Meta::canExpand( track ) )
             {
                 Meta::PlaylistPtr playlist = Meta::expand( track );
@@ -94,10 +91,8 @@ Playlist::Model::Model( QObject *parent )
                     i.remove();
                     Meta::TrackList newtracks = playlist->tracks();
                     foreach( Meta::TrackPtr t, newtracks )
-                    {
-                        if( t != Meta::TrackPtr() )
+                        if( t )
                             i.insert( t );
-                    }
                 }
             }
         }
@@ -442,7 +437,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             Meta::TrackList tracks = trackListDrag->tracks();
             qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }
@@ -451,7 +446,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         debug() << "this is a playlist";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
-            Controller::instance()->insertPlaylists( beginRow, dragList->playlists() );
+            The::playlistController()->insertPlaylists( beginRow, dragList->playlists() );
         return true;
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
@@ -463,7 +458,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             Meta::TrackList tracks;
             foreach( Meta::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
                 tracks << Meta::TrackPtr::staticCast( episode );
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }
@@ -477,7 +472,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             foreach( Meta::PodcastChannelPtr channel, dragList->podcastChannels() )
                 foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
                     tracks << Meta::TrackPtr::staticCast( episode );
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }
@@ -551,7 +546,8 @@ Playlist::Model::stateOfRow( int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->state();
-    return Item::Invalid;
+    else
+        return Item::Invalid;
 }
 
 bool
@@ -598,7 +594,8 @@ Playlist::Model::trackAt( int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 Meta::TrackPtr
@@ -606,7 +603,8 @@ Playlist::Model::activeTrack() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 int
@@ -614,7 +612,8 @@ Playlist::Model::rowForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_items.indexOf( m_itemIds.value( id ) );
-    return -1;
+    else
+        return -1;
 }
 
 Meta::TrackPtr
@@ -622,7 +621,8 @@ Playlist::Model::trackForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 quint64
@@ -630,8 +630,8 @@ Playlist::Model::idAt( const int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->id();
-
-    return 0;
+    else
+        return 0;
 }
 
 quint64
@@ -639,7 +639,8 @@ Playlist::Model::activeId() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->id();
-    return 0;
+    else
+        return 0;
 }
 
 Playlist::Item::State
@@ -647,7 +648,8 @@ Playlist::Model::stateOfId( quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->state();
-    return Item::Invalid;
+    else
+        return Item::Invalid;
 }
 
 void
@@ -678,7 +680,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    return The::playlistManager()->exportPlaylist( tracks(), path );
+    return Meta::exportPlaylistFile( tracks(), path );
 }
 
 Meta::TrackList
@@ -722,6 +724,7 @@ Playlist::Model::prettyColumnName( Column index ) //static
     }
 
 }
+
 
 ////////////
 //Private Methods
@@ -798,6 +801,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 }
+
 
 void
 Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
@@ -900,17 +904,15 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
     //make sure that there are enough tracks if we just removed from a dynamic playlist.
-    Playlist::Actions::instance()->normalizeDynamicPlayist();
+    Playlist::Actions::instance()->normalizeDynamicPlaylist();
 }
 
 
 void Playlist::Model::clearCommand()
 {
-    int noOfRows = m_items.size();
-
     QList<quint64> delIds = m_itemIds.keys();
 
-    beginRemoveRows( QModelIndex(), 0, noOfRows - 1);
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     qDeleteAll( m_items );
     m_items.clear();
     m_itemIds.clear();
@@ -919,7 +921,6 @@ void Playlist::Model::clearCommand()
     m_activeRow = -1;
 
     emit removedIds( delIds );
-
 }
 
 
@@ -964,6 +965,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 
     //update the active row
 }
+
 
 void Playlist::Model::setAllUnplayed()
 {

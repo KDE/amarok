@@ -25,7 +25,6 @@
 #include "Meta.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistModelStack.h"
-#include "playlist/PlaylistController.h"
 
 #include <QMutexLocker>
 
@@ -43,7 +42,8 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
 
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
-    m_playlist->requestAbort();
+    if( !m_playlist.isNull() )
+        m_playlist->requestAbort();
 }
 
 void
@@ -51,7 +51,7 @@ Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
 {
     DEBUG_BLOCK
 
-    Controller::instance()->insertOptioned( tracks, Append );
+    The::playlistController()->insertOptioned( tracks, Append );
 }
 
 void
@@ -63,7 +63,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
     int rowCount = m_model->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
-    if ( upcomingCountLag > 0 )
+    if ( upcomingCountLag > 0 && !m_playlist.isNull() )
         m_playlist->requestTracks( upcomingCountLag );
 }
 
@@ -73,7 +73,7 @@ Playlist::DynamicTrackNavigator::removePlayed()
     int activeRow = m_model->activeRow();
     if ( activeRow > AmarokConfig::previousTracks() )
     {
-        Controller::instance()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
+        The::playlistController()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
     }
 }
 
@@ -127,9 +127,10 @@ Playlist::DynamicTrackNavigator::repopulate()
     while( row < m_model->rowCount() );
 
     if( !rows.isEmpty() )
-        Controller::instance()->removeRows( rows );
+        The::playlistController()->removeRows( rows );
 
-    m_playlist->recalculate();
+    if( !m_playlist.isNull() )
+        m_playlist->recalculate();
     appendUpcoming();
 
     m_mutex.unlock();

@@ -64,14 +64,13 @@ class AMAROK_EXPORT App : public KUniqueApplication
         static int mainThreadId;
 
         virtual int newInstance();
-        void hideSplashScreen() { delete m_splash; }
 
         inline MainWindow *mainWindow() const { return m_mainWindow; }
 
         /**
          * Determines location of the "amarokcollectionscanner" tool.
          *
-         * @Returns path of the collection scanner binary.
+         * @return path of the collection scanner binary.
          */
         static QString collectionScannerLocation();
 
@@ -113,7 +112,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
         QPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon        *m_tray;
         MediaDeviceManager      *m_mediaDeviceManager;
-        QPointer<KSplashScreen> m_splash;
 };
 
 #define pApp static_cast<App*>(kapp)

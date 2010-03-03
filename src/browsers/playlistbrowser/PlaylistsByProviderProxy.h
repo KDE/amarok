@@ -24,8 +24,19 @@
 class PlaylistsByProviderProxy : public QtGroupingProxy
         , public PlaylistBrowserNS::MetaPlaylistModel
 {
+    Q_OBJECT
     public:
-        PlaylistsByProviderProxy( QAbstractItemModel *model );
+        /** serializes the indexes into a bytearray
+          */
+        QByteArray encodeMimeRows( const QList<QModelIndex> indexes ) const;
+
+        /** \arg data serialized data
+          * \model this model is used to get the indexes.
+          */
+        QList<QModelIndex> decodeMimeRows( QByteArray data, QAbstractItemModel *model ) const;
+        static const QString AMAROK_PROVIDERPROXY_INDEXES;
+
+        PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
         ~PlaylistsByProviderProxy() {}
 
         /* QAbstractModel methods */
@@ -46,6 +57,12 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
     signals:
         void renameIndex( QModelIndex idx );
+
+    protected slots:
+        virtual void buildTree();
+
+    private slots:
+        void slotRename( QModelIndex idx );
 
 };
 

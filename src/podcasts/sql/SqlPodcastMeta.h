@@ -20,6 +20,8 @@
 #include "PodcastMeta.h"
 #include "meta/file/File.h"
 
+class SqlPodcastProvider;
+
 namespace Meta
 {
 
@@ -35,6 +37,9 @@ typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
 class SqlPodcastEpisode : public PodcastEpisode
 {
     public:
+        static TrackList toTrackList( SqlPodcastEpisodeList episodes );
+        static PodcastEpisodeList toPodcastEpisodeList( SqlPodcastEpisodeList episodes );
+
         SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
 
         /** Copy from another PodcastEpisode
@@ -57,6 +62,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
         virtual bool isEditable() const;
+        virtual void finishedPlaying( double playedFraction );
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;
@@ -83,19 +89,19 @@ class SqlPodcastEpisode : public PodcastEpisode
 class SqlPodcastChannel : public PodcastChannel
 {
     public:
-        static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
-        static PodcastEpisodeList sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes );
+        static PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
+        static SqlPodcastChannelPtr fromPlaylistPtr( PlaylistPtr playlist );
 
-        SqlPodcastChannel( PlaylistProvider *provider, const QStringList &queryResult );
+        SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
         /** Copy a PodcastChannel
         */
-        SqlPodcastChannel( PlaylistProvider *provider, PodcastChannelPtr channel );
+        SqlPodcastChannel( SqlPodcastProvider *provider, PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
         // Meta::Playlist methods
-        virtual TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
-        virtual PlaylistProvider *provider() const { return m_provider; }
+        virtual TrackList tracks() { return Meta::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual PlaylistProvider *provider() const;
 
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );
@@ -126,7 +132,7 @@ class SqlPodcastChannel : public PodcastChannel
         int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_episodes;
-        PlaylistProvider *m_provider;
+        SqlPodcastProvider *m_provider;
 };
 
 }

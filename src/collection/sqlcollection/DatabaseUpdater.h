@@ -20,13 +20,17 @@
 #include <QHash>
 #include <QString>
 
+#include "amarok_sqlcollection_export.h"
+
 class SqlStorage;
 class SqlCollection;
 
-class DatabaseUpdater {
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS DatabaseUpdater {
 public:
     DatabaseUpdater();
     ~DatabaseUpdater();
+
+    static int expectedDatabaseVersion();
 
     bool needsUpdate() const;
     void update();

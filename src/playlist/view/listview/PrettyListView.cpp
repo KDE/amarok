@@ -40,7 +40,6 @@
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "PopupDropperFactory.h"
@@ -84,7 +83,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
-    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
@@ -167,7 +165,7 @@ Playlist::PrettyListView::removeSelection()
     {
         // Now that we have the list of selected rows in the topmost proxy, we can perform the
         // removal.
-        Controller::instance()->removeRows( sr );
+        The::playlistController()->removeRows( sr );
 
         // Next, we look for the first row.
         int firstRow = sr.first();
@@ -180,7 +178,7 @@ Playlist::PrettyListView::removeSelection()
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -255,6 +253,11 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
     DEBUG_BLOCK
     m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
+
+    //make sure that the track we just activated is also set as the current index or
+    //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
+    selectionModel()->setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
+    
 }
 
 void
@@ -381,7 +384,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
         int targetRow = indexAt( event->pos() ).row();
         targetRow = ( targetRow < 0 ) ? plModel->rowCount() : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
-        int realtarget = Controller::instance()->moveRows( sr, targetRow );
+        int realtarget = The::playlistController()->moveRows( sr, targetRow );
         QItemSelection selItems;
         foreach( int row, sr )
         {
@@ -554,6 +557,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return; // no items selected in the view, abort. See bug 226167
+
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
     static bool ongoingDrags = false;
     if( ongoingDrags )
@@ -565,15 +572,12 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-
         m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
         qDebug() << "svgHandler SVG renderer is " << (QObject*)(The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ));
         qDebug() << "m_pd SVG renderer is " << (QObject*)(m_pd->svgRenderer());
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
-        QModelIndexList indices = selectedIndexes();
 
         QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
-
         foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
@@ -655,7 +659,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-        
+
         if ( !filter )
         {
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );

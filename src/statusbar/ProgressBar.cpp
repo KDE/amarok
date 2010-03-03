@@ -74,7 +74,6 @@ ProgressBar::~ProgressBar()
 void
 ProgressBar::setDescription( const QString & description )
 {
-    DEBUG_BLOCK
     m_descriptionLabel->setText( description );
 
 }

@@ -177,12 +177,12 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& 
     if( !m_rcb )
         return;
 
-    TrackMap trackMap = m_memColl->trackMap();
-    ArtistMap artistMap = m_memColl->artistMap();
-    AlbumMap albumMap = m_memColl->albumMap();
-    GenreMap genreMap = m_memColl->genreMap();
-    ComposerMap composerMap = m_memColl->composerMap();
-    YearMap yearMap = m_memColl->yearMap();
+    TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
+    ArtistMap artistMap = m_memColl->memoryCollection()->artistMap();
+    AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
+    GenreMap genreMap = m_memColl->memoryCollection()->genreMap();
+    ComposerMap composerMap = m_memColl->memoryCollection()->composerMap();
+    YearMap yearMap = m_memColl->memoryCollection()->yearMap();
 
     /* 1-liner info retrieval */
 
@@ -204,25 +204,25 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& 
     m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
     // Finally, assign the created maps to the collection
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
-    m_memColl->releaseLock();
+    m_memColl->memoryCollection()->acquireWriteLock();
+    m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->setArtistMap( artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( albumMap );
+    m_memColl->memoryCollection()->setGenreMap( genreMap );
+    m_memColl->memoryCollection()->setComposerMap( composerMap );
+    m_memColl->memoryCollection()->setYearMap( yearMap );
+    m_memColl->memoryCollection()->releaseLock();
 }
 
 void
 MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track )
 {
-    TrackMap trackMap = m_memColl->trackMap();
-    ArtistMap artistMap = m_memColl->artistMap();
-    AlbumMap albumMap = m_memColl->albumMap();
-    GenreMap genreMap = m_memColl->genreMap();
-    ComposerMap composerMap = m_memColl->composerMap();
-    YearMap yearMap = m_memColl->yearMap();
+    TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
+    ArtistMap artistMap = m_memColl->memoryCollection()->artistMap();
+    AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
+    GenreMap genreMap = m_memColl->memoryCollection()->genreMap();
+    ComposerMap composerMap = m_memColl->memoryCollection()->composerMap();
+    YearMap yearMap = m_memColl->memoryCollection()->yearMap();
 
     Meta::MediaDeviceArtistPtr artist = Meta::MediaDeviceArtistPtr::dynamicCast( track->artist() );
     Meta::MediaDeviceAlbumPtr album = Meta::MediaDeviceAlbumPtr::dynamicCast( track->album() );
@@ -242,44 +242,44 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     if( artist->tracks().isEmpty() )
     {
         artistMap.remove( artist->name() );
-        m_memColl->acquireWriteLock();
-        m_memColl->setArtistMap( artistMap );
-        m_memColl->releaseLock();
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setArtistMap( artistMap );
+        m_memColl->memoryCollection()->releaseLock();
     }
     if( album->tracks().isEmpty() )
     {
         albumMap.remove( album->name() );
-        m_memColl->acquireWriteLock();
-        m_memColl->setAlbumMap( albumMap );
-        m_memColl->releaseLock();
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setAlbumMap( albumMap );
+        m_memColl->memoryCollection()->releaseLock();
     }
     if( genre->tracks().isEmpty() )
     {
         genreMap.remove( genre->name() );
-        m_memColl->acquireWriteLock();
-        m_memColl->setGenreMap( genreMap );
-        m_memColl->releaseLock();
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setGenreMap( genreMap );
+        m_memColl->memoryCollection()->releaseLock();
     }
     if( composer->tracks().isEmpty() )
     {
         composerMap.remove( composer->name() );
-        m_memColl->acquireWriteLock();
-        m_memColl->setComposerMap( composerMap );
-        m_memColl->releaseLock();
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setComposerMap( composerMap );
+        m_memColl->memoryCollection()->releaseLock();
     }
     if( year->tracks().isEmpty() )
     {
         yearMap.remove( year->name() );
-        m_memColl->acquireWriteLock();
-        m_memColl->setYearMap( yearMap );
-        m_memColl->releaseLock();
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setYearMap( yearMap );
+        m_memColl->memoryCollection()->releaseLock();
     }
 
     // remove from trackmap
     trackMap.remove( track->name() );
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->releaseLock();
+    m_memColl->memoryCollection()->acquireWriteLock();
+    m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->releaseLock();
 }
 
 void
@@ -309,6 +309,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     DEBUG_BLOCK
 
     setupWriteCapability();
+    setupReadCapability();
 
     if( !m_wcb )
         return;
@@ -318,7 +319,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     bool isDupe = false;
     bool hasDupe = false;
     QString format;
-    TrackMap trackMap = m_memColl->trackMap();
+    TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
     Meta::TrackList tempTrackList;
 
@@ -454,6 +455,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 void
 MediaDeviceHandler::copyNextTrackToDevice()
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track;
 
     // If there are more tracks to copy, copy the next one
@@ -936,14 +938,14 @@ MediaDeviceHandler::privateParseTracks()
     }
 
     // Finally, assign the created maps to the collection
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
-    m_memColl->releaseLock();
+    m_memColl->memoryCollection()->acquireWriteLock();
+    m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->setArtistMap( artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( albumMap );
+    m_memColl->memoryCollection()->setGenreMap( genreMap );
+    m_memColl->memoryCollection()->setComposerMap( composerMap );
+    m_memColl->memoryCollection()->setYearMap( yearMap );
+    m_memColl->memoryCollection()->releaseLock();
 
     m_memColl->collectionUpdated();
 
@@ -1009,15 +1011,22 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
 float
 MediaDeviceHandler::freeSpace() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
+    {
+        debug() << "totalCapacity:" << m_rcb->totalCapacity();
+        debug() << "usedCapacity():" << m_rcb->usedCapacity();
         return ( m_rcb->totalCapacity() - m_rcb->usedCapacity() );
-    else
+    } else {
+        debug() << "m_rcb null!";
         return 0.0;
+    }
 }
 
 float
 MediaDeviceHandler::usedcapacity() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->usedCapacity();
     else
@@ -1027,6 +1036,7 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->totalCapacity();
     else

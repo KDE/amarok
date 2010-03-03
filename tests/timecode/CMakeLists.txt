@@ -1,4 +1,4 @@
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
 QT4_AUTOMOC( TestTimecodeTrackProvider.cpp
 )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()

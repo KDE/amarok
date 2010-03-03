@@ -27,6 +27,7 @@
 #include <KIcon>
 
 #include <QtGlobal>
+#include <QSharedPointer>
 
 typedef QMap<int, Meta::TrackPtr> TrackIdMap;
 typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
@@ -38,7 +39,7 @@ typedef QMap<int, Meta::GenrePtr> GenreIdMap;
  *  fetch their data from somewhere ( a web service, an external program, etc....)
  */
 
-class AMAROK_EXPORT ServiceCollection : public Amarok::Collection, public MemoryCollection
+class AMAROK_EXPORT ServiceCollection : public Amarok::Collection
 {
     Q_OBJECT
     public:
@@ -83,8 +84,22 @@ class AMAROK_EXPORT ServiceCollection : public Amarok::Collection, public Memory
 
         ServiceBase * service();
 
+        //convenience functions for subclasses
+        void acquireWriteLock() { m_mc->acquireWriteLock(); }
+        void acquireReadLock() { m_mc->acquireReadLock(); }
+        void releaseLock() { m_mc->releaseLock(); }
+        GenreMap genreMap() const { return m_mc->genreMap(); }
+        void setGenreMap( const GenreMap &map ) { m_mc->setGenreMap( map ); }
+        ArtistMap artistMap() const { return m_mc->artistMap(); }
+        void setArtistMap( const ArtistMap &map ) { m_mc->setArtistMap( map ); }
+        TrackMap trackMap() const { return m_mc->trackMap(); }
+        void setTrackMap( const TrackMap &map ) { m_mc->setTrackMap( map ); }
+        AlbumMap albumMap() const { return m_mc->albumMap(); }
+        void setAlbumMap( const AlbumMap &map ) { m_mc->setAlbumMap( map ); }
+
     private:
         ServiceBase * m_service;
+        QSharedPointer<MemoryCollection> m_mc;
 
         ServiceMetaFactory * m_metaFactory;
 

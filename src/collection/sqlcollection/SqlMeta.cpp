@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "meta/TagLibUtils.h"
+#include "ArtistHelper.h"
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
@@ -37,6 +38,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QMultiHash>
 #include <QMutexLocker>
 #include <QPointer>
 
@@ -427,10 +429,14 @@ SqlTrack::setAlbum( const QString &newAlbum )
     else
     {
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        int id = -1;
-        SqlArtist *artist = dynamic_cast<SqlArtist*>(m_artist.data());
-        if( artist )
-            id = artist->id();
+        //the album should remain a compilation after renaming it
+        int id = 0;
+        if( m_album->hasAlbumArtist() )
+        {
+            SqlArtist *artist = dynamic_cast<SqlArtist*>(m_album->albumArtist().data());
+            if( artist )
+                id = artist->id();
+        }
         m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         m_cache.clear();
@@ -677,7 +683,11 @@ SqlTrack::commitMetaDataChanges()
         if( m_cache.contains( Meta::Field::ALBUM ) )
         {
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-            int artistId = KSharedPtr<SqlArtist>::staticCast( m_artist )->id();
+            int artistId = 0;
+            if( m_album->hasAlbumArtist() )
+            {
+                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+            }
             m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         }
@@ -820,25 +830,18 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
-    // Only increment playcount if we've played more than half of the song... It seems like the sanest comprimise.
-    // and only update the other stats (if we did assume that is not played we should not update the last played date
-    if ( playedFraction >= 0.5 )
-    {
-        m_lastPlayed = QDateTime::currentDateTime().toTime_t();
-        m_playCount++;
-        if( !m_firstPlayed )
-        {
-            m_firstPlayed = m_lastPlayed;
-        }
-    }
+    DEBUG_BLOCK
+
+    beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
+
+    setPlayCount( m_playCount + 1 );
+    setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+    if( m_firstPlayed == 0 )
+        setFirstPlayed( m_lastPlayed );
 
     setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
-    QStringList fields;
-    if( !m_firstPlayed )
-        fields << Meta::Field::FIRST_PLAYED;
-    fields << Meta::Field::LAST_PLAYED << Meta::Field::PLAYCOUNT << Meta::Field::SCORE;
-    updateStatisticsInDb( fields );
-    notifyObservers();
+
+    endMetaDataUpdate();
 }
 
 bool
@@ -1498,24 +1501,17 @@ void
 SqlAlbum::setCompilation( bool compilation )
 {
     DEBUG_BLOCK
-    AMAROK_NOTIMPLEMENTED
     if( isCompilation() == compilation )
     {
         return;
     }
     else
     {
+        QString uidQuery = "SELECT uniqueid FROM tracks INNER JOIN urls ON tracks.url = urls.id WHERE album = %1;";
+        QStringList uids = m_collection->sqlStorage()->query( uidQuery.arg( m_id ) );
         if( compilation )
         {
             // A compilation is an album where artist is NULL. Set the album's artist to NULL when the album is set to compilation.
-            debug() << "User selected album as compilation";
-            /* Old behavior, potentially caused multiple entries of the same album under compilations.
-            m_artistId = 0;
-            m_artist = Meta::ArtistPtr();
-
-            QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
-            m_collection->sqlStorage()->query( update.arg( m_id ) );
-            */
             m_artistId = 0;
             m_artist = Meta::ArtistPtr();
 
@@ -1528,7 +1524,7 @@ SqlAlbum::setCompilation( bool compilation )
                 int otherId = albumId[0].toInt();
                 QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
                 m_collection->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
-                
+
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
                 m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
 
@@ -1540,77 +1536,126 @@ SqlAlbum::setCompilation( bool compilation )
         }
         else
         {
-            debug() << "User selected album as non-compilation";
-            /*  Old behavior - UPDATE-query potentially causes an duplicate key error from mysql, if another album with the same title and artist exists.
-            QString select = "SELECT artist FROM tracks WHERE album = %1";
-            QStringList artistid = m_collection->sqlStorage()->query( select.arg( m_id ) );
+            //step1: get the actual artists per track
+            QHash<int,QString> artists;
+            QHash<int,int> trackToArtist;
+            {
+                QString trackSelect = "SELECT tracks.id, tracks.artist, artists.name "
+                                      "FROM tracks INNER JOIN artists ON tracks.artist = artists.id WHERE tracks.album = %1;";
+                QStringList trackSelectResult = m_collection->sqlStorage()->query( trackSelect.arg( m_id ) );
 
-            m_artistId = artistid[0].toInt();
-            if( tracks().size() > 0 )
-                m_artist = this->tracks()[0]->artist();
-
-            QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
-            update = update.arg( m_artistId ).arg( m_id );
-            m_collection->sqlStorage()->query( update );
-            */
-
-            // The artists for all the tracks in this album
-            QString select = "SELECT GROUP_CONCAT( CONCAT( artist ) ) FROM tracks WHERE album = %1";
-            QStringList artists = m_collection->sqlStorage()->query( select.arg( m_id ) );
-
-            QSet< int > artistIds;
-            foreach ( const QString & artist, artists[0].split( ",", QString::SkipEmptyParts ) ) {
-                artistIds.insert( artist.toInt( ) );
-            }
-
-            debug() << "Found these artists" << artistIds;
-
-            bool done = false;
-            if( artistIds.size( ) == 1 ) {
-                // All the tracks have the same artist, see it there is another album with the same name for this artist.
-                select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
-                QStringList albumId = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
-                if( albumId.empty( ) ) {
-                    m_artistId = *artistIds.begin();
-
-                    // There isn't another album with the same name and artist, just change the artist on the album
-                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
-                    m_collection->sqlStorage()->query( update.arg( m_artistId ).arg( m_id ) );
-                    done = true;
+                QStringListIterator iter( trackSelectResult );
+                while( iter.hasNext() )
+                {
+                    int track = iter.next().toInt();
+                    int artist = iter.next().toInt();
+                    QString artistName = iter.next();
+                    trackToArtist.insert( track, artist );
+                    artists.insert( artist, artistName );
                 }
             }
 
-            if( !done ) {
-                foreach( const int artistId, artistIds ) {
-                    debug() << "Look for album '" << name() << "' for artist " << artistId;
-                    // Does there exist another album with the same name and the same artist as some of the tracks in this album?
-                    select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
-                    QStringList otherAlbumIdStr = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ).arg( artistId ) );
-                    int otherAlbumId = 0;
-                    if( otherAlbumIdStr.empty( ) ) {
-                        debug() << "Didn't find an album";
-                        // Create new album for the tracks for this artist.
-                        QString insert = "INSERT INTO albums( artist, name ) VALUES ( %1, '%2');";
-                        otherAlbumId = m_collection->sqlStorage()->insert( insert.arg( artistId ).arg( m_collection->sqlStorage()->escape( name() ) ), "albums" );
-                    } else {
-                        debug() << "Found album " << otherAlbumIdStr;
-                        // We found an album with the same name as the compilation album and the same artist as some of the tracks.
-                        // Move all the tracks for this artist from the compilation album to the existing album.
-                        otherAlbumId = otherAlbumIdStr[0].toInt();
-                    }
+            //step2: figure out, per artist, if an appropriate album already exists
+            //taking into account A feat. B stuff
+            QHash<int,int> artistToTargetAlbum;
+            {
+                QMultiHash<QString, int> actualNameToTrackArtistIds;
+                foreach( int id, artists.keys() )
+                {
+                    QString name = ArtistHelper::realTrackArtist( artists.value( id ) );
+                    actualNameToTrackArtistIds.insert( name, id );
+                }
 
-                    if ( otherAlbumId > 0 ) {
-                        QString update = "UPDATE tracks SET album = %1 WHERE album = %2 AND artist = %3";
-                        m_collection->sqlStorage()->query( update.arg( otherAlbumId ).arg( m_id ).arg( artistId ) );
+                //the loop below assumes two return values per row!
+                QString select = "SELECT albums.id, artists.name FROM albums "
+                                 "INNER JOIN artists ON albums.artist = artists.id "
+                                 "WHERE albums.name = '%1' AND albums.id != %2 AND ( 0 %3 )";
+                QString artistNames;
+                foreach( const QString &name, actualNameToTrackArtistIds.keys() )
+                {
+                    QString tmp = "OR artists.name = '%1' ";
+                    artistNames += tmp.arg( m_collection->sqlStorage()->escape( name ) );
+                }
+                QStringList data = m_collection->sqlStorage()->query( select.arg( m_collection->sqlStorage()->escape( m_name ), QString::number( m_id ), artistNames ) );
+
+                QStringListIterator iter( data );
+                while( iter.hasNext() )
+                {
+                    int albumId = iter.next().toInt();
+                    QString artist = iter.next();
+                    //lookup original artist:
+                    if( actualNameToTrackArtistIds.contains( artist ) )
+                    {
+                        foreach( int trackArtist, actualNameToTrackArtistIds.values( artist ) )
+                        {
+                            artistToTargetAlbum.insert( trackArtist, albumId );
+                        }
                     }
                 }
 
-                // Remove the existing compilation album, since we have move all tracks to a new album.
-                QString delete_album = "DELETE FROM albums WHERE id = %1";
-                m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
-                m_id = 0;
+            }
+
+            //step3: create missing album entries
+            //special case: if there is only one album, and it does not exist yet, change the current object instead
+            bool currentObjectUpdated = false;
+            if( artists.count() == 1 && artistToTargetAlbum.count() == 0 )
+            {
+                currentObjectUpdated = true;
+                int artistId = artists.keys().first();
+                // There isn't another album with the same name and artist, just change the artist on the album
+                QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
+                m_collection->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
+                m_artistId = artistId;
+            }
+            else
+            {
+                foreach( int artistId, artists.keys() )
+                {
+                    if( artistToTargetAlbum.contains( artistId ) )
+                    {
+                        //target album for the given artist already exists, do nothing here
+                        continue;
+                    }
+                    QString insert = "INSERT INTO albums (name, artist) VALUES ('%1',%2)";
+                    SqlStorage *s = m_collection->sqlStorage();
+                    int albumId = s->insert( insert.arg( s->escape( m_name ), QString::number( artistId ) ), "albums" );
+                    artistToTargetAlbum.insert( artistId, albumId );
+                }
+            }
+
+            //step 4: update all tracks, if necessary
+            if( !currentObjectUpdated )
+            {
+                foreach( int trackId, trackToArtist.keys() )
+                {
+                    int artistId = trackToArtist.value( trackId );
+                    int albumId = artistToTargetAlbum.value( artistId );
+                    QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
+                    m_collection->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
+                }
+            }
+
+            //step 5: delete the original album, if necessary
+            if( !currentObjectUpdated )
+            {
+                QString del = "DELETE FROM albums WHERE id = %1;";
+                m_collection->sqlStorage()->query( del.arg( m_id ) );
             }
         }
+        //ensure that all currently loaded tracks will return the correct album from now on
+        foreach( const QString &uid, uids )
+        {
+            if( m_collection->registry()->checkUidExists( uid ) )
+            {
+                Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( uid );
+                SqlTrack *sqlTrack = dynamic_cast<SqlTrack*>( track.data() );
+                if( sqlTrack )
+                {
+                    sqlTrack->refreshFromDatabase( uid, m_collection, false ); //we will notify observers below
+                }
+            }
+        }
+
         notifyObservers();
         m_collection->sendChangedSignal();
     }

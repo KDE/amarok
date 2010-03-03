@@ -30,7 +30,7 @@
 #include "collection/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 #include "widgets/kratingpainter.h"
 #include "widgets/kratingwidget.h"
@@ -533,7 +533,7 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
         tra->album()->setImage( *info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
-        The::playlistController()->insertOptioned(track , Playlist::AppendAndPlay);
+        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
     }
 }
 

@@ -19,6 +19,8 @@
 #define AMAROK_PLAYLISTSORTPROXY_H
 
 #include "ProxyBase.h"
+
+#include "SortAlgorithms.h"
 #include "SortScheme.h"
 
 namespace Playlist
@@ -53,17 +55,18 @@ public:
      */
     bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
 
+    /**
+     * Checks if the SortProxy is currently applying a SortScheme.
+     * @return true if the SortProxy is sorting, otherwise false.
+     */
+    bool isSorted(){ return m_scheme.length(); }
+
 public slots:
     /**
      * Applies a sorting scheme to the playlist.
      * @param scheme the sorting scheme that will be applied.
      */
     void updateSortMap( SortScheme scheme );
-
-    /**
-     * Resets the proxy to its original pass-through state.
-     */
-    void resetSorting();
 
 protected:
     /**
@@ -82,14 +85,9 @@ protected:
      */
     virtual int rowToSource( int row ) const;
 
-protected slots:
-    /**
-     * Reapplies the current sorting scheme.
-     */
-    void invalidateSorting();
-
 private:
     SortScheme m_scheme;               //! The current sorting scheme.
+    multilevelLessThan m_mlt;          //! Decision object for current sorting scheme.
 };
 
 }   //namespace Playlist

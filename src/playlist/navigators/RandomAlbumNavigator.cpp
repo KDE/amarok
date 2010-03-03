@@ -145,12 +145,67 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 }
 
 quint64
+Playlist::RandomAlbumNavigator::likelyNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.first();
+    if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
+        return 0;
+
+    QList<Meta::AlbumPtr> *unplayedAlbums = &m_unplayedAlbums;
+    if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
+        unplayedAlbums = &m_playedAlbums;
+
+    quint64 requestedTrack = 0;
+    if ( m_albumGroups.contains( m_currentAlbum ) )
+    {
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
+        int idx = atl.indexOf( m_currentTrack );
+        if ( idx < ( atl.size() - 1 ) )
+            return  atl.at( idx + 1 );
+    }
+
+    if ( !unplayedAlbums->isEmpty() )
+        requestedTrack = m_albumGroups.value( unplayedAlbums->first() ).first();
+
+    return requestedTrack;
+}
+
+quint64
+Playlist::RandomAlbumNavigator::likelyLastTrack()
+{
+    if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
+        return 0;
+
+    QList<Meta::AlbumPtr> *playedAlbums = &m_playedAlbums;
+    if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
+            playedAlbums = &m_unplayedAlbums;
+
+    quint64 requestedTrack = 0;
+    if ( m_albumGroups.contains( m_currentAlbum ) )
+    {
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
+        int idx = atl.indexOf( m_currentTrack );
+        if ( idx > 0 )
+        {
+            return atl.at( idx - 1 );
+        }
+    }
+
+    if ( !playedAlbums->isEmpty() )
+        requestedTrack = m_albumGroups.value( playedAlbums->first() ).last();
+
+    return requestedTrack;
+}
+
+quint64
 Playlist::RandomAlbumNavigator::requestNextTrack()
 {
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
+
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
     {
         m_unplayedAlbums = m_playedAlbums;
@@ -164,30 +219,26 @@ Playlist::RandomAlbumNavigator::requestNextTrack()
         if ( idx < ( atl.size() - 1 ) )
         {
             m_currentTrack = atl.at( idx + 1 );
+            return m_currentTrack;
         }
         else
         {
             m_playedAlbums.prepend( m_currentAlbum );
-            if ( !m_unplayedAlbums.isEmpty() )
-            {
-                m_currentAlbum = m_unplayedAlbums.takeFirst();
-                m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
-            }
-            else
+            if ( m_unplayedAlbums.isEmpty() )
             {
                 m_currentAlbum = Meta::AlbumPtr();
                 m_currentTrack = 0;
+                return m_currentTrack;
             }
         }
     }
-    else
+
+    if ( !m_unplayedAlbums.isEmpty() )
     {
-        if ( !m_unplayedAlbums.isEmpty() )
-        {
-            m_currentAlbum = m_unplayedAlbums.takeFirst();
-            m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
-        }
+        m_currentAlbum = m_unplayedAlbums.takeFirst();
+        m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
     }
+
     return m_currentTrack;
 }
 
@@ -210,30 +261,26 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
         if ( idx > 0 )
         {
             m_currentTrack = atl.at( idx - 1 );
+            return m_currentTrack;
         }
         else
         {
             m_unplayedAlbums.prepend( m_currentAlbum );
-            if ( !m_playedAlbums.isEmpty() )
-            {
-                m_currentAlbum = m_playedAlbums.takeFirst();
-                m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
-            }
-            else
+            if ( m_playedAlbums.isEmpty() )
             {
                 m_currentAlbum = Meta::AlbumPtr();
                 m_currentTrack = 0;
+                return m_currentTrack;
             }
         }
     }
-    else
+
+    if ( !m_playedAlbums.isEmpty() )
     {
-        if ( !m_playedAlbums.isEmpty() )
-        {
-            m_currentAlbum = m_playedAlbums.takeFirst();
-            m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
-        }
+        m_currentAlbum = m_playedAlbums.takeFirst();
+        m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
     }
+
     return m_currentTrack;
 }
 

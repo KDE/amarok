@@ -385,7 +385,10 @@ JamendoXmlParser::readTrack()
                 genre = m_id3GenreHash.value( m_reader.readElementText().toInt() );
         }
     }
-    static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+
+    //FIXME: temp workaround for bug 221922. Remove if Jamendo fixes their redirects
+    //static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+    static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1";
 
     JamendoTrack currentTrack( name );
     currentTrack.setId( id.toInt() );

@@ -77,7 +77,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
-    setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The sites allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
+    setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The site allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
 
 setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.png" ) );
 

@@ -97,7 +97,8 @@ VolumePopupButton::engineVolumeChanged( int newVolume )
         m_volumeSlider->setValue( newVolume );
 
     //make sure to uncheck mute toolbar when moving slider
-    m_muteAction->setChecked( false );
+    if ( newVolume )
+        m_muteAction->setChecked( false );
 
     setToolTip( i18n( "Volume: %1% %2", newVolume, ( m_muteAction->isChecked() ? i18n( "(muted)" ) : "" ) ) );
 }

@@ -34,9 +34,6 @@
 
 QTEST_KDEMAIN_CORE( TestOneWaySynchronizationJob )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 using ::testing::Return;
 using ::testing::AnyNumber;
 
@@ -52,12 +49,12 @@ public:
     bool isWritable() const { return true; }
     bool remove( const Meta::TrackPtr &track )
     {
-        coll->acquireWriteLock();
+        coll->mc->acquireWriteLock();
         //theoretically we should clean up the other maps as well...
-        TrackMap map = coll->trackMap();
+        TrackMap map = coll->mc->trackMap();
         map.remove( track->uidUrl() );
-        coll->setTrackMap( map );
-        coll->releaseLock();
+        coll->mc->setTrackMap( map );
+        coll->mc->releaseLock();
         return true;
     }
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
@@ -66,7 +63,7 @@ public:
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {
-            coll->addTrack( track );
+            coll->mc->addTrack( track );
         }
     }
 };
@@ -93,9 +90,9 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + "_" + artistName + "_" + albumName ) );
     EXPECT_CALL( *track, isPlayable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
-    coll->addTrack( trackPtr );
+    coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )
@@ -115,14 +112,14 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
-        coll->addAlbum( albumPtr );
+        coll->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;
     EXPECT_CALL( *album, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( albumTracks ) );
 
     EXPECT_CALL( *track, album() ).Times( AnyNumber() ).WillRepeatedly( Return( albumPtr ) );
 
-    Meta::ArtistPtr artistPtr = coll->artistMap().value( artistName );
+    Meta::ArtistPtr artistPtr = coll->mc->artistMap().value( artistName );
     Meta::MockArtist *artist;
     Meta::TrackList artistTracks;
     if( artistPtr )
@@ -141,7 +138,7 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
         ::testing::Mock::AllowLeak( artist );
         artistPtr = Meta::ArtistPtr( artist );
         EXPECT_CALL( *artist, name() ).Times( AnyNumber() ).WillRepeatedly( Return( artistName ) );
-        coll->addArtist( artistPtr );
+        coll->mc->addArtist( artistPtr );
     }
     artistTracks << trackPtr;
     EXPECT_CALL( *artist, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( artistTracks ) );
@@ -174,8 +171,8 @@ TestOneWaySynchronizationJob::testAddTrackToTarget()
     addMockTrack( target, "track1", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 1 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -184,8 +181,8 @@ TestOneWaySynchronizationJob::testAddTrackToTarget()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     delete source,
     delete target;
@@ -202,8 +199,8 @@ TestOneWaySynchronizationJob::testAddAlbumToTarget()
     addMockTrack( target, "track1", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 1 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -212,8 +209,8 @@ TestOneWaySynchronizationJob::testAddAlbumToTarget()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     delete source,
     delete target;
@@ -230,8 +227,8 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
     addMockTrack( target, "track1", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 1 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -240,8 +237,8 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     delete source,
     delete target;
@@ -257,8 +254,8 @@ TestOneWaySynchronizationJob::testEmptyTarget()
     addMockTrack( source, "track2", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 0 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 0 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -267,8 +264,8 @@ TestOneWaySynchronizationJob::testEmptyTarget()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 2 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     delete source,
     delete target;
@@ -283,8 +280,8 @@ TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
     addMockTrack( target, "track1", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 0 );
-    QCOMPARE( target->trackMap().count(), 1 );
+    QCOMPARE( source->mc->trackMap().count(), 0 );
+    QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -293,8 +290,8 @@ TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 0 );
-    QCOMPARE( target->trackMap().count(), 1 );
+    QCOMPARE( source->mc->trackMap().count(), 0 );
+    QCOMPARE( target->mc->trackMap().count(), 1 );
 
     delete source,
     delete target;
@@ -312,8 +309,8 @@ TestOneWaySynchronizationJob::testNoActionNecessary()
     addMockTrack( target, "track2", "artist1", "album1" );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
     job->setSource( source );
@@ -322,8 +319,8 @@ TestOneWaySynchronizationJob::testNoActionNecessary()
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
     QCOMPARE( trackCopyCount, 0 );
-    QCOMPARE( source->trackMap().count(), 2 );
-    QCOMPARE( target->trackMap().count(), 2 );
+    QCOMPARE( source->mc->trackMap().count(), 2 );
+    QCOMPARE( target->mc->trackMap().count(), 2 );
 
     delete source,
     delete target;

@@ -19,12 +19,8 @@
 
 #include "BrowserCategoryList.h"
 
-#include <KVBox>
-
 #include <QMap>
-#include <QString>
 
-class QToolBox;
 class PodcastCollection;
 
 namespace PlaylistBrowserNS {
@@ -36,28 +32,20 @@ class PodcastCategory;
 */
 class PlaylistBrowser : public BrowserCategoryList
 {
-Q_OBJECT
-public:
-    PlaylistBrowser( const char *name, QWidget *parent );
-
-    ~PlaylistBrowser();
-
-    int currentCategory();
+    Q_OBJECT
+    public:
+        PlaylistBrowser( const char *name, QWidget *parent );
+        ~PlaylistBrowser();
 
 
-public slots:
-    void addCategory( int category );
-    void showCategory( int category );
+    public slots:
+        void addCategory( int category );
 
-private:
-    BrowserCategory * loadPodcastCategory();
-    BrowserCategory * loadDynamicCategory();
-
-    PodcastCollection *m_localPodcasts;
-    PodcastCategory * m_podcastCategory;
-    QMap<int, int> m_categoryIndexMap;
-};
-
+    private:
+        PodcastCollection* m_localPodcasts;
+        PodcastCategory* m_podcastCategory;
+        QMap<int, int> m_categoryIndexMap;
+    };
 }
 
 #endif

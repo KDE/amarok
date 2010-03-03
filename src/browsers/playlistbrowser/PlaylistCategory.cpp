@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (r) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +21,8 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsByProviderProxy.h"
+#include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
@@ -38,7 +40,12 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
+using namespace PlaylistBrowserNS;
+
+QString PlaylistCategory::s_configGroup( "Saved Playlists View" );
+QString PlaylistCategory::s_mergeViewKey( "Merged View" );
+
+PlaylistCategory::PlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists", parent )
 {
     setPrettyName( i18n( "Saved Playlists" ) );
@@ -54,12 +61,39 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
                   );
 
     setContentsMargins( 0, 0, 0, 0 );
-    m_toolBar = new QToolBar( this );
-    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    KToolBar *toolBar = new KToolBar( this, false, false );
+    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
+    m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(),
+                                                      UserModel::ProviderColumn );
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
-    m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
+    m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+    m_defaultItemView = m_playlistView->itemDelegate();
+
+    m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
+    toolBar->addAction( m_addGroupAction );
+    connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
+             m_playlistView, SLOT( createNewGroup() ) );
+
+    m_playlistView->setNewGroupAction( m_addGroupAction );
+
+    //a QWidget with minimumExpanding makes the next button right aligned.
+    QWidget *spacerWidget = new QWidget( this );
+    spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
+                                 QSizePolicy::MinimumExpanding );
+    toolBar->addWidget( spacerWidget );
+
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
+    toggleAction->setToolTip( i18n( "Merged View" ) );
+    toggleAction->setCheckable( true );
+    toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergeViewKey, false ) );
+    toolBar->addAction( toggleAction );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+
+    toggleView( toggleAction->isChecked() );
+
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
@@ -77,23 +111,41 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
-    m_toolBar->addAction( m_addGroupAction );
-    connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
-             m_playlistView, SLOT( createNewGroup() ) );
-
-    m_playlistView->setNewGroupAction( m_addGroupAction );
+    new PlaylistTreeItemDelegate( m_playlistView );
 }
 
-PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
+PlaylistCategory::~PlaylistCategory()
 {
 }
 
-void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
+void PlaylistCategory::newPalette(const QPalette & palette)
 {
     Q_UNUSED( palette )
 
     The::paletteHandler()->updateItemView( m_playlistView );
+}
+
+void
+PlaylistCategory::toggleView( bool merged )
+{
+    if( merged )
+    {
+        m_playlistView->setModel( m_byFolderProxy );
+        m_playlistView->setItemDelegate( m_defaultItemView );
+        m_playlistView->setRootIsDecorated( true );
+    }
+    else
+    {
+        m_playlistView->setModel( m_byProviderProxy );
+        m_playlistView->setItemDelegate( m_byProviderDelegate );
+        m_playlistView->setRootIsDecorated( false );
+    }
+
+    //folders don't make sense in per-provider view
+    m_addGroupAction->setEnabled( merged );
+    //TODO: set a tooltip saying why it's disabled mention labels
+
+    Amarok::config( s_configGroup ).writeEntry( s_mergeViewKey, merged );
 }
 
 #include "PlaylistCategory.moc"

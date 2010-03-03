@@ -318,6 +318,7 @@ set(collection_SRCS
     collection/Collection.cpp
     collection/CollectionManager.cpp
     collection/CollectionLocation.cpp
+    collection/CollectionLocationDelegateImpl.cpp
     collection/MetaQueryMaker.cpp
     collection/QueryMaker.cpp
     collection/TrackForUrlWorker.cpp
@@ -325,6 +326,7 @@ set(collection_SRCS
     collection/support/MemoryFilter.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
+    collection/support/MemoryQueryMakerInternal.cpp
     collection/support/MemoryQueryMakerHelper.cpp
     collection/support/PlaylistCollection.cpp
     collection/support/PlaylistCollectionLocation.cpp
@@ -396,6 +398,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/PlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
+    browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
@@ -586,10 +589,12 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
+    Amarok.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
+    Components.cpp
     DirectoryLoader.cpp
     EngineController.cpp
     EngineObserver.cpp
@@ -628,23 +633,23 @@ set(amaroklib_LIB_SRCS
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
+    browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
-    browsers/filebrowser/FileBrowserMkII.cpp
     browsers/filebrowser/FileView.cpp
-    browsers/filebrowser/MyDirOperator.cpp
-    browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
-    MountPointManager.cpp
     OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
+    statemanagement/ApplicationController.cpp
+    statemanagement/DefaultApplicationController.cpp
     toolbar/CurrentTrackToolbar.cpp
-    toolbar/MainToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
+    toolbar/MainToolbar.cpp
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
+    widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
@@ -658,11 +663,13 @@ set(amaroklib_LIB_SRCS
     widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
+    widgets/IconButton.cpp
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
+    widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
@@ -671,7 +678,9 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
     widgets/VolumeWidget.cpp
+    widgets/VolumeDial.cpp
     widgets/Splitter.cpp
+    widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
@@ -687,11 +696,9 @@ else( BUILD_MYSQLE_COLLECTION )
            )
 endif( BUILD_MYSQLE_COLLECTION )
 
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/context/engines/TestDataEngine.cpp
-        ../tests/context/engines/upcomingevents/TestUpcomingEventsEngine.cpp
         ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
@@ -706,7 +713,6 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
-        ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
     )
     include_directories(
@@ -714,6 +720,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/context/
         ../tests/context/engines/
         ../tests/context/engines/upcomingevents/
+        ../tests/context/engines/similarartists/
         ../tests/meta/
         ../tests/meta/cue/
         ../tests/meta/file/
@@ -723,7 +730,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/playlistmanager/sql/
         ../tests/timecode/
     )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
@@ -742,6 +749,8 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml Coll
 set( amaroklib_DEPENDS "amarokpud" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
+add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
+
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
@@ -754,6 +763,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/OrganizeCollectionDialogBase.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     podcasts/sql/PodcastSettingsBase.ui
+    podcasts/sql/SqlPodcastProviderSettingsWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
@@ -787,9 +797,9 @@ if (KDE_VERSION VERSION_GREATER "4.3.80")
     target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
 endif (KDE_VERSION VERSION_GREATER "4.3.80")
 
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 if( BUILD_MYSQLE_COLLECTION )
 else( BUILD_MYSQLE_COLLECTION )
@@ -857,7 +867,7 @@ install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
-#install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
 install(FILES context/servicetypes/amarok_context_applet.desktop

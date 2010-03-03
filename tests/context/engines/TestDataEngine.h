@@ -19,12 +19,17 @@
 #include <QString>
 #include <Plasma/DataEngine>
 
+/**
+ * This class provides a method to perform "black box" unit tests on data engines
+ * by retrieving the DataEngine through the KDE plugin manager
+ */
 class TestDataEngine
 {
     public:
         TestDataEngine( const QString identifier);
+        ~TestDataEngine();
         
-    private:
+    protected:
         Plasma::DataEngine* m_engine;
 };
 

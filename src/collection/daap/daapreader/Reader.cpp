@@ -431,14 +431,14 @@ Reader::parseSongList( const QByteArray &data )
 
     addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( m_trackMap );
-    m_memColl->setArtistMap( m_artistMap );
-    m_memColl->setAlbumMap( m_albumMap );
-    m_memColl->setGenreMap( m_genreMap );
-    m_memColl->setComposerMap( m_composerMap );
-    m_memColl->setYearMap( m_yearMap );
-    m_memColl->releaseLock();
+    m_memColl->memoryCollection()->acquireWriteLock();
+    m_memColl->memoryCollection()->setTrackMap( m_trackMap );
+    m_memColl->memoryCollection()->setArtistMap( m_artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( m_albumMap );
+    m_memColl->memoryCollection()->setGenreMap( m_genreMap );
+    m_memColl->memoryCollection()->setComposerMap( m_composerMap );
+    m_memColl->memoryCollection()->setYearMap( m_yearMap );
+    m_memColl->memoryCollection()->releaseLock();
     m_trackMap.clear();
     m_artistMap.clear();
     m_albumMap.clear();

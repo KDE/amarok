@@ -51,9 +51,9 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 
 # Needed to conditionally build tests and gui
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
    add_definitions(-DDEBUG)
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -108,9 +108,9 @@ if( WITH_PLAYER )
 
     if( WITH_IPOD )
         find_package(Ipod)
-        if( IPOD_FOUND )
+        if( IPOD_FOUND AND NOT WIN32 )
             macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_FOUND)
-        endif( IPOD_FOUND )
+        endif( IPOD_FOUND AND NOT WIN32 )
         macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
 	macro_optional_find_package(Gdk)
 	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
@@ -135,9 +135,6 @@ if( WITH_PLAYER )
         endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
         macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
 
-        find_package(GObject)
-        macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
-
         find_package(Loudmouth)
         macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for syncing." "http://www.loudmouth-project.org" FALSE "" "" )
 
@@ -146,6 +143,8 @@ if( WITH_PLAYER )
     endif( WITH_MP3Tunes )
 
     if( WITH_IPOD OR WITH_MP3Tunes )
+    find_package(GObject)
+    macro_log_feature( GOBJECT_FOUND "gobject" "Required by libgpod and mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
 	find_package(GLIB2)
 	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_IPOD OR WITH_MP3Tunes )
@@ -190,3 +189,5 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
+
+include(CTest)

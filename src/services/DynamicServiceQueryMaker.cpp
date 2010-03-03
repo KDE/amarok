@@ -18,6 +18,7 @@
 #include "DynamicServiceQueryMaker.h"
 
 #include "Debug.h"
+#include "ServiceCollection.h"
 
 using namespace Meta;
 
@@ -154,6 +155,31 @@ QueryMaker * DynamicServiceQueryMaker::limitMaxResultSize(int size)
 {
     Q_UNUSED( size );
     return this;
+}
+
+AlbumList
+DynamicServiceQueryMaker::matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist )
+{
+    if( !artist || !coll )
+        return AlbumList();
+    ArtistMap artistMap = coll->artistMap();
+    if ( artist && artistMap.contains( artist->name() ) )
+    {
+        ArtistPtr artist = artistMap.value( artist->name() );
+
+        AlbumList matchingAlbums;
+        AlbumList albums = coll->albumMap().values();
+
+        foreach( AlbumPtr albumPtr, albums ) {
+
+            if ( albumPtr->albumArtist() == artist )
+                matchingAlbums.push_back( albumPtr );
+        }
+
+        return matchingAlbums;
+    }
+    else
+        return AlbumList();
 }
 
 

@@ -38,7 +38,7 @@
 #include "collection/CollectionManager.h"
 #include "meta/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
 #include "CustomBias.h"
 

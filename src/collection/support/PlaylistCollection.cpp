@@ -22,17 +22,17 @@
 
 PlaylistCollection::PlaylistCollection( const Meta::PlaylistPtr &playlist )
         : Amarok::Collection()
-        , MemoryCollection()
         , Meta::PlaylistObserver()
         , m_playlist( playlist )
+        , m_mc( new MemoryCollection() )
 {
     subscribeTo( playlist );
-    acquireWriteLock();
+    m_mc->acquireWriteLock();
     foreach( const Meta::TrackPtr &track, m_playlist->tracks() )
     {
         insertTrack( track );
     }
-    releaseLock();
+    m_mc->releaseLock();
 }
 
 PlaylistCollection::~PlaylistCollection()
@@ -43,7 +43,7 @@ PlaylistCollection::~PlaylistCollection()
 QueryMaker*
 PlaylistCollection::queryMaker()
 {
-    return new MemoryQueryMaker( this, collectionId() );
+    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 CollectionLocation*
@@ -82,9 +82,9 @@ PlaylistCollection::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track
 
     if( track )
     {
-        acquireWriteLock();
+        m_mc->acquireWriteLock();
         insertTrack( track );
-        releaseLock();
+        m_mc->releaseLock();
     }
 }
 
@@ -96,35 +96,35 @@ PlaylistCollection::trackRemoved( Meta::PlaylistPtr playlist, int position )
     //ok, what now? is the removed track still availabe at position
     //as this is not clear from the API, and apparently not used
     //anywhere, do it the hard way...
-    acquireWriteLock();
-    setTrackMap( TrackMap() );
-    setArtistMap( ArtistMap() );
-    setAlbumMap( AlbumMap() );
-    setGenreMap( GenreMap() );
-    setComposerMap( ComposerMap() );
-    setYearMap( YearMap() );
+    m_mc->acquireWriteLock();
+    m_mc->setTrackMap( TrackMap() );
+    m_mc->setArtistMap( ArtistMap() );
+    m_mc->setAlbumMap( AlbumMap() );
+    m_mc->setGenreMap( GenreMap() );
+    m_mc->setComposerMap( ComposerMap() );
+    m_mc->setYearMap( YearMap() );
     foreach( const Meta::TrackPtr &track, playlist->tracks() )
     {
         insertTrack( track );
     }
-    releaseLock();
+    m_mc->releaseLock();
 }
 
 //should be moved to MemoryCollection I guess
 void
 PlaylistCollection::insertTrack( const Meta::TrackPtr &track )
 {
-    addTrack( track );
+    m_mc->addTrack( track );
     if( track->artist() )
-        addArtist( track->artist() );
+        m_mc->addArtist( track->artist() );
     if( track->album() )
-        addAlbum( track->album() );
+        m_mc->addAlbum( track->album() );
     if( track->composer() )
-        addComposer( track->composer() );
+        m_mc->addComposer( track->composer() );
     if( track->genre() )
-        addGenre( track->genre() );
+        m_mc->addGenre( track->genre() );
     if( track->year() )
-        addYear( track->year() );
+        m_mc->addYear( track->year() );
 }
 
 Meta::PlaylistPtr

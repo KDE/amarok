@@ -18,6 +18,7 @@
 #define SQLREGISTRY_H
 
 #include "SqlMeta.h"
+#include "amarok_sqlcollection_export.h"
 
 #include <QHash>
 #include <QMutex>
@@ -34,7 +35,7 @@ class TrackCapabilityDelegate;
 
 typedef QPair<int, QString> TrackId;
 
-class SqlRegistry : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 {
     Q_OBJECT
 

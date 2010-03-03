@@ -66,6 +66,20 @@ using namespace Meta;
 
 /// UmsHandler
 
+// Define the maximum number of concurrent kio jobs allowed.
+// This used to be 150, but flash media doesn't handle parallel
+// writes well, so by forcing this constant to 1 the jobs
+// are run sequentially.
+// BUG: 218152
+#ifndef UMS_MAX_CONCURRENT_JOBS
+#define UMS_MAX_CONCURRENT_JOBS 1
+#endif
+
+QString UmsHandler::s_settingsFileName( ".is_audio_player" );
+QString UmsHandler::s_audioFolderKey( "audio_folder" );
+QString UmsHandler::s_podcastFolderKey( "podcast_folder" );
+QString UmsHandler::s_autoConnectKey( "use_automatically" );
+
 UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     , m_watcher()
@@ -88,6 +102,9 @@ UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     , m_wait( false )
     , m_tempdir( new KTempDir() )
     , m_podcastProvider( 0 )
+    , m_configureAction( 0 )
+    , m_settings( 0 )
+    , m_umsSettingsDialog( 0 )
 {
     DEBUG_BLOCK
 
@@ -118,43 +135,51 @@ UmsHandler::init()
         return;
     }
 
-    QFile playerFile( m_mountPoint + "/.is_audio_player" );
-    bool use_automatically = false;
+    KUrl playerFilePath( m_mountPoint );
+    playerFilePath.addPath( s_settingsFileName );
+    QFile playerFile( playerFilePath.toLocalFile() );
 
-    QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        debug() << "Got .is_audio_player file";
+        debug() << QString( "Got %1 file").arg( s_settingsFileName );
         QTextStream in(&playerFile);
         while( !in.atEnd() )
         {
             QString line = in.readLine();
-            if( line.startsWith( "audio_folder=" ) )
+            if( line.startsWith( s_audioFolderKey + "=" ) )
             {
-                debug() << "Found audio_folder=";
-                QString path = m_mountPoint + '/' + line.section( '=', 1, 1 );
-                debug() << "Path trying to set to: " << path;
-                QDir dir( path );
-                if( dir.exists() )
+                debug() << QString( "Found %1" ).arg( s_audioFolderKey );
+                debug() << line;
+                m_musicPath = KUrl( m_mountPoint );
+                m_musicPath.addPath( line.section( '=', 1, 1 ) );
+                m_musicPath.cleanPath();
+                debug() << "Scan for music in " << m_musicPath.toLocalFile();
+                if( !QDir( m_musicPath.toLocalFile() ).exists() )
                 {
-                    debug() << "Custom audio folder now set to: " << path;
-                    m_mountPoint = path;
+                    debug() << "Music path doesn't exist! Using the mountpoint instead";
+                    //TODO: add user-visible warning after string freeze.
+                    m_musicPath = m_mountPoint;
                 }
             }
-            else if( line.startsWith( "podcast_folder=" ) )
+            else if( line.startsWith( s_podcastFolderKey + "=" ) )
             {
-                debug() << "Found podcast_folder, initializing UMS podcast provider";
-                m_podcastPath = mountPoint + '/' + line.section( '=', 1, 1 );
-                debug() << "scan for podcasts in " << m_podcastPath;
+                debug() << QString( "Found %1, initializing UMS podcast provider" )
+                                .arg( s_podcastFolderKey );
+                debug() << line;
+                m_podcastPath = KUrl( m_mountPoint );
+                m_podcastPath.addPath( line.section( '=', 1, 1 ) );
+                m_podcastPath.cleanPath();
+                debug() << "scan for podcasts in " <<
+                        m_podcastPath.toLocalFile( KUrl::AddTrailingSlash );
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
                 m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
                                                      PlaylistManager::PodcastChannel );
             }
-            else if( line.startsWith( "use_automatically=" ) )
+            else if( line.startsWith( s_autoConnectKey + "=" ) )
             {
                 debug() << "Use automatically: " << line.section( '=', 1, 1 );
-                use_automatically = ( line.section( '=', 1, 1 ) == "true" );
+                m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
             }
         }
 
@@ -187,10 +212,35 @@ UmsHandler::init()
     m_parsed = false;
     m_parseAction = 0;
 
+    // Get storage access for getting device space capacity/usage
+    Solid::Device device = Solid::Device(  m_memColl->udi() );
+    if(  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        if( storage )
+            m_filepath = storage->filePath();
+        else if( !m_mountPoint.isEmpty() )
+            m_filepath = m_mountPoint;
+
+        if ( !m_filepath.isEmpty() )
+            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        else
+        {
+            debug() << "capacity = 0.0 because m_filepath.isEmpty()";
+            m_capacity = 0.0;
+        }
+    }
+    else
+    {
+        debug() << "device is not valid";
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
+
     debug() << "Succeeded: true";
     m_memColl->emitCollectionReady();
     //m_memColl->slotAttemptConnectionDone( true );
-    if( use_automatically )
+    if( m_autoConnect )
     {
         debug() << "Automatically start to parse for tracks";
         m_parsed = true;
@@ -378,7 +428,7 @@ UmsHandler::addPath( const QString &path )
 QString
 UmsHandler::baseMusicFolder() const
 {
-    return mountPoint();
+    return m_musicPath.isEmpty() ? m_mountPoint : m_musicPath.toLocalFile();
 }
 
 bool
@@ -401,9 +451,13 @@ UmsHandler::prettyName() const
 
     device = Solid::Device( m_memColl->udi() );
 
-    if ( device.isValid() )
+    if( device.isValid() )
     {
-        return device.vendor().append( " " ).append( device.product() );
+        QString name = device.vendor().simplified();
+        if( !name.isEmpty() )
+            name += " ";
+        name += device.product().simplified();
+        return name;
     }
 
     return m_mountPoint;
@@ -412,7 +466,6 @@ UmsHandler::prettyName() const
 QList<QAction *>
 UmsHandler::collectionActions()
 {
-
     QList< QAction* > actions;
 
     // Button to start parse
@@ -421,16 +474,129 @@ UmsHandler::collectionActions()
     {
         if( !m_parseAction )
         {
-            m_parseAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Read Device" ), this );
+            m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Use as Collection" ), this );
             m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
 
             connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
         }
 
-        actions.append( m_parseAction );
+        //if already parsed no need to add this.
+        if( !m_parsed )
+            actions.append( m_parseAction );
     }
+    
+    if( !m_configureAction )
+    {
+        m_configureAction = new QAction( KIcon( "configure" ),
+            i18n( "&Configure %1", prettyName() ),
+            this
+        );
+        m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
+    }
+    actions << m_configureAction;
 
     return actions;
+}
+
+void
+UmsHandler::slotConfigure()
+{
+    DEBUG_BLOCK
+    m_umsSettingsDialog = new KDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( m_umsSettingsDialog );
+
+    m_settings = new Ui::UmsConfiguration();
+    m_settings->setupUi( settingsWidget );
+
+    m_settings->m_autoConnect->setChecked( m_autoConnect );
+
+    m_settings->m_musicFolder->setMode( KFile::Directory );
+    m_settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+
+    m_settings->m_podcastFolder->setMode( KFile::Directory );
+    m_settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
+                                         : m_podcastPath );
+
+    m_umsSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+    m_umsSettingsDialog->setMainWidget( settingsWidget );
+
+    m_umsSettingsDialog->setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
+    m_umsSettingsDialog->enableButtonApply( false );
+
+    connect( m_settings->m_musicFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( m_settings->m_podcastFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( m_settings->m_autoConnect, SIGNAL( stateChanged( int ) ), SLOT( slotConfigChanged() ) );
+
+    if( m_umsSettingsDialog->exec() == QDialog::Accepted )
+    {
+        debug() << "accepted";
+
+        if(  m_settings->m_musicFolder->url() != m_musicPath )
+        {
+            debug() << "music location changed from " << m_musicPath.toLocalFile() << " to ";
+            debug() << m_settings->m_musicFolder->url().toLocalFile();
+            //TODO: reparse music
+        }
+
+        if( m_settings->m_podcastFolder->url() != m_podcastPath )
+        {
+            debug() << "podcast location changed from " << m_podcastPath << " to ";
+            debug() << m_settings->m_podcastFolder->url().url();
+            //TODO: reparse podcasts
+        }
+
+        m_autoConnect = m_settings->m_autoConnect->isChecked();
+        if( m_autoConnect && !m_parsed )
+            parseTracks();
+
+        //write the date to the on-disk file
+        KUrl localFile = KUrl( m_mountPoint );
+        localFile.addPath( s_settingsFileName );
+        QFile settingsFile( localFile.toLocalFile() );
+        if( settingsFile.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
+        {
+            QTextStream s( &settingsFile );
+            QString keyValuePair( "%1=%2\n" );
+            KUrl musicPath = m_settings->m_musicFolder->url();
+            if( musicPath != m_mountPoint )
+            {
+                s << keyValuePair.arg( s_audioFolderKey, KUrl::relativePath( m_mountPoint,
+                    musicPath.toLocalFile() ) );
+            }
+            KUrl podcastPath = m_settings->m_podcastFolder->url();
+            if( podcastPath != m_mountPoint )
+            {
+                s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
+                    podcastPath.toLocalFile() ) );
+            }
+            if( m_autoConnect )
+                s << keyValuePair.arg( s_autoConnectKey, "true" );
+
+            settingsFile.close();
+        }
+        else
+            error() << "Could not open settingsfile " << localFile.toLocalFile();
+    }
+
+    delete m_umsSettingsDialog;
+    m_umsSettingsDialog = 0;
+    delete m_settings;
+    m_settings = 0;
+}
+
+void
+UmsHandler::slotConfigChanged()
+{
+    if( !m_settings )
+        return;
+
+    if( m_settings->m_autoConnect->isChecked() != m_autoConnect
+        || m_settings->m_musicFolder->url() != m_musicPath
+        || m_settings->m_podcastFolder->url() != m_podcastPath )
+    {
+        m_umsSettingsDialog->enableButtonApply( true );
+    }
 }
 
 void
@@ -506,7 +672,7 @@ UmsHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
     m_jobcounter++;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
         copyNextTrackToDevice();
 
 
@@ -538,10 +704,10 @@ UmsHandler::fileTransferred( KJob *job )  //SLOT
         return;
     }
 
-    // Limit max number of jobs to 150, make sure more tracks left
+    // Limit max number of jobs to 1, make sure more tracks left
     // to copy
     debug() << "Tracks to copy still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < 1 )
     {
         debug() << "Jobs: " << m_jobcounter;
         copyNextTrackToDevice();
@@ -580,7 +746,7 @@ UmsHandler::deleteFile( const KUrl &url )
 
     m_jobcounter++;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
         removeNextTrackFromDevice();
 
     connect( job, SIGNAL( result( KJob * ) ),
@@ -598,10 +764,8 @@ UmsHandler::fileDeleted( KJob *job )  //SLOT
 
     m_jobcounter--;
 
-    // Limit max number of jobs to 150, make sure more tracks left
-    // to delete
     debug() << "Tracks to delete still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
     {
         debug() << "Jobs: " << m_jobcounter;
         removeNextTrackFromDevice();
@@ -669,6 +833,7 @@ UmsHandler::usedCapacity() const
 float
 UmsHandler::totalCapacity() const
 {
+    DEBUG_BLOCK
     return m_capacity;
 }
 
@@ -685,31 +850,10 @@ UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    // Get storage access for getting device space capacity/usage
+    debug() << "Scanning for music in " << m_musicPath.toLocalFile();
+    m_watcher.addDir( m_musicPath.toLocalFile(), KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
-    Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        if ( storage )
-            m_filepath = storage->filePath();
-        else if ( !m_mountPoint.isEmpty() )
-            m_filepath = m_mountPoint;
-
-        if ( !m_filepath.isEmpty() )
-            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        else
-            m_capacity = 0.0;
-    }
-    else
-    {
-        m_filepath = "";
-        m_capacity = 0.0;
-    }
-
-    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
-
-    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
+    QDirIterator it( m_musicPath.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
     {
         addPath( it.next() );

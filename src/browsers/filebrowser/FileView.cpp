@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,15 +18,24 @@
 #include "FileView.h"
 
 #include "Debug.h"
-#include "EngineController.h"
-#include "playlist/PlaylistController.h"
-#include "PopupDropperFactory.h"
+#include "collection/CollectionManager.h"
+#include "collection/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "dialogs/TagDialog.h"
+#include "DirectoryLoader.h"
+#include "EngineController.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
+#include "playlist/PlaylistModelStack.h"
+#include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 
+#include <KIO/DeleteJob>
+#include <KDialog>
+#include <KDirModel>
+#include <KFileItem>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
@@ -38,58 +48,27 @@
 
 
 
-class FileViewDelegate : public QItemDelegate
-{
-
-public:
-
-    FileViewDelegate( QObject *parent = 0 )
-        : QItemDelegate( parent )
-    {
-    }
-
-    
-    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
-    {
-        const int width = option.rect.width();
-        const int height = option.rect.height();
-
-        if( height > 0 )
-        {
-            painter->save();
-            QPixmap background;
-
-            background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-
-            painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
-
-            painter->restore();
-        }
-
-        QItemDelegate::paint( painter, option, index );
-    }
-
-};
-
-
-
-
 FileView::FileView( QWidget * parent )
-    : QListView( parent )
+    : Amarok::PrettyTreeView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_editAction( 0 )
+    , m_separator1( 0 )
+    , m_deleteAction( 0 )
     , m_pd( 0 )
     , m_ongoingDrag( false )
+    , m_moveActivated( false )
+    , m_copyActivated( false )
+    , m_moveAction( 0 )
+    , m_copyAction( 0 )
 {
     setFrameStyle( QFrame::NoFrame );
-
-     setAlternatingRowColors( true );
+    setItemsExpandable( false );
+    setRootIsDecorated( false );
+    setAlternatingRowColors( true );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
-
-    setItemDelegate( new FileViewDelegate( this ) );
-    
 }
 
 void FileView::contextMenuEvent ( QContextMenuEvent * e )
@@ -112,7 +91,42 @@ void FileView::contextMenuEvent ( QContextMenuEvent * e )
 
     foreach( QAction * action, actions )
         menu->addAction( action );
-    
+
+    // Create Copy/Move to menu items
+    // ported from old filebrowser
+    QList<Amarok::Collection*> writableCollections;
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+    while ( it != hash.constEnd() )
+    {
+        Amarok::Collection *coll = it.key();
+        if ( coll && coll->isWritable() )
+        {
+            writableCollections.append( coll );
+        }
+        ++it;
+    }
+    if ( !writableCollections.isEmpty() )
+    {
+        QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
+        foreach( Amarok::Collection *coll, writableCollections )
+        {
+            CollectionAction *moveAction = new CollectionAction( coll, this );
+            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotPrepareMoveTracks() ) );
+            moveMenu->addAction( moveAction );
+        }
+        menu->addMenu( moveMenu );
+
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), this );
+        foreach( Amarok::Collection *coll, writableCollections )
+        {
+            CollectionAction *copyAction = new CollectionAction( coll, this );
+            connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotPrepareCopyTracks() ) );
+            copyMenu->addAction( copyAction );
+        }
+        menu->addMenu( copyMenu );
+    }
+
     menu->exec( e->globalPos() );
  
 }
@@ -128,31 +142,183 @@ void FileView::slotReplacePlaylist()
     addSelectionToPlaylist( true );
 }
 
+void FileView::slotEditTracks()
+{
+    Meta::TrackList tracks = tracksForEdit();
+    if( !tracks.isEmpty() )
+    {
+        TagDialog *dialog = new TagDialog( tracks, this );
+        dialog->show();
+    }
+}
+
+void FileView::slotPrepareMoveTracks()
+{
+    if( m_moveActivated )
+        return;
+
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
+
+    m_moveActivated = true;
+    m_moveAction = action;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotMoveTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
+}
+
+void FileView::slotPrepareCopyTracks()
+{
+    if( m_copyActivated )
+        return;
+
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
+
+    m_copyActivated = true;
+    m_copyAction = action;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotCopyTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
+}
+
+void
+FileView::slotCopyTracks( const Meta::TrackList& tracks )
+{
+    if( !m_copyAction || !m_copyActivated )
+        return;
+
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_copyAction->collection()->location();
+        source->prepareCopy( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle copying tracks from multiple collections, doing nothing to be safe";
+    }
+    m_copyActivated = false;
+    m_copyAction = 0;
+}
+
+void
+FileView::slotMoveTracks( const Meta::TrackList& tracks )
+{
+    if( !m_moveAction || !m_moveActivated )
+        return;
+
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_moveAction->collection()->location();
+
+        source->prepareMove( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle moving tracks from multipe collections, doing nothing to be safe";
+    }
+    m_moveActivated = false;
+    m_moveAction = 0;
+}
+
+
+
 QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 {
-
     QList<QAction *> actions;
     
-    if( !indices.isEmpty() )
+    if( indices.isEmpty() )
+        return actions; // get out of here!
+
+    if( m_appendAction == 0 )
     {
-        if( m_appendAction == 0 )
-        {
-            m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
-            m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-            connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
-        }
-
-        actions.append( m_appendAction );
-
-        if( m_loadAction == 0 )
-        {
-            m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-            m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-            connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
-        }
-
-        actions.append( m_loadAction );
+        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
+        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
     }
+
+    actions.append( m_appendAction );
+
+    if( m_loadAction == 0 )
+    {
+        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
+    }
+
+    actions.append( m_loadAction );
+
+    if( m_editAction == 0 )
+    {
+        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+        m_editAction->setProperty( "popupdropper_svg_id", "edit" );
+        connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+    }
+
+    actions.append( m_editAction );
+
+    if( m_separator1 == 0 )
+    {
+            m_separator1 = new QAction( this );
+            m_separator1->setSeparator( true );
+    }
+    
+    actions.append( m_separator1 );
+
+    if( m_deleteAction == 0 )
+    {
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+    }
+
+    actions.append( m_deleteAction );
+
+    Meta::TrackList tracks = tracksForEdit();
+    m_editAction->setEnabled( !tracks.isEmpty() );
 
     return actions;
 }
@@ -164,25 +330,19 @@ void FileView::addSelectionToPlaylist( bool replace )
 
     if( indices.count() == 0 )
         return;
-    
-    QFileSystemModel * fsModel = qobject_cast<QFileSystemModel *>( model() );
-    
-    if( fsModel )
-    {
-        QList<KUrl> urls;
-        
-        foreach( QModelIndex index, indices )
-        {
-            QString path = fsModel->filePath( index );
-            debug() << "file path: " << path;
-            if( EngineController::canDecode( path ) || fsModel->isDir( index ) )
-            {
-                urls << KUrl( path );
-            }
-        }
+    QList<KUrl> urls;
 
-        The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        debug() << "file path: " << file.url();
+        if( EngineController::canDecode( file.url() ) || file.isDir() )
+        {
+            urls << file.url();
+        }
     }
+
+    The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
 }
 
 
@@ -221,7 +381,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
         m_pd->show();
     }
 
-    QListView::startDrag( supportedActions );
+    QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
 
     if( m_pd )
@@ -236,11 +396,76 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
-void FileView::newPalette( const QPalette & palette )
+KFileItemList FileView::selectedItems() const
 {
-    Q_UNUSED( palette )
-    The::paletteHandler()->updateItemView( this );
-    reset(); // redraw all potential delegates
+    KFileItemList items;
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return items;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        items << item;
+    }
+    return items;
+}
+
+
+
+Meta::TrackList
+FileView::tracksForEdit() const
+{
+    Meta::TrackList tracks;
+
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return tracks;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
+        if( track )
+            tracks << track;
+    }
+    return tracks;
+}
+
+void FileView::slotDelete()
+{
+    DEBUG_BLOCK
+
+    QModelIndexList indices = selectedIndexes();
+
+    if( indices.count() == 0 )
+        return;
+
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this item?",
+                         "Are you sure you want to delete these %1 items?",
+                         indices.count() )
+                    , &dialog
+                  );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+    
+    
+    QList<KUrl> urls;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        debug() << "file path: " << file.url();
+
+        KIO::DeleteJob * job = KIO::del( file.url() );
+        job->start();
+    }
+
 }
 
 #include "FileView.moc"

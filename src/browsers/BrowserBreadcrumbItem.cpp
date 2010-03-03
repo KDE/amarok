@@ -20,6 +20,7 @@
 #include "BrowserCategoryList.h"
 #include "Debug.h"
 
+#include <QDir>
 #include <QMenu>
 
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
@@ -36,7 +37,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     if ( parentList )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( this );
+        QMenu *menu = new QMenu( 0 );
         
         QMap<QString,BrowserCategory *> siblingMap =  parentList->categories();
 
@@ -64,9 +65,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
 
-    // REMIND: Uncomment after string freeze
-    //if( category->prettyName().isEmpty() )   // root item
-    //    m_mainButton->setToolTip( i18n( "Media Sources Home" ) ); 
+    if( category->prettyName().isEmpty() )   // root item
+        m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
@@ -77,11 +77,67 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     {
         connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
     }
+    else  
+    {
+        connect( m_mainButton, SIGNAL( clicked( bool ) ), category, SLOT( reActivate() ) );
+    }
 
     hide();
 
     updateSizePolicy();
 }
+
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler )
+    : KHBox( 0 )
+    , m_category( 0 )
+    , m_menuButton( 0 )
+    , m_callback( callback )
+{
+
+    if ( !childItems.isEmpty() )
+    {
+        m_menuButton = new BreadcrumbItemMenuButton( this );
+        QMenu *menu = new QMenu( 0 );
+
+
+        foreach( const QString &siblingName, childItems )
+        {
+            QAction * action = menu->addAction( KIcon(), siblingName );
+            action->setProperty( "directory", siblingName );
+
+            // the current action should be bolded
+            if( siblingName == name )
+            {
+                QFont font = action->font();
+                font.setBold( true );
+                action->setFont( font );
+            }
+            connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
+        }
+
+        m_menuButton->setMenu( menu );
+
+        //do a little magic to line up items in the menu with the current item
+        int offset = 6;
+
+        menu->setContentsMargins( offset, 1, 1, 2 );
+    }
+
+    m_mainButton = new BreadcrumbItemButton( KIcon( "folder-amarok" ), name, this );
+    
+    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
+
+    connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
+    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
+
+    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
+
+    hide();
+
+    updateSizePolicy(); 
+}
+
+
 
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
@@ -104,5 +160,25 @@ void BrowserBreadcrumbItem::updateSizePolicy()
     setSizePolicy( m_mainButton->sizePolicy() );
 }
 
+void BrowserBreadcrumbItem::activate()
+{
+    emit activated( m_callback );
+}
+
+void BrowserBreadcrumbItem::activateSibling()
+{
+
+    QAction * action = dynamic_cast<QAction *>( sender() );
+
+    if( action )
+    {
+        QDir dir( m_callback );
+        dir.cdUp();
+
+        QString siblingCallback = dir.path() + QDir::separator() + action->property( "directory" ).toString();
+
+        emit activated( siblingCallback );
+    }
+}
 
 

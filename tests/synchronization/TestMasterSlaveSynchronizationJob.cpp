@@ -18,9 +18,12 @@
 
 #include "Debug.h"
 #include "collection/CollectionLocation.h"
+#include "collection/CollectionLocationDelegate.h"
+#include "Components.h"
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
 #include "CollectionTestImpl.h"
+#include "collection/MockCollectionLocationDelegate.h"
 #include "mocks/MockTrack.h"
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
@@ -30,13 +33,13 @@
 
 #include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMasterSlaveSynchronizationJob )
+#include <gmock/gmock.h>
 
-//required for Debug.h
-QMutex Debug::mutex;
+QTEST_KDEMAIN_CORE( TestMasterSlaveSynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
+using ::testing::_;
 
 static int trackCopyCount;
 static int trackRemoveCount;
@@ -48,23 +51,25 @@ public:
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
-    bool remove( const Meta::TrackPtr &track )
+
+    void removeUrlsFromCollection( const Meta::TrackList &sources )
     {
-        trackRemoveCount++;
-        coll->acquireWriteLock();
-        //theoretically we should clean up the other maps as well...
-        TrackMap map = coll->trackMap();
-        map.remove( track->uidUrl() );
-        coll->setTrackMap( map );
-        coll->releaseLock();
-        return true;
+        trackRemoveCount += sources.count();
+        coll->mc->acquireWriteLock();
+        TrackMap map = coll->mc->trackMap();
+        foreach( const Meta::TrackPtr &track, sources )
+            map.remove( track->uidUrl() );
+        coll->mc->setTrackMap( map );
+        coll->mc->releaseLock();
+        slotRemoveOperationFinished();
     }
+
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
     {
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {
-            coll->addTrack( track );
+            coll->mc->addTrack( track );
         }
     }
 };
@@ -91,9 +96,9 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + "_" + artistName + "_" + albumName ) );
     EXPECT_CALL( *track, isPlayable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
-    coll->addTrack( trackPtr );
+    coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )
@@ -113,14 +118,14 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
-        coll->addAlbum( albumPtr );
+        coll->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;
     EXPECT_CALL( *album, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( albumTracks ) );
 
     EXPECT_CALL( *track, album() ).Times( AnyNumber() ).WillRepeatedly( Return( albumPtr ) );
 
-    Meta::ArtistPtr artistPtr = coll->artistMap().value( artistName );
+    Meta::ArtistPtr artistPtr = coll->mc->artistMap().value( artistName );
     Meta::MockArtist *artist;
     Meta::TrackList artistTracks;
     if( artistPtr )
@@ -139,7 +144,7 @@ void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QSt
         ::testing::Mock::AllowLeak( artist );
         artistPtr = Meta::ArtistPtr( artist );
         EXPECT_CALL( *artist, name() ).Times( AnyNumber() ).WillRepeatedly( Return( artistName ) );
-        coll->addArtist( artistPtr );
+        coll->mc->addArtist( artistPtr );
     }
     artistTracks << trackPtr;
     EXPECT_CALL( *artist, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( artistTracks ) );
@@ -170,8 +175,8 @@ TestMasterSlaveSynchronizationJob::testAddTracksToEmptySlave()
 
     //setup master
     addMockTrack( master, "track1", "artist1", "album1" );
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 0 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 0 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -183,8 +188,8 @@ TestMasterSlaveSynchronizationJob::testAddTracksToEmptySlave()
 
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( trackRemoveCount, 0 );
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
     delete master;
     delete slave;
 }
@@ -200,8 +205,8 @@ TestMasterSlaveSynchronizationJob::testAddSingleTrack()
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( master, "track2", "artist1", "album1" );
 
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -215,8 +220,8 @@ TestMasterSlaveSynchronizationJob::testAddSingleTrack()
     //verify
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( trackRemoveCount, 0 );
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
 
     delete master;
     delete slave;
@@ -233,8 +238,8 @@ TestMasterSlaveSynchronizationJob::testAddAlbum()
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( master, "track1", "artist1", "album2" );
 
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -248,8 +253,8 @@ TestMasterSlaveSynchronizationJob::testAddAlbum()
     //verify
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( trackRemoveCount, 0 );
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
 
     delete master;
     delete slave;
@@ -266,8 +271,8 @@ TestMasterSlaveSynchronizationJob::testAddArtist()
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( master, "track1", "artist2", "album1" );
 
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -281,8 +286,8 @@ TestMasterSlaveSynchronizationJob::testAddArtist()
     //verify
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( trackRemoveCount, 0 );
-    QCOMPARE( master->trackMap().count(), 2 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 2 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
 
     delete master;
     delete slave;
@@ -294,13 +299,17 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
 
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
+
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( slave, "track2", "artist1", "album1" );
 
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -314,11 +323,12 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
     //verify
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 1 );
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -327,13 +337,17 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
 
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
+
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist1", "album2" );
 
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -347,11 +361,12 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
     //verify
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 1 );
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -360,13 +375,17 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
 
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
+
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist2", "album1" );
 
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 2 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 2 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -380,11 +399,12 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
     //verify
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 1 );
-    QCOMPARE( master->trackMap().count(), 1 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 1 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -393,10 +413,14 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
 
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
+
     //setup master
     addMockTrack( slave, "track1", "artist1", "album1" );
-    QCOMPARE( master->trackMap().count(), 0 );
-    QCOMPARE( slave->trackMap().count(), 1 );
+    QCOMPARE( master->mc->trackMap().count(), 0 );
+    QCOMPARE( slave->mc->trackMap().count(), 1 );
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 0 );
 
@@ -408,8 +432,9 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 1 );
-    QCOMPARE( master->trackMap().count(), 0 );
-    QCOMPARE( slave->trackMap().count(), 0 );
+    QCOMPARE( master->mc->trackMap().count(), 0 );
+    QCOMPARE( slave->mc->trackMap().count(), 0 );
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }

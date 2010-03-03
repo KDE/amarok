@@ -52,6 +52,9 @@ class AMAROK_EXPORT EngineController : public EngineSubject
     Q_OBJECT
 
 public:
+    EngineController();
+    ~EngineController();
+
     /**
      * Returns the global EngineController instance
      */
@@ -77,6 +80,11 @@ public:
      * Checks whether the media file at the specified URL can be decoded
      */
     static bool canDecode( const KUrl& );
+
+    /**
+     * Returns a list of backend supported mime types.
+     */
+    static QStringList supportedMimeTypes();
 
     /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
@@ -330,10 +338,6 @@ private:
 
     void createFadeoutEffect();
     void resetFadeout();
-
-    static EngineController* s_instance;
-    EngineController();
-    ~EngineController();
 
     Q_DISABLE_COPY( EngineController )
 

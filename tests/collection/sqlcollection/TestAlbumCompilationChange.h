@@ -45,6 +45,7 @@ private slots:
     void testUnsetCompilationWithMultipleExistingAlbums();
 
     void testUnsetCompilationWithArtistAFeaturingB();
+    void testUnsetCompilationWithMultipleArtists();
 
     //void testSetCompilationWithoutExistingCompilationWithMultipleTracks();
     //void testSetCompilationWithExistingComiplationWithMultipleTracks();

@@ -292,7 +292,7 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
-    // debug() << m_prevGeom << g << m_nextGeom << addItemGeom;
+//     debug() << m_prevGeom << g << m_nextGeom << addItemGeom;
     if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() )
     {
         swapWithPrevious();
@@ -303,7 +303,7 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
         swapWithNext();
     }
 
-    // debug() << "=================================";
+//     debug() << "=================================";
 }
 
 void 
@@ -444,7 +444,7 @@ Context::AppletItemOverlay::syncGeometry()
     setGeometry( m_applet->geometry().toRect() );
   //  debug() << "setting overlay geometry to" << m_applet->geometry().toRect();
 
-    if( m_index > 1 ) 
+    if( m_index > 0 ) 
     {
         if( m_layout->itemAt( m_index - 1 ) )
             m_prevGeom = m_layout->itemAt( m_index - 1 )->geometry();

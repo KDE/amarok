@@ -17,6 +17,7 @@
 #include "UnionJob.h"
 
 #include "collection/Collection.h"
+#include "collection/CollectionLocation.h"
 #include "Debug.h"
 
 UnionJob::UnionJob( Amarok::Collection *collA, Amarok::Collection *collB )
@@ -39,7 +40,6 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )
     {
         debug() << "warning, received an unexpected syncDirection";
-        deleteLater();
         return;
     }
     Amarok::Collection *from = ( syncDirection == OnlyInA ? collA : collB );
@@ -47,4 +47,17 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
 
     debug() << "Collection " << from->collectionId() << " has to sync " << tracks.count() << " track(s) to " << to->collectionId();
     //show confirmation dialog, actually do stuff
+    CollectionLocation *fromLoc = from->location();
+    CollectionLocation *toLoc = to->location();
+
+    if( !toLoc->isWritable() )
+    {
+        debug() << "Collection " << to->collectionId() << " is not writable";
+        fromLoc->deleteLater();
+        toLoc->deleteLater();
+    }
+    else
+    {
+        fromLoc->prepareCopy( tracks, toLoc );
+    }
 }

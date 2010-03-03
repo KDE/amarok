@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,8 +20,7 @@
 #include "PodcastMeta.h"
 
 #include "MetaPlaylistModel.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -29,16 +28,13 @@
 #include <QVariant>
 
 class OpmlOutline;
-class QAction;
+class PodcastProvider;
 
 namespace PlaylistBrowserNS {
 
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
-    LongDescriptionRole,
-    //Where is this Playlist from (collection, service, device)
-    OriginRole = Qt::UserRole,
-    OnDiskRole = Qt::UserRole //Is the PodcastEpisode downloaded to disk?
+    LongDescriptionRole
 };
 
 enum
@@ -52,13 +48,15 @@ enum
     DateColumn,
     IsEpisodeColumn,
     ProviderColumn,
+    OnDiskColumn,
     ColumnCount
 };
 
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
+class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
+                     public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -66,6 +64,8 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         static void destroy();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole );
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
@@ -84,12 +84,16 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
+        /* Meta::PlaylistObserver methods */
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
+
         //Own methods
         void downloadItems(  QModelIndexList list );
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
-        void configureChannels( QModelIndexList list );
 
         /** @returns all channels currently selected
         **/
@@ -120,9 +124,13 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         static PodcastModel* s_instance;
         PodcastModel();
         ~PodcastModel();
+        static int podcastItemType( const QModelIndex &index );
+        static Meta::PodcastChannelPtr channelForIndex( const QModelIndex &index );
+        static Meta::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
 
         Q_DISABLE_COPY( PodcastModel )
 
+        PlaylistProvider *getProviderByName( const QString &name );
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );
@@ -138,6 +146,9 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         static Meta::TrackList
         podcastEpisodesToTracks(
             Meta::PodcastEpisodeList episodes );
+
+        /** Get the provider associated with a PodcastMetaCommon object */
+        PodcastProvider *providerForPmc( Meta::PodcastMetaCommon *pmc ) const;
 
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );

@@ -1,6 +1,7 @@
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
 find_package(Googlemock REQUIRED)
+macro_log_feature( GOOGLEMOCK_FOUND "gmock" "Used in Amarok's tests." "http://code.google.com/p/googlemock/" TRUE "1.4" "" )
 
 set( AMAROK_SOURCE_TREE ${CMAKE_SOURCE_DIR}/src )
 set( AMAROK_TEST_TREE ${CMAKE_SOURCE_DIR}/tests )
@@ -16,10 +17,22 @@ include_directories( .
 
 add_subdirectory( data )
 add_subdirectory( collection )
+add_subdirectory( context )
 add_subdirectory( meta )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
 add_subdirectory( synchronization )
+
+#------------------------ Test CaseConverter -----------------------------
+
+set( testcaseconverter_SRCS
+        TestCaseConverter.cpp
+        ${AMAROK_SOURCE_TREE}/CaseConverter.cpp
+    )
+
+kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
+
+target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
 
 #------------------------ Test Expression -----------------------------
 
@@ -52,4 +65,3 @@ set( testsmartpointerlist_SRCS
 kde4_add_unit_test( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
 
 target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
-add_subdirectory( context )

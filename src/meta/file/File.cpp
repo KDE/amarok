@@ -20,8 +20,8 @@
 
 #include "Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
-#include <config-amarok.h>
 #include "browsers/filebrowser/FileBrowser.h"
+#include "config-amarok.h"
 #include "MainWindow.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
@@ -163,7 +163,7 @@ public:
         BrowserCategory * fileCategory = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
         if( fileCategory )
         {
-            FileBrowser::Widget * fileBrowser = dynamic_cast<FileBrowser::Widget *>( fileCategory );
+            FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( fileCategory );
             if( fileBrowser )
             {
                 //get the path of the parent directory of the file
@@ -171,7 +171,6 @@ public:
                 fileBrowser->setDir( playableUrl.directory() );       
             }
         }
-
     }
 
 private:

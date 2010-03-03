@@ -1,4 +1,4 @@
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
 install(
         FILES
         Platz\ 01.mp3
@@ -13,6 +13,7 @@ install(
         Platz\ 10.mp3
         DESTINATION ${DATA_INSTALL_DIR}/amarok/testdata/audio
 )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
-
 add_subdirectory( album )
+
+endif()
+

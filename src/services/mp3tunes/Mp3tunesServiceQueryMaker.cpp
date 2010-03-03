@@ -257,8 +257,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
     debug() << "Fetching Albums for parentArtist id: " << m_parentArtistId;
 
     if ( !m_parentArtistId.isEmpty() ) {
-        ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
-        albums = artistMatcher.matchAlbums( m_collection );
+        albums = matchAlbums( m_collection, m_collection->artistById( m_parentArtistId.toInt() ) );
     } else {
         debug() << "parent id empty";
         return;
@@ -288,10 +287,10 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
     if ( !m_parentArtistId.isEmpty() ) {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
-        tracks = artistMatcher.match( m_collection );
+        tracks = artistMatcher.match( m_collection->trackMap().values() );
     } else if ( !m_parentAlbumId.isEmpty() ) {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
-        tracks = albumMatcher.match( m_collection );
+        tracks = albumMatcher.match( m_collection->trackMap().values() );
     } else {
         debug() << "parent id empty";
         return;

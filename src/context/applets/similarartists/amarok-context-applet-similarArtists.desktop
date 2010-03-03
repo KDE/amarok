@@ -4,6 +4,7 @@ Name[en_GB]=Similar artists
 Name[fr]=Artistes similaires
 Type=Service
 ServiceTypes=Plasma/Applet
+Icon=similarartists-amarok
 
 X-KDE-Library=amarok_context_applet_similarArtists
 X-KDE-PluginInfo-Author=Joffrey Clavel

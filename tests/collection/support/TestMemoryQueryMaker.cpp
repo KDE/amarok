@@ -27,45 +27,54 @@
 #include "mocks/MockTrack.h"
 
 #include <QVariantMap>
+#include <QSharedPointer>
 #include <QSignalSpy>
 
 #include <KCmdLineArgs>
+#include <KGlobal>
 
 #include <qtest_kde.h>
 
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
+using ::testing::AnyNumber;
+using ::testing::Return;
 
-//required for Debug.h
-QMutex Debug::mutex;
+QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
 
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
+    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
     ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    qRegisterMetaType<Meta::TrackList>();
+    qRegisterMetaType<Meta::AlbumList>();
+    qRegisterMetaType<Meta::ArtistList>();
 }
 
 void
 TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
 {
-    MemoryCollection mc;
-    mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    mc.addTrack( Meta::TrackPtr( new Meta::MockTrack() ) );
+    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
+    mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
+    mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
+    Meta::MockTrack *mock = new Meta::MockTrack();
+    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
+    Meta::TrackPtr trackPtr( mock );
+    mc->addTrack( trackPtr );
 
-    MemoryQueryMaker *qm = new MemoryQueryMaker( &mc, "test" );
+    MemoryQueryMaker *qm = new MemoryQueryMaker( mc.toWeakRef(), "test" );
     qm->setQueryType( QueryMaker::Track );
 
     qm->run();
     delete qm;
     //we cannot wait for a signal here....
-    QTest::qWait( 500 );
+    //QTest::qWait( 500 );
 }
 
 void
 TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
 {
-    MemoryCollection *mc = new MemoryCollection();
+    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
 
@@ -75,7 +84,7 @@ TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
     QSignalSpy spy( qm, SIGNAL(queryDone()));
 
     qm->run();
-    delete mc;
+    mc.clear();
     QTest::qWait( 500 );
     QCOMPARE( spy.count(), 1 );
 

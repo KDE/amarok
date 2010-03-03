@@ -23,6 +23,8 @@
 #include "MemoryCollection.h"
 #include "collection/QueryMaker.h"
 
+#include <QWeakPointer>
+
 
 namespace ThreadWeaver
 {
@@ -33,7 +35,14 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
 {
     Q_OBJECT
     public:
-        MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId );
+    /**
+      * Creates a new MemoryQueryMaker that will query a memory collection.
+      * This class implements the QueryMaker interface and can be used as a generic
+      * query maker for all collections that use MemoryCollection.
+      * @param mc the MemoryCollection instance that the query should be run on.
+      * @param collectionId the collectionid that has to be emitted by this querymaker.
+      */
+        MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
 
         virtual QueryMaker* reset();
@@ -74,19 +83,12 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
-        //MemoryQueryMaker specific methods
-        void runQuery();
-        void handleResult();
-        void handleResult( const Meta::TrackList &tracks );
-
     private slots:
         void done( ThreadWeaver::Job * job );
 
     protected:
-        template <class PointerType>
-        void emitProperResult( const QList<PointerType > &list );
 
-        MemoryCollection *m_collection;
+        QWeakPointer<MemoryCollection> m_collection;
         struct Private;
         Private * const d;
 };

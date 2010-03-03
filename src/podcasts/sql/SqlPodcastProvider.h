@@ -17,7 +17,6 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "EngineObserver.h"
 #include "PodcastProvider.h"
 #include "SqlPodcastMeta.h"
 
@@ -26,6 +25,7 @@
 
 class PodcastImageFetcher;
 
+class KDialog;
 class KUrl;
 class PodcastReader;
 class SqlStorage;
@@ -34,7 +34,7 @@ class QTimer;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class SqlPodcastProvider : public PodcastProvider, public EngineObserver
+class SqlPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
@@ -44,7 +44,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         bool possiblyContainsTrack( const KUrl &url ) const;
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        QString prettyName() const { return i18n("Local Podcasts"); };
+        QString prettyName() const { return i18n("Local Podcasts"); }
         KIcon icon() const { return KIcon( "server-database" ); }
 
         Meta::PlaylistList playlists();
@@ -65,13 +65,14 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
         QList<QAction *> channelActions( Meta::PodcastChannelList );
 
-        void completePodcastDownloads();
+        virtual QList<QAction *> providerActions();
 
-        //EngineObserver methods
-        virtual void engineNewTrackPlaying();
+        void completePodcastDownloads();
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
+
+        KUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
     public slots:
         void updateAll();
@@ -97,6 +98,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void slotUpdateChannels();
         void slotDownloadProgress( KJob *job, unsigned long percent );
         void slotWriteTagsToFiles();
+        void slotConfigChanged();
 
     signals:
         void updated();
@@ -105,11 +107,17 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
     private slots:
         void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
         void podcastImageFetcherDone( PodcastImageFetcher * );
+        void slotConfigureProvider();
 
     private:
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
+
+        /** return the url as a string. Removes percent encoding if it actually has a non-url guid.
+        */
+        static QString cleanUrlOrGuid( const KUrl &url );
+
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
@@ -130,7 +138,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         Meta::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
-        unsigned int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
+        int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Meta::PodcastChannelList m_updateQueue;
@@ -144,13 +152,19 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
 
-        QAction * m_configureAction; //Configure a Channel
-        QAction * m_deleteAction; //delete a downloaded Episode
-        QAction * m_downloadAction;
-        QAction * m_removeAction; //remove a subscription
-        QAction * m_renameAction; //rename a Channel or Episode
-        QAction * m_updateAction;
-        QAction * m_writeTagsAction; //write feed information to downloaded file
+        KUrl m_baseDownloadDir;
+
+        KDialog *m_providerSettingsDialog;
+
+        QList<QAction *> m_providerActions;
+
+        QAction *m_configureChannelAction; //Configure a Channel
+        QAction *m_deleteAction; //delete a downloaded Episode
+        QAction *m_downloadAction;
+        QAction *m_removeAction; //remove a subscription
+        QAction *m_renameAction; //rename a Channel or Episode
+        QAction *m_updateAction;
+        QAction *m_writeTagsAction; //write feed information to downloaded file
 
         PodcastImageFetcher *m_podcastImageFetcher;
 };

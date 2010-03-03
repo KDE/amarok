@@ -38,11 +38,10 @@ extern "C"
 #include "IpodPlaylistCapability.h"
 #include "IpodReadCapability.h"
 #include "IpodWriteCapability.h"
+#include "IpodDeviceInfo.h"
 
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
-
-#include "mediadevicecollection_export.h"
 
 #include <KDiskFreeSpaceInfo>
 #include <KIO/Job>
@@ -92,12 +91,12 @@ namespace Meta
     typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 
 /* The libgpod backend for all Ipod calls */
-class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
+class IpodHandler : public Meta::MediaDeviceHandler
 {
     Q_OBJECT
 
     public:
-        IpodHandler( IpodCollection *mc, const QString& mountPoint );
+        IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo );
         virtual ~IpodHandler();
 
         virtual void init(); // collection
@@ -124,8 +123,10 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         /// Ipod-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
-        QString mountPoint() const { return m_mountPoint; }
+        QString mountPoint() const { return m_deviceInfo->mountPoint(); }
+#if 0
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+#endif
 
         // NOTE: do not use writeITunesDB,
         // use the threaded writeDatabase
@@ -277,7 +278,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         bool writeFirewireGuid();
         KUrl determineURLOnDevice( const Meta::TrackPtr &track );
         QString itunesDir( const QString &path = QString() ) const;
-        QString ipodPath( const QString &realPath );
+        QString ipodPath( const QString &realPath ) const;
         bool pathExists( const QString &ipodPath, QString *realPath = 0 );
         QString realPath( const char *ipodPath );
 
@@ -333,19 +334,18 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         /* Ipod Connection */
         bool    m_autoConnect;
-        QString m_mountPoint;
         QString m_name;
+        const IpodDeviceInfo *m_deviceInfo;
 
         /* Ipod Model */
         bool m_isShuffle;
-        bool m_isMobile;
-        bool m_isIPhone;
 
         /* Properties of Ipod */
         bool m_supportsArtwork;
         bool m_supportsVideo;
         bool m_rockboxFirmware;
         bool m_needsFirewireGuid;
+        mutable QString m_controlDir;
 
         /* Success/Failure */
         bool m_dbChanged;

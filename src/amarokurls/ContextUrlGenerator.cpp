@@ -75,6 +75,3 @@ ContextUrlGenerator::createUrl()
 {
     return createContextBookmark();
 }
-
-#include "ContextUrlGenerator.h"
-

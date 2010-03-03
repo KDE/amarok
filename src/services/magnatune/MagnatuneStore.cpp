@@ -32,7 +32,7 @@
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
 
 #include <KAction>

@@ -31,9 +31,6 @@ namespace Playlist
  * Members declared here must be implemented by Playlist::Model and all proxies.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class AbstractModel
-{
-public:
 
 //NOTE: While AbstractModel is ideally and logically an abstract base class with all pure
 //      virtual methods, there are a few exceptions.
@@ -47,6 +44,16 @@ public:
 //      must implement. Non trivial implementations are handled by the proxies, and they
 //      are used in the view(s), Playlist::Controller, Playlist::Actions and probably in
 //      many other places.  --Téo 19/7/2009
+
+class AbstractModel
+{
+public:
+
+    /**
+     * Virtual destructor
+     * (Make it OK to delete an instance of a derived class through a pointer to this base class.)
+     */
+    virtual ~AbstractModel() { };
 
     /**
      * Returns the unique playlist item id of the active track
@@ -336,11 +343,6 @@ public:
      * @return the tracklist.
      */
     virtual Meta::TrackList tracks() const = 0;
-
-    /**
-     * Destructor.
-     */
-    virtual ~AbstractModel() {};
 };
 
 }   //namespace Playlist

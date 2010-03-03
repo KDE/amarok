@@ -26,6 +26,7 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "tooltips/ToolTipManager.h"
 
+
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -56,7 +57,7 @@ public:
 
 protected:
     int verticalOffset() const;
-    
+
 signals:
     void found();
     void notFound();

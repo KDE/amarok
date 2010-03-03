@@ -23,6 +23,7 @@
 
 #include <KVBox>
 
+#include <QStack>
 #include <QTimer>
 #include <QTreeView>
 #include <QMap>
@@ -46,7 +47,7 @@ class BrowserCategoryList : public BrowserCategory
         * @param parent The parent widget.
         * @param name The name of this widget.
         */
-        BrowserCategoryList( QWidget *parent, const QString& name );
+        BrowserCategoryList( QWidget *parent, const QString& name, bool sort = false );
 
         /**
          * Destructor.
@@ -72,7 +73,7 @@ class BrowserCategoryList : public BrowserCategory
         void showCategory( const QString &name );
 
         QString activeCategoryName();
-        BrowserCategory *activeCategory();
+        BrowserCategory *activeCategory() const;
 
         /**
          * Recursively navigate to a specific category.
@@ -136,6 +137,8 @@ class BrowserCategoryList : public BrowserCategory
         QString m_currentFilter;
         
         QString m_infoHtmlTemplate;
+
+        bool    m_sorting;
 
     private slots:
         /**

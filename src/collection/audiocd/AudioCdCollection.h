@@ -73,7 +73,6 @@ public:
 
     void setEncodingFormat( int format ) const;
 
-    virtual QueryMaker * queryMaker();
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual KIcon icon() const;
@@ -92,6 +91,8 @@ public:
 
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
+
+    bool isReady();
 
 public slots:
     void infoFetchComplete( KJob *job );
@@ -124,6 +125,8 @@ private:
     QString m_albumNamePattern;
 
     QMap<KUrl, MetaProxy::Track*> m_proxyMap;
+
+    bool m_ready;
 };
 
 #endif

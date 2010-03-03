@@ -28,9 +28,11 @@
 #include <QStringList>
 #include <QVariant>
 
+#include "amarok_sqlcollection_export.h"
+
 class SqlStorage;
 
-class ScanResultProcessor : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
 {
     Q_OBJECT
 

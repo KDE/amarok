@@ -1149,14 +1149,21 @@ PodcastReader::endItem()
             m_item->setDescription( description );
         }
 
-        const KUrl trackId( m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid() );
+        QString guid = m_item->guid();
+        bool useGuid = !guid.isEmpty() &&
+                       !guid.contains( "[A-Z]" ) && //KUrl only uses lowercase
+                       !guid.startsWith( '/' ); //appends file://
+
+        const KUrl trackId( useGuid ? m_item->guid() : m_item->uidUrl() );
         Meta::PodcastEpisodePtr episode = Meta::PodcastEpisodePtr::dynamicCast(
                                               m_podcastProvider->trackForUrl( trackId )
                                           );
 
-        if( !episode.isNull() )
+        //make sure that the episode is not a bogus match. The channel has to be correct.
+        // See http://bugs.kde.org/show_bug.cgi?id=227515
+        if( !episode.isNull() && episode->channel() == m_channel )
         {
-            debug() << "updating episode: " << m_item->title();
+            debug() << "updating episode: " << episode->title();
 
             episode->setTitle( m_item->title() );
             episode->setSubtitle( m_item->subtitle() );

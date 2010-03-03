@@ -52,7 +52,7 @@ public:
      * Get the user visible name of this category.
      * @return The name of the service.
      */
-    QString prettyName() const;
+    virtual QString prettyName() const;
 
     /**
      * Set a short description string for this category. This string is used to describe the category in the category browser.
@@ -93,12 +93,13 @@ public:
     void setImagePath( const QString &path );
     QString imagePath();
 
-    BrowserCategoryList * parentList();
+    BrowserCategoryList * parentList() const;
     void setParentList( BrowserCategoryList * parent );
 
     BrowserBreadcrumbItem * breadcrumb();
 
     virtual void polish() {};
+    virtual void setupAddItems() {};
 
     //These 2 functions are forwarded to simplifiy the creation of urls
     //even though they might not be needed in many cases.
@@ -108,8 +109,17 @@ public:
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
 
+    void addAdditionalItem( BrowserBreadcrumbItem * item );
+    void clearAdditionalItems();
+
+    QList<BrowserBreadcrumbItem *> additionalItems();
+
+
 public slots:
     void activate();
+
+    //Called if this category itself is re-clicked in the breadcrumb
+    virtual void reActivate() {}
 
 private:
     QString m_name;
@@ -121,6 +131,8 @@ private:
     BrowserCategoryList * m_parentList;
 
     BrowserBreadcrumbItem * m_breadcrumb;
+
+    QList<BrowserBreadcrumbItem *> m_additionalItems;
 
 };
 

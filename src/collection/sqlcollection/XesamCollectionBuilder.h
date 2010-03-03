@@ -19,6 +19,8 @@
 
 #include "XesamDbus.h"
 
+#include "amarok_sqlcollection_export.h"
+
 #include <QList>
 #include <QMap>
 #include <QObject>
@@ -27,7 +29,7 @@
 
 class SqlCollection;
 
-class XesamCollectionBuilder : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS XesamCollectionBuilder : public QObject
 {
     Q_OBJECT
     public:

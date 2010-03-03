@@ -34,14 +34,10 @@ class ProgressWidget : public QWidget, public EngineObserver
     Q_OBJECT
     public:
         ProgressWidget( QWidget* );
-        ~ProgressWidget();
 
         virtual QSize sizeHint() const;
-
-        void addBookmark( const QString &name, int milliSeconds , bool instantDisplayPopUp = false );
-        void redrawBookmarks(const QString *BookmarkName = 0);
-
-       Amarok::TimeSlider* slider() const { return m_slider; }
+        void addBookmark( const QString &name, int milliSeconds , bool instantDisplayPopUp );
+        Amarok::TimeSlider* slider() const { return m_slider; }
 
     public slots:
         void drawTimeDisplay( int position );
@@ -53,10 +49,15 @@ class ProgressWidget : public QWidget, public EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
+        void layout();
+        
+    private slots:
+        void addBookmark( const QString &name, int milliSeconds );
+        void redrawBookmarks(const QString *BookmarkName = 0);
+        
     private:
         TimeLabel *m_timeLabelLeft;
         TimeLabel *m_timeLabelRight;
-        int m_timeLength;
         Amarok::TimeSlider *m_slider;
         QString m_currentUrlId;
 };

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Foo Bar <foo@bar.com>                                             *
+ * Copyright (c) 2010 Foo Bar <foo@bar.com>                                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,20 +27,18 @@ class /*AMAROK_EXPORT*/ Template : public QObject
 {
     Q_OBJECT
 
-public:
-    Template();
-    ~Template();
+    public:
+        Template();
+        ~Template();
 
-public Q_SLOTS:
+    public Q_SLOTS:
 
-protected:
+    protected:
 
-private Q_SLOTS:
+    private Q_SLOTS:
 
-private:
-
-// Member variables:
-
+    private:
 };
 
-#endif
+
+#endif  // end include guard

@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlayistInfo.h"
+#include "PlaylistInfo.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -26,7 +26,7 @@
 #include <QSpinBox>
 #include <QLabel>
 
-PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
+PlaylistInfo::PlaylistInfo( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
@@ -63,12 +63,12 @@ PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
     constraintsEvent();
 }
 
-PlayistInfo::~PlayistInfo()
+PlaylistInfo::~PlaylistInfo()
 {
     DEBUG_BLOCK
 }
 
-void PlayistInfo::constraintsEvent()
+void PlaylistInfo::constraintsEvent()
 {
     prepareGeometryChange();
     // here we put all of the text items into the correct locations
@@ -88,7 +88,7 @@ void PlayistInfo::constraintsEvent()
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
-void PlayistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+void PlaylistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
@@ -118,7 +118,7 @@ void PlayistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
 }
 
-void PlayistInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void PlaylistInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
 
@@ -143,7 +143,7 @@ void PlayistInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 
 }
 
-void PlayistInfo::showConfigurationInterface()
+void PlaylistInfo::showConfigurationInterface()
 {
     if (m_config == 0)
     {
@@ -169,7 +169,7 @@ void PlayistInfo::showConfigurationInterface()
     m_config->show();
 }
 
-void PlayistInfo::configAccepted() // SLOT
+void PlaylistInfo::configAccepted() // SLOT
 {
     KConfigGroup cg = globalConfig();
 
@@ -182,7 +182,7 @@ void PlayistInfo::configAccepted() // SLOT
     constraintsEvent();
 }
 
-void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
+void PlaylistInfo::resize( qreal newWidth, qreal aspectRatio )
 {
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
@@ -193,5 +193,5 @@ void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
     constraintsEvent();
 }
 
-#include "PlayistInfo.moc"
+#include "PlaylistInfo.moc"
 

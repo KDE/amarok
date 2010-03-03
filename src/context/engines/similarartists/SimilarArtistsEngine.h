@@ -193,8 +193,6 @@ private slots:
 
 };
 
-K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
-
 #endif // SIMILARARTISTSENGINE_H
 
 
