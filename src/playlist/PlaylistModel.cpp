@@ -54,6 +54,7 @@ Playlist::Model::Model( QObject *parent )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
         , m_totalSize( 0 )
+        , m_setStateOfItem_batchMinRow( -1 )
 {
     DEBUG_BLOCK
 
@@ -736,14 +737,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     if ( cmds.size() < 1 )
         return;
 
-    for ( int i = 0; i < m_items.size(); i++ )
-    {
-        if ( m_items.at( i )->state() == Item::NewlyAdded )
-        {
-            m_items.at( i )->setState( Item::Unplayed );
-            emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
-        }
-    }
+    setAllNewlyAddedToUnplayed();
 
     int activeShift = 0;
     int min = m_items.size() + cmds.size();
@@ -967,8 +961,75 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 }
 
 
+// When doing a 'setStateOfItem_batch', we emit 1 crude 'dataChanged' signal. If we're
+// unlucky, that signal may span many innocent rows that haven't changed at all.
+// Although that "worst case" will cause unnecessary work in our listeners "upstream", it
+// still has much better performance than the worst case of emitting very many tiny
+// 'dataChanged' signals.
+//
+// Being more clever (coalesce multiple contiguous ranges, etc.) is not worth the effort.
+void
+Playlist::Model::setStateOfItem_batchStart()
+{
+    m_setStateOfItem_batchMinRow = rowCount() + 1;
+    m_setStateOfItem_batchMaxRow = 0;
+}
+
+void
+Playlist::Model::setStateOfItem_batchEnd()
+{
+    if ( ( m_setStateOfItem_batchMaxRow - m_setStateOfItem_batchMinRow ) >= 0 )
+        emit dataChanged( index( m_setStateOfItem_batchMinRow, 0 ), index( m_setStateOfItem_batchMaxRow, columnCount() - 1 ) );
+
+    m_setStateOfItem_batchMinRow = -1;
+}
+
+void
+Playlist::Model::setStateOfItem( Item *item, int row, Item::State state )
+{
+    item->setState( state );
+
+    if ( m_setStateOfItem_batchMinRow == -1 )    // If not in batch mode
+        emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
+    else
+    {
+        m_setStateOfItem_batchMinRow = qMin( m_setStateOfItem_batchMinRow, row );
+        m_setStateOfItem_batchMaxRow = qMax( m_setStateOfItem_batchMaxRow, row );
+    }
+}
+
+
+// Unimportant TODO: the performance of this function is O(n) in playlist size.
+// Not a big problem, because it's called infrequently.
+// Can be fixed by maintaining a new member variable 'QMultiHash<Item::State, Item*>'.
+void
+Playlist::Model::setAllNewlyAddedToUnplayed()
+{
+    DEBUG_BLOCK
+
+    setStateOfItem_batchStart();
+
+    for ( int row = 0; row < rowCount(); row++ )
+    {
+        Item* item = m_items.at( row );
+        if ( item->state() == Item::NewlyAdded )
+            setStateOfItem( item, row, Item::Unplayed );
+    }
+
+    setStateOfItem_batchEnd();
+}
+
 void Playlist::Model::setAllUnplayed()
 {
-    foreach( Item * item, m_items )
-        item->setState( Item::Unplayed );
+    DEBUG_BLOCK
+
+    setStateOfItem_batchStart();
+
+    for ( int row = 0; row < rowCount(); row++ )
+    {
+        Item* item = m_items.at( row );
+        setStateOfItem( item, row, Item::Unplayed );
+    }
+
+    setStateOfItem_batchEnd();
 }
