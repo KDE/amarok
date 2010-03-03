@@ -129,6 +129,7 @@ SimilarArtistsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     m_maxArtists = config.readEntry( "maxArtists", "5" ).toInt();
+    m_temp_maxArtists=m_maxArtists;
 
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ),
@@ -316,11 +317,45 @@ SimilarArtistsApplet::configure()
 
 
 void
+SimilarArtistsApplet::switchToLang(QString lang)
+{
+    DEBUG_BLOCK
+    if (lang == i18n("Automatic") )
+        m_descriptionPreferredLang = "aut";
+
+    else if (lang == i18n("English") )
+        m_descriptionPreferredLang = "en";
+
+    else if (lang == i18n("French") )
+        m_descriptionPreferredLang = "fr";
+
+    else if (lang == i18n("German") )
+        m_descriptionPreferredLang = "de";
+
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
+
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
+}
+
+void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
+
+    if ( m_descriptionPreferredLang == "aut" )
+        ui_Settings.comboBox->setCurrentIndex( 0 );
+    else if ( m_descriptionPreferredLang == "en" )
+        ui_Settings.comboBox->setCurrentIndex( 1 );
+    else if ( m_descriptionPreferredLang == "fr" )
+        ui_Settings.comboBox->setCurrentIndex( 2 );
+    else if ( m_descriptionPreferredLang == "de" )
+        ui_Settings.comboBox->setCurrentIndex( 3 );
+
+    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 
     ui_Settings.spinBox->setValue( m_maxArtists );
 

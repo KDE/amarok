@@ -90,6 +90,10 @@ protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
+    QString descriptionLocale() const;
+
+    QLocale m_descriptionLang;
+    QString m_descriptionWideLang;
 
     /**
      * Prepare the calling of the similarArtistsRequest method.

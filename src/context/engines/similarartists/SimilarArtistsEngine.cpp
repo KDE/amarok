@@ -39,6 +39,7 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVarian
         , m_currentSelection( "artist" )
         , m_requested( true )
         , m_sources( "current" )
+        , m_descriptionWideLang( "aut" )
         , m_triedRefinedSearch( 0 )
 {
     update();
@@ -73,9 +74,20 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
 
     // user has changed the maximum artists returned.
     if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
+    {
         if (( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
+        {
             m_maxArtists = tokens.at( 2 ).toInt();
-
+        }
+    }
+    // user has selected is favorite language.
+    if ( tokens.contains( "lang" ) && tokens.size() > 1 )
+    {
+        if (( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
+        {
+            m_descriptionWideLang = tokens.at( 2 );
+        }
+    }
 
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
@@ -110,7 +122,7 @@ SimilarArtistsEngine::update()
 {
     DEBUG_BLOCK
     debug() << "SAE updt 1";
-    
+
     //new update, if a job is not terminated, we kill it
     if ( m_similarArtistsJob )
     {
@@ -139,7 +151,7 @@ SimilarArtistsEngine::update()
     if ( !currentTrack )
         return;
 
-        debug() << "SAE updt 4";
+    debug() << "SAE updt 4";
     DataEngine::Data data;
     // default, or applet told us to fetch artist
     if ( selection() == "artist" )
@@ -197,7 +209,7 @@ void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
     DEBUG_BLOCK
-    
+
     // we generate the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
@@ -225,10 +237,10 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
  * @param artist_name the name of the artist
  */
 void
-SimilarArtistsEngine::artistDescriptionRequest(const QString &artistName)
+SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
 {
     DEBUG_BLOCK
-    
+
     // we genere the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
@@ -237,12 +249,12 @@ SimilarArtistsEngine::artistDescriptionRequest(const QString &artistName)
     url.addQueryItem( "method", "artist.getinfo" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artistName.toLocal8Bit() );
-    url.addQueryItem( "lang", KGlobal::locale()->language() );
+    url.addQueryItem( "lang", descriptionLocale() );
 
 
     KJob *job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
 
-    m_artistDescriptionJobs.append(job);
+    m_artistDescriptionJobs.append( job );
 
     connect( job, SIGNAL( result( KJob* ) ), SLOT( parseArtistDescription( KJob* ) ) );
 
@@ -254,7 +266,7 @@ SimilarArtistsEngine::artistDescriptionRequest(const QString &artistName)
  * @param artistName the name of the artist
  */
 void
-SimilarArtistsEngine::artistTopTrackRequest(const QString &artistName)
+SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
 {
     // we genere the url for the demand on the lastFM Api
     QUrl url;
@@ -267,8 +279,8 @@ SimilarArtistsEngine::artistTopTrackRequest(const QString &artistName)
 
     KJob *job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
 
-    m_artistTopTrackJobs.append(job);
-    
+    m_artistTopTrackJobs.append( job );
+
     connect( job, SIGNAL( result( KJob* ) ), SLOT( parseArtistTopTrack( KJob* ) ) );
 
 }
@@ -283,13 +295,13 @@ void
 SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
 {
     DEBUG_BLOCK
-    
+
     // we clear the context of the dataEngine
     m_similarArtists.clear();   // we clear the similarArtists precedently downloaded
-    m_descriptionArtists=0;     // we mark we haven't downloaded the description of
-                                // the artists
-    m_topTrackArtists=0;        // we mark we haven't downloaded the most know tracks of
-                                // the artists
+    m_descriptionArtists = 0;   // we mark we haven't downloaded the description of
+    // the artists
+    m_topTrackArtists = 0;      // we mark we haven't downloaded the most know tracks of
+    // the artists
 
     if ( !m_similarArtistsJob ) return; //track changed while we were fetching
 
@@ -311,37 +323,37 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
 
     // The reader on the xml document which contains the information of the lastFM API.
     QXmlStreamReader xmlReader;
-    
+
     if ( job )
     {
         KIO::StoredTransferJob* const storedJob
         = static_cast<KIO::StoredTransferJob*>( job );
 
         // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData(storedJob->data().data());
+        xmlReader.addData( storedJob->data().data() );
     }
     else
     {
         return;
     }
 
-     // we search the artist name on the xml
-    while (!xmlReader.atEnd() && !xmlReader.hasError())
+    // we search the artist name on the xml
+    while ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
-        if (xmlReader.name()=="artist") // we have found a similar artist
+        if ( xmlReader.name() == "artist" ) // we have found a similar artist
         {
 
             // we search the similar artist name
             while ( !xmlReader.atEnd()
                     && !xmlReader.hasError()
-                    && xmlReader.name() != "name")
+                    && xmlReader.name() != "name" )
             {
-                xmlReader.readNext ();
+                xmlReader.readNext();
             }
 
             QString name;
             // we get the name only if we have found it
-            if (!xmlReader.atEnd() && !xmlReader.hasError())
+            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
             {
                 name = xmlReader.readElementText();
             }
@@ -350,35 +362,36 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
             // we search the similar artist match
             while ( !xmlReader.atEnd()
                     && !xmlReader.hasError()
-                    && xmlReader.name() != "match")
+                    && xmlReader.name() != "match" )
             {
-                xmlReader.readNext ();
+                xmlReader.readNext();
             }
 
             float match;
             // we get the match only if we have found it
-            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
             {
                 match = xmlReader.readElementText().toFloat();
 
                 //FIX of the lastFM API
                 // this API return randomly a float between 0 to 1 of 0 to 100
-                if ( match<=1.0 ) {
-                    match=match*100.0;
+                if ( match <= 1.0 )
+                {
+                    match = match * 100.0;
                 }
             }
 
             // we search the url on lastFM of the similar artist
             while ( !xmlReader.atEnd()
                     && !xmlReader.hasError()
-                    && xmlReader.name() != "url")
+                    && xmlReader.name() != "url" )
             {
-                xmlReader.readNext ();
+                xmlReader.readNext();
             }
 
             KUrl url;
             // we get the url only if we have found it
-            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
             {
                 url = KUrl( xmlReader.readElementText() );
             }
@@ -387,31 +400,31 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
             // we search the url on lastFM of the artist image
             while ( !xmlReader.atEnd()
                     && !xmlReader.hasError()
-                    && xmlReader.name() != "image")
+                    && xmlReader.name() != "image" )
             {
-                xmlReader.readNext ();
+                xmlReader.readNext();
             }
 
             //we search the large image, in the panel of the image proposed by lastFM
             while ( !xmlReader.atEnd()
                     && !xmlReader.hasError()
-                    && xmlReader.attributes().value("size")!="large")
+                    && xmlReader.attributes().value( "size" ) != "large" )
             {
-                xmlReader.readNext ();
+                xmlReader.readNext();
             }
 
             KUrl imageUrl;
             // we get the image url only if we have found it
-            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
             {
                 imageUrl = KUrl( xmlReader.readElementText() );
             }
 
             m_similarArtists.append( SimilarArtist( name, match, url, imageUrl, m_artist ) );
-            artistDescriptionRequest(name);
-            artistTopTrackRequest(name);
+            artistDescriptionRequest( name );
+            artistTopTrackRequest( name );
         }
-        xmlReader.readNext ();
+        xmlReader.readNext();
     }
 
     m_similarArtistsJob = 0;
@@ -424,22 +437,22 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
  * @param job The job, which have downloaded the data.
  */
 void
-SimilarArtistsEngine::parseArtistDescription(KJob *job)
+SimilarArtistsEngine::parseArtistDescription( KJob *job )
 {
-    int cpt=0;
-    while (cpt>m_artistDescriptionJobs.size() && m_artistDescriptionJobs.at(cpt)!=job)
+    int cpt = 0;
+    while ( cpt > m_artistDescriptionJobs.size() && m_artistDescriptionJobs.at( cpt ) != job )
     {
         cpt++;
     }
 
     //track changed while we were fetching
-    if ( cpt>=m_artistDescriptionJobs.size() ) return;
+    if ( cpt >= m_artistDescriptionJobs.size() ) return;
 
     // else (the job is correct)
     m_descriptionArtists++;
 
     // It's the correct job but it errored out
-    if (job->error() != KJob::NoError)
+    if ( job->error() != KJob::NoError )
     {
         return;
     }
@@ -453,7 +466,7 @@ SimilarArtistsEngine::parseArtistDescription(KJob *job)
         = static_cast<KIO::StoredTransferJob*>( job );
 
         // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData(storedJob->data().data());
+        xmlReader.addData( storedJob->data().data() );
     }
     else
     {
@@ -461,53 +474,57 @@ SimilarArtistsEngine::parseArtistDescription(KJob *job)
     }
 
     // we search the artist name on the xml
-    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name")
+    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name" )
     {
-        xmlReader.readNext ();
+        xmlReader.readNext();
     }
 
     QString name;
     // we get the name only if we have found it
-    if (!xmlReader.atEnd() && !xmlReader.hasError() )
+    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
-            name = xmlReader.readElementText();
-    } else { // error when parsing the xml
+        name = xmlReader.readElementText();
+    }
+    else   // error when parsing the xml
+    {
         return;
     }
 
-    // we search the artist description on the xml 
-    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "summary")
+    // we search the artist description on the xml
+    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "summary" )
     {
-        xmlReader.readNext ();
+        xmlReader.readNext();
     }
 
     QString description;
-     // we get the description only if we have found it
-    if (!xmlReader.atEnd() && !xmlReader.hasError() )
+    // we get the description only if we have found it
+    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
-       description = xmlReader.readElementText();
-    } else {
+        description = xmlReader.readElementText();
+    }
+    else
+    {
         return;
     }
-  
+
     // we search the correct artist to add his description
-    cpt=0;
-    while (cpt<m_similarArtists.size() && m_similarArtists.value(cpt).name()!=name)
+    cpt = 0;
+    while ( cpt < m_similarArtists.size() && m_similarArtists.value( cpt ).name() != name )
     {
         cpt++;
     }
 
-    if (cpt<m_similarArtists.size()) // we have found the correct artist
+    if ( cpt < m_similarArtists.size() ) // we have found the correct artist
     {
         // we had his desciption
-        SimilarArtist tmp=m_similarArtists.takeAt(cpt);
-        tmp.setDescription(description);
-        m_similarArtists.insert(cpt,tmp);
+        SimilarArtist tmp = m_similarArtists.takeAt( cpt );
+        tmp.setDescription( description );
+        m_similarArtists.insert( cpt, tmp );
     }
 
     // we have fetched all of the data (artists + descriptions + toptracks)
-    if ( m_descriptionArtists+1>=m_similarArtists.size()
-         && m_topTrackArtists+1>=m_similarArtists.size() )
+    if ( m_descriptionArtists + 1 >= m_similarArtists.size()
+            && m_topTrackArtists + 1 >= m_similarArtists.size() )
     {
         // we send the data to the applet
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" )
@@ -522,22 +539,22 @@ SimilarArtistsEngine::parseArtistDescription(KJob *job)
  * @param job The job, which have downloaded the data.
  */
 void
-SimilarArtistsEngine::parseArtistTopTrack(KJob* job)
+SimilarArtistsEngine::parseArtistTopTrack( KJob* job )
 {
-    int cpt=0;
-    while (cpt>m_artistTopTrackJobs.size() && m_artistTopTrackJobs.at(cpt)!=job)
+    int cpt = 0;
+    while ( cpt > m_artistTopTrackJobs.size() && m_artistTopTrackJobs.at( cpt ) != job )
     {
         cpt++;
     }
 
     //track changed while we were fetching
-    if ( cpt>=m_artistTopTrackJobs.size() ) return;
+    if ( cpt >= m_artistTopTrackJobs.size() ) return;
 
     // else (the job is correct)
     m_topTrackArtists++;
 
     // It's the correct job but it errored out
-    if (job->error() != KJob::NoError)
+    if ( job->error() != KJob::NoError )
     {
         return;
     }
@@ -550,7 +567,7 @@ SimilarArtistsEngine::parseArtistTopTrack(KJob* job)
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
 
         // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData(storedJob->data().data());
+        xmlReader.addData( storedJob->data().data() );
     }
     else
     {
@@ -558,53 +575,57 @@ SimilarArtistsEngine::parseArtistTopTrack(KJob* job)
     }
 
     // we search the name of the artist
-    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "toptracks")
+    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "toptracks" )
     {
-        xmlReader.readNext ();
+        xmlReader.readNext();
     }
 
     //the name of the artist is on the xml attribute
     QString name;
-    if (!xmlReader.atEnd() && !xmlReader.hasError() )
+    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
-        name = xmlReader.attributes().value("artist").toString();
-    } else {
+        name = xmlReader.attributes().value( "artist" ).toString();
+    }
+    else
+    {
         return;
     }
 
     // we search the first top track on the xml
-    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name")
+    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name" )
     {
-        xmlReader.readNext ();
+        xmlReader.readNext();
     }
 
     QString topTrack;
     // we get the name only if we have found it
-    if (!xmlReader.atEnd() && !xmlReader.hasError() )
+    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
         topTrack = xmlReader.readElementText();
-    } else { // error when parsing the xml
+    }
+    else   // error when parsing the xml
+    {
         return;
     }
 
     // we search the correct artist to add his top track
-    cpt=0;
-    while (cpt<m_similarArtists.size() && m_similarArtists.value(cpt).name()!=name)
+    cpt = 0;
+    while ( cpt < m_similarArtists.size() && m_similarArtists.value( cpt ).name() != name )
     {
         cpt++;
     }
 
-    if (cpt<m_similarArtists.size()) // we have found the correct artist
+    if ( cpt < m_similarArtists.size() ) // we have found the correct artist
     {
         // we had his top track
-        SimilarArtist tmp=m_similarArtists.takeAt(cpt);
-        tmp.setTopTrack(topTrack);
-        m_similarArtists.insert(cpt,tmp);
+        SimilarArtist tmp = m_similarArtists.takeAt( cpt );
+        tmp.setTopTrack( topTrack );
+        m_similarArtists.insert( cpt, tmp );
     }
 
-    // we have fetched all of the data (artists + descriptions + toptracks) 
-    if ( m_descriptionArtists+1>=m_similarArtists.size()
-         && m_topTrackArtists+1>=m_similarArtists.size() )
+    // we have fetched all of the data (artists + descriptions + toptracks)
+    if ( m_descriptionArtists + 1 >= m_similarArtists.size()
+            && m_topTrackArtists + 1 >= m_similarArtists.size() )
     {
         // we send the data to the applet
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" )
@@ -612,6 +633,21 @@ SimilarArtistsEngine::parseArtistTopTrack(KJob* job)
         setData( "similarArtists", "SimilarArtists", variant );
     }
 
+}
+
+inline QString
+SimilarArtistsEngine::descriptionLocale() const
+{
+    // if there is no language set (QLocale::C) then return english as default
+    if ( m_descriptionWideLang == "aut" )
+    {
+        if ( m_descriptionLang.language() == QLocale::C )
+            return "en";
+        else
+            return m_descriptionLang.name().split( '_' )[0];
+    }
+    else
+        return m_descriptionWideLang;
 }
 
 

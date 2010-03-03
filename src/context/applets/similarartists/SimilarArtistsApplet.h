@@ -116,6 +116,8 @@ private:
     qreal m_headerAspectRatio;
     QSizeF m_size;
 
+    QString m_descriptionPreferredLang;
+
     /**
      * Layout for the formatting of the applet contents
      */
@@ -183,6 +185,7 @@ private slots:
      * Show the settings windows
      */
     void configure();
+    void switchToLang(QString lang);
     void changeMaxArtists( int value );
     void saveMaxArtists();
     void saveSettings();
