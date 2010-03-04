@@ -40,15 +40,7 @@ LastFmServiceConfig::LastFmServiceConfig()
     // if it failed and the user hasn't forced us to use the wallet, ask if he wants us to ignore it for the future
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
-        m_askDiag = new KDialog( 0 );
-        m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
-        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
-        m_askDiag->setButtons( KDialog::Ok | KDialog::Cancel );
-        m_askDiag->setModal( true );
-
-        connect( m_askDiag, SIGNAL( okClicked() ), this, SLOT( textDialogOK() ) );
-        connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
-        m_askDiag->exec();
+        askAboutMissingKWallet();
     }
 
     load();
@@ -117,6 +109,23 @@ void LastFmServiceConfig::save()
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
     }
+}
+
+void
+LastFmServiceConfig::askAboutMissingKWallet()
+{
+    if ( !m_askDiag )
+    {
+        m_askDiag = new KDialog( 0 );
+        m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
+        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
+        m_askDiag->setButtons( KDialog::Ok | KDialog::Cancel );
+        m_askDiag->setModal( true );
+
+        connect( m_askDiag, SIGNAL( okClicked() ), this, SLOT( textDialogOK() ) );
+        connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
+    }
+    m_askDiag->exec();
 }
 
 

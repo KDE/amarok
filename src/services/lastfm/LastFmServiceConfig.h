@@ -60,6 +60,8 @@ private slots:
     void textDialogCancel();
 
 private:
+    void askAboutMissingKWallet();
+
     QString m_username;
     QString m_password;
     QString m_sessionKey;
