@@ -98,7 +98,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     // signal connections
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
 
-    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
+    //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
+    //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
+    //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( itemsInserted( const QList<quint64>& ) ) );
 
     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
@@ -836,19 +839,18 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )
+void Playlist::PrettyListView::itemsInserted( const QList<quint64> &insertedIds )
 {
     DEBUG_BLOCK
-    Q_UNUSED( parent )
-    Q_UNUSED( lastRow )
 
-    QModelIndex index = model()->index( firstRow, 0);
+    int firstRow = m_topmostProxy->rowForId( insertedIds.first() );
+
+    QModelIndex index = model()->index( firstRow, 0 );
     if( !index.isValid() )
         return;
 
     debug() << "index has row: " << index.row();
     scrollTo( index, QAbstractItemView::PositionAtCenter );
-
 }
 
 void Playlist::PrettyListView::redrawActive()
