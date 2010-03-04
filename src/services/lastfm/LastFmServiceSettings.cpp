@@ -59,8 +59,7 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
 
     // whenever this gets opened, we'll assume the user wants to change something,
     // so blow away the saved session key
-    m_config.setSessionKey( "" );
-    m_config.save();
+    m_config.clearSessionKey();
 
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );

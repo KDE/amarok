@@ -115,6 +115,14 @@ void LastFmServiceConfig::save()
 }
 
 void
+LastFmServiceConfig::clearSessionKey()
+{
+    setSessionKey( QString() );
+    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    config.writeEntry( "sessionKey", m_sessionKey );
+}
+
+void
 LastFmServiceConfig::askAboutMissingKWallet()
 {
     if ( !m_askDiag )
