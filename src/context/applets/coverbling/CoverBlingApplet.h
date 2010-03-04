@@ -22,7 +22,7 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
-#include "pictureflow.h"
+#include "PhotoBrowser.h"
 
 class TextScrollingWidget;
 class KConfigDialog;
@@ -47,8 +47,6 @@ class MyGraphicItem:public QObject, public QGraphicsPixmapItem
 	private:
 	  void mousePressEvent(QGraphicsSceneMouseEvent * event);
 };
- /** CoverBlingApplet will display photos from the Internet, relative to the current playing song
-   */
 class CoverBlingApplet : public Context::Applet, public EngineObserver
 {
         Q_OBJECT
@@ -64,14 +62,10 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
 	void	slideChanged(int islideindex);
         void	playAlbum(int islideindex);
-	void    skipToFirst();
-	void	skipToLast();
-	void	fastForward();
-	void	fastBackward();
     protected :
 	//virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     private:
-	PictureFlow * m_pictureflow;
+	PhotoBrowser * m_pictureflow;
 	QGraphicsProxyWidget * m_layout;
 	RatingWidget* m_ratingWidget;
 	QGraphicsSimpleTextItem* m_label;

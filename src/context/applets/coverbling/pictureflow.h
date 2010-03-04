@@ -30,7 +30,6 @@
 
 #include <qwidget.h>
 #include "meta/Meta.h"
-#include <QLabel>
 
 class PictureFlowPrivate;
 
@@ -192,12 +191,12 @@ protected:
   void resizeEvent(QResizeEvent* event);
   void mouseDoubleClickEvent(QMouseEvent* event);
   void wheelEvent(QWheelEvent * event);
+  Meta::AlbumList m_album_list;
 private slots:
   void updateAnimation();
 
 private:
   PictureFlowPrivate* d;
-  Meta::AlbumList m_album_list;
 };
 
 #endif // PICTUREFLOW_H

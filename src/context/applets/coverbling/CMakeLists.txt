@@ -2,7 +2,10 @@ project(context-coverbling)
 
 set(coverbling_SRCS
 pictureflow.cpp
-CoverBlingApplet.cpp)
+CoverBlingApplet.cpp
+ImageLoader.cpp
+PhotoBrowser.cpp
+)
 
 include_directories( ../../..
                     ../..

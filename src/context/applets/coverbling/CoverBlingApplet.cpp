@@ -73,7 +73,7 @@ CoverBlingApplet::init()
     resize( m_horizontal_size,m_vertical_size);
    
     m_layout = new QGraphicsProxyWidget(this);
-    m_pictureflow = new PictureFlow();
+    m_pictureflow = new PhotoBrowser();
     m_layout->setWidget(m_pictureflow);
     QSize slideSize(150,150);
     m_pictureflow->setSlideSize(slideSize);
@@ -86,7 +86,7 @@ CoverBlingApplet::init()
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
-    connect( qm, SIGNAL(queryDone()), this, SLOT( slideChanged(0)));
+    //connect( qm, SIGNAL(queryDone()), this, SLOT( slideChanged(0)));
     connect(m_pictureflow, SIGNAL(centerIndexChanged(int)),this,SLOT(slideChanged(int)));
     connect(m_pictureflow,SIGNAL(doubleClicked(int)),this,SLOT(playAlbum(int)));
     qm->run();
@@ -98,7 +98,7 @@ CoverBlingApplet::init()
     bigFont.setPointSize( bigFont.pointSize() +  2 );
     m_label->setFont( labelFont );
     m_label ->setPos(m_horizontal_size/2,m_vertical_size-50);
-    // pour le rating
+ 
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setSpacing( 2 );
     //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
@@ -108,64 +108,36 @@ CoverBlingApplet::init()
 
     m_blingtofirst = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" )),this);
     m_blingtofirst->setOffset(30,m_vertical_size-30);
-    connect(m_blingtofirst,SIGNAL(clicked()),this,SLOT(skipToFirst()));
+    connect(m_blingtofirst,SIGNAL(clicked()),m_pictureflow,SLOT(skipToFirst()));
 
     m_blingtolast = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" )),this);
     m_blingtolast->setOffset(m_horizontal_size+30,m_vertical_size-30);
-    connect(m_blingtolast,SIGNAL(clicked()),this,SLOT(skipToLast()));
+    connect(m_blingtolast,SIGNAL(clicked()),m_pictureflow,SLOT(skipToLast()));
 
     m_blingfastback = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" )),this);
     m_blingfastback->setOffset(60,m_vertical_size-30);
-    connect(m_blingfastback,SIGNAL(clicked()),this,SLOT(fastBackward()));
+    connect(m_blingfastback,SIGNAL(clicked()),m_pictureflow,SLOT(fastBackward()));
 
     m_blingfastforward = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" )),this);
     m_blingfastforward->setOffset(m_horizontal_size,m_vertical_size-30);
-    connect(m_blingfastforward,SIGNAL(clicked()),this,SLOT(fastForward()));
+    connect(m_blingfastforward,SIGNAL(clicked()),m_pictureflow,SLOT(fastForward()));
 }
 
 CoverBlingApplet::~CoverBlingApplet()
 {
-    DEBUG_BLOCK
+    delete m_blingtofirst;
+    delete m_blingtolast;
+    delete m_blingfastback;
+    delete m_blingfastforward;    
+    delete m_ratingWidget;
+    delete m_label;
+    delete m_layout;
 }
 void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
-    foreach( Meta::AlbumPtr album, albums )
-        m_pictureflow->addAlbum(album);
-}
-void CoverBlingApplet::skipToFirst()
-{
-    if (m_pictureflow)
-    {
-	m_pictureflow->setCenterIndex(0);	
-    }
-}
-void CoverBlingApplet::skipToLast()
-{
-    if (m_pictureflow)
-    {
-	int nbslides = m_pictureflow->slideCount();
-	m_pictureflow->setCenterIndex(nbslides);
-    }
-}
-void CoverBlingApplet::fastForward()
-{
-    if (m_pictureflow)
-    {
-	int nbslides = m_pictureflow->slideCount();
-	int current = m_pictureflow->centerIndex();
-	m_pictureflow->showSlide(current+nbslides/10);	
-    }
-}
-void CoverBlingApplet::fastBackward()
-{
-    if (m_pictureflow)
-    {
-	int nbslides = m_pictureflow->slideCount();
-	int current = m_pictureflow->centerIndex();
-	m_pictureflow->showSlide(current-nbslides/10);	
-    }
+    m_pictureflow->fillAlbums(albums);
 }
 void CoverBlingApplet::slideChanged(int islideindex)
 {

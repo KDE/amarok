@@ -933,16 +933,8 @@ void PictureFlow::setSlide(int index, const QPixmap& pixmap)
 }
 void PictureFlow::addAlbum(Meta::AlbumPtr iAlbum)
 {
-  if (iAlbum->hasImage())
-  {
-	addSlide(iAlbum->image());
 	m_album_list.append(iAlbum);
-  }
-  else
-  {
-	QPixmap* no_cover_pix = new QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
-	if (no_cover_pix) {addSlide(*no_cover_pix);m_album_list.append(iAlbum);}
-  }
+	//QPixmap* no_cover_pix = new QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
 }
 Meta::AlbumPtr PictureFlow::album(int index)
 {
