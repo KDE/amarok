@@ -441,10 +441,19 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
+    /**
+      A Label represents an arbitrary classification of a Track.
+      */
     class AMAROK_EXPORT Label : public MetaBase
     {
     public:
+        /**
+          Constructs a new Label.
+          */
         Label() : MetaBase() {}
+        /**
+          Destructs an existing Label.
+          */
         virtual ~ Label() {}
 
         virtual void addMatchTo( QueryMaker* qm );
