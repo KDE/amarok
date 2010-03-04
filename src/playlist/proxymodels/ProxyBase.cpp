@@ -334,14 +334,13 @@ ProxyBase::tracks() const
 //protected:
 
 bool
-ProxyBase::rowMatch( int row, const QString &searchTerm, int searchFields ) const
+ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerm, int searchFields ) const
 {
-    QAbstractItemModel *abstractItemModel = dynamic_cast< QAbstractItemModel * >( m_belowModel );
-    if ( !abstractItemModel )
+    if ( !m_belowModel )
         return false;
 
-    QModelIndex index = abstractItemModel->index( row, 0 );
-    Meta::TrackPtr track = m_belowModel->data( index, TrackRole ).value< Meta::TrackPtr >();
+    Meta::TrackPtr track = m_belowModel->trackAt( sourceModelRow );
+
     if ( searchFields & MatchTrack &&
         track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
        )

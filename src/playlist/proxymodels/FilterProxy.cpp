@@ -127,15 +127,12 @@ void FilterProxy::clearSearchTerm()
 }
 
 bool
-FilterProxy::matchesCurrentSearchTerm( int source_row ) const
+FilterProxy::matchesCurrentSearchTerm( int sourceModelRow ) const
 {
-    if ( ! m_belowModel->rowExists( source_row ) )
-        return false;
-
     if ( m_currentSearchTerm.isEmpty() )
         return true;
 
-    return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
+    return rowMatch( sourceModelRow, m_currentSearchTerm, m_currentSearchFields );
 }
 
 int
