@@ -37,12 +37,6 @@ LastFmServiceConfig::LastFmServiceConfig()
         m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
     }
 
-    // if it failed and the user hasn't forced us to use the wallet, ask if he wants us to ignore it for the future
-    if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
-    {
-        askAboutMissingKWallet();
-    }
-
     load();
 }
 
@@ -76,7 +70,8 @@ LastFmServiceConfig::load()
             debug() << "failed to read last.fm username from kwallet.. :(";
         else
             m_username = QString::fromUtf8( rawUsername );
-    } else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
+    }
+    else if( config.readEntry( "ignoreWallet", QString() ) != "no" )
     {
         m_username = config.readEntry( "username", QString() );
         m_password = config.readEntry( "password", QString() );
@@ -97,6 +92,9 @@ void LastFmServiceConfig::save()
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
 
+    if ( !m_wallet && config.readEntry( "ignoreWallet", QString() ) != "yes" )
+        askAboutMissingKWallet();
+
     if( m_wallet )
     {
         m_wallet->setFolder( "Amarok" );
@@ -104,10 +102,15 @@ void LastFmServiceConfig::save()
             debug() << "Failed to save last.fm pw to kwallet!";
         if( m_wallet->writeEntry( "lastfm_username", m_username.toUtf8() ) > 0 )
             debug() << "Failed to save last.fm username to kwallet!";
-    } else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
+    }
+    else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
     {
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
+    }
+    else
+    {
+        debug() << "Could not access the wallet to save the last.fm credentials";
     }
 }
 
