@@ -63,7 +63,7 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	void	slideChanged(int islideindex);
         void	playAlbum(int islideindex);
     protected :
-	//virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     private:
 	PhotoBrowser * m_pictureflow;
 	QGraphicsProxyWidget * m_layout;
@@ -74,9 +74,6 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	MyGraphicItem* m_blingtolast;
 	MyGraphicItem* m_blingfastback;
 	MyGraphicItem* m_blingfastforward;
-
-	int m_horizontal_size;
-	int m_vertical_size;
 };
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
 

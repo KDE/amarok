@@ -66,12 +66,7 @@ void
 CoverBlingApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_vertical_size = 300;
-    m_horizontal_size = 500;
-
-    resize( m_horizontal_size,m_vertical_size);
-   
+    resize(-1,300); 
     m_layout = new QGraphicsProxyWidget(this);
     m_pictureflow = new PhotoBrowser();
     m_layout->setWidget(m_pictureflow);
@@ -97,30 +92,23 @@ CoverBlingApplet::init()
     QFont bigFont( labelFont );
     bigFont.setPointSize( bigFont.pointSize() +  2 );
     m_label->setFont( labelFont );
-    m_label ->setPos(m_horizontal_size/2,m_vertical_size-50);
  
     m_ratingWidget = new RatingWidget( this );
-    m_ratingWidget->setSpacing( 2 );
-    //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
-    m_ratingWidget->setPos(m_horizontal_size/2,m_vertical_size-30);
     m_ratingWidget->setRating(0);
     m_ratingWidget->setEnabled(FALSE);
 
     m_blingtofirst = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" )),this);
-    m_blingtofirst->setOffset(30,m_vertical_size-30);
-    connect(m_blingtofirst,SIGNAL(clicked()),m_pictureflow,SLOT(skipToFirst()));
-
     m_blingtolast = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" )),this);
-    m_blingtolast->setOffset(m_horizontal_size+30,m_vertical_size-30);
-    connect(m_blingtolast,SIGNAL(clicked()),m_pictureflow,SLOT(skipToLast()));
-
     m_blingfastback = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" )),this);
-    m_blingfastback->setOffset(60,m_vertical_size-30);
-    connect(m_blingfastback,SIGNAL(clicked()),m_pictureflow,SLOT(fastBackward()));
-
     m_blingfastforward = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" )),this);
-    m_blingfastforward->setOffset(m_horizontal_size,m_vertical_size-30);
+
+    connect(m_blingtofirst,SIGNAL(clicked()),m_pictureflow,SLOT(skipToFirst()));
+    connect(m_blingtolast,SIGNAL(clicked()),m_pictureflow,SLOT(skipToLast()));
+    //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
+    connect(m_blingfastback,SIGNAL(clicked()),m_pictureflow,SLOT(fastBackward()));
     connect(m_blingfastforward,SIGNAL(clicked()),m_pictureflow,SLOT(fastForward()));
+
+    constraintsEvent();
 }
 
 CoverBlingApplet::~CoverBlingApplet()
@@ -171,12 +159,22 @@ void CoverBlingApplet::playAlbum(int islideindex)
 	}
 
 }
-/*void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
+void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
     prepareGeometryChange();
+    int vertical_size = boundingRect().height();
+    int horizontal_size = boundingRect().width();
+    m_ratingWidget->setSpacing( 2 );
+    m_ratingWidget->setPos(horizontal_size/2-40,vertical_size-30);
+    m_label ->setPos(horizontal_size/2-40,vertical_size-50);
+    m_blingtofirst->setOffset(20,vertical_size-30);
+    m_blingtolast->setOffset(horizontal_size-30,vertical_size-30);
+    m_blingfastback->setOffset(50,vertical_size-30);
+    m_blingfastforward->setOffset(horizontal_size-60,vertical_size-30);
+    m_pictureflow->resize(horizontal_size,vertical_size);
    
-}*/
+}
 void 
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
