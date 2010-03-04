@@ -42,31 +42,12 @@ public:
     ~FilterProxy();
 
     /**
-     * Find the first track in the playlist that matches the search term in one of the
-     * specified search fields. This function emits found() or notFound() depending on
-     * whether a match is found.
-     * @param searchTerm The term to search for.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match, -1 if no match is found.
+     * Implementation of Playlist::AbstractModel: search/filter-related functions.
      */
-    int find( const QString & searchTerm, int searchFields = MatchTrack );
-
-    /**
-     * Notify proxy that the search term of searched fields has changed. Since
-     * this calls does not use the parents filter values, this method needs to be
-     * called when the values change.
-     */
-    void filterUpdated();
-
-    /**
-     * Toggle acting in pass through mode. When in pass through mode, this proxy
-     * is basically completely transparent, and ignores any search terms. It also
-     * ignores any calls to filterUpdated() while in pass through mode,.
-     * @param passThrough Determines whether pass through mode is enabled.
-     */
-    void showOnlyMatches( bool onlyMatches );
-
     void clearSearchTerm();
+    int find( const QString & searchTerm, int searchFields = MatchTrack );
+    void filterUpdated();
+    void showOnlyMatches( bool onlyMatches );
 
 protected:
     /**

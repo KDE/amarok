@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -70,7 +71,9 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
 
-    filterUpdated();
+    // Don't call 'filterUpdated()': our client must do that as part of the API.
+    // This allows client 'PrettyListView' to give the user the time to type a few
+    // characters before we do a filter run that might block for a few seconds.
 
     return -1;
 }
@@ -118,7 +121,9 @@ void FilterProxy::clearSearchTerm()
     m_currentSearchFields = 0;
     m_belowModel->clearSearchTerm();
 
-    filterUpdated();
+    // Don't call 'filterUpdated()': our client must do that as part of the API.
+    // This allows client 'PrettyListView' to give the user the time to type a few
+    // characters before we do a filter run that might block for a few seconds.
 }
 
 bool

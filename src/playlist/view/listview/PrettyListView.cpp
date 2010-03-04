@@ -808,8 +808,8 @@ void Playlist::PrettyListView::clearSearchTerm()
 
     debug() << "first row in filtered list: " << index.row();
 
-    m_topmostProxy->filterUpdated();
     m_topmostProxy->clearSearchTerm();
+    m_topmostProxy->filterUpdated();
 
     //Now we scroll to the previously stored row again. Note that it's not the same row in
     //the topmost model any more, so we need to grab it again using its id.

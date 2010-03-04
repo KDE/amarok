@@ -86,6 +86,9 @@ public:
 
     /**
      * Clears the current search term.
+     *
+     * Filtering MUST adapt its filter parameters to this call, but SHOULD delay doing
+     * any work until it gets a 'filterUpdated()' call.
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
 
@@ -159,6 +162,10 @@ public:
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. Playlist::Model::find() emits found() or notFound() depending
      * on whether a match is found.
+     *
+     * Filtering MUST take its filter parameters from this call, but SHOULD delay doing
+     * any work until it gets a 'filterUpdated()' call.
+     *
      * @param searchTerm The term to search for.
      * @param searchFields A bitmask specifying the fields to look in.
      * @return The row of the first found match, -1 if no match is found.
