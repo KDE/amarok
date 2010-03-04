@@ -189,5 +189,7 @@ LastFmServiceSettings::settingsChanged()
     //TODO: Make pretty validation for username and password
     //with error reporting
 
+    m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
+
     emit changed( true );
 }
