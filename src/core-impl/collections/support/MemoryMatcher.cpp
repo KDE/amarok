@@ -316,7 +316,21 @@ LabelMatcher::match( const Meta::TrackList &tracks )
 Meta::TrackList
 LabelMatcher::match( MemoryCollection *memColl )
 {
-    //TODO labels have to be added to MemoryCollection somehow
+    if( !m_label )
+        return Meta::TrackList();
+
+    Meta::TrackList matchingTracks;
+
+    if( memColl->labelMap().contains( m_label->name() ) )
+    {
+        //m_label might actually be a proxy label
+        Meta::LabelPtr realLabel = memColl->labelMap().value( m_label->name() );
+        matchingTracks = memColl->labelToTrackMap().value( realLabel );
+    }
+    if( isLast() || matchingTracks.count() == 0 )
+        return matchingTracks;
+    else
+        return next()->match( matchingTracks );
 }
 
 

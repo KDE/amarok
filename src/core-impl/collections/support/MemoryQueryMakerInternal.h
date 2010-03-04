@@ -84,6 +84,7 @@ signals:
     void newResultReady( QString collectionId, Meta::YearList );
     void newResultReady( QString collectionId, Meta::DataList );
     void newResultReady( QString collectionId, QStringList );
+    void newResultReady( QString collectionId, Meta::LabelList );
 
 private:
     template <class PointerType>

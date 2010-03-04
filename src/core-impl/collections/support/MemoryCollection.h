@@ -28,6 +28,8 @@ typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 typedef QMap<QString, Meta::GenrePtr> GenreMap;
 typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
 typedef QMap<QString, Meta::YearPtr> YearMap;
+typedef QMap<QString, Meta::LabelPtr> LabelMap;
+typedef QHash<Meta::LabelPtr, Meta::TrackList> LabelToTrackMap;
 
 namespace Collections {
 
@@ -44,6 +46,8 @@ class MemoryCollection
         GenreMap genreMap() { return m_genreMap; }
         ComposerMap composerMap() { return m_composerMap; }
         YearMap yearMap() { return m_yearMap; }
+        LabelMap labelMap() { return m_labelMap; }
+        LabelToTrackMap labelToTrackMap() { return m_labelToTrackMap; }
 
         void setTrackMap( const TrackMap &map ) { m_trackMap = map; }
         void addTrack( Meta::TrackPtr trackPtr ) { m_trackMap.insert( trackPtr->uidUrl(), trackPtr ); }
@@ -57,18 +61,35 @@ class MemoryCollection
         void addComposer( Meta::ComposerPtr composerPtr ) { m_composerMap.insert( composerPtr->name(), composerPtr ); }
         void setYearMap( const YearMap &map ) { m_yearMap = map; }
         void addYear( Meta::YearPtr yearPtr ) { m_yearMap.insert( yearPtr->name(), yearPtr ); }
-        void setCollectionId( const QString& collectionId ) { m_collectionId = collectionId; }
-        QString collectionId( ) { return m_collectionId; }
+        void clearLabels()
+        {
+            m_labelMap = LabelMap();
+            m_labelToTrackMap = LabelToTrackMap();
+        }
+
+        void addLabelToTrack( const Meta::LabelPtr &labelPtr, const Meta::TrackPtr &track )
+        {
+            m_labelMap.insert( labelPtr->name(), labelPtr );
+            Meta::TrackList tracks;
+            if( m_labelToTrackMap.contains( labelPtr ) )
+            {
+                tracks = m_labelToTrackMap.value( labelPtr );
+            }
+            tracks << track;
+            m_labelToTrackMap.insert( labelPtr, tracks );
+        }
+
 
     protected:
         QReadWriteLock m_readWriteLock;
-        QString m_collectionId;
         TrackMap m_trackMap;
         ArtistMap m_artistMap;
         AlbumMap m_albumMap;
         GenreMap m_genreMap;
         ComposerMap m_composerMap;
         YearMap m_yearMap;
+        LabelMap m_labelMap;
+        LabelToTrackMap m_labelToTrackMap;
 
 };
 

@@ -22,6 +22,7 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QList>
+#include <QRegExp>
 #include <QString>
 
 class MemoryFilter;
@@ -311,6 +312,17 @@ class AMAROK_EXPORT BpmNumberFilter : public NumberMemoryFilter
         virtual ~BpmNumberFilter();
     protected:
         virtual qint64 value( const Meta::TrackPtr &track ) const;
+};
+
+class AMAROK_EXPORT LabelFilter : public MemoryFilter
+{
+public:
+    LabelFilter( const QString &filter, bool matchBegin, bool matchEnd );
+    virtual ~ LabelFilter();
+    bool filterMatches( const Meta::TrackPtr &track ) const;
+
+private:
+    QRegExp m_expression;
 };
 
 #endif

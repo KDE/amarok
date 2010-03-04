@@ -335,6 +335,30 @@ MemoryQueryMakerInternal::handleResult()
             emitProperResult<Meta::YearPtr>( years );
             break;
         }
+        case QueryMaker::Label:
+        {
+            Meta::LabelList labels;
+            Meta::LabelList tmp = coll ? coll->labelMap().values() : Meta::LabelList();
+            foreach( const Meta::LabelPtr &label, tmp )
+            {
+                Meta::TrackList tracks = coll ? coll->labelToTrackMap().value( label ) : Meta::TrackList();
+                foreach( const Meta::TrackPtr &track, tracks )
+                {
+                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        labels.append( label );
+                        break;
+                    }
+                }
+            }
+
+            labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
+
+            emitProperResult<Meta::LabelPtr>( labels );
+            break;
+        }
         case QueryMaker::None :
             //nothing to do
             break;
@@ -479,6 +503,21 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
 
             emitProperResult<Meta::YearPtr>( years );
+            break;
+        }
+        case QueryMaker::Label:
+        {
+            QSet<Meta::LabelPtr> labelSet;
+            foreach( const Meta::TrackPtr &track, tracks )
+            {
+                labelSet.unite( track->labels().toSet() );
+            }
+            Meta::LabelList labels = labelSet.toList();
+            if( m_orderByField == Meta::valLabel )
+            {
+                labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
+            }
+            emitProperResult<Meta::LabelPtr>( labels );
             break;
         }
         case QueryMaker::None:

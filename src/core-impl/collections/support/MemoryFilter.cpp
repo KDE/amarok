@@ -58,6 +58,10 @@ namespace FilterFactory
             {
                 result = new AlbumArtistMemoryFilter( filter, matchBegin, matchEnd );
             }
+            case Meta::valLabel:
+            {
+                result = new LabelFilter( filter, matchBegin, matchEnd );
+            }
         }
         return result;
     }
@@ -638,4 +642,33 @@ BpmNumberFilter::value( const Meta::TrackPtr &track ) const
         return 0;
 
     return track->bpm();
+}
+
+LabelFilter::LabelFilter( const QString &filter, bool matchBegin, bool matchEnd )
+    : MemoryFilter()
+{
+    QString pattern;
+    if( matchBegin )
+        pattern += '^';
+    pattern += filter;
+    if( matchEnd )
+        pattern += '$';
+
+    m_expression = QRegExp( pattern, Qt::CaseInsensitive );
+}
+
+LabelFilter::~LabelFilter()
+{
+    //nothing to do
+}
+
+bool
+LabelFilter::filterMatches( const Meta::TrackPtr &track ) const
+{
+    foreach( const Meta::LabelPtr &label, track->labels() )
+    {
+        if( m_expression.indexIn( label->name() ) != -1 )
+            return true;
+    }
+    return false;
 }

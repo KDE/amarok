@@ -171,6 +171,7 @@ MemoryQueryMaker::run()
         connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
@@ -228,6 +229,12 @@ MemoryQueryMaker::setQueryType( QueryType type )
         if ( d->type == QueryMaker::None )
             d->type = QueryMaker::Custom;
         return this;
+
+    case QueryMaker::Label:
+        if( d->type == QueryMaker::None )
+            d->type = QueryMaker::Label;
+        return this;
+
     case QueryMaker::None:
         return this;
     }
