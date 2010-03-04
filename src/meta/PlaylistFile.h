@@ -19,6 +19,8 @@
 
 #include "Playlist.h"
 
+class PlaylistProvider;
+
 namespace Meta
 {
 
@@ -34,8 +36,7 @@ namespace Meta
     class AMAROK_EXPORT PlaylistFile : public Playlist
     {
         public:
-            PlaylistFile() {}
-            PlaylistFile( const KUrl &url ) { Q_UNUSED( url ); }
+            PlaylistFile() : Playlist(), m_provider( 0 ) {}
             virtual ~PlaylistFile() {}
 
             virtual bool isWritable() { return false; }
@@ -46,6 +47,15 @@ namespace Meta
 
             virtual void setName( const QString &name ) = 0;
             virtual void setGroups( const QStringList &groups ) { Q_UNUSED( groups ); }
+
+            //default implementation prevents crashes related to PlaylistFileProvider
+            virtual void setProvider( PlaylistProvider *provider ) { m_provider = provider; }
+
+            /* Playlist Methods */
+            virtual PlaylistProvider *provider() const { return m_provider; }
+
+        protected:
+            PlaylistProvider *m_provider;
     };
 
 }
