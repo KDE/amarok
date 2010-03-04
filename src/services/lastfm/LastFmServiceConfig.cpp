@@ -122,7 +122,7 @@ LastFmServiceConfig::askAboutMissingKWallet()
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
         m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
-        m_askDiag->setButtons( KDialog::Ok | KDialog::Cancel );
+        m_askDiag->setButtons( KDialog::Yes | KDialog::No );
         m_askDiag->setModal( true );
 
         connect( m_askDiag, SIGNAL( okClicked() ), this, SLOT( textDialogOK() ) );
