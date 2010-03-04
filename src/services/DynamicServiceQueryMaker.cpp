@@ -165,14 +165,14 @@ DynamicServiceQueryMaker::matchAlbums( ServiceCollection *coll, const Meta::Arti
     ArtistMap artistMap = coll->artistMap();
     if ( artist && artistMap.contains( artist->name() ) )
     {
-        ArtistPtr artist = artistMap.value( artist->name() );
+        ArtistPtr artist2 = artistMap.value( artist->name() );
 
         AlbumList matchingAlbums;
         AlbumList albums = coll->albumMap().values();
 
         foreach( AlbumPtr albumPtr, albums ) {
 
-            if ( albumPtr->albumArtist() == artist )
+            if ( albumPtr->albumArtist() == artist2 )
                 matchingAlbums.push_back( albumPtr );
         }
 
