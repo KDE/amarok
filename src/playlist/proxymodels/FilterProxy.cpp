@@ -30,13 +30,12 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
 
     setDynamicSortFilter( true );    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
 
+    // Proxy the Playlist::AbstractModel signals
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
     connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( slotInvalidateFilter() ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", true );
