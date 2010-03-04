@@ -96,16 +96,18 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setAutoFillBackground( false );
 
     // signal connections
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
+
+    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
+
+    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
+
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
-
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
-
-    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
-
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     m_animationTimer = new QTimer(this);
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
@@ -115,9 +117,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     if ( LayoutManager::instance()->activeLayout().inlineControls() )
         m_animationTimer->start();
-
-    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 
     m_toolTipManager = new ToolTipManager(this);
 
