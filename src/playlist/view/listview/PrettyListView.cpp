@@ -712,7 +712,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     else
         emit( notFound() );
 
-    //instead of kicking the proxy right away, start a 500msec timeout.
+    //instead of kicking the proxy right away, start a small timeout.
     //this stops us from updating it for each letter of a long search term,
     //and since it does not affect any views, this is fine. Worst case is that
     //a navigator skips to a track form the old search if the track change happens
@@ -824,7 +824,7 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
     if ( m_proxyUpdateTimer->isActive() )
         m_proxyUpdateTimer->stop();
 
-    m_proxyUpdateTimer->setInterval( 500 );
+    m_proxyUpdateTimer->setInterval( 200 );
     m_proxyUpdateTimer->start();
 }
 
