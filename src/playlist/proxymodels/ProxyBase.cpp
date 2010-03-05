@@ -66,9 +66,9 @@ ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
 }
 
 int
-ProxyBase::columnCount( const QModelIndex& i ) const
+ProxyBase::columnCount( const QModelIndex& proxyParent ) const
 {
-    return m_belowModel->columnCount( i );
+    return sourceModel()->columnCount( mapToSource( proxyParent ) );
 }
 
 void

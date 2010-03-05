@@ -88,7 +88,7 @@ public:
      * @param parent the parent of the columns to count.
      * @return the number of columns.
      */
-    virtual int columnCount( const QModelIndex& i ) const;
+    virtual int columnCount( const QModelIndex& parent = QModelIndex() ) const;
 
     /**
      * Reports if the current model exposes a given id.
