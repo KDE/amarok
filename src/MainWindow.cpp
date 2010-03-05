@@ -420,7 +420,7 @@ MainWindow::createPopupMenu()
     menu->setTitle( i18nc("@item:inmenu", "&View" ) );
 
     // Layout locking:
-    QAction* lockAction = new QAction( i18n( "Lock layout" ), this );
+    QAction* lockAction = new QAction( i18n( "Lock Layout" ), this );
     lockAction->setCheckable( true );
     lockAction->setChecked( AmarokConfig::lockLayout() );
     connect( lockAction, SIGNAL( toggled( bool ) ), SLOT( setLayoutLocked( bool ) ) );

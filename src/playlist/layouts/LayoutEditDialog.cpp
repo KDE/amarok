@@ -98,14 +98,14 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     l = new QLabel( i18n( "Width: " ), this );
     l->setFont( boldFont );
     l4->addWidget( l );
-    l4->addWidget( m_fixedWidth = new QRadioButton( i18n( "custom" ), this ) );
+    l4->addWidget( m_fixedWidth = new QRadioButton( i18n( "Custom" ), this ) );
     m_fixedWidth->setToolTip( i18n( "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)." ) );
     m_fixedWidth->setChecked( true );
 #if HAVE_WIDTH_MODES
-    l4->addWidget( m_fitContent = new QRadioButton( i18n( "fit content" ), this ) );
+    l4->addWidget( m_fitContent = new QRadioButton( i18n( "Fit content" ), this ) );
     m_fitContent->setToolTip( i18n( "Fit the element text" ) );
 #endif
-    l4->addWidget( m_peerWidth = new QRadioButton( i18n( "automatic" ), this ) );
+    l4->addWidget( m_peerWidth = new QRadioButton( i18n( "Automatic" ), this ) );
     m_peerWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
     boxWidget->connect( m_fixedWidth, SIGNAL( toggled(bool) ), SLOT( setEnabled(bool) ) );
