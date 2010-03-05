@@ -353,6 +353,8 @@ void ProgressiveSearchWidget::readConfig()
 
 void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = Amarok::config( "Playlist Search" );
     config.writeEntry( "ShowOnlyMatches", onlyMatches );
 
@@ -392,6 +394,7 @@ ProgressiveSearchWidget::focusInputLine()
 
 void ProgressiveSearchWidget::slotFilterClear()
 {
+    DEBUG_BLOCK
     m_searchEdit->setText( QString() );
 }
 

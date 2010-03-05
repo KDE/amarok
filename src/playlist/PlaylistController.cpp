@@ -263,6 +263,8 @@ void
 Playlist::Controller::insertUrls( int row, const QList<KUrl>& urls )
 {
     Q_UNUSED( row );
+    DEBUG_BLOCK
+
     // FIXME: figure out some way to have this insert at the appropriate row, rather than always at end
     const int options = Append | DirectPlay;
     DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
@@ -470,6 +472,7 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
 void
 Playlist::Controller::undo()
 {
+    DEBUG_BLOCK
     m_undoStack->undo();
     emit changed();
 }
@@ -477,6 +480,7 @@ Playlist::Controller::undo()
 void
 Playlist::Controller::redo()
 {
+    DEBUG_BLOCK
     m_undoStack->redo();
     emit changed();
 }
@@ -496,6 +500,8 @@ Playlist::Controller::clear()
 void
 Playlist::Controller::newResultReady( const QString&, const Meta::TrackList& tracks )
 {
+    DEBUG_BLOCK
+
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
     {
@@ -506,6 +512,8 @@ Playlist::Controller::newResultReady( const QString&, const Meta::TrackList& tra
 void
 Playlist::Controller::queryDone()
 {
+    DEBUG_BLOCK
+
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
     {

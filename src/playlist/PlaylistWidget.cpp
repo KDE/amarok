@@ -211,6 +211,8 @@ Playlist::Widget::playlistProviderRemoved( PlaylistProvider *provider, int categ
 void
 Playlist::Widget::slotSaveCurrentPlaylist()
 {
+    DEBUG_BLOCK
+
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
         return;

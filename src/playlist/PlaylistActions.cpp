@@ -171,6 +171,8 @@ Playlist::Actions::requestTrack( quint64 id )
 void
 Playlist::Actions::play()
 {
+    DEBUG_BLOCK
+
     if( 0 == m_nextTrackCandidate )
     {
         m_nextTrackCandidate = m_topmostModel->activeId();
@@ -184,6 +186,8 @@ Playlist::Actions::play()
 void
 Playlist::Actions::play( const QModelIndex& index )
 {
+    DEBUG_BLOCK
+
     if( index.isValid() )
     {
         m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
@@ -194,6 +198,8 @@ Playlist::Actions::play( const QModelIndex& index )
 void
 Playlist::Actions::play( const int row )
 {
+    DEBUG_BLOCK
+
     m_nextTrackCandidate = m_topmostModel->idAt( row );
     play( m_nextTrackCandidate );
 }
@@ -233,19 +239,21 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 void
 Playlist::Actions::next()
 {
+    DEBUG_BLOCK
     requestUserNextTrack();
 }
 
 void
 Playlist::Actions::back()
 {
+    DEBUG_BLOCK
     requestPrevTrack();
 }
 
 void
 Playlist::Actions::playlistModeChanged()
 {
-
+    DEBUG_BLOCK
 
     QQueue<quint64> currentQueue;
 
@@ -330,6 +338,8 @@ Playlist::Actions::playlistModeChanged()
 void
 Playlist::Actions::repopulateDynamicPlaylist()
 {
+    DEBUG_BLOCK
+
     if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
     {
         static_cast<DynamicTrackNavigator*>(m_navigator)->repopulate();
@@ -346,6 +356,7 @@ void
 Playlist::Actions::queue( QList<int> rows )
 {
     DEBUG_BLOCK
+
     foreach( int row, rows )
     {
         quint64 id = m_topmostModel->idAt( row );
@@ -358,6 +369,8 @@ Playlist::Actions::queue( QList<int> rows )
 void
 Playlist::Actions::dequeue( QList<int> rows )
 {
+    DEBUG_BLOCK
+
     foreach( int row, rows )
     {
         quint64 id = m_topmostModel->idAt( row );
@@ -400,6 +413,8 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
 void
 Playlist::Actions::engineNewTrackPlaying()
 {
+    DEBUG_BLOCK
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
     {
