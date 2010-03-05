@@ -76,11 +76,6 @@ Playlist::Actions::Actions()
 
     m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
-    m_nextTrackCandidate = m_navigator->requestNextTrack();
-
-    //Stop Amarok from advancing to the next track when play
-    //is pressed.
-    requestTrack( Playlist::ModelStack::instance()->source()->idAt( AmarokConfig::lastPlaying() ) );
 }
 
 Playlist::Actions::~Actions()
