@@ -47,32 +47,32 @@
 
 #define DEBUG_PREFIX "CoverBlingApplet"
 
-MyGraphicItem::MyGraphicItem( const QPixmap & pixmap, QGraphicsItem * parent, QGraphicsScene * scene)
-    : QGraphicsPixmapItem(pixmap,parent,scene)
+MyGraphicItem::MyGraphicItem( const QPixmap & pixmap, QGraphicsItem * parent, QGraphicsScene * scene )
+        : QGraphicsPixmapItem( pixmap, parent, scene )
 {
 }
-void MyGraphicItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void MyGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
-   emit clicked();
+    emit clicked();
 }
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
-    : Context::Applet( parent, args )
+        : Context::Applet( parent, args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( false );
 }
 
-void 
+void
 CoverBlingApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-    resize(-1,300); 
-    m_layout = new QGraphicsProxyWidget(this);
+    resize( -1, 300 );
+    m_layout = new QGraphicsProxyWidget( this );
     m_pictureflow = new PhotoBrowser();
-    m_layout->setWidget(m_pictureflow);
-    QSize slideSize(150,150);
-    m_pictureflow->setSlideSize(slideSize);
-    m_pictureflow->show();    
+    m_layout->setWidget( m_pictureflow );
+    QSize slideSize( 150, 150 );
+    m_pictureflow->setSlideSize( slideSize );
+    m_pictureflow->show();
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
@@ -82,31 +82,31 @@ CoverBlingApplet::init()
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
     //connect( qm, SIGNAL(queryDone()), this, SLOT( slideChanged(0)));
-    connect(m_pictureflow, SIGNAL(centerIndexChanged(int)),this,SLOT(slideChanged(int)));
-    connect(m_pictureflow,SIGNAL(doubleClicked(int)),this,SLOT(playAlbum(int)));
+    connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
+    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( playAlbum( int ) ) );
     qm->run();
-    m_label = new QGraphicsSimpleTextItem(this);
+    m_label = new QGraphicsSimpleTextItem( this );
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
     m_label ->setBrush( brush );
     QFont labelFont;
     QFont bigFont( labelFont );
     bigFont.setPointSize( bigFont.pointSize() +  2 );
     m_label->setFont( labelFont );
- 
+
     m_ratingWidget = new RatingWidget( this );
-    m_ratingWidget->setRating(0);
-    m_ratingWidget->setEnabled(FALSE);
+    m_ratingWidget->setRating( 0 );
+    m_ratingWidget->setEnabled( FALSE );
 
-    m_blingtofirst = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" )),this);
-    m_blingtolast = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" )),this);
-    m_blingfastback = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" )),this);
-    m_blingfastforward = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" )),this);
+    m_blingtofirst = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ) ), this );
+    m_blingtolast = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ) ), this );
+    m_blingfastback = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) ), this );
+    m_blingfastforward = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) ), this );
 
-    connect(m_blingtofirst,SIGNAL(clicked()),m_pictureflow,SLOT(skipToFirst()));
-    connect(m_blingtolast,SIGNAL(clicked()),m_pictureflow,SLOT(skipToLast()));
+    connect( m_blingtofirst, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToFirst() ) );
+    connect( m_blingtolast, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToLast() ) );
     //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
-    connect(m_blingfastback,SIGNAL(clicked()),m_pictureflow,SLOT(fastBackward()));
-    connect(m_blingfastforward,SIGNAL(clicked()),m_pictureflow,SLOT(fastForward()));
+    connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
+    connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
 
     constraintsEvent();
 }
@@ -116,47 +116,47 @@ CoverBlingApplet::~CoverBlingApplet()
     delete m_blingtofirst;
     delete m_blingtolast;
     delete m_blingfastback;
-    delete m_blingfastforward;    
+    delete m_blingfastforward;
     delete m_ratingWidget;
     delete m_label;
     delete m_layout;
 }
-void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums) //SLOT
+void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
-    m_pictureflow->fillAlbums(albums);
+    m_pictureflow->fillAlbums( albums );
 }
-void CoverBlingApplet::slideChanged(int islideindex)
+void CoverBlingApplet::slideChanged( int islideindex )
 {
-	Meta::AlbumPtr album = m_pictureflow->album(islideindex);
-	if (album)
-	{
-		Meta::ArtistPtr artist = album->albumArtist();
-		QString label = album->prettyName();
-		if (artist) label+= " - " + artist->prettyName();
-		m_label->setText(label);
-		m_label->show();
-		int nbtracks = 0;
-		int rating = 0;       
-		foreach( Meta::TrackPtr track, album->tracks())
-		{
-        		nbtracks++;
-        		if (track) 
-				rating+=track->rating();
-		}
-		if (nbtracks)
-        		rating = rating/nbtracks;
-		m_ratingWidget->setRating(rating);
-	}
+    Meta::AlbumPtr album = m_pictureflow->album( islideindex );
+    if ( album )
+    {
+        Meta::ArtistPtr artist = album->albumArtist();
+        QString label = album->prettyName();
+        if ( artist ) label += " - " + artist->prettyName();
+        m_label->setText( label );
+        m_label->show();
+        int nbtracks = 0;
+        int rating = 0;
+        foreach( Meta::TrackPtr track, album->tracks() )
+        {
+            nbtracks++;
+            if ( track )
+                rating += track->rating();
+        }
+        if ( nbtracks )
+            rating = rating / nbtracks;
+        m_ratingWidget->setRating( rating );
+    }
 }
-void CoverBlingApplet::playAlbum(int islideindex)
+void CoverBlingApplet::playAlbum( int islideindex )
 {
-	Meta::AlbumPtr album = m_pictureflow->album(islideindex);
-	if (album)
-	{
-    		The::playlistController()->insertOptioned( album->tracks(), Playlist::LoadAndPlay );
-	}
+    Meta::AlbumPtr album = m_pictureflow->album( islideindex );
+    if ( album )
+    {
+        The::playlistController()->insertOptioned( album->tracks(), Playlist::LoadAndPlay );
+    }
 
 }
 void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
@@ -166,16 +166,16 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     int vertical_size = boundingRect().height();
     int horizontal_size = boundingRect().width();
     m_ratingWidget->setSpacing( 2 );
-    m_ratingWidget->setPos(horizontal_size/2-40,vertical_size-30);
-    m_label ->setPos(horizontal_size/2-40,vertical_size-50);
-    m_blingtofirst->setOffset(20,vertical_size-30);
-    m_blingtolast->setOffset(horizontal_size-30,vertical_size-30);
-    m_blingfastback->setOffset(50,vertical_size-30);
-    m_blingfastforward->setOffset(horizontal_size-60,vertical_size-30);
-    m_pictureflow->resize(horizontal_size,vertical_size);
-   
+    m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
+    m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
+    m_blingtofirst->setOffset( 20, vertical_size - 30 );
+    m_blingtolast->setOffset( horizontal_size - 30, vertical_size - 30 );
+    m_blingfastback->setOffset( 50, vertical_size - 30 );
+    m_blingfastforward->setOffset( horizontal_size - 60, vertical_size - 30 );
+    m_pictureflow->resize( horizontal_size, vertical_size );
+
 }
-void 
+void
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( p );

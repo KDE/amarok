@@ -4,7 +4,7 @@
  * Copyright (C) 2007 Ariya Hidayat (ariya.hidayat@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
+ * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either
  * version 2 of the License, or (at your option) any later version.
  *
@@ -25,94 +25,94 @@
 #include <QPixmap>
 #include <KStandardDirs>
 // load and resize image
-static QImage loadAndResize(Meta::AlbumPtr iAlbum, QSize size)
+static QImage loadAndResize( Meta::AlbumPtr iAlbum, QSize size )
 {
-  //qDebug() <<  <<"ImageLoader::loadAndresize()";
-  QImage image;
-  QPixmap pixmap;
-  if (iAlbum->hasImage())
-  {
-	  pixmap = iAlbum->image();
-  }
-  else
-  {
-	  pixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ));
-  }
-  image = pixmap.toImage();
-  image = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-  return image;
+    //qDebug() <<  <<"ImageLoader::loadAndresize()";
+    QImage image;
+    QPixmap pixmap;
+    if ( iAlbum->hasImage() )
+    {
+        pixmap = iAlbum->image();
+    }
+    else
+    {
+        pixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
+    }
+    image = pixmap.toImage();
+    image = image.scaled( size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    return image;
 }
 
-ImageLoader::ImageLoader(): QThread(), 
-restart(false), working(false), idx(-1)
+ImageLoader::ImageLoader(): QThread(),
+        restart( false ), working( false ), idx( -1 )
 {
 }
 
 ImageLoader::~ImageLoader()
 {
-  mutex.lock();
-  condition.wakeOne();
-  mutex.unlock();
-  wait();
+    mutex.lock();
+    condition.wakeOne();
+    mutex.unlock();
+    wait();
 }
 
 bool ImageLoader::busy() const
 {
-  return isRunning() ? working : false;
-}  
+    return isRunning() ? working : false;
+}
 
-void ImageLoader::generate(int index, Meta::AlbumPtr iAlbum, QSize size)
+void ImageLoader::generate( int index, Meta::AlbumPtr iAlbum, QSize size )
 {
-  mutex.lock();
-  this->idx = index;
-  this->m_album = iAlbum;
-  this->size = size;
-  mutex.unlock();
+    mutex.lock();
+    this->idx = index;
+    this->m_album = iAlbum;
+    this->size = size;
+    mutex.unlock();
 
-  if (!isRunning())
-    start();
-  else
-  {
-    // already running, wake up whenever ready
-    restart = true;
-    condition.wakeOne();
-   }
- }
+    if ( !isRunning() )
+        start();
+    else
+    {
+        // already running, wake up whenever ready
+        restart = true;
+        condition.wakeOne();
+    }
+}
 
 void ImageLoader::run()
 {
-  for(;;)
-  {
-    // copy necessary data
-    mutex.lock();
-    this->working = true;
-    Meta::AlbumPtr album_ptr = this->m_album;
-    QSize size = this->size;
-    mutex.unlock();
+    for ( ;; )
+    {
+        // copy necessary data
+        mutex.lock();
+        this->working = true;
+        Meta::AlbumPtr album_ptr = this->m_album;
+        QSize size = this->size;
+        mutex.unlock();
 
-    QImage image = loadAndResize(album_ptr, size);
+        QImage image = loadAndResize( album_ptr, size );
 
-      // let everyone knows it is ready
-    mutex.lock();
-    this->working = false;
-    this->img = image;
-    mutex.unlock();
+        // let everyone knows it is ready
+        mutex.lock();
+        this->working = false;
+        this->img = image;
+        mutex.unlock();
 
-    // put to sleep
-    mutex.lock();
-    if (!this->restart)
-      condition.wait(&mutex);
-    restart = false;
-    mutex.unlock();
-  }
+        // put to sleep
+        mutex.lock();
+        if ( !this->restart )
+            condition.wait( &mutex );
+        restart = false;
+        mutex.unlock();
+    }
 }
 
-PlainImageLoader::PlainImageLoader(): idx(-1)
+PlainImageLoader::PlainImageLoader(): idx( -1 )
 {
 }
 
-void PlainImageLoader::generate(int index, Meta::AlbumPtr iAlbum, QSize size)
+void PlainImageLoader::generate( int index, Meta::AlbumPtr iAlbum, QSize size )
 {
-  img = loadAndResize(iAlbum, size);
-  idx = index;
+    img = loadAndResize( iAlbum, size );
+    idx = index;
 }
