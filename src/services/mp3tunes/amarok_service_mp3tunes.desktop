@@ -2,7 +2,7 @@
 Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-mp3tunes-amarok
-Name=Mp3tunes
+Name=MP3tunes
 Name[bg]=Mp3tunes
 Name[ca]=Mp3tunes
 Name[ca@valencia]=Mp3tunes
@@ -46,7 +46,7 @@ Name[wa]=Mp3tunes
 Name[x-test]=xxMp3tunesxx
 Name[zh_CN]=Mp3tunes
 Name[zh_TW]=Mp3tunes
-Comment=Browse and listen to the music stored in your mp3tunes account
+Comment=Browse and listen to the music stored in your MP3tunes account
 Comment[bg]=Обзор и слушане на музиката от вашата mp3tunes сметка
 Comment[ca]=Navegueu i escolteu la música emmagatzemada en el vostre compte de mp3tunes
 Comment[ca@valencia]=Navegueu i escolteu la música emmagatzemada en el vostre compte de mp3tunes
