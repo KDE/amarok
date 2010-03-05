@@ -435,6 +435,8 @@ Playlist::Actions::engineNewTrackPlaying()
                 else
                     m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
             }
+            //else
+            //  Engine and playlist are in sync even though we didn't plan it; do nothing
         }
     }
     else

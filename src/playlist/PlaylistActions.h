@@ -49,6 +49,12 @@ enum StopAfterMode
 };
 
 
+/**
+ * This class is a central hub between the playlist model stack, the playlist navigators,
+ * and the track playback engine. It ties them together to provide simple "Play", "Play
+ * Next", etc. commands to the GUI code.
+ */
+
 class AMAROK_EXPORT Actions : public QObject, public EngineObserver
 {
     Q_OBJECT

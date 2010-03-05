@@ -98,6 +98,8 @@ Playlist::Model::Model( QObject *parent )
             }
         }
 
+        // Insert playlist items loaded from file.
+        // Don't emit any signals, because we're in the constructor.
         foreach( Meta::TrackPtr track, tracks )
         {
             m_totalLength += track->length();
@@ -792,7 +794,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 
     if( Amarok::actionCollection()->action( "playlist_clear" ) )
         Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
+    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );    //TODO either re-enable or remove this. 2009-11-17
 }
 
 
@@ -916,6 +918,12 @@ void Playlist::Model::clearCommand()
     emit removedIds( delIds );
 }
 
+
+// Note: this function depends on 'MoveCmdList' to be a complete "cycle", in the sense
+// that if row A is moved to row B, another row MUST be moved to row A.
+// Very strange API design IMHO, because it forces our caller to e.g. move ALL ROWS in
+// the playlist to move row 0 to the last row. This function should just have been
+// equivalent to a 'removeTracks()' followed by an 'insertTracks()' IMHO.  --Nanno
 
 void
 Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )

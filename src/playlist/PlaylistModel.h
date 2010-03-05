@@ -170,10 +170,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void setStateOfRow( int row, Item::State state )     { setStateOfItem( m_items.at( row ), row, state ); }
 
         // Variables
-        QList<Item*> m_items;            //! list of tracks in order currently in the playlist
-        QHash<quint64, Item*> m_itemIds; //! maps track id's to items
+        QList<Item*> m_items;               //! list of playlist items, in their "natural" (unsorted) order.
+        QHash<quint64, Item*> m_itemIds;    //! maps playlist item ID to Item pointer.
 
-        int m_activeRow;                 //! the row being played
+        int m_activeRow;    //! the row being played
 
         qint64 m_totalLength;
         quint64 m_totalSize;

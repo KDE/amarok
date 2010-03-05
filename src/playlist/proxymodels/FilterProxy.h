@@ -113,6 +113,6 @@ private:
     bool m_showOnlyMatches;
 };
 
-}
+} // namespace Playlist
 
 #endif
