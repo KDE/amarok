@@ -832,14 +832,16 @@ SqlTrack::finishedPlaying( double playedFraction )
 {
     DEBUG_BLOCK
 
+    int newPlayCount = playCount() + 1;    // Warning: playCount() won't update until after 'endMetaDataUpdate()'.
+
     beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
 
-    setPlayCount( m_playCount + 1 );
+    setPlayCount( newPlayCount );
     setLastPlayed( QDateTime::currentDateTime().toTime_t() );
     if( m_firstPlayed == 0 )
         setFirstPlayed( m_lastPlayed );
 
-    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
+    setScore( Amarok::computeScore( score(), newPlayCount, playedFraction ) );
 
     endMetaDataUpdate();
 }
