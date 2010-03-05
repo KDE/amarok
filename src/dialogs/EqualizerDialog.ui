@@ -79,7 +79,7 @@
             <string>Delete currently selected preset. Not available for built-in presets.</string>
            </property>
            <property name="text">
-            <string>Delete preset</string>
+            <string>Delete Preset</string>
            </property>
           </widget>
          </item>
@@ -95,7 +95,7 @@
             <string>Reset selected preset setting to default. Available only for built-in presets.</string>
            </property>
            <property name="text">
-            <string>Reset to default</string>
+            <string>Reset to Default</string>
            </property>
           </widget>
          </item>
