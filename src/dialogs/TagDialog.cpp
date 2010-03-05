@@ -569,22 +569,20 @@ TagDialog::loadCover()
 void
 TagDialog::guessFromFilename() //SLOT
 {
-    //was: setFilenameSchemes()
-    KDialog *dialog = new KDialog( this );
-    //FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
-    dialog->setCaption( i18n( "Filename Layout Chooser" ) );
-    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
-    FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
-    widget->setFileName( m_currentTrack->playableUrl().path() );
-    dialog->setMainWidget( widget );
-    connect( dialog, SIGNAL( accepted() ),
-             widget, SLOT( onAccept() ) );
+    KDialog dialog;
+    dialog.setCaption( i18n( "Filename Layout Chooser" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    FilenameLayoutDialog widget( &dialog );
+    widget.setFileName( m_currentTrack->playableUrl().path() );
+    dialog.setMainWidget( &widget );
+    connect( &dialog, SIGNAL( accepted() ), &widget, SLOT( onAccept() ) );
 
-    const int dcode = dialog->exec();
+    const int dcode = dialog.exec();
+
     QString schemeFromDialog; //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
     if( dcode == KDialog::Accepted )
-        schemeFromDialog = widget->getParsableScheme();
+        schemeFromDialog = widget.getParsableScheme();
     else
         debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
 
@@ -614,9 +612,9 @@ TagDialog::guessFromFilename() //SLOT
         TagGuesser guesser;
         guesser.setFilename( fi.fileName() );
         guesser.setSchema( schemeFromDialog );
-        guesser.setCaseType( widget->getCaseOptions() );
-        guesser.setConvertUnderscores( widget->getUnderscoreOptions() );
-        guesser.setCutTrailingSpaces( widget->getWhitespaceOptions() );
+        guesser.setCaseType( widget.getCaseOptions() );
+        guesser.setConvertUnderscores( widget.getUnderscoreOptions() );
+        guesser.setCutTrailingSpaces( widget.getWhitespaceOptions() );
 
         if( guesser.guess() )
         {
@@ -663,8 +661,6 @@ TagDialog::guessFromFilename() //SLOT
             debug() << "guessing tags from filename failed" << endl;
         }
     }
-    widget->deleteLater();
-    dialog->deleteLater();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

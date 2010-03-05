@@ -516,6 +516,7 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
     m_playlistHash[ playlist->title() ] = playlist->xml();
 
     m_activePlaylist = m_defaultPlaylist = 0;
+    m_activePlaylistPtr = playlist;
 
 #if 0
     QFile file( Amarok::saveLocation() + "dynamic_current.xml" );

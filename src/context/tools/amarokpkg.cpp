@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 {
     KAboutData aboutData("amarokpkg", 0, ki18n("Amarok Applet Manager"),
                          version, ki18n(description), KAboutData::License_GPL,
-                         ki18n("(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"));
+                         ki18n("(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"));
     aboutData.addAuthor( ki18n("Aaron Seigo"),
                          ki18n("Original author"),
                         "aseigo@kde.org" );
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
     options.add("u");
     options.add("upgrade <path>", ki18nc("Do not translate <path>", "Upgrade the applet at <path>"));
     options.add("l");
-    options.add("list", ki18n("List installed applet"));
+    options.add("list", ki18n("List installed applets"));
     options.add("r");
     options.add("remove <name>", ki18nc("Do not translate <name>", "Remove the applet named <name>"));
     options.add("p");

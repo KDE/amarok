@@ -20,16 +20,14 @@
 #ifndef TESTCASECONVERTER_H
 #define TESTCASECONVERTER_H
 
-#include "TestBase.h"
-
 #include <QtCore/QObject>
 
-class TestCaseConverter : public TestBase
+class TestCaseConverter : public QObject
 {
 Q_OBJECT
 
 public:
-    TestCaseConverter( const QStringList args, const QString &logPath );
+    TestCaseConverter();
 
 private slots:
     void testToCapitalizedCase();

@@ -23,7 +23,6 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
-#include "EngineController.h"
 #include "PodcastImageFetcher.h"
 #include "PodcastModel.h"
 #include "PodcastReader.h"
@@ -32,6 +31,8 @@
 #include "SqlStorage.h"
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
+
+#include "ui_SqlPodcastProviderSettingsWidget.h"
 
 #include <KLocale>
 #include <KIO/CopyJob>
@@ -58,7 +59,8 @@ SqlPodcastProvider::SqlPodcastProvider()
         : m_updateTimer( new QTimer( this ) )
         , m_updatingChannels( 0 )
         , m_completedDownloads( 0 )
-        , m_configureAction( 0 )
+        , m_providerSettingsDialog( 0 )
+        , m_configureChannelAction( 0 )
         , m_deleteAction( 0 )
         , m_downloadAction( 0 )
         , m_removeAction( 0 )
@@ -83,6 +85,8 @@ SqlPodcastProvider::SqlPodcastProvider()
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
+    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Downlaod Directory",
+                                                           Amarok::saveLocation( "podcasts" ) );
 
     QStringList values;
 
@@ -155,8 +159,7 @@ SqlPodcastProvider::loadPodcasts()
     {
         QStringList channelResult = results.mid( i, rowLength );
         SqlPodcastChannelPtr channel =
-                SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
-        channel->setProvider( this );
+                SqlPodcastChannelPtr( new SqlPodcastChannel( this, channelResult ) );
         if( channel->image().isNull() )
             fetchImage( channel );
 
@@ -167,8 +170,15 @@ SqlPodcastProvider::loadPodcasts()
     emit( updated() );
 }
 
+QString
+SqlPodcastProvider::cleanUrlOrGuid( const KUrl &url )
+{
+    QString decodedUrl = QUrl::fromPercentEncoding( url.url().toUtf8() );
+    return decodedUrl;
+}
+
 bool
-SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
+SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
@@ -176,16 +186,17 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 
     QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
                       "OR localurl='%1';";
-    command = command.arg( sqlStorage->escape( url.url() ) );
+    command = command.arg( sqlStorage->escape( cleanUrlOrGuid( url ) ) );
 
     QStringList dbResult = sqlStorage->query( command );
     return !dbResult.isEmpty();
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl( const KUrl & url )
+SqlPodcastProvider::trackForUrl( const KUrl &url )
 {
-    DEBUG_BLOCK
+    if( url.isEmpty() )
+        return TrackPtr();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
@@ -195,7 +206,7 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
             "duration, filesize, isnew FROM podcastepisodes "
             "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;";
-    command = command.arg( sqlStorage->escape( url.url() ) );
+    command = command.arg( sqlStorage->escape( cleanUrlOrGuid( url ) ) );
     QStringList dbResult = sqlStorage->query( command );
 
     if( dbResult.isEmpty() )
@@ -307,7 +318,7 @@ SqlPodcastProvider::subscribe( const KUrl &url )
 Meta::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
-    Meta::SqlPodcastChannel * sqlChannel = new Meta::SqlPodcastChannel( channel );
+    Meta::SqlPodcastChannel *sqlChannel = new Meta::SqlPodcastChannel( this, channel );
     m_channels << SqlPodcastChannelPtr( sqlChannel );
     return Meta::PodcastChannelPtr( sqlChannel );
 }
@@ -356,6 +367,18 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
     sqlChannel->deleteFromDb();
 
     m_channels.removeOne( sqlChannel );
+
+    //HACK: because of a database "leak" in the past we have orphan data in the tables.
+    //Remove it when we know it's supposed to be empty.
+    if( m_channels.isEmpty() )
+    {
+        SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+        if( !sqlStorage )
+            return;
+        debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
+        sqlStorage->query( "DELETE FROM podcastepisodes WHERE 1;" );
+    }
+
     emit updated();
 }
 
@@ -363,6 +386,54 @@ void
 SqlPodcastProvider::configureProvider()
 {
     DEBUG_BLOCK
+    m_providerSettingsDialog = new KDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
+    Ui::SqlPodcastProviderSettingsWidget settings;
+    settings.setupUi( settingsWidget );
+
+    settings.m_baseDirUrl->setMode( KFile::Directory );
+    settings.m_baseDirUrl->setUrl( m_baseDownloadDir );
+
+    settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
+    settings.m_autoUpdateInterval->setSuffix(ki18np(" minute", " minutes"));
+
+    m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+    m_providerSettingsDialog->setMainWidget( settingsWidget );
+
+    connect( settings.m_baseDirUrl, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( settings.m_autoUpdateInterval, SIGNAL( valueChanged(int) ),
+             SLOT( slotConfigChanged() ) );
+
+    m_providerSettingsDialog->setWindowTitle( i18n( "Configure Local Podcasts" ) );
+    m_providerSettingsDialog->enableButtonApply( false );
+
+    if( m_providerSettingsDialog->exec() == QDialog::Accepted )
+    {
+        debug() << "accepted";
+
+        //TODO: apply
+    }
+
+    delete m_providerSettingsDialog;
+    m_providerSettingsDialog = 0;
+
+}
+
+void
+SqlPodcastProvider::slotConfigChanged()
+{
+    Ui::SqlPodcastProviderSettingsWidget *settings =
+            dynamic_cast<Ui::SqlPodcastProviderSettingsWidget *>(
+                    m_providerSettingsDialog->mainWidget() );
+
+    if( !settings )
+        return;
+
+    if( settings->m_autoUpdateInterval->value() != m_autoUpdateInterval
+        || settings->m_baseDirUrl->url() != m_baseDownloadDir )
+    {
+        m_providerSettingsDialog->enableButtonApply( true );
+    }
 }
 
 void
@@ -512,17 +583,17 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if( m_configureAction == 0 )
+    if( m_configureChannelAction == 0 )
     {
-        m_configureAction = new QAction(
+        m_configureChannelAction = new QAction(
             KIcon( "configure" ),
             i18n( "&Configure" ),
             this
         );
-        m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
+        m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureChannelAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
     }
-    actions << m_configureAction;
+    actions << m_configureChannelAction;
 
     if( m_removeAction == 0 )
     {
@@ -549,6 +620,31 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     actions << m_updateAction;
 
     return actions;
+}
+
+QList<QAction *>
+SqlPodcastProvider::providerActions()
+{
+    if( m_providerActions.isEmpty() )
+    {
+        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
+                                         i18n( "&Update All Channels" ),
+                                         this
+                                       );
+        updateAllAction->setProperty( "popupdropper_svg_id", "update" );
+        connect( updateAllAction, SIGNAL( triggered() ), this, SLOT( updateAll() ) );
+        m_providerActions << updateAllAction;
+
+        QAction *configureAction = new QAction( KIcon( "configure" ),
+            i18n( "&Configure General Settings" ),
+            this
+        );
+        configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureProvider() ) );
+        m_providerActions << configureAction;
+    }
+
+    return m_providerActions;
 }
 
 void
@@ -755,18 +851,6 @@ SqlPodcastProvider::completePodcastDownloads()
             }
         }
     }
-}
-
-void SqlPodcastProvider::engineNewTrackPlaying()
-{
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    Meta::SqlPodcastEpisodePtr currentEpisode = Meta::SqlPodcastEpisodePtr::dynamicCast( currentTrack );
-
-    if( currentEpisode.isNull() )
-        return;
-
-    //TODO: wait a at least 10% of the tracklength before setting isNew to false
-    currentEpisode->setNew( false );
 }
 
 void
@@ -1326,6 +1410,12 @@ SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
 {
     fetcher->deleteLater();
     m_podcastImageFetcher = 0;
+}
+
+void
+SqlPodcastProvider::slotConfigureProvider()
+{
+    configureProvider();
 }
 
 #include "SqlPodcastProvider.moc"

@@ -27,6 +27,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
+#include "Components.h"
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -57,19 +58,16 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
-EngineController* EngineController::s_instance = 0;
-
 EngineController*
 EngineController::instance()
 {
-    return s_instance ? s_instance : new EngineController();
+    return Amarok::Components::engineController();
 }
 
 void
 EngineController::destroy()
 {
-    delete s_instance;
-    s_instance = 0;
+    //nothing to do?
 }
 
 EngineController::EngineController()
@@ -80,13 +78,9 @@ EngineController::EngineController()
 {
     DEBUG_BLOCK
 
-    initializePhonon();
-
     m_fadeoutTimer->setSingleShot( true );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
-
-    s_instance = this;
 }
 
 EngineController::~EngineController()
@@ -212,12 +206,7 @@ EngineController::canDecode( const KUrl &url ) //static
         return true;
 
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
-                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
-
-    // Add whitelist hacks
-    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    //mimeTable << "?/?"; //Add comment
+    static QStringList mimeTable = supportedMimeTypes();
 
     const KMimeType::Ptr mimeType = item.mimeTypePtr();
     
@@ -231,14 +220,31 @@ EngineController::canDecode( const KUrl &url ) //static
         }
     }
 
+    return valid;
+}
+
+QStringList
+EngineController::supportedMimeTypes()
+{
+    //NOTE this function must be thread-safe
+    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
+                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+
+    // Add whitelist hacks
+    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+
     // We special case this, as otherwise the users would hate us
-    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
+    if( ( !mimeTable.contains( "audio/mp3" ) || !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    {
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
                       "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+        mimeTable << "audio/mp3" << "audio/x-mp3";
+    }
 
-    return valid;
+    return mimeTable;
 }
 
 bool
@@ -417,8 +423,11 @@ EngineController::playUrl( const KUrl &url, uint offset )
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
-        m_media->clear();
-        m_media->setCurrentSource( Phonon::Cd );
+        if( m_media->currentSource().type() != Phonon::MediaSource::Disc )
+        {
+            m_media->clear();
+            m_media->setCurrentSource( Phonon::Cd );
+        }
         debug() << "boom?";
         m_controller->setCurrentTitle( trackNumber );
         debug() << "no boom?";

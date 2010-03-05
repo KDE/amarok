@@ -3,7 +3,6 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
 add_subdirectory( daap )
-#add_subdirectory( iphoneos )
 # NOTE: disabled until ported to new framework
 add_subdirectory( audiocd )
 
@@ -11,8 +10,6 @@ add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
 add_subdirectory( sqlcollection )
-
-add_subdirectory( device )
 
 # needs things from playground/base/nepomuk-kde
 #if (SOPRANO_FOUND AND NEPOMUK_FOUND)

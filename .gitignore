@@ -1,6 +1,11 @@
-*.kdev4
-CMakeLists.txt.user
-*~
-*.patch
-Doxyfile
 .*
+*~
+build
+Doxyfile
+*.patch
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+CMakeLists.txt.user

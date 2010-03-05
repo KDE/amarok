@@ -49,6 +49,12 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
                 SCRIPTABLE false
                 DESIGNABLE false )
 
+    Q_PROPERTY( QStringList collectionFolders
+                READ collectionFolders
+                WRITE setCollectionFolders
+                SCRIPTABLE false
+                DESIGNABLE false )
+
     public:
         SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();
@@ -79,6 +85,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         virtual CollectionLocation* location() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
+
+        QStringList collectionFolders() const;
+        void setCollectionFolders( const QStringList &folders );
 
         //sqlcollection internal methods
         void sendChangedSignal();
@@ -129,7 +138,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 
 typedef QList<int> IdList;
 
-class SqlMountPointManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlMountPointManager : public QObject
 {
     Q_OBJECT
 public:
@@ -137,7 +146,8 @@ public:
     virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const = 0;
     virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const = 0;
     virtual IdList getMountedDeviceIds() const = 0;
-    virtual QStringList collectionFolders() = 0;
+    virtual QStringList collectionFolders() const = 0;
+    virtual void setCollectionFolders( const QStringList &folders ) = 0;
 
 signals:
         void deviceAdded( int id );

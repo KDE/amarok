@@ -29,9 +29,6 @@
 
 QTEST_KDEMAIN_CORE( TestAlbumCompilationChange )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestAlbumCompilationChange::TestAlbumCompilationChange()
     : QObject()
     , m_collection( 0 )
@@ -80,9 +77,9 @@ TestAlbumCompilationChange::init()
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (1, -1, './IDoNotExist.mp3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (2, -1, './IDoNotExistAsWell.mp3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (3, -1, './MeNeither.mp3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');" );
 
 
 }
@@ -150,7 +147,7 @@ TestAlbumCompilationChange::testSetCompilationWithExistingCompilation()
 
     QStringList trackResult = m_storage->query("SELECT album FROM tracks WHERE id = 1");
     QCOMPARE( trackResult.count(), 1 );
-    QCOMPARE( trackResult.first(), QString( "2" ) ); //track still points at the compilation row
+    QCOMPARE( trackResult.first(), QString( "2" ) ); //track points at the compilation row
 
     QStringList albumResult = m_storage->query( "SELECT name, artist FROM albums WHERE id = 1" );
     QCOMPARE( albumResult.count(), 0 ); //album1 should not exist anymore as there is no track associated to it
@@ -281,6 +278,35 @@ TestAlbumCompilationChange::testUnsetCompilationWithArtistAFeaturingB()
     QCOMPARE( track->album()->albumArtist()->name(), QString( "artist1" ) );
 
     QCOMPARE( track->album(), targetAlbum );
+}
+
+void
+TestAlbumCompilationChange::testUnsetCompilationWithMultipleArtists()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1,'album1',0);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',2,1,1,1,1 );" );
+
+    Meta::TrackPtr track1 = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::TrackPtr track2 = m_registry->getTrack( "/IDoNotExistAsWell.mp3" );
+
+    Meta::AlbumPtr album = track1->album();
+    QCOMPARE( album, track2->album() );
+    QVERIFY( album->isCompilation() );
+
+    Meta::SqlAlbum *sqlCompilation = static_cast<Meta::SqlAlbum*>( album.data() );
+    sqlCompilation->setCompilation( false );
+
+    QStringList albumsCount = m_storage->query( "SELECT count(*) FROM albums;" );
+    QCOMPARE( albumsCount.first(), QString::number( 2 ) );
+
+    QVERIFY( !track1->album()->isCompilation() );
+    QVERIFY( !track2->album()->isCompilation() );
+
+
 }
 
 #include "TestAlbumCompilationChange.moc"

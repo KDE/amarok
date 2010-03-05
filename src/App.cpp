@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
+#include "Components.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
@@ -32,7 +33,6 @@
 #include "meta/MetaConstants.h"
 #include "Meta.h"
 #include "MetaUtility.h"
-#include "MountPointManager.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
@@ -46,6 +46,8 @@
 #include "podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
+#include "statemanagement/ApplicationController.h"
+#include "statemanagement/DefaultApplicationController.h"
 #include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
 #include "TrayIcon.h"
@@ -87,9 +89,6 @@
 #include <realmediafiletyperesolver.h>
 
 QMutex Debug::mutex;
-QMutex Amarok::globalDirsMutex;
-QPointer<KActionCollection> Amarok::actionCollectionObject;
-
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
@@ -99,7 +98,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestAmarok.h"
-#include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
@@ -132,20 +130,6 @@ App::App()
 
     // required for last.fm plugin to grab app version
     setApplicationVersion( AMAROK_VERSION );
-
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
-    {
-        PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs *stdDirs = KGlobal::dirs();
-        PERF_LOG( "Finding image" )
-        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
-        PERF_LOG( "Creating pixmap" )
-        QPixmap splashpix( img );
-        PERF_LOG( "Creating splashscreen" )
-        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
-        PERF_LOG( "showing splashscreen" )
-        m_splash->show();
-    }
 
     PERF_LOG( "Registering taglib plugins" )
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
@@ -231,8 +215,6 @@ App::~App()
 {
     DEBUG_BLOCK
 
-    delete m_splash;
-
     CollectionManager::instance()->stopScan();
 
     // Hiding the OSD before exit prevents crash
@@ -276,6 +258,7 @@ App::~App()
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
     Amarok::OSD::destroy();
+    Amarok::KNotificationBackend::destroy();
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
@@ -287,12 +270,13 @@ App::~App()
     delete mainWindow();
 
     CollectionManager::destroy();
-    MountPointManager::destroy();
     Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
-    EngineController::destroy();
     CoverFetcher::destroy();
+
+    //this should be moved to App::quit() I guess
+    Amarok::Components::applicationController()->shutdown();
 
 
 #ifdef Q_WS_WIN
@@ -315,11 +299,9 @@ App::handleCliArgs() //static
     if( args->isSet( "cwd" ) )
         KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
 
-    bool haveArgs = false;
+    bool haveArgs = true; // assume having args in first place
     if( args->count() > 0 )
     {
-        haveArgs = true;
-
         KUrl::List list;
         for( int i = 0; i < args->count(); i++ )
         {
@@ -355,6 +337,8 @@ App::handleCliArgs() //static
 
         The::playlistController()->insertOptioned( list, options );
     }
+    else if ( args->isSet( "cdplay" ) )
+        The::mainWindow()->playAudioCd();
 
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -362,35 +346,19 @@ App::handleCliArgs() //static
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
     else if ( args->isSet( "pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->pause();
-    }
     else if ( args->isSet( "stop" ) )
-    {
-        haveArgs = true;
         The::engineController()->stop();
-    }
     else if ( args->isSet( "play-pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->playPause();
-    }
     else if ( args->isSet( "play" ) ) //will restart if we are playing
-    {
-        haveArgs = true;
         The::engineController()->play();
-    }
     else if ( args->isSet( "next" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->next();
-    }
     else if ( args->isSet( "previous" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->back();
-    }
+    else // no args given
+        haveArgs = false;
 
     static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
@@ -488,6 +456,7 @@ App::initCliArgs() //static
     KCmdLineOptions options;
 
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
+    options.add("cdplay", ki18n("Immediately start playing an audio cd"));
     options.add("r");
     options.add("previous", ki18n( "Skip backwards in playlist" ));
     options.add("p");
@@ -582,7 +551,6 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    Amarok::OSD::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
@@ -599,20 +567,6 @@ void App::applySettings( bool firstTime )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
     }
-
-    { //<Engine>
-        if( The::engineController()->volume() != AmarokConfig::masterVolume() )
-        {
-            // block signals to make sure that the OSD isn't shown
-            const bool osdEnabled = Amarok::OSD::instance()->isEnabled();
-            Amarok::OSD::instance()->setEnabled( false );
-            The::engineController()->setVolume( AmarokConfig::masterVolume() );
-            Amarok::OSD::instance()->setEnabled( osdEnabled );
-        }
-
-        if( The::engineController()->isMuted() != AmarokConfig::muteState() )
-            The::engineController()->setMuted( AmarokConfig::muteState() );
-    } //</Engine>
 
     if( firstTime )
     {   // delete unneeded cover images from cache
@@ -660,7 +614,6 @@ App::runUnitTests( const QStringList options, bool stdout )
 
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  test001( options, logPath );
-    TestCaseConverter           test002( options, logPath );
     TestM3UPlaylist             test003( options, logPath );
     TestMetaCueCueFileItem      test004( options, logPath );
     TestMetaCueTrack            test005( options, logPath );
@@ -696,6 +649,17 @@ App::continueInit()
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
 
+    new Amarok::DefaultApplicationController();
+    Amarok::Components::applicationController()->start();
+
+    KSplashScreen* splash = 0;
+    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    {
+        QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
+        splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
+        splash->show();
+    }
+
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
@@ -709,6 +673,13 @@ App::continueInit()
     new CollectionDBusHandler( this );
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )
+
+    if( splash ) // close splash correctly
+    {
+        splash->close();
+        delete splash;
+    }
+
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
@@ -716,14 +687,20 @@ App::continueInit()
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
 
-    //create engine, show TrayIcon etc.
+    // Create engine, show TrayIcon etc.
     applySettings( true );
-    // Start ScriptManager. Must be created _after_ MainWindow.
+
+    // Must be created _after_ MainWindow.
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
+    The::engineController()->setVolume( AmarokConfig::masterVolume() );
+    The::engineController()->setMuted( AmarokConfig::muteState() );
+
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
+    Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
+
 
     if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
@@ -737,8 +714,6 @@ App::continueInit()
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
 
-    delete m_splash;
-    m_splash = 0;
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
 
@@ -799,9 +774,12 @@ App::continueInit()
             switch( result )
             {
             case KMessageBox::Yes:
-                MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
-                CollectionManager::instance()->startFullScan();
-                useMusicLocation = true;
+                if( CollectionManager::instance()->primaryCollection() )
+                {
+                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+                    CollectionManager::instance()->startFullScan();
+                    useMusicLocation = true;
+                }
                 break;
 
             case KMessageBox::No:
@@ -944,394 +922,6 @@ bool App::notify( QObject *receiver, QEvent *event )
         return false;
     }
 }
-
-
-namespace Amarok
-{
-    /// @see Amarok.h
-
-    /*
-    * Transform to be usable within HTML/XHTML attributes
-    */
-    QString escapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( '%', "%25" ).replace( '\'', "%27" ).replace( '"', "%22" ).
-                replace( '#', "%23" ).replace( '?', "%3F" );
-    }
-    QString unescapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
-                replace( "%27", "'" ).replace( "%25", "%" );
-    }
-
-    QString verboseTimeSince( const QDateTime &datetime )
-    {
-        const QDateTime now = QDateTime::currentDateTime();
-        const int datediff = datetime.daysTo( now );
-
-        // HACK: Fix 203522. Arithmetic overflow?
-        // Getting weird values from Plasma::DataEngine (LAST_PLAYED field).
-        if( datediff < 0 )
-            return i18nc( "When this track was last played", "Unknown" );
-
-        if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
-            const KCalendarSystem *cal = KGlobal::locale()->calendar();
-            const QDate date = datetime.date();
-            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
-                          cal->yearString(date, KCalendarSystem::LongFormat) );
-        }
-
-        //TODO "last week" = maybe within 7 days, but prolly before last Sunday
-
-        if( datediff >= 7 )  // return difference in weeks
-            return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
-
-        const int timediff = datetime.secsTo( now );
-
-        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
-            return datediff == 1 ?
-                    i18n( "Yesterday" ) :
-                    i18np( "One day ago", "%1 days ago", (timediff+12*60*60)/(24*60*60) );
-
-        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-            return i18np( "One hour ago", "%1 hours ago", (timediff+30*60)/(60*60) );
-
-        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
-
-        if( timediff >= 0 )  // return difference in minutes
-            return timediff/60 ?
-                    i18np( "One minute ago", "%1 minutes ago", (timediff+30)/60 ) :
-                    i18n( "Within the last minute" );
-
-        return i18n( "The future" );
-    }
-
-    QString verboseTimeSince( uint time_t )
-    {
-        if( !time_t )
-            return i18nc( "The amount of time since last played", "Never" );
-
-        QDateTime dt;
-        dt.setTime_t( time_t );
-        return verboseTimeSince( dt );
-    }
-
-    QString conciseTimeSince( uint time_t )
-    {
-        if( !time_t )
-            return i18nc( "The amount of time since last played", "0" );
-
-        QDateTime datetime;
-        datetime.setTime_t( time_t );
-
-        const QDateTime now = QDateTime::currentDateTime();
-        const int datediff = datetime.daysTo( now );
-
-        if( datediff >= 6*7 /*six weeks*/ ) {  // return difference in months
-            return i18nc( "number of months ago", "%1M", datediff/7/4 );
-        }
-
-        if( datediff >= 7 )  // return difference in weeks
-            return i18nc( "w for weeks", "%1w", (datediff+3)/7 );
-
-        if( datediff == -1 )
-            return i18nc( "When this track was last played", "Tomorrow" );
-
-        const int timediff = datetime.secsTo( now );
-
-        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
-            // xgettext: no-c-format
-            return i18nc( "d for days", "%1d", (timediff+12*60*60)/(24*60*60) );
-
-        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-            return i18nc( "h for hours", "%1h", (timediff+30*60)/(60*60) );
-
-        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
-
-        if( timediff >= 60 )  // return difference in minutes
-            return QString("%1'").arg( ( timediff + 30 )/60 );
-        if( timediff >= 0 )  // return difference in seconds
-            return QString("%1\"").arg( ( timediff + 1 )/60 );
-
-        return i18n( "0" );
-    }
-
-    QString prettyNowPlaying()
-    {
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-
-        if( track )
-        {
-            QString title       = Qt::escape( track->name() );
-            QString prettyTitle = Qt::escape( track->prettyName() );
-            QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
-            QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-            QString length      = Qt::escape( Meta::msToPrettyTime( track->length() ) );
-
-            // ugly because of translation requirements
-            if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
-                title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
-
-            else if ( !title.isEmpty() && !artist.isEmpty() )
-                title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
-
-            else if ( !album.isEmpty() )
-                // we try for pretty title as it may come out better
-                title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
-            else
-                title = "<b>" + prettyTitle + "</b>";
-
-            if ( title.isEmpty() )
-                title = i18n( "Unknown track" );
-
-            Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
-            if ( sic )
-            {
-                QString source = sic->sourceName();
-                if ( !source.isEmpty() )
-                    title += ' ' + i18nc( "track from source", "from <b>%1</b>", source );
-
-                delete sic;
-            }
-
-            if ( length.length() > 1 )
-                title += " (" + length + ')';
-
-            return title;
-        }
-        else
-            return i18n( "No track playing" );
-    }
-
-    QWidget *mainWindow()
-    {
-        return pApp->mainWindow();
-    }
-
-    KActionCollection* actionCollection()  // TODO: constify?
-    {
-        if( !actionCollectionObject )
-        {
-            actionCollectionObject = new KActionCollection( pApp );
-            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
-        }
-
-        return actionCollectionObject;
-    }
-
-    KConfigGroup config( const QString &group )
-    {
-        //Slightly more useful config() that allows setting the group simultaneously
-        return KGlobal::config()->group( group );
-    }
-
-    namespace ColorScheme
-    {
-        QColor Base;
-        QColor Text;
-        QColor Background;
-        QColor Foreground;
-        QColor AltBase;
-    }
-
-    OverrideCursor::OverrideCursor( Qt::CursorShape cursor )
-    {
-        QApplication::setOverrideCursor( cursor == Qt::WaitCursor ?
-                                        Qt::WaitCursor :
-                                        Qt::BusyCursor );
-    }
-
-    OverrideCursor::~OverrideCursor()
-    {
-        QApplication::restoreOverrideCursor();
-    }
-
-    QString saveLocation( const QString &directory )
-    {
-        globalDirsMutex.lock();
-        QString result = KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
-        globalDirsMutex.unlock();
-        return result;
-    }
-
-    QString cleanPath( const QString &path )
-    {
-        /* Unicode uses combining characters to form accented versions of other characters.
-         * (Exception: Latin-1 table for compatibility with ASCII.)
-         * Those can be found in the Unicode tables listed at:
-         * http://en.wikipedia.org/w/index.php?title=Combining_character&oldid=255990982
-         * Removing those characters removes accents. :)                                   */
-        QString result = path;
-
-        // German umlauts
-        result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
-        result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
-        result.replace( QChar(0x00fc), "ue" ).replace( QChar(0x00dc), "Ue" );
-        result.replace( QChar(0x00df), "ss" );
-
-        // other special cases
-        result.replace( QChar(0x00C6), "AE" );
-        result.replace( QChar(0x00E6), "ae" );
-
-        result.replace( QChar(0x00D8), "OE" );
-        result.replace( QChar(0x00F8), "oe" );
-
-        // normalize in a form where accents are separate characters
-        result = result.normalized( QString::NormalizationForm_D );
-
-        // remove accents from table "Combining Diacritical Marks"
-        for( int i = 0x0300; i <= 0x036F; i++ )
-        {
-            result.remove( QChar( i ) );
-        }
-
-        return result;
-    }
-
-    QString asciiPath( const QString &path )
-    {
-        QString result = path;
-        for( int i = 0; i < result.length(); i++ )
-        {
-            QChar c = result[ i ];
-            if( c > QChar(0x7f) || c == QChar(0) )
-            {
-                c = '_';
-            }
-            result[ i ] = c;
-        }
-        return result;
-    }
-
-    QString vfatPath( const QString &path )
-    {
-        QString s = path;
-
-        if( QDir::separator() == '/' ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
-            s.replace( '\\', '_' );
-        else
-            s.replace( '/', '_' ); // on windows we have to replace / instead
-
-        for( int i = 0; i < s.length(); i++ )
-        {
-            QChar c = s[ i ];
-            if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
-                    || c=='*' || c=='?' || c=='<' || c=='>'
-                    || c=='|' || c=='"' || c==':' )
-                c = '_';
-            s[ i ] = c;
-        }
-
-        /* beware of reserved device names */
-        uint len = s.length();
-        if( len == 3 || (len > 3 && s[3] == '.') )
-        {
-            QString l = s.left(3).toLower();
-            if( l=="aux" || l=="con" || l=="nul" || l=="prn" )
-                s = '_' + s;
-        }
-        else if( len == 4 || (len > 4 && s[4] == '.') )
-        {
-            QString l = s.left(3).toLower();
-            QString d = s.mid(3,1);
-            if( (l=="com" || l=="lpt") &&
-                    (d=="0" || d=="1" || d=="2" || d=="3" || d=="4" ||
-                     d=="5" || d=="6" || d=="7" || d=="8" || d=="9") )
-                s = '_' + s;
-        }
-
-        // "clock$" is only allowed WITH extension, according to:
-        // http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations
-        if( QString::compare( s, "clock$", Qt::CaseInsensitive ) == 0 )
-            s = '_' + s;
-
-        /* max path length of Windows API */
-        s = s.left(255);
-
-        /* whitespace at the end of folder/file names or extensions are bad */
-        len = s.length();
-        if( s[len-1] == ' ' )
-            s[len-1] = '_';
-
-        int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
-        if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
-            if( s.at( extensionIndex - 1 ) == ' ' )
-                s[extensionIndex - 1] = '_';
-
-        for( int i = 1; i < s.length(); i++ ) // correct trailing whitespace in folder names
-        {
-            if( ( s.at( i ) == QDir::separator() ) && ( s.at( i - 1 ) == ' ' ) )
-                s[i - 1] = '_';
-        }
-
-        return s;
-    }
-
-    /* Strip the common prefix of two strings from the first one and trim
-     * whitespace from the beginning of the resultant string.
-     * Case-insensitive.
-     *
-     * @param input the string being processed
-     * @param ref the string used to determine prefix
-     */
-    QString decapitateString( const QString &input, const QString &ref )
-    {
-        int len;    //the length of common prefix calculated so far
-        for ( len = 0; len < input.length() && len < ref.length(); len++ )
-        {
-            if ( input.at( len ).toUpper() != ref.at( len ).toUpper() )
-                break;
-        }
-
-        return input.right( input.length() - len ).trimmed();
-    }
-
-    KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
-
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
-    {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister ( false );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !Meta::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
-    }
-
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
-
-        return urls;
-    }
-} // End namespace Amarok
 
 int App::newInstance()
 {

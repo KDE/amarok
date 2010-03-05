@@ -32,16 +32,14 @@
 namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
-    : PlaylistFile()
-    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
+    : m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracksLoaded( false )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
-    : PlaylistFile()
-    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
+    : m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracksLoaded( true )
     , m_tracks( tracks )
 {
@@ -49,8 +47,7 @@ M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
 }
 
 M3UPlaylist::M3UPlaylist( const KUrl &url )
-    : PlaylistFile( url )
-    , m_url( url )
+    : m_url( url )
     , m_tracksLoaded( false )
 {
     //DEBUG_BLOCK

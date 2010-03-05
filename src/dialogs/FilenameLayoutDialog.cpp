@@ -33,6 +33,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 {
     setupUi( this );
     optionsFrame->hide();
+    resultGroupBox->hide();
 
     m_caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
@@ -42,7 +43,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     QVBoxLayout *l = new QVBoxLayout(filenameLayout);
     l->setContentsMargins( 0, 0, 0, 0 );
     l->addWidget(m_dropTarget);
-    
+
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     syntaxLabel->setWordWrap( true );
@@ -101,13 +102,16 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     int underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores" ).toInt();
     cbReplaceUnderscores->setChecked( underscoreOptions );
     if( !m_isOrganizeCollection )
+    {
         optionsFrame->show();
+        resultGroupBox->show();
+    }
     else
     {
         //INIT for collection root
         unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
         collectionRootFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
@@ -128,7 +132,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionRootIconLabel->setPixmap( collectionIcon );
 
         collectionSlashFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
@@ -139,6 +143,51 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionSlashLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
         collectionSlashLayout->setContentsMargins( 0, 0, 0, 0 );
         collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
+
+        dotFrame->setStyleSheet( "\
+            color: palette( Text );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+
+        QHBoxLayout *dotLayout = new QHBoxLayout( dotFrame );
+        QLabel *dotIconLabel = new QLabel( "", this );
+        QLabel *dotLabel = new QLabel( "." , this );
+        dotLayout->addWidget( dotIconLabel );
+        dotLayout->addWidget( dotLabel );
+        dotLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        dotIconLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        dotLayout->setContentsMargins( 0, 0, 0, 0 );
+        dotIconLabel->setContentsMargins( 0, 0, 0, 0 );
+        dotLabel->setContentsMargins( 0, 0, 0, 0 );
+        dotIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+        dotIconLabel->setFixedSize( 16, 16 );
+        QPixmap dotIcon = QPixmap( KIcon( "filename-dot-amarok" ).pixmap(16, 16) );
+        dotIconLabel->setPixmap( dotIcon );
+
+
+        extensionFrame->setStyleSheet( "\
+            color: palette( Text );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+
+        QHBoxLayout *extensionLayout = new QHBoxLayout( extensionFrame );
+        QLabel *extensionIconLabel = new QLabel( "", this );
+        QLabel *extensionLabel = new QLabel( i18n("File Type"), this );
+        extensionLayout->addWidget( extensionIconLabel );
+        extensionLayout->addWidget( extensionLabel );
+        extensionLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        extensionIconLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        extensionLayout->setContentsMargins( 0, 0, 0, 0 );
+        extensionIconLabel->setContentsMargins( 0, 0, 0, 0 );
+        extensionLabel->setContentsMargins( 0, 0, 0, 0 );
+        extensionIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+        extensionIconLabel->setFixedSize( 16, 16 );
+        QPixmap extensionIcon = QPixmap( KIcon( "filename-filetype-amarok" ).pixmap(16, 16) );
+        extensionIconLabel->setPixmap( extensionIcon );
     }
 
     if( !m_isOrganizeCollection )
@@ -157,7 +206,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         m_color_Album = m_color_Artist = m_color_Comment = m_color_Composer = m_color_Genre = \
         m_color_Title = m_color_Track = m_color_Year = Qt::black;
     }
-    
+
     //INIT for tokenPool
     Token *nToken = new Token( i18n( "Track" ),"filename-track-amarok", Track );
     nToken->setTextColor( m_color_Track );
@@ -190,10 +239,12 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     nToken = new Token( i18n( "Genre" ), "filename-genre-amarok", Genre );
     nToken->setTextColor( m_color_Genre );
     tokenPool->addToken( nToken );
-    
+
     tokenPool->addToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
     tokenPool->addToken( new Token( "-", "filename-dash-amarok", Dash ) );
-    tokenPool->addToken( new Token( ".", "filename-dot-amarok", Dot ) );
+
+    Token *dotToken = new Token( ".", "filename-dot-amarok", Dot );
+    tokenPool->addToken( dotToken );
     tokenPool->addToken( new Token( " ", "filename-space-amarok", Space ) );
 
     if( !m_isOrganizeCollection )
@@ -214,24 +265,32 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     {
         tokenPool->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
         tokenPool->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
-        tokenPool->addToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
+        Token *filetypeToken = new Token( i18n( "File type" ), "filename-filetype-amarok", FileType );
+        tokenPool->addToken( filetypeToken );
         tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
+
     }
     if( m_isOrganizeCollection )
     {
+        debug() << "about to infer!";
         if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Advanced" )
         {
+            debug() << "Advanced";
             setAdvancedMode( true );
-            filenameLayoutEdit->setText( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
+            filenameLayoutEdit->setText( Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated( "Custom Scheme" ) );
         }
-        else if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Basic" )
+        else// if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Basic" )
         {
+            debug() << "Basic";
             setAdvancedMode( false );
-            inferScheme( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
+            QString scheme = Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated( "Custom Scheme" );
+            if(scheme.isEmpty())
+                scheme = Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated("Custom Scheme", "%artist/%album/%track_-_%title");
+            inferScheme( scheme );
         }
     }
     else
@@ -239,12 +298,12 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Advanced" )
         {
             setAdvancedMode( true );
-            filenameLayoutEdit->setText( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
+            filenameLayoutEdit->setText( Amarok::config( "FilenameLayoutDialog" ).readEntryUntranslated( "Custom Scheme" ) );
         }
         else if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Basic" )
         {
             setAdvancedMode( false );
-            inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
+            inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntryUntranslated( "Custom Scheme" ) );
         }
     }
 }
@@ -265,7 +324,7 @@ FilenameLayoutDialog::getParsableScheme()
     QString category = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
     QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : parsableScheme();
 
-    Amarok::config( category ).writeEntry( "Scheme", scheme );
+    Amarok::config( category ).writeEntry( "Custom Scheme", scheme );
     return scheme;
 }
 
@@ -283,10 +342,10 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
 {
     if( m_isOrganizeCollection )
        return;
-    
+
     QString scheme = this->getParsableScheme();
     QFileInfo fi( m_filename );
- 
+
     if( !scheme.isEmpty() )
     {
         TagGuesser guesser;
@@ -295,7 +354,7 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
         guesser.setConvertUnderscores( this->getUnderscoreOptions() );
         guesser.setCutTrailingSpaces( this->getWhitespaceOptions() );
         guesser.setSchema( scheme );
-        
+
         if( guesser.guess() )
         {
             QMap<QString,QString> tags = guesser.tags();
@@ -339,7 +398,7 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
                 Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString( tags["year"].toInt() ) + "</font>" );
             else
                 Year_result->setText( i18n("<empty>") );
-            
+
             filenamePreview->setText(guesser.coloredFileName());
         }
         else
@@ -445,8 +504,8 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
 
 
 
-// Iterates over the elements of the TokenLayoutWidget bar 
-// (really over the elements of a QList that stores the indexes 
+// Iterates over the elements of the TokenLayoutWidget bar
+// (really over the elements of a QList that stores the indexes
 // of the tokens) and generates a string that TagGuesser can digest.
 QString
 FilenameLayoutDialog::parsableScheme() const
@@ -454,7 +513,7 @@ FilenameLayoutDialog::parsableScheme() const
     QString parsableScheme = "";
 
     QList< Token *> list = m_dropTarget->drags( 0 );
-    
+
     foreach( Token * token, list )
     {
         parsableScheme += typeElements[token->value()];

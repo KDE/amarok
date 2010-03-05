@@ -18,11 +18,14 @@
 #define AMAROK_METAPLAYLISTMODEL_H
 
 #include "meta/Playlist.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
 
 class QAction;
+
+Q_DECLARE_METATYPE( QAction* )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 namespace PlaylistBrowserNS {
 
@@ -32,14 +35,16 @@ namespace PlaylistBrowserNS {
 class MetaPlaylistModel
 {
     public:
-        virtual ~MetaPlaylistModel() {};
+        virtual ~MetaPlaylistModel() {}
         
-        enum {
-            DescriptionRole = Qt::UserRole + 1,
-            //Where is this Playlist from i.e. which PlaylistProvider
-            OriginRole = Qt::UserRole + 2,
+        enum
+        {
+            DescriptionRole = Qt::UserRole + 100,
             //What is the name of the group this Playlist is in.
-            GroupRole = Qt::UserRole + 3
+            GroupRole,
+            ByLineRole,
+            ActionCountRole,
+            ActionRole
         };
 
         virtual QList<QAction *> actionsFor( const QModelIndexList &indexes ) = 0;

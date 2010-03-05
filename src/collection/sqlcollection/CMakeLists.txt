@@ -18,8 +18,10 @@ if (NOT WIN32)
 endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_SRCS
-    CapabilityDelegate.cpp
+    ArtistHelper.cpp
+    CapabilityDelegateImpl.cpp
     DatabaseUpdater.cpp
+    MountPointManager.cpp
     ScanManager.cpp
     ScanResultProcessor.cpp
     SqlBookmarkThisCapability.cpp
@@ -49,6 +51,7 @@ target_link_libraries(amarok-sqlcollection
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
+    ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
@@ -66,6 +69,8 @@ set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 
 install(TARGETS amarok-sqlcollection ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 install(FILES org.kde.amarok.SqlCollection.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+
+add_subdirectory( device )
 
 if( BUILD_MYSQLE_COLLECTION )
     add_subdirectory( mysqlecollection )

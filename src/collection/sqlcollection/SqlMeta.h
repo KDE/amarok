@@ -19,6 +19,7 @@
 #define SQLMETA_H
 
 #include "meta/Meta.h"
+#include "amarok_sqlcollection_export.h"
 
 #include <QByteArray>
 #include <QDateTime>
@@ -155,7 +156,7 @@ class SqlTrack : public Meta::Track
         QString rpath() const { return m_rpath; }
         int trackId() const { return m_trackId; }
         SqlCollection* sqlCollection() const { return m_collection; }
-        void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
+        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
         void updateData( const QStringList &result, bool forceUpdates = false );
         void setCapabilityDelegate( TrackCapabilityDelegate *delegate );
 

@@ -27,27 +27,56 @@
 
 
 /**
-A widget for displaying th ecurrent state of, and navigating, the browser dig down interface.
-
-	@author Nikolaj Hald Nielsen <nhn@kde.org>
-*/
+ *  A widget for displaying the current state of and navigating the category dig down interface.
+ *
+ *	@author Nikolaj Hald Nielsen <nhn@kde.org>
+ */
 class BrowserBreadcrumbWidget : public KHBox
 {
     Q_OBJECT
 public:
+
+    /**
+     * Constructor
+     * @param parent the parent widget
+     */
     BrowserBreadcrumbWidget( QWidget * parent );
 
+    /**
+     * Destructor
+     * @param parent the parent widget
+     */
     ~BrowserBreadcrumbWidget();
 
+    /**
+     * Set the BrowserCategoryList which acts as the "root" of the breadcrumb widget.
+     * A root breadcrumb item is created that represents the lowest level, and the categories
+     * in the list are added to the items dropdown menu.
+     * @param rootList the BrowserCategoryList representing the lowest level in the navigation hirachy
+     */
     void setRootList( BrowserCategoryList * rootList );
 
 signals:
+    
+    /**
+     * Signal emited when the root breadcrumb item is clicked.
+     */
     void toHome();
     
 public slots:
+
+    /**
+     * Rebuild the list of breadcrumb items corrosponding to the current location in the hirachy.
+     * This also allows for categories that add additional breadcrumb items (such as the file browser) to update the
+     * breadcrumbs when their internal state changes.
+     */
     void updateBreadcrumbs();
 
 private:
+    
+    /**
+     * Remove all breadcrumb items
+     */
     void clearCrumbs();
     
     /**

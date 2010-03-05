@@ -135,7 +135,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         m_cueTrackAction->disconnect();
     }
-    
+
     if( isQueued )
         QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
     else
@@ -179,12 +179,12 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         if( m_findInSourceAction == 0 )
         {
-            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Find in Source" ), parent );
+            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Show in Media Sources" ), parent );
             QObject::connect( m_findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
         }
         actions << m_findInSourceAction;
     }
-    
+
     return actions;
 }
 
@@ -240,6 +240,7 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     QAction *editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent );
+    editAction->setProperty( "popupdropper_svg_id", "edit" );
     QObject::connect( editAction, SIGNAL( triggered() ), parent, SLOT( editTrackInformation() ) );
     actions << editAction;
 

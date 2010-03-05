@@ -21,14 +21,16 @@
 #include "UmsHandler.h"
 #include "UmsPodcastMeta.h"
 
+class KJob;
+
 class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        UmsPodcastProvider( Meta::UmsHandler *handler, QString scanDirectory );
+        UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory );
         ~UmsPodcastProvider();
 
-        void addFile( MetaFile::TrackPtr metafileTrack );
+        UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
         int addPath( const QString &path );
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
@@ -70,14 +72,29 @@ class UmsPodcastProvider : public PodcastProvider
         virtual void scan();
 
     signals:
-        virtual void updated();
+        void updated();
+
+    private slots:
+        void slotDeleteEpisodes();
+        void slotDeleteChannels();
+        void deleteJobComplete( KJob *job );
+        void slotCopyComplete( KJob *job );
 
     private:
+
+        void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
+
         Meta::UmsHandler *m_handler;
-        QString m_scanDirectory;
+        KUrl m_scanDirectory;
         QStringList m_dirList;
 
         UmsPodcastChannelList m_umsChannels;
+
+        QAction *m_deleteEpisodeAction; //delete a downloaded Episode
+        QAction *m_deleteChannelAction; //delete a everything from one channel
+        QList<QAction *> m_providerActions;
+
+        QMap<KJob *,UmsPodcastEpisodeList> m_deleteJobMap;
 };
 
 #endif // UMSPODCASTPROVIDER_H

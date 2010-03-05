@@ -27,12 +27,63 @@
 #include <KRandom>
 
 quint64
+Playlist::FavoredRandomTrackNavigator::likelyNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.first();
+
+    if ( !m_random )
+        m_random = KRandom::random();
+
+    const int row = randomRow();
+    if ( row < 0 )
+        return 0;
+    AbstractModel* model = Playlist::ModelStack::instance()->top();
+    return model->idAt( row );
+}
+
+quint64
+Playlist::FavoredRandomTrackNavigator::likelyLastTrack()
+{
+    if( m_history.isEmpty() )
+        return requestNextTrack();
+
+    return m_history.first();
+}
+
+quint64
 Playlist::FavoredRandomTrackNavigator::requestNextTrack()
 {
     DEBUG_BLOCK
 
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
+
+    m_random = KRandom::random();
+
+    const int row = randomRow();
+    if ( row < 0 )
+        return 0;
+
+    AbstractModel* model = Playlist::ModelStack::instance()->top();
+    quint64 next = model->idAt( row );
+    m_history.prepend( next );
+    return next;
+}
+
+quint64
+Playlist::FavoredRandomTrackNavigator::requestLastTrack()
+{
+    if( m_history.isEmpty() )
+        return requestNextTrack();
+
+    return m_history.takeFirst();
+}
+
+int
+Playlist::FavoredRandomTrackNavigator::randomRow()
+{
+    DEBUG_BLOCK
 
     QList< qreal > weights;
     qreal totalWeight = 0.0;
@@ -65,8 +116,8 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack()
         {
             int lastplayed = t->lastPlayed();
             qreal weight = lastplayed?
-                QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
-                : 400.0;
+            QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
+            : 400.0;
             totalWeight += weight;
             weights << weight;
         }
@@ -74,32 +125,20 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack()
     }
 
     if( weights.isEmpty() )
-        return 0;
+        return -1;
 
     debug() << "Total weight is" << totalWeight;
 
-    qreal point = ( KRandom::random() / qreal( RAND_MAX ) ) * totalWeight - weights[0];
+    qreal point = ( m_random / qreal( RAND_MAX ) ) * totalWeight - weights[0];
     int row = 0;
     for(; point > 0.0; row++, point -= weights[row]) ;
 
-    quint64 next = model->idAt( row );
-    m_history.prepend( next );
-
-    return next;
-}
-
-quint64
-Playlist::FavoredRandomTrackNavigator::requestLastTrack()
-{
-    if( m_history.isEmpty() )
-        return requestNextTrack();
-
-    return m_history.takeFirst();
+    return row;
 }
 
 void
 Playlist::FavoredRandomTrackNavigator::reset()
 {
     m_history.clear();
+    m_random = 0;
 }
-

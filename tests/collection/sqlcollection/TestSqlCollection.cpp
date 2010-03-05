@@ -30,9 +30,6 @@
 
 QTEST_KDEMAIN_CORE( TestSqlCollection )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestSqlCollection::TestSqlCollection()
 {
 }

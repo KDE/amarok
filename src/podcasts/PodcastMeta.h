@@ -53,15 +53,12 @@ typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;
 
-
-enum Type
+enum PodcastType
 {
     NoType = 0,
     ChannelType,
     EpisodeType
 };
-
-
 
 class AMAROK_EXPORT PodcastMetaCommon
 {
@@ -100,6 +97,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
     public:
         PodcastEpisode();
         PodcastEpisode( PodcastChannelPtr channel );
+        PodcastEpisode( PodcastEpisodePtr episode, PodcastChannelPtr channel );
 
         virtual ~PodcastEpisode() {}
 
@@ -222,6 +220,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlist
             , m_purgeCount( 0 )
         { }
 
+        PodcastChannel( Meta::PodcastChannelPtr channel );
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods

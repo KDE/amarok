@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005-2007 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2006 Martin Ellis <martin.ellis@kdemail.net>                           *
@@ -65,17 +65,11 @@
 
 #if KDE_IS_VERSION(4, 3, 80)
 #define HAVE_KNEWSTUFF3
-#endif
-
-#ifdef HAVE_KNEWSTUFF3
-#include <knewstuff2/engine.h>
-#include <knewstuff2/core/entry.h>
 #include <KNS3/DownloadDialog>
-#else
-#include <knewstuff2/engine.h>
-#include <knewstuff2/core/entry.h>
 #endif
 
+#include <knewstuff2/engine.h>
+#include <knewstuff2/core/entry.h>
 
 #include <QFileInfo>
 #include <QTimer>
@@ -141,6 +135,9 @@ ScriptManager::ScriptManager( QWidget* parent )
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( updateAllScripts() ) );
 
+
+    //FIXME This is only here for testing purposes. Remove later.
+    //QTimer::singleShot( 0, this, SLOT( showScriptStalledDialog() ) );
 }
 
 ScriptManager::~ScriptManager()
@@ -250,17 +247,41 @@ ScriptManager::updateAllScripts() // SLOT
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive | KStandardDirs::NoDuplicates);
     m_nScripts = foundScripts.count();
-    // create a ScriptUpdater for each script
-    m_updaters = new ScriptUpdater[m_nScripts];
-    for (int i = 0; i < m_nScripts; i++)
+
+    // get timestamp of the last update check
+    KConfigGroup config = Amarok::config( "ScriptManager" );
+    uint lastCheck = config.readEntry( "LastUpdateCheck", QVariant( 0 ) ).toUInt();
+    uint now = QDateTime::currentDateTime().toTime_t();
+
+    // last update was at least 7 days ago -> check now
+    if ( now - lastCheck > 7*24*60*60 )
     {
-        // all the ScriptUpdaters are now started in parallel.
-        // tell them which script to work on
-        m_updaters[i].setScriptPath(foundScripts.at(i));
-        // tell them whom to signal when they're finished
-        connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString )) );
-        // and finally tell them to get to work
-        QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
+        debug() << "ScriptUpdater: Performing script update check now!";
+        // create a ScriptUpdater for each script
+        m_updaters = new ScriptUpdater[m_nScripts];
+        for ( int i = 0; i < m_nScripts; i++ )
+        {
+            // all the ScriptUpdaters are now started in parallel.
+            // tell them which script to work on
+            m_updaters[i].setScriptPath( foundScripts.at( i ) );
+            // tell them whom to signal when they're finished
+            connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString ) ) );
+            // and finally tell them to get to work
+            QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
+        }
+        // store current timestamp
+        config.writeEntry( "LastUpdateCheck", QVariant( now ) );
+        config.sync();
+    }
+    // last update was pretty recent, don't check again
+    else
+    {
+        debug() << "ScriptUpdater: Skipping update check";
+        for ( int i = 0; i < m_nScripts; i++ )
+        {
+            loadScript( foundScripts.at( i ) );
+        }
+        findScripts();
     }
 
 }
@@ -579,6 +600,23 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
     delete m_scripts[name].engine;
 }
+
+
+//MOCKUP method, see API docs
+void
+ScriptManager::showScriptStalledDialog()  // SLOT
+{
+    const QString script = "FIXME";
+
+    const int reply = KMessageBox::questionYesNo( 0, i18n( "The script '%1' appears to have stalled.\n\n"
+                                                           "Would you like to stop it?", script ),
+                                                           i18n( "Script Manager - Amarok" ),
+                                                           KStandardGuiItem::yes(),
+                                                           KStandardGuiItem::no(),
+                                                           QString(),
+                                                           KMessageBox::Dangerous );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // private

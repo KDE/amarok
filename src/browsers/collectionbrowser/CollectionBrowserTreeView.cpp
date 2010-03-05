@@ -88,15 +88,21 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
         const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
         if( rect.contains( event->pos() ) )
         {
-            QList<QAction*> actions = index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
-            foreach(QAction * action, actions)
+            QList<QAction*> actions =
+                    index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
+            //hack: rect height == the width of one action's area.
+            int indexOfActionToTrigger
+                = ( event->pos().x() - rect.left() ) / rect.height();
+            debug() << "triggering action " << indexOfActionToTrigger;
+            if( indexOfActionToTrigger >= actions.count() )
             {
-                if( action )
-                {
-                    action->trigger();
-                    return;
-                }
+                debug() << "no such action";
+                return;
             }
+            QAction *action = actions.value( indexOfActionToTrigger );
+            if( action )
+                action->trigger();
+            return;
         }
     }
     CollectionTreeView::mouseReleaseEvent( event );

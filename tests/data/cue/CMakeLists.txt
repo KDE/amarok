@@ -1,3 +1,4 @@
+if(KDE4_BUILD_TESTS)
 install(
         FILES
         testsheet01-iso8859-1.cue
@@ -5,3 +6,4 @@ install(
         test_silence.ogg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/testdata/cue
 )
+endif()

@@ -29,17 +29,33 @@ class BrowserBreadcrumbItem;
 class BrowserCategoryList;
 
 /**
-The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
-
-	@author Nikolaj Hald Nielsen <nhn@kde.org>
+ * The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
+ *
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT BrowserCategory : public KVBox
 {
     Q_OBJECT
 public:
+
+    /**
+     * Constructor.
+     *
+     * @param name The internal name of the category, used for generating Amarok urls. This should never be translated.
+     * @param parent The parent widget.
+     */
     BrowserCategory( const QString &name, QWidget *parent );
+
+    /**
+     * Destructor.
+     */
     ~BrowserCategory();
 
+    /**
+     * Get the internal name of this category.
+     *
+     * @return The name.
+     */
     QString name() const;
 
     /**
@@ -52,7 +68,7 @@ public:
      * Get the user visible name of this category.
      * @return The name of the service.
      */
-    QString prettyName() const;
+    virtual QString prettyName() const;
 
     /**
      * Set a short description string for this category. This string is used to describe the category in the category browser.
@@ -90,15 +106,25 @@ public:
      */
     QIcon icon() const;
 
+    /**
+     * Set the path of the imaged used in the presentation of this category.
+     * @param path The path of the image to use.
+     */
     void setImagePath( const QString &path );
+
+    /**
+     * Get the path of the image used in the presentation of this category.
+     * @return The path of the image.
+     */
     QString imagePath();
 
-    BrowserCategoryList * parentList();
+    BrowserCategoryList * parentList() const;
     void setParentList( BrowserCategoryList * parent );
 
     BrowserBreadcrumbItem * breadcrumb();
 
     virtual void polish() {};
+    virtual void setupAddItems() {};
 
     //These 2 functions are forwarded to simplifiy the creation of urls
     //even though they might not be needed in many cases.
@@ -108,8 +134,17 @@ public:
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
 
+    void addAdditionalItem( BrowserBreadcrumbItem * item );
+    void clearAdditionalItems();
+
+    QList<BrowserBreadcrumbItem *> additionalItems();
+
+
 public slots:
     void activate();
+
+    //Called if this category itself is re-clicked in the breadcrumb
+    virtual void reActivate() {}
 
 private:
     QString m_name;
@@ -121,6 +156,8 @@ private:
     BrowserCategoryList * m_parentList;
 
     BrowserBreadcrumbItem * m_breadcrumb;
+
+    QList<BrowserBreadcrumbItem *> m_additionalItems;
 
 };
 

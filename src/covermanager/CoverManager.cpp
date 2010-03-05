@@ -31,7 +31,7 @@
 #include "QueryMaker.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "widgets/LineEdit.h"
 
 #include <KIO/NetAccess>
@@ -769,7 +769,6 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setIconSize( QSize(100, 100) );
     setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
-    setMouseTracking( true );
     setContextMenuPolicy( Qt::DefaultContextMenu );
 
     connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );

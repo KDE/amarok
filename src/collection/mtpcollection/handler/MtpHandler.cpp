@@ -375,7 +375,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
     foreach( Meta::TrackPtr trackptr,  tracks )
     {
-        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trackptr );
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( trackptr );
         if( !track )
             break;
 

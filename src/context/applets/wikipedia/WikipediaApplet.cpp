@@ -221,7 +221,8 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     if( data.contains("busy") )
     {
         m_webView->hide();
-        setBusy( true );
+        if( canAnimate() )
+            setBusy( true );
         return;
     }
     else

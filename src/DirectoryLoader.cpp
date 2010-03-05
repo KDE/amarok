@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "CollectionManager.h"
 #include "meta/PlaylistFileSupport.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <kio/job.h> // KIO::listRecursive

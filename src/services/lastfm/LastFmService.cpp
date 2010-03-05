@@ -38,7 +38,7 @@
 #include "collection/CollectionManager.h"
 #include "meta/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
 #include "CustomBias.h"
 
@@ -329,8 +329,7 @@ LastFmService::onAuthenticated()
             if( lfm.children( "error" ).size() > 0 )
             {
                 debug() << "error from authenticating with last.fm service:" << lfm.text();
-                config.setSessionKey( "" );
-                config.save();
+                config.clearSessionKey();
                 break;
             }
             m_sessionKey = lfm[ "session" ][ "key" ].text();

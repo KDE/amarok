@@ -67,6 +67,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual QList<QAction *> channelActions( Meta::PodcastChannelList )
             { return QList<QAction *>(); }
 
+        virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
                 { Q_UNUSED( playlist ) return QList<QAction *>(); }
         virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,

@@ -37,6 +37,7 @@ class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
 
+
 namespace Playlist
 {
 
@@ -75,6 +76,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
         int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
         void setActiveRow( int row );
+        void setAllNewlyAddedToUnplayed();
+        void setAllUnplayed();
         void setRowQueued( int row );
         void setRowDequeued( int row );
         Item::State stateOfRow( int row ) const;
@@ -122,8 +125,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
          */
         Item::State stateOfId( quint64 id ) const;
 
-        void setAllUnplayed();
-
         // methods to save playlist to file
         /**
          * Saves a playlist to a specified location.
@@ -146,6 +147,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void metadataUpdated();
         void queueChanged();
 
+    protected:
+        int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
+
     private:
         // inherit from QAbstractListModel, and make private so that nobody uses them
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
@@ -158,10 +162,18 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void removeTracksCommand( const RemoveCmdList& );
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
         void clearCommand();
-        void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
 
+        // Always alter the state of a row via one of the following functions.
+        void setStateOfItem_batchStart();
+        void setStateOfItem_batchEnd();
+        void setStateOfItem( Item *item, int row, Item::State state );    // 'item' must equal 'm_items.at( row )'
+        void setStateOfItem( Item *item, Item::State state ) { setStateOfItem( item, rowForItem( item ), state ); }
+        void setStateOfRow( int row, Item::State state )     { setStateOfItem( m_items.at( row ), row, state ); }
+
+        // Variables
         QList<Item*> m_items;            //! list of tracks in order currently in the playlist
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
+
         int m_activeRow;                 //! the row being played
 
         qint64 m_totalLength;
@@ -170,7 +182,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QString m_playlistName;
         bool m_proposeOverwriting;
 
+        int m_setStateOfItem_batchMinRow;    //! For 'setStateOfItem_batch*()'
+        int m_setStateOfItem_batchMaxRow;
 };
+
 } // namespace Playlist
 
 #endif

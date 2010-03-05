@@ -101,7 +101,6 @@ Meta::SqlPlaylistGroup::setDescription( const QString &description )
 void
 Meta::SqlPlaylistGroup::removeFromDb()
 {
-    DEBUG_BLOCK
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
@@ -115,7 +114,6 @@ Meta::SqlPlaylistGroup::removeFromDb()
 void
 Meta::SqlPlaylistGroup::clear()
 {
-    DEBUG_BLOCK
     /* m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to
        just clear the list and the playlistptrs will delete themselves
     */
@@ -140,7 +138,6 @@ Meta::SqlPlaylistGroup::setParent( Meta::SqlPlaylistGroupPtr parent )
 Meta::SqlPlaylistGroupList
 Meta::SqlPlaylistGroup::childSqlGroups() const
 {
-    DEBUG_BLOCK
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
         return Meta::SqlPlaylistGroupList();
@@ -173,7 +170,6 @@ Meta::SqlPlaylistGroup::childSqlGroups() const
 Meta::SqlPlaylistList
 Meta::SqlPlaylistGroup::childSqlPlaylists() const
 {
-    DEBUG_BLOCK
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
         return Meta::SqlPlaylistList();

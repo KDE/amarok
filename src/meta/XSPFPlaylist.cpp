@@ -48,8 +48,7 @@ namespace Meta
 {
 
 XSPFPlaylist::XSPFPlaylist()
-    : PlaylistFile()
-    , QDomDocument()
+    : QDomDocument()
     , m_tracksLoaded( false )
 {
     QDomElement root = createElement( "playlist" );
@@ -63,8 +62,7 @@ XSPFPlaylist::XSPFPlaylist()
 }
 
 XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
-    : PlaylistFile( url )
-    , QDomDocument()
+    : QDomDocument()
     , m_tracksLoaded( false )
     , m_url( url )
     , m_autoAppendAfterLoad( autoAppend )
@@ -93,8 +91,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 }
 
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList tracks )
-    : PlaylistFile()
-    , QDomDocument()
+    : QDomDocument()
 {
     DEBUG_BLOCK
 
@@ -192,7 +189,6 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
-    DEBUG_BLOCK
     if( m_tracksLoaded )
         return m_tracks;
 

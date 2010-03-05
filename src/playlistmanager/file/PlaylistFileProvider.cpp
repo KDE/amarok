@@ -131,6 +131,12 @@ PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
+    else
+    {
+        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
+                                             "Remove From \"%1\"" ).arg( playlist->name() ) );
+    }
+
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
@@ -143,6 +149,9 @@ PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
         playlistMap.insert( playlist, track );
     }
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
+
+    if( playlistMap.keys().count() > 1 )
+        m_removeTrackAction->setText( i18n( "Remove" ) );
 
     actions << m_removeTrackAction;
 
@@ -311,6 +320,7 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+        playlist->setProvider( this );
 
         if( !groups.isEmpty() && playlist->isWritable() )
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
@@ -318,6 +328,7 @@ PlaylistFileProvider::loadPlaylists()
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 
+    //also add all files in the $KDEHOME/share/apps/amarok/playlists
     QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
                              QDir::Name,
                              QDir::Files | QDir::Readable );
@@ -335,6 +346,8 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+        playlist->setProvider( this );
+
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 

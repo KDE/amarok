@@ -43,6 +43,9 @@ namespace Playlist
     public:
         RepeatAlbumNavigator();
 
+        quint64 likelyNextTrack();
+        quint64 likelyLastTrack();
+
         quint64 requestNextTrack();
         quint64 requestUserNextTrack() { return requestNextTrack(); }
         quint64 requestLastTrack();

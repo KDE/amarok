@@ -26,8 +26,8 @@ public:
     TestMemoryQueryMaker();
 
 private slots:
-    void testDeleteCollectionWhileQueryIsRunning();
     void testDeleteQueryMakerWhileQueryIsRunning();
+    void testDeleteCollectionWhileQueryIsRunning();
 };
 
 #endif // TESTMEMORYQUERYMAKER_H

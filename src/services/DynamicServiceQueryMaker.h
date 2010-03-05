@@ -24,6 +24,8 @@
 
 #include <kio/jobclasses.h>
 
+class ServiceCollection;
+
 namespace ThreadWeaver
 {
     class Job;
@@ -85,6 +87,8 @@ public:
     virtual QueryMaker* beginAnd() { return this; }
     virtual QueryMaker* beginOr() { return this; }
     virtual QueryMaker* endAndOr() { return this; }
+
+    static Meta::AlbumList matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist );
 };
 
 #endif

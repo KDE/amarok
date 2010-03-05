@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,10 +19,11 @@
 #include "CollectionLocation.h"
 
 #include "Collection.h"
+#include "CollectionLocationDelegate.h"
+#include "Components.h"
 #include "Debug.h"
 #include "QueryMaker.h"
-
-#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
+#include "meta/capabilities/UpdateCapability.h"
 
 
 CollectionLocation::CollectionLocation()
@@ -97,6 +99,8 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
@@ -112,6 +116,8 @@ CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
         deleteLater();
@@ -139,6 +145,8 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
@@ -151,8 +159,11 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 void
 CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination )
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
         deleteLater();
@@ -173,6 +184,8 @@ CollectionLocation::prepareRemove( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     if( !isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         deleteLater();
         return;
     }
@@ -185,6 +198,8 @@ CollectionLocation::prepareRemove( QueryMaker *qm )
     DEBUG_BLOCK
     if( !isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         qm->deleteLater();
         deleteLater();
         return;
@@ -210,13 +225,13 @@ bool
 CollectionLocation::remove( const Meta::TrackList &tracks )
 {
     bool success = true;
-    
+
     foreach( const Meta::TrackPtr &track, tracks )
         if( !remove( track ) )
             success = false;
 
     return success;
-        
+
 }
 
 void
@@ -279,20 +294,11 @@ void
 CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    
-    QStringList files;
-    foreach( Meta::TrackPtr track, tracks )
-        files << track->prettyUrl();
-    
-    // NOTE: taken from SqlCollection
-    // TODO put the delete confirmation code somewhere else?
-    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from disk as well as your collection.",
-                                "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracks.count() ) );
-    const bool del = KMessageBox::warningContinueCancelList(0,
-                                                     text,
-                                                     files,
-                                                     i18n("Delete Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
+
+    CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+
+    const bool del = delegate->reallyDelete( this, tracks );
+
     if( !del )
         slotFinishRemove();
     else
@@ -359,6 +365,7 @@ CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
 void
 CollectionLocation::slotFinishCopy()
 {
+    DEBUG_BLOCK
     if( m_removeSources )
         removeSourceTracks( m_tracksSuccessfullyTransferred );
     m_sourceTracks.clear();
@@ -380,6 +387,27 @@ void
 CollectionLocation::slotFinishRemove()
 {
     DEBUG_BLOCK
+    if( m_tracksWithError.size() > 0 )
+    {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->errorDeleting( this, m_tracksWithError.keys() );
+        m_tracksWithError.clear();
+    }
+
+    debug() << "remove finished updating";
+    foreach( Meta::TrackPtr track, m_tracksSuccessfullyTransferred )
+    {
+        if(!track)
+            continue;
+
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        if(!uc)
+            continue;
+
+        uc->collectionUpdated();
+    }
+
+    m_tracksSuccessfullyTransferred.clear();
     m_sourceTracks.clear();
     this->deleteLater();
 }
@@ -465,8 +493,6 @@ void
 CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    // TODO: add a dialog warning that tracks are to be deleted
-
     m_sourceTracks = tracks;
     setupRemoveConnections();
     if( tracks.size() <= 0 )
@@ -478,21 +504,20 @@ CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
-    Meta::TrackList notDeletableTracks;
-    int count = m_tracksWithError.count();
-    debug() << "Transfer errors: " << count;
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        if( m_tracksWithError.contains( track ) )
-        {
-            debug() << "transfer error for track " << track->playableUrl();
-            continue;
-        }
+    DEBUG_BLOCK
+    debug() << "Transfer errors: " << m_tracksWithError.count();
 
-        if( !remove( track ) )
-            notDeletableTracks.append( track );
+    foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
+    {
+        debug() << "transfer error for track " << track->playableUrl();
     }
-    //TODO inform user about tracks which were not deleted
+
+    QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );
+    QSet<Meta::TrackPtr> errored = QSet<Meta::TrackPtr>::fromList( m_tracksWithError.keys() );
+    toRemove.subtract( errored );
+
+    // start the remove workflow
+    prepareRemove( toRemove.toList() );
 }
 
 CollectionLocation*

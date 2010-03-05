@@ -33,6 +33,8 @@
 
 #include "mediadevicecollection_export.h"
 
+#include "ui_UmsConfiguration.h"
+
 #include <KDiskFreeSpaceInfo>
 
 #include <KDirWatch>
@@ -54,6 +56,7 @@ namespace Solid {
 
 class UmsCollection;
 
+class KDialog;
 class KDirLister;
 class KFileItem;
 class KUrl;
@@ -77,6 +80,12 @@ class UmsHandler : public Meta::MediaDeviceHandler
     Q_OBJECT
 
     public:
+        //static variables relating to the on-disk configuration file
+        static QString s_settingsFileName;
+        static QString s_audioFolderKey;
+        static QString s_podcastFolderKey;
+        static QString s_autoConnectKey;
+
         UmsHandler( UmsCollection *mc, const QString& mountPoint );
         virtual ~UmsHandler();
 
@@ -151,6 +160,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual void libSetCoverArt( Itdb_Track *umstrack, const QPixmap &image );
         virtual void setCoverArt( Itdb_Track *umstrack, const QString &path );
 #endif
+    private slots:
+        void slotConfigure();
+        void slotConfigChanged();
+
     private:
         enum FileType
         {
@@ -228,6 +241,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         /* Ums Connection */
         bool    m_autoConnect;
         QString m_mountPoint;
+
+        KUrl m_musicPath;
+        KUrl m_podcastPath;
+
         bool    m_wasMounted;
         QString m_name;
 
@@ -261,7 +278,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         //direct implementation of a podcast provider NOT using the MD::Capabilities
         UmsPodcastProvider *m_podcastProvider;
-        QString m_podcastPath;
+        QAction *m_configureAction;
+
+        Ui::UmsConfiguration *m_settings;
+        KDialog *m_umsSettingsDialog;
 
     private slots:
         void slotCreateEntry( const QString &path );

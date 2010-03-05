@@ -70,9 +70,14 @@ public:
         return result;
     }
 
-    QStringList collectionFolders()
+    QStringList collectionFolders() const
     {
         return QStringList();
+    }
+
+    void setCollectionFolders( const QStringList &folders )
+    {
+        Q_UNUSED( folders );
     }
 
     void emitDeviceAdded( int id )

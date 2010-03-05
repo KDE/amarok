@@ -46,6 +46,9 @@ protected:
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
 
+private slots:
+    void notificationClosed();
+
 private:
     KNotificationBackend();
     ~KNotificationBackend();

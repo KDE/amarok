@@ -3,7 +3,7 @@
  * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -26,14 +26,11 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
-
 #include <KAction>
-#include <KApplication>
 #include <KIcon>
 #include <KIconEffect>
 #include <KLocale>
@@ -46,6 +43,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QTime>
 #include <QToolTip>
 
 namespace Amarok
@@ -71,11 +69,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
-
-    //seems to be necessary
-    /*QAction *quit = actionCollection()->action( "file_quit" );
-    quit->disconnect();
-    connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );*/
 
     PERF_LOG( "Before adding actions" );
 
@@ -136,9 +129,12 @@ Amarok::TrayIcon::setupToolTip()
         if( m_track->album() )
         {
             const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
-            image.save( tmpFilename, "PNG" );
-            tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
-            tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+            if ( !image.isNull() ) // cover available?
+            {
+                image.save( tmpFilename, "PNG" );
+                tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
+                tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+            }
         }
 
         QStringList left, right;
@@ -203,6 +199,8 @@ Amarok::TrayIcon::setupToolTip()
 bool
 Amarok::TrayIcon::event( QEvent *e )
 {
+    static QTime lastEventCall = QTime();
+
     switch( e->type() )
     {
     case QEvent::DragEnter:
@@ -233,11 +231,17 @@ Amarok::TrayIcon::event( QEvent *e )
 
     case QEvent::Wheel:
         #define e static_cast<QWheelEvent*>(e)
-        if( e->modifiers() == Qt::ControlModifier )
+        if( e->modifiers() == Qt::ControlModifier || e->orientation() == Qt::Horizontal )
         {
-            const bool up = e->delta() > 0;
-            if( up ) The::playlistActions()->back();
-            else     The::playlistActions()->next();
+            if (lastEventCall.elapsed() < 500) // block event for some ms
+                break;
+
+            lastEventCall.restart();
+
+            if( e->delta() > 0 ) // up
+                The::playlistActions()->back();
+            else
+                The::playlistActions()->next();
             break;
         }
         else if( e->modifiers() == Qt::ShiftModifier )
@@ -356,6 +360,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     static qint64 oldMergePos = -1;
 
     // start up
+    // TODO: Move these two blocks to ctor (warning: might get some regressions)
     if( m_baseIcon.isNull() )
     {
         QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );

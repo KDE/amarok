@@ -111,12 +111,28 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
+            debug() << "here!";
             BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
             leaf->setActive( true );
             
             m_items.append( leaf );
+
+
+            //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
+            foreach( BrowserBreadcrumbItem * addItem, childCategory->additionalItems() )
+            {
+                debug() << "adding extra item";
+
+                //hack to ensure that we have not already added it to the front of the breadcrumb...
+                addItem->setParent( 0 );
+                
+                addItem->setParent( m_breadcrumbArea );
+                addItem->show();
+                addItem->setActive( true );
+                //m_items.append( addItem );
+            }
         }
     }
     else

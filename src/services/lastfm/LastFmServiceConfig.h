@@ -35,7 +35,7 @@ public:
 
     LastFmServiceConfig();
     ~LastFmServiceConfig();
-    
+
     void load();
     void save();
     void reset();
@@ -48,7 +48,8 @@ public:
 
     const QString sessionKey() { return m_sessionKey; }
     void setSessionKey( const QString& sessionKey ) { m_sessionKey = sessionKey; }
-    
+    void clearSessionKey();
+
     bool scrobble() { return m_scrobble; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
 
@@ -58,8 +59,10 @@ public:
 private slots:
     void textDialogOK();
     void textDialogCancel();
-    
+
 private:
+    void askAboutMissingKWallet();
+
     QString m_username;
     QString m_password;
     QString m_sessionKey;

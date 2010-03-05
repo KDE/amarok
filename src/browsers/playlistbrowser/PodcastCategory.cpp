@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>                           *
  *                                                                                      *
@@ -19,6 +19,7 @@
 #include "PodcastCategory.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -28,6 +29,7 @@
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "PlaylistsByProviderProxy.h"
+#include "PlaylistTreeItemDelegate.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
@@ -51,6 +53,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
+#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
 
@@ -65,6 +68,9 @@ namespace The
 }
 
 using namespace PlaylistBrowserNS;
+
+QString PodcastCategory::s_configGroup( "Podcast View" );
+QString PodcastCategory::s_mergedViewKey( "Merged View" );
 
 PodcastCategory* PodcastCategory::s_instance = 0;
 
@@ -89,10 +95,12 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     , m_podcastModel( podcastModel )
 {
     setPrettyName( i18n( "Podcasts" ) );
-    setShortDescription( i18n( "List of subscribed podcasts and episodes" ) );
+    setShortDescription( i18n( "List of podcast subscriptions and episodes" ) );
     setIcon( KIcon( "podcast-amarok" ) );
 
-    setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. Downloading episodes to the disk is also done here, or you can tell Amarok to do this automatically." ) );
+    setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. "
+                              "Downloading episodes to the disk is also done here, or you can tell "
+                              "Amarok to do this automatically." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
@@ -101,11 +109,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
-    setSizePolicy(sizePolicy);
+    setSizePolicy( sizePolicy );
 
     setContentsMargins(0,0,0,0);
 
-    QToolBar *toolBar = new QToolBar( this );
+    KToolBar *toolBar = new KToolBar( this, false, false );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
@@ -124,21 +132,24 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
 
-    QAction *importOpmlAction = new QAction( KIcon("document-import")
-                                             , QString()
-                                             , toolBar
-                                         );
-    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
-    toolBar->addAction( importOpmlAction );
-    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
-
-    PlaylistsByProviderProxy *byProviderProxy = new PlaylistsByProviderProxy( podcastModel );
     m_podcastTreeView = new PodcastView( podcastModel, this );
+    m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
+
+    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
+                                                      PlaylistBrowserNS::ProviderColumn );
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
-//    m_podcastTreeView->setModel( podcastModel );
-    m_podcastTreeView->setModel( byProviderProxy );
+
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
+    toggleAction->setToolTip( i18n( "Merged View" ) );
+    toggleAction->setCheckable( true );
+    toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) );
+    toolBar->addAction( toggleAction );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+    toggleView( toggleAction->isChecked() );
+
     m_podcastTreeView->header()->hide();
     m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
 
@@ -146,6 +157,8 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled( true );
+    m_podcastTreeView->setAcceptDrops( true );
+    m_podcastTreeView->setDropIndicatorShown( true );
 
     for( int column = 1; column < podcastModel->columnCount(); ++ column )
     {
@@ -172,7 +185,17 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
-    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
+    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this,
+             SLOT( showInfo( const QModelIndex & ) ) );
+
+    QAction *importOpmlAction = new QAction( KIcon("document-import")
+                                             , i18n( "Import OPML File" )
+                                             , toolBar
+                                         );
+    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
+    toolBar->addAction( importOpmlAction );
+    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
 }
 
 PodcastCategory::~PodcastCategory()
@@ -289,6 +312,8 @@ PodcastCategory::showInfo( const QModelIndex & index )
         "    <head>"
         "        <title>%1</title>"
         "        <style type=\"text/css\">"
+        "body {color: %3;}"
+        "::selection {background-color: %4;}"
         "h1 {text-align:center; font-size: 1.2em;}"
         "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
         "        </style>"
@@ -299,7 +324,9 @@ PodcastCategory::showInfo( const QModelIndex & index )
         "    </body>"
         "</html>")
         .arg( Qt::escape( title ) )
-        .arg( description );
+        .arg( description )
+        .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
+        .arg( PaletteHandler::highlightColor().name() );
     
     map["service_name"] = title;
     map["main_info"] = description;
@@ -323,6 +350,25 @@ PodcastCategory::slotImportOpml()
         // user entered nothing or pressed Cancel
         debug() << "invalid input or cancel";
     }
+}
+
+void
+PodcastCategory::toggleView( bool merged ) //SLOT
+{
+    if( merged )
+    {
+        m_podcastTreeView->setModel( m_podcastModel );
+        m_podcastTreeView->setItemDelegate( m_defaultItemDelegate );
+        m_podcastTreeView->setRootIsDecorated( true );
+    }
+    else
+    {
+        m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
+        m_podcastTreeView->setRootIsDecorated( false );
+    }
+
+    Amarok::config( s_configGroup ).writeEntry( s_mergedViewKey, merged );
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )
@@ -477,23 +523,118 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_dragMutex()
-{}
+    , m_justDoubleClicked( false )
+{
+    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
+}
 
 PodcastView::~PodcastView()
 {}
 
+void PodcastView::mousePressEvent( QMouseEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( KGlobalSettings::singleClick() )
+        setItemsExpandable( false );
+    if( !index.parent().isValid() ) //not a root element, don't bother checking actions
+    {
+        Amarok::PrettyTreeView::mousePressEvent( event );
+        return;
+    }
+
+    const int actionCount =
+            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+    if( actionCount > 0 )
+    {
+        const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
+        if( rect.contains( event->pos() ) )
+            return;
+    }
+
+    Amarok::PrettyTreeView::mousePressEvent( event );
+}
+
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
 {
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
+    {
+        const int actionCount =
+            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+        if( actionCount > 0 )
+        {
+            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
+            if( rect.contains( event->pos() ) )
+            {
+                QVariantList variantList =
+                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+                if( variantList.isEmpty() )
+                    return;
+
+                QList<QAction*> actions = variantList.first().value<QList<QAction*> >();
+                //hack: rect height == the width of one action's area.
+                int indexOfActionToTrigger
+                    = ( event->pos().x() - rect.left() ) / rect.height();
+                debug() << "triggering action " << indexOfActionToTrigger;
+                if( indexOfActionToTrigger >= actions.count() )
+                {
+                    debug() << "no such action";
+                    return;
+                }
+                QAction *action = actions.value( indexOfActionToTrigger );
+                if( action )
+                    action->trigger();
+                return;
+            }
+        }
+    }
+
     if( m_pd )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
         m_pd->hide();
     }
     m_pd = 0;
-    event->accept();
 
+    setItemsExpandable( true );
+
+    if( m_clickTimer.isActive() || m_justDoubleClicked )
+    {
+        //it's a double-click...so ignore it
+        m_clickTimer.stop();
+        m_justDoubleClicked = false;
+        m_savedClickIndex = QModelIndex();
+        event->accept();
+        return;
+    }
+
+    m_savedClickIndex = indexAt( event->pos() );
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    m_clickLocation = event->pos();
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
+}
+
+void
+PodcastView::mouseMoveEvent( QMouseEvent *event )
+{
+    if( event->buttons() || event->modifiers() )
+    {
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+        update();
+        return;
+    }
+    QPoint point = event->pos() - m_clickLocation;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
+    {
+        m_clickTimer.stop();
+        slotClickTimeout();
+        event->accept();
+    }
+    else
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
 }
 
 void
@@ -511,7 +652,14 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
         event->accept();
     }
 
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
+    m_clickTimer.stop();
+    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
+    //comes through, but after the mouseDoubleClickEvent, so we need to tell
+    //mouseReleaseEvent to ignore that one event
+    m_justDoubleClicked = true;
+    setExpanded( index, !isExpanded( index ) );
+
+    event->accept();
 }
 
 void
@@ -532,9 +680,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
+    QList<QAction*> actions;
+
     if( m_pd && m_pd->isHidden() )
     {
-        QList<QAction*> actions;
         MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm )
             actions = mpm->actionsFor( selectedIndexes() );
@@ -549,6 +698,11 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
+
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the context menu has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 
     if( m_pd )
     {
@@ -582,10 +736,22 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
             menu.addAction( action );
     }
 
-    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
-    Q_UNUSED( result )
+    menu.exec( mapToGlobal( event->pos() ) );
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the PUD has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
+}
 
-   debug() << indices.count() << " selectedIndexes";
+void
+PodcastView::slotClickTimeout()
+{
+    m_clickTimer.stop();
+    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
+    {
+        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+    }
+    m_savedClickIndex = QModelIndex();
 }
 
 #include "PodcastCategory.moc"

@@ -66,7 +66,7 @@ class CollectionWidget : public BrowserCategory
 
         void setLevels( const QList<int> &levels );
 
-        void toggleView();
+        void toggleView( bool merged );
 
     private:
         SearchWidget        *m_searchWidget;

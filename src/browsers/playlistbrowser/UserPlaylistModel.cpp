@@ -137,9 +137,53 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 }
 
 QVariant
-PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
+PlaylistBrowserNS::UserModel::data(const QModelIndex &index, int role) const
 {
 //    debug() << "index: " << index;
+    if( index.row() == -1 )
+    {
+        if( index.column() == ProviderColumn )
+        {
+            QVariantList displayList;
+            QVariantList iconList;
+            QVariantList playlistCountList;
+            QVariantList providerActionsCountList;
+            QVariantList providerActionsList;
+            QVariantList providerByLineList;
+
+            //get data from empty providers
+            PlaylistProviderList providerList =
+                    The::playlistManager()->providersForCategory( PlaylistManager::UserPlaylist );
+            foreach( PlaylistProvider *provider, providerList )
+            {
+                if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
+                    continue;
+
+                displayList << provider->prettyName();
+                iconList << provider->icon();
+                playlistCountList << provider->playlists().count();
+                providerActionsCountList << provider->providerActions().count();
+                providerActionsList <<  QVariant::fromValue( provider->providerActions() );
+                providerByLineList << i18ncp( "number of playlists from one source",
+                                              "One Playlist", "%1 playlists",
+                                              provider->playlists().count() );
+            }
+
+            switch( role )
+            {
+                case Qt::DisplayRole:
+                case DescriptionRole:
+                case Qt::ToolTipRole:
+                    return displayList;
+                case Qt::DecorationRole: return iconList;
+                case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
+                case MetaPlaylistModel::ActionRole: return providerActionsList;
+                case MetaPlaylistModel::ByLineRole: return providerByLineList;
+                case Qt::EditRole: return QVariant();
+            }
+        }
+    }
+
     if ( !index.isValid() )
         return QVariant();
 
@@ -152,6 +196,8 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     QString description;
     KIcon icon;
     QStringList groups;
+    int playlistCount = 0;
+    QList<QAction *> providerActions;
 
     if( IS_TRACK(index) )
     {
@@ -174,26 +220,30 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                 }
                 break;
             case GroupColumn: //group
+            {
+                if( !playlist->groups().isEmpty() )
                 {
-                    if( !playlist->groups().isEmpty() )
-                    {
-                        name= playlist->groups().first();
-                        icon = KIcon( "folder" );
-                    }
+                    name= playlist->groups().first();
+                    icon = KIcon( "folder" );
                 }
                 break;
+            }
+
             case ProviderColumn: //source
+            {
+                PlaylistProvider *provider =
+                        The::playlistManager()->getProviderForPlaylist( playlist );
+                //if provider is 0 there is something seriously wrong.
+                if( provider )
                 {
-                    PlaylistProvider *provider =
-                            The::playlistManager()->getProviderForPlaylist( playlist );
-                    //if provider is 0 there is something seriously wrong.
-                    if( provider )
-                    {
-                        name = provider->prettyName();
-                        icon = provider->icon();
-                    }
+                    name = description = provider->prettyName();
+                    icon = provider->icon();
+                    playlistCount = provider->playlists().count();
+                    providerActions = provider->providerActions();
                 }
                 break;
+            }
+
             default: return QVariant();
         }
     }
@@ -206,14 +256,27 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         case DescriptionRole:
         case Qt::ToolTipRole: return description;
         case Qt::DecorationRole: return QVariant( icon );
+        case MetaPlaylistModel::ByLineRole:
+            return i18ncp( "number of playlists from one source",
+                           "One Playlist", "%1 playlists",
+                           playlistCount );
+        case MetaPlaylistModel::ActionCountRole:
+            return providerActions.count();
+        case MetaPlaylistModel::ActionRole:
+            return QVariant::fromValue( providerActions );
+
         default: return QVariant();
     }
 }
 
 QModelIndex
-PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
+PlaylistBrowserNS::UserModel::index( int row, int column, const QModelIndex &parent ) const
 {
-    if (!hasIndex(row, column, parent))
+    //there are valid indexes available with row == -1 for empty groups and providers
+    if( !parent.isValid() && row == -1 && column >= 0 )
+        return createIndex( row, column, row );
+
+    if( !hasIndex( row, column, parent ) )
         return QModelIndex();
 
     //if it has a parent it is a track
@@ -239,7 +302,7 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
+PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
 {
 //    debug() << "parent: " << parent;
     if (parent.column() > 0)
@@ -262,18 +325,27 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::columnCount(const QModelIndex &parent) const
+PlaylistBrowserNS::UserModel::columnCount( const QModelIndex &parent ) const
 {
     if( !parent.isValid() ) //for playlists (children of root)
-        return 3; //name, group and source
+        return 3; //name, group and provider
 
     //for tracks
     return 1; //only name
 }
 
 Qt::ItemFlags
-PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
+PlaylistBrowserNS::UserModel::flags( const QModelIndex &index ) const
 {
+    //Both providers and groups can be empty. QtGroupingProxy makes empty groups from the data in
+    //the rootnode (here an invalid QModelIndex).
+    //TODO: accept drops and allow drags only if provider is writable.
+    if( index.column() == ProviderColumn )
+        return Qt::ItemIsEnabled;
+
+    if( index.column() == GroupColumn )
+        return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+
     if( !index.isValid() )
         return Qt::ItemIsDropEnabled;
 
@@ -281,7 +353,8 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
     //item is a playlist
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
+           Qt::ItemIsDropEnabled;
 }
 
 QVariant
@@ -718,8 +791,13 @@ PlaylistBrowserNS::UserModel::selectedTracks( const QModelIndexList &list )
 Meta::TrackPtr
 PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
 {
-    Meta::PlaylistPtr playlist = m_playlists.value(
-            REMOVE_TRACK_MASK(index.internalId()) );
+    if( !index.isValid() )
+        return Meta::TrackPtr();
+
+    Meta::PlaylistPtr playlist = m_playlists.value( REMOVE_TRACK_MASK(index.internalId()) );
+    if( playlist.isNull() || playlist->tracks().count() <= index.row() )
+        return Meta::TrackPtr();
+
     return playlist->tracks()[index.row()];
 }
 

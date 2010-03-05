@@ -16,7 +16,9 @@
 
 #include "PodcastMeta.h"
 
-Meta::PodcastEpisode::PodcastEpisode()
+using namespace Meta;
+
+PodcastEpisode::PodcastEpisode()
     : PodcastMetaCommon()
     , Track()
     , m_channel( 0 )
@@ -28,14 +30,14 @@ Meta::PodcastEpisode::PodcastEpisode()
     , m_sequenceNumber( 0 )
     , m_isNew( true )
 {
-    m_albumPtr = Meta::AlbumPtr( new Meta::PodcastAlbum( this ) );
-    m_artistPtr = Meta::ArtistPtr( new Meta::PodcastArtist( this ) );
-    m_composerPtr = Meta::ComposerPtr( new Meta::PodcastComposer( this ) );
-    m_genrePtr = Meta::GenrePtr( new Meta::PodcastGenre( this ) );
-    m_yearPtr = Meta::YearPtr( new Meta::PodcastYear( this ) );
+    m_albumPtr = AlbumPtr( new PodcastAlbum( this ) );
+    m_artistPtr = ArtistPtr( new PodcastArtist( this ) );
+    m_composerPtr = ComposerPtr( new PodcastComposer( this ) );
+    m_genrePtr = GenrePtr( new PodcastGenre( this ) );
+    m_yearPtr = YearPtr( new PodcastYear( this ) );
 }
 
-Meta::PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
+PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
     : PodcastMetaCommon()
     , Track()
     , m_channel( channel )
@@ -47,10 +49,59 @@ Meta::PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
     , m_sequenceNumber( 0 )
     , m_isNew( true )
 {
-    m_albumPtr = Meta::AlbumPtr( new Meta::PodcastAlbum( this ) );
-    m_artistPtr = Meta::ArtistPtr( new Meta::PodcastArtist( this ) );
-    m_composerPtr = Meta::ComposerPtr( new Meta::PodcastComposer( this ) );
-    m_genrePtr = Meta::GenrePtr( new Meta::PodcastGenre( this ) );
-    m_yearPtr = Meta::YearPtr( new Meta::PodcastYear( this ) );
+    m_albumPtr = AlbumPtr( new PodcastAlbum( this ) );
+    m_artistPtr = ArtistPtr( new PodcastArtist( this ) );
+    m_composerPtr = ComposerPtr( new PodcastComposer( this ) );
+    m_genrePtr = GenrePtr( new PodcastGenre( this ) );
+    m_yearPtr = YearPtr( new PodcastYear( this ) );
 }
 
+PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
+                                      PodcastChannelPtr channel )
+    : m_channel( channel )
+{
+    m_author = episode->author();
+    m_description = episode->description();
+    m_duration = episode->duration();
+    m_fileSize = episode->filesize();
+    m_guid = episode->guid();
+    m_isNew = episode->isNew();
+    m_keywords = episode->keywords();
+    m_localUrl = episode->localUrl();
+    m_mimeType = episode->mimeType();
+    m_title = episode->title();
+    m_pubDate = episode->pubDate();
+    m_sequenceNumber = episode->sequenceNumber();
+    m_subtitle = episode->subtitle();
+    m_summary = episode->summary();
+    m_url = episode->uidUrl();
+}
+
+PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
+{
+    m_author = channel->author();
+    m_autoScan = channel->autoScan();
+    m_copyright = channel->copyright();
+    m_description = channel->description();
+    m_directory = channel->saveLocation();
+    m_episodes = channel->episodes();
+    m_fetchType = channel->fetchType();
+    m_imageUrl = channel->m_imageUrl;
+    m_keywords = channel->keywords();
+    m_labels = channel->labels();
+    m_name = channel->name();
+    m_purge = channel->hasPurge();
+    m_purgeCount = channel->purgeCount();
+    m_subscribeDate = channel->subscribeDate();
+    m_subtitle = channel->subtitle();
+    m_summary = channel->summary();
+    m_title = channel->title();
+    m_url = channel->url();
+    m_webLink = channel->webLink();
+
+    foreach( PodcastEpisodePtr episode, channel->episodes() )
+    {
+        m_episodes << PodcastEpisodePtr(
+                new PodcastEpisode( episode, PodcastChannelPtr( this ) ) );
+    }
+}

@@ -20,6 +20,7 @@
 #include "MemoryFilter.h"
 #include "MemoryMatcher.h"
 #include "MemoryQueryMakerHelper.h"
+#include "MemoryQueryMakerInternal.h"
 #include "Debug.h"
 
 #include <threadweaver/Job.h>
@@ -40,22 +41,27 @@ using namespace Meta;
 class QueryJob : public ThreadWeaver::Job
 {
     public:
-        QueryJob( MemoryQueryMaker *qm )
+        QueryJob( MemoryQueryMakerInternal *qmInternal )
             : ThreadWeaver::Job()
-            , m_queryMaker( qm )
+            , queryMakerInternal( qmInternal )
         {
             //nothing to do
+        }
+
+        ~QueryJob()
+        {
+            delete queryMakerInternal;
         }
 
     protected:
         void run()
         {
-            m_queryMaker->runQuery();
+            queryMakerInternal->runQuery();
             setFinished( true );
         }
 
-    private:
-        MemoryQueryMaker *m_queryMaker;
+    public:
+        MemoryQueryMakerInternal *queryMakerInternal;
 };
 
 struct MemoryQueryMaker::Private {
@@ -74,14 +80,15 @@ struct MemoryQueryMaker::Private {
     bool orderDescending;
     bool orderByNumberField;
     AlbumQueryMode albumQueryMode;
+    QString collectionId;
 };
 
-MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
+MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId )
     : QueryMaker()
     , m_collection( mc )
     , d( new Private )
 {
-    m_collection->setCollectionId( collectionId );
+    d->collectionId = collectionId;
     d->matcher = 0;
     d->job = 0;
     reset();
@@ -89,6 +96,8 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collect
 
 MemoryQueryMaker::~MemoryQueryMaker()
 {
+    disconnect();
+    abortQuery();
     if( !d->containerFilters.isEmpty() )
         delete d->containerFilters.first();
     delete d;
@@ -132,7 +141,38 @@ MemoryQueryMaker::run()
     }
     else
     {
-        d->job = new QueryJob( this );
+        MemoryQueryMakerInternal *qmi = new MemoryQueryMakerInternal( m_collection );
+        if( d->usingFilters )
+        {
+            qmi->setFilters( d->containerFilters.first() );
+            d->containerFilters.clear(); //will be deleted by MemoryQueryMakerInternal
+        }
+        qmi->setMatchers( d->matcher );
+        d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
+        qmi->setRandomize( d->randomize );
+        qmi->setMaxSize( d->maxsize );
+        qmi->setReturnAsDataPtrs( d->returnDataPtrs );
+        qmi->setType( d->type );
+        qmi->setCustomReturnFunctions( d->returnFunctions );
+        d->returnFunctions.clear(); //will be deleted by MemoryQueryMakerInternal
+        qmi->setCustomReturnValues( d->returnValues );
+        d->returnValues.clear(); //will be deleted by MemoryQueryMakerInternal
+        qmi->setAlbumQueryMode( d->albumQueryMode );
+        qmi->setOrderDescending( d->orderDescending );
+        qmi->setOrderByNumberField( d->orderByNumberField );
+        qmi->setOrderByField( d->orderByField );
+        qmi->setCollectionId( d->collectionId );
+
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SIGNAL(newResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SIGNAL(newResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SIGNAL(newResultReady(QString,Meta::YearList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
+
+        d->job = new QueryJob( qmi );
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->job );
     }
@@ -141,416 +181,12 @@ MemoryQueryMaker::run()
 void
 MemoryQueryMaker::abortQuery()
 {
-}
-
-void
-MemoryQueryMaker::runQuery()
-{
-    m_collection->acquireReadLock();
-    //naive implementation, fix this
-    if ( d->matcher )
+    if( d->job )
     {
-        TrackList result = d->matcher->match( m_collection );
-        if ( d->usingFilters )
-        {
-            TrackList filtered;
-            foreach( TrackPtr track, result )
-            {
-                if( d->containerFilters.first()->filterMatches( track ) )
-                    filtered.append( track );
-            }
-            handleResult( filtered );
-        }
-        else
-            handleResult( result );
-    }
-    else if ( d->usingFilters )
-    {
-        TrackList tracks = m_collection->trackMap().values();
-        TrackList filtered;
-        foreach( const TrackPtr &track, tracks )
-        {
-            if ( d->containerFilters.first()->filterMatches( track ) )
-                filtered.append( track );
-        }
-        handleResult( filtered );
-    }
-    else
-        handleResult();
-    m_collection->releaseLock();
-}
-
-template <class PointerType>
-void MemoryQueryMaker::emitProperResult( const QList<PointerType>& list )
-{
-   QList<PointerType> resultList = list;
-    if( d->randomize )
-        d->sequence.randomize<PointerType>( resultList );
-
-    if ( d->maxsize >= 0 && resultList.count() > d->maxsize )
-        resultList = resultList.mid( 0, d->maxsize );
-
-    if( d->returnDataPtrs )
-    {
-        DataList data;
-        foreach( PointerType p, resultList )
-            data << DataPtr::staticCast( p );
-
-        emit newResultReady( m_collection->collectionId(), data );
-    }
-    else
-        emit newResultReady( m_collection->collectionId(), list );
-}
-
-template<typename T>
-static inline QList<T> reverse(const QList<T> &l)
-{
-    QList<T> ret;
-    for (int i=l.size() - 1; i>=0; --i)
-        ret.append(l.at(i));
-    return ret;
-}
-
-void
-MemoryQueryMaker::handleResult()
-{
-    //this gets called when we want to return all values for the given query type
-    switch( d->type )
-    {
-        case QueryMaker::Custom :
-        {
-            QStringList result;
-            TrackList tracks = m_collection->trackMap().values();
-            if( !d->returnFunctions.empty() )
-            {
-                //no sorting necessary
-                foreach( CustomReturnFunction *function, d->returnFunctions )
-                {
-                    result.append( function->value( tracks ) );
-                }
-            }
-            else if( !d->returnValues.empty() )
-            {
-                if( d-> orderByField )
-                {
-                    if( d->orderByNumberField )
-                        tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
-                    else
-                        tracks = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
-                }
-                if( d->randomize )
-                    d->sequence.randomize<Meta::TrackPtr>( tracks );
-
-                int count = 0;
-                foreach( const Meta::TrackPtr &track, tracks )
-                {
-                    if ( d->maxsize >= 0 && count == d->maxsize )
-                        break;
-                
-                    foreach( CustomReturnValue *value, d->returnValues )
-                    {
-                        result.append( value->value( track ) );
-                    }
-                    count++;
-                }
-            }
-            emit newResultReady( m_collection->collectionId(), result );
-            break;
-        }
-        case QueryMaker::Track :
-        {
-            TrackList tracks;
-
-            foreach( TrackPtr track, m_collection->trackMap().values() )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                {
-                    tracks.append( track );
-                }
-            }
-
-            if( d->orderByField )
-            {
-                if( d->orderByNumberField )
-                    tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
-                else
-                    tracks = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
-            }
-
-            emitProperResult<TrackPtr>( tracks );
-            break;
-        }
-        case QueryMaker::Album :
-        {
-
-            AlbumList albums;
-            foreach( AlbumPtr album, m_collection->albumMap().values() )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && album->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !album->isCompilation()) )
-                {
-                    albums.append( album );
-                    break;
-                }
-            }
- 
-            albums = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albums, d->orderDescending );
-
-            emitProperResult<AlbumPtr>( albums );
-            break;
-        }
-        case QueryMaker::Artist :
-        {
-            ArtistList artists;
-            foreach( ArtistPtr artist, m_collection->artistMap().values() )
-            {
-                TrackList tracks = artist->tracks();
-                foreach( TrackPtr track, tracks )
-                {
-                    if( d->albumQueryMode == AllAlbums
-                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                    {
-                        artists.append( artist );
-                        break;
-                    }
-                }
-            }
-            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, d->orderDescending );
-            emitProperResult<ArtistPtr>( artists );
-            break;
-        }
-        case QueryMaker::Composer :
-        {
-            ComposerList composers;
-            foreach( ComposerPtr composer, m_collection->composerMap().values() )
-            {
-                TrackList tracks = composer->tracks();
-                foreach( TrackPtr track, tracks )
-                {
-                    if( d->albumQueryMode == AllAlbums
-                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                    {
-                        composers.append( composer );
-                        break;
-                    }
-                }
-            }
-            composers = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( composers, d->orderDescending );
-
-            emitProperResult<ComposerPtr>( composers );
-            break;
-        }
-        case QueryMaker::Genre :
-        {
-            GenreList genres;
-            foreach( GenrePtr genre, m_collection->genreMap().values() )
-            {
-                TrackList tracks = genre->tracks();
-                foreach( TrackPtr track, tracks )
-                {
-                    if( d->albumQueryMode == AllAlbums
-                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                    {
-                        genres.append( genre );
-                        break;
-                    }
-                }
-            }
-            
-            genres = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( genres, d->orderDescending );
-
-            emitProperResult<GenrePtr>( genres );
-            break;
-        }
-        case QueryMaker::Year :
-        {
-            YearList years;
-            foreach( YearPtr year, m_collection->yearMap().values() )
-            {
-                TrackList tracks = year->tracks();
-                foreach( TrackPtr track, tracks )
-                {
-                    if( d->albumQueryMode == AllAlbums
-                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                    {
-                        years.append( year );
-                        break;
-                    }
-                }
-            }
-        
-            //this a special case which requires a bit of code duplication
-            //years have to be ordered as numbers, but orderListByNumber does not work for Meta::YearPtrs
-            if( d->orderByField == Meta::valYear )
-            {
-                years = MemoryQueryMakerHelper::orderListByYear( years, d->orderDescending );
-            }
-
-            emitProperResult<YearPtr>( years );
-            break;
-        }
-        case QueryMaker::None :
-            //nothing to do
-            break;
-    }
-}
-
-void
-MemoryQueryMaker::handleResult( const TrackList &tracks )
-{
-    switch( d->type )
-    {
-        case QueryMaker::Custom :
-        {
-            QStringList result;
-            if( !d->returnFunctions.empty() )
-            {
-                //no sorting necessary
-                foreach( CustomReturnFunction *function, d->returnFunctions )
-                {
-                    result.append( function->value( tracks ) );
-                }
-            }
-            else if( !d->returnValues.empty() )
-            {
-                Meta::TrackList resultTracks = tracks;
-                if( d->orderByField )
-                {
-                    if( d->orderByNumberField )
-                        resultTracks = MemoryQueryMakerHelper::orderListByNumber( resultTracks, d->orderByField, d->orderDescending );
-                    else
-                        resultTracks = MemoryQueryMakerHelper::orderListByString( resultTracks, d->orderByField, d->orderDescending );
-                }
-                if( d->randomize )
-                    d->sequence.randomize<Meta::TrackPtr>( resultTracks );
-
-                int count = 0;
-                foreach( const Meta::TrackPtr &track, resultTracks )
-                {
-                    if ( d->maxsize >= 0 && count == d->maxsize )
-                        break;
-                    
-                    foreach( CustomReturnValue *value, d->returnValues )
-                    {
-                        result.append( value->value( track ) );
-                    }
-                    count++;
-                }
-            }
-            emit newResultReady( m_collection->collectionId(), result );
-            break;
-        }
-        case QueryMaker::Track :
-        {
-            TrackList newResult;
-
-            if( d->orderByField )
-            {
-                if( d->orderByNumberField )
-                    newResult = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
-                else
-                    newResult = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
-            }
-            else
-                newResult = tracks;
-
-            emitProperResult<TrackPtr>( newResult );
-            break;
-        }
-        case QueryMaker::Album :
-        {
-            QSet<AlbumPtr> albumSet;
-            foreach( TrackPtr track, tracks )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                {
-                    albumSet.insert( track->album() );
-                }
-            }
-            AlbumList albumList = albumSet.toList();
-            albumList = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albumList, d->orderDescending );
-            emitProperResult<AlbumPtr>( albumList );
-            break;
-        }
-        case QueryMaker::Artist :
-        {
-            QSet<ArtistPtr> artistSet;
-            foreach( TrackPtr track, tracks )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                {
-                    artistSet.insert( track->artist() );
-                }
-            }
-            ArtistList list = artistSet.toList();
-            list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, d->orderDescending );
-            emitProperResult<ArtistPtr>( list );
-            break;
-        }
-        case QueryMaker::Genre :
-        {
-            QSet<GenrePtr> genreSet;
-            foreach( TrackPtr track, tracks )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                {
-                    genreSet.insert( track->genre() );
-                }
-            }
-            GenreList list = genreSet.toList();
-            list = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( list, d->orderDescending );
-            emitProperResult<GenrePtr>( list );
-            break;
-        }
-        case QueryMaker::Composer :
-        {
-            QSet<ComposerPtr> composerSet;
-            foreach( TrackPtr track, tracks )
-            {
-                if( d->albumQueryMode == AllAlbums
-                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
-                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
-                {
-                    composerSet.insert( track->composer() );
-                }
-            }
-            ComposerList list = composerSet.toList();
-            list = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( list, d->orderDescending );
-            emitProperResult<ComposerPtr>( list );
-            break;
-        }
-        case QueryMaker::Year :
-        {
-            QSet<YearPtr> yearSet;
-            foreach( TrackPtr track, tracks )
-            {
-                yearSet.insert( track->year() );
-            }
-            YearList years = yearSet.toList();
-            if( d->orderByField == Meta::valYear )
-            {
-                years = MemoryQueryMakerHelper::orderListByYear( years, d->orderDescending );
-            }
-
-            emitProperResult<YearPtr>( years );
-            break;
-        }
-        case QueryMaker::None:
-            //should never happen, but handle error anyway
-            break;
+        d->job->requestAbort();
+        d->job->disconnect( this );
+        if( d->job->queryMakerInternal )
+            d->job->queryMakerInternal->disconnect( this );
     }
 }
 

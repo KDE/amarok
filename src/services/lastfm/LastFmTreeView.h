@@ -20,7 +20,7 @@
 #define LASTFMTREEVIEW_H
 
 #include "LastFmTreeModel.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <QList>

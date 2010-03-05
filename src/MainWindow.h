@@ -30,7 +30,6 @@
 
 class CollectionWidget;
 class ContextWidget;
-class MainToolbar;
 class SlimToolbar;
 class MainToolbar;
 class MainWindow;
@@ -108,6 +107,14 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         bool isLayoutLocked();
 
+        /**
+        *    If an audiocd collection is present. Stop current playback, clear playlist,
+        *    add cd to playlist and start playback
+        */
+        bool playAudioCd();
+
+        bool isWaitingForCd();
+
     signals:
         void loveTrack( Meta::TrackPtr track );
         void banTrack();
@@ -136,6 +143,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
     private slots:
         void exportPlaylist() const;
+        void slotShowActiveTrack() const;
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;
@@ -204,8 +212,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_contextDock;
         QDockWidget * m_playlistDock;
 
-        QPointer<MainToolbar> m_mainToolbar;
         QPointer<SlimToolbar> m_slimToolbar;
+        QPointer<MainToolbar> m_mainToolbar;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;
@@ -225,6 +233,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QTimer * m_restoreLayoutTimer;
         QTimer * m_ignoreLayoutChangesTimer;
         QTimer * m_saveLayoutChangesTimer;
+
+        bool m_waitingForCd;
 
     private slots:
         void createContextView( Plasma::Containment *c );

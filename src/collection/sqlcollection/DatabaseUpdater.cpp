@@ -18,7 +18,6 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "collection/SqlStorage.h"
 #include "SqlCollection.h"
 
@@ -32,6 +31,12 @@
 #include <KMessageBox>
 
 static const int DB_VERSION = 13;
+
+int
+DatabaseUpdater::expectedDatabaseVersion()
+{
+    return DB_VERSION;
+}
 
 DatabaseUpdater::DatabaseUpdater()
     : m_collection( 0 )

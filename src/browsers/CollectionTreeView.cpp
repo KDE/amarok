@@ -34,7 +34,7 @@
 #include "meta/capabilities/CollectionCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -68,7 +68,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_ongoingDrag( false )
     , m_justDoubleClicked( false )
 {
-    setMouseTracking( true );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -363,22 +362,22 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
 {
+    // pass event to parent widget
     if( event->buttons() || event->modifiers() )
     {
         Amarok::PrettyTreeView::mouseMoveEvent( event );
         update();
         return;
     }
+
     QPoint point = event->pos() - m_clickLocation;
     KConfigGroup cg( KGlobal::config(), "KDE" );
     if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
     {
         m_clickTimer.stop();
         slotClickTimeout();
-        event->accept();
     }
-    else
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
+    event->accept();
 }
 
 CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
@@ -706,6 +705,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
     {
+        debug() << "Collection not organizable";
         //how did we get here??
         delete location;
         delete qm;
@@ -785,7 +785,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
         item = item->parent();
-    
+
     Amarok::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
@@ -897,7 +897,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
-                    m_organizeAction->setVisible( false );  //Disabled Organize Collection until we figure out the data loss issues.
                 }
             }
             delete location;

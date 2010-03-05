@@ -34,6 +34,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QReadLocker>
+#include <QStyleOptionSlider>
 #include <QWriteLocker>
 
 
@@ -129,30 +130,30 @@ KSvgRenderer * SvgHandler::getRenderer()
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
-    QPixmap pixmap( width, height );
-
-    QReadLocker readLocker( &m_lock );
-    if( ! m_renderers[name] )
-    {
-        readLocker.unlock();
-        if( !loadSvg( name ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
+    QPixmap pixmap;
 
     const QString key = QString("%1:%2x%3")
-        .arg( keyname )
-        .arg( width )
-        .arg( height );
-
+            .arg( keyname )
+            .arg( width )
+            .arg( height );
 
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
+
+        QReadLocker readLocker( &m_lock );
+        if( ! m_renderers[name] )
+        {
+            readLocker.unlock();
+            if( !loadSvg( name ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -173,21 +174,7 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
 
-    QString name = m_themeFile;
-    
-    QPixmap pixmap( width, height );
-
-    QReadLocker readLocker( &m_lock );
-    if( ! m_renderers[name] )
-    {
-        readLocker.unlock();
-        if( ! loadSvg( name ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
+    QPixmap pixmap;
 
     const QString key = QString("%1:%2x%3-div")
             .arg( keyname )
@@ -198,7 +185,22 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
+
+        QString name = m_themeFile;
+        
+        QReadLocker readLocker( &m_lock );
+        if( ! m_renderers[name] )
+        {
+            readLocker.unlock();
+            if( ! loadSvg( name ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+        
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -250,37 +252,33 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
 
-    QPixmap pixmap( newWidth, newHeight );
+    QPixmap pixmap;
     
-    QReadLocker readLocker( &m_lock );
-    if( !m_renderers[m_themeFile] )
-    {
-        readLocker.unlock();
-        if( !loadSvg( m_themeFile ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
-
     const QString key = QString("%1:%2x%3b%4")
             .arg( name )
             .arg( newWidth )
             .arg( newHeight )
             .arg( borderWidth );
 
-    if( !m_cache->find( key, pixmap ) || skipCache )
+    if( skipCache || !m_cache->find( key, pixmap ) )
     {
         // Cache miss! We need to create the pixmap
-
-        //whoops... if skipCache is true, we might actually already have fetched the image, including borders from the cache....
-        //so we really need to create a blank pixmap here so we don't paint several layers of borders on top of each other
-        if ( skipCache )
-            pixmap = QPixmap( newWidth, newHeight );
-        
+        // if skipCache is true, we might actually already have fetched the image, including borders from the cache....
+        // so we really need to create a blank pixmap here as well, to not pollute the cached pixmap
+        pixmap = QPixmap( newWidth, newHeight );
         pixmap.fill( Qt::transparent );
-        
+
+        QReadLocker readLocker( &m_lock );
+        if( !m_renderers[m_themeFile] )
+        {
+            readLocker.unlock();
+            if( !loadSvg( m_themeFile ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+
         QPainter pt( &pixmap );
 
         pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );
@@ -363,125 +361,101 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 }
 #endif
 
-QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent ) const
+QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent, bool inverse ) const
 {
-    //NOTICE Vertical sliders are atm not supported by the API at all, neither is rtl
+    if ( inverse )
+        percent = 1.0 - percent;
     const int knobSize = slider.height() - 4;
     QRect ret( 0, 0, knobSize, knobSize );
     ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
-
     return ret;
 }
 
 // Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
-void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active, bool paintMoodbar )
+void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qreal percentage, bool paintMoodbar )
 {
-    QRect knob = sliderKnobRect( QRect( x, y, width, height), percentage );
+    int sliderHeight = slider->rect.height() - 6;
+    const bool inverse = ( slider->orientation == Qt::Vertical ) ? slider->upsideDown :
+                         ( (slider->direction == Qt::RightToLeft) != slider->upsideDown );
+    QRect knob = sliderKnobRect( slider->rect, percentage, inverse );
+    QPoint pt = slider->rect.topLeft() + QPoint( 0, 2 );
 
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
-    int sliderHeight = height - 6;
-
-
     //if we should paint moodbar, paint this as the bottom layer
-
     bool moodbarPainted = false;
-    if( paintMoodbar )
+    if ( paintMoodbar )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-        if( currentTrack )
+        if ( currentTrack )
         {
             if( The::moodbarManager()->hasMoodbar( currentTrack ) )
             {
+                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, slider->rect.width() - sliderHeight, sliderHeight, inverse );
+                p->drawPixmap( pt, renderSvg( "moodbar_end_left", sliderHeight / 2, sliderHeight, "moodbar_end_left" ) );
 
-                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, width - sliderHeight, sliderHeight );
+                pt.rx() += sliderHeight / 2;
+                p->drawPixmap( pt, moodbar );
 
-       
-                 p->drawPixmap( x, y + 2,
-                                renderSvg(
-                                "moodbar_end_left",
-                                sliderHeight / 2, sliderHeight,
-                                "moodbar_end_left" ) );
-                                
-                p->drawPixmap( x + ( sliderHeight / 2 ), y + 2, moodbar );
-
-                p->drawPixmap( x + ( width - sliderHeight / 2  ) , y + 2,
-                                renderSvg(
-                                "moodbar_end_right",
-                                sliderHeight / 2, sliderHeight,
-                                "moodbar_end_right" ) );
+                pt.rx() += slider->rect.width() - sliderHeight;
+                p->drawPixmap( pt, renderSvg( "moodbar_end_right", sliderHeight / 2, sliderHeight, "moodbar_end_right" ) );
 
                 moodbarPainted = true;
-                  
             }
         }
     }
 
     if( !moodbarPainted )
     {
-    
-
         // Draw the slider background in 3 parts
 
-        p->drawPixmap( x, y + 2,
-                    renderSvg(
-                    "progress_slider_left",
-                    sliderHeight, sliderHeight,
-                    "progress_slider_left" ) );
+        p->drawPixmap( pt, renderSvg( "progress_slider_left", sliderHeight, sliderHeight, "progress_slider_left" ) );
 
-        p->drawPixmap( x + sliderHeight, y + 2,
-                    renderSvg(
-                    "progress_slider_mid",
-                    width - sliderHeight * 2, sliderHeight,
-                    "progress_slider_mid" ) );
+        pt.rx() += sliderHeight;
+        QRect midRect(pt, QSize(slider->rect.width() - sliderHeight * 2, sliderHeight) );
+        p->drawTiledPixmap( midRect, renderSvg( "progress_slider_mid", 32, sliderHeight, "progress_slider_mid" ) );
 
-        p->drawPixmap( x + width - sliderHeight, y + 2,
-                    renderSvg(
-                    "progress_slider_right",
-                    sliderHeight, sliderHeight,
-                    "progress_slider_right" ) );
+        pt = midRect.topRight() + QPoint( 1, 0 );
+        p->drawPixmap( pt, renderSvg( "progress_slider_right", sliderHeight, sliderHeight, "progress_slider_right" ) );
 
         //draw the played background.
 
         int playedBarHeight = sliderHeight - 6;
 
-        int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
+        int sizeOfLeftPlayed = qBound( 0, inverse ? slider->rect.right() - knob.right() + 2 :
+                                                    knob.x() - 2, playedBarHeight );
 
-        if( sizeOfLeftPlayed > 0 ) {
+        if( sizeOfLeftPlayed > 0 )
+        {
+            QPoint tl, br;
+            if ( inverse )
+            {
+                tl = knob.topRight() + QPoint( -5, 5 ); // 5px x padding to avoid a "gap" between it and the top and botton of the round knob.
+                br = slider->rect.topRight() + QPoint( -3, 5 + playedBarHeight - 1 );
+                QPixmap rightEnd = renderSvg( "progress_slider_played_right", playedBarHeight, playedBarHeight, "progress_slider_played_right" );
+                p->drawPixmap( br.x() - rightEnd.width() + 1, tl.y(), rightEnd, qMax(0, rightEnd.width() - (sizeOfLeftPlayed + 3)), 0, sizeOfLeftPlayed + 3, playedBarHeight );
+                br.rx() -= playedBarHeight;
+            }
+            else
+            {
+                tl = slider->rect.topLeft() + QPoint( 3, 5 );
+                br = QPoint( knob.x() + 5, tl.y() + playedBarHeight - 1 );
+                QPixmap leftEnd = renderSvg( "progress_slider_played_left", playedBarHeight, playedBarHeight, "progress_slider_played_left" );
+                p->drawPixmap( tl.x(), tl.y(), leftEnd, 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
+                tl.rx() += playedBarHeight;
+            }
+            if ( sizeOfLeftPlayed == playedBarHeight )
+                p->drawTiledPixmap( QRect(tl, br), renderSvg( "progress_slider_played_mid", 32, playedBarHeight, "progress_slider_played_mid" ) );
 
-            p->drawPixmap( x + 3, y + 5,
-                            renderSvg(
-                            "progress_slider_played_left",
-                            playedBarHeight, playedBarHeight,
-                            "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
-
-            int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
-
-            //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
-            playedBarMidWidth += 5;
-
-            p->drawPixmap( x + 3 + playedBarHeight, y + 5,
-                            renderSvg(
-                            "progress_slider_played_mid",
-                            playedBarMidWidth, playedBarHeight,
-                            "progress_slider_played_mid" ) );               
         }
-
     }
 
-    // Draw the knob (handle)
-    if ( active )
-        p->drawPixmap( knob.x(), knob.y(),
-                       renderSvg(
-                       "slider_knob_200911_active",
-                       knob.width(), knob.height(),
-                       "slider_knob_200911_active" ) );
-    else
-        p->drawPixmap( knob.x(), knob.y(),
-                       renderSvg(
-                       "slider_knob_200911",
-                       knob.width(), knob.height(),
-                       "slider_knob_200911" ) );
+    if ( slider->state & QStyle::State_Enabled )
+    {   // Draw the knob (handle)
+        const char *string = ( slider->activeSubControls & QStyle::SC_SliderHandle ) ?
+                             "slider_knob_200911_active" : "slider_knob_200911";
+        p->drawPixmap( knob.topLeft(), renderSvg( string, knob.width(), knob.height(), string ) );
+    }
 }
 
 

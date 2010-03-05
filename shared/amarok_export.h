@@ -24,10 +24,25 @@
 # if defined(MAKE_AMAROKLIB_LIB)
    /* We are building this library */ 
 #  define AMAROK_EXPORT KDE_EXPORT
+
+#  if defined(DEBUG)
+#    define AMAROK_EXPORT_TESTS KDE_EXPORT
+#  else
+#    define AMAROK_EXPORT_TESTS
+#  endif
+
 # else
    /* We are using this library */ 
 #  define AMAROK_EXPORT KDE_IMPORT
+
+#  if defined(DEBUG)
+#    define AMAROK_EXPORT_TESTS KDE_IMPORT
+#  else
+#    define AMAROK_EXPORT_TESTS
+#  endif
+
 # endif
+
 #endif
 
 # ifndef AMAROK_EXPORT_DEPRECATED

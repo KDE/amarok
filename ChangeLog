@@ -3,12 +3,88 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
-VERSION 2.2.3
+VERSION 2.3
   FEATURES:
-    * The playlist context menu now has a "Find in Source" action for many
-      types of track.
-    * It's now possible to automatically use a USB Mass Storage device as a collection
-      when it's connected.
+    * Podcast channels and episodes can be dragged to add them to other
+      providers. (BR 195704)
+    * Trackaction buttons are now available in the label for the current track
+    * Bookmark button is now available in the Current Track applet.
+
+  CHANGES:
+    * When a podcast episode is no longer shown because of the episode limit the
+      downloaded file is also deleted from disk. (BR 227674)
+    * The visibility of columns in the new File Browser is now configurable.
+    * Toolbar: "Skip icons", prev/next labels are aligned to the edges
+    * Volume Dial: Gradient indicator and pointing cursor hint above the dial ring
+    * Playlist layout editor: When copying a layout, set its current name as
+      the default one for the copy. Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Set Media Keys as default global shortcuts for playlist navigation.
+      (BR 194259)
+    * Deleting files from the File Browser is now asynchronous.
+    * Copy/Move/Organize operations now display detailed progress information.
+    * Copy/Move/Organize operations can now be canceled. 
+    * Port Copy/Move to Collection actions to the new File Browser.
+    * Script-Updater: Only check for updates if 7 days have passed since the 
+      last check.
+
+  BUGFIXES:
+    * Fixed cover art not properly updating in TrayIcon. (BR 228966)
+    * Fixed lyrics window size too small after edit. (BR 228922)
+    * Fixed odd behaviour when doing drag-and-drop from Collection browser.
+      (BR 222500)
+    * Show artist and title instead of raw track ID when copying/deleting
+      tracks on an MTP device.
+    * Fixed time labels getting truncated in the slim toolbar. (BR 195935)
+    * Fixed broken keyboard navigation in the playlist after activating a track. 
+      (BR 225791) 
+    * Workaround broken Jamendo url redirects. (BR 221922)
+    * MainToolbar labels: watch changes of metadata & queue (BR 227439 & BR 227362)
+    * MainToolbar labels: avoid empty strings (BR 228042)
+    * MainToolbar timelabel: show progressing time for stream (BR 227598)
+    * Playlist layout editor: Disable "rename" button for default playlist layouts. 
+      Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Playlist layout editor: When reating a copy of a default layout, add copy
+      to layout list imediately. Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Compilations do not become normal albums when renaming them. (BR 192029)
+    * Fixed a bug where there would be no dynamic playlist biases available 
+      with a clean startup. (BR 227797)
+    * Fixed a crash when pressing dynamic playlist "save" button on first startup. (BR 227073)
+    * Fixed a bug when trying to drag files from some app into Amarok.
+      (BR 226167)
+    * Fixed a bug in podcast parsing that broke all feeds that do not include a
+      guid and possible overwrited data from other podcasts. Introduced in 2.3 beta.
+      (BR 227515)
+    * Correctly show progress description of last remaining job in the statusbar 
+      after multiple jobs have been running.
+    * Fixed a regression that broke the playlist save button.
+    * Respect the podcast episode limit when new episodes are added during update.
+      (BR 220768)
+    * Fixed crash when right clicking on a header in "saved playlists". (BR 226290)
+    * Fixed bug that prevented files from being deleted from the file browser
+      when performing a Move operation.
+    * Fixed bug in organize collection dialog that used the old %theartist
+      token instead of %artist.
+    * Install amarokitpc.protocol to be able to play iTunes links in the
+      web browser if Amarok is off. Thanks to Philippe Roubach. (BR 206615) 
+
+
+VERSION 2.3-Beta 1
+  FEATURES:
+    * Added a configuration dialog for Local Podcasts. Update interval and base
+      download directory can now be configured. (BR 221398)
+    * Make it possible to go to next/previous track with horizontal mouse
+      wheel button on TrayIcon. (BR 225783)
+    * New main toolbar with completely redesigned look and new features.
+      Contributed by Thomas Luebking <thomas.luebking@web.de>.
+    * Podcasts and Saved Playlists can now be grouped by provider like iPod, Local,
+      USB Mass Storage, etc. This can be toggled using a button in the relevant
+      Category.
+    * The playlist context menu now has a "Show in Media Sources" action for
+      many types of track.
+    * The collection scanner now also looks for cover images named
+     "folder.*". Apparently some applications use this convention. (BR 224692)
+    * It's now possible to automatically use a USB Mass Storage device as a
+      collection when it's connected.
     * The progress bar tooltip now shows the position in the track that the
       cursor is hovering, making it simple to jump to a specific position.
     * D-Bus: Added StopAfterCurrent method for /Player.
@@ -24,6 +100,12 @@ VERSION 2.2.3
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * All move/copy operations to the local collection are asynchronous.
+    * Proper handling of disk full and permision errors for copy/move
+      operations to the local collection.
+    * A preview of the moving/copying operations is now shown in the Organize
+      dialog.
+    * Added an expander icon to the collection root items.
     * The equalizer configuration is now a seperate tool window accessible 
       from the tool menu.
     * Files with ogg and flac extensions can now be copied to UMS devices.
@@ -47,6 +129,18 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Prevent custom sliders from allocating a lot of pixmap resources (xrestop)
+    * Fix multiple busy indicators being shown in the Context View. (BR 208102)
+    * Corruption of guid strings by passing them as a KUrl caused podcast episodes
+      to be readded on each update. This issue has been solved.
+      If you have episodes that appear twice, remove the channel and add it again.
+      (BR 219516)
+    * Cleaned up the Organize dialog to make it more usable. (BR 199574)
+    * Made it harder to Move Files unintentionally. (BR 220716)
+    * Returned "Organize Files" to the collection's context menu. (BR 215902)
+    * Fixed Amarok Solid action for playing audio CDs working. (BR 209204)
+    * Fixed crash with moving applets in the Context View. (BR 191918)
+    * Fixed crash in KNotify. (BR 224673)
     * Fixed queue management with mouse. (BR 217153)
     * Fixed playback of some streams causing the progress slider to show 
       garbage track length and position values like -322:0-35:0-59.

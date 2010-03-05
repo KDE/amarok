@@ -290,6 +290,9 @@ DynamicCategory::playlistSelectionChanged( int index )
     Dynamic::DynamicPlaylistPtr playlist =
         DynamicModel::instance()->setActivePlaylist( index );
 
+    if( !playlist )
+        return;
+
     if( DynamicModel::instance()->isActiveDefault() )
         m_deleteButton->setEnabled( false );
     else
