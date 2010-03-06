@@ -53,6 +53,7 @@ MyGraphicItem::MyGraphicItem( const QPixmap & pixmap, QGraphicsItem * parent, QG
 }
 void MyGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
+    Q_UNUSED( event );
     emit clicked();
 }
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
@@ -66,12 +67,13 @@ void
 CoverBlingApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-    resize( -1, 300 );
+    resize( -1, 400 );
     m_layout = new QGraphicsProxyWidget( this );
     m_pictureflow = new PhotoBrowser();
     m_layout->setWidget( m_pictureflow );
-    QSize slideSize( 150, 150 );
-    m_pictureflow->setSlideSize( slideSize );
+    m_pictureflow->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+    m_pictureflow->setReflectionEffect(PictureFlow::PlainReflection);
+    m_pictureflow->setAnimationTime(10);
     m_pictureflow->show();
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
@@ -165,6 +167,8 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
     int vertical_size = boundingRect().height();
     int horizontal_size = boundingRect().width();
+    QSize slideSize( vertical_size/2, vertical_size/2 );
+    m_pictureflow->setSlideSize( slideSize );
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
@@ -173,7 +177,6 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_blingfastback->setOffset( 50, vertical_size - 30 );
     m_blingfastforward->setOffset( horizontal_size - 60, vertical_size - 30 );
     m_pictureflow->resize( horizontal_size, vertical_size );
-
 }
 void
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

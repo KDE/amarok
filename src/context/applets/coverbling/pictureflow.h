@@ -30,6 +30,7 @@
 
 #include <qwidget.h>
 #include "meta/Meta.h"
+#include <qpainter.h>
 
 class PictureFlowPrivate;
 
@@ -116,6 +117,9 @@ public:
   */  
   void setReflectionEffect(ReflectionEffect effect);
 
+  void setRenderHints(QPainter::RenderHints);
+
+  void setAnimationTime(int iTime);
 
 public slots:
 
