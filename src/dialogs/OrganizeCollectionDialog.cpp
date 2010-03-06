@@ -138,14 +138,10 @@ OrganizeCollectionDialog::overwriteDestinations() const
 QString
 OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
 {
-    //TODO: handle if track==NULL to avoid bug 169684
-    //This could maybe happen with an empty collection, when the TrackList is empty and then m_previewTrack is null.
-    //FIXME: 169684
-
     bool isCompilation = track->album() && track->album()->isCompilation();
 
     QMap<QString, QString> args;
-    QString artist = track->artist()->name();
+    QString artist = track->artist() ? track->artist()->name() : QString();
     QString albumartist;
     if( isCompilation )
         albumartist = i18n( "Various Artists" );
