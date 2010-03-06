@@ -320,6 +320,7 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+        playlist->setProvider( this );
 
         if( !groups.isEmpty() && playlist->isWritable() )
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
@@ -327,6 +328,7 @@ PlaylistFileProvider::loadPlaylists()
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 
+    //also add all files in the $KDEHOME/share/apps/amarok/playlists
     QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
                              QDir::Name,
                              QDir::Files | QDir::Readable );
@@ -344,6 +346,8 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+        playlist->setProvider( this );
+
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 

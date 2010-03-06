@@ -34,23 +34,20 @@
 namespace Meta {
 
 PLSPlaylist::PLSPlaylist()
-    : PlaylistFile()
-    , m_url( Meta::newPlaylistFilePath( "pls" ) )
+    : m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( TrackList tracks )
-    : PlaylistFile()
-    , m_tracks( tracks )
+    : m_tracks( tracks )
     , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
-    : PlaylistFile( url )
-    , m_url( url )
+    : m_url( url )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;

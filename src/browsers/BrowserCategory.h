@@ -29,17 +29,33 @@ class BrowserBreadcrumbItem;
 class BrowserCategoryList;
 
 /**
-The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
-
-	@author Nikolaj Hald Nielsen <nhn@kde.org>
+ * The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
+ *
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT BrowserCategory : public KVBox
 {
     Q_OBJECT
 public:
+
+    /**
+     * Constructor.
+     *
+     * @param name The internal name of the category, used for generating Amarok urls. This should never be translated.
+     * @param parent The parent widget.
+     */
     BrowserCategory( const QString &name, QWidget *parent );
+
+    /**
+     * Destructor.
+     */
     ~BrowserCategory();
 
+    /**
+     * Get the internal name of this category.
+     *
+     * @return The name.
+     */
     QString name() const;
 
     /**
@@ -90,7 +106,16 @@ public:
      */
     QIcon icon() const;
 
+    /**
+     * Set the path of the imaged used in the presentation of this category.
+     * @param path The path of the image to use.
+     */
     void setImagePath( const QString &path );
+
+    /**
+     * Get the path of the image used in the presentation of this category.
+     * @return The path of the image.
+     */
     QString imagePath();
 
     BrowserCategoryList * parentList() const;

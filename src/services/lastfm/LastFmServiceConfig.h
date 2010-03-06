@@ -48,6 +48,7 @@ public:
 
     const QString sessionKey() { return m_sessionKey; }
     void setSessionKey( const QString& sessionKey ) { m_sessionKey = sessionKey; }
+    void clearSessionKey();
 
     bool scrobble() { return m_scrobble; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
@@ -60,6 +61,8 @@ private slots:
     void textDialogCancel();
 
 private:
+    void askAboutMissingKWallet();
+
     QString m_username;
     QString m_password;
     QString m_sessionKey;
