@@ -42,6 +42,13 @@ QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker*
+QueryMaker::setLabelQueryMode( LabelQueryMode mode )
+{
+    Q_UNUSED( mode )
+    return this;
+}
+
 int QueryMaker::validFilterMask()
 {
     return AllFilters;

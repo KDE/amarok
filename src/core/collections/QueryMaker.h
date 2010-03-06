@@ -36,6 +36,10 @@ class AMAROK_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        enum LabelQueryMode { NoConstraint = 0
+                                , OnlyWithLabels = 1
+                                , OnlyWithoutLabels = 2 };
+
         //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
         //specify which ones make sense for a given qm. Add to this as needed
@@ -188,6 +192,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
          * QueryMaker defaults to AlbumQueryMode::AllAlbums.
          */
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
+        /**
+          * Sets the label query mode. This method restricts a query to tracks
+          * that have labels assigned to them, no labels assigned to them, or no constraint.
+          * The default is no constraint.
+          * @param mode The LabelQueryMode that will be used by the query.
+          * @see LabelQueryMode
+          */
+        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
         virtual QueryMaker* beginAnd() = 0;
         virtual QueryMaker* beginOr() = 0;
