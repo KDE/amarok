@@ -423,14 +423,25 @@ EngineController::playUrl( const KUrl &url, uint offset )
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
-        if( m_media->currentSource().type() != Phonon::MediaSource::Disc )
+
+        Phonon::MediaSource::Type type = m_media->currentSource().type();
+        if( type != Phonon::MediaSource::Disc )
         {
             m_media->clear();
             m_media->setCurrentSource( Phonon::Cd );
         }
+
         debug() << "boom?";
         m_controller->setCurrentTitle( trackNumber );
         debug() << "no boom?";
+
+        if( type == Phonon::MediaSource::Disc )
+        {
+            // The track has changed but the slot will not be called,
+            // because it's still the same media source, which means
+            // we need to do it explicitly.
+            slotNewTrackPlaying( Phonon::Cd );
+        }
 
         //reconnect it
         connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
