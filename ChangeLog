@@ -28,6 +28,9 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * When an audio CD track is chosen manually, make it active in the playlist
+      and actually show the OSD.
+    * Prevent a KDirLister error from appearing when running Amarok for the first time.
     * Fixed cover art not properly updating in TrayIcon. (BR 228966)
     * Fixed lyrics window size too small after edit. (BR 228922)
     * Fixed odd behaviour when doing drag-and-drop from Collection browser.
