@@ -304,6 +304,14 @@ MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker*
+MetaQueryMaker::setLabelQueryMode( LabelQueryMode mode )
+{
+    foreach( QueryMaker *qm, builders )
+        qm->setLabelQueryMode( mode );
+    return this;
+}
+
 void
 MetaQueryMaker::slotQueryDone()
 {

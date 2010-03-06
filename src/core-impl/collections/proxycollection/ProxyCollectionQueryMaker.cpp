@@ -354,6 +354,14 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker*
+ProxyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
+{
+    foreach( QueryMaker *b, m_builders )
+        b->setLabelQueryMode( mode );
+    return this;
+}
+
 void
 ProxyQueryMaker::slotQueryDone()
 {
