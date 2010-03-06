@@ -78,6 +78,10 @@ public slots:
     void scrollToActiveTrack();
     void selectSource();
 
+    // Workaround for BUG 222961 and BUG 229240: see implementation for more comments.
+    void setCurrentIndex( const QModelIndex &index );
+    void selectionModel_setCurrentIndex( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );    // Never call selectionModel()->setCurrentIndex() directly!
+
     void find( const QString & searchTerm, int fields, bool filter );
     void findNext( const QString & searchTerm, int fields  );
     void findPrevious( const QString & searchTerm, int fields  );
