@@ -132,6 +132,13 @@ namespace Dynamic
             void universeResults( QString collectionId, QStringList );
             void universeUpdated();
 
+
+            /**
+             * Query for the universe set (the set of all tracks in the
+             * collection being considered).
+             */
+            void updateUniverse();
+            
         private:
             /** 
              * Try to produce an optimal playlist using a genetic algorithm, and
@@ -219,12 +226,6 @@ namespace Dynamic
              * produce offspring.
              */
             QList<int> generateMatingPopulation( const QList<TrackListEnergyPair>& );
-
-            /**
-             * Query for the universe set (the set of all tracks in the
-             * collection being considered).
-             */
-            void updateUniverse();
 
             Meta::TrackList m_solution;
 

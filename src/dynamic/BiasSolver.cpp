@@ -828,6 +828,8 @@ Dynamic::BiasSolver::updateUniverse()
 {
     DEBUG_BLOCK
 
+    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+
     /* TODO: Using multiple collections.
      * One problem with just using MetaQueryMaker is that we can't store uids as
      * QByteArrays unless we keep separate lists for each collection. If we do
@@ -848,7 +850,12 @@ Dynamic::BiasSolver::updateUniverse()
     {
         if( !s_universeCollection )
             s_universeCollection = CollectionManager::instance()->primaryCollection();
-
+        if( !s_universeCollection ) // WTF we really can't get a primarycollection?
+        {                           //  whenever a collection is added lets check again, so we catch the loading of the primary colletion
+            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+            return;
+        }
+        
         s_universeQuery = s_universeCollection->queryMaker();
         s_universeQuery->setQueryType( QueryMaker::Custom );
         s_universeQuery->addReturnValue( Meta::valUniqueId );
