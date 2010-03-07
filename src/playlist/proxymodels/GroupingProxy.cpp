@@ -103,6 +103,12 @@ Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
     m_groupingCategoryIndex = groupableCategories.indexOf( m_groupingCategory );    // May be -1
 
     invalidateGrouping();
+
+    // Notify our client(s) that we may now give different answers to 'data()' calls.
+    //   - Not 'layoutChanged': that is for when rows have been moved around, which they haven't.
+    //   - Not 'modelReset': that is too heavy. E.g. it also invalidates QListView item selections, etc.
+    if ( rowCount() > 0 )
+        emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
 }
 
 
