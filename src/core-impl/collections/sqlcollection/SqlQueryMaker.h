@@ -69,6 +69,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         virtual QueryMaker* limitMaxResultSize( int size );
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
         virtual QueryMaker* beginAnd();
         virtual QueryMaker* beginOr();

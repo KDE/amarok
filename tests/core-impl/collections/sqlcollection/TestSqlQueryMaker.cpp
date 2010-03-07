@@ -59,6 +59,8 @@ Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
 Q_DECLARE_METATYPE( Collections::QueryMaker::NumberComparison )
 Q_DECLARE_METATYPE( Collections::QueryMaker::ReturnFunction )
+Q_DECLARE_METATYPE( Collections::QueryMaker::AlbumQueryMode )
+Q_DECLARE_METATYPE( Collections::QueryMaker::LabelQueryMode )
 
 TestSqlQueryMaker::TestSqlQueryMaker()
 {
@@ -76,9 +78,13 @@ TestSqlQueryMaker::TestSqlQueryMaker()
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
+    qRegisterMetaType<Meta::Label>();
+    qRegisterMetaType<Meta::LabelList>();
     qRegisterMetaType<Collections::QueryMaker::QueryType>();
     qRegisterMetaType<Collections::QueryMaker::NumberComparison>();
     qRegisterMetaType<Collections::QueryMaker::ReturnFunction>();
+    qRegisterMetaType<Collections::QueryMaker::AlbumQueryMode>();
+    qRegisterMetaType<Collections::QueryMaker::LabelQueryMode>();
 }
 
 void
@@ -1073,7 +1079,7 @@ TestSqlQueryMaker::testFilterOnLabelsNegationAndCombination()
 }
 
 void
-        TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
+TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
 {
     SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
@@ -1103,6 +1109,40 @@ TestSqlQueryMaker::testComplexLabelsFilter()
     qm.run();
 
     QCOMPARE( qm.tracks().count(), 3 );
+}
+
+void
+TestSqlQueryMaker::testLabelQueryMode_data()
+{
+    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<QueryMaker::LabelQueryMode>( "labelMode" );
+    QTest::addColumn<QueryMaker::AlbumQueryMode>( "albumMode" );
+    QTest::addColumn<int>( "result" );
+
+    QTest::newRow( "labels with querymode WithoutLabels" ) << QueryMaker::Label << QueryMaker::OnlyWithoutLabels << QueryMaker::AllAlbums << 0;
+    QTest::newRow( "tracks with labels" ) << QueryMaker::Track << QueryMaker::OnlyWithLabels << QueryMaker::AllAlbums << 4;
+    QTest::newRow( "Compilations with labels" ) << QueryMaker::Album << QueryMaker::OnlyWithLabels << QueryMaker::OnlyCompilations << 1;
+    QTest::newRow( "Compilations without labels" ) << QueryMaker::Album << QueryMaker::OnlyWithoutLabels << QueryMaker::OnlyCompilations << 1;
+}
+
+void
+TestSqlQueryMaker::testLabelQueryMode()
+{
+    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( QueryMaker::LabelQueryMode, labelMode );
+    QFETCH( QueryMaker::AlbumQueryMode, albumMode );
+    QFETCH( int, result );
+
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setReturnResultAsDataPtrs( true );
+    qm.setQueryType( type );
+    qm.setAlbumQueryMode( albumMode );
+    qm.setLabelQueryMode( labelMode );
+    qm.run();
+
+    QCOMPARE( qm.data().count(), result );
+
 }
 
 #include "TestSqlQueryMaker.moc"

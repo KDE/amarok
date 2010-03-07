@@ -88,6 +88,7 @@ struct SqlQueryMaker::Private
     bool withoutDuplicates;
     int maxResultSize;
     AlbumQueryMode albumMode;
+    LabelQueryMode labelMode;
     SqlWorkerThread *worker;
 
     QStack<bool> andStack;
@@ -139,6 +140,7 @@ SqlQueryMaker::reset()
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->albumMode = AllAlbums;
+    d->labelMode = QueryMaker::NoConstraint;
     d->maxResultSize = -1;
     d->andStack.clear();
     d->andStack.push( true );   //and is default
@@ -660,6 +662,13 @@ SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+SqlQueryMaker::setLabelQueryMode( LabelQueryMode mode )
+{
+    d->labelMode = mode;
+    return this;
+}
+
+QueryMaker*
 SqlQueryMaker::beginAnd()
 {
     d->queryFilter += andOr();
@@ -829,6 +838,25 @@ SqlQueryMaker::buildQuery()
             //do nothing
             break;
     }
+    if( d->labelMode != QueryMaker::NoConstraint )
+    {
+        switch( d->labelMode )
+        {
+        case QueryMaker::OnlyWithLabels:
+            query += " AND tracks.url IN ";
+            break;
+
+        case QueryMaker::OnlyWithoutLabels:
+            query += " AND tracks.url NOT IN ";
+            break;
+
+        case QueryMaker::NoConstraint:
+            //do nothing, will never be called
+            break;
+        }
+        query += " (SELECT DISTINCT url FROM urls_labels) ";
+    }
+
     query += d->queryMatch;
     if ( !d->queryFilter.isEmpty() )
     {

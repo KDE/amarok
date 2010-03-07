@@ -61,6 +61,9 @@ private slots:
     void testFilterOnLabelsNegationOrCombination();
     void testComplexLabelsFilter();
 
+    void testLabelQueryMode_data();
+    void testLabelQueryMode();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
