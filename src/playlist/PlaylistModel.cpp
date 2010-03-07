@@ -260,12 +260,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 Meta::TrackPtr track = m_items.at( row )->track();
                 if( track )
                 {
-                    Capabilities::ReadLabelCapability *rlc = track->create<Capabilities::ReadLabelCapability>();
-                    if( rlc )
+                    QStringList labelNames;
+                    foreach( const Meta::LabelPtr &label, track->labels() )
                     {
-                        const QStringList labels = rlc->labels();
-                        return rlc->labels().join( ", " );
+                        labelNames << label->prettyName();
                     }
+                    return labelNames.join( ", " );
                 }
                 return QString();
             }
