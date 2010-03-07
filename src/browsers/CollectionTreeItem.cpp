@@ -73,15 +73,14 @@ CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollectio
     connect( parentCollection, SIGNAL( updated() ), SLOT( collectionUpdated() ) );
 }
 
-CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
+CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
     , m_model( model )
     , m_parentCollection( 0 )
     , m_updateRequired( false )  //the node already has all children
     , m_trackCount( -1 )
-    , m_type( VariousArtist )
-    //, m_name("VA")
+    , m_type( type )
     , m_isCounting( false )
 {
     DEBUG_BLOCK
@@ -194,6 +193,12 @@ CollectionTreeItem::data( int role ) const
             return i18n( "Various Artists" );
         return QVariant();
     }
+    else if( isNoLabelItem() )
+    {
+        if( role == Qt::DisplayRole )
+            return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
+        return QVariant();
+    }
     else if( m_parentCollection )
     {
         if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
@@ -304,6 +309,12 @@ bool
 CollectionTreeItem::isVariousArtistItem() const
 {
     return m_type == VariousArtist;
+}
+
+bool
+CollectionTreeItem::isNoLabelItem() const
+{
+    return m_type == CollectionTreeItem::NoLabel;
 }
 
 bool

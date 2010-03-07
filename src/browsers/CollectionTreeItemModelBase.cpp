@@ -362,12 +362,16 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
         case CategoryId::Year :
             icon = "clock";
             break;
+        case CategoryId::Label :
+            icon = "label"; //FIXME
+            break;
     }
     return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
+    DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
@@ -377,7 +381,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         if ( level > m_levelType.count() )
             return;
 
-        if( parent->isVariousArtistItem() )
+        if( parent->isVariousArtistItem() || parent->isNoLabelItem() )
             return;
 
         if ( level == m_levelType.count() )
@@ -404,16 +408,24 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
                         qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
-                case CategoryId::Composer:
-                    qm->setQueryType( Collections::QueryMaker::Composer );
+                case CategoryId::Label:
+                    qm->setQueryType( Collections::QueryMaker::Label );
+                    //we do not have to restrict to OnlqWithLabels here, as these obviously cannot be returned when querying for labels
+                    //but we need to handle tracks without labels
+                    Collections::QueryMaker::QueryType nextLevel;
+                    if( level +1 == m_levelType.count() )
+                    {
+                        nextLevel = QueryMaker::Track;
+                    }
+                    else
+                    {
+                        nextLevel = mapCategoryToQueryType( m_levelType [ level + 1 ] );
+                    }
+                    handleTracksWithoutLabels( nextLevel, parent );
                     break;
-                case CategoryId::Genre:
-                    qm->setQueryType( Collections::QueryMaker::Genre );
-                    break;
-                case CategoryId::Year:
-                    qm->setQueryType( Collections::QueryMaker::Year );
-                    break;
+
                 default : //TODO handle error condition. return tracks?
+                    qm->setQueryType( mapCategoryToQueryType( m_levelType[ level ] ) );
                     break;
             }
         }
@@ -438,10 +450,42 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         d->m_runningQueries.insert( parent, qm );
         qm->run();
 
-        //some very quick queries may be dode so fast that the loading
-        //animation creates an unnecessary flicker, therfore delay it for a bit
+        //some very quick queries may be done so fast that the loading
+        //animation creates an unnecessary flicker, therefore delay it for a bit
         QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
     }
+}
+
+Collections::QueryMaker::QueryType
+CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
+{
+    Collections::QueryMaker::QueryType type;
+    switch( levelType )
+    {
+    case CategoryId::Album:
+        type = Collections::QueryMaker::Album;
+        break;
+    case CategoryId::Artist:
+        type = Collections::QueryMaker::Artist;
+        break;
+    case CategoryId::Composer:
+        type = Collections::QueryMaker::Composer;
+        break;
+    case CategoryId::Genre:
+        type = Collections::QueryMaker::Genre;
+        break;
+    case CategoryId::Label:
+        type = Collections::QueryMaker::Label;
+        break;
+    case CategoryId::Year:
+        type = Collections::QueryMaker::Year;
+        break;
+    default:
+        type = Collections::QueryMaker::None;
+        break;
+    }
+
+    return type;
 }
 
 void
@@ -497,6 +541,9 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                         case CategoryId::Year:
                             if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
                             value = Meta::valYear;
+                            break;
+                        case CategoryId::Label:
+                            value = Meta::valLabel;
                             break;
                         default:
                             value = -1;
@@ -562,6 +609,10 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
+                }
+                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "label" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
@@ -705,14 +756,25 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     }
     else if( d->m_compilationQueries.contains( qm ) )
     {
-        handleCompilationQueryResult( qm, data );
+        handleSpecialQueryResult( CollectionTreeItem::VariousArtist, qm, data );
+    }
+    else if( d->noLabelsQueries.contains( qm ) )
+    {
+        handleSpecialQueryResult( CollectionTreeItem::NoLabel, qm, data );
     }
 }
 
 void
-CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
+CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
+    DEBUG_BLOCK
+    debug() << "Received special data: " << dataList.count();
+    CollectionTreeItem *parent = 0;
+    if( type == CollectionTreeItem::VariousArtist )
+        parent = d->m_compilationQueries.value( qm );
+    else if( type == CollectionTreeItem::NoLabel )
+        parent = d->noLabelsQueries.value( qm );
+
     QModelIndex parentIndex;
     if( parent )
     {
@@ -721,16 +783,16 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMak
         else
             parentIndex = createIndex( parent->row(), 0, parent );
 
-        //if the compilation query did not return a result we have to remove the
-        //the various artists node itself
+        //if the special query did not return a result we have to remove the
+        //the special node itself
         if( dataList.isEmpty() )
         {
             for( int i = 0; i < parent->childCount(); i++ )
             {
                 CollectionTreeItem *cti = parent->child( i );
-                if( cti->isVariousArtistItem() )
+                if( cti->type() == type )
                 {
-                    //found the various artists node
+                    //found the special node
                     beginRemoveRows( parentIndex, cti->row(), cti->row() );
                     cti = 0; //will be deleted;
                     parent->removeChild( i );
@@ -738,18 +800,18 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMak
                     break;
                 }
             }
-            //we have removed the VA node if it existed
+            //we have removed the special node if it existed
             return;
         }
 
-        CollectionTreeItem *vaNode = 0;
+        CollectionTreeItem *specialNode = 0;
         if( parent->childCount() == 0 )
         {
-            //we only insert the "Various Artists" node
+            //we only insert the special node
             beginInsertRows( parentIndex, 0, 0 );
-            vaNode = new CollectionTreeItem( dataList, parent, this );
-            //set requiresUpdate, otherwise we will query for the children of vaNode again!
-            vaNode->setRequiresUpdate( false );
+            specialNode = new CollectionTreeItem( type, dataList, parent, this );
+            //set requiresUpdate, otherwise we will query for the children of specialNode again!
+            specialNode->setRequiresUpdate( false );
             endInsertRows();
         }
         else
@@ -757,38 +819,38 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMak
             for( int i = 0; i < parent->childCount(); i++ )
             {
                 CollectionTreeItem *cti = parent->child( i );
-                if( cti->isVariousArtistItem() )
+                if( cti->type() == type )
                 {
-                    //found the various artists node
-                    vaNode = cti;
+                    //found the special node
+                    specialNode = cti;
                     break;
                 }
             }
-            if( !vaNode )
+            if( !specialNode )
             {
-                //we only insert the "Various Artists" node
+                //we only insert the special node
                 beginInsertRows( parentIndex, 0, 0 );
-                vaNode = new CollectionTreeItem( dataList, parent, this );
-                //set requiresUpdate, otherwise we will query for the children of vaNode again!
-                vaNode->setRequiresUpdate( false );
+                specialNode = new CollectionTreeItem( type, dataList, parent, this );
+                //set requiresUpdate, otherwise we will query for the children of specialNode again!
+                specialNode->setRequiresUpdate( false );
                 endInsertRows();
             }
             else
             {
-                //only call populateChildren for the VA node if we have not
-                //created it in this method call. The VA ndoe ctor takes care
+                //only call populateChildren for the special node if we have not
+                //created it in this method call. The special node ctor takes care
                 //of that itself
-                populateChildren( dataList, vaNode, createIndex( vaNode->row(), 0, vaNode ) );
+                populateChildren( dataList, specialNode, createIndex( specialNode->row(), 0, specialNode ) );
             }
             //populate children will call setRequiresUpdate on vaNode
-            //but as the VA query is based on vaNode's parent,
+            //but as the special query is based on specialNode's parent,
             //we have to call setRequiresUpdate on the parent too
             //yes, this will mean we will call setRequiresUpdate twice
             parent->setRequiresUpdate( false );
 
-            for( int count = vaNode->childCount(), i = 0; i < count; ++i )
+            for( int count = specialNode->childCount(), i = 0; i < count; ++i )
             {
-                CollectionTreeItem *item = vaNode->child( i );
+                CollectionTreeItem *item = specialNode->child( i );
                 if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
                 {
                     listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
@@ -796,16 +858,26 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMak
             }
         }
 
-        //if the va node exists, check if it has to be expanded
-        if(vaNode)
+        //if the special node exists, check if it has to be expanded
+        if( specialNode)
         {
             CollectionTreeItem *tmp = parent;
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
 
-            if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
+            if( type == CollectionTreeItem::VariousArtist )
             {
-                emit expandIndex( createIndex( 0, 0, vaNode ) ); //we have just inserted the vaItem at row 0
+                if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
+                {
+                    emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the vaItem at row 0
+                }
+            }
+            else if( type == CollectionTreeItem::NoLabel )
+            {
+                if( m_expandedNoLabelsNodes.contains( tmp->parentCollection() ) )
+                {
+                    emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the special node at row 0
+                }
             }
         }
     }
@@ -932,6 +1004,7 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
         case CategoryId::Composer   : return i18n( "Composer" );
         case CategoryId::Genre      : return i18n( "Genre" );
         case CategoryId::Year       : return i18n( "Year" );
+        case CategoryId::Label      : return i18n( "Label" );
 
         default: return QString();
     }
@@ -950,7 +1023,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     while( tmpItem->isDataItem()  )
     {
         //ignore Various artists node (which will not have a data pointer)
-        if( !tmpItem->isVariousArtistItem() )
+        if( !tmpItem->isVariousArtistItem() && !tmpItem->isNoLabelItem() )
             qm->addMatch( tmpItem->data() );
         tmpItem = tmpItem->parent();
     }
@@ -959,6 +1032,32 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->m_compilationQueries.insert( qm, parent );
+    d->m_runningQueries.insert( parent, qm );
+    qm->run();
+}
+
+void
+CollectionTreeItemModelBase::handleTracksWithoutLabels( QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const
+{
+    DEBUG_BLOCK
+    QueryMaker *qm = parent->queryMaker();
+    qm->setQueryType( queryType );
+    qm->setLabelQueryMode( QueryMaker::OnlyWithoutLabels );
+    qm->setReturnResultAsDataPtrs( true );
+    CollectionTreeItem *tmpItem = parent;
+    while( tmpItem->isDataItem() )
+    {
+        //ignore special nodes that do not have a data pointer
+        if( !tmpItem->isVariousArtistItem() && !tmpItem->isNoLabelItem() )
+        {
+            qm->addMatch( tmpItem->data() );
+        }
+        tmpItem = tmpItem->parent();
+    }
+    addFilters( qm );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    d->noLabelsQueries.insert( qm, parent );
     d->m_runningQueries.insert( parent, qm );
     qm->run();
 }
@@ -1029,6 +1128,14 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
 
             m_expandedVariousArtistsNodes.remove( tmp->parentCollection() );
         }
+        else if( item->isNoLabelItem() )
+        {
+            CollectionTreeItem *tmp = item->parent();
+            while( tmp->isDataItem() )
+                tmp = tmp->parent();
+
+            m_expandedNoLabelsNodes.remove( tmp->parentCollection() );
+        }
         else
         {
             m_expandedCollections.remove( item->parentCollection() );
@@ -1042,17 +1149,25 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
     if( index.isValid() )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        //we are really only interested in the various artists nodes here.
-        //we have to remember whether the user expanded a various artists node or not.
-        //otherwise we won't be able to automatically expand the various artists node after filtering again
-        //there is exactly one various artists node per collection, so use the collection to store that information
-        if( item->isDataItem() && !item->data() )
+        //we are really only interested in the special nodes here.
+        //we have to remember whether the user expanded a various artists/no labels node or not.
+        //otherwise we won't be able to automatically expand the special node after filtering again
+        //there is exactly one special node per type per collection, so use the collection to store that information
+        if( item->isVariousArtistItem() )
         {
             CollectionTreeItem *tmp = item->parent();
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
 
             m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
+        }
+        else if( item->isNoLabelItem() )
+        {
+            CollectionTreeItem *tmp = item->parent();
+            while( tmp->isDataItem() )
+                tmp = tmp->parent();
+
+            m_expandedNoLabelsNodes.insert( tmp->parentCollection() );
         }
     }
 }

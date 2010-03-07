@@ -130,16 +130,21 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *firstComposerAction = m_firstLevel->addAction( i18n( "Composer" ) );
     firstComposerAction->setData( CategoryId::Composer );
 
+    QAction *firstLabelAction = m_firstLevel->addAction( i18n( "Label" ) );
+    firstLabelAction->setData( CategoryId::Label );
+
     firstArtistAction->setCheckable  ( true );
     firstAlbumAction->setCheckable   ( true );
     firstGenreAction->setCheckable   ( true );
     firstComposerAction->setCheckable( true );
+    firstLabelAction->setCheckable( true );
 
     QActionGroup *firstGroup = new QActionGroup( this );
     firstGroup->addAction( firstArtistAction );
     firstGroup->addAction( firstAlbumAction );
     firstGroup->addAction( firstGenreAction );
     firstGroup->addAction( firstComposerAction );
+    firstGroup->addAction( firstLabelAction );
 
     connect( m_firstLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
@@ -159,11 +164,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *secondComposerAction = m_secondLevel->addAction( i18n( "Composer" ) );
     secondComposerAction->setData( CategoryId::Composer );
 
+    QAction *secondLabelAction = m_secondLevel->addAction( i18n( "Label" ) );
+    secondLabelAction->setData( CategoryId::Label );
+
     secondNullAction->setCheckable    ( true );
     secondArtistAction->setCheckable  ( true );
     secondAlbumAction->setCheckable   ( true );
     secondGenreAction->setCheckable   ( true );
     secondComposerAction->setCheckable( true );
+    secondLabelAction->setCheckable( true );
 
     QActionGroup *secondGroup = new QActionGroup( this );
     secondGroup->addAction( secondNullAction );
@@ -171,6 +180,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     secondGroup->addAction( secondAlbumAction );
     secondGroup->addAction( secondGenreAction );
     secondGroup->addAction( secondComposerAction );
+    secondGroup->addAction( secondLabelAction );
     secondNullAction->setChecked( true );
 
     connect( m_secondLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
@@ -191,11 +201,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *thirdComposerAction = m_thirdLevel->addAction( i18n( "Composer" ) );
     thirdComposerAction->setData( CategoryId::Composer );
 
+    QAction *thirdLabelAction = m_thirdLevel->addAction( i18n( "Label" ) );
+    thirdLabelAction->setData( CategoryId::Label );
+
     thirdNullAction->setCheckable    ( true );
     thirdArtistAction->setCheckable  ( true );
     thirdAlbumAction->setCheckable   ( true );
     thirdGenreAction->setCheckable   ( true );
     thirdComposerAction->setCheckable( true );
+    thirdLabelAction->setCheckable( true );
 
     QActionGroup *thirdGroup = new QActionGroup( this );
     thirdGroup->addAction( thirdNullAction );
@@ -203,6 +217,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     thirdGroup->addAction( thirdAlbumAction );
     thirdGroup->addAction( thirdGenreAction );
     thirdGroup->addAction( thirdComposerAction );
+    thirdGroup->addAction( thirdLabelAction );
     thirdNullAction->setChecked( true );
 
     connect( m_thirdLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
@@ -238,6 +253,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Genre:
                 firstGenreAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                firstLabelAction->setChecked( true );
+                break;
             default: //as good a fall through as any, here
                 firstComposerAction->setChecked( true );
                 break;
@@ -260,6 +278,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Composer:
                 secondComposerAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                secondLabelAction->setChecked( true );
+                break;
             default:
                 secondNullAction->setChecked( true );
         }
@@ -281,6 +302,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Composer:
                 thirdComposerAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                thirdLabelAction->setChecked( true );
+                break;
+
             default:
                 thirdNullAction->setChecked( true );
         }

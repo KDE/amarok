@@ -21,20 +21,21 @@
 
 #include "amarok_export.h"
 
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
+#include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
 #include <QHash>
 #include <QPair>
 #include <QSet>
 
-class Collection;
+namespace Collections
+{
+    class Collection;
+}
 class CollectionTreeItem;
 class QTimeLine;
-
-namespace Collections {
-    class QueryMaker;
-}
 
 typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 
@@ -46,7 +47,8 @@ namespace CategoryId
     Artist,
     Composer,
     Genre,
-    Year
+    Year,
+    Label
     };
 }
 
@@ -112,8 +114,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void slotExpanded( const QModelIndex &index );
 
     private:
-        void handleCompilationQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
+        void handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList );
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
+
+        Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
     protected:
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
@@ -127,6 +131,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
         void handleCompilations( CollectionTreeItem *parent ) const;
+        void handleTracksWithoutLabels( QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         QString m_headerText;
         CollectionTreeItem *m_rootItem;
@@ -143,6 +148,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collections::Collection*> m_expandedCollections;
         QSet<Collections::Collection*> m_expandedVariousArtistsNodes;
+        QSet<Collections::Collection*> m_expandedNoLabelsNodes;
         
     protected slots:
         void startAnimationTick();
@@ -156,6 +162,7 @@ class CollectionTreeItemModelBase::Private
     QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
     QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
     QHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
 };
 

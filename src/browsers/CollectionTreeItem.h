@@ -51,14 +51,15 @@ class CollectionTreeItem : public QObject
             Root,
             Collection,
             VariousArtist,
+            NoLabel,
             Data
         };
 
         CollectionTreeItem( CollectionTreeItemModelBase *model ); //root node
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //data node
         CollectionTreeItem( Collections::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //collection node
-        //this ctor creates a "Various Artists" node. do not use it for anything else
-        CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //various artist node
+        //this ctor creates a "Various Artists" and "No Labels" nodes. do not use it for anything else
+        CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //various artist node
 
         ~CollectionTreeItem();
 
@@ -83,6 +84,7 @@ class CollectionTreeItem : public QObject
         bool isAlbumItem() const;
         bool isTrackItem() const;
         bool isVariousArtistItem() const;
+        bool isNoLabelItem() const;
 
         Collections::QueryMaker* queryMaker() const;
 
