@@ -28,6 +28,8 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Made cover urls for tracks from Jamendo, Magnatune and scripted services
+      available using DBus.
     * When an audio CD track is chosen manually, make it active in the playlist
       and actually show the OSD.
     * Prevent a KDirLister error from appearing when running Amarok for the first time.
