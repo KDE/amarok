@@ -175,6 +175,8 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
         virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
         virtual QString coverUrl() const { return m_coverUrl; }
 
+        virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
+
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::SourceInfo );
