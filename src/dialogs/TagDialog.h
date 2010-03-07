@@ -108,6 +108,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
+        /**
+        *   Updates global label list by querying all collections for all existing labels.
+        */
+        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
         void dataQueryDone();
 
         //individual item-specific slots, so we know which have been changed by the user
@@ -138,11 +142,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void trackLabelsFetched( QStringList labels );
 
-        /**
-        *   Updates global label list
-        */
-        void globalLabelsFetched( QStringList labels );
-
     private:
         void init();
         void setCurrentTrack( Meta::TrackPtr track );
@@ -171,11 +170,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @arg track Track to load labels for
         */
         void loadLabels( Meta::TrackPtr track );
-
-        /**
-        * Loads all labels to auto completion list
-        */
-        void loadGlobalLabels();
 
         void loadTags( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
@@ -223,11 +217,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap< QString, bool > m_fieldEdited;
         QVariantMap m_currentData;
         Collections::QueryMaker *m_queryMaker;
-        Collections::QueryMaker *m_dataQueryMaker;
         QStringList m_artists;
         QStringList m_albums;
         QStringList m_composers;
         QStringList m_genres;
+        QStringList m_allLabels; //! all labels known to currently active collections, used for autocompletion
 
         Ui::TagDialogBase *ui;
 

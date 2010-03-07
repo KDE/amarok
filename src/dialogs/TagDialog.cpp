@@ -233,13 +233,24 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
     m_genres.sort();
 }
 
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+
+    foreach( const Meta::LabelPtr &label, labels )
+    {
+        if( !label->name().isEmpty() )
+            m_allLabels << label->name();
+    }
+    m_allLabels.sort();
+}
+
 void
 TagDialog::dataQueryDone()
 {
     DEBUG_BLOCK
-
-    m_dataQueryMaker->deleteLater();
-    m_dataQueryMaker = 0;
 
     // basically we want to ignore the fact that the fields are being
     // edited because we do it not the user, so it results in empty
@@ -275,7 +286,11 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->completionObject()->setItems( m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
-
+    saveText = ui->kComboBox_label->lineEdit()->text();
+    ui->kComboBox_label->clear();
+    ui->kComboBox_label->insertItems( 0, m_allLabels );
+    ui->kComboBox_label->completionObject()->setItems( m_allLabels );
+    ui->kComboBox_label->lineEdit()->setText( saveText );
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -692,9 +707,7 @@ void TagDialog::init()
     m_labelModel = new LabelListModel( m_labels );
 
     ui->labelsList->setModel( m_labelModel );
-    ui->labelsTab->setEnabled( m_currentTrack->is<Capabilities::ReadLabelCapability>() );
-
-    loadGlobalLabels();
+    ui->labelsTab->setEnabled( true );
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -791,23 +804,30 @@ TagDialog::startDataQuery()
     if( !coll )
         return;
 
-    Collections::QueryMaker *artist = coll->queryMaker()->setQueryType( Collections::QueryMaker::Artist );
-    Collections::QueryMaker *album = coll->queryMaker()->setQueryType( Collections::QueryMaker::Album );
-    Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
-    Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    Collections::QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
+    Collections::QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
+    Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
+    Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
+
+    Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Label );
+
     QList<Collections::QueryMaker*> queries;
-    queries << artist << album << composer << genre;
+    queries << artist << album << composer << genre << label;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
 
-    m_dataQueryMaker = new Collections::MetaQueryMaker( queries );
-    connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
-    m_dataQueryMaker->run();
+    Collections::QueryMaker *mqm = new MetaQueryMaker( queries );
+    connect( mqm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString; Meta::LabelList ) ), Qt::DirectConnection );
+
+    mqm->setAutoDelete( true );
+
+    mqm->run();
 }
 
 
@@ -1468,19 +1488,31 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
 {
     DEBUG_BLOCK
 
-    Capabilities::WriteLabelCapability *wlc = track->create<Capabilities::WriteLabelCapability>();
-
-    if( !wlc )
+    if( track )
     {
-        debug() << "Unable to get a write label capability, aborting";
-        return;
-    }
-    wlc->setLabels( removedLabels, newLabels );
-    delete wlc;
+        QHash<QString, Meta::LabelPtr> labelMap;
+        foreach( const Meta::LabelPtr &label, track->labels() )
+        {
+            labelMap.insert( label->name(), label );
+        }
 
-    Capabilities::ReadLabelCapability *rlc = track->create<Capabilities::ReadLabelCapability>();
-    if( rlc )
-        rlc->fetchLabels(); // If new labels are set, we need to fetchLabels() again to update the cache.  This should probably be done centrally..
+        foreach( const QString &oldLabel, removedLabels )
+        {
+            if( labelMap.contains( oldLabel ) )
+            {
+                Meta::LabelPtr label = labelMap.value( oldLabel );
+                track->removeLabel( label );
+            }
+        }
+
+        foreach( const QString &newLabel, newLabels )
+        {
+            if( !labelMap.contains( newLabel ) )
+            {
+                track->addLabel( newLabel );
+            }
+        }
+    }
 }
 
 
@@ -1523,30 +1555,16 @@ TagDialog::loadLabels( Meta::TrackPtr track )
 {
     if( track )
     {
-        Capabilities::ReadLabelCapability *ric = track->create<Capabilities::ReadLabelCapability>();
-        if( !ric )
+        QStringList labelNames;
+        foreach( const Meta::LabelPtr &label, track->labels() )
         {
-            debug() << "No Read Label Capability found, no labels available.";
-            return;
+            labelNames << label->name();
         }
-        connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
-        ric->fetchLabels();
+        m_labels = labelNames;
+        m_labelModel->setLabels( labelNames );
+        ui->labelsList->update();
     }
 }
-
-void
-TagDialog::loadGlobalLabels()
-{
-    Capabilities::ReadLabelCapability *ric = m_currentTrack->create<Capabilities::ReadLabelCapability>();
-    if( !ric )
-    {
-        debug() << "No Read Label Capability found, no labels available.";
-        return;
-    }
-    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(globalLabelsFetched(QStringList)));
-    ric->fetchGlobalLabels();
-}
-
 
 void
 TagDialog::trackLabelsFetched( QStringList labels )
@@ -1556,17 +1574,6 @@ TagDialog::trackLabelsFetched( QStringList labels )
     m_labelModel->setLabels( labels );
     ui->labelsList->update();
 }
-
-void
-TagDialog::globalLabelsFetched( QStringList labels )
-{
-    sender()->deleteLater();
-    ui->kComboBox_label->addItems( labels );
-    ui->kComboBox_label->completionObject()->insertItems( labels );
-    ui->kComboBox_label->update();
-    ui->kComboBox_label->setCurrentIndex( -1 );
-}
-
 
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )
