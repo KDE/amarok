@@ -163,6 +163,29 @@ Playlist::RandomTrackNavigator::likelyLastTrack()
 quint64
 Playlist::RandomTrackNavigator::requestNextTrack()
 {
+    // This loop is a truly awful half-baked hack for BUG 229226 and 222129. (Broken since 2009-11-19)
+    // This is the only "fix" we can do safely while in v2.3 release freeze.
+    // Proper fix needs to refactor too many things for a release freeze.
+
+    quint64 requestedTrack;
+
+    while (true)
+    {
+        requestedTrack = requestNextTrack2();
+
+        if ( requestedTrack == 0 )
+            return requestedTrack;
+
+        // Do the same thing as 'containsId()', but with (slightly) less-awful performance.
+        int row = m_model->rowForId( requestedTrack );
+        if ( row != -1 )
+            return requestedTrack;
+    }
+}
+
+quint64
+Playlist::RandomTrackNavigator::requestNextTrack2()
+{
     const bool noTracksLeft = m_queue.isEmpty() && m_unplayedRows.isEmpty() && m_replayedRows.isEmpty();
 
     if( noTracksLeft && m_playedRows.isEmpty() )

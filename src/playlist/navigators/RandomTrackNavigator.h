@@ -38,6 +38,7 @@ namespace Playlist
         quint64 likelyLastTrack();
 
         quint64 requestNextTrack();
+        quint64 requestNextTrack2();
         quint64 requestUserNextTrack() { return requestNextTrack(); }
         quint64 requestLastTrack();
 
