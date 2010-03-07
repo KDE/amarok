@@ -298,15 +298,11 @@ void VolumeDial::setMuted( bool mute )
 
     if ( mute )
     {
-        setToolTip( i18n( "Muted" ) );
         m_unmutedValue = value();
         setValue( minimum() );
     }
     else
-    {
-        setToolTip( i18n( "Volume: %1%", value() ) );
         setValue( m_unmutedValue );
-    }
 }
 
 QSize VolumeDial::sizeHint() const
@@ -342,7 +338,7 @@ void VolumeDial::sliderChange( SliderChange change )
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    setToolTip( i18n( "Volume: %1%", v ) );
+    setToolTip( ( v == minimum() ) ? i18n( "Muted" ) : i18n( "Volume: %1%", v ) );
 
     m_isClick = false;
 
