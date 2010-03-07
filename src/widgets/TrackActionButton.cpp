@@ -45,7 +45,7 @@ bool TrackActionButton::eventFilter( QObject *o, QEvent *e )
 void TrackActionButton::enterEvent( QEvent *e )
 {
     setIcon( m_icon.image[2], 3 );
-    IconButton::leaveEvent( e );
+    IconButton::enterEvent( e );
 }
 
 void TrackActionButton::init()
@@ -78,7 +78,7 @@ void TrackActionButton::reloadContent( const QSize &sz )
     // the gray value is turned into the opacity
 #define ALPHA qAlpha(pixel[i])
 #define GRAY qGray(pixel[i])
-    if ( qMax( qMax(r,b), b ) > 128 ) // value > 50%, bright foreground
+    if ( qMax( qMax(r,g), b ) > 128 ) // value > 50%, bright foreground
         for (int i = 0; i < n; ++i)
             pixel[i] = qRgba( r,g,b, ( ALPHA * ( (160*GRAY) / 255 ) ) / 255 );
     else // inverse
