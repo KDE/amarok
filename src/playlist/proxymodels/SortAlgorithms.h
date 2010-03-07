@@ -60,22 +60,24 @@ struct multilevelLessThan
 
     protected:
         /**
-         * For random sort, we want to assign a random sequence number to each row in the
-         * source model.
+         * For random sort, we want to assign a random sequence number to each item in
+         * the source model.
          *
-         * On the other hand, the sequence number must stay constant for any given row.
+         * However, the sequence number must stay constant for any given item.
          * The QSortFilterProxyModel sort code can ask us about the same row twice, and
          * we need to return consistent answers.
          *
-         * It would be even nicer if the sequence number stayed constant for a given
-         * *item* instead of *row*, but that is not truly necessary and costs performance.
+         * The sequence number must also stay constant across item insert/remove, so the
+         * row number itself should not be used as a persistent key.
          *
-         * The sequence numbers don't need to be contiguous.
-         * The sequence numbers don't need to be unique; a few collisions are no problem.
+         * The returned sequence numbers don't need to be contiguous.
          *
-         * @return a sequence number that is random, but constant for 'sourceRow'.
+         * The returned sequence numbers don't need to be unique; a few collisions are no
+         * problem.  (fallback tiebreaker will be the source row numbers, as always)
+         *
+         * @return a sequence number that is random, but constant for the item at 'sourceModelRow'.
          */
-        long constantRandomSeqnumForRow( int sourceRow ) const;
+        long constantRandomSeqnumForRow( const QAbstractItemModel* sourceModel, int sourceModelRow ) const;
 
     private:
         SortScheme m_scheme;           //! The current sorting scheme.
