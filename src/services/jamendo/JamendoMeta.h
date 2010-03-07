@@ -157,6 +157,8 @@ public:
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 
+    virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
+
     void setLaunchYear( int launchYear );
     int launchYear() const;
 
