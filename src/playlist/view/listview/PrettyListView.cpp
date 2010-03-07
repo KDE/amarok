@@ -178,7 +178,7 @@ Playlist::PrettyListView::removeSelection()
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() );
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0 );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -256,9 +256,35 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 
     //make sure that the track we just activated is also set as the current index or
     //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
-    selectionModel()->setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
-    
+    selectionModel_setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
 }
+
+
+// The following 2 functions are a workaround for crash BUG 222961 and BUG 229240:
+//   There appears to be a bad interaction between Qt 'setCurrentIndex()' and
+//   Qt 'selectedIndexes()' / 'selectionModel()->select()' / 'scrollTo()'.
+//
+//   'setCurrentIndex()' appears to do something bad with its QModelIndex parameter,
+//   leading to a crash deep within Qt.
+//
+//   It might be our fault, but we suspect a bug in Qt.  (Qt 4.6 at least)
+//
+//   The problem goes away if we use a fresh QModelIndex, which we also don't re-use
+//   afterwards.
+void
+Playlist::PrettyListView::setCurrentIndex( const QModelIndex &index )
+{
+    QModelIndex indexCopy = model()->index( index.row(), index.column() );
+    QListView::setCurrentIndex( indexCopy );
+}
+
+void
+Playlist::PrettyListView::selectionModel_setCurrentIndex( const QModelIndex &index, QItemSelectionModel::SelectionFlags command )
+{
+    QModelIndex indexCopy = model()->index( index.row(), index.column() );
+    selectionModel()->setCurrentIndex( indexCopy, command );
+}
+
 
 void
 Playlist::PrettyListView::showEvent( QShowEvent* event )
@@ -460,7 +486,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
         selectionModel()->select( selItems, command );
         // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
-        selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
+        selectionModel_setCurrentIndex( index, QItemSelectionModel::NoUpdate );
     }
     else
     {
