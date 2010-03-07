@@ -317,7 +317,7 @@ SimilarArtistsApplet::configure()
 
 
 void
-SimilarArtistsApplet::switchToLang(QString lang)
+SimilarArtistsApplet::switchToLang(const QString &lang)
 {
     DEBUG_BLOCK
     if (lang == i18n("Automatic") )
