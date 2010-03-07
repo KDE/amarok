@@ -144,9 +144,12 @@ MemoryQueryMakerInternal::handleResult()
             Meta::TrackList tracks;
             foreach( const Meta::TrackPtr &track, tmpTracks )
             {
-                if( m_albumQueryMode == QueryMaker::AllAlbums
+                if( ( m_albumQueryMode == QueryMaker::AllAlbums
                     || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                    ( m_labelQueryMode == QueryMaker::NoConstraint
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                 {
                     tracks.append( track );
                 }
@@ -198,9 +201,12 @@ MemoryQueryMakerInternal::handleResult()
             Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
             foreach( Meta::TrackPtr track, tmpTracks )
             {
-                if( m_albumQueryMode == QueryMaker::AllAlbums
+                if( ( m_albumQueryMode == QueryMaker::AllAlbums
                     || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                    ( m_labelQueryMode == QueryMaker::NoConstraint
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                 {
                     tracks.append( track );
                 }
@@ -223,12 +229,19 @@ MemoryQueryMakerInternal::handleResult()
             Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
             foreach( Meta::AlbumPtr album, tmp )
             {
-                if( m_albumQueryMode == QueryMaker::AllAlbums
-                    || ( m_albumQueryMode == QueryMaker::OnlyCompilations && album->isCompilation() )
-                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !album->isCompilation()) )
+                Meta::TrackList tracks = album->tracks();
+                foreach( Meta::TrackPtr track, tracks )
                 {
-                    albums.append( album );
-                    break;
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                    {
+                        albums.append( album );
+                        break;
+                    }
                 }
             }
 
@@ -246,9 +259,12 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = artist->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
-                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         artists.append( artist );
                         break;
@@ -268,9 +284,12 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = composer->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
-                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         composers.append( composer );
                         break;
@@ -291,9 +310,12 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = genre->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
-                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         genres.append( genre );
                         break;
@@ -315,9 +337,12 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = year->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
-                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         years.append( year );
                         break;
@@ -344,9 +369,12 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = coll ? coll->labelToTrackMap().value( label ) : Meta::TrackList();
                 foreach( const Meta::TrackPtr &track, tracks )
                 {
-                    if( m_albumQueryMode == QueryMaker::AllAlbums
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         labels.append( label );
                         break;
@@ -371,9 +399,12 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
     Meta::TrackList tracks;
     foreach( const Meta::TrackPtr &track, tmpTracks )
     {
-        if( m_albumQueryMode == QueryMaker::AllAlbums
+        if( ( m_albumQueryMode == QueryMaker::AllAlbums
             || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-            || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) )
+            || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+            ( m_labelQueryMode == QueryMaker::NoConstraint
+              || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+              || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
         {
             tracks.append( track );
         }

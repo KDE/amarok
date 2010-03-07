@@ -80,6 +80,7 @@ struct MemoryQueryMaker::Private {
     bool orderDescending;
     bool orderByNumberField;
     AlbumQueryMode albumQueryMode;
+    LabelQueryMode labelQueryMode;
     QString collectionId;
 };
 
@@ -125,6 +126,7 @@ MemoryQueryMaker::reset()
     d->orderDescending = false;
     d->orderByNumberField = false;
     d->albumQueryMode = AllAlbums;
+    d->labelQueryMode = QueryMaker::NoConstraint;
     return this;
 }
 
@@ -158,6 +160,7 @@ MemoryQueryMaker::run()
         qmi->setCustomReturnValues( d->returnValues );
         d->returnValues.clear(); //will be deleted by MemoryQueryMakerInternal
         qmi->setAlbumQueryMode( d->albumQueryMode );
+        qmi->setLabelQueryMode( d->labelQueryMode );
         qmi->setOrderDescending( d->orderDescending );
         qmi->setOrderByNumberField( d->orderByNumberField );
         qmi->setOrderByField( d->orderByField );
@@ -527,6 +530,13 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     d->albumQueryMode = mode;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::setLabelQueryMode( LabelQueryMode mode )
+{
+    d->labelQueryMode = mode;
     return this;
 }
 

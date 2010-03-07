@@ -84,6 +84,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private slots:
         void done( ThreadWeaver::Job * job );
