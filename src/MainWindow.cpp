@@ -4,6 +4,7 @@
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2002 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ * Copyright (c) 2010 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,7 +14,7 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                       ß                                               *
+ *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
@@ -48,6 +49,7 @@
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/EqualizerDialog.h"
+#include "likeback/likeback.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
@@ -349,7 +351,7 @@ MainWindow::init()
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browsers->list()->addCategory( fileBrowserMkII );
 
-        
+
         PERF_LOG( "Created FileBrowser" )
 
         PERF_LOG( "Initialising ServicePluginManager" )
@@ -367,7 +369,6 @@ MainWindow::init()
     }
 
     The::amarokUrlHandler(); //Instantiate
-
 
     // Runtime check for Qt 4.6 here.
     // We delete the layout file once, because of binary incompatibility with older Qt version.
@@ -794,7 +795,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );    
+    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
@@ -942,6 +943,22 @@ MainWindow::createActions()
     action->setIcon( KIcon( "edit-undo-amarok" ) );
     connect(pc, SIGNAL(canUndoChanged(bool)), action, SLOT(setEnabled(bool)));
 
+    action = new KAction( KIcon( "amarok" ), i18n( "&About Amarok" ), this );
+    ac->addAction( "extendedAbout", action );
+    connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
+
+    LikeBack *likeBack = new LikeBack( LikeBack::AllButtons,
+        LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
+    likeBack->setServer( "example.org", "/likeback/send.php" );
+    likeBack->setAcceptedLanguages( QStringList( "en" ) );
+
+    KActionCollection *likeBackActions = new KActionCollection( this, KGlobal::mainComponent() );
+    likeBackActions->addAssociatedWidget( this );
+    likeBack->createActions( likeBackActions );
+
+    ac->addAction( "likeBackSendComment", likeBackActions->action( "likeBackSendComment" ) );
+    ac->addAction( "likeBackShowIcons", likeBackActions->action( "likeBackShowIcons" ) );
+
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac, this );
     new Amarok::StopAction( ac, this );
@@ -1059,7 +1076,15 @@ MainWindow::createMenus()
     m_menubar->addMenu( playlistMenu );
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
+
     KMenu *helpMenu = Amarok::Menu::helpMenu();
+    helpMenu->insertAction( helpMenu->actions().last(),
+                            Amarok::actionCollection()->action( "extendedAbout" ) );
+    helpMenu->insertAction( helpMenu->actions().at(4),
+                            Amarok::actionCollection()->action( "likeBackSendComment" ) );
+    helpMenu->insertAction( helpMenu->actions().at(5),
+                            Amarok::actionCollection()->action( "likeBackShowIcons" ) );
+
     m_menubar->addMenu( helpMenu );
 }
 
@@ -1103,7 +1128,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
     }
 
     m_dockChangesIgnored = true;
-    
+
     m_saveLayoutChangesTimer->stop();
     m_restoreLayoutTimer->stop();
     m_ignoreLayoutChangesTimer->stop();
@@ -1358,7 +1383,7 @@ bool MainWindow::playAudioCd()
 {
     DEBUG_BLOCK
     //drop whatever we are doing and play auidocd
-    
+
     QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
 
     foreach( Amarok::Collection *collection, collections )
@@ -1370,8 +1395,8 @@ bool MainWindow::playAudioCd()
 
             MemoryCollection * cdColl = dynamic_cast<MemoryCollection *>( collection );
 
-            
-            
+
+
             if( !cdColl || cdColl->trackMap().count() == 0 )
             {
                 debug() << "cd collection not ready yet (track count = 0 )";

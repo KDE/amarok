@@ -51,11 +51,11 @@ namespace Amarok
 
     bool entireAlbums()   { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
-                                   
+
     bool repeatEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum  ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist; }
-                                   
+
     bool randomEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
 }
@@ -161,9 +161,6 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
-    QAction *extendedAboutAction = new QAction( KIcon( "amarok" ), i18n( "&About Amarok" ), menu ); //translateme
-    menu->insertAction( s_helpMenu->action(KHelpMenu::menuAboutKDE ),extendedAboutAction );
-    connect( extendedAboutAction, SIGNAL(triggered()), The::mainWindow(), SLOT(showAbout()) );
     return menu;
 }
 
@@ -347,7 +344,7 @@ EqualizerAction::updateContent() //SLOT
     // this slot update the content of equalizer main window menu
     // according to config blocking is neccessary to prevent
     // circluar loop between menu and config dialog
-    blockSignals( true ); 
+    blockSignals( true );
     setCurrentItem( AmarokConfig::equalizerMode() );
     blockSignals( false );
 }
@@ -538,7 +535,7 @@ StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
         The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
         The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->source()->activeId() );
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );       
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );
     } else {
         The::playlistActions()->setStopAfterMode( Playlist::StopNever );
         The::playlistActions()->setTrackToBeLast( 0 );

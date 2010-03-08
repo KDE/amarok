@@ -48,6 +48,7 @@ include_directories(
     dbus
     dialogs
     dynamic
+    likeback
     meta
     meta/capabilities
     playlistmanager
@@ -70,6 +71,15 @@ include_directories(
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
 endif ( KDEMULTIMEDIA_FOUND )
+
+#####################################################################
+# LIKEBACK
+#####################################################################
+set(likeback_SRCS
+    likeback/likeback.cpp
+    likeback/likebackbar.cpp
+    likeback/likebackdialog.cpp
+)
 
 #####################################################################
 # PLUGIN
@@ -569,6 +579,7 @@ set(amaroklib_LIB_SRCS
     ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
+    ${likeback_SRCS}
     ${meta_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
@@ -757,6 +768,8 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
+    likeback/likebackbar.ui
+    likeback/likebackdialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     podcasts/sql/PodcastSettingsBase.ui
     podcasts/sql/SqlPodcastProviderSettingsWidget.ui
