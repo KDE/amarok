@@ -44,6 +44,7 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <KStandardDirs>
+#include <QDesktopWidget>
 
 #define DEBUG_PREFIX "CoverBlingApplet"
 
@@ -60,7 +61,7 @@ CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
 {
     DEBUG_BLOCK
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
 }
 
 void
@@ -68,13 +69,26 @@ CoverBlingApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
     resize( -1, 400 );
+    m_fullsize = false;
     m_layout = new QGraphicsProxyWidget( this );
     m_pictureflow = new PhotoBrowser();
     m_layout->setWidget( m_pictureflow );
     m_pictureflow->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
-    m_pictureflow->setReflectionEffect(PictureFlow::PlainReflection);
-    m_pictureflow->setAnimationTime(10);
+
+    KConfigGroup config = Amarok::config("CoverBling Applet");
+    m_coversize = config.readEntry( "CoverSize", 200 );
+    //m_coversize = 200;
+    //m_reflectionEffect = PictureFlow::PlainReflection;
+    int reflectioneffect = config.readEntry( "ReflectionEffect", 1 );
+    if ( reflectioneffect==0 )
+        m_reflectionEffect = PictureFlow::NoReflection;
+    else if ( reflectioneffect == 1 )
+         m_reflectionEffect = PictureFlow::PlainReflection;
+    else if ( reflectioneffect == 2)
+        m_reflectionEffect = PictureFlow::BlurredReflection;
+
     m_pictureflow->show();
+    
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
@@ -103,12 +117,14 @@ CoverBlingApplet::init()
     m_blingtolast = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ) ), this );
     m_blingfastback = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) ), this );
     m_blingfastforward = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) ), this );
+    m_fullscreen = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) ), this );
 
     connect( m_blingtofirst, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToLast() ) );
     //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
     connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
     connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
+    connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
 
     constraintsEvent();
 }
@@ -168,7 +184,14 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     int vertical_size = boundingRect().height();
     int horizontal_size = boundingRect().width();
     QSize slideSize( vertical_size/2, vertical_size/2 );
+    if (!m_fullsize)
+    {
+        slideSize.setWidth(m_coversize);
+        slideSize.setHeight(m_coversize);
+    }
     m_pictureflow->setSlideSize( slideSize );
+    m_pictureflow->setReflectionEffect(m_reflectionEffect);
+    m_pictureflow->setAnimationTime(10);
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
@@ -176,6 +199,7 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_blingtolast->setOffset( horizontal_size - 30, vertical_size - 30 );
     m_blingfastback->setOffset( 50, vertical_size - 30 );
     m_blingfastforward->setOffset( horizontal_size - 60, vertical_size - 30 );
+    m_fullscreen->setOffset( horizontal_size - 30, 30 );
     m_pictureflow->resize( horizontal_size, vertical_size );
 }
 void
@@ -187,6 +211,58 @@ CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     p->setRenderHint( QPainter::Antialiasing );
     // tint the whole applet
     addGradientToAppletBackground( p );
+}
+void CoverBlingApplet::toggleFullscreen()
+{
+    if (m_fullsize)
+    {
+	resize(-1,400);
+    }
+    else
+    {
+	//QDesktopWidget* desktop = QApplication::desktop();
+        //if (desktop)
+        {
+        //    QRect rect = desktop->screenGeometry();
+        //    resize(rect.width(),rect.height());
+            resize(-1,-1);
+        }
+    }
+    updateConstraints();
+    //constraintsEvent();
+    m_fullsize = !m_fullsize;
+}
+void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+
+    if ( m_reflectionEffect == PictureFlow::NoReflection)
+        ui_Settings.reflectionEffectCombo->setCurrentIndex( 0 );
+    else if ( m_reflectionEffect == PictureFlow::PlainReflection )
+        ui_Settings.reflectionEffectCombo->setCurrentIndex( 1 );
+    else if ( m_reflectionEffect == PictureFlow::BlurredReflection )
+        ui_Settings.reflectionEffectCombo->setCurrentIndex( 2 );
+    if (m_coversize)
+        ui_Settings.coversizeSpin->setValue(m_coversize);
+    parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system");
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+}
+void CoverBlingApplet::saveSettings()
+{
+    m_coversize = ui_Settings.coversizeSpin->value();
+    if (ui_Settings.reflectionEffectCombo->currentIndex()==0)
+        m_reflectionEffect = PictureFlow::NoReflection;
+    else if (ui_Settings.reflectionEffectCombo->currentIndex()==1)
+        m_reflectionEffect = PictureFlow::PlainReflection;
+    else if (ui_Settings.reflectionEffectCombo->currentIndex()==2)
+        m_reflectionEffect = PictureFlow::BlurredReflection;
+
+    KConfigGroup config = Amarok::config("CoverBling Applet");
+    config.writeEntry( "CoverSize", m_coversize );
+    config.writeEntry( "ReflectionEffect", (int) m_reflectionEffect );
+    constraintsEvent();
 }
 #include "CoverBlingApplet.moc"
 

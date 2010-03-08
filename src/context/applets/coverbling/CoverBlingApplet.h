@@ -23,6 +23,7 @@
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
 #include "PhotoBrowser.h"
+#include <ui_coverblingSettings.h>
 
 class TextScrollingWidget;
 class KConfigDialog;
@@ -62,8 +63,11 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
 	void	slideChanged(int islideindex);
         void	playAlbum(int islideindex);
+        void	toggleFullscreen();
+        void    saveSettings();
     protected :
 	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+        void createConfigurationInterface(KConfigDialog *parent);
     private:
 	PhotoBrowser * m_pictureflow;
 	QGraphicsProxyWidget * m_layout;
@@ -74,6 +78,11 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	MyGraphicItem* m_blingtolast;
 	MyGraphicItem* m_blingfastback;
 	MyGraphicItem* m_blingfastforward;
+	MyGraphicItem* m_fullscreen;
+	bool m_fullsize;
+        Ui::coverblingSettings   ui_Settings;
+	int m_coversize;
+	PictureFlow::ReflectionEffect m_reflectionEffect;
 };
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
 
