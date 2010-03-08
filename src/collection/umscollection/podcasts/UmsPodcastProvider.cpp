@@ -44,12 +44,14 @@ UmsPodcastProvider::~UmsPodcastProvider()
 bool
 UmsPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 {
+    Q_UNUSED( url )
     return false;
 }
 
 TrackPtr
 UmsPodcastProvider::trackForUrl( const KUrl &url )
 {
+    Q_UNUSED( url )
     return TrackPtr();
 }
 
