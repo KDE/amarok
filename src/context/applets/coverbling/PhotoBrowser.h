@@ -40,7 +40,8 @@ public slots:
         void    skipToFirst();
 	void	skipToLast();
 	void	fastForward();
-	void	fastBackward(); 
+	void	fastBackward();
+	void 	skipToSlide(int iSlide); 
 private slots:
   void preload();
   void updateImageData();

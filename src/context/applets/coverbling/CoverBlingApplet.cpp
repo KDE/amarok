@@ -291,6 +291,14 @@ void CoverBlingApplet::jumpToPlaying()
     }
     if (found)
     {
+	int center = m_pictureflow->centerIndex();
+        if (center - index > 10 || index - center > 10)
+        {
+            if (index>center)
+	    	m_pictureflow->skipToSlide( index - 10 );
+            else
+         	m_pictureflow->skipToSlide( index + 10 );
+	}
 	m_pictureflow->showSlide( index );
     }
 }

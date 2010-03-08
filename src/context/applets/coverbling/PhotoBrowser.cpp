@@ -124,12 +124,15 @@ void PhotoBrowser::fastBackward()
 }
 void PhotoBrowser::skipToFirst()
 {
-    setCenterIndex( 0 );
-    preload();
+    skipToSlide(0);
 }
 void PhotoBrowser::skipToLast()
 {
     int nbslides = slideCount();
-    setCenterIndex( nbslides );
-    preload();
+    skipToSlide(nbslides);
+}
+void PhotoBrowser::skipToSlide(int iSlide)
+{
+   setCenterIndex(iSlide);
+   preload();
 }
