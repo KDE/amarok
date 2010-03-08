@@ -64,8 +64,6 @@ ToolTipManager::ToolTipManager(QAbstractItemView* parent) :
 
     m_previewTimer = new QTimer(this);
     m_previewTimer->setSingleShot(true);
-    connect(m_previewTimer, SIGNAL(timeout()),
-            this, SLOT(startPreviewJob()));
 
     m_waitOnPreviewTimer = new QTimer(this);
     m_waitOnPreviewTimer->setSingleShot(true);
