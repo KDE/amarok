@@ -282,7 +282,10 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
 bool
 PLSPlaylist::isWritable()
 {
-    return QFile( m_url.path() ).isWritable();
+    if( m_url.isEmpty() )
+        return false;
+
+    return QFileInfo( m_url.path() ).isWritable();
 }
 
 void

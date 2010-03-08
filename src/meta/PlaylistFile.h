@@ -46,7 +46,8 @@ namespace Meta
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
             virtual void setName( const QString &name ) = 0;
-            virtual void setGroups( const QStringList &groups ) { Q_UNUSED( groups ); }
+            virtual void setGroups( const QStringList &groups ) { m_groups = groups; }
+            virtual QStringList groups() { return m_groups; }
 
             //default implementation prevents crashes related to PlaylistFileProvider
             virtual void setProvider( PlaylistProvider *provider ) { m_provider = provider; }
@@ -56,6 +57,7 @@ namespace Meta
 
         protected:
             PlaylistProvider *m_provider;
+            QStringList m_groups;
     };
 
 }

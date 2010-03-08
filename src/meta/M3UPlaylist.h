@@ -62,12 +62,9 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         KUrl retrievableUrl() { return m_url; }
 
-        virtual QStringList groups() { return m_groups; }
-
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
-        void setGroups( const QStringList &groups ) { m_groups = groups; }
 
         bool save( const KUrl &location, bool relative );
         bool load( QTextStream &stream ) { return loadM3u( stream ); }
@@ -79,7 +76,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         bool m_tracksLoaded;
         TrackList m_tracks;
-        QStringList m_groups;
 };
 
 }

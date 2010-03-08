@@ -776,7 +776,10 @@ XSPFPlaylist::createCapabilityInterface( Capability::Type type )
 bool
 XSPFPlaylist::isWritable()
 {
-    return QFile( m_url.path() ).isWritable();
+    if( m_url.isEmpty() )
+        return false;
+
+    return QFileInfo( m_url.path() ).isWritable();
 }
 
 void
