@@ -20,6 +20,7 @@
 #include <QResizeEvent>
 
 #include <KApplication>
+#include <KStandardDirs>
 
 #include "likeback.h"
 #include "likebackbar.h"
@@ -38,10 +39,10 @@ LikeBackBar::LikeBackBar( LikeBack *likeBack )
   setObjectName( "LikeBackBar" );
 
   // Set the button icons
-  m_likeButton   ->setIcon( KIcon( "likeback_like"    ) );
-  m_dislikeButton->setIcon( KIcon( "likeback_dislike" ) );
-  m_bugButton    ->setIcon( KIcon( "likeback_bug"     ) );
-  m_featureButton->setIcon( KIcon( "likeback_feature" ) );
+  m_likeButton   ->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_like.png"    ) ) );
+  m_dislikeButton->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_dislike.png" ) ) );
+  m_bugButton    ->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_bug.png"     ) ) );
+  m_featureButton->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_feature.png" ) ) );
 
   // Show buttons for the enabled types of feedback only
   LikeBack::Button buttons = likeBack->buttons();
