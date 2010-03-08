@@ -27,7 +27,7 @@
 #include <KInputDialog>
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
-    : QtGroupingProxy( model, QModelIndex(), 1 )
+    : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::GroupColumn )
     , m_renameFolderAction( 0 )
     , m_deleteFolderAction( 0 )
 {
@@ -231,7 +231,7 @@ PlaylistsInGroupsProxy::slotRenameFolder()
 {
     DEBUG_BLOCK
     //get the name for this new group
-    //TODO: do inline rename
+    //inline rename is handled by the view using setData()
     QModelIndex folder = m_selectedGroups.first();
     QString folderName = folder.data( Qt::DisplayRole ).toString();
     bool ok;
@@ -245,9 +245,11 @@ PlaylistsInGroupsProxy::slotRenameFolder()
 
     for( int i = 0; i < rowCount( folder ); i++ )
     {
-        QModelIndex idx = m_model->index( i, 0, QModelIndex() );
+        QModelIndex idx = index( i, PlaylistBrowserNS::UserModel::GroupColumn, folder );
         setData( idx, newName, GroupRole );
     }
+    //remove the old foldername from the map
+    m_groupMaps.removeAt( folder.row() );
     buildTree();
     emit layoutChanged();
 }
