@@ -550,6 +550,14 @@ IpodHandler::addNextOrphaned()
 
     m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
 
+    // add to list of files on device
+
+    const QString key(path.toLower().toLatin1());
+    if( m_files.value(key) )
+       debug() << "duplicate track" << key;
+    else
+       m_files.insert( key, m_itdbtrackhash[ destTrack ] );
+
     // Add the track struct into the database
 
     addTrackInDB( destTrack );
@@ -1757,6 +1765,11 @@ IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta
     debug() << "Path before put in ipod_path: " << pathname;
 
     m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
+    const QString key(ipodPath(pathname).toLower());
+    if( m_files.value(key) )
+       debug() << "duplicate track" << key;
+    else
+       m_files.insert(key, m_itdbtrackhash[ destTrack ] );
     debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
     setDatabaseChanged();
 }
@@ -2013,7 +2026,11 @@ void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;
-    m_files.insert( QString(m_currtrack->ipod_path).toLower(), m_currtrack );
+    const QString key(m_currtrack->ipod_path);
+    if( m_files.value(key) )
+       debug() << "duplicate track" << key;
+    else
+       m_files.insert( key, m_currtrack );
 }
 
 QStringList
