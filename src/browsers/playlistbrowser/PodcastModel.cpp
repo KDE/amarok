@@ -686,7 +686,12 @@ PlaylistBrowserNS::PodcastModel::dropMimeData( const QMimeData * data, Qt::DropA
         {
             //TODO: implement PodcastChannel::operator=( PodcastChannelPtr )
             if( episode->channel()->title() == channel->title() )
-                allAdded = channel->addEpisode( episode ) ? allAdded : false;
+            {
+                if( episode->channel() == channel )
+                    allAdded = false; //don't add episode to it's parent channel. Causes duplicates.
+                else
+                    allAdded = channel->addEpisode( episode ) ? allAdded : false;
+            }
         }
 
         return allAdded;
