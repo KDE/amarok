@@ -45,7 +45,7 @@ AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * c
     , d( new Private )
     , m_server( server )
     , m_sessionId( sessionId )
-    , m_dateFilter ( -1 )
+    , m_dateFilter( -1 )
 {
     DEBUG_BLOCK
     m_collection = collection;
@@ -170,7 +170,7 @@ AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
 }
 
 QueryMaker *
-AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
+AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
 {
     DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = dynamic_cast< const ServiceAlbum * >( album.data() );
@@ -231,7 +231,7 @@ AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
 }
 
 void
-AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
+AmpacheServiceQueryMaker::handleResult( const TrackList & tracks )
 {
     DEBUG_BLOCK
 
@@ -399,15 +399,15 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement("root");
+    QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement("error");
+    QDomElement error = root.firstChildElement( "error" );
 
     if ( !error.isNull() )
     {
         debug () << "Error getting Artist List" << error.text();
-        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
+        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
         {
                 return;
@@ -425,7 +425,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
         //if ( ! (e.tagName() == "item") )
         //    break;
 
-        QDomElement element = n.firstChildElement("name");
+        QDomElement element = n.firstChildElement( "name" );
         ServiceArtist * artist = new AmpacheArtist( element.text(), m_collection->service() );
 
         int artistId = e.attribute( "id", "0").toInt();
@@ -452,7 +452,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 }
 
 void
-AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
+AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
 {
     DEBUG_BLOCK
 
@@ -475,7 +475,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement("error");
+    QDomElement error = root.firstChildElement( "error" );
 
     if ( !error.isNull() )
     {
@@ -510,7 +510,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         album->setId( albumId );
 
 
-        element = n.firstChildElement("art");
+        element = n.firstChildElement( "art" );
 
         QString coverUrl = element.text();
         album->setCoverUrl( coverUrl );
@@ -547,7 +547,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 }
 
 void
-AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
+AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
 {
     DEBUG_BLOCK
 
@@ -565,15 +565,15 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement("root");
+    QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement("error");
+    QDomElement error = root.firstChildElement( "error" );
 
     if ( !error.isNull() )
     {
         debug () << "Error getting Track Download " << error.text();
-        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
+        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
         {
                 return;
@@ -591,14 +591,14 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         //if ( ! (e.tagName() == "item") )
         //    break;
 
-        int trackId = e.attribute( "id", "0").toInt();
-        QDomElement element = n.firstChildElement("title");
+        int trackId = e.attribute( "id", "0" ).toInt();
+        QDomElement element = n.firstChildElement( "title" );
 
         QString title = element.text();
         if ( title.isEmpty() )
             title = "Unknown";
-        element = n.firstChildElement("url");
-        AmpacheTrack * track = new AmpacheTrack( title, m_collection->service()  );
+        element = n.firstChildElement( "url" );
+        AmpacheTrack * track = new AmpacheTrack( title, m_collection->service() );
         TrackPtr trackPtr( track );
 
         //debug() << "Adding track: " <<  title;
@@ -606,20 +606,20 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         track->setId( trackId );
         track->setUidUrl( element.text() );
 
-        element = n.firstChildElement("time");
+        element = n.firstChildElement( "time" );
         track->setLength( element.text().toInt() * 1000 );
 
-        element = n.firstChildElement("track");
+        element = n.firstChildElement( "track" );
         track->setTrackNumber( element.text().toInt() );
 
         m_collection->acquireWriteLock();
         m_collection->addTrack( trackPtr );
         m_collection->releaseLock();
 
-        QDomElement albumElement = n.firstChildElement("album");
+        QDomElement albumElement = n.firstChildElement( "album" );
         int albumId = albumElement.attribute( "id", "0").toInt();
 
-        QDomElement artistElement = n.firstChildElement("artist");
+        QDomElement artistElement = n.firstChildElement( "artist" );
         int artistId = artistElement.attribute( "id", "0").toInt();
 
         ArtistPtr artistPtr = m_collection->artistById( artistId );
@@ -651,7 +651,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 }
 
 QueryMaker *
-AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+AmpacheServiceQueryMaker::addFilter( qint64 value, const QString & filter, bool matchBegin, bool matchEnd )
 {
     DEBUG_BLOCK
     Q_UNUSED( matchBegin )
