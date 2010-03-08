@@ -118,14 +118,14 @@ CoverBlingApplet::init()
     m_blingfastback = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) ), this );
     m_blingfastforward = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) ), this );
     m_fullscreen = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) ), this );
+    m_jumptoplaying = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) ), this );
 
     connect( m_blingtofirst, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToLast() ) );
-    //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
     connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
     connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
     connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
-
+    connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
     constraintsEvent();
 }
 
@@ -135,6 +135,8 @@ CoverBlingApplet::~CoverBlingApplet()
     delete m_blingtolast;
     delete m_blingfastback;
     delete m_blingfastforward;
+    delete m_fullscreen;
+    delete m_jumptoplaying;
     delete m_ratingWidget;
     delete m_label;
     delete m_layout;
@@ -200,6 +202,7 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_blingfastback->setOffset( 50, vertical_size - 30 );
     m_blingfastforward->setOffset( horizontal_size - 60, vertical_size - 30 );
     m_fullscreen->setOffset( horizontal_size - 30, 30 );
+    m_jumptoplaying->setOffset( horizontal_size - 60, 30 );
     m_pictureflow->resize( horizontal_size, vertical_size );
 }
 void
@@ -263,6 +266,33 @@ void CoverBlingApplet::saveSettings()
     config.writeEntry( "CoverSize", m_coversize );
     config.writeEntry( "ReflectionEffect", (int) m_reflectionEffect );
     constraintsEvent();
+}
+void CoverBlingApplet::jumpToPlaying()
+{
+   Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    if( !track )
+        return;
+    Meta::AlbumPtr album = track->album();
+    if ( !album )
+	return;
+    int nbslides = m_pictureflow->slideCount();
+    bool found = false;
+    int index = 0;
+    for (int i=0; i<nbslides;i++)
+    {
+	Meta::AlbumPtr current_album = m_pictureflow->album(i);
+	if (current_album==album)
+	{
+	    index = i;
+	    found = true;
+	    break;
+	}
+    }
+    if (found)
+    {
+	m_pictureflow->showSlide( index );
+    }
 }
 #include "CoverBlingApplet.moc"
 

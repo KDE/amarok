@@ -64,6 +64,7 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	void	slideChanged(int islideindex);
         void	playAlbum(int islideindex);
         void	toggleFullscreen();
+        void	jumpToPlaying();
         void    saveSettings();
     protected :
 	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -79,6 +80,7 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	MyGraphicItem* m_blingfastback;
 	MyGraphicItem* m_blingfastforward;
 	MyGraphicItem* m_fullscreen;
+	MyGraphicItem* m_jumptoplaying;
 	bool m_fullsize;
         Ui::coverblingSettings   ui_Settings;
 	int m_coversize;

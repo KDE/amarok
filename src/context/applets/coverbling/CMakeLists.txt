@@ -32,3 +32,4 @@ install(FILES blingfastforward.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 install(FILES blingtolast.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingdefaultcover.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingfullscreen.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingjumptoplaying.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
