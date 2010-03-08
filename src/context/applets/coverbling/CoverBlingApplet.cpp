@@ -191,7 +191,7 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     }
     m_pictureflow->setSlideSize( slideSize );
     m_pictureflow->setReflectionEffect(m_reflectionEffect);
-    m_pictureflow->setAnimationTime(10);
+    m_pictureflow->setAnimationTime(20);
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
