@@ -187,8 +187,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albu
         if( !album->name().isEmpty() )
             m_albums << album->name();
     }
-
-    m_albums.sort();
 }
 
 void
@@ -201,8 +199,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &art
         if( !artist->name().isEmpty() )
             m_artists << artist->name();
     }
-
-    m_artists.sort();
 }
 
 void
@@ -215,8 +211,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &c
         if( !composer->name().isEmpty() )
             m_composers << composer->name();
     }
-
-    m_composers.sort();
 }
 
 void
@@ -229,8 +223,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
         if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
             m_genres << genre->name();
     }
-
-    m_genres.sort();
 }
 
 
@@ -244,7 +236,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::LabelList &labe
         if( !label->name().isEmpty() )
             m_allLabels << label->name();
     }
-    m_allLabels.sort();
 }
 
 void
@@ -263,33 +254,43 @@ TagDialog::dataQueryDone()
     // we do this because if we insert items and the contents of the textbox
     // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
+    QStringList artists = m_artists.toList();
+    artists.sort();
     ui->kComboBox_artist->clear();
-    ui->kComboBox_artist->insertItems( 0, m_artists );
-    ui->kComboBox_artist->completionObject()->setItems( m_artists );
+    ui->kComboBox_artist->insertItems( 0, artists );
+    ui->kComboBox_artist->completionObject()->setItems( artists );
     ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
+    QStringList albums = m_albums.toList();
+    albums.sort();
     ui->kComboBox_album->clear();
-    ui->kComboBox_album->insertItems( 0, m_albums );
-    ui->kComboBox_album->completionObject()->setItems( m_albums );
+    ui->kComboBox_album->insertItems( 0, albums );
+    ui->kComboBox_album->completionObject()->setItems( albums );
     ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
+    QStringList composers = m_composers.toList();
+    composers.sort();
     ui->kComboBox_composer->clear();
-    ui->kComboBox_composer->insertItems( 0, m_composers );
-    ui->kComboBox_composer->completionObject()->setItems( m_composers );
+    ui->kComboBox_composer->insertItems( 0, composers );
+    ui->kComboBox_composer->completionObject()->setItems( composers );
     ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
+    QStringList genres = m_genres.toList();
+    genres.sort();
     ui->kComboBox_genre->clear();
-    ui->kComboBox_genre->insertItems( 0, m_genres );
-    ui->kComboBox_genre->completionObject()->setItems( m_genres );
+    ui->kComboBox_genre->insertItems( 0, genres );
+    ui->kComboBox_genre->completionObject()->setItems( genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_label->lineEdit()->text();
+    QStringList labels = m_allLabels.toList();
+    labels.sort();
     ui->kComboBox_label->clear();
-    ui->kComboBox_label->insertItems( 0, m_allLabels );
-    ui->kComboBox_label->completionObject()->setItems( m_allLabels );
+    ui->kComboBox_label->insertItems( 0, labels );
+    ui->kComboBox_label->completionObject()->setItems( labels );
     ui->kComboBox_label->lineEdit()->setText( saveText );
 
     if( !m_queryMaker )  //track query complete or not necessary
@@ -723,6 +724,9 @@ void TagDialog::init()
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
     ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
 
+    ui->kComboBox_label->completionObject()->setIgnoreCase( true );
+    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
+
     ui->addButton->setEnabled( false );
     ui->removeButton->setEnabled( false );
 
@@ -800,15 +804,10 @@ void TagDialog::init()
 void
 TagDialog::startDataQuery()
 {
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    if( !coll )
-        return;
-
-    Collections::QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
-    Collections::QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
-    Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
-    Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
-
+    Collections::QueryMaker *artist = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Artist );
+    Collections::QueryMaker *album = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Album );
+    Collections::QueryMaker *composer = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Composer );
+    Collections::QueryMaker *genre = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Genre );
     Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Label );
 
     QList<Collections::QueryMaker*> queries;
@@ -1254,26 +1253,19 @@ TagDialog::readMultipleTracks()
     m_labelModel->setLabels( m_labels );
 
     // Set them in the dialog and in the track ( so we don't break hasChanged() )
-    int cur_item;
     if( artist )
     {
-        cur_item = ui->kComboBox_artist->currentIndex();
         m_currentData.insert( Meta::Field::ARTIST, first.value( Meta::Field::ARTIST ) );
-        ui->kComboBox_artist->completionObject()->insertItems( m_artists );
         selectOrInsertText( first.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
     }
     if( album )
     {
-        cur_item = ui->kComboBox_album->currentIndex();
         m_currentData.insert( Meta::Field::ALBUM, first.value( Meta::Field::ALBUM ) );
-        ui->kComboBox_album->completionObject()->insertItems( m_albums );
         selectOrInsertText( first.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
     }
     if( genre )
     {
-        cur_item = ui->kComboBox_genre->currentIndex();
         m_currentData.insert( Meta::Field::GENRE, first.value( Meta::Field::GENRE ) );
-        ui->kComboBox_genre->completionObject()->insertItems( m_genres );
         selectOrInsertText( first.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     }
     if( comment )
@@ -1283,9 +1275,7 @@ TagDialog::readMultipleTracks()
     }
     if( composer )
     {
-        cur_item = ui->kComboBox_composer->currentIndex();
         m_currentData.insert( Meta::Field::COMPOSER, first.value( Meta::Field::COMPOSER ) );
-        ui->kComboBox_composer->completionObject()->insertItems( m_composers );
         selectOrInsertText( first.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     }
     if( year )

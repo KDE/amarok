@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QListIterator>
 #include <QMap>
+#include <QSet>
 #include <QVariant>
 #include <QtGui/QWidget>
 
@@ -217,11 +218,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap< QString, bool > m_fieldEdited;
         QVariantMap m_currentData;
         Collections::QueryMaker *m_queryMaker;
-        QStringList m_artists;
-        QStringList m_albums;
-        QStringList m_composers;
-        QStringList m_genres;
-        QStringList m_allLabels; //! all labels known to currently active collections, used for autocompletion
+        QSet<QString> m_artists;
+        QSet<QString> m_albums;
+        QSet<QString> m_composers;
+        QSet<QString> m_genres;
+        QSet<QString> m_allLabels; //! all labels known to currently active collections, used for autocompletion
 
         Ui::TagDialogBase *ui;
 
