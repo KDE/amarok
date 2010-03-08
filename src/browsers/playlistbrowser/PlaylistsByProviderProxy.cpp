@@ -161,7 +161,6 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
     {
         if( data->hasFormat( AMAROK_PROVIDERPROXY_INDEXES ) )
         {
-            const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
             QList<QModelIndex> originalIndexes =
                     decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ), m_model );
             //set the groupedColumn data of all playlist indexes to the data of this group

@@ -38,6 +38,8 @@ KFormattedBalloonTipDelegate::~KFormattedBalloonTipDelegate()
 
 QSize KFormattedBalloonTipDelegate::sizeHint(const KStyleOptionToolTip &option, const KToolTipItem &item) const
 {
+    Q_UNUSED( option )
+
     QTextDocument doc;
     doc.setHtml(item.text());
     const QSize docSize = doc.size().toSize();

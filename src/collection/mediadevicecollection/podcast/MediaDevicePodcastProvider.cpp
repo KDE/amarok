@@ -10,18 +10,21 @@ MediaDevicePodcastProvider::MediaDevicePodcastProvider( MediaDeviceHandler *hand
 void
 MediaDevicePodcastProvider::addPodcast( const KUrl &url )
 {
+    Q_UNUSED( url )
     //can this handler even fetch feeds itself?
 }
 
 PodcastChannelPtr
 MediaDevicePodcastProvider::addChannel( PodcastChannelPtr channel )
 {
+    Q_UNUSED( channel )
     return PodcastChannelPtr();
 }
 
 PodcastEpisodePtr
 MediaDevicePodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
+    Q_UNUSED( episode )
     return PodcastEpisodePtr();
 }
 
@@ -35,6 +38,7 @@ MediaDevicePodcastProvider::channels()
 void
 MediaDevicePodcastProvider::removeSubscription( PodcastChannelPtr channel )
 {
+    Q_UNUSED( channel )
 }
 
 void
@@ -45,6 +49,7 @@ MediaDevicePodcastProvider::configureProvider()
 void
 MediaDevicePodcastProvider::configureChannel( PodcastChannelPtr channel )
 {
+    Q_UNUSED( channel )
 }
 
 QString
