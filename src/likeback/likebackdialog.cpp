@@ -305,9 +305,8 @@ void LikeBackDialog::requestFinished( int id, bool error )
     {
         KMessageBox::information( this,
                                   i18nc( "Dialog box text",
-                                         "<p>Your comment has been sent successfully. "
-                                         "It will help us improve the application!</p>"
-                                         "<p>Thanks for your time.</p>" ),
+                                         "<p>Your comment has been sent successfully.</p>"
+                                         "<p>Thank you for your time.</p>" ),
                                   i18nc( "Dialog box title", "Comment Sent" ) );
 
         hide();
