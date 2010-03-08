@@ -330,7 +330,7 @@ void LikeBack::showInformationMessage()
   {
     likeAndDislikePhrase = i18nc( "Welcome dialog text, explanation for both the like and dislike buttons",
                                   "Each time you have a great or frustrating experience, "
-                                  "please click on the appropriate face below the window title-bar, "
+                                  "please click on the appropriate face below the window title bar, "
                                   "briefly describe what you like or dislike and click on 'Send'." );
   }
   else if( buttons & LikeBack::Like )
@@ -381,7 +381,7 @@ void LikeBack::showInformationMessage()
     examplesBlocks += "<img src=\"" + bugIconPath + "\"/> &nbsp;"
                       "<span>" +
                       i18nc( "Welcome dialog text, usage example",
-                             "<b>The application shows an improper behaviour</b> when clicking the Add button. Nothing happens." ) +
+                             "<b>The application shows an improper behavior</b> when clicking the Add button. Nothing happens." ) +
                       "</span><br/>";
   }
   if( buttons & LikeBack::Feature )
@@ -478,6 +478,7 @@ bool LikeBack::isDevelopmentVersion( const QString &version )
          version.indexOf( "beta",  0, Qt::CaseInsensitive ) != -1 ||
          version.indexOf( "rc",    0, Qt::CaseInsensitive ) != -1 ||
          version.indexOf( "svn",   0, Qt::CaseInsensitive ) != -1 ||
+         version.indexOf( "git",   0, Qt::CaseInsensitive ) != -1 ||
          version.indexOf( "cvs",   0, Qt::CaseInsensitive ) != -1;
 }
 
