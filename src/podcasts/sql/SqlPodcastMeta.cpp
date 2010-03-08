@@ -610,6 +610,14 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
+
+    if( !m_provider )
+        return PodcastEpisodePtr();
+
+    //check for guid and return the episode we might already have.
+    if( !episode->guid().isEmpty() && m_provider->possiblyContainsTrack( episode->guid() ) )
+        return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
+
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     //episodes are sorted on pubDate high to low
