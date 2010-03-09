@@ -82,6 +82,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_view->setSpacing( 4 );
     m_view->setUniformItemSizes( true );
     m_view->setViewMode( QListView::IconMode );
+    m_view->setResizeMode( QListView::Adjust );
 
     connect( m_view, SIGNAL(itemClicked(QListWidgetItem*)),
              this,   SLOT(itemClicked(QListWidgetItem*)) );
