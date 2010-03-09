@@ -26,10 +26,12 @@
 
 #include <QLabel>
 #include <QList>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
 
 class KLineEdit;
+class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
@@ -46,7 +48,7 @@ public:
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return *m_labelPixmap->pixmap(); }
+    const QPixmap image() { return m_pixmap; }
 
 signals:
     void newCustomQuery( const QString & );
@@ -59,37 +61,20 @@ public slots:
 
 protected:
     void keyPressEvent( QKeyEvent *event );
-    void resizeEvent( QResizeEvent *event );
     void closeEvent( QCloseEvent *event );
-    void wheelEvent( QWheelEvent *event );
 
 private slots:
-    /**
-    *   Switch picture label and current index to next cover
-    */
-    void nextPix();
-
-    /**
-    *   Switch picture label and current index to previous cover
-    */
-    void prevPix();
+    void itemClicked( QListWidgetItem *item );
 
 private:
     void updateGui();
-    void updatePixmap();
-    void updateButtons();
     void updateDetails();
     void updateTitle();
 
-    QPixmap noCover( int size = 300 );
-    QPixmap m_noCover;               //! nocover.png cache
-
-    QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout
     KLineEdit      *m_search;        //! Custom search input
-    KPushButton    *m_next;          //! Next Button
-    KPushButton    *m_prev;          //! Back Button
+    KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
 
     //! Album associated with the covers
@@ -98,10 +83,23 @@ private:
     //! Retrieved covers for the album
     QList< QPixmap > m_covers;
 
-    //! Current position indices for m_covers
-    int m_index;
+    //! Currently selected cover image
+    QPixmap m_pixmap;
 
     Q_DISABLE_COPY( CoverFoundDialog );
+};
+
+class CoverFoundItem : public QListWidgetItem
+{
+public:
+    explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 )
+        : QListWidgetItem( pixmap, QString(), parent ), m_pixmap( pixmap ) {}
+    ~CoverFoundItem() {}
+
+    QPixmap pixmap() const { return m_pixmap; }
+
+private:
+    QPixmap m_pixmap;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */
