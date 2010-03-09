@@ -23,17 +23,15 @@
 #include "meta/Meta.h"
 
 #include <KDialog>
-#include <KPushButton>
 
-#include <QHash>
 #include <QLabel>
 #include <QList>
 #include <QObject>
 #include <QPixmap>
 
-class KHBox;
 class KLineEdit;
 class KPushButton;
+class QFrame;
 class QGridLayout;
 
 class CoverFoundDialog : public KDialog

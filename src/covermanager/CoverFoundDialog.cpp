@@ -22,9 +22,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "PaletteHandler.h"
 
-#include <KLocale>
 #include <KLineEdit>
 #include <KPushButton>
 #include <KStandardDirs>
@@ -32,6 +30,7 @@
 
 #include <QCloseEvent>
 #include <QDir>
+#include <QFrame>
 #include <QGridLayout>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
