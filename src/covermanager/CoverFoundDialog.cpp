@@ -97,6 +97,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_detailsLayout->addWidget( albumLabel,  1, 0 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
+    m_detailsLayout->setColumnStretch( 1, 1 );
 
     setMainWidget( box );
     setDetailsWidget( m_details );
