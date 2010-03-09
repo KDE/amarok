@@ -155,9 +155,10 @@ SetCustomCoverAction::slotTriggered()
     dlg.setCaption( i18n("Select Cover Image File") );
     dlg.setInlinePreviewShown( true );
 
-    KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() );
-    KDirLister *dirLister = fileWidget->dirOperator()->dirLister();
-    dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
+    // trueg: there could be another implementation of the file module which does not use KFileWidget!
+    if ( KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() ) )
+        if ( KDirLister *dirLister = fileWidget->dirOperator()->dirLister() )
+            dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
 
     dlg.exec();
     KUrl file = dlg.selectedUrl();
