@@ -23,6 +23,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 
+#include <KHBox>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KPushButton>
@@ -55,9 +56,19 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     KVBox *box = new KVBox( this );
     box->setSpacing( 4 );
 
-    m_search = new KLineEdit( box );
+    KHBox *searchBox = new KHBox( box );
+    box->setSpacing( 4 );
+
+    m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+
+    KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
+
+    connect( m_search, SIGNAL(returnPressed(const QString&)),
+             this,     SIGNAL(newCustomQuery(const QString&)) );
+    connect( searchButton, SIGNAL(pressed()),
+             this,         SLOT(searchButtonPressed()) );
 
     m_view = new KListWidget( box );
     m_view->setGridSize( QSize( 140, 140 ) );
@@ -70,8 +81,6 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
              this,   SLOT(itemClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
-    connect( m_search, SIGNAL(returnPressed(const QString&)),
-             this,     SIGNAL(newCustomQuery(const QString&)) );
 
     QFrame *m_details = new QFrame( this );
     m_details->setFrameShadow( QFrame::Plain );
@@ -136,6 +145,12 @@ void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
     KDialog::accept();
+}
+
+void CoverFoundDialog::searchButtonPressed()
+{
+    const QString text = m_search->text();
+    emit newCustomQuery( text );
 }
 
 void CoverFoundDialog::updateGui()

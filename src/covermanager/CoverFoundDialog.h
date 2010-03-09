@@ -65,6 +65,7 @@ private slots:
     void clearView();
     void itemClicked( QListWidgetItem *item );
     void itemDoubleClicked( QListWidgetItem *item );
+    void searchButtonPressed();
 
 private:
     void updateGui();
