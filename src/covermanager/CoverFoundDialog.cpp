@@ -94,15 +94,19 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
     QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
     QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
+    QLabel *artistText  = new QLabel( m_details );
+    QLabel *albumText   = new QLabel( m_details );
 
     artistLabel->setAlignment( Qt::AlignRight );
     albumLabel->setAlignment( Qt::AlignRight );
+    artistText->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    albumText->setTextInteractionFlags( Qt::TextBrowserInteraction );
 
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
     m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
+    m_detailsLayout->addWidget( artistText, 0, 1 );
+    m_detailsLayout->addWidget( albumText, 1, 1 );
     m_detailsLayout->setColumnStretch( 1, 1 );
 
     setMainWidget( box );
