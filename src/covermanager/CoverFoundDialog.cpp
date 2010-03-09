@@ -86,21 +86,17 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_details->setFrameShadow( QFrame::Plain );
     m_details->setFrameShape( QFrame::Box );
 
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", m_details );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", m_details );
-    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", m_details );
+    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
+    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
 
     artistLabel->setAlignment( Qt::AlignRight );
     albumLabel->setAlignment( Qt::AlignRight );
-    sizeLabel->setAlignment( Qt::AlignRight );
 
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
     m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( sizeLabel,   2, 0 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
 
     setMainWidget( box );
     setDetailsWidget( m_details );
@@ -174,11 +170,9 @@ void CoverFoundDialog::updateDetails()
 
         QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
         QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-        QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
 
         artistName->setText( artist );
         albumName->setText( m_album->prettyName() );
-        coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
     }
 }
 
@@ -194,6 +188,13 @@ void CoverFoundDialog::add( QPixmap cover )
 {
     m_covers << cover;
     CoverFoundItem *item = new CoverFoundItem( cover );
+
+    const QString size = QString( "%1x%2" )
+        .arg( QString::number( cover.width() ) )
+        .arg( QString::number( cover.height() ) );
+    const QString tip = i18n( "Size:" ) + size;
+    item->setToolTip( tip );
+
     m_view->addItem( item );
 }
 
