@@ -59,11 +59,6 @@ class ScriptableServiceMetaItem
         QPixmap m_serviceEmblem;
         QString m_serviceScalableEmblem;
 
-        Meta::AlbumPtr m_albumPtr;
-        Meta::ArtistPtr m_artistPtr;
-        Meta::GenrePtr m_genrePtr;
-        Meta::ComposerPtr m_composerPtr;
-        Meta::YearPtr m_yearPtr;
 };
 
 
@@ -77,13 +72,7 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         virtual QString sourceDescription();
         virtual QPixmap emblem();
         virtual QString scalableEmblem();
-
-        virtual Meta::AlbumPtr album() const;
-        virtual Meta::ArtistPtr artist() const;
-        virtual Meta::GenrePtr genre() const;
-        virtual Meta::ComposerPtr composer() const;
-        virtual Meta::YearPtr year() const;
-        
+      
         void setAlbumName( const QString &newAlbum );
         void setArtistName( const QString &newArtist );
         void setGenreName( const QString &newGenre );

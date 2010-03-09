@@ -75,8 +75,10 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
                                    const QString & composerOverride, int yearOverride, const QString &coverUrl  )
 {
-    DEBUG_BLOCK
 
+    /*
+    please dont remove this block as I regularly need it for debugging - nhn
+    DEBUG_BLOCK
     debug() << "level: " << level;
     debug() << "parentId: " << parentId;
     debug() << "name: " << name;
@@ -86,7 +88,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
     debug() << "albumOverride: " << albumOverride;
     debug() << "artistOverride: " << artistOverride;
-    debug() << "coverUrl: " << coverUrl;
+    debug() << "coverUrl: " << coverUrl;*/
 
     if ( ( level +1 > m_levels ) || level < 0 )
         return -1;
@@ -221,8 +223,6 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
 int ScriptableService::addTrack( ScriptableServiceTrack * track )
 {
-    DEBUG_BLOCK
-
     int artistId = -1;
     int genreId = -1;
 
@@ -246,6 +246,7 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
         }
 
         ScriptableServiceAlbum * album = m_ssAlbumIdMap.value( albumId );
+        
         track->setAlbum( album->prettyName() );
         track->setAlbumPtr( AlbumPtr( album ) );
         album->addTrack( trackPtr );
@@ -352,7 +353,6 @@ int ScriptableService::addGenre( Meta::ScriptableServiceGenre * genre )
 
 void ScriptableService::donePopulating( int parentId )
 {
-    DEBUG_BLOCK
     m_collection->donePopulating( parentId );
 }
 
@@ -414,9 +414,6 @@ void ScriptableService::setCurrentInfo( const QString & info )
 {
     infoChanged( info );
 }
-
-
-
 
 
 
