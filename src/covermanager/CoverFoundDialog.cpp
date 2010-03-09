@@ -71,6 +71,11 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
              this,         SLOT(searchButtonPressed()) );
 
     m_view = new KListWidget( box );
+    m_view->setAcceptDrops( false );
+    m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
+    m_view->setDragEnabled( false );
+    m_view->setDropIndicatorShown( false );
+    m_view->setMovement( QListView::Static );
     m_view->setGridSize( QSize( 140, 140 ) );
     m_view->setIconSize( QSize( 120, 120 ) );
     m_view->setSpacing( 4 );
