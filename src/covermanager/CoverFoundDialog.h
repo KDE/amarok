@@ -54,8 +54,6 @@ signals:
     void newCustomQuery( const QString & );
 
 public slots:
-    virtual void accept();
-
     void add( QPixmap cover );
     void add( QList< QPixmap > covers );
 
@@ -66,6 +64,7 @@ protected:
 private slots:
     void clearView();
     void itemClicked( QListWidgetItem *item );
+    void itemDoubleClicked( QListWidgetItem *item );
 
 private:
     void updateGui();

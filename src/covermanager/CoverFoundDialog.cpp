@@ -68,6 +68,8 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
     connect( m_view, SIGNAL(itemClicked(QListWidgetItem*)),
              this,   SLOT(itemClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)),
              this,     SIGNAL(newCustomQuery(const QString&)) );
 
@@ -129,6 +131,13 @@ void CoverFoundDialog::itemClicked( QListWidgetItem *item )
     updateDetails();
 }
 
+
+void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
+{
+    m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
+    KDialog::accept();
+}
+
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
@@ -166,7 +175,6 @@ void CoverFoundDialog::updateTitle()
     this->setCaption( caption );
 }
 
-//SLOT
 void CoverFoundDialog::add( QPixmap cover )
 {
     m_covers << cover;
@@ -174,7 +182,6 @@ void CoverFoundDialog::add( QPixmap cover )
     m_view->addItem( item );
 }
 
-//SLOT
 void CoverFoundDialog::add( QList< QPixmap > covers )
 {
     foreach( const QPixmap &cover, covers )
@@ -182,17 +189,6 @@ void CoverFoundDialog::add( QList< QPixmap > covers )
         add( cover );
     }
     updateGui();
-}
-
-//SLOT
-void CoverFoundDialog::accept()
-{
-    if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-        done( 1000 );
-    else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-        done( 1001 );
-    else
-        KDialog::accept();
 }
 
 #include "CoverFoundDialog.moc"
