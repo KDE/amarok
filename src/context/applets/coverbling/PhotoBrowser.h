@@ -37,8 +37,6 @@ public:
 
   void fillAlbums(Meta::AlbumList albums);
 public slots:
-        void    skipToFirst();
-	void	skipToLast();
 	void	fastForward();
 	void	fastBackward();
 	void 	skipToSlide(int iSlide); 

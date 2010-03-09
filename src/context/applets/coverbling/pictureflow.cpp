@@ -270,7 +270,7 @@ void PictureFlowState::reset()
 // ------------- PictureFlowAnimator  ---------------------------------------
 
 PictureFlowAnimator::PictureFlowAnimator():
-        state( 0 ), target( 0 ), step( 0 ), frame( 0 ), animationDuration(30)
+        state( 0 ), target( 0 ), step( 0 ), frame( 0 ), animationDuration( 30 )
 {
 }
 
@@ -455,7 +455,7 @@ void PictureFlowSoftwareRenderer::paint()
         render();
 
     QPainter painter( widget );
-    painter.setRenderHints(render_hints);
+    painter.setRenderHints( render_hints );
     painter.drawImage( QPoint( 0, 0 ), buffer );
 }
 
@@ -635,7 +635,7 @@ QImage* PictureFlowSoftwareRenderer::surface( int slideIndex )
             QImage img = QImage( sw, sh, QImage::Format_RGB32 );
 
             QPainter painter( &img );
-	    painter.setRenderHints(render_hints);
+            painter.setRenderHints( render_hints );
             QPoint p1( sw*4 / 10, 0 );
             QPoint p2( sw*6 / 10, sh );
             QLinearGradient linearGrad( p1, p2 );
@@ -705,7 +705,7 @@ QRect PictureFlowSoftwareRenderer::renderSlide( const SlideInfo &slide, int col1
     PFreal ys = slide.cy - state->slideWidth * sdy / 2;
     PFreal dist = distance * PFREAL_ONE;
 
-    int xi = qMax(( PFreal )0, (( w * PFREAL_ONE / 2 ) + fdiv( xs * h, dist + ys )) >> PFREAL_SHIFT );
+    int xi = qMax(( PFreal )0, (( w * PFREAL_ONE / 2 ) + fdiv( xs * h, dist + ys ) ) >> PFREAL_SHIFT );
     if ( xi >= w )
         return rect;
 
@@ -897,14 +897,14 @@ void PictureFlow::setReflectionEffect( ReflectionEffect effect )
     d->state->reflectionEffect = effect;
     triggerRender();
 }
-void PictureFlow::setRenderHints(QPainter::RenderHints iHints)
+void PictureFlow::setRenderHints( QPainter::RenderHints iHints )
 {
     d->renderer->render_hints = iHints;
     triggerRender();
 }
-void PictureFlow::setAnimationTime(int iTime)
+void PictureFlow::setAnimationTime( int iTime )
 {
-   d->animator->animationDuration = iTime;
+    d->animator->animationDuration = iTime;
 }
 QImage PictureFlow::slide( int index ) const
 {
@@ -1075,7 +1075,8 @@ void PictureFlow::wheelEvent( QWheelEvent * event )
     bool forward = TRUE;
     if ( numSteps < 0 )
     {
-        forward = FALSE; numSteps = -numSteps;
+        forward = FALSE;
+        numSteps = -numSteps;
     }
     for ( int i = 1;i <= numSteps;i++ )
     {

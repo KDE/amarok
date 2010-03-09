@@ -73,22 +73,23 @@ CoverBlingApplet::init()
     m_layout = new QGraphicsProxyWidget( this );
     m_pictureflow = new PhotoBrowser();
     m_layout->setWidget( m_pictureflow );
-    m_pictureflow->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+    m_pictureflow->setRenderHints( QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
 
-    KConfigGroup config = Amarok::config("CoverBling Applet");
+    KConfigGroup config = Amarok::config( "CoverBling Applet" );
     m_coversize = config.readEntry( "CoverSize", 200 );
-    //m_coversize = 200;
-    //m_reflectionEffect = PictureFlow::PlainReflection;
     int reflectioneffect = config.readEntry( "ReflectionEffect", 1 );
-    if ( reflectioneffect==0 )
+    if ( reflectioneffect == 0 )
         m_reflectionEffect = PictureFlow::NoReflection;
     else if ( reflectioneffect == 1 )
-         m_reflectionEffect = PictureFlow::PlainReflection;
-    else if ( reflectioneffect == 2)
+        m_reflectionEffect = PictureFlow::PlainReflection;
+    else if ( reflectioneffect == 2 )
         m_reflectionEffect = PictureFlow::BlurredReflection;
 
+    m_autojump = config.readEntry( "AutoJump", false );
+    m_animatejump = config.readEntry( "AnimateJump", true );
+
     m_pictureflow->show();
-    
+
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
@@ -120,8 +121,8 @@ CoverBlingApplet::init()
     m_fullscreen = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) ), this );
     m_jumptoplaying = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) ), this );
 
-    connect( m_blingtofirst, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToFirst() ) );
-    connect( m_blingtolast, SIGNAL( clicked() ), m_pictureflow, SLOT( skipToLast() ) );
+    connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
+    connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
     connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
     connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
     connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
@@ -185,15 +186,15 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
     int vertical_size = boundingRect().height();
     int horizontal_size = boundingRect().width();
-    QSize slideSize( vertical_size/2, vertical_size/2 );
-    if (!m_fullsize)
+    QSize slideSize( vertical_size / 2, vertical_size / 2 );
+    if ( !m_fullsize )
     {
-        slideSize.setWidth(m_coversize);
-        slideSize.setHeight(m_coversize);
+        slideSize.setWidth( m_coversize );
+        slideSize.setHeight( m_coversize );
     }
     m_pictureflow->setSlideSize( slideSize );
-    m_pictureflow->setReflectionEffect(m_reflectionEffect);
-    m_pictureflow->setAnimationTime(20);
+    m_pictureflow->setReflectionEffect( m_reflectionEffect );
+    m_pictureflow->setAnimationTime( 20 );
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
@@ -217,18 +218,18 @@ CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 }
 void CoverBlingApplet::toggleFullscreen()
 {
-    if (m_fullsize)
+    if ( m_fullsize )
     {
-	resize(-1,400);
+        resize( -1, 400 );
     }
     else
     {
-	//QDesktopWidget* desktop = QApplication::desktop();
+        //QDesktopWidget* desktop = QApplication::desktop();
         //if (desktop)
         {
-        //    QRect rect = desktop->screenGeometry();
-        //    resize(rect.width(),rect.height());
-            resize(-1,-1);
+            //    QRect rect = desktop->screenGeometry();
+            //    resize(rect.width(),rect.height());
+            resize( -1, -1 );
         }
     }
     updateConstraints();
@@ -241,66 +242,98 @@ void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
 
-    if ( m_reflectionEffect == PictureFlow::NoReflection)
+    if ( m_reflectionEffect == PictureFlow::NoReflection )
         ui_Settings.reflectionEffectCombo->setCurrentIndex( 0 );
     else if ( m_reflectionEffect == PictureFlow::PlainReflection )
         ui_Settings.reflectionEffectCombo->setCurrentIndex( 1 );
     else if ( m_reflectionEffect == PictureFlow::BlurredReflection )
         ui_Settings.reflectionEffectCombo->setCurrentIndex( 2 );
-    if (m_coversize)
-        ui_Settings.coversizeSpin->setValue(m_coversize);
-    parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system");
+    if ( m_coversize )
+        ui_Settings.coversizeSpin->setValue( m_coversize );
+    ui_Settings.autoJumpChk->setChecked( m_autojump );
+    ui_Settings.animJumpChk->setChecked( m_animatejump );
+    parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system" );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 void CoverBlingApplet::saveSettings()
 {
     m_coversize = ui_Settings.coversizeSpin->value();
-    if (ui_Settings.reflectionEffectCombo->currentIndex()==0)
+    if ( ui_Settings.reflectionEffectCombo->currentIndex() == 0 )
         m_reflectionEffect = PictureFlow::NoReflection;
-    else if (ui_Settings.reflectionEffectCombo->currentIndex()==1)
+    else if ( ui_Settings.reflectionEffectCombo->currentIndex() == 1 )
         m_reflectionEffect = PictureFlow::PlainReflection;
-    else if (ui_Settings.reflectionEffectCombo->currentIndex()==2)
+    else if ( ui_Settings.reflectionEffectCombo->currentIndex() == 2 )
         m_reflectionEffect = PictureFlow::BlurredReflection;
-
-    KConfigGroup config = Amarok::config("CoverBling Applet");
+    m_autojump = ui_Settings.autoJumpChk->isChecked();
+    m_animatejump = ui_Settings.animJumpChk->isChecked();
+    KConfigGroup config = Amarok::config( "CoverBling Applet" );
     config.writeEntry( "CoverSize", m_coversize );
-    config.writeEntry( "ReflectionEffect", (int) m_reflectionEffect );
+    config.writeEntry( "ReflectionEffect", ( int ) m_reflectionEffect );
+    config.writeEntry( "AutoJump", m_autojump );
+    config.writeEntry( "AnimateJump", m_animatejump );
     constraintsEvent();
 }
 void CoverBlingApplet::jumpToPlaying()
 {
-   Meta::TrackPtr track = The::engineController()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    if( !track )
+    if ( !track )
         return;
     Meta::AlbumPtr album = track->album();
     if ( !album )
-	return;
+        return;
+    int center = m_pictureflow->centerIndex();
+    if ( m_pictureflow->album( center ) == album )
+        return;
     int nbslides = m_pictureflow->slideCount();
     bool found = false;
     int index = 0;
-    for (int i=0; i<nbslides;i++)
+    for ( int i = 0; i < nbslides;i++ )
     {
-	Meta::AlbumPtr current_album = m_pictureflow->album(i);
-	if (current_album==album)
-	{
-	    index = i;
-	    found = true;
-	    break;
-	}
-    }
-    if (found)
-    {
-	int center = m_pictureflow->centerIndex();
-        if (center - index > 10 || index - center > 10)
+        Meta::AlbumPtr current_album = m_pictureflow->album( i );
+        if ( current_album == album )
         {
-            if (index>center)
-	    	m_pictureflow->skipToSlide( index - 10 );
-            else
-         	m_pictureflow->skipToSlide( index + 10 );
-	}
-	m_pictureflow->showSlide( index );
+            index = i;
+            found = true;
+            break;
+        }
+    }
+    if ( found )
+    {
+        if ( m_animatejump )
+        {
+            if ( center - index > 10 || index - center > 10 )
+            {
+                if ( index > center )
+                    m_pictureflow->skipToSlide( index - 10 );
+                else
+                    m_pictureflow->skipToSlide( index + 10 );
+            }
+            m_pictureflow->showSlide( index );
+        }
+        else
+            m_pictureflow->skipToSlide( index );
+    }
+    slideChanged( index );
+}
+void CoverBlingApplet::engineNewTrackPlaying( )
+{
+    if ( m_autojump )
+    {
+        jumpToPlaying();
     }
 }
+void CoverBlingApplet::skipToFirst()
+{
+    m_pictureflow->skipToSlide( 0 );
+    slideChanged( 0 );
+}
+void CoverBlingApplet::skipToLast()
+{
+    int nbslides = m_pictureflow->slideCount();
+    m_pictureflow->skipToSlide( nbslides - 1 );
+    slideChanged( nbslides - 1 );
+}
+
 #include "CoverBlingApplet.moc"
 

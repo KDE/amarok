@@ -58,7 +58,9 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 
         void    init();
         void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-        
+                
+	// inherited from EngineObserver
+        virtual void engineNewTrackPlaying();
     public slots:
 	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
 	void	slideChanged(int islideindex);
@@ -66,6 +68,8 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
         void	toggleFullscreen();
         void	jumpToPlaying();
         void    saveSettings();
+	void	skipToFirst();
+	void	skipToLast();
     protected :
 	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);
@@ -82,6 +86,8 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	MyGraphicItem* m_fullscreen;
 	MyGraphicItem* m_jumptoplaying;
 	bool m_fullsize;
+	bool m_autojump;
+	bool m_animatejump;
         Ui::coverblingSettings   ui_Settings;
 	int m_coversize;
 	PictureFlow::ReflectionEffect m_reflectionEffect;
