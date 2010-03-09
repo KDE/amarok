@@ -43,8 +43,12 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     , m_album( album )
     , m_covers( covers )
 {
-    setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel );
+    setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
+                KDialog::User1 ); // User1: clear icon view
     setInitialSize( QSize( 480, 350 ) );
+
+    setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
+    connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
 
     m_save = button( KDialog::Ok );
 
@@ -110,6 +114,13 @@ void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
     m_covers.clear();
     event->accept();
+}
+
+void CoverFoundDialog::clearView()
+{
+    m_view->clear();
+    m_covers.clear();
+    updateGui();
 }
 
 void CoverFoundDialog::itemClicked( QListWidgetItem *item )

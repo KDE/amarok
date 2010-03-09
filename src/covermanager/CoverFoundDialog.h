@@ -64,6 +64,7 @@ protected:
     void closeEvent( QCloseEvent *event );
 
 private slots:
+    void clearView();
     void itemClicked( QListWidgetItem *item );
 
 private:
