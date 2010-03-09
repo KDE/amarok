@@ -22,6 +22,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "SvgHandler.h"
 
 #include <KHBox>
 #include <KLineEdit>
@@ -211,6 +212,15 @@ void CoverFoundDialog::add( QList< QPixmap > covers )
         add( cover );
     }
     updateGui();
+}
+
+CoverFoundItem::CoverFoundItem( QPixmap pixmap, QListWidget *parent )
+    : QListWidgetItem( parent )
+    , m_pixmap( pixmap )
+{
+    QPixmap scaledPix = pixmap.scaled( QSize( 120, 120 ) );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    setIcon( prettyPix );
 }
 
 #include "CoverFoundDialog.moc"

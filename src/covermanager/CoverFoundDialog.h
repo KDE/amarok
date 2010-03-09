@@ -93,8 +93,7 @@ private:
 class CoverFoundItem : public QListWidgetItem
 {
 public:
-    explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 )
-        : QListWidgetItem( pixmap, QString(), parent ), m_pixmap( pixmap ) {}
+    explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 );
     ~CoverFoundItem() {}
 
     QPixmap pixmap() const { return m_pixmap; }
