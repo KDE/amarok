@@ -178,9 +178,9 @@ void CoverFoundDialog::updateDetails()
 
 void CoverFoundDialog::updateTitle()
 {
-    QString caption;
-
-    caption = m_covers.isEmpty() ? i18n( "Cover Not Found" ) : i18n( "Cover Found" );
+    const QString caption = m_covers.isEmpty()
+                          ? i18n( "Cover Not Found" )
+                          : i18np( "1 Cover Found", "%1 Covers Found", m_view->count() );
     this->setCaption( caption );
 }
 
