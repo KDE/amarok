@@ -112,7 +112,7 @@ X-KDE-Library=amarok_smb-device
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=53
+X-KDE-Amarok-framework-version=54
 X-KDE-Amarok-name=smb-device
 X-KDE-Amarok-plugintype=device
 X-KDE-Amarok-rank=100
