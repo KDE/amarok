@@ -66,6 +66,16 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
 
+    KCompletion *searchComp = m_search->completionObject();
+    searchComp->setOrder( KCompletion::Insertion );
+    searchComp->setIgnoreCase( true );
+
+    QStringList completionNames;
+    completionNames << m_album->name();
+    if( m_album->hasAlbumArtist() )
+        completionNames << m_album->albumArtist()->name();
+    searchComp->setItems( completionNames );
+
     KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
 
@@ -76,6 +86,8 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     sourceMenu->addAction( webSearch );
     sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
+    connect( m_search,   SIGNAL(returnPressed(const QString&)),
+             searchComp, SLOT(addItem(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)),
              this,     SIGNAL(newCustomQuery(const QString&)) );
     connect( searchButton, SIGNAL(pressed()),
