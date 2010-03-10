@@ -65,6 +65,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->setTrapReturnKey( true );
 
     KCompletion *searchComp = m_search->completionObject();
     searchComp->setOrder( KCompletion::Insertion );
@@ -146,12 +147,6 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
         m_pixmap = firstItem->pixmap();
 
     updateGui();
-}
-
-void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
-{
-    if( !m_search->hasFocus() )
-        KDialog::keyPressEvent( event );
 }
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
