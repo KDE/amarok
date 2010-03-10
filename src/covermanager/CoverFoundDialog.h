@@ -82,9 +82,6 @@ private:
     //! Album associated with the covers
     Meta::AlbumPtr m_album;
 
-    //! Retrieved covers for the album
-    QList< QPixmap > m_covers;
-
     //! Currently selected cover image
     QPixmap m_pixmap;
 

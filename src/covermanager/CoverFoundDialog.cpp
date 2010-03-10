@@ -46,7 +46,6 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
                                     const QList<QPixmap> &covers )
     : KDialog( parent )
     , m_album( album )
-    , m_covers( covers )
 {
     setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -145,14 +144,13 @@ void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
-    m_covers.clear();
+    clearView();
     event->accept();
 }
 
 void CoverFoundDialog::clearView()
 {
     m_view->clear();
-    m_covers.clear();
     updateGui();
 }
 
@@ -223,15 +221,15 @@ void CoverFoundDialog::updateDetails()
 
 void CoverFoundDialog::updateTitle()
 {
-    const QString caption = m_covers.isEmpty()
+    const int itemCount = m_view->count();
+    const QString caption = ( itemCount == 0 )
                           ? i18n( "Cover Not Found" )
-                          : i18np( "1 Cover Found", "%1 Covers Found", m_view->count() );
-    this->setCaption( caption );
+                          : i18np( "1 Cover Found", "%1 Covers Found", itemCount );
+    setCaption( caption );
 }
 
 void CoverFoundDialog::add( QPixmap cover )
 {
-    m_covers << cover;
     CoverFoundItem *item = new CoverFoundItem( cover );
 
     const QString size = QString( "%1x%2" )
