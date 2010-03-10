@@ -185,7 +185,7 @@ private slots:
      * Show the settings windows
      */
     void configure();
-    void switchToLang(QString lang);
+    void switchToLang(const QString &lang);
     void changeMaxArtists( int value );
     void saveMaxArtists();
     void saveSettings();
