@@ -59,7 +59,7 @@ VERSION 2.3
       with a clean startup. (BR 227797)
     * Fixed a crash when pressing dynamic playlist "save" button on first
       startup. (BR 227073)
-    * Fixed a bug when trying to drag files from some app into Amarok.
+    * Fixed a bug when trying to drag files from another application into Amarok.
       (BR 226167)
     * Fixed a bug in podcast parsing that broke all feeds that do not include a
       guid and possible overwrited data from other podcasts. Introduced in 2.3 beta.
