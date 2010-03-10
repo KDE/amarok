@@ -38,7 +38,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QSizePolicy>
 
-#define HEIGHT 120
+#define HEIGHT 130
 #define ICON_SIZE 16
 
 
