@@ -18,6 +18,7 @@
 #include "PlaylistCategory.h"
 
 #include "CollectionManager.h"
+#include "Debug.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
@@ -28,9 +29,13 @@
 #include "UserPlaylistModel.h"
 
 #include <KAction>
+#include <KActionMenu>
+#include <KButtonGroup>
 #include <KIcon>
 #include <KLineEdit>
 
+#include <QButtonGroup>
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -72,6 +77,12 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
     m_defaultItemView = m_playlistView->itemDelegate();
 
+    m_filterProxy = new QSortFilterProxyModel( this );
+    m_filterProxy->setDynamicSortFilter( true );
+    m_filterProxy->setFilterKeyColumn( PlaylistBrowserNS::UserModel::ProviderColumn );
+
+    m_playlistView->setModel( m_filterProxy );
+
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
@@ -84,6 +95,10 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
+
+    m_providerMenu = new KActionMenu( KIcon( "view-list-tree" ), i18n( "Visible Sources"), this );
+    m_providerMenu->setDelayed( false );
+    toolBar->addAction( m_providerMenu );
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
     toggleAction->setToolTip( i18n( "Merged View" ) );
@@ -111,7 +126,11 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    new PlaylistTreeItemDelegate( m_playlistView );
+    foreach( const PlaylistProvider *provider,
+             The::playlistManager()->providersForCategory( PlaylistManager::UserPlaylist ) )
+    {
+        createProviderButton( provider );
+    }
 }
 
 PlaylistCategory::~PlaylistCategory()
@@ -130,13 +149,13 @@ PlaylistCategory::toggleView( bool merged )
 {
     if( merged )
     {
-        m_playlistView->setModel( m_byFolderProxy );
+        m_filterProxy->setSourceModel( m_byFolderProxy );
         m_playlistView->setItemDelegate( m_defaultItemView );
         m_playlistView->setRootIsDecorated( true );
     }
     else
     {
-        m_playlistView->setModel( m_byProviderProxy );
+        m_filterProxy->setSourceModel( m_byProviderProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
     }
@@ -146,6 +165,57 @@ PlaylistCategory::toggleView( bool merged )
     //TODO: set a tooltip saying why it's disabled mention labels
 
     Amarok::config( s_configGroup ).writeEntry( s_mergeViewKey, merged );
+}
+
+void
+PlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int category )
+{
+    if( !m_providerActions.keys().contains( provider ) )
+        createProviderButton( provider );
+}
+
+void
+PlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category )
+{
+    if( m_providerActions.keys().contains( provider ) )
+    {
+        QAction *providerToggle = m_providerActions.take( provider );
+        m_providerMenu->removeAction( providerToggle );
+    }
+}
+
+void
+PlaylistCategory::createProviderButton( const PlaylistProvider *provider )
+{
+    QAction *providerToggle = new QAction( provider->icon(), provider->prettyName(), this );
+    providerToggle->setCheckable( true );
+    providerToggle->setChecked( true );
+    providerToggle->setData( QVariant::fromValue( provider ) );
+    connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton(bool)) );
+    m_providerMenu->addAction( providerToggle );
+    m_providerActions.insert( provider, providerToggle );
+}
+
+void
+PlaylistCategory::slotToggleProviderButton( bool enabled )
+{
+    DEBUG_BLOCK
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    const PlaylistProvider *provider = action->data().value<const PlaylistProvider *>();
+    if( !m_providerActions.keys().contains( provider ) )
+        return;
+
+    QString filter;
+    foreach( const PlaylistProvider *p, m_providerActions.keys() )
+    {
+        QAction *action = m_providerActions.value( p );
+        if( action->isChecked() )
+        {
+            QString escapedName = QRegExp::escape( p->prettyName() ).replace( " ", "\\ " );
+            filter += QString( filter.isEmpty() ? "^%1" : "|^%1" ).arg( escapedName );
+        }
+    }
+    m_filterProxy->setFilterRegExp( filter );
 }
 
 #include "PlaylistCategory.moc"

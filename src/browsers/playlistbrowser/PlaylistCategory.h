@@ -25,11 +25,15 @@
 
 #include <QModelIndex>
 #include <QPoint>
+#include <QSortFilterProxyModel>
 
 class QTreeView;
 
 class KAction;
+class KActionMenu;
 class KLineEdit;
+
+class PlaylistProvider;
 
 class PlaylistsInGroupsProxy;
 class PlaylistsByProviderProxy;
@@ -54,21 +58,32 @@ public:
     ~PlaylistCategory();
 
 private slots:
-    void newPalette( const QPalette & palette );
+    void newPalette( const QPalette &palette );
     void toggleView( bool );
+    void slotProviderAdded( PlaylistProvider *provider, int category );
+    void slotProviderRemoved( PlaylistProvider *provider, int category );
+    void slotToggleProviderButton( bool enabled );
 
 private:
-    UserPlaylistTreeView * m_playlistView;
+    void createProviderButton( const PlaylistProvider *provider );
 
-    KAction * m_addGroupAction;
+    UserPlaylistTreeView *m_playlistView;
+
+    KAction *m_addGroupAction;
+    KActionMenu *m_providerMenu;
+    QMap<const PlaylistProvider *, QAction *> m_providerActions;
     
     PlaylistTreeItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemView;
     PlaylistsInGroupsProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;
+    QSortFilterProxyModel *m_filterProxy;
 
 };
 
 }
+
+//for saving it in a QVariant
+Q_DECLARE_METATYPE( const PlaylistProvider * );
 
 #endif
