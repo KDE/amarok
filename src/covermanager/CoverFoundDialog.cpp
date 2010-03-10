@@ -68,6 +68,14 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
 
     KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
+    KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
+
+    QMenu *sourceMenu = new QMenu( sourceButton );
+    QAction *lastfm = new QAction( i18n( "Last.fm" ), sourceMenu );
+    QAction *webSearch = new QAction( i18n( "Web Search" ), sourceMenu );
+    sourceMenu->addAction( lastfm );
+    sourceMenu->addAction( webSearch );
+    sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
     connect( m_search, SIGNAL(returnPressed(const QString&)),
              this,     SIGNAL(newCustomQuery(const QString&)) );
