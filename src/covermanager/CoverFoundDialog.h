@@ -65,6 +65,7 @@ private slots:
     void clearView();
     void itemClicked( QListWidgetItem *item );
     void itemDoubleClicked( QListWidgetItem *item );
+    void itemMenuRequested( const QPoint &pos );
     void searchButtonPressed();
 
 private:
@@ -90,13 +91,21 @@ private:
     Q_DISABLE_COPY( CoverFoundDialog );
 };
 
-class CoverFoundItem : public QListWidgetItem
+class CoverFoundItem : public QObject, public QListWidgetItem
 {
+    Q_OBJECT
+
 public:
     explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 );
     ~CoverFoundItem() {}
 
     QPixmap pixmap() const { return m_pixmap; }
+
+public slots:
+    /**
+     * Opens a pixmap viewer
+     */
+    void display();
 
 private:
     QPixmap m_pixmap;

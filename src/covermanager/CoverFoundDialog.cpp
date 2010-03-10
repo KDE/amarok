@@ -21,7 +21,9 @@
 #include "CoverFoundDialog.h"
 
 #include "Amarok.h"
+#include "CoverViewDialog.h"
 #include "Debug.h"
+#include "PixmapViewer.h"
 #include "SvgHandler.h"
 
 #include <KHBox>
@@ -35,6 +37,7 @@
 #include <QDir>
 #include <QFrame>
 #include <QGridLayout>
+#include <QMenu>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
@@ -73,6 +76,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
     m_view = new KListWidget( box );
     m_view->setAcceptDrops( false );
+    m_view->setContextMenuPolicy( Qt::CustomContextMenu );
     m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
     m_view->setDragEnabled( false );
     m_view->setDropIndicatorShown( false );
@@ -88,6 +92,8 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
              this,   SLOT(itemClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
+             this,   SLOT(itemMenuRequested(const QPoint&)) );
 
     QFrame *m_details = new QFrame( this );
     m_details->setFrameShadow( QFrame::Plain );
@@ -153,6 +159,25 @@ void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
     KDialog::accept();
+}
+
+void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
+{
+    const QPoint globalPos = m_view->mapToGlobal( pos );
+    QModelIndex index = m_view->indexAt( pos );
+
+    if( !index.isValid() )
+        return;
+
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->item( index.row() ) );
+    item->setSelected( true );
+
+    QMenu menu( this );
+    QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
+    connect( display, SIGNAL(triggered()), item, SLOT(display()) );
+
+    menu.addAction( display );
+    menu.exec( globalPos );
 }
 
 void CoverFoundDialog::searchButtonPressed()
@@ -226,6 +251,13 @@ CoverFoundItem::CoverFoundItem( QPixmap pixmap, QListWidget *parent )
     QPixmap scaledPix = pixmap.scaled( QSize( 120, 120 ) );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setIcon( prettyPix );
+}
+
+void CoverFoundItem::display()
+{
+    QWidget *p = dynamic_cast<QWidget*>( parent() );
+    int parentScreen = KApplication::desktop()->screenNumber( p );
+    ( new CoverViewDialog( m_pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
 }
 
 #include "CoverFoundDialog.moc"
