@@ -31,6 +31,8 @@
 #include <qwidget.h>
 #include "meta/Meta.h"
 #include <qpainter.h>
+#include <QGraphicsView>
+#include "CoverBling.h"
 
 class PictureFlowPrivate;
 
@@ -65,7 +67,7 @@ public:
   /*!
     Creates a new PictureFlow widget.
   */  
-  PictureFlow(QWidget* parent = 0);
+  PictureFlow(QWidget* parent = 0, bool enableOpenGL = false);
 
   /*!
     Destroys the widget.
@@ -82,6 +84,7 @@ public:
   */
   void setBackgroundColor(const QColor& c);
 
+  void setOpenGLMode(bool activateOpenGL);
   /*!
     Returns the dimension of each slide (in pixels).
   */  
@@ -201,6 +204,8 @@ private slots:
 
 private:
   PictureFlowPrivate* d;
+  bool m_opengl;
+  CoverBling* m_openglwidget;
 };
 
 #endif // PICTUREFLOW_H

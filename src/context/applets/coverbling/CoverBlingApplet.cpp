@@ -73,6 +73,7 @@ CoverBlingApplet::init()
     m_layout = new QGraphicsProxyWidget( this );
     m_pictureflow = new PhotoBrowser();
     m_layout->setWidget( m_pictureflow );
+	
     m_pictureflow->setRenderHints( QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
 
     KConfigGroup config = Amarok::config( "CoverBling Applet" );

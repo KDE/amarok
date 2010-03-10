@@ -41,7 +41,7 @@ public:
     ImageLoader* worker;
 };
 
-PhotoBrowser::PhotoBrowser( QWidget* parent ): PictureFlow( parent )
+PhotoBrowser::PhotoBrowser( QWidget* parent, bool enableOpenGL ): PictureFlow( parent,enableOpenGL)
 {
     d = new Private;
 

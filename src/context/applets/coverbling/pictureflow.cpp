@@ -201,6 +201,33 @@ private:
     QImage* surface( int slideIndex );
 };
 
+class PictureFlowOpenGLRenderer: public PictureFlowAbstractRenderer
+{
+public:
+    PictureFlowOpenGLRenderer();
+    ~PictureFlowOpenGLRenderer();
+    void init();
+    void paint();
+private :
+    QSize size;
+    QRgb bgcolor;
+    int effect;
+    QImage* blankSurface;
+};
+
+PictureFlowOpenGLRenderer::PictureFlowOpenGLRenderer():
+        PictureFlowAbstractRenderer(), size( 0, 0 ), bgcolor( 0 ), effect( -1 ), blankSurface( 0 )
+{
+}
+PictureFlowOpenGLRenderer::~PictureFlowOpenGLRenderer()
+{
+}
+void PictureFlowOpenGLRenderer::init()
+{
+}
+void PictureFlowOpenGLRenderer::paint()
+{
+}
 // ------------- PictureFlowState ---------------------------------------
 
 PictureFlowState::PictureFlowState():
@@ -827,17 +854,30 @@ public:
 };
 
 
-PictureFlow::PictureFlow( QWidget* parent ): QWidget( parent )
+PictureFlow::PictureFlow( QWidget* parent, bool enableOpenGL): QWidget( parent )
 {
     d = new PictureFlowPrivate;
-
+    m_opengl = enableOpenGL;
+	m_openglwidget = 0;
     d->state = new PictureFlowState;
     d->state->reset();
     d->state->reposition();
 
-    d->renderer = new PictureFlowSoftwareRenderer;
-    d->renderer->state = d->state;
-    d->renderer->widget = this;
+	if (!m_opengl)
+	{
+		d->renderer = new PictureFlowSoftwareRenderer;
+		d->renderer->widget = this;
+	}
+	else
+	{
+		d->renderer = new PictureFlowOpenGLRenderer;
+		m_openglwidget = new CoverBling(0);
+		m_openglwidget->init(m_album_list);
+		m_openglwidget->show();
+		m_openglwidget->resize(-1,-1);
+		d->renderer->widget = m_openglwidget;
+	}
+	d->renderer->state = d->state;
     d->renderer->init();
 
     d->animator = new PictureFlowAnimator;
@@ -857,7 +897,10 @@ PictureFlow::~PictureFlow()
     delete d->state;
     delete d;
 }
-
+void PictureFlow::setOpenGLMode(bool activateOpenGL)
+{
+	m_opengl = activateOpenGL;
+}
 int PictureFlow::slideCount() const
 {
     return d->state->slideImages.count();

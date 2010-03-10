@@ -1,14 +1,18 @@
 project(context-coverbling)
 
+find_package(OpenGL)
+
 set(coverbling_SRCS
 pictureflow.cpp
 CoverBlingApplet.cpp
 ImageLoader.cpp
 PhotoBrowser.cpp
+CoverBling.cpp
 )
 
 include_directories( ../../..
                     ../..
+			  ${OPENGL_INCLUDE_DIR}
                     ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
 
 kde4_add_ui_files( coverbling_SRCS coverblingSettings.ui )
