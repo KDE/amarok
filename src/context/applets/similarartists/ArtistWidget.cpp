@@ -40,6 +40,8 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     this->setMinimumHeight( 105 );
     this->setMaximumHeight( 105 );
 
+    this->setMinimumWidth(350);
+
     // The background og this widget is transparent
     m_layout = new QGridLayout( this );
     this->setAttribute( Qt::WA_TranslucentBackground, true );
