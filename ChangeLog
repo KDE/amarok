@@ -28,6 +28,8 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed issue with applet icons with 2 lines of text getting cut off in the 
+      applet explorer. (BR 227597)
     * Fixed crash when setting a custom cover while Nepomuk is enabled on the system.
       Thanks to Sebastian Trueg <trueg@kde.org> for the patch. (BR 197343)
     * Fix crashes when scanning for orphaned tracks immediately after adding tracks
