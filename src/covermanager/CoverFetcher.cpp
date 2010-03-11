@@ -178,7 +178,7 @@ CoverFetcher::slotResult( KJob *job )
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( Meta::AlbumPtr( 0 ), unit->options(), data, true );
+        m_queue->add( Meta::AlbumPtr( 0 ), unit->options(), data );
         m_queue->remove( unit );
         break;
 

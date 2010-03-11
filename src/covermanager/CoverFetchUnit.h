@@ -26,7 +26,13 @@ class CoverFetchSearchPayload;
 
 namespace CoverFetch
 {
-    enum Options { Automatic, Interactive };
+    enum Options
+    {
+        Automatic,      //! Automtically save cover for the specified album, if one is found
+        Interactive,    //! Opens a dialog for the user to decide, and add more searches if desired
+        WildInteractive //! As \ref Interactive, but without filtering results (used for web search)
+    };
+
     typedef QHash< QString, QString > Metadata;
     typedef QHash< KUrl, Metadata > Urls;
 }
@@ -116,7 +122,8 @@ private:
 };
 
 /**
- * Prepares URL for searching albums on Last.fm.
+ * Prepares URL for searching albums on Last.fm using wild mode.
+ * See \ref CoverFetch::WildInteractive mode.
  */
 class CoverFetchSearchPayload : public CoverFetchPayload
 {
@@ -149,6 +156,8 @@ public:
     bool isWild() const;
 
     void setXml( const QByteArray &xml );
+
+    void setWildMode( bool enable );
 
 protected:
     void prepareUrls();

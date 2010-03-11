@@ -40,7 +40,7 @@ CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
 
 CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *payload )
     : QSharedData()
-    , m_options( CoverFetch::Interactive )
+    , m_options( CoverFetch::WildInteractive )
     , m_payload( payload )
 {
 }
@@ -53,25 +53,27 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
 
     switch( cpy.m_payload->type() )
     {
-    case CoverFetchPayload::Info:
-        m_payload = new CoverFetchInfoPayload( cpy.m_album );
-        break;
-    case CoverFetchPayload::Search:
+        case CoverFetchPayload::Info:
         {
-            const CoverFetchSearchPayload *payload =
-                dynamic_cast< const CoverFetchSearchPayload * >( cpy.payload() );
+            m_payload = new CoverFetchInfoPayload( cpy.m_album );
+            break;
+        }
+        case CoverFetchPayload::Search:
+        {
+            typedef CoverFetchSearchPayload CFSP;
+            const CFSP *payload = dynamic_cast< const CFSP* >( cpy.payload() );
             m_payload = new CoverFetchSearchPayload( payload->query() );
             break;
         }
-    case CoverFetchPayload::Art:
+        case CoverFetchPayload::Art:
         {
-            const CoverFetchArtPayload *payload =
-                dynamic_cast< const CoverFetchArtPayload * >( cpy.payload() );
+            typedef CoverFetchArtPayload CFAP;
+            const CFAP *payload = dynamic_cast< const CFAP* >( cpy.payload() );
             m_payload = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
             break;
         }
-    default:
-        m_payload = 0;
+        default:
+            m_payload = 0;
     }
 }
 
@@ -107,13 +109,14 @@ CoverFetchUnit::payload() const
 bool
 CoverFetchUnit::isInteractive() const
 {
-    bool interactive;
+    bool interactive( false );
     switch( m_options )
     {
     case CoverFetch::Automatic:
         interactive = false;
         break;
     case CoverFetch::Interactive:
+    case CoverFetch::WildInteractive:
         interactive = true;
         break;
     }
@@ -134,24 +137,27 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
 
     switch( rhs.m_payload->type() )
     {
-    case CoverFetchPayload::Info:
-        m_payload = new CoverFetchInfoPayload( rhs.m_album );
-        break;
-    case CoverFetchPayload::Search:
+        case CoverFetchPayload::Info:
         {
-            const CoverFetchSearchPayload *payload =
-                dynamic_cast< const CoverFetchSearchPayload * >( rhs.payload() );
+            m_payload = new CoverFetchInfoPayload( rhs.m_album );
+            break;
+        }
+        case CoverFetchPayload::Search:
+        {
+            typedef CoverFetchSearchPayload CFSP;
+            const CFSP *payload = dynamic_cast< const CFSP* >( rhs.payload() );
             m_payload = new CoverFetchSearchPayload( payload->query() );
             break;
         }
-    case CoverFetchPayload::Art:
+        case CoverFetchPayload::Art:
         {
-            const CoverFetchArtPayload *payload =
-                dynamic_cast< const CoverFetchArtPayload * >( rhs.payload() );
+            typedef CoverFetchArtPayload CFAP;
+            const CFAP *payload = dynamic_cast< const CFAP* >( rhs.payload() );
             m_payload = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+            break;
         }
-    default:
-        m_payload = 0;
+        default:
+            m_payload = 0;
     }
 
     m_album = rhs.m_album;
@@ -314,6 +320,12 @@ CoverFetchArtPayload::setXml( const QByteArray &xml )
 {
     m_xml = QString::fromUtf8( xml );
     prepareUrls();
+}
+
+void
+CoverFetchArtPayload::setWildMode( bool enable )
+{
+    m_wild = enable;
 }
 
 void

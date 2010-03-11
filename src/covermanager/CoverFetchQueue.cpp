@@ -38,9 +38,7 @@ CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 }
 
 bool
-CoverFetchQueue::add( const Meta::AlbumPtr album,
-                      CoverFetch::Options opt,
-                      const QByteArray &xml, bool wild )
+CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Options opt, const QByteArray &xml )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
@@ -49,7 +47,9 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
     }
     else
     {
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, wild );
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album );
+        const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+        art->setWildMode( wild );
         art->setXml( xml );
         payload = art;
     }
