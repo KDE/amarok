@@ -41,9 +41,10 @@
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
-CoverFoundDialog::CoverFoundDialog( QWidget *parent,
-                                    Meta::AlbumPtr album,
-                                    const QList<QPixmap> &covers )
+CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album, 
+                                    const QPixmap cover,
+                                    const CoverFetch::Metadata data,
+                                    QWidget *parent )
     : KDialog( parent )
     , m_album( album )
 {
@@ -141,12 +142,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
     connect( m_save, SIGNAL(clicked()), SLOT(accept()) );
 
-    add( covers );
-    CoverFoundItem *firstItem = dynamic_cast< CoverFoundItem* >( m_view->item( 0 ) );
-    if( firstItem )
-        m_pixmap = firstItem->pixmap();
-
-    updateGui();
+    add( cover, data );
 }
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
@@ -211,19 +207,16 @@ void CoverFoundDialog::updateGui()
 
 void CoverFoundDialog::updateDetails()
 {
-    if( m_album )
-    {
-        const QPixmap pixmap = m_pixmap;
-        const QString artist = m_album->hasAlbumArtist()
-                             ? m_album->albumArtist()->prettyName()
-                             : i18n( "Various Artists" );
+    const CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( !item )
+        return;
 
-        QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-        QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+    const CoverFetch::Metadata meta = item->metadata();
+    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
+    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
 
-        artistName->setText( artist );
-        albumName->setText( m_album->prettyName() );
-    }
+    artistName->setText( meta.value( "artist" ) );
+    albumName->setText( meta.value( "name" ) );
 }
 
 void CoverFoundDialog::updateTitle()
@@ -235,9 +228,12 @@ void CoverFoundDialog::updateTitle()
     setCaption( caption );
 }
 
-void CoverFoundDialog::add( QPixmap cover )
+void CoverFoundDialog::add( const QPixmap cover, const CoverFetch::Metadata metadata )
 {
-    CoverFoundItem *item = new CoverFoundItem( cover );
+    if( cover.isNull() )
+        return;
+
+    CoverFoundItem *item = new CoverFoundItem( cover, metadata );
 
     const QString size = QString( "%1x%2" )
         .arg( QString::number( cover.width() ) )
@@ -246,19 +242,13 @@ void CoverFoundDialog::add( QPixmap cover )
     item->setToolTip( tip );
 
     m_view->addItem( item );
-}
 
-void CoverFoundDialog::add( QList< QPixmap > covers )
-{
-    foreach( const QPixmap &cover, covers )
-    {
-        add( cover );
-    }
     updateGui();
 }
 
-CoverFoundItem::CoverFoundItem( QPixmap pixmap, QListWidget *parent )
+CoverFoundItem::CoverFoundItem( const QPixmap pixmap, CoverFetch::Metadata data, QListWidget *parent )
     : QListWidgetItem( parent )
+    , m_metadata( data )
     , m_pixmap( pixmap )
 {
     QPixmap scaledPix = pixmap.scaled( QSize( 120, 120 ) );

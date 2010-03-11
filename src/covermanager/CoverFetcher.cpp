@@ -114,7 +114,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         return;
 
     const CoverFetchPayload *payload = unit->payload();
-    const KUrl::List urls = payload->urls();
+    const CoverFetch::Urls urls = payload->urls();
 
     if( urls.isEmpty() )
     {
@@ -130,7 +130,8 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         return;
     }
 
-    foreach( const KUrl &url, urls )
+    const KUrl::List uniqueUrls = urls.uniqueKeys();
+    foreach( const KUrl &url, uniqueUrls )
     {
         KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
@@ -183,19 +184,13 @@ CoverFetcher::slotResult( KJob *job )
 
     case CoverFetchPayload::Art:
         QPixmap pixmap;
-
         if( pixmap.loadFromData( data ) )
         {
-            QList< QPixmap > list;
-            if( m_pixmaps.contains( unit ) )
-            {
-                list = m_pixmaps.take( unit );
-            }
-            m_pixmaps.insert( unit, list << pixmap );
-
             if( unit->isInteractive() )
             {
-                showCover( unit );
+                const KUrl url = storedJob->url();
+                const CoverFetch::Metadata metadata = payload->urls().value( url );
+                showCover( unit, pixmap, metadata );
             }
             else
             {
@@ -223,7 +218,6 @@ CoverFetcher::slotDialogFinished()
         {
             m_queue->remove( unit );
             m_queueLater.removeAll( unit->album() );
-            m_pixmaps.remove( unit );
             m_selectedPixmaps.remove( unit );
 
             const KJob *job = m_jobs.key( unit );
@@ -235,10 +229,9 @@ CoverFetcher::slotDialogFinished()
 }
 
 void
-CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
+CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFetch::Metadata data )
 {
     DEBUG_BLOCK
-    QList< QPixmap > pixmaps = m_pixmaps.take( unit );
 
     if( cover.isNull() )
     {
@@ -277,7 +270,8 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
     }
     else
     {
-        m_dialog->add( pixmaps );
+        if( !cover.isNull() )
+            m_dialog->add( cover, data );
     }
 }
 

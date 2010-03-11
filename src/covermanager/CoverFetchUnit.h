@@ -27,6 +27,8 @@ class CoverFetchSearchPayload;
 namespace CoverFetch
 {
     enum Options { Automatic, Interactive };
+    typedef QHash< QString, QString > Metadata;
+    typedef QHash< KUrl, Metadata > Urls;
 }
 
 /**
@@ -78,10 +80,10 @@ public:
     virtual ~CoverFetchPayload();
 
     enum Type type() const;
-    const KUrl::List &urls() const;
+    const CoverFetch::Urls &urls() const;
 
 protected:
-    KUrl::List m_urls;
+    CoverFetch::Urls m_urls;
 
     const QString &method() const { return m_method; }
     Meta::AlbumPtr album()  const { return m_album; }

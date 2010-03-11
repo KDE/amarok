@@ -75,7 +75,6 @@ private:
     Meta::AlbumList  m_queueLater; /// put here if m_queue exceeds m_limit
 
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
-    QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;
@@ -88,7 +87,9 @@ private:
                  const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover( const CoverFetchUnit::Ptr unit );
+    void showCover( CoverFetchUnit::Ptr unit,
+                    const QPixmap cover = QPixmap(),
+                    CoverFetch::Metadata data = CoverFetch::Metadata() );
 };
 
 namespace The

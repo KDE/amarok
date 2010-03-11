@@ -197,7 +197,7 @@ CoverFetchPayload::type() const
     return m_type;
 }
 
-const KUrl::List &
+const CoverFetch::Urls &
 CoverFetchPayload::urls() const
 {
     return m_urls;
@@ -239,7 +239,10 @@ CoverFetchInfoPayload::prepareUrls()
     }
     url.addQueryItem( "method", method() );
 
-    m_urls.append( url );
+    CoverFetch::Metadata metadata;
+    metadata[ "source" ] = "Last.fm";
+    metadata[ "method" ] = method();
+    m_urls.insert( url, metadata );
 }
 
 /*
@@ -279,7 +282,11 @@ CoverFetchSearchPayload::prepareUrls()
     url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
     url.addQueryItem( "album", m_query );
     url.addQueryItem( "method", method() );
-    m_urls.append( url );
+
+    CoverFetch::Metadata metadata;
+    metadata[ "source" ] = "Last.fm";
+    metadata[ "method" ] = method();
+    m_urls.insert( url, metadata );
 }
 
 /*
@@ -357,6 +364,7 @@ CoverFetchArtPayload::prepareUrls()
         else if( searchMethod == "album.search" && !m_wild && !artistSet.contains( artist ) )
             continue;
 
+        KUrl url;
         const QDomNodeList list = albumNode.childNodes();
         for( int i = 0, count = list.count(); i < count; ++i )
         {
@@ -366,12 +374,22 @@ CoverFetchArtPayload::prepareUrls()
                 const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
                 if( node.isElement() && imageSize == coverSize( ExtraLarge ) )
                 {
-                    const KUrl url( node.toElement().text() );
-                    if( url.isValid() )
-                        m_urls.append( url );
+                    url = node.toElement().text();
                 }
             }
         }
+
+        QStringList tags;
+        tags << "name" << "artist" << "url";
+        CoverFetch::Metadata metadata;
+        foreach( const QString &tag, tags )
+        {
+            const QDomElement e = albumNode.namedItem( tag ).toElement();
+            if( !e.isNull() )
+                metadata[ tag ] = e.text();
+        }
+        if( url.isValid() )
+            m_urls.insert( url, metadata );
     }
 }
 

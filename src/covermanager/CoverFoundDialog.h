@@ -20,6 +20,7 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
+#include "CoverFetchUnit.h"
 #include "meta/Meta.h"
 
 #include <KDialog>
@@ -41,9 +42,10 @@ class CoverFoundDialog : public KDialog
     Q_OBJECT
 
 public:
-    explicit CoverFoundDialog( QWidget *parent,
-                               Meta::AlbumPtr album = KSharedPtr< Meta::Album >(),
-                               const QList< QPixmap > &covers = QList< QPixmap >() );
+    CoverFoundDialog( Meta::AlbumPtr album,
+                      const QPixmap cover = QPixmap(),
+                      const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                      QWidget *parent = 0 );
 
     /**
     *   @returns the currently selected cover image
@@ -54,8 +56,7 @@ signals:
     void newCustomQuery( const QString & );
 
 public slots:
-    void add( QPixmap cover );
-    void add( QList< QPixmap > covers );
+    void add( const QPixmap cover, const CoverFetch::Metadata metadata );
 
 protected:
     void closeEvent( QCloseEvent *event );
@@ -92,10 +93,11 @@ class CoverFoundItem : public QObject, public QListWidgetItem
     Q_OBJECT
 
 public:
-    explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 );
+    explicit CoverFoundItem( const QPixmap pixmap, CoverFetch::Metadata data, QListWidget *parent = 0 );
     ~CoverFoundItem() {}
 
-    QPixmap pixmap() const { return m_pixmap; }
+    const CoverFetch::Metadata metadata() const { return m_metadata; }
+    const QPixmap pixmap() const { return m_pixmap; }
 
 public slots:
     /**
@@ -104,6 +106,7 @@ public slots:
     void display();
 
 private:
+    CoverFetch::Metadata m_metadata;
     QPixmap m_pixmap;
 };
 
