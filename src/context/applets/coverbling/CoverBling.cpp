@@ -33,6 +33,7 @@
 #include <QTimer>
 
 #include <climits>
+#include "ImageLoader.h"
 
 #define TEXTURE_SIZE QSize( 256, 256 )
 
@@ -63,7 +64,7 @@ CoverBling::queryResult( QString collectionId, Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
 	{
-		if (album->hasImage()) m_covers << album->image();
+		m_covers << PlainImageLoader::GetPixmap(album);
 	}
         
 

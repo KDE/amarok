@@ -25,23 +25,7 @@
 #include <QPixmap>
 #include <KStandardDirs>
 // load and resize image
-static QImage loadAndResize( Meta::AlbumPtr iAlbum, QSize size )
-{
-    //qDebug() <<  <<"ImageLoader::loadAndresize()";
-    QImage image;
-    QPixmap pixmap;
-    if ( iAlbum->hasImage() )
-    {
-        pixmap = iAlbum->image();
-    }
-    else
-    {
-        pixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
-    }
-    image = pixmap.toImage();
-    image = image.scaled( size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    return image;
-}
+
 
 ImageLoader::ImageLoader(): QThread(),
         restart( false ), working( false ), idx( -1 )
@@ -90,7 +74,7 @@ void ImageLoader::run()
         QSize size = this->size;
         mutex.unlock();
 
-        QImage image = loadAndResize( album_ptr, size );
+        QImage image = PlainImageLoader::loadAndResize( album_ptr, size );
 
         // let everyone knows it is ready
         mutex.lock();
@@ -115,4 +99,26 @@ void PlainImageLoader::generate( int index, Meta::AlbumPtr iAlbum, QSize size )
 {
     img = loadAndResize( iAlbum, size );
     idx = index;
+}
+QPixmap PlainImageLoader::GetPixmap(Meta::AlbumPtr iAlbum)
+{
+    QPixmap pixmap;
+    if ( iAlbum->hasImage() )
+    {
+        pixmap = iAlbum->image();
+    }
+    else
+    {
+        pixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
+    }
+	return pixmap;
+}
+QImage PlainImageLoader::loadAndResize( Meta::AlbumPtr iAlbum, QSize size )
+{
+    //qDebug() <<  <<"ImageLoader::loadAndresize()";
+    QImage image;
+    QPixmap pixmap = GetPixmap(iAlbum);
+    image = pixmap.toImage();
+    image = image.scaled( size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    return image;
 }

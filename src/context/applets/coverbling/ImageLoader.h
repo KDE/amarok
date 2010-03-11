@@ -74,7 +74,9 @@ public:
   int index() const { return idx; }
 
   QImage result() const { return img; }
-
+	
+  static QPixmap GetPixmap( Meta::AlbumPtr iAlbum);
+  static QImage loadAndResize( Meta::AlbumPtr iAlbum, QSize size );
 private:
   int idx;
   QImage img;
