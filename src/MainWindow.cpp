@@ -949,7 +949,7 @@ MainWindow::createActions()
 
     LikeBack *likeBack = new LikeBack( LikeBack::AllButtons,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
-    likeBack->setServer( "example.org", "/likeback/send.php" );
+    likeBack->setServer( "likeback.kollide.net", "/send.php" );
     likeBack->setAcceptedLanguages( QStringList( "en" ) );
 
     KActionCollection *likeBackActions = new KActionCollection( this, KGlobal::mainComponent() );
