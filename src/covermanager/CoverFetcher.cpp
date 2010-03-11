@@ -109,6 +109,10 @@ void
 CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
+
+    if( !unit )
+        return;
+
     const CoverFetchPayload *payload = unit->payload();
     const KUrl::List urls = payload->urls();
 
@@ -149,6 +153,9 @@ CoverFetcher::slotResult( KJob *job )
 {
     DEBUG_BLOCK
     const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
+
+    if( !unit )
+        return;
 
     if( job && job->error() )
     {
@@ -202,17 +209,55 @@ CoverFetcher::slotResult( KJob *job )
 }
 
 void
+CoverFetcher::slotDialogFinished()
+{
+    /*
+     * Remove all manual fetch jobs from the queue if the user accepts, cancels,
+     * or closes the cover found dialog. This way, the dialog will not reappear
+     * if there are still covers yet to be retrieved.
+     */
+    QList< CoverFetchUnit::Ptr > units = m_jobs.values();
+    foreach( const CoverFetchUnit::Ptr &unit, units )
+    {
+        if( unit->isInteractive() )
+        {
+            m_queue->remove( unit );
+            m_queueLater.removeAll( unit->album() );
+            m_pixmaps.remove( unit );
+            m_selectedPixmaps.remove( unit );
+
+            const KJob *job = m_jobs.key( unit );
+            const_cast< KJob* >( job )->kill();
+            The::statusBar()->endProgressOperation( job );
+            m_jobs.remove( job );
+        }
+    }
+}
+
+void
 CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
     QList< QPixmap > pixmaps = m_pixmaps.take( unit );
 
+    if( cover.isNull() )
+    {
+        finish( unit, Error );
+        return;
+    }
+
     if( !m_dialog )
     {
-        m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), unit->album(), pixmaps );
+        const Meta::AlbumPtr album = unit->album();
+        if( !album )
+        {
+            finish( unit, Error );
+            return;
+        }
 
-        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)),
-                 this,     SLOT(queueQuery(const QString&)) );
+        m_dialog = new CoverFoundDialog( album, cover, data, static_cast<QWidget*>( parent() ) );
+        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)), SLOT(queueQuery(const QString&)) );
+        connect( m_dialog, SIGNAL(finished()), SLOT(slotDialogFinished()) );
 
         switch( m_dialog->exec() )
         {
@@ -221,7 +266,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
             finish( unit );
             break;
 
-        case KDialog::Rejected: //make sure we do not show any more dialogs
+        case KDialog::Rejected:
         default:
             finish( unit, Cancelled );
             break;
