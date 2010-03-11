@@ -38,9 +38,9 @@ public:
     typedef KSharedPtr< CoverFetchUnit > Ptr;
 
     CoverFetchUnit( Meta::AlbumPtr album,
-                    const CoverFetchPayload *url,
+                    const CoverFetchPayload *payload,
                     CoverFetch::Options opt = CoverFetch::Automatic );
-    CoverFetchUnit( const CoverFetchSearchPayload *url );
+    CoverFetchUnit( const CoverFetchSearchPayload *payload );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
@@ -63,7 +63,7 @@ private:
     Meta::AlbumPtr m_album;
     QStringList m_errors;
     CoverFetch::Options m_options;
-    const CoverFetchPayload *m_url;
+    const CoverFetchPayload *m_payload;
 };
 
 /**

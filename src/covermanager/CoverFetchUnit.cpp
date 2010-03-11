@@ -28,19 +28,19 @@
  */
 
 CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
-                                const CoverFetchPayload *url,
+                                const CoverFetchPayload *payload,
                                 CoverFetch::Options opt )
     : QSharedData()
     , m_album( album )
     , m_options( opt )
-    , m_url( url )
+    , m_payload( payload )
 {
 }
 
-CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *url )
+CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *payload )
     : QSharedData()
     , m_options( CoverFetch::Interactive )
-    , m_url( url )
+    , m_payload( payload )
 {
 }
 
@@ -50,33 +50,33 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     m_album = cpy.m_album;
     m_options = cpy.m_options;
 
-    switch( cpy.m_url->type() )
+    switch( cpy.m_payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_url = new CoverFetchInfoPayload( cpy.m_album );
+        m_payload = new CoverFetchInfoPayload( cpy.m_album );
         break;
     case CoverFetchPayload::Search:
         {
             const CoverFetchSearchPayload *payload =
                 dynamic_cast< const CoverFetchSearchPayload * >( cpy.payload() );
-            m_url = new CoverFetchSearchPayload( payload->query() );
+            m_payload = new CoverFetchSearchPayload( payload->query() );
             break;
         }
     case CoverFetchPayload::Art:
         {
             const CoverFetchArtPayload *payload =
                 dynamic_cast< const CoverFetchArtPayload * >( cpy.payload() );
-            m_url = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
             break;
         }
     default:
-        m_url = 0;
+        m_payload = 0;
     }
 }
 
 CoverFetchUnit::~CoverFetchUnit()
 {
-    delete m_url;
+    delete m_payload;
 }
 
 Meta::AlbumPtr
@@ -100,7 +100,7 @@ CoverFetchUnit::options() const
 const CoverFetchPayload *
 CoverFetchUnit::payload() const
 {
-    return m_url;
+    return m_payload;
 }
 
 bool
@@ -131,26 +131,26 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
     if( this == &rhs )
         return *this;
 
-    switch( rhs.m_url->type() )
+    switch( rhs.m_payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_url = new CoverFetchInfoPayload( rhs.m_album );
+        m_payload = new CoverFetchInfoPayload( rhs.m_album );
         break;
     case CoverFetchPayload::Search:
         {
             const CoverFetchSearchPayload *payload =
                 dynamic_cast< const CoverFetchSearchPayload * >( rhs.payload() );
-            m_url = new CoverFetchSearchPayload( payload->query() );
+            m_payload = new CoverFetchSearchPayload( payload->query() );
             break;
         }
     case CoverFetchPayload::Art:
         {
             const CoverFetchArtPayload *payload =
                 dynamic_cast< const CoverFetchArtPayload * >( rhs.payload() );
-            m_url = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
         }
     default:
-        m_url = 0;
+        m_payload = 0;
     }
 
     m_album = rhs.m_album;
