@@ -31,7 +31,7 @@
 #include <qwidget.h>
 #include "meta/Meta.h"
 #include <qpainter.h>
-#include <QGraphicsView>
+#include <QHBoxLayout>
 #include "CoverBling.h"
 
 class PictureFlowPrivate;
@@ -127,6 +127,9 @@ public:
 public slots:
 
  Meta::AlbumPtr album(int index);
+
+ void setAlbums(Meta::AlbumList iAlbums);
+	
  void addAlbum(Meta::AlbumPtr iAlbum);
   /*!
     Adds a new slide.
@@ -199,13 +202,15 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent* event);
   void wheelEvent(QWheelEvent * event);
   Meta::AlbumList m_album_list;
+  bool m_opengl;
 private slots:
   void updateAnimation();
 
 private:
   PictureFlowPrivate* d;
-  bool m_opengl;
+
   CoverBling* m_openglwidget;
+  QHBoxLayout* m_opengllayout;
 };
 
 #endif // PICTUREFLOW_H

@@ -37,6 +37,10 @@
 #include <QVector>
 #include <QWidget>
 #include <KStandardDirs>
+
+#include <QGraphicsView>
+#include <QFrame>
+
 // for fixed-point arithmetic, we need minimum 32-bit long
 // long long (64-bit) might be useful for multiplication and division
 typedef long PFreal;
@@ -871,11 +875,8 @@ PictureFlow::PictureFlow( QWidget* parent, bool enableOpenGL): QWidget( parent )
 	else
 	{
 		d->renderer = new PictureFlowOpenGLRenderer;
-		m_openglwidget = new CoverBling(0);
-		m_openglwidget->init(m_album_list);
-		m_openglwidget->show();
-		m_openglwidget->resize(-1,-1);
-		d->renderer->widget = m_openglwidget;
+		m_openglwidget = new CoverBling(0,m_album_list);
+		//m_openglwidget->setParent(this);
 	}
 	d->renderer->state = d->state;
     d->renderer->init();
@@ -989,6 +990,19 @@ void PictureFlow::addAlbum( Meta::AlbumPtr iAlbum )
 {
     m_album_list.append( iAlbum );
     //QPixmap* no_cover_pix = new QPixmap( KStandardDirs::locate( "data", "amarok/images/blingdefaultcover.png" ) );
+}
+void PictureFlow::setAlbums(Meta::AlbumList iAlbums)
+{
+	m_album_list = iAlbums;
+	//m_openglwidget->resize(-1,-1);
+	d->renderer->widget = m_openglwidget;
+	if (m_openglwidget) 
+	{
+		m_openglwidget->init(m_album_list);
+		m_openglwidget->show();
+		
+	}
+	
 }
 Meta::AlbumPtr PictureFlow::album( int index )
 {

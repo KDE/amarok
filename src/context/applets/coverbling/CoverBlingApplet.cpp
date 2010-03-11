@@ -70,13 +70,8 @@ CoverBlingApplet::init()
     setBackgroundHints( Plasma::Applet::NoBackground );
     resize( -1, 400 );
     m_fullsize = false;
-    m_layout = new QGraphicsProxyWidget( this );
-    m_pictureflow = new PhotoBrowser();
-    m_layout->setWidget( m_pictureflow );
-	
-    m_pictureflow->setRenderHints( QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
 
-    KConfigGroup config = Amarok::config( "CoverBling Applet" );
+	KConfigGroup config = Amarok::config( "CoverBling Applet" );
     m_coversize = config.readEntry( "CoverSize", 200 );
     int reflectioneffect = config.readEntry( "ReflectionEffect", 1 );
     if ( reflectioneffect == 0 )
@@ -88,6 +83,17 @@ CoverBlingApplet::init()
 
     m_autojump = config.readEntry( "AutoJump", false );
     m_animatejump = config.readEntry( "AnimateJump", true );
+    m_layout = new QGraphicsProxyWidget( this );
+	m_openGL = false;
+	bool setting_opengl = config.readEntry( "OpenGL", false );
+	if (QGLFormat::hasOpenGL() && setting_opengl) m_openGL = true;
+	
+    m_pictureflow = new PhotoBrowser(0,m_openGL);
+    m_layout->setWidget( m_pictureflow );
+	
+    //m_pictureflow->setRenderHints( QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
+
+
 
     m_pictureflow->show();
 
@@ -195,7 +201,7 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     }
     m_pictureflow->setSlideSize( slideSize );
     m_pictureflow->setReflectionEffect( m_reflectionEffect );
-    m_pictureflow->setAnimationTime( 20 );
+    m_pictureflow->setAnimationTime( 10 );
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
@@ -253,6 +259,8 @@ void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.coversizeSpin->setValue( m_coversize );
     ui_Settings.autoJumpChk->setChecked( m_autojump );
     ui_Settings.animJumpChk->setChecked( m_animatejump );
+	if (m_openGL) ui_Settings.renderingCombo->setCurrentIndex(1);
+	else ui_Settings.renderingCombo->setCurrentIndex(0);
     parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system" );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
@@ -265,6 +273,10 @@ void CoverBlingApplet::saveSettings()
         m_reflectionEffect = PictureFlow::PlainReflection;
     else if ( ui_Settings.reflectionEffectCombo->currentIndex() == 2 )
         m_reflectionEffect = PictureFlow::BlurredReflection;
+	if (ui_Settings.renderingCombo->currentIndex()==1)
+		 m_openGL = true;
+	else
+		 m_openGL = false;
     m_autojump = ui_Settings.autoJumpChk->isChecked();
     m_animatejump = ui_Settings.animJumpChk->isChecked();
     KConfigGroup config = Amarok::config( "CoverBling Applet" );
@@ -272,6 +284,7 @@ void CoverBlingApplet::saveSettings()
     config.writeEntry( "ReflectionEffect", ( int ) m_reflectionEffect );
     config.writeEntry( "AutoJump", m_autojump );
     config.writeEntry( "AnimateJump", m_animatejump );
+	config.writeEntry( "OpenGL", (int) m_openGL );
     constraintsEvent();
 }
 void CoverBlingApplet::jumpToPlaying()

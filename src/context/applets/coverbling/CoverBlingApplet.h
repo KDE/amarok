@@ -91,6 +91,7 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
         Ui::coverblingSettings   ui_Settings;
 	int m_coversize;
 	PictureFlow::ReflectionEffect m_reflectionEffect;
+	bool m_openGL;
 };
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
 

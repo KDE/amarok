@@ -27,7 +27,7 @@ class CoverBling : public QGLWidget
     Q_OBJECT
 
     public:
-        CoverBling( QWidget* parent );
+        CoverBling( QWidget* parent,Meta::AlbumList albums );
 		void init(Meta::AlbumList albums);
 
     protected:
@@ -37,7 +37,7 @@ class CoverBling : public QGLWidget
         void paintGL();
         void draw( GLuint selected = 0 );
         GLuint objectAtPosition( const QPoint& pos );
-
+		void mousePressEvent(QMouseEvent *event);
     private slots:
         void queryResult( QString collectionId, Meta::AlbumList albums );
         
@@ -48,6 +48,7 @@ class CoverBling : public QGLWidget
         GLuint m_texturedRectReflectedList;
         float m_xOffset;
         float m_zOffset;
+		int m_currentindex;
 };
 
 

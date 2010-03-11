@@ -37,15 +37,17 @@
 #define TEXTURE_SIZE QSize( 256, 256 )
 
 
-CoverBling::CoverBling( QWidget* parent )
+CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
         : QGLWidget( QGLFormat(QGL::DepthBuffer|QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
         , m_xOffset( 0.0 )
         , m_zOffset( M_PI / 2 )
 {
     DEBUG_BLOCK
 
-    setFixedHeight( 200 );
-
+	m_currentindex = 0;
+	makeCurrent();
+    //setFixedHeight( 200 );
+	queryResult("",albums);
    /* Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Album );
@@ -60,7 +62,10 @@ void
 CoverBling::queryResult( QString collectionId, Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
-        m_covers << album->image();
+	{
+		if (album->hasImage()) m_covers << album->image();
+	}
+        
 
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
@@ -220,7 +225,6 @@ CoverBling::draw( GLuint selected )
         glPopMatrix();
         glColor4f( 1.0, 1.0, 1.0, 1.0 );
     }
-
     glDisable( GL_TEXTURE_2D);
 }
 
@@ -266,7 +270,11 @@ CoverBling::objectAtPosition( const QPoint& pos )
     // return the name of the clicked surface
     return hit;
 }
-
+void CoverBling::mousePressEvent(QMouseEvent *event)
+{
+	m_currentindex++;
+	paintGL();
+}
 
 #include "CoverBling.moc"
 

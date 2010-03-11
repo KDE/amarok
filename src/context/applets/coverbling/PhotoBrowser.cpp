@@ -49,6 +49,7 @@ PhotoBrowser::PhotoBrowser( QWidget* parent, bool enableOpenGL ): PictureFlow( p
     connect( d->updateTimer, SIGNAL( timeout() ), this, SLOT( updateImageData() ) );
     d->worker = new ImageLoader;
     connect( this, SIGNAL( centerIndexChanged( int ) ), this, SLOT( preload() ) );
+	m_opengl = enableOpenGL;
 }
 
 PhotoBrowser::~PhotoBrowser()
@@ -59,13 +60,18 @@ PhotoBrowser::~PhotoBrowser()
 }
 void PhotoBrowser::fillAlbums( Meta::AlbumList albums )
 {
-    foreach( Meta::AlbumPtr album, albums )
+	if (m_opengl)
+		setAlbums(albums);
+	else
+	{
+		    foreach( Meta::AlbumPtr album, albums )
     {
         addAlbum( album );
         addSlide( QImage() );
     }
     setCenterIndex( 0 );
     preload();
+	}
 }
 void PhotoBrowser::preload()
 {
