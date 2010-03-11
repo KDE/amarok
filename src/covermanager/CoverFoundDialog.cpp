@@ -122,19 +122,26 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
 
     QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
     QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
+    QLabel *urlLabel    = new QLabel( "<b>" + i18n( "URL"    ) + "</b>", m_details );
     QLabel *artistText  = new QLabel( m_details );
     QLabel *albumText   = new QLabel( m_details );
+    QLabel *urlText     = new QLabel( m_details );
 
     artistLabel->setAlignment( Qt::AlignRight );
     albumLabel->setAlignment( Qt::AlignRight );
+    urlLabel->setAlignment( Qt::AlignRight );
     artistText->setTextInteractionFlags( Qt::TextBrowserInteraction );
     albumText->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    urlText->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    urlText->setOpenExternalLinks( true );
 
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
     m_detailsLayout->addWidget( albumLabel,  1, 0 );
+    m_detailsLayout->addWidget( urlLabel,  2, 0 );
     m_detailsLayout->addWidget( artistText, 0, 1 );
     m_detailsLayout->addWidget( albumText, 1, 1 );
+    m_detailsLayout->addWidget( urlText, 2, 1 );
     m_detailsLayout->setColumnStretch( 1, 1 );
 
     setMainWidget( box );
@@ -214,9 +221,13 @@ void CoverFoundDialog::updateDetails()
     const CoverFetch::Metadata meta = item->metadata();
     QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
     QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+    QLabel *urlName    = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
 
     artistName->setText( meta.value( "artist" ) );
     albumName->setText( meta.value( "name" ) );
+    const KUrl url = KUrl( meta.value( "url" ) );
+    const QString urlText = QString( "<a href=\"%1\">link</a>" ).arg( url.url() );
+    urlName->setText( urlText );
 }
 
 void CoverFoundDialog::updateTitle()
