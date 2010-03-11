@@ -33,6 +33,12 @@ namespace CoverFetch
         WildInteractive //! As \ref Interactive, but without filtering results (used for web search)
     };
 
+    enum ImageSize
+    {
+        NormalSize,     //! Normal cover size, for storage and display
+        ThumbSize       //! Thumbnail size, for icon views
+    };
+
     typedef QHash< QString, QString > Metadata;
     typedef QHash< KUrl, Metadata > Urls;
 }
@@ -156,6 +162,7 @@ public:
 
     bool isWild() const;
 
+    void setSize( CoverFetch::ImageSize size );
     void setXml( const QByteArray &xml );
 
     void setWildMode( bool enable );
@@ -164,22 +171,14 @@ protected:
     void prepareUrls();
 
 private:
+    CoverFetch::ImageSize m_size;
     QString m_xml;
-
-    /// Available album cover sizes from Last.fm
-    enum CoverSize
-    {
-        Small = 0,  //! 34px
-        Medium,     //! 64px
-        Large,      //! 128px
-        ExtraLarge  //! 300px
-    };
 
     /// search is wild mode?
     bool m_wild;
 
     /// convert CoverSize enum to string
-    QString coverSize( enum CoverSize size ) const;
+    QString coverSize( enum CoverFetch::ImageSize size ) const;
 
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );

@@ -49,6 +49,7 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Options opt,
         CoverFetchArtPayload *art = new CoverFetchArtPayload( album );
         const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
         art->setWildMode( wild );
+        art->setSize( CoverFetch::NormalSize );
         art->setXml( xml );
         payload = art;
     }

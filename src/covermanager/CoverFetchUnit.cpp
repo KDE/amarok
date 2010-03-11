@@ -301,6 +301,7 @@ CoverFetchSearchPayload::prepareUrls()
 
 CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
     : CoverFetchPayload( album, CoverFetchPayload::Art )
+    , m_size( CoverFetch::NormalSize )
     , m_wild( wild )
 {
 }
@@ -313,6 +314,12 @@ bool
 CoverFetchArtPayload::isWild() const
 {
     return m_wild;
+}
+
+void
+CoverFetchArtPayload::setSize( CoverFetch::ImageSize size )
+{
+    m_size = size;
 }
 
 void
@@ -384,7 +391,7 @@ CoverFetchArtPayload::prepareUrls()
             if( node.nodeName() == "image" && node.hasAttributes() )
             {
                 const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if( node.isElement() && imageSize == coverSize( ExtraLarge ) )
+                if( node.isElement() && imageSize == coverSize( m_size ) )
                 {
                     url = node.toElement().text();
                 }
@@ -406,15 +413,18 @@ CoverFetchArtPayload::prepareUrls()
 }
 
 QString
-CoverFetchArtPayload::coverSize( enum CoverSize size ) const
+CoverFetchArtPayload::coverSize( enum CoverFetch::ImageSize size ) const
 {
     QString str;
     switch( size )
     {
-    case Small:  str = "small";      break;
-    case Medium: str = "medium";     break;
-    case Large:  str = "large";      break;
-    default:     str = "extralarge"; break;
+    case CoverFetch::ThumbSize:
+        str = "large"; // Last.fm's "large" is around 128x128
+        break;
+    case CoverFetch::NormalSize:
+    default:
+        str = "extralarge"; // Last.fm's "extralarge" is up to 300x300
+        break;
     }
     return str;
 }
