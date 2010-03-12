@@ -40,11 +40,11 @@ Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
     for ( int i = 0; i < m_model->rowCount(); i++ )
     {
         Meta::AlbumPtr album = m_model->trackAt( i )->album();
-        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
+        m_albumGroups[album->name()].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
     }
 
     Meta::TrackPtr activeTrack = m_model->activeTrack();
-    m_currentAlbum = activeTrack ? activeTrack->album() : Meta::AlbumPtr();
+    m_currentAlbum = activeTrack ? activeTrack->album()->name() : QString();
     m_currentTrack = m_model->activeId();
 
     dump();
@@ -58,7 +58,7 @@ Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
     foreach( quint64 id, list )
     {
         Meta::AlbumPtr album = m_model->trackForId( id )->album();
-        m_albumGroups[album].append( id ); // conveniently creates an empty list if none exists
+        m_albumGroups[album->name()].append( id ); // conveniently creates an empty list if none exists
     }
 
     sortTheseAlbums( modifiedAlbums );
@@ -73,19 +73,19 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
     {
         quint64 id = *id_iter;
         debug() << "removing" << id;
-        QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
+        QHash<QString, ItemList>::iterator alb_iter = m_albumGroups.begin();
 
         while ( alb_iter != m_albumGroups.end() )
         {
             if ( alb_iter->contains( id ) )
             {
 
-                if( alb_iter.key() )
-                    debug() << "    from" << alb_iter.key()->prettyName();
+                if( !alb_iter.key().isEmpty() &&  alb_iter.key() != "Unknown" )
+                    debug() << "    from" << alb_iter.key();
                 else
                     debug() << "    which is not in any album";
 
-                Meta::AlbumPtr album = alb_iter.key();
+                QString album = alb_iter.key();
                 ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id )
                 {
@@ -95,12 +95,12 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                 atl.removeAll( id );
                 if ( atl.isEmpty() )
                 {
-                    if( album )
-                        debug() << album->prettyName() << "is now empty";
+                    if( !album.isEmpty() )
+                        debug() << album << "is now empty";
                     alb_iter = m_albumGroups.erase( alb_iter );
                     if ( album == m_currentAlbum )
                     {
-                        m_currentAlbum = Meta::AlbumPtr();
+                        m_currentAlbum = QString();
                         m_currentTrack = 0;
                     }
                 }
@@ -126,11 +126,14 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 
     if ( m_model->containsId( id ) )
     {
-        m_currentAlbum = m_model->trackForId( id )->album();
+        if( m_model->trackForId( id )->album() )
+            m_currentAlbum = m_model->trackForId( id )->album()->name();
+        else m_currentAlbum = QString();
+            
     }
     else
     {
-        m_currentAlbum = Meta::AlbumPtr();
+        m_currentAlbum = QString();
     }
     m_currentTrack = id;
 }
@@ -140,11 +143,15 @@ quint64
 Playlist::RepeatAlbumNavigator::likelyNextTrack()
 {
     DEBUG_BLOCK
-    if ( m_currentAlbum != Meta::AlbumPtr() )
+    if ( !m_currentAlbum.isEmpty() )
     {
+
+        debug() << "current album is " << m_currentAlbum;
         ItemList atl = m_albumGroups.value( m_currentAlbum );
+        debug() << "it has " << atl.count() << " tracks in it";
         int row = atl.indexOf( m_currentTrack ) + 1;
         row = ( row < atl.size() ) ? row : 0;
+        debug() << "row of next track is " << row;
         return atl.at( row );
     }
     return 0;
@@ -154,7 +161,7 @@ quint64
 Playlist::RepeatAlbumNavigator::likelyLastTrack()
 {
     DEBUG_BLOCK
-    if ( m_currentAlbum != Meta::AlbumPtr() )
+    if ( !m_currentAlbum.isEmpty() )
     {
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) - 1;
@@ -193,8 +200,9 @@ Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 void
 Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 {
-    foreach( Meta::AlbumPtr a, al )
+    foreach( Meta::AlbumPtr album, al )
     {
+        QString a = album->name();
         qStableSort( m_albumGroups[a].begin(), m_albumGroups[a].end(), idLessThan );
     }
 }
@@ -203,11 +211,11 @@ void
 Playlist::RepeatAlbumNavigator::dump()
 {
     debug() << "album groups are as follows:";
-    foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
+    foreach( QString album, m_albumGroups.keys() )
     {
-        if( album )
+        if( !album.isEmpty() )
         {
-            debug() << "   in" << album->prettyName();
+            debug() << "   in" << album;
             ItemList atl = m_albumGroups.value( album );
             foreach( quint64 id, atl )
             {

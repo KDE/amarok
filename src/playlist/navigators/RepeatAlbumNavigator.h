@@ -63,9 +63,9 @@ namespace Playlist
 
         void dump();
 
-        QHash<Meta::AlbumPtr, ItemList> m_albumGroups;
+        QHash<QString, ItemList> m_albumGroups;
 
-        Meta::AlbumPtr m_currentAlbum;
+        QString m_currentAlbum;
         quint64 m_currentTrack;
     };
 }
