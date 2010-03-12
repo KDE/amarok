@@ -152,6 +152,9 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     KMenu* menu = s_helpMenu->menu();
 
+    // NOTE: We hide "Report Bug..." because we need to add it on our own to name the dialog
+    // so it can be blacklisted from LikeBack.
+    s_helpMenu->action( KHelpMenu::menuReportBug )->setVisible( false );
 
     // NOTE: We hide the "Amarok Handbook" entry until the handbook actually exists (WIP)
     s_helpMenu->action( KHelpMenu::menuHelpContents )->setVisible( false );

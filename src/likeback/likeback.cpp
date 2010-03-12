@@ -376,7 +376,7 @@ void LikeBack::showInformationMessage()
                              "<b>I dislike</b> the welcome page of this assistant. Too time consuming." ) +
                       "</span><br/>";
   }
-  if( buttons & LikeBack::Bug )
+  if( true )//buttons & LikeBack::Bug )
   {
     examplesBlocks += "<img src=\"" + bugIconPath + "\"/> &nbsp;"
                       "<span>" +

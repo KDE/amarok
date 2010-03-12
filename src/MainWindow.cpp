@@ -80,6 +80,7 @@
 #include <KMenu>
 #include <KMenuBar>
 #include <KPixmapCache>
+#include <KBugReport>
 #include <KStandardAction>
 #include <KStandardDirs>
 #include <KWindowSystem>
@@ -947,6 +948,10 @@ MainWindow::createActions()
     ac->addAction( "extendedAbout", action );
     connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
 
+    action = new KAction( KIcon( "tools-report-bug" ), i18n("&Report Bug..."), this );
+    ac->addAction( "reportBug", action );
+    connect( action, SIGNAL( triggered() ), SLOT( showReportBug() ) );
+
     LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
     likeBack->setServer( "likeback.kollide.net", "/send.php" );
@@ -1078,6 +1083,8 @@ MainWindow::createMenus()
     m_menubar->addMenu( m_settingsMenu );
 
     KMenu *helpMenu = Amarok::Menu::helpMenu();
+    helpMenu->insertAction( helpMenu->actions().first(),
+                            Amarok::actionCollection()->action( "reportBug" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
     helpMenu->insertAction( helpMenu->actions().at(4),
@@ -1094,6 +1101,14 @@ MainWindow::showAbout()
     ExtendedAboutDialog *dialog = new ExtendedAboutDialog( &aboutData, &ocsData, this );
     dialog->exec();
     delete dialog;
+}
+
+void
+MainWindow::showReportBug()
+{
+    KBugReport * rbDialog = new KBugReport( this, true, KGlobal::mainComponent().aboutData() );
+    rbDialog->setObjectName( "KBugReport" );
+    rbDialog->exec();
 }
 
 void

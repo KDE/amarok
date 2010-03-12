@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>96</width>
-    <height>24</height>
+    <width>94</width>
+    <height>22</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,7 @@
    <item>
     <widget class="QToolButton" name="m_likeButton">
      <property name="toolTip">
-      <string>Click here to tell the developers about something you liked</string>
+      <string>Tell the developers about something you liked</string>
      </property>
      <property name="whatsThis">
       <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
@@ -46,7 +46,7 @@
    <item>
     <widget class="QToolButton" name="m_dislikeButton">
      <property name="toolTip">
-      <string>Click here to tell the developers about something you did not like</string>
+      <string>Tell the developers about something you did not like</string>
      </property>
      <property name="whatsThis">
       <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
@@ -63,7 +63,7 @@
    <item>
     <widget class="QToolButton" name="m_bugButton">
      <property name="toolTip">
-      <string>Click here to tell the developers about a problem in the application</string>
+      <string>Tell the developers about a problem in the application</string>
      </property>
      <property name="whatsThis">
       <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
@@ -80,7 +80,7 @@
    <item>
     <widget class="QToolButton" name="m_featureButton">
      <property name="toolTip">
-      <string>Click here to tell the developers about new features you would like to have in this application</string>
+      <string>Tell the developers about new features you would like to have in this application</string>
      </property>
      <property name="whatsThis">
       <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;

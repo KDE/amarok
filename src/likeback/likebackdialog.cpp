@@ -69,7 +69,7 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
     featureRadio_->setVisible( buttons & LikeBack::Feature );
 
     // If no specific "reason" is provided, choose the first one:
-    if( reason == LikeBack::AllButtons || reason == LikeBack::DefaultButtons )
+    if( reason == LikeBack::AllButtons || reason == LikeBack::DefaultButtons || reason == LikeBack::AllButBugs )
     {
         if( buttons & LikeBack::Dislike )      reason = LikeBack::Dislike;
         else if( buttons & LikeBack::Bug     ) reason = LikeBack::Bug;

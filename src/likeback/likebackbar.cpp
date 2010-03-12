@@ -21,7 +21,9 @@
 
 #include <KApplication>
 #include <KStandardDirs>
+#include <KBugReport>
 
+#include "Amarok.h"
 #include "likeback.h"
 #include "likebackbar.h"
 
@@ -41,14 +43,14 @@ LikeBackBar::LikeBackBar( LikeBack *likeBack )
   // Set the button icons
   m_likeButton   ->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_like.png"    ) ) );
   m_dislikeButton->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_dislike.png" ) ) );
-  m_bugButton    ->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_bug.png"     ) ) );
+  m_bugButton    ->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_bug.png" ) ) );
   m_featureButton->setIcon( QIcon( KStandardDirs::locate( "data", "amarok/images/likeback_feature.png" ) ) );
 
   // Show buttons for the enabled types of feedback only
   LikeBack::Button buttons = likeBack->buttons();
   m_likeButton   ->setShown( buttons & LikeBack::Like    );
   m_dislikeButton->setShown( buttons & LikeBack::Dislike );
-  m_bugButton    ->setShown( buttons & LikeBack::Bug     );
+  m_bugButton    ->setShown( true );//buttons & LikeBack::Bug     );
   m_featureButton->setShown( buttons & LikeBack::Feature );
 
 #ifdef DEBUG_LIKEBACK
@@ -71,7 +73,10 @@ LikeBackBar::~LikeBackBar()
 // The Bug button has been clicked
 void LikeBackBar::bugClicked()
 {
-  m_likeBack->execCommentDialog( LikeBack::Bug );
+    //m_likeBack->execCommentDialog( LikeBack::Bug );
+    KBugReport *brDialog = new KBugReport( window(), true, KGlobal::mainComponent().aboutData() );
+    brDialog->setObjectName( "KBugReport");
+    brDialog->exec();
 }
 
 
@@ -114,6 +119,7 @@ void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
   // or if it's the send feedback window
   if(  newWindow != 0
   &&   newWindow->objectName() != "LikeBackFeedBack"
+  &&   newWindow->objectName() != "KBugReport"
   && ( newWindow->windowType() == Qt::Window
   ||   newWindow->windowType() == Qt::Dialog ) )
   {

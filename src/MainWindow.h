@@ -131,6 +131,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void setLayoutLocked( bool locked );
 
         void showAbout();
+        void showReportBug();
 
     protected:
         //Reimplemented from EngineObserver
