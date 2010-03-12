@@ -25,7 +25,6 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
     : QAbstractProxyModel()
     , m_model( model )
     , m_rootNode( rootNode )
-    , m_folderIcon( QVariant( QIcon( "folder" ) ) )
 {
     // signal proxies
     connect( m_model,
