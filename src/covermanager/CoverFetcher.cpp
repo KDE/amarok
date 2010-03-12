@@ -102,7 +102,7 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 void
 CoverFetcher::queueQuery( const QString &query )
 {
-    m_queue->addSearch( query );
+    m_queue->addQuery( query );
 }
 
 void
@@ -178,7 +178,7 @@ CoverFetcher::slotResult( KJob *job )
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( Meta::AlbumPtr( 0 ), unit->options(), data );
+        m_queue->add( unit->options(), data );
         m_queue->remove( unit );
         break;
 

@@ -28,16 +28,15 @@ CoverFetchQueue::~CoverFetchQueue()
 {
 }
 
-bool
+void
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
     m_queue.append( unit );
     emit fetchUnitAdded( unit );
-    return true;
 }
 
-bool
+void
 CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Options opt, const QByteArray &xml )
 {
     CoverFetchPayload *payload;
@@ -53,14 +52,24 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Options opt,
         art->setXml( xml );
         payload = art;
     }
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
 }
 
-bool
-CoverFetchQueue::addSearch( const QString &query )
+void
+CoverFetchQueue::add( const CoverFetch::Options opt, const QByteArray &xml )
+{
+    CoverFetchArtPayload *art = new CoverFetchArtPayload();
+    const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+    art->setWildMode( wild );
+    art->setXml( xml );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( Meta::AlbumPtr( 0 ), art, opt ) ) );
+}
+
+void
+CoverFetchQueue::addQuery( const QString &query )
 {
     CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
 int

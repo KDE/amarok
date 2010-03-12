@@ -150,7 +150,8 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild = false );
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr album = Meta::AlbumPtr( 0 ),
+                                   bool wild = false );
     ~CoverFetchArtPayload();
 
     bool isWild() const;
