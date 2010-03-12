@@ -26,7 +26,6 @@
 #include "CoverFoundDialog.h"
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
-#include "ui_EditCoverSearchDialog.h"
 
 #include <KIO/Job>
 #include <KLocale>

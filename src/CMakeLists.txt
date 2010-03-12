@@ -750,7 +750,6 @@ add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfi
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
-    dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
     dialogs/ScriptManagerBase.ui
