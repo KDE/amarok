@@ -54,6 +54,7 @@ public:
     CoverFetchUnit( Meta::AlbumPtr album,
                     const CoverFetchPayload *payload,
                     CoverFetch::Option opt = CoverFetch::Automatic );
+    CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
     CoverFetchUnit( const CoverFetchSearchPayload *payload );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
@@ -156,16 +157,17 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album = Meta::AlbumPtr( 0 ),
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr album,
+                                   const CoverFetch::ImageSize size = CoverFetch::NormalSize,
                                    bool wild = false );
+    explicit CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild = false );
     ~CoverFetchArtPayload();
 
     bool isWild() const;
 
-    void setSize( CoverFetch::ImageSize size );
-    void setXml( const QByteArray &xml );
+    CoverFetch::ImageSize imageSize() const;
 
-    void setWildMode( bool enable );
+    void setXml( const QByteArray &xml );
 
 protected:
     void prepareUrls();

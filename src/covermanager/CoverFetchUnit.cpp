@@ -38,6 +38,14 @@ CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
 {
 }
 
+CoverFetchUnit::CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt )
+    : QSharedData()
+    , m_album( Meta::AlbumPtr( 0 ) )
+    , m_options( opt )
+    , m_payload( payload )
+{
+}
+
 CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *payload )
     : QSharedData()
     , m_options( CoverFetch::WildInteractive )
@@ -69,7 +77,7 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( cpy.payload() );
-            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->imageSize(), payload->isWild() );
             break;
         }
         default:
@@ -153,7 +161,7 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( rhs.payload() );
-            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->imageSize(), payload->isWild() );
             break;
         }
         default:
@@ -299,9 +307,18 @@ CoverFetchSearchPayload::prepareUrls()
  * CoverFetchArtPayload
  */
 
-CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
+CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album,
+                                            const CoverFetch::ImageSize size,
+                                            bool wild )
     : CoverFetchPayload( album, CoverFetchPayload::Art )
-    , m_size( CoverFetch::NormalSize )
+    , m_size( size )
+    , m_wild( wild )
+{
+}
+
+CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art )
+    , m_size( size )
     , m_wild( wild )
 {
 }
@@ -316,10 +333,10 @@ CoverFetchArtPayload::isWild() const
     return m_wild;
 }
 
-void
-CoverFetchArtPayload::setSize( CoverFetch::ImageSize size )
+CoverFetch::ImageSize
+CoverFetchArtPayload::imageSize() const
 {
-    m_size = size;
+    return m_size;
 }
 
 void
@@ -327,12 +344,6 @@ CoverFetchArtPayload::setXml( const QByteArray &xml )
 {
     m_xml = QString::fromUtf8( xml );
     prepareUrls();
-}
-
-void
-CoverFetchArtPayload::setWildMode( bool enable )
-{
-    m_wild = enable;
 }
 
 void

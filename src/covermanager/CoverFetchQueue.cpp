@@ -46,10 +46,8 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Option opt, 
     }
     else
     {
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album );
         const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-        art->setWildMode( wild );
-        art->setSize( CoverFetch::NormalSize );
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, CoverFetch::NormalSize, wild );
         art->setXml( xml );
         payload = art;
     }
@@ -59,12 +57,10 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Option opt, 
 void
 CoverFetchQueue::add( const CoverFetch::Option opt, const QByteArray &xml )
 {
-    CoverFetchArtPayload *art = new CoverFetchArtPayload();
     const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-    art->setWildMode( wild );
-    art->setSize( CoverFetch::ThumbSize );
+    CoverFetchArtPayload *art = new CoverFetchArtPayload( CoverFetch::ThumbSize, wild );
     art->setXml( xml );
-    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( Meta::AlbumPtr( 0 ), art, opt ) ) );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( art, opt ) ) );
 }
 
 void
