@@ -24,15 +24,15 @@
 
 class QAction;
 
-class PlaylistsInGroupsProxy :  public QtGroupingProxy
-        , public PlaylistBrowserNS::MetaPlaylistModel
+class PlaylistsInGroupsProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
         PlaylistsInGroupsProxy( QAbstractItemModel *model );
         ~PlaylistsInGroupsProxy();
 
-//        virtual QList<ColumnVariantMap> belongsTo( const QModelIndex &idx );
+        /* PlaylistInGroupsProxy methods */
+        QModelIndex createNewGroup( const QString &groupName );
 
         /* QAbstractModel methods */
         virtual bool removeRows( int row, int count,
@@ -44,14 +44,6 @@ class PlaylistsInGroupsProxy :  public QtGroupingProxy
 
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
-
-        /* MetaPlaylistModel methods */
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
-
-        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
-        /* PlaylistInGroupsProxy methods */
-        QModelIndex createNewGroup( const QString &groupName );
 
     signals:
         void renameIndex( QModelIndex idx );

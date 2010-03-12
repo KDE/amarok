@@ -299,6 +299,7 @@ PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
     buildTree();
 }
 
+#if(0)
 QList<QAction *>
 PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 {
@@ -339,16 +340,7 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 
     return actions;
 }
-
-void
-PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
-{
-    QModelIndexList originalList = mapToSource( list );
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
-    if( mpm == 0 )
-        return;
-    mpm->loadItems( originalList, insertMode );
-}
+#endif
 
 QModelIndex
 PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )

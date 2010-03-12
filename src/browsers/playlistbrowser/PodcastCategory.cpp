@@ -644,12 +644,14 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 
     if( index.isValid() )
     {
-        QModelIndexList indices;
-        indices << index;
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm )
-            mpm->loadItems( indices, Playlist::AppendAndPlay );
-        event->accept();
+        QList<QAction *> actions =
+         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        if( actions.count() > 0 )
+        {
+            //HACK execute the first action assuming it's load
+            actions.first()->trigger();
+            actions.first()->setData( QVariant() );
+        }
     }
 
     m_clickTimer.stop();

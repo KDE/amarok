@@ -201,6 +201,7 @@ PlaylistsByProviderProxy::supportedDragActions() const
     return m_model->supportedDragActions() | Qt::CopyAction;
 }
 
+#if(0)
 QList<QAction *>
 PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
 {
@@ -218,20 +219,7 @@ PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
 
     return actions;
 }
-
-void
-PlaylistsByProviderProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
-{
-    if( isAGroupSelected( list ) )
-        return;
-    QModelIndexList originalList = mapToSource( list );
-    debug() << originalList.count() << "original indices";
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( m_model );
-    if( mpm == 0 )
-        return;
-    if( !originalList.isEmpty() )
-        mpm->loadItems( originalList, insertMode );
-}
+#endif
 
 void
 PlaylistsByProviderProxy::buildTree()

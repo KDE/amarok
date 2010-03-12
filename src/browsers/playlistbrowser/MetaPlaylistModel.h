@@ -52,8 +52,6 @@ class MetaPlaylistModel
             ActionRole, //list of QActions for the index
             CustomRoleOffset //first role that can be used by sublasses for their own data
         };
-
-        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
 };
 
 }

@@ -50,11 +50,6 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
-        /* MetaPlaylistModel methods */
-        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
-
-        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
     signals:
         void renameIndex( QModelIndex idx );
 

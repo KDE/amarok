@@ -195,13 +195,14 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * ev
 
     if( index.isValid() )
     {
-        QModelIndexList list;
-        list << index;
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm == 0 )
-            return;
-        mpm->loadItems( list, Playlist::LoadAndPlay );
-        event->accept();
+        QList<QAction *> actions =
+         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        if( actions.count() > 0 )
+        {
+            //HACK execute the first action assuming it's load
+            actions.first()->trigger();
+            actions.first()->setData( QVariant() );
+        }
     }
 
     m_clickTimer.stop();
