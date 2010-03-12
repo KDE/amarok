@@ -24,9 +24,11 @@
 #include "CoverViewDialog.h"
 #include "Debug.h"
 #include "PixmapViewer.h"
+#include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
 
 #include <KHBox>
+#include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KPushButton>
@@ -147,7 +149,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     setMainWidget( box );
     setDetailsWidget( m_details );
 
-    connect( m_save, SIGNAL(clicked()), SLOT(accept()) );
+    connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
 
     add( cover, data );
 }
@@ -174,8 +176,8 @@ void CoverFoundDialog::itemClicked( QListWidgetItem *item )
 
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
-    const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
-    m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+    Q_UNUSED( item )
+    saveRequested();
     KDialog::accept();
 }
 
@@ -196,6 +198,17 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 
     menu.addAction( display );
     menu.exec( globalPos );
+}
+
+void CoverFoundDialog::saveRequested()
+{
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( item && !item->hasBigPix() )
+    {
+        item->fetchBigPix();
+        m_pixmap = item->bigPix();
+    }
+    KDialog::accept();
 }
 
 void CoverFoundDialog::searchButtonPressed()
@@ -243,12 +256,14 @@ void CoverFoundDialog::updateTitle()
     setCaption( caption );
 }
 
-void CoverFoundDialog::add( const QPixmap cover, const CoverFetch::Metadata metadata )
+void CoverFoundDialog::add( const QPixmap cover,
+                            const CoverFetch::Metadata metadata,
+                            const CoverFetch::ImageSize imageSize )
 {
     if( cover.isNull() )
         return;
 
-    CoverFoundItem *item = new CoverFoundItem( cover, metadata );
+    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
 
     const QString size = QString( "%1x%2" )
         .arg( QString::number( cover.width() ) )
@@ -261,23 +276,89 @@ void CoverFoundDialog::add( const QPixmap cover, const CoverFetch::Metadata meta
     updateGui();
 }
 
-CoverFoundItem::CoverFoundItem( const QPixmap thumb, CoverFetch::Metadata data, QListWidget *parent )
+CoverFoundItem::CoverFoundItem( const QPixmap cover,
+                                const CoverFetch::Metadata data,
+                                const CoverFetch::ImageSize imageSize,
+                                QListWidget *parent )
     : QListWidgetItem( parent )
     , m_metadata( data )
-    , m_thumb( thumb )
+    , m_dialog( 0 )
+    , m_progress( 0 )
 {
-    QPixmap scaledPix = thumb.scaled( QSize( 120, 120 ) );
+    switch( imageSize )
+    {
+    default:
+    case CoverFetch::NormalSize:
+        m_bigPix = cover;
+        break;
+    case CoverFetch::ThumbSize:
+        m_thumb = cover;
+        break;
+    }
+
+    QPixmap scaledPix = cover.scaled( QSize( 120, 120 ) );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setIcon( prettyPix );
 }
 
+CoverFoundItem::~CoverFoundItem()
+{
+    delete m_dialog;
+    m_dialog = 0;
+}
+
+void CoverFoundItem::fetchBigPix()
+{
+    const KUrl url( m_metadata.value( "normalarturl" ) );
+    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
+
+    if( !m_dialog )
+        m_dialog = new KDialog( listWidget() );
+    m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
+    m_dialog->setButtons( KDialog::Cancel );
+    m_dialog->setDefaultButton( KDialog::Cancel );
+
+    if( !m_progress )
+        m_progress = new KJobProgressBar( m_dialog, job );
+    m_progress->cancelButton()->hide();
+    m_progress->descriptionLabel()->hide();
+    connect( m_dialog, SIGNAL(cancelClicked()), m_progress, SLOT(cancel()) );
+    connect( m_dialog, SIGNAL(cancelClicked()), job, SLOT(kill()) );
+
+    m_dialog->setMainWidget( m_progress );
+    m_dialog->exec();
+}
+
 void CoverFoundItem::display()
 {
+    if( !hasBigPix() )
+        fetchBigPix();
+
     QWidget *p = dynamic_cast<QWidget*>( parent() );
     int parentScreen = KApplication::desktop()->screenNumber( p );
 
     const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
     ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
+}
+
+void CoverFoundItem::slotFetchResult( KJob *job )
+{
+    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    const QByteArray data = storedJob->data();
+    QPixmap pixmap;
+    if( pixmap.loadFromData( data ) )
+    {
+        m_bigPix = pixmap;
+    }
+
+    if( m_dialog )
+    {
+        m_dialog->accept();
+        delete m_dialog;
+        m_dialog = 0;
+    }
+    storedJob->deleteLater();
 }
 
 #include "CoverFoundDialog.moc"
