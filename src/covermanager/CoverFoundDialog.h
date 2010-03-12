@@ -93,11 +93,16 @@ class CoverFoundItem : public QObject, public QListWidgetItem
     Q_OBJECT
 
 public:
-    explicit CoverFoundItem( const QPixmap pixmap, CoverFetch::Metadata data, QListWidget *parent = 0 );
+    explicit CoverFoundItem( const QPixmap thumb, CoverFetch::Metadata data, QListWidget *parent = 0 );
     ~CoverFoundItem() {}
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
-    const QPixmap pixmap() const { return m_pixmap; }
+    const QPixmap bigPix() const { return m_bigPix; }
+    const QPixmap thumb() const { return m_thumb; }
+
+    bool hasBigPix() const { return !m_bigPix.isNull(); }
+
+    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
 
 public slots:
     /**
@@ -107,7 +112,8 @@ public slots:
 
 private:
     CoverFetch::Metadata m_metadata;
-    QPixmap m_pixmap;
+    QPixmap m_thumb;
+    QPixmap m_bigPix;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

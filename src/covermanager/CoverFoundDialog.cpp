@@ -166,14 +166,16 @@ void CoverFoundDialog::clearView()
 
 void CoverFoundDialog::itemClicked( QListWidgetItem *item )
 {
-    m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
+    const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
+    m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
     updateDetails();
 }
 
 
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
-    m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
+    const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
+    m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
     KDialog::accept();
 }
 
@@ -225,8 +227,10 @@ void CoverFoundDialog::updateDetails()
 
     artistName->setText( meta.value( "artist" ) );
     albumName->setText( meta.value( "name" ) );
-    const KUrl url = KUrl( meta.value( "url" ) );
-    const QString urlText = QString( "<a href=\"%1\">link</a>" ).arg( url.url() );
+    const QString urlText = QString( "<a href=\"%1\">source</a>, <a href=\"%2\">image</a>, <a href=\"%3\">thumb</a>" )
+                                .arg( KUrl( meta.value( "url" ) ).url() )
+                                .arg( KUrl( meta.value( "normalarturl" ) ).url() )
+                                .arg( KUrl( meta.value( "thumbarturl" ) ).url() );
     urlName->setText( urlText );
 }
 
@@ -257,12 +261,12 @@ void CoverFoundDialog::add( const QPixmap cover, const CoverFetch::Metadata meta
     updateGui();
 }
 
-CoverFoundItem::CoverFoundItem( const QPixmap pixmap, CoverFetch::Metadata data, QListWidget *parent )
+CoverFoundItem::CoverFoundItem( const QPixmap thumb, CoverFetch::Metadata data, QListWidget *parent )
     : QListWidgetItem( parent )
     , m_metadata( data )
-    , m_pixmap( pixmap )
+    , m_thumb( thumb )
 {
-    QPixmap scaledPix = pixmap.scaled( QSize( 120, 120 ) );
+    QPixmap scaledPix = thumb.scaled( QSize( 120, 120 ) );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setIcon( prettyPix );
 }
@@ -271,7 +275,9 @@ void CoverFoundItem::display()
 {
     QWidget *p = dynamic_cast<QWidget*>( parent() );
     int parentScreen = KApplication::desktop()->screenNumber( p );
-    ( new CoverViewDialog( m_pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
+
+    const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
+    ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
 }
 
 #include "CoverFoundDialog.moc"

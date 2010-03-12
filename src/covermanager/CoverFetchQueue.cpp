@@ -62,6 +62,7 @@ CoverFetchQueue::add( const CoverFetch::Option opt, const QByteArray &xml )
     CoverFetchArtPayload *art = new CoverFetchArtPayload();
     const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
     art->setWildMode( wild );
+    art->setSize( CoverFetch::ThumbSize );
     art->setXml( xml );
     add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( Meta::AlbumPtr( 0 ), art, opt ) ) );
 }
