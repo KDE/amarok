@@ -20,8 +20,8 @@
 #include "playlistmanager/PlaylistProvider.h"
 
 #include "AmarokMimeData.h"
-#include "Debug.h"
 #include "CollectionManager.h"
+#include "Debug.h"
 #include "SvgHandler.h"
 
 #include <KIcon>
@@ -45,11 +45,11 @@ namespace The
     }
 }
 
-PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::s_instance = 0;
+PlaylistBrowserNS::UserModel *PlaylistBrowserNS::UserModel::s_instance = 0;
 
-PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
+PlaylistBrowserNS::UserModel *PlaylistBrowserNS::UserModel::instance()
 {
-    if ( s_instance == 0 )
+    if( s_instance == 0 )
         s_instance = new UserModel();
 
     return s_instance;
@@ -58,7 +58,8 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 void
 PlaylistBrowserNS::UserModel::destroy()
 {
-    if (s_instance) {
+    if( s_instance )
+    {
         delete s_instance;
         s_instance = 0;
     }
@@ -86,7 +87,6 @@ PlaylistBrowserNS::UserModel::~UserModel()
 void
 PlaylistBrowserNS::UserModel::slotUpdate()
 {
-    DEBUG_BLOCK
     loadPlaylists();
 
     emit layoutAboutToBeChanged();
@@ -96,7 +96,6 @@ PlaylistBrowserNS::UserModel::slotUpdate()
 void
 PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
 {
-    DEBUG_BLOCK
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
     // several playlists with the same name
@@ -111,17 +110,15 @@ PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
         return;
 
     QModelIndex index = this->index( row, 0, QModelIndex() );
-    debug() << index;
     emit( renameIndex( index ) );
 }
 
 void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
-    DEBUG_BLOCK
     QList<Meta::PlaylistPtr> playlists =
-    The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
-    QListIterator<Meta::PlaylistPtr> i(playlists);
+            The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
+    QListIterator<Meta::PlaylistPtr> i( playlists );
     m_playlists.clear();
     while( i.hasNext() )
     {
@@ -137,9 +134,8 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 }
 
 QVariant
-PlaylistBrowserNS::UserModel::data(const QModelIndex &index, int role) const
+PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
 {
-//    debug() << "index: " << index;
     if( index.row() == -1 )
     {
         if( index.column() == ProviderColumn )
@@ -173,8 +169,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex &index, int role) const
             {
                 case Qt::DisplayRole:
                 case DescriptionRole:
-                case Qt::ToolTipRole:
-                    return displayList;
+                case Qt::ToolTipRole: return displayList;
                 case Qt::DecorationRole: return iconList;
                 case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
                 case MetaPlaylistModel::ActionRole: return providerActionsList;
@@ -188,7 +183,6 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     int row = REMOVE_TRACK_MASK(index.internalId());
-//    debug() << "playlist at row: " << row;
     Meta::PlaylistPtr playlist = m_playlists.value( row );
 
     QVariant food = QVariant();
@@ -286,15 +280,11 @@ PlaylistBrowserNS::UserModel::index( int row, int column, const QModelIndex &par
 }
 
 QModelIndex
-PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
+PlaylistBrowserNS::UserModel::parent( const QModelIndex &index ) const
 {
-//    DEBUG_BLOCK
-//    debug() << index;
     if( IS_TRACK(index) )
     {
-//        debug() << " is a track.";
         int row = REMOVE_TRACK_MASK(index.internalId());
-//        debug() << "parent at row: " << row;
         return this->index( row, index.column(), QModelIndex() );
     }
 
@@ -304,7 +294,6 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
 {
-//    debug() << "parent: " << parent;
     if (parent.column() > 0)
     {
         return 0;
@@ -317,7 +306,6 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
     else if( !IS_TRACK(parent) )
     {
         Meta::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
-        //debug() << QString( "has %1 tracks.").arg(playlist->tracks().count());
         return playlist->tracks().count();
     }
 
@@ -358,7 +346,7 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex &index ) const
 }
 
 QVariant
-PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientation, int role) const
+PlaylistBrowserNS::UserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
@@ -377,7 +365,6 @@ bool
 PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
     Q_UNUSED( role )
-    DEBUG_BLOCK
 
     switch( idx.column() )
     {
@@ -405,9 +392,6 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
 bool
 PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-    DEBUG_BLOCK
-    debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-
     if( row < 0 || row > rowCount( parent ) )
         return false;
 
@@ -430,13 +414,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
       return true;
     }
     int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
-    debug() << "playlist at row: " << playlistRow;
 
     //don't try to get a playlist beyond the last item in the list
     if( playlistRow >=  m_playlists.count() )
     {
-        debug() << "ERROR: tried to remove from non existing playlist:";
-        debug() << playlistRow << " while there are only " << m_playlists.count();
+        error() << "Tried to remove from non existing playlist:";
+        error() << playlistRow << " while there are only " << m_playlists.count();
         return false;
     }
 
@@ -446,8 +429,8 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     //count will be at least 1 to delete one track
     if( row + count - 1 >= playlist->tracks().count() )
     {
-        debug() << "ERROR: tried to remove a track using an index that is not there:";
-        debug() << "row: " << row << " count: " << count << " number of tracks: "
+        error() << "Tried to remove a track using an index that is not there:";
+        error() << "row: " << row << " count: " << count << " number of tracks: "
                 << playlist->tracks().count();
         return false;
     }
@@ -477,7 +460,6 @@ PlaylistBrowserNS::UserModel::mimeTypes() const
 QMimeData*
 PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 {
-    DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
 
     Meta::PlaylistList playlists;
@@ -486,15 +468,9 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
     foreach( const QModelIndex &index, indices )
     {
         if( IS_TRACK(index) )
-        {
-            debug() << "track";
             tracks << trackFromIndex( index );
-        }
         else
-        {
-            debug() << "playlist";
             playlists << m_playlists.value( index.internalId() );
-        }
     }
 
     mime->setPlaylists( playlists );
@@ -507,10 +483,6 @@ bool
 PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropAction action, int row,
         int column, const QModelIndex &parent ) //reimplemented
 {
-    DEBUG_BLOCK
-    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
-    debug() << parent;
-
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -520,24 +492,18 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
-        debug() << "Found track mime type";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( !dragList )
             return false;
 
-        //TODO: use PlaylistManager::moveTrack()
         emit layoutAboutToBeChanged();
         int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
-        debug() << "playlist at row: " << playlistRow;
         Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
         if( playlist )
         {
             int insertAt = (row == -1) ? playlist->tracks().count() : row;
             foreach( Meta::TrackPtr track, dragList->tracks() )
-            {
-                debug() << track->prettyName() << "dropped on " << playlist->prettyName() << "insert at " << insertAt;
                 playlist->addTrack( track, insertAt++ );
-            }
             emit rowsInserted( parent, row, insertAt );
         }
         return !playlist.isNull();
@@ -550,24 +516,6 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
             success = The::playlistManager()->import( url.toString() ) ? success : false;
         return success;
     }
-
-#if 0
-    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
-    {
-        debug() << "Found playlist mime type";
-
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if( !dragList )
-            return false;
-
-        foreach( Meta::PlaylistPtr playlistPtr, dragList->playlists() )
-        {
-            //TODO: figure out what to do when a playlist is dropped onto another playlist
-        }
-
-        return true;
-    }
-#endif
 
     return false;
 }
@@ -682,22 +630,22 @@ PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if ( m_renameAction == 0 )
+    if( m_renameAction == 0 )
     {
-        //FIXME: add ellipsis ("...") since this action opens a dialog
-        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ),
+                                       this );
         m_renameAction->setProperty( "pud_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
 
-    if ( m_deleteAction == 0 )
+    if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
         m_renameAction->setProperty( "pud_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
 
-    if ( indices.count() > 0 )
+    if( indices.count() > 0 )
     {
         // NOTE: rename only 1 playlist at a time
         if( m_selectedPlaylists.count() == 1 )
@@ -802,15 +750,13 @@ PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
 }
 
 void
-PlaylistBrowserNS::UserModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position )
+PlaylistBrowserNS::UserModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                          int position )
 {
-    DEBUG_BLOCK
-    debug() << "From playlist: " << playlist->prettyName();
-    debug() << "Track: " << track->prettyName() << "position: " << position;
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
     {
-        debug() << "Error: this playlist is not in the list of this model.";
+        error() << "This playlist is not in the list of this model.";
         return;
     }
     QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
@@ -820,13 +766,10 @@ PlaylistBrowserNS::UserModel::trackAdded( Meta::PlaylistPtr playlist, Meta::Trac
 void
 PlaylistBrowserNS::UserModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
 {
-    DEBUG_BLOCK
-    debug() << "From playlist: " << playlist->prettyName();
-    debug() << "position: " << position;
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
     {
-        debug() << "Error: this playlist is not in the list of this model.";
+        error() << "This playlist is not in the list of this model.";
         return;
     }
     QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
