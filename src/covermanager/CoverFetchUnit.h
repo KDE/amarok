@@ -26,7 +26,7 @@ class CoverFetchSearchPayload;
 
 namespace CoverFetch
 {
-    enum Options
+    enum Option
     {
         Automatic,      //! Automtically save cover for the specified album, if one is found
         Interactive,    //! Opens a dialog for the user to decide, and add more searches if desired
@@ -53,7 +53,7 @@ public:
 
     CoverFetchUnit( Meta::AlbumPtr album,
                     const CoverFetchPayload *payload,
-                    CoverFetch::Options opt = CoverFetch::Automatic );
+                    CoverFetch::Option opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchSearchPayload *payload );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
@@ -61,7 +61,7 @@ public:
 
     Meta::AlbumPtr album() const;
     const QStringList &errors() const;
-    CoverFetch::Options options() const;
+    CoverFetch::Option options() const;
     const CoverFetchPayload *payload() const;
 
     bool isInteractive() const;
@@ -76,7 +76,7 @@ public:
 private:
     Meta::AlbumPtr m_album;
     QStringList m_errors;
-    CoverFetch::Options m_options;
+    CoverFetch::Option m_options;
     const CoverFetchPayload *m_payload;
 };
 

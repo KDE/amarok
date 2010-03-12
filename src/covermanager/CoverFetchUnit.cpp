@@ -30,7 +30,7 @@
 
 CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
                                 const CoverFetchPayload *payload,
-                                CoverFetch::Options opt )
+                                CoverFetch::Option opt )
     : QSharedData()
     , m_album( album )
     , m_options( opt )
@@ -94,7 +94,7 @@ CoverFetchUnit::errors() const
     return m_errors;
 }
 
-CoverFetch::Options
+CoverFetch::Option
 CoverFetchUnit::options() const
 {
     return m_options;

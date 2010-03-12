@@ -55,7 +55,7 @@ public:
      * pass of the fetching process.
      */
     void add( const Meta::AlbumPtr album,
-              const CoverFetch::Options opt = CoverFetch::Automatic,
+              const CoverFetch::Option opt = CoverFetch::Automatic,
               const QByteArray &xml = QByteArray() );
 
     /**
@@ -64,7 +64,7 @@ public:
      * @param xml xml document from the cover provider. Can be empty on first
      * pass of the fetching process.
      */
-    void add( const CoverFetch::Options opt = CoverFetch::WildInteractive,
+    void add( const CoverFetch::Option opt = CoverFetch::WildInteractive,
               const QByteArray &xml = QByteArray() );
 
     /**
