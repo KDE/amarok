@@ -20,7 +20,7 @@
 #include "meta/Meta.h"
 
 #include <QGLWidget>
-
+#include <QTimer>
 
 class CoverBling : public QGLWidget
 {
@@ -28,8 +28,9 @@ class CoverBling : public QGLWidget
 
     public:
         CoverBling( QWidget* parent,Meta::AlbumList albums );
-		void init(Meta::AlbumList albums);
-
+		void init(Meta::AlbumList albums, QSize iSize = QSize(256,256));
+	public slots:
+		void setCurrentIndex(int idx);
     protected:
         void initializeGL();
         void resizeGL( int width, int height );
@@ -40,15 +41,24 @@ class CoverBling : public QGLWidget
 		void mousePressEvent(QMouseEvent *event);
     private slots:
         void queryResult( QString collectionId, Meta::AlbumList albums );
-        
+		void updateAnimation();
     private:
-        QList<QPixmap> m_covers;
+		Meta::AlbumList m_albums;
         QList<GLuint> m_textureIds;
         GLuint m_texturedRectList;
         GLuint m_texturedRectReflectedList;
         float m_xOffset;
         float m_zOffset;
 		int m_currentindex;
+		QTimer* m_timer;
+		QSize m_coversize;
+		float m_anim_right;
+		float m_anim_left;
+		float m_elevation;
+		QTimer animateTimer; 
+		int m_animationDuration;
+		int m_animationStep;
+		int m_animation_StepMax;
 };
 
 

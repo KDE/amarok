@@ -998,7 +998,7 @@ void PictureFlow::setAlbums(Meta::AlbumList iAlbums)
 	d->renderer->widget = m_openglwidget;
 	if (m_openglwidget) 
 	{
-		m_openglwidget->init(m_album_list);
+		m_openglwidget->init(m_album_list,QSize(150,150));
 		m_openglwidget->show();
 		
 	}

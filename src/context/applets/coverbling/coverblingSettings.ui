@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>171</height>
+    <height>146</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>40</y>
+     <y>20</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>80</y>
+     <y>60</y>
      <width>101</width>
      <height>16</height>
     </rect>
@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>80</y>
+     <y>60</y>
      <width>51</width>
      <height>21</height>
     </rect>
@@ -59,7 +59,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>40</y>
+     <y>20</y>
      <width>101</width>
      <height>26</height>
     </rect>
@@ -84,7 +84,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>110</y>
+     <y>90</y>
      <width>141</width>
      <height>16</height>
     </rect>
@@ -97,7 +97,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
+     <y>110</y>
      <width>141</width>
      <height>16</height>
     </rect>
@@ -105,39 +105,6 @@
    <property name="text">
     <string>Animated jump</string>
    </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>50</width>
-     <height>14</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Rendering</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="renderingCombo">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>10</y>
-     <width>101</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Software</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>OpenGL</string>
-    </property>
-   </item>
   </widget>
  </widget>
  <resources/>

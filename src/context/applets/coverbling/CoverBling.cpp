@@ -35,9 +35,6 @@
 #include <climits>
 #include "ImageLoader.h"
 
-#define TEXTURE_SIZE QSize( 256, 256 )
-
-
 CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
         : QGLWidget( QGLFormat(QGL::DepthBuffer|QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
         , m_xOffset( 0.0 )
@@ -47,47 +44,39 @@ CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
 
 	m_currentindex = 0;
 	makeCurrent();
-    //setFixedHeight( 200 );
+	m_animationDuration = 20;
+	m_coversize = QSize (150,150);
+    setFixedHeight( 300 );
 	queryResult("",albums);
-   /* Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
-    qm->setQueryType( QueryMaker::Album );
-    qm->limitMaxResultSize( 10 );
-
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( queryResult( QString, Meta::AlbumList ) ) );
-
-    qm->run();*/
+	m_animationStep = 0;
+	m_animation_StepMax = 10;
 }
 
 void
 CoverBling::queryResult( QString collectionId, Meta::AlbumList albums )
 {
-    foreach( Meta::AlbumPtr album, albums )
-	{
-		m_covers << PlainImageLoader::GetPixmap(album);
-	}
-        
-
-    QTimer* timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
-    timer->start( 20 ); //50fps
+	m_albums = albums;
+	m_timer = new QTimer( this );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+    m_timer->start( 20 ); //50fps
+    
+    connect(&animateTimer, SIGNAL( timeout() ), this, SLOT(updateAnimation()));
 }
-void CoverBling::init(Meta::AlbumList albums)
+void CoverBling::init(Meta::AlbumList albums,QSize iSize)
 {
 	queryResult("",albums);
+	m_coversize = iSize;
 }
 void
 CoverBling::initializeGL() //reimplemented
 {
     DEBUG_BLOCK
-
+    if (m_timer) m_timer->stop();
     //generate all textures
-    foreach( const QPixmap &p, m_covers ) {
-        QImage image = p.toImage();
-        image = image.scaled( TEXTURE_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    foreach( Meta::AlbumPtr album, m_albums ) {
+		QImage image = PlainImageLoader::loadAndResize( album, m_coversize );
         m_textureIds << bindTexture( image );
     }
-
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glShadeModel(GL_SMOOTH); 
     qglClearColor( Qt::black );
@@ -142,6 +131,7 @@ CoverBling::initializeGL() //reimplemented
 
         glDisable( GL_BLEND );
     glEndList();
+    
 }
 
 void
@@ -169,50 +159,50 @@ CoverBling::paintGL() //reimplemented
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     const QPoint mousePos = mapFromGlobal( QCursor::pos() );
-    draw( objectAtPosition( mousePos ) );
+    draw(0);
+    //draw( objectAtPosition( mousePos ) );
 }
-
 void
 CoverBling::draw( GLuint selected )
 {
+	//DEBUG_BLOCK
+	
     GLuint objectName = 1;
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    glRotatef( 10, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
+    glRotatef( 4, 1.0, 0.0, 0.0 ); //Rotate whole scene around X axis; simulates camera tilt
     glScalef( 1.0, 1.0, 6.0 );
-
-    //draw the ground
-    //glBegin( GL_POLYGON );
-    //    glColor3f( 0.0, 0.0, 0.5 );
-    //    glVertex3f (-3.0, -1.0, -2.0);
-    //    glColor3f( 1.0, 0.0, 0.5 );
-    //    glVertex3f (3.0, -1.0, -2.0);
-    //    glColor3f( 0.0, 1.0, 0.5 );
-    //    glVertex3f (3.0, -1.0, 2.0);
-    //    glColor3f( 0.0, 0.0, 1.5 );
-    //    glVertex3f (-3.0, -1.0, 2.0);
-    //glEnd();
-
+    float step = ((float)m_animationStep)/((float)m_animation_StepMax);    	
+    if (!animateTimer.isActive()) step=1; 
+    
+	glTranslatef( -2*m_currentindex*step, 0.0, 0.0 );			
+   
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
     glEnable( GL_TEXTURE_2D);
-
-    float xoffset = -5.5;
+    //glTranslatef( -2*m_currentindex, 0, 0 );
+    float xoffset = 0.5;
     float yoffset = -0.6;
     float zoffset = -1.1;
-
-    foreach( GLuint id, m_textureIds ) { // krazy:exclude=foreach
+	int nbtextures = m_textureIds.size();
+	for (int i=0;i<nbtextures;i++)
+	{
+		GLuint id = m_textureIds[i];
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
-            //const float xsin = sin( xoffset );
-            //const float zsin = sin( zoffset );
+            
+            glTranslatef( 2*i, 0.0, 0.0);
             xoffset += 1.0;
             zoffset += 0.1;
-            glTranslatef( xoffset, yoffset, zoffset );
-            glRotatef( 8, 0.0, 1.0, 0.0 );
-
+            int idx_diff = m_currentindex-i;
+            if( idx_diff )
+			{
+				//glTranslatef( 1.5*idx_diff*step, 0.0, -0.1*idx_diff*idx_diff*step );
+				//glRotatef( 90*idx_diff*step/nbtextures, 0.0, 1.0, 0.0 );
+			}
             //draw the cover
-            if( objectName == selected )
+			// celle là il faut la mettre à plat au milieu !!!
+			else
                 glColor3f( 1.0, 0.0, 0.0 );
             glLoadName( objectName++ );
             glCallList( m_texturedRectList );
@@ -225,7 +215,33 @@ CoverBling::draw( GLuint selected )
             glPopMatrix();
         glPopMatrix();
         glColor4f( 1.0, 1.0, 1.0, 1.0 );
-    }
+	}
+	// ancienne boucle
+    //foreach( GLuint id, m_textureIds ) { // krazy:exclude=foreach
+    //    glBindTexture( GL_TEXTURE_2D, id );
+    //    glPushMatrix();
+    //        //const float xsin = sin( xoffset );
+    //        //const float zsin = sin( zoffset );
+    //        xoffset += 1.0;
+    //        zoffset += 0.1;
+    //        glTranslatef( xoffset, yoffset, zoffset );
+    //        glRotatef( 8, 0.0, 1.0, 0.0 );
+
+    //        //draw the cover
+    //        if( objectName == selected )
+    //            glColor3f( 1.0, 0.0, 0.0 );
+    //        glLoadName( objectName++ );
+    //        glCallList( m_texturedRectList );
+    //        glColor4f( 1.0, 1.0, 1.0, 1.0 );
+
+    //        //draw reflection on the ground
+    //        glLoadName( 0 );
+    //        glPushMatrix();
+    //            glCallList( m_texturedRectReflectedList );
+    //        glPopMatrix();
+    //    glPopMatrix();
+    //    glColor4f( 1.0, 1.0, 1.0, 1.0 );
+    //}
     glDisable( GL_TEXTURE_2D);
 }
 
@@ -273,9 +289,22 @@ CoverBling::objectAtPosition( const QPoint& pos )
 }
 void CoverBling::mousePressEvent(QMouseEvent *event)
 {
+	DEBUG_BLOCK
+	m_animationStep=0;
 	m_currentindex++;
-	paintGL();
+	animateTimer.start(m_animationDuration);
+	//updateGL();
 }
-
+void CoverBling::setCurrentIndex(int idx)
+{
+	DEBUG_BLOCK
+	m_currentindex = idx;
+}
+void CoverBling::updateAnimation()
+{
+	m_animationStep++;
+	if (m_animationStep==m_animation_StepMax) {animateTimer.stop();m_animationStep=0;}
+	updateGL();
+}
 #include "CoverBling.moc"
 
