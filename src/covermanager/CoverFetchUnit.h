@@ -177,8 +177,11 @@ private:
     /// search is wild mode?
     bool m_wild;
 
-    /// convert CoverSize enum to string
+    /// convert ImageSize enum to string
     QString coverSize( enum CoverFetch::ImageSize size ) const;
+
+    /// convert string to ImageSize
+    enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
 
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );

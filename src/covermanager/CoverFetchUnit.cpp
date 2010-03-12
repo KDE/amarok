@@ -384,23 +384,40 @@ CoverFetchArtPayload::prepareUrls()
             continue;
 
         KUrl url;
+        CoverFetch::Metadata metadata;
+
         const QDomNodeList list = albumNode.childNodes();
         for( int i = 0, count = list.count(); i < count; ++i )
         {
             const QDomNode &node = list.item( i );
             if( node.nodeName() == "image" && node.hasAttributes() )
             {
-                const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if( node.isElement() && imageSize == coverSize( m_size ) )
+                if( !node.isElement() )
+                    continue;
+
+                const QString elementText = node.toElement().text();
+                const QString sizeStr = node.attributes().namedItem( "size" ).nodeValue();
+                enum CoverFetch::ImageSize imageSize = str2CoverSize( sizeStr );
+
+                switch( imageSize )
                 {
-                    url = node.toElement().text();
+                case CoverFetch::ThumbSize:
+                    metadata[ "thumbarturl" ] = elementText;
+                    break;
+                case CoverFetch::NormalSize:
+                    metadata[ "normalarturl" ] = elementText;
+                    break;
+                }
+
+                if( sizeStr == coverSize( m_size ) )
+                {
+                    url = elementText;
                 }
             }
         }
 
         QStringList tags;
         tags << "name" << "artist" << "url";
-        CoverFetch::Metadata metadata;
         foreach( const QString &tag, tags )
         {
             const QDomElement e = albumNode.namedItem( tag ).toElement();
@@ -427,6 +444,17 @@ CoverFetchArtPayload::coverSize( enum CoverFetch::ImageSize size ) const
         break;
     }
     return str;
+}
+
+enum CoverFetch::ImageSize
+CoverFetchArtPayload::str2CoverSize( const QString &string ) const
+{
+    enum CoverFetch::ImageSize size;
+    if( string == "large" )
+        size = CoverFetch::ThumbSize;
+    else
+        size = CoverFetch::NormalSize;
+    return size;
 }
 
 QString
