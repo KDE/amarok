@@ -37,17 +37,21 @@ class MetaPlaylistModel
     public:
         virtual ~MetaPlaylistModel() {}
         
-        enum
-        {
-            DescriptionRole = Qt::UserRole + 100,
-            //What is the name of the group this Playlist is in.
-            GroupRole,
-            ByLineRole,
-            ActionCountRole,
-            ActionRole
+        enum {
+            PlaylistColumn = 0, //Data form the playlist itself
+            LabelColumn, //Data from the labels. Can be used as foldernames in the view.
+            ProviderColumn, //data from the PlaylistProvider
+            CustomColumOffset //first column that can be used by subclasses for their own data
         };
 
-        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes ) = 0;
+        enum
+        {
+            DescriptionRole = Qt::UserRole,
+            ByLineRole, //show some additional info like count or status. Displayed under description
+            ActionCountRole,
+            ActionRole, //list of QActions for the index
+            CustomRoleOffset //first role that can be used by sublasses for their own data
+        };
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
 };

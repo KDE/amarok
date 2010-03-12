@@ -684,14 +684,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm )
-            actions = mpm->actionsFor( selectedIndexes() );
+        actions = actionsFor( selectedIndexes() );
 
-        foreach( QAction * action, actions )
-        {
+        foreach( QAction *action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-        }
 
         m_pd->show();
     }
@@ -715,22 +711,34 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
+QList<QAction *>
+PodcastView::actionsFor( QModelIndexList indexes )
+{
+    QList<QAction *> actions;
+    foreach( QModelIndex idx, indexes )
+    {
+        QList<QAction *> idxActions =
+         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        //only add unique actions model is responsible for making them unique
+        foreach( QAction *action, idxActions )
+        {
+            if( !actions.contains( action ) )
+                actions << action;
+        }
+    }
+    return actions;
+}
+
 void
 PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
-    DEBUG_BLOCK
-
-    KMenu menu;
-    QModelIndexList indices = selectedIndexes();
-    QList<QAction *> actions;
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-    if( mpm )
-        actions = mpm->actionsFor( indices );
+    QList<QAction *> actions = actionsFor( selectedIndexes() );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( QAction * action, actions )
+    KMenu menu;
+    foreach( QAction *action, actions )
     {
         if( action )
             menu.addAction( action );

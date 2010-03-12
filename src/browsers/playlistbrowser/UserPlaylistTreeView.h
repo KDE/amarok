@@ -60,6 +60,8 @@ private slots:
     void slotClickTimeout();
 
 private:
+    QList<QAction *> actionsFor( QModelIndexList indexes );
+
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;

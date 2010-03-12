@@ -38,11 +38,6 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
 {
     Q_OBJECT
     public:
-        enum {
-            PlaylistColumn = 0, //Data form the playlist itself
-            GroupColumn = 1, //Data form the group (a.k.a. folder) the playlist is in.
-            ProviderColumn = 2 //data form the PlaylistProvider
-        };
         static UserModel * instance();
         static void destroy();
 
@@ -72,13 +67,7 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
-
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
-        /* UserPlaylistModel specific methods */
-        Meta::PlaylistList selectedPlaylists() { return m_selectedPlaylists; }
-        Meta::TrackList selectedTracks() { return m_selectedTracks; }
 
         /* Meta::PlaylistObserver methods */
         virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
@@ -89,38 +78,32 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         void slotLoad();
         void slotAppend();
 
-        void slotRename();
-        void slotDelete(); // Deletes playlists
-
         void slotUpdate();
         void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 
     signals:
-        void renameIndex( const QModelIndex & index );
-        void rowsInserted( const QModelIndex & parent, int start, int end );
+        void renameIndex( const QModelIndex &index );
+        void rowsInserted( const QModelIndex &parent, int start, int end );
 
     private:
         UserModel();
+        QList<QAction *> actionsFor( const QModelIndex &idx ) const;
+        Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
+        Meta::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
+        Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
+
         void loadPlaylists();
 
         static UserModel * s_instance;
 
         Meta::PlaylistList m_playlists;
-        QList<QAction *> createCommonActions( QModelIndexList indices );
-        QList<QAction *> createWriteActions( QModelIndexList indices );
         QAction *m_appendAction;
         QAction *m_loadAction;
-        QAction *m_renameAction;
-        QAction *m_deleteAction;
-
-        Meta::PlaylistList m_selectedPlaylists;
-        Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );
-        Meta::TrackList m_selectedTracks;
-        Meta::TrackList selectedTracks( const QModelIndexList &list );
-        Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
 };
 
 }
+
+Q_DECLARE_METATYPE( QModelIndexList )
 
 namespace The {
     AMAROK_EXPORT PlaylistBrowserNS::UserModel* userPlaylistModel();

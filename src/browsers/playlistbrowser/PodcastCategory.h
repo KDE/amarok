@@ -111,6 +111,8 @@ class PodcastView : public Amarok::PrettyTreeView
         void slotClickTimeout();
 
     private:
+        QList<QAction *> actionsFor( QModelIndexList indexes );
+
         PodcastModel *m_podcastModel;
 
         PopupDropper* m_pd;

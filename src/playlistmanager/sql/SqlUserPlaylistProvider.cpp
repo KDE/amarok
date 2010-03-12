@@ -74,7 +74,7 @@ void
 SqlUserPlaylistProvider::slotDelete()
 {
     DEBUG_BLOCK
-    deletePlaylists( The::userPlaylistModel()->selectedPlaylists() );
+//    deletePlaylists( The::userPlaylistModel()->selectedPlaylists() );
 }
 
 void
@@ -82,16 +82,16 @@ SqlUserPlaylistProvider::slotRename()
 {
     DEBUG_BLOCK
     //only one playlist can be selected at this point
-    Meta::SqlPlaylistPtr playlist = selectedPlaylists().first();
-    if( playlist.isNull() )
-        return;
-    //TODO: inline rename
-    bool ok;
-    const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name(),
-                                                   &ok );
-    if ( ok )
-        playlist->setName( newName.trimmed() );
+//    Meta::SqlPlaylistPtr playlist = selectedPlaylists().first();
+//    if( playlist.isNull() )
+//        return;
+//    //TODO: inline rename
+//    bool ok;
+//    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+//                i18n("Enter new name for playlist:"), playlist->name(),
+//                                                   &ok );
+//    if ( ok )
+//        playlist->setName( newName.trimmed() );
 }
 
 void
@@ -121,7 +121,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
 
     if ( m_renameAction == 0 )
     {
-        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
         m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
@@ -129,7 +129,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }

@@ -229,22 +229,14 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     if( m_pd && m_pd->isHidden() )
     {
+        actions = actionsFor( selectedIndexes() );
 
-        QModelIndexList indices = selectedIndexes();
-
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm == 0 )
-            return;
-        actions = mpm->actionsFor( indices );
-
-        foreach( QAction * action, actions )
-        {
+        foreach( QAction *action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-        }
 
         m_pd->show();
     }
@@ -287,16 +279,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 {
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    KMenu menu;
-
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-    if( mpm == 0 )
-        return;
-    QList<QAction *> actions = mpm->actionsFor( indices );
+    QList<QAction *> actions = actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
+    KMenu menu;
     foreach( QAction *action, actions )
     {
         if( action )
@@ -323,6 +311,24 @@ PlaylistBrowserNS::UserPlaylistTreeView::slotClickTimeout()
         setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
     }
     m_savedClickIndex = QModelIndex();
+}
+
+QList<QAction *>
+PlaylistBrowserNS::UserPlaylistTreeView::actionsFor( QModelIndexList indexes )
+{
+    QList<QAction *> actions;
+    foreach( QModelIndex idx, indexes )
+    {
+        QList<QAction *> idxActions =
+         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        //only add unique actions model is responsible for making them unique
+        foreach( QAction *action, idxActions )
+        {
+            if( !actions.contains( action ) )
+                actions << action;
+        }
+    }
+    return actions;
 }
 
 void

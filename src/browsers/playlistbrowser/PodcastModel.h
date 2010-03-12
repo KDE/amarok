@@ -33,13 +33,13 @@ class PodcastProvider;
 namespace PlaylistBrowserNS {
 
 enum {
-    ShortDescriptionRole = Qt::UserRole + 1,
+    ShortDescriptionRole = MetaPlaylistModel::CustomRoleOffset,
     LongDescriptionRole
 };
 
 enum
 {
-    TitleColumn,
+    TitleColumn = MetaPlaylistModel::CustomColumOffset,
     SubtitleColumn,
     AuthorColumn,
     KeywordsColumn,

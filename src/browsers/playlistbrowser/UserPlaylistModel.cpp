@@ -69,11 +69,22 @@ PlaylistBrowserNS::UserModel::UserModel()
     : MetaPlaylistModel()
     , m_appendAction( 0 )
     , m_loadAction( 0 )
-    , m_renameAction( 0 )
-    , m_deleteAction( 0 )
 {
     s_instance = this;
     loadPlaylists();
+
+    //common, unconditional actions
+    m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
+                                  this );
+    m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+    connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+
+    m_loadAction = new QAction( KIcon( "folder-open" ),
+                                i18nc( "Replace the currently loaded tracks with these",
+                                       "&Replace Playlist" ),
+                                this );
+    m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+    connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
     connect( The::playlistManager(), SIGNAL(renamePlaylist( Meta::PlaylistPtr )),
@@ -138,7 +149,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
 {
     if( index.row() == -1 )
     {
-        if( index.column() == ProviderColumn )
+        if( index.column() == MetaPlaylistModel::ProviderColumn )
         {
             QVariantList displayList;
             QVariantList iconList;
@@ -179,7 +190,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
         }
     }
 
-    if ( !index.isValid() )
+    if( !index.isValid() )
         return QVariant();
 
     int row = REMOVE_TRACK_MASK(index.internalId());
@@ -204,16 +215,16 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
     {
         switch( index.column() )
         {
-            case PlaylistColumn: //playlist
-                {
-                    food = QVariant::fromValue( playlist );
-                    name = playlist->prettyName();
-                    description = playlist->description();
-                    icon = KIcon( "amarok_playlist" );
-                    groups = playlist->groups();
-                }
+            case MetaPlaylistModel::PlaylistColumn: //playlist
+            {
+                food = QVariant::fromValue( playlist );
+                name = playlist->prettyName();
+                description = playlist->description();
+                icon = KIcon( "amarok_playlist" );
+                groups = playlist->groups();
                 break;
-            case GroupColumn: //group
+            }
+            case MetaPlaylistModel::LabelColumn: //group
             {
                 if( !playlist->groups().isEmpty() )
                 {
@@ -223,7 +234,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
                 break;
             }
 
-            case ProviderColumn: //source
+            case MetaPlaylistModel::ProviderColumn: //source
             {
                 PlaylistProvider *provider =
                         The::playlistManager()->getProviderForPlaylist( playlist );
@@ -242,6 +253,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
         }
     }
 
+    
     switch( role )
     {
         case 0xf00d: return food;
@@ -254,10 +266,10 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
             return i18ncp( "number of playlists from one source",
                            "One Playlist", "%1 playlists",
                            playlistCount );
-        case MetaPlaylistModel::ActionCountRole:
-            return providerActions.count();
+        case MetaPlaylistModel::ActionCountRole: return providerActions.count();
         case MetaPlaylistModel::ActionRole:
-            return QVariant::fromValue( providerActions );
+            return QVariant::fromValue( index.column() == MetaPlaylistModel::ProviderColumn ?
+                        providerActions : actionsFor( index ) );
 
         default: return QVariant();
     }
@@ -328,10 +340,10 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex &index ) const
     //Both providers and groups can be empty. QtGroupingProxy makes empty groups from the data in
     //the rootnode (here an invalid QModelIndex).
     //TODO: accept drops and allow drags only if provider is writable.
-    if( index.column() == ProviderColumn )
+    if( index.column() == MetaPlaylistModel::ProviderColumn )
         return Qt::ItemIsEnabled;
 
-    if( index.column() == GroupColumn )
+    if( index.column() == MetaPlaylistModel::LabelColumn )
         return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
     if( !index.isValid() )
@@ -351,9 +363,9 @@ PlaylistBrowserNS::UserModel::headerData( int section, Qt::Orientation orientati
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case PlaylistColumn: return i18n("Name");
-            case GroupColumn: return i18n("Group");
-            case ProviderColumn: return i18n("Source");
+            case MetaPlaylistModel::PlaylistColumn: return i18n("Name");
+            case MetaPlaylistModel::LabelColumn: return i18n("Group");
+            case MetaPlaylistModel::ProviderColumn: return i18n("Source");
             default: return QVariant();
         }
     }
@@ -368,14 +380,14 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
 
     switch( idx.column() )
     {
-        case PlaylistColumn:
+        case MetaPlaylistModel::PlaylistColumn:
         {
             debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
             Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
-        case GroupColumn:
+        case MetaPlaylistModel::LabelColumn:
         {
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
@@ -521,59 +533,32 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 }
 
 QList<QAction *>
-PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
+PlaylistBrowserNS::UserModel::actionsFor( const QModelIndex &idx ) const
 {
+    //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
+    QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
+
+    actionList << idx;
+    QVariant value = QVariant::fromValue( actionList );
+    m_appendAction->setData( value );
+    m_loadAction->setData( value );
+
     QList<QAction *> actions;
-    m_selectedPlaylists.clear();
-    m_selectedPlaylists << selectedPlaylists( indices );
-    m_selectedTracks.clear();
-    m_selectedTracks << selectedTracks( indices );
+    actions << m_appendAction << m_loadAction;
 
-    actions = createCommonActions( indices );
-
-    // If a playlist is selected, we bring up playlist actions
-    if( !m_selectedPlaylists.isEmpty() )
+    // It's a playlist, we return playlist actions
+    if( !IS_TRACK(idx) )
     {
-        // Only check for write actions if no tracks selected
-        if( m_selectedTracks.isEmpty() )
-        {
-            // Check if the playlists are writable, and if _any_ of them
-            // are not writable, do not bring up the write actions
-
-            bool writable = true;
-
-            foreach( Meta::PlaylistPtr playlist, m_selectedPlaylists )
-            {
-                if( !The::playlistManager()->isWritable( playlist ) )
-                {
-                    debug() << "There exists an unwritable playlist, not adding write actions";
-                    writable = false;
-                    break;
-                }
-            }
-
-            if( writable )
-                actions << createWriteActions( indices );
-
-        }
-        actions << The::playlistManager()->playlistActions( m_selectedPlaylists );
+        Meta::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
+        if( playlist->provider() )
+            actions << playlist->provider()->playlistActions( playlist );
     }
     // Otherwise, tracks are selected, so we bring up track actions
     else
     {
-        foreach( const QModelIndex &idx, indices )
-        {
-            QList<QAction *> trackActions = The::playlistManager()->trackActions(
-                                        m_playlists.value( idx.parent().internalId() ),
-                                        idx.row()
-                                    );
-            //only unique actions in the list.
-            foreach( QAction *action, trackActions )
-            {
-                if( !actions.contains( action ) )
-                    actions << action;
-            }
-        }
+        Meta::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
+        if( playlist->provider() )
+            actions << playlist->provider()->trackActions( playlist, idx.row() );
     }
 
     return actions;
@@ -595,81 +580,16 @@ PlaylistBrowserNS::UserModel::loadItems( QModelIndexList list, Playlist::AddOpti
         The::playlistController()->insertOptioned( playlists, insertMode );
 }
 
-QList<QAction *>
-PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( m_appendAction == 0 )
-    {
-        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
-        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
-    }
-
-    if ( m_loadAction == 0 )
-    {
-        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
-    }
-
-    if ( indices.count() > 0 )
-    {
-        actions << m_appendAction;
-        actions << m_loadAction;
-    }
-
-    return actions;
-}
-
-QList<QAction *>
-PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if( m_renameAction == 0 )
-    {
-        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ),
-                                       this );
-        m_renameAction->setProperty( "pud_svg_id", "edit" );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-
-    if( m_deleteAction == 0 )
-    {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
-        m_renameAction->setProperty( "pud_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
-    }
-
-    if( indices.count() > 0 )
-    {
-        // NOTE: rename only 1 playlist at a time
-        if( m_selectedPlaylists.count() == 1 )
-        {
-            debug() << "one playlist selected, allowing rename";
-            actions << m_renameAction;
-        }
-        actions << m_deleteAction;
-    }
-
-    return actions;
-}
-
 void
 PlaylistBrowserNS::UserModel::slotLoad()
 {
-    Meta::TrackList tracks;
-    foreach( Meta::TrackPtr track, selectedTracks() )
-            tracks << track;
-    foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
-    {
-      if( !playlist.isNull() )
-        tracks << playlist->tracks();
-    }
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    QModelIndexList indexes = action->data().value<QModelIndexList>();
+
+    Meta::TrackList tracks = tracksFromIndexes( indexes );
     if( !tracks.isEmpty() )
         The::playlistController()->insertOptioned( tracks, Playlist::LoadAndPlay );
 }
@@ -677,61 +597,27 @@ PlaylistBrowserNS::UserModel::slotLoad()
 void
 PlaylistBrowserNS::UserModel::slotAppend()
 {
-    Meta::TrackList tracks;
-    foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
-    {
-        if( playlist )
-            tracks << playlist->tracks();
-    }
-    foreach( Meta::TrackPtr track, selectedTracks() )
-        tracks << track;
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    QModelIndexList indexes = action->data().value<QModelIndexList>();
+
+    Meta::TrackList tracks = tracksFromIndexes( indexes );
     if( !tracks.isEmpty() )
         The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
-void
-PlaylistBrowserNS::UserModel::slotRename()
-{
-    DEBUG_BLOCK
-    The::playlistManager()->rename( m_selectedPlaylists.first() );
-}
-
-void
-PlaylistBrowserNS::UserModel::slotDelete()
-{
-    DEBUG_BLOCK
-
-    debug() << "Deleting this many playlists: " << m_selectedPlaylists.count();
-
-    The::playlistManager()->deletePlaylists( m_selectedPlaylists );
-}
-
-
-Meta::PlaylistList
-PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )
-{
-    Meta::PlaylistList playlists;
-    QSet<int> indices;
-
-    foreach( const QModelIndex &index, list )
-    {
-        if( !indices.contains( index.internalId() ) && !IS_TRACK(index) )
-        {
-            playlists << m_playlists.value( index.internalId() );
-            indices.insert( index.internalId() );
-        }
-    }
-    return playlists;
-}
-
 Meta::TrackList
-PlaylistBrowserNS::UserModel::selectedTracks( const QModelIndexList &list )
+PlaylistBrowserNS::UserModel::tracksFromIndexes( const QModelIndexList &list ) const
 {
     Meta::TrackList tracks;
     foreach( const QModelIndex &index, list )
     {
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
+        else if( Meta::PlaylistPtr playlist = playlistFromIndex( index ) )
+            tracks << playlist->tracks();
     }
     return tracks;
 }
@@ -747,6 +633,15 @@ PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
         return Meta::TrackPtr();
 
     return playlist->tracks()[index.row()];
+}
+
+Meta::PlaylistPtr
+PlaylistBrowserNS::UserModel::playlistFromIndex( const QModelIndex &index ) const
+{
+    if( !index.isValid() )
+        return Meta::PlaylistPtr();
+
+    return m_playlists.value( index.internalId() );
 }
 
 void

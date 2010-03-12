@@ -204,7 +204,6 @@ PlaylistsByProviderProxy::supportedDragActions() const
 QList<QAction *>
 PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
 {
-    DEBUG_BLOCK
     QList<QAction *> actions;
     if( isAGroupSelected( list ) )
     {
@@ -213,12 +212,9 @@ PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
     }
 
     QModelIndexList originalList = mapToSource( list );
-    debug() << originalList.count() << "original indices";
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( m_model );
-    if( mpm == 0 )
-        return actions;
+
     if( !originalList.isEmpty() )
-        actions << mpm->actionsFor( originalList );
+        actions << actionsFor( originalList );
 
     return actions;
 }

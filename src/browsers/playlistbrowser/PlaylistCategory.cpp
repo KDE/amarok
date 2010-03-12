@@ -61,9 +61,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
         "Amarok automatically adds any playlists found when scanning your collection, "
         "and any playlists that you save are also shown here." ) );
 
-    setImagePath( KStandardDirs::locate(
-                        "data", "amarok/images/hover_info_user_playlists.png" )
-                  );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_user_playlists.png" ) );
 
     setContentsMargins( 0, 0, 0, 0 );
     KToolBar *toolBar = new KToolBar( this, false, false );
@@ -82,6 +80,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_filterProxy->setFilterKeyColumn( PlaylistBrowserNS::UserModel::ProviderColumn );
 
     m_playlistView->setModel( m_filterProxy );
+//    m_playlistView->setModel( m_byProviderProxy );
 
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     toolBar->addAction( m_addGroupAction );

@@ -27,7 +27,7 @@
 #include <KInputDialog>
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
-    : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::GroupColumn )
+    : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
     , m_renameFolderAction( 0 )
     , m_deleteFolderAction( 0 )
 {
@@ -245,8 +245,8 @@ PlaylistsInGroupsProxy::slotRenameFolder()
 
     for( int i = 0; i < rowCount( folder ); i++ )
     {
-        QModelIndex idx = index( i, PlaylistBrowserNS::UserModel::GroupColumn, folder );
-        setData( idx, newName, GroupRole );
+        QModelIndex idx = index( i, PlaylistBrowserNS::UserModel::LabelColumn, folder );
+        setData( idx, newName, Qt::DisplayRole );
     }
     //remove the old foldername from the map
     m_groupMaps.removeAt( folder.row() );
@@ -321,12 +321,9 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
                 m_selectedPlaylists << index;
         }
         QModelIndexList originalList = mapToSource( list );
-        debug() << originalList.count() << "original indices";
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
-        if( mpm == 0 )
-            return actions;
+
         if( !originalList.isEmpty() )
-            actions << mpm->actionsFor( originalList );
+            actions << actionsFor( originalList );
     }
     else if( groupSelected )
     {
