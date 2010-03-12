@@ -947,7 +947,7 @@ MainWindow::createActions()
     ac->addAction( "extendedAbout", action );
     connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
 
-    LikeBack *likeBack = new LikeBack( LikeBack::DefaultButtons,
+    LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
     likeBack->setServer( "likeback.kollide.net", "/send.php" );
     likeBack->setAcceptedLanguages( QStringList( "en" ) );
