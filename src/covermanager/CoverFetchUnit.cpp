@@ -420,7 +420,7 @@ CoverFetchArtPayload::prepareUrls()
                     break;
                 }
 
-                if( sizeStr == coverSize( m_size ) )
+                if( sizeStr == coverSize2str( m_size ) )
                 {
                     url = elementText;
                 }
@@ -441,7 +441,7 @@ CoverFetchArtPayload::prepareUrls()
 }
 
 QString
-CoverFetchArtPayload::coverSize( enum CoverFetch::ImageSize size ) const
+CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
 {
     QString str;
     switch( size )

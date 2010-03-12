@@ -180,7 +180,7 @@ private:
     bool m_wild;
 
     /// convert ImageSize enum to string
-    QString coverSize( enum CoverFetch::ImageSize size ) const;
+    QString coverSize2str( enum CoverFetch::ImageSize size ) const;
 
     /// convert string to ImageSize
     enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
