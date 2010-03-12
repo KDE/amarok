@@ -58,9 +58,6 @@ namespace Playlist
         void recvActiveTrackChanged( const quint64 );
 
     private:
-        static bool idLessThan( const quint64& left, const quint64& right );
-        void sortTheseAlbums( const Meta::AlbumList );
-
         void dump();
 
         QHash<QString, ItemList> m_albumGroups;

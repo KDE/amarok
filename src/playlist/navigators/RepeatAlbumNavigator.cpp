@@ -54,14 +54,12 @@ void
 Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
     DEBUG_BLOCK
-    Meta::AlbumList modifiedAlbums;
+
     foreach( quint64 id, list )
     {
         Meta::AlbumPtr album = m_model->trackForId( id )->album();
         m_albumGroups[album->name()].append( id ); // conveniently creates an empty list if none exists
     }
-
-    sortTheseAlbums( modifiedAlbums );
 }
 
 void
@@ -129,7 +127,7 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
         if( m_model->trackForId( id )->album() )
             m_currentAlbum = m_model->trackForId( id )->album()->name();
         else m_currentAlbum = QString();
-            
+
     }
     else
     {
@@ -187,24 +185,6 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
     if ( track )
         m_currentTrack = track;
     return track;
-}
-
-bool
-Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
-{
-    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
-    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
-    return Meta::Track::lessThan( left, right );
-}
-
-void
-Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
-{
-    foreach( Meta::AlbumPtr album, al )
-    {
-        QString a = album->name();
-        qStableSort( m_albumGroups[a].begin(), m_albumGroups[a].end(), idLessThan );
-    }
 }
 
 void
