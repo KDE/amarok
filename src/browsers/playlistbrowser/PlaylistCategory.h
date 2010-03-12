@@ -64,6 +64,8 @@ private slots:
     void slotProviderRemoved( PlaylistProvider *provider, int category );
     void slotToggleProviderButton( bool enabled );
 
+    void createNewGroup();
+
 private:
     void createProviderButton( const PlaylistProvider *provider );
 

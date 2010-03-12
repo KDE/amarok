@@ -338,14 +338,4 @@ PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
     m_addGroupAction = action;
 }
 
-void
-PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
-{
-    PlaylistsInGroupsProxy *pigp = qobject_cast<PlaylistsInGroupsProxy *>( model() );
-    if( pigp == 0 )
-        return;
-    QModelIndex idx = pigp->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
-    edit( idx );
-}
-
 #include "UserPlaylistTreeView.moc"

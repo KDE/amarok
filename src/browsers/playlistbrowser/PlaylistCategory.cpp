@@ -84,8 +84,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     toolBar->addAction( m_addGroupAction );
-    connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
-             m_playlistView, SLOT( createNewGroup() ) );
+    connect( m_addGroupAction, SIGNAL( triggered( bool ) ), SLOT( createNewGroup() ) );
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
 
@@ -215,6 +214,13 @@ PlaylistCategory::slotToggleProviderButton( bool enabled )
         }
     }
     m_filterProxy->setFilterRegExp( filter );
+}
+
+void
+PlaylistCategory::createNewGroup()
+{
+    QModelIndex idx = m_byFolderProxy->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
+    m_playlistView->edit( m_filterProxy->mapFromSource( idx ) );
 }
 
 #include "PlaylistCategory.moc"
