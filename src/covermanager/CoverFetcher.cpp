@@ -159,6 +159,7 @@ CoverFetcher::slotResult( KJob *job )
 
     if( job && job->error() )
     {
+        The::statusBar()->endProgressOperation( job );
         finish( unit, Error, i18n( "There was an error communicating with last.fm." ) );
         return;
     }
