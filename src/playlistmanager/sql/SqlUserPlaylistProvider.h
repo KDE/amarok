@@ -75,6 +75,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void checkTables();
         void loadFromDb();
 
+        void deleteSqlPlaylists( Meta::SqlPlaylistList playlistlist );
+
         Meta::SqlPlaylistList selectedPlaylists() const
             { return m_selectedPlaylists; }
         Meta::SqlPlaylistList m_selectedPlaylists;

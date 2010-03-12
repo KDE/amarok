@@ -73,25 +73,36 @@ SqlUserPlaylistProvider::playlists()
 void
 SqlUserPlaylistProvider::slotDelete()
 {
-    DEBUG_BLOCK
-//    deletePlaylists( The::userPlaylistModel()->selectedPlaylists() );
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    //only one playlist can be selected at this point
+    Meta::SqlPlaylistList playlists = action->data().value<Meta::SqlPlaylistList>();
+
+    if( playlists.count() > 0 )
+        deleteSqlPlaylists( playlists );
 }
 
 void
 SqlUserPlaylistProvider::slotRename()
 {
-    DEBUG_BLOCK
-    //only one playlist can be selected at this point
-//    Meta::SqlPlaylistPtr playlist = selectedPlaylists().first();
-//    if( playlist.isNull() )
-//        return;
-//    //TODO: inline rename
-//    bool ok;
-//    const QString newName = KInputDialog::getText( i18n("Change playlist"),
-//                i18n("Enter new name for playlist:"), playlist->name(),
-//                                                   &ok );
-//    if ( ok )
-//        playlist->setName( newName.trimmed() );
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    //only one playlist can be renamed at a time.
+    Meta::SqlPlaylistPtr playlist = action->data().value<Meta::SqlPlaylistPtr>();
+    if( playlist.isNull() )
+        return;
+
+    //TODO: inline rename
+    bool ok;
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if( ok )
+        playlist->setName( newName.trimmed() );
 }
 
 void
@@ -113,26 +124,38 @@ SqlUserPlaylistProvider::slotRemove()
 QList<QAction *>
 SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
 {
-    Q_UNUSED( playlist );
     QList<QAction *> actions;
 
-    m_selectedPlaylists.clear();
-    m_selectedPlaylists << Meta::SqlPlaylistPtr::dynamicCast( playlist );
+    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr::dynamicCast( playlist );
+    if( !sqlPlaylist )
+    {
+        error() << "Action requested for a non-SQL playlist";
+        return actions;
+    }
 
-    if ( m_renameAction == 0 )
+    if( m_renameAction == 0 )
     {
         m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
         m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
+    //only one playlist can be renamed at a time.
+    if( m_renameAction->data().isNull() )
+        m_renameAction->setData( QVariant::fromValue( sqlPlaylist ) );
+
     actions << m_renameAction;
 
-    if ( m_deleteAction == 0 )
+    if( m_deleteAction == 0 )
     {
         m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
+
+    Meta::SqlPlaylistList actionList = m_deleteAction->data().value<Meta::SqlPlaylistList>();
+    actionList << sqlPlaylist;
+    m_deleteAction->setData( QVariant::fromValue( actionList ) );
+
     actions << m_deleteAction;
 
     return actions;
@@ -176,6 +199,15 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
 void
 SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistList )
 {
+    Meta::SqlPlaylistList sqlPlaylists;
+    foreach( Meta::PlaylistPtr playlist, playlistList )
+        sqlPlaylists << Meta::SqlPlaylistPtr::dynamicCast( playlist );
+    deleteSqlPlaylists( sqlPlaylists );
+}
+
+void
+SqlUserPlaylistProvider::deleteSqlPlaylists( Meta::SqlPlaylistList playlistList )
+{
     KDialog dialog( The::mainWindow() );
     dialog.setCaption( i18n( "Confirm Delete" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
@@ -188,10 +220,8 @@ SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistList )
     dialog.setMainWidget( &label );
     if( dialog.exec() != QDialog::Accepted )
         return;
-    foreach( Meta::PlaylistPtr playlist, playlistList )
+    foreach( Meta::SqlPlaylistPtr sqlPlaylist, playlistList )
     {
-        Meta::SqlPlaylistPtr sqlPlaylist =
-                Meta::SqlPlaylistPtr::dynamicCast( playlist );
         if( sqlPlaylist )
         {
             debug() << "deleting " << sqlPlaylist->name();
