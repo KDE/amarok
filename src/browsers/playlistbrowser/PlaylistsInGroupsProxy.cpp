@@ -28,14 +28,47 @@
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
-    , m_renameFolderAction( 0 )
-    , m_deleteFolderAction( 0 )
 {
+    m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
+                                         i18n( "&Rename Folder..." ), this );
+    m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
+    connect( m_renameFolderAction, SIGNAL( triggered() ), this,
+             SLOT( slotRenameFolder() ) );
+
+    m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
+                                        i18n( "&Delete Folder" ), this );
+    m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+    connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
+             SLOT( slotDeleteFolder() ) );
+
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
 }
 
 PlaylistsInGroupsProxy::~PlaylistsInGroupsProxy()
 {
+}
+
+QVariant
+PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
+{
+    if( idx.column() == 0 && isGroup( idx ) && role ==
+        PlaylistBrowserNS::MetaPlaylistModel::ActionRole )
+    {
+        //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
+        //they are the same anyway
+        QModelIndexList actionList = m_deleteFolderAction->data().value<QModelIndexList>();
+
+        actionList << idx;
+        QVariant value = QVariant::fromValue( actionList );
+        m_deleteFolderAction->setData( value );
+        m_renameFolderAction->setData( value );
+
+        QList<QAction *> actions;
+        actions << m_renameFolderAction << m_deleteFolderAction;
+        return QVariant::fromValue( actions );
+    }
+
+    return QtGroupingProxy::data( idx, role );
 }
 
 bool
@@ -218,21 +251,31 @@ PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
 void
 PlaylistsInGroupsProxy::slotDeleteFolder()
 {
-    DEBUG_BLOCK
-    if( m_selectedGroups.count() == 0 )
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
         return;
 
-    QModelIndex groupIdx = m_selectedGroups.first();
-    deleteFolder( groupIdx );
+    QModelIndexList indexes = action->data().value<QModelIndexList>();
+
+    foreach( const QModelIndex &groupIdx, indexes )
+        deleteFolder( groupIdx );
 }
 
 void
 PlaylistsInGroupsProxy::slotRenameFolder()
 {
-    DEBUG_BLOCK
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    QModelIndexList indexes = action->data().value<QModelIndexList>();
+
+    if( indexes.isEmpty() )
+        return;
+
     //get the name for this new group
     //inline rename is handled by the view using setData()
-    QModelIndex folder = m_selectedGroups.first();
+    QModelIndex folder = indexes.first();
     QString folderName = folder.data( Qt::DisplayRole ).toString();
     bool ok;
     const QString newName = KInputDialog::getText( i18n("New name"),
@@ -254,93 +297,15 @@ PlaylistsInGroupsProxy::slotRenameFolder()
     emit layoutChanged();
 }
 
-QList<QAction *>
-PlaylistsInGroupsProxy::createGroupActions()
-{
-    QList<QAction *> actions;
-
-    if ( m_deleteFolderAction == 0 )
-    {
-        m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
-                                            i18n( "&Delete Folder" ), this );
-        m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
-        connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
-                 SLOT( slotDeleteFolder() ) );
-    }
-    actions << m_deleteFolderAction;
-
-    if ( m_renameFolderAction == 0 )
-    {
-        m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
-                                             i18n( "&Rename Folder..." ), this );
-        m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
-        connect( m_renameFolderAction, SIGNAL( triggered() ), this,
-                 SLOT( slotRenameFolder() ) );
-    }
-    actions << m_renameFolderAction;
-
-    return actions;
-}
-
-bool
-PlaylistsInGroupsProxy::isAPlaylistSelected( const QModelIndexList& list ) const
-{
-    return mapToSource( list ).count() > 0;
-}
-
 void
 PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
-    DEBUG_BLOCK
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
         removeRows( 0, childCount, groupIdx );
     removeGroup( groupIdx );
     buildTree();
 }
-
-#if(0)
-QList<QAction *>
-PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
-{
-    DEBUG_BLOCK
-    bool playlistSelected = isAPlaylistSelected( list );
-    bool groupSelected = isAGroupSelected( list );
-
-    QList<QAction *> actions;
-    m_selectedGroups.clear();
-    m_selectedPlaylists.clear();
-
-    //only playlists selected
-    if( playlistSelected )
-    {
-        foreach( const QModelIndex &index, list )
-        {
-            QModelIndexList tempList;
-            tempList << index;
-            if( isAPlaylistSelected( tempList ) )
-                m_selectedPlaylists << index;
-        }
-        QModelIndexList originalList = mapToSource( list );
-
-        if( !originalList.isEmpty() )
-            actions << actionsFor( originalList );
-    }
-    else if( groupSelected )
-    {
-        actions << createGroupActions();
-        foreach( const QModelIndex &index, list )
-        {
-            QModelIndexList tempList;
-            tempList << index;
-            if( isAGroupSelected( tempList ) )
-                m_selectedGroups << index;
-        }
-    }
-
-    return actions;
-}
-#endif
 
 QModelIndex
 PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )
