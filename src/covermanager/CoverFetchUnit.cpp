@@ -281,12 +281,6 @@ CoverFetchSearchPayload::query() const
 }
 
 void
-CoverFetchSearchPayload::setQuery( const QString &query )
-{
-    m_query = query;
-}
-
-void
 CoverFetchSearchPayload::prepareUrls()
 {
     KUrl url;

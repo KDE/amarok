@@ -140,8 +140,6 @@ public:
 
     QString query() const;
 
-    void setQuery( const QString &query );
-
 protected:
     void prepareUrls();
 
