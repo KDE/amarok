@@ -407,6 +407,7 @@ CoverFetchArtPayload::prepareUrls()
         prepareLastFmUrls( doc );
         break;
     case CoverFetch::Yahoo:
+        prepareYahooUrls( doc );
         break;
     }
 }
@@ -497,6 +498,37 @@ CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
     }
 }
 
+void
+CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
+{
+    const QDomNodeList results = doc.documentElement().namedItem( "resultset_images" ).childNodes();
+    for( uint x = 0, len = results.length(); x < len; ++x )
+    {
+        const QDomNode albumNode = results.item( x );
+        const KUrl url = albumNode.namedItem( coverSize2str( imageSize() ) ).toElement().text();
+        if( !url.isValid() )
+            continue;
+
+        CoverFetch::Metadata metadata;
+        metadata[ "thumbarturl" ] = albumNode.namedItem( "thumbnail_url" ).toElement().text();
+        metadata[ "normalarturl" ] = albumNode.namedItem( "url" ).toElement().text();
+
+        const QDomNodeList list = albumNode.childNodes();
+        for( int i = 0, count = list.count(); i < count; ++i )
+        {
+            const QDomNode &node = list.item( i );
+            if( node.isElement() )
+            {
+                const QDomElement element = node.toElement();
+                const QString elementText = element.text();
+                const QString elementTag  = element.tagName();
+                metadata[ elementTag ] = elementText;
+            }
+        }
+        m_urls.insert( url, metadata );
+    }
+}
+
 QString
 CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
 {
@@ -504,11 +536,17 @@ CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
     switch( size )
     {
     case CoverFetch::ThumbSize:
-        str = "large"; // Last.fm's "large" is around 128x128
+        if( m_src == CoverFetch::LastFm )
+            str = "large"; // around 128x128
+        else if( m_src == CoverFetch::Yahoo )
+            str = "thumbnail_url";
         break;
     case CoverFetch::NormalSize:
     default:
-        str = "extralarge"; // Last.fm's "extralarge" is up to 300x300
+        if( m_src == CoverFetch::LastFm )
+            str = "extralarge"; // up to 300x300
+        else if( m_src == CoverFetch::Yahoo )
+            str = "url";
         break;
     }
     return str;
@@ -518,7 +556,7 @@ enum CoverFetch::ImageSize
 CoverFetchArtPayload::str2CoverSize( const QString &string ) const
 {
     enum CoverFetch::ImageSize size;
-    if( string == "large" )
+    if( string == "large" || string == "thumbnail_url" )
         size = CoverFetch::ThumbSize;
     else
         size = CoverFetch::NormalSize;

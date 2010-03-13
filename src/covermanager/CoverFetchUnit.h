@@ -207,6 +207,9 @@ private:
     /// prepare urls from xml provided by Last.Fm
     void prepareLastFmUrls( const QDomDocument &doc );
 
+    /// prepare urls from xml provided by Yahoo! Image Search
+    void prepareYahooUrls( const QDomDocument &doc );
+
     Q_DISABLE_COPY( CoverFetchArtPayload );
 };
 
