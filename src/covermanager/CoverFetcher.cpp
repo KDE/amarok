@@ -171,12 +171,12 @@ CoverFetcher::slotResult( KJob *job )
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), data );
+        m_queue->add( unit->album(), unit->options(), CoverFetch::LastFm, data );
         m_queue->remove( unit );
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( unit->options(), data );
+        m_queue->add( unit->options(), CoverFetch::LastFm, data ); // TODO: make fetch source configurable
         m_queue->remove( unit );
         break;
 
@@ -333,7 +333,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
             {
                 Meta::AlbumPtr album = m_queueLater.takeFirst();
-                m_queue->add( album, CoverFetch::Automatic );
+                m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm ); // TODO: make fetch source configurable
             }
         }
     }

@@ -51,27 +51,32 @@ public:
      * Add an album-associated work unit to the queue.
      * @param album album to fetch cover for.
      * @param opt cover fetch option.
+     * @param src cover image source.
      * @param xml xml document from the cover provider. Can be empty on first
      * pass of the fetching process.
      */
     void add( const Meta::AlbumPtr album,
               const CoverFetch::Option opt = CoverFetch::Automatic,
+              const CoverFetch::Source src = CoverFetch::LastFm,
               const QByteArray &xml = QByteArray() );
 
     /**
      * Add a work unit to the queue that does not need to associate with any album.
      * @param opt cover fetch option.
+     * @param src cover image source.
      * @param xml xml document from the cover provider. Can be empty on first
      * pass of the fetching process.
      */
     void add( const CoverFetch::Option opt = CoverFetch::WildInteractive,
+              const CoverFetch::Source src = CoverFetch::LastFm,
               const QByteArray &xml = QByteArray() );
 
     /**
      * Add a string query to the queue.
      * @param query text to be used for image search.
+     * @param src the image provider to search.
      */
-    void addQuery( const QString &query );
+    void addQuery( const QString &query, const CoverFetch::Source src = CoverFetch::LastFm );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;
