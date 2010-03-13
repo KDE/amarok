@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>530</height>
+    <width>498</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
     <widget class="QTextEdit" name="m_comment">
      <property name="minimumSize">
       <size>
-       <width>150</width>
+       <width>300</width>
        <height>100</height>
       </size>
      </property>
