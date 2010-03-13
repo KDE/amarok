@@ -421,6 +421,9 @@ CoverFetchArtPayload::prepareUrls()
             }
         }
 
+        if( !url.isValid() )
+            continue;
+
         QStringList tags;
         tags << "name" << "artist" << "url";
         foreach( const QString &tag, tags )
@@ -429,8 +432,7 @@ CoverFetchArtPayload::prepareUrls()
             if( !e.isNull() )
                 metadata[ tag ] = e.text();
         }
-        if( url.isValid() )
-            m_urls.insert( url, metadata );
+        m_urls.insert( url, metadata );
     }
 }
 
