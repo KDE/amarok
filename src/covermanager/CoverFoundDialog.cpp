@@ -379,6 +379,11 @@ void CoverFoundItem::slotFetchResult( KJob *job )
     if( pixmap.loadFromData( data ) )
     {
         m_bigPix = pixmap;
+        const QString w = QString::number( pixmap.width() );
+        const QString h = QString::number( pixmap.height() );
+        const QString size = QString( "%1x%2" ).arg( w ).arg( h );
+        const QString tip = i18n( "Size:" ) + size;
+        setToolTip( tip );
     }
 
     if( m_dialog )
