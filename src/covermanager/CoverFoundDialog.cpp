@@ -114,7 +114,6 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     m_view->setGridSize( QSize( 140, 140 ) );
     m_view->setIconSize( QSize( 120, 120 ) );
     m_view->setSpacing( 4 );
-    m_view->setUniformItemSizes( true );
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
@@ -325,7 +324,7 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
         break;
     }
 
-    QPixmap scaledPix = cover.scaled( QSize( 120, 120 ) );
+    QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setIcon( prettyPix );
 }
