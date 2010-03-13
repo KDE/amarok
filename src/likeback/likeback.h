@@ -1,21 +1,20 @@
-/***************************************************************************
-                                 likeback.h
-                             -------------------
-    begin                : unknown
-    imported to LB svn   : 3 june, 2009
-    copyright            : (C) 2006 by Sebastien Laout
-                           (C) 2008-2009 by Valerio Pilo, Sjors Gielen
-    email                : sjors@kmess.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006 Sebastien Laout <slaout@linux62.org>                              *
+ * Copyright (c) 2008,2009 Valerio Pilo <amroth@kmess.org>                              *
+ * Copyright (c) 2008,2009 Sjors Gielen <sjors@kmess.org>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef LIKEBACK_H
 #define LIKEBACK_H
@@ -74,8 +73,8 @@ class LikeBackPrivate;
  */
 class LikeBack : public QObject
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
      * Ids of every LikeBack buttons the button-bar can have.
      * The four first values are each individual buttons you can enable or not.
@@ -106,7 +105,7 @@ class LikeBack : public QObject
 
     /**
      * You only need to call the constructor once, typically in main.cpp.
-     * Even if you do not show the button-bar by default, you should instanciate LikeBack,
+     * Even if you do not show the button-bar by default, you should instantiate LikeBack,
      * to include its action in the Help menu of your application, to let the users send comments or activate the bar.
      * @param buttons          The types of comments you want to get. Determine which radio-buttons are shown in the comment dialog,
      *                         and which ones are displayed in the button-bar. Default buttons do not show the Bug and Feature buttons because you are
@@ -202,30 +201,30 @@ class LikeBack : public QObject
      */
     quint16 hostPort();
 
-  /**
-   * Create the menu actions.
-   * They will be added to the given actionCollection(), so if you use KXmlGuiWindow,
-   * you can add them via XML in the Help menu (or any other!) like this:
-   * @code
-   * <Menu name="help">
-   *   <Action name="likeBackSendComment" />
-   *   <Action name="likeBackShowIcons" />
-   * </Menu>
-   * @endcode
-   *
-   * This will add the actions above "Report a Bug", if it's visible, and below "What's This?".
-   * If you do not have a Bugzilla account, LikeBack is a good way for your small application to get bug reports: remove "Report a Bug".
-   * For more information about how to configure LikeBack depending on your application size and settings, see the constructor documentation.
-   *
-   * If you use KMainWindow, add them like this:
-   * @code
-   * KActionCollection *collection = new KActionCollection();
-   * collection->addAssociatedWidget( this );
-   * likeback->createActions( collection );
-   * menu()->addAction( collection->action( "likeBackSendComment" );
-   * menu()->addAction( collection->action( "likeBackShowIcons" );
-   * @endcode
-   *
+    /**
+     * Create the menu actions.
+     * They will be added to the given actionCollection(), so if you use KXmlGuiWindow,
+     * you can add them via XML in the Help menu (or any other!) like this:
+     * @code
+     * <Menu name="help">
+     *   <Action name="likeBackSendComment" />
+     *   <Action name="likeBackShowIcons" />
+     * </Menu>
+     * @endcode
+     *
+     * This will add the actions above "Report a Bug", if it's visible, and below "What's This?".
+     * If you do not have a Bugzilla account, LikeBack is a good way for your small application to get bug reports: remove "Report a Bug".
+     * For more information about how to configure LikeBack depending on your application size and settings, see the constructor documentation.
+     *
+     * If you use KMainWindow, add them like this:
+     * @code
+     * KActionCollection *collection = new KActionCollection();
+     * collection->addAssociatedWidget( this );
+     * likeback->createActions( collection );
+     * menu()->addAction( collection->action( "likeBackSendComment" );
+     * menu()->addAction( collection->action( "likeBackShowIcons" );
+     * @endcode
+     *
      */
     void createActions( KActionCollection *parent = 0 );
 
@@ -247,7 +246,7 @@ class LikeBack : public QObject
      */
     bool enabledBar();
 
-  public slots:
+public slots:
 
     /**
      * Temporarily disable the button-bar: it is hiden from the screen if it was shown.
@@ -294,7 +293,7 @@ class LikeBack : public QObject
      */
     void execCommentDialog(Button type = AllButtons, const QString &initialComment = "", const QString &windowPath = "", const QString &context = "");
 
-  private:
+private:
     LikeBackPrivate *d;
 
     /**
@@ -302,7 +301,7 @@ class LikeBack : public QObject
      */
     void fetchUserEmail();
 
-  private slots:
+private slots:
     /**
      * Slot triggered by the "Help -> Send a Comment to Developers" KAction.
      * It popups the comment dialog, and set the window path to "HelpMenuAction",
@@ -310,16 +309,16 @@ class LikeBack : public QObject
      */
     void execCommentDialogFromHelp();
 
-  public slots:
+public slots:
 
-  /**
-   * Explicitely set if the floating button-bar should be shown or not.
-   * Tehorically, this choice should only be left to the user,
-   * and to the developers for the default value, already provided in the constructor.
-   */
-  void setUserWantsToShowBar(bool showBar);
+    /**
+     * Explicitely set if the floating button-bar should be shown or not.
+     * Tehorically, this choice should only be left to the user,
+     * and to the developers for the default value, already provided in the constructor.
+     */
+    void setUserWantsToShowBar(bool showBar);
 
-  public:
+public:
 
     /**
      * @returns true if the user has enabled the LikeBack bar for this version.
@@ -353,8 +352,8 @@ class LikeBack : public QObject
 
     /**
      * Define or re-define the user email address.
-   * LikeBack will not ask it again to the user, unless you set @p userProvided to false.
-   * Then, this call can be considered as setting the default email address, that the user should confirm later.
+     * LikeBack will not ask it again to the user, unless you set @p userProvided to false.
+     * Then, this call can be considered as setting the default email address, that the user should confirm later.
      */
     void setEmailAddress( const QString &address, bool userProvided = false );
 
@@ -364,10 +363,10 @@ class LikeBack : public QObject
      */
     static bool isDevelopmentVersion(const QString &version);
 
-  bool isLikeActive() const;
-  bool isDislikeActive() const;
-  bool isBugActive() const;
-  bool isFeatureActive() const;
+    bool isLikeActive() const;
+    bool isDislikeActive() const;
+    bool isBugActive() const;
+    bool isFeatureActive() const;
 };
 
 #endif // LIKEBACK_H
