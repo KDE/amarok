@@ -194,7 +194,7 @@ void LikeBackBar::setBarVisible( bool visible )
     if( visible && ! isVisible() )
     {
 #ifdef DEBUG_LIKEBACK
-        debug() << "Setting visible, connected?" << connected_;
+        debug() << "Setting visible, connected?" << m_connected;
 #endif
 
         // Avoid duplicated connections
@@ -210,7 +210,7 @@ void LikeBackBar::setBarVisible( bool visible )
     else if( ! visible && isVisible() )
     {
 #ifdef DEBUG_LIKEBACK
-        debug() << "Setting hidden, connected?" << connected_;
+        debug() << "Setting hidden, connected?" << m_connected;
 #endif
         hide();
 
@@ -230,7 +230,7 @@ void LikeBackBar::setBarVisible( bool visible )
 #ifdef DEBUG_LIKEBACK
     else
     {
-        debug() << "Not changing status, connected?" << connected_;
+        debug() << "Not changing status, connected?" << m_connected;
     }
 #endif
 }

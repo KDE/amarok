@@ -956,6 +956,7 @@ MainWindow::createActions()
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
     likeBack->setServer( "likeback.kollide.net", "/send.php" );
     likeBack->setAcceptedLanguages( QStringList( "en" ) );
+    likeBack->setWindowNamesListing( LikeBack::WarnUnnamedWindows );    //Notify if a window has no name
 
     KActionCollection *likeBackActions = new KActionCollection( this, KGlobal::mainComponent() );
     likeBackActions->addAssociatedWidget( this );

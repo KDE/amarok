@@ -33,6 +33,10 @@
 #include "LikeBackDialog.h"
 #include "LikeBackPrivate.h"
 
+#ifdef DEBUG_LIKEBACK
+#include "Debug.h"
+#endif
+
 // Constructor
 LikeBack::LikeBack( Button buttons, bool showBarByDefault, KConfig *config, const KAboutData *aboutData )
     : QObject()
