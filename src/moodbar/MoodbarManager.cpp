@@ -99,8 +99,23 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     if( !QFile::exists( moodFilePath ) )
     {
         debug() << "no such file";
-        m_hasMoodMap.insert( track, false );
-        return false;
+        //for fun, try without the leading '.'
+
+        QFileInfo fInfo( moodFilePath );
+        QString testName = fInfo.fileName(); 
+        testName.remove( 0, 1 );
+
+        moodFilePath.replace( fInfo.fileName(), testName );
+
+        debug() << "trying : " << moodFilePath;
+        if( !QFile::exists( moodFilePath ) )
+        {
+            debug() << "no luck removing the leading '.' either...";
+            m_hasMoodMap.insert( track, false );
+            return false;
+        }
+
+        debug() << "whoops, missing leading '.', so mood file path: " << moodFilePath;
     }
 
     //it is a local file with a matching .mood file. Good enough for now!
