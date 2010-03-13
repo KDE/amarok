@@ -101,7 +101,7 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 void
 CoverFetcher::queueQuery( const QString &query )
 {
-    m_queue->addQuery( query );
+    m_queue->addQuery( query, fetchSource() );
 }
 
 void
@@ -176,7 +176,7 @@ CoverFetcher::slotResult( KJob *job )
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( unit->options(), CoverFetch::LastFm, data ); // TODO: make fetch source configurable
+        m_queue->add( unit->options(), fetchSource(), data );
         m_queue->remove( unit );
         break;
 
@@ -333,12 +333,22 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
             {
                 Meta::AlbumPtr album = m_queueLater.takeFirst();
-                m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm ); // TODO: make fetch source configurable
+                // automatic fetching only uses Last.Fm as source
+                m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm );
             }
         }
     }
 
     emit finishedSingle( static_cast< int >( state ) );
+}
+
+CoverFetch::Source
+CoverFetcher::fetchSource() const
+{
+    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const QString sourceEntry = config.readEntry( "Interactive Image Source", "LastFm" );
+    CoverFetch::Source source = ( sourceEntry == "Yahoo" ) ? CoverFetch::Yahoo : CoverFetch::LastFm;
+    return source;
 }
 
 #include "CoverFetcher.moc"

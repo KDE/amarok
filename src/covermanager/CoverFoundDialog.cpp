@@ -84,10 +84,17 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
 
     QMenu *sourceMenu = new QMenu( sourceButton );
-    QAction *lastfm = new QAction( i18n( "Last.fm" ), sourceMenu );
-    QAction *webSearch = new QAction( i18n( "Web Search" ), sourceMenu );
-    sourceMenu->addAction( lastfm );
-    sourceMenu->addAction( webSearch );
+    QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
+    QAction *webSearchAct = new QAction( i18n( "Web Search" ), sourceMenu );
+    lastFmAct->setCheckable( true );
+    webSearchAct->setCheckable( true );
+    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFmSearch()) );
+    connect( webSearchAct, SIGNAL(triggered()), this, SLOT(selectWebSearch()) );
+
+    QActionGroup *ag = new QActionGroup( sourceButton );
+    ag->addAction( lastFmAct );
+    ag->addAction( webSearchAct );
+    sourceMenu->addActions( ag->actions() );
     sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
     connect( m_search,   SIGNAL(returnPressed(const QString&)),
@@ -152,7 +159,12 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
 
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     restoreDialogSize( config ); // call this after setMainWidget()
+    if( source == "LastFm" )
+        lastFmAct->setChecked( true );
+    else if( source == "Yahoo" )
+        webSearchAct->setChecked( true );
 
     add( cover, data );
 }
@@ -220,6 +232,18 @@ void CoverFoundDialog::searchButtonPressed()
 {
     const QString text = m_search->text();
     emit newCustomQuery( text );
+}
+
+void CoverFoundDialog::selectLastFmSearch()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "LastFm" );
+}
+
+void CoverFoundDialog::selectWebSearch()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "Yahoo" );
 }
 
 void CoverFoundDialog::updateGui()
