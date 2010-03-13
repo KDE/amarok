@@ -9,7 +9,7 @@ SECTION 1: Preparation
  * Check the README file is still relevant
  * Run the "fixuifiles" script from the source-root
  * Run the "bump_plugin_version.rb" script from the folder amarok/
- * Commit the source to SVN
+ * Commit the source to Git
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
@@ -36,6 +36,7 @@ SECTION 3: Once Happy with the Tarball
 
 Section 4: The Release Day
 
+ * Make tarball public
  * Update download page on the wiki
  * Update the amarok.kde.org front-page
  * Send a witty, intelligent and diligently crafted email to the following lists:
@@ -43,8 +44,11 @@ Section 4: The Release Day
      CC:  amarok-promo@kde.org
      BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org,
           amarok-packagers@googlegroups.com, (kde-press-announce@kde.org)
- * Blog, update IRC channel topics, ...
+ * Update IRC channel topics
+ * Update social networks
  * Update kde-apps.org
+ * Write blog post
+ * Publish dot story (for major versions)
 --------------------------------------------------------------------------------
 
 SECTION 5: After the Release

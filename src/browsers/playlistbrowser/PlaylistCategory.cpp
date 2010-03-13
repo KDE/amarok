@@ -96,7 +96,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
 
-    m_providerMenu = new KActionMenu( KIcon( "view-list-tree" ), i18n( "Visible Sources"), this );
+    m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
     toolBar->addAction( m_providerMenu );
 

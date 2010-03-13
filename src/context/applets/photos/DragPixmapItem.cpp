@@ -34,7 +34,7 @@
 DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
     , m_dragPos( QPoint() )
-    , m_url( 0 )
+    , m_url( '0' )
 {
     setAcceptDrops( true );
     setCursor( Qt::PointingHandCursor );

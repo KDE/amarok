@@ -76,9 +76,9 @@ endif ( KDEMULTIMEDIA_FOUND )
 # LIKEBACK
 #####################################################################
 set(likeback_SRCS
-    likeback/likeback.cpp
-    likeback/likebackbar.cpp
-    likeback/likebackdialog.cpp
+    likeback/LikeBack.cpp
+    likeback/LikeBackBar.cpp
+    likeback/LikeBackDialog.cpp
 )
 
 #####################################################################
@@ -768,8 +768,8 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
-    likeback/likebackbar.ui
-    likeback/likebackdialog.ui
+    likeback/LikeBackBar.ui
+    likeback/LikeBackDialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     podcasts/sql/PodcastSettingsBase.ui
     podcasts/sql/SqlPodcastProviderSettingsWidget.ui

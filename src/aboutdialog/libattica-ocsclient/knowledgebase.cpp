@@ -25,7 +25,7 @@
 using namespace AmarokAttica;
 
 KnowledgeBase::KnowledgeBase()
-    : m_id(0),
+    : m_id('0'),
       m_contentId(0),
       m_comments(0)
 {
