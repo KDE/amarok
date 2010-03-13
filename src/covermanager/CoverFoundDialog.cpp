@@ -293,9 +293,10 @@ void CoverFoundDialog::add( const QPixmap cover,
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
 
-    const QString size = QString( "%1x%2" )
-        .arg( QString::number( cover.width() ) )
-        .arg( QString::number( cover.height() ) );
+    const QString src = metadata.value( "source" );
+    const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
+    const QString h = metadata.contains( "height" ) ? metadata.value( "height" ) : QString::number( cover.height() );
+    const QString size = QString( "%1x%2" ).arg( w ).arg( h );
     const QString tip = i18n( "Size:" ) + size;
     item->setToolTip( tip );
 
