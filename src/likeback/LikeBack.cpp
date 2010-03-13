@@ -272,11 +272,14 @@ void LikeBack::showInformationMessage()
     QString featureIconPath( KStandardDirs::locate( "data", "amarok/images/likeback_feature.png" ) );
 
     // Show a message reflecting the allowed types of comment:
-    Button buttons = d->buttons;
+    int buttons = d->buttons;
     int nbButtons = ( buttons & Like        ? 1 : 0 ) +
                     ( buttons & Dislike ? 1 : 0 ) +
                     ( buttons & Bug         ? 1 : 0 ) +
                     ( buttons & Feature ? 1 : 0 );
+
+    // We use bugzilla for bug reporting but we still want to show the icon here:
+    buttons = buttons | LikeBack::Bug;
 
     // Construct the welcome phrase
     QString welcomePhrase;
@@ -321,8 +324,8 @@ void LikeBack::showInformationMessage()
     {
         bugPhrase = i18nc( "Welcome dialog text, explanation for the bug button",
                            "If you experience an improper behavior in the application, just click on "
-                           "the broken-object icon in the top-right corner of the window, describe the "
-                           "behavior and click on 'Send'." );
+                           "the bug icon in the top-right corner of the window, describe the behavior "
+                           "and click on 'Send'." );
     }
 
     // Construct the usage examples
@@ -343,7 +346,7 @@ void LikeBack::showInformationMessage()
                                  "<b>I dislike</b> the welcome page of this assistant. Too time consuming." ) +
                           "</span><br/>";
     }
-    if( true )//buttons & LikeBack::Bug )
+    if( buttons & LikeBack::Bug )
     {
         examplesBlocks += "<img src=\"" + bugIconPath + "\"/> &nbsp;"
                           "<span>" +
