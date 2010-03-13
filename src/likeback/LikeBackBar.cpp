@@ -25,8 +25,8 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "likeback.h"
-#include "likebackbar.h"
+#include "LikeBack.h"
+#include "LikeBackBar.h"
 
 
 // Constructor
@@ -236,4 +236,4 @@ void LikeBackBar::setBarVisible( bool visible )
 }
 
 
-#include "likebackbar.moc"
+#include "LikeBackBar.moc"

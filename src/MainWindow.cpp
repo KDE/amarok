@@ -49,7 +49,7 @@
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/EqualizerDialog.h"
-#include "likeback/likeback.h"
+#include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"

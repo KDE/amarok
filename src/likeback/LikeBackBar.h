@@ -22,9 +22,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "likeback.h"
+#include "LikeBack.h"
 
-#include "ui_likebackbar.h"
+#include "ui_LikeBackBar.h"
 
 
 

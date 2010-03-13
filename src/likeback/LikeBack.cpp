@@ -28,10 +28,10 @@
 #include <KStandardDirs>
 #include <KToggleAction>
 
-#include "likeback.h"
-#include "likebackbar.h"
-#include "likebackdialog.h"
-#include "likeback_p.h"
+#include "LikeBack.h"
+#include "LikeBackBar.h"
+#include "LikeBackDialog.h"
+#include "LikeBackPrivate.h"
 
 // Constructor
 LikeBack::LikeBack( Button buttons, bool showBarByDefault, KConfig *config, const KAboutData *aboutData )
@@ -473,4 +473,4 @@ bool LikeBack::isFeatureActive() const
 }
 
 
-#include "likeback.moc"
+#include "LikeBack.moc"

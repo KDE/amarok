@@ -23,12 +23,12 @@
 #include <KAboutData>
 #include <KApplication>
 #include <KConfig>
-#include <debug>
 #include <KMessageBox>
 #include <KPushButton>
 
-#include "likebackdialog.h"
-#include "likeback.h"
+#include "Debug.h"
+#include "LikeBackDialog.h"
+#include "LikeBack.h"
 
 
 
@@ -323,4 +323,4 @@ void LikeBackDialog::requestFinished( int id, bool error )
     verify();
 }
 
-#include "likebackdialog.moc"
+#include "LikeBackDialog.moc"
