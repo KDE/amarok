@@ -31,9 +31,11 @@
 #include <QGLFormat>
 #include <QGLWidget>
 #include <QTimer>
+#include "QMouseEvent"
 
 #include <climits>
 #include "ImageLoader.h"
+#include <iostream>
 
 CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
         : QGLWidget( QGLFormat(QGL::DepthBuffer|QGL::SampleBuffers|QGL::AlphaChannel|QGL::DoubleBuffer), parent )
@@ -176,11 +178,10 @@ CoverBling::draw( GLuint selected )
     float step = ((float)m_animationStep)/((float)m_animation_StepMax);    	
     if (!animateTimer.isActive()) step=1; 
     
-	glTranslatef( -2*m_currentindex*step, 0.0, 0.0 );			
+	//glTranslatef( -2*m_currentindex*step, 0.0, 0.0 );			
    
     glColor3f( 1.0, 1.0, 1.0 ); //reset color
     glEnable( GL_TEXTURE_2D);
-    //glTranslatef( -2*m_currentindex, 0, 0 );
     float xoffset = 0.5;
     float yoffset = -0.6;
     float zoffset = -1.1;
@@ -191,18 +192,24 @@ CoverBling::draw( GLuint selected )
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
             
-            glTranslatef( 2*i, 0.0, 0.0);
             xoffset += 1.0;
             zoffset += 0.1;
             int idx_diff = m_currentindex-i;
+            GLdouble step = ((GLdouble)m_animationStep)/((GLdouble)m_animation_StepMax);    	
+			if (!animateTimer.isActive()) step=1;
+						
+			GLdouble angle = 15 * step; 
+            if (idx_diff!=0) glTranslatef( -2*idx_diff, 0.0, -1 );
             if( idx_diff )
 			{
-				//glTranslatef( 1.5*idx_diff*step, 0.0, -0.1*idx_diff*idx_diff*step );
-				//glRotatef( 90*idx_diff*step/nbtextures, 0.0, 1.0, 0.0 );
+				if (idx_diff >0)
+					glRotatef( angle, 0.0, 1.0, 0.0 );
+				else
+					glRotatef( -angle, 0.0, 1.0, 0.0 );	
 			}
             //draw the cover
 			// celle là il faut la mettre à plat au milieu !!!
-			else
+			//else
                 glColor3f( 1.0, 0.0, 0.0 );
             glLoadName( objectName++ );
             glCallList( m_texturedRectList );
@@ -291,7 +298,12 @@ void CoverBling::mousePressEvent(QMouseEvent *event)
 {
 	DEBUG_BLOCK
 	m_animationStep=0;
-	m_currentindex++;
+	if ( event->x() > ( width() / 2))
+        m_currentindex++;
+	else
+        m_currentindex--;
+	if (m_currentindex<0) m_currentindex = 0;
+	if (m_currentindex> m_albums.size()) m_currentindex = m_albums.size();
 	animateTimer.start(m_animationDuration);
 	//updateGL();
 }
