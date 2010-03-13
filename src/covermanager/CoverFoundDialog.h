@@ -64,7 +64,7 @@ public slots:
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
-    void closeEvent( QCloseEvent *event );
+    void hideEvent( QHideEvent *event );
 
 private slots:
     void clearView();

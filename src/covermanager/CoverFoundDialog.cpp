@@ -157,7 +157,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     add( cover, data );
 }
 
-void CoverFoundDialog::closeEvent( QCloseEvent *event )
+void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
     clearView();
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
