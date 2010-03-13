@@ -27,6 +27,7 @@
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
 
+#include <KConfigGroup>
 #include <KHBox>
 #include <KIO/Job>
 #include <KLineEdit>
@@ -52,7 +53,6 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
 {
     setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
-    setInitialSize( QSize( 480, 350 ) );
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
     connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
@@ -151,12 +151,17 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
 
     connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
 
+    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    restoreDialogSize( config ); // call this after setMainWidget()
+
     add( cover, data );
 }
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
     clearView();
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    saveDialogSize( config );
     event->accept();
 }
 
