@@ -22,10 +22,10 @@
 #include <QAction>
 
 class PlaylistsByProviderProxy : public QtGroupingProxy
-        , public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
     public:
+        //TODO: move these internal drag and drop functions to QtGroupingProxy
         /** serializes the indexes into a bytearray
           */
         QByteArray encodeMimeRows( const QList<QModelIndex> indexes ) const;

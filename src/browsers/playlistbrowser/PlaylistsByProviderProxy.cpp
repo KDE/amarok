@@ -201,26 +201,6 @@ PlaylistsByProviderProxy::supportedDragActions() const
     return m_model->supportedDragActions() | Qt::CopyAction;
 }
 
-#if(0)
-QList<QAction *>
-PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
-{
-    QList<QAction *> actions;
-    if( isAGroupSelected( list ) )
-    {
-        //TODO: get provider actions
-        return actions;
-    }
-
-    QModelIndexList originalList = mapToSource( list );
-
-    if( !originalList.isEmpty() )
-        actions << actionsFor( originalList );
-
-    return actions;
-}
-#endif
-
 void
 PlaylistsByProviderProxy::buildTree()
 {
