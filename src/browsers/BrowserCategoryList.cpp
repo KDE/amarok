@@ -81,7 +81,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
     connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
 
