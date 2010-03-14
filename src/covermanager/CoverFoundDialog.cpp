@@ -28,19 +28,21 @@
 #include "SvgHandler.h"
 
 #include <KConfigGroup>
-#include <KHBox>
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KPushButton>
 #include <KStandardDirs>
-#include <KVBox>
 
 #include <QCloseEvent>
 #include <QDir>
 #include <QFrame>
 #include <QGridLayout>
+#include <QHeaderView>
 #include <QMenu>
+#include <QSplitter>
+#include <QTabWidget>
+#include <QTableWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
@@ -51,7 +53,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     : KDialog( parent )
     , m_album( album )
 {
-    setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
+    setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
@@ -59,11 +61,14 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
 
     m_save = button( KDialog::Ok );
 
-    KVBox *box = new KVBox( this );
-    box->setSpacing( 4 );
+    QSplitter *splitter = new QSplitter( this );
+    m_sideBar = new CoverFoundSideBar( splitter );
 
-    KHBox *searchBox = new KHBox( box );
-    box->setSpacing( 4 );
+    KVBox *vbox = new KVBox( splitter );
+    vbox->setSpacing( 4 );
+
+    KHBox *searchBox = new KHBox( vbox );
+    vbox->setSpacing( 4 );
 
     m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
@@ -104,7 +109,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     connect( searchButton, SIGNAL(pressed()),
              this,         SLOT(searchButtonPressed()) );
 
-    m_view = new KListWidget( box );
+    m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
     m_view->setContextMenuPolicy( Qt::CustomContextMenu );
     m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
@@ -117,43 +122,16 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(itemClicked(QListWidgetItem*)),
-             this,   SLOT(itemClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(itemSelectionChanged()),
+             this,   SLOT(itemSelected()) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
              this,   SLOT(itemMenuRequested(const QPoint&)) );
 
-    QFrame *m_details = new QFrame( this );
-    m_details->setFrameShadow( QFrame::Plain );
-    m_details->setFrameShape( QFrame::Box );
-
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
-    QLabel *urlLabel    = new QLabel( "<b>" + i18n( "URL"    ) + "</b>", m_details );
-    QLabel *artistText  = new QLabel( m_details );
-    QLabel *albumText   = new QLabel( m_details );
-    QLabel *urlText     = new QLabel( m_details );
-
-    artistLabel->setAlignment( Qt::AlignRight );
-    albumLabel->setAlignment( Qt::AlignRight );
-    urlLabel->setAlignment( Qt::AlignRight );
-    artistText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    albumText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    urlText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    urlText->setOpenExternalLinks( true );
-
-    m_detailsLayout = new QGridLayout( m_details );
-    m_detailsLayout->addWidget( artistLabel, 0, 0 );
-    m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( urlLabel,  2, 0 );
-    m_detailsLayout->addWidget( artistText, 0, 1 );
-    m_detailsLayout->addWidget( albumText, 1, 1 );
-    m_detailsLayout->addWidget( urlText, 2, 1 );
-    m_detailsLayout->setColumnStretch( 1, 1 );
-
-    setMainWidget( box );
-    setDetailsWidget( m_details );
+    splitter->addWidget( m_sideBar );
+    splitter->addWidget( vbox );
+    setMainWidget( splitter );
 
     connect( m_save, SIGNAL(released()), SLOT(saveRequested()) );
 
@@ -166,6 +144,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
         webSearchAct->setChecked( true );
 
     add( cover, data );
+    m_view->setCurrentItem( m_view->item( 0 ) );
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
@@ -182,11 +161,11 @@ void CoverFoundDialog::clearView()
     updateGui();
 }
 
-void CoverFoundDialog::itemClicked( QListWidgetItem *item )
+void CoverFoundDialog::itemSelected()
 {
-    const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
+    CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-    updateDetails();
+    m_sideBar->setPixmap( m_pixmap, it->metadata() );
 }
 
 
@@ -247,31 +226,10 @@ void CoverFoundDialog::selectWebSearch()
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
-    updateDetails();
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );
     update();
-}
-
-void CoverFoundDialog::updateDetails()
-{
-    const CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
-    const CoverFetch::Metadata meta = item->metadata();
-    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-    QLabel *urlName    = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
-
-    artistName->setText( meta.value( "artist" ) );
-    albumName->setText( meta.value( "name" ) );
-    const QString urlText = QString( "<a href=\"%1\">source</a>, <a href=\"%2\">image</a>, <a href=\"%3\">thumb</a>" )
-                                .arg( KUrl( meta.value( "url" ) ).url() )
-                                .arg( KUrl( meta.value( "normalarturl" ) ).url() )
-                                .arg( KUrl( meta.value( "thumbarturl" ) ).url() );
-    urlName->setText( urlText );
 }
 
 void CoverFoundDialog::updateTitle()
@@ -291,6 +249,7 @@ void CoverFoundDialog::add( const QPixmap cover,
         return;
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
+    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
 
     const QString src = metadata.value( "source" );
     const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
@@ -302,6 +261,146 @@ void CoverFoundDialog::add( const QPixmap cover,
     m_view->addItem( item );
 
     updateGui();
+}
+
+CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
+    : KVBox( parent )
+{
+    m_cover     = new QLabel( this );
+    m_tabs      = new QTabWidget( this );
+    m_abstract  = new QLabel( m_tabs );
+    m_metaTable = new QTableWidget( m_tabs );
+    m_abstract->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    m_abstract->setMargin( 4 );
+    m_abstract->setOpenExternalLinks( true );
+    m_abstract->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_abstract->setWordWrap( true );
+    m_cover->setAlignment( Qt::AlignCenter );
+    m_metaTable->setColumnCount( 2 );
+    m_metaTable->horizontalHeader()->setVisible( false );
+    m_metaTable->verticalHeader()->setVisible( false );
+    m_tabs->addTab( m_metaTable, i18n( "Information" ) );
+    m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
+    setMaximumWidth( 200 );
+    setNoCover();
+}
+
+CoverFoundSideBar::~CoverFoundSideBar()
+{
+}
+
+void CoverFoundSideBar::setNoCover()
+{
+    if( m_noCover.isNull() )
+        m_noCover = noCover();
+
+    m_cover->setPixmap( m_noCover );
+    m_metadata.clear();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
+{
+    setPixmap( pixmap );
+    m_metadata = metadata;
+    updateMetaTable();
+    updateAbstract();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
+{
+    m_pixmap = pixmap;
+    QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    m_cover->setPixmap( prettyPix );
+}
+
+void CoverFoundSideBar::updateAbstract()
+{
+    bool enableAbstract( false );
+    if( m_metadata.contains( "abstract" ) )
+    {
+        const QString abstract = m_metadata.value( "abstract" );
+        if( !abstract.isEmpty() )
+        {
+            m_abstract->setText( abstract );
+            enableAbstract = true;
+        }
+        else
+            enableAbstract = false;
+    }
+    else
+    {
+        m_abstract->clear();
+        enableAbstract = false;
+    }
+    m_tabs->setTabEnabled( m_tabs->indexOf( m_abstract ), enableAbstract );
+}
+
+void CoverFoundSideBar::updateMetaTable()
+{
+    QStringList tags;
+    tags << "artist" << "clickurl" << "date"  << "format" << "height"
+         << "name"   << "size"     << "title" << "url"    << "width";
+
+    m_metaTable->clear();
+    m_metaTable->setRowCount( 10 );
+
+    int row( 0 );
+    foreach( const QString &tag, tags )
+    {
+        QTableWidgetItem *itemTag( 0 );
+        QTableWidgetItem *itemVal( 0 );
+
+        if( m_metadata.contains( tag ) )
+        {
+            const QString value = m_metadata.value( tag );
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( value );
+        }
+        else if( tag == "width" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
+        }
+        else if( tag == "height" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
+        }
+
+        if( itemTag && itemVal )
+        {
+            m_metaTable->setItem( row, 0, itemTag );
+            m_metaTable->setItem( row, 1, itemVal );
+            row++;
+        }
+    }
+    m_metaTable->setRowCount( row );
+    m_metaTable->sortItems( 0 );
+    m_metaTable->resizeColumnsToContents();
+    m_metaTable->resizeRowsToContents();
+}
+
+QPixmap CoverFoundSideBar::noCover( int size )
+{
+    /* code from Meta::Album::image( int size ) */
+
+    QPixmap pixmap( size, size );
+    const QString sizeKey = QString::number( size ) + '@';
+    const QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+
+    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
+    {
+        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    }
+    else
+    {
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
+        //scaled() does not change the original image but returns a scaled copy
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+    }
+    return pixmap;
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap cover,
@@ -383,6 +482,7 @@ void CoverFoundItem::slotFetchResult( KJob *job )
         const QString size = QString( "%1x%2" ).arg( w ).arg( h );
         const QString tip = i18n( "Size:" ) + size;
         setToolTip( tip );
+        emit pixmapChanged( m_bigPix );
     }
 
     if( m_dialog )

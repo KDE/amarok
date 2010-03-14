@@ -24,6 +24,7 @@
 #include "meta/Meta.h"
 
 #include <KDialog>
+#include <KVBox>
 
 #include <QLabel>
 #include <QList>
@@ -31,6 +32,7 @@
 #include <QObject>
 #include <QPixmap>
 
+class CoverFoundSideBar;
 class KDialog;
 class KJob;
 class KJobProgressBar;
@@ -39,6 +41,8 @@ class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
+class QTabWidget;
+class QTableWidget;
 
 class CoverFoundDialog : public KDialog
 {
@@ -68,7 +72,7 @@ protected:
 
 private slots:
     void clearView();
-    void itemClicked( QListWidgetItem *item );
+    void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void saveRequested();
@@ -78,14 +82,12 @@ private slots:
 
 private:
     void updateGui();
-    void updateDetails();
     void updateTitle();
 
-    QFrame         *m_details;       //! Details widget
-    QGridLayout    *m_detailsLayout; //! Details widget layout
     KLineEdit      *m_search;        //! Custom search input
     KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
+    CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata
 
     //! Album associated with the covers
     Meta::AlbumPtr m_album;
@@ -94,6 +96,36 @@ private:
     QPixmap m_pixmap;
 
     Q_DISABLE_COPY( CoverFoundDialog );
+};
+
+class CoverFoundSideBar : public KVBox
+{
+    Q_OBJECT
+
+public:
+    CoverFoundSideBar( QWidget *parent = 0 );
+    ~CoverFoundSideBar();
+
+public slots:
+    void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap pixmap );
+    void setNoCover();
+
+private:
+    QLabel               *m_abstract;
+    QLabel               *m_cover;
+    QPixmap               m_pixmap;
+    QTabWidget           *m_tabs;
+    QTableWidget         *m_metaTable;
+    CoverFetch::Metadata  m_metadata;
+
+    void updateAbstract();
+    void updateMetaTable();
+
+    QPixmap noCover( int size = 200 );
+    QPixmap m_noCover; //! nocover cache
+
+    Q_DISABLE_COPY( CoverFoundSideBar );
 };
 
 class CoverFoundItem : public QObject, public QListWidgetItem
@@ -116,6 +148,9 @@ public:
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
     void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+signals:
+    void pixmapChanged( const QPixmap pixmap );
 
 public slots:
     /**
