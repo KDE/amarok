@@ -27,6 +27,7 @@
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "MainWindow.h"
+#include "meta/PlaylistFileSupport.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
@@ -332,11 +333,11 @@ void FileView::addSelectionToPlaylist( bool replace )
         return;
     QList<KUrl> urls;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         debug() << "file path: " << file.url();
-        if( EngineController::canDecode( file.url() ) || file.isDir() )
+        if( EngineController::canDecode( file.url() ) || Meta::isPlaylist( file.url() ) || file.isDir() )
         {
             urls << file.url();
         }
