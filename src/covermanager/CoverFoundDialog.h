@@ -116,9 +116,12 @@ public slots:
 private:
     QLabel               *m_abstract;
     QLabel               *m_cover;
+    QPixmap               m_pixmap;
     QTabWidget           *m_tabs;
     QTableWidget         *m_metaTable;
     CoverFetch::Metadata  m_metadata;
+
+    void updateMetaTable();
 
     QPixmap noCover( int size = 200 );
     QPixmap m_noCover; //! nocover cache

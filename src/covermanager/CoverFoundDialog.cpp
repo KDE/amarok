@@ -193,6 +193,7 @@ void CoverFoundDialog::itemClicked( QListWidgetItem *item )
 {
     const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
     m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+    m_sideBar->setPixmap( m_pixmap, it->metadata() );
     updateDetails();
 }
 
@@ -344,8 +345,57 @@ void CoverFoundSideBar::setNoCover()
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
 {
-    m_cover->setPixmap( pixmap );
+    m_pixmap = pixmap;
+    QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    m_cover->setPixmap( prettyPix );
     m_metadata = metadata;
+    updateMetaTable();
+}
+
+void CoverFoundSideBar::updateMetaTable()
+{
+    QStringList tags;
+    tags << "artist" << "clickurl" << "date"  << "format" << "height"
+         << "name"   << "size"     << "title" << "url"    << "width";
+
+    m_metaTable->clear();
+    m_metaTable->setRowCount( 10 );
+
+    int row( 0 );
+    foreach( const QString &tag, tags )
+    {
+        QTableWidgetItem *itemTag( 0 );
+        QTableWidgetItem *itemVal( 0 );
+
+        if( m_metadata.contains( tag ) )
+        {
+            const QString value = m_metadata.value( tag );
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( value );
+        }
+        else if( tag == "width" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
+        }
+        else if( tag == "height" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
+        }
+
+        if( itemTag && itemVal )
+        {
+            m_metaTable->setItem( row, 0, itemTag );
+            m_metaTable->setItem( row, 1, itemVal );
+            row++;
+        }
+    }
+    m_metaTable->setRowCount( row );
+    m_metaTable->sortItems( 0 );
+    m_metaTable->resizeColumnsToContents();
+    m_metaTable->resizeRowsToContents();
 }
 
 QPixmap CoverFoundSideBar::noCover( int size )
