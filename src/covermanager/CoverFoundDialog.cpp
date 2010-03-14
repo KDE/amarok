@@ -28,19 +28,21 @@
 #include "SvgHandler.h"
 
 #include <KConfigGroup>
-#include <KHBox>
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KPushButton>
 #include <KStandardDirs>
-#include <KVBox>
 
 #include <QCloseEvent>
 #include <QDir>
 #include <QFrame>
 #include <QGridLayout>
+#include <QHeaderView>
 #include <QMenu>
+#include <QSplitter>
+#include <QTabWidget>
+#include <QTableWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
@@ -59,11 +61,14 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
 
     m_save = button( KDialog::Ok );
 
-    KVBox *box = new KVBox( this );
-    box->setSpacing( 4 );
+    QSplitter *splitter = new QSplitter( this );
+    m_sideBar = new CoverFoundSideBar( splitter );
 
-    KHBox *searchBox = new KHBox( box );
-    box->setSpacing( 4 );
+    KVBox *vbox = new KVBox( splitter );
+    vbox->setSpacing( 4 );
+
+    KHBox *searchBox = new KHBox( vbox );
+    vbox->setSpacing( 4 );
 
     m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
@@ -104,7 +109,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     connect( searchButton, SIGNAL(pressed()),
              this,         SLOT(searchButtonPressed()) );
 
-    m_view = new KListWidget( box );
+    m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
     m_view->setContextMenuPolicy( Qt::CustomContextMenu );
     m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
@@ -152,7 +157,9 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     m_detailsLayout->addWidget( urlText, 2, 1 );
     m_detailsLayout->setColumnStretch( 1, 1 );
 
-    setMainWidget( box );
+    splitter->addWidget( m_sideBar );
+    splitter->addWidget( vbox );
+    setMainWidget( splitter );
     setDetailsWidget( m_details );
 
     connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
@@ -303,6 +310,64 @@ void CoverFoundDialog::add( const QPixmap cover,
     m_view->addItem( item );
 
     updateGui();
+}
+
+CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
+    : KVBox( parent )
+{
+    m_cover     = new QLabel( this );
+    m_tabs      = new QTabWidget( this );
+    m_abstract  = new QLabel( m_tabs );
+    m_metaTable = new QTableWidget( m_tabs );
+    m_cover->setAlignment( Qt::AlignCenter );
+    m_metaTable->setColumnCount( 2 );
+    m_metaTable->horizontalHeader()->setVisible( false );
+    m_metaTable->verticalHeader()->setVisible( false );
+    m_tabs->addTab( m_metaTable, i18n( "Information" ) );
+    m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
+    setMaximumWidth( 200 );
+    setNoCover();
+}
+
+CoverFoundSideBar::~CoverFoundSideBar()
+{
+}
+
+void CoverFoundSideBar::setNoCover()
+{
+    if( m_noCover.isNull() )
+        m_noCover = noCover();
+
+    m_cover->setPixmap( m_noCover );
+    m_metadata.clear();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
+{
+    m_cover->setPixmap( pixmap );
+    m_metadata = metadata;
+}
+
+QPixmap CoverFoundSideBar::noCover( int size )
+{
+    /* code from Meta::Album::image( int size ) */
+
+    QPixmap pixmap( size, size );
+    const QString sizeKey = QString::number( size ) + '@';
+    const QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+
+    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
+    {
+        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    }
+    else
+    {
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
+        //scaled() does not change the original image but returns a scaled copy
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+    }
+    return pixmap;
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap cover,
