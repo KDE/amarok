@@ -14,14 +14,38 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef TESTDATAENGINE_H
-#define TESTDATAENGINE_H
+#include "TestDataEngineBlackBox.h"
+#include <KServiceTypeTrader>
 
-
-class TestDataEngine
+TestDataEngineBlackBox::TestDataEngineBlackBox(QString identifier)
 {
-    public:
-        TestDataEngine();
-};
+    Plasma::DataEngine* engine = 0;
+    // load the engine, add it to the engines
+    QString constraint = QString("[X-KDE-PluginInfo-Name] == '"+ identifier +"'").arg(identifier);
+    KService::List offers = KServiceTypeTrader::self()->query("Plasma/DataEngine", constraint);
+    QString error;
 
-#endif //TESTDATAENGINE_H
+    if (!offers.isEmpty()) {
+        QVariantList allArgs;
+        allArgs << offers.first()->storageId();
+        QString api = offers.first()->property("X-Plasma-API").toString();
+        if (api.isEmpty()) {
+            if (offers.first()) {
+                KPluginLoader plugin(*offers.first());
+                if (Plasma::isPluginVersionCompatible(plugin.pluginVersion())) {
+                   engine = offers.first()->createInstance<Plasma::DataEngine>(0, allArgs, &error);
+               }
+            }
+        } else {
+            engine = new Plasma::DataEngine(0, offers.first());
+        }
+    }
+    
+    m_engine = engine;
+}
+
+
+TestDataEngineBlackBox::~TestDataEngineBlackBox()
+{
+  delete m_engine;
+}

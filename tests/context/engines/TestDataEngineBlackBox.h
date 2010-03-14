@@ -14,14 +14,23 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef TESTDATAENGINE_H
-#define TESTDATAENGINE_H
+#ifndef TESTDATAENGINEBLACKBOX_H
+#define TESTDATAENGINEBLACKBOX_H
+#include <QString>
+#include <Plasma/DataEngine>
 
-
-class TestDataEngine
+/**
+ * This class provides a method to perform unit tests on data engines
+ * by retrieving the DataEngine through the KDE plugin manager
+ */
+class TestDataEngineBlackBox
 {
     public:
-        TestDataEngine();
+        TestDataEngineBlackBox( const QString identifier);
+        ~TestDataEngineBlackBox();
+        
+    protected:
+        Plasma::DataEngine* m_engine;
 };
 
-#endif //TESTDATAENGINE_H
+#endif // TESTDATAENGINEBLACKBOX_H
