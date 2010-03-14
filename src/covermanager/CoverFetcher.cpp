@@ -249,12 +249,6 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 {
     DEBUG_BLOCK
 
-    if( cover.isNull() )
-    {
-        finish( unit, Error );
-        return;
-    }
-
     if( !m_dialog )
     {
         if( !unit->album() )
