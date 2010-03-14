@@ -49,7 +49,7 @@ class CoverFoundDialog : public KDialog
     Q_OBJECT
 
 public:
-    CoverFoundDialog( Meta::AlbumPtr album,
+    CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                       const QPixmap cover = QPixmap(),
                       const CoverFetch::Metadata data = CoverFetch::Metadata(),
                       QWidget *parent = 0 );
@@ -57,7 +57,9 @@ public:
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return m_pixmap; }
+    const QPixmap image() const { return m_pixmap; }
+
+    const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
     void newCustomQuery( const QString & );
@@ -89,8 +91,8 @@ private:
     KPushButton    *m_save;          //! Save Button
     CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata
 
-    //! Album associated with the covers
-    Meta::AlbumPtr m_album;
+    //! Cover fetch unit that initiated this dialog
+    const CoverFetchUnit::Ptr m_unit;
 
     //! Currently selected cover image
     QPixmap m_pixmap;

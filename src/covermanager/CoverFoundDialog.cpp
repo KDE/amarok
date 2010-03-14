@@ -46,12 +46,12 @@
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
-CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album, 
+CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const QPixmap cover,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
-    , m_album( album )
+    , m_unit( unit )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -80,9 +80,10 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     searchComp->setIgnoreCase( true );
 
     QStringList completionNames;
-    completionNames << m_album->name();
-    if( m_album->hasAlbumArtist() )
-        completionNames << m_album->albumArtist()->name();
+    const Meta::AlbumPtr album = unit->album();
+    completionNames << album->name();
+    if( album->hasAlbumArtist() )
+        completionNames << album->albumArtist()->name();
     searchComp->setItems( completionNames );
 
     KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
@@ -471,7 +472,7 @@ void CoverFoundItem::display()
     int parentScreen = KApplication::desktop()->screenNumber( p );
 
     const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
-    ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
+    ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->show();
 }
 
 void CoverFoundItem::slotFetchResult( KJob *job )

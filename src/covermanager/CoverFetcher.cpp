@@ -205,6 +205,23 @@ CoverFetcher::slotResult( KJob *job )
 void
 CoverFetcher::slotDialogFinished()
 {
+    const CoverFetchUnit::Ptr unit = m_dialog->unit();
+    switch( m_dialog->result() )
+    {
+    case KDialog::Accepted:
+        m_selectedPixmaps.insert( unit, m_dialog->image() );
+        finish( unit );
+        break;
+
+    case KDialog::Rejected:
+    default:
+        finish( unit, Cancelled );
+        break;
+    }
+
+    delete m_dialog;
+    m_dialog = 0;
+
     /*
      * Remove all manual fetch jobs from the queue if the user accepts, cancels,
      * or closes the cover found dialog. This way, the dialog will not reappear
@@ -240,32 +257,19 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 
     if( !m_dialog )
     {
-        const Meta::AlbumPtr album = unit->album();
-        if( !album )
+        if( !unit->album() )
         {
             finish( unit, Error );
             return;
         }
 
-        m_dialog = new CoverFoundDialog( album, cover, data, static_cast<QWidget*>( parent() ) );
+        m_dialog = new CoverFoundDialog( unit, cover, data, static_cast<QWidget*>( parent() ) );
         connect( m_dialog, SIGNAL(newCustomQuery(const QString&)), SLOT(queueQuery(const QString&)) );
-        connect( m_dialog, SIGNAL(finished()), SLOT(slotDialogFinished()) );
-
-        switch( m_dialog->exec() )
-        {
-        case KDialog::Accepted:
-            m_selectedPixmaps.insert( unit, m_dialog->image() );
-            finish( unit );
-            break;
-
-        case KDialog::Rejected:
-        default:
-            finish( unit, Cancelled );
-            break;
-        }
-
-        delete m_dialog;
-        m_dialog = 0;
+        connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
+        connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+        m_dialog->show();
+        m_dialog->raise();
+        m_dialog->activateWindow();
     }
     else
     {
