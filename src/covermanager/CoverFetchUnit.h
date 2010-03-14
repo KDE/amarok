@@ -21,6 +21,8 @@
 
 #include <KSharedPtr>
 
+#include <QDomDocument>
+
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
 
@@ -37,6 +39,12 @@ namespace CoverFetch
     {
         NormalSize,     //! Normal cover size, for storage and display
         ThumbSize       //! Thumbnail size, for icon views
+    };
+
+    enum Source
+    {
+        LastFm,         //! Use Last.Fm as provider for cover images
+        Yahoo           //! Use Yahoo! BOSS image search as provider
     };
 
     typedef QHash< QString, QString > Metadata;
@@ -89,15 +97,18 @@ class CoverFetchPayload
 {
 public:
     enum Type { Info, Search, Art };
-    CoverFetchPayload( const Meta::AlbumPtr album, enum Type type );
+    CoverFetchPayload( const Meta::AlbumPtr album, enum Type type, const CoverFetch::Source src );
     virtual ~CoverFetchPayload();
 
+    CoverFetch::Source source() const;
     enum Type type() const;
     const CoverFetch::Urls &urls() const;
 
 protected:
+    const CoverFetch::Source m_src;
     CoverFetch::Urls m_urls;
 
+    const QString  sourceString() const;
     const QString &method() const { return m_method; }
     Meta::AlbumPtr album()  const { return m_album; }
 
@@ -135,7 +146,8 @@ private:
 class CoverFetchSearchPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchSearchPayload( const QString &query = QString() );
+    explicit CoverFetchSearchPayload( const QString &query = QString(),
+                                      const CoverFetch::Source src = CoverFetch::LastFm );
     ~CoverFetchSearchPayload();
 
     QString query() const;
@@ -157,8 +169,11 @@ class CoverFetchArtPayload : public CoverFetchPayload
 public:
     explicit CoverFetchArtPayload( const Meta::AlbumPtr album,
                                    const CoverFetch::ImageSize size = CoverFetch::NormalSize,
+                                   const CoverFetch::Source src = CoverFetch::LastFm,
                                    bool wild = false );
-    explicit CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild = false );
+    explicit CoverFetchArtPayload( const CoverFetch::ImageSize size,
+                                   const CoverFetch::Source src = CoverFetch::LastFm,
+                                   bool wild = false );
     ~CoverFetchArtPayload();
 
     bool isWild() const;
@@ -188,6 +203,12 @@ private:
 
     /// lower, remove whitespace, and do Unicode normalization on a QStringList
     QStringList normalize( const QStringList &rawList );
+
+    /// prepare urls from xml provided by Last.Fm
+    void prepareLastFmUrls( const QDomDocument &doc );
+
+    /// prepare urls from xml provided by Yahoo! Image Search
+    void prepareYahooUrls( const QDomDocument &doc );
 
     Q_DISABLE_COPY( CoverFetchArtPayload );
 };

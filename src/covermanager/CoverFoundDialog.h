@@ -73,6 +73,8 @@ private slots:
     void itemMenuRequested( const QPoint &pos );
     void saveRequested();
     void searchButtonPressed();
+    void selectLastFmSearch();
+    void selectWebSearch();
 
 private:
     void updateGui();

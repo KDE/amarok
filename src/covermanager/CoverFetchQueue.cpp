@@ -37,7 +37,10 @@ CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Option opt, const QByteArray &xml )
+CoverFetchQueue::add( const Meta::AlbumPtr album,
+                      const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
@@ -47,7 +50,7 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Option opt, 
     else
     {
         const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, CoverFetch::NormalSize, wild );
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, CoverFetch::NormalSize, src, wild );
         art->setXml( xml );
         payload = art;
     }
@@ -55,18 +58,20 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, const CoverFetch::Option opt, 
 }
 
 void
-CoverFetchQueue::add( const CoverFetch::Option opt, const QByteArray &xml )
+CoverFetchQueue::add( const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
     const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-    CoverFetchArtPayload *art = new CoverFetchArtPayload( CoverFetch::ThumbSize, wild );
+    CoverFetchArtPayload *art = new CoverFetchArtPayload( CoverFetch::ThumbSize, src, wild );
     art->setXml( xml );
     add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( art, opt ) ) );
 }
 
 void
-CoverFetchQueue::addQuery( const QString &query )
+CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src )
 {
-    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src );
     add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 

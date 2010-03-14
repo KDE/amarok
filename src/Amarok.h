@@ -222,7 +222,7 @@ namespace Amarok
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
 
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
-
+    inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }
 }
 
 

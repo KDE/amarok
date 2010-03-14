@@ -77,7 +77,10 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( cpy.payload() );
-            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->imageSize(), payload->isWild() );
+            m_payload = new CoverFetchArtPayload( cpy.m_album,
+                                                  payload->imageSize(),
+                                                  payload->source(),
+                                                  payload->isWild() );
             break;
         }
         default:
@@ -161,7 +164,10 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( rhs.payload() );
-            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->imageSize(), payload->isWild() );
+            m_payload = new CoverFetchArtPayload( rhs.m_album,
+                                                  payload->imageSize(),
+                                                  payload->source(),
+                                                  payload->isWild() );
             break;
         }
         default:
@@ -192,8 +198,11 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
  * CoverFetchPayload
  */
 
-CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayload::Type type )
-    : m_album( album )
+CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album,
+                                      CoverFetchPayload::Type type,
+                                      CoverFetch::Source src )
+    : m_src( src )
+    , m_album( album )
     , m_method( ( type == Search ) ? QString( "album.search" )
                                    : album && album->hasAlbumArtist() ? QString( "album.getinfo" )
                                                                       : QString( "album.search" ) )
@@ -203,6 +212,12 @@ CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayl
 
 CoverFetchPayload::~CoverFetchPayload()
 {
+}
+
+CoverFetch::Source
+CoverFetchPayload::source() const
+{
+    return m_src;
 }
 
 CoverFetchPayload::Type
@@ -217,6 +232,24 @@ CoverFetchPayload::urls() const
     return m_urls;
 }
 
+const QString
+CoverFetchPayload::sourceString() const
+{
+    QString source;
+    switch( m_src )
+    {
+    case CoverFetch::LastFm:
+        source = "Last.Fm";
+        break;
+    case CoverFetch::Yahoo:
+        source = "Yahoo!";
+        break;
+    default:
+        source = "Unknown";
+    }
+    return source;
+}
+
 bool
 CoverFetchPayload::isPrepared() const
 {
@@ -228,7 +261,7 @@ CoverFetchPayload::isPrepared() const
  */
 
 CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album )
-    : CoverFetchPayload( album, CoverFetchPayload::Info )
+    : CoverFetchPayload( album, CoverFetchPayload::Info, CoverFetch::LastFm )
 {
     prepareUrls();
 }
@@ -263,8 +296,8 @@ CoverFetchInfoPayload::prepareUrls()
  * CoverFetchSearchPayload
  */
 
-CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Search )
+CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query, const CoverFetch::Source src )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Search, src )
     , m_query( query )
 {
     prepareUrls();
@@ -285,15 +318,30 @@ CoverFetchSearchPayload::prepareUrls()
 {
     KUrl url;
     url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "album", m_query );
-    url.addQueryItem( "method", method() );
-
     CoverFetch::Metadata metadata;
-    metadata[ "source" ] = "Last.fm";
-    metadata[ "method" ] = method();
+
+    switch( m_src )
+    {
+    default:
+    case CoverFetch::LastFm:
+        url.setHost( "ws.audioscrobbler.com" );
+        url.setPath( "/2.0/" );
+        url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+        url.addQueryItem( "album", m_query );
+        url.addQueryItem( "method", method() );
+        metadata[ "source" ] = "Last.fm";
+        metadata[ "method" ] = method();
+        break;
+
+    case CoverFetch::Yahoo:
+        url.setHost( "boss.yahooapis.com" );
+        url.setPath( "/ysearch/images/v1/" + m_query );
+        url.addQueryItem( "appid", Amarok::yahooBossApiKey() );
+        url.addQueryItem( "format", "xml" );
+        metadata[ "source" ] = "Yahoo!";
+        break;
+    }
+
     m_urls.insert( url, metadata );
 }
 
@@ -303,15 +351,18 @@ CoverFetchSearchPayload::prepareUrls()
 
 CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album,
                                             const CoverFetch::ImageSize size,
+                                            const CoverFetch::Source src,
                                             bool wild )
-    : CoverFetchPayload( album, CoverFetchPayload::Art )
+    : CoverFetchPayload( album, CoverFetchPayload::Art, src )
     , m_size( size )
     , m_wild( wild )
 {
 }
 
-CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art )
+CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size,
+                                            const CoverFetch::Source src,
+                                            bool wild )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art, src )
     , m_size( size )
     , m_wild( wild )
 {
@@ -346,14 +397,27 @@ CoverFetchArtPayload::prepareUrls()
     QDomDocument doc;
     if( !doc.setContent( m_xml ) )
     {
-        debug() << "The xml obtained from Last.fm is invalid.";
+        debug() << QString( "The xml obtained from %1 is invalid." ).arg( sourceString() );
         return;
     }
 
+    switch( m_src )
+    {
+    case CoverFetch::LastFm:
+        prepareLastFmUrls( doc );
+        break;
+    case CoverFetch::Yahoo:
+        prepareYahooUrls( doc );
+        break;
+    }
+}
+
+void
+CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
+{
     QString albumArtist;
     QDomNodeList results;
     QSet< QString > artistSet;
-
     const QString &searchMethod = method();
 
     if( searchMethod == "album.getinfo" )
@@ -436,6 +500,37 @@ CoverFetchArtPayload::prepareUrls()
     }
 }
 
+void
+CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
+{
+    const QDomNodeList results = doc.documentElement().namedItem( "resultset_images" ).childNodes();
+    for( uint x = 0, len = results.length(); x < len; ++x )
+    {
+        const QDomNode albumNode = results.item( x );
+        const KUrl url = albumNode.namedItem( coverSize2str( imageSize() ) ).toElement().text();
+        if( !url.isValid() )
+            continue;
+
+        CoverFetch::Metadata metadata;
+        metadata[ "thumbarturl" ] = albumNode.namedItem( "thumbnail_url" ).toElement().text();
+        metadata[ "normalarturl" ] = albumNode.namedItem( "url" ).toElement().text();
+
+        const QDomNodeList list = albumNode.childNodes();
+        for( int i = 0, count = list.count(); i < count; ++i )
+        {
+            const QDomNode &node = list.item( i );
+            if( node.isElement() )
+            {
+                const QDomElement element = node.toElement();
+                const QString elementText = element.text();
+                const QString elementTag  = element.tagName();
+                metadata[ elementTag ] = elementText;
+            }
+        }
+        m_urls.insert( url, metadata );
+    }
+}
+
 QString
 CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
 {
@@ -443,11 +538,17 @@ CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
     switch( size )
     {
     case CoverFetch::ThumbSize:
-        str = "large"; // Last.fm's "large" is around 128x128
+        if( m_src == CoverFetch::LastFm )
+            str = "large"; // around 128x128
+        else if( m_src == CoverFetch::Yahoo )
+            str = "thumbnail_url";
         break;
     case CoverFetch::NormalSize:
     default:
-        str = "extralarge"; // Last.fm's "extralarge" is up to 300x300
+        if( m_src == CoverFetch::LastFm )
+            str = "extralarge"; // up to 300x300
+        else if( m_src == CoverFetch::Yahoo )
+            str = "url";
         break;
     }
     return str;
@@ -457,7 +558,7 @@ enum CoverFetch::ImageSize
 CoverFetchArtPayload::str2CoverSize( const QString &string ) const
 {
     enum CoverFetch::ImageSize size;
-    if( string == "large" )
+    if( string == "large" || string == "thumbnail_url" )
         size = CoverFetch::ThumbSize;
     else
         size = CoverFetch::NormalSize;

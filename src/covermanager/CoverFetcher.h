@@ -90,6 +90,8 @@ private:
     void showCover( CoverFetchUnit::Ptr unit,
                     const QPixmap cover = QPixmap(),
                     CoverFetch::Metadata data = CoverFetch::Metadata() );
+
+    CoverFetch::Source fetchSource() const;
 };
 
 namespace The
