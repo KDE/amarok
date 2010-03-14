@@ -34,7 +34,6 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     kcfg_FadeoutOnExit->setHidden( true );
 
     connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
-    connect( findChild<QPushButton*>( "equalizerButton" ), SIGNAL( clicked() ), SLOT( configureEqualizer() ) );
 }
 
 PlaybackConfig::~PlaybackConfig()
