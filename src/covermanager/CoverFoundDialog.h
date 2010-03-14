@@ -72,7 +72,7 @@ protected:
 
 private slots:
     void clearView();
-    void itemClicked( QListWidgetItem *item );
+    void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void saveRequested();

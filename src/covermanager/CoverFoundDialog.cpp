@@ -122,8 +122,8 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(itemClicked(QListWidgetItem*)),
-             this,   SLOT(itemClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(itemSelectionChanged()),
+             this,   SLOT(itemSelected()) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -189,9 +189,9 @@ void CoverFoundDialog::clearView()
     updateGui();
 }
 
-void CoverFoundDialog::itemClicked( QListWidgetItem *item )
+void CoverFoundDialog::itemSelected()
 {
-    const CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( item );
+    CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
     m_sideBar->setPixmap( m_pixmap, it->metadata() );
     updateDetails();
