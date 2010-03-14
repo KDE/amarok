@@ -48,9 +48,14 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
 {
     m_label = new QGraphicsSimpleTextItem( this );
     if( m_applet )
+    {
        m_label->setText( m_applet->name() );
+       setToolTip( m_applet->name() );
+    }
     else
+    {
         m_label->setText( i18n("no applet name") );
+    }
 
     setAcceptHoverEvents( true );
     m_label->setAcceptHoverEvents( true );
