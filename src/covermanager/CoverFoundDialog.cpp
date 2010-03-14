@@ -173,6 +173,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
         webSearchAct->setChecked( true );
 
     add( cover, data );
+    m_view->setCurrentItem( m_view->item( 0 ) );
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
