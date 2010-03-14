@@ -250,6 +250,7 @@ void CoverFoundDialog::add( const QPixmap cover,
         return;
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
+    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
 
     const QString src = metadata.value( "source" );
     const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
@@ -300,13 +301,18 @@ void CoverFoundSideBar::setNoCover()
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
 {
+    setPixmap( pixmap );
+    m_metadata = metadata;
+    updateMetaTable();
+    updateAbstract();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
+{
     m_pixmap = pixmap;
     QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     m_cover->setPixmap( prettyPix );
-    m_metadata = metadata;
-    updateMetaTable();
-    updateAbstract();
 }
 
 void CoverFoundSideBar::updateAbstract()
@@ -477,6 +483,7 @@ void CoverFoundItem::slotFetchResult( KJob *job )
         const QString size = QString( "%1x%2" ).arg( w ).arg( h );
         const QString tip = i18n( "Size:" ) + size;
         setToolTip( tip );
+        emit pixmapChanged( m_bigPix );
     }
 
     if( m_dialog )

@@ -108,6 +108,7 @@ public:
 
 public slots:
     void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap pixmap );
     void setNoCover();
 
 private:
@@ -147,6 +148,9 @@ public:
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
     void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+signals:
+    void pixmapChanged( const QPixmap pixmap );
 
 public slots:
     /**
