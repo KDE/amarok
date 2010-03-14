@@ -430,6 +430,8 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
 
 CoverFoundItem::~CoverFoundItem()
 {
+    delete m_progress;
+    m_progress = 0;
     delete m_dialog;
     m_dialog = 0;
 }
@@ -488,6 +490,8 @@ void CoverFoundItem::slotFetchResult( KJob *job )
     if( m_dialog )
     {
         m_dialog->accept();
+        delete m_progress;
+        m_progress = 0;
         delete m_dialog;
         m_dialog = 0;
     }
