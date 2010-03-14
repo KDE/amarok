@@ -59,6 +59,7 @@ class CoverBling : public QGLWidget
 		int m_animationDuration;
 		int m_animationStep;
 		int m_animation_StepMax;
+		bool m_anim_forward;
 };
 
 

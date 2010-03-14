@@ -52,6 +52,7 @@ CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
 	queryResult("",albums);
 	m_animationStep = 0;
 	m_animation_StepMax = 10;
+	m_anim_forward = true;
 }
 
 void
@@ -196,17 +197,30 @@ CoverBling::draw( GLuint selected )
             zoffset += 0.1;
             int idx_diff = m_currentindex-i;
             GLdouble step = ((GLdouble)m_animationStep)/((GLdouble)m_animation_StepMax);    	
-			if (!animateTimer.isActive()) step=1;
-						
+			if (!animateTimer.isActive()) step=1;			
 			GLdouble angle = 15 * step; 
-            if (idx_diff!=0) glTranslatef( -2*idx_diff, 0.0, -1 );
-            if( idx_diff )
-			{
-				if (idx_diff >0)
-					glRotatef( angle, 0.0, 1.0, 0.0 );
+			
+				if (idx_diff==1 || idx_diff==-1)
+				{
+					if (!m_anim_forward) idx_diff = -idx_diff;
+					if (i==m_currentindex+1)
+					{
+						glTranslatef( -2*idx_diff*(1-step), 0.0, -1*(1-step) );
+						//glRotatef( angle*(1-step), 0.0, 1.0, 0.0 );
+					}
+					if (i==m_currentindex-1)
+					{
+						glTranslatef( -2*idx_diff*step, 0.0, -1*step );
+					}
+				}
 				else
-					glRotatef( -angle, 0.0, 1.0, 0.0 );	
-			}
+				{
+				glTranslatef( -2*idx_diff, 0.0, -1 );
+				//if (idx_diff >0)
+					//glRotatef( angle, 0.0, 1.0, 0.0 );
+				//else
+					//glRotatef( -angle, 0.0, 1.0, 0.0 );
+				}	
             //draw the cover
 			// celle là il faut la mettre à plat au milieu !!!
 			//else
@@ -223,32 +237,6 @@ CoverBling::draw( GLuint selected )
         glPopMatrix();
         glColor4f( 1.0, 1.0, 1.0, 1.0 );
 	}
-	// ancienne boucle
-    //foreach( GLuint id, m_textureIds ) { // krazy:exclude=foreach
-    //    glBindTexture( GL_TEXTURE_2D, id );
-    //    glPushMatrix();
-    //        //const float xsin = sin( xoffset );
-    //        //const float zsin = sin( zoffset );
-    //        xoffset += 1.0;
-    //        zoffset += 0.1;
-    //        glTranslatef( xoffset, yoffset, zoffset );
-    //        glRotatef( 8, 0.0, 1.0, 0.0 );
-
-    //        //draw the cover
-    //        if( objectName == selected )
-    //            glColor3f( 1.0, 0.0, 0.0 );
-    //        glLoadName( objectName++ );
-    //        glCallList( m_texturedRectList );
-    //        glColor4f( 1.0, 1.0, 1.0, 1.0 );
-
-    //        //draw reflection on the ground
-    //        glLoadName( 0 );
-    //        glPushMatrix();
-    //            glCallList( m_texturedRectReflectedList );
-    //        glPopMatrix();
-    //    glPopMatrix();
-    //    glColor4f( 1.0, 1.0, 1.0, 1.0 );
-    //}
     glDisable( GL_TEXTURE_2D);
 }
 
@@ -299,9 +287,15 @@ void CoverBling::mousePressEvent(QMouseEvent *event)
 	DEBUG_BLOCK
 	m_animationStep=0;
 	if ( event->x() > ( width() / 2))
+	{
         m_currentindex++;
+        m_anim_forward = true;
+	}
 	else
+	{
         m_currentindex--;
+        m_anim_forward = false;
+	}
 	if (m_currentindex<0) m_currentindex = 0;
 	if (m_currentindex> m_albums.size()) m_currentindex = m_albums.size();
 	animateTimer.start(m_animationDuration);
