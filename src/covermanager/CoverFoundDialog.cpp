@@ -442,6 +442,9 @@ void CoverFoundItem::fetchBigPix()
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
 
+    if( !url.isValid() || !job )
+        return;
+
     if( !m_dialog )
         m_dialog = new KDialog( listWidget() );
     m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
