@@ -21,18 +21,23 @@
 #include "CoverFoundDialog.h"
 
 #include "Amarok.h"
+#include "CoverViewDialog.h"
 #include "Debug.h"
-#include "PaletteHandler.h"
+#include "PixmapViewer.h"
+#include "SvgHandler.h"
 
-#include <KLocale>
+#include <KHBox>
 #include <KLineEdit>
+#include <KListWidget>
 #include <KPushButton>
 #include <KStandardDirs>
 #include <KVBox>
 
 #include <QCloseEvent>
 #include <QDir>
+#include <QFrame>
 #include <QGridLayout>
+#include <QMenu>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
@@ -41,273 +46,231 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
                                     const QList<QPixmap> &covers )
     : KDialog( parent )
     , m_album( album )
-    , m_covers( covers )
-    , m_index( 0 )
 {
-    setButtons( KDialog::Ok     |
-                KDialog::Details |
-                KDialog::Cancel |
-                KDialog::User1  | // next
-                KDialog::User2 ); // prev
+    setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
+                KDialog::User1 ); // User1: clear icon view
+    setInitialSize( QSize( 480, 350 ) );
 
-    setButtonGuiItem( KDialog::User1, KStandardGuiItem::forward() );
-    setButtonGuiItem( KDialog::User2, KStandardGuiItem::back() );
+    setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
+    connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
 
-    m_next = button( KDialog::User1 );
-    m_prev = button( KDialog::User2 );
     m_save = button( KDialog::Ok );
-
-    setButtonText( KDialog::User1, QString() );
-    setButtonText( KDialog::User2, QString() );
-
-    m_prev->hide();
-    m_next->hide();
 
     KVBox *box = new KVBox( this );
     box->setSpacing( 4 );
 
-    QPixmap pixmap;
-    if( covers.isEmpty() )
-        pixmap = m_noCover = noCover();
-    else
-        pixmap = covers.first();
+    KHBox *searchBox = new KHBox( box );
+    box->setSpacing( 4 );
 
-    m_labelPixmap = new QLabel( box );
-    m_labelPixmap->setMinimumHeight( 300 );
-    m_labelPixmap->setMinimumWidth( 300 );
-    m_labelPixmap->setAlignment( Qt::AlignCenter );
-    m_labelPixmap->setPixmap( pixmap );
-    m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-
-    m_search = new KLineEdit( box );
+    m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->setTrapReturnKey( true );
 
+    KCompletion *searchComp = m_search->completionObject();
+    searchComp->setOrder( KCompletion::Insertion );
+    searchComp->setIgnoreCase( true );
+
+    QStringList completionNames;
+    completionNames << m_album->name();
+    if( m_album->hasAlbumArtist() )
+        completionNames << m_album->albumArtist()->name();
+    searchComp->setItems( completionNames );
+
+    KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
+    KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
+
+    QMenu *sourceMenu = new QMenu( sourceButton );
+    QAction *lastfm = new QAction( i18n( "Last.fm" ), sourceMenu );
+    QAction *webSearch = new QAction( i18n( "Web Search" ), sourceMenu );
+    sourceMenu->addAction( lastfm );
+    sourceMenu->addAction( webSearch );
+    sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
+
+    connect( m_search,   SIGNAL(returnPressed(const QString&)),
+             searchComp, SLOT(addItem(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)),
              this,     SIGNAL(newCustomQuery(const QString&)) );
+    connect( searchButton, SIGNAL(pressed()),
+             this,         SLOT(searchButtonPressed()) );
+
+    m_view = new KListWidget( box );
+    m_view->setAcceptDrops( false );
+    m_view->setContextMenuPolicy( Qt::CustomContextMenu );
+    m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
+    m_view->setDragEnabled( false );
+    m_view->setDropIndicatorShown( false );
+    m_view->setMovement( QListView::Static );
+    m_view->setGridSize( QSize( 140, 140 ) );
+    m_view->setIconSize( QSize( 120, 120 ) );
+    m_view->setSpacing( 4 );
+    m_view->setUniformItemSizes( true );
+    m_view->setViewMode( QListView::IconMode );
+    m_view->setResizeMode( QListView::Adjust );
+
+    connect( m_view, SIGNAL(itemClicked(QListWidgetItem*)),
+             this,   SLOT(itemClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
+    connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
+             this,   SLOT(itemMenuRequested(const QPoint&)) );
 
     QFrame *m_details = new QFrame( this );
     m_details->setFrameShadow( QFrame::Plain );
     m_details->setFrameShape( QFrame::Box );
 
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", m_details );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", m_details );
-    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", m_details );
+    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
+    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
+    QLabel *artistText  = new QLabel( m_details );
+    QLabel *albumText   = new QLabel( m_details );
 
     artistLabel->setAlignment( Qt::AlignRight );
     albumLabel->setAlignment( Qt::AlignRight );
-    sizeLabel->setAlignment( Qt::AlignRight );
+    artistText->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    albumText->setTextInteractionFlags( Qt::TextBrowserInteraction );
 
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
     m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( sizeLabel,   2, 0 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
+    m_detailsLayout->addWidget( artistText, 0, 1 );
+    m_detailsLayout->addWidget( albumText, 1, 1 );
+    m_detailsLayout->setColumnStretch( 1, 1 );
 
     setMainWidget( box );
     setDetailsWidget( m_details );
 
-    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
-    connect( m_save, SIGNAL(clicked()), SLOT(accept())  );
-    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
+    connect( m_save, SIGNAL(clicked()), SLOT(accept()) );
+
+    add( covers );
+    CoverFoundItem *firstItem = dynamic_cast< CoverFoundItem* >( m_view->item( 0 ) );
+    if( firstItem )
+        m_pixmap = firstItem->pixmap();
 
     updateGui();
-    updatePixmap();
-}
-
-void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
-{
-    if( !m_search->hasFocus() )
-        KDialog::keyPressEvent( event );
-}
-
-void CoverFoundDialog::resizeEvent( QResizeEvent *event )
-{
-    if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )
-    {
-        const QSize pixmapSize = m_labelPixmap->pixmap()->size();
-        QSize scaledSize = pixmapSize;
-        scaledSize.scale( m_labelPixmap->size(), Qt::KeepAspectRatio );
-
-        if( scaledSize != pixmapSize )
-            updatePixmap();
-    }
-    QWidget::resizeEvent( event );
 }
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
-    m_index = 0;
-    m_covers.clear();
+    clearView();
     event->accept();
 }
 
-void CoverFoundDialog::wheelEvent( QWheelEvent *event )
+void CoverFoundDialog::clearView()
 {
-    if( event->delta() > 0 )
-        prevPix();
-    else
-        nextPix();
+    m_view->clear();
+    updateGui();
+}
 
-    event->accept();
+void CoverFoundDialog::itemClicked( QListWidgetItem *item )
+{
+    m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
+    updateDetails();
+}
+
+
+void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
+{
+    m_pixmap = dynamic_cast< CoverFoundItem* >( item )->pixmap();
+    KDialog::accept();
+}
+
+void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
+{
+    const QPoint globalPos = m_view->mapToGlobal( pos );
+    QModelIndex index = m_view->indexAt( pos );
+
+    if( !index.isValid() )
+        return;
+
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->item( index.row() ) );
+    item->setSelected( true );
+
+    QMenu menu( this );
+    QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
+    connect( display, SIGNAL(triggered()), item, SLOT(display()) );
+
+    menu.addAction( display );
+    menu.exec( globalPos );
+}
+
+void CoverFoundDialog::searchButtonPressed()
+{
+    const QString text = m_search->text();
+    emit newCustomQuery( text );
 }
 
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
     updateDetails();
-    updateButtons();
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );
     update();
 }
 
-void CoverFoundDialog::updatePixmap()
-{
-    QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
-    m_labelPixmap->setPixmap( pixmap.scaled( m_labelPixmap->size(),
-                                             Qt::KeepAspectRatio,
-                                             Qt::SmoothTransformation) );
-}
-
-void CoverFoundDialog::updateButtons()
-{
-    const int count = m_covers.length();
-
-    if( count > 1 )
-    {
-        m_prev->show();
-        m_next->show();
-    }
-    else
-    {
-        return;
-    }
-
-    if( m_index < count - 1 )
-        m_next->setEnabled( true );
-    else
-        m_next->setEnabled( false );
-
-    if( m_index == 0 )
-        m_prev->setEnabled( false );
-    else
-        m_prev->setEnabled( true );
-
-    showButton( KDialog::Details, m_album ? true : false );
-}
-
 void CoverFoundDialog::updateDetails()
 {
     if( m_album )
     {
-        const QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
+        const QPixmap pixmap = m_pixmap;
         const QString artist = m_album->hasAlbumArtist()
                              ? m_album->albumArtist()->prettyName()
                              : i18n( "Various Artists" );
 
         QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
         QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-        QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
 
         artistName->setText( artist );
         albumName->setText( m_album->prettyName() );
-        coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
     }
 }
 
 void CoverFoundDialog::updateTitle()
 {
-    QString caption;
-
-    if( m_covers.isEmpty() )
-    {
-        caption = i18n( "Cover Not Found" );
-    }
-    else
-    {
-        caption = i18n( "Cover Found" );
-        const int size = m_covers.size();
-        if( size > 1 )
-        {
-            const QString position = QString( "%1/%2" ).arg( QString::number( m_index + 1 ) )
-                                                       .arg( QString::number( size ) );
-            caption +=  ": " + position;
-        }
-    }
-    this->setCaption( caption );
+    const int itemCount = m_view->count();
+    const QString caption = ( itemCount == 0 )
+                          ? i18n( "Cover Not Found" )
+                          : i18np( "1 Cover Found", "%1 Covers Found", itemCount );
+    setCaption( caption );
 }
 
-QPixmap CoverFoundDialog::noCover( int size )
-{
-    // code from Meta::Album::image( int size )
-
-    QPixmap pixmap( size, size );
-    QString sizeKey = QString::number( size ) + '@';
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-
-    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-    {
-        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
-    }
-    else
-    {
-        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
-        //scaled() does not change the original image but returns a scaled copy
-        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
-    }
-    return pixmap;
-}
-
-//SLOT
 void CoverFoundDialog::add( QPixmap cover )
 {
-    m_covers << cover;
-    updateGui();
+    CoverFoundItem *item = new CoverFoundItem( cover );
+
+    const QString size = QString( "%1x%2" )
+        .arg( QString::number( cover.width() ) )
+        .arg( QString::number( cover.height() ) );
+    const QString tip = i18n( "Size:" ) + size;
+    item->setToolTip( tip );
+
+    m_view->addItem( item );
 }
 
-//SLOT
 void CoverFoundDialog::add( QList< QPixmap > covers )
 {
-    m_covers << covers;
+    foreach( const QPixmap &cover, covers )
+    {
+        add( cover );
+    }
     updateGui();
 }
 
-//SLOT
-void CoverFoundDialog::accept()
+CoverFoundItem::CoverFoundItem( QPixmap pixmap, QListWidget *parent )
+    : QListWidgetItem( parent )
+    , m_pixmap( pixmap )
 {
-    if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-        done( 1000 );
-    else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-        done( 1001 );
-    else
-        KDialog::accept();
+    QPixmap scaledPix = pixmap.scaled( QSize( 120, 120 ) );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    setIcon( prettyPix );
 }
 
-//SLOT
-void CoverFoundDialog::nextPix()
+void CoverFoundItem::display()
 {
-    if( m_index < m_covers.length() - 1 )
-    {
-        m_index++;
-        updateGui();
-        updatePixmap();
-    }
-}
-
-//SLOT
-void CoverFoundDialog::prevPix()
-{
-    if( m_index >= 1 )
-    {
-        m_index--;
-        updateGui();
-        updatePixmap();
-    }
+    QWidget *p = dynamic_cast<QWidget*>( parent() );
+    int parentScreen = KApplication::desktop()->screenNumber( p );
+    ( new CoverViewDialog( m_pixmap, QApplication::desktop()->screen( parentScreen ) ) )->exec();
 }
 
 #include "CoverFoundDialog.moc"

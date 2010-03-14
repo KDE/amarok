@@ -23,17 +23,17 @@
 #include "meta/Meta.h"
 
 #include <KDialog>
-#include <KPushButton>
 
-#include <QHash>
 #include <QLabel>
 #include <QList>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
 
-class KHBox;
 class KLineEdit;
+class KListWidget;
 class KPushButton;
+class QFrame;
 class QGridLayout;
 
 class CoverFoundDialog : public KDialog
@@ -48,62 +48,63 @@ public:
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return *m_labelPixmap->pixmap(); }
+    const QPixmap image() { return m_pixmap; }
 
 signals:
     void newCustomQuery( const QString & );
 
 public slots:
-    virtual void accept();
-
     void add( QPixmap cover );
     void add( QList< QPixmap > covers );
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
-    void resizeEvent( QResizeEvent *event );
     void closeEvent( QCloseEvent *event );
-    void wheelEvent( QWheelEvent *event );
 
 private slots:
-    /**
-    *   Switch picture label and current index to next cover
-    */
-    void nextPix();
-
-    /**
-    *   Switch picture label and current index to previous cover
-    */
-    void prevPix();
+    void clearView();
+    void itemClicked( QListWidgetItem *item );
+    void itemDoubleClicked( QListWidgetItem *item );
+    void itemMenuRequested( const QPoint &pos );
+    void searchButtonPressed();
 
 private:
     void updateGui();
-    void updatePixmap();
-    void updateButtons();
     void updateDetails();
     void updateTitle();
 
-    QPixmap noCover( int size = 300 );
-    QPixmap m_noCover;               //! nocover.png cache
-
-    QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout
     KLineEdit      *m_search;        //! Custom search input
-    KPushButton    *m_next;          //! Next Button
-    KPushButton    *m_prev;          //! Back Button
+    KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
 
     //! Album associated with the covers
     Meta::AlbumPtr m_album;
 
-    //! Retrieved covers for the album
-    QList< QPixmap > m_covers;
-
-    //! Current position indices for m_covers
-    int m_index;
+    //! Currently selected cover image
+    QPixmap m_pixmap;
 
     Q_DISABLE_COPY( CoverFoundDialog );
+};
+
+class CoverFoundItem : public QObject, public QListWidgetItem
+{
+    Q_OBJECT
+
+public:
+    explicit CoverFoundItem( QPixmap pixmap, QListWidget *parent = 0 );
+    ~CoverFoundItem() {}
+
+    QPixmap pixmap() const { return m_pixmap; }
+
+public slots:
+    /**
+     * Opens a pixmap viewer
+     */
+    void display();
+
+private:
+    QPixmap m_pixmap;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

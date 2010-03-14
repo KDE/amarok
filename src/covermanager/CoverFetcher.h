@@ -62,6 +62,9 @@ private slots:
     void slotFetch( const CoverFetchUnit::Ptr unit );
     void slotResult( KJob *job );
 
+    /// Cover found dialog is closed by the user
+    void slotDialogFinished();
+
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();

@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "Amarok.h"
 #include "CoverFetchUnit.h"
 #include "Debug.h"
 
@@ -229,7 +230,7 @@ CoverFetchInfoPayload::prepareUrls()
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
     url.addQueryItem( "album", album()->name() );
 
     if( album()->hasAlbumArtist() )
@@ -275,7 +276,7 @@ CoverFetchSearchPayload::prepareUrls()
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
     url.addQueryItem( "album", m_query );
     url.addQueryItem( "method", method() );
     m_urls.append( url );
