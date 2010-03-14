@@ -21,6 +21,8 @@
 
 #include <kconfigdialog.h>
 
+#include "SmartPointerList.h"
+
 
 class Amarok2ConfigDialog : public KConfigDialog
 {
@@ -56,7 +58,7 @@ class Amarok2ConfigDialog : public KConfigDialog
         bool isDefault();
 
     private:
-        QList<ConfigDialogBase*> m_pageList;
+        SmartPointerList<ConfigDialogBase> m_pageList;
         QMap<ConfigDialogBase*, KPageWidgetItem*> m_pageMap;
 
         static QString s_currentPage;
