@@ -121,6 +121,7 @@ private:
     QTableWidget         *m_metaTable;
     CoverFetch::Metadata  m_metadata;
 
+    void updateAbstract();
     void updateMetaTable();
 
     QPixmap noCover( int size = 200 );

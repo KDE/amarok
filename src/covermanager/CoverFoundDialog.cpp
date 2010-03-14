@@ -320,6 +320,11 @@ CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
     m_tabs      = new QTabWidget( this );
     m_abstract  = new QLabel( m_tabs );
     m_metaTable = new QTableWidget( m_tabs );
+    m_abstract->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    m_abstract->setMargin( 4 );
+    m_abstract->setOpenExternalLinks( true );
+    m_abstract->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_abstract->setWordWrap( true );
     m_cover->setAlignment( Qt::AlignCenter );
     m_metaTable->setColumnCount( 2 );
     m_metaTable->horizontalHeader()->setVisible( false );
@@ -351,6 +356,29 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata me
     m_cover->setPixmap( prettyPix );
     m_metadata = metadata;
     updateMetaTable();
+    updateAbstract();
+}
+
+void CoverFoundSideBar::updateAbstract()
+{
+    bool enableAbstract( false );
+    if( m_metadata.contains( "abstract" ) )
+    {
+        const QString abstract = m_metadata.value( "abstract" );
+        if( !abstract.isEmpty() )
+        {
+            m_abstract->setText( abstract );
+            enableAbstract = true;
+        }
+        else
+            enableAbstract = false;
+    }
+    else
+    {
+        m_abstract->clear();
+        enableAbstract = false;
+    }
+    m_tabs->setTabEnabled( m_tabs->indexOf( m_abstract ), enableAbstract );
 }
 
 void CoverFoundSideBar::updateMetaTable()
