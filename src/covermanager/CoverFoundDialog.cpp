@@ -53,7 +53,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     : KDialog( parent )
     , m_album( album )
 {
-    setButtons( KDialog::Ok | KDialog::Details | KDialog::Cancel |
+    setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
@@ -129,38 +129,9 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
              this,   SLOT(itemMenuRequested(const QPoint&)) );
 
-    QFrame *m_details = new QFrame( this );
-    m_details->setFrameShadow( QFrame::Plain );
-    m_details->setFrameShape( QFrame::Box );
-
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" ) + "</b>", m_details );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  ) + "</b>", m_details );
-    QLabel *urlLabel    = new QLabel( "<b>" + i18n( "URL"    ) + "</b>", m_details );
-    QLabel *artistText  = new QLabel( m_details );
-    QLabel *albumText   = new QLabel( m_details );
-    QLabel *urlText     = new QLabel( m_details );
-
-    artistLabel->setAlignment( Qt::AlignRight );
-    albumLabel->setAlignment( Qt::AlignRight );
-    urlLabel->setAlignment( Qt::AlignRight );
-    artistText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    albumText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    urlText->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    urlText->setOpenExternalLinks( true );
-
-    m_detailsLayout = new QGridLayout( m_details );
-    m_detailsLayout->addWidget( artistLabel, 0, 0 );
-    m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( urlLabel,  2, 0 );
-    m_detailsLayout->addWidget( artistText, 0, 1 );
-    m_detailsLayout->addWidget( albumText, 1, 1 );
-    m_detailsLayout->addWidget( urlText, 2, 1 );
-    m_detailsLayout->setColumnStretch( 1, 1 );
-
     splitter->addWidget( m_sideBar );
     splitter->addWidget( vbox );
     setMainWidget( splitter );
-    setDetailsWidget( m_details );
 
     connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
 
@@ -195,7 +166,6 @@ void CoverFoundDialog::itemSelected()
     CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
     m_sideBar->setPixmap( m_pixmap, it->metadata() );
-    updateDetails();
 }
 
 
@@ -257,31 +227,10 @@ void CoverFoundDialog::selectWebSearch()
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
-    updateDetails();
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );
     update();
-}
-
-void CoverFoundDialog::updateDetails()
-{
-    const CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
-    const CoverFetch::Metadata meta = item->metadata();
-    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-    QLabel *urlName    = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
-
-    artistName->setText( meta.value( "artist" ) );
-    albumName->setText( meta.value( "name" ) );
-    const QString urlText = QString( "<a href=\"%1\">source</a>, <a href=\"%2\">image</a>, <a href=\"%3\">thumb</a>" )
-                                .arg( KUrl( meta.value( "url" ) ).url() )
-                                .arg( KUrl( meta.value( "normalarturl" ) ).url() )
-                                .arg( KUrl( meta.value( "thumbarturl" ) ).url() );
-    urlName->setText( urlText );
 }
 
 void CoverFoundDialog::updateTitle()

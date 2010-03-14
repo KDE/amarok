@@ -82,11 +82,8 @@ private slots:
 
 private:
     void updateGui();
-    void updateDetails();
     void updateTitle();
 
-    QFrame         *m_details;       //! Details widget
-    QGridLayout    *m_detailsLayout; //! Details widget layout
     KLineEdit      *m_search;        //! Custom search input
     KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
