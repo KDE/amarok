@@ -155,7 +155,7 @@ CoverFoundDialog::CoverFoundDialog( Meta::AlbumPtr album,
     setMainWidget( box );
     setDetailsWidget( m_details );
 
-    connect( m_save, SIGNAL(clicked()), SLOT(saveRequested()) );
+    connect( m_save, SIGNAL(released()), SLOT(saveRequested()) );
 
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
@@ -194,7 +194,6 @@ void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     Q_UNUSED( item )
     saveRequested();
-    KDialog::accept();
 }
 
 void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
