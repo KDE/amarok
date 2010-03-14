@@ -21,16 +21,22 @@
 #include <QtTest/QTest>
 #include <qtest_kde.h>
 
-#include <src/context/engines/similarartists/SimilarArtistsEngine.h>
+#include "src/context/engines/similarartists/SimilarArtistsEngine.h"
 
 QTEST_KDEMAIN_CORE( TestSimilarArtistsEngine )
+
+TestSimilarArtistsEngine::TestSimilarArtistsEngine(QObject* parent)
+    : QObject(parent)
+{
+
+}
 
 void
 TestSimilarArtistsEngine::initTestCase()
 {
     //Write here initilizations
     QList<QVariant> args;
-    //m_engine = new UpcomingEventsEngine(0, args);
+    m_engine = new SimilarArtistsEngine(0, args);
 }
 
 

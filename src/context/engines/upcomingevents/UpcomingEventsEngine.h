@@ -19,9 +19,9 @@
 #ifndef AMAROK_UPCOMINGEVENTS_ENGINE
 #define AMAROK_UPCOMINGEVENTS_ENGINE
 
-#include "ContextObserver.h"
+#include "src/context/ContextObserver.h"
 #include <context/DataEngine.h>
-#include <applets/upcomingevents/LastFmEvent.h>
+#include "src/context/applets/upcomingevents/LastFmEvent.h"
 #include "meta/Meta.h"
 
 // Qt

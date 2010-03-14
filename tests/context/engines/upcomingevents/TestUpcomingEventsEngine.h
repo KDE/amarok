@@ -18,12 +18,16 @@
 #define TESTUPCOMINGEVENTSENGINE_H
 
 #include <QObject>
+#include <TestDataEngine.h>
 
 class UpcomingEventsEngine;
 
-class TestUpcomingEventsEngine : public QObject
+class TestUpcomingEventsEngine : public TestDataEngine
 {
     Q_OBJECT
+    
+    public:    
+        TestUpcomingEventsEngine(QObject* parent = 0);
     
     private slots:
         void initTestCase();

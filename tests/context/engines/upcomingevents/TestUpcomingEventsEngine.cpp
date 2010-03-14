@@ -20,17 +20,29 @@
 #include <KStandardDirs>
 #include <QtTest/QTest>
 #include <qtest_kde.h>
+#include <QDebug>
 
-#include <src/context/engines/upcomingevents/UpcomingEventsEngine.h>
+#include "src/context/ContextObserver.h"
+#include "src/context/engines/upcomingevents/UpcomingEventsEngine.h"
 
 QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
+
+
+TestUpcomingEventsEngine::TestUpcomingEventsEngine(QObject* parent)
+    : TestDataEngine(parent)
+{
+
+}
+
 
 void
 TestUpcomingEventsEngine::initTestCase()
 {
-    //Write here initilizations
-    QList<QVariant> args;
-    //m_engine = new UpcomingEventsEngine(0, args);
+     qDebug() << "coucou" ;
+     //Write here initilizations
+     QList<QVariant> args;
+     qDebug() << "coucou" ;
+     m_engine = new UpcomingEventsEngine(this, args);
 }
 
 
@@ -45,7 +57,7 @@ void
 TestUpcomingEventsEngine::cleanupTestCase()
 {
     //Write here cleaning
-    //delete m_engine;
+    delete m_engine;
 }
 
 #include "TestUpcomingEventsEngine.moc"

@@ -21,7 +21,6 @@
 #include "UpcomingEventsEngine.h"
 #include "Amarok.h"
 #include "Debug.h"
-#include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
 
@@ -356,120 +355,6 @@ UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
         xmlReader.readNext();
     }
 
-    /*
-    const QDomNode events = doc.documentElement().namedItem( "events" );
-
-    QDomNode n = events.firstChild();
-
-    while( !n.isNull() )
-    {
-        // Event name
-        QDomNode titleNode = n.namedItem( "title" );
-        QDomElement e = titleNode.toElement();
-        QString title;
-        if( !e.isNull() )
-        {            
-            title = e.text();
-        }
-
-        // Event participants
-        QDomNode artistsNode = n.namedItem( "artists" );
-        QDomNode currentArtistNode = artistsNode.firstChild();
-        QStringList artists;
-        while( !currentArtistNode.isNull() )
-        {
-            QDomElement currentArtistElement = currentArtistNode.toElement();
-            if( currentArtistElement.tagName() == "artist" )
-            {
-                if( !currentArtistElement.isNull() && currentArtistElement.text() != m_artistName )
-                {
-                    artists.append( currentArtistElement.text() );
-                }
-            }
-            currentArtistNode = currentArtistNode.nextSibling();
-        }
-
-        // Event date
-        QLocale::setDefault(QLocale::English);
-        QDomNode startDateNode = n.namedItem( "startDate" );
-        QDomElement startDateElement = startDateNode.toElement();
-        QDateTime startDate;
-        if( !startDateElement.isNull() )
-        {
-            QString startDateString = startDateElement.text();
-            startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
-
-        }
-
-        // Event location
-        QDomNode venueNode = n.namedItem( "venue" );        
-        QString location;
-        if( !venueNode.isNull() )
-        {
-            QDomNodeList venueNodes = venueNode.childNodes();
-            QDomNode locationNode;
-            for( int i = 0; i < venueNodes.size(); i++ )
-            {
-                if( venueNodes.at( i ).nodeName() == "location" )
-                {
-                    locationNode = venueNodes.at( i );
-                    QDomNodeList locationNodes = locationNode.childNodes();
-                    QString cityText, countryText;
-                    for( int j = 0; j < locationNodes.size(); j++ )
-                    {
-                        QDomElement locationElement;
-                        debug() << locationNodes.at( j ).nodeName();
-                        if( locationNodes.at( j ).nodeName() == "city" )
-                        {
-                            locationElement = locationNodes.at( j ).toElement();
-                            cityText = locationElement.text();
-                        }
-                        if( locationNodes.at( j ).nodeName() == "country" )
-                        {
-                            locationElement = locationNodes.at( j ).toElement();
-                            countryText = locationElement.text();
-                        }
-                    }
-                    location = cityText + ", " + countryText;
-                }
-            }
-        }
-
-        // Event url
-        QDomNode urlNode = n.namedItem( "url" );
-        QDomElement urlElement = urlNode.toElement();
-        KUrl url;
-        if( !urlElement.isNull() )
-        {
-            url = KUrl( urlElement.text() );
-        }
-
-        // Small image url
-        QDomNode imageUrlNode = n.namedItem( "image" );
-        QDomElement imageUrlElement = imageUrlNode.toElement();
-        KUrl imageUrl;
-        if( !imageUrlElement.isNull() )
-        {
-            while ( imageUrlElement.attributeNode( "size" ).value() != "large" )
-            {
-                imageUrlElement = imageUrlElement.nextSiblingElement();
-            }
-            imageUrl = KUrl( imageUrlElement.text() );
-        }
-
-        // LastFm event creation
-        LastFmEvent event;
-        event.setArtists( artists );
-        event.setName( title );
-        event.setLocation( location );
-        event.setDate( startDate );
-        event.setUrl( url );
-        event.setSmallImageUrl( imageUrl );
-        m_upcomingEvents.append( event );
-        
-        n = n.nextSibling();
-    }
-    */
     QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );

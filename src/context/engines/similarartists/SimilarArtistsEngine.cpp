@@ -19,7 +19,6 @@
 
 #include "Amarok.h"
 #include <lastfm/Artist>
-#include "ContextObserver.h"
 #include "ContextView.h"
 #include "Debug.h"
 #include "EngineController.h"

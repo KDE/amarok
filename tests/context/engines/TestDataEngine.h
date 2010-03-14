@@ -17,11 +17,16 @@
 #ifndef TESTDATAENGINE_H
 #define TESTDATAENGINE_H
 
+#include "ContextView.h"
 
-class TestDataEngine
+#include <QObject>
+
+class TestDataEngine : public QObject 
 {
     public:
-        TestDataEngine();
+        TestDataEngine(QObject* parent = 0);
+        
+    private:
 };
 
 #endif //TESTDATAENGINE_H

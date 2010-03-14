@@ -1,11 +1,9 @@
 add_subdirectory( data )
 
 include_directories(
-  ${AMAROK_SOURCE_TREE}
-  ${AMAROK_SOURCE_TREE}/context
   ${AMAROK_SOURCE_TREE}/context/engines/similarartists
   ${AMAROK_SOURCE_TREE}/context/applets/similarartists
-  ${CMAKE_BINARY_DIR}/src
+  ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
   ${QT_INCLUDES}
@@ -14,6 +12,9 @@ include_directories(
 
 set( testsimilarartistsengine_SRCS
     TestSimilarArtistsEngine.cpp
+    ${AMAROK_TEST_TREE}/context/engines/ContextView.cpp
+    ${AMAROK_TEST_TREE}/context/engines/TestDataEngine.cpp
+    ${AMAROK_SOURCE_TREE}/context/ContextObserver.cpp
     ${AMAROK_SOURCE_TREE}/context/engines/similarartists/SimilarArtistsEngine.cpp
     ${AMAROK_SOURCE_TREE}/context/applets/similarartists/SimilarArtist.cpp
 )
