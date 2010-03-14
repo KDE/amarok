@@ -196,9 +196,9 @@ CoverBling::draw( GLuint selected )
             xoffset += 1.0;
             zoffset += 0.1;
             int idx_diff = m_currentindex-i;
-            GLdouble step = ((GLdouble)m_animationStep)/((GLdouble)m_animation_StepMax);    	
-			if (!animateTimer.isActive()) step=1;			
-			GLdouble angle = 15 * step; 
+            GLdouble step = ((GLdouble)m_animationStep)/((GLdouble)m_animation_StepMax);
+            double angle_rot = 10;    	
+			if (!animateTimer.isActive()) step=1;			 
 			
 				if (idx_diff==1 || idx_diff==-1)
 				{
@@ -206,20 +206,22 @@ CoverBling::draw( GLuint selected )
 					if (i==m_currentindex+1)
 					{
 						glTranslatef( -2*idx_diff*(1-step), 0.0, -1*(1-step) );
-						//glRotatef( angle*(1-step), 0.0, 1.0, 0.0 );
+						glRotatef( -angle_rot*(1-step), 0.0, 1.0, 0.0 );
 					}
 					if (i==m_currentindex-1)
 					{
 						glTranslatef( -2*idx_diff*step, 0.0, -1*step );
+						glRotatef( angle_rot*step, 0.0, 1.0, 0.0 );
 					}
 				}
 				else
 				{
+					double fac = idx_diff/(idx_diff*idx_diff+1);
 				glTranslatef( -2*idx_diff, 0.0, -1 );
-				//if (idx_diff >0)
-					//glRotatef( angle, 0.0, 1.0, 0.0 );
-				//else
-					//glRotatef( -angle, 0.0, 1.0, 0.0 );
+				if (idx_diff >0)
+					glRotatef( angle_rot, 0.0, 1.0, 0.0 );
+				else if (idx_diff<0)
+					glRotatef( -angle_rot, 0.0, 1.0, 0.0 );
 				}	
             //draw the cover
 			// celle là il faut la mettre à plat au milieu !!!
