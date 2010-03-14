@@ -30,9 +30,17 @@
 
 CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
                                 const CoverFetchPayload *payload,
-                                CoverFetch::Options opt )
+                                CoverFetch::Option opt )
     : QSharedData()
     , m_album( album )
+    , m_options( opt )
+    , m_payload( payload )
+{
+}
+
+CoverFetchUnit::CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt )
+    : QSharedData()
+    , m_album( Meta::AlbumPtr( 0 ) )
     , m_options( opt )
     , m_payload( payload )
 {
@@ -69,7 +77,7 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( cpy.payload() );
-            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( cpy.m_album, payload->imageSize(), payload->isWild() );
             break;
         }
         default:
@@ -94,7 +102,7 @@ CoverFetchUnit::errors() const
     return m_errors;
 }
 
-CoverFetch::Options
+CoverFetch::Option
 CoverFetchUnit::options() const
 {
     return m_options;
@@ -153,7 +161,7 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( rhs.payload() );
-            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+            m_payload = new CoverFetchArtPayload( rhs.m_album, payload->imageSize(), payload->isWild() );
             break;
         }
         default:
@@ -299,8 +307,18 @@ CoverFetchSearchPayload::prepareUrls()
  * CoverFetchArtPayload
  */
 
-CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
+CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album,
+                                            const CoverFetch::ImageSize size,
+                                            bool wild )
     : CoverFetchPayload( album, CoverFetchPayload::Art )
+    , m_size( size )
+    , m_wild( wild )
+{
+}
+
+CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art )
+    , m_size( size )
     , m_wild( wild )
 {
 }
@@ -315,17 +333,17 @@ CoverFetchArtPayload::isWild() const
     return m_wild;
 }
 
+CoverFetch::ImageSize
+CoverFetchArtPayload::imageSize() const
+{
+    return m_size;
+}
+
 void
 CoverFetchArtPayload::setXml( const QByteArray &xml )
 {
     m_xml = QString::fromUtf8( xml );
     prepareUrls();
-}
-
-void
-CoverFetchArtPayload::setWildMode( bool enable )
-{
-    m_wild = enable;
 }
 
 void
@@ -377,23 +395,40 @@ CoverFetchArtPayload::prepareUrls()
             continue;
 
         KUrl url;
+        CoverFetch::Metadata metadata;
+
         const QDomNodeList list = albumNode.childNodes();
         for( int i = 0, count = list.count(); i < count; ++i )
         {
             const QDomNode &node = list.item( i );
             if( node.nodeName() == "image" && node.hasAttributes() )
             {
-                const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if( node.isElement() && imageSize == coverSize( ExtraLarge ) )
+                if( !node.isElement() )
+                    continue;
+
+                const QString elementText = node.toElement().text();
+                const QString sizeStr = node.attributes().namedItem( "size" ).nodeValue();
+                enum CoverFetch::ImageSize imageSize = str2CoverSize( sizeStr );
+
+                switch( imageSize )
                 {
-                    url = node.toElement().text();
+                case CoverFetch::ThumbSize:
+                    metadata[ "thumbarturl" ] = elementText;
+                    break;
+                case CoverFetch::NormalSize:
+                    metadata[ "normalarturl" ] = elementText;
+                    break;
+                }
+
+                if( sizeStr == coverSize2str( m_size ) )
+                {
+                    url = elementText;
                 }
             }
         }
 
         QStringList tags;
         tags << "name" << "artist" << "url";
-        CoverFetch::Metadata metadata;
         foreach( const QString &tag, tags )
         {
             const QDomElement e = albumNode.namedItem( tag ).toElement();
@@ -406,17 +441,31 @@ CoverFetchArtPayload::prepareUrls()
 }
 
 QString
-CoverFetchArtPayload::coverSize( enum CoverSize size ) const
+CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
 {
     QString str;
     switch( size )
     {
-    case Small:  str = "small";      break;
-    case Medium: str = "medium";     break;
-    case Large:  str = "large";      break;
-    default:     str = "extralarge"; break;
+    case CoverFetch::ThumbSize:
+        str = "large"; // Last.fm's "large" is around 128x128
+        break;
+    case CoverFetch::NormalSize:
+    default:
+        str = "extralarge"; // Last.fm's "extralarge" is up to 300x300
+        break;
     }
     return str;
+}
+
+enum CoverFetch::ImageSize
+CoverFetchArtPayload::str2CoverSize( const QString &string ) const
+{
+    enum CoverFetch::ImageSize size;
+    if( string == "large" )
+        size = CoverFetch::ThumbSize;
+    else
+        size = CoverFetch::NormalSize;
+    return size;
 }
 
 QString

@@ -31,6 +31,9 @@
 #include <QObject>
 #include <QPixmap>
 
+class KDialog;
+class KJob;
+class KJobProgressBar;
 class KLineEdit;
 class KListWidget;
 class KPushButton;
@@ -56,7 +59,9 @@ signals:
     void newCustomQuery( const QString & );
 
 public slots:
-    void add( const QPixmap cover, const CoverFetch::Metadata metadata );
+    void add( const QPixmap cover,
+              const CoverFetch::Metadata metadata,
+              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
     void closeEvent( QCloseEvent *event );
@@ -66,6 +71,7 @@ private slots:
     void itemClicked( QListWidgetItem *item );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
+    void saveRequested();
     void searchButtonPressed();
 
 private:
@@ -93,11 +99,21 @@ class CoverFoundItem : public QObject, public QListWidgetItem
     Q_OBJECT
 
 public:
-    explicit CoverFoundItem( const QPixmap pixmap, CoverFetch::Metadata data, QListWidget *parent = 0 );
-    ~CoverFoundItem() {}
+    explicit CoverFoundItem( const QPixmap cover,
+                             const CoverFetch::Metadata data,
+                             const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
+                             QListWidget *parent = 0 );
+    ~CoverFoundItem();
+
+    void fetchBigPix();
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
-    const QPixmap pixmap() const { return m_pixmap; }
+    const QPixmap bigPix() const { return m_bigPix; }
+    const QPixmap thumb() const { return m_thumb; }
+
+    bool hasBigPix() const { return !m_bigPix.isNull(); }
+
+    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
 
 public slots:
     /**
@@ -105,9 +121,14 @@ public slots:
      */
     void display();
 
+    void slotFetchResult( KJob *job );
+
 private:
     CoverFetch::Metadata m_metadata;
-    QPixmap m_pixmap;
+    QPixmap m_thumb;
+    QPixmap m_bigPix;
+    KDialog *m_dialog;
+    KJobProgressBar *m_progress;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

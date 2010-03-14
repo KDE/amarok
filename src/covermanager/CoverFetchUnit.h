@@ -26,11 +26,17 @@ class CoverFetchSearchPayload;
 
 namespace CoverFetch
 {
-    enum Options
+    enum Option
     {
         Automatic,      //! Automtically save cover for the specified album, if one is found
         Interactive,    //! Opens a dialog for the user to decide, and add more searches if desired
         WildInteractive //! As \ref Interactive, but without filtering results (used for web search)
+    };
+
+    enum ImageSize
+    {
+        NormalSize,     //! Normal cover size, for storage and display
+        ThumbSize       //! Thumbnail size, for icon views
     };
 
     typedef QHash< QString, QString > Metadata;
@@ -47,7 +53,8 @@ public:
 
     CoverFetchUnit( Meta::AlbumPtr album,
                     const CoverFetchPayload *payload,
-                    CoverFetch::Options opt = CoverFetch::Automatic );
+                    CoverFetch::Option opt = CoverFetch::Automatic );
+    CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
     CoverFetchUnit( const CoverFetchSearchPayload *payload );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
@@ -55,7 +62,7 @@ public:
 
     Meta::AlbumPtr album() const;
     const QStringList &errors() const;
-    CoverFetch::Options options() const;
+    CoverFetch::Option options() const;
     const CoverFetchPayload *payload() const;
 
     bool isInteractive() const;
@@ -70,7 +77,7 @@ public:
 private:
     Meta::AlbumPtr m_album;
     QStringList m_errors;
-    CoverFetch::Options m_options;
+    CoverFetch::Option m_options;
     const CoverFetchPayload *m_payload;
 };
 
@@ -150,36 +157,33 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album = Meta::AlbumPtr( 0 ),
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr album,
+                                   const CoverFetch::ImageSize size = CoverFetch::NormalSize,
                                    bool wild = false );
+    explicit CoverFetchArtPayload( const CoverFetch::ImageSize size, bool wild = false );
     ~CoverFetchArtPayload();
 
     bool isWild() const;
 
-    void setXml( const QByteArray &xml );
+    CoverFetch::ImageSize imageSize() const;
 
-    void setWildMode( bool enable );
+    void setXml( const QByteArray &xml );
 
 protected:
     void prepareUrls();
 
 private:
+    CoverFetch::ImageSize m_size;
     QString m_xml;
-
-    /// Available album cover sizes from Last.fm
-    enum CoverSize
-    {
-        Small = 0,  //! 34px
-        Medium,     //! 64px
-        Large,      //! 128px
-        ExtraLarge  //! 300px
-    };
 
     /// search is wild mode?
     bool m_wild;
 
-    /// convert CoverSize enum to string
-    QString coverSize( enum CoverSize size ) const;
+    /// convert ImageSize enum to string
+    QString coverSize2str( enum CoverFetch::ImageSize size ) const;
+
+    /// convert string to ImageSize
+    enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
 
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );

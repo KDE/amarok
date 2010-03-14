@@ -270,7 +270,12 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
     else
     {
         if( !cover.isNull() )
-            m_dialog->add( cover, data );
+        {
+            typedef CoverFetchArtPayload CFAP;
+            const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
+            const CoverFetch::ImageSize imageSize = payload->imageSize();
+            m_dialog->add( cover, data, imageSize );
+        }
     }
 }
 
