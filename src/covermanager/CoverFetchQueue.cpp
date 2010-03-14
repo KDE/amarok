@@ -28,19 +28,19 @@ CoverFetchQueue::~CoverFetchQueue()
 {
 }
 
-bool
+void
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
     m_queue.append( unit );
     emit fetchUnitAdded( unit );
-    return true;
 }
 
-bool
+void
 CoverFetchQueue::add( const Meta::AlbumPtr album,
-                      CoverFetch::Options opt,
-                      const QByteArray &xml, bool wild )
+                      const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
@@ -49,18 +49,30 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
     }
     else
     {
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, wild );
+        const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, CoverFetch::NormalSize, src, wild );
         art->setXml( xml );
         payload = art;
     }
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
 }
 
-bool
-CoverFetchQueue::addSearch( const QString &query )
+void
+CoverFetchQueue::add( const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
-    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
+    const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+    CoverFetchArtPayload *art = new CoverFetchArtPayload( CoverFetch::ThumbSize, src, wild );
+    art->setXml( xml );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( art, opt ) ) );
+}
+
+void
+CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src )
+{
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
 int

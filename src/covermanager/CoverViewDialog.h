@@ -52,6 +52,26 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
             layout->addWidget( pixmapViewer );
             layout->setSizeConstraint( QLayout::SetFixedSize );
         }
+
+        CoverViewDialog( QPixmap pixmap, QWidget *parent )
+            : QDialog( parent )
+        {
+            setAttribute( Qt::WA_DeleteOnClose );
+
+            #ifdef Q_WS_X11
+            KWindowSystem::setType( winId(), NET::Utility );
+            #endif
+
+            kapp->setTopWidget( this );
+            setWindowTitle( KDialog::makeStandardCaption( i18n( "Cover View" ) ) );
+
+            int screenNumber = KApplication::desktop()->screenNumber( parent );
+
+            PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap /* full sized image */, screenNumber );
+            QHBoxLayout *layout = new QHBoxLayout( this );
+            layout->addWidget( pixmapViewer );
+            layout->setSizeConstraint( QLayout::SetFixedSize );
+        }
 };
 
 #endif

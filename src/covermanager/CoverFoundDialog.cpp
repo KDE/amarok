@@ -21,233 +21,375 @@
 #include "CoverFoundDialog.h"
 
 #include "Amarok.h"
+#include "CoverViewDialog.h"
 #include "Debug.h"
-#include "PaletteHandler.h"
+#include "PixmapViewer.h"
+#include "statusbar/KJobProgressBar.h"
+#include "SvgHandler.h"
 
-#include <KLocale>
+#include <KConfigGroup>
+#include <KIO/Job>
 #include <KLineEdit>
+#include <KListWidget>
 #include <KPushButton>
 #include <KStandardDirs>
-#include <KVBox>
 
 #include <QCloseEvent>
 #include <QDir>
+#include <QFrame>
 #include <QGridLayout>
+#include <QHeaderView>
+#include <QMenu>
+#include <QSplitter>
+#include <QTabWidget>
+#include <QTableWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
-CoverFoundDialog::CoverFoundDialog( QWidget *parent,
-                                    Meta::AlbumPtr album,
-                                    const QList<QPixmap> &covers )
+CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+                                    const QPixmap cover,
+                                    const CoverFetch::Metadata data,
+                                    QWidget *parent )
     : KDialog( parent )
-    , m_album( album )
-    , m_covers( covers )
-    , m_index( 0 )
+    , m_unit( unit )
 {
-    setButtons( KDialog::Ok     |
-                KDialog::Details |
-                KDialog::Cancel |
-                KDialog::User1  | // next
-                KDialog::User2 ); // prev
+    setButtons( KDialog::Ok | KDialog::Cancel |
+                KDialog::User1 ); // User1: clear icon view
 
-    setButtonGuiItem( KDialog::User1, KStandardGuiItem::forward() );
-    setButtonGuiItem( KDialog::User2, KStandardGuiItem::back() );
+    setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
+    connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
 
-    m_next = button( KDialog::User1 );
-    m_prev = button( KDialog::User2 );
     m_save = button( KDialog::Ok );
 
-    setButtonText( KDialog::User1, QString() );
-    setButtonText( KDialog::User2, QString() );
+    QSplitter *splitter = new QSplitter( this );
+    m_sideBar = new CoverFoundSideBar( splitter );
 
-    m_prev->hide();
-    m_next->hide();
+    KVBox *vbox = new KVBox( splitter );
+    vbox->setSpacing( 4 );
 
-    KVBox *box = new KVBox( this );
-    box->setSpacing( 4 );
+    KHBox *searchBox = new KHBox( vbox );
+    vbox->setSpacing( 4 );
 
-    QPixmap pixmap;
-    if( covers.isEmpty() )
-        pixmap = m_noCover = noCover();
-    else
-        pixmap = covers.first();
-
-    m_labelPixmap = new QLabel( box );
-    m_labelPixmap->setMinimumHeight( 300 );
-    m_labelPixmap->setMinimumWidth( 300 );
-    m_labelPixmap->setAlignment( Qt::AlignCenter );
-    m_labelPixmap->setPixmap( pixmap );
-    m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-
-    m_search = new KLineEdit( box );
+    m_search = new KLineEdit( searchBox );
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->setTrapReturnKey( true );
 
+    KCompletion *searchComp = m_search->completionObject();
+    searchComp->setOrder( KCompletion::Insertion );
+    searchComp->setIgnoreCase( true );
+
+    QStringList completionNames;
+    const Meta::AlbumPtr album = unit->album();
+    completionNames << album->name();
+    if( album->hasAlbumArtist() )
+        completionNames << album->albumArtist()->name();
+    searchComp->setItems( completionNames );
+
+    KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
+    KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
+
+    QMenu *sourceMenu = new QMenu( sourceButton );
+    QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
+    QAction *webSearchAct = new QAction( i18n( "Web Search" ), sourceMenu );
+    lastFmAct->setCheckable( true );
+    webSearchAct->setCheckable( true );
+    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFmSearch()) );
+    connect( webSearchAct, SIGNAL(triggered()), this, SLOT(selectWebSearch()) );
+
+    QActionGroup *ag = new QActionGroup( sourceButton );
+    ag->addAction( lastFmAct );
+    ag->addAction( webSearchAct );
+    sourceMenu->addActions( ag->actions() );
+    sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
+
+    connect( m_search,   SIGNAL(returnPressed(const QString&)),
+             searchComp, SLOT(addItem(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)),
              this,     SIGNAL(newCustomQuery(const QString&)) );
+    connect( searchButton, SIGNAL(pressed()),
+             this,         SLOT(searchButtonPressed()) );
 
-    QFrame *m_details = new QFrame( this );
-    m_details->setFrameShadow( QFrame::Plain );
-    m_details->setFrameShape( QFrame::Box );
+    m_view = new KListWidget( vbox );
+    m_view->setAcceptDrops( false );
+    m_view->setContextMenuPolicy( Qt::CustomContextMenu );
+    m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
+    m_view->setDragEnabled( false );
+    m_view->setDropIndicatorShown( false );
+    m_view->setMovement( QListView::Static );
+    m_view->setGridSize( QSize( 140, 140 ) );
+    m_view->setIconSize( QSize( 120, 120 ) );
+    m_view->setSpacing( 4 );
+    m_view->setViewMode( QListView::IconMode );
+    m_view->setResizeMode( QListView::Adjust );
 
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", m_details );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", m_details );
-    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", m_details );
+    connect( m_view, SIGNAL(itemSelectionChanged()),
+             this,   SLOT(itemSelected()) );
+    /* // FIXME: Double clicking on an item crashes Amarok, seems to be a qt bug.
+    connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );*/
+    connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
+             this,   SLOT(itemMenuRequested(const QPoint&)) );
 
-    artistLabel->setAlignment( Qt::AlignRight );
-    albumLabel->setAlignment( Qt::AlignRight );
-    sizeLabel->setAlignment( Qt::AlignRight );
+    splitter->addWidget( m_sideBar );
+    splitter->addWidget( vbox );
+    setMainWidget( splitter );
 
-    m_detailsLayout = new QGridLayout( m_details );
-    m_detailsLayout->addWidget( artistLabel, 0, 0 );
-    m_detailsLayout->addWidget( albumLabel,  1, 0 );
-    m_detailsLayout->addWidget( sizeLabel,   2, 0 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
-    m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
+    connect( m_save, SIGNAL(released()), SLOT(saveRequested()) );
 
-    setMainWidget( box );
-    setDetailsWidget( m_details );
+    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
+    restoreDialogSize( config ); // call this after setMainWidget()
+    if( source == "LastFm" )
+        lastFmAct->setChecked( true );
+    else if( source == "Yahoo" )
+        webSearchAct->setChecked( true );
 
-    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
-    connect( m_save, SIGNAL(clicked()), SLOT(accept())  );
-    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
+    add( cover, data );
+    m_view->setCurrentItem( m_view->item( 0 ) );
+}
 
+void CoverFoundDialog::hideEvent( QHideEvent *event )
+{
+    clearView();
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    saveDialogSize( config );
+    event->accept();
+}
+
+void CoverFoundDialog::clearView()
+{
+    m_view->clear();
     updateGui();
-    updatePixmap();
 }
 
-void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
+void CoverFoundDialog::itemSelected()
 {
-    if( !m_search->hasFocus() )
-        KDialog::keyPressEvent( event );
+    CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+    m_sideBar->setPixmap( m_pixmap, it->metadata() );
 }
 
-void CoverFoundDialog::resizeEvent( QResizeEvent *event )
+
+void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
-    if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )
+    Q_UNUSED( item )
+    saveRequested();
+}
+
+void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
+{
+    const QPoint globalPos = m_view->mapToGlobal( pos );
+    QModelIndex index = m_view->indexAt( pos );
+
+    if( !index.isValid() )
+        return;
+
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->item( index.row() ) );
+    item->setSelected( true );
+
+    QMenu menu( this );
+    QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
+    connect( display, SIGNAL(triggered()), item, SLOT(display()) );
+
+    menu.addAction( display );
+    menu.exec( globalPos );
+}
+
+void CoverFoundDialog::saveRequested()
+{
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( item && !item->hasBigPix() )
     {
-        const QSize pixmapSize = m_labelPixmap->pixmap()->size();
-        QSize scaledSize = pixmapSize;
-        scaledSize.scale( m_labelPixmap->size(), Qt::KeepAspectRatio );
-
-        if( scaledSize != pixmapSize )
-            updatePixmap();
+        item->fetchBigPix();
+        m_pixmap = item->bigPix();
     }
-    QWidget::resizeEvent( event );
+    KDialog::accept();
 }
 
-void CoverFoundDialog::closeEvent( QCloseEvent *event )
+void CoverFoundDialog::searchButtonPressed()
 {
-    m_index = 0;
-    m_covers.clear();
-    event->accept();
+    const QString text = m_search->text();
+    emit newCustomQuery( text );
 }
 
-void CoverFoundDialog::wheelEvent( QWheelEvent *event )
+void CoverFoundDialog::selectLastFmSearch()
 {
-    if( event->delta() > 0 )
-        prevPix();
-    else
-        nextPix();
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "LastFm" );
+}
 
-    event->accept();
+void CoverFoundDialog::selectWebSearch()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "Yahoo" );
 }
 
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
-    updateDetails();
-    updateButtons();
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );
     update();
 }
 
-void CoverFoundDialog::updatePixmap()
-{
-    QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
-    m_labelPixmap->setPixmap( pixmap.scaled( m_labelPixmap->size(),
-                                             Qt::KeepAspectRatio,
-                                             Qt::SmoothTransformation) );
-}
-
-void CoverFoundDialog::updateButtons()
-{
-    const int count = m_covers.length();
-
-    if( count > 1 )
-    {
-        m_prev->show();
-        m_next->show();
-    }
-    else
-    {
-        return;
-    }
-
-    if( m_index < count - 1 )
-        m_next->setEnabled( true );
-    else
-        m_next->setEnabled( false );
-
-    if( m_index == 0 )
-        m_prev->setEnabled( false );
-    else
-        m_prev->setEnabled( true );
-
-    showButton( KDialog::Details, m_album ? true : false );
-}
-
-void CoverFoundDialog::updateDetails()
-{
-    if( m_album )
-    {
-        const QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
-        const QString artist = m_album->hasAlbumArtist()
-                             ? m_album->albumArtist()->prettyName()
-                             : i18n( "Various Artists" );
-
-        QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-        QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-        QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
-
-        artistName->setText( artist );
-        albumName->setText( m_album->prettyName() );
-        coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
-    }
-}
-
 void CoverFoundDialog::updateTitle()
 {
-    QString caption;
+    const int itemCount = m_view->count();
+    const QString caption = ( itemCount == 0 )
+                          ? i18n( "No Images Found" )
+                          : i18np( "1 Image Found", "%1 Images Found", itemCount );
+    setCaption( caption );
+}
 
-    if( m_covers.isEmpty() )
+void CoverFoundDialog::add( const QPixmap cover,
+                            const CoverFetch::Metadata metadata,
+                            const CoverFetch::ImageSize imageSize )
+{
+    if( cover.isNull() )
+        return;
+
+    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
+    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
+
+    const QString src = metadata.value( "source" );
+    const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
+    const QString h = metadata.contains( "height" ) ? metadata.value( "height" ) : QString::number( cover.height() );
+    const QString size = QString( "%1x%2" ).arg( w ).arg( h );
+    const QString tip = i18n( "Size:" ) + size;
+    item->setToolTip( tip );
+
+    m_view->addItem( item );
+
+    updateGui();
+}
+
+CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
+    : KVBox( parent )
+{
+    m_cover     = new QLabel( this );
+    m_tabs      = new QTabWidget( this );
+    m_abstract  = new QLabel( m_tabs );
+    m_metaTable = new QTableWidget( m_tabs );
+    m_abstract->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    m_abstract->setMargin( 4 );
+    m_abstract->setOpenExternalLinks( true );
+    m_abstract->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_abstract->setWordWrap( true );
+    m_cover->setAlignment( Qt::AlignCenter );
+    m_metaTable->setColumnCount( 2 );
+    m_metaTable->horizontalHeader()->setVisible( false );
+    m_metaTable->verticalHeader()->setVisible( false );
+    m_tabs->addTab( m_metaTable, i18n( "Information" ) );
+    m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
+    setMaximumWidth( 200 );
+    setNoCover();
+}
+
+CoverFoundSideBar::~CoverFoundSideBar()
+{
+}
+
+void CoverFoundSideBar::setNoCover()
+{
+    if( m_noCover.isNull() )
+        m_noCover = noCover();
+
+    m_cover->setPixmap( m_noCover );
+    m_metadata.clear();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
+{
+    setPixmap( pixmap );
+    m_metadata = metadata;
+    updateMetaTable();
+    updateAbstract();
+}
+
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
+{
+    m_pixmap = pixmap;
+    QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    m_cover->setPixmap( prettyPix );
+}
+
+void CoverFoundSideBar::updateAbstract()
+{
+    bool enableAbstract( false );
+    if( m_metadata.contains( "abstract" ) )
     {
-        caption = i18n( "Cover Not Found" );
+        const QString abstract = m_metadata.value( "abstract" );
+        if( !abstract.isEmpty() )
+        {
+            m_abstract->setText( abstract );
+            enableAbstract = true;
+        }
+        else
+            enableAbstract = false;
     }
     else
     {
-        caption = i18n( "Cover Found" );
-        const int size = m_covers.size();
-        if( size > 1 )
-        {
-            const QString position = QString( "%1/%2" ).arg( QString::number( m_index + 1 ) )
-                                                       .arg( QString::number( size ) );
-            caption +=  ": " + position;
-        }
+        m_abstract->clear();
+        enableAbstract = false;
     }
-    this->setCaption( caption );
+    m_tabs->setTabEnabled( m_tabs->indexOf( m_abstract ), enableAbstract );
 }
 
-QPixmap CoverFoundDialog::noCover( int size )
+void CoverFoundSideBar::updateMetaTable()
 {
-    // code from Meta::Album::image( int size )
+    QStringList tags;
+    tags << "artist" << "clickurl" << "date"  << "format" << "height"
+         << "name"   << "size"     << "title" << "url"    << "width";
+
+    m_metaTable->clear();
+    m_metaTable->setRowCount( 10 );
+
+    int row( 0 );
+    foreach( const QString &tag, tags )
+    {
+        QTableWidgetItem *itemTag( 0 );
+        QTableWidgetItem *itemVal( 0 );
+
+        if( m_metadata.contains( tag ) )
+        {
+            const QString value = m_metadata.value( tag );
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( value );
+        }
+        else if( tag == "width" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
+        }
+        else if( tag == "height" )
+        {
+            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
+        }
+
+        if( itemTag && itemVal )
+        {
+            m_metaTable->setItem( row, 0, itemTag );
+            m_metaTable->setItem( row, 1, itemVal );
+            row++;
+        }
+    }
+    m_metaTable->setRowCount( row );
+    m_metaTable->sortItems( 0 );
+    m_metaTable->resizeColumnsToContents();
+    m_metaTable->resizeRowsToContents();
+}
+
+QPixmap CoverFoundSideBar::noCover( int size )
+{
+    /* code from Meta::Album::image( int size ) */
 
     QPixmap pixmap( size, size );
-    QString sizeKey = QString::number( size ) + '@';
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QString sizeKey = QString::number( size ) + '@';
+    const QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
 
     if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
     {
@@ -263,51 +405,102 @@ QPixmap CoverFoundDialog::noCover( int size )
     return pixmap;
 }
 
-//SLOT
-void CoverFoundDialog::add( QPixmap cover )
+CoverFoundItem::CoverFoundItem( const QPixmap cover,
+                                const CoverFetch::Metadata data,
+                                const CoverFetch::ImageSize imageSize,
+                                QListWidget *parent )
+    : QListWidgetItem( parent )
+    , m_metadata( data )
+    , m_dialog( 0 )
+    , m_progress( 0 )
 {
-    m_covers << cover;
-    updateGui();
-}
-
-//SLOT
-void CoverFoundDialog::add( QList< QPixmap > covers )
-{
-    m_covers << covers;
-    updateGui();
-}
-
-//SLOT
-void CoverFoundDialog::accept()
-{
-    if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-        done( 1000 );
-    else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-        done( 1001 );
-    else
-        KDialog::accept();
-}
-
-//SLOT
-void CoverFoundDialog::nextPix()
-{
-    if( m_index < m_covers.length() - 1 )
+    switch( imageSize )
     {
-        m_index++;
-        updateGui();
-        updatePixmap();
+    default:
+    case CoverFetch::NormalSize:
+        m_bigPix = cover;
+        break;
+    case CoverFetch::ThumbSize:
+        m_thumb = cover;
+        break;
     }
+
+    QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
+    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    setIcon( prettyPix );
 }
 
-//SLOT
-void CoverFoundDialog::prevPix()
+CoverFoundItem::~CoverFoundItem()
 {
-    if( m_index >= 1 )
+    delete m_progress;
+    m_progress = 0;
+    delete m_dialog;
+    m_dialog = 0;
+}
+
+void CoverFoundItem::fetchBigPix()
+{
+    const KUrl url( m_metadata.value( "normalarturl" ) );
+    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
+
+    if( !url.isValid() || !job )
+        return;
+
+    if( !m_dialog )
+        m_dialog = new KDialog( listWidget() );
+    m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
+    m_dialog->setButtons( KDialog::Cancel );
+    m_dialog->setDefaultButton( KDialog::Cancel );
+
+    if( !m_progress )
+        m_progress = new KJobProgressBar( m_dialog, job );
+    m_progress->cancelButton()->hide();
+    m_progress->descriptionLabel()->hide();
+    connect( m_dialog, SIGNAL(cancelClicked()), m_progress, SLOT(cancel()) );
+    connect( m_dialog, SIGNAL(cancelClicked()), job, SLOT(kill()) );
+
+    m_dialog->setMainWidget( m_progress );
+    m_dialog->exec();
+}
+
+void CoverFoundItem::display()
+{
+    if( !hasBigPix() )
+        fetchBigPix();
+
+    QWidget *p = dynamic_cast<QWidget*>( parent() );
+    int parentScreen = KApplication::desktop()->screenNumber( p );
+
+    const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
+    ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->show();
+}
+
+void CoverFoundItem::slotFetchResult( KJob *job )
+{
+    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    const QByteArray data = storedJob->data();
+    QPixmap pixmap;
+    if( pixmap.loadFromData( data ) )
     {
-        m_index--;
-        updateGui();
-        updatePixmap();
+        m_bigPix = pixmap;
+        const QString w = QString::number( pixmap.width() );
+        const QString h = QString::number( pixmap.height() );
+        const QString size = QString( "%1x%2" ).arg( w ).arg( h );
+        const QString tip = i18n( "Size:" ) + size;
+        setToolTip( tip );
+        emit pixmapChanged( m_bigPix );
     }
+
+    if( m_dialog )
+    {
+        m_dialog->accept();
+        delete m_progress;
+        m_progress = 0;
+        delete m_dialog;
+        m_dialog = 0;
+    }
+    storedJob->deleteLater();
 }
 
 #include "CoverFoundDialog.moc"

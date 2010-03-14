@@ -20,90 +20,154 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
+#include "CoverFetchUnit.h"
 #include "meta/Meta.h"
 
 #include <KDialog>
-#include <KPushButton>
+#include <KVBox>
 
-#include <QHash>
 #include <QLabel>
 #include <QList>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
 
-class KHBox;
+class CoverFoundSideBar;
+class KDialog;
+class KJob;
+class KJobProgressBar;
 class KLineEdit;
+class KListWidget;
 class KPushButton;
+class QFrame;
 class QGridLayout;
+class QTabWidget;
+class QTableWidget;
 
 class CoverFoundDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    explicit CoverFoundDialog( QWidget *parent,
-                               Meta::AlbumPtr album = KSharedPtr< Meta::Album >(),
-                               const QList< QPixmap > &covers = QList< QPixmap >() );
+    CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+                      const QPixmap cover = QPixmap(),
+                      const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                      QWidget *parent = 0 );
 
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return *m_labelPixmap->pixmap(); }
+    const QPixmap image() const { return m_pixmap; }
+
+    const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
     void newCustomQuery( const QString & );
 
 public slots:
-    virtual void accept();
-
-    void add( QPixmap cover );
-    void add( QList< QPixmap > covers );
+    void add( const QPixmap cover,
+              const CoverFetch::Metadata metadata,
+              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
-    void resizeEvent( QResizeEvent *event );
-    void closeEvent( QCloseEvent *event );
-    void wheelEvent( QWheelEvent *event );
+    void hideEvent( QHideEvent *event );
 
 private slots:
-    /**
-    *   Switch picture label and current index to next cover
-    */
-    void nextPix();
-
-    /**
-    *   Switch picture label and current index to previous cover
-    */
-    void prevPix();
+    void clearView();
+    void itemSelected();
+    void itemDoubleClicked( QListWidgetItem *item );
+    void itemMenuRequested( const QPoint &pos );
+    void saveRequested();
+    void searchButtonPressed();
+    void selectLastFmSearch();
+    void selectWebSearch();
 
 private:
     void updateGui();
-    void updatePixmap();
-    void updateButtons();
-    void updateDetails();
     void updateTitle();
 
-    QPixmap noCover( int size = 300 );
-    QPixmap m_noCover;               //! nocover.png cache
-
-    QLabel         *m_labelPixmap;   //! Pixmap container
-    QFrame         *m_details;       //! Details widget
-    QGridLayout    *m_detailsLayout; //! Details widget layout
     KLineEdit      *m_search;        //! Custom search input
-    KPushButton    *m_next;          //! Next Button
-    KPushButton    *m_prev;          //! Back Button
+    KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
+    CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata
 
-    //! Album associated with the covers
-    Meta::AlbumPtr m_album;
+    //! Cover fetch unit that initiated this dialog
+    const CoverFetchUnit::Ptr m_unit;
 
-    //! Retrieved covers for the album
-    QList< QPixmap > m_covers;
-
-    //! Current position indices for m_covers
-    int m_index;
+    //! Currently selected cover image
+    QPixmap m_pixmap;
 
     Q_DISABLE_COPY( CoverFoundDialog );
+};
+
+class CoverFoundSideBar : public KVBox
+{
+    Q_OBJECT
+
+public:
+    CoverFoundSideBar( QWidget *parent = 0 );
+    ~CoverFoundSideBar();
+
+public slots:
+    void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap pixmap );
+    void setNoCover();
+
+private:
+    QLabel               *m_abstract;
+    QLabel               *m_cover;
+    QPixmap               m_pixmap;
+    QTabWidget           *m_tabs;
+    QTableWidget         *m_metaTable;
+    CoverFetch::Metadata  m_metadata;
+
+    void updateAbstract();
+    void updateMetaTable();
+
+    QPixmap noCover( int size = 200 );
+    QPixmap m_noCover; //! nocover cache
+
+    Q_DISABLE_COPY( CoverFoundSideBar );
+};
+
+class CoverFoundItem : public QObject, public QListWidgetItem
+{
+    Q_OBJECT
+
+public:
+    explicit CoverFoundItem( const QPixmap cover,
+                             const CoverFetch::Metadata data,
+                             const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
+                             QListWidget *parent = 0 );
+    ~CoverFoundItem();
+
+    void fetchBigPix();
+
+    const CoverFetch::Metadata metadata() const { return m_metadata; }
+    const QPixmap bigPix() const { return m_bigPix; }
+    const QPixmap thumb() const { return m_thumb; }
+
+    bool hasBigPix() const { return !m_bigPix.isNull(); }
+
+    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+signals:
+    void pixmapChanged( const QPixmap pixmap );
+
+public slots:
+    /**
+     * Opens a pixmap viewer
+     */
+    void display();
+
+    void slotFetchResult( KJob *job );
+
+private:
+    CoverFetch::Metadata m_metadata;
+    QPixmap m_thumb;
+    QPixmap m_bigPix;
+    KDialog *m_dialog;
+    KJobProgressBar *m_progress;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

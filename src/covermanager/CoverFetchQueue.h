@@ -32,8 +32,13 @@ class CoverFetchPayload;
 typedef QList< CoverFetchUnit::Ptr > CoverFetchUnitList;
 
 /**
- * A queue that keeps track of albums to fetch covers for.
+ * A queue that creates and keeps track of cover fetching units.
+ * This queue creates cover fetch units with suitable payloads as requested by
+ * the cover fetcher. It does not manage the state of those units, as in, what
+ * to do next after each of those units is completed. The cover fetcher is
+ * responsible for coordinating that.
  */
+
 class CoverFetchQueue : public QObject
 {
     Q_OBJECT
@@ -42,11 +47,36 @@ public:
     CoverFetchQueue( QObject *parent = 0 );
     ~CoverFetchQueue();
 
-    bool add( const Meta::AlbumPtr album,
-              CoverFetch::Options opt = CoverFetch::Automatic,
-              const QByteArray &xml = QByteArray(),
-              bool wild = false );
-    bool addSearch( const QString &query );
+    /**
+     * Add an album-associated work unit to the queue.
+     * @param album album to fetch cover for.
+     * @param opt cover fetch option.
+     * @param src cover image source.
+     * @param xml xml document from the cover provider. Can be empty on first
+     * pass of the fetching process.
+     */
+    void add( const Meta::AlbumPtr album,
+              const CoverFetch::Option opt = CoverFetch::Automatic,
+              const CoverFetch::Source src = CoverFetch::LastFm,
+              const QByteArray &xml = QByteArray() );
+
+    /**
+     * Add a work unit to the queue that does not need to associate with any album.
+     * @param opt cover fetch option.
+     * @param src cover image source.
+     * @param xml xml document from the cover provider. Can be empty on first
+     * pass of the fetching process.
+     */
+    void add( const CoverFetch::Option opt = CoverFetch::WildInteractive,
+              const CoverFetch::Source src = CoverFetch::LastFm,
+              const QByteArray &xml = QByteArray() );
+
+    /**
+     * Add a string query to the queue.
+     * @param query text to be used for image search.
+     * @param src the image provider to search.
+     */
+    void addQuery( const QString &query, const CoverFetch::Source src = CoverFetch::LastFm );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;
@@ -63,7 +93,7 @@ signals:
     void fetchUnitAdded( const CoverFetchUnit::Ptr );
 
 private:
-    bool add( const CoverFetchUnit::Ptr unit );
+    void add( const CoverFetchUnit::Ptr unit );
     void remove( const Meta::AlbumPtr album );
 
     CoverFetchUnitList m_queue;

@@ -21,12 +21,34 @@
 
 #include <KSharedPtr>
 
+#include <QDomDocument>
+
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
 
 namespace CoverFetch
 {
-    enum Options { Automatic, Interactive };
+    enum Option
+    {
+        Automatic,      //! Automtically save cover for the specified album, if one is found
+        Interactive,    //! Opens a dialog for the user to decide, and add more searches if desired
+        WildInteractive //! As \ref Interactive, but without filtering results (used for web search)
+    };
+
+    enum ImageSize
+    {
+        NormalSize,     //! Normal cover size, for storage and display
+        ThumbSize       //! Thumbnail size, for icon views
+    };
+
+    enum Source
+    {
+        LastFm,         //! Use Last.Fm as provider for cover images
+        Yahoo           //! Use Yahoo! BOSS image search as provider
+    };
+
+    typedef QHash< QString, QString > Metadata;
+    typedef QHash< KUrl, Metadata > Urls;
 }
 
 /**
@@ -38,16 +60,17 @@ public:
     typedef KSharedPtr< CoverFetchUnit > Ptr;
 
     CoverFetchUnit( Meta::AlbumPtr album,
-                    const CoverFetchPayload *url,
-                    CoverFetch::Options opt = CoverFetch::Automatic );
-    CoverFetchUnit( const CoverFetchSearchPayload *url );
+                    const CoverFetchPayload *payload,
+                    CoverFetch::Option opt = CoverFetch::Automatic );
+    CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
+    CoverFetchUnit( const CoverFetchSearchPayload *payload );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
 
     Meta::AlbumPtr album() const;
     const QStringList &errors() const;
-    CoverFetch::Options options() const;
+    CoverFetch::Option options() const;
     const CoverFetchPayload *payload() const;
 
     bool isInteractive() const;
@@ -62,8 +85,8 @@ public:
 private:
     Meta::AlbumPtr m_album;
     QStringList m_errors;
-    CoverFetch::Options m_options;
-    const CoverFetchPayload *m_url;
+    CoverFetch::Option m_options;
+    const CoverFetchPayload *m_payload;
 };
 
 /**
@@ -74,15 +97,18 @@ class CoverFetchPayload
 {
 public:
     enum Type { Info, Search, Art };
-    CoverFetchPayload( const Meta::AlbumPtr album, enum Type type );
+    CoverFetchPayload( const Meta::AlbumPtr album, enum Type type, const CoverFetch::Source src );
     virtual ~CoverFetchPayload();
 
+    CoverFetch::Source source() const;
     enum Type type() const;
-    const KUrl::List &urls() const;
+    const CoverFetch::Urls &urls() const;
 
 protected:
-    KUrl::List m_urls;
+    const CoverFetch::Source m_src;
+    CoverFetch::Urls m_urls;
 
+    const QString  sourceString() const;
     const QString &method() const { return m_method; }
     Meta::AlbumPtr album()  const { return m_album; }
 
@@ -114,17 +140,17 @@ private:
 };
 
 /**
- * Prepares URL for searching albums on Last.fm.
+ * Prepares URL for searching albums on Last.fm using wild mode.
+ * See \ref CoverFetch::WildInteractive mode.
  */
 class CoverFetchSearchPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchSearchPayload( const QString &query = QString() );
+    explicit CoverFetchSearchPayload( const QString &query = QString(),
+                                      const CoverFetch::Source src = CoverFetch::LastFm );
     ~CoverFetchSearchPayload();
 
     QString query() const;
-
-    void setQuery( const QString &query );
 
 protected:
     void prepareUrls();
@@ -141,10 +167,18 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild = false );
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr album,
+                                   const CoverFetch::ImageSize size = CoverFetch::NormalSize,
+                                   const CoverFetch::Source src = CoverFetch::LastFm,
+                                   bool wild = false );
+    explicit CoverFetchArtPayload( const CoverFetch::ImageSize size,
+                                   const CoverFetch::Source src = CoverFetch::LastFm,
+                                   bool wild = false );
     ~CoverFetchArtPayload();
 
     bool isWild() const;
+
+    CoverFetch::ImageSize imageSize() const;
 
     void setXml( const QByteArray &xml );
 
@@ -152,28 +186,29 @@ protected:
     void prepareUrls();
 
 private:
+    CoverFetch::ImageSize m_size;
     QString m_xml;
-
-    /// Available album cover sizes from Last.fm
-    enum CoverSize
-    {
-        Small = 0,  //! 34px
-        Medium,     //! 64px
-        Large,      //! 128px
-        ExtraLarge  //! 300px
-    };
 
     /// search is wild mode?
     bool m_wild;
 
-    /// convert CoverSize enum to string
-    QString coverSize( enum CoverSize size ) const;
+    /// convert ImageSize enum to string
+    QString coverSize2str( enum CoverFetch::ImageSize size ) const;
+
+    /// convert string to ImageSize
+    enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
 
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );
 
     /// lower, remove whitespace, and do Unicode normalization on a QStringList
     QStringList normalize( const QStringList &rawList );
+
+    /// prepare urls from xml provided by Last.Fm
+    void prepareLastFmUrls( const QDomDocument &doc );
+
+    /// prepare urls from xml provided by Yahoo! Image Search
+    void prepareYahooUrls( const QDomDocument &doc );
 
     Q_DISABLE_COPY( CoverFetchArtPayload );
 };
