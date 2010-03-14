@@ -279,8 +279,8 @@ void CoverFoundDialog::updateTitle()
 {
     const int itemCount = m_view->count();
     const QString caption = ( itemCount == 0 )
-                          ? i18n( "Cover Not Found" )
-                          : i18np( "1 Cover Found", "%1 Covers Found", itemCount );
+                          ? i18n( "No Images Found" )
+                          : i18np( "1 Image Found", "%1 Images Found", itemCount );
     setCaption( caption );
 }
 
