@@ -236,6 +236,8 @@ void LayoutEditDialog::setPeerWidth( bool peer )
 
 void LayoutEditDialog::setToken( TokenWithLayout *t )
 {
+    setWindowTitle( i18n( "Configuration for '%1'", t->name() ) );
+    
     apply();
     m_token = t;
     if ( m_token )
