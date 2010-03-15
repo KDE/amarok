@@ -49,8 +49,14 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
     }
     else
     {
+        CoverFetch::ImageSize imageSize;
+        if( opt == CoverFetch::Automatic )
+            imageSize = CoverFetch::NormalSize;
+        else
+            imageSize = CoverFetch::ThumbSize;
+
         const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, CoverFetch::NormalSize, src, wild );
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, imageSize, src, wild );
         art->setXml( xml );
         payload = art;
     }

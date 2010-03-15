@@ -161,7 +161,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     else
         googleAct->setChecked( true );
 
-    add( cover, data );
+    typedef CoverFetchArtPayload CFAP;
+    const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
+    add( cover, data, payload->imageSize() );
     m_view->setCurrentItem( m_view->item( 0 ) );
 }
 
