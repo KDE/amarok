@@ -330,6 +330,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.setHost( "ws.audioscrobbler.com" );
         url.setPath( "/2.0/" );
         url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+        url.addQueryItem( "limit", QString::number( 20 ) );
         url.addQueryItem( "album", m_query );
         url.addQueryItem( "method", method() );
         metadata[ "source" ] = "Last.fm";
@@ -340,6 +341,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.setHost( "boss.yahooapis.com" );
         url.setPath( "/ysearch/images/v1/" + m_query );
         url.addQueryItem( "appid", Amarok::yahooBossApiKey() );
+        url.addQueryItem( "count", QString::number( 20 ) );
         url.addQueryItem( "format", "xml" );
         metadata[ "source" ] = "Yahoo!";
         break;
