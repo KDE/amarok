@@ -111,6 +111,12 @@ public slots:
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
 
+    /**
+    * Repaint the playlist.
+    * Useful when triggering a change that will modify the visual appearance of one or more items in the playlist
+    */
+    void repaintPlaylist();
+
 signals:
     void navigatorChanged();
 

@@ -439,6 +439,12 @@ Playlist::Actions::normalizeDynamicPlaylist()
     }
 }
 
+void
+Playlist::Actions::repaintPlaylist()
+{
+    The::mainWindow()->playlistWidget()->currentView()->repaint();
+}
+
 
 namespace The
 {
