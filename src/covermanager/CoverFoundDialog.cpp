@@ -414,7 +414,7 @@ void CoverFoundSideBar::updateMetaTable()
          << "name"   << "size"     << "title" << "url"    << "width";
 
     m_metaTable->clear();
-    m_metaTable->setRowCount( 10 );
+    m_metaTable->setRowCount( tags.size() );
 
     int row( 0 );
     foreach( const QString &tag, tags )
