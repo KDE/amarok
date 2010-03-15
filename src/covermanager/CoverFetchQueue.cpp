@@ -69,9 +69,9 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
 }
 
 void
-CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src )
+CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src, unsigned int page )
 {
-    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src );
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page );
     add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 

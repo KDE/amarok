@@ -51,13 +51,20 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
+    , m_queryPage( 0 )
     , m_unit( unit )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
-                KDialog::User1 ); // User1: clear icon view
+                KDialog::User1 |  // User1: clear icon view
+                KDialog::User2 ); // User2: get more results from last query
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
+    setButtonGuiItem( KDialog::User2, KStandardGuiItem::cont() );
     connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
+    connect( button( KDialog::User2 ), SIGNAL(clicked()), SLOT(processQuery()) );
+
+    KPushButton *more = button( KDialog::User2 );
+    more->setText( i18n( "More Results" ) );
 
     m_save = button( KDialog::Ok );
 
@@ -110,9 +117,11 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     connect( m_search,   SIGNAL(returnPressed(const QString&)),
              searchComp, SLOT(addItem(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)),
-             this,     SIGNAL(newCustomQuery(const QString&)) );
+             this,     SLOT(processQuery(const QString&)) );
+    connect( m_search, SIGNAL(clearButtonClicked()),
+             this,     SLOT(clearQueryButtonClicked()));
     connect( searchButton, SIGNAL(pressed()),
-             this,         SLOT(searchButtonPressed()) );
+             this,         SLOT(processQuery()) );
 
     m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
@@ -162,6 +171,13 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     saveDialogSize( config );
     event->accept();
+}
+
+void CoverFoundDialog::clearQueryButtonClicked()
+{
+    m_query = QString();
+    m_queryPage = 0;
+    updateGui();
 }
 
 void CoverFoundDialog::clearView()
@@ -215,33 +231,53 @@ void CoverFoundDialog::saveRequested()
     KDialog::accept();
 }
 
-void CoverFoundDialog::searchButtonPressed()
+void CoverFoundDialog::processQuery()
 {
     const QString text = m_search->text();
-    emit newCustomQuery( text );
+    processQuery( text );
+}
+
+void CoverFoundDialog::processQuery( const QString &query )
+{
+    if( !query.isEmpty() && (m_query == query) )
+    {
+        m_queryPage++;
+    }
+    else
+    {
+        m_query = query;
+        m_queryPage = 0;
+    }
+    emit newCustomQuery( m_query, m_queryPage );
 }
 
 void CoverFoundDialog::selectLastFmSearch()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "LastFm" );
+    m_queryPage = 0;
 }
 
 void CoverFoundDialog::selectYahoo()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Yahoo" );
+    m_queryPage = 0;
 }
 
 void CoverFoundDialog::selectGoogle()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Google" );
+    m_queryPage = 0;
 }
 
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
+
+    KPushButton *more = button( KDialog::User2 );
+    more->setEnabled( !m_query.isEmpty() );
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );

@@ -299,8 +299,11 @@ CoverFetchInfoPayload::prepareUrls()
  * CoverFetchSearchPayload
  */
 
-CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query, const CoverFetch::Source src )
+CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query,
+                                                  const CoverFetch::Source src,
+                                                  unsigned int page )
     : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Search, src )
+    , m_page( page )
     , m_query( query )
 {
     prepareUrls();
@@ -331,6 +334,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.setPath( "/2.0/" );
         url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
         url.addQueryItem( "limit", QString::number( 20 ) );
+        url.addQueryItem( "page", QString::number( m_page ) );
         url.addQueryItem( "album", m_query );
         url.addQueryItem( "method", method() );
         metadata[ "source" ] = "Last.fm";
@@ -342,6 +346,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.setPath( "/ysearch/images/v1/" + m_query );
         url.addQueryItem( "appid", Amarok::yahooBossApiKey() );
         url.addQueryItem( "count", QString::number( 20 ) );
+        url.addQueryItem( "start", QString::number( 20 * m_page ) );
         url.addQueryItem( "format", "xml" );
         metadata[ "source" ] = "Yahoo!";
         break;
@@ -352,6 +357,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "q", m_query );
         url.addQueryItem( "gbv", QChar( '1' ) );
         url.addQueryItem( "filter", QChar( '1' ) );
+        url.addQueryItem( "start", QString::number( 20 * m_page ) );
         metadata[ "source" ] = "Google";
         break;
     }

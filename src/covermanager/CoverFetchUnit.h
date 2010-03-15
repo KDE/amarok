@@ -148,7 +148,8 @@ class CoverFetchSearchPayload : public CoverFetchPayload
 {
 public:
     explicit CoverFetchSearchPayload( const QString &query = QString(),
-                                      const CoverFetch::Source src = CoverFetch::LastFm );
+                                      const CoverFetch::Source src = CoverFetch::LastFm,
+                                      unsigned int page = 0 );
     ~CoverFetchSearchPayload();
 
     QString query() const;
@@ -157,7 +158,8 @@ protected:
     void prepareUrls();
 
 private:
-    QString m_query;
+    const unsigned int m_page;
+    const QString m_query;
 
     Q_DISABLE_COPY( CoverFetchSearchPayload );
 };

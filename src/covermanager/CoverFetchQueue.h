@@ -75,8 +75,11 @@ public:
      * Add a string query to the queue.
      * @param query text to be used for image search.
      * @param src the image provider to search.
+     * @param page the page number to jump to.
      */
-    void addQuery( const QString &query, const CoverFetch::Source src = CoverFetch::LastFm );
+    void addQuery( const QString &query,
+                   const CoverFetch::Source src = CoverFetch::LastFm,
+                   unsigned int page = 0 );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;

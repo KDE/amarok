@@ -99,9 +99,9 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
-CoverFetcher::queueQuery( const QString &query )
+CoverFetcher::queueQuery( const QString &query, unsigned int page )
 {
-    m_queue->addQuery( query, fetchSource() );
+    m_queue->addQuery( query, fetchSource(), page );
 }
 
 void
@@ -258,7 +258,8 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
         }
 
         m_dialog = new CoverFoundDialog( unit, cover, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)), SLOT(queueQuery(const QString&)) );
+        connect( m_dialog, SIGNAL(newCustomQuery(const QString&, unsigned int)),
+                           SLOT(queueQuery(const QString&, unsigned int)) );
         connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
         connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
         m_dialog->show();

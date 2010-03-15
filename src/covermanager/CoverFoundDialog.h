@@ -62,7 +62,7 @@ public:
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
-    void newCustomQuery( const QString & );
+    void newCustomQuery( const QString &query, unsigned int page );
 
 public slots:
     void add( const QPixmap cover,
@@ -73,12 +73,14 @@ protected:
     void hideEvent( QHideEvent *event );
 
 private slots:
+    void clearQueryButtonClicked();
     void clearView();
     void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
+    void processQuery();
+    void processQuery( const QString &query );
     void saveRequested();
-    void searchButtonPressed();
     void selectLastFmSearch();
     void selectGoogle();
     void selectYahoo();
@@ -91,6 +93,8 @@ private:
     KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
     CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata
+    QString         m_query;         //! Cache for the last entered custom query
+    unsigned int    m_queryPage;     //! Cache for the page number associated with \ref m_query
 
     //! Cover fetch unit that initiated this dialog
     const CoverFetchUnit::Ptr m_unit;
