@@ -91,10 +91,9 @@ DatabaseConfig::updateSQLQuery() //SLOT
 
         // Don't print the actual password!
         const QString examplePassword = i18nc( "A default password for insertion into an example SQL command (so as not to print the real one). To be manually replaced by the user.", "password" );
-        query = QString( "GRANT ALL ON %1.* TO '%2'@'%3' IDENTIFIED BY '%4';\nFLUSH PRIVILEGES;" )
+        query = QString( "CREATE DATABASE %1;\nGRANT ALL PRIVILEGES ON %1.* TO '%2' IDENTIFIED BY '%3'; FLUSH PRIVILEGES;" )
                    .arg( kcfg_Database->text() )
                    .arg( kcfg_User->text() )
-                   .arg( kcfg_Host->text() )
                    .arg( examplePassword );
     }
     text_SQL->setPlainText( query );

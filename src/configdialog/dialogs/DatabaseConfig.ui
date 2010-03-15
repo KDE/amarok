@@ -172,7 +172,7 @@
          <item>
           <widget class="QLabel" name="label_SQL">
            <property name="text">
-            <string>Access rights can be assigned with the following S&amp;QL commands (after replacing the password with the correct one):</string>
+            <string>If your database is not already set up, you can use the following S&amp;QL commands (after replacing the password with the correct one):</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
