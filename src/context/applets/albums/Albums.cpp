@@ -121,7 +121,13 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
    
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
     if( m_albums.isEmpty() )
+    {
+        //Don't keep showing the albums for the artist of the last track that had album in the collection
+        m_headerText->setText( data[ "headerText" ].toString() );
+        update();
+        m_model->clear();
         return;
+    }
 
     debug() << "Received" << m_albums.count() << "albums";
 
@@ -129,7 +135,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
     //Update the applet (render properly the header)
     update();
-
     m_model->clear();
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
