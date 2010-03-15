@@ -81,7 +81,8 @@ private slots:
     void processQuery();
     void processQuery( const QString &query );
     void saveRequested();
-    void selectLastFmSearch();
+    void selectDiscogs();
+    void selectLastFm();
     void selectGoogle();
     void selectYahoo();
 

@@ -100,17 +100,21 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
     QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
     QAction *yahooAct = new QAction( i18n( "Yahoo!" ), sourceMenu );
+    QAction *discogsAct = new QAction( i18n( "Discogs" ), sourceMenu );
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
     yahooAct->setCheckable( true );
-    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFmSearch()) );
+    discogsAct->setCheckable( true );
+    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFm()) );
     connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
     connect( yahooAct, SIGNAL(triggered()), this, SLOT(selectYahoo()) );
+    connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
 
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
     ag->addAction( googleAct );
     ag->addAction( yahooAct );
+    ag->addAction( discogsAct );
     sourceMenu->addActions( ag->actions() );
     sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
@@ -158,6 +162,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         lastFmAct->setChecked( true );
     else if( source == "Yahoo" )
         yahooAct->setChecked( true );
+    else if( source == "Discogs" )
+        discogsAct->setChecked( true );
     else
         googleAct->setChecked( true );
 
@@ -253,7 +259,14 @@ void CoverFoundDialog::processQuery( const QString &query )
     emit newCustomQuery( m_query, m_queryPage );
 }
 
-void CoverFoundDialog::selectLastFmSearch()
+void CoverFoundDialog::selectDiscogs()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "Discogs" );
+    m_queryPage = 0;
+}
+
+void CoverFoundDialog::selectLastFm()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "LastFm" );

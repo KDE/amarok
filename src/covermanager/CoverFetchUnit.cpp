@@ -63,7 +63,7 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     {
         case CoverFetchPayload::Info:
         {
-            m_payload = new CoverFetchInfoPayload( cpy.m_album );
+            m_payload = new CoverFetchInfoPayload( cpy.m_album, cpy.m_payload->source() );
             break;
         }
         case CoverFetchPayload::Search:
@@ -150,7 +150,7 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
     {
         case CoverFetchPayload::Info:
         {
-            m_payload = new CoverFetchInfoPayload( rhs.m_album );
+            m_payload = new CoverFetchInfoPayload( rhs.m_album, rhs.payload()->source() );
             break;
         }
         case CoverFetchPayload::Search:
@@ -247,6 +247,9 @@ CoverFetchPayload::sourceString() const
     case CoverFetch::Google:
         source = "Google";
         break;
+    case CoverFetch::Discogs:
+        source = "Discogs";
+        break;
     default:
         source = "Unknown";
     }
@@ -263,8 +266,15 @@ CoverFetchPayload::isPrepared() const
  * CoverFetchInfoPayload
  */
 
-CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album )
-    : CoverFetchPayload( album, CoverFetchPayload::Info, CoverFetch::LastFm )
+CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album, const CoverFetch::Source src )
+    : CoverFetchPayload( album, CoverFetchPayload::Info, src )
+{
+    prepareUrls();
+}
+
+CoverFetchInfoPayload::CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &xml )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Info, src )
+    , m_xml( QString::fromUtf8( xml ) )
 {
     prepareUrls();
 }
@@ -277,22 +287,61 @@ void
 CoverFetchInfoPayload::prepareUrls()
 {
     KUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "album", album()->name() );
-
-    if( album()->hasAlbumArtist() )
-    {
-        url.addQueryItem( "artist", album()->albumArtist()->name() );
-    }
-    url.addQueryItem( "method", method() );
-
     CoverFetch::Metadata metadata;
-    metadata[ "source" ] = "Last.fm";
-    metadata[ "method" ] = method();
+
+    switch( m_src )
+    {
+    default:
+    case CoverFetch::LastFm:
+        url.setScheme( "http" );
+        url.setHost( "ws.audioscrobbler.com" );
+        url.setPath( "/2.0/" );
+        url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+        url.addQueryItem( "album", album()->name() );
+
+        if( album()->hasAlbumArtist() )
+        {
+            url.addQueryItem( "artist", album()->albumArtist()->name() );
+        }
+        url.addQueryItem( "method", method() );
+
+        metadata[ "source" ] = "Last.fm";
+        metadata[ "method" ] = method();
+        break;
+
+    case CoverFetch::Discogs:
+        QDomDocument doc;
+        if( doc.setContent( m_xml ) )
+            prepareDiscogsUrls( doc );
+        break;
+    }
     m_urls.insert( url, metadata );
+}
+
+void
+CoverFetchInfoPayload::prepareDiscogsUrls( const QDomDocument &doc )
+{
+    const QDomNodeList results = doc.documentElement().namedItem( "searchresults" ).childNodes();
+    for( uint x = 0, len = results.length(); x < len; ++x )
+    {
+        const QDomNode resultNode = results.item( x );
+        const KUrl releaseUrl     = resultNode.namedItem( "uri" ).toElement().text();
+        const QString releaseStr  = releaseUrl.url( KUrl::RemoveTrailingSlash );
+        const QString releaseId   = releaseStr.split( '/' ).last();
+
+        KUrl url;
+        url.setScheme( "http" );
+        url.setHost( "www.discogs.com" );
+        url.setPath( "/release/" + releaseId );
+        url.addQueryItem( "api_key", Amarok::discogsApiKey() );
+        url.addQueryItem( "f", "xml" );
+
+        if( !url.isValid() )
+            continue;
+
+        CoverFetch::Metadata metadata;
+        m_urls.insert( url, metadata );
+    }
 }
 
 /*
@@ -339,6 +388,17 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "method", method() );
         metadata[ "source" ] = "Last.fm";
         metadata[ "method" ] = method();
+        break;
+
+    case CoverFetch::Discogs:
+        url.setHost( "www.discogs.com" );
+        url.setPath( "/search" );
+        url.addQueryItem( "api_key", Amarok::discogsApiKey() );
+        url.addQueryItem( "page", QString::number( m_page + 1 ) );
+        url.addQueryItem( "type", "all" );
+        url.addQueryItem( "q", m_query );
+        url.addQueryItem( "f", "xml" );
+        metadata[ "source" ] = "Discogs";
         break;
 
     case CoverFetch::Yahoo:
@@ -432,6 +492,62 @@ CoverFetchArtPayload::prepareUrls()
     case CoverFetch::Google:
         prepareGoogleUrls( m_xml );
         break;
+    case CoverFetch::Discogs:
+        prepareDiscogsUrls( doc );
+        break;
+    }
+}
+
+void
+CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
+{
+    CoverFetch::Metadata metadata;
+    const QDomNode releaseNode = doc.documentElement().namedItem( "release" );
+
+    /* TODO: there are a lot of discogs info that can be extracted as metadata.
+    const QDomNodeList results = releaseNode.childNodes();
+    for( uint x = 0, len = results.length(); x < len; ++x )
+    {
+        const QDomNode &node = results.item( x );
+    }*/
+
+    const QDomNodeList imageNodes = releaseNode.namedItem( "images" ).childNodes();
+    for( uint x = 0, len = imageNodes.length(); x < len; ++x )
+    {
+        const QDomNode &node = imageNodes.item( x ); 
+        if( node.hasAttributes() )
+        {
+            const QDomNamedNodeMap attr = node.attributes();
+            const QString thburl = attr.namedItem( "uri150" ).nodeValue();
+            const KUrl uri       = attr.namedItem( "uri"    ).nodeValue();
+
+            KUrl url;
+            switch( m_size )
+            {
+            case CoverFetch::NormalSize:
+                url = uri;
+                break;
+            case CoverFetch::ThumbSize:
+            default:
+                url = KUrl( thburl );
+                break;
+            }
+
+            if( !url.isValid() )
+                continue;
+
+            const QString height = attr.namedItem( "height" ).nodeValue();
+            const QString width  = attr.namedItem( "width"  ).nodeValue();
+            const QString type   = attr.namedItem( "type"   ).nodeValue();
+
+            metadata[ "normalarturl" ] = uri.url();
+            metadata[ "thumbarturl"  ] = thburl;
+            metadata[ "width"        ] = width;
+            metadata[ "height"       ] = height;
+            metadata[ "type"         ] = type;
+
+            m_urls.insert( url, metadata );
+        }
     }
 }
 

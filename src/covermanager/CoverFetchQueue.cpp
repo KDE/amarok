@@ -45,7 +45,7 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
     {
-        payload = new CoverFetchInfoPayload( album );
+        payload = new CoverFetchInfoPayload( album, src );
     }
     else
     {
@@ -68,10 +68,29 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
                       const CoverFetch::Source src,
                       const QByteArray &xml )
 {
-    const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
-    CoverFetchArtPayload *art = new CoverFetchArtPayload( CoverFetch::ThumbSize, src, wild );
-    art->setXml( xml );
-    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( art, opt ) ) );
+    switch( src )
+    {
+        default:
+        case CoverFetch::Google:
+        case CoverFetch::Yahoo:
+        case CoverFetch::LastFm:
+        {
+            typedef CoverFetchArtPayload CFAP;
+            const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+            CFAP *payload = new CFAP( CoverFetch::ThumbSize, src, wild );
+            payload->setXml( xml );
+            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+        }
+        break;
+
+        case CoverFetch::Discogs:
+        {
+            typedef CoverFetchInfoPayload CFIP;
+            CFIP *payload = new CFIP( src, xml );
+            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+        }
+        break;
+    }
 }
 
 void
