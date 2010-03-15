@@ -21,6 +21,9 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed some artist/album/track names not getting shown or getting shown 
+       incorrectly in the Current Track applet because of html encoding. 
+       (BR 222765)
      * Fixed issue with the Albums applet not correctly updating when playing a 
        track by an artist not present in the local collection. 
      * Fixed Albums applet not getting updated if the artist of the currently 

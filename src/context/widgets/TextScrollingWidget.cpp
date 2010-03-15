@@ -77,7 +77,7 @@ TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
 void
 TextScrollingWidget::setText( const QString &text )
 {
-    setHtml( text );
+    setPlainText( text );
 }
 
 QString
