@@ -436,7 +436,7 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
     QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+)>[\\s\\n]*<img\\ssrc=([a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+).*>[\\s\\n]*</a>" );
     rx.setMinimal( true );
 
-    int pos = 0; int i = 0;
+    int pos = 0;
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
         KUrl url( "http://www.google.com" + rx.cap( 1 ) );
@@ -461,9 +461,11 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
             url = metadata.value( "thumbarturl" );
             break;
         }
-        m_urls.insert( url, metadata );
+
+        if( url.isValid() )
+            m_urls.insert( url, metadata );
+
         pos += rx.matchedLength();
-        ++i;
     }
 }
 
