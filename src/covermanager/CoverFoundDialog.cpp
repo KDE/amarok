@@ -90,16 +90,20 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
 
     QMenu *sourceMenu = new QMenu( sourceButton );
-    QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
-    QAction *webSearchAct = new QAction( i18n( "Web Search" ), sourceMenu );
+    QAction *lastFmAct = new QAction( i18n( "Last.Fm" ), sourceMenu );
+    QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
+    QAction *yahooAct = new QAction( i18n( "Yahoo!" ), sourceMenu );
     lastFmAct->setCheckable( true );
-    webSearchAct->setCheckable( true );
+    googleAct->setCheckable( true );
+    yahooAct->setCheckable( true );
     connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFmSearch()) );
-    connect( webSearchAct, SIGNAL(triggered()), this, SLOT(selectWebSearch()) );
+    connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
+    connect( yahooAct, SIGNAL(triggered()), this, SLOT(selectYahoo()) );
 
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
-    ag->addAction( webSearchAct );
+    ag->addAction( googleAct );
+    ag->addAction( yahooAct );
     sourceMenu->addActions( ag->actions() );
     sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
@@ -140,10 +144,13 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     restoreDialogSize( config ); // call this after setMainWidget()
+
     if( source == "LastFm" )
         lastFmAct->setChecked( true );
     else if( source == "Yahoo" )
-        webSearchAct->setChecked( true );
+        yahooAct->setChecked( true );
+    else
+        googleAct->setChecked( true );
 
     add( cover, data );
     m_view->setCurrentItem( m_view->item( 0 ) );
@@ -219,10 +226,16 @@ void CoverFoundDialog::selectLastFmSearch()
     config.writeEntry( "Interactive Image Source", "LastFm" );
 }
 
-void CoverFoundDialog::selectWebSearch()
+void CoverFoundDialog::selectYahoo()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Yahoo" );
+}
+
+void CoverFoundDialog::selectGoogle()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "Google" );
 }
 
 void CoverFoundDialog::updateGui()
@@ -341,7 +354,7 @@ void CoverFoundSideBar::updateAbstract()
 void CoverFoundSideBar::updateMetaTable()
 {
     QStringList tags;
-    tags << "artist" << "clickurl" << "date"  << "format" << "height"
+    tags << "artist" << "clickurl" << "date"  << "format" << "height" << "imgrefurl"
          << "name"   << "size"     << "title" << "url"    << "width";
 
     m_metaTable->clear();

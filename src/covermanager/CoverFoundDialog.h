@@ -80,7 +80,8 @@ private slots:
     void saveRequested();
     void searchButtonPressed();
     void selectLastFmSearch();
-    void selectWebSearch();
+    void selectGoogle();
+    void selectYahoo();
 
 private:
     void updateGui();

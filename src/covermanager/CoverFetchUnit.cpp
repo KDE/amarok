@@ -244,6 +244,9 @@ CoverFetchPayload::sourceString() const
     case CoverFetch::Yahoo:
         source = "Yahoo!";
         break;
+    case CoverFetch::Google:
+        source = "Google";
+        break;
     default:
         source = "Unknown";
     }
@@ -340,6 +343,15 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "format", "xml" );
         metadata[ "source" ] = "Yahoo!";
         break;
+
+    case CoverFetch::Google:
+        url.setHost( "images.google.com" );
+        url.setPath( "/images" );
+        url.addQueryItem( "q", m_query );
+        url.addQueryItem( "gbv", QChar( '1' ) );
+        url.addQueryItem( "filter", QChar( '1' ) );
+        metadata[ "source" ] = "Google";
+        break;
     }
 
     m_urls.insert( url, metadata );
@@ -395,7 +407,7 @@ void
 CoverFetchArtPayload::prepareUrls()
 {
     QDomDocument doc;
-    if( !doc.setContent( m_xml ) )
+    if( ( m_src != CoverFetch::Google ) && !doc.setContent( m_xml ) )
     {
         debug() << QString( "The xml obtained from %1 is invalid." ).arg( sourceString() );
         return;
@@ -409,6 +421,47 @@ CoverFetchArtPayload::prepareUrls()
     case CoverFetch::Yahoo:
         prepareYahooUrls( doc );
         break;
+    case CoverFetch::Google:
+        prepareGoogleUrls( m_xml );
+        break;
+    }
+}
+
+void
+CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
+{
+    // code based on Audex CDDA Extractor
+    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+)>[\\s\\n]*<img\\ssrc=([a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+).*>[\\s\\n]*</a>" );
+    rx.setMinimal( true );
+
+    int pos = 0; int i = 0;
+    while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
+    {
+        KUrl url( "http://www.google.com" + rx.cap( 1 ) );
+
+        CoverFetch::Metadata metadata;
+        metadata[ "width" ] = url.queryItemValue( "w" );
+        metadata[ "height" ] = url.queryItemValue( "h" );
+        metadata[ "size" ] = url.queryItemValue( "sz" );
+        metadata[ "imgrefurl" ] = url.queryItemValue( "imgrefurl" );
+        metadata[ "normalarturl" ] = url.queryItemValue("imgurl");
+
+        if( !rx.cap( 2 ).isEmpty() )
+            metadata[ "thumbarturl" ] = rx.cap( 2 );
+
+        switch( m_size )
+        {
+        case CoverFetch::NormalSize:
+            url = metadata.value( "normalarturl" );
+            break;
+        case CoverFetch::ThumbSize:
+        default:
+            url = metadata.value( "thumbarturl" );
+            break;
+        }
+        m_urls.insert( url, metadata );
+        pos += rx.matchedLength();
+        ++i;
     }
 }
 

@@ -345,7 +345,13 @@ CoverFetcher::fetchSource() const
 {
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString sourceEntry = config.readEntry( "Interactive Image Source", "LastFm" );
-    CoverFetch::Source source = ( sourceEntry == "Yahoo" ) ? CoverFetch::Yahoo : CoverFetch::LastFm;
+    CoverFetch::Source source;
+    if( sourceEntry == "LastFm" )
+        source = CoverFetch::LastFm;
+    else if( sourceEntry == "Google" )
+        source = CoverFetch::Google;
+    else
+        source = CoverFetch::Yahoo;
     return source;
 }
 

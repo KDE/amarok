@@ -43,6 +43,7 @@ namespace CoverFetch
 
     enum Source
     {
+        Google,         //! Use Google image search as provider
         LastFm,         //! Use Last.Fm as provider for cover images
         Yahoo           //! Use Yahoo! BOSS image search as provider
     };
@@ -209,6 +210,9 @@ private:
 
     /// prepare urls from xml provided by Yahoo! Image Search
     void prepareYahooUrls( const QDomDocument &doc );
+
+    /// prepare urls from xml provided by Google Image Search
+    void prepareGoogleUrls( const QString &html );
 
     Q_DISABLE_COPY( CoverFetchArtPayload );
 };
