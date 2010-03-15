@@ -110,9 +110,9 @@ public:
     ~CoverFoundSideBar();
 
 public slots:
+    void clear();
     void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
     void setPixmap( const QPixmap pixmap );
-    void setNoCover();
 
 private:
     QLabel               *m_abstract;

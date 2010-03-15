@@ -167,6 +167,7 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
 void CoverFoundDialog::clearView()
 {
     m_view->clear();
+    m_sideBar->clear();
     updateGui();
 }
 
@@ -297,19 +298,22 @@ CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
     m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
     setMaximumWidth( 200 );
-    setNoCover();
+    clear();
 }
 
 CoverFoundSideBar::~CoverFoundSideBar()
 {
 }
 
-void CoverFoundSideBar::setNoCover()
+void CoverFoundSideBar::clear()
 {
     if( m_noCover.isNull() )
         m_noCover = noCover();
 
     m_cover->setPixmap( m_noCover );
+    m_metaTable->setRowCount( 0 );
+    m_metaTable->clear();
+    m_abstract->clear();
     m_metadata.clear();
 }
 
