@@ -331,7 +331,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
             {
                 Meta::AlbumPtr album = m_queueLater.takeFirst();
-                // automatic fetching only uses Last.Fm as source
+                // automatic fetching only uses Last.fm as source
                 m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm );
             }
         }

@@ -239,7 +239,7 @@ CoverFetchPayload::sourceString() const
     switch( m_src )
     {
     case CoverFetch::LastFm:
-        source = "Last.Fm";
+        source = "Last.fm";
         break;
     case CoverFetch::Yahoo:
         source = "Yahoo!";

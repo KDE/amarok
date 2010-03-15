@@ -90,7 +90,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
 
     QMenu *sourceMenu = new QMenu( sourceButton );
-    QAction *lastFmAct = new QAction( i18n( "Last.Fm" ), sourceMenu );
+    QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
     QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
     QAction *yahooAct = new QAction( i18n( "Yahoo!" ), sourceMenu );
     lastFmAct->setCheckable( true );

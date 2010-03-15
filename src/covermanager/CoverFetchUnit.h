@@ -44,7 +44,7 @@ namespace CoverFetch
     enum Source
     {
         Google,         //! Use Google image search as provider
-        LastFm,         //! Use Last.Fm as provider for cover images
+        LastFm,         //! Use Last.fm as provider for cover images
         Yahoo           //! Use Yahoo! BOSS image search as provider
     };
 
@@ -205,7 +205,7 @@ private:
     /// lower, remove whitespace, and do Unicode normalization on a QStringList
     QStringList normalize( const QStringList &rawList );
 
-    /// prepare urls from xml provided by Last.Fm
+    /// prepare urls from xml provided by Last.fm
     void prepareLastFmUrls( const QDomDocument &doc );
 
     /// prepare urls from xml provided by Yahoo! Image Search
