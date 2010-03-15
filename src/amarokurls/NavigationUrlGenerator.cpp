@@ -15,6 +15,7 @@
  ****************************************************************************************/
  
 #include "NavigationUrlGenerator.h"
+#include <amarokconfig.h>
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
 #include "Debug.h"
@@ -101,6 +102,23 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     
     if ( !sortMode.isEmpty() )
         url.appendArg( "levels", sortMode );
+
+
+    //if in the local collection view, also store "show covers" and "show years"
+    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    {
+        debug() << "bookmarking in local collection";
+
+        if( AmarokConfig::showAlbumArt() )
+            url.appendArg( "show_cover", "true" );
+        else
+            url.appendArg( "show_cover", "false" );
+
+        if(  AmarokConfig::showYears() )
+            url.appendArg( "show_years", "true" );
+        else
+            url.appendArg( "show_years", "false" );
+    }
 
 
     //come up with a default name for this url..

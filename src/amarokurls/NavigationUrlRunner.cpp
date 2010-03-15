@@ -16,6 +16,7 @@
 
 #include "NavigationUrlRunner.h"
 
+#include <amarokconfig.h>
 #include "Debug.h"
 
 #include "AmarokUrlHandler.h"
@@ -73,6 +74,28 @@ NavigationUrlRunner::run( AmarokUrl url )
 
         active->setLevels( levels );
 
+    }
+
+
+    //if we are activating the local collection, check if we need to restore "show cover" and "show year"
+        //if in the local collection view, also store "show covers" and "show years"
+    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    {
+        if ( args.keys().contains( "show_cover" ) )
+        {
+            if( args.value( "show_cover" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowAlbumArt( true );
+            else if( args.value( "show_cover" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowAlbumArt( false );
+        }
+
+        if ( args.keys().contains( "show_years" ) )
+        {
+            if( args.value( "show_years" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowYears( true );
+            else if( args.value( "show_years" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowYears( false );
+        }
     }
 
     if ( args.keys().contains( "filter" ) )
