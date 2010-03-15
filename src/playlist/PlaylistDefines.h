@@ -187,6 +187,7 @@ static const QStringList groupableCategories = ( QStringList()
         << "Album"
         << "Artist"
         << "Composer"
+        << "Directory"
         << "Genre"
         << "Rating"
         << "Source"
