@@ -410,8 +410,8 @@ void CoverFoundSideBar::updateNotes()
 void CoverFoundSideBar::updateMetaTable()
 {
     QStringList tags;
-    tags << "artist" << "clickurl" << "date"  << "format" << "height" << "imgrefurl"
-         << "name"   << "size"     << "title" << "url"    << "width";
+    tags << "artist" << "clickurl" << "country" << "date" << "format" << "height" << "imgrefurl"
+         << "name"   << "size"     << "title"   << "url"  << "width";
 
     m_metaTable->clear();
     m_metaTable->setRowCount( tags.size() );

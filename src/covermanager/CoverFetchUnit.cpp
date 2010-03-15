@@ -504,17 +504,16 @@ CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
     CoverFetch::Metadata metadata;
     const QDomNode releaseNode = doc.documentElement().namedItem( "release" );
 
-    /* TODO: there are a lot of discogs info that can be extracted as metadata.
+    // TODO: there are a lot more discogs info that can be extracted as metadata.
     const QDomNodeList results = releaseNode.childNodes();
-    for( uint x = 0, len = results.length(); x < len; ++x )
-    {
-        const QDomNode &node = results.item( x );
-    }*/
+    metadata[ "notes" ] = releaseNode.namedItem( "notes" ).toElement().text();
+    metadata[ "title" ] = releaseNode.namedItem( "title" ).toElement().text();
+    metadata[ "country" ] = releaseNode.namedItem( "country" ).toElement().text();
 
     const QDomNodeList imageNodes = releaseNode.namedItem( "images" ).childNodes();
     for( uint x = 0, len = imageNodes.length(); x < len; ++x )
     {
-        const QDomNode &node = imageNodes.item( x ); 
+        const QDomNode &node = imageNodes.item( x );
         if( node.hasAttributes() )
         {
             const QDomNamedNodeMap attr = node.attributes();
