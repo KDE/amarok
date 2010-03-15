@@ -32,7 +32,7 @@
 #include "meta/Meta.h"
 #include <qpainter.h>
 #include <QHBoxLayout>
-#include "CoverBling.h"
+//#include "CoverBling.h"
 
 class PictureFlowPrivate;
 
@@ -209,8 +209,8 @@ private slots:
 private:
   PictureFlowPrivate* d;
 
-  CoverBling* m_openglwidget;
-  QHBoxLayout* m_opengllayout;
+  //CoverBling* m_openglwidget;
+  //QHBoxLayout* m_opengllayout;
 };
 
 #endif // PICTUREFLOW_H

@@ -862,7 +862,7 @@ PictureFlow::PictureFlow( QWidget* parent, bool enableOpenGL): QWidget( parent )
 {
     d = new PictureFlowPrivate;
     m_opengl = enableOpenGL;
-	m_openglwidget = 0;
+	//m_openglwidget = 0;
     d->state = new PictureFlowState;
     d->state->reset();
     d->state->reposition();
@@ -875,7 +875,7 @@ PictureFlow::PictureFlow( QWidget* parent, bool enableOpenGL): QWidget( parent )
 	else
 	{
 		d->renderer = new PictureFlowOpenGLRenderer;
-		m_openglwidget = new CoverBling(0,m_album_list);
+		//m_openglwidget = new CoverBling(0,m_album_list);
 		//m_openglwidget->setParent(this);
 	}
 	d->renderer->state = d->state;
@@ -995,13 +995,13 @@ void PictureFlow::setAlbums(Meta::AlbumList iAlbums)
 {
 	m_album_list = iAlbums;
 	//m_openglwidget->resize(-1,-1);
-	d->renderer->widget = m_openglwidget;
-	if (m_openglwidget) 
-	{
-		m_openglwidget->init(m_album_list,QSize(150,150));
-		m_openglwidget->show();
+	//d->renderer->widget = m_openglwidget;
+	//if (m_openglwidget) 
+	//{
+		//m_openglwidget->init(m_album_list,QSize(150,150));
+		//m_openglwidget->show();
 		
-	}
+	//}
 	
 }
 Meta::AlbumPtr PictureFlow::album( int index )

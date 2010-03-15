@@ -44,11 +44,11 @@ CoverBling::CoverBling( QWidget* parent,Meta::AlbumList albums )
 {
     DEBUG_BLOCK
 
-	m_currentindex = 0;
+	m_currentindex = -1;
 	makeCurrent();
 	m_animationDuration = 20;
 	m_coversize = QSize (150,150);
-    setFixedHeight( 300 );
+    //setFixedHeight( 300 );
 	queryResult("",albums);
 	m_animationStep = 0;
 	m_animation_StepMax = 10;
@@ -199,30 +199,68 @@ CoverBling::draw( GLuint selected )
             GLdouble step = ((GLdouble)m_animationStep)/((GLdouble)m_animation_StepMax);
             double angle_rot = 10;    	
 			if (!animateTimer.isActive()) step=1;			 
-			
-				if (idx_diff==1 || idx_diff==-1)
+			//if (!m_anim_forward) idx_diff = -idx_diff;
+			int forward_fac = 1;
+			if (!m_anim_forward) forward_fac = -1;
+			if (m_anim_forward)
+			{
+				if (idx_diff==0 || idx_diff==-1)
 				{
-					if (!m_anim_forward) idx_diff = -idx_diff;
 					if (i==m_currentindex+1)
 					{
 						glTranslatef( -2*idx_diff*(1-step), 0.0, -1*(1-step) );
 						glRotatef( -angle_rot*(1-step), 0.0, 1.0, 0.0 );
 					}
-					if (i==m_currentindex-1)
+					if (i==m_currentindex)
 					{
-						glTranslatef( -2*idx_diff*step, 0.0, -1*step );
+						glTranslatef( -2*(step), 0.0, -1*step );
 						glRotatef( angle_rot*step, 0.0, 1.0, 0.0 );
 					}
 				}
 				else
 				{
 					double fac = idx_diff/(idx_diff*idx_diff+1);
-				glTranslatef( -2*idx_diff, 0.0, -1 );
 				if (idx_diff >0)
+				{
+					glTranslatef( -2*(idx_diff+1), 0.0, -1 );
 					glRotatef( angle_rot, 0.0, 1.0, 0.0 );
+				}
 				else if (idx_diff<0)
+				{
+					glTranslatef( -2*idx_diff, 0.0, -1 );
 					glRotatef( -angle_rot, 0.0, 1.0, 0.0 );
-				}	
+				}
+				}
+			}
+			else
+			{
+				if (idx_diff==-2 || idx_diff==-1)
+				{
+					if (i==m_currentindex+1)
+					{
+						glTranslatef( 2*idx_diff*(1-step), 0.0, -1*(1-step) );
+						glRotatef( angle_rot*(1-step), 0.0, 1.0, 0.0 );
+					}
+					if (i==m_currentindex+2)
+					{
+						glTranslatef( 2*(step+1), 0.0, -1*step );
+						glRotatef( -angle_rot*step, 0.0, 1.0, 0.0 );
+					}
+				}
+				else
+				{
+				if (idx_diff >1)
+				{
+					glTranslatef( -2*(idx_diff), 0.0, -1 );
+					glRotatef( -angle_rot, 0.0, 1.0, 0.0 );
+				}
+				else if (idx_diff<0)
+				{
+					glTranslatef( -2*(idx_diff), 0.0, -1 );
+					glRotatef( -angle_rot, 0.0, 1.0, 0.0 );
+				}
+				}
+			}	
             //draw the cover
 			// celle là il faut la mettre à plat au milieu !!!
 			//else

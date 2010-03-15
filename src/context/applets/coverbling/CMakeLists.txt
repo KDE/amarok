@@ -7,7 +7,6 @@ pictureflow.cpp
 CoverBlingApplet.cpp
 ImageLoader.cpp
 PhotoBrowser.cpp
-CoverBling.cpp
 )
 
 include_directories( ../../..
