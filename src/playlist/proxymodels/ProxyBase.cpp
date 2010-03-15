@@ -198,7 +198,15 @@ ProxyBase::idAt( const int row ) const
 QMimeData *
 ProxyBase::mimeData( const QModelIndexList &indexes ) const
 {
-    return m_belowModel->mimeData( indexes ); //TODO: probably needs mapToSource!
+
+    QModelIndexList sourceIndexes;
+    foreach( QModelIndex index, indexes )
+    {
+        sourceIndexes << mapToSource( index );
+    }
+    
+    return m_belowModel->mimeData( sourceIndexes );
+    
 }
 
 QStringList
