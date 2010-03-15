@@ -120,14 +120,14 @@ public slots:
     void setPixmap( const QPixmap pixmap );
 
 private:
-    QLabel               *m_abstract;
+    QLabel               *m_notes;
     QLabel               *m_cover;
     QPixmap               m_pixmap;
     QTabWidget           *m_tabs;
     QTableWidget         *m_metaTable;
     CoverFetch::Metadata  m_metadata;
 
-    void updateAbstract();
+    void updateNotes();
     void updateMetaTable();
 
     QPixmap noCover( int size = 200 );

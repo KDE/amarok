@@ -333,21 +333,22 @@ void CoverFoundDialog::add( const QPixmap cover,
 CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
     : KVBox( parent )
 {
-    m_cover     = new QLabel( this );
-    m_tabs      = new QTabWidget( this );
-    m_abstract  = new QLabel( m_tabs );
+    m_cover = new QLabel( this );
+    m_tabs  = new QTabWidget( this );
+    m_notes = new QLabel( m_tabs );
     m_metaTable = new QTableWidget( m_tabs );
-    m_abstract->setAlignment( Qt::AlignLeft | Qt::AlignTop );
-    m_abstract->setMargin( 4 );
-    m_abstract->setOpenExternalLinks( true );
-    m_abstract->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    m_abstract->setWordWrap( true );
+    m_notes->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    m_notes->setMargin( 4 );
+    m_notes->setOpenExternalLinks( true );
+    m_notes->setTextFormat( Qt::RichText );
+    m_notes->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_notes->setWordWrap( true );
     m_cover->setAlignment( Qt::AlignCenter );
     m_metaTable->setColumnCount( 2 );
     m_metaTable->horizontalHeader()->setVisible( false );
     m_metaTable->verticalHeader()->setVisible( false );
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
-    m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
+    m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
     clear();
 }
@@ -364,7 +365,7 @@ void CoverFoundSideBar::clear()
     m_cover->setPixmap( m_noCover );
     m_metaTable->setRowCount( 0 );
     m_metaTable->clear();
-    m_abstract->clear();
+    m_notes->clear();
     m_metadata.clear();
 }
 
@@ -373,7 +374,7 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata me
     setPixmap( pixmap );
     m_metadata = metadata;
     updateMetaTable();
-    updateAbstract();
+    updateNotes();
 }
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
@@ -384,26 +385,26 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
     m_cover->setPixmap( prettyPix );
 }
 
-void CoverFoundSideBar::updateAbstract()
+void CoverFoundSideBar::updateNotes()
 {
-    bool enableAbstract( false );
-    if( m_metadata.contains( "abstract" ) )
+    bool enableNotes( false );
+    if( m_metadata.contains( "notes" ) )
     {
-        const QString abstract = m_metadata.value( "abstract" );
-        if( !abstract.isEmpty() )
+        const QString notes = m_metadata.value( "notes" );
+        if( !notes.isEmpty() )
         {
-            m_abstract->setText( abstract );
-            enableAbstract = true;
+            m_notes->setText( notes );
+            enableNotes = true;
         }
         else
-            enableAbstract = false;
+            enableNotes = false;
     }
     else
     {
-        m_abstract->clear();
-        enableAbstract = false;
+        m_notes->clear();
+        enableNotes = false;
     }
-    m_tabs->setTabEnabled( m_tabs->indexOf( m_abstract ), enableAbstract );
+    m_tabs->setTabEnabled( m_tabs->indexOf( m_notes ), enableNotes );
 }
 
 void CoverFoundSideBar::updateMetaTable()

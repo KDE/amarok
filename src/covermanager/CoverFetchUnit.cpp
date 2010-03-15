@@ -706,6 +706,12 @@ CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
                 metadata[ elementTag ] = elementText;
             }
         }
+
+        if( metadata.contains( "abstract" ) )
+        {
+            const QString notes = metadata.take( "abstract" );
+            metadata[ "notes" ] = notes;
+        }
         m_urls.insert( url, metadata );
     }
 }
