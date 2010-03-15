@@ -237,6 +237,8 @@ CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
+    if( m_requested[ "albums" ] )
+        update();
 }
 
 void
