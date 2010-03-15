@@ -21,6 +21,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed issue with the Albums applet not correctly updating when playing a 
+       track by an artist not present in the local collection. 
      * Fixed Albums applet not getting updated if the artist of the currently 
        playing track was edited. (BR 210296)
      * Fixed bad window title for the details edit dialog in the playlist layout 
