@@ -19,6 +19,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed visual indication for "Stop After This Track" not getting shown 
+       immediately when using the global shortcut. (BR 230569)
      * Cover fetcher: Fixed a crash involving reappearing cover found dialogs
        and pending cover fetches. (BR 230215)
      * Display tooltips with applet names in the context toolbar. (BR 230736)
