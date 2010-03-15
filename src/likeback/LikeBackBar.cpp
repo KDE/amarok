@@ -119,6 +119,10 @@ void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
     if(  newWindow != 0
          &&   newWindow->objectName() != "LikeBackFeedBack"
          &&   newWindow->objectName() != "KBugReport"
+         &&   newWindow->objectName() != "BookmarkManager"
+         &&   newWindow->objectName() != "TheCoverManager"
+         &&   newWindow->objectName() != "PlayMedia"
+         &&   newWindow->objectName() != "PlaylistExport"
          && ( newWindow->windowType() == Qt::Window
               ||   newWindow->windowType() == Qt::Dialog ) )
     {

@@ -565,6 +565,7 @@ MainWindow::exportPlaylist() const //SLOT
     fileDialog.setOperationMode( KFileDialog::Saving );
     fileDialog.setMode( KFile::File );
     fileDialog.setCaption( i18n("Save As") );
+    fileDialog.setObjectName( "PlaylistExport" );
 
     fileDialog.exec();
 
@@ -614,6 +615,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation)), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
+    dlg.setObjectName( "PlayMedia" );
     dlg.exec();
     files = dlg.selectedUrls();
 

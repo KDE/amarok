@@ -42,6 +42,7 @@ BookmarkManager::BookmarkManager()
     kapp->setTopWidget( this );
     setWindowTitle( KDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
     setAttribute( Qt::WA_DeleteOnClose );
+    setObjectName( "BookmarkManager" );
 
     QHBoxLayout *layout = new QHBoxLayout( this );
     m_widget = new BookmarkManagerWidget( this );
