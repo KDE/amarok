@@ -522,6 +522,11 @@ CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
 
     CoverFetch::Metadata metadata;
     const QDomNode &releaseNode = docElem.namedItem( "release" );
+    if( releaseNode.hasAttributes() )
+    {
+        const QDomNamedNodeMap attr = releaseNode.attributes();
+        metadata[ "releaseid" ] = attr.namedItem( "id" ).nodeValue();
+    }
 
     // TODO: there are a lot more discogs info that can be extracted as metadata.
     metadata[ "notes" ] = releaseNode.namedItem( "notes" ).toElement().text();

@@ -409,9 +409,11 @@ void CoverFoundSideBar::updateNotes()
 
 void CoverFoundSideBar::updateMetaTable()
 {
+    // TODO: clean up tags displayed when the sidebar info area is improved
     QStringList tags;
-    tags << "artist" << "clickurl" << "country" << "date"  << "format" << "height" << "imgrefurl"
-         << "name"   << "released" << "size"    << "title" << "url"    << "width";
+    tags << "artist"    << "clickurl"  << "country" << "date" << "format"
+         << "height"    << "imgrefurl" << "name"    << "type" << "released"
+         << "releaseid" << "size"      << "title"   << "url"  << "width";
 
     m_metaTable->clear();
     m_metaTable->setRowCount( tags.size() );
