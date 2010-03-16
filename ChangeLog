@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * New "CoverBling" applet, which allows to browse your collection in an 
+       animated 3D view. Thanks to Manu Wagner <manu.wagner@sfr.fr>.
      * Support for the new System Tray technology from KDE SC 4.4. This adds
        nice animations and a better looking popup menu to the System Tray.
        Thanks to Aurelien Gateau <agateau@kde.org> for the patch.
