@@ -72,8 +72,8 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     // The background of the QLabel is transparent
     m_desc->setAttribute( Qt::WA_TranslucentBackground, true );
     m_desc->setAlignment( Qt::AlignLeft );
+    m_desc->setMinimumHeight(50);
 
-    
 
     // the image display is extended on two row
     m_layout->addWidget( m_image, 0, 0, 3, 1 );
@@ -240,17 +240,9 @@ ArtistWidget::setDescription(const QString &description)
         QTextDocument descriptionText;
         descriptionText.setHtml(description);
         QString descriptionString = descriptionText.toPlainText();
-        //resize the description
-        if (description.length() > 150)
-        {
-            //resizing the qstring
-            descriptionString.resize(150);
-            //looking for the last space
-            int last_space = descriptionString.lastIndexOf(" ");
-            //adding ... following this space
-            descriptionString = descriptionString.mid(0, last_space).append("...");
-        }
-        m_desc->setText(descriptionString);
+        m_descString=descriptionString;
+
+        elideArtistDescription();
     }
 }
 
@@ -269,3 +261,40 @@ ArtistWidget::setTopTrack(const QString &topTrack)
     }
 }
 
+
+
+void
+ArtistWidget::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event)
+    elideArtistDescription();
+}
+
+/**
+ * Elide the artist description depending on the widget size
+ */
+void
+ArtistWidget::elideArtistDescription()
+{
+
+    if(!m_descString.isEmpty())
+    {
+        QFontMetrics fontMetric(fontMetrics());
+        int space = fontMetric.lineSpacing();
+        int interligne = fontMetric.leading();
+        int heightChar = fontMetric.height();
+        int nbWidth = m_desc->width() ;
+        float nbHeight = m_desc->height() / (heightChar+interligne) ;
+        int widthTot = nbWidth * nbHeight - (space*(nbHeight-1));
+
+        QString stringTmp=fontMetric.elidedText(m_descString,Qt::ElideRight,widthTot);
+
+        //we delete nbHeigth words because of the wordWrap action
+        for(int i; i<nbHeight; i++) {
+            stringTmp=stringTmp.left(stringTmp.lastIndexOf(' '));
+        }
+
+        stringTmp.append("...");
+        m_desc->setText(stringTmp);
+    }
+}

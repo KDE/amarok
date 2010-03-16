@@ -21,10 +21,12 @@
 //Kde
 #include<KUrl>
 #include <KIO/Job>
+#include <ksqueezedtextlabel.h>
 
 //Qt
 #include <QWidget>
 #include <QString>
+
 
 class QLabel;
 class QGraphicsScene;
@@ -88,12 +90,19 @@ public:
      */
     void setTopTrack( const QString &topTrack );
 
+    void resizeEvent(QResizeEvent *event);
+
     /**
      * Clean the widget => the content of the QLabel is empty
      */
     void clear();
 
 private:
+
+    /**
+     * Elide the artist description depending on the widget size
+     */
+    void elideArtistDescription();
 
     /**
      * Layout for the formatting of the widget contents
@@ -105,23 +114,31 @@ private:
      * Image of the artist
      */
     QLabel *m_image;
-    
+
     /**
      * Name of the artist
      */
     QLabel *m_name;
-    
+
     /**
      * Genre of the artist's music
      */
     QLabel *m_genre;
-    
+
     /**
      * Top track of the artist
      */
     QLabel *m_topTrack;
-    
+
+    /**
+     * Description of the artist
+     */
     QLabel *m_desc;
+
+    /**
+     * The description in text of the artist
+     */
+    QString m_descString;
 
     /**
      * Job of the image from the web
