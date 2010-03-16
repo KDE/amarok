@@ -509,6 +509,7 @@ CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
     metadata[ "notes" ] = releaseNode.namedItem( "notes" ).toElement().text();
     metadata[ "title" ] = releaseNode.namedItem( "title" ).toElement().text();
     metadata[ "country" ] = releaseNode.namedItem( "country" ).toElement().text();
+    metadata[ "released" ] = releaseNode.namedItem( "released" ).toElement().text();
 
     const QDomNodeList imageNodes = releaseNode.namedItem( "images" ).childNodes();
     for( uint x = 0, len = imageNodes.length(); x < len; ++x )
