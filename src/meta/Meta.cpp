@@ -328,33 +328,39 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
     if( !left || !right ) // These should never be 0, but it can apparently happen (http://bugs.kde.org/show_bug.cgi?id=181187)
         return false;
 
-    if( !left->album() || !right->album() )
-        return false;
-
-    if( left->album()->name() == right->album()->name() ) // If the albums are the same
-    {
-        if ( left->discNumber() < right->discNumber() ) //First compare by disc number
+    if( left->album() && right->album() )
+        if( left->album()->name() == right->album()->name() )
         {
+            if( left->discNumber() < right->discNumber() )
+                return true;
+            else if( left->discNumber() > right->discNumber() )
+                return false;
+
+            if( left->trackNumber() < right->trackNumber() )
+                return true;
+            if( left->trackNumber() > right->trackNumber() )
+                return false;
+        }
+
+    if( left->artist() && right->artist() )
+    {
+        int compare = QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() );
+        if ( compare < 0 )
             return true;
-        }
-        else if( left->discNumber() == right->discNumber() ) //Disc #'s are equal, compare by track number
-        {
-            return left->trackNumber() < right->trackNumber();
-        }
-        else
-        {
-            return false; // Right disc has a lower number
-        }
-    }
-    else if( left->artist() && right->artist() )
-    {
-        if( left->artist()->name() == right->artist()->name() )
-            return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
-        // compare artists alphabetically
-        return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
+        else if ( compare > 0 )
+            return false;
     }
 
-    return false;
+    if( left->album() && right->album() )
+    {
+        int compare = QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() );
+        if ( compare < 0 )
+            return true;
+        else if ( compare > 0 )
+            return false;
+    }
+
+    return QString::localeAwareCompare( left->prettyName(), right->prettyName() ) < 0;
 }
 
 //Meta::Artist
