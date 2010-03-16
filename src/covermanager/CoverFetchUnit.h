@@ -43,6 +43,7 @@ namespace CoverFetch
 
     enum Source
     {
+        Discogs,        //! Use Discogs as provider for cover images
         Google,         //! Use Google image search as provider
         LastFm,         //! Use Last.fm as provider for cover images
         Yahoo           //! Use Yahoo! BOSS image search as provider
@@ -130,13 +131,16 @@ private:
 class CoverFetchInfoPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchInfoPayload( const Meta::AlbumPtr album );
+    explicit CoverFetchInfoPayload( const Meta::AlbumPtr album, const CoverFetch::Source src );
+    explicit CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &xml );
     ~CoverFetchInfoPayload();
 
 protected:
     void prepareUrls();
 
 private:
+    QString m_xml;
+    void prepareDiscogsUrls( const QDomDocument &doc );
     Q_DISABLE_COPY( CoverFetchInfoPayload );
 };
 
@@ -206,6 +210,9 @@ private:
 
     /// lower, remove whitespace, and do Unicode normalization on a QStringList
     QStringList normalize( const QStringList &rawList );
+
+    /// prepare urls from xml provided by Discogs
+    void prepareDiscogsUrls( const QDomDocument &doc );
 
     /// prepare urls from xml provided by Last.fm
     void prepareLastFmUrls( const QDomDocument &doc );

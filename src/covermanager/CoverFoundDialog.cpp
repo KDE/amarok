@@ -100,17 +100,21 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
     QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
     QAction *yahooAct = new QAction( i18n( "Yahoo!" ), sourceMenu );
+    QAction *discogsAct = new QAction( i18n( "Discogs" ), sourceMenu );
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
     yahooAct->setCheckable( true );
-    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFmSearch()) );
+    discogsAct->setCheckable( true );
+    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFm()) );
     connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
     connect( yahooAct, SIGNAL(triggered()), this, SLOT(selectYahoo()) );
+    connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
 
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
     ag->addAction( googleAct );
     ag->addAction( yahooAct );
+    ag->addAction( discogsAct );
     sourceMenu->addActions( ag->actions() );
     sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
 
@@ -158,10 +162,14 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         lastFmAct->setChecked( true );
     else if( source == "Yahoo" )
         yahooAct->setChecked( true );
+    else if( source == "Discogs" )
+        discogsAct->setChecked( true );
     else
         googleAct->setChecked( true );
 
-    add( cover, data );
+    typedef CoverFetchArtPayload CFAP;
+    const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
+    add( cover, data, payload->imageSize() );
     m_view->setCurrentItem( m_view->item( 0 ) );
 }
 
@@ -251,7 +259,14 @@ void CoverFoundDialog::processQuery( const QString &query )
     emit newCustomQuery( m_query, m_queryPage );
 }
 
-void CoverFoundDialog::selectLastFmSearch()
+void CoverFoundDialog::selectDiscogs()
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Interactive Image Source", "Discogs" );
+    m_queryPage = 0;
+}
+
+void CoverFoundDialog::selectLastFm()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "LastFm" );
@@ -318,21 +333,22 @@ void CoverFoundDialog::add( const QPixmap cover,
 CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
     : KVBox( parent )
 {
-    m_cover     = new QLabel( this );
-    m_tabs      = new QTabWidget( this );
-    m_abstract  = new QLabel( m_tabs );
+    m_cover = new QLabel( this );
+    m_tabs  = new QTabWidget( this );
+    m_notes = new QLabel( m_tabs );
     m_metaTable = new QTableWidget( m_tabs );
-    m_abstract->setAlignment( Qt::AlignLeft | Qt::AlignTop );
-    m_abstract->setMargin( 4 );
-    m_abstract->setOpenExternalLinks( true );
-    m_abstract->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    m_abstract->setWordWrap( true );
+    m_notes->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    m_notes->setMargin( 4 );
+    m_notes->setOpenExternalLinks( true );
+    m_notes->setTextFormat( Qt::RichText );
+    m_notes->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_notes->setWordWrap( true );
     m_cover->setAlignment( Qt::AlignCenter );
     m_metaTable->setColumnCount( 2 );
     m_metaTable->horizontalHeader()->setVisible( false );
     m_metaTable->verticalHeader()->setVisible( false );
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
-    m_tabs->addTab( m_abstract, i18n( "Abstract" ) );
+    m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
     clear();
 }
@@ -349,7 +365,7 @@ void CoverFoundSideBar::clear()
     m_cover->setPixmap( m_noCover );
     m_metaTable->setRowCount( 0 );
     m_metaTable->clear();
-    m_abstract->clear();
+    m_notes->clear();
     m_metadata.clear();
 }
 
@@ -358,7 +374,7 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata me
     setPixmap( pixmap );
     m_metadata = metadata;
     updateMetaTable();
-    updateAbstract();
+    updateNotes();
 }
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
@@ -369,36 +385,38 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
     m_cover->setPixmap( prettyPix );
 }
 
-void CoverFoundSideBar::updateAbstract()
+void CoverFoundSideBar::updateNotes()
 {
-    bool enableAbstract( false );
-    if( m_metadata.contains( "abstract" ) )
+    bool enableNotes( false );
+    if( m_metadata.contains( "notes" ) )
     {
-        const QString abstract = m_metadata.value( "abstract" );
-        if( !abstract.isEmpty() )
+        const QString notes = m_metadata.value( "notes" );
+        if( !notes.isEmpty() )
         {
-            m_abstract->setText( abstract );
-            enableAbstract = true;
+            m_notes->setText( notes );
+            enableNotes = true;
         }
         else
-            enableAbstract = false;
+            enableNotes = false;
     }
     else
     {
-        m_abstract->clear();
-        enableAbstract = false;
+        m_notes->clear();
+        enableNotes = false;
     }
-    m_tabs->setTabEnabled( m_tabs->indexOf( m_abstract ), enableAbstract );
+    m_tabs->setTabEnabled( m_tabs->indexOf( m_notes ), enableNotes );
 }
 
 void CoverFoundSideBar::updateMetaTable()
 {
+    // TODO: clean up tags displayed when the sidebar info area is improved
     QStringList tags;
-    tags << "artist" << "clickurl" << "date"  << "format" << "height" << "imgrefurl"
-         << "name"   << "size"     << "title" << "url"    << "width";
+    tags << "artist"    << "clickurl"  << "country" << "date" << "format"
+         << "height"    << "imgrefurl" << "name"    << "type" << "released"
+         << "releaseid" << "size"      << "title"   << "url"  << "width";
 
     m_metaTable->clear();
-    m_metaTable->setRowCount( 10 );
+    m_metaTable->setRowCount( tags.size() );
 
     int row( 0 );
     foreach( const QString &tag, tags )
@@ -409,18 +427,25 @@ void CoverFoundSideBar::updateMetaTable()
         if( m_metadata.contains( tag ) )
         {
             const QString value = m_metadata.value( tag );
+            if( value.isEmpty() )
+                continue;
+
             itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
             itemVal = new QTableWidgetItem( value );
         }
         else if( tag == "width" )
         {
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemTag = new QTableWidgetItem( i18n( "width" ) );
             itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
         }
         else if( tag == "height" )
         {
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemTag = new QTableWidgetItem( i18n( "height" ) );
             itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
+        }
+        else
+        {
+            continue;
         }
 
         if( itemTag && itemVal )

@@ -14,8 +14,9 @@ VERSION 2.3.1-Beta 1
      * Cover fetcher: The UI was improved. Now an icon view is used to display
        results, with an informational sidebar that may show interesting bits
        about an image.
-     * Cover fetcher: Added ability to enter custom queries via web search (in
-       addition to Lasf.Fm).
+     * Cover fetcher: Added ability to enter custom queries via Yahoo!,
+       Google, or Discogs (in addition to Lasf.Fm). Note the source for
+       automatic cover fetching is still Last.fm only.
 
   CHANGES:
      * When bookmarking a view in the local collection, also store (and restore)

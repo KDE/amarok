@@ -117,7 +117,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
     if( urls.isEmpty() )
     {
-        if( unit->isInteractive() )
+        if( unit->isInteractive() && !m_dialog )
         {
             The::statusBar()->shortMessage( i18n( "No covers found." ) );
             showCover( unit );
@@ -171,7 +171,7 @@ CoverFetcher::slotResult( KJob *job )
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), CoverFetch::LastFm, data );
+        m_queue->add( unit->album(), unit->options(), unit->payload()->source(), data );
         m_queue->remove( unit );
         break;
 
@@ -351,6 +351,8 @@ CoverFetcher::fetchSource() const
         source = CoverFetch::LastFm;
     else if( sourceEntry == "Google" )
         source = CoverFetch::Google;
+    else if( sourceEntry == "Discogs" )
+        source = CoverFetch::Discogs;
     else
         source = CoverFetch::Yahoo;
     return source;
