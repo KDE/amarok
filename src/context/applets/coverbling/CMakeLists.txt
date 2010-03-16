@@ -1,7 +1,5 @@
 project(context-coverbling)
 
-find_package(OpenGL)
-
 set(coverbling_SRCS
 pictureflow.cpp
 CoverBlingApplet.cpp
