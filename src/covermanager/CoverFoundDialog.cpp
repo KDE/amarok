@@ -427,18 +427,25 @@ void CoverFoundSideBar::updateMetaTable()
         if( m_metadata.contains( tag ) )
         {
             const QString value = m_metadata.value( tag );
+            if( value.isEmpty() )
+                continue;
+
             itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
             itemVal = new QTableWidgetItem( value );
         }
         else if( tag == "width" )
         {
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemTag = new QTableWidgetItem( i18n( "width" ) );
             itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
         }
         else if( tag == "height" )
         {
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            itemTag = new QTableWidgetItem( i18n( "height" ) );
             itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
+        }
+        else
+        {
+            continue;
         }
 
         if( itemTag && itemVal )
