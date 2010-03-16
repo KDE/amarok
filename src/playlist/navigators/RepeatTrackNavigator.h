@@ -18,14 +18,14 @@
 #ifndef REPEATTRACKNAVIGATOR_H
 #define REPEATTRACKNAVIGATOR_H
 
-#include "StandardTrackNavigator.h"
+#include "TrackNavigator.h"
 
 namespace Playlist
 {
     /**
      * Repeats the selected track over and over, unless the user intervenes
      */
-    class RepeatTrackNavigator : public StandardTrackNavigator
+    class RepeatTrackNavigator : public TrackNavigator
     {
         Q_OBJECT
 
@@ -35,9 +35,8 @@ namespace Playlist
             quint64 likelyNextTrack() { return m_trackid; }
             quint64 likelyLastTrack() { return m_trackid; }
             quint64 requestNextTrack() { return m_trackid; }
+            quint64 requestUserNextTrack() { return requestNextTrack(); }
             quint64 requestLastTrack() { return m_trackid; }
-
-            virtual void reset() {};
 
         private slots:
             void recvActiveTrackChanged( const quint64 id ) { m_trackid = id; }

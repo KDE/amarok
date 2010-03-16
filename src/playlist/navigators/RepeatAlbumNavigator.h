@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +21,9 @@
 #ifndef REPEATALBUMNAVIGATOR_H
 #define REPEATALBUMNAVIGATOR_H
 
-#include "TrackNavigator.h"
+#include "AlbumNavigator.h"
 
 #include "Meta.h"
-
-#include <QHash>
-#include <QList>
 
 namespace Playlist
 {
@@ -34,36 +32,20 @@ namespace Playlist
 
         @author Nikolaj Hald Nielsen <nhn@kde.org>
         @author Soren Harward <stharward@gmail.com>
-    */
-
-    class RepeatAlbumNavigator : public TrackNavigator
+     */
+    class RepeatAlbumNavigator : public AlbumNavigator
     {
         Q_OBJECT
 
-    public:
-        RepeatAlbumNavigator();
+        public:
+            RepeatAlbumNavigator();
 
-        quint64 likelyNextTrack();
-        quint64 likelyLastTrack();
+        private:
+            //! Override from 'AlbumNavigator'
+            void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) { Q_UNUSED( insertedAlbums ); }
 
-        quint64 requestNextTrack();
-        quint64 requestUserNextTrack() { return requestNextTrack(); }
-        quint64 requestLastTrack();
-
-        void reset() {};
-
-    private slots:
-        void recvInsertedIds( const QList<quint64>& );
-        void recvRemovedIds( const QList<quint64>& );
-        void recvActiveTrackChanged( const quint64 );
-
-    private:
-        void dump();
-
-        QHash<QString, ItemList> m_albumGroups;
-
-        QString m_currentAlbum;
-        quint64 m_currentTrack;
+            //! Override from 'NonlinearTrackNavigator'
+            void planOne();
     };
 }
 #endif

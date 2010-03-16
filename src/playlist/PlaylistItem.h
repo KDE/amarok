@@ -36,6 +36,9 @@ namespace Playlist
                 Queued
             };
 
+            static void listRemove( QList<quint64> &target, QSet<quint64> &removeSet );
+
+
             Item() : m_track ( 0 ), m_state ( Invalid ), m_id ( 0 ) { }
             Item ( Meta::TrackPtr track );
             ~Item();

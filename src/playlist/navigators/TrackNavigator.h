@@ -79,11 +79,6 @@ namespace Playlist
             virtual quint64 requestLastTrack() = 0;
 
             /**
-             * Reset this navigator. Called when the end of a playlist is reached.
-             */
-            virtual void reset() = 0;
-
-            /**
              * Find the position of the id in the queue
              * @return the position, or -1 if non in queue
              */
@@ -99,14 +94,17 @@ namespace Playlist
             /**
              * Queues the specified id and schedules it to be played.
              */
-            virtual bool queueIds( const QList<quint64> &ids );
-            virtual bool queueId( const quint64 id );
+            virtual void queueIds( const QList<quint64> &ids );
+            virtual void queueId( const quint64 id );
 
             /**
              * Dequeue the specified id from the queue list
              */
-            virtual bool dequeueIds( const QList<quint64> &ids );
-            virtual bool dequeueId( const quint64 id );
+            virtual void dequeueId( const quint64 id );
+
+        private slots:
+            void slotModelReset();
+            void slotRowsRemoved( const QModelIndex& parent, int start, int end );
 
         protected:
             // repeat the entire playlist when we've reached the end

@@ -23,22 +23,20 @@
 
 namespace Playlist
 {
-/**
- * Simply plays the next track and stops playing when the playlist is finished.
- */
-class StandardTrackNavigator : public TrackNavigator
-{
-public:
-    StandardTrackNavigator() : TrackNavigator() { }
+    /**
+     * Simply plays the next track and stops playing when the playlist is finished.
+     */
+    class StandardTrackNavigator : public TrackNavigator
+    {
+        public:
+            StandardTrackNavigator() : TrackNavigator() { }
 
-    quint64 likelyNextTrack();
-    quint64 likelyLastTrack();
-    quint64 requestNextTrack();
-    quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack();
-
-    void reset() {};
-};
+            quint64 likelyNextTrack();
+            quint64 likelyLastTrack();
+            quint64 requestNextTrack();
+            quint64 requestUserNextTrack() { return requestNextTrack(); }
+            quint64 requestLastTrack();
+    };
 
 }
 

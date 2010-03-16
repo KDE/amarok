@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,55 +21,31 @@
 #ifndef RANDOMALBUMNAVIGATOR_H
 #define RANDOMALBUMNAVIGATOR_H
 
-#include "TrackNavigator.h"
-
-#include "Meta.h"
-
-#include <QList>
+#include "AlbumNavigator.h"
 
 namespace Playlist
 {
     /**
-    Navigator for playing back albums in random order
+        Navigator for playing back albums in random order
 
         @author Nikolaj Hald Nielsen <nhn@kde.org>
         @author Soren Harward <stharward@gmail.com>
-    */
+     */
 
-    class RandomAlbumNavigator : public TrackNavigator
+    class RandomAlbumNavigator : public AlbumNavigator
     {
         Q_OBJECT
 
         public:
             RandomAlbumNavigator();
 
-            quint64 likelyNextTrack();
-            quint64 likelyLastTrack();
-
-            quint64 requestNextTrack();
-            quint64 requestUserNextTrack() { return requestNextTrack(); }
-            quint64 requestLastTrack();
-
-            void reset();
-
-        private slots:
-            void recvInsertedIds( const QList<quint64>& );
-            void recvRemovedIds( const QList<quint64>& );
-            void recvActiveTrackChanged( const quint64 );
-
         private:
-            static bool idLessThan( const quint64& left, const quint64& right );
-            void sortTheseAlbums( const Meta::AlbumList );
+            //! Override from 'AlbumNavigator'
+            void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums );
 
-            void dump();
-
-            QHash<Meta::AlbumPtr, ItemList> m_albumGroups;
-
-            QList<Meta::AlbumPtr> m_playedAlbums;
-            QList<Meta::AlbumPtr> m_unplayedAlbums;
-
-            Meta::AlbumPtr m_currentAlbum;
-            quint64 m_currentTrack;
+            //! Override from 'NonlinearTrackNavigator'
+            void planOne();
     };
 }
+
 #endif

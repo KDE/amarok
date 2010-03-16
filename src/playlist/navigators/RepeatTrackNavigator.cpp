@@ -22,7 +22,6 @@
 
 Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
 {
-    m_model = Playlist::ModelStack::instance()->top();
     m_trackid = m_model->activeId();
 
     connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),

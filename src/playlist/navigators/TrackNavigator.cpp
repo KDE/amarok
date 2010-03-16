@@ -30,19 +30,24 @@ Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();
     m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
-             this, SLOT( dequeueIds( const QList<quint64>& ) ) );
+
+    // Connect to the QAbstractItemModel signals of the source model.
+    //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
+    //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
+    connect( model(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
+    //   Ignore SIGNAL rowsInserted.
+    connect( model(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsRemoved( const QModelIndex&, int, int ) ) );
 }
 
-bool
+void
 Playlist::TrackNavigator::queueId( const quint64 id )
 {
     QList<quint64> ids;
     ids << id;
-    return queueIds( ids );
+    queueIds( ids );
 }
 
-bool
+void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
     foreach( quint64 id, ids )
@@ -50,23 +55,12 @@ Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
         if( !m_queue.contains( id ) )
             m_queue.enqueue( id );
     }
-    return true;
 }
 
-bool
+void
 Playlist::TrackNavigator::dequeueId( const quint64 id )
 {
-    QList<quint64> ids;
-    ids << id;
-    return dequeueIds( ids );
-}
-
-bool
-Playlist::TrackNavigator::dequeueIds( const QList<quint64> &ids )
-{
-    foreach( quint64 id, ids )
-        m_queue.removeAll( id );
-    return true;
+    m_queue.removeAll( id );
 }
 
 int
@@ -80,3 +74,19 @@ QQueue<quint64> Playlist::TrackNavigator::queue()
     return m_queue;
 }
 
+void
+Playlist::TrackNavigator::slotModelReset()
+{
+    m_queue.clear();    // We should check 'm_model's new contents, but this is unlikely to bother anyone.
+}
+
+// This function can get called thousands of times during a single FilterProxy change.
+// Be very efficient here!
+void
+Playlist::TrackNavigator::slotRowsRemoved( const QModelIndex& parent, int startRow, int endRow )
+{
+    Q_UNUSED( parent );
+
+    for (int row = startRow; row <= endRow; row++)
+        dequeueId( m_model->idAt( row ) );
+}

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Edward Toroshchin <edward.hades@gmail.com>                        *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,30 +20,22 @@
 #ifndef FAVOREDRANDOMTRACKNAVIGATOR_H
 #define FAVOREDRANDOMTRACKNAVIGATOR_H
 
-#include "TrackNavigator.h"
+#include "NonlinearTrackNavigator.h"
 
 namespace Playlist
 {
 
-class FavoredRandomTrackNavigator : public TrackNavigator
-{
-public:
-    FavoredRandomTrackNavigator() : TrackNavigator(), m_random(0) { }
+    class FavoredRandomTrackNavigator : public NonlinearTrackNavigator
+    {
+        public:
+            FavoredRandomTrackNavigator();
 
-    quint64 likelyNextTrack();
-    quint64 likelyLastTrack();
-
-    quint64 requestNextTrack();
-    quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack();
-
-    void reset();
-
-private:
-    int randomRow();
-    QList< quint64 > m_history;
-    int m_random;
-};
+        private:
+            //! Override from 'NonlinearTrackNavigator'
+            void planOne();
+            void notifyItemsInserted( const QSet<quint64> &insertedItems ) { Q_UNUSED( insertedItems ); }
+            void notifyItemsRemoved( const QSet<quint64> &removedItems ) { Q_UNUSED( removedItems ); }
+    };
 
 }
 

@@ -33,7 +33,7 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
         : m_playlist( p )
 {
     DEBUG_BLOCK
-    m_model = Playlist::ModelStack::instance()->top();
+
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
     connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( model(), SIGNAL( modelReset() ), SLOT( repopulate() ) );

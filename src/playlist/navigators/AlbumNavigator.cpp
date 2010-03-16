@@ -36,22 +36,17 @@ Playlist::AlbumNavigator::notifyItemsInserted( const QSet<quint64> &insertedItem
 {
     DEBUG_BLOCK
 
-    QSet<Meta::AlbumPtr> oldAlbums = m_itemsPerAlbum.uniqueKeys().toSet();
-    QSet<Meta::AlbumPtr> modifiedAlbums;
+    QSet<AlbumId> oldAlbums = m_itemsPerAlbum.uniqueKeys().toSet();
+    QSet<AlbumId> modifiedAlbums;
 
     foreach( quint64 insertedItem, insertedItems )
     {
-        Meta::AlbumPtr album = m_model->trackForId( insertedItem )->album();
-        debug() << "Inserting" << album->prettyName();
+        AlbumId album = albumForItem( insertedItem );
         m_itemsPerAlbum[album].append( insertedItem ); // conveniently creates an empty list if none exists
         modifiedAlbums.insert( album );
     }
 
-        foreach ( Meta::AlbumPtr a, m_itemsPerAlbum.uniqueKeys() )
-        {
-            debug() << "Album:" << a->prettyName();
-        }
-    foreach( Meta::AlbumPtr album, modifiedAlbums )
+    foreach( AlbumId album, modifiedAlbums )
         qStableSort( m_itemsPerAlbum[album].begin(), m_itemsPerAlbum[album].end(), itemLessThan );
 
     notifyAlbumsInserted( ( modifiedAlbums - oldAlbums ).toList() );
@@ -64,7 +59,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 
     foreach( quint64 removedItem, removedItems )
     {
-        Meta::AlbumPtr album = m_model->trackForId( removedItem )->album();
+        AlbumId album = albumForItem( removedItem );
 
         // Try not to lose our position in the playlist: if we're losing 'currentItem()', substitute the next "planned item".
         if ( removedItem == currentItem() )
@@ -90,7 +85,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 bool
 Playlist::AlbumNavigator::itemLessThan( const quint64 &item1, const quint64 &item2 )
 {
-    // Somewhat nasty to hard-code the model like this, but 'qStableSort()' doesn't allow us pass 'm_model'.
+    // Somewhat nasty to hard-code the model like this, but 'qStableSort()' doesn't give us a way to pass 'm_model'.
     AbstractModel *model = Playlist::ModelStack::instance()->top();
 
     Meta::TrackPtr track1 = model->trackForId( item1 );

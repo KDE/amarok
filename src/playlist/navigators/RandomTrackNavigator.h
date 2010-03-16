@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,52 +21,30 @@
 #ifndef AMAROK_RANDOMTRACKNAVIGATOR_H
 #define AMAROK_RANDOMTRACKNAVIGATOR_H
 
-#include "TrackNavigator.h"
+#include "NonlinearTrackNavigator.h"
 
 namespace Playlist
 {
     /**
      * Plays a random track in the playlist
      */
-    class RandomTrackNavigator : public TrackNavigator
+    class RandomTrackNavigator : public NonlinearTrackNavigator
     {
         Q_OBJECT
 
-    public:
-        RandomTrackNavigator();
+        public:
+            RandomTrackNavigator();
 
-        quint64 likelyNextTrack();
-        quint64 likelyLastTrack();
+            static const int AVOID_RECENTLY_PLAYED_MAX = 512;    //! Try to avoid the 'N' most recently played items.
 
-        quint64 requestNextTrack();
-        quint64 requestNextTrack2();
-        quint64 requestUserNextTrack() { return requestNextTrack(); }
-        quint64 requestLastTrack();
+        private:
+            //! Overrides from 'NonlinearTrackNavigator'
+            void planOne();
+            void notifyItemsInserted( const QSet<quint64> &insertedItems ) { Q_UNUSED( insertedItems ); }
+            void notifyItemsRemoved( const QSet<quint64> &removedItems ) { Q_UNUSED( removedItems ); }
 
-        void reset();
-
-    private slots:
-        void recvInsertedIds( const QList<quint64>& );
-        void recvRemovedIds( const QList<quint64>& );
-        void recvActiveTrackChanged( const quint64 );
-
-    private:
-        /**
-         * List of tracks already played.
-         */
-        QList<quint64> m_playedRows;
-
-        /**
-         * List of tracks that have played before but due to requests
-         * of previous tracks these will be queued next.
-         */
-        QList<quint64> m_replayedRows;
-
-        /**
-         * List of tracks that have never been played.
-         */
-        QList<quint64> m_unplayedRows;
-
+            QSet<quint64> getRecentHistory( int size );
+            quint64 chooseRandomItem( QSet<quint64> avoidSet );
     };
 }
 

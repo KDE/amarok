@@ -45,18 +45,25 @@ namespace Playlist
             void notifyItemsInserted( const QSet<quint64> &insertedItems );
             void notifyItemsRemoved( const QSet<quint64> &removedItems );
 
+            typedef QString AlbumId;    // QString '->name()', because Meta::AlbumPtr doesn't work for meta types that use private album pointers.
+
             /**
              * Empty notification callback for child classes: new albums have been inserted.
              */
-            virtual void notifyAlbumsInserted( const QList<Meta::AlbumPtr> insertedAlbums ) = 0;
+            virtual void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) = 0;
+
+            /**
+             * Convenience function: the album of an item.
+             */
+            AlbumId albumForItem( quint64 item ) { return m_model->trackForId( item )->album()->name(); }
 
             /**
              * Convenience function: the album of 'currentItem()'.
              */
-            Meta::AlbumPtr currentAlbum() { return currentItem() ? m_model->trackForId( currentItem() )->album() : Meta::AlbumPtr(); }
+            AlbumId currentAlbum() { return currentItem() ? albumForItem( currentItem() ) : AlbumId(); }
 
-            QHash<Meta::AlbumPtr, ItemList> m_itemsPerAlbum;    //! For use by child classes. Maintained automatically.
-            QList<Meta::AlbumPtr> m_plannedAlbums;    //! For use by child classes. Cleared automatically.
+            QHash<AlbumId, ItemList> m_itemsPerAlbum;    //! For use by child classes. Maintained automatically.
+            QList<AlbumId> m_plannedAlbums;    //! For use by child classes. Cleared automatically.
 
         private:
             static bool itemLessThan( const quint64 &left, const quint64 &right );
