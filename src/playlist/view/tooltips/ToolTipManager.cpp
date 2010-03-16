@@ -134,11 +134,11 @@ void ToolTipManager::prepareToolTip()
     QString text;
 
 
-    if (isVisible(Playlist::Artist))
+    if ((isVisible(Playlist::Artist)) && (m_track->artist()))
     {
         text += HTMLLine( Playlist::Artist, m_track->artist()->prettyName() );
     }
-    if (isVisible(Playlist::Album))
+    if ((isVisible(Playlist::Album)) && (m_track->album()))
     {
         text += HTMLLine( Playlist::Album, m_track->album()->prettyName() );
     }
@@ -154,15 +154,15 @@ void ToolTipManager::prepareToolTip()
     {
         text += HTMLLine( Playlist::TrackNumber, m_track->trackNumber() );
     }
-    if (isVisible(Playlist::Composer))
+    if ((isVisible(Playlist::Composer)) && (m_track->composer()))
     {
         text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
     }
-    if (isVisible(Playlist::Genre))
+    if ((isVisible(Playlist::Genre)) && (m_track->genre()))
     {
         text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
     }
-    if (isVisible(Playlist::Year))
+    if ((isVisible(Playlist::Year)) && (m_track->year()))
     {
         text += HTMLLine( Playlist::Year, m_track->year()->name().toInt() );
     }
