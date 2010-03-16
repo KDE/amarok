@@ -117,7 +117,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
     if( urls.isEmpty() )
     {
-        if( unit->isInteractive() )
+        if( unit->isInteractive() && !m_dialog )
         {
             The::statusBar()->shortMessage( i18n( "No covers found." ) );
             showCover( unit );
