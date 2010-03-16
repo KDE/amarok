@@ -251,7 +251,8 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 
     if( !m_dialog )
     {
-        if( !unit->album() )
+        const Meta::AlbumPtr album = unit->album();
+        if( !album )
         {
             finish( unit, Error );
             return;
@@ -262,6 +263,12 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
                            SLOT(queueQuery(const QString&, unsigned int)) );
         connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
         connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+
+        QString query( album->name() );
+        if( album->hasAlbumArtist() )
+            query += ' ' + album->albumArtist()->name();
+        queueQuery( query, 0 );
+
         m_dialog->show();
         m_dialog->raise();
         m_dialog->activateWindow();

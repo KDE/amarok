@@ -51,7 +51,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
-    , m_queryPage( 0 )
+    , m_queryPage( 1 )
     , m_unit( unit )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
@@ -88,9 +88,15 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     QStringList completionNames;
     const Meta::AlbumPtr album = unit->album();
+    QString firstRunQuery( album->name() );
     completionNames << album->name();
     if( album->hasAlbumArtist() )
-        completionNames << album->albumArtist()->name();
+    {
+        const QString &name = album->albumArtist()->name();
+        completionNames << name;
+        firstRunQuery += ' ' + name;
+    }
+    m_query = firstRunQuery;
     searchComp->setItems( completionNames );
 
     KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
@@ -245,18 +251,33 @@ void CoverFoundDialog::processQuery()
     processQuery( text );
 }
 
-void CoverFoundDialog::processQuery( const QString &query )
+void CoverFoundDialog::processQuery( const QString &input )
 {
-    if( !query.isEmpty() && (m_query == query) )
+    const bool inputEmpty( input.isEmpty() );
+    const bool mQueryEmpty( m_query.isEmpty() );
+
+    QString q;
+    if( inputEmpty && !mQueryEmpty )
     {
+        q = m_query;
         m_queryPage++;
     }
-    else
+    else if( !inputEmpty || !mQueryEmpty )
     {
-        m_query = query;
-        m_queryPage = 0;
+        q = input;
+        if( m_query == input )
+        {
+            m_queryPage++;
+        }
+        else
+        {
+            m_query = input;
+            m_queryPage = 0;
+        }
     }
-    emit newCustomQuery( m_query, m_queryPage );
+
+    if( !q.isEmpty() )
+        emit newCustomQuery( q, m_queryPage );
 }
 
 void CoverFoundDialog::selectDiscogs()
