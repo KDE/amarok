@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * Support for the new System Tray technology from KDE SC 4.4. This adds
+       nice animations and a better looking popup menu to the System Tray.
+       Thanks to Aurelien Gateau <agateau@kde.org> for the patch.
      * Allow playlist layouts to group tracks by directory. (BR 230594)
      * Cover fetcher: The UI was improved. Now an icon view is used to display
        results, with an informational sidebar that may show interesting bits
