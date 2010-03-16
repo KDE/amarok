@@ -321,7 +321,17 @@ CoverFetchInfoPayload::prepareUrls()
 void
 CoverFetchInfoPayload::prepareDiscogsUrls( const QDomDocument &doc )
 {
-    const QDomNodeList results = doc.documentElement().namedItem( "searchresults" ).childNodes();
+    const QDomElement &docElem = doc.documentElement();
+
+    const QDomNode &respNode = docElem.namedItem( "resp" );
+    if( respNode.hasAttributes() )
+    {
+        const QString &stat = respNode.attributes().namedItem( "stat" ).nodeValue();
+        if( stat != "ok" )
+            return;
+    }
+
+    const QDomNodeList &results = docElem.namedItem( "searchresults" ).childNodes();
     for( uint x = 0, len = results.length(); x < len; ++x )
     {
         const QDomNode resultNode = results.item( x );
@@ -501,11 +511,19 @@ CoverFetchArtPayload::prepareUrls()
 void
 CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
 {
+    const QDomElement &docElem = doc.documentElement();
+    const QDomNode &respNode = docElem.namedItem( "resp" );
+    if( respNode.hasAttributes() )
+    {
+        const QString &stat = respNode.attributes().namedItem( "stat" ).nodeValue();
+        if( stat != "ok" )
+            return;
+    }
+
     CoverFetch::Metadata metadata;
-    const QDomNode releaseNode = doc.documentElement().namedItem( "release" );
+    const QDomNode &releaseNode = docElem.namedItem( "release" );
 
     // TODO: there are a lot more discogs info that can be extracted as metadata.
-    const QDomNodeList results = releaseNode.childNodes();
     metadata[ "notes" ] = releaseNode.namedItem( "notes" ).toElement().text();
     metadata[ "title" ] = releaseNode.namedItem( "title" ).toElement().text();
     metadata[ "country" ] = releaseNode.namedItem( "country" ).toElement().text();
