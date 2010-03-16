@@ -140,6 +140,8 @@ private:
 
     ToolTipManager * m_toolTipManager;
 
+    void excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item , bool single );
+
 public:
     QList<int> selectedRows() const;
 };

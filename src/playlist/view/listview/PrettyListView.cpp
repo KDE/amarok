@@ -3,7 +3,7 @@
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
- * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -42,6 +42,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
+#include "playlist/PlaylistDefines.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -119,6 +120,15 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 
     m_toolTipManager = new ToolTipManager(this);
+
+    // Indicate to the tooltip manager what to display based on the layout
+    // That way, we avoid doing it every time we want to display the tooltip
+    // This will be done every time the layout will be changed
+    m_toolTipManager->cancelExclusions();
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
+
     setMouseTracking( true );
 }
 
@@ -855,6 +865,14 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         m_animationTimer->start();
     else
         m_animationTimer->stop();
+
+    // Indicate to the tooltip manager what to display based on the layout
+    // That way, we avoid doing it every time we want to display the tooltip
+    // This will be done every time the layout will be changed
+    m_toolTipManager->cancelExclusions();
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
 }
 
 void Playlist::PrettyListView::saveTrackSelection()
@@ -875,6 +893,22 @@ void Playlist::PrettyListView::restoreTrackSelection()
 
         if( restoredIndex.isValid() )
             selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
+    }
+}
+
+void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )
+{
+    for (int activeRow = 0; activeRow < item.rows(); activeRow++)
+    {
+        for (int activeElement = 0; activeElement < item.row(activeRow).count();activeElement++)
+        {
+            Playlist::Column column = (Playlist::Column)item.row(activeRow).element(activeElement).value();
+            m_toolTipManager->excludeField( column , single );
+        }
+    }
+    if (item.showCover())
+    {
+        m_toolTipManager->excludeCover( single );
     }
 }
 

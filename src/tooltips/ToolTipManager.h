@@ -49,6 +49,24 @@ public:
     explicit ToolTipManager(QAbstractItemView* parent);
     virtual ~ToolTipManager();
 
+    /**
+    * Exclude the field from being shown on the tooltip because it's already on the playlist
+    * @param column The column to be excluded
+    * @param single If ON, the item is excluded from the tooltip for a Single item (not Head or Body)
+    */
+    void excludeField( const Playlist::Column& column, bool single );
+
+    /**
+    * Exclude the album cover from being shown on the tooltip because it's already on the playlist
+    * @param single If ON, the item is excluded from the tooltip for a Single item (not Head or Body)
+    */
+    void excludeCover( bool single );
+
+    /**
+    * Cancel all exclusions
+    */
+    void cancelExclusions();
+
 public slots:
     /**
      * Hides the currently shown tooltip. Invoking this method is
@@ -80,6 +98,10 @@ private:
 
     Meta::TrackPtr m_track;
 
+    bool m_excludes[Playlist::NUM_COLUMNS];
+    bool m_excludes_single[Playlist::NUM_COLUMNS];
+    bool m_singleItem;
+
     AmarokBalloonTooltipDelegate * g_delegate;
 
     /**
@@ -87,7 +109,7 @@ private:
      * an mp3 tag and its value
      * @param column The colunm used to display the icon
      * @param value The QString value to be shown
-     * @return
+     * @return The line to be shown or an empty QString if the value is null
      */
     QString HTMLLine( const Playlist::Column& column, const QString& value );
 
@@ -96,7 +118,7 @@ private:
      * an mp3 tag and its value
      * @param column The colunm used to display the icon
      * @param value The integer value to be shown
-     * @return
+     * @return The line to be shown or an empty QString if the value is 0
      */
     QString HTMLLine( const Playlist::Column& column, const int value );
     /**
@@ -105,6 +127,15 @@ private:
      * @return The processed text
      */
     QString breakLongLinesHTML(const QString& text);
+
+    /**
+     * Returns TRUE if a data of a column should be shown
+     * Makes it easier to determine considering the Single items don't share
+     * configuration with Head or Body items
+     * @param column The column in question
+     * @return TRUE if the line should be shown
+     */
+    bool isVisible( const Playlist::Column& column );
 };
 
 #endif

@@ -83,6 +83,8 @@ ToolTipManager::ToolTipManager(QAbstractItemView* parent) :
             this, SLOT(hideTip()));
 
     m_view->viewport()->installEventFilter(this);
+
+    cancelExclusions();
 }
 
 ToolTipManager::~ToolTipManager()
@@ -112,6 +114,8 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
         m_track = track;
         m_waitOnPreviewTimer->stop();
         KToolTip::hideTip();
+
+        m_singleItem = (index.data( Playlist::GroupRole ).toInt() == Playlist::None);
 
         m_itemRect = m_view->visualRect(index);
         const QPoint pos = m_view->viewport()->mapToGlobal(m_itemRect.topLeft());
@@ -144,25 +148,57 @@ void ToolTipManager::prepareToolTip()
     }*/
 
     QPixmap image;
-    if (m_track->album()->hasImage())
+    if ( ( m_track->album()->hasImage() ) && ( isVisible(Playlist::CoverImage) ) )
+    {
         image = m_track->album()->image();
+    }
     else
+    {
         image = QPixmap();
+    }
 
     QString text;
 
-    text += HTMLLine( Playlist::Title, m_track->prettyName() );
-    text += HTMLLine( Playlist::Artist, m_track->artist()->prettyName() );
-    text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
-    text += HTMLLine( Playlist::Album, m_track->album()->prettyName() );
-    text += HTMLLine( Playlist::DiscNumber, m_track->discNumber() );
-    text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
-    text += HTMLLine( Playlist::TrackNumber, m_track->trackNumber() );
-    text += HTMLLine( Playlist::Year, m_track->year()->prettyName() );
-    text += HTMLLine( Playlist::Comment, m_track->comment() );
+    if (isVisible(Playlist::Title))
+    {
+        text += HTMLLine( Playlist::Title, m_track->prettyName() );
+    }
+    if (isVisible(Playlist::Artist))
+    {
+        text += HTMLLine( Playlist::Artist, m_track->artist()->prettyName() );
+    }
+    if (isVisible(Playlist::Composer))
+    {
+        text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
+    }
+    if (isVisible(Playlist::Album))
+    {
+        text += HTMLLine( Playlist::Album, m_track->album()->prettyName() );
+    }
+    if (isVisible(Playlist::DiscNumber))
+    {
+        text += HTMLLine( Playlist::DiscNumber, m_track->discNumber() );
+    }
+    if (isVisible(Playlist::Genre))
+    {
+        text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
+    }
+    if (isVisible(Playlist::TrackNumber))
+    {
+        text += HTMLLine( Playlist::TrackNumber, m_track->trackNumber() );
+    }
+    if (isVisible(Playlist::Year))
+    {
+        text += HTMLLine( Playlist::Year, m_track->year()->name().toInt() );
+    }
+    if (isVisible(Playlist::Comment))
+    {
+        text += HTMLLine( Playlist::Comment, m_track->comment() );
+    }
+
     if (text == "")
     {
-        text = QString(i18n("No information available"));
+        text = QString( i18n( "No extra information available" ) );
     }
     else
     {       
@@ -230,6 +266,13 @@ void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
     KToolTip::showTip(QPoint(x, y), tip);
 }
 
+/**
+* Prepares a row for the playlist tooltips consisting of an icon representing
+* an mp3 tag and its value
+* @param column The colunm used to display the icon
+* @param value The QString value to be shown
+* @return The line to be shown or an empty QString if the value is null
+*/
 QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString& value )
 {
     if (value != "")
@@ -246,6 +289,13 @@ QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString&
         return QString();
 }
 
+/**
+* Prepares a row for the playlist tooltips consisting of an icon representing
+* an mp3 tag and its value
+* @param column The colunm used to display the icon
+* @param value The integer value to be shown
+* @return The line to be shown or an empty QString if the value is 0
+*/
 QString ToolTipManager::HTMLLine( const Playlist::Column& column, const int value )
 {
     if (value != 0)
@@ -301,5 +351,75 @@ QString ToolTipManager::breakLongLinesHTML(const QString& text)
         return textInLines.trimmed();
     }
 }
+
+/**
+ * Exclude the field from being shown on the tooltip because it's already on the playlist
+ * @param column The column to be excluded
+ */
+void ToolTipManager::excludeField(const Playlist::Column& column, bool single)
+{
+    if (single)
+    {
+        m_excludes_single[column] = true;
+        // The "Track with track number", as it contains two pieces of data,
+        // deserves a special treatment
+        if (column == Playlist::TitleWithTrackNum)
+        {
+            m_excludes_single[Playlist::Title] = true;
+            m_excludes_single[Playlist::TrackNumber] = true;
+        }
+    }
+    else
+    {
+        m_excludes[column] = true;
+        if (column == Playlist::TitleWithTrackNum)
+        {
+            m_excludes[Playlist::Title] = true;
+            m_excludes[Playlist::TrackNumber] = true;
+        }
+    }
+}
+
+/**
+* Exclude the album cover from being shown on the tooltip because it's already on the playlist
+* @param single If ON, the item is excluded from the tooltip for a Single item (not Head or Body)
+*/
+void ToolTipManager::excludeCover( bool single )
+{
+    excludeField(Playlist::CoverImage, single);
+}
+
+/**
+* Cancel all exclusions
+*/
+void ToolTipManager::cancelExclusions()
+{
+    for (int i = 0 ;i < Playlist::NUM_COLUMNS; i++ )
+    {
+        m_excludes[i] = false;
+        m_excludes_single[i] = false;
+    }
+
+}
+
+/**
+* Returns TRUE if a data of a column should be shown
+* Makes it easier to determine considering the Single items don't share
+* configuration with Head or Body items
+* @param column The column in question
+* @return TRUE if the line should be shown
+*/
+bool ToolTipManager::isVisible( const Playlist::Column& column )
+{
+    if (m_singleItem)
+    {
+        return !m_excludes_single[column];
+    }
+    else
+    {
+        return !m_excludes[column];
+    }
+}
+
 
 #include "ToolTipManager.moc"
