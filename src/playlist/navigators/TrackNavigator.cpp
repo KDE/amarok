@@ -19,9 +19,11 @@
  ****************************************************************************************/
 
 #include "TrackNavigator.h"
+
+#include "playlist/PlaylistModelStack.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "playlist/PlaylistModelStack.h"
 
 #include <QQueue>
 
@@ -29,7 +31,6 @@
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();
-    m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
 
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.

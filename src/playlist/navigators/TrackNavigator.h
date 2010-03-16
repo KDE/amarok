@@ -107,9 +107,6 @@ namespace Playlist
             void slotRowsRemoved( const QModelIndex& parent, int start, int end );
 
         protected:
-            // repeat the entire playlist when we've reached the end
-            bool m_repeatPlaylist;
-
             // Holds the list of tracks to be played next. General
             // workflow should dictate that the TrackAdvancer should
             // respect the queue list as an override to what the Advancer

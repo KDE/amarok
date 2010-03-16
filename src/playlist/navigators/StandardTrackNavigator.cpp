@@ -21,6 +21,14 @@
 
 #include "StandardTrackNavigator.h"
 
+#include "Amarok.h"
+#include "amarokconfig.h"
+
+
+Playlist::StandardTrackNavigator::StandardTrackNavigator()
+{
+    m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+}
 
 quint64
 Playlist::StandardTrackNavigator::likelyNextTrack()

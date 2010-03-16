@@ -57,7 +57,7 @@ Playlist::RandomAlbumNavigator::planOne()
     // Try to find first item in next album
     if ( m_plannedItems.isEmpty() )
     {
-        if ( m_plannedAlbums.isEmpty() && m_repeatPlaylist )    // Handle end of planned album list
+        if ( m_plannedAlbums.isEmpty() )    // Handle end of planned album list
             notifyAlbumsInserted( m_itemsPerAlbum.uniqueKeys() );
 
         if ( !m_plannedAlbums.isEmpty() )
