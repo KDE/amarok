@@ -302,7 +302,19 @@ Playlist::Actions::playlistModeChanged()
             break;
 
         case AmarokConfig::EnumTrackProgression::RandomTrack:
-            m_navigator = new RandomTrackNavigator();
+            switch( AmarokConfig::favorTracks() )
+            {
+                case AmarokConfig::EnumFavorTracks::HigherScores:
+                case AmarokConfig::EnumFavorTracks::HigherRatings:
+                case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+                    m_navigator = new FavoredRandomTrackNavigator();
+                    break;
+
+                case AmarokConfig::EnumFavorTracks::Off:
+                default:
+                    m_navigator = new RandomTrackNavigator();
+                    break;
+            }
             break;
 
         case AmarokConfig::EnumTrackProgression::RandomAlbum:
