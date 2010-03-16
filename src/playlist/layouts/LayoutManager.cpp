@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -196,6 +197,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+        currentLayout.setTooltips( layout.toElement().attribute( "tooltips", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
@@ -301,6 +303,9 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" );
+
+    if( layout.tooltips() )
+        newLayout.setAttribute( "tooltips", "true" );
 
     newLayout.setAttribute( "group_by", layout.groupBy() );
 

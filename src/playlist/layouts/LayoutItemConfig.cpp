@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -154,6 +155,7 @@ Playlist::PlaylistLayout::PlaylistLayout()
     : m_isEditable(false)
     , m_isDirty(false)
     , m_inlineControls(false)
+    , m_tooltips(false)
 {}
 
 LayoutItemConfig Playlist::PlaylistLayout::head() const
@@ -213,6 +215,15 @@ bool Playlist::PlaylistLayout::inlineControls()
 void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
 {
     m_inlineControls = inlineControls;
+}
+
+bool Playlist::PlaylistLayout::tooltips()
+{
+   return m_tooltips;
+}
+void Playlist::PlaylistLayout::setTooltips( bool tooltips )
+{
+    m_tooltips = tooltips;
 }
 
 QString Playlist::PlaylistLayout::groupBy()

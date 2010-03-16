@@ -110,12 +110,6 @@
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
     </entry>
-
-    <entry key="EnableToolTips" type="Bool">
-        <label>Whether to display tooltips for the song in the playlist</label>
-        <default>false</default>
-    </entry>
-
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>

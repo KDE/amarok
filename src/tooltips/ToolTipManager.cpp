@@ -24,6 +24,8 @@
 #include "AmarokToolTip.h"
 #include "meta/Meta.h"
 #include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/layouts/LayoutManager.h"
+#include "playlist/layouts/LayoutItemConfig.h"
 
 #include <tooltips/KToolTip.h>
 
@@ -104,7 +106,7 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
     // only request a tooltip for the name column and when no selection or
     // drag & drop operation is done (indicated by the left mouse button)
     Meta::TrackPtr track = index.data( Playlist::TrackRole ).value<Meta::TrackPtr>();
-    if ((AmarokConfig::enableToolTips()) && (track) && !(QApplication::mouseButtons() & Qt::LeftButton)) {
+    if ( ( Playlist::LayoutManager::instance()->activeLayout().tooltips() ) && (track) && !(QApplication::mouseButtons() & Qt::LeftButton)) {
         m_track = track;
         m_waitOnPreviewTimer->stop();
         KToolTip::hideTip();

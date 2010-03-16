@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -162,6 +163,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
+    connect( tooltipsCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
     connect( groupByComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setLayoutChanged() ) );
 }
 
@@ -248,6 +250,7 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setSingle( singleConfig );
 
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
+    layout.setTooltips( tooltipsCheckbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
@@ -316,6 +319,7 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         m_bodyEdit->readLayout( layout.body() );
         m_singleEdit->readLayout( layout.single() );
         inlineControlsChekbox->setChecked( layout.inlineControls() );
+        tooltipsCheckbox->setChecked( layout.tooltips() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
         //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
@@ -342,6 +346,7 @@ void PlaylistLayoutEditDialog::preview()
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
+    layout.setTooltips( tooltipsCheckbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
@@ -423,6 +428,7 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 setLayout( layoutName );
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
+            i.value().setTooltips( tooltipsCheckbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( layoutName, i.value() );
@@ -518,6 +524,7 @@ void PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
 
     (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );
+    (*m_layoutsMap)[m_layoutName].setTooltips( tooltipsCheckbox->isChecked() );
     (*m_layoutsMap)[m_layoutName].setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
     (*m_layoutsMap)[m_layoutName].setDirty( true );
 }

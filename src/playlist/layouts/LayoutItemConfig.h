@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -294,6 +295,9 @@ class PlaylistLayout
         bool inlineControls();
         void setInlineControls( bool inlineControls );
 
+        bool tooltips();
+        void setTooltips( bool tooltips );
+
         QString groupBy();
         void setGroupBy( const QString & );
 
@@ -304,6 +308,7 @@ class PlaylistLayout
         bool m_isEditable;
         bool m_isDirty;
         bool m_inlineControls;
+        bool m_tooltips;
 
         QString m_groupBy;
 };
