@@ -38,20 +38,11 @@
 #include <KIcon>
 #include <KIconLoader>
 
-const int ICON_WIDTH = 128;
-const int ICON_HEIGHT = 128;
-const int PREVIEW_DELAY = 250;
-
 ToolTipManager::ToolTipManager(QAbstractItemView* parent) :
     QObject(parent),
     m_view(parent),
     m_timer(0),
-    m_previewTimer(0),
-    m_waitOnPreviewTimer(0),
-    m_itemRect(),
-    m_generatingPreview(false),
-    m_hasDefaultIcon(false),
-    m_previewPixmap()
+    m_itemRect()
 {
     g_delegate = new AmarokBalloonTooltipDelegate();
     KToolTip::setToolTipDelegate(g_delegate);
@@ -64,14 +55,6 @@ ToolTipManager::ToolTipManager(QAbstractItemView* parent) :
     m_timer = new QTimer(this);
     m_timer->setSingleShot(true);
     connect(m_timer, SIGNAL(timeout()),
-            this, SLOT(prepareToolTip()));
-
-    m_previewTimer = new QTimer(this);
-    m_previewTimer->setSingleShot(true);
-
-    m_waitOnPreviewTimer = new QTimer(this);
-    m_waitOnPreviewTimer->setSingleShot(true);
-    connect(m_waitOnPreviewTimer, SIGNAL(timeout()),
             this, SLOT(prepareToolTip()));
 
     // When the mousewheel is used, the items don't get a hovered indication
@@ -112,7 +95,6 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
     Meta::TrackPtr track = index.data( Playlist::TrackRole ).value<Meta::TrackPtr>();
     if ( ( Playlist::LayoutManager::instance()->activeLayout().tooltips() ) && (track) && !(QApplication::mouseButtons() & Qt::LeftButton)) {
         m_track = track;
-        m_waitOnPreviewTimer->stop();
         KToolTip::hideTip();
 
         m_singleItem = (index.data( Playlist::GroupRole ).toInt() == Playlist::None);
@@ -120,14 +102,8 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
         m_itemRect = m_view->visualRect(index);
         const QPoint pos = m_view->viewport()->mapToGlobal(m_itemRect.topLeft());
         m_itemRect.moveTo(pos);
-        
-        // only start the previewJob when the mouse has been over this item for 200 milliseconds,
-        // this prevents a lot of useless preview jobs when passing rapidly over a lot of items
-        m_previewTimer->start(200);
-        m_previewPixmap = QPixmap();
-        m_hasDefaultIcon = false;
 
-        m_timer->start(500);
+        m_timer->start(750);
     } else {
         hideToolTip();
     }
@@ -136,8 +112,6 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
 void ToolTipManager::hideToolTip()
 {
     m_timer->stop();
-    m_previewTimer->stop();
-    //m_waitOnPreviewTimer->stop();
     KToolTip::hideTip();
 }
 
@@ -159,17 +133,10 @@ void ToolTipManager::prepareToolTip()
 
     QString text;
 
-    if (isVisible(Playlist::Title))
-    {
-        text += HTMLLine( Playlist::Title, m_track->prettyName() );
-    }
+
     if (isVisible(Playlist::Artist))
     {
         text += HTMLLine( Playlist::Artist, m_track->artist()->prettyName() );
-    }
-    if (isVisible(Playlist::Composer))
-    {
-        text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
     }
     if (isVisible(Playlist::Album))
     {
@@ -179,13 +146,21 @@ void ToolTipManager::prepareToolTip()
     {
         text += HTMLLine( Playlist::DiscNumber, m_track->discNumber() );
     }
-    if (isVisible(Playlist::Genre))
+    if (isVisible(Playlist::Title))
     {
-        text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
+        text += HTMLLine( Playlist::Title, m_track->prettyName() );
     }
     if (isVisible(Playlist::TrackNumber))
     {
         text += HTMLLine( Playlist::TrackNumber, m_track->trackNumber() );
+    }
+    if (isVisible(Playlist::Composer))
+    {
+        text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
+    }
+    if (isVisible(Playlist::Genre))
+    {
+        text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
     }
     if (isVisible(Playlist::Year))
     {
@@ -194,6 +169,18 @@ void ToolTipManager::prepareToolTip()
     if (isVisible(Playlist::Comment))
     {
         text += HTMLLine( Playlist::Comment, m_track->comment() );
+    }
+    if (isVisible(Playlist::Score))
+    {
+        text += HTMLLine( Playlist::Score, QString::number( static_cast<int>( m_track->score() ) ), true );
+    }
+    if (isVisible(Playlist::Rating))
+    {
+        text += HTMLLine( Playlist::Rating, QString::number( static_cast<double>(m_track->rating())/2.0 ), true );
+    }
+    if (isVisible(Playlist::PlayCount))
+    {
+        text += HTMLLine( Playlist::PlayCount, m_track->playCount(), true );
     }
 
     if (text == "")
@@ -273,9 +260,9 @@ void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
 * @param value The QString value to be shown
 * @return The line to be shown or an empty QString if the value is null
 */
-QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString& value )
+QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString& value, bool force )
 {
-    if (value != "")
+    if ( (value != "") || (force) )
     {
         QString line = QString();
         line += "<tr><td align=\"right\">";
@@ -296,9 +283,9 @@ QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString&
 * @param value The integer value to be shown
 * @return The line to be shown or an empty QString if the value is 0
 */
-QString ToolTipManager::HTMLLine( const Playlist::Column& column, const int value )
+QString ToolTipManager::HTMLLine( const Playlist::Column& column, const int value, bool force )
 {
-    if (value != 0)
+    if ( (value != 0) || (force) )
     {
         return HTMLLine( column, QString::number( value ) );
     }

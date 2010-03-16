@@ -89,12 +89,7 @@ private:
     QAbstractItemView* m_view;
 
     QTimer* m_timer;
-    QTimer* m_previewTimer;
-    QTimer* m_waitOnPreviewTimer;
     QRect m_itemRect;
-    bool m_generatingPreview;
-    bool m_hasDefaultIcon;
-    QPixmap m_previewPixmap;
 
     Meta::TrackPtr m_track;
 
@@ -107,20 +102,22 @@ private:
     /**
      * Prepares a row for the playlist tooltips consisting of an icon representing
      * an mp3 tag and its value
-     * @param column The colunm used to display the icon
+     * @param column The column used to display the icon
      * @param value The QString value to be shown
+     * @param force Set to TRUE to always return a line
      * @return The line to be shown or an empty QString if the value is null
      */
-    QString HTMLLine( const Playlist::Column& column, const QString& value );
+    QString HTMLLine( const Playlist::Column& column, const QString& value, bool force = false );
 
     /**
      * Prepares a row for the playlist tooltips consisting of an icon representing
      * an mp3 tag and its value
-     * @param column The colunm used to display the icon
+     * @param column The column used to display the icon
      * @param value The integer value to be shown
+     * @param force Set to TRUE to always return a line
      * @return The line to be shown or an empty QString if the value is 0
      */
-    QString HTMLLine( const Playlist::Column& column, const int value );
+    QString HTMLLine( const Playlist::Column& column, const int value, bool force = false );
     /**
      * Inserts "<br>" tags in long lines of text so that it doesn't become too long
      * @param text The text in HTML to process

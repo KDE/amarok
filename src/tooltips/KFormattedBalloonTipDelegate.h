@@ -40,7 +40,7 @@ private:
     QSize iconResize(const KToolTipItem &item, const QSize &docSize) const;
 
 private:
-    enum { Border = 1 };
+    enum { Border = 2 };
 };
 
 #endif

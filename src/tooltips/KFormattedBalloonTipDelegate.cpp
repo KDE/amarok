@@ -119,10 +119,15 @@ QSize KFormattedBalloonTipDelegate::iconResize(const KToolTipItem &item, const Q
     if (!icon.isNull())
     {
         iconSize = icon.actualSize(docSize);
-        if (iconSize.height() > docSize.height())
+        if ( docSize.width() > docSize.height() )
         {
-            iconSize.rheight() = docSize.height();
-            iconSize.rwidth() *= docSize.height()/iconSize.height();
+            // Just in case we have a horizontal rectangle-shaped album cover,
+            // we'll give it a little more place, but not much
+            iconSize = icon.actualSize( QSize( docSize.width(), docSize.height()) );
+        }
+        else
+        {
+            iconSize = icon.actualSize( QSize( docSize.height(), docSize.height()) );
         }
     }
     else
