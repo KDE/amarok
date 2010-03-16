@@ -11,7 +11,6 @@ PhotoBrowser.cpp
 
 include_directories( ../../..
                     ../..
-			  ${OPENGL_INCLUDE_DIR}
                     ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
 
 kde4_add_ui_files( coverbling_SRCS coverblingSettings.ui )
@@ -21,9 +20,6 @@ kde4_add_plugin(amarok_context_applet_coverbling ${coverbling_SRCS})
 target_link_libraries(amarok_context_applet_coverbling
     amaroklib
     ${KDE4_PLASMA_LIBS} 
-    ${QT_QTOPENGL_LIBRARY}
-    ${OPENGL_gl_LIBRARY}
-    ${OPENGL_glu_LIBRARY}
     ${KDE4_KIO_LIBS}
 )
 
