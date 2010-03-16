@@ -371,10 +371,9 @@ void CoverFoundSideBar::clear()
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
 {
-    setPixmap( pixmap );
     m_metadata = metadata;
-    updateMetaTable();
     updateNotes();
+    setPixmap( pixmap );
 }
 
 void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
@@ -383,6 +382,7 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
     QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     m_cover->setPixmap( prettyPix );
+    updateMetaTable();
 }
 
 void CoverFoundSideBar::updateNotes()
