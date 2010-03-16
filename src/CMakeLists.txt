@@ -431,12 +431,12 @@ set(libplaylistmanager_SRCS
 # TOOLTIPS
 #####################################################################
 set(libtooltip_SRCS
-    tooltips/AmarokToolTip.cpp
-    tooltips/KToolTip.cpp
-    tooltips/KToolTipDelegate.cpp
-    tooltips/KToolTipItem.cpp
-    tooltips/KFormattedBalloonTipDelegate.cpp
-    tooltips/ToolTipManager.cpp
+    playlist/view/tooltips/AmarokToolTip.cpp
+    playlist/view/tooltips/KToolTip.cpp
+    playlist/view/tooltips/KToolTipDelegate.cpp
+    playlist/view/tooltips/KToolTipItem.cpp
+    playlist/view/tooltips/KFormattedBalloonTipDelegate.cpp
+    playlist/view/tooltips/ToolTipManager.cpp
 )
 
 #####################################################################

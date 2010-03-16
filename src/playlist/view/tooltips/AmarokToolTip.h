@@ -23,8 +23,8 @@
 #ifndef AMAROKTOOLTIP_H
 #define AMAROKTOOLTIP_H
 
-#include <tooltips/KToolTip.h>
-#include <tooltips/KFormattedBalloonTipDelegate.h>
+#include "KToolTip.h"
+#include "KFormattedBalloonTipDelegate.h"
 
 #include <QtCore/QObject>
 

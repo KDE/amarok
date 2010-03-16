@@ -27,7 +27,7 @@
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/layouts/LayoutItemConfig.h"
 
-#include <tooltips/KToolTip.h>
+#include "KToolTip.h"
 
 #include <QAbstractItemView>
 #include <QApplication>

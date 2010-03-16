@@ -25,7 +25,7 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 
 #include "playlist/view/PlaylistViewCommon.h"
-#include "tooltips/ToolTipManager.h"
+#include "playlist/view/tooltips/ToolTipManager.h"
 
 
 #include <QListView>

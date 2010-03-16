@@ -20,7 +20,7 @@
 #ifndef KTOOLTIP_H
 #define KTOOLTIP_H
 
-#include <tooltips/KToolTipItem.h>
+#include "KToolTipItem.h"
 
 #include <QStyle>
 #include <QFontMetrics>
