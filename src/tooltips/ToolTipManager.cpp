@@ -1,6 +1,6 @@
 /*******************************************************************************
  *   Copyright (C) 2008 by Konstantin Heil <konst.heil@stud.uni-heidelberg.de> *
- *   Copyright (C) 2008 Oleksandr Khayrullin <saniokh@gmail.com>               *
+ *   Copyright (C) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>          *
  *                                                                             *
  *   This program is free software; you can redistribute it and/or modify      *
  *   it under the terms of the GNU General Public License as published by      *
@@ -35,6 +35,8 @@
 #include <QScrollBar>
 #include <QTimer>
 #include <QToolTip>
+#include <KIcon>
+#include <KIconLoader>
 
 const int ICON_WIDTH = 128;
 const int ICON_HEIGHT = 128;
@@ -148,43 +150,16 @@ void ToolTipManager::prepareToolTip()
         image = QPixmap();
 
     QString text;
-    if (m_track->name() != "")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->prettyName())+"</td></tr>";
-    }
-    if (m_track->artist()->name() != "")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Artist")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->artist()->prettyName())+"</td></tr>";
-    }
-    if (m_track->composer()->name() != "")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Composer")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->composer()->prettyName())+"</td></tr>";
-    }
-    if (m_track->album()->name() != "")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Album")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->album()->prettyName())+"</td></tr>";
-    }
-    if (m_track->discNumber() != 0)
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Disk Number")+"</b>:</td><td align=\"left\">"+QString::number(m_track->discNumber())+"</td></tr>";
-    }
-    if (m_track->genre()->name() != "")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Genre")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->genre()->prettyName())+"</td></tr>";
-    }
-    if (m_track->trackNumber() != 0)
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Track")+"</b>:</td><td align=\"left\">"+QString::number(m_track->trackNumber())+"</td></tr>";
-    }
-    if (m_track->year()->name() != "0")
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Year")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->year()->prettyName())+"</td></tr>";
-    }
-    if ((m_track->comment() != ""))
-    {
-        text += "<tr><td align=\"right\"><b>"+i18n("Comment")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->comment())+"</td></tr>";
-    }
-    //text += "<tr><td align=\"right\"><b>"+i18n("Location")+"</b>:</td><td align=\"left\"><a href=\""+m_track->prettyUrl()+"\">"+m_track->prettyUrl()+"</a></td></tr>";
+
+    text += HTMLLine( Playlist::Title, m_track->prettyName() );
+    text += HTMLLine( Playlist::Artist, m_track->artist()->prettyName() );
+    text += HTMLLine( Playlist::Composer, m_track->composer()->prettyName() );
+    text += HTMLLine( Playlist::Album, m_track->album()->prettyName() );
+    text += HTMLLine( Playlist::DiscNumber, m_track->discNumber() );
+    text += HTMLLine( Playlist::Genre, m_track->genre()->prettyName() );
+    text += HTMLLine( Playlist::TrackNumber, m_track->trackNumber() );
+    text += HTMLLine( Playlist::Year, m_track->year()->prettyName() );
+    text += HTMLLine( Playlist::Comment, m_track->comment() );
     if (text == "")
     {
         text = QString(i18n("No information available"));
@@ -255,6 +230,32 @@ void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
     KToolTip::showTip(QPoint(x, y), tip);
 }
 
+QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString& value )
+{
+    if (value != "")
+    {
+        QString line = QString();
+        line += "<tr><td align=\"right\">";
+        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconNames[column] , -16)+"\" />";
+        line += "</td><td align=\"left\">";
+        line += breakLongLinesHTML( value );
+        line += "</td></tr>";
+        return line;
+    }
+    else
+        return QString();
+}
+
+QString ToolTipManager::HTMLLine( const Playlist::Column& column, const int value )
+{
+    if (value != 0)
+    {
+        return HTMLLine( column, QString::number( value ) );
+    }
+    else
+        return QString();
+}
+
 QString ToolTipManager::breakLongLinesHTML(const QString& text)
 {
     // Now let's break up long lines so that the tooltip doesn't become hideously large
@@ -300,4 +301,5 @@ QString ToolTipManager::breakLongLinesHTML(const QString& text)
         return textInLines.trimmed();
     }
 }
+
 #include "ToolTipManager.moc"

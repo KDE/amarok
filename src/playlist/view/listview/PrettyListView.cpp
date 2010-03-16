@@ -119,6 +119,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 
     m_toolTipManager = new ToolTipManager(this);
+    setMouseTracking( true );
 }
 
 Playlist::PrettyListView::~PrettyListView()

@@ -1,7 +1,7 @@
 /*******************************************************************************
  *   Copyright (C) 2008 by Fredrik Höglund <fredrik@kde.org>                   *
  *   Copyright (C) 2008 by Konstantin Heil <konst.heil@stud.uni-heidelberg.de> *
- *   Copyright (C) 2009 Oleksandr Khayrullin <saniokh@gmail.com>               *
+ *   Copyright (C) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>          *
  *                                                                             *
  *   This program is free software; you can redistribute it and/or modify      *
  *   it under the terms of the GNU General Public License as published by      *
@@ -40,7 +40,7 @@ private:
     QSize iconResize(const KToolTipItem &item, const QSize &docSize) const;
 
 private:
-    enum { Border = 8 };
+    enum { Border = 1 };
 };
 
 #endif

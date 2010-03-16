@@ -1,6 +1,6 @@
 /*******************************************************************************
  *   Copyright (C) 2008 by Konstantin Heil <konst.heil@stud.uni-heidelberg.de> *
- *   Copyright (C) 2008 Oleksandr Khayrullin <saniokh@gmail.com>               *
+ *   Copyright (C) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>          *
  *                                                                             *
  *   This program is free software; you can redistribute it and/or modify      *
  *   it under the terms of the GNU General Public License as published by      *
@@ -27,6 +27,7 @@
 #include <QModelIndex>
 #include "meta/Meta.h"
 #include "AmarokToolTip.h"
+#include "playlist/PlaylistDefines.h"
 
 class QAbstractItemView;
 class QModelIndex;
@@ -81,6 +82,28 @@ private:
 
     AmarokBalloonTooltipDelegate * g_delegate;
 
+    /**
+     * Prepares a row for the playlist tooltips consisting of an icon representing
+     * an mp3 tag and its value
+     * @param column The colunm used to display the icon
+     * @param value The QString value to be shown
+     * @return
+     */
+    QString HTMLLine( const Playlist::Column& column, const QString& value );
+
+    /**
+     * Prepares a row for the playlist tooltips consisting of an icon representing
+     * an mp3 tag and its value
+     * @param column The colunm used to display the icon
+     * @param value The integer value to be shown
+     * @return
+     */
+    QString HTMLLine( const Playlist::Column& column, const int value );
+    /**
+     * Inserts "<br>" tags in long lines of text so that it doesn't become too long
+     * @param text The text in HTML to process
+     * @return The processed text
+     */
     QString breakLongLinesHTML(const QString& text);
 };
 
