@@ -34,6 +34,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fix issues with using random navigators while filetering or searching The
+       Playlist. (BR 229226) (BR 222129)
      * Fixed crash related to the new playlist tooltips. (BR 229696)
      * Fixed some artist/album/track names not getting shown or getting shown 
        incorrectly in the Current Track applet because of html encoding. 
