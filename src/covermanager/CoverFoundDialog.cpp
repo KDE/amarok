@@ -75,6 +75,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_search->setClearButtonShown( true );
     m_search->setClickMessage( i18n( "Enter Custom Search" ) );
     m_search->setTrapReturnKey( true );
+    setupSearchToolTip();
 
     KCompletion *searchComp = m_search->completionObject();
     searchComp->setOrder( KCompletion::Insertion );
@@ -299,6 +300,28 @@ void CoverFoundDialog::selectGoogle()
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Google" );
     m_queryPage = 0;
+}
+
+void CoverFoundDialog::setupSearchToolTip()
+{
+    const KShortcut textShortcut = KStandardShortcut::completion();
+    const KShortcut nextShortcut = KStandardShortcut::nextCompletion();
+    const KShortcut prevShortcut = KStandardShortcut::prevCompletion();
+    const KShortcut subShortcut  = KStandardShortcut::substringCompletion();
+
+    const QString &textKey = textShortcut.toString( QKeySequence::NativeText );
+    const QString &nextKey = nextShortcut.toString( QKeySequence::NativeText );
+    const QString &prevKey = prevShortcut.toString( QKeySequence::NativeText );
+    const QString &subKey  = subShortcut.toString( QKeySequence::NativeText );
+
+    const QString tt = i18n( "<b>Useful text completion shortcuts:</b><br> %1 (%2)<br> %3 (%4)<br> %5 (%6)<br> %7 (%8)",
+                             i18n( "Text completion" ), textKey,
+                             i18n( "Switch to previous completion" ), nextKey,
+                             i18n( "Switch to next completion" ), prevKey,
+                             i18n( "Substring completion" ), subKey
+                             );
+
+    m_search->setToolTip( tt );
 }
 
 void CoverFoundDialog::updateSearchButton( const QString &text )

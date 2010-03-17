@@ -88,6 +88,7 @@ private slots:
     void updateSearchButton( const QString &text );
 
 private:
+    void setupSearchToolTip();
     void updateGui();
     void updateTitle();
 
