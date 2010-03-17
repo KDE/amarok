@@ -128,12 +128,12 @@ CoverBlingApplet::init()
     m_blingfastback = new Plasma::IconWidget( this );
     m_blingfastback->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) );
     m_blingfastback->setMaximumSize( 16.0, 16.0 );
-    m_blingfastback->setToolTip( i18n( "Backward" ) );
+    m_blingfastback->setToolTip( i18n( "Fast Backward" ) );
 
     m_blingfastforward = new Plasma::IconWidget( this );
     m_blingfastforward->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) );
     m_blingfastforward->setMaximumSize( 16.0, 16.0 );
-    m_blingfastforward->setToolTip( i18n( "Forward" ) );
+    m_blingfastforward->setToolTip( i18n( "Fast Forward" ) );
 
     m_fullscreen = new Plasma::IconWidget( this );
     m_fullscreen->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) );
