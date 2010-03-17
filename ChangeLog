@@ -22,6 +22,9 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
+     * Remove information that is already displayed elsewhere in the playlist from
+       the playlist tooltips.
+     * Make showing the playlist tooltips a per playlist layout option.
      * When bookmarking a view in the local collection, also store (and restore)
        the setings for "Show Cover Art" and "Show Years". (BR 230562)
      * Allow moodbar files witout the leading '.' (both .<trackfilename>.mood 
@@ -31,6 +34,7 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed crash related to the new playlist tooltips. (BR 229696)
      * Fixed some artist/album/track names not getting shown or getting shown 
        incorrectly in the Current Track applet because of html encoding. 
        (BR 222765)
