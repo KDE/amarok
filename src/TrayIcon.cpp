@@ -204,27 +204,7 @@ Amarok::TrayIcon::setupToolTip()
 void
 Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
 {
-    static QTime lastEventCall = QTime();
-
-    Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
-    if( modifiers == Qt::ControlModifier || orientation == Qt::Horizontal )
-    {
-        if (lastEventCall.elapsed() < 500) // block event for some ms
-            return;
-
-        lastEventCall.restart();
-
-        if( delta > 0 ) // up
-            The::playlistActions()->back();
-        else
-            The::playlistActions()->next();
-    }
-    else if( modifiers == Qt::ShiftModifier )
-    {
-        The::engineController()->seekRelative( (delta / 120) * 5000 ); // 5 seconds for keyboard seeking
-    }
-    else
-        The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
+    The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
 void
