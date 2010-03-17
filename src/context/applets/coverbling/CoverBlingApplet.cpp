@@ -115,21 +115,27 @@ CoverBlingApplet::init()
     // Construct icon widgets
     m_blingtofirst = new Plasma::IconWidget( this );
     m_blingtofirst->setIcon( KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ) );
+    m_blingtofirst->setMaximumSize( 16.0, 16.0 );
 
     m_blingtolast = new Plasma::IconWidget( this );
     m_blingtolast->setIcon( KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ) );
+    m_blingtolast->setMaximumSize( 16.0, 16.0 );
 
     m_blingfastback = new Plasma::IconWidget( this );
     m_blingfastback->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) );
+    m_blingfastback->setMaximumSize( 16.0, 16.0 );
 
     m_blingfastforward = new Plasma::IconWidget( this );
     m_blingfastforward->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) );
+    m_blingfastforward->setMaximumSize( 16.0, 16.0 );
 
     m_fullscreen = new Plasma::IconWidget( this );
     m_fullscreen->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) );
+    m_fullscreen->setMaximumSize( 16.0, 16.0 );
 
     m_jumptoplaying = new Plasma::IconWidget( this );
     m_jumptoplaying->setIcon( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) );
+    m_jumptoplaying->setMaximumSize( 16.0, 16.0 );
 
     connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
