@@ -37,7 +37,7 @@ namespace Playlist
      * The simplest use case for a child class is to provide an implementation of 'planOne()'.
      *
      * A slightly more advanced use case for a child class is to override
-     * 'foorbarInsertedItems()', 'foobarRemovedItems()', and 'setCurrentItem()'.
+     * 'notifyItemsInserted()', 'notifyItemsRemoved()', and 'setCurrentItem()'.
      *
      * If a child class really needs to do something special, it can override
      * 'requestNextTrack()' etc., as long as it tries the return value of the base
@@ -123,7 +123,7 @@ namespace Playlist
         private slots:
             void slotModelReset();
             void slotRowsInserted( const QModelIndex& parent, int start, int end );
-            void slotRowsRemoved( const QModelIndex& parent, int start, int end );
+            void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );
 
             void slotActiveTrackChanged( const quint64 );
 
@@ -141,8 +141,7 @@ namespace Playlist
 
             /**
              * These variables hold inserted/removed items until we batch-process them.
-             * This is due to performance requirements of slotRowsInserted/slotRowsRemoved.
-             * Note: items may be in both
+             * This is due to performance requirements of slotRowsInserted/slotRowsAboutToBeRemoved.
              */
             QSet<quint64> m_insertedItems;
             QSet<quint64> m_removedItems;

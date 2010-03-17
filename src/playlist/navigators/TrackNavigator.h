@@ -104,7 +104,7 @@ namespace Playlist
 
         private slots:
             void slotModelReset();
-            void slotRowsRemoved( const QModelIndex& parent, int start, int end );
+            void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );
 
         protected:
             // Holds the list of tracks to be played next. General

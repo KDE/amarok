@@ -35,7 +35,7 @@ Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()
     //   Ignore SIGNAL layoutChanged: rows moving around doesn't affect the random play order.
     connect( model(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
     connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( model(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( model(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 
     // Connect to the Playlist::AbstractModel signals of the source model.
     connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotActiveTrackChanged( const quint64 ) ) );
@@ -80,7 +80,7 @@ Playlist::NonlinearTrackNavigator::slotRowsInserted( const QModelIndex& parent, 
 // This function can get called thousands of times during a single FilterProxy change.
 // Be very efficient here!
 void
-Playlist::NonlinearTrackNavigator::slotRowsRemoved( const QModelIndex& parent, int startRow, int endRow )
+Playlist::NonlinearTrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
 {
     Q_UNUSED( parent );
 
@@ -124,6 +124,7 @@ Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
     if ( !tmpInsertedItems.isEmpty() )
     {
         m_allItemsList.append( tmpInsertedItems.toList() );
+        m_plannedItems.clear();    // Could do this more subtly in each child class, but this is good enough.
         notifyItemsInserted( tmpInsertedItems );
     }
 

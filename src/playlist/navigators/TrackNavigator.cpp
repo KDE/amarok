@@ -24,6 +24,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "Debug.h"
 
 #include <QQueue>
 
@@ -37,7 +38,7 @@ Playlist::TrackNavigator::TrackNavigator()
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
     connect( model(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
     //   Ignore SIGNAL rowsInserted.
-    connect( model(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( model(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 }
 
 void
@@ -78,14 +79,16 @@ QQueue<quint64> Playlist::TrackNavigator::queue()
 void
 Playlist::TrackNavigator::slotModelReset()
 {
+    DEBUG_BLOCK
     m_queue.clear();    // We should check 'm_model's new contents, but this is unlikely to bother anyone.
 }
 
 // This function can get called thousands of times during a single FilterProxy change.
 // Be very efficient here!
 void
-Playlist::TrackNavigator::slotRowsRemoved( const QModelIndex& parent, int startRow, int endRow )
+Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
 {
+    DEBUG_BLOCK
     Q_UNUSED( parent );
 
     for (int row = startRow; row <= endRow; row++)
