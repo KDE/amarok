@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2010 Emmanuel Wagner <manu.wagner@sfr.fr>                              *
+ * Copyright (c) 2010 Emmanuel Wagner <menu.wagner@sfr.fr>                              *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,6 +26,7 @@
 #include "collection/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
+
 // KDE
 #include <KAction>
 #include <KColorScheme>
@@ -48,15 +50,7 @@
 
 #define DEBUG_PREFIX "CoverBlingApplet"
 
-MyGraphicItem::MyGraphicItem( const QPixmap & pixmap, QGraphicsItem * parent, QGraphicsScene * scene )
-        : QGraphicsPixmapItem( pixmap, parent, scene )
-{
-}
-void MyGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
-{
-    Q_UNUSED( event );
-    emit clicked();
-}
+
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
 {
@@ -118,12 +112,24 @@ CoverBlingApplet::init()
     m_ratingWidget->setRating( 0 );
     m_ratingWidget->setEnabled( FALSE );
 
-    m_blingtofirst = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ) ), this );
-    m_blingtolast = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ) ), this );
-    m_blingfastback = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) ), this );
-    m_blingfastforward = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) ), this );
-    m_fullscreen = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) ), this );
-    m_jumptoplaying = new MyGraphicItem( QPixmap( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) ), this );
+    // Construct icon widgets
+    m_blingtofirst = new Plasma::IconWidget( this );
+    m_blingtofirst->setIcon( KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ) );
+
+    m_blingtolast = new Plasma::IconWidget( this );
+    m_blingtolast->setIcon( KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ) );
+
+    m_blingfastback = new Plasma::IconWidget( this );
+    m_blingfastback->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ) );
+
+    m_blingfastforward = new Plasma::IconWidget( this );
+    m_blingfastforward->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ) );
+
+    m_fullscreen = new Plasma::IconWidget( this );
+    m_fullscreen->setIcon( KStandardDirs::locate( "data", "amarok/images/blingfullscreen.png" ) );
+
+    m_jumptoplaying = new Plasma::IconWidget( this );
+    m_jumptoplaying->setIcon( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) );
 
     connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
@@ -131,6 +137,7 @@ CoverBlingApplet::init()
     connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
     connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
     connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
+
     constraintsEvent();
 }
 
@@ -202,12 +209,14 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setPos( horizontal_size / 2 - 40, vertical_size - 30 );
     m_label ->setPos( horizontal_size / 2 - 40, vertical_size - 50 );
-    m_blingtofirst->setOffset( 20, vertical_size - 30 );
-    m_blingtolast->setOffset( horizontal_size - 30, vertical_size - 30 );
-    m_blingfastback->setOffset( 50, vertical_size - 30 );
-    m_blingfastforward->setOffset( horizontal_size - 60, vertical_size - 30 );
-    m_fullscreen->setOffset( horizontal_size - 30, 30 );
-    m_jumptoplaying->setOffset( horizontal_size - 60, 30 );
+
+    m_blingtofirst->setPos( 20, vertical_size - 30 );
+    m_blingtolast->setPos( horizontal_size - 30, vertical_size - 30 );
+    m_blingfastback->setPos( 50, vertical_size - 30 );
+    m_blingfastforward->setPos( horizontal_size - 60, vertical_size - 30 );
+    m_fullscreen->setPos( horizontal_size - 30, 30 );
+    m_jumptoplaying->setPos( horizontal_size - 60, 30 );
+
     m_pictureflow->resize( horizontal_size, vertical_size );
 }
 void

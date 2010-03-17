@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
- * Copyright (c) 2010 Emmanuel Wagner <manu.wagner@sfr.fr>                         *
+ * Copyright (c) 2010 Emmanuel Wagner <manu.wagner@sfr.fr>                              *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -38,20 +39,10 @@ namespace Plasma
 {
     class IconWidget;
 }
-class MyGraphicItem:public QObject, public QGraphicsPixmapItem
-{
-	Q_OBJECT
-	public:
-	  MyGraphicItem(const QPixmap & pixmap, QGraphicsItem * parent = 0, QGraphicsScene * scene = 0);
-	  enum {Type = 65536}; //UserType should be greater then = 65535
-	signals:
-  		void clicked();
-	private:
-	  void mousePressEvent(QGraphicsSceneMouseEvent * event);
-};
+
 class CoverBlingApplet : public Context::Applet, public EngineObserver
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         CoverBlingApplet( QObject* parent, const QVariantList& args );
@@ -62,15 +53,17 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
                 
 	// inherited from EngineObserver
         virtual void engineNewTrackPlaying();
+
     public slots:
 	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
 	void	slideChanged(int islideindex);
-        void	playAlbum(int islideindex);
-        void	toggleFullscreen();
-        void	jumpToPlaying();
-        void    saveSettings();
+    void	playAlbum(int islideindex);
+    void	toggleFullscreen();
+    void	jumpToPlaying();
+    void    saveSettings();
 	void	skipToFirst();
 	void	skipToLast();
+
     protected :
 	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);
@@ -80,12 +73,13 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	RatingWidget* m_ratingWidget;
 	QGraphicsSimpleTextItem* m_label;
 
-	MyGraphicItem* m_blingtofirst;
-	MyGraphicItem* m_blingtolast;
-	MyGraphicItem* m_blingfastback;
-	MyGraphicItem* m_blingfastforward;
-	MyGraphicItem* m_fullscreen;
-	MyGraphicItem* m_jumptoplaying;
+    Plasma::IconWidget* m_blingtofirst;
+    Plasma::IconWidget* m_blingtolast;
+    Plasma::IconWidget* m_blingfastback;
+    Plasma::IconWidget* m_blingfastforward;
+    Plasma::IconWidget* m_fullscreen;
+    Plasma::IconWidget* m_jumptoplaying;
+
 	bool m_fullsize;
 	bool m_autojump;
 	bool m_animatejump;
@@ -94,6 +88,7 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	PictureFlow::ReflectionEffect m_reflectionEffect;
 	bool m_openGL;
 };
+
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
 
 #endif /* COVERBLING_APPLET_H */
