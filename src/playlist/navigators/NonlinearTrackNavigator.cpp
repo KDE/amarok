@@ -49,6 +49,7 @@ Playlist::NonlinearTrackNavigator::slotModelReset()
 {
     DEBUG_BLOCK
 
+    m_insertedItems.clear();
     m_removedItems += allItemsSet();
 
     int lastRowInModel = m_model->rowCount() - 1;
@@ -68,7 +69,7 @@ Playlist::NonlinearTrackNavigator::slotRowsInserted( const QModelIndex& parent, 
 {
     Q_UNUSED( parent );
 
-    for (int row = startRow; row <= endRow; row++)
+    for ( int row = startRow; row <= endRow; row++ )
     {
         quint64 itemId = m_model->idAt( row );
 
@@ -84,7 +85,7 @@ Playlist::NonlinearTrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& 
 {
     Q_UNUSED( parent );
 
-    for (int row = startRow; row <= endRow; row++)
+    for ( int row = startRow; row <= endRow; row++ )
     {
         quint64 itemId = m_model->idAt( row );
 
@@ -93,12 +94,17 @@ Playlist::NonlinearTrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& 
     }
 }
 
+// A general note on this function: thousands of rows can be inserted/removed by a single
+// FilterProxy change. However, this function gets to process them in a big batch.
+//
+// So: O(n * log n) performance is good enough, but O(n^2) is not.
+// (that's also why we need the 'listRemove()' helper function)
 void
 Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
 {
     DEBUG_BLOCK
 
-    // Make batch instructions local immediately, because we may get called recursively.
+    // Move batch instructions to local storage immediately, because we may get called recursively.
     QSet<quint64> tmpInsertedItems = m_insertedItems;
     m_insertedItems.clear();
 
@@ -106,7 +112,6 @@ Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
     m_removedItems.clear();
 
     // Handle the removed items
-        // We need listRemove()'s O(n log n) performance, because FilterProxy may have removed thousands of rows.
     if ( !tmpRemovedItems.isEmpty() )
     {
         Item::listRemove( m_allItemsList, tmpRemovedItems );
@@ -114,18 +119,22 @@ Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
         Item::listRemove( m_replayedItems, tmpRemovedItems );
         Item::listRemove( m_plannedItems, tmpRemovedItems );
 
-        notifyItemsRemoved( tmpRemovedItems );
+        QSet<quint64> knownRemovedItems = tmpRemovedItems & allItemsSet();    // Filter out items inserted+removed between calls to us.
+        notifyItemsRemoved( knownRemovedItems );
 
-        if ( tmpRemovedItems.contains( currentItem() ) )    // After 'notifyItemsRemoved()', so that that gets the chance to choose a new one.
+        if ( tmpRemovedItems.contains( currentItem() ) )    // After 'notifyItemsRemoved()', so that they get a chance to choose a new one.
             setCurrentItem( 0 );
     }
 
     // Handle the newly inserted items
     if ( !tmpInsertedItems.isEmpty() )
     {
-        m_allItemsList.append( tmpInsertedItems.toList() );
+        QSet<quint64> unknownInsertedItems = tmpInsertedItems - allItemsSet();    // Filter out items removed+reinserted between calls to us.
+
+        m_allItemsList.append( unknownInsertedItems.toList() );
         m_plannedItems.clear();    // Could do this more subtly in each child class, but this is good enough.
-        notifyItemsInserted( tmpInsertedItems );
+
+        notifyItemsInserted( unknownInsertedItems );
     }
 
     // Prune history size

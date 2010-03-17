@@ -75,6 +75,8 @@ namespace Playlist
              * The current reason for the QList variant is that RandomTrackNavigator needs
              * a list, and it would give bad performance to convert the whole playlist
              * from QSet to QList on every 'planOne()' call.
+             *
+             * The QSet variant currently has O(n) performance. (Nothing needs O(1).)
              */
             QList<quint64> allItemsList() { doItemListsMaintenance(); return m_allItemsList; }
             QSet<quint64> allItemsSet() { doItemListsMaintenance(); return m_allItemsList.toSet(); }
@@ -108,7 +110,6 @@ namespace Playlist
 
             /**
              * Notification-callback for child classes: Items have been removed.
-             * 'removedItems' may contain items that were not actually present.
              *
              * 'currentItem()' still has its old (possibly obsolete) value when this function is called.
              * This function can call 'setCurrentItem()' if it knows a good new choice.
