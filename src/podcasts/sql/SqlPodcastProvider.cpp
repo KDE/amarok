@@ -968,7 +968,7 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    if( m_downloadJobMap.values().contains( sqlEpisode.data() ) )
+    if( m_downloadJobMap.values().contains( sqlEpisode ) )
     {
         debug() << "already downloading " << sqlEpisode->uidUrl();
         return;
@@ -988,7 +988,7 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
     KIO::TransferJob *transferJob =
             KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_downloadJobMap[transferJob] = sqlEpisode.data();
+    m_downloadJobMap[transferJob] = sqlEpisode;
     m_fileNameMap[transferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title()
@@ -1041,15 +1041,15 @@ SqlPodcastProvider::createTmpFile( KJob *job )
 {
     DEBUG_BLOCK
 
-    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
-    if( sqlEpisode == 0 )
+    Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
         return 0;
     }
     Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
-    if( !sqlChannel )
+    if( sqlChannel.isNull() )
     {
         error() << "sqlChannelPtr is NULL after download";
         return 0;
@@ -1080,15 +1080,15 @@ SqlPodcastProvider::createTmpFile( KJob *job )
 bool
 SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
 {
-    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
-    if( sqlEpisode == 0 )
+    Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
         return false;
     }
     Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
-    if( !sqlChannel )
+    if( sqlChannel.isNull() )
     {
         error() << "sqlChannelPtr is NULL after download";
         return false;
@@ -1098,14 +1098,12 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     fileName += m_fileNameMap.value( job );
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
-    if ( !fileInfo.exists() )
-    {
+    if( !fileInfo.exists() )
         return false;
-    }
 
     debug() << fileName << " already exists, no need to redownload";
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
-    job->kill(KJob::EmitResult);
+    job->kill( KJob::EmitResult );
     sqlEpisode->setLocalUrl( fileName );
     emit( updated() );  // repaint icons
     return true;
@@ -1185,8 +1183,8 @@ SqlPodcastProvider::downloadResult( KJob *job )
     }
     else
     {
-        Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
-        if( sqlEpisode == 0 )
+        Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+        if( sqlEpisode.isNull() )
         {
             error() << "sqlEpisodePtr is NULL after download";
             cleanupDownload( job, true );
@@ -1194,7 +1192,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
         }
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
-        if( !sqlChannel )
+        if( sqlChannel.isNull() )
         {
             error() << "sqlChannelPtr is NULL after download";
             cleanupDownload( job, true );

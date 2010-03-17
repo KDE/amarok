@@ -144,7 +144,7 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::PodcastChannelList m_updateQueue;
         QList<KUrl> m_subscribeQueue;
 
-        QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
+        QHash<KJob *, Meta::SqlPodcastEpisodePtr> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
         QHash<KJob *, QFile*> m_tmpFileMap;
 
