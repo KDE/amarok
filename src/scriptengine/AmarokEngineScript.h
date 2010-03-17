@@ -79,6 +79,7 @@ namespace AmarokScript
             void engineVolumeChanged( int value );
             void engineTrackPositionChanged( qint64 position, bool userSeek );
             void engineTrackChanged( Meta::TrackPtr track );
+            void engineTrackFinished( Meta::TrackPtr track );
             void engineNewMetaData( const QHash<qint64, QString> &newData, bool trackChanged );
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
 

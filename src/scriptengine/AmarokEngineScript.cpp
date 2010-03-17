@@ -150,9 +150,12 @@ namespace AmarokScript
     void AmarokEngineScript::engineTrackChanged( Meta::TrackPtr track )
     {
         emit trackChanged();
-        if ( track.isNull() )
-            emit trackFinished();
     }
+    void AmarokEngineScript::engineTrackFinished( Meta::TrackPtr track)
+    {
+        emit trackFinished();
+    }
+
     void AmarokEngineScript::engineNewMetaData( const QHash<qint64, QString> &newData, bool trackChanged )
     {
         emit newMetaData( newData, trackChanged );

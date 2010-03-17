@@ -65,6 +65,12 @@ EngineObserver::engineTrackChanged( Meta::TrackPtr track )
 }
 
 void
+EngineObserver::engineTrackFinished( Meta::TrackPtr track )
+{
+    Q_UNUSED( track );
+}
+
+void
 EngineObserver::engineNewTrackPlaying()
 {
 }
@@ -200,6 +206,13 @@ EngineSubject::trackChangedNotify( Meta::TrackPtr track )
 {
     foreach( EngineObserver *observer, Observers )
         observer->engineTrackChanged( track );
+}
+
+void
+EngineSubject::trackFinishedNotify( Meta::TrackPtr track )
+{
+    foreach( EngineObserver *observer, Observers )
+        observer->engineTrackFinished( track );
 }
 
 void
