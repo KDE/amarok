@@ -236,6 +236,7 @@ ArtistWidget::setDescription(const QString &description)
     if(description.isEmpty())
     {
         m_desc->setText(i18n("No description available in your language"));
+        m_descString=""; //we delete the precedent artist description
     } else {
         QTextDocument descriptionText;
         descriptionText.setHtml(description);
@@ -276,15 +277,15 @@ ArtistWidget::resizeEvent(QResizeEvent *event)
 void
 ArtistWidget::elideArtistDescription()
 {
-
+    DEBUG_BLOCK
     if(!m_descString.isEmpty())
     {
         QFontMetrics fontMetric(fontMetrics());
         int space = fontMetric.lineSpacing();
-        int interligne = fontMetric.leading();
+        int lineSpace = fontMetric.leading();
         int heightChar = fontMetric.height();
         int nbWidth = m_desc->width() ;
-        float nbHeight = m_desc->height() / (heightChar+interligne) ;
+        float nbHeight = m_desc->height() / (heightChar+lineSpace) ;
         int widthTot = nbWidth * nbHeight - (space*(nbHeight-1));
 
         QString stringTmp=fontMetric.elidedText(m_descString,Qt::ElideRight,widthTot);
