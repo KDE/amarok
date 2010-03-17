@@ -136,13 +136,9 @@ ServiceTrack::ServiceTrack( const QString & name )
     , m_id( 0 )
     , m_trackNumber( 0 )
     , m_length( 0 )
-    , m_displayUrl( '0' )
-    , m_playableUrl( '0' )
-    , m_downloadableUrl( '0' )
     , m_albumId( 0 )
     , m_albumName( '0' )
     , m_artistId( 0 )
-    , m_artistName( '0' )
     , m_name( name )
 {
 }
@@ -575,7 +571,6 @@ ServiceArtist::ServiceArtist( const QString & name )
     , BookmarkThisProvider()
     , m_id( 0 )
     , m_name( name )
-    , m_description( '0' )
     , m_tracks()
 {
     //nothing to do
@@ -685,7 +680,6 @@ ServiceAlbum::ServiceAlbum( const QString & name )
     , m_isCompilation( false )
     , m_albumArtist( 0 )
     , m_artistId( 0 )
-    , m_artistName( '0' )
 {
     //nothing to do
 }
