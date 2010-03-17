@@ -85,12 +85,14 @@ private slots:
     void selectLastFm();
     void selectGoogle();
     void selectYahoo();
+    void updateSearchButton( const QString &text );
 
 private:
     void updateGui();
     void updateTitle();
 
     KLineEdit      *m_search;        //! Custom search input
+    KPushButton    *m_searchButton;  //! Button to start search or get more results for last query
     KListWidget    *m_view;          //! View of retreived covers
     KPushButton    *m_save;          //! Save Button
     CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata

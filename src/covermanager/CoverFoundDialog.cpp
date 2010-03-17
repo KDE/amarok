@@ -55,16 +55,10 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_unit( unit )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
-                KDialog::User1 |  // User1: clear icon view
-                KDialog::User2 ); // User2: get more results from last query
+                KDialog::User1 ); // User1: clear icon view
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
-    setButtonGuiItem( KDialog::User2, KStandardGuiItem::cont() );
     connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
-    connect( button( KDialog::User2 ), SIGNAL(clicked()), SLOT(processQuery()) );
-
-    KPushButton *more = button( KDialog::User2 );
-    more->setText( i18n( "More Results" ) );
 
     m_save = button( KDialog::Ok );
 
@@ -99,8 +93,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_query = firstRunQuery;
     searchComp->setItems( completionNames );
 
-    KPushButton *searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
+    m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
+    updateSearchButton( firstRunQuery );
 
     QMenu *sourceMenu = new QMenu( sourceButton );
     QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
@@ -122,16 +117,14 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     ag->addAction( yahooAct );
     ag->addAction( discogsAct );
     sourceMenu->addActions( ag->actions() );
-    sourceButton->setMenu( sourceMenu ); // TODO: link actions to choose source when implemented
+    sourceButton->setMenu( sourceMenu );
 
-    connect( m_search,   SIGNAL(returnPressed(const QString&)),
-             searchComp, SLOT(addItem(const QString&)) );
-    connect( m_search, SIGNAL(returnPressed(const QString&)),
-             this,     SLOT(processQuery(const QString&)) );
-    connect( m_search, SIGNAL(clearButtonClicked()),
-             this,     SLOT(clearQueryButtonClicked()));
-    connect( searchButton, SIGNAL(pressed()),
-             this,         SLOT(processQuery()) );
+    connect( m_search, SIGNAL(returnPressed(const QString&)), searchComp, SLOT(addItem(const QString&)) );
+    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(processQuery(const QString&)) );
+    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(updateSearchButton(const QString&)) );
+    connect( m_search, SIGNAL(textChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
+    connect( m_search, SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
+    connect( m_searchButton, SIGNAL(pressed()), SLOT(processQuery()) );
 
     m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
@@ -308,12 +301,16 @@ void CoverFoundDialog::selectGoogle()
     m_queryPage = 0;
 }
 
+void CoverFoundDialog::updateSearchButton( const QString &text )
+{
+    const bool isNewSearch = ( text != m_query ) ? true : false;
+    m_searchButton->setGuiItem( isNewSearch ? KStandardGuiItem::find() : KStandardGuiItem::cont() );
+    m_searchButton->setToolTip( isNewSearch ? i18n( "Search" ) : i18n( "Search For More Results" ) );
+}
+
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
-
-    KPushButton *more = button( KDialog::User2 );
-    more->setEnabled( !m_query.isEmpty() );
 
     if( !m_search->hasFocus() )
         setButtonFocus( KDialog::Ok );
