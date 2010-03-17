@@ -160,7 +160,7 @@ CoverFetcher::slotResult( KJob *job )
     if( job && job->error() )
     {
         The::statusBar()->endProgressOperation( job );
-        finish( unit, Error, i18n( "There was an error communicating with last.fm." ) );
+        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
         return;
     }
 
@@ -292,41 +292,47 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 {
     DEBUG_BLOCK
 
-    const QString albumName = unit->album() ? unit->album()->name() : QString();
+    Meta::AlbumPtr album = unit->album();
+    const bool isInteractive = unit->isInteractive();
+    const QString albumName = album ? album->name() : QString();
 
     switch( state )
     {
-        case Success:
+    case Success:
+        if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
-            unit->album()->setImage( m_selectedPixmaps.take( unit ) );
-            break;
         }
+        album->setImage( m_selectedPixmaps.take( unit ) );
+        break;
 
-        case Error:
+    case Error:
+        if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
             The::statusBar()->shortMessage( text );
-            m_errors += message;
-            break;
         }
+        m_errors += message;
+        break;
 
-        case Cancelled:
+    case Cancelled:
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
-            break;
         }
+        break;
 
-        case NotFound:
+    case NotFound:
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
             The::statusBar()->shortMessage( text );
             m_errors += text;
-            break;
         }
+        break;
     }
 
     m_queue->remove( unit );
