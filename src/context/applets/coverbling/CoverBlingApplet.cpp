@@ -52,9 +52,10 @@
 
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
-        : Context::Applet( parent, args )
+    : Context::Applet( parent, args )
 {
     DEBUG_BLOCK
+
     setHasConfigurationInterface( true );
 }
 
@@ -100,17 +101,18 @@ CoverBlingApplet::init()
     connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
     connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( playAlbum( int ) ) );
     qm->run();
+
     m_label = new QGraphicsSimpleTextItem( this );
-    QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+    const QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
     m_label ->setBrush( brush );
     QFont labelFont;
     QFont bigFont( labelFont );
-    bigFont.setPointSize( bigFont.pointSize() +  2 );
+    bigFont.setPointSize( bigFont.pointSize() + 2 );
     m_label->setFont( labelFont );
 
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setRating( 0 );
-    m_ratingWidget->setEnabled( FALSE );
+    m_ratingWidget->setEnabled( false );
 
     // Construct icon widgets
     m_blingtofirst = new Plasma::IconWidget( this );
@@ -153,12 +155,15 @@ CoverBlingApplet::~CoverBlingApplet()
     delete m_label;
     delete m_layout;
 }
+
 void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
+
     m_pictureflow->fillAlbums( albums );
 }
+
 void CoverBlingApplet::slideChanged( int islideindex )
 {
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
@@ -171,17 +176,21 @@ void CoverBlingApplet::slideChanged( int islideindex )
         m_label->show();
         int nbtracks = 0;
         int rating = 0;
+
         foreach( Meta::TrackPtr track, album->tracks() )
         {
             nbtracks++;
             if ( track )
                 rating += track->rating();
         }
+
         if ( nbtracks )
             rating = rating / nbtracks;
+
         m_ratingWidget->setRating( rating );
     }
 }
+
 void CoverBlingApplet::playAlbum( int islideindex )
 {
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
@@ -194,15 +203,18 @@ void CoverBlingApplet::playAlbum( int islideindex )
 void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
+
     prepareGeometryChange();
-    int vertical_size = boundingRect().height();
-    int horizontal_size = boundingRect().width();
+    const int vertical_size = boundingRect().height();
+    const int horizontal_size = boundingRect().width();
     QSize slideSize( vertical_size / 2, vertical_size / 2 );
+
     if ( !m_fullsize )
     {
         slideSize.setWidth( m_coversize );
         slideSize.setHeight( m_coversize );
     }
+
     m_pictureflow->setSlideSize( slideSize );
     m_pictureflow->setReflectionEffect( m_reflectionEffect );
     m_pictureflow->setAnimationTime( 10 );
@@ -219,16 +231,19 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_pictureflow->resize( horizontal_size, vertical_size );
 }
+
 void
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( p );
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
+
     p->setRenderHint( QPainter::Antialiasing );
     // tint the whole applet
     addGradientToAppletBackground( p );
 }
+
 void CoverBlingApplet::toggleFullscreen()
 {
     if ( m_fullsize )
@@ -249,10 +264,11 @@ void CoverBlingApplet::toggleFullscreen()
     //constraintsEvent();
     m_fullsize = !m_fullsize;
 }
+
 void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup configuration = config();
-    QWidget *settings = new QWidget;
+    QWidget * const settings = new QWidget;
     ui_Settings.setupUi( settings );
 
     if ( m_reflectionEffect == PictureFlow::NoReflection )
@@ -270,6 +286,7 @@ void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
     parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system" );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
+
 void CoverBlingApplet::saveSettings()
 {
     m_coversize = ui_Settings.coversizeSpin->value();
@@ -291,8 +308,10 @@ void CoverBlingApplet::saveSettings()
     config.writeEntry( "AutoJump", m_autojump );
     config.writeEntry( "AnimateJump", m_animatejump );
 	//config.writeEntry( "OpenGL", (int) m_openGL );
+
     constraintsEvent();
 }
+
 void CoverBlingApplet::jumpToPlaying()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -336,6 +355,7 @@ void CoverBlingApplet::jumpToPlaying()
     }
     slideChanged( index );
 }
+
 void CoverBlingApplet::engineNewTrackPlaying( )
 {
     if ( m_autojump )
@@ -343,11 +363,13 @@ void CoverBlingApplet::engineNewTrackPlaying( )
         jumpToPlaying();
     }
 }
+
 void CoverBlingApplet::skipToFirst()
 {
     m_pictureflow->skipToSlide( 0 );
     slideChanged( 0 );
 }
+
 void CoverBlingApplet::skipToLast()
 {
     int nbslides = m_pictureflow->slideCount();

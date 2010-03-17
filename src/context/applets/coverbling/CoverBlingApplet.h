@@ -25,7 +25,7 @@
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
 #include "PhotoBrowser.h"
-#include <ui_coverblingSettings.h>
+#include "ui_coverblingSettings.h"
 
 class TextScrollingWidget;
 class KConfigDialog;
@@ -48,45 +48,46 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
         CoverBlingApplet( QObject* parent, const QVariantList& args );
         ~CoverBlingApplet();
 
-        void    init();
-        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+        void init();
+        void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
                 
 	// inherited from EngineObserver
         virtual void engineNewTrackPlaying();
 
     public slots:
-	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
-	void	slideChanged(int islideindex);
-    void	playAlbum(int islideindex);
-    void	toggleFullscreen();
-    void	jumpToPlaying();
-    void    saveSettings();
-	void	skipToFirst();
-	void	skipToLast();
+        void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
+        void slideChanged(int islideindex);
+        void playAlbum(int islideindex);
+        void toggleFullscreen();
+        void jumpToPlaying();
+        void saveSettings();
+        void skipToFirst();
+        void skipToLast();
 
     protected :
-	virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+        virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);
+
     private:
-	PhotoBrowser * m_pictureflow;
-	QGraphicsProxyWidget * m_layout;
-	RatingWidget* m_ratingWidget;
-	QGraphicsSimpleTextItem* m_label;
+        PhotoBrowser * m_pictureflow;
+        QGraphicsProxyWidget * m_layout;
+        RatingWidget* m_ratingWidget;
+        QGraphicsSimpleTextItem* m_label;
 
-    Plasma::IconWidget* m_blingtofirst;
-    Plasma::IconWidget* m_blingtolast;
-    Plasma::IconWidget* m_blingfastback;
-    Plasma::IconWidget* m_blingfastforward;
-    Plasma::IconWidget* m_fullscreen;
-    Plasma::IconWidget* m_jumptoplaying;
+        Plasma::IconWidget* m_blingtofirst;
+        Plasma::IconWidget* m_blingtolast;
+        Plasma::IconWidget* m_blingfastback;
+        Plasma::IconWidget* m_blingfastforward;
+        Plasma::IconWidget* m_fullscreen;
+        Plasma::IconWidget* m_jumptoplaying;
 
-	bool m_fullsize;
-	bool m_autojump;
-	bool m_animatejump;
+        bool m_fullsize;
+        bool m_autojump;
+        bool m_animatejump;
         Ui::coverblingSettings   ui_Settings;
-	int m_coversize;
-	PictureFlow::ReflectionEffect m_reflectionEffect;
-	bool m_openGL;
+        int m_coversize;
+        PictureFlow::ReflectionEffect m_reflectionEffect;
+        bool m_openGL;
 };
 
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
