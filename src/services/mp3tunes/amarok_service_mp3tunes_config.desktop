@@ -8,7 +8,7 @@ X-KDE-Library=kcm_amarok_service_mp3tunes
 X-KDE-ParentApp=amarok_service_mp3tunes
 X-KDE-ParentComponents=amarok_service_mp3tunes
 
-Name=Mp3tunes Service Config
+Name=MP3tunes Service Config
 Name[bg]=Настройване на услугата Mp3tunes
 Name[ca]=Configuració del servei mp3tunes
 Name[ca@valencia]=Configuració del servei mp3tunes

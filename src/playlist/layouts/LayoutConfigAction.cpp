@@ -67,7 +67,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
 
     const KIcon configIcon( "configure" );
     m_configAction->setIcon( configIcon );
-    m_configAction->setText( i18n( "Configure playlist layouts..." ) );
+    m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 
     connect( m_configAction, SIGNAL( triggered() ), this, SLOT( configureLayouts() ) );
 }

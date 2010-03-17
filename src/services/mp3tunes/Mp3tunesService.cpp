@@ -263,7 +263,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
-        QString error = i18n("Mp3tunes failed to Authenticate.");
+        QString error = i18n("MP3tunes failed to Authenticate.");
         if ( !m_locker->errorMessage().isEmpty() )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
@@ -343,7 +343,7 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
+    The::statusBar()->longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )

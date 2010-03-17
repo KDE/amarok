@@ -260,7 +260,7 @@
          <string>Check this box to look for the tracks that contain all the words you typed in the related Simple Search edit box</string>
         </property>
         <property name="text">
-         <string>Match All Words</string>
+         <string>Match all words</string>
         </property>
        </widget>
       </item>
@@ -270,7 +270,7 @@
          <string>Check this box to look for the tracks that contain at least one of the words you typed in the related Simple Search edit box</string>
         </property>
         <property name="text">
-         <string>Match Any Word</string>
+         <string>Match any word</string>
         </property>
        </widget>
       </item>
@@ -280,7 +280,7 @@
          <string>Check this box to look for all the tracks that contain exactly the words you typed in the related Simple Search edit box</string>
         </property>
         <property name="text">
-         <string>Exact Match</string>
+         <string>Exact match</string>
         </property>
        </widget>
       </item>
@@ -347,7 +347,7 @@
       <string>&lt;p&gt;If this option is checked the defined filter condition will be negated. This means that, for example, you can define a filter that looks for all tracks that are not of a specific album, artist, and so on.&lt;/p&gt;</string>
      </property>
      <property name="text">
-      <string>Invert Condition</string>
+      <string>Invert condition</string>
      </property>
     </widget>
    </item>

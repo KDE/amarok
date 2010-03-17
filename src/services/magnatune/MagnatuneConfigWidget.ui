@@ -50,7 +50,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Membership options</string>
+      <string>Membership Options</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
@@ -154,7 +154,7 @@ p, li { white-space: pre-wrap; }
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Stream options</string>
+      <string>Stream Options</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
