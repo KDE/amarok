@@ -578,7 +578,7 @@ void
 CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
 {
     // code based on Audex CDDA Extractor
-    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+)>[\\s\\n]*<img\\ssrc=([a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?]+).*>[\\s\\n]*</a>" );
+    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)]+)>[\\s\\n]*<img\\ssrc=([a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)]+).*>[\\s\\n]*</a>" );
     rx.setMinimal( true );
 
     int pos = 0;
