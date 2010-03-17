@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * The scripting system now offers a new function for detecting that a 
+       track has finished. Patch by Michael MacDonald <mars@antlersoft.com>.
+       (BR 227312)
      * New "CoverBling" applet, which allows to browse your collection in an 
        animated 3D view. Thanks to Manu Wagner <manu.wagner@sfr.fr>.
      * Support for the new System Tray technology from KDE SC 4.4. This adds
