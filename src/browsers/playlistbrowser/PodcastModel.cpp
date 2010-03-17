@@ -184,48 +184,45 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
 }
 
 QVariant
-PlaylistBrowserNS::PodcastModel::data(const QModelIndex &index, int role) const
+PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) const
 {
-    if( index.row() == -1 )
+    if( index.row() == -1 && index.column() == ProviderColumn )
     {
-        if( index.column() == ProviderColumn )
+        QVariantList displayList;
+        QVariantList iconList;
+        QVariantList playlistCountList;
+        QVariantList providerActionsCountList;
+        QVariantList providerActionsList;
+        QVariantList providerByLineList;
+
+        //get data from empty providers
+        PlaylistProviderList providerList =
+                The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
+        foreach( PlaylistProvider *provider, providerList )
         {
-            QVariantList displayList;
-            QVariantList iconList;
-            QVariantList playlistCountList;
-            QVariantList providerActionsCountList;
-            QVariantList providerActionsList;
-            QVariantList providerByLineList;
+            if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
+                continue;
 
-            //get data from empty providers
-            PlaylistProviderList providerList =
-                    The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
-            foreach( PlaylistProvider *provider, providerList )
-            {
-                if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
-                    continue;
+            displayList << provider->prettyName();
+            iconList << provider->icon();
+            playlistCountList << provider->playlists().count();
+            providerActionsCountList << provider->providerActions().count();
+            providerActionsList <<  QVariant::fromValue( provider->providerActions() );
+            providerByLineList << i18ncp( "number of podcasts from one source", "One channel",
+                           "%1 channels", provider->providerActions().count() );
+        }
 
-                displayList << provider->prettyName();
-                iconList << provider->icon();
-                playlistCountList << provider->playlists().count();
-                providerActionsCountList << provider->providerActions().count();
-                providerActionsList <<  QVariant::fromValue( provider->providerActions() );
-                providerByLineList << i18ncp( "number of podcasts from one source", "One channel",
-                               "%1 channels", provider->providerActions().count() );
-            }
-
-            switch( role )
-            {
-                case Qt::DisplayRole:
-                case DescriptionRole:
-                case Qt::ToolTipRole:
-                    return displayList;
-                case Qt::DecorationRole: return iconList;
-                case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
-                case MetaPlaylistModel::ActionRole: return providerActionsList;
-                case MetaPlaylistModel::ByLineRole: return providerByLineList;
-                case Qt::EditRole: return QVariant();
-            }
+        switch( role )
+        {
+            case Qt::DisplayRole:
+            case DescriptionRole:
+            case Qt::ToolTipRole:
+                return displayList;
+            case Qt::DecorationRole: return iconList;
+            case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
+            case MetaPlaylistModel::ActionRole: return providerActionsList;
+            case MetaPlaylistModel::ByLineRole: return providerByLineList;
+            case Qt::EditRole: return QVariant();
         }
     }
 
@@ -359,12 +356,36 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex &index, int role) const
 
         case PlaylistBrowserNS::MetaPlaylistModel::ActionRole:
         {
+            PlaylistProvider *provider = providerForPmc(
+                    static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+            if( !provider )
+                return QVariant();
+
             if( index.column() == ProviderColumn )
+                return QVariant::fromValue( provider->providerActions() );
+            else if( index.column() == PlaylistColumn )
             {
-                PlaylistProvider *provider = providerForPmc(
-                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
-                if( provider )
-                    return QVariant::fromValue( provider->providerActions() );
+                PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+                if( !podcastProvider )
+                    return QVariant();
+
+                switch( podcastItemType( index ) )
+                {
+                    case Meta::ChannelType:
+                    {
+                        Meta::PodcastChannelPtr channel = channelForIndex( index );
+                        Meta::PodcastChannelList channels;
+                        channels << channel;
+                        return QVariant::fromValue( podcastProvider->channelActions( channels ) );
+                    }
+                    case Meta::EpisodeType:
+                    {
+                        Meta::PodcastEpisodePtr episode = episodeForIndex( index );
+                        Meta::PodcastEpisodeList episodes;
+                        episodes << episode;
+                        return QVariant::fromValue( podcastProvider->episodeActions( episodes ) );
+                    }
+                }
             }
         }
     }

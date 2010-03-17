@@ -88,10 +88,10 @@ class SqlPodcastProvider : public PodcastProvider
 
     private slots:
         void downloadResult( KJob * );
-        void addData( KIO::Job * job, const QByteArray & data );
+        void addData( KIO::Job *job, const QByteArray & data );
         void redirected( KIO::Job *, const KUrl& );
         void autoUpdate();
-        void slotDeleteSelectedEpisodes();
+        void slotDeleteDownloadedEpisodes();
         void slotDownloadEpisodes();
         void slotConfigureChannel();
         void slotRemoveChannels();
@@ -126,11 +126,11 @@ class SqlPodcastProvider : public PodcastProvider
         QPair<bool, bool> confirmUnsubscribe(Meta::PodcastChannelPtr channel);
 
         /** remove the episodes in the list from the filesystem */
-        void deleteEpisodes( Meta::PodcastEpisodeList & episodes );
+        void deleteDownloadedEpisodes( Meta::PodcastEpisodeList &episodes );
 
         void subscribe( const KUrl &url );
-        QFile* createTmpFile ( KJob* job );
-        void cleanupDownload( KJob* job, bool downloadFailed );
+        QFile* createTmpFile ( KJob *job );
+        void cleanupDownload( KJob *job, bool downloadFailed );
 
         /** returns true if the file that is downloaded by 'job' is already locally available */
         bool checkEnclosureLocallyAvailable( KIO::Job *job );

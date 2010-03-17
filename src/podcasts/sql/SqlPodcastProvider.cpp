@@ -515,9 +515,11 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 QList<QAction *>
 SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
 {
-    DEBUG_BLOCK
     QList< QAction * > actions;
+    if( episodes.isEmpty() )
+        return actions;
 
+    Meta::PodcastEpisodeList actionEpisodes;
     if( m_deleteAction == 0 )
     {
         m_deleteAction = new QAction(
@@ -526,9 +528,11 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             this
         );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteSelectedEpisodes() ) );
+        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDeleteDownloadedEpisodes() ) );
     }
 
+
+    actionEpisodes.clear();
     if( m_writeTagsAction == 0 )
     {
         m_writeTagsAction = new QAction(
@@ -537,7 +541,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             this
         );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_writeTagsAction, SIGNAL( triggered() ), this, SLOT( slotWriteTagsToFiles() ) );
+        connect( m_writeTagsAction, SIGNAL( triggered() ), SLOT( slotWriteTagsToFiles() ) );
     }
 
     bool hasDownloaded = false;
@@ -556,6 +560,11 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     }
     if( hasDownloaded )
     {
+        Meta::PodcastEpisodeList actionEpisodes = m_deleteAction->data().value<Meta::PodcastEpisodeList>();
+        actionEpisodes << episodes;
+        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
+        //these lists are the same anyway
+        m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
         actions << m_deleteAction;
         actions << m_writeTagsAction;
     }
@@ -569,8 +578,14 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
                 this
             );
             m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
-            connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownloadEpisodes() ) );
+            connect( m_downloadAction, SIGNAL( triggered() ), SLOT( slotDownloadEpisodes() ) );
         }
+        else
+        {
+            actionEpisodes = m_downloadAction->data().value<Meta::PodcastEpisodeList>();
+        }
+        actionEpisodes << episodes;
+        m_downloadAction->setData( QVariant::fromValue( actionEpisodes ) );
         actions << m_downloadAction;
     }
 
@@ -578,10 +593,12 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
 }
 
 QList<QAction *>
-SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
+SqlPodcastProvider::channelActions( Meta::PodcastChannelList channels )
 {
-    DEBUG_BLOCK
     QList< QAction * > actions;
+
+    if( channels.isEmpty() )
+        return actions;
 
     if( m_configureChannelAction == 0 )
     {
@@ -591,10 +608,16 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             this
         );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureChannelAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
+        connect( m_configureChannelAction, SIGNAL( triggered() ), SLOT( slotConfigureChannel() ) );
     }
+
+    //only one playlist can be renamed at a time.
+    if( m_configureChannelAction->data().isNull() )
+        m_configureChannelAction->setData( QVariant::fromValue( channels.first() ) );
+
     actions << m_configureChannelAction;
 
+    Meta::PodcastChannelList actionChannels;
     if( m_removeAction == 0 )
     {
         m_removeAction = new QAction(
@@ -603,10 +626,19 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             this
         );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
-        connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemoveChannels() ) );
+        connect( m_removeAction, SIGNAL( triggered() ), SLOT( slotRemoveChannels() ) );
     }
+    else
+    {
+        actionChannels = m_removeAction->data().value<Meta::PodcastChannelList>();
+    }
+
+    actionChannels << channels;
+    m_removeAction->setData( QVariant::fromValue( actionChannels ) );
+
     actions << m_removeAction;
 
+    actionChannels.clear();
     if( m_updateAction == 0 )
     {
         m_updateAction = new QAction(
@@ -615,8 +647,16 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             this
         );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
-        connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
+        connect( m_updateAction, SIGNAL( triggered() ), SLOT( slotUpdateChannels() ) );
     }
+    else
+    {
+        actionChannels = m_updateAction->data().value<Meta::PodcastChannelList>();
+    }
+
+    actionChannels << channels;
+    m_updateAction->setData( QVariant::fromValue( actionChannels ) );
+
     actions << m_updateAction;
 
     return actions;
@@ -648,7 +688,7 @@ SqlPodcastProvider::providerActions()
 }
 
 void
-SqlPodcastProvider::deleteEpisodes( Meta::PodcastEpisodeList & episodes )
+SqlPodcastProvider::deleteDownloadedEpisodes( Meta::PodcastEpisodeList &episodes )
 {
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
@@ -662,19 +702,23 @@ SqlPodcastProvider::deleteEpisodes( Meta::PodcastEpisodeList & episodes )
 }
 
 void
-SqlPodcastProvider::slotDeleteSelectedEpisodes()
+SqlPodcastProvider::slotDeleteDownloadedEpisodes()
 {
-    DEBUG_BLOCK
-    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
-    deleteEpisodes(episodes);
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
+    deleteDownloadedEpisodes( episodes );
 }
 
 void
 SqlPodcastProvider::slotDownloadEpisodes()
 {
-    DEBUG_BLOCK
-    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
-    debug() << episodes.count() << " episodes selected";
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+        if( action == 0 )
+            return;
+    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
+
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
@@ -714,8 +758,13 @@ SqlPodcastProvider::confirmUnsubscribe( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::slotRemoveChannels()
 {
-    DEBUG_BLOCK
-    foreach( Meta::PodcastChannelPtr channel, The::podcastModel()->selectedChannels() )
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Meta::PodcastChannelList channels = action->data().value<Meta::PodcastChannelList>();
+
+    foreach( Meta::PodcastChannelPtr channel, channels )
     {
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
@@ -728,7 +777,7 @@ SqlPodcastProvider::slotRemoveChannels()
             {
                 debug() << "removing all episodes";
                 PodcastEpisodeList episodes = channel->episodes();
-                deleteEpisodes(episodes);
+                deleteDownloadedEpisodes(episodes);
             }
             removeSubscription( channel );
         }
@@ -738,8 +787,12 @@ SqlPodcastProvider::slotRemoveChannels()
 void
 SqlPodcastProvider::slotUpdateChannels()
 {
-    DEBUG_BLOCK
-    foreach( Meta::PodcastChannelPtr channel, The::podcastModel()->selectedChannels() )
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+        if( action == 0 )
+            return;
+    Meta::PodcastChannelList channels = action->data().value<Meta::PodcastChannelList>();
+
+    foreach( Meta::PodcastChannelPtr channel, channels )
     {
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
@@ -768,8 +821,11 @@ SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
 void
 SqlPodcastProvider::slotWriteTagsToFiles()
 {
-    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
-    debug() << episodes.count() << " episodes selected";
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
@@ -784,11 +840,13 @@ SqlPodcastProvider::slotWriteTagsToFiles()
 void
 SqlPodcastProvider::slotConfigureChannel()
 {
-    DEBUG_BLOCK
-    //only one channel should be selected or dragged because
-    //of the actions we've returned in channelActions()
-    if( The::podcastModel()->selectedChannels().count() )
-        configureChannel( The::podcastModel()->selectedChannels().first() );
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Meta::PodcastChannelPtr podcastChannel = action->data().value<Meta::PodcastChannelPtr>();
+    if( !podcastChannel.isNull() )
+        configureChannel( podcastChannel );
 }
 
 void
