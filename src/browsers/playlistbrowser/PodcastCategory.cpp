@@ -136,7 +136,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
 
     m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
-                                                      PlaylistBrowserNS::ProviderColumn );
+                                                      MetaPlaylistModel::ProviderColumn );
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
@@ -396,8 +396,8 @@ PodcastCategoryDelegate::~PodcastCategoryDelegate()
 }
 
 void
-PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
-                                const QModelIndex & index ) const
+PodcastCategoryDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+                                const QModelIndex &index ) const
 {
     DEBUG_BLOCK
 

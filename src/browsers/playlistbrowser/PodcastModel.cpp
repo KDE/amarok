@@ -184,7 +184,7 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
 }
 
 QVariant
-PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
+PlaylistBrowserNS::PodcastModel::data(const QModelIndex &index, int role) const
 {
     if( index.row() == -1 )
     {
@@ -244,7 +244,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         case Qt::ToolTipRole:
             switch( index.column() )
             {
-                case TitleColumn:
+                case MetaPlaylistModel::PlaylistColumn:
                     return pmc->title();
 
                 case SubtitleColumn:
@@ -303,7 +303,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             break;
 
         case ShortDescriptionRole:
-            if( index.column() == TitleColumn )
+            if( index.column() == MetaPlaylistModel::PlaylistColumn )
                 return pmc->description();
             break;
 
@@ -311,7 +311,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         {
             switch( index.column() )
             {
-                case TitleColumn:
+                case MetaPlaylistModel::PlaylistColumn:
                     return icon( pmc );
                 case ProviderColumn:
                 {

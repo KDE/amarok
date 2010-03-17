@@ -37,17 +37,17 @@ enum {
     LongDescriptionRole
 };
 
+/* TODO: these should be replaced with custom roles for PlaylistColumn so all data of a playlist can
+   be fetched at once with itemData() */
 enum
 {
-    TitleColumn = MetaPlaylistModel::CustomColumOffset,
-    SubtitleColumn,
+    SubtitleColumn = MetaPlaylistModel::CustomColumOffset,
     AuthorColumn,
     KeywordsColumn,
     FilesizeColumn, // episode only
     ImageColumn,    // channel only (for now)
     DateColumn,
     IsEpisodeColumn,
-    ProviderColumn,
     OnDiskColumn,
     ColumnCount
 };
