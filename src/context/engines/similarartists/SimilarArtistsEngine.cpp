@@ -21,7 +21,6 @@
 #include <lastfm/Artist>
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "Debug.h"
 #include "EngineController.h"
 
 #include <QXmlStreamReader>
@@ -35,11 +34,11 @@ using namespace Context;
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_similarArtistsJob( 0 )
-        , m_currentSelection( "artist" )
-        , m_requested( true )
-        , m_sources( "current" )
+        , m_similarArtistsJob( 0 )       
         , m_descriptionWideLang( "aut" )
+        , m_currentSelection( "artist" )       
+        , m_requested( true )  
+        , m_sources( "current" )
         , m_triedRefinedSearch( 0 )
 {
     update();
@@ -108,8 +107,6 @@ void
 SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
-    DEBUG_BLOCK
-
     update();
 }
 
@@ -120,23 +117,18 @@ SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 void
 SimilarArtistsEngine::update()
 {
-    DEBUG_BLOCK
-    debug() << "SAE updt 1";
-
     //new update, if a job is not terminated, we kill it
     if ( m_similarArtistsJob )
     {
         m_similarArtistsJob->kill();
         m_similarArtistsJob = 0;
     }
-
-    debug() << "SAE updt 2";
+    
     // we mark the jobs that fetch description as outdated
     m_artistDescriptionJobs.clear();
 
     // we mark the jobs that fetch artists top tracks as outdated
     m_artistTopTrackJobs.clear();
-    debug() << "SAE updt 3";
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
@@ -151,7 +143,6 @@ SimilarArtistsEngine::update()
     if ( !currentTrack )
         return;
 
-    debug() << "SAE updt 4";
     DataEngine::Data data;
     // default, or applet told us to fetch artist
     if ( selection() == "artist" )
@@ -196,7 +187,6 @@ SimilarArtistsEngine::update()
             }
         }
     }
-    debug() << "SAE updt 5";
 
 }
 
@@ -208,8 +198,6 @@ SimilarArtistsEngine::update()
 void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
-    DEBUG_BLOCK
-
     // we generate the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
@@ -239,8 +227,6 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 void
 SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
 {
-    DEBUG_BLOCK
-
     // we genere the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
@@ -294,8 +280,6 @@ SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
 void
 SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
 {
-    DEBUG_BLOCK
-
     // we clear the context of the dataEngine
     m_similarArtists.clear();   // we clear the similarArtists precedently downloaded
     m_descriptionArtists = 0;   // we mark we haven't downloaded the description of
@@ -500,7 +484,7 @@ SimilarArtistsEngine::parseArtistDescription( KJob *job )
     // we get the description only if we have found it
     if ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
-        description = xmlReader.readElementText();
+        description = xmlReader.readElementText().simplified(); //we clean the string
     }
     else
     {

@@ -236,7 +236,7 @@ ArtistWidget::setDescription(const QString &description)
     if(description.isEmpty())
     {
         m_desc->setText(i18n("No description available in your language"));
-        m_descString=""; //we delete the precedent artist description
+        m_descString.clear(); //we delete the precedent artist description
     } else {
         QTextDocument descriptionText;
         descriptionText.setHtml(description);
