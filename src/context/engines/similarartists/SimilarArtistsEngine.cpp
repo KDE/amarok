@@ -34,13 +34,13 @@ using namespace Context;
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_similarArtistsJob( 0 )       
-        , m_descriptionWideLang( "aut" )
-        , m_currentSelection( "artist" )       
-        , m_requested( true )  
-        , m_sources( "current" )
-        , m_triedRefinedSearch( 0 )
 {
+    m_similarArtistsJob=0;
+    m_descriptionWideLang="aut";
+    m_currentSelection="artist";
+    m_requested=true;
+    m_sources.append("current");
+    m_triedRefinedSearch=0;
     update();
 }
 
