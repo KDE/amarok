@@ -149,12 +149,6 @@ CoverBlingApplet::init()
 
 CoverBlingApplet::~CoverBlingApplet()
 {
-    delete m_blingtofirst;
-    delete m_blingtolast;
-    delete m_blingfastback;
-    delete m_blingfastforward;
-    delete m_fullscreen;
-    delete m_jumptoplaying;
     delete m_ratingWidget;
     delete m_label;
     delete m_layout;
