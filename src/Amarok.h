@@ -46,8 +46,18 @@ namespace Amarok
     const int VOLUME_SENSITIVITY = 30; // for mouse wheels
     const int GUI_THREAD_ID = 0;
 
-    /** Bump this number whenever the plugin framework gets incompatible with older versions */
+    /**
+     * Bump this number whenever the plugin framework becomes incompatible with older versions.
+     * This is normally handled by the "bump_plugin_version.rb" script before tagging.
+     */
     static const int PluginFrameworkVersion = 54;
+
+    /**
+     * Bump this number whenever Context View applets have been removed or renamed.
+     * This is normally handled by the "bump_plugin_version.rb" script before tagging.
+     */
+    static const int AppletFrameworkVersion = 1;
+
 
     extern QMutex globalDirsMutex; // defined in App.cpp
     extern QPointer<KActionCollection> actionCollectionObject; // defined in App.cpp

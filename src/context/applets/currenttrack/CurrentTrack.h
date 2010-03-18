@@ -57,6 +57,8 @@ public:
     virtual void init();
     virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
+    virtual int appletVersion() const { return 1; }
+
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 

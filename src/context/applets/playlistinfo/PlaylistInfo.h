@@ -42,6 +42,8 @@ public:
     void constraintsEvent();
     QSizeF contentSizeHint() const { return m_size; }
 
+    virtual int appletVersion() const { return 1; }
+
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

@@ -54,6 +54,8 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	// inherited from EngineObserver
         virtual void engineNewTrackPlaying();
 
+        virtual int appletVersion() const { return 1; }
+
     public slots:
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
         void slideChanged(int islideindex);
