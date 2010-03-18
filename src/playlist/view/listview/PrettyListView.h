@@ -88,8 +88,6 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
-    void itemsAdded( const QModelIndex& parent, int firstRow, int lastRow );
-
 protected slots:
     void newPalette( const QPalette & palette );
 
@@ -97,6 +95,7 @@ protected slots:
     void restoreTrackSelection();
 
 private slots:
+    void itemsInserted( const QList<quint64>& );
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.

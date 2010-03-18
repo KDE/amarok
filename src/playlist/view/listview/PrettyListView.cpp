@@ -96,16 +96,21 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setAutoFillBackground( false );
 
     // signal connections
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
+
+    //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
+    //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
+    //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( itemsInserted( const QList<quint64>& ) ) );
+
+    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
+
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
-
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
-
-    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
-
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     m_animationTimer = new QTimer(this);
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
@@ -115,9 +120,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     if ( LayoutManager::instance()->activeLayout().inlineControls() )
         m_animationTimer->start();
-
-    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 
     m_toolTipManager = new ToolTipManager(this);
 
@@ -710,7 +712,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     else
         emit( notFound() );
 
-    //instead of kicking the proxy right away, start a 500msec timeout.
+    //instead of kicking the proxy right away, start a small timeout.
     //this stops us from updating it for each letter of a long search term,
     //and since it does not affect any views, this is fine. Worst case is that
     //a navigator skips to a track form the old search if the track change happens
@@ -806,8 +808,8 @@ void Playlist::PrettyListView::clearSearchTerm()
 
     debug() << "first row in filtered list: " << index.row();
 
-    m_topmostProxy->filterUpdated();
     m_topmostProxy->clearSearchTerm();
+    m_topmostProxy->filterUpdated();
 
     //Now we scroll to the previously stored row again. Note that it's not the same row in
     //the topmost model any more, so we need to grab it again using its id.
@@ -822,7 +824,7 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
     if ( m_proxyUpdateTimer->isActive() )
         m_proxyUpdateTimer->stop();
 
-    m_proxyUpdateTimer->setInterval( 500 );
+    m_proxyUpdateTimer->setInterval( 200 );
     m_proxyUpdateTimer->start();
 }
 
@@ -837,19 +839,18 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )
+void Playlist::PrettyListView::itemsInserted( const QList<quint64> &insertedIds )
 {
     DEBUG_BLOCK
-    Q_UNUSED( parent )
-    Q_UNUSED( lastRow )
 
-    QModelIndex index = model()->index( firstRow, 0);
+    int firstRow = m_topmostProxy->rowForId( insertedIds.first() );
+
+    QModelIndex index = model()->index( firstRow, 0 );
     if( !index.isValid() )
         return;
 
     debug() << "index has row: " << index.row();
     scrollTo( index, QAbstractItemView::PositionAtCenter );
-
 }
 
 void Playlist::PrettyListView::redrawActive()

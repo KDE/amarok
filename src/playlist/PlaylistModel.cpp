@@ -658,7 +658,6 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
         if ( m_items.at( i )->track() == track )
         {
             emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
-            emit metadataUpdated();
             debug()<<"Metadata updated for track"<<track->prettyName();
             break;
         }

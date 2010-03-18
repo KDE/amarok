@@ -43,52 +43,14 @@ public:
     ~SearchProxy();
 
     /**
-     * Find the first track in the playlist that matches the search term in one of the
-     * specified search fields. This function emits found() or notFound() depending on
-     * whether a match is found.
-     * @param searchTerm The term to search for.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match, -1 if no match is found.
+     * Implementation of Playlist::AbstractModel: search/filter-related functions.
      */
-    int find( const QString & searchTerm, int searchFields = MatchTrack );
-
-    /**
-     * Find the first track below a given row that matches the search term in one of the
-     * specified search fields. This function emits found() or notFound() depending on
-     * whether a match is found. If no row is found below the current row, the function wraps
-     * around and returns the first match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match below the offset, -1 if no match is found.
-     */
-    int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
-
-    /**
-     * Find the first track above a given row that matches the search term in one of the
-     * specified search fields. This function emits found() or notFound() depending on
-     * whether a match is found. If no row is found above the current row, the function wraps
-     * around and returns the last match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match above the offset, -1 if no match is found.
-     */
-    int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
-
     void clearSearchTerm();
-
-    /**
-     * Get the current search term.
-     * @return The curent search term.
-     */
-    QString currentSearchTerm() { return m_currentSearchTerm; }
-
-    /**
-     * Get the current search fields bit bitmask.
-     * @return The current search fields.
-     */
     int currentSearchFields() { return m_currentSearchFields; }
+    QString currentSearchTerm() { return m_currentSearchTerm; }
+    int find( const QString & searchTerm, int searchFields = MatchTrack );
+    int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
+    int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
 
 private:
     QString m_currentSearchTerm;

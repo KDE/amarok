@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,13 +31,12 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
 
     setDynamicSortFilter( true );    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
 
+    // Proxy the Playlist::AbstractModel signals
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
     connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( slotInvalidateFilter() ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", true );
@@ -71,7 +71,9 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
 
-    filterUpdated();
+    // Don't call 'filterUpdated()': our client must do that as part of the API.
+    // This allows client 'PrettyListView' to give the user the time to type a few
+    // characters before we do a filter run that might block for a few seconds.
 
     return -1;
 }
@@ -119,19 +121,18 @@ void FilterProxy::clearSearchTerm()
     m_currentSearchFields = 0;
     m_belowModel->clearSearchTerm();
 
-    filterUpdated();
+    // Don't call 'filterUpdated()': our client must do that as part of the API.
+    // This allows client 'PrettyListView' to give the user the time to type a few
+    // characters before we do a filter run that might block for a few seconds.
 }
 
 bool
-FilterProxy::matchesCurrentSearchTerm( int source_row ) const
+FilterProxy::matchesCurrentSearchTerm( int sourceModelRow ) const
 {
-    if ( ! m_belowModel->rowExists( source_row ) )
-        return false;
-
     if ( m_currentSearchTerm.isEmpty() )
         return true;
 
-    return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
+    return rowMatch( sourceModelRow, m_currentSearchTerm, m_currentSearchFields );
 }
 
 int

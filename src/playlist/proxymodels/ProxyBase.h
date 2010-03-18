@@ -374,25 +374,20 @@ signals:
     void activeTrackChanged( const quint64 );
 
     /**
-     * Signal forwarded from the source model. Emitted when the metadata of a track changes.
-     */
-    void metadataUpdated();
-
-    /**
      * Signal forwarded from the source model. Emitted when tracks are (de)queued in the playlist.
      */
     void queueChanged();
 
 protected:
     /**
-     * Check if a certain row matches a search term when looking at the fields specified by
-     * the searchFields bitmask.
-     * @param row The row of the track to match against.
+     * Check if a certain row in the source model matches a search term when looking at
+     * the fields specified by the searchFields bitmask.
+     * @param row The row number in the source model to match against.
      * @param searchTerm The search term.
      * @param searchFields A bitmask containing the fields that should be matched against.
      * @return True if a match is found in any field, false otherwise.
      */
-    bool rowMatch( int row, const QString &searchTerm, int searchFields ) const;
+    bool rowMatch( int sourceModelRow, const QString &searchTerm, int searchFields ) const;
 
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid

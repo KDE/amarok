@@ -144,7 +144,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void removedIds( const QList<quint64>& );
         void activeTrackChanged( quint64 );
         void activeRowChanged( int );
-        void metadataUpdated();
         void queueChanged();
 
     protected:
