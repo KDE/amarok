@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTCATEGORY_H
-#define PLAYLISTCATEGORY_H
+#ifndef USERUserPlaylistCategory_H
+#define USERUserPlaylistCategory_H
 
 
 #include "UserPlaylistTreeView.h"
@@ -46,16 +46,16 @@ The widget that displays playlists in the playlist browser
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class PlaylistCategory : public BrowserCategory
+class UserPlaylistCategory : public BrowserCategory
 {
 Q_OBJECT
 public:
     static QString s_configGroup;
     static QString s_mergeViewKey;
 
-    PlaylistCategory( QWidget * parent );
+    UserPlaylistCategory( QWidget * parent );
 
-    ~PlaylistCategory();
+    ~UserPlaylistCategory();
 
 private slots:
     void newPalette( const QPalette &palette );

@@ -406,7 +406,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/PlaylistBrowser.cpp
     browsers/playlistbrowser/UserPlaylistModel.cpp
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
-    browsers/playlistbrowser/PlaylistCategory.cpp
+    browsers/playlistbrowser/UserPlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
     browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp

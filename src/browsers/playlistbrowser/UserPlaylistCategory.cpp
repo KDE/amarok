@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistCategory.h"
+#include "UserPlaylistCategory.h"
 
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -47,10 +47,10 @@
 
 using namespace PlaylistBrowserNS;
 
-QString PlaylistCategory::s_configGroup( "Saved Playlists View" );
-QString PlaylistCategory::s_mergeViewKey( "Merged View" );
+QString UserPlaylistCategory::s_configGroup( "Saved Playlists View" );
+QString UserPlaylistCategory::s_mergeViewKey( "Merged View" );
 
-PlaylistCategory::PlaylistCategory( QWidget * parent )
+UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists", parent )
 {
     setPrettyName( i18n( "Saved Playlists" ) );
@@ -131,11 +131,11 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     }
 }
 
-PlaylistCategory::~PlaylistCategory()
+UserPlaylistCategory::~UserPlaylistCategory()
 {
 }
 
-void PlaylistCategory::newPalette(const QPalette & palette)
+void UserPlaylistCategory::newPalette(const QPalette & palette)
 {
     Q_UNUSED( palette )
 
@@ -143,7 +143,7 @@ void PlaylistCategory::newPalette(const QPalette & palette)
 }
 
 void
-PlaylistCategory::toggleView( bool merged )
+UserPlaylistCategory::toggleView( bool merged )
 {
     if( merged )
     {
@@ -166,14 +166,14 @@ PlaylistCategory::toggleView( bool merged )
 }
 
 void
-PlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int category )
+UserPlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int category )
 {
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
 }
 
 void
-PlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category )
+UserPlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category )
 {
     if( m_providerActions.keys().contains( provider ) )
     {
@@ -183,7 +183,7 @@ PlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category 
 }
 
 void
-PlaylistCategory::createProviderButton( const PlaylistProvider *provider )
+UserPlaylistCategory::createProviderButton( const PlaylistProvider *provider )
 {
     QAction *providerToggle = new QAction( provider->icon(), provider->prettyName(), this );
     providerToggle->setCheckable( true );
@@ -195,7 +195,7 @@ PlaylistCategory::createProviderButton( const PlaylistProvider *provider )
 }
 
 void
-PlaylistCategory::slotToggleProviderButton( bool enabled )
+UserPlaylistCategory::slotToggleProviderButton( bool enabled )
 {
     DEBUG_BLOCK
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
@@ -217,10 +217,8 @@ PlaylistCategory::slotToggleProviderButton( bool enabled )
 }
 
 void
-PlaylistCategory::createNewGroup()
+UserPlaylistCategory::createNewGroup()
 {
     QModelIndex idx = m_byFolderProxy->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
     m_playlistView->edit( m_filterProxy->mapFromSource( idx ) );
 }
-
-#include "PlaylistCategory.moc"
