@@ -46,6 +46,9 @@ namespace Amarok
     const int VOLUME_SENSITIVITY = 30; // for mouse wheels
     const int GUI_THREAD_ID = 0;
 
+    /** Bump this number whenever the plugin framework gets incompatible with older versions */
+    static const int PluginFrameworkVersion = 54;
+
     extern QMutex globalDirsMutex; // defined in App.cpp
     extern QPointer<KActionCollection> actionCollectionObject; // defined in App.cpp
 

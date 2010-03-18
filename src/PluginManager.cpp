@@ -18,6 +18,7 @@
 
 #include "PluginManager.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 #include "plugin.h"
 
@@ -45,7 +46,7 @@ PluginManager::query( const QString& constraint )
     // Add versioning constraint
     QString
     str  = "[X-KDE-Amarok-framework-version] == ";
-    str += QString::number( FrameworkVersion );
+    str += QString::number( Amarok::PluginFrameworkVersion );
     if ( !constraint.trimmed().isEmpty() )
         str += " and " + constraint;
     str += " and ";

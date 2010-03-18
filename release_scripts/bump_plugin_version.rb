@@ -7,7 +7,7 @@
 # no old and perhaps incompatible engines are getting loaded. After running, don't
 # forget to commit to svn. The script must be started from the amarok/ folder.
 #
-# (c) 2005-2008 Mark Kretschmann <kretschmann@kde.org>
+# (c) 2005-2010 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 
@@ -36,18 +36,18 @@ if not Dir::getwd().split( "/" ).last() == "amarok"
 end
 
 
-# Bump FrameworkVersion in pluginmanager.h
-file = File.new( "src/PluginManager.h", File::RDWR )
+# Bump PluginFrameworkVersion in Amarok.h
+file = File.new( "src/Amarok.h", File::RDWR )
 str = file.read()
 file.rewind()
 file.truncate( 0 )
-temp = str.scan( /static const int FrameworkVersion = [0-9]*;/ )
+temp = str.scan( /static const int PluginFrameworkVersion = [0-9]*;/ )
 @version = temp.join().scan( /[0-9]*/ ).join().to_i()
 @version = @version + 1
 
 print "Bumping the plugin framework version to: #{@version}"
 
-str.sub!( /static const int FrameworkVersion = [0-9]*;/, "static const int FrameworkVersion = #{@version};" )
+str.sub!( /static const int PluginFrameworkVersion = [0-9]*;/, "static const int PluginFrameworkVersion = #{@version};" )
 file << str
 file.close()
 
