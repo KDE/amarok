@@ -143,7 +143,7 @@ CoverBlingApplet::init()
     m_jumptoplaying = new Plasma::IconWidget( this );
     m_jumptoplaying->setIcon( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) );
     m_jumptoplaying->setMaximumSize( 16.0, 16.0 );
-    m_jumptoplaying->setToolTip( i18n( "Junp to Current" ) );
+    m_jumptoplaying->setToolTip( i18n( "Jump to Current" ) );
 
     connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );

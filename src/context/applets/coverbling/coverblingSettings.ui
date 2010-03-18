@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Refection effect</string>
+    <string>Reflection effect</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
