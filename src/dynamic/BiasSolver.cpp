@@ -828,7 +828,7 @@ Dynamic::BiasSolver::updateUniverse()
 {
     DEBUG_BLOCK
 
-    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
 
     /* TODO: Using multiple collections.
      * One problem with just using MetaQueryMaker is that we can't store uids as
@@ -852,7 +852,7 @@ Dynamic::BiasSolver::updateUniverse()
             s_universeCollection = CollectionManager::instance()->primaryCollection();
         if( !s_universeCollection ) // WTF we really can't get a primarycollection?
         {                           //  whenever a collection is added lets check again, so we catch the loading of the primary colletion
-            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
             return;
         }
         
