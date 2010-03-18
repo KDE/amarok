@@ -22,6 +22,7 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
+     * Improved performance (dramatic in some cases) when filtering The Playlist.
      * Remove information that is already displayed elsewhere in the playlist from
        the playlist tooltips.
      * Make showing the playlist tooltips a per playlist layout option.
