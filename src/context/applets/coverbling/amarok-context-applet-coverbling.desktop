@@ -1,6 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=CoverBling
+Name[pt]=Capas
+Name[uk]=CoverBling
+Name[x-test]=xxCoverBlingxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
