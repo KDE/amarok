@@ -80,7 +80,6 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
     m_filterProxy->setFilterKeyColumn( PlaylistBrowserNS::UserModel::ProviderColumn );
 
     m_playlistView->setModel( m_filterProxy );
-//    m_playlistView->setModel( m_byProviderProxy );
 
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     toolBar->addAction( m_addGroupAction );
@@ -107,7 +106,6 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
 
     toggleView( toggleAction->isChecked() );
 
-//    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
     m_playlistView->header()->hide();
