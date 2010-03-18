@@ -1275,6 +1275,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
+    job->setDefaultPermissions(true);
     m_jobcounter++;
 
     if( m_jobcounter < 150 )
