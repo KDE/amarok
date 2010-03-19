@@ -31,6 +31,7 @@
 // Qt
 #include <QXmlStreamReader>
 
+K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
 
 using namespace Context;
 

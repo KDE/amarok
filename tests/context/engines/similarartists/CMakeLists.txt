@@ -1,5 +1,3 @@
-add_subdirectory( data )
-
 include_directories(
   ${AMAROK_SOURCE_TREE}/context/engines/similarartists
   ${AMAROK_SOURCE_TREE}/context/applets/similarartists
