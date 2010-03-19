@@ -103,8 +103,8 @@ CoverBlingApplet::init()
     qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
-    const QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
-    m_label ->setBrush( brush );
+    const QBrush brush( Qt::white );
+    m_label->setBrush( brush );
     QFont labelFont;
     QFont bigFont( labelFont );
     bigFont.setPointSize( bigFont.pointSize() + 2 );
