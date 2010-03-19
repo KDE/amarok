@@ -19,6 +19,7 @@
 
 #include <UserPlaylistProvider.h>
 #include <PlaylistFileSupport.h>
+#include "meta/PlaylistProvider.h"
 
 #include <kicon.h>
 
@@ -41,7 +42,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
-        virtual int category() const { return PlaylistManager::UserPlaylist; }
+        virtual int category() const { return Meta::UserPlaylist; }
 
         virtual int playlistCount() const;
         virtual Meta::PlaylistList playlists();

@@ -20,7 +20,7 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "meta/Playlist.h"
-#include "PlaylistProvider.h"
+#include "meta/PlaylistProvider.h"
 
 #include <QMultiMap>
 #include <QList>

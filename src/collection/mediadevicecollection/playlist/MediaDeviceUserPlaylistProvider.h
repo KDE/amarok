@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTION_MEDIADEVICEUSERPLAYLISTPROVIDER_H
 #define AMAROK_COLLECTION_MEDIADEVICEUSERPLAYLISTPROVIDER_H
 
-#include "playlistmanager/UserPlaylistProvider.h"
+#include "meta/UserPlaylistProvider.h"
 #include "MediaDevicePlaylist.h"
 
 #include <klocale.h>

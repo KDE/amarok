@@ -32,8 +32,8 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
-class QTextStream;
 class PlaylistProvider;
+class QTextStream;
 
 namespace Meta
 {
@@ -41,6 +41,12 @@ namespace Meta
 
     typedef KSharedPtr<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
+
+    enum PlaylistCategory
+    {
+        UserPlaylist = 1,
+        PodcastChannelPlaylist
+    };
 
     class AMAROK_EXPORT PlaylistObserver
     {

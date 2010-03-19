@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "PlaylistsInGroupsProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
@@ -123,7 +124,7 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
     m_playlistView->setAlternatingRowColors( true );
 
     foreach( const PlaylistProvider *provider,
-             The::playlistManager()->providersForCategory( PlaylistManager::UserPlaylist ) )
+             The::playlistManager()->providersForCategory( Meta::UserPlaylist ) )
     {
         createProviderButton( provider );
     }

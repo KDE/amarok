@@ -17,7 +17,7 @@
 
 #include "UserPlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlistmanager/PlaylistProvider.h"
+#include "meta/PlaylistProvider.h"
 
 #include "AmarokMimeData.h"
 #include "CollectionManager.h"
@@ -128,7 +128,7 @@ void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
     QList<Meta::PlaylistPtr> playlists =
-            The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
+            The::playlistManager()->playlistsOfCategory( Meta::UserPlaylist );
     QListIterator<Meta::PlaylistPtr> i( playlists );
     m_playlists.clear();
     while( i.hasNext() )
@@ -160,7 +160,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
 
             //get data from empty providers
             PlaylistProviderList providerList =
-                    The::playlistManager()->providersForCategory( PlaylistManager::UserPlaylist );
+                    The::playlistManager()->providersForCategory( Meta::UserPlaylist );
             foreach( PlaylistProvider *provider, providerList )
             {
                 if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )

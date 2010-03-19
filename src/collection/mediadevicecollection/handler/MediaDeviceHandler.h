@@ -33,7 +33,7 @@
 
 #include "mediadevicecollection_export.h"
 
-#include "playlistmanager/UserPlaylistProvider.h"
+#include "meta/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>
 

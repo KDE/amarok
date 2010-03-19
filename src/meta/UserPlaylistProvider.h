@@ -18,8 +18,8 @@
 #ifndef USERPLAYLISTPROVIDER_H
 #define USERPLAYLISTPROVIDER_H
 
-#include "meta/Playlist.h"
-#include "playlistmanager/PlaylistManager.h"
+#include "Playlist.h"
+#include "PlaylistProvider.h"
 
 class QAction;
 

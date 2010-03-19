@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "plugin/plugin.h"
-#include "meta/Playlist.h"
+#include "Playlist.h"
 
 #include <QString>
 

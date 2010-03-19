@@ -27,7 +27,7 @@ class MediaDevicePodcastProvider : public PodcastProvider
 
         // PlaylistProvider methods
         virtual QString prettyName() const;
-        virtual int category() const { return (int)PlaylistManager::PodcastChannel; }
+        virtual int category() const { return (int)Meta::PodcastChannelPlaylist; }
 
         virtual Meta::PlaylistList playlists();
 

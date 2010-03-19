@@ -287,6 +287,8 @@ set(meta_SRCS
     meta/Playlist.cpp
     meta/PLSPlaylist.cpp
     meta/StatisticsProvider.cpp
+    meta/PlaylistProvider.cpp
+    meta/UserPlaylistProvider.cpp
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
     meta/XSPFPlaylist.cpp
@@ -419,8 +421,6 @@ set(libplaylistbrowser_SRCS
 #####################################################################
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
-    playlistmanager/PlaylistProvider.cpp
-    playlistmanager/UserPlaylistProvider.cpp
     playlistmanager/file/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylist.cpp

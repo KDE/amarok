@@ -21,6 +21,7 @@
 #include "UmsCollection.h"
 #include "UmsPodcastProvider.h"
 #include "Debug.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include "SvgHandler.h"
 
@@ -174,7 +175,7 @@ UmsHandler::init()
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
                 m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
-                                                     PlaylistManager::PodcastChannel );
+                                                     Meta::PodcastChannelPlaylist );
             }
             else if( line.startsWith( s_autoConnectKey + "=" ) )
             {

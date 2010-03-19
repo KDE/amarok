@@ -24,7 +24,7 @@ UserPlaylistProvider::~UserPlaylistProvider()
 int
 UserPlaylistProvider::category() const
 {
-     return PlaylistManager::UserPlaylist;
+     return Meta::UserPlaylist;
 }
 
 bool

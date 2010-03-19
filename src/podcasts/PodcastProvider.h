@@ -19,7 +19,6 @@
 
 #include "Collection.h"
 #include "PodcastMeta.h"
-#include "playlistmanager/PlaylistManager.h"
 
 #include <kio/jobclasses.h>
 #include <klocale.h>
@@ -58,7 +57,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual QString prettyName() const = 0;
         virtual KIcon icon() const = 0;
 
-        virtual int category() const { return (int)PlaylistManager::PodcastChannel; }
+        virtual int category() const { return (int)Meta::PodcastChannelPlaylist; }
 
         virtual Meta::PlaylistList playlists() = 0;
 
