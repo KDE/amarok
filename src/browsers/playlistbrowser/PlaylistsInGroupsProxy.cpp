@@ -89,9 +89,9 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         //is a playlist not in a folder
         //FIXME: before confirming deletion of a playlist it already dissapears from the
         //view. The beginRemoveRows should not be called here but in the source model.
-        QModelIndex childIdx = mapToSource( index( row, 0, QModelIndex() ) );
+        QModelIndex childIdx = mapToSource( index( row, 0, m_rootNode ) );
         beginRemoveRows( QModelIndex(), row, row + count );
-        result = m_model->removeRows( childIdx.row(), count, QModelIndex() );
+        result = m_model->removeRows( childIdx.row(), count, m_rootNode );
         endRemoveRows();
         return result;
     }
@@ -104,17 +104,17 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
             //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
-            result =
-                m_model->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
+            result = m_model->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
         }
         return result;
     }
 
     //removing a track from a playlist
-    beginRemoveRows( parent, row, row + count );
+    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
     result = m_model->removeRows( row, count, originalIdx );
     endRemoveRows();
+
     return result;
 }
 
