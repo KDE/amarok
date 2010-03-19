@@ -364,16 +364,7 @@ void CoverFoundDialog::add( const QPixmap cover,
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
     connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
-
-    const QString src = metadata.value( "source" );
-    const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
-    const QString h = metadata.contains( "height" ) ? metadata.value( "height" ) : QString::number( cover.height() );
-    const QString size = QString( "%1x%2" ).arg( w ).arg( h );
-    const QString tip = i18n( "Size:" ) + size;
-    item->setToolTip( tip );
-
     m_view->addItem( item );
-
     updateGui();
 }
 
@@ -588,11 +579,6 @@ void CoverFoundItem::slotFetchResult( KJob *job )
     if( pixmap.loadFromData( data ) )
     {
         m_bigPix = pixmap;
-        const QString w = QString::number( pixmap.width() );
-        const QString h = QString::number( pixmap.height() );
-        const QString size = QString( "%1x%2" ).arg( w ).arg( h );
-        const QString tip = i18n( "Size:" ) + size;
-        setToolTip( tip );
         emit pixmapChanged( m_bigPix );
     }
 
