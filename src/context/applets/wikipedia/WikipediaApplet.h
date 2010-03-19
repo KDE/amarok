@@ -57,8 +57,6 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-    virtual int appletVersion() const { return 1; }
-
 protected:
     void createConfigurationInterface(KConfigDialog *parent);
     

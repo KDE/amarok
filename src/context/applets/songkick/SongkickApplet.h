@@ -46,8 +46,6 @@ public:
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
-    virtual int appletVersion() const { return 1; }
-
 public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );

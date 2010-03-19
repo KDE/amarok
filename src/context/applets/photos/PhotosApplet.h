@@ -56,8 +56,6 @@ class PhotosApplet : public Context::Applet, public EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
         
-        virtual int appletVersion() const { return 1; }
-
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );

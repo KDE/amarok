@@ -52,8 +52,6 @@ public:
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
 
-    virtual int appletVersion() const { return 1; }
-
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();

@@ -1,6 +1,5 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,7 +16,6 @@
 
 #include "VerticalToolbarContainment.h"
 
-#include "Amarok.h"
 #include "ContextView.h"
 #include "Debug.h"
 #include "PaletteHandler.h"
@@ -143,21 +141,13 @@ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const
 {
     DEBUG_BLOCK
 
-    Context::Applet* applet = qobject_cast<Context::Applet*>( Plasma::Containment::addApplet( pluginName ) );
+    Plasma::Applet* applet = Plasma::Containment::addApplet( pluginName );
 
     if( applet == 0 )
-    {
         debug() << "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!";
-        return 0;
-    }
+    else
+        m_applets->addApplet( applet, loc );
 
-    if( applet->appletVersion() != Amarok::AppletFrameworkVersion )
-    {
-        debug() << "Applet version mismatch. Skipping this applet.";
-        return 0;
-    }
-
-    m_applets->addApplet( applet, loc );
     return applet;
 }
 
