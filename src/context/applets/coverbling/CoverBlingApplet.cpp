@@ -106,7 +106,7 @@ CoverBlingApplet::init()
     m_label->setBrush( QBrush( Qt::white ) );
     QFont labelFont;
     QFont bigFont( labelFont );
-    bigFont.setPointSize( bigFont.pointSize() + 2 );
+    bigFont.setPointSize( bigFont.pointSize() + 4 );
     m_label->setFont( labelFont );
 
     m_ratingWidget = new RatingWidget( this );
@@ -239,6 +239,8 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_jumptoplaying->setPos( horizontal_size - 60, 30 );
 
     m_pictureflow->resize( horizontal_size, vertical_size );
+
+    m_label->setPos( ( size().width() - m_label->boundingRect().width() ) / 2, m_label->y() );
 }
 
 void
