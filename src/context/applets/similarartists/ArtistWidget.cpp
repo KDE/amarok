@@ -220,6 +220,7 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
     m_nameLabel->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
 
     //Figure out of this applet is present in the local collection, and show the "show in collection" button if so
+    m_navigateButton->hide();
 
     if( m_qm )
         m_qm->reset();
