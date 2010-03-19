@@ -25,6 +25,7 @@
 #include "Debug.h"
 
 //KDE
+#include <KHBox>
 #include <KIcon>
 #include <KLocale>
 
@@ -78,11 +79,13 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     m_topTrack->setAlignment( Qt::AlignLeft );
 
 
-    m_navigateButton = new QPushButton( this );
+    KHBox * spacer = new KHBox( this );
+    spacer->setFixedHeight( 18 );
+    m_navigateButton = new QPushButton( spacer );
     m_navigateButton->setIcon( KIcon( "edit-find" ) );
     m_navigateButton->setFlat( true );
     m_navigateButton->setFixedWidth( 20 );
-    m_navigateButton->setFixedHeight( 20 );
+    m_navigateButton->setFixedHeight( 18 );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
     m_navigateButton->hide();
 
@@ -94,7 +97,7 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     // The background of the QLabel is transparent
     m_desc->setAttribute( Qt::WA_TranslucentBackground, true );
     m_desc->setAlignment( Qt::AlignLeft );
-    m_desc->setMinimumHeight(50);
+    m_desc->setMinimumHeight( 50 );
 
 
     // the image display is extended on two row
@@ -102,7 +105,7 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     m_layout->addWidget( m_nameLabel, 0, 1 );
     m_layout->addWidget( m_genre, 0, 2 );
     m_layout->addWidget( m_topTrack, 1, 1, 1, 2 );
-    m_layout->addWidget( m_navigateButton, 1, 2, 1, 1 );
+    m_layout->addWidget( spacer, 1, 2, 1, 1 );
     m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
     // open the url of the similar artist when his name is clicked
