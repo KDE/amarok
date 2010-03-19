@@ -18,7 +18,12 @@
 #include "ArtistWidget.h"
 
 //Amarok
+#include "amarokurls/AmarokUrl.h"
 #include "Debug.h"
+
+//KDE
+#include <KIcon>
+#include <KLocale>
 
 //Qt
 #include <QGridLayout>
@@ -51,10 +56,10 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_image->setAttribute( Qt::WA_TranslucentBackground, true );
     m_image->setAlignment( Qt::AlignCenter );
 
-    m_name = new QLabel( this );
+    m_nameLabel = new QLabel( this );
     // The background of the QLabel is transparent
-    m_name->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_name->setAlignment( Qt::AlignCenter );
+    m_nameLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+    m_nameLabel->setAlignment( Qt::AlignCenter );
 
     m_genre = new QLabel( this );
     // The background of the QLabel is transparent
@@ -67,6 +72,17 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_topTrack->setAttribute( Qt::WA_TranslucentBackground, true );
     m_topTrack->setAlignment( Qt::AlignLeft );
 
+
+    m_navigateButton = new QPushButton( this );
+    m_navigateButton->setIcon( KIcon( "edit-find" ) );
+    m_navigateButton->setFlat( true );
+    m_navigateButton->setFixedWidth( 20 );
+    m_navigateButton->setFixedHeight( 20 );
+    m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
+
+
+    connect( m_navigateButton, SIGNAL( clicked( bool ) ), this, SLOT( navigateToArtist() ) );
+
     m_desc= new QLabel( this );
     m_desc->setWordWrap( true );
     // The background of the QLabel is transparent
@@ -77,13 +93,14 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
 
     // the image display is extended on two row
     m_layout->addWidget( m_image, 0, 0, 3, 1 );
-    m_layout->addWidget( m_name, 0, 1 );
+    m_layout->addWidget( m_nameLabel, 0, 1 );
     m_layout->addWidget( m_genre, 0, 2 );
     m_layout->addWidget( m_topTrack, 1, 1, 1, 2 );
+    m_layout->addWidget( m_navigateButton, 1, 2, 1, 1 );
     m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
     // open the url of the similar artist when his name is clicked
-    connect( m_name, SIGNAL( linkActivated( const QString & ) ), this
+    connect( m_nameLabel, SIGNAL( linkActivated( const QString & ) ), this
              , SLOT( openUrl( const QString  & ) ) );
 }
 
@@ -95,7 +112,7 @@ ArtistWidget::~ArtistWidget()
 {
     delete m_layout;
     delete m_image;
-    delete m_name;
+    delete m_nameLabel;
     delete m_genre;
     delete m_topTrack;
     delete m_imageJob;
@@ -190,7 +207,8 @@ ArtistWidget::setImageFromInternet( KJob *job )
 void
 ArtistWidget::setArtist( const QString &nom, const KUrl &url )
 {
-    m_name->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
+    m_name = nom;
+    m_nameLabel->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
 }
 
 /**
@@ -210,7 +228,7 @@ void
 ArtistWidget::clear()
 {
     m_image->clear();
-    m_name->clear();
+    m_nameLabel->clear();
     m_genre->clear();
     m_topTrack->clear();
 }
@@ -298,4 +316,14 @@ ArtistWidget::elideArtistDescription()
         stringTmp.append("...");
         m_desc->setText(stringTmp);
     }
+}
+
+void
+ArtistWidget::navigateToArtist()
+{
+    AmarokUrl url;
+    url.setCommand( "navigate" );
+    url.setPath( "collections" );
+    url.appendArg( "filter", "artist:\"" + m_name + "\"" );
+    url.run();
 }

@@ -31,6 +31,7 @@
 class QLabel;
 class QGraphicsScene;
 class QGridLayout;
+class QPushButton;
 
 /**
  * A widget for display an artist with some details
@@ -115,10 +116,16 @@ private:
      */
     QLabel *m_image;
 
+
     /**
      * Name of the artist
      */
-    QLabel *m_name;
+    QString m_name;
+    
+    /**
+     * Label showing the name of the artist
+     */
+    QLabel *m_nameLabel;
 
     /**
      * Genre of the artist's music
@@ -129,6 +136,11 @@ private:
      * Top track of the artist
      */
     QLabel *m_topTrack;
+
+    /**
+     * Button to navigate to the artit in the local collection
+     */
+     QPushButton *m_navigateButton;
 
     /**
      * Description of the artist
@@ -159,6 +171,11 @@ private slots:
      * @param url The URL of the artist
      */
     void openUrl( const QString &url );
+
+    /**
+     * Navigate to this artist in the local collection
+     */
+    void navigateToArtist();
 };
 
 #endif // ARTIST_WIDGET_H
