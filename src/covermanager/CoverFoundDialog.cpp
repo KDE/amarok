@@ -528,6 +528,9 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
     QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setIcon( prettyPix );
+    setCaption();
+    setFont( KGlobalSettings::smallestReadableFont() );
+    setTextAlignment( Qt::AlignHCenter | Qt::AlignTop );
 }
 
 CoverFoundItem::~CoverFoundItem()
@@ -601,6 +604,28 @@ void CoverFoundItem::slotFetchResult( KJob *job )
         m_dialog = 0;
     }
     storedJob->deleteLater();
+}
+
+void CoverFoundItem::setCaption()
+{
+    QStringList captions;
+    const QString width = m_metadata.value( "width" );
+    const QString height = m_metadata.value( "height" );
+    if( !width.isEmpty() && !height.isEmpty() )
+        captions << QString( "%1 x %2" ).arg( width ).arg( height );
+
+    int size = m_metadata.value( "size" ).toInt();
+    if( size )
+    {
+        const QString source = m_metadata.value( "source" );
+        if( source == "Yahoo!" )
+            size /= 1024;
+
+        captions << ( QString::number( size ) + 'k' );
+    }
+
+    if( !captions.isEmpty() )
+        setText( captions.join( QString( " - " ) ) );
 }
 
 #include "CoverFoundDialog.moc"
