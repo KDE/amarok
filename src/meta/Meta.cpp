@@ -423,13 +423,14 @@ Meta::Album::notifyObservers() const
 QPixmap
 Meta::Album::image( int size )
 {
-    // Return "nocover" until it's fetched.
+    /*
+     * This is the base class's image() function, which returns "nocover" by default.
+     * Retrieval of the cover for the actual album is done by subclasses.
+     */
     const QDir &cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if( size <= 1 )
         size = 100;
-    const QString &noCoverKey = QString::number( size ) + '@' + "nocover.png";
-
-    m_noCoverImage = true; //FIXME is this correct? Why do we set it unconditionally?
+    const QString &noCoverKey = QString::number( size ) + "@nocover.png";
 
     QPixmap pixmap;
     if( cacheCoverDir.exists( noCoverKey ) )
@@ -449,10 +450,9 @@ Meta::Album::image( int size )
 QPixmap
 Meta::Album::imageWithBorder( int size, int borderWidth )
 {
-    m_noCoverImage = false;
     const int imageSize = size - ( borderWidth * 2 );
     const QPixmap cover = image( imageSize );
-    const QString &nameForKey = m_noCoverImage ? "nocover" : name();
+    const QString &nameForKey = name();
     return The::svgHandler()->addBordersToPixmap( cover, borderWidth, nameForKey );
 }
 
@@ -460,7 +460,7 @@ Meta::Album::imageWithBorder( int size, int borderWidth )
 bool
 Meta::Album::operator==( const Meta::Album &album ) const
 {
-    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &album );
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const void*>( &album );
 }
 
 //Meta::Genre
