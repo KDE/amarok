@@ -22,7 +22,7 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
-     * Improved performance (dramatic in some cases) when filtering The Playlist 
+     * Improved performance (dramatic in some cases) when filtering the Playlist 
        (231185).
      * Remove information that is already displayed elsewhere in the playlist from
        the playlist tooltips.
@@ -54,7 +54,7 @@ VERSION 2.3.1-Beta 1
        playing track was edited. (BR 210296)
      * Fixed bad window title for the details edit dialog in the playlist layout 
        editor. (BR 227912)
-     * Fixed wrong track getting dragged from The Playlist when sorting and/or
+     * Fixed wrong track getting dragged from the Playlist when sorting and/or
        filtering is active. (BR 226503)
      * Fixed visual indication for "Stop After This Track" not getting shown 
        immediately when using the global shortcut. (BR 230569)
