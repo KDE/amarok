@@ -56,8 +56,8 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 
     public slots:
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
-        void slideChanged(int islideindex);
-        void playAlbum(int islideindex);
+        void slideChanged( int islideindex );
+        void appendAlbum( int islideindex );
         void toggleFullscreen();
         void jumpToPlaying();
         void saveSettings();

@@ -99,7 +99,7 @@ CoverBlingApplet::init()
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
     connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
-    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( playAlbum( int ) ) );
+    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
     qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
@@ -200,12 +200,12 @@ void CoverBlingApplet::slideChanged( int islideindex )
     }
 }
 
-void CoverBlingApplet::playAlbum( int islideindex )
+void CoverBlingApplet::appendAlbum( int islideindex )
 {
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
     if ( album )
     {
-        The::playlistController()->insertOptioned( album->tracks(), Playlist::LoadAndPlay );
+        The::playlistController()->insertOptioned( album->tracks(), Playlist::AppendAndPlay );
     }
 
 }
