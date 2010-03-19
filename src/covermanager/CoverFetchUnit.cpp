@@ -533,6 +533,7 @@ CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
     metadata[ "title" ] = releaseNode.namedItem( "title" ).toElement().text();
     metadata[ "country" ] = releaseNode.namedItem( "country" ).toElement().text();
     metadata[ "released" ] = releaseNode.namedItem( "released" ).toElement().text();
+    metadata[ "source" ] = "Discogs";
 
     const QDomNodeList imageNodes = releaseNode.namedItem( "images" ).childNodes();
     for( uint x = 0, len = imageNodes.length(); x < len; ++x )
@@ -592,6 +593,7 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
         metadata[ "size" ] = url.queryItemValue( "sz" );
         metadata[ "imgrefurl" ] = url.queryItemValue( "imgrefurl" );
         metadata[ "normalarturl" ] = url.queryItemValue("imgurl");
+        metadata[ "source" ] = "Google";
 
         if( !rx.cap( 2 ).isEmpty() )
             metadata[ "thumbarturl" ] = rx.cap( 2 );
@@ -656,6 +658,7 @@ CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
 
         KUrl url;
         CoverFetch::Metadata metadata;
+        metadata[ "source" ] = "Last.fm";
 
         const QDomNodeList list = albumNode.childNodes();
         for( int i = 0, count = list.count(); i < count; ++i )
@@ -714,6 +717,7 @@ CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
             continue;
 
         CoverFetch::Metadata metadata;
+        metadata[ "source" ] = "Yahoo!";
         metadata[ "thumbarturl" ] = albumNode.namedItem( "thumbnail_url" ).toElement().text();
         metadata[ "normalarturl" ] = albumNode.namedItem( "url" ).toElement().text();
 
