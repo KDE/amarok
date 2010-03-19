@@ -456,38 +456,21 @@ void CoverFoundSideBar::updateMetaTable()
     int row( 0 );
     foreach( const QString &tag, tags )
     {
-        QTableWidgetItem *itemTag( 0 );
-        QTableWidgetItem *itemVal( 0 );
-
         if( m_metadata.contains( tag ) )
         {
             const QString value = m_metadata.value( tag );
             if( value.isEmpty() )
                 continue;
 
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
-            itemVal = new QTableWidgetItem( value );
-        }
-        else if( tag == "width" )
-        {
-            itemTag = new QTableWidgetItem( i18n( "width" ) );
-            itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
-        }
-        else if( tag == "height" )
-        {
-            itemTag = new QTableWidgetItem( i18n( "height" ) );
-            itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
-        }
-        else
-        {
-            continue;
-        }
+            QTableWidgetItem *itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            QTableWidgetItem *itemVal = new QTableWidgetItem( value );
 
-        if( itemTag && itemVal )
-        {
-            m_metaTable->setItem( row, 0, itemTag );
-            m_metaTable->setItem( row, 1, itemVal );
-            row++;
+            if( itemTag && itemVal )
+            {
+                m_metaTable->setItem( row, 0, itemTag );
+                m_metaTable->setItem( row, 1, itemVal );
+                row++;
+            }
         }
     }
     m_metaTable->setRowCount( row );
