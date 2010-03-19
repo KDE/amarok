@@ -103,8 +103,7 @@ CoverBlingApplet::init()
     qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
-    const QBrush brush( Qt::white );
-    m_label->setBrush( brush );
+    m_label->setBrush( QBrush( Qt::white ) );
     QFont labelFont;
     QFont bigFont( labelFont );
     bigFont.setPointSize( bigFont.pointSize() + 2 );
@@ -179,6 +178,10 @@ void CoverBlingApplet::slideChanged( int islideindex )
         QString label = album->prettyName();
         if ( artist ) label += " - " + artist->prettyName();
         m_label->setText( label );
+
+        //center the label
+        m_label->setPos( ( size().width() - m_label->boundingRect().width() ) / 2, m_label->y() );
+ 
         m_label->show();
         int nbtracks = 0;
         int rating = 0;
