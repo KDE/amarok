@@ -135,7 +135,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setDragEnabled( false );
     m_view->setDropIndicatorShown( false );
     m_view->setMovement( QListView::Static );
-    m_view->setGridSize( QSize( 140, 140 ) );
+    m_view->setGridSize( QSize( 140, 150 ) );
     m_view->setIconSize( QSize( 120, 120 ) );
     m_view->setSpacing( 4 );
     m_view->setViewMode( QListView::IconMode );
@@ -527,6 +527,7 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
 
     QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    setSizeHint( QSize( 140, 150 ) );
     setIcon( prettyPix );
     setCaption();
     setFont( KGlobalSettings::smallestReadableFont() );
