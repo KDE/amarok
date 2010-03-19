@@ -38,9 +38,9 @@ VERSION 2.3.1-Beta 1
   BUGFIXES:
      * Fixed problems with new Main Toolbar and SHOUTcast streams: Since these
        streams cannot be paused, we detect this now and stop them instead.
-     * Fix permission errors happening for each file copied to an iPhone via ifuse.
-       Thank you to Colin Guthrie <cguthrie@mandriva.org> for the patch. (BR 231021)
-     * Fix issues with using random navigators while filetering or searching The
+     * Fixed permission errors with each file copied to an iPhone via iFuse.
+       Thanks to Colin Guthrie <cguthrie@mandriva.org> for the patch. (BR 231021)
+     * Fixed issues with using random navigators while filetering or searching the
        Playlist. (BR 229226) (BR 222129)
      * Fixed crash related to the new playlist tooltips. (BR 229696)
      * Fixed some artist/album/track names not getting shown or getting shown 
