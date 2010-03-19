@@ -279,16 +279,23 @@ QModelIndex
 PlaylistBrowserNS::UserModel::index( int row, int column, const QModelIndex &parent ) const
 {
     //there are valid indexes available with row == -1 for empty groups and providers
-    if( !parent.isValid() && row == -1 && column >= 0 )
-        return createIndex( row, column, row );
+    if( !parent.isValid() )
+    {
+        if( row == -1 && column >= 0 )
+            return createIndex( row, column, row );
 
-    if( !hasIndex( row, column, parent ) )
-        return QModelIndex();
+        if( row < m_playlists.count() )
+            return createIndex( row, column, row );
+    }
+    else //if it has a parent it is a track
+    {
+        //but check if the playlist indeed has that track
+        Meta::PlaylistPtr playlist = m_playlists.value( parent.row() );
+        if( row < playlist->tracks().count() )
+            return createIndex( row, column, SET_TRACK_MASK(parent.row()) );
+    }
 
-    //if it has a parent it is a track
-    if( parent.isValid() )
-        return createIndex( row, column, SET_TRACK_MASK(parent.row()) );
-    return createIndex( row, column, row );
+    return QModelIndex();
 }
 
 QModelIndex
@@ -306,12 +313,10 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex &index ) const
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
 {
-    if (parent.column() > 0)
-    {
+    if( parent.column() > 0 )
         return 0;
-    }
 
-    if (!parent.isValid())
+    if( !parent.isValid() )
     {
         return m_playlists.count();
     }
