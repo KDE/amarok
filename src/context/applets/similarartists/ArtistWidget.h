@@ -18,6 +18,8 @@
 #ifndef ARTIST_WIDGET_H
 #define ARTIST_WIDGET_H
 
+#include "meta/Meta.h"
+
 //Kde
 #include<KUrl>
 #include <KIO/Job>
@@ -32,6 +34,7 @@ class QLabel;
 class QGraphicsScene;
 class QGridLayout;
 class QPushButton;
+class QueryMaker;
 
 /**
  * A widget for display an artist with some details
@@ -157,6 +160,11 @@ private:
      */
     KJob *m_imageJob;
 
+    /**
+     * QueryMaker used for checking if a given artist exists in the local collection.
+     */
+    QueryMaker *m_qm;
+
 
 
 private slots:
@@ -176,6 +184,12 @@ private slots:
      * Navigate to this artist in the local collection
      */
     void navigateToArtist();
+
+
+    /**
+     * Get results from the qery maker
+     */
+    void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
 };
 
 #endif // ARTIST_WIDGET_H

@@ -19,6 +19,9 @@
 
 //Amarok
 #include "amarokurls/AmarokUrl.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
+#include "collection/QueryMaker.h"
 #include "Debug.h"
 
 //KDE
@@ -38,7 +41,9 @@
  * ArtistWidget constructor
  * @param parent The widget parent
  */
-ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
+ArtistWidget::ArtistWidget( QWidget *parent )
+    : QWidget( parent )
+    , m_qm( 0 )
 {
 
     // set a fixed size for all widget, for harmonize the similar artists applet display
@@ -79,6 +84,7 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_navigateButton->setFixedWidth( 20 );
     m_navigateButton->setFixedHeight( 20 );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
+    m_navigateButton->hide();
 
 
     connect( m_navigateButton, SIGNAL( clicked( bool ) ), this, SLOT( navigateToArtist() ) );
@@ -209,6 +215,26 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
 {
     m_name = nom;
     m_nameLabel->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
+
+    //Figure out of this applet is present in the local collection, and show the "show in collection" button if so
+
+    if( m_qm )
+        m_qm->reset();
+    else
+    {
+        Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+        m_qm = coll->queryMaker();
+    }
+    
+    m_qm->setQueryType( QueryMaker::Artist );
+    m_qm->addFilter( QueryMaker::ArtistFilter, m_name );
+    m_qm->limitMaxResultSize( 1 );
+
+    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+            SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+
+    m_qm->run();
+    
 }
 
 /**
@@ -326,4 +352,15 @@ ArtistWidget::navigateToArtist()
     url.setPath( "collections" );
     url.appendArg( "filter", "artist:\"" + m_name + "\"" );
     url.run();
+}
+
+
+void
+ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( collectionId )
+    if( artists.length() > 0 )
+        m_navigateButton->show();
+
 }
