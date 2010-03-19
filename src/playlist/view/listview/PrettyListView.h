@@ -23,7 +23,6 @@
 
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/view/tooltips/ToolTipManager.h"
 

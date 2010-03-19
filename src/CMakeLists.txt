@@ -741,6 +741,10 @@ if(KDE4_BUILD_TESTS)
     )
     include_directories(
         ../tests/
+        ../tests/context/
+        ../tests/context/engines/
+        ../tests/context/engines/upcomingevents/
+        ../tests/context/engines/similarartists/
         ../tests/meta/
         ../tests/meta/cue/
         ../tests/meta/file/

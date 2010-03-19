@@ -254,7 +254,7 @@
     </entry>
     <entry key="DefEqualizerPresetsNames" type="StringList">
         <label>List with user equalizer preset names</label>
-        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass + Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
+        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
     </entry>
     <entry key="DefEqualizerPresestValues" type="IntList">
         <default>
@@ -329,9 +329,9 @@
         <default>true</default>
     </entry>
     <entry key="Growl Enabled" type="Bool">
-	<label>Use Growl for notifications</label>
-	<whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
-	<default>false</default>
+    <label>Use Growl for notifications</label>
+    <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
+    <default>false</default>
     </entry>
     <entry key="Osd Use Playlist Columns" type="Bool">
         <label>Display the same information in the OSD as in the playlist columns.</label>
@@ -630,7 +630,5 @@
         <default>20</default>
     </entry>
 </group>
-
-
 
 </kcfg>

@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=Similar Artists
+Name[en_GB]=Similar artists
+Name[fr]=Artistes similaires
+Type=Service
+ServiceTypes=Plasma/Applet
+Icon=similarartists-amarok
+
+X-KDE-Library=amarok_context_applet_similarArtists
+X-KDE-PluginInfo-Author=Joffrey Clavel
+X-KDE-PluginInfo-Email=jclavel@clabert.info
+X-KDE-PluginInfo-Name=similarArtists
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+
