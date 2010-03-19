@@ -423,25 +423,26 @@ Meta::Album::notifyObservers() const
 QPixmap
 Meta::Album::image( int size )
 {
-    // Return "nocover" until it's fetched.
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    if ( size <= 1 )
+    /*
+     * This is the base class's image() function, which returns "nocover" by default.
+     * Retrieval of the cover for the actual album is done by subclasses.
+     */
+    const QDir &cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    if( size <= 1 )
         size = 100;
-    QString sizeKey = QString::number( size ) + '@';
-
-    m_noCoverImage = true; //FIXME is this correct? Why do we set it unconditionally?
+    const QString &noCoverKey = QString::number( size ) + "@nocover.png";
 
     QPixmap pixmap;
-    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-         pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    if( cacheCoverDir.exists( noCoverKey ) )
+    {
+        pixmap.load( cacheCoverDir.filePath( noCoverKey ) );
+    }
     else
     {
-        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
-        //scaled() does not change the original image but returns a scaled copy
+        const QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+        pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
     }
-
     return pixmap;
 }
 
@@ -449,28 +450,18 @@ Meta::Album::image( int size )
 QPixmap
 Meta::Album::imageWithBorder( int size, int borderWidth )
 {
-    QPixmap coverWithBorders;
-
-    m_noCoverImage = false;
-
-    const int imageSize = size - borderWidth * 2;
-    QPixmap cover = image( imageSize );
-
-    QString nameForKey = name();
-
-    if( m_noCoverImage == true )
-        nameForKey = "nocover";
-
-    coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, nameForKey );
-
-    return coverWithBorders;
+    const int imageSize = size - ( borderWidth * 2 );
+    const QString loc   = imageLocation( imageSize ).url();
+    const QString key   = !loc.isEmpty() ? loc : name();
+    const QPixmap cover = image( imageSize );
+    return The::svgHandler()->addBordersToPixmap( cover, borderWidth, key );
 }
 
 
 bool
 Meta::Album::operator==( const Meta::Album &album ) const
 {
-    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &album );
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const void*>( &album );
 }
 
 //Meta::Genre

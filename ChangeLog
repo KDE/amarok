@@ -36,6 +36,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed incorrectly displayed cover images for albums with the same name,
+       e.g. "Greatest Hits". (BR 170146)
      * Fixed problems with new Main Toolbar and SHOUTcast streams: Since these
        streams cannot be paused, we detect this now and stop them instead.
      * Fixed permission errors with each file copied to an iPhone via iFuse.

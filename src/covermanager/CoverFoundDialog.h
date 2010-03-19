@@ -53,6 +53,7 @@ public:
                       const QPixmap cover = QPixmap(),
                       const CoverFetch::Metadata data = CoverFetch::Metadata(),
                       QWidget *parent = 0 );
+    ~CoverFoundDialog();
 
     /**
     *   @returns the currently selected cover image
@@ -102,6 +103,7 @@ private:
 
     //! Cover fetch unit that initiated this dialog
     const CoverFetchUnit::Ptr m_unit;
+    Meta::AlbumPtr m_album;
 
     //! Currently selected cover image
     QPixmap m_pixmap;
@@ -114,7 +116,7 @@ class CoverFoundSideBar : public KVBox
     Q_OBJECT
 
 public:
-    CoverFoundSideBar( QWidget *parent = 0 );
+    CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
     ~CoverFoundSideBar();
 
 public slots:
@@ -123,6 +125,7 @@ public slots:
     void setPixmap( const QPixmap pixmap );
 
 private:
+    Meta::AlbumPtr        m_album;
     QLabel               *m_notes;
     QLabel               *m_cover;
     QPixmap               m_pixmap;
@@ -132,9 +135,6 @@ private:
 
     void updateNotes();
     void updateMetaTable();
-
-    QPixmap noCover( int size = 200 );
-    QPixmap m_noCover; //! nocover cache
 
     Q_DISABLE_COPY( CoverFoundSideBar );
 };
