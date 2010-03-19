@@ -451,9 +451,10 @@ QPixmap
 Meta::Album::imageWithBorder( int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
+    const QString loc   = imageLocation( imageSize ).url();
+    const QString key   = !loc.isEmpty() ? loc : name();
     const QPixmap cover = image( imageSize );
-    const QString &nameForKey = name();
-    return The::svgHandler()->addBordersToPixmap( cover, borderWidth, nameForKey );
+    return The::svgHandler()->addBordersToPixmap( cover, borderWidth, key );
 }
 
 
