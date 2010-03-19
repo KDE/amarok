@@ -53,6 +53,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     : KDialog( parent )
     , m_queryPage( 1 )
     , m_unit( unit )
+    , m_album( unit->album() )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -63,7 +64,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_save = button( KDialog::Ok );
 
     QSplitter *splitter = new QSplitter( this );
-    m_sideBar = new CoverFoundSideBar( splitter );
+    m_sideBar = new CoverFoundSideBar( m_album, splitter );
 
     KVBox *vbox = new KVBox( splitter );
     vbox->setSpacing( 4 );
@@ -82,17 +83,17 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     searchComp->setIgnoreCase( true );
 
     QStringList completionNames;
-    const Meta::AlbumPtr album = unit->album();
-    QString firstRunQuery( album->name() );
-    completionNames << album->name();
-    if( album->hasAlbumArtist() )
+    QString firstRunQuery( m_album->name() );
+    completionNames << firstRunQuery;
+    if( m_album->hasAlbumArtist() )
     {
-        const QString &name = album->albumArtist()->name();
+        const QString &name = m_album->albumArtist()->name();
         completionNames << name;
         firstRunQuery += ' ' + name;
     }
     m_query = firstRunQuery;
     searchComp->setItems( completionNames );
+    m_album->setSuppressImageAutoFetch( true );
 
     m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
@@ -171,6 +172,11 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
     add( cover, data, payload->imageSize() );
     m_view->setCurrentItem( m_view->item( 0 ) );
+}
+
+CoverFoundDialog::~CoverFoundDialog()
+{
+    m_album->setSuppressImageAutoFetch( false );
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
@@ -371,8 +377,9 @@ void CoverFoundDialog::add( const QPixmap cover,
     updateGui();
 }
 
-CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
+CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent )
     : KVBox( parent )
+    , m_album( album )
 {
     m_cover = new QLabel( this );
     m_tabs  = new QTabWidget( this );
@@ -391,6 +398,7 @@ CoverFoundSideBar::CoverFoundSideBar( QWidget *parent )
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
+    setPixmap( m_album->image() );
     clear();
 }
 
@@ -400,11 +408,6 @@ CoverFoundSideBar::~CoverFoundSideBar()
 
 void CoverFoundSideBar::clear()
 {
-    if( m_noCover.isNull() )
-        m_noCover = noCover();
-
-    m_cover->setPixmap( m_noCover );
-    m_metaTable->setRowCount( 0 );
     m_metaTable->clear();
     m_notes->clear();
     m_metadata.clear();
@@ -500,28 +503,6 @@ void CoverFoundSideBar::updateMetaTable()
     m_metaTable->sortItems( 0 );
     m_metaTable->resizeColumnsToContents();
     m_metaTable->resizeRowsToContents();
-}
-
-QPixmap CoverFoundSideBar::noCover( int size )
-{
-    /* code from Meta::Album::image( int size ) */
-
-    QPixmap pixmap( size, size );
-    const QString sizeKey = QString::number( size ) + '@';
-    const QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-
-    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-    {
-        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
-    }
-    else
-    {
-        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
-        //scaled() does not change the original image but returns a scaled copy
-        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
-    }
-    return pixmap;
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap cover,
