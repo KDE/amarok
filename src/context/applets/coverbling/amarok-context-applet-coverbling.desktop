@@ -1,7 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=CoverBling
+Name[it]=CoverBling
 Name[pt]=Capas
+Name[sv]=Omslagsutsmyckning
 Name[uk]=CoverBling
 Name[x-test]=xxCoverBlingxx
 Type=Service
