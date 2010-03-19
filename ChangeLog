@@ -5,6 +5,11 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * New "Upcoming Events" applet, displays the next events such as conerts
+       for the artist of the current track. The events are fetched from the
+       LastFM API.
+     * New "Similar Artists" applet, displays a list of artists which are
+       similar to the one currently played. The list is fetched from the LastFM API.
      * The scripting system now offers a new function for detecting that a 
        track has finished. Patch by Michael MacDonald <mars@antlersoft.com>.
        (BR 227312)
