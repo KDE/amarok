@@ -36,6 +36,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed problems with new Main Toolbar and SHOUTcast streams: Since these
+       streams cannot be paused, we detect this now and stop them instead.
      * Fix permission errors happening for each file copied to an iPhone via ifuse.
        Thank you to Colin Guthrie <cguthrie@mandriva.org> for the patch. (BR 231021)
      * Fix issues with using random navigators while filetering or searching The

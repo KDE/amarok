@@ -554,11 +554,20 @@ EngineController::playPause() //SLOT
     {
         case Phonon::PausedState:
         case Phonon::StoppedState:
+
         case Phonon::LoadingState:
             play();
             break;
+
         default:
-            pause();
+            if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast doesn't support pausing, so we stop.
+            {
+                debug() << "This is a stream that cannot be paused. Stopping instead.";
+                stop();
+            }
+            else
+                pause();
+
             break;
     }
 }
