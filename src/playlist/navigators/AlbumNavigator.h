@@ -45,17 +45,17 @@ namespace Playlist
             void notifyItemsInserted( const QSet<quint64> &insertedItems );
             void notifyItemsRemoved( const QSet<quint64> &removedItems );
 
-            typedef QString AlbumId;    // QString '->name()', because Meta::AlbumPtr doesn't work for meta types that use private album pointers.
+            typedef QString AlbumId;    // Not Meta::AlbumPtr but QString '->name()'. Reason: Meta::AlbumPtr doesn't work for meta types that use private album pointers.
+
+            /**
+             * The album of an item. Opaque key for bookkeeping.
+             */
+            AlbumId albumForItem( quint64 item );
 
             /**
              * Empty notification callback for child classes: new albums have been inserted.
              */
             virtual void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) = 0;
-
-            /**
-             * Convenience function: the album of an item.
-             */
-            AlbumId albumForItem( quint64 item ) { return m_model->trackForId( item )->album()->name(); }
 
             /**
              * Convenience function: the album of 'currentItem()'.
@@ -67,6 +67,16 @@ namespace Playlist
 
         private:
             static bool itemLessThan( const quint64 &left, const quint64 &right );
+
+            /**
+             * Cache the album for each playlist item. The reasons:
+             *   - By the time 'notifyItemsRemoved()' is called, the items are usually
+             *     already gone from the playlist model.
+             *   - Currently we don't get a notification when the item's '->track()->album()'
+             *     changes. We need to do all bookkeeping with the same value that we saw
+             *     during insertion.
+             */
+            QHash<quint64, AlbumId> m_albumForItem;
     };
 }
 

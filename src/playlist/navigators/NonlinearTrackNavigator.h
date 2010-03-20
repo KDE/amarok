@@ -104,15 +104,18 @@ namespace Playlist
             virtual void planOne() = 0;
 
             /**
-             * Notification-callback for child classes: Items have been inserted.
+             * Notification-callback for child classes: Playlist items have been inserted.
              */
             virtual void notifyItemsInserted( const QSet<quint64> &insertedItems ) = 0;
 
             /**
-             * Notification-callback for child classes: Items have been removed.
+             * Notification-callback for child classes: Playlist items have been removed.
              *
              * 'currentItem()' still has its old (possibly obsolete) value when this function is called.
              * This function can call 'setCurrentItem()' if it knows a good new choice.
+             *
+             * Note: by the time this notification gets called, the playlist items are
+             * usually no longer present in the source model.
              */
             virtual void notifyItemsRemoved( const QSet<quint64> &removedItems ) = 0;
 

@@ -71,7 +71,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 
         m_plannedItems.removeAll( removedItem );    // We only need to do this because we call 'planOne()' in this loop.
 
-        // Maintain 'm_itemsPerAlbum'.
+        // Maintain 'm_itemsPerAlbum' and 'm_albumForItem'.
         ItemList itemsInAlbum = m_itemsPerAlbum.value( album );
         itemsInAlbum.removeAll( removedItem );
         if ( itemsInAlbum.isEmpty() )
@@ -79,6 +79,30 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
             m_itemsPerAlbum.remove( album );
             m_plannedAlbums.removeAll( album );
         }
+
+        m_albumForItem.remove( removedItem );
+    }
+}
+
+Playlist::AlbumNavigator::AlbumId
+Playlist::AlbumNavigator::albumForItem( quint64 item )
+{
+    if ( m_albumForItem.contains( item ) )
+        return m_albumForItem.value( item );
+    else
+    {
+        AlbumId album;
+
+        Meta::TrackPtr track = m_model->trackForId( item );
+        if ( track )
+        {
+            Meta::AlbumPtr metaAlbum = track->album();
+            if ( metaAlbum )
+                album = metaAlbum->name();    // See comment for 'typedef AlbumId'.
+        }
+
+        m_albumForItem.insert( item, album );
+        return album;
     }
 }
 
