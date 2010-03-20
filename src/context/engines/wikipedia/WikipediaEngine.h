@@ -22,7 +22,7 @@
 #include "ContextObserver.h"
 #include "meta/Meta.h"
 
-#include <context/DataEngine.h>
+#include "context/DataEngine.h"
 
 #include <KIO/Job>
 
