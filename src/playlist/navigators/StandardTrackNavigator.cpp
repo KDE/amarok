@@ -31,23 +31,18 @@ Playlist::StandardTrackNavigator::StandardTrackNavigator()
 }
 
 quint64
-Playlist::StandardTrackNavigator::likelyNextTrack()
-{
-    if( !m_queue.isEmpty() )
-        return m_queue.first();
-    int updateRow = m_model->activeRow() + 1;
-    if ( m_repeatPlaylist )
-        updateRow = ( updateRow >= m_model->rowCount() ) ? 0 : updateRow;
-    return m_model->idAt( updateRow );
-}
-
-quint64
 Playlist::StandardTrackNavigator::likelyLastTrack()
 {
-    int updateRow = m_model->activeRow() - 1;
-    if ( m_repeatPlaylist )
-        updateRow = ( updateRow < 0 ) ? m_model->rowCount() - 1 : updateRow;
-    return m_model->idAt( updateRow );
+    int lastRow = m_model->activeRow() - 1;
+
+    if( lastRow < 0 )
+        if( m_repeatPlaylist )
+            lastRow = m_model->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
+
+    if( m_model->rowExists( lastRow ) )
+        return m_model->idAt( lastRow );
+    else
+        return 0;
 }
 
 quint64
@@ -55,11 +50,30 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 {
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
-    return likelyNextTrack();
+
+    return chooseNextTrack();
 }
 
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
     return likelyLastTrack();
+}
+
+quint64
+Playlist::StandardTrackNavigator::chooseNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.first();
+
+    int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
+
+    if( nextRow >= m_model->rowCount() )
+        if( m_repeatPlaylist )
+            nextRow = 0;    // This row is still invalid if 'rowCount() == 0'.
+
+    if( m_model->rowExists( nextRow ) )
+        return m_model->idAt( nextRow );
+    else
+        return 0;
 }
