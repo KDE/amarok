@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILETREEVIEW_H
-#define FILETREEVIEW_H
+#ifndef AMAROK_FILEVIEW_H
+#define AMAROK_FILEVIEW_H
 
 #include "collection/Collection.h"
 #include "widgets/PrettyTreeView.h"
@@ -98,4 +98,4 @@ private:
     CollectionAction* m_copyAction;
 };
 
-#endif // FILETREEVIEW_H
+#endif // end include guard

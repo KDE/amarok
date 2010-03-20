@@ -17,6 +17,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "LikeBack.h"
+
+#include "LikeBackBar.h"
+#include "LikeBackDialog.h"
+#include "LikeBackPrivate.h"
+
 #include <KAboutData>
 #include <KAction>
 #include <KActionCollection>
@@ -27,11 +33,6 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <KToggleAction>
-
-#include "LikeBack.h"
-#include "LikeBackBar.h"
-#include "LikeBackDialog.h"
-#include "LikeBackPrivate.h"
 
 #ifdef DEBUG_LIKEBACK
 #include "Debug.h"

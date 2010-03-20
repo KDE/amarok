@@ -41,7 +41,6 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsWidget>
-#include <QGraphicsProxyWidget>
 #include <QLabel>
 #include <QPixmap>
 #include <QGraphicsPixmapItem>

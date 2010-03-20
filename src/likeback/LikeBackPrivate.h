@@ -19,13 +19,13 @@
 #ifndef LIKEBACK_PRIVATE_H
 #define LIKEBACK_PRIVATE_H
 
+#include <KAction>
+#include <KToggleAction>
+
 #include <QTimer>
 
 
 class QButtonGroup;
-
-class Kaction;
-
 
 
 class LikeBackPrivate

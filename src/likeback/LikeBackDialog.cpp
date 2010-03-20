@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "LikeBackDialog.h"
+
 #include <QHttp>
 #include <QHttpRequestHeader>
 
@@ -27,9 +29,7 @@
 #include <KPushButton>
 
 #include "Debug.h"
-#include "LikeBackDialog.h"
 #include "LikeBack.h"
-
 
 
 // Constructor

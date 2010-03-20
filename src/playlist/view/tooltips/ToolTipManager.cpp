@@ -18,8 +18,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA                *
  *******************************************************************************/
 
-#include "amarokconfig.h"
 #include "ToolTipManager.h"
+
+#include "amarokconfig.h"
 
 #include "AmarokToolTip.h"
 #include "meta/Meta.h"

@@ -17,16 +17,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <QResizeEvent>
-
-#include <KApplication>
-#include <KStandardDirs>
-#include <KBugReport>
+#include "LikeBackBar.h"
 
 #include "Amarok.h"
 #include "Debug.h"
 #include "LikeBack.h"
-#include "LikeBackBar.h"
+
+#include <QResizeEvent>
+
+#include <KApplication>
+#include <KBugReport>
+#include <KStandardDirs>
 
 
 // Constructor

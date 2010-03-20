@@ -14,9 +14,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <QStringList>
 #include "IpodDeviceInfo.h"
+
 #include "MediaDeviceInfo.h"
+
+#include <QStringList>
+
 
 IpodDeviceInfo::IpodDeviceInfo( QString mountpoint, QString udi, bool wasMounted )
 : MediaDeviceInfo()

@@ -21,7 +21,7 @@
 #include "Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "browsers/filebrowser/FileBrowser.h"
-#include "config-amarok.h"
+#include <config-amarok.h>
 #include "MainWindow.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"

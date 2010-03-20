@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef DYNAMIC_CUSTOM_BIAS_FACTORY_H
-#define DYNAMIC_CUSTOM_BIAS_FACTORY_H
+#ifndef AMAROK_CUSTOM_BIAS_ENTRY_FACTORY_H
+#define AMAROK_CUSTOM_BIAS_ENTRY_FACTORY_H
 
 #include "amarok_export.h"
 
@@ -65,4 +65,4 @@ class AMAROK_EXPORT CustomBiasEntryFactory
 
 Q_DECLARE_METATYPE( Dynamic::CustomBiasEntryFactory* )
 
-#endif
+#endif // end include guard
