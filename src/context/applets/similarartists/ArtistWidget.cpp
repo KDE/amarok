@@ -23,6 +23,7 @@
 #include "collection/CollectionManager.h"
 #include "collection/QueryMaker.h"
 #include "Debug.h"
+#include "playlist/PlaylistModelStack.h"
 
 //KDE
 #include <KHBox>
@@ -80,17 +81,31 @@ ArtistWidget::ArtistWidget( QWidget *parent )
 
 
     KHBox * spacer = new KHBox( this );
-    spacer->setFixedHeight( 18 );
+    spacer->setFixedHeight( 20 );
+
+    //make sure the buttons are pushed all the way to the right.
+    new QWidget( spacer );
+
     m_navigateButton = new QPushButton( spacer );
     m_navigateButton->setIcon( KIcon( "edit-find" ) );
     m_navigateButton->setFlat( true );
     m_navigateButton->setFixedWidth( 20 );
-    m_navigateButton->setFixedHeight( 18 );
+    m_navigateButton->setFixedHeight( 20 );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
     m_navigateButton->hide();
 
-
     connect( m_navigateButton, SIGNAL( clicked( bool ) ), this, SLOT( navigateToArtist() ) );
+
+    
+    m_lastfmStationButton = new QPushButton( spacer );
+    m_lastfmStationButton->setIcon( KIcon("view-services-lastfm-amarok") );
+    m_lastfmStationButton->setFlat( true );
+    m_lastfmStationButton->setFixedWidth( 20 );
+    m_lastfmStationButton->setFixedHeight( 20 );
+    m_lastfmStationButton->setToolTip( i18n( "Add last.fm artist station to the Playlist" ) );
+
+    connect( m_lastfmStationButton, SIGNAL( clicked( bool ) ), this, SLOT( addLastfmArtistStation() ) );
+
 
     m_desc= new QLabel( this );
     m_desc->setWordWrap( true );
@@ -356,6 +371,14 @@ ArtistWidget::navigateToArtist()
     url.setPath( "collections" );
     url.appendArg( "filter", "artist:\"" + m_name + "\"" );
     url.run();
+}
+
+void
+ArtistWidget::addLastfmArtistStation()
+{
+    const QString url = "lastfm://artist/" + m_name + "/similarartists";
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
 
 

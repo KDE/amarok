@@ -141,9 +141,14 @@ private:
     QLabel *m_topTrack;
 
     /**
+     * Button to add the last.fm simmilar artist station for this artist to the playlist
+     */
+    QPushButton *m_lastfmStationButton;
+    
+    /**
      * Button to navigate to the artit in the local collection
      */
-     QPushButton *m_navigateButton;
+    QPushButton *m_navigateButton;
 
     /**
      * Description of the artist
@@ -184,6 +189,11 @@ private slots:
      * Navigate to this artist in the local collection
      */
     void navigateToArtist();
+
+    /**
+     * Add this artists last.fm simmliar artist stream
+     */
+    void addLastfmArtistStation();
 
 
     /**
