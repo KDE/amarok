@@ -242,7 +242,7 @@ void FileBrowser::setupAddItems()
         addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
     }
 
-    foreach( QString part, parts )
+    foreach( const QString& part, parts )
     {
         if( !part.isEmpty() )
         {
@@ -251,7 +251,6 @@ void FileBrowser::setupAddItems()
             addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
         }
     }
-    
 }
 
 QStringList FileBrowser::siblingsForDir( const QString &path )

@@ -464,7 +464,6 @@ Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
     }
     
     return satisfy;
-
 }
 
 QDomElement
@@ -485,10 +484,10 @@ Dynamic::LastFmBias::saveDataToFile()
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_similarartists.xml" );
     file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out( &file );
-    foreach( QString key, m_savedArtists.keys() )
+    foreach( const QString& key, m_savedArtists.keys() )
     {
         out << key << "#";
-        foreach( QByteArray uid, m_savedArtists[ key ] )
+        foreach( const QByteArray& uid, m_savedArtists[ key ] )
         {
             out << uid << "^";
         }
@@ -499,10 +498,10 @@ Dynamic::LastFmBias::saveDataToFile()
     QFile file2( Amarok::saveLocation() + "dynamic_lastfm_similartracks.xml" );
     file2.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out2( &file2 );
-    foreach( QString key, m_savedTracks.keys() )
+    foreach( const QString& key, m_savedTracks.keys() )
     {
         out2 << key << "#";
-        foreach( QByteArray uid, m_savedTracks[ key ] )
+        foreach( const QByteArray& uid, m_savedTracks[ key ] )
         {
             out2 << uid << "^";
         }
@@ -524,7 +523,7 @@ Dynamic::LastFmBias::loadFromFile()
         QString key = line.split( "#" )[ 0 ];
         QStringList uids = line.split( "#" )[ 1 ].split( "^" );
         QSet<QByteArray> u;
-        foreach( QString uid, uids )
+        foreach( const QString& uid, uids )
         {
             if( !uid.isEmpty() )
                 u.insert( uid.toUtf8() );
@@ -542,7 +541,7 @@ Dynamic::LastFmBias::loadFromFile()
         QString key = line.split( "#" )[ 0 ];
         QStringList uids = line.split( "#" )[ 1 ].split( "^" );
         QSet<QByteArray> u;
-        foreach( QString uid, uids )
+        foreach( const QString& uid, uids )
         {
             if( !uid.isEmpty() )
                 u.insert( uid.toUtf8() );
