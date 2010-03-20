@@ -657,7 +657,7 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
     {
         if ( m_items.at( i )->track() == track )
         {
-            emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
+            emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
             debug()<<"Metadata updated for track"<<track->prettyName();
             break;
         }
@@ -764,7 +764,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         newIds.append( newitem->id() );
     }
     endInsertRows();
-    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
+    emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
@@ -874,7 +874,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         min = qMin( min, m_items.size() -1 );
         max = ( max < m_items.size() ) ? max : m_items.size() - 1;
-        emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
+        emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
     }
 
     emit removedIds( delIds );
@@ -950,7 +950,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
         }
     }
     m_activeRow = newActiveRow;
-    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
+    emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
 
     //update the active row
 }
