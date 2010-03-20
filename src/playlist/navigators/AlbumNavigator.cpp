@@ -71,7 +71,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 
         m_plannedItems.removeAll( removedItem );    // We only need to do this because we call 'planOne()' in this loop.
 
-        // Maintain 'm_itemsPerAlbum' and 'm_albumForItem'.
+        // Maintain 'm_itemsPerAlbum'
         ItemList itemsInAlbum = m_itemsPerAlbum.value( album );
         itemsInAlbum.removeAll( removedItem );
         if ( itemsInAlbum.isEmpty() )
@@ -79,7 +79,10 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
             m_itemsPerAlbum.remove( album );
             m_plannedAlbums.removeAll( album );
         }
+        else
+            m_itemsPerAlbum.insert( album, itemsInAlbum );    // Replace old list with the edited copy.
 
+        // Maintain 'm_albumForItem'.
         m_albumForItem.remove( removedItem );
     }
 }

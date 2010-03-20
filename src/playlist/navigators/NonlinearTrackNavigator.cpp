@@ -114,12 +114,13 @@ Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
     // Handle the removed items
     if ( !tmpRemovedItems.isEmpty() )
     {
+        QSet<quint64> knownRemovedItems = tmpRemovedItems & allItemsSet();    // Filter out items inserted+removed between calls to us.
+
         Item::listRemove( m_allItemsList, tmpRemovedItems );
         Item::listRemove( m_historyItems, tmpRemovedItems );
         Item::listRemove( m_replayedItems, tmpRemovedItems );
         Item::listRemove( m_plannedItems, tmpRemovedItems );
 
-        QSet<quint64> knownRemovedItems = tmpRemovedItems & allItemsSet();    // Filter out items inserted+removed between calls to us.
         notifyItemsRemoved( knownRemovedItems );
 
         if ( tmpRemovedItems.contains( currentItem() ) )    // After 'notifyItemsRemoved()', so that they get a chance to choose a new one.
