@@ -1,8 +1,5 @@
 [Desktop Entry]
 Name=Upcoming Events Data Engine
-Name[en_GB]=Upcoming Events Data Engine
-Name[fr]=Moteur de données pour les événements associés
-Name[ru]=Источник данных грядущих событий
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok

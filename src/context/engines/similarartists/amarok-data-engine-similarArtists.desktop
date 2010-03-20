@@ -1,8 +1,5 @@
 [Desktop Entry]
 Name=Upcoming Events Data Engine
-Name[en_GB]=Similar Artists Data Engine
-Name[fr]=Moteur de données pour les artistes similaires
-Name[ru]=Источник данных похожих исполнителей
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok
