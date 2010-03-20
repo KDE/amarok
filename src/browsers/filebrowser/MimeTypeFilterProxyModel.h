@@ -34,7 +34,7 @@ public:
      * MimeTypeFilterProxyModel
      * @param mimeList the valid mimetypes
      */
-     MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent = 0 );
+     explicit MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent = 0 );
 
 
 protected:

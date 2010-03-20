@@ -49,10 +49,10 @@ class CoverFoundDialog : public KDialog
     Q_OBJECT
 
 public:
-    CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                      const QPixmap cover = QPixmap(),
-                      const CoverFetch::Metadata data = CoverFetch::Metadata(),
-                      QWidget *parent = 0 );
+    explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+                               const QPixmap cover = QPixmap(),
+                               const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                               QWidget *parent = 0 );
     ~CoverFoundDialog();
 
     /**
