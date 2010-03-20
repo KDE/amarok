@@ -77,6 +77,10 @@
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0" colspan="3">
        <widget class="QCheckBox" name="kcfg_ShowMoodbarInSlider">
+        <property name="toolTip">
+         <string>The Moodbar makes it possible to navigate in your music visually.
+Please note that this feature requires the external &quot;Moodbar Generator&quot; tool.</string>
+        </property>
         <property name="text">
          <string>Show Moodbar in Progress Slider</string>
         </property>
