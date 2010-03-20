@@ -183,7 +183,7 @@ void ToolTipManager::prepareToolTip()
         text += HTMLLine( Playlist::PlayCount, m_track->playCount(), true );
     }
 
-    if (text == "")
+    if (text.isEmpty())
     {
         text = QString( i18n( "No extra information available" ) );
     }
@@ -262,7 +262,7 @@ void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
 */
 QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString& value, bool force )
 {
-    if ( (value != "") || (force) )
+    if ( (!value.isEmpty()) || (force) )
     {
         QString line = QString();
         line += "<tr><td align=\"right\">";
