@@ -64,7 +64,7 @@ CollectionSetupTreeView::slotPressed( const QModelIndex &index )
         QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
         if( reply.isValid() && reply.value() )
         {
-            m_rescanDirAction->setText( i18n( "Rescan '%1'" ).arg( m_currDir ) );
+            m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
             QMenu menu;
             menu.addAction( m_rescanDirAction );
             menu.exec( QCursor::pos() );

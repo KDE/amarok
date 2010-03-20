@@ -154,7 +154,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
         // TODO: set text in a tooltip where we can show extra info (eg bytes available, not just percentage)
         if( isHover && capacityRect.contains( cursorPos ) )
-            capacityBar.setText( i18n("%1% used").arg( QString::number(used) ) );
+            capacityBar.setText( i18n("%1% used", QString::number(used) ) );
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 

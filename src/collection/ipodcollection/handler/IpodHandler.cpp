@@ -243,8 +243,8 @@ IpodHandler::init()
 
         // TODO: turn into a switch statement, this is too convoluted
 
-        QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
-                             "Attempt to initialize your iPod?" ).arg(  mountPoint() );
+        const QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
+                                   "Attempt to initialize your iPod?", mountPoint() );
         if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
                                                 KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
         {

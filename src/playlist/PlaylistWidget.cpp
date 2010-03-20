@@ -189,10 +189,7 @@ Playlist::Widget::playlistProviderAdded( PlaylistProvider *provider, int categor
             dynamic_cast<UserPlaylistProvider *>(provider);
     if( userProvider == 0 )
         return;
-    QAction *action = new KAction( userProvider->icon(),
-                        i18n("&Save playlist to \"%1\"").arg( provider->prettyName() ),
-                        this
-                    );
+    QAction *action = new KAction( userProvider->icon(), i18n("&Save playlist to \"%1\"", provider->prettyName() ), this );
     action->setData( QVariant::fromValue( QPointer<UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( provider->objectName(), action );
 
