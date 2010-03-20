@@ -61,6 +61,18 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         QList<Collections::Collection*> queryableCollections() const;
 
+        /**
+          * Allows access to one of Amarok's collection.
+          *
+          * @deprecated DO NOT USE this method. This is legacy code from the early days of Amarok
+          * when SqlCollection was the only working collection. If you are writing new code, make
+          * sure that it is able to handle multiple collections,
+          * e.g. multiple connected media devices. Using this method means you are lazy. An easy way
+          * is to use CollectionManager::queryMaker(). Alternatively, access the available collections
+          * using CollectionManager::queryableCollections() or CollectionManager::viewableCollections()
+          * and do whatever you want to.
+          *
+          */
         Collections::Collection* primaryCollection() const;
 
         /**
@@ -68,6 +80,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
             could be created for the url.
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
+        /**
+          * convenience method. See trackForUrl( const KUrl ).
+          */
         Meta::TrackList tracksForUrls( const KUrl::List &urls );
 
         /**
