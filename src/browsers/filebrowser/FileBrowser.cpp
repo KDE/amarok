@@ -134,6 +134,15 @@ FileBrowser::polish()
     setupAddItems();
 }
 
+QString
+FileBrowser::currentDir()
+{
+    if( m_showingPlaces )
+        return "places:";
+    else
+        return m_currentPath;
+}
+
 void
 FileBrowser::itemActivated( const QModelIndex &index )
 {
@@ -359,8 +368,11 @@ FileBrowser::prettyName() const
 void
 FileBrowser::setDir( const QString &dir )
 {
-    //This function just happens to do exactly what we need
-    addItemActivated( dir );
+
+    if( dir == "places:" )
+        showPlaces();
+    else
+       addItemActivated( dir );  //This function just happens to do exactly what we need
 }
 
 void

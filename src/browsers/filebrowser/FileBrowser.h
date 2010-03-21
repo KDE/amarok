@@ -45,6 +45,11 @@ public:
     */
     void setDir( const QString &dir );
 
+    /**
+     * Return the path of the currently shown dir.
+     */
+    QString currentDir();
+
 protected slots:
     void itemActivated( const QModelIndex &index );
     

@@ -25,6 +25,7 @@
 #include "PlaylistManager.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "services/ServiceBase.h"
@@ -78,7 +79,7 @@ NavigationUrlRunner::run( AmarokUrl url )
 
 
     //if we are activating the local collection, check if we need to restore "show cover" and "show year"
-        //if in the local collection view, also store "show covers" and "show years"
+    //if in the local collection view, also store "show covers" and "show years"
     if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
     {
         if ( args.keys().contains( "show_cover" ) )
@@ -95,6 +96,19 @@ NavigationUrlRunner::run( AmarokUrl url )
                 AmarokConfig::setShowYears( true );
             else if( args.value( "show_years" ).compare( "false", Qt::CaseInsensitive ) == 0 )
                 AmarokConfig::setShowYears( false );
+        }
+    }
+
+    //also set the correct path if we are navigating to the file browser
+    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    {
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        if( fileBrowser )
+        {
+            if( args.keys().contains( "path" ) )
+            {
+                fileBrowser->setDir( args.value( "path" ) );
+            }
         }
     }
 

@@ -25,6 +25,7 @@
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "collection/sqlcollection/SqlMeta.h"
 #include "PlaylistManager.h"
 
@@ -120,9 +121,23 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
             url.appendArg( "show_years", "false" );
     }
 
-
     //come up with a default name for this url..
     QString name = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->prettyName();
+
+    //if in the file browser, also store the file path
+    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    {
+
+        //Give a proper name since it will return "/" as that is what is used in the breadcrumb.
+        name = i18n( "Files" );
+
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        if( fileBrowser )
+        {
+            url.appendArg( "path", fileBrowser->currentDir() );
+        }
+    }
+
     url.setName( name );
     
     return url;
