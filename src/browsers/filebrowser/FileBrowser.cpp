@@ -29,6 +29,7 @@
 #include <KLineEdit>
 #include <KDirModel>
 #include <KDirLister>
+#include <KToolBar>
 
 #include <QHeaderView>
 #include <QDir>
@@ -38,8 +39,19 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 {
 
     DEBUG_BLOCK;
-    m_searchWidget = new SearchWidget( this, this, false );
+
+    KHBox * topHBox = new KHBox( this );
+
+    m_searchWidget = new SearchWidget( topHBox, this, false );
     m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
+
+    KToolBar * navigationToolbar = new KToolBar( topHBox );
+    navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+
+    //add navigation actions
+    m_upAction = new QAction( KIcon( "go-up" ), "Up one level", this );
+    navigationToolbar->addAction( m_upAction );
+    connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
@@ -293,4 +305,12 @@ void FileBrowser::setDir( const QString &dir )
 {
     //This function just happens to do exactly what we need
     addItemActivated( dir );
+}
+
+void FileBrowser::up()
+{
+    QDir dir( m_currentPath );
+    if ( dir.cdUp() )
+        setDir( dir.path() );
+        
 }

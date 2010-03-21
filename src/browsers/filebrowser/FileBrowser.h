@@ -24,6 +24,7 @@
 #include "widgets/SearchWidget.h"
 
 #include <KDirModel>
+
 #include <QTimer>
 
 class FileBrowser : public BrowserCategory
@@ -60,6 +61,11 @@ protected slots:
      */
     void toggleColumn( bool toggled);
 
+    /**
+     * Navigates up one level in the path shown
+     */
+    void up();
+
 
 private:
     void readConfig();
@@ -77,6 +83,8 @@ private:
     QString                   m_currentFilter;
     QString                   m_currentPath;
     FileView                 *m_fileView;
+
+    QAction                  *m_upAction;
         
 };
 
