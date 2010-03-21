@@ -389,7 +389,7 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
-    setPixmap( m_album->image() );
+    setPixmap( m_album->image( 190 ) );
     clear();
 }
 
