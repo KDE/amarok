@@ -21,8 +21,11 @@
 #include "BrowserCategoryList.h"
 
 #include <KHBox>
+#include <KLineEdit>
 
+#include <KPushButton>
 #include <QList>
+#include <QStackedWidget>
 #include <QStringList>
 
 
@@ -72,8 +75,11 @@ public slots:
      */
     void updateBreadcrumbs();
 
+    void editUpdated();
+
 protected:
     virtual void resizeEvent( QResizeEvent * event );
+    virtual void mousePressEvent( QMouseEvent * event );
 
 private:
     
@@ -96,7 +102,14 @@ private:
     QList<BrowserBreadcrumbItem *> m_items;
     QWidget * m_spacer;
 
+    QStackedWidget * m_widgetStack;
+
     KHBox * m_breadcrumbArea;
+    KHBox * m_editArea;
+
+    KLineEdit * m_pathEdit;
+    KPushButton * m_goButton;
+    
     BreadcrumbItemMenuButton * m_childMenuButton;
 
 };
