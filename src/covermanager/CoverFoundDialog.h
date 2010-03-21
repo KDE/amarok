@@ -74,6 +74,7 @@ protected:
     void hideEvent( QHideEvent *event );
 
 private slots:
+    void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
     void itemSelected();

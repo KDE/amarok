@@ -20,6 +20,7 @@
 
 #include "CoverFoundDialog.h"
 
+#include "AlbumBreadcrumbWidget.h"
 #include "Amarok.h"
 #include "CoverViewDialog.h"
 #include "Debug.h"
@@ -68,6 +69,18 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     KVBox *vbox = new KVBox( splitter );
     vbox->setSpacing( 4 );
+
+    KHBox *breadcrumbBox = new KHBox( vbox );
+    QLabel *breadcrumbLabel = new QLabel( i18n( "Finding cover for" ), breadcrumbBox );
+    AlbumBreadcrumbWidget *breadcrumb = new AlbumBreadcrumbWidget( m_album, breadcrumbBox );
+
+    QFont breadcrumbLabelFont;
+    breadcrumbLabelFont.setBold( true );
+    breadcrumbLabel->setFont( breadcrumbLabelFont );
+    breadcrumbLabel->setIndent( 4 );
+
+    connect( breadcrumb, SIGNAL(artistClicked(const QString&)), SLOT(addToCustomSearch(const QString&)) );
+    connect( breadcrumb, SIGNAL(albumClicked(const QString&)), SLOT(addToCustomSearch(const QString&)) );
 
     KHBox *searchBox = new KHBox( vbox );
     vbox->setSpacing( 4 );
@@ -187,6 +200,21 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
+void CoverFoundDialog::addToCustomSearch( const QString &text )
+{
+    const QString &query = m_search->text();
+    if( !text.isEmpty() && !query.contains( text ) )
+    {
+        QStringList q;
+        if( !query.isEmpty() )
+            q << query;
+        q << text;
+        const QString result = q.join( QChar( ' ' ) );
+        m_search->setText( result );
+        updateSearchButton( result );
+    }
+}
+
 void CoverFoundDialog::clearQueryButtonClicked()
 {
     m_query = QString();
@@ -277,7 +305,10 @@ void CoverFoundDialog::processQuery( const QString &input )
     }
 
     if( !q.isEmpty() )
+    {
         emit newCustomQuery( q, m_queryPage );
+        updateSearchButton( q );
+    }
 }
 
 void CoverFoundDialog::selectDiscogs()

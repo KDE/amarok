@@ -660,6 +660,7 @@ set(amaroklib_LIB_SRCS
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     toolbar/MainToolbar.cpp
+    widgets/AlbumBreadcrumbWidget.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
