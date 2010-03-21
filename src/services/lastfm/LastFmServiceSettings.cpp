@@ -14,11 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "lastfm"
-
 #include "LastFmServiceSettings.h"
-#include "ui_LastFmConfigWidget.h"
+
+#include "Amarok.h"
 #include "Debug.h"
+#include "ui_LastFmConfigWidget.h"
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
@@ -34,7 +34,7 @@
 
 #include <KMessageBox>
 #include <KPluginFactory>
-#include <Amarok.h>
+
 
 K_PLUGIN_FACTORY( LastFmServiceSettingsFactory, registerPlugin<LastFmServiceSettings>(); )
 K_EXPORT_PLUGIN( LastFmServiceSettingsFactory( "kcm_amarok_lastfm" ) )
