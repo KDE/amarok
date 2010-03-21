@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=Upcoming Events
+Name[sv]=Kommande händelser
+Name[uk]=Майбутні події
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=upcomingevents-amarok

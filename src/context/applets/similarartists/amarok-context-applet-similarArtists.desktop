@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=Similar Artists
+Name[sv]=Liknande artister
+Name[uk]=Подібні виконавці
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=similarartists-amarok

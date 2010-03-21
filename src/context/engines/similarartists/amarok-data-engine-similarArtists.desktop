@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=Upcoming Events Data Engine
+Name[sv]=Datagränssnitt för kommande händelser
+Name[uk]=Рушій розкладу найближчих подій
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok
