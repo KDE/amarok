@@ -135,7 +135,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setDragEnabled( false );
     m_view->setDropIndicatorShown( false );
     m_view->setMovement( QListView::Static );
-    m_view->setGridSize( QSize( 140, 140 ) );
+    m_view->setGridSize( QSize( 140, 150 ) );
     m_view->setIconSize( QSize( 120, 120 ) );
     m_view->setSpacing( 4 );
     m_view->setViewMode( QListView::IconMode );
@@ -364,16 +364,7 @@ void CoverFoundDialog::add( const QPixmap cover,
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
     connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
-
-    const QString src = metadata.value( "source" );
-    const QString w = metadata.contains( "width" ) ? metadata.value( "width" ) : QString::number( cover.width() );
-    const QString h = metadata.contains( "height" ) ? metadata.value( "height" ) : QString::number( cover.height() );
-    const QString size = QString( "%1x%2" ).arg( w ).arg( h );
-    const QString tip = i18n( "Size:" ) + size;
-    item->setToolTip( tip );
-
     m_view->addItem( item );
-
     updateGui();
 }
 
@@ -398,7 +389,7 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_tabs->addTab( m_metaTable, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
-    setPixmap( m_album->image() );
+    setPixmap( m_album->image( 190 ) );
     clear();
 }
 
@@ -465,38 +456,21 @@ void CoverFoundSideBar::updateMetaTable()
     int row( 0 );
     foreach( const QString &tag, tags )
     {
-        QTableWidgetItem *itemTag( 0 );
-        QTableWidgetItem *itemVal( 0 );
-
         if( m_metadata.contains( tag ) )
         {
             const QString value = m_metadata.value( tag );
             if( value.isEmpty() )
                 continue;
 
-            itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
-            itemVal = new QTableWidgetItem( value );
-        }
-        else if( tag == "width" )
-        {
-            itemTag = new QTableWidgetItem( i18n( "width" ) );
-            itemVal = new QTableWidgetItem( QString::number( m_pixmap.width() ) );
-        }
-        else if( tag == "height" )
-        {
-            itemTag = new QTableWidgetItem( i18n( "height" ) );
-            itemVal = new QTableWidgetItem( QString::number( m_pixmap.height() ) );
-        }
-        else
-        {
-            continue;
-        }
+            QTableWidgetItem *itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
+            QTableWidgetItem *itemVal = new QTableWidgetItem( value );
 
-        if( itemTag && itemVal )
-        {
-            m_metaTable->setItem( row, 0, itemTag );
-            m_metaTable->setItem( row, 1, itemVal );
-            row++;
+            if( itemTag && itemVal )
+            {
+                m_metaTable->setItem( row, 0, itemTag );
+                m_metaTable->setItem( row, 1, itemVal );
+                row++;
+            }
         }
     }
     m_metaTable->setRowCount( row );
@@ -527,7 +501,11 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
 
     QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
+    setSizeHint( QSize( 140, 150 ) );
     setIcon( prettyPix );
+    setCaption();
+    setFont( KGlobalSettings::smallestReadableFont() );
+    setTextAlignment( Qt::AlignHCenter | Qt::AlignTop );
 }
 
 CoverFoundItem::~CoverFoundItem()
@@ -584,11 +562,6 @@ void CoverFoundItem::slotFetchResult( KJob *job )
     if( pixmap.loadFromData( data ) )
     {
         m_bigPix = pixmap;
-        const QString w = QString::number( pixmap.width() );
-        const QString h = QString::number( pixmap.height() );
-        const QString size = QString( "%1x%2" ).arg( w ).arg( h );
-        const QString tip = i18n( "Size:" ) + size;
-        setToolTip( tip );
         emit pixmapChanged( m_bigPix );
     }
 
@@ -601,6 +574,28 @@ void CoverFoundItem::slotFetchResult( KJob *job )
         m_dialog = 0;
     }
     storedJob->deleteLater();
+}
+
+void CoverFoundItem::setCaption()
+{
+    QStringList captions;
+    const QString width = m_metadata.value( "width" );
+    const QString height = m_metadata.value( "height" );
+    if( !width.isEmpty() && !height.isEmpty() )
+        captions << QString( "%1 x %2" ).arg( width ).arg( height );
+
+    int size = m_metadata.value( "size" ).toInt();
+    if( size )
+    {
+        const QString source = m_metadata.value( "source" );
+        if( source == "Yahoo!" )
+            size /= 1024;
+
+        captions << ( QString::number( size ) + 'k' );
+    }
+
+    if( !captions.isEmpty() )
+        setText( captions.join( QString( " - " ) ) );
 }
 
 #include "CoverFoundDialog.moc"

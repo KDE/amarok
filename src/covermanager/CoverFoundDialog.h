@@ -172,6 +172,8 @@ public slots:
     void slotFetchResult( KJob *job );
 
 private:
+    void setCaption();
+
     CoverFetch::Metadata m_metadata;
     QPixmap m_thumb;
     QPixmap m_bigPix;
