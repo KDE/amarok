@@ -59,7 +59,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     navigationToolbar->addAction( m_homeAction );
     connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
 
-    m_placesAction = new QAction( KIcon( "folder-remote" ), "Home", this );
+    m_placesAction = new QAction( KIcon( "folder-remote" ), "Places", this );
     navigationToolbar->addAction( m_placesAction );
     connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
 
