@@ -72,7 +72,8 @@ FileView::FileView( QWidget * parent )
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
-void FileView::contextMenuEvent ( QContextMenuEvent * e )
+void
+FileView::contextMenuEvent ( QContextMenuEvent * e )
 {
 
     if( !model() )
@@ -132,18 +133,21 @@ void FileView::contextMenuEvent ( QContextMenuEvent * e )
  
 }
 
-void FileView::slotAppendToPlaylist()
+void
+FileView::slotAppendToPlaylist()
 {
     addSelectionToPlaylist( false );
 }
 
 
-void FileView::slotReplacePlaylist()
+void
+FileView::slotReplacePlaylist()
 {
     addSelectionToPlaylist( true );
 }
 
-void FileView::slotEditTracks()
+void
+FileView::slotEditTracks()
 {
     Meta::TrackList tracks = tracksForEdit();
     if( !tracks.isEmpty() )
@@ -153,7 +157,8 @@ void FileView::slotEditTracks()
     }
 }
 
-void FileView::slotPrepareMoveTracks()
+void
+FileView::slotPrepareMoveTracks()
 {
     if( m_moveActivated )
         return;
@@ -174,7 +179,8 @@ void FileView::slotPrepareMoveTracks()
     dl->init( list.urlList() );
 }
 
-void FileView::slotPrepareCopyTracks()
+void
+FileView::slotPrepareCopyTracks()
 {
     if( m_copyActivated )
         return;
@@ -267,7 +273,8 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
 
 
 
-QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
+QList<QAction *>
+FileView::actionsForIndices( const QModelIndexList &indices )
 {
     QList<QAction *> actions;
     
@@ -324,7 +331,8 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
     return actions;
 }
 
-void FileView::addSelectionToPlaylist( bool replace )
+void
+FileView::addSelectionToPlaylist( bool replace )
 {
     DEBUG_BLOCK
     QModelIndexList indices = selectedIndexes();
@@ -397,7 +405,8 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
-KFileItemList FileView::selectedItems() const
+KFileItemList
+FileView::selectedItems() const
 {
     KFileItemList items;
     QModelIndexList indices = selectedIndexes();
@@ -433,7 +442,8 @@ FileView::tracksForEdit() const
     return tracks;
 }
 
-void FileView::slotDelete()
+void
+FileView::slotDelete()
 {
     DEBUG_BLOCK
 

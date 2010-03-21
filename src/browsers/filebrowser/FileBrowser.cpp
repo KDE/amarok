@@ -107,7 +107,8 @@ FileBrowser::~FileBrowser()
     writeConfig();
 }
 
-void FileBrowser::toggleColumn( bool toggled )
+void
+FileBrowser::toggleColumn( bool toggled )
 {
     int index = m_columnActions.indexOf( qobject_cast< QAction* >( sender() ) );
     if( index != -1 )
@@ -119,13 +120,15 @@ void FileBrowser::toggleColumn( bool toggled )
     }
 }
 
-void FileBrowser::polish()
+void
+FileBrowser::polish()
 {
     DEBUG_BLOCK
     setupAddItems();
 }
 
-void FileBrowser::itemActivated( const QModelIndex &index )
+void
+FileBrowser::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
     KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
@@ -155,7 +158,8 @@ void FileBrowser::itemActivated( const QModelIndex &index )
     }
 }
 
-void FileBrowser::slotSetFilterTimeout()
+void
+FileBrowser::slotSetFilterTimeout()
 {
     KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
     if( lineEdit )
@@ -166,7 +170,8 @@ void FileBrowser::slotSetFilterTimeout()
     }
 }
 
-void FileBrowser::slotFilterNow()
+void
+FileBrowser::slotFilterNow()
 {
     m_mimeFilterProxyModel->setFilterFixedString( m_currentFilter );
 
@@ -174,7 +179,8 @@ void FileBrowser::slotFilterNow()
     filters << m_currentFilter;
 }
 
-void FileBrowser::readConfig()
+void
+FileBrowser::readConfig()
 {
     DEBUG_BLOCK
 
@@ -217,7 +223,8 @@ void FileBrowser::writeConfig()
 }
 
 
-void FileBrowser::addItemActivated( const QString &callbackString )
+void
+FileBrowser::addItemActivated( const QString &callbackString )
 {
     DEBUG_BLOCK
     
@@ -229,7 +236,8 @@ void FileBrowser::addItemActivated( const QString &callbackString )
     activate();
 }
 
-void FileBrowser::setupAddItems()
+void
+FileBrowser::setupAddItems()
 {
     DEBUG_BLOCK
     clearAdditionalItems();
@@ -269,7 +277,8 @@ void FileBrowser::setupAddItems()
     }
 }
 
-QStringList FileBrowser::siblingsForDir( const QString &path )
+QStringList
+FileBrowser::siblingsForDir( const QString &path )
 {
     // includes the dir itself
     DEBUG_BLOCK
@@ -286,7 +295,8 @@ QStringList FileBrowser::siblingsForDir( const QString &path )
     return siblings;
 }
 
-void FileBrowser::reActivate()
+void
+FileBrowser::reActivate()
 {
     DEBUG_BLOCK
     
@@ -297,7 +307,8 @@ void FileBrowser::reActivate()
     activate();
 }
 
-QString FileBrowser::prettyName() const
+QString
+FileBrowser::prettyName() const
 {
     if( parentList()->activeCategory() == this )
         return QDir::rootPath();
@@ -305,21 +316,23 @@ QString FileBrowser::prettyName() const
         return BrowserCategory::prettyName();
 }
 
-void FileBrowser::setDir( const QString &dir )
+void
+FileBrowser::setDir( const QString &dir )
 {
     //This function just happens to do exactly what we need
     addItemActivated( dir );
 }
 
-void FileBrowser::up()
+void
+FileBrowser::up()
 {
     QDir dir( m_currentPath );
     if ( dir.cdUp() )
-        setDir( dir.path() );
-        
+        setDir( dir.path() );     
 }
 
-void FileBrowser::home()
+void
+FileBrowser::home()
 {
     setDir( QDir::homePath() );
 }
