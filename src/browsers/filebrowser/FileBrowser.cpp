@@ -46,6 +46,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 
     KToolBar * navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    navigationToolbar->setIconDimensions( 16 );
 
     //add navigation actions
     m_upAction = new QAction( KIcon( "go-up" ), "Up one level", this );
