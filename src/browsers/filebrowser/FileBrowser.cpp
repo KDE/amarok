@@ -44,9 +44,6 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 
     KHBox * topHBox = new KHBox( this );
 
-    m_searchWidget = new SearchWidget( topHBox, this, false );
-    m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
-
     KToolBar * navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
@@ -62,6 +59,9 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_placesAction = new QAction( KIcon( "folder-remote" ), "Places", this );
     navigationToolbar->addAction( m_placesAction );
     connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
+
+    m_searchWidget = new SearchWidget( topHBox, this, false );
+    m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
