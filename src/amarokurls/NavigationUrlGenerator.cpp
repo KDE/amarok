@@ -135,6 +135,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         if( fileBrowser )
         {
             url.appendArg( "path", fileBrowser->currentDir() );
+            name = i18n( "Files (%1)", fileBrowser->currentDir() );
         }
     }
 
