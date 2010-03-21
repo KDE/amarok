@@ -24,6 +24,7 @@
 #include "widgets/SearchWidget.h"
 
 #include <KDirModel>
+#include <KFilePlacesModel>
 
 #include <QTimer>
 
@@ -71,6 +72,11 @@ protected slots:
      */
     void home();
 
+    /**
+     * Navigates to home directory
+     */
+    void showPlaces();
+
 
 private:
     void readConfig();
@@ -82,6 +88,8 @@ private:
     
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
+    KFilePlacesModel         *m_placesModel;
+    
     MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
 
     QTimer                    m_filterTimer;
@@ -91,6 +99,9 @@ private:
 
     QAction                  *m_upAction;
     QAction                  *m_homeAction;
+    QAction                  *m_placesAction;
+
+    bool                      m_showingPlaces;
         
 };
 

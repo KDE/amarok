@@ -36,6 +36,8 @@
 
 FileBrowser::FileBrowser( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
+    , m_placesModel( 0 )
+    , m_showingPlaces( false )
 {
 
     DEBUG_BLOCK;
@@ -56,6 +58,10 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_homeAction = new QAction( KIcon( "go-home" ), "Home", this );
     navigationToolbar->addAction( m_homeAction );
     connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
+
+    m_placesAction = new QAction( KIcon( "folder-remote" ), "Home", this );
+    navigationToolbar->addAction( m_placesAction );
+    connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
@@ -131,29 +137,53 @@ void
 FileBrowser::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-    KUrl filePath = file.url();
-    m_currentPath = filePath.path();
 
-    debug() << "activated url: " << filePath.url();
-    debug() << "filename: " << filePath.fileName();
+    if( m_showingPlaces )
+    {
+        debug() << "place activated!";
+        QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
 
-    if( file.isDir() ) {
-        debug() << "setting root path to: " << filePath.path();
-        m_kdirModel->dirLister()->openUrl( filePath );
-        m_fileView->setRootIndex( index );
+        if( !placesUrl.isEmpty() )
+        {
+            m_fileView->setModel( m_mimeFilterProxyModel );
 
-        //add this dir to the breadcrumb
-        setupAddItems();
-        activate();
+            //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
+            //as that will break remote, trash, ...
+            if( placesUrl.startsWith( "file://" ) )
+                placesUrl = placesUrl.replace( "file://", QString() );
+            
+            setDir( placesUrl );
+            m_showingPlaces = false;
+        }
+
+        //TODO, handle automatic mounting fo
     }
     else
     {
-        if( EngineController::canDecode( filePath ) )
+        KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        KUrl filePath = file.url();
+        m_currentPath = filePath.path();
+
+        debug() << "activated url: " << filePath.url();
+        debug() << "filename: " << filePath.fileName();
+
+        if( file.isDir() ) {
+            debug() << "setting root path to: " << filePath.path();
+            m_kdirModel->dirLister()->openUrl( filePath );
+            m_fileView->setRootIndex( index );
+
+            //add this dir to the breadcrumb
+            setupAddItems();
+            activate();
+        }
+        else
         {
-            QList<KUrl> urls;
-            urls << filePath;
-            The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
+            if( EngineController::canDecode( filePath ) )
+            {
+                QList<KUrl> urls;
+                urls << filePath;
+                The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
+            }
         }
     }
 }
@@ -326,9 +356,8 @@ FileBrowser::setDir( const QString &dir )
 void
 FileBrowser::up()
 {
-    QDir dir( m_currentPath );
-    if ( dir.cdUp() )
-        setDir( dir.path() );     
+    KUrl url( m_currentPath);
+    setDir( url.upUrl().path() );
 }
 
 void
@@ -336,3 +365,21 @@ FileBrowser::home()
 {
     setDir( QDir::homePath() );
 }
+
+void
+FileBrowser::showPlaces()
+{
+    if( !m_placesModel )
+        m_placesModel = new KFilePlacesModel( this );
+
+    clearAdditionalItems();
+
+    QStringList siblings;
+    addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
+
+    m_fileView->setModel( m_placesModel );
+    m_showingPlaces = true;
+}
+
+
+
