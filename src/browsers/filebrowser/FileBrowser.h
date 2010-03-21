@@ -66,6 +66,11 @@ protected slots:
      */
     void up();
 
+    /**
+     * Navigates to home directory
+     */
+    void home();
+
 
 private:
     void readConfig();
@@ -85,6 +90,7 @@ private:
     FileView                 *m_fileView;
 
     QAction                  *m_upAction;
+    QAction                  *m_homeAction;
         
 };
 
