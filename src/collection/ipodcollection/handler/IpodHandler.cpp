@@ -848,7 +848,7 @@ IpodHandler::writeFirewireGuid()
     // for elevated privileges, so we are assuming the user has sudo set up
     // for now, which is a _very big_ assumption.
 
-    KPasswordDialog dlg( 0 );
+    KPasswordDialog dlg;
     dlg.setPrompt(i18n("Amarok requires sudo access to get the FirewireGuid required to connect to your device. Please enter your sudo password"));
     if( !dlg.exec() )
     {

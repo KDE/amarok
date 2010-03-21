@@ -1101,9 +1101,8 @@ MainWindow::createMenus()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog *dialog = new ExtendedAboutDialog( &aboutData, &ocsData, this );
-    dialog->exec();
-    delete dialog;
+    ExtendedAboutDialog dialog( &aboutData, &ocsData );
+    dialog.exec();
 }
 
 void
