@@ -26,6 +26,8 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
+     * The new file browser now supports "places".
+     * Added "up" and "home" buttons to the new filebrowser.
      * Items in the breadcrumb navigation bar are now hidden if there is not enough
        room to show all of them (similar to how it works in Dolphin) (BR 231497)
      * Improved performance (dramatic in some cases) when filtering the Playlist 
