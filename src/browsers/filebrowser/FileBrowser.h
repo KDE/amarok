@@ -77,6 +77,13 @@ protected slots:
      */
     void showPlaces();
 
+    /**
+     * Handle results of tryiong to setup an item in "places" that needed mouting or other
+     * special setup.
+     * @param index the index that we tried to setup
+     * @param success did the setup succeed?
+     */
+    void setupDone( const QModelIndex & index, bool success );    
 
 private:
     void readConfig();

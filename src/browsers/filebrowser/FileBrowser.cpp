@@ -155,8 +155,17 @@ FileBrowser::itemActivated( const QModelIndex &index )
             setDir( placesUrl );
             m_showingPlaces = false;
         }
+        else
+        {
 
-        //TODO, handle automatic mounting fo
+
+            //check if this url needs setup/mounting
+            if( index.data( KFilePlacesModel::SetupNeededRole ).value<bool>() )
+            {
+                m_placesModel->requestSetup( index );
+            }
+        }
+
     }
     else
     {
@@ -386,7 +395,10 @@ void
 FileBrowser::showPlaces()
 {
     if( !m_placesModel )
+    {
         m_placesModel = new KFilePlacesModel( this );
+        connect( m_placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
+    }
 
     clearAdditionalItems();
 
@@ -395,6 +407,29 @@ FileBrowser::showPlaces()
 
     m_fileView->setModel( m_placesModel );
     m_showingPlaces = true;
+}
+
+void
+FileBrowser::setupDone( const QModelIndex & index, bool success )
+{
+    DEBUG_BLOCK
+    if( success )
+    {
+        QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
+
+        if( !placesUrl.isEmpty() )
+        {
+            m_fileView->setModel( m_mimeFilterProxyModel );
+
+            //needed to make folder urls look nice. We cannot just strip all protocol headers
+            //as that will break remote, trash, ...
+            if( placesUrl.startsWith( "file://" ) )
+                placesUrl = placesUrl.replace( "file://", QString() );
+
+            setDir( placesUrl );
+            m_showingPlaces = false;
+        }
+    }
 }
 
 
