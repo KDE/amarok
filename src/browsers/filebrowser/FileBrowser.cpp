@@ -356,8 +356,24 @@ FileBrowser::setDir( const QString &dir )
 void
 FileBrowser::up()
 {
-    KUrl url( m_currentPath);
-    setDir( url.upUrl().path() );
+    DEBUG_BLOCK
+    debug() << "current dir: " << m_currentPath;
+
+    QDir dir( m_currentPath );
+    
+    if( !dir.exists( m_currentPath ) )
+    {
+        //assume that we are browsing "places" where "up" does not really work
+        //so just bounce back to the places root
+
+        debug() << "special case for handling up when browsing 'places'";
+        showPlaces();
+    }
+    else
+    {
+        KUrl url( m_currentPath);
+        setDir( url.upUrl().path() );
+    }
 }
 
 void
