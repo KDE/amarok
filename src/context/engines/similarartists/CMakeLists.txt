@@ -1,6 +1,8 @@
 
 include_directories( ../../..
                      ../../../context
+                     ${LIBLASTFM_INCLUDE_DIR}
+                     ${LIBLASTFM_INCLUDE_DIR}/..
                      ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
 )
 
