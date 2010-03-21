@@ -219,9 +219,6 @@ CoverFetcher::slotDialogFinished()
         break;
     }
 
-    delete m_dialog;
-    m_dialog = 0;
-
     /*
      * Remove all manual fetch jobs from the queue if the user accepts, cancels,
      * or closes the cover found dialog. This way, the dialog will not reappear
@@ -237,11 +234,14 @@ CoverFetcher::slotDialogFinished()
             m_selectedPixmaps.remove( unit );
 
             const KJob *job = m_jobs.key( unit );
-            const_cast< KJob* >( job )->kill();
+            const_cast< KJob* >( job )->deleteLater();
             The::statusBar()->endProgressOperation( job );
             m_jobs.remove( job );
         }
     }
+
+    delete m_dialog;
+    m_dialog = 0;
 }
 
 void
