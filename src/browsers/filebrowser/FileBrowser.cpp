@@ -55,7 +55,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     navigationToolbar->addAction( m_upAction );
     connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
 
-    m_homeAction = new QAction( KIcon( "go-home" ), "Home", this );
+    m_homeAction = new QAction( KIcon( "user-home" ), "Home", this );
     navigationToolbar->addAction( m_homeAction );
     connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
 
