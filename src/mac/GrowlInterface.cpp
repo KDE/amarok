@@ -20,6 +20,7 @@
 #include "App.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h" // for secToPrettyTime
 #include "SvgHandler.h"
 #include "TrayIcon.h"
@@ -60,10 +61,11 @@ GrowlInterface::show( Meta::TrackPtr track )
 
     if( App::instance()->trayIcon() )
     {
-        App::instance()->trayIcon()->setVisible( true );
         if( track && track->album() )
-            App::instance()->trayIcon()->setIcon( QIcon( The::svgHandler()->imageWithBorder( track->album(), 100, 5 ) ) );
-        App::instance()->trayIcon()->showMessage( "Amarok", text );
+        {
+            App::instance()->trayIcon()->setIconByPixmap( The::svgHandler()->imageWithBorder( track->album(), 100, 5 ) );
+        }
+        App::instance()->trayIcon()->showMessage( "Amarok", text, QString() );
     }
 
 }

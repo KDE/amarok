@@ -84,10 +84,6 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ), SLOT( slotActivated() ) );
-    #ifdef Q_WS_MAC
-    // FIXME: Port to KSNI
-    KSystemTrayIcon::setVisible( false );
-    #endif
 }
 
 void
