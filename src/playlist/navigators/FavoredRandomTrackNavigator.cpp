@@ -39,41 +39,9 @@ Playlist::FavoredRandomTrackNavigator::planOne()
 
     if ( m_plannedItems.isEmpty() )
     {
-        QList< qreal > weights;
+        QList<qreal> weights = rowWeights();
 
-        AbstractModel* model = Playlist::ModelStack::instance()->top();
-        Meta::TrackList tracks = model->tracks();
-
-        switch( AmarokConfig::favorTracks() )
-        {
-        case AmarokConfig::EnumFavorTracks::HigherScores:
-            foreach( Meta::TrackPtr t, tracks )
-            {
-                int score = t->score();
-                qreal weight = score? score * 0.1 : 5.0;
-                weights << weight;
-            }
-            break;
-        case AmarokConfig::EnumFavorTracks::HigherRatings:
-            foreach( Meta::TrackPtr t, tracks )
-            {
-                int rating = t->rating();
-                qreal weight = rating? rating : 5.0;
-                weights << weight;
-            }
-            break;
-        case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
-            foreach( Meta::TrackPtr t, tracks )
-            {
-                int lastplayed = t->lastPlayed();
-                qreal weight = lastplayed?
-                QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
-                : 400.0;
-                weights << weight;
-            }
-            break;
-        }
-
+        // Choose a weighed random row.
         if( !weights.isEmpty() )
         {
             qreal totalWeight = 0.0;
@@ -90,4 +58,48 @@ Playlist::FavoredRandomTrackNavigator::planOne()
             m_plannedItems.append( m_model->idAt( row ) );
         }
     }
+}
+
+QList<qreal>
+Playlist::FavoredRandomTrackNavigator::rowWeights()
+{
+    QList<qreal> weights;
+
+    int favorType = AmarokConfig::favorTracks();
+    int rowCount = m_model->rowCount();
+
+    for( int row = 0; row < rowCount; row++ )
+    {
+        qreal weight;
+
+        switch( favorType )
+        {
+            case AmarokConfig::EnumFavorTracks::HigherScores:
+            {
+                int score = m_model->trackAt( row )->score();
+                weight = score? score * 0.1 : 5.0;
+                break;
+            }
+
+            case AmarokConfig::EnumFavorTracks::HigherRatings:
+            {
+                int rating = m_model->trackAt( row )->rating();
+                weight = rating? rating : 5.0;
+                break;
+            }
+
+            case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+            {
+                int lastplayed = m_model->trackAt( row )->lastPlayed();
+                weight = lastplayed?
+                    QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
+                    : 400.0;
+                break;
+            }
+        }
+
+        weights.append( weight );
+    }
+
+    return weights;
 }

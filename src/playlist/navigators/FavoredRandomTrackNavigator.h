@@ -35,6 +35,8 @@ namespace Playlist
             void planOne();
             void notifyItemsInserted( const QSet<quint64> &insertedItems ) { Q_UNUSED( insertedItems ); }
             void notifyItemsRemoved( const QSet<quint64> &removedItems ) { Q_UNUSED( removedItems ); }
+
+            QList<qreal> rowWeights();
     };
 
 }
