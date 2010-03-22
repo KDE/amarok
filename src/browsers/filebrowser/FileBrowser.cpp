@@ -174,6 +174,10 @@ FileBrowser::itemActivated( const QModelIndex &index )
             {
                 m_placesModel->requestSetup( index );
             }
+            else
+            {
+                m_fileView->setModel( m_mimeFilterProxyModel );
+            }
         }
 
     }

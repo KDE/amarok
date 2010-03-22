@@ -66,6 +66,10 @@ public:
 
     QList<AmarokUrlGenerator *> generators() { return m_registeredGenerators; }
 
+    AmarokUrl createBrowserViewBookmark();
+    AmarokUrl createPlaylistViewBookmark();
+    AmarokUrl createContextViewBookmark();
+
 
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );

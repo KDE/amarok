@@ -96,10 +96,12 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
 
     protected slots:
         void showMenu();
+        void copyCurrentToClipboard();
 
 
     private:
         QString m_urlsCommand;
+        QAction * m_copyToClipboardAction;
        
 };
 

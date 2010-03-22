@@ -48,7 +48,8 @@ BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &te
     init();
 }
 
-void BreadcrumbItemButton::init()
+void
+BreadcrumbItemButton::init()
 {
     setFocusPolicy( Qt::NoFocus );
     setDisplayHintEnabled( HoverHint, false );
@@ -58,7 +59,8 @@ BreadcrumbItemButton::~BreadcrumbItemButton()
 {
 }
 
-void BreadcrumbItemButton::setActive( const bool active )
+void
+BreadcrumbItemButton::setActive( const bool active )
 {
     setDisplayHintEnabled( ActiveHint, active );
 
@@ -67,7 +69,8 @@ void BreadcrumbItemButton::setActive( const bool active )
     setFont( f );
 }
 
-void BreadcrumbItemButton::setDisplayHintEnabled( DisplayHint hint, bool enable )
+void
+BreadcrumbItemButton::setDisplayHintEnabled( DisplayHint hint, bool enable )
 {
     if( enable )
         m_displayHint = m_displayHint | hint;
@@ -77,26 +80,30 @@ void BreadcrumbItemButton::setDisplayHintEnabled( DisplayHint hint, bool enable 
     update();
 }
 
-bool BreadcrumbItemButton::isDisplayHintEnabled( DisplayHint hint ) const
+bool
+BreadcrumbItemButton::isDisplayHintEnabled( DisplayHint hint ) const
 {
     return (m_displayHint & hint) > 0;
 }
 
-void BreadcrumbItemButton::enterEvent( QEvent* event )
+void
+BreadcrumbItemButton::enterEvent( QEvent* event )
 {
     QPushButton::enterEvent( event );
     setDisplayHintEnabled( HoverHint, true );
     update();
 }
 
-void BreadcrumbItemButton::leaveEvent( QEvent* event )
+void
+BreadcrumbItemButton::leaveEvent( QEvent* event )
 {
     QPushButton::leaveEvent( event );
     setDisplayHintEnabled( HoverHint, false );
     update();
 }
 
-void BreadcrumbItemButton::paintEvent( QPaintEvent* event )
+void
+BreadcrumbItemButton::paintEvent( QPaintEvent* event )
 {
     Q_UNUSED(event);
 
@@ -127,7 +134,8 @@ void BreadcrumbItemButton::paintEvent( QPaintEvent* event )
 }
 
 
-void BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
+void
+BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
 {
     const bool isHovered = isDisplayHintEnabled( HoverHint );
 
@@ -143,7 +151,8 @@ void BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
     }
 }
 
-QColor BreadcrumbItemButton::foregroundColor() const
+QColor
+BreadcrumbItemButton::foregroundColor() const
 {
     const bool isHighlighted = isDisplayHintEnabled( HoverHint );
     const bool isActive = isDisplayHintEnabled( ActiveHint );
@@ -155,7 +164,8 @@ QColor BreadcrumbItemButton::foregroundColor() const
     return foregroundColor;
 }
 
-QSize BreadcrumbItemButton::sizeHint() const
+QSize
+BreadcrumbItemButton::sizeHint() const
 {
     QSize size = Amarok::ElidingButton::sizeHint();
     QFontMetrics fm( font() );
@@ -163,14 +173,16 @@ QSize BreadcrumbItemButton::sizeHint() const
     return size;
 }
 
-QSize BreadcrumbItemMenuButton::sizeHint() const
+QSize
+BreadcrumbItemMenuButton::sizeHint() const
 {
     QSize size = BreadcrumbItemButton::sizeHint();
     size.setWidth(size.height() / 2);
     return size;
 }
 
-void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
+void
+BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 {
     Q_UNUSED(event);
 
@@ -199,6 +211,7 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
     : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
+    , m_copyToClipboardAction( 0 )
 {
     setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 
@@ -209,7 +222,8 @@ BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
 {
 }
 
-void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
+void
+BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 {
 
     DEBUG_BLOCK
@@ -234,7 +248,15 @@ void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
     else
         warning()<<"Bad URL command.";
 
-    menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
+    if( !m_copyToClipboardAction )
+    {
+        m_copyToClipboardAction = new QAction( KIcon( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
+        connect( m_copyToClipboardAction, SIGNAL(triggered( bool ) ), this, SLOT( copyCurrentToClipboard() ) );
+    }
+
+    menu->addAction( m_copyToClipboardAction );
+
+    menu->addAction( Amarok::actionCollection()->action( "bookmark_manager" ) );
 
     menu->addSeparator();
 
@@ -249,10 +271,37 @@ void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
 }
 
-void BreadcrumbUrlMenuButton::showMenu()
+void
+BreadcrumbUrlMenuButton::showMenu()
 {
     QPoint pos( 0, height() );
     generateMenu( mapToGlobal( pos ) );
+}
+
+void
+BreadcrumbUrlMenuButton::copyCurrentToClipboard()
+{
+
+    QString urlString;
+
+    if( m_urlsCommand == "navigate" )
+    {
+        AmarokUrl url = The::amarokUrlHandler()->createBrowserViewBookmark();
+        urlString = url.url();
+    }
+    else if( m_urlsCommand == "playlist" )
+    {
+        AmarokUrl url = The::amarokUrlHandler()->createPlaylistViewBookmark();
+        urlString = url.url();
+    }
+    else if( m_urlsCommand == "context" )
+    {
+        AmarokUrl url = The::amarokUrlHandler()->createContextViewBookmark();
+        urlString = url.url();
+    }
+
+    QApplication::clipboard()->setText( urlString );
+
 }
 
 #include "BreadcrumbItemButton.moc"

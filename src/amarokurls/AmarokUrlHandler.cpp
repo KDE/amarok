@@ -152,9 +152,27 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
     return resultList;
 }
 
+AmarokUrl
+AmarokUrlHandler::createBrowserViewBookmark()
+{
+    return NavigationUrlGenerator::instance()->CreateAmarokUrl();;
+}
+
+AmarokUrl
+AmarokUrlHandler::createPlaylistViewBookmark()
+{
+    return Playlist::ViewUrlGenerator::instance()->createUrl();
+}
+
+AmarokUrl
+AmarokUrlHandler::createContextViewBookmark()
+{
+    return ContextUrlGenerator::instance()->createContextBookmark();
+}
+
 void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
-    AmarokUrl url = NavigationUrlGenerator::instance()->CreateAmarokUrl();
+    AmarokUrl url = createBrowserViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -162,7 +180,7 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
 void
 AmarokUrlHandler::bookmarkCurrentPlaylistView()
 {
-    AmarokUrl url = Playlist::ViewUrlGenerator::instance()->createUrl();
+    AmarokUrl url = createPlaylistViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -170,7 +188,7 @@ AmarokUrlHandler::bookmarkCurrentPlaylistView()
 void
 AmarokUrlHandler::bookmarkCurrentContextView()
 {
-    AmarokUrl url = ContextUrlGenerator::instance()->createContextBookmark();
+    AmarokUrl url = createContextViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb(); 
 }
