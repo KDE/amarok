@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
@@ -1037,22 +1037,6 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     DEBUG_BLOCK
-
-    // HACK:
-    // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
-    // ("amarok stops playing tracks") and other issues with Phonon.
-    // The theory:
-    // It has been observed that Phonon will sometimes emit a stateChanged() with
-    // _both_ oldState and newState == 0, which makes little sense. After that it goes
-    // berserk, until you restart Amarok.
-    // Now we try to detect this weird state, and then try to destroy and recreate all
-    // Phonon objects, in the hope of fixing the situation. Fingers crossed.
-    if( newState == Phonon::LoadingState && oldState == Phonon::LoadingState )
-    {
-        warning() << "Trying to re-initialize Phonon. Fingers crossed.";
-        initializePhonon();
-        newState = Phonon::ErrorState;  // Indicate error
-    }
 
     // Sanity checks:
     if( newState == oldState )
