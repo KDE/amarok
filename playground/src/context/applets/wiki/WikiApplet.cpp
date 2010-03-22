@@ -205,109 +205,90 @@ void WikiApplet :: createContextMenu()
      previousTrackAction -> setIcon( KIcon( "go-previous-page" ) );
      previousTrackAction -> setVisible( false );
      previousTrackAction -> setEnabled( false );
-     previousTrackAction -> setText( "View Previous Track Info" );
      connect(previousTrackAction,SIGNAL(triggered()),this,SLOT( viewPreviousTrackInfo() ) );
 
      QAction *currentTrackAction = m_contextMenu -> addAction( i18n( "View Current Track Info" ) );
      currentTrackAction -> setIcon( KIcon( "go-home" ) );
      currentTrackAction -> setVisible( false );
      currentTrackAction -> setEnabled( false );
-     currentTrackAction -> setText( "View Current Track Info" );
      connect(currentTrackAction,SIGNAL(triggered()),this,SLOT( viewCurrentTrackInfo() ) );
 
      QAction* refreshAction = m_contextMenu-> addAction( i18n( "Refresh Previous Track Info" ) );
      refreshAction->setIcon( KIcon( "view-refresh" ) );
      refreshAction->setVisible( false );
      refreshAction->setEnabled( false );
-     refreshAction -> setText( "Refresh Previous Track Info" );
      connect( refreshAction , SIGNAL( triggered() ), this, SLOT( viewPreviousTrackInfo() ) );
 
      QAction *reloadLyricsAction = m_contextMenu -> addAction(i18n("Reload Lyrics Info"));
      reloadLyricsAction -> setIcon( KIcon( "view-refresh" ) );
      reloadLyricsAction -> setVisible( true );
      reloadLyricsAction -> setEnabled( false );
-     reloadLyricsAction -> setText( "Reload Lyrics" );
      connect(reloadLyricsAction,SIGNAL(triggered()),this,SLOT( reloadLyricsInfo() ) );
 
      QAction *reloadArtistAction = m_contextMenu -> addAction(i18n("Reload Artist Info"));
      reloadArtistAction -> setIcon( KIcon( "view-refresh" ) );
      reloadArtistAction -> setVisible( true );
      reloadArtistAction -> setEnabled( false );
-     reloadArtistAction -> setText( "Reload Artist Info" );
      connect(reloadArtistAction,SIGNAL(triggered()),this,SLOT( reloadArtistInfo() ) );
 
      QAction *reloadAlbumAction = m_contextMenu -> addAction(i18n("Reload Album Info"));
      reloadAlbumAction -> setIcon( KIcon( "view-refresh" ) );
      reloadAlbumAction -> setVisible( true );
      reloadAlbumAction -> setEnabled( false );
-     reloadAlbumAction -> setText( "Reload Album Info" );
      connect(reloadAlbumAction,SIGNAL(triggered()),this,SLOT( reloadAlbumInfo() ) );
 
      QAction *reloadTitleAction = m_contextMenu -> addAction(i18n("Reload Title Info"));
      reloadTitleAction -> setIcon( KIcon( "view-refresh" ) );
      reloadTitleAction -> setVisible( true );
      reloadTitleAction -> setEnabled( false );
-     reloadTitleAction -> setText( "Reload Title Info" );
      connect(reloadTitleAction,SIGNAL(triggered()),this,SLOT( reloadTitleInfo() ) );
 
      QAction *navigateLyricsAction = m_contextMenu -> addAction(i18n("See Lyrics Info") );
      navigateLyricsAction -> setVisible(false);
-     navigateLyricsAction -> setText( "See Lyrics Info" );
      connect(navigateLyricsAction,SIGNAL(triggered()),this,SLOT( navigateToLyrics() ) );
 
      QAction *navigateArtistAction = m_contextMenu -> addAction(i18n("See Artist Info") );
      navigateArtistAction -> setVisible(false);
-     navigateArtistAction -> setText( "See Artist Info" );
      connect(navigateArtistAction,SIGNAL(triggered()),this,SLOT( navigateToArtist() ) );
 
      QAction *navigateAlbumAction = m_contextMenu -> addAction(i18n("See Album Info") );
      navigateAlbumAction -> setVisible(false);
-     navigateAlbumAction -> setText( "See Album Info" );
      connect(navigateAlbumAction,SIGNAL(triggered()),this,SLOT( navigateToAlbum() ) );
 
      QAction *navigateTitleAction = m_contextMenu -> addAction(i18n("See Title Info") );
      navigateTitleAction -> setVisible(false);
-     navigateTitleAction -> setText( "See Title Info" );
      connect(navigateTitleAction,SIGNAL(triggered()),this,SLOT( navigateToTitle() ) );
 
      QAction *compressArtistAction = m_contextMenu -> addAction(i18n("Compress Artist Info") );
      compressArtistAction -> setVisible(false);
-     compressArtistAction -> setText( "Compress Artist Info" );
      connect(compressArtistAction,SIGNAL(triggered()),this,SLOT(compressArtistInfo() ) );
 
      QAction *compressLyricsAction = m_contextMenu -> addAction(i18n("Compress Lyrics Info"));
      compressLyricsAction -> setVisible(false);
-     compressLyricsAction -> setText( "Compress Lyrics Info" );
      connect(compressLyricsAction,SIGNAL(triggered()),this,SLOT( compressLyricsInfo()));
 
      QAction *compressAlbumAction = m_contextMenu -> addAction(i18n("Compress Album Info"));
      compressAlbumAction -> setVisible(false);
-     compressAlbumAction -> setText( "Compress Album Info" );
      connect(compressAlbumAction,SIGNAL(triggered()),this,SLOT( compressAlbumInfo()));
 
      QAction *compressTitleAction = m_contextMenu -> addAction(i18n("Compress Title Info"));
      compressTitleAction -> setVisible(false);
-     compressTitleAction -> setText( "Compress Title Info" );
      connect(compressTitleAction,SIGNAL(triggered()),this,SLOT( compressTitleInfo()));
 
      QAction *expandLyricsAction = m_contextMenu -> addAction(i18n("View More Lyrics Info" ) );
      expandLyricsAction -> setVisible(false);
-     expandLyricsAction -> setText( "View More Lyrics Info" );
      connect(expandLyricsAction,SIGNAL(triggered()),this,SLOT( expandLyricsInfo() ) );
 
      QAction *expandArtistAction = m_contextMenu -> addAction(i18n("View More Artist Info"));
      expandArtistAction -> setVisible(false);
-     expandArtistAction -> setText( "View More Artist Info" );
      connect(expandArtistAction,SIGNAL(triggered()),this,SLOT( expandArtistInfo() ) );
 
      QAction *expandAlbumAction = m_contextMenu -> addAction(i18n("View More Album Info" ) );
      expandAlbumAction -> setVisible(false);
-     expandAlbumAction -> setText( "View More Album Info" );
      connect(expandAlbumAction,SIGNAL(triggered()),this,SLOT( expandAlbumInfo() ) );
 
      QAction *expandTitleAction = m_contextMenu -> addAction(i18n("View More Title Info" ) );
      expandTitleAction -> setVisible(false);
-     expandTitleAction -> setText( "View More Title Info" );
      connect(expandTitleAction,SIGNAL(triggered()),this,SLOT( expandTitleInfo() ) );
 
      m_webView -> loadMenu(m_contextMenu);
