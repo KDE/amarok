@@ -68,19 +68,17 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
     KToolBar *toolBar = new KToolBar( this, false, false );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(),
                                                       UserModel::ProviderColumn );
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
-
     m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
-    m_defaultItemView = m_playlistView->itemDelegate();
 
     m_filterProxy = new QSortFilterProxyModel( this );
     m_filterProxy->setDynamicSortFilter( true );
     m_filterProxy->setFilterKeyColumn( PlaylistBrowserNS::UserModel::ProviderColumn );
 
-    m_playlistView->setModel( m_filterProxy );
+    m_playlistView = new UserPlaylistTreeView( m_filterProxy, this );
+    m_defaultItemView = m_playlistView->itemDelegate();
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     toolBar->addAction( m_addGroupAction );

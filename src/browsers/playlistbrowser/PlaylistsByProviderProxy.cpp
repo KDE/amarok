@@ -36,7 +36,7 @@ PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &par
     DEBUG_BLOCK
     bool result;
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    beginRemoveRows( parent, row, row + count );
+    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
     result = m_model->removeRows( row, count, originalIdx );
     endRemoveRows();
