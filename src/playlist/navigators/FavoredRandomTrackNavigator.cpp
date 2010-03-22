@@ -77,23 +77,24 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
             case AmarokConfig::EnumFavorTracks::HigherScores:
             {
                 int score = m_model->trackAt( row )->score();
-                weight = score? score * 0.1 : 5.0;
+                weight = score ? score : 50.0;    // "Unknown" weight: in the middle, 50%
                 break;
             }
 
             case AmarokConfig::EnumFavorTracks::HigherRatings:
             {
                 int rating = m_model->trackAt( row )->rating();
-                weight = rating? rating : 5.0;
+                weight = rating ? rating : 5.0;
                 break;
             }
 
             case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
             {
-                int lastplayed = m_model->trackAt( row )->lastPlayed();
-                weight = lastplayed?
-                    QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
-                    : 400.0;
+                uint lastPlayed = m_model->trackAt( row )->lastPlayed();
+                if ( lastPlayed )
+                    weight = QDateTime::fromTime_t( lastPlayed ).secsTo( QDateTime::currentDateTime() );
+                else
+                    weight = 365 * 24 * 60 * 60;    // "Never" weight: 1 year.
                 break;
             }
         }
