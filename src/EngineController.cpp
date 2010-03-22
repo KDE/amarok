@@ -483,6 +483,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
 void
 EngineController::pause() //SLOT
 {
+    if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast doesn't support pausing, so we stop.
+    {
+        debug() << "This is a stream that cannot be paused. Stopping instead.";
+        stop();
+        return;
+    }
+
     m_media->pause();
 }
 
@@ -564,14 +571,7 @@ EngineController::playPause() //SLOT
             break;
 
         default:
-            if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast doesn't support pausing, so we stop.
-            {
-                debug() << "This is a stream that cannot be paused. Stopping instead.";
-                stop();
-            }
-            else
-                pause();
-
+            pause();
             break;
     }
 }
