@@ -204,6 +204,8 @@ Amarok::TrayIcon::setupToolTip()
 void
 Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
 {
+    Q_UNUSED( orientation )
+
     The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
