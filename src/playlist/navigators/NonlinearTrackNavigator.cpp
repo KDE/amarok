@@ -63,7 +63,7 @@ Playlist::NonlinearTrackNavigator::slotModelReset()
 }
 
 // This function can get called thousands of times during a single FilterProxy change.
-// Be very efficient here!
+// Be very efficient here! (e.g. no DEBUG_BLOCK)
 void
 Playlist::NonlinearTrackNavigator::slotRowsInserted( const QModelIndex& parent, int startRow, int endRow )
 {
@@ -79,7 +79,7 @@ Playlist::NonlinearTrackNavigator::slotRowsInserted( const QModelIndex& parent, 
 }
 
 // This function can get called thousands of times during a single FilterProxy change.
-// Be very efficient here!
+// Be very efficient here! (e.g. no DEBUG_BLOCK)
 void
 Playlist::NonlinearTrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
 {

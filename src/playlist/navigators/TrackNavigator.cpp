@@ -84,11 +84,10 @@ Playlist::TrackNavigator::slotModelReset()
 }
 
 // This function can get called thousands of times during a single FilterProxy change.
-// Be very efficient here!
+// Be very efficient here! (e.g. no DEBUG_BLOCK)
 void
 Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
 {
-    DEBUG_BLOCK
     Q_UNUSED( parent );
 
     for (int row = startRow; row <= endRow; row++)
