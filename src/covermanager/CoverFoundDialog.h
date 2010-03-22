@@ -42,7 +42,6 @@ class KPushButton;
 class QFrame;
 class QGridLayout;
 class QTabWidget;
-class QTableWidget;
 
 class CoverFoundDialog : public KDialog
 {
@@ -131,11 +130,12 @@ private:
     QLabel               *m_cover;
     QPixmap               m_pixmap;
     QTabWidget           *m_tabs;
-    QTableWidget         *m_metaTable;
+    QWidget              *m_metaTable;
     CoverFetch::Metadata  m_metadata;
 
     void updateNotes();
     void updateMetaTable();
+    void clearMetaTable();
 
     Q_DISABLE_COPY( CoverFoundSideBar );
 };

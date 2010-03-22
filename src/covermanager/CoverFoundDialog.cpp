@@ -37,13 +37,14 @@
 
 #include <QCloseEvent>
 #include <QDir>
+#include <QFormLayout>
 #include <QFrame>
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QMenu>
+#include <QScrollArea>
 #include <QSplitter>
 #include <QTabWidget>
-#include <QTableWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
 
@@ -211,7 +212,6 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
         q << text;
         const QString result = q.join( QChar( ' ' ) );
         m_search->setText( result );
-        updateSearchButton( result );
     }
 }
 
@@ -406,7 +406,12 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_cover = new QLabel( this );
     m_tabs  = new QTabWidget( this );
     m_notes = new QLabel( m_tabs );
-    m_metaTable = new QTableWidget( m_tabs );
+    m_metaTable = new QWidget( m_tabs );
+    m_metaTable->setLayout( new QFormLayout() );
+    m_metaTable->setMinimumSize( QSize( 150, 200 ) );
+    QScrollArea *metaArea = new QScrollArea( m_tabs );
+    metaArea->setFrameShape( QFrame::NoFrame );
+    metaArea->setWidget( m_metaTable );
     m_notes->setAlignment( Qt::AlignLeft | Qt::AlignTop );
     m_notes->setMargin( 4 );
     m_notes->setOpenExternalLinks( true );
@@ -414,10 +419,7 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_notes->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_notes->setWordWrap( true );
     m_cover->setAlignment( Qt::AlignCenter );
-    m_metaTable->setColumnCount( 2 );
-    m_metaTable->horizontalHeader()->setVisible( false );
-    m_metaTable->verticalHeader()->setVisible( false );
-    m_tabs->addTab( m_metaTable, i18n( "Information" ) );
+    m_tabs->addTab( metaArea, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
     setPixmap( m_album->image( 190 ) );
@@ -430,7 +432,7 @@ CoverFoundSideBar::~CoverFoundSideBar()
 
 void CoverFoundSideBar::clear()
 {
-    m_metaTable->clear();
+    clearMetaTable();
     m_notes->clear();
     m_metadata.clear();
 }
@@ -475,39 +477,94 @@ void CoverFoundSideBar::updateNotes()
 
 void CoverFoundSideBar::updateMetaTable()
 {
-    // TODO: clean up tags displayed when the sidebar info area is improved
     QStringList tags;
-    tags << "artist"    << "clickurl"  << "country" << "date" << "format"
-         << "height"    << "imgrefurl" << "name"    << "type" << "released"
-         << "releaseid" << "size"      << "title"   << "url"  << "width";
+    tags << "artist" << "country"  << "date" << "format" << "height" << "name"
+         << "type"   << "released" << "size" << "source" << "title"  << "width";
 
-    m_metaTable->clear();
-    m_metaTable->setRowCount( tags.size() );
+    clearMetaTable();
 
-    int row( 0 );
-    foreach( const QString &tag, tags )
+    QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
+    layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+
+    CoverFetch::Metadata::const_iterator mit = m_metadata.constBegin();
+    while( mit != m_metadata.constEnd() )
     {
-        if( m_metadata.contains( tag ) )
+        const QString tag = mit.key();
+        if( tags.contains( tag ) )
         {
-            const QString value = m_metadata.value( tag );
-            if( value.isEmpty() )
-                continue;
+            const QString &value = mit.value();
+            QLabel *label = new QLabel( value );
+            label->setToolTip( value );
+            layout->addRow( i18n( "<b>%1:</b>", tag ), label );
+        }
+        ++mit;
+    }
 
-            QTableWidgetItem *itemTag = new QTableWidgetItem( i18n( tag.toAscii() ) );
-            QTableWidgetItem *itemVal = new QTableWidgetItem( value );
+    QString refUrl;
+    QString refShowUrl; // only used by Yahoo atm
 
-            if( itemTag && itemVal )
+    const QString source = m_metadata.value( "source" );
+    if( source == "Last.fm" || source == "Discogs" )
+    {
+        refUrl = m_metadata.value( "releaseurl" );
+    }
+    else if( source == "Google" )
+    {
+        refUrl = m_metadata.value( "imgrefurl" );
+    }
+    else if( source == "Yahoo!" )
+    {
+        refUrl = m_metadata.value( "refererclickurl" );
+        refShowUrl = m_metadata.value( "refererurl" );
+    }
+
+    if( !refUrl.isEmpty() )
+    {
+        QFont font;
+        QFontMetrics qfm( font );
+        const QString &toolUrl = refShowUrl.isEmpty() ? refUrl : refShowUrl;
+        const QString &tooltip = qfm.elidedText( toolUrl, Qt::ElideMiddle, 350 );
+        const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
+        const QString &url     = i18n( "<a href=\"%1\">link</a>", decoded );
+
+        QLabel *label = new QLabel( url );
+        label->setOpenExternalLinks( true );
+        label->setTextInteractionFlags( Qt::TextBrowserInteraction );
+        label->setToolTip( tooltip );
+        layout->addRow( i18n( "<b>URL:</b>" ), label );
+    }
+}
+
+void CoverFoundSideBar::clearMetaTable()
+{
+    QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
+    for( int i = 0, rowCount = layout->rowCount(); i < rowCount; ++i )
+    {
+        QLayoutItem *labelItem = layout->itemAt( i, QFormLayout::LabelRole );
+        if( labelItem )
+        {
+            QWidget *widget = labelItem->widget();
+            layout->removeItem( labelItem );
+            if( widget )
             {
-                m_metaTable->setItem( row, 0, itemTag );
-                m_metaTable->setItem( row, 1, itemVal );
-                row++;
+                layout->removeWidget( widget );
+                delete widget;
+            }
+        }
+
+        QLayoutItem *fieldItem = layout->itemAt( i, QFormLayout::FieldRole );
+        if( fieldItem )
+        {
+            QWidget *widget = fieldItem->widget();
+            layout->removeItem( fieldItem );
+            if( widget )
+            {
+                layout->removeWidget( widget );
+                delete widget;
             }
         }
     }
-    m_metaTable->setRowCount( row );
-    m_metaTable->sortItems( 0 );
-    m_metaTable->resizeColumnsToContents();
-    m_metaTable->resizeRowsToContents();
+
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap cover,
