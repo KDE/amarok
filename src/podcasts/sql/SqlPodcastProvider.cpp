@@ -889,7 +889,7 @@ SqlPodcastProvider::completePodcastDownloads()
                                        "There are still %1 podcast downloads in progress",
                                        m_downloadJobMap.count() )
                                       );
-        progressDialog.setButtonText( "Cancel Download and Quit." );
+        progressDialog.setButtonText( i18n("Cancel Download and Quit.") );
 
         m_completedDownloads = 0;
         foreach( KJob *job, m_downloadJobMap.keys() )

@@ -116,7 +116,7 @@ UpcomingEventsWidget::url() const
 void
 UpcomingEventsWidget::setImage( const KUrl &url )
 {
-    m_image->setText( "Loading picture..." );
+    m_image->setText( i18n("Loading picture...") );
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KJob * ) ), SLOT( loadImage( KJob * ) ) );
 }
