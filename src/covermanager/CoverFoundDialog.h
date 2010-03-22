@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QPixmap>
 
+class CoverFoundItem;
 class CoverFoundSideBar;
 class KDialog;
 class KJob;
@@ -86,12 +87,20 @@ private slots:
     void selectLastFm();
     void selectGoogle();
     void selectYahoo();
+    void sortingTriggered( bool checked );
     void updateSearchButton( const QString &text );
 
 private:
+    void addToView( CoverFoundItem *const item );
     void setupSearchToolTip();
+    void sortCoversBySize();
     void updateGui();
     void updateTitle();
+
+    bool            m_isSorted;      //! Are the covers sorted in the view?
+    bool            m_sortEnabled;   //! Sort covers by size
+    QAction        *m_sortAction;    //! Action to sort covers by size
+    QList< int >    m_sortSizes;     //! List of sorted cover sizes used for indexing
 
     KLineEdit      *m_search;        //! Custom search input
     KPushButton    *m_searchButton;  //! Button to start search or get more results for last query

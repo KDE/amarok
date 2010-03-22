@@ -53,6 +53,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
+    , m_isSorted( false )
+    , m_sortEnabled( false )
     , m_queryPage( 1 )
     , m_unit( unit )
     , m_album( unit->album() )
@@ -127,12 +129,18 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     connect( yahooAct, SIGNAL(triggered()), this, SLOT(selectYahoo()) );
     connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
 
+    m_sortAction = new QAction( i18n( "Sort by size" ), sourceMenu );
+    m_sortAction->setCheckable( true );
+    connect( m_sortAction, SIGNAL(triggered(bool)), this, SLOT(sortingTriggered(bool)) );
+
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
     ag->addAction( googleAct );
     ag->addAction( yahooAct );
     ag->addAction( discogsAct );
     sourceMenu->addActions( ag->actions() );
+    sourceMenu->addSeparator();
+    sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
     connect( m_search, SIGNAL(returnPressed(const QString&)), searchComp, SLOT(addItem(const QString&)) );
@@ -171,6 +179,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
+    m_sortEnabled = config.readEntry( "Sort by Size", false );
+    m_sortAction->setChecked( m_sortEnabled );
+    m_isSorted = m_sortEnabled;
     restoreDialogSize( config ); // call this after setMainWidget()
 
     if( source == "LastFm" )
@@ -201,6 +212,45 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
+void CoverFoundDialog::add( const QPixmap cover,
+                            const CoverFetch::Metadata metadata,
+                            const CoverFetch::ImageSize imageSize )
+{
+    if( cover.isNull() )
+        return;
+
+    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
+    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
+    addToView( item );
+}
+
+void CoverFoundDialog::addToView( CoverFoundItem *const item )
+{
+    const CoverFetch::Metadata metadata = item->metadata();
+
+    if( m_sortEnabled && metadata.contains( "width" ) && metadata.contains( "height" ) )
+    {
+        if( m_isSorted )
+        {
+            const int size = metadata.value( "width" ).toInt() * metadata.value( "height" ).toInt();
+            QList< int >::iterator i = qLowerBound( m_sortSizes.begin(), m_sortSizes.end(), size );
+            m_sortSizes.insert( i, size );
+            const int index = m_sortSizes.count() - m_sortSizes.indexOf( size ) - 1;
+            m_view->insertItem( index, item );
+        }
+        else
+        {
+            m_view->addItem( item );
+            sortCoversBySize();
+        }
+    }
+    else
+    {
+        m_view->addItem( item );
+    }
+    updateGui();
+}
+
 void CoverFoundDialog::addToCustomSearch( const QString &text )
 {
     const QString &query = m_search->text();
@@ -226,14 +276,18 @@ void CoverFoundDialog::clearView()
 {
     m_view->clear();
     m_sideBar->clear();
+    m_sortSizes.clear();
     updateGui();
 }
 
 void CoverFoundDialog::itemSelected()
 {
     CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-    m_sideBar->setPixmap( m_pixmap, it->metadata() );
+    if( it )
+    {
+        m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+        m_sideBar->setPixmap( m_pixmap, it->metadata() );
+    }
 }
 
 
@@ -315,6 +369,7 @@ void CoverFoundDialog::selectDiscogs()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Discogs" );
+    m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
 }
@@ -323,6 +378,7 @@ void CoverFoundDialog::selectLastFm()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "LastFm" );
+    m_sortAction->setEnabled( false );
     m_queryPage = 0;
     processQuery();
 }
@@ -331,6 +387,7 @@ void CoverFoundDialog::selectYahoo()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Yahoo" );
+    m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
 }
@@ -339,8 +396,19 @@ void CoverFoundDialog::selectGoogle()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Google" );
+    m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
+}
+
+void CoverFoundDialog::sortingTriggered( bool checked )
+{
+    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    config.writeEntry( "Sort by Size", checked );
+    m_sortEnabled = checked;
+    m_isSorted = false;
+    if( m_sortEnabled )
+        sortCoversBySize();
 }
 
 void CoverFoundDialog::setupSearchToolTip()
@@ -363,6 +431,41 @@ void CoverFoundDialog::setupSearchToolTip()
                              );
 
     m_search->setToolTip( tt );
+}
+
+void CoverFoundDialog::sortCoversBySize()
+{
+    m_sortSizes.clear();
+    QList< QListWidgetItem* > viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
+    QMultiMap<int, CoverFoundItem*> sortItems;
+
+    // get a list of cover items sorted (automatically by qmap) by size
+    foreach( QListWidgetItem *viewItem, viewItems  )
+    {
+        CoverFoundItem *coverItem = dynamic_cast<CoverFoundItem*>( viewItem );
+        const CoverFetch::Metadata meta = coverItem->metadata();
+        const int itemSize = meta.value( "width" ).toInt() * meta.value( "height" ).toInt();
+        sortItems.insert( itemSize, coverItem );
+        m_sortSizes << itemSize;
+    }
+
+    // take items from the view and insert into a temp list in the sorted order
+    QList<CoverFoundItem*> coverItems = sortItems.values();
+    QList<CoverFoundItem*> tempItems;
+    for( int i = 0, count = sortItems.count(); i < count; ++i )
+    {
+        CoverFoundItem *item = coverItems.value( i );
+        const int itemRow = m_view->row( item );
+        QListWidgetItem *itemFromRow = m_view->takeItem( itemRow );
+        if( itemFromRow )
+            tempItems << dynamic_cast<CoverFoundItem*>( itemFromRow );
+    }
+
+    // add the items back to the view in descending order
+    foreach( CoverFoundItem* item, tempItems )
+        m_view->insertItem( 0, item );
+
+    m_isSorted = true;
 }
 
 void CoverFoundDialog::updateSearchButton( const QString &text )
@@ -388,19 +491,6 @@ void CoverFoundDialog::updateTitle()
                           ? i18n( "No Images Found" )
                           : i18np( "1 Image Found", "%1 Images Found", itemCount );
     setCaption( caption );
-}
-
-void CoverFoundDialog::add( const QPixmap cover,
-                            const CoverFetch::Metadata metadata,
-                            const CoverFetch::ImageSize imageSize )
-{
-    if( cover.isNull() )
-        return;
-
-    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
-    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
-    m_view->addItem( item );
-    updateGui();
 }
 
 CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent )
