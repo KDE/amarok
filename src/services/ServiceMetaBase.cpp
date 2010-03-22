@@ -350,7 +350,7 @@ ServiceTrack::setYear( const QString &newYear )
 }
 
 /* At time of writing, the services (Jamendo & Magnatune.com) I've seen can't handle BPM yet. */
-float
+qreal
 ServiceTrack::bpm() const
 {
     return -1.0;

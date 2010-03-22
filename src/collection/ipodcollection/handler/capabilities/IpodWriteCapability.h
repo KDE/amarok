@@ -62,7 +62,7 @@ class IpodWriteCapability : public WriteCapability
     virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
     virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
     virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
     virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
     virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
     virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );

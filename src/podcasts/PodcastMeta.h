@@ -120,7 +120,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
 
         virtual void setTitle( const QString &title ) { m_title = title; }
 
-        virtual float bpm() const { return -1.0; }
+        virtual qreal bpm() const { return -1.0; }
 
         virtual QString comment() const { return QString(); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); }

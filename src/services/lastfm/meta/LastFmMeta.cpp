@@ -216,7 +216,7 @@ Track::year() const
     return d->yearPtr;
 }
 
-float
+qreal
 Track::bpm() const
 {
     return -1.0;

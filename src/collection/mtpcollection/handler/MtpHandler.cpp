@@ -1046,7 +1046,7 @@ MtpHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
     return m_mtpTrackHash.value( track )->samplerate;
 }
 
-float
+qreal
 MtpHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track );
@@ -1189,7 +1189,7 @@ MtpHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
     m_mtpTrackHash.value( track )->samplerate = samplerate;
 }
 void
-MtpHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+MtpHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm )
 {
     // NOTE: defaulting, since not provided
     Q_UNUSED( track )

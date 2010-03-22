@@ -62,7 +62,7 @@ namespace LastFm
             virtual Meta::ComposerPtr composer() const;
             virtual Meta::YearPtr year() const;
 
-            virtual float bpm() const;
+            virtual qreal bpm() const;
 
             virtual QString comment() const;
 

@@ -152,7 +152,7 @@ IpodWriteCapability::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int sam
 }
 
 void
-IpodWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+IpodWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm )
 {
     m_handler->libSetBpm( track, bpm );
 }

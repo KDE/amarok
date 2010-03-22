@@ -127,7 +127,7 @@ IpodReadCapability::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetSamplerate( track );
 }
 
-float
+qreal
 IpodReadCapability::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetBpm( track );

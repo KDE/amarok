@@ -94,7 +94,7 @@ struct MetaData
     int sampleRate;
     int bitRate;
     int year;
-    float bpm;
+    qreal bpm;
     qreal trackGain;
     qreal trackPeak;
     qreal albumGain;

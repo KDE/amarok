@@ -94,8 +94,8 @@ class SqlTrack : public Meta::Track
         virtual void setUrl( const QString &url );
         virtual void setUrl( const int deviceid, const QString &rpath );
 
-        virtual float bpm() const { return m_bpm; }
-        virtual void setBpm( const float newBpm );
+        virtual qreal bpm() const { return m_bpm; }
+        virtual void setBpm( const qreal newBpm );
 
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );
@@ -195,7 +195,7 @@ class SqlTrack : public Meta::Track
         int m_rating;
         double m_score;
         QString m_comment;
-        float m_bpm;
+        qreal m_bpm;
         QString m_uid;
         qreal m_albumGain;
         qreal m_albumPeakGain;

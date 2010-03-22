@@ -46,7 +46,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
         virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;

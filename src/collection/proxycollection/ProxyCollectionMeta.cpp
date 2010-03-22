@@ -62,7 +62,7 @@ public:
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
     void setDiscNumber( int newDiscNumber ) { FORWARD( setDiscNumber( newDiscNumber ) ) }
-    void setBpm( float newBpm ) { FORWARD( setBpm( newBpm ) ) }
+    void setBpm( qreal newBpm ) { FORWARD( setBpm( newBpm ) ) }
     void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
     void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
     void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
@@ -249,12 +249,12 @@ ProxyCollection::Track::comment() const
     return comment;
 }
 
-float
+qreal
 ProxyCollection::Track::bpm() const
 {
     //Similar to comment(), try to return something sensible here...
     //do not show a common bpm value if the internal tracks disagree about the bpm
-    float bpm = -1.0;
+    qreal bpm = -1.0;
     if( !m_tracks.isEmpty() )
         bpm = m_tracks.first()->bpm();
 

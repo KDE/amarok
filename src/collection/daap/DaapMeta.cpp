@@ -155,7 +155,7 @@ TODO: This isn't good enough, but for now as daapreader/Reader.cpp indicates
  we can query for the BPM from daap server, but desire is to get BPM of files working
  first! 
 */
-float
+qreal
 DaapTrack::bpm() const
 {
     return -1.0;

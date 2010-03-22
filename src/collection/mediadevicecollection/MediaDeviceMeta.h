@@ -100,8 +100,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int sampleRate() const;
         virtual void setSamplerate( int newSamplerate );
 
-        virtual float bpm() const;
-        virtual void setBpm( const float newBpm );
+        virtual qreal bpm() const;
+        virtual void setBpm( const qreal newBpm );
 
         virtual int trackNumber() const;
         virtual void setTrackNumber ( int newTrackNumber );
@@ -170,7 +170,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         int m_playCount;
         uint m_lastPlayed;
         int m_rating;
-        float m_bpm;
+        qreal m_bpm;
         QString m_displayUrl;
         KUrl m_playableUrl;
 };

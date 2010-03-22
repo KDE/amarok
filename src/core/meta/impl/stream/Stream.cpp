@@ -172,7 +172,7 @@ Track::setTitle( const QString &newTitle )
     d->title = newTitle;
 }
 
-float
+qreal
 Track::bpm() const
 {
     return -1.0;

@@ -76,7 +76,7 @@ TimecodeEditCapabilityImpl::setYear( const QString &newYear )
 }
 
 void
-TimecodeEditCapabilityImpl::setBpm( const float newBpm )
+TimecodeEditCapabilityImpl::setBpm( const qreal newBpm )
 {
      m_track->setBpm( newBpm );
 }
@@ -220,7 +220,7 @@ TimecodeTrack::year() const
     return YearPtr::staticCast( m_year );
 }
 
-float 
+qreal
 TimecodeTrack::bpm() const
 {
     return m_bpm;
@@ -346,10 +346,10 @@ TimecodeTrack::setYear( const QString &newYear )
 }
 
 void
-TimecodeTrack::setBpm( const float newBpm )
+TimecodeTrack::setBpm( const qreal newBpm )
 {
     m_updatedFields |= BPM_UPDATED;
-    m_fields.insert( BPM_UPDATED, QString::number( (float) newBpm ) );
+    m_fields.insert( BPM_UPDATED, QString::number( (qreal) newBpm ) );
 }
 
 void

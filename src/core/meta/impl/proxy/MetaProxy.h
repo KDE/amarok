@@ -64,8 +64,8 @@ namespace MetaProxy
             virtual Meta::YearPtr year() const;
             virtual void setYear( const QString &year );
 
-            virtual float bpm() const;
-            virtual void setBpm( const float bpm );
+            virtual qreal bpm() const;
+            virtual void setBpm( const qreal bpm );
 
             virtual QString comment() const;
 

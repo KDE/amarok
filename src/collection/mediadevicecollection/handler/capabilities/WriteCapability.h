@@ -85,7 +85,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
         virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum ) = 0;
         virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate ) = 0;
         virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate ) = 0;
-        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm ) = 0;
+        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm ) = 0;
         virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize ) = 0;
         virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount ) = 0;
         virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed ) = 0;

@@ -172,7 +172,7 @@ MtpWriteCapability::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samp
 
 
 void
-MtpWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+MtpWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm )
 {
     m_handler->libSetBpm( track, bpm );
 }

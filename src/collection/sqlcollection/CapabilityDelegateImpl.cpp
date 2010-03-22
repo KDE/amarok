@@ -53,7 +53,7 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
         virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
+        virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }

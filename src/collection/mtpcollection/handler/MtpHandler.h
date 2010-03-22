@@ -136,7 +136,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
-        virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
+        virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
         virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
@@ -159,7 +159,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
         virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
         virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
         virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
         virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
         virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );

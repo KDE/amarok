@@ -400,7 +400,7 @@ SqlTrack::setYear( const QString &newYear )
 }
 
 void
-SqlTrack::setBpm( const float newBpm )
+SqlTrack::setBpm( const qreal newBpm )
 {
     if ( m_bpm && m_bpm == newBpm )
         return;

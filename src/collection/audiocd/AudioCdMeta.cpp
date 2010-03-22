@@ -146,7 +146,7 @@ AudioCdTrack::setYear( const QString &newYear )
     Q_UNUSED( newYear )
 }
 
-float
+qreal
 AudioCdTrack::bpm() const
 {
     return -1.0;

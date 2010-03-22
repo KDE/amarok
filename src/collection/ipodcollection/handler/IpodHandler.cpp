@@ -1528,7 +1528,7 @@ IpodHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
     return m_itdbtrackhash[ track ]->samplerate;
 }
 
-float
+qreal
 IpodHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->BPM;
@@ -1667,7 +1667,7 @@ IpodHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate 
     setDatabaseChanged();
 }
 void
-IpodHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+IpodHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm )
 {
     m_itdbtrackhash[ track ]->BPM = static_cast<int>( bpm );
     setDatabaseChanged();
