@@ -259,6 +259,7 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
 void
 BrowserBreadcrumbWidget::mousePressEvent( QMouseEvent * event )
 {
+    Q_UNUSED( event )
     DEBUG_BLOCK
 
     //set the string in the edit widgets. Just use the current "amarok path", except for the case of the

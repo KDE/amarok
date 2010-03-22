@@ -167,6 +167,8 @@ UserPlaylistCategory::toggleView( bool merged )
 void
 UserPlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int category )
 {
+    Q_UNUSED( category )
+
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
 }
@@ -174,6 +176,8 @@ UserPlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int categor
 void
 UserPlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category )
 {
+    Q_UNUSED( category )
+
     if( m_providerActions.keys().contains( provider ) )
     {
         QAction *providerToggle = m_providerActions.take( provider );
@@ -196,8 +200,10 @@ UserPlaylistCategory::createProviderButton( const PlaylistProvider *provider )
 void
 UserPlaylistCategory::slotToggleProviderButton( bool enabled )
 {
+    Q_UNUSED( enabled )
     DEBUG_BLOCK
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+
+    QAction * const action = qobject_cast<QAction *>( QObject::sender() );
     const PlaylistProvider *provider = action->data().value<const PlaylistProvider *>();
     if( !m_providerActions.keys().contains( provider ) )
         return;
