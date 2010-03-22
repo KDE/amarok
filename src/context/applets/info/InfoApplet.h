@@ -48,6 +48,8 @@ public:
     InfoApplet( QObject* parent, const QVariantList& args );
     virtual ~InfoApplet();
 
+    void init();
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
