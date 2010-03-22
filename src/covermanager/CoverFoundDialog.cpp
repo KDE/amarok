@@ -211,7 +211,6 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
         q << text;
         const QString result = q.join( QChar( ' ' ) );
         m_search->setText( result );
-        updateSearchButton( result );
     }
 }
 
