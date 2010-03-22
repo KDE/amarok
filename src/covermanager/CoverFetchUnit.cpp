@@ -564,7 +564,9 @@ CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
             const QString height = attr.namedItem( "height" ).nodeValue();
             const QString width  = attr.namedItem( "width"  ).nodeValue();
             const QString type   = attr.namedItem( "type"   ).nodeValue();
+            const QString relUrl = "http://discogs.com/release/" + metadata.value( "releaseid" );
 
+            metadata[ "releaseurl"   ] = relUrl;
             metadata[ "normalarturl" ] = uri.url();
             metadata[ "thumbarturl"  ] = thburl;
             metadata[ "width"        ] = width;
@@ -695,13 +697,18 @@ CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
             continue;
 
         QStringList tags;
-        tags << "name" << "artist" << "url";
+        tags << "name" << "artist";
         foreach( const QString &tag, tags )
         {
             const QDomElement e = albumNode.namedItem( tag ).toElement();
             if( !e.isNull() )
                 metadata[ tag ] = e.text();
         }
+
+        const QDomElement urlElem = albumNode.namedItem( "url" ).toElement();
+        if( !urlElem.isNull() )
+            metadata[ "releaseurl" ] = urlElem.text();
+
         m_urls.insert( url, metadata );
     }
 }
