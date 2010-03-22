@@ -316,6 +316,7 @@ void CoverFoundDialog::selectDiscogs()
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Discogs" );
     m_queryPage = 0;
+    processQuery();
 }
 
 void CoverFoundDialog::selectLastFm()
@@ -323,6 +324,7 @@ void CoverFoundDialog::selectLastFm()
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "LastFm" );
     m_queryPage = 0;
+    processQuery();
 }
 
 void CoverFoundDialog::selectYahoo()
@@ -330,6 +332,7 @@ void CoverFoundDialog::selectYahoo()
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Yahoo" );
     m_queryPage = 0;
+    processQuery();
 }
 
 void CoverFoundDialog::selectGoogle()
@@ -337,6 +340,7 @@ void CoverFoundDialog::selectGoogle()
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     config.writeEntry( "Interactive Image Source", "Google" );
     m_queryPage = 0;
+    processQuery();
 }
 
 void CoverFoundDialog::setupSearchToolTip()
