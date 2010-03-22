@@ -92,7 +92,11 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
             {
                 uint lastPlayed = m_model->trackAt( row )->lastPlayed();
                 if ( lastPlayed )
+                {
                     weight = QDateTime::fromTime_t( lastPlayed ).secsTo( QDateTime::currentDateTime() );
+                    if ( weight < 0 )    // If 'lastPlayed()' is nonsense, or the system clock has been set back:
+                        weight = 1 * 60 * 60;    // "Nonsense" weight: 1 hour.
+                }
                 else
                     weight = 365 * 24 * 60 * 60;    // "Never" weight: 1 year.
                 break;
