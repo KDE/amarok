@@ -544,7 +544,7 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 }
 
 void
-Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
+Playlist::Controller::insertionHelper( int rowInTopModel, Meta::TrackList& tl )
 {
     //expand any tracks that are actually playlists into multisource tracks
     //and any tracks with an associated cue file
@@ -600,18 +600,18 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     debug()<<"About to check for rowCount() and SortProxy::isSorted()";
     debug()<< ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ? "SORTED" : "NOT SORTED" );
-    debug()<<"About to drop on row " << row;
+    debug()<<"About to drop on row " << rowInTopModel;
     // The qBound is ok for a filtered but not sorted playlist, but if the playlist is also
     // sorted there's no point in placing the added tracks at any specific point in relation
     // to another track, so we just append them.
-    row = ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ) ?
-          m_sourceModel->rowCount() :
-          qBound( 0, m_topmostModel->rowToBottomModel( row ), m_sourceModel->rowCount() );
+    int rowInBottomModel = ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ) ?
+            m_sourceModel->rowCount() :
+            qBound( 0, m_topmostModel->rowToBottomModel( rowInTopModel ), m_sourceModel->rowCount() );
 
-    debug()<<"Fixed row to " << row;
+    debug()<<"Fixed row to " << rowInBottomModel;
 
     foreach( Meta::TrackPtr t, modifiedList )
-        cmds.append( InsertCmd( t, row++ ) );
+        cmds.append( InsertCmd( t, rowInBottomModel++ ) );
 
     if( cmds.size() > 0 )
         m_undoStack->push( new InsertTracksCmd( 0, cmds ) );

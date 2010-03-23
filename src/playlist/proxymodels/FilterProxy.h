@@ -68,22 +68,6 @@ protected:
      */
     bool matchesCurrentSearchTerm( int source_row ) const;
 
-    /**
-     * Converts a row index that's valid in the proxy below this one to a row index valid
-     * in this proxy.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in this proxy.
-     */
-    virtual int rowFromSource( int row ) const;
-
-    /**
-     * Converts a row index that's valid in this proxy to a row index valid in the proxy
-     * below this one.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in the proxy below this one.
-     */
-    virtual int rowToSource( int row ) const;
-
 //signals:
     // Emits signals inherited from QSortFilterProxy
 

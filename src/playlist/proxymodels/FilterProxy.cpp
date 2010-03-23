@@ -105,28 +105,6 @@ FilterProxy::matchesCurrentSearchTerm( int sourceModelRow ) const
     return rowMatch( sourceModelRow, m_currentSearchTerm, m_currentSearchFields );
 }
 
-int
-FilterProxy::rowToSource( int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    QModelIndex sourceIndex = mapToSource( index );
-
-    if ( !sourceIndex.isValid() )
-        return ( row == rowCount() ) ? m_belowModel->rowCount() : -1;
-    return sourceIndex.row();
-}
-
-int
-FilterProxy::rowFromSource( int row ) const
-{
-    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
-
-    if ( !index.isValid() )
-        return -1;
-    return index.row();
-}
-
 }
 
 #include "FilterProxy.moc"

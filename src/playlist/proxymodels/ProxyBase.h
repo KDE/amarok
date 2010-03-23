@@ -246,11 +246,15 @@ public:
     virtual int rowForId( const quint64 id ) const;
 
     /**
-     * Returns the row number of a track in terms of the bottom model.
-     * @param row the row in a proxy model
+     * Converts a row number in this (proxy) model to a row number in the lowest model.
+     *
+     * As a special case, 'rowInProxy == rowCount()' returns the bottom model's
+     * 'rowCount()'. Qt uses that value for 'dropMimeData()' at the end of the list.
+     *
+     * @param rowInProxy the row in this proxy model.
      * @return the row in the bottom model.
      */
-    virtual int rowToBottomModel( const int row );
+    virtual int rowToBottomModel( const int rowInProxy );
 
     /**
      * Set the currently active track based on the playlist id given.
@@ -370,28 +374,22 @@ protected:
     bool rowMatch( int sourceModelRow, const QString &searchTerm, int searchFields ) const;
 
     /**
-     * Converts a row index that's valid in the proxy below this one to a row index valid
-     * in this proxy.
-     * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy. Reimplement this method with mapFromSource and sanity checks if your
-     * proxy adds, removes or sorts rows.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in this proxy.
+     * Converts a row number in the underlying model to a row number in this proxy.
+     * @param rowInSource the row number that's valid in 'sourceModel()'.
+     * @return the row number that's valid in this proxy.
      */
-    virtual int rowFromSource( int row ) const
-    { return row; }
+    virtual int rowFromSource( int sourceModelRow ) const;
 
     /**
-     * Converts a row index that's valid in this proxy to a row index valid in the proxy
-     * below this one.
-     * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy. Reimplement this method with mapToSource and sanity checks if your
-     * proxy adds, removes or sorts rows.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in the proxy below this one.
+     * Converts a row number in this proxy to a row number in the underlying model.
+     *
+     * As a special case, 'rowInProxy == rowCount()' returns the bottom model's
+     * 'rowCount()'. See comment at 'rowToBottomModel()'.
+     *
+     * @param rowInProxy the row number that's valid in this proxy.
+     * @return the row number that's valid in 'sourceModel()'.
      */
-    virtual int rowToSource( int row ) const
-    { return row; }
+    virtual int rowToSource( int proxyModelRow ) const;
 
 
     AbstractModel *m_belowModel;

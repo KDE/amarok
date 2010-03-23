@@ -66,30 +66,4 @@ SortProxy::updateSortMap( SortScheme scheme )
     invalidate();    // Tell QSortFilterProxyModel: re-sort
 }
 
-
-// Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
-// pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- Téo
-
-int
-SortProxy::rowFromSource( int row ) const
-{
-    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
-
-    if ( !index.isValid() )
-        return -1;
-    return index.row();
-}
-
-int
-SortProxy::rowToSource( int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    QModelIndex sourceIndex = SortProxy::mapToSource( index );
-    if ( !sourceIndex.isValid() )
-        return ( row == rowCount() ) ? m_belowModel->rowCount() : -1;
-    return sourceIndex.row();
-}
-
 }   //namespace Playlist

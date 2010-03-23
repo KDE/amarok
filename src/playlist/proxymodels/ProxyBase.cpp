@@ -204,9 +204,9 @@ ProxyBase::mimeData( const QModelIndexList &indexes ) const
     {
         sourceIndexes << mapToSource( index );
     }
-    
+
     return m_belowModel->mimeData( sourceIndexes );
-    
+
 }
 
 QStringList
@@ -383,6 +383,32 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerm, int searchFi
     return false;
 }
 
+int
+ProxyBase::rowFromSource( int sourceModelRow ) const
+{
+    QModelIndex sourceModelIndex = sourceModel()->index( sourceModelRow, 0 );
+    QModelIndex proxyModelIndex = mapFromSource( sourceModelIndex );    // Call 'map' even for a 1:1 passthrough proxy: QSFPM might need it.
+
+    if ( proxyModelIndex.isValid() )
+        return proxyModelIndex.row();
+    else
+        return -1;
+}
+
+int
+ProxyBase::rowToSource( int proxyModelRow ) const
+{
+    QModelIndex proxyModelIndex = this->index( proxyModelRow, 0 );
+    QModelIndex sourceModelIndex = mapToSource( proxyModelIndex );    // Call 'map' even for a 1:1 passthrough proxy: QSFPM might need it.
+
+    if( sourceModelIndex.isValid() )
+        return sourceModelIndex.row();
+    else
+        if( proxyModelRow == rowCount() )
+            return sourceModel()->rowCount();
+        else
+            return -1;
+}
 
 }   //namespace Playlist
 

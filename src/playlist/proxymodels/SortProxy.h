@@ -68,23 +68,6 @@ public slots:
      */
     void updateSortMap( SortScheme scheme );
 
-protected:
-    /**
-     * Converts a row index that's valid in the proxy below this one to a row index valid
-     * in this proxy, with sanity checks.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in this proxy.
-     */
-    virtual int rowFromSource( int row ) const;
-
-    /**
-     * Converts a row index that's valid in this proxy to a row index valid in the proxy
-     * below this one, with sanity checks.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in the proxy below this one.
-     */
-    virtual int rowToSource( int row ) const;
-
 private:
     SortScheme m_scheme;               //! The current sorting scheme.
     multilevelLessThan m_mlt;          //! Decision object for current sorting scheme.
