@@ -22,7 +22,7 @@
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 
 #include <QString>
 #include <QHash>

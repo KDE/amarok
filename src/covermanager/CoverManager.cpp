@@ -26,7 +26,7 @@
 #include "CollectionManager.h"
 #include "CompoundProgressBar.h"
 #include "Debug.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "capabilities/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "QueryMaker.h"
 #include <config-amarok.h>

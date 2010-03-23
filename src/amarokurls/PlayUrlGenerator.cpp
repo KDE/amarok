@@ -20,7 +20,7 @@
 #include "AmarokUrlHandler.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "MetaUtility.h"
+#include "meta/support/MetaUtility.h"
 
 PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
 

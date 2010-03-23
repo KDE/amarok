@@ -18,7 +18,7 @@
 #define FINDINSOURCECAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 namespace Meta {
 

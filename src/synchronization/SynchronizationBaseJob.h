@@ -18,7 +18,7 @@
 #define SYNCHRONIZATIONBASEJOB_H
 
 #include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 
 #include <QHash>
 #include <QObject>

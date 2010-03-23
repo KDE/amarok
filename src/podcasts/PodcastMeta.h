@@ -20,7 +20,7 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "meta/Meta.h"
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 
 #include <KLocale>
 #include <KUrl>

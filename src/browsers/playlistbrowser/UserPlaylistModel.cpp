@@ -17,7 +17,7 @@
 
 #include "UserPlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "meta/PlaylistProvider.h"
+#include "playlists/PlaylistProvider.h"
 
 #include "AmarokMimeData.h"
 #include "CollectionManager.h"

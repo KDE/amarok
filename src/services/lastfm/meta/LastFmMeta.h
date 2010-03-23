@@ -20,7 +20,7 @@
 #define AMAROK_LASTFMMETA_H
 
 #include "meta/Meta.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
 

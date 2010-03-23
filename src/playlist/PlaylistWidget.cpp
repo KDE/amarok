@@ -34,7 +34,7 @@
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
-#include "UserPlaylistProvider.h"
+#include "playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <KActionMenu>

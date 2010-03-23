@@ -18,7 +18,7 @@
 #define STREAMINFOCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 #include <QString>
 namespace Meta

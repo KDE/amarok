@@ -26,8 +26,8 @@
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
 #include "amarokconfig.h"
-#include "meta/MetaConstants.h"
-#include "meta/MetaUtility.h"
+#include "meta/support/MetaConstants.h"
+#include "support/MetaUtility.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "statusbar/StatusBar.h"
 

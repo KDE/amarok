@@ -25,8 +25,8 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/capabilities/FindInSourceCapability.h"
+#include "capabilities/CurrentTrackActionsCapability.h"
+#include "capabilities/FindInSourceCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "TagDialog.h"
 

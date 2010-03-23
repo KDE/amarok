@@ -19,9 +19,9 @@
 #include "Debug.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/Capability.h"
-#include "meta/capabilities/BoundedPlaybackCapability.h"
+#include "capabilities/CustomActionsCapability.h"
+#include "capabilities/Capability.h"
+#include "capabilities/BoundedPlaybackCapability.h"
 
 using namespace Meta;
 

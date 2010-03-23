@@ -1,3 +1,8 @@
+include_directories(
+                    ../../meta
+                    ../../meta/capabilities
+                   )
+
 add_subdirectory( albums )
 add_subdirectory( currenttrack )
 add_subdirectory( lyrics )

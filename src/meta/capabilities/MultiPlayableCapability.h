@@ -17,7 +17,7 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITY_H
 #define AMAROK_MULTIPLAYABLECAPABILITY_H
 
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 #include <KUrl>
 

@@ -31,9 +31,9 @@
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
 
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "capabilities/CurrentTrackActionsCapability.h"
+#include "support/MetaUtility.h"
+#include "capabilities/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"

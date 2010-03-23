@@ -22,7 +22,7 @@
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
-#include "meta/capabilities/CustomActionsCapability.h"
+#include "capabilities/CustomActionsCapability.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 

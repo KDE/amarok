@@ -26,9 +26,9 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "SvgHandler.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/UpdateCapability.h"
+#include "capabilities/CustomActionsCapability.h"
+#include "capabilities/EditCapability.h"
+#include "capabilities/UpdateCapability.h"
 
 #include <KIcon>
 #include <KUrl>

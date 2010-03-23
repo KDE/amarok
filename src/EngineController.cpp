@@ -33,11 +33,11 @@
 #include "MainWindow.h"
 #include "MediaDeviceMonitor.h"
 #include "meta/Meta.h"
-#include "meta/MetaConstants.h"
-#include "meta/capabilities/MultiPlayableCapability.h"
-#include "meta/capabilities/MultiSourceCapability.h"
+#include "meta/support/MetaConstants.h"
+#include "capabilities/MultiPlayableCapability.h"
+#include "capabilities/MultiSourceCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "PlaylistFileSupport.h"
+#include "playlists/impl/file/PlaylistFileSupport.h"
 #include "PluginManager.h"
 
 #include <KFileItem>

@@ -17,7 +17,7 @@
 #ifndef AMAROK_LASTFMCAPABILITYIMPL_P_H
 #define AMAROK_LASTFMCAPABILITYIMPL_P_H
 
-#include "meta/capabilities/LastFmCapability.h"
+#include "capabilities/LastFmCapability.h"
 
 class LastFmCapabilityImpl : public Meta::LastFmCapability
 {

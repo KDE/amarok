@@ -25,7 +25,7 @@
 #include "Debug.h"
 #include "collection/SqlStorage.h"
 #include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 #include "MountPointManager.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"

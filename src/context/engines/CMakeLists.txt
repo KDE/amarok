@@ -1,3 +1,8 @@
+include_directories(
+                    ../../meta
+                    ../../meta/capabilities
+                   )
+
 add_subdirectory( wikipedia )
 add_subdirectory( lyrics )
 add_subdirectory( current )

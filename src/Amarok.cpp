@@ -19,9 +19,9 @@
 
 #include "App.h"
 #include "Meta.h"
-#include "MetaUtility.h"
-#include "meta/capabilities/SourceInfoCapability.h"
-#include "meta/PlaylistFileSupport.h"
+#include "meta/support/MetaUtility.h"
+#include "capabilities/SourceInfoCapability.h"
+#include "playlists/impl/file/PlaylistFileSupport.h"
 
 
 #include <QDateTime>

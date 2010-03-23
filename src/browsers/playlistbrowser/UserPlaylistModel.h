@@ -19,7 +19,7 @@
 
 #include "MetaPlaylistModel.h"
 #include "Meta.h"
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 
 #include <QAction>
 #include <QAbstractItemModel>

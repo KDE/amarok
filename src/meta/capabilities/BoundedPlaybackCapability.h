@@ -17,7 +17,7 @@
 #ifndef METABOUNDEDPLAYBACKCAPABILITY_H
 #define METABOUNDEDPLAYBACKCAPABILITY_H
 
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 namespace Meta {
 

@@ -23,14 +23,14 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/MetaUtility.h"
+#include "capabilities/CurrentTrackActionsCapability.h"
+#include "meta/support/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
-#include "UpdateCapability.h"
+#include "capabilities/UpdateCapability.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/tabbar.h>

@@ -21,9 +21,9 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "EditCapability.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
-#include "meta/capabilities/TimecodeWriteCapability.h"
+#include "capabilities/CurrentTrackActionsCapability.h"
+#include "capabilities/TimecodeLoadCapability.h"
+#include "capabilities/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 

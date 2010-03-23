@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 

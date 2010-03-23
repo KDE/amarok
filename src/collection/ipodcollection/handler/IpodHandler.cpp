@@ -34,7 +34,7 @@ extern "C" {
 
 #include "SvgHandler.h"
 
-#include "meta/file/File.h" // for KIO file handling
+#include "meta/impl/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
 #include <kdiskfreespaceinfo.h>

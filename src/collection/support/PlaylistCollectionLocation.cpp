@@ -16,7 +16,7 @@
 
 #include "PlaylistCollectionLocation.h"
 
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 #include "PlaylistCollection.h"
 
 PlaylistCollectionLocation::PlaylistCollectionLocation( const PlaylistCollection *collection )

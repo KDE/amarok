@@ -22,7 +22,7 @@
 #include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
 
-#include "meta/capabilities/CollectionCapability.h"
+#include "capabilities/CollectionCapability.h"
 #include "MediaDeviceCollectionCapability.h"
 #include "MediaDeviceDecoratorCapability.h"
 

@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "AlbumItem.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 
 #include <KLocale>
 

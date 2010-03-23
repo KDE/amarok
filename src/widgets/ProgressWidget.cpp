@@ -21,8 +21,8 @@
 #include "SliderWidget.h"
 #include "TimeLabel.h"
 #include "amarokconfig.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "support/MetaUtility.h"
+#include "capabilities/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 

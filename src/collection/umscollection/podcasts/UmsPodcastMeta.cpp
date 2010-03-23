@@ -16,7 +16,7 @@
 
 #include "UmsPodcastMeta.h"
 
-#include "meta/PlaylistFileSupport.h"
+#include "playlists/impl/file/PlaylistFileSupport.h"
 #include "UmsPodcastProvider.h"
 
 using namespace Meta;

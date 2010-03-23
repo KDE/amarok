@@ -23,8 +23,8 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "meta/Meta.h"
-#include "meta/StatisticsProvider.h"
-#include "meta/support/TagStatisticsProvider.h"
+#include "statistics/StatisticsProvider.h"
+#include "statistics/providers/tag/TagStatisticsProvider.h"
 
 #include <lastfm/Track>
 #include <lastfm/ws.h>

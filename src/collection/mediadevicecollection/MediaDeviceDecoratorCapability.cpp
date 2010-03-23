@@ -17,7 +17,7 @@
 #include "MediaDeviceDecoratorCapability.h"
 #include "MediaDeviceCollection.h"
 
-#include "meta/capabilities/CollectionCapability.h"
+#include "capabilities/CollectionCapability.h"
 
 #include <QAction>
 

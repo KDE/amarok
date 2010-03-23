@@ -2,8 +2,10 @@ project(context-albums)
 
 set(albums_SRCS Albums.cpp AlbumsView.cpp AlbumItem.cpp TrackItem.cpp AlbumsModel.cpp)
 
-include_directories( ../..
-                    ../../.. )
+include_directories(
+                    ../..
+                    ../../..
+                    )
 
 kde4_add_plugin(amarok_context_applet_albums ${albums_SRCS})
 if(APPLE)

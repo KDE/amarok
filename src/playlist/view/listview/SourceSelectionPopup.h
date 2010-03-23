@@ -19,7 +19,7 @@
 
 #include <QDialog>
 
-#include "meta/capabilities/MultiSourceCapability.h"
+#include "capabilities/MultiSourceCapability.h"
 
 #include <QStringList>
 

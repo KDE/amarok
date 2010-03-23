@@ -23,7 +23,7 @@
 
 #include "Debug.h"
 #include "EngineObserver.h"
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 #include "proxymodels/AbstractModel.h"
 
 

@@ -3,8 +3,10 @@ project(context-info)
 set(info_SRCS
 InfoApplet.cpp )
 
-include_directories( ../..
-                    ../../.. )
+include_directories(
+                    ../..
+                    ../../..
+                    )
 
 kde4_add_plugin(amarok_context_applet_info ${info_SRCS})
 if(APPLE)

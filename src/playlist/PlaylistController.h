@@ -23,7 +23,7 @@
 #define AMAROK_PLAYLISTCONTROLLER_H
 
 #include "meta/Meta.h"
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 #include "UndoCommands.h"
 
 #include <QObject>

@@ -6,7 +6,7 @@ if (MTP_FOUND)
        ${Amarok_SOURCE_DIR}/src
        ${Amarok_SOURCE_DIR}/src/plugin
        ${Amarok_SOURCE_DIR}/src/meta
-       ${Amarok_SOURCE_DIR}/src/meta/file
+       ${Amarok_SOURCE_DIR}/src/meta/capabilities
        ${Amarok_SOURCE_DIR}/src/collection
        ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection
        ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection/support

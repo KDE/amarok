@@ -19,7 +19,7 @@
 #ifndef WRITELABELCAPABILITY_H
 #define WRITELABELCAPABILITY_H
 
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 #include "meta/Meta.h"
 #include "amarok_export.h"
 

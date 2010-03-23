@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 namespace Meta
 {

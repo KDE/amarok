@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "meta/default/DefaultMetaTypes.h"
+#include "meta/impl/default/DefaultMetaTypes.h"
 
 using namespace Meta;
 

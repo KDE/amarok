@@ -18,7 +18,7 @@
 #define AMAROK_COLLECTIONCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 #include "Meta.h"
 
 

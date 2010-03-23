@@ -26,7 +26,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "meta/stream/Stream.h"
+#include "meta/impl/stream/Stream.h"
 #include "collection/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"

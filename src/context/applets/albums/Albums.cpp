@@ -29,7 +29,7 @@
 #include "context/Svg.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
 #include "TrackItem.h"
 

@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 
 #include <QDateTime>
 #include <QList>

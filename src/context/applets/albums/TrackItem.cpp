@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "TrackItem.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 
 #include <QFont>
 

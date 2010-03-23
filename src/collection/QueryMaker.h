@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
-#include "meta/MetaConstants.h"
+#include "meta/support/MetaConstants.h"
 
 #include <QObject>
 #include <QStringList>

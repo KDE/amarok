@@ -16,7 +16,7 @@
 
 #include "ScriptableServiceQueryMaker.h"
 
-#include "MetaConstants.h"
+#include "meta/support/MetaConstants.h"
 #include "ScriptableServiceMeta.h"
 #include "ScriptManager.h"
 

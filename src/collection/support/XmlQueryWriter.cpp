@@ -17,7 +17,7 @@
  ****************************************************************************************/
 
 #include "XmlQueryWriter.h"
-#include "MetaConstants.h"
+#include "meta/support/MetaConstants.h"
 
 #include "Debug.h"
 

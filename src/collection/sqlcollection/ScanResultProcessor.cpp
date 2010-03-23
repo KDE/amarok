@@ -19,8 +19,8 @@
 
 #include "ArtistHelper.h"
 #include "Debug.h"
-#include "meta/MetaConstants.h"
-#include "meta/MetaUtility.h"
+#include "meta/support/MetaConstants.h"
+#include "support/MetaUtility.h"
 
 #include <QDir>
 #include <QFileInfo>

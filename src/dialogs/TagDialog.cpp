@@ -35,9 +35,9 @@
 #include "FilenameLayoutDialog.h"
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
-#include "MetaUtility.h"
-#include "meta/capabilities/ReadLabelCapability.h"
-#include "meta/capabilities/WriteLabelCapability.h"
+#include "meta/support/MetaUtility.h"
+#include "capabilities/ReadLabelCapability.h"
+#include "capabilities/WriteLabelCapability.h"
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"

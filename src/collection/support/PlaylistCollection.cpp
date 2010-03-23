@@ -18,7 +18,7 @@
 
 #include "MemoryQueryMaker.h"
 #include "PlaylistCollectionLocation.h"
-#include "meta/PlaylistProvider.h"
+#include "playlists/PlaylistProvider.h"
 
 PlaylistCollection::PlaylistCollection( const Meta::PlaylistPtr &playlist )
         : Amarok::Collection()

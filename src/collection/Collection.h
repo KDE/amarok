@@ -19,9 +19,9 @@
 
 #include "Amarok.h"
 #include "amarok_export.h"
-#include "meta/Capability.h"
+#include "capabilities/Capability.h"
 #include "QueryMaker.h"
-#include "meta/UserPlaylistProvider.h"
+#include "playlists/providers/user/UserPlaylistProvider.h"
 
 #include <QObject>
 #include <QSharedData>

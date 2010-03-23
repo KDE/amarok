@@ -19,7 +19,7 @@
 
 #include "Meta.h"
 
-#include "meta/capabilities/DecoratorCapability.h"
+#include "capabilities/DecoratorCapability.h"
 
 class MediaDeviceCollection;
 class QAction;

@@ -27,8 +27,8 @@
 
 #include "Debug.h"
 #include "Collection.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "support/MetaUtility.h"
+#include "capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>

@@ -18,8 +18,8 @@
 #ifndef LASTFMREADLABELCAPABILITY_H
 #define LASTFMREADLABELCAPABILITY_H
 
-#include "meta/Capability.h"
-#include "meta/capabilities/ReadLabelCapability.h"
+#include "capabilities/Capability.h"
+#include "capabilities/ReadLabelCapability.h"
 class QNetworkReply;
 
 namespace Meta

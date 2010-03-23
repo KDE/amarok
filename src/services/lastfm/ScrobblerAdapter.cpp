@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "MetaConstants.h"
+#include "meta/support/MetaConstants.h"
 #include "meta/LastFmMeta.h"
 #include "StatusBar.h"
 

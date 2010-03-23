@@ -20,7 +20,7 @@
 #include "Debug.h"
 #include "LastFmMeta.h"
 #include "Meta.h"
-#include "meta/capabilities/MultiPlayableCapability.h"
+#include "capabilities/MultiPlayableCapability.h"
 #include "StatusBar.h"
 
 #include <lastfm/Track>

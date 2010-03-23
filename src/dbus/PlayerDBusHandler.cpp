@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"

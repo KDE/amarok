@@ -29,11 +29,11 @@
 #include "Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "MetaUtility.h"
+#include "meta/support/MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
-#include "PlaylistFileSupport.h"
+#include "playlists/impl/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor

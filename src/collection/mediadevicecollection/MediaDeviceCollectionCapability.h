@@ -19,7 +19,7 @@
 
 #include "Meta.h"
 
-#include "meta/capabilities/CollectionCapability.h"
+#include "capabilities/CollectionCapability.h"
 
 class MediaDeviceCollection;
 

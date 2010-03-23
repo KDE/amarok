@@ -18,7 +18,7 @@
 
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "meta/stream/Stream.h"
+#include "meta/impl/stream/Stream.h"
 #include "SqlStorage.h"
 #include "timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"

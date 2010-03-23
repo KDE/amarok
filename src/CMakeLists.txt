@@ -51,6 +51,7 @@ include_directories(
     likeback
     meta
     meta/capabilities
+    meta/playlists
     playlistmanager
     plugin
     podcasts
@@ -278,20 +279,20 @@ set(libstatusbar_SRCS
 # META
 #####################################################################
 set(meta_SRCS
-    meta/Capability.cpp
-    meta/M3UPlaylist.cpp
+    meta/capabilities/Capability.cpp
+    meta/playlists/impl/file/m3u/M3UPlaylist.cpp
     meta/Meta.cpp
-    meta/MetaUtility.cpp
-    meta/TagLibUtils.cpp
+    meta/support/MetaUtility.cpp
+    meta/impl/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
-    meta/Playlist.cpp
-    meta/PLSPlaylist.cpp
-    meta/StatisticsProvider.cpp
-    meta/PlaylistProvider.cpp
-    meta/UserPlaylistProvider.cpp
-    meta/PlaylistFileSupport.cpp
-    meta/PrivateMetaRegistry.cpp
-    meta/XSPFPlaylist.cpp
+    meta/playlists/Playlist.cpp
+    meta/playlists/impl/file/pls/PLSPlaylist.cpp
+    meta/statistics/StatisticsProvider.cpp
+    meta/playlists/PlaylistProvider.cpp
+    meta/playlists/providers/user/UserPlaylistProvider.cpp
+    meta/playlists/impl/file/PlaylistFileSupport.cpp
+    meta/support/PrivateMetaRegistry.cpp
+    meta/playlists/impl/file/xspf/XSPFPlaylist.cpp
     meta/capabilities/BookmarkThisCapability.cpp
     meta/capabilities/BoundedPlaybackCapability.cpp
     meta/capabilities/CollectionCapability.cpp
@@ -313,14 +314,14 @@ set(meta_SRCS
     meta/capabilities/TimecodeWriteCapability.cpp
     meta/capabilities/UpdateCapability.cpp
     meta/capabilities/WriteLabelCapability.cpp
-    meta/file/File.cpp
-    meta/multi/MultiTrack.cpp
-    meta/multi/MultiSourceCapabilityImpl.cpp
-    meta/cue/CueFileSupport.cpp
-    meta/proxy/MetaProxy.cpp
-    meta/stream/Stream.cpp
-    meta/support/PermanentUrlStatisticsProvider.cpp
-    meta/support/TagStatisticsProvider.cpp
+    meta/impl/file/File.cpp
+    meta/impl/multi/MultiTrack.cpp
+    meta/impl/multi/MultiSourceCapabilityImpl.cpp
+    meta/impl/cue/CueFileSupport.cpp
+    meta/impl/proxy/MetaProxy.cpp
+    meta/impl/stream/Stream.cpp
+    meta/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
+    meta/statistics/providers/tag/TagStatisticsProvider.cpp
 )
 
 #####################################################################

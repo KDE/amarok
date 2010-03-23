@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "collection/support/FileCollectionLocation.h"
 #include "StatisticsCapability.h"
-#include "meta/file/File.h"
+#include "meta/impl/file/File.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

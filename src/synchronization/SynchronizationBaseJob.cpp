@@ -19,7 +19,7 @@
 #include "collection/Collection.h"
 #include "collection/QueryMaker.h"
 #include "Debug.h"
-#include "meta/MetaConstants.h"
+#include "meta/support/MetaConstants.h"
 
 #include <QMetaEnum>
 #include <QMetaObject>

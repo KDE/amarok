@@ -18,7 +18,7 @@
 
 #include "AmarokMimeData.h"
 #include "Debug.h"
-#include "meta/Playlist.h"
+#include "playlists/Playlist.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"

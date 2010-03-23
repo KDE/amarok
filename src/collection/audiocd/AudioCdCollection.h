@@ -20,7 +20,7 @@
 #include "Collection.h"
 #include "MediaDeviceCollection.h"
 #include "MemoryCollection.h"
-#include "meta/proxy/MetaProxy.h"
+#include "meta/impl/proxy/MetaProxy.h"
 
 #include <kio/jobclasses.h>
 #include <KUrl>

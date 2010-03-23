@@ -28,7 +28,7 @@
 #include "StarManager.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
-#include "meta/MetaUtility.h"
+#include "support/MetaUtility.h"
 
 #include <KApplication>
 #include <KIcon>

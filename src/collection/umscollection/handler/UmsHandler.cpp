@@ -25,7 +25,7 @@
 
 #include "SvgHandler.h"
 
-#include "File.h" // for KIO file handling
+#include "meta/impl/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
 #include <KDirLister>

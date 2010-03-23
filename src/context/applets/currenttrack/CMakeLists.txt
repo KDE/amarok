@@ -2,9 +2,10 @@ project(context-currenttrack)
 
 set(currenttrack_SRCS CurrentTrack.cpp )
 
-include_directories( ../..
+include_directories(
+                    ../..
                     ../../..
-		    ../../../meta/capabilities)
+                    )
 
 kde4_add_ui_files( currenttrack_SRCS currentTrackSettings.ui )
 kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})

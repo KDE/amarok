@@ -1,6 +1,7 @@
 
 include_directories(
     .
+    ../../meta
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
