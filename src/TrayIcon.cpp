@@ -48,19 +48,6 @@
 #include <QTime>
 #include <QToolTip>
 
-namespace Amarok
-{
-    static QPixmap
-    loadOverlay( const QString &iconName )
-    {
-        KIcon icon( iconName );
-        if ( !icon.isNull() )
-            return icon.pixmap( 10, 10 ); // overlay size, adjust here
-
-        return 0;
-    }
-}
-
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
         , EngineObserver( The::engineController() )
@@ -88,9 +75,6 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
-
-    m_playOverlay = loadOverlay( "media-playback-start" );
-    m_pauseOverlay = loadOverlay( "media-playback-pause" );
 
     PERF_LOG( "Adding system tray icon" );
     paintIcon();
@@ -233,7 +217,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             break;
 
         case Phonon::PausedState:
-            blendOverlay( m_pauseOverlay );
+            setOverlayIconByName( "media-playback-pause" );
             break;
 
         case Phonon::LoadingState:
@@ -310,6 +294,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     {
         m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );
         setIconByPixmap( m_baseIcon ); // show icon
+        setOverlayIconByName( QString() );
         return; // HACK: return because m_baseIcon is still null after first startup (why?)
     }
 
@@ -324,6 +309,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     {
         oldMergePos = -1;
         setIconByPixmap( m_baseIcon );
+        setOverlayIconByName( QString() );
         return;
     }
 
@@ -331,7 +317,8 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     if( !m_trackLength )
     {
         m_icon = m_baseIcon;
-        blendOverlay( m_playOverlay );
+        setIconByPixmap( m_icon );
+        setOverlayIconByName( "media-playback-start" );
         return;
     }
 
@@ -349,22 +336,8 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
 
     oldMergePos = mergePos;
 
-    blendOverlay( m_playOverlay );
-}
-
-void
-Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
-{
-    if ( !overlay.isNull() )
-    {
-        // draw overlay at bottom right
-        const int x = m_icon.size().width() - overlay.size().width();
-        const int y = m_icon.size().height() - overlay.size().width();
-        QPainter p( &m_icon );
-        p.drawPixmap( x, y, overlay );
-        p.end();
-        setIconByPixmap( m_icon );
-    }
+    setIconByPixmap( m_icon );
+    setOverlayIconByName( "media-playback-start" );
 }
 
 void
