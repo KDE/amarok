@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,10 +23,17 @@
 namespace Playlist
 {
 
-ProxyBase::ProxyBase( QObject *parent )
+ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     : QSortFilterProxyModel( parent )
-    , m_belowModel( 0 )
+    , m_belowModel( belowModel )
 {
+    setSourceModel( dynamic_cast< QAbstractItemModel* >( m_belowModel ) );
+
+    // Proxy the Playlist::AbstractModel signals.
+    //   If you need to do something special in a subclass, disconnect() this signal and
+    //   do your own connect() call.
+    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
 ProxyBase::~ProxyBase()

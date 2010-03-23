@@ -29,21 +29,14 @@ namespace Playlist
 //           and non-trivial (in Qt 4.6 at least).
 
 SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
-    : ProxyBase( parent )
+    : ProxyBase( belowModel, parent )
 {
-    m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-
     // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
     // Qt will do this by receiving the standard QAbstractItemModel signals: dataChanged, rowsInserted, etc.
     setDynamicSortFilter( true );
 
     // Tell QSortFilterProxyModel: activate sorting.
     sort( 0 );    // 0 is a dummy column.
-
-    // Proxy the Playlist::AbstractModel signals
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
 SortProxy::~SortProxy()
