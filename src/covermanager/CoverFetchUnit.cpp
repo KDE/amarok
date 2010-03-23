@@ -17,13 +17,13 @@
 #include "CoverFetchUnit.h"
 
 #include "Amarok.h"
-#include "Debug.h"
 
 #include <QDomNodeList>
 #include <QRegExp>
 #include <QSet>
 
 #define DEBUG_PREFIX "CoverFetchUnit"
+#include "Debug.h"
 
 /*
  * CoverFetchUnit

@@ -24,7 +24,6 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
-#include "Debug.h"
 #include "statusbar/StatusBar.h"
 
 #include <KIO/Job>
@@ -32,6 +31,7 @@
 #include <KUrl>
 
 #define DEBUG_PREFIX "CoverFetcher"
+#include "Debug.h"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -55,7 +55,6 @@ CoverFetcher::CoverFetcher()
     , m_limit( 10 )
     , m_dialog( 0 )
 {
-    DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
 
     m_queue = new CoverFetchQueue( this );
@@ -67,14 +66,13 @@ CoverFetcher::CoverFetcher()
 
 CoverFetcher::~CoverFetcher()
 {
-    DEBUG_FUNC_INFO
 }
 
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     m_queue->add( album, CoverFetch::Interactive );
+    debug() << "Adding interactive cover fetch for:" << album->name();
 }
 
 void
@@ -84,6 +82,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         m_queueLater.append( album );
     else
         m_queue->add( album, CoverFetch::Automatic );
+    debug() << "Queueing interactive cover fetch for:" << album->name();
 }
 
 void
@@ -102,13 +101,12 @@ void
 CoverFetcher::queueQuery( const QString &query, unsigned int page )
 {
     m_queue->addQuery( query, fetchSource(), page );
+    debug() << "Queueing interactive cover fetch for query:" << query << "(page" << page << ')';
 }
 
 void
 CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
-    DEBUG_BLOCK
-
     if( !unit )
         return;
 
@@ -151,7 +149,6 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 void
 CoverFetcher::slotResult( KJob *job )
 {
-    DEBUG_BLOCK
     const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
 
     if( !unit )
@@ -247,8 +244,6 @@ CoverFetcher::slotDialogFinished()
 void
 CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFetch::Metadata data )
 {
-    DEBUG_BLOCK
-
     if( !m_dialog )
     {
         const Meta::AlbumPtr album = unit->album();
@@ -290,8 +285,6 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
                       CoverFetcher::FinishState state,
                       const QString &message )
 {
-    DEBUG_BLOCK
-
     Meta::AlbumPtr album = unit->album();
     const bool isInteractive = unit->isInteractive();
     const QString albumName = album ? album->name() : QString();
@@ -303,6 +296,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
+            debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedPixmaps.take( unit ) );
         break;
@@ -312,6 +306,10 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
             The::statusBar()->shortMessage( text );
+            QString debugMessage;
+            if( !message.isEmpty() )
+                debugMessage = '[' + message + ']';
+            debug() << "Finished with errors for album" << albumName << debugMessage;
         }
         m_errors += message;
         break;
@@ -321,6 +319,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
+            debug() << "Finished, cancelled by user for album" << albumName;
         }
         break;
 
@@ -331,6 +330,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             //FIXME: Not visible behind cover manager
             The::statusBar()->shortMessage( text );
             m_errors += text;
+            debug() << "Finished due to cover not found for album" << albumName;
         }
         break;
     }
