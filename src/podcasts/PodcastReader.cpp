@@ -1607,10 +1607,21 @@ PodcastReader::parsePubDate( const QString &dateString )
     debug() << "Parsing pubdate: " << parseInput;
 
     QRegExp rfcDateDayRegex( "^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)" );
-    if( rfcDateDayRegex.indexIn(parseInput) != -1 )
+    if( rfcDateDayRegex.indexIn( parseInput ) != -1 )
     {
         parseInput = rfcDateDayRegex.cap(1);
     }
+    //Hack around a to strict RFCDate implementation in KDateTime.
+    //See http://bugs.kde.org/show_bug.cgi?id=231062
+    QRegExp rfcMonthLowercase( "^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b" );
+    if( rfcMonthLowercase.indexIn( parseInput ) != -1 )
+    {
+        QString lowerMonth = rfcMonthLowercase.cap( 1 );
+        QString upperMonth = lowerMonth;
+        upperMonth.replace( 0, 1, lowerMonth.at( 0 ).toUpper() );
+        parseInput.replace( lowerMonth, upperMonth );
+    }
+
     QDateTime pubDate = KDateTime::fromString( parseInput, KDateTime::RFCDate ).dateTime();
 
     debug() << "result: " << pubDate.toString();
