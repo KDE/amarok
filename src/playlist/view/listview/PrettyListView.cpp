@@ -99,16 +99,12 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setAutoFillBackground( false );
 
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
 
     // Signal connections
     //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
     //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
     //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
     connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( itemsInserted( const QList<quint64>& ) ) );
-
-    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
@@ -881,27 +877,6 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
 
     update();
-}
-
-void Playlist::PrettyListView::saveTrackSelection()
-{
-    m_savedTrackSelection.clear();
-
-    foreach( int rowId, selectedRows() )
-        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
-}
-
-void Playlist::PrettyListView::restoreTrackSelection()
-{
-    selectionModel()->clearSelection();
-
-    foreach( qint64 savedTrackId, m_savedTrackSelection )
-    {
-        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
-
-        if( restoredIndex.isValid() )
-            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
-    }
 }
 
 void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )

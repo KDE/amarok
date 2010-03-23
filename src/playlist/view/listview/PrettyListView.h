@@ -90,9 +90,6 @@ public slots:
 protected slots:
     void newPalette( const QPalette & palette );
 
-    void saveTrackSelection();
-    void restoreTrackSelection();
-
 private slots:
     void itemsInserted( const QList<quint64>& );
     void trackActivated( const QModelIndex& );
@@ -133,8 +130,6 @@ private:
     PrettyItemDelegate * m_prettyDelegate;
 
     QTimer *m_animationTimer;
-
-    QList<qint64> m_savedTrackSelection;
 
     ToolTipManager * m_toolTipManager;
 
