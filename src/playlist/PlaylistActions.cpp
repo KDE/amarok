@@ -425,7 +425,7 @@ Playlist::Actions::engineNewTrackPlaying()
             if ( m_topmostModel->activeTrack() != track )
             {
                  // this will set active row to -1 if the track isn't in the playlist at all
-                qint64 row = m_topmostModel->firstRowForTrack( track );
+                int row = m_topmostModel->firstRowForTrack( track );
                 if( row != -1 )
                     m_topmostModel->setActiveRow( row );
                 else
