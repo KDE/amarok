@@ -39,7 +39,6 @@ namespace AmarokScript
     {
         connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
         connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
-        //connect( The::playlist(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) ); // FIXME: still needed?
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()

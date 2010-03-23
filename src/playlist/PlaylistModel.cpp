@@ -499,7 +499,6 @@ Playlist::Model::setActiveRow( int row )
     {
         setStateOfRow( row, Item::Played );
         m_activeRow = row;
-
         emit activeTrackChanged( m_items.at( row )->id() );
     }
     else
@@ -507,7 +506,6 @@ Playlist::Model::setActiveRow( int row )
         m_activeRow = -1;
         emit activeTrackChanged( 0 );
     }
-    emit activeRowChanged( m_activeRow );
 }
 
 void
