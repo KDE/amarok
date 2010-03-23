@@ -134,7 +134,6 @@ private:
     void engineNewTrackPlaying(); //from EngineObserver
 
     quint64 m_nextTrackCandidate;
-    quint64 m_currentTrack;
     quint64 m_trackToBeLast;
     TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
     Playlist::StopAfterMode m_stopAfterMode;

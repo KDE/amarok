@@ -65,7 +65,6 @@ Playlist::Actions::Actions()
         : QObject()
         , EngineObserver( The::engineController() )
         , m_nextTrackCandidate( 0 )
-        , m_currentTrack( 0 )
         , m_trackToBeLast( 0 )
         , m_navigator( 0 )
         , m_stopAfterMode( StopNever )
@@ -108,8 +107,7 @@ Playlist::Actions::requestNextTrack()
 
     debug() << "so far so good!";
     m_trackError = false;
-    m_currentTrack = m_topmostModel->activeId();
-    if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
+    if ( stopAfterMode() == StopAfterQueue && m_topmostModel->activeId() == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
         m_trackToBeLast = 0;
@@ -135,8 +133,6 @@ Playlist::Actions::requestNextTrack()
 
         return;
     }
-
-    m_currentTrack = m_nextTrackCandidate;
 
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
         setStopAfterMode( StopNever );
