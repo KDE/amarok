@@ -105,7 +105,7 @@ WikipediaApplet::init()
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addAction( backwardAction );
-    connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
+    connect( m_backwardIcon, SIGNAL( activated() ), this, SLOT( goBackward() ) );
     
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
