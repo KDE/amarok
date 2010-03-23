@@ -3,6 +3,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,7 +38,7 @@ Playlist::StandardTrackNavigator::likelyLastTrack()
 
     if( lastRow < 0 )
         if( m_repeatPlaylist )
-            lastRow = m_model->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
+            lastRow = m_model->qaim()->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
 
     if( m_model->rowExists( lastRow ) )
         return m_model->idAt( lastRow );
@@ -68,7 +69,7 @@ Playlist::StandardTrackNavigator::chooseNextTrack()
 
     int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
 
-    if( nextRow >= m_model->rowCount() )
+    if( nextRow >= m_model->qaim()->rowCount() )
         if( m_repeatPlaylist )
             nextRow = 0;    // This row is still invalid if 'rowCount() == 0'.
 

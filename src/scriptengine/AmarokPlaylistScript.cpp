@@ -51,7 +51,7 @@ namespace AmarokScript
 
     int AmarokPlaylistScript::totalTrackCount()
     {
-        return The::playlist()->rowCount();
+        return The::playlist()->qaim()->rowCount();
     }
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
@@ -122,7 +122,7 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        for( int i=0; i < The::playlist()->rowCount(); i++ )
+        for( int i=0; i < The::playlist()->qaim()->rowCount(); i++ )
             fileNames << The::playlist()->trackAt(i)->prettyUrl();
         return fileNames;
     }

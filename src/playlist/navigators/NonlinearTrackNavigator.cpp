@@ -52,7 +52,7 @@ Playlist::NonlinearTrackNavigator::slotModelReset()
     m_insertedItems.clear();
     m_removedItems += allItemsSet();
 
-    int lastRowInModel = m_model->rowCount() - 1;
+    int lastRowInModel = m_model->qaim()->rowCount() - 1;
     if ( lastRowInModel >= 0 )
         slotRowsInserted( QModelIndex(), 0, lastRowInModel );
 

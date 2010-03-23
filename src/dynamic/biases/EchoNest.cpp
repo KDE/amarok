@@ -155,7 +155,7 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
             { // mode is set to whole playlist, so check if any tracks in the playlist aren't saved as Ids yet and query those
                 QList< Meta::TrackPtr > playlist;
                 m_currentPlaylist.clear(); // for searching in later
-                for( int i = 0; i < The::playlist()->rowCount(); i++ )
+                for( int i = 0; i < The::playlist()->qaim()->rowCount(); i++ )
                 {
                     Meta::TrackPtr t = The::playlist()->trackAt( i );
                     playlist << t;

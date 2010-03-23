@@ -130,7 +130,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 {
     DEBUG_BLOCK
     debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
-    
+
     if( !m_solver )
     {
         BiasSolver::setUniverseCollection( m_collection );
@@ -296,7 +296,7 @@ Dynamic::BiasedPlaylist::getContext()
 
     int i = qMax( 0, The::playlist()->activeRow() );
 
-    for( ; i < The::playlist()->rowCount(); ++i )
+    for( ; i < The::playlist()->qaim()->rowCount(); ++i )
     {
         m_context.append( The::playlist()->trackAt(i) );
     }

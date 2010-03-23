@@ -132,8 +132,8 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else
     {
-        debug()<<"About to check for Model::rowCount()";
-        firstItemAdded = m_sourceModel->rowCount();
+        debug()<<"About to check for bottom model rowCount()";
+        firstItemAdded = m_sourceModel->qaim()->rowCount();
         insertionHelper( firstItemAdded, list );
     }
 
@@ -217,7 +217,7 @@ Playlist::Controller::insertTracks( int row, Meta::TrackList tl )
     DEBUG_BLOCK
     if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
     {
-        row = m_sourceModel->rowCount();    // makes no sense to insert at a specific point
+        row = m_sourceModel->qaim()->rowCount();    // makes no sense to insert at a specific point
         debug()<<"SortProxy is SORTED             ... so I'll just append.";
     }
     else
@@ -300,7 +300,7 @@ Playlist::Controller::removeRows( QList<int>& rows )
     RemoveCmdList cmds;
     foreach( int r, rows )
     {
-        if(( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
+        if(( r >= 0 ) && ( r < m_topmostModel->qaim()->rowCount() ) )
             cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), m_topmostModel->rowToBottomModel( r ) ) );
         else
             warning() << "Received command to remove non-existent row. This should NEVER happen. row=" << r;
@@ -394,7 +394,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
         return from.first();
 
-    to = ( to == qBound( 0, to, m_topmostModel->rowCount() ) ) ? to : m_topmostModel->rowCount();
+    to = ( to == qBound( 0, to, m_topmostModel->qaim()->rowCount() ) ) ? to : m_topmostModel->qaim()->rowCount();
 
     from.erase( std::unique( from.begin(), from.end() ), from.end() );
 
@@ -405,7 +405,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     QList<int> target;
     for( int i = min; i <= max; i++ )
     {
-        if( i >=  m_topmostModel->rowCount() )
+        if( i >=  m_topmostModel->qaim()->rowCount() )
             break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
         target.append( i );
@@ -458,7 +458,7 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
     for( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
-        if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->rowCount() ) )
+        if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->qaim()->rowCount() ) )
             if( from.at( i ) != to.at( i ) )
                 cmds.append( MoveCmd( m_topmostModel->rowToBottomModel( from.at( i ) ), m_topmostModel->rowToBottomModel( to.at( i ) ) ) );
     }
@@ -489,7 +489,7 @@ void
 Playlist::Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Playlist::ModelStack::instance()->source()->rowCount() );
+    removeRows( 0, Playlist::ModelStack::instance()->source()->qaim()->rowCount() );
     emit changed();
 }
 
@@ -605,8 +605,8 @@ Playlist::Controller::insertionHelper( int rowInTopModel, Meta::TrackList& tl )
     // sorted there's no point in placing the added tracks at any specific point in relation
     // to another track, so we just append them.
     int rowInBottomModel = ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ) ?
-            m_sourceModel->rowCount() :
-            qBound( 0, m_topmostModel->rowToBottomModel( rowInTopModel ), m_sourceModel->rowCount() );
+            m_sourceModel->qaim()->rowCount() :
+            qBound( 0, m_topmostModel->rowToBottomModel( rowInTopModel ), m_sourceModel->qaim()->rowCount() );
 
     debug()<<"Fixed row to " << rowInBottomModel;
 

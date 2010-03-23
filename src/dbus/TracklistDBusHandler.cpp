@@ -70,7 +70,7 @@ namespace Amarok
 
     int TracklistDBusHandler::GetLength()
     {
-        return The::playlist()->rowCount();
+        return The::playlist()->qaim()->rowCount();
     }
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
@@ -113,7 +113,7 @@ namespace Amarok
 
     void TracklistDBusHandler::slotTrackListChange()
     {
-        emit TrackListChange( The::playlist()->rowCount() );
+        emit TrackListChange( The::playlist()->qaim()->rowCount() );
     }
 }
 

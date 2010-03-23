@@ -66,7 +66,7 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
     QList<qreal> weights;
 
     int favorType = AmarokConfig::favorTracks();
-    int rowCount = m_model->rowCount();
+    int rowCount = m_model->qaim()->rowCount();
 
     for( int row = 0; row < rowCount; row++ )
     {

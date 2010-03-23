@@ -100,7 +100,7 @@ Playlist::TrackNavigator::bestFallbackItem()
     quint64 item = m_model->activeId();
 
     if ( !item )
-        if ( m_model->rowCount() > 0 )
+        if ( m_model->qaim()->rowCount() > 0 )
             item = m_model->idAt( 0 );
 
     return item;
