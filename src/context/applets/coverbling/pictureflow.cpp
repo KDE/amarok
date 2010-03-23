@@ -1006,7 +1006,12 @@ void PictureFlow::setAlbums(Meta::AlbumList iAlbums)
 }
 Meta::AlbumPtr PictureFlow::album( int index )
 {
-    return m_album_list[index];
+	Meta::AlbumPtr album;
+	if (index < m_album_list.size() &&  index >= 0)
+	{
+		album = m_album_list[index];
+	}
+    return album;
 }
 int PictureFlow::centerIndex() const
 {

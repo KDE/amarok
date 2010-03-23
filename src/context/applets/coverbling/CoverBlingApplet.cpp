@@ -97,9 +97,7 @@ CoverBlingApplet::init()
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
-    connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
-    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
-    qm->run();
+	qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
     m_label->setBrush( QBrush( Qt::white ) );
@@ -142,14 +140,7 @@ CoverBlingApplet::init()
     m_jumptoplaying->setIcon( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) );
     m_jumptoplaying->setMaximumSize( 16.0, 16.0 );
     m_jumptoplaying->setToolTip( i18n( "Jump to Current" ) );
-
-    connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
-    connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
-    connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
-    connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
-    connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
-    connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
-
+    
     constraintsEvent();
 }
 
@@ -166,6 +157,15 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     Q_UNUSED( collectionId );
 
     m_pictureflow->fillAlbums( albums );
+    
+	connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
+    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
+    connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
+    connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
+    connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
+    connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
+    connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
+    connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
 }
 
 void CoverBlingApplet::slideChanged( int islideindex )
@@ -337,33 +337,36 @@ void CoverBlingApplet::jumpToPlaying()
     int nbslides = m_pictureflow->slideCount();
     bool found = false;
     int index = 0;
-    for ( int i = 0; i < nbslides;i++ )
+    if (nbslides > 0)
     {
-        Meta::AlbumPtr current_album = m_pictureflow->album( i );
-        if ( current_album == album )
-        {
-            index = i;
-            found = true;
-            break;
-        }
-    }
-    if ( found )
-    {
-        if ( m_animatejump )
-        {
-            if ( center - index > 10 || index - center > 10 )
-            {
-                if ( index > center )
-                    m_pictureflow->skipToSlide( index - 10 );
-                else
-                    m_pictureflow->skipToSlide( index + 10 );
-            }
-            m_pictureflow->showSlide( index );
-        }
-        else
-            m_pictureflow->skipToSlide( index );
-    }
-    slideChanged( index );
+		for ( int i = 0; i < nbslides;i++ )
+		{
+			Meta::AlbumPtr current_album = m_pictureflow->album( i );
+			if ( current_album == album )
+			{
+				index = i;
+				found = true;
+				break;
+			}
+		}
+		if ( found )
+		{
+			if ( m_animatejump )
+			{
+				if ( center - index > 10 || index - center > 10 )
+				{
+					if ( index > center )
+						m_pictureflow->skipToSlide( index - 10 );
+					else
+						m_pictureflow->skipToSlide( index + 10 );
+				}
+				m_pictureflow->showSlide( index );
+			}
+			else
+				m_pictureflow->skipToSlide( index );
+			slideChanged( index ); 
+		}	
+	}
 }
 
 void CoverBlingApplet::engineNewTrackPlaying( )
