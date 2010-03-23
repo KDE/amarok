@@ -75,7 +75,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
+        , m_firstItemInserted( 0 )
 {
+    // QAbstractItemView basics
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
@@ -87,7 +89,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setVerticalScrollMode( ScrollPerPixel );
 
-    // rendering adjustments
+    setMouseTracking( true );
+
+
+    // Rendering adjustments
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
     The::paletteHandler()->updateItemView( this );
@@ -95,19 +100,17 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setAutoFillBackground( false );
 
-    // signal connections
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
 
-    //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
-    //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
-    //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
-    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( itemsInserted( const QList<quint64>& ) ) );
-
-    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
-
+    // Signal connections
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+
+    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->source()'.
+    connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
+
+
+    // Timers
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
@@ -116,22 +119,20 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
     m_animationTimer->setInterval( 250 );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
-
     if ( LayoutManager::instance()->activeLayout().inlineControls() )
         m_animationTimer->start();
 
+
+    // Tooltips
     m_toolTipManager = new ToolTipManager(this);
 
-    // Indicate to the tooltip manager what to display based on the layout
-    // That way, we avoid doing it every time we want to display the tooltip
-    // This will be done every time the layout will be changed
+    //   Indicate to the tooltip manager what to display based on the layout
+    //   That way, we avoid doing it every time we want to display the tooltip
+    //   This will be done every time the layout will be changed
     m_toolTipManager->cancelExclusions();
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
-
-    setMouseTracking( true );
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -838,18 +839,39 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsInserted( const QList<quint64> &insertedIds )
+// Handle scrolling to newly inserted playlist items.
+// Warning, this slot is connected to the 'rowsInserted' signal of the *bottom* model,
+// not the normal top model.
+// The reason: FilterProxy can emit *A LOT* (thousands) of 'rowsInserted' signals when its
+// search string changes. For that case we don't want to do any scrollTo() at all.
+void
+Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, int start, int end )
+{
+    Q_UNUSED( parent )
+    Q_UNUSED( end )
+
+    if( m_firstItemInserted == 0 )
+    {
+        m_firstItemInserted = Playlist::ModelStack::instance()->source()->idAt( start );
+        QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
+    }
+}
+
+void Playlist::PrettyListView::bottomModelRowsInsertedScroll()
 {
     DEBUG_BLOCK
 
-    int firstRow = m_topmostProxy->rowForId( insertedIds.first() );
+    if( m_firstItemInserted )
+    {   // Note: we don't bother handling the case "first inserted item in bottom model
+        // does not have a row in the top 'model()' due to FilterProxy" nicely.
+        int firstRowInserted = m_topmostProxy->rowForId( m_firstItemInserted );    // In the *top* model.
+        QModelIndex index = model()->index( firstRowInserted, 0 );
 
-    QModelIndex index = model()->index( firstRow, 0 );
-    if( !index.isValid() )
-        return;
+        if( index.isValid() )
+            scrollTo( index, QAbstractItemView::PositionAtCenter );
 
-    debug() << "index has row: " << index.row();
-    scrollTo( index, QAbstractItemView::PositionAtCenter );
+        m_firstItemInserted = 0;
+    }
 }
 
 void Playlist::PrettyListView::redrawActive()
@@ -873,27 +895,8 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
-}
 
-void Playlist::PrettyListView::saveTrackSelection()
-{
-    m_savedTrackSelection.clear();
-
-    foreach( int rowId, selectedRows() )
-        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
-}
-
-void Playlist::PrettyListView::restoreTrackSelection()
-{
-    selectionModel()->clearSelection();
-
-    foreach( qint64 savedTrackId, m_savedTrackSelection )
-    {
-        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
-
-        if( restoredIndex.isValid() )
-            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
-    }
+    update();
 }
 
 void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )

@@ -32,7 +32,7 @@ namespace AmarokScript
     class AmarokPlaylistScript : public QObject
     {
         Q_OBJECT
-		
+
         public:
             AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
             ~AmarokPlaylistScript();
@@ -57,7 +57,6 @@ namespace AmarokScript
             QStringList selectedFilenames();
 
         signals:
-            void activeRowChanged( int row );
             void trackInserted( int start, int end );
             void trackRemoved( int start, int end );
 

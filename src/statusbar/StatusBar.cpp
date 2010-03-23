@@ -87,10 +87,11 @@ StatusBar::StatusBar( QWidget * parent )
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
     connect( The::playlist(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
+    connect( The::playlist(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+
     connect( The::playlist(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();

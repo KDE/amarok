@@ -42,12 +42,7 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     sort( 0 );    // 0 is a dummy column.
 
     // Proxy the Playlist::AbstractModel signals
-    //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
-    //by sorting, they may be just blindly forwarded
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
-    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
-    connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
     connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
