@@ -113,9 +113,14 @@ SqlUserPlaylistProvider::slotRemove()
         return;
 
     PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    foreach( Meta::PlaylistPtr playlist, playlistMap.uniqueKeys() )
-        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+    QList< Meta::PlaylistPtr > uniquePlaylists = playlistMap.uniqueKeys();
+
+    foreach( Meta::PlaylistPtr playlist, uniquePlaylists )
+    {
+        QList< Meta::TrackPtr > tracks = playlistMap.values( playlist );
+        foreach( Meta::TrackPtr track, tracks )
             playlist->removeTrack( playlist->tracks().indexOf( track ) );
+    }
 
     //clear the data
     action->setData( QVariant() );

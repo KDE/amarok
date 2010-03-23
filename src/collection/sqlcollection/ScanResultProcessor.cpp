@@ -261,10 +261,12 @@ ScanResultProcessor::commit()
     }
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
-        foreach( const QString &dir, m_directories.keys() )
+        SqlMountPointManager *manager = m_collection->mountPointManager();
+        const QStringList dirs        = m_directories.keys();
+        foreach( const QString &dir, dirs )
         {
-            int deviceid = m_collection->mountPointManager()->getIdForUrl( dir );
-            const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, dir );
+            int deviceid = manager->getIdForUrl( dir );
+            const QString rpath = manager->getRelativePath( deviceid, dir );
             m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
         }
     }
@@ -402,12 +404,12 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
     }
     QString albumArtist;
     int count = 0;
-    foreach( const QString &key, artistCount.keys() )
+    foreach( int value, artistCount )
     {
-        if( artistCount.value( key ) > count )
+        if( value > count )
         {
-            albumArtist = key;
-            count = artistCount.value( key );
+            albumArtist = artistCount.key( value );
+            count = value;
         }
     }
     //if an artist is the primary artist of each track in the directory, assume the artist is the albumartist

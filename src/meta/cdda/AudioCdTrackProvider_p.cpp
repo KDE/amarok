@@ -103,7 +103,8 @@ AudioCdTrackProvider::Private::deviceRemoved( const QString &udi )
 bool
 AudioCdTrackProvider::Private::isPathOnCd( const QString &path ) const
 {
-    foreach( const QString &mountPoint, m_cdMountPaths.values() )
+    const QStringList paths = m_cdMountPaths.values();
+    foreach( const QString &mountPoint, paths )
     {
         //path can be entered by the user, therefore we cannot make any assumptions about the case
         //of the path on windows -> d:/ and D:/ are equivalent

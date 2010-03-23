@@ -604,7 +604,7 @@ IpodHandler::syncArtwork()
 
     Meta::AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
 
-    foreach( const Meta::AlbumPtr album, albumMap.values() )
+    foreach( const Meta::AlbumPtr album, albumMap )
     {
         debug() << "Updating artwork for" << (album->albumArtist() ? album->albumArtist()->name() : "unknown") << "-" << album->name();
     }
@@ -1191,7 +1191,7 @@ IpodHandler::staleTracks()
 
     Meta::TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
-    foreach( const Meta::TrackPtr trk, trackMap.values() )
+    foreach( const Meta::TrackPtr trk, trackMap )
     {
         Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
         Itdb_Track *ipodtrack =  m_itdbtrackhash.value( track );

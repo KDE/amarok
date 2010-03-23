@@ -248,7 +248,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
         if( ! m_currentOnly )
         {
             // check our map, see if there are any we are still waiting for. if not, do the query
-            foreach( const QString &result, m_artistIds.values() )
+            foreach( const QString &result, m_artistIds )
             {
                 if( result == "-1" ) // still waiting
                 {
@@ -258,7 +258,8 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
                     return;
                 }
             }
-            foreach( const QString &key, m_artistIds.keys() )
+            const QStringList keys = m_artistIds.keys();
+            foreach( const QString &key, keys )
                 toQuery << key;
             // ok we're not, update our list and do it!
         } else

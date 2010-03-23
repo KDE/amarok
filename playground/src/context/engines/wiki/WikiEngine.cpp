@@ -406,7 +406,8 @@ void WikiEngine :: updateAlbumInfo()
 
     removeAllData(sourceName );
 
-    foreach( const QString &key, data.keys() )
+    const QStringList keys = data.keys();
+    foreach( const QString &key, keys )
         setData( key, data[key] );
 
     m_wikiCurrentLastAlbumEntry = tmpWikiStr;
@@ -529,7 +530,8 @@ void WikiEngine :: updateTitleInfo()
 
     removeAllData(sourceName );
 
-    foreach( const QString &key, data.keys() )
+    const QStringList keys = data.keys();
+    foreach( const QString &key, keys )
         setData( key, data[key] );
 
     m_wikiCurrentLastTitleEntry = tmpWikiStr;

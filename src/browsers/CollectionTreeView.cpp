@@ -1008,12 +1008,14 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QM
     {
         Amarok::Collection *collection = getCollection( indices.first() );
         QList<Amarok::Collection*> writableCollections;
-        foreach( Amarok::Collection *coll, CollectionManager::instance()->collections().keys() )
+        QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        while ( it != hash.constEnd() )
         {
+            Amarok::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
-            {
                 writableCollections.append( coll );
-            }
+            ++it;
         }
         if( !writableCollections.isEmpty() )
         {

@@ -1715,7 +1715,7 @@ TagDialog::saveTags()
 
     // use the representative tracks to send updated signals
 
-    foreach( Meta::TrackPtr track, collectionsToUpdateMap.values() )
+    foreach( Meta::TrackPtr track, collectionsToUpdateMap )
     {
         Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
 

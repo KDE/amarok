@@ -17,13 +17,13 @@
 #include "CoverFetchUnit.h"
 
 #include "Amarok.h"
-#include "Debug.h"
 
 #include <QDomNodeList>
 #include <QRegExp>
 #include <QSet>
 
 #define DEBUG_PREFIX "CoverFetchUnit"
+#include "Debug.h"
 
 /*
  * CoverFetchUnit
@@ -215,6 +215,14 @@ CoverFetchPayload::~CoverFetchPayload()
 {
 }
 
+QString
+CoverFetchPayload::sanitizeQuery( const QString &query )
+{
+    QString cooked( query );
+    cooked.remove( QChar('?') );
+    return cooked;
+}
+
 CoverFetch::Source
 CoverFetchPayload::source() const
 {
@@ -298,11 +306,11 @@ CoverFetchInfoPayload::prepareUrls()
         url.setHost( "ws.audioscrobbler.com" );
         url.setPath( "/2.0/" );
         url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-        url.addQueryItem( "album", album()->name() );
+        url.addQueryItem( "album", sanitizeQuery( album()->name() ) );
 
         if( album()->hasAlbumArtist() )
         {
-            url.addQueryItem( "artist", album()->albumArtist()->name() );
+            url.addQueryItem( "artist", sanitizeQuery( album()->albumArtist()->name() ) );
         }
         url.addQueryItem( "method", method() );
 
@@ -395,7 +403,7 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
         url.addQueryItem( "limit", QString::number( 20 ) );
         url.addQueryItem( "page", QString::number( m_page ) );
-        url.addQueryItem( "album", m_query );
+        url.addQueryItem( "album", sanitizeQuery( m_query ) );
         url.addQueryItem( "method", method() );
         metadata[ "source" ] = "Last.fm";
         metadata[ "method" ] = method();
@@ -407,14 +415,14 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "api_key", Amarok::discogsApiKey() );
         url.addQueryItem( "page", QString::number( m_page + 1 ) );
         url.addQueryItem( "type", "all" );
-        url.addQueryItem( "q", m_query );
+        url.addQueryItem( "q", sanitizeQuery( m_query ) );
         url.addQueryItem( "f", "xml" );
         metadata[ "source" ] = "Discogs";
         break;
 
     case CoverFetch::Yahoo:
         url.setHost( "boss.yahooapis.com" );
-        url.setPath( "/ysearch/images/v1/" + m_query );
+        url.setPath( "/ysearch/images/v1/" + sanitizeQuery( m_query ) );
         url.addQueryItem( "appid", Amarok::yahooBossApiKey() );
         url.addQueryItem( "count", QString::number( 20 ) );
         url.addQueryItem( "start", QString::number( 20 * m_page ) );
@@ -425,7 +433,7 @@ CoverFetchSearchPayload::prepareUrls()
     case CoverFetch::Google:
         url.setHost( "images.google.com" );
         url.setPath( "/images" );
-        url.addQueryItem( "q", m_query );
+        url.addQueryItem( "q", sanitizeQuery( m_query ) );
         url.addQueryItem( "gbv", QChar( '1' ) );
         url.addQueryItem( "filter", QChar( '1' ) );
         url.addQueryItem( "start", QString::number( 20 * m_page ) );
@@ -582,7 +590,8 @@ void
 CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
 {
     // code based on Audex CDDA Extractor
-    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)]+)>[\\s\\n]*<img\\ssrc=([a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)]+).*>[\\s\\n]*</a>" );
+    const QString filter = "a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)\\~\\!";
+    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[" + filter + "]+)>[\\s\\n]*<img\\ssrc=([" + filter + "]+).*>[\\s\\n]*</a>" );
     rx.setMinimal( true );
 
     int pos = 0;

@@ -15,9 +15,6 @@
  ****************************************************************************************/
 
 #include "CoverFetchQueue.h"
-#include "Debug.h"
-
-#define DEBUG_PREFIX "CoverFetchQueue"
 
 CoverFetchQueue::CoverFetchQueue( QObject *parent )
     : QObject( parent )
@@ -31,7 +28,6 @@ CoverFetchQueue::~CoverFetchQueue()
 void
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
-    DEBUG_BLOCK
     m_queue.append( unit );
     emit fetchUnitAdded( unit );
 }

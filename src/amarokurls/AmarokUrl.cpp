@@ -130,7 +130,8 @@ QString AmarokUrl::url() const
     {
     
         url += '?';
-        foreach( const QString &argName, m_arguments.keys() )
+        const QStringList args = m_arguments.keys();
+        foreach( const QString &argName, args )
         {
             url += argName;
             url += '=';

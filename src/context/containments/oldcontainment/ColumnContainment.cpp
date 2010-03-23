@@ -747,7 +747,7 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
 
         //keep the indexes updated
         const int idx = m_appletsIndexes[applet];
-        foreach( Plasma::Applet *a, m_appletsIndexes.keys() )
+        foreach( const Plasma::Applet *a, m_appletsIndexes.keys() )
             if( m_appletsIndexes[a] > idx )
                 m_appletsIndexes[a]--;
 
@@ -790,7 +790,7 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
             for( int k = 0; k < rowSpan; k++ )
                 m_gridFreePositions[row + k][col] = true;
 
-            foreach( Plasma::Applet* a, m_appletsIndexes.keys() )
+            foreach( const Plasma::Applet* a, m_appletsIndexes.keys() )
                 if( m_appletsIndexes[a] > idx )
                     m_appletsIndexes[a]--;
 

@@ -63,7 +63,8 @@ void PostJob::doWork()
 {
   QString postData;
 
-  foreach( const QString &name, m_data.keys() ) {
+  const QStringList dataKeys = m_data.keys();
+  foreach( const QString &name, dataKeys ) {
     m_url.addQueryItem( name, m_data.value( name ) );
   }
 

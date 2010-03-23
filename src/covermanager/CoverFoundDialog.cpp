@@ -23,7 +23,6 @@
 #include "AlbumBreadcrumbWidget.h"
 #include "Amarok.h"
 #include "CoverViewDialog.h"
-#include "Debug.h"
 #include "PixmapViewer.h"
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
@@ -47,6 +46,7 @@
 #include <QTabWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
+#include "Debug.h"
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const QPixmap cover,
@@ -337,19 +337,20 @@ void CoverFoundDialog::processQuery( const QString &input )
 {
     const bool inputEmpty( input.isEmpty() );
     const bool mQueryEmpty( m_query.isEmpty() );
+    bool incrementPage( false );
 
     QString q;
     if( inputEmpty && !mQueryEmpty )
     {
         q = m_query;
-        m_queryPage++;
+        incrementPage = true;
     }
     else if( !inputEmpty || !mQueryEmpty )
     {
         q = input;
         if( m_query == input )
         {
-            m_queryPage++;
+            incrementPage = true;
         }
         else
         {
@@ -362,6 +363,7 @@ void CoverFoundDialog::processQuery( const QString &input )
     {
         emit newCustomQuery( q, m_queryPage );
         updateSearchButton( q );
+        m_queryPage++;
     }
 }
 
@@ -372,6 +374,7 @@ void CoverFoundDialog::selectDiscogs()
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
+    debug() << "Select Discogs as source";
 }
 
 void CoverFoundDialog::selectLastFm()
@@ -381,6 +384,7 @@ void CoverFoundDialog::selectLastFm()
     m_sortAction->setEnabled( false );
     m_queryPage = 0;
     processQuery();
+    debug() << "Select Last.fm as source";
 }
 
 void CoverFoundDialog::selectYahoo()
@@ -390,6 +394,7 @@ void CoverFoundDialog::selectYahoo()
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
+    debug() << "Select Yahoo! as source";
 }
 
 void CoverFoundDialog::selectGoogle()
@@ -399,6 +404,7 @@ void CoverFoundDialog::selectGoogle()
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
     processQuery();
+    debug() << "Select Google as source";
 }
 
 void CoverFoundDialog::sortingTriggered( bool checked )
@@ -409,6 +415,7 @@ void CoverFoundDialog::sortingTriggered( bool checked )
     m_isSorted = false;
     if( m_sortEnabled )
         sortCoversBySize();
+    debug() << "Enable sorting by size:" << checked;
 }
 
 void CoverFoundDialog::setupSearchToolTip()
@@ -435,6 +442,8 @@ void CoverFoundDialog::setupSearchToolTip()
 
 void CoverFoundDialog::sortCoversBySize()
 {
+    DEBUG_BLOCK
+
     m_sortSizes.clear();
     QList< QListWidgetItem* > viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
     QMultiMap<int, CoverFoundItem*> sortItems;
@@ -700,6 +709,8 @@ CoverFoundItem::~CoverFoundItem()
 
 void CoverFoundItem::fetchBigPix()
 {
+    DEBUG_BLOCK
+
     const KUrl url( m_metadata.value( "normalarturl" ) );
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
