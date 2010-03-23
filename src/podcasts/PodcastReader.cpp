@@ -1606,8 +1606,8 @@ PodcastReader::parsePubDate( const QString &dateString )
     QString parseInput = dateString;
     debug() << "Parsing pubdate: " << parseInput;
 
-    QRegExp rfcDateDayRegex("^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)");
-    if ( rfcDateDayRegex.indexIn(parseInput) != -1 )
+    QRegExp rfcDateDayRegex( "^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)" );
+    if( rfcDateDayRegex.indexIn(parseInput) != -1 )
     {
         parseInput = rfcDateDayRegex.cap(1);
     }
