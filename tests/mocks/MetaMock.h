@@ -17,8 +17,8 @@
 #ifndef METAMOCK_H
 #define METAMOCK_H
 
-#include "meta/Meta.h"
-#include "meta/MetaConstants.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <QVariantMap>
 
@@ -47,7 +47,7 @@ public:
     QString uidUrl() const { return m_data.value( Meta::Field::UNIQUEID ).toString(); }
     bool isPlayable() const { return false; }
     QString comment() const { return m_data.value( Meta::Field::COMMENT ).toString(); }
-    float bpm() const { return m_data.value( Meta::Field::BPM ).toDouble(); }
+    qreal bpm() const { return m_data.value( Meta::Field::BPM ).toDouble(); }
     qint64 length() const { return m_data.value( Meta::Field::LENGTH ).toInt(); }
     int filesize() const { return m_data.value( Meta::Field::FILESIZE ).toInt(); }
     int sampleRate() const { return m_data.value( Meta::Field::SAMPLERATE ).toInt(); }

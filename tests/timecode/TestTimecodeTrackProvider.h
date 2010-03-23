@@ -21,7 +21,7 @@
 #define TESTTIMECODETRACKPROVIDER_H
 
 #include "TestBase.h"
-#include "timecode/TimecodeTrackProvider.h"
+#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
 
 #include <QtCore/QStringList>
 

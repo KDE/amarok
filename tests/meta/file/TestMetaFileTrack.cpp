@@ -19,7 +19,7 @@
 
 #include "TestMetaFileTrack.h"
 
-#include "meta/file/File.h"
+#include "core/meta/impl/file/File.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QFile>

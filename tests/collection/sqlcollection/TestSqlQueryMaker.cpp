@@ -17,7 +17,7 @@
 #include "TestSqlQueryMaker.h"
 
 #include "Debug.h"
-#include "meta/TagLibUtils.h"
+#include "core/meta/impl/file/TagLibUtils.h"
 
 #include "DatabaseUpdater.h"
 #include "SqlCollection.h"

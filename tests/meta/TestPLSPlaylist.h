@@ -20,7 +20,7 @@
 #ifndef TESTPLSPLAYLIST_H
 #define TESTPLSPLAYLIST_H
 
-#include "meta/PLSPlaylist.h"
+#include "core/playlists/impl/file/pls/PLSPlaylist.h"
 #include "TestBase.h"
 
 #include <QtCore/QStringList>

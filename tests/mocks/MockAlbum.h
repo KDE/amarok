@@ -20,7 +20,7 @@
 
 #include <gmock/gmock.h>
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 namespace Meta
 {

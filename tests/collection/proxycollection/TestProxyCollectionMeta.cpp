@@ -19,10 +19,10 @@
 #include "ProxyCollection.h"
 #include "ProxyCollectionMeta.h"
 #include "Debug.h"
-#include "meta/Capability.h"
-#include "meta/Meta.h"
-#include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/OrganiseCapability.h"
+#include "core/capabilities/Capability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/OrganiseCapability.h"
 
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
@@ -50,23 +50,23 @@ class MyTrackMock : public MetaMock
 public:
     MyTrackMock() : MetaMock( QVariantMap() ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
 class MyAlbumMock : public MockAlbum
@@ -74,23 +74,23 @@ class MyAlbumMock : public MockAlbum
 public:
     MyAlbumMock() : MockAlbum( "testAlbum" ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
 class MyArtistMock : public MockArtist
@@ -98,23 +98,23 @@ class MyArtistMock : public MockArtist
 public:
     MyArtistMock() : MockArtist( "testArtist" ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
 class MyGenreMock : public MockGenre
@@ -122,23 +122,23 @@ class MyGenreMock : public MockGenre
 public:
     MyGenreMock() : MockGenre( "testGenre" ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
 class MyComposerMock : public MockComposer
@@ -146,23 +146,23 @@ class MyComposerMock : public MockComposer
 public:
     MyComposerMock() : MockComposer( "testComposer" ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
 class MyYearMock : public MockYear
@@ -170,26 +170,26 @@ class MyYearMock : public MockYear
 public:
     MyYearMock() : MockYear( "testYear" ) {}
 
-    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
     {
-        Meta::Capability* cap = capabilities.value( type );
+        Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
 
-    mutable QMap<Meta::Capability::Type, bool> results;
-    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+    mutable QMap<Capabilities::Capability::Type, bool> results;
+    mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
 };
 
-class MyOrganiseCapability : public Meta::OrganiseCapability
+class MyOrganiseCapability : public Capabilities::OrganiseCapability
 {
 public:
     void deleteTrack() {}
@@ -199,17 +199,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
 {
     MyTrackMock *mock = new MyTrackMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::TrackPtr ptr( mock );
 
     ProxyCollection::Track cut( 0, ptr );
 
-    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !cut.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -217,10 +217,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
 {
     MyTrackMock *mock = new MyTrackMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -228,8 +228,8 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
 
     ProxyCollection::Track cut( 0, ptr );
 
-    QVERIFY( ! cut.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
@@ -238,17 +238,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
 {
     MyAlbumMock *mock = new MyAlbumMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::AlbumPtr ptr( mock );
 
     ProxyCollection::Album album( 0, ptr );
 
-    QVERIFY( album.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !album.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( album.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !album.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -256,10 +256,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
 {
     MyAlbumMock *mock = new MyAlbumMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -267,8 +267,8 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
 
     ProxyCollection::Album album( 0, ptr );
 
-    QVERIFY( ! album.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( album.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! album.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( album.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
@@ -277,17 +277,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleArtist()
 {
     MyArtistMock *mock = new MyArtistMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::ArtistPtr ptr( mock );
 
     ProxyCollection::Artist artist( 0, ptr );
 
-    QVERIFY( artist.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !artist.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( artist.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !artist.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -295,10 +295,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
 {
     MyArtistMock *mock = new MyArtistMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -306,8 +306,8 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
 
     ProxyCollection::Artist artist( 0, ptr );
 
-    QVERIFY( ! artist.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( artist.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! artist.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( artist.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
@@ -316,17 +316,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleComposer()
 {
     MyComposerMock *mock = new MyComposerMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::ComposerPtr ptr( mock );
 
     ProxyCollection::Composer cut( 0, ptr );
 
-    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !cut.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -334,10 +334,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
 {
     MyComposerMock *mock = new MyComposerMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -345,8 +345,8 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
 
     ProxyCollection::Composer cut( 0, ptr );
 
-    QVERIFY( ! cut.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
@@ -355,17 +355,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleGenre()
 {
     MyGenreMock *mock = new MyGenreMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::GenrePtr ptr( mock );
 
     ProxyCollection::Genre cut( 0, ptr );
 
-    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !cut.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -373,10 +373,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
 {
     MyGenreMock *mock = new MyGenreMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -384,8 +384,8 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
 
     ProxyCollection::Genre cut( 0, ptr );
 
-    QVERIFY( ! cut.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
@@ -394,17 +394,17 @@ void
 TestProxyCollectionMeta::testHasCapabilityOnSingleYear()
 {
     MyYearMock *mock = new MyYearMock();
-    QMap<Meta::Capability::Type, bool> results;
-    results.insert( Meta::Capability::Buyable, false );
-    results.insert( Meta::Capability::BookmarkThis, true );
+    QMap<Capabilities::Capability::Type, bool> results;
+    results.insert( Capabilities::Capability::Buyable, false );
+    results.insert( Capabilities::Capability::BookmarkThis, true );
     mock->results = results;
 
     Meta::YearPtr ptr( mock );
 
     ProxyCollection::Year cut( 0, ptr );
 
-    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
-    QVERIFY( !cut.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
+    QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( mock->results.count(), 0 );
 }
 
@@ -412,10 +412,10 @@ void
 TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
 {
     MyYearMock *mock = new MyYearMock();
-    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
-    capabilities.insert( Meta::Capability::Buyable, 0 );
-    Meta::Capability *cap = new MyOrganiseCapability();
-    capabilities.insert( Meta::Capability::Organisable, cap );
+    QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
+    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    Capabilities::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Capabilities::Capability::Organisable, cap );
 
     mock->capabilities = capabilities;
 
@@ -423,16 +423,16 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
 
     ProxyCollection::Year cut( 0, ptr );
 
-    QVERIFY( ! cut.createCapabilityInterface( Meta::Capability::Buyable ) );
-    QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
+    QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
 }
 
-class MyEditCapability : public Meta::EditCapability
+class MyEditCapability : public Capabilities::EditCapability
 {
 public:
-    MyEditCapability() : Meta::EditCapability()
+    MyEditCapability() : Capabilities::EditCapability()
             , beginCallCount(0)
             , endCallcount(0)
             , abortCallcount(0) {}
@@ -446,7 +446,7 @@ public:
     virtual void setComment( const QString &newComment ) {};
     virtual void setTrackNumber( int newTrackNumber ) {};
     virtual void setDiscNumber( int newDiscNumber ) {};
-    virtual void setBpm( const float newBpm ) {};
+    virtual void setBpm( const qreal newBpm ) {};
     virtual void beginMetaDataUpdate() { beginCallCount++; };
     virtual void endMetaDataUpdate() { endCallcount++; };
     virtual void abortMetaDataUpdate() { abortCallcount++; };
@@ -461,12 +461,12 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
 {
     MyTrackMock *mock1 = new MyTrackMock();
     MyTrackMock *mock2 = new MyTrackMock();
-    QMap<Meta::Capability::Type, bool> result;
-    result.insert( Meta::Capability::Editable, true );
+    QMap<Capabilities::Capability::Type, bool> result;
+    result.insert( Capabilities::Capability::Editable, true );
     MyEditCapability *cap1 = new MyEditCapability();
     MyEditCapability *cap2 = new MyEditCapability();
-    mock1->capabilities.insert( Meta::Capability::Editable, cap1 );
-    mock2->capabilities.insert( Meta::Capability::Editable, cap2 );
+    mock1->capabilities.insert( Capabilities::Capability::Editable, cap1 );
+    mock2->capabilities.insert( Capabilities::Capability::Editable, cap2 );
     mock1->results = result;
     mock2->results = result;
 
@@ -481,9 +481,9 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     ProxyCollection::Track cut( proxyCollection, ptr1 );
     cut.add( ptr2 );
 
-    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::Editable ) );
+    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::Editable ) );
 
-    Meta::EditCapability *editCap = cut.create<Meta::EditCapability>();
+    Capabilities::EditCapability *editCap = cut.create<Capabilities::EditCapability>();
     QVERIFY( editCap );
     QVERIFY( editCap->isEditable() );
 

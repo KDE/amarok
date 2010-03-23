@@ -20,7 +20,7 @@
 #ifndef TESTMETATRACK_H
 #define TESTMETATRACK_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "TestBase.h"
 
 #include <QtCore/QStringList>

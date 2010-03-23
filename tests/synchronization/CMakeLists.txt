@@ -25,10 +25,10 @@ set( testmasterslave_SRCS
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/meta/capabilities/EditCapability.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
     )
 
 kde4_add_unit_test( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
@@ -61,10 +61,10 @@ set( testunion_SRCS
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/meta/capabilities/EditCapability.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
     )
 
 kde4_add_unit_test( testunionjob  ${testunion_SRCS} )
@@ -96,10 +96,10 @@ set( testonewaysynchronization_SRCS
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/meta/capabilities/EditCapability.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
+        ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
     )
 
 kde4_add_unit_test( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )

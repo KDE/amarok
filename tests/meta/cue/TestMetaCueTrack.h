@@ -20,7 +20,7 @@
 #ifndef TESTMETACUETRACK_H
 #define TESTMETACUETRACK_H
 
-#include "meta/cue/Cue.h"
+#include "core/meta/impl/cue/Cue.h"
 #include "TestBase.h"
 
 #include <QtCore/QStringList>

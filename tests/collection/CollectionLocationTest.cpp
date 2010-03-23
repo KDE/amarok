@@ -19,7 +19,7 @@
 #include "Components.h"
 #include "collection/CollectionLocation.h"
 #include "Debug.h"
-#include "meta/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "../tests/mocks/MetaMock.h"
 #include "MockCollectionLocationDelegate.h"
 

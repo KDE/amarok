@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "TestPlaylistFileSupport.h"
-#include "meta/PlaylistFileSupport.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>

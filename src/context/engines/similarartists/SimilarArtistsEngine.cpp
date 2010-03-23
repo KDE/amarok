@@ -22,6 +22,8 @@
 #include "ContextView.h"
 #include "EngineController.h"
 
+#include <KConfigGroup>
+
 #include <QXmlStreamReader>
 
 K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )

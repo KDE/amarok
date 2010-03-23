@@ -19,7 +19,7 @@
 #include "Debug.h"
 
 #include "collection/QueryMaker.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "MemoryCollection.h"
 #include "MemoryQueryMaker.h"
 

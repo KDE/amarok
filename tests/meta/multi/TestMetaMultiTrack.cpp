@@ -19,8 +19,8 @@
 
 #include "TestMetaMultiTrack.h"
 
-#include "meta/multi/MultiTrack.h"
-#include "meta/PlaylistFileSupport.h"
+#include "core/meta/impl/multi/MultiTrack.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
@@ -99,5 +99,5 @@ void TestMetaMultiTrack::testSources()
 
 void TestMetaMultiTrack::testHasCapabilityInterface()
 {
-    QVERIFY( m_testMultiTrack->hasCapabilityInterface( Meta::Capability::MultiSource ) );
+    QVERIFY( m_testMultiTrack->hasCapabilityInterface( Capabilities::Capability::MultiSource ) );
 }

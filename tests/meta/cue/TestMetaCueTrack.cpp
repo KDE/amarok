@@ -19,7 +19,7 @@
 
 #include "TestMetaCueTrack.h"
 
-#include "meta/cue/CueFileSupport.h"
+#include "core/meta/impl/cue/CueFileSupport.h"
 
 #include <KStandardDirs>
 

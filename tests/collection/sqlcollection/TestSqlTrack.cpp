@@ -20,7 +20,7 @@
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "DefaultSqlQueryMakerFactory.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
 #include "SqlRegistry.h"

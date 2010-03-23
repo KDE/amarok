@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "TestMetaCueCueFileItem.h"
-#include "meta/cue/Cue.h"
+#include "core/meta/impl/cue/Cue.h"
 
 #include <QtTest/QTest>
 

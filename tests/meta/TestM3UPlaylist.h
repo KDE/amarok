@@ -20,7 +20,7 @@
 #ifndef TESTM3UPLAYLIST_H
 #define TESTM3UPLAYLIST_H
 
-#include "meta/M3UPlaylist.h"
+#include "core/playlists/impl/file/m3u/M3UPlaylist.h"
 #include "TestBase.h"
 
 #include <QtCore/QStringList>

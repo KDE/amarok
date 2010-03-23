@@ -59,9 +59,9 @@ link_database_test( testdatabaseupdater )
 
 set( testalbumcompilationchange_SRCS
         TestAlbumCompilationChange.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core/playlists/impl/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
@@ -69,7 +69,7 @@ set( testalbumcompilationchange_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
@@ -93,7 +93,7 @@ set( testsqltrackediting_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
@@ -110,7 +110,7 @@ set( testsqlartist_SRCS
         TestSqlArtist.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
@@ -149,7 +149,7 @@ set( testsqlquerymaker_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
@@ -196,9 +196,9 @@ target_link_libraries( testartisthelper
 
 set( testsqltrack_SRCS
         TestSqlTrack.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core/playlists/impl/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
@@ -206,7 +206,7 @@ set( testsqltrack_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )

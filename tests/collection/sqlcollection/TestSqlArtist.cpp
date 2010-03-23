@@ -17,8 +17,8 @@
 #include "TestSqlArtist.h"
 
 #include "Debug.h"
-#include "meta/Meta.h"
-#include "meta/TagLibUtils.h"
+#include "core/meta/Meta.h"
+#include "core/meta/impl/file/TagLibUtils.h"
 #include "SqlMeta.h"
 
 #include <qtest_kde.h>

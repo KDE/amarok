@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "TestXSPFPlaylist.h"
-#include "meta/XSPFPlaylist.h"
+#include "core/playlists/impl/file/xspf/XSPFPlaylist.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>

@@ -18,7 +18,7 @@
 
 #include "Debug.h"
 
-#include "meta/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
 #include "ScanResultProcessor.h"
