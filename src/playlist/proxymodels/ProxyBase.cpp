@@ -77,12 +77,6 @@ ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
     return proxyModelRows;
 }
 
-int
-ProxyBase::columnCount( const QModelIndex& proxyParent ) const
-{
-    return sourceModel()->columnCount( mapToSource( proxyParent ) );
-}
-
 void
 ProxyBase::clearSearchTerm()
 {
@@ -123,23 +117,6 @@ QString
 ProxyBase::currentSearchTerm()
 {
     return m_belowModel->currentSearchTerm();
-}
-
-QVariant
-ProxyBase::data( const QModelIndex & index, int role ) const
-{
-    //HACK around incomplete index causing a crash...
-    //note to self by Téo: is this still needed?
-    QModelIndex newIndex = this->index( index.row(), index.column() );
-
-    QModelIndex sourceIndex = mapToSource( newIndex );
-    return m_belowModel->data( sourceIndex, role );
-}
-
-bool
-ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
-{
-    return m_belowModel->dropMimeData( data, action, rowToSource( row ), column, parent );
 }
 
 bool
@@ -208,46 +185,12 @@ ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
     }
 }
 
-Qt::ItemFlags
-ProxyBase::flags( const QModelIndex &index ) const
-{
-    //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
-    //       every time. Needs to be checked.       -- Téo
-    return m_belowModel->flags( index );
-}
-
 quint64
 ProxyBase::idAt( const int row ) const
 {
     if( rowExists( row ) )
         return m_belowModel->idAt( rowToSource( row ) );
     return 0;
-}
-
-QMimeData *
-ProxyBase::mimeData( const QModelIndexList &indexes ) const
-{
-
-    QModelIndexList sourceIndexes;
-    foreach( QModelIndex index, indexes )
-    {
-        sourceIndexes << mapToSource( index );
-    }
-
-    return m_belowModel->mimeData( sourceIndexes );
-
-}
-
-QStringList
-ProxyBase::mimeTypes() const
-{
-    return m_belowModel->mimeTypes();
-}
-
-int
-ProxyBase::rowCount(const QModelIndex& parent) const
-{
-    return QSortFilterProxyModel::rowCount( parent );
 }
 
 bool
@@ -319,12 +262,6 @@ Item::State
 ProxyBase::stateOfRow( int row ) const
 {
     return m_belowModel->stateOfRow( rowToSource( row ) );
-}
-
-Qt::DropActions
-ProxyBase::supportedDropActions() const
-{
-    return m_belowModel->supportedDropActions();
 }
 
 qint64

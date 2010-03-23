@@ -85,14 +85,6 @@ public:
      */
     virtual void clearSearchTerm();
 
-   /**
-     * Returns the number of columns exposed by the current proxy.
-     * The default implementation forwards the column count of the model below it.
-     * @param parent the parent of the columns to count.
-     * @return the number of columns.
-     */
-    virtual int columnCount( const QModelIndex& parent = QModelIndex() ) const;
-
     /**
      * Reports if the current model exposes a given id.
      * @param id the id to check for.
@@ -118,25 +110,6 @@ public:
      * @return The curent search term.
      */
     virtual QString currentSearchTerm();
-
-    /**
-     * Forwards the request down the proxy stack and gets the data at an index.
-     * @param index the index for which to retrieve the data from the model.
-     * @return the data from the model.
-     */
-    virtual QVariant data( const QModelIndex& index, int role ) const;
-
-    /**
-     * Handles the data supplied by a drag and drop operation that ended with the given
-     * action.
-     * @param data the MIME data.
-     * @param action the drop action of the current drag and drop operation.
-     * @param row the row where the operation ended.
-     * @param column the column where the operation ended.
-     * @param parent the parent index.
-     * @return true if the data and action can be handled by the model; otherwise false.
-     */
-    virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
     /**
      * Saves a playlist to a specified location.
@@ -199,40 +172,11 @@ public:
     virtual int firstRowForTrack( const Meta::TrackPtr track ) const;
 
     /**
-     * Returns the item flags for the given index.
-     * @param index the index to retrieve the flags for.
-     * @return the item flags.
-     */
-    virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
-
-    /**
      * Returns the unique 64-bit id for the given row in the current model.
      * @param row the row.
      * @return the unique id, or 0 if the row does not exist.
      */
     virtual quint64 idAt( const int row ) const;
-
-    /**
-     * Returns an object that contains serialized items of data corresponding to the list
-     * of indexes specified.
-     * @param indexes a list of indexes.
-     * @return the MIME data corresponding to the indexes.
-     */
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
-
-    /**
-     * Returns a list of MIME types that can be used to describe a list of model indexes.
-     * @return a QStringList of MIME types.
-     */
-    virtual QStringList mimeTypes() const;
-
-    /**
-     * Returns the number of rows exposed by the current proxy.
-     * The default implementation forwards the row count of the model below it.
-     * @param parent the parent of the rows to count.
-     * @return the number of rows.
-     */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
     /**
      * Checks if a row exists in the current proxy.
@@ -307,14 +251,6 @@ public:
      * @return The state of the track at the row.
      */
     virtual Item::State stateOfRow( int row ) const;
-
-    /**
-     * Returns the drop actions supported by this proxy.
-     * The default implementation returns the drop actions supported by the proxy or model
-     * below the current proxy.
-     * @return the drop actions.
-     */
-    virtual Qt::DropActions supportedDropActions() const;
 
     /**
      * Returns the total length of the playlist.
