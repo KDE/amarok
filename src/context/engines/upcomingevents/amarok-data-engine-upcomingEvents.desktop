@@ -2,6 +2,8 @@
 Name=Upcoming Events Data Engine
 Name[de]=Datenmodul für anstehende Ereignisse
 Name[en_GB]=Upcoming Events Data Engine
+Name[nds]=Datenkarn för anstahn Begeefnissen
+Name[pt]=Motor de Dados dos Próximos Eventos
 Name[sv]=Datagränssnitt för kommande händelser
 Name[uk]=Рушій розкладу найближчих подій
 X-KDE-ServiceTypes=Plasma/DataEngine

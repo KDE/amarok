@@ -10,10 +10,12 @@ X-KDE-ParentComponents=amarok_service_mp3tunes
 
 Name=MP3tunes Service Config
 Name[ca]=Configuració del servei MP3tunes
+Name[cs]=Nastavení služby Mp3tunes
 Name[de]=Einrichtung von MP3tunes
 Name[en_GB]=MP3tunes Service Config
 Name[es]=Configurar servicio MP3tunes
 Name[it]=Configurazione servizio MP3tunes
+Name[nds]=MP3Tunes-Deenstinstellen
 Name[pt]=Configuração do Serviço MP3tunes
 Name[pt_BR]=Configuração do serviço MP3tunes
 Name[sk]=Konfigurácia služby MP3tunes
