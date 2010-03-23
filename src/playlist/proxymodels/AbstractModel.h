@@ -49,11 +49,27 @@ class AbstractModel
 {
 public:
 
+    //! Management of objects and inheritance
+
     /**
      * Virtual destructor
      * (Make it OK to delete an instance of a derived class through a pointer to this base class.)
      */
     virtual ~AbstractModel() { };
+
+    /**
+     * If you need QAbstractItemModel functions, access them through this pointer.
+     *
+     * This is a work-around for Qt's poor support for multiple inheritance and/or templates.
+     * If Qt supported the full C++ inheritance system well, this class could have inherited
+     * from QAbstractItemModel, and our descendants could have inherited from more specific
+     * implementations of QAbstractItemModel, like QSortFilterProxyModel.
+     * In the current Qt reality, that causes clashes.
+     */
+    virtual QAbstractItemModel* qaim() const = 0;
+
+
+    //! Playlist-specific API; the functions QAbstractItemModel doesn't already offer.
 
     /**
      * Returns the unique playlist item id of the active track

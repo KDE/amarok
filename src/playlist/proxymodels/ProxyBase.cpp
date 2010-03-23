@@ -27,7 +27,7 @@ ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     : QSortFilterProxyModel( parent )
     , m_belowModel( belowModel )
 {
-    setSourceModel( dynamic_cast< QAbstractItemModel* >( m_belowModel ) );
+    setSourceModel( m_belowModel->qaim() );
 
     // Proxy the Playlist::AbstractModel signals.
     //   If you need to do something special in a subclass, disconnect() this signal and

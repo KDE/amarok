@@ -35,8 +35,8 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
     DEBUG_BLOCK
 
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
-    connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
-    connect( model(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
+    connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
+    connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
 }
 

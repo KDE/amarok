@@ -66,7 +66,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Qt::DropActions supportedDropActions() const;
 
         // Inherited from Playlist::AbstractModel
-        QAbstractItemModel* model() const { return const_cast<Model*>( this ); }
+        QAbstractItemModel* qaim() const { return const_cast<Model*>( this ); }
 
         quint64 activeId() const;
         int activeRow() const { return m_activeRow; } // returns -1 if there is no active row

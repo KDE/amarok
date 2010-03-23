@@ -78,7 +78,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_firstItemInserted( 0 )
 {
     // QAbstractItemView basics
-    setModel( Playlist::ModelStack::instance()->top() );
+    setModel( m_topmostProxy->qaim() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
     setSelectionMode( ExtendedSelection );

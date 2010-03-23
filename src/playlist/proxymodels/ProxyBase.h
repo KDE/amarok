@@ -44,6 +44,9 @@ public:
      */
     virtual ~ProxyBase();
 
+    QAbstractItemModel* qaim() const { return const_cast<ProxyBase*>( this ); }
+
+
 // Common public forwarder methods that pretty much just forward stuff through the stack of
 // proxies start here.
 // Please keep them sorted alphabetically.  -- Téo
