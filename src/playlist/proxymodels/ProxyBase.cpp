@@ -65,12 +65,16 @@ ProxyBase::activeTrack() const
 QSet<int>
 ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
 {
-    QSet<int> trackRows;
+    QSet<int> proxyModelRows;
 
-    foreach( int row, m_belowModel->allRowsForTrack( track ) )
-        trackRows.insert( rowFromSource( row ) );
+    foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+    {
+        int proxyModelRow = rowFromSource( sourceModelRow );
+        if ( proxyModelRow != -1 )
+            proxyModelRows.insert( proxyModelRow );
+    }
 
-    return trackRows;
+    return proxyModelRows;
 }
 
 int
@@ -184,7 +188,24 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
 int
 ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
 {
-    return rowFromSource( m_belowModel->firstRowForTrack( track ) );
+    // First optimistically try 'firstRowForTrack()'. It'll usually work.
+    int proxyModelRow = rowFromSource( m_belowModel->firstRowForTrack( track ) );
+    if ( proxyModelRow != -1 )
+        return proxyModelRow;
+    else
+    {
+        // It might be that there are multiple hits in the source model, and we just got
+        // unlucky with a source row that's filtered out in this model. So, we need to
+        // check all hits.
+        foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+        {
+            proxyModelRow = rowFromSource( sourceModelRow );
+            if ( proxyModelRow != -1 )
+                return proxyModelRow;
+        }
+
+        return -1;
+    }
 }
 
 Qt::ItemFlags
