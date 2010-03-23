@@ -110,6 +110,7 @@ protected:
     const CoverFetch::Source m_src;
     CoverFetch::Urls m_urls;
 
+    QString sanitizeQuery( const QString &query );
     const QString  sourceString() const;
     const QString &method() const { return m_method; }
     Meta::AlbumPtr album()  const { return m_album; }
