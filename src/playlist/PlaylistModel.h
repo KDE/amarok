@@ -140,7 +140,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
     signals:
         void insertedIds( const QList<quint64>& );
-        void beginRemoveIds();
         void activeTrackChanged( quint64 );
         void activeRowChanged( int );
         void queueChanged();

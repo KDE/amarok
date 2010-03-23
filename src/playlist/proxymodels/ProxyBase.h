@@ -354,12 +354,6 @@ signals:
     void insertedIds( const QList<quint64>& );
 
     /**
-     * Signal forwarded from the source model.
-     * Emitted before items are removed from the model.
-     */
-    void beginRemoveIds();
-
-    /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
      * by the proxies.
      * @param the id of the new active track.

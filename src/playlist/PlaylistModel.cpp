@@ -813,8 +813,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         return;
     }
 
-    emit beginRemoveIds();
-
     int min = m_items.size();
     int max = 0;
     int activeShift = 0;
