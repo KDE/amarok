@@ -139,7 +139,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowToBottomModel( const int row ) { return row; }
 
     signals:
-        void insertedIds( const QList<quint64>& );
         void activeTrackChanged( quint64 );
         void queueChanged();
 

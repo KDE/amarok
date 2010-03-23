@@ -742,7 +742,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     int min = m_items.size() + cmds.size();
     int max = 0;
     int begin = cmds.at( 0 ).second;
-    QList<quint64> newIds;
     foreach( const InsertCmd &ic, cmds )
     {
         min = qMin( min, ic.second );
@@ -765,11 +764,9 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Item* newitem = new Item( track );
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
-        newIds.append( newitem->id() );
     }
     endInsertRows();
     emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
-    emit insertedIds( newIds );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 

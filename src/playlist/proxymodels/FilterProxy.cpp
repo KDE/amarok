@@ -32,7 +32,6 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
     setDynamicSortFilter( true );    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
 
     // Proxy the Playlist::AbstractModel signals
-    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
     connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 
@@ -74,19 +73,6 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
     // characters before we do a filter run that might block for a few seconds.
 
     return -1;
-}
-
-void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
-{
-    QList< quint64 > proxyIds;
-    foreach( quint64 id, ids )
-    {
-        if ( matchesCurrentSearchTerm( m_belowModel->rowForId( id ) ) )
-            proxyIds << id;
-    }
-
-    if ( proxyIds.size() > 0 )
-        emit insertedIds( proxyIds );
 }
 
 void

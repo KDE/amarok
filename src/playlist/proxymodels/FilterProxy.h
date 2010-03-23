@@ -84,15 +84,6 @@ protected:
      */
     virtual int rowToSource( int row ) const;
 
-protected slots:
-    /**
-     * Slot called when the source model has inserted new tracks. Uses filterAcceptsRow
-     * to determine if a given id should be included in the list forwarded to any
-     * listeners in the insertedIds() signal.
-     * @param ids the list of id's added to the source model.
-     */
-    void slotInsertedIds( const QList<quint64> &ids );
-
 //signals:
     // Emits signals inherited from QSortFilterProxy
 
