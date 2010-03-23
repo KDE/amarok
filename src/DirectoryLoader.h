@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <KFileItem>
 

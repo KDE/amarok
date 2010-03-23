@@ -23,7 +23,7 @@
 
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
-#include "meta/support/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "ServiceSqlCollection.h"
 
 #include <threadweaver/Job.h>

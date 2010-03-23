@@ -22,7 +22,7 @@
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <context/widgets/TrackWidget.h>
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
 #include <ui_currentTrackSettings.h>
 

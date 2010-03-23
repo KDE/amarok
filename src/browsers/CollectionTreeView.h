@@ -19,7 +19,7 @@
 
 #include "CollectionSortFilterProxyModel.h"
 #include "playlist/PlaylistController.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "widgets/PrettyTreeView.h"
 
 

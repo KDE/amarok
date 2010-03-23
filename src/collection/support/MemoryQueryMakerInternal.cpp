@@ -22,7 +22,7 @@
 #include "MemoryMatcher.h"
 #include "MemoryQueryMakerHelper.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QSharedPointer>
 

@@ -18,7 +18,7 @@
 #define MEMORYQUERYMAKERHELPER_H
 
 #include <QList>
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 namespace MemoryQueryMakerHelper
 {

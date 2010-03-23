@@ -27,7 +27,7 @@
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
-#include "meta/support/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
 #include "collection/support/XmlQueryWriter.h"

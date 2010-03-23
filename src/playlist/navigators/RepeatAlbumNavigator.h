@@ -23,7 +23,7 @@
 
 #include "AlbumNavigator.h"
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 namespace Playlist
 {

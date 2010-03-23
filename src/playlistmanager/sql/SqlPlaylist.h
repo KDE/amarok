@@ -17,7 +17,7 @@
 #ifndef METASQLPLAYLIST_H
 #define METASQLPLAYLIST_H
 
-#include "Playlist.h"
+#include "core/playlists/Playlist.h"
 // #include "playlistmanager/sql/SqlPlaylistGroup.h"
 
 class PlaylistProvider;

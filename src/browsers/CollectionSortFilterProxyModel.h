@@ -18,7 +18,7 @@
 #ifndef COLLECTIONSORTFILTERPROXYMODEL_H
 #define COLLECTIONSORTFILTERPROXYMODEL_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QSortFilterProxyModel>
 

@@ -18,7 +18,7 @@
 #define INFOPARSERBASE_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QObject>
 

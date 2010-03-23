@@ -20,7 +20,7 @@
 #ifndef AMAROK_UNDOCOMMANDS_H
 #define AMAROK_UNDOCOMMANDS_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QList>
 #include <QPair>

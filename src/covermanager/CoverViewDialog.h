@@ -17,7 +17,7 @@
 #ifndef AMAROK_COVERVIEWDIALOG_H
 #define AMAROK_COVERVIEWDIALOG_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
 #include <KApplication>

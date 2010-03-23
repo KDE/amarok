@@ -18,7 +18,7 @@
 
 #include "browsers/CollectionTreeItem.h"
 #include "Debug.h"
-#include "../meta/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
 
 #include <KMenu>
 

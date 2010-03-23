@@ -36,7 +36,7 @@
 #include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
 #include "collection/CollectionManager.h"
-#include "capabilities/LastFmCapability.h"
+#include "core/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"

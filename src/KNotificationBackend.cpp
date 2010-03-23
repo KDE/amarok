@@ -19,7 +19,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QTimer>
 

@@ -27,7 +27,7 @@
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"

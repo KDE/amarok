@@ -17,7 +17,7 @@
 #ifndef DBUSQUERYHELPER_H
 #define DBUSQUERYHELPER_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QDBusConnection>
 #include <QDBusMessage>

@@ -22,8 +22,8 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "Debug.h"
 #include "InfoParserBase.h"
-#include "meta/impl/proxy/MetaProxy.h"
-#include "statistics/StatisticsProvider.h"
+#include "core/meta/impl/proxy/MetaProxy.h"
+#include "core/statistics/StatisticsProvider.h"
 #include "ServiceCapabilities.h"
 
 #include <QAction>

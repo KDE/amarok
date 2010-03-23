@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "MagnatuneActions.h"
 #include "MagnatuneConfig.h"
-#include "statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "core/statistics/providers/url/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
 #include <KLocale>

@@ -21,7 +21,7 @@
 #define AMAROK_COVERFOUNDDIALOG_H
 
 #include "CoverFetchUnit.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <KDialog>
 #include <KVBox>

@@ -1,6 +1,5 @@
 include_directories( ../..
         ../../plugin
-   ../../meta
    ../../collection
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}

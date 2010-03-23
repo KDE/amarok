@@ -17,9 +17,9 @@
 #ifndef PLAYLISTFILEPROVIDER_H
 #define PLAYLISTFILEPROVIDER_H
 
-#include "playlists/providers/user/UserPlaylistProvider.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
-#include "playlists/PlaylistProvider.h"
+#include "core/playlists/providers/user/UserPlaylistProvider.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core/playlists/PlaylistProvider.h"
 
 #include <kicon.h>
 

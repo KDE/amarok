@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 
-#include "capabilities/DecoratorCapability.h"
+#include "core/capabilities/DecoratorCapability.h"
 
 #include <KLocale>
 

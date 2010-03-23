@@ -19,7 +19,7 @@
 #ifndef SQLWRITELABELCAPABILITY_H
 #define SQLWRITELABELCAPABILITY_H
 
-#include "capabilities/WriteLabelCapability.h"
+#include "core/capabilities/WriteLabelCapability.h"
 #include "SqlMeta.h"
 
 class SqlStorage;

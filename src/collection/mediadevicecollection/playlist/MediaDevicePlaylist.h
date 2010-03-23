@@ -17,7 +17,7 @@
 #ifndef METAMEDIADEVICEPLAYLIST_H
 #define METAMEDIADEVICEPLAYLIST_H
 
-#include "playlists/Playlist.h"
+#include "core/playlists/Playlist.h"
 
 #include "Debug.h"
 

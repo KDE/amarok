@@ -19,8 +19,8 @@
 
 #include "Debug.h"
 #include "LastFmMeta.h"
-#include "Meta.h"
-#include "capabilities/MultiPlayableCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/MultiPlayableCapability.h"
 #include "StatusBar.h"
 
 #include <lastfm/Track>

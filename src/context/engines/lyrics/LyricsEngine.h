@@ -21,7 +21,7 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <kio/job.h>
 

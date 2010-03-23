@@ -1,4 +1,8 @@
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ../ )
+include_directories(
+                    ${KDE4_INCLUDE_DIR}
+                    ${QT_INCLUDES}
+                    ${Amarok_SOURCE_DIR}/src
+                   )
 
 add_subdirectory( magnatune )
 add_subdirectory( jamendo )

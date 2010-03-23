@@ -19,7 +19,7 @@
 #define LASTFMSCROBBLERADAPTER_H
 
 #include "EngineObserver.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <lastfm/Audioscrobbler>
 #include <lastfm/Track>

@@ -3,7 +3,6 @@ include_directories(
         ../
         ../../
         ../../collection
-        ../../meta
         ../../statusbar
         ../../widgets
         ../../context

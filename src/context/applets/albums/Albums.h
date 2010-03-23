@@ -23,7 +23,7 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
 #include <KDialog>
 

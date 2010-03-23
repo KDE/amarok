@@ -19,7 +19,7 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "VideoclipInfo.h"
 
 #include <KIO/Job>

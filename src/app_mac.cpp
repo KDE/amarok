@@ -20,7 +20,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "DirectoryLoader.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
 #include "playlist/PlaylistController.h"

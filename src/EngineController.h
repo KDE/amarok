@@ -21,9 +21,9 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "capabilities/BoundedPlaybackCapability.h"
+#include "core/capabilities/BoundedPlaybackCapability.h"
 #include "EngineObserver.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QMutex>

@@ -25,7 +25,7 @@
 #include <QRect>
 #include <QIcon>
 #include <QModelIndex>
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "AmarokToolTip.h"
 #include "playlist/PlaylistDefines.h"
 

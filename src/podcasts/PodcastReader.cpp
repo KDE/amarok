@@ -19,7 +19,7 @@
 
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
-#include "meta/support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 
 #include <kio/job.h>
 #include <kurl.h>

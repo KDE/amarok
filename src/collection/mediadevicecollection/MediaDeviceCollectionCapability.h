@@ -17,9 +17,9 @@
 #ifndef MEDIADEVICECOLLECTIONCAPABILITY_H
 #define MEDIADEVICECOLLECTIONCAPABILITY_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
-#include "capabilities/CollectionCapability.h"
+#include "core/capabilities/CollectionCapability.h"
 
 class MediaDeviceCollection;
 

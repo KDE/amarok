@@ -17,7 +17,7 @@
 #ifndef NEPOMUKTRACK_H
 #define NEPOMUKTRACK_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QDateTime>
 

@@ -24,7 +24,7 @@
 #define PHOTO_BROWSER_H
 
 #include "pictureflow.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 class PhotoBrowser: public PictureFlow
 {

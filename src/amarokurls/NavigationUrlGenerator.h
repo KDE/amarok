@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "AmarokUrlGenerator.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 class AmarokUrl;
 

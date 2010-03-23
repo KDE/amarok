@@ -18,7 +18,7 @@
 #define MEMORYCUSTOMVALUE_H
 
 #include "amarok_export.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "collection/QueryMaker.h"
 
 #include <QList>

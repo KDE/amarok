@@ -21,7 +21,7 @@
 #include "BiasSolver.h"
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "meta/support/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "TrackSet.h"
 
 #include <cmath>

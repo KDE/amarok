@@ -18,7 +18,7 @@
 
 #include "Debug.h"
 #include "collection/QueryMaker.h"
-#include "support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 
 #include <QTimer>
 

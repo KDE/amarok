@@ -20,8 +20,8 @@
 
 #include "ProxyCollectionMeta.h"
 
-#include "support/MetaUtility.h"
-#include "capabilities/EditCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/EditCapability.h"
 #include "ProxyCollection.h"
 
 #include "Debug.h"

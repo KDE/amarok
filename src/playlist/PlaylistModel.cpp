@@ -26,14 +26,15 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
+#include "core/capabilities/ReadLabelCapability.h"
 #include "Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "meta/support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
@@ -46,7 +47,6 @@
 #include <QTextDocument>
 
 #include <typeinfo>
-#include <ReadLabelCapability.h>
 
 
 Playlist::Model::Model( QObject *parent )

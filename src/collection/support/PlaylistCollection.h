@@ -19,7 +19,7 @@
 
 #include "collection/Collection.h"
 #include "MemoryCollection.h"
-#include "playlists/Playlist.h"
+#include "core/playlists/Playlist.h"
 
 #include <QSharedPointer>
 

@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 #include "MemoryCollection.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 /**
 A helper class for finding items in a MemoryCollection

@@ -17,7 +17,7 @@
 #ifndef AMAROK_ALBUMITEM_H
 #define AMAROK_ALBUMITEM_H
 
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
 #include <QSize>
 #include <QStandardItem>

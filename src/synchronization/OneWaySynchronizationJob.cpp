@@ -19,7 +19,7 @@
 #include "collection/Collection.h"
 #include "collection/CollectionLocation.h"
 #include "Debug.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 OneWaySynchronizationJob::OneWaySynchronizationJob()
         : SynchronizationBaseJob()

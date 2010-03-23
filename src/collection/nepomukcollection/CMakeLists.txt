@@ -1,7 +1,6 @@
 
 include_directories( ../..
         ../../plugin
-   ../../meta
    ../../collection
    ../../dialogs
 #./search-api

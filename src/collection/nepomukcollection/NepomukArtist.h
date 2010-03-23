@@ -19,7 +19,7 @@
 
 #include "NepomukCollection.h"
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 class NepomukCollection;
 

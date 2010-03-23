@@ -19,7 +19,7 @@
 
 #include "GlobalCollectionActions.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "LastFmService.h"
 
 

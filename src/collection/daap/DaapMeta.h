@@ -17,7 +17,7 @@
 #ifndef DAAPMETA_H
 #define DAAPMETA_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 class DaapCollection;
 

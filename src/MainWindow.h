@@ -19,7 +19,7 @@
 #define MAINWINDOW_H
 
 #include "amarok_export.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "EngineObserver.h"
 #include "browsers/BrowserWidget.h"
 

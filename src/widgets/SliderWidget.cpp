@@ -27,7 +27,7 @@
 #include "BookmarkTriangle.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 

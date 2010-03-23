@@ -23,7 +23,7 @@
 
 #include "NonlinearTrackNavigator.h"
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QList>
 #include <QSet>

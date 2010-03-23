@@ -30,7 +30,7 @@
 #include <qmutex.h>
 #include <qwaitcondition.h>
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 class ImageLoader : public QThread
 {
 public:

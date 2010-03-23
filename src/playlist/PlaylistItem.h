@@ -20,7 +20,7 @@
 #ifndef AMAROKPLAYLISTITEM_H
 #define AMAROKPLAYLISTITEM_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 namespace Playlist
 {

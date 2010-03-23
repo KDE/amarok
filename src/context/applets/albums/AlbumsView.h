@@ -20,7 +20,7 @@
 
 #include <QGraphicsProxyWidget>
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 class QTreeView;
 class QAbstractItemModel;

@@ -19,7 +19,7 @@
 
 #include <QSortFilterProxyModel>
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 class BrowserCategoryListSortFilterProxyModel : public QSortFilterProxyModel
 {

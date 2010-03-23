@@ -24,7 +24,7 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
-#include "meta/support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"

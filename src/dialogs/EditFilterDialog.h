@@ -17,7 +17,7 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "ui_EditFilterDialog.h"
 
 #include <KDialog>

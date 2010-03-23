@@ -17,7 +17,7 @@
 #ifndef AMAROK_TRACKITEM_H
 #define AMAROK_TRACKITEM_H
 
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
 #include <QStandardItem>
 

@@ -10,7 +10,6 @@ set(videoclip_applet_SRCS
 
 include_directories(
     ${Amarok_SOURCE_DIR}/src
-    ${Amarok_SOURCE_DIR}/src/meta
     ${Amarok_SOURCE_DIR}/src/context
     ${Amarok_SOURCE_DIR}/src/context/applets
     ${Amarok_SOURCE_DIR}/src/context/applets/videoclip

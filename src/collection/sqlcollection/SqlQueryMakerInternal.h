@@ -18,7 +18,7 @@
 #define SQLQUERYMAKERINTERNAL_H
 
 #include "collection/QueryMaker.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QObject>
 #include <QPointer>

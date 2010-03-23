@@ -26,7 +26,7 @@
 #include "playlist/PlaylistModelStack.h"
 
 #include "Debug.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QtAlgorithms> // For qStableSort
 

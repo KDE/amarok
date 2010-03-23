@@ -18,7 +18,7 @@
 #ifndef ARTIST_WIDGET_H
 #define ARTIST_WIDGET_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 //Kde
 #include<KUrl>

@@ -17,8 +17,8 @@
 #ifndef METATYPE_EXPORTER_H
 #define METATYPE_EXPORTER_H
 
-#include "Meta.h"
-#include "EditCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/EditCapability.h"
 
 #include <QObject>
 #include <QScriptable>

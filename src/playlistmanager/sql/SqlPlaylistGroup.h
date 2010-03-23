@@ -17,7 +17,7 @@
 #ifndef SQLPLAYLISTGROUP_H
 #define SQLPLAYLISTGROUP_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "SqlPlaylist.h"
 
 #include <QString>

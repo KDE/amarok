@@ -17,7 +17,7 @@
 #ifndef AMAROK_COVERFETCHUNIT_H
 #define AMAROK_COVERFETCHUNIT_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <KSharedPtr>
 

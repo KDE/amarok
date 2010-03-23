@@ -2,7 +2,6 @@
             ../
             ../..
             ../../plugin
-            ../../meta
             ../../collection
             ../../servicebrowser
             ../../statusbar

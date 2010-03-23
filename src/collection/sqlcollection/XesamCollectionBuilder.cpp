@@ -17,7 +17,7 @@
 #include "XesamCollectionBuilder.h"
 
 #include "Debug.h"
-#include "support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "SqlCollection.h"
 #include "XesamDbus.h"
 

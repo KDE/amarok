@@ -19,7 +19,7 @@
 #ifndef PROXYCOLLECTIONMETA_H
 #define PROXYCOLLECTIONMETA_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QList>
 

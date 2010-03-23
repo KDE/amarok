@@ -19,8 +19,8 @@
 
 #include "Amarok.h"
 #include "amarok_export.h"
-#include "playlists/Playlist.h"
-#include "playlists/PlaylistProvider.h"
+#include "core/playlists/Playlist.h"
+#include "core/playlists/PlaylistProvider.h"
 
 #include <QMultiMap>
 #include <QList>

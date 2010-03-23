@@ -20,7 +20,7 @@
 #define AMAROK_BIASSOLVER_H
 
 #include "Bias.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "TrackSet.h"
 
 #include <threadweaver/Job.h>

@@ -17,7 +17,7 @@
 #include "MemoryQueryMakerHelper.h"
 
 #include "collection/support/MemoryCustomValue.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QList>
 #include <QSet>

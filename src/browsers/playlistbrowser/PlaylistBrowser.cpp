@@ -19,7 +19,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "DynamicCategory.h"
-#include "Playlist.h"
+#include "core/playlists/Playlist.h"
 #include "UserPlaylistCategory.h"
 #include "PlaylistManager.h"
 

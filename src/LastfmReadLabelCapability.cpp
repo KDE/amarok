@@ -17,7 +17,7 @@
 #include "LastfmReadLabelCapability.h"
 
 #include "Debug.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QNetworkReply>

@@ -21,7 +21,7 @@
 #include "collection/QueryMaker.h"
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
-#include "meta/Meta.h" // album observer
+#include "core/meta/Meta.h" // album observer
 
 class QTimer;
 

@@ -21,8 +21,8 @@
 
 
 #include "Debug.h"
-#include "Meta.h"
-#include "SourceInfoCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 #include <QObject>
 #include <QPixmap>

@@ -17,8 +17,8 @@
 #ifndef SYNCHRONIZATIONBASEJOB_H
 #define SYNCHRONIZATIONBASEJOB_H
 
-#include "meta/Meta.h"
-#include "support/MetaUtility.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
 
 #include <QHash>
 #include <QObject>

@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistModelStack.h"
 

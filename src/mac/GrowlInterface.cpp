@@ -20,7 +20,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "meta/support/MetaUtility.h" // for secToPrettyTime
+#include "core/meta/support/MetaUtility.h" // for secToPrettyTime
 #include "TrayIcon.h"
 
 GrowlInterface::GrowlInterface( QString appName ) :

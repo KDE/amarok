@@ -22,11 +22,11 @@
 #include "amarok_export.h"
 #include "amarokurls/AmarokUrl.h"
 
-#include "capabilities/BookmarkThisCapability.h"
-#include "capabilities/CurrentTrackActionsCapability.h"
-#include "capabilities/CustomActionsCapability.h"
-#include "capabilities/FindInSourceCapability.h"
-#include "capabilities/SourceInfoCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 
 class BookmarkThisProvider;

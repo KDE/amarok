@@ -17,7 +17,7 @@
 #ifndef METASQLBOOKMARKTHISCAPABILITY_H
 #define METASQLBOOKMARKTHISCAPABILITY_H
 
-#include "capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "SqlMeta.h"
 
 namespace Meta

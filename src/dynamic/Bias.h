@@ -20,7 +20,7 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "collection/support/XmlQueryReader.h"
 
 #include <QDomElement>

@@ -17,7 +17,7 @@
 #ifndef NEPOMUKGENRE_H
 #define NEPOMUKGENRE_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include "QString"
 

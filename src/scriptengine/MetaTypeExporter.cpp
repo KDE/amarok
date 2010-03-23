@@ -17,8 +17,6 @@
 
 #include "MetaTypeExporter.h"
 
-#include "EditCapability.h"
-
 #include <QtScript>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );

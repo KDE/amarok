@@ -19,7 +19,7 @@
 
 #include "FastForwardImporter.h"
 #include "databaseimporter/DatabaseImporter.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

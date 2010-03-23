@@ -22,7 +22,7 @@
 #include "BookmarkModel.h"
 #include "Debug.h"
 #include "MainWindow.h"
-#include "meta/support/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"
 
 #include <KLocale>

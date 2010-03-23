@@ -26,10 +26,10 @@
 #include "CollectionTreeItem.h"
 #include "Debug.h"
 #include "Expression.h"
-#include "meta/support/MetaConstants.h"
+#include "core/meta/support/MetaConstants.h"
 #include "QueryMaker.h"
 #include "amarokconfig.h"
-#include "capabilities/EditCapability.h"
+#include "core/capabilities/EditCapability.h"
 
 #include <KIcon>
 #include <KIconLoader>

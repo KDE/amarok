@@ -26,7 +26,7 @@
 #include "playlist/PlaylistItem.h"
 #include "LabelListModel.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <khtml_part.h>
 #include <KDialog>

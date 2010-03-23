@@ -20,7 +20,7 @@
 #define DEBUG_PREFIX "Playlist::Item"
 
 #include "PlaylistItem.h"
-#include "capabilities/SourceInfoCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 #include <KRandom>
 

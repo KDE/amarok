@@ -20,7 +20,7 @@
 
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <math.h>
 #ifdef Q_WS_MAC

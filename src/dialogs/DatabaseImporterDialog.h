@@ -20,7 +20,7 @@
 #include <KAssistantDialog>    //baseclass
 
 #include "databaseimporter/DatabaseImporter.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QHash>
 

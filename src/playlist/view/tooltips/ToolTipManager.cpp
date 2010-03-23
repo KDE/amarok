@@ -23,7 +23,7 @@
 #include "amarokconfig.h"
 
 #include "AmarokToolTip.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/layouts/LayoutItemConfig.h"

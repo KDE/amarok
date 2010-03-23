@@ -5,7 +5,6 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             ../
             ../../
             ../../plugin
-            ../../meta
             ../../collection
             ../../servicebrowser
             ../../statusbar

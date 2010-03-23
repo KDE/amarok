@@ -19,7 +19,7 @@
 #ifndef AMAROK_DYNAMICPLAYLIST_H
 #define AMAROK_DYNAMICPLAYLIST_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QDomElement>
 #include <QSharedData>

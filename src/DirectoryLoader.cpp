@@ -20,7 +20,7 @@
 
 #include "Debug.h"
 #include "CollectionManager.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 

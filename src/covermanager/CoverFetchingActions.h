@@ -17,7 +17,7 @@
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QAction>
 

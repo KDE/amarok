@@ -15,7 +15,7 @@
  ****************************************************************************************/
  
 #include "GlobalCollectionActions.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 
 namespace The

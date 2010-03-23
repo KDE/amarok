@@ -18,7 +18,7 @@
 
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )

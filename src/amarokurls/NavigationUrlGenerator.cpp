@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
-#include "SourceInfoCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"

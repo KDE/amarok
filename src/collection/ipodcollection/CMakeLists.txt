@@ -6,8 +6,6 @@ endif(NOT GDK_FOUND)
 if (IPOD_FOUND AND WITH_IPOD)
    include_directories( ../..
    ../../plugin
-   ../../meta
-   ../../meta/file
    ../../collection
    ../../metadata/audible
    ../mediadevicecollection

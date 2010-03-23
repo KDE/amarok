@@ -23,7 +23,7 @@
 #include <QImage>
  
 #include "Debug.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "EngineController.h" 
 #include "EngineObserver.h"
     

@@ -23,7 +23,7 @@
 #include "EngineController.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "dialogs/ScriptManager.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "PaletteHandler.h"
 #include "Theme.h"
 

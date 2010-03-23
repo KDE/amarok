@@ -23,7 +23,7 @@
 #include "collection/support/MemoryCustomValue.h"
 #include "collection/support/MemoryQueryMakerHelper.h"
 #include "Debug.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "ProxyCollection.h"
 
 #include <QMetaEnum>

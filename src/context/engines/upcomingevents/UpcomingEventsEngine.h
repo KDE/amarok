@@ -22,7 +22,7 @@
 #include "src/context/ContextObserver.h"
 #include <context/DataEngine.h>
 #include "src/context/applets/upcomingevents/LastFmEvent.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 // Qt
 #include <QDomDocument>

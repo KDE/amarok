@@ -17,7 +17,7 @@
 #include "ScriptableServiceMeta.h"
 #include "ScriptableServiceMeta_p.h"
 
-#include "support/PrivateMetaRegistry.h"
+#include "core/meta/support/PrivateMetaRegistry.h"
 #include "ScriptableService.h"
 #include "ScriptableServiceManager.h"
 

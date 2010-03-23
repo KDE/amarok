@@ -18,7 +18,7 @@
 
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "capabilities/TimecodeWriteCapability.h"
+#include "core/capabilities/TimecodeWriteCapability.h"
 
 
 const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minutes

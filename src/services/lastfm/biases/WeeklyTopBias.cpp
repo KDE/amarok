@@ -19,7 +19,7 @@
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "QueryMaker.h"
 
 #include <lastfm/Artist>

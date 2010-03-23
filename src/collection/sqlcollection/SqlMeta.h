@@ -18,7 +18,7 @@
 #ifndef SQLMETA_H
 #define SQLMETA_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "amarok_sqlcollection_export.h"
 
 #include <QByteArray>

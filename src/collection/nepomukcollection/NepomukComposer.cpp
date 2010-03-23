@@ -16,7 +16,7 @@
 
 #include "NepomukComposer.h"
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QString>
 

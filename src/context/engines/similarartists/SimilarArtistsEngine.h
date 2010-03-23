@@ -21,7 +21,7 @@
 
 #include "src/context/ContextObserver.h"
 #include "src/context/DataEngine.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "src/context/applets/similarartists/SimilarArtist.h"
 
 #include <KIO/Job>

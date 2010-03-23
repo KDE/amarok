@@ -17,9 +17,9 @@
 #ifndef AUDIOCDCOLLECTIONCAPABILITY_H
 #define AUDIOCDCOLLECTIONCAPABILITY_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
-#include "capabilities/CollectionCapability.h"
+#include "core/capabilities/CollectionCapability.h"
 
 class AudioCdCollection;
 

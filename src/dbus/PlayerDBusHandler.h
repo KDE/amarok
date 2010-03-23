@@ -18,7 +18,7 @@
 #ifndef PLAYER_DBUS_HANDLER_H
 #define PLAYER_DBUS_HANDLER_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "EngineObserver.h"
 
 #include <QObject>

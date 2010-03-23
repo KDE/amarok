@@ -19,8 +19,8 @@
 
 #include "amarok_export.h"
 #include "amarokurls/BookmarkGroup.h"
-#include "meta/Meta.h"
-#include "playlists/Playlist.h"
+#include "core/meta/Meta.h"
+#include "core/playlists/Playlist.h"
 #include "podcasts/PodcastMeta.h"
 #include "collection/QueryMaker.h"
 

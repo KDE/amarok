@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "AmarokUrlGenerator.h"
 #include "AmarokUrlRunnerBase.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistViewUrlRunner.h"
 
 #include <KIcon>

@@ -18,7 +18,7 @@
 #define AMAROK_ITUNES_IMPORTER_WORKER_H
 
 #include "databaseimporter/DatabaseImporter.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

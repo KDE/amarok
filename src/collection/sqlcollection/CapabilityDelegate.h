@@ -18,7 +18,7 @@
 #define CAPABILITYDELEGATE_H
 
 #include "amarok_sqlcollection_export.h"
-#include "capabilities/Capability.h"
+#include "core/capabilities/Capability.h"
 
 class SqlCollection;
 

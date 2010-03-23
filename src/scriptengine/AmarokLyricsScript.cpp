@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "ScriptManager.h"
 
 #include <KApplication>

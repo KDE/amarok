@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTION_SQLUSERPLAYLISTPROVIDER_H
 #define AMAROK_COLLECTION_SQLUSERPLAYLISTPROVIDER_H
 
-#include "playlists/providers/user/UserPlaylistProvider.h"
+#include "core/playlists/providers/user/UserPlaylistProvider.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 

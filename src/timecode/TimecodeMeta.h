@@ -17,9 +17,9 @@
 #ifndef TIMECODEMETA_H
 #define TIMECODEMETA_H
 
-#include "meta/Meta.h"
-#include "capabilities/BoundedPlaybackCapability.h"
-#include "capabilities/EditCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/BoundedPlaybackCapability.h"
+#include "core/capabilities/EditCapability.h"
 
 
 class QAction;

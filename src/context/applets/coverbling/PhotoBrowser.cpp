@@ -29,7 +29,7 @@
 #include <QImage>
 #include <QImageReader>
 #include <QTimer>
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #define ImageLoader PlainImageLoader
 

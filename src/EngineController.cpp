@@ -32,12 +32,12 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "MediaDeviceMonitor.h"
-#include "meta/Meta.h"
-#include "meta/support/MetaConstants.h"
-#include "capabilities/MultiPlayableCapability.h"
-#include "capabilities/MultiSourceCapability.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/capabilities/MultiPlayableCapability.h"
+#include "core/capabilities/MultiSourceCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "PluginManager.h"
 
 #include <KFileItem>

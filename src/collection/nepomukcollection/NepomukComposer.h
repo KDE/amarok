@@ -17,7 +17,7 @@
 #ifndef NEPOMUKCOMPOSER_H
 #define NEPOMUKCOMPOSER_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include "QString"
 

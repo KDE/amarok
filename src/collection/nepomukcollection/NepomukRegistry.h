@@ -22,7 +22,7 @@
 #include "NepomukArtist.h"
 #include "NepomukTrack.h"
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QHash>
 #include <QTimer>

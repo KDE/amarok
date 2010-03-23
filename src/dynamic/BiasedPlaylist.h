@@ -22,7 +22,7 @@
 #include "Bias.h"
 #include "BiasSolver.h"
 #include "DynamicPlaylist.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QDomElement>
 #include <QObject>

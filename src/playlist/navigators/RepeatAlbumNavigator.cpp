@@ -24,7 +24,7 @@
 #include "RepeatAlbumNavigator.h"
 
 #include "Debug.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()

@@ -17,9 +17,9 @@
 #ifndef MEDIADEVICE_DECORATOR_CAPABILITY_H
 #define MEDIADEVICE_DECORATOR_CAPABILITY_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
-#include "capabilities/DecoratorCapability.h"
+#include "core/capabilities/DecoratorCapability.h"
 
 class MediaDeviceCollection;
 class QAction;

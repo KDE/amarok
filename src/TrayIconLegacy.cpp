@@ -26,8 +26,8 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/support/MetaConstants.h"
-#include "capabilities/CurrentTrackActionsCapability.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include <KAction>

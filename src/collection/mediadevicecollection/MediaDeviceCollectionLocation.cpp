@@ -17,7 +17,7 @@
 #include "MediaDeviceCollectionLocation.h"
 
 #include "Debug.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 //#include "MediaDeviceMeta.h"

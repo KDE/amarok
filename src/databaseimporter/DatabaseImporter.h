@@ -17,7 +17,7 @@
 #ifndef AMAROK_DATABASE_IMPORTER_H
 #define AMAROK_DATABASE_IMPORTER_H
 
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
 #include <KVBox>
 

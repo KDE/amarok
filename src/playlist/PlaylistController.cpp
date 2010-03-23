@@ -29,13 +29,13 @@
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "collection/QueryMaker.h"
-#include "meta/impl/cue/CueFileSupport.h"
+#include "core/meta/impl/cue/CueFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlists/impl/file/PlaylistFileSupport.h"
-#include "meta/impl/multi/MultiTrack.h"
-#include "meta/impl/file/File.h"
+#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core/meta/impl/multi/MultiTrack.h"
+#include "core/meta/impl/file/File.h"
 
 
 #include <algorithm> // STL

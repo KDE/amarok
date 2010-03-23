@@ -1,4 +1,8 @@
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories(
+                    ${KDE4_INCLUDE_DIR}
+                    ${QT_INCLUDES}
+                    ${Amarok_SOURCE_DIR}/src
+                   )
 
 set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 

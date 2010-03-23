@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "amarok_export.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <KUrl>
 

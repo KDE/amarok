@@ -22,8 +22,8 @@
 #include "EngineController.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
-#include "support/MetaUtility.h"
-#include "capabilities/SourceInfoCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 #include <QVariant>
 #include <Phonon/MediaObject>

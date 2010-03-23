@@ -21,9 +21,9 @@
 #include "CollectionLocation.h"
 #include "Debug.h"
 #include "collection/support/FileCollectionLocation.h"
-#include "StatisticsCapability.h"
-#include "meta/impl/file/File.h"
-#include "meta/support/MetaConstants.h"
+#include "core/capabilities/StatisticsCapability.h"
+#include "core/meta/impl/file/File.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

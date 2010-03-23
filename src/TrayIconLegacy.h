@@ -20,7 +20,7 @@
 #define AMAROK_TRAYICONLEGACY_H
 
 #include "EngineObserver.h" //baseclass
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "SmartPointerList.h"
 
 #include <KSystemTrayIcon> //baseclass

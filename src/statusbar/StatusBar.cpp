@@ -21,8 +21,8 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "LongMessageWidget.h"
-#include "support/MetaUtility.h"
-#include "capabilities/SourceInfoCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistItem.h"
 #include "playlist/PlaylistModelStack.h"
 

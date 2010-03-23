@@ -17,7 +17,7 @@
 #ifndef NEPOMUKYEAR_H
 #define NEPOMUKYEAR_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QString>
 

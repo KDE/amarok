@@ -28,12 +28,12 @@
 
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
 
-#include "playlists/providers/user/UserPlaylistProvider.h"
+#include "core/playlists/providers/user/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>
 

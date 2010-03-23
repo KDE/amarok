@@ -49,9 +49,6 @@ include_directories(
     dialogs
     dynamic
     likeback
-    meta
-    meta/capabilities
-    meta/playlists
     playlistmanager
     plugin
     podcasts
@@ -278,50 +275,50 @@ set(libstatusbar_SRCS
 #####################################################################
 # META
 #####################################################################
-set(meta_SRCS
-    meta/capabilities/Capability.cpp
-    meta/playlists/impl/file/m3u/M3UPlaylist.cpp
-    meta/Meta.cpp
-    meta/support/MetaUtility.cpp
-    meta/impl/file/TagLibUtils.cpp
+set(core_SRCS
+    core/capabilities/Capability.cpp
+    core/playlists/impl/file/m3u/M3UPlaylist.cpp
+    core/meta/Meta.cpp
+    core/meta/support/MetaUtility.cpp
+    core/meta/impl/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
-    meta/playlists/Playlist.cpp
-    meta/playlists/impl/file/pls/PLSPlaylist.cpp
-    meta/statistics/StatisticsProvider.cpp
-    meta/playlists/PlaylistProvider.cpp
-    meta/playlists/providers/user/UserPlaylistProvider.cpp
-    meta/playlists/impl/file/PlaylistFileSupport.cpp
-    meta/support/PrivateMetaRegistry.cpp
-    meta/playlists/impl/file/xspf/XSPFPlaylist.cpp
-    meta/capabilities/BookmarkThisCapability.cpp
-    meta/capabilities/BoundedPlaybackCapability.cpp
-    meta/capabilities/CollectionCapability.cpp
-    meta/capabilities/CurrentTrackActionsCapability.cpp
-    meta/capabilities/CustomActionsCapability.cpp
-    meta/capabilities/DecoratorCapability.cpp
-    meta/capabilities/EditCapability.cpp
-    meta/capabilities/EditablePlaylistCapability.cpp
-    meta/capabilities/FindInSourceCapability.cpp
-    meta/capabilities/LastFmCapability.cpp
-    meta/capabilities/MultiPlayableCapability.cpp
-    meta/capabilities/MultiSourceCapability.cpp
-    meta/capabilities/OrganiseCapability.cpp
-    meta/capabilities/ReadLabelCapability.cpp
-    meta/capabilities/SourceInfoCapability.cpp
-    meta/capabilities/StatisticsCapability.cpp
-    meta/capabilities/StreamInfoCapability.cpp
-    meta/capabilities/TimecodeLoadCapability.cpp
-    meta/capabilities/TimecodeWriteCapability.cpp
-    meta/capabilities/UpdateCapability.cpp
-    meta/capabilities/WriteLabelCapability.cpp
-    meta/impl/file/File.cpp
-    meta/impl/multi/MultiTrack.cpp
-    meta/impl/multi/MultiSourceCapabilityImpl.cpp
-    meta/impl/cue/CueFileSupport.cpp
-    meta/impl/proxy/MetaProxy.cpp
-    meta/impl/stream/Stream.cpp
-    meta/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
-    meta/statistics/providers/tag/TagStatisticsProvider.cpp
+    core/playlists/Playlist.cpp
+    core/playlists/impl/file/pls/PLSPlaylist.cpp
+    core/statistics/StatisticsProvider.cpp
+    core/playlists/PlaylistProvider.cpp
+    core/playlists/providers/user/UserPlaylistProvider.cpp
+    core/playlists/impl/file/PlaylistFileSupport.cpp
+    core/meta/support/PrivateMetaRegistry.cpp
+    core/playlists/impl/file/xspf/XSPFPlaylist.cpp
+    core/capabilities/BookmarkThisCapability.cpp
+    core/capabilities/BoundedPlaybackCapability.cpp
+    core/capabilities/CollectionCapability.cpp
+    core/capabilities/CurrentTrackActionsCapability.cpp
+    core/capabilities/CustomActionsCapability.cpp
+    core/capabilities/DecoratorCapability.cpp
+    core/capabilities/EditCapability.cpp
+    core/capabilities/EditablePlaylistCapability.cpp
+    core/capabilities/FindInSourceCapability.cpp
+    core/capabilities/LastFmCapability.cpp
+    core/capabilities/MultiPlayableCapability.cpp
+    core/capabilities/MultiSourceCapability.cpp
+    core/capabilities/OrganiseCapability.cpp
+    core/capabilities/ReadLabelCapability.cpp
+    core/capabilities/SourceInfoCapability.cpp
+    core/capabilities/StatisticsCapability.cpp
+    core/capabilities/StreamInfoCapability.cpp
+    core/capabilities/TimecodeLoadCapability.cpp
+    core/capabilities/TimecodeWriteCapability.cpp
+    core/capabilities/UpdateCapability.cpp
+    core/capabilities/WriteLabelCapability.cpp
+    core/meta/impl/file/File.cpp
+    core/meta/impl/multi/MultiTrack.cpp
+    core/meta/impl/multi/MultiSourceCapabilityImpl.cpp
+    core/meta/impl/cue/CueFileSupport.cpp
+    core/meta/impl/proxy/MetaProxy.cpp
+    core/meta/impl/stream/Stream.cpp
+    core/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
+    core/statistics/providers/tag/TagStatisticsProvider.cpp
 )
 
 #####################################################################
@@ -496,8 +493,8 @@ set(libplaylist_SRCS
 
 if(KDEMULTIMEDIA_FOUND)
     set(audiocdsupport_SRCS
-        meta/audiocd/AudioCdTrackProvider.cpp
-        meta/audiocd/AudioCdTrackProvider_p.cpp
+        core/meta/impl/cdda/AudioCdTrackProvider.cpp
+        core/meta/impl/cdda/AudioCdTrackProvider_p.cpp
        )
 endif(KDEMULTIMEDIA_FOUND)
 
@@ -583,7 +580,7 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
     ${likeback_SRCS}
-    ${meta_SRCS}
+    ${core_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}

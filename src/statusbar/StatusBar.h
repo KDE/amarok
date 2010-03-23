@@ -22,7 +22,7 @@
 #include "EngineObserver.h"
 #include "MainWindow.h"
 #include "amarok_export.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "statusbar/CompoundProgressBar.h"
 
 #include <KJob>

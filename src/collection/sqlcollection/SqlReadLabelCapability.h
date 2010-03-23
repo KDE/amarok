@@ -19,7 +19,7 @@
 #ifndef SQLREADLABELCAPABILITY_H
 #define SQLREADLABELCAPABILITY_H
 
-#include "capabilities/ReadLabelCapability.h"
+#include "core/capabilities/ReadLabelCapability.h"
 #include "SqlMeta.h"
 
 class SqlStorage;

@@ -22,9 +22,9 @@
 #include "NepomukRegistry.h"
 
 #include "covermanager/CoverFetchingActions.h"
-#include "meta/CustomActionsCapability.h"
+#include "core/meta/CustomActionsCapability.h"
 #include "Debug.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QAction>
 #include <QDir>

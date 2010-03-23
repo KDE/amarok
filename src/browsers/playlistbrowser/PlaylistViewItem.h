@@ -18,7 +18,7 @@
 #ifndef PLAYLISTVIEWITEM_H
 #define PLAYLISTVIEWITEM_H
 
-#include "meta/PlaylistGroup.h"
+#include "core/meta/PlaylistGroup.h"
 
 #include <QSharedData>
 #include <KSharedPtr>

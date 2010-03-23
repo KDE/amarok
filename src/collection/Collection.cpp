@@ -17,7 +17,7 @@
 #include "Collection.h"
 
 #include "CollectionLocation.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 Amarok::CollectionFactory::CollectionFactory() : QObject()
 {

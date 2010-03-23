@@ -18,8 +18,8 @@
 #define USERPLAYLISTMODEL_H
 
 #include "MetaPlaylistModel.h"
-#include "Meta.h"
-#include "playlists/Playlist.h"
+#include "core/meta/Meta.h"
+#include "core/playlists/Playlist.h"
 
 #include <QAction>
 #include <QAbstractItemModel>

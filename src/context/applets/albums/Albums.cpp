@@ -28,8 +28,8 @@
 #include "EngineController.h"
 #include "context/Svg.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "meta/Meta.h"
-#include "support/MetaUtility.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
 #include "TrackItem.h"
 

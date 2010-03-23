@@ -19,7 +19,7 @@
 
 #include "CapabilityDelegate.h"
 #include "amarok_sqlcollection_export.h"
-#include "capabilities/Capability.h"
+#include "core/capabilities/Capability.h"
 
 #include <QAction>
 

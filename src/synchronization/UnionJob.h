@@ -19,7 +19,7 @@
 
 #include "SynchronizationBaseJob.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QPair>

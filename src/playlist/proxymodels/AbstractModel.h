@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLAYLISTABSTRACTMODEL_H
 #define AMAROK_PLAYLISTABSTRACTMODEL_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistItem.h"
 

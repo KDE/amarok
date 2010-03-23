@@ -1,6 +1,5 @@
 include_directories( ../.. 
 					 ../../..
-					 ../../../meta
 )
 
 set( photos_applet_SRCS

@@ -25,7 +25,7 @@
 #define AMAROK_PLAYLISTGROUPINGPROXY_H
 
 #include "ProxyBase.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QHash>
 #include <QModelIndex>

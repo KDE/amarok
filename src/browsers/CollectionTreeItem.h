@@ -20,7 +20,7 @@
 
 #include "Collection.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QList>
 

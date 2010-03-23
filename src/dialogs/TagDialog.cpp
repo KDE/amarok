@@ -31,18 +31,18 @@
 #include "SqlStorage.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
-#include "EditCapability.h"
+#include "core/capabilities/EditCapability.h"
 #include "FilenameLayoutDialog.h"
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
-#include "meta/support/MetaUtility.h"
-#include "capabilities/ReadLabelCapability.h"
-#include "capabilities/WriteLabelCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/ReadLabelCapability.h"
+#include "core/capabilities/WriteLabelCapability.h"
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "ui_TagDialogBase.h"
-#include "UpdateCapability.h"
+#include "core/capabilities/UpdateCapability.h"
 
 #include <KGlobal>
 #include <KHTMLView>

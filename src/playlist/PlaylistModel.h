@@ -25,7 +25,7 @@
 #include "proxymodels/AbstractModel.h"
 #include "Amarok.h"
 #include "UndoCommands.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QAbstractListModel>
 #include <QHash>

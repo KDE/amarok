@@ -18,7 +18,7 @@
 #ifndef AUDIOCDMETA_H
 #define AUDIOCDMETA_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 class AudioCdCollection;
 

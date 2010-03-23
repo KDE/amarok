@@ -20,7 +20,7 @@
 #define AMAROK_WIKIPEDIA_ENGINE
 
 #include "ContextObserver.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include "context/DataEngine.h"
 

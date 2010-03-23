@@ -29,7 +29,7 @@
 #define PICTUREFLOW_H
 
 #include <qwidget.h>
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include <qpainter.h>
 #include <QHBoxLayout>
 //#include "CoverBling.h"

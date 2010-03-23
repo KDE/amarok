@@ -20,7 +20,7 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "CoverFetchUnit.h"
 
 #include <QHash>
