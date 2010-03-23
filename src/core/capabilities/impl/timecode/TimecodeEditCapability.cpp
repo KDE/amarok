@@ -59,7 +59,7 @@ TimecodeEditCapability::setYear( const QString &newYear )
 }
 
 void
-TimecodeEditCapability::setBpm( const float newBpm )
+TimecodeEditCapability::setBpm( const qreal newBpm )
 {
      m_track->setBpm( newBpm );
 }
