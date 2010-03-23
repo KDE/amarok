@@ -76,6 +76,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
 {
+    // QAbstractItemView basics
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
@@ -87,7 +88,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setVerticalScrollMode( ScrollPerPixel );
 
-    // rendering adjustments
+    setMouseTracking( true );
+
+
+    // Rendering adjustments
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
     The::paletteHandler()->updateItemView( this );
@@ -95,9 +99,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setAutoFillBackground( false );
 
-    // signal connections
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );    // TODO for whoever added this 'connect()': Document why this is needed beyond what 'QListView' already does? And why only on 'layoutChanged', not e.g. 'modelReset'?
 
+    // Signal connections
     //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
     //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
     //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
@@ -108,6 +112,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+
+
+    // Timers
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
@@ -116,22 +124,20 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
     m_animationTimer->setInterval( 250 );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
-
     if ( LayoutManager::instance()->activeLayout().inlineControls() )
         m_animationTimer->start();
 
+
+    // Tooltips
     m_toolTipManager = new ToolTipManager(this);
 
-    // Indicate to the tooltip manager what to display based on the layout
-    // That way, we avoid doing it every time we want to display the tooltip
-    // This will be done every time the layout will be changed
+    //   Indicate to the tooltip manager what to display based on the layout
+    //   That way, we avoid doing it every time we want to display the tooltip
+    //   This will be done every time the layout will be changed
     m_toolTipManager->cancelExclusions();
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
-
-    setMouseTracking( true );
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -873,6 +879,8 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
+
+    update();
 }
 
 void Playlist::PrettyListView::saveTrackSelection()
