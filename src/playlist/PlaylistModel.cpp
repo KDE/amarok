@@ -819,7 +819,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     int max = 0;
     int activeShift = 0;
     bool activeDeleted = false;
-    QList<quint64> delIds;
     foreach( const RemoveCmd &rc, cmds )
     {
         min = qMin( min, rc.second );
@@ -865,7 +864,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
             beginRemoveRows(QModelIndex(), idx, idx);
             delitems.append(item);
             m_items.removeAll( item );
-            delIds.append( item->id() );
             m_itemIds.remove( item->id() );
             endRemoveRows();
         } else {
@@ -882,8 +880,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         max = ( max < m_items.size() ) ? max : m_items.size() - 1;
         emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
     }
-
-    emit removedIds( delIds );
 
     //update the active row
     if ( !activeDeleted && ( m_activeRow >= 0 ) )
@@ -905,8 +901,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
 void Playlist::Model::clearCommand()
 {
-    QList<quint64> delIds = m_itemIds.keys();
-
     beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     qDeleteAll( m_items );
     m_items.clear();
@@ -914,8 +908,6 @@ void Playlist::Model::clearCommand()
     endRemoveRows();
 
     m_activeRow = -1;
-
-    emit removedIds( delIds );
 }
 
 
