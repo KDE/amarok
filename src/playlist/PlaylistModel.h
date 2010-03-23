@@ -3,6 +3,7 @@
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -53,90 +54,54 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Model( QObject *parent = 0 );
         ~Model();
 
-        // inherited from QAbstractListModel
-        int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
+        // Inherited from QAbstractItemModel  (via QAbstractListModel)
         int columnCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return NUM_COLUMNS; }
-        QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
         QVariant data( const QModelIndex& index, int role ) const;
-        Qt::DropActions supportedDropActions() const;
-        Qt::ItemFlags flags( const QModelIndex &index ) const;
-        QStringList mimeTypes() const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
+        Qt::ItemFlags flags( const QModelIndex &index ) const;
+        QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+        QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        QStringList mimeTypes() const;
+        int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
+        Qt::DropActions supportedDropActions() const;
 
-        // inherited from Meta::Observer
-        using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track );
-        void metadataChanged( Meta::AlbumPtr album );
+        // Inherited from Playlist::AbstractModel
+        QAbstractItemModel* model() const { return const_cast<Model*>( this ); }
 
-        qint64 totalLength() const { return m_totalLength; }
-        quint64 totalSize() const { return m_totalSize; }
-
-        // convenience access methods
-        bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
+        quint64 activeId() const;
         int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
+        QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
+        Meta::TrackPtr activeTrack() const;
+        bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
+        bool containsTrack( const Meta::TrackPtr track ) const;
+        inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
+        virtual bool exportPlaylist( const QString &path ) const;
+        int firstRowForTrack( const Meta::TrackPtr track ) const;
+        quint64 idAt( const int row ) const;
+        bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
+        int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
+        int rowToBottomModel( const int row ) { return row; }
+        void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
         void setActiveRow( int row );
         void setAllNewlyAddedToUnplayed();
         void setAllUnplayed();
         void setRowQueued( int row );
         void setRowDequeued( int row );
+        Item::State stateOfId( quint64 id ) const;
         Item::State stateOfRow( int row ) const;
-
-        bool containsTrack( const Meta::TrackPtr track ) const;
-        int firstRowForTrack( const Meta::TrackPtr track ) const;
-        QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
-
+        qint64 totalLength() const { return m_totalLength; }
+        quint64 totalSize() const { return m_totalSize; }
         Meta::TrackPtr trackAt( int row ) const;
-        Meta::TrackPtr activeTrack() const;
-
-        /**
-         * Get the ordered list of tracks from this model
-         */
+        Meta::TrackPtr trackForId( const quint64 id ) const;
         virtual Meta::TrackList tracks() const;
 
-        // position-independent access methods
-        // these are useful when you care what tracks are in the playlist, but not what order they're in (eg, the Random Track navigator)
-        bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
-        int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
-        Meta::TrackPtr trackForId( const quint64 id ) const;
-
-        /**
-         * Returns the unique playlist id of the track at the requested row
-         * @param row the index in the playlist
-         * @return the id of the row specified, or 0 if the row does not exist
-         */
-        quint64 idAt( const int row ) const;
-
-        /**
-         * Returns the unique playlist item id of the active track
-         * (or 0 if no track is active).
-         * @return The playlist item's id.
-         */
-        quint64 activeId() const;
-
-        /**
-         * Set the active track based on the playlist id given.
-         * @param id the unique playlist id
-         */
-        void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
-
-        /**
-         * The Item state of the playlist track at the specified index
-         */
-        Item::State stateOfId( quint64 id ) const;
-
-        // methods to save playlist to file
-        /**
-         * Saves a playlist to a specified location.
-         * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
-         */
-        virtual bool exportPlaylist( const QString &path ) const;
-        inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
+        // Inherited from Meta::Observer
+        using Observer::metadataChanged;
+        void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::AlbumPtr album );
 
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
-
-        int rowToBottomModel( const int row ) { return row; }
 
     signals:
         void activeTrackChanged( quint64 );
