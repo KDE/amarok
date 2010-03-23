@@ -737,8 +737,8 @@ MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
     disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
+    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
     disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
                  this, SLOT( updateBookmarks(const QString*) ) );
@@ -885,8 +885,8 @@ void
 MainToolbar::showEvent( QShowEvent *ev )
 {
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
+    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
     connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
               this, SLOT( updateBookmarks(const QString*) ) );

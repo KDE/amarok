@@ -73,11 +73,11 @@ void TestDirectoryLoader::loadersFinished()
 
 void TestDirectoryLoader::testInitAndInsertAtRow()
 {
-    QCOMPARE( Playlist::ModelStack::instance()->source()->rowCount(), 20 );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->rowCount(), 20 );
 
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 0 )->prettyName(), QString( "Platz 01" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 4 )->prettyName(), QString( "Platz 01" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 5 )->prettyName(), QString( "Platz 02" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 14 )->prettyName(), QString( "Platz 05" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 19 )->prettyName(), QString( "Platz 10" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 0 )->prettyName(), QString( "Platz 01" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 4 )->prettyName(), QString( "Platz 01" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 5 )->prettyName(), QString( "Platz 02" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 14 )->prettyName(), QString( "Platz 05" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 19 )->prettyName(), QString( "Platz 10" ) );
 }

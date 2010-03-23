@@ -237,7 +237,7 @@ PlaylistFileProvider::import( const KUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == Playlist::ModelStack::instance()->source()->defaultPlaylistPath() )
+    if( path == Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;

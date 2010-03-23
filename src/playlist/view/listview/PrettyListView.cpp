@@ -106,8 +106,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
-    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->source()'.
-    connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
+    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
 
 
     // Timers
@@ -852,7 +852,7 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
 
     if( m_firstItemInserted == 0 )
     {
-        m_firstItemInserted = Playlist::ModelStack::instance()->source()->idAt( start );
+        m_firstItemInserted = Playlist::ModelStack::instance()->bottom()->idAt( start );
         QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
     }
 }

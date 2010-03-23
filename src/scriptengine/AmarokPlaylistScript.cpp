@@ -56,7 +56,7 @@ namespace AmarokScript
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
     {
-        QString savePath = Playlist::ModelStack::instance()->source()->defaultPlaylistPath();
+        QString savePath = Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath();
         The::playlist()->exportPlaylist( savePath );
         return savePath;
     }

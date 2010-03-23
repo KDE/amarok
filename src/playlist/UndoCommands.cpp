@@ -37,14 +37,14 @@ void
 Playlist::InsertTracksCmd::redo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->bottom()->insertTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::InsertTracksCmd::undo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->bottom()->removeTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -59,14 +59,14 @@ void
 Playlist::RemoveTracksCmd::redo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->bottom()->removeTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::RemoveTracksCmd::undo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->bottom()->insertTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -81,12 +81,12 @@ void
 Playlist::MoveTracksCmd::redo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, false );
+    Playlist::ModelStack::instance()->bottom()->moveTracksCommand( m_cmdlist, false );
 }
 
 void
 Playlist::MoveTracksCmd::undo()
 {
     DEBUG_BLOCK
-    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, true );
+    Playlist::ModelStack::instance()->bottom()->moveTracksCommand( m_cmdlist, true );
 }

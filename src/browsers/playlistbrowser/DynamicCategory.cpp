@@ -239,7 +239,7 @@ DynamicCategory::On()
     //if the playlist is empty, repopulate while we are at it:
 
     DynamicModel::instance()->enable( true );
-    if ( Playlist::ModelStack::instance()->source()->rowCount() == 0 )
+    if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
         The::playlistActions()->repopulateDynamicPlaylist();
 }
 

@@ -32,7 +32,7 @@
 // At any time a view should ONLY talk to the topmost proxy model, exposed by Playlist::
 // ModelStack::instance()->top(). External classes that talk to the playlist should only
 // talk to The::playlist() which returns Playlist::ModelStack::instance()->top(), and
-// exceptionally to Playlist::ModelStack::instance()->source() if they really really need
+// exceptionally to Playlist::ModelStack::instance()->bottom() if they really really need
 // the source model.
 // Each playlist model implements the interface defined in Playlist::AbstractModel.
 // Each playlist proxy is a subclass od QSortFilterProxyModel through Playlist::ProxyBase,
@@ -48,7 +48,7 @@ namespace Playlist
 
 /**
  * Singleton class that handles and wraps around the Playlist models architecture.
- * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->source()
+ * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->bottom()
  * should only be used internally or in very specific situations.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
@@ -68,11 +68,12 @@ public:
     static void destroy();
 
     /**
-     * The topmost proxy model in the stack
+     * Use the 'top()' model unless you have a specific need for a lower model.
      */
-    GroupingProxy *top();
-    SortProxy     *sortProxy();
-    Model         *source();
+    Playlist::AbstractModel *top();
+    GroupingProxy           *groupingProxy();
+    SortProxy               *sortProxy();
+    Playlist::Model         *bottom();
 
     Controller *controller();
 
@@ -101,7 +102,7 @@ private:
 
 namespace The
 {
-    AMAROK_EXPORT Playlist::GroupingProxy* playlist();
+    AMAROK_EXPORT Playlist::AbstractModel* playlist();
     AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 

@@ -181,7 +181,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 
     //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
     if( m_autoAppendAfterLoad )
-        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->source()->rowCount(), Meta::PlaylistPtr( this ) );
+        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->bottom()->rowCount(), Meta::PlaylistPtr( this ) );
 
     return true;
 }

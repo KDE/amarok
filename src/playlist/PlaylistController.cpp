@@ -489,7 +489,7 @@ void
 Playlist::Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Playlist::ModelStack::instance()->source()->qaim()->rowCount() );
+    removeRows( 0, Playlist::ModelStack::instance()->bottom()->qaim()->rowCount() );
     emit changed();
 }
 

@@ -58,7 +58,7 @@ LayoutManager::LayoutManager()
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
     if( !layouts().contains( m_activeLayout ) )
         m_activeLayout = "Default";
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 QStringList LayoutManager::layouts() const
@@ -69,11 +69,11 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );  
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 
 }
 
@@ -85,7 +85,7 @@ void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
@@ -112,10 +112,10 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
             copyNumber++;
             newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
         }
-                
+
 
         The::statusBar()->longMessage( i18n( "Current layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
-        
+
         addUserLayout( newLayoutName, layout );
         setActiveLayout( newLayoutName );
     }
@@ -202,7 +202,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
         debug() << "grouping mode is: " << layout.toElement().attribute( "group_by", "Album" );
-        
+
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );

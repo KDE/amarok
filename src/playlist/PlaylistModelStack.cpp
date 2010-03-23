@@ -23,7 +23,7 @@
 
 namespace The
 {
-    AMAROK_EXPORT Playlist::GroupingProxy* playlist()
+    AMAROK_EXPORT Playlist::AbstractModel* playlist()
     {
         return Playlist::ModelStack::instance()->top();
     }
@@ -79,8 +79,14 @@ ModelStack::~ModelStack()
     delete m_model;
 }
 
-GroupingProxy *
+Playlist::AbstractModel *
 ModelStack::top()
+{
+    return m_grouping;
+}
+
+GroupingProxy *
+ModelStack::groupingProxy()
 {
     return m_grouping;
 }
@@ -91,8 +97,8 @@ ModelStack::sortProxy()
     return m_sortfilter;
 }
 
-Model *
-ModelStack::source()
+Playlist::Model *
+ModelStack::bottom()
 {
     return m_model;
 }
@@ -104,4 +110,3 @@ ModelStack::controller()
 }
 
 }   //namespace Playlist
-
