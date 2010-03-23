@@ -337,19 +337,20 @@ void CoverFoundDialog::processQuery( const QString &input )
 {
     const bool inputEmpty( input.isEmpty() );
     const bool mQueryEmpty( m_query.isEmpty() );
+    bool incrementPage( false );
 
     QString q;
     if( inputEmpty && !mQueryEmpty )
     {
         q = m_query;
-        m_queryPage++;
+        incrementPage = true;
     }
     else if( !inputEmpty || !mQueryEmpty )
     {
         q = input;
         if( m_query == input )
         {
-            m_queryPage++;
+            incrementPage = true;
         }
         else
         {
@@ -362,6 +363,7 @@ void CoverFoundDialog::processQuery( const QString &input )
     {
         emit newCustomQuery( q, m_queryPage );
         updateSearchButton( q );
+        m_queryPage++;
     }
 }
 
