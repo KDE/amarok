@@ -75,6 +75,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
+        , m_firstItemInserted( 0 )
 {
     // QAbstractItemView basics
     setModel( Playlist::ModelStack::instance()->top() );
@@ -101,14 +102,12 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 
     // Signal connections
-    //   We prefer to connect to 'insertedIds' rather than 'rowsInserted', because FilterProxy
-    //   can emit *A LOT* (thousands) of 'rowsInserted' signals when its search string changes.
-    //   'insertedIds' only happens when the user inserted something, and that suits our purposes.
-    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( itemsInserted( const QList<quint64>& ) ) );
-
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+
+    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->source()'.
+    connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
 
 
     // Timers
@@ -840,18 +839,39 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsInserted( const QList<quint64> &insertedIds )
+// Handle scrolling to newly inserted playlist items.
+// Warning, this slot is connected to the 'rowsInserted' signal of the *bottom* model,
+// not the normal top model.
+// The reason: FilterProxy can emit *A LOT* (thousands) of 'rowsInserted' signals when its
+// search string changes. For that case we don't want to do any scrollTo() at all.
+void
+Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, int start, int end )
+{
+    Q_UNUSED( parent )
+    Q_UNUSED( end )
+
+    if( m_firstItemInserted == 0 )
+    {
+        m_firstItemInserted = Playlist::ModelStack::instance()->source()->idAt( start );
+        QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
+    }
+}
+
+void Playlist::PrettyListView::bottomModelRowsInsertedScroll()
 {
     DEBUG_BLOCK
 
-    int firstRow = m_topmostProxy->rowForId( insertedIds.first() );
+    if( m_firstItemInserted )
+    {   // Note: we don't bother handling the case "first inserted item in bottom model
+        // does not have a row in the top 'model()' due to FilterProxy" nicely.
+        int firstRowInserted = m_topmostProxy->rowForId( m_firstItemInserted );    // In the *top* model.
+        QModelIndex index = model()->index( firstRowInserted, 0 );
 
-    QModelIndex index = model()->index( firstRow, 0 );
-    if( !index.isValid() )
-        return;
+        if( index.isValid() )
+            scrollTo( index, QAbstractItemView::PositionAtCenter );
 
-    debug() << "index has row: " << index.row();
-    scrollTo( index, QAbstractItemView::PositionAtCenter );
+        m_firstItemInserted = 0;
+    }
 }
 
 void Playlist::PrettyListView::redrawActive()

@@ -91,7 +91,9 @@ protected slots:
     void newPalette( const QPalette & palette );
 
 private slots:
-    void itemsInserted( const QList<quint64>& );
+    void bottomModelRowsInserted( const QModelIndex& parent, int start, int end );
+    void bottomModelRowsInsertedScroll();
+
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
@@ -134,6 +136,8 @@ private:
     ToolTipManager * m_toolTipManager;
 
     void excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item , bool single );
+
+    quint64 m_firstItemInserted;
 
 public:
     QList<int> selectedRows() const;
