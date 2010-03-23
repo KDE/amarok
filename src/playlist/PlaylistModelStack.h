@@ -20,15 +20,14 @@
 #include "PlaylistController.h"
 #include "proxymodels/AbstractModel.h"
 #include "PlaylistModel.h"
-#include "proxymodels/FilterProxy.h"
-#include "proxymodels/SortProxy.h"
+#include "proxymodels/SortFilterProxy.h"
 #include "proxymodels/SearchProxy.h"
 #include "proxymodels/GroupingProxy.h"
 
 // THE PLAYLIST MODELS ARCHITECTURE
 // Amarok's playlist uses Qt's Model-View design pattern, so we have
 // * 1 source model which feeds the tracks data: Playlist::Model
-// * 4 proxies which modify the rows: FilterProxy==>SortProxy==>SearchProxy==>GroupingProxy
+// * 3 proxies which modify the rows: SortFilterProxy==>SearchProxy==>GroupingProxy
 // * 1 or more views, such as Playlist::PrettyListView.
 // At any time a view should ONLY talk to the topmost proxy model, exposed by Playlist::
 // ModelStack::instance()->top(). External classes that talk to the playlist should only
@@ -71,10 +70,11 @@ public:
     /**
      * The topmost proxy model in the stack
      */
-    GroupingProxy * top();
-    Model *         source();
-    SortProxy *     sortProxy();
-    Controller *    controller();
+    GroupingProxy *top();
+    SortProxy     *sortProxy();
+    Model         *source();
+
+    Controller *controller();
 
 private:
     /**
@@ -89,12 +89,12 @@ private:
 
     static ModelStack *s_instance;       //! Instance member.
 
-    Controller *        m_controller;
-    Model *             m_model;
-    FilterProxy *       m_filter;
-    SortProxy *         m_sort;
-    SearchProxy *       m_search;
-    GroupingProxy *     m_grouping;
+    GroupingProxy   *m_grouping;
+    SearchProxy     *m_search;
+    SortFilterProxy *m_sortfilter;
+    Model           *m_model;
+
+    Controller      *m_controller;
 };
 
 }   //namespace Playlist

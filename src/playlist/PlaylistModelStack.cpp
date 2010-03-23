@@ -61,9 +61,8 @@ ModelStack::ModelStack()
     : QObject()
 {
     m_model = new Model( this );
-    m_filter = new FilterProxy( m_model, this );
-    m_sort = new SortProxy( m_filter, this );
-    m_search = new SearchProxy( m_sort, this );
+    m_sortfilter = new SortFilterProxy( m_model, this );
+    m_search = new SearchProxy( m_sortfilter, this );
     m_grouping = new GroupingProxy( m_search, this );
 
     m_controller = new Controller( m_model, m_grouping, this );
@@ -71,12 +70,12 @@ ModelStack::ModelStack()
 
 ModelStack::~ModelStack()
 {
-    delete m_controller;  //destroyed first because it points to models
+    // Delete everything in reverse order of the constructor.
+    delete m_controller;
 
     delete m_grouping;
     delete m_search;
-    delete m_sort;
-    delete m_filter;
+    delete m_sortfilter;
     delete m_model;
 }
 
@@ -86,16 +85,16 @@ ModelStack::top()
     return m_grouping;
 }
 
+SortProxy *
+ModelStack::sortProxy()
+{
+    return m_sortfilter;
+}
+
 Model *
 ModelStack::source()
 {
     return m_model;
-}
-
-SortProxy *
-ModelStack::sortProxy()
-{
-    return m_sort;
 }
 
 Controller *
