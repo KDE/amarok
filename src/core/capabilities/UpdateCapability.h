@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta
+namespace Capabilities
 {
     /**
       * Do not use this capability. Ever. If you really need to emit Collection::updated()
@@ -30,13 +30,13 @@ namespace Meta
       * The proper solution is to add code to the collection that allows it figure out on its
       * own whether it has been changed.
       */
-    class AMAROK_EXPORT UpdateCapability : public Meta::Capability
+    class AMAROK_EXPORT UpdateCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
             virtual ~UpdateCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Updatable; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Updatable; }
         // simply should emit track's collection's updated signal
             virtual void collectionUpdated() const = 0;
 

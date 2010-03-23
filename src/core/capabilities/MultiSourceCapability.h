@@ -21,7 +21,7 @@
 
 #include <KUrl>
 
-namespace Meta {
+namespace Capabilities {
 
 /**
 A capability for tracks that can have several different source urls, such as multiple fallback streams for a radio station. If one source url fails or finishes, the track will automatically use the next one. It is also possbile to get a list of all urls that can be presented to the user so he can choose.
@@ -36,7 +36,7 @@ public:
 
     ~MultiSourceCapability();
 
-    static Type capabilityInterfaceType() { return Meta::Capability::MultiSource; }
+    static Type capabilityInterfaceType() { return Capabilities::Capability::MultiSource; }
 
     virtual KUrl first() = 0;
     virtual KUrl next() = 0;

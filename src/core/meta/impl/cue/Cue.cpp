@@ -38,11 +38,11 @@ using namespace MetaCue;
 
 namespace MetaCue {
 
-class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
 {
     public:
         TimecodeLoadCapabilityImpl( Track *track )
-        : Meta::TimecodeLoadCapability()
+        : Capabilities::TimecodeLoadCapability()
         , m_track( track )
         {}
 
@@ -259,17 +259,17 @@ Track::length() const
 }
 
 bool
-Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Meta::Capability::LoadTimecode;
+    return type == Capabilities::Capability::LoadTimecode;
 }
 
-Meta::Capability*
-Track::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::LoadTimecode:
+        case Capabilities::Capability::LoadTimecode:
             return new MetaCue::TimecodeLoadCapabilityImpl( this );
         default:
             return 0;

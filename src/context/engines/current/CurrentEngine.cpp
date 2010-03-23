@@ -284,7 +284,7 @@ CurrentEngine::update()
 
         setData( "current", "current", trackInfo );
 
-        Meta::SourceInfoCapability *sic = m_currentTrack->create<Meta::SourceInfoCapability>();
+        Capabilities::SourceInfoCapability *sic = m_currentTrack->create<Capabilities::SourceInfoCapability>();
         if( sic )
         {
             //is the source defined

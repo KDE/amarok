@@ -692,7 +692,7 @@ void TagDialog::init()
     m_labelModel = new LabelListModel( m_labels );
 
     ui->labelsList->setModel( m_labelModel );
-    ui->labelsTab->setEnabled( m_currentTrack->is<Meta::ReadLabelCapability>() );
+    ui->labelsTab->setEnabled( m_currentTrack->is<Capabilities::ReadLabelCapability>() );
 
     loadGlobalLabels();
 
@@ -1068,7 +1068,7 @@ void TagDialog::readTags()
     ui->X->setEnabled( editable ); \
     qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
 
-    const bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
+    const bool editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
     ui->kLineEdit_title->setEnabled( editable );
     ui->kLineEdit_title->setClearButtonShown( editable );
 
@@ -1468,7 +1468,7 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
 {
     DEBUG_BLOCK
 
-    Meta::WriteLabelCapability *wlc = track->create<Meta::WriteLabelCapability>();
+    Capabilities::WriteLabelCapability *wlc = track->create<Capabilities::WriteLabelCapability>();
 
     if( !wlc )
     {
@@ -1478,7 +1478,7 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
     wlc->setLabels( removedLabels, newLabels );
     delete wlc;
 
-    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+    Capabilities::ReadLabelCapability *rlc = track->create<Capabilities::ReadLabelCapability>();
     if( rlc )
         rlc->fetchLabels(); // If new labels are set, we need to fetchLabels() again to update the cache.  This should probably be done centrally..
 }
@@ -1508,7 +1508,7 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+    Capabilities::ReadLabelCapability *ric = track->create<Capabilities::ReadLabelCapability>();
     if( !ric )
     {
         debug() << "No Read Label Capability found, no labels available.";
@@ -1523,7 +1523,7 @@ TagDialog::loadLabels( Meta::TrackPtr track )
 {
     if( track )
     {
-        Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+        Capabilities::ReadLabelCapability *ric = track->create<Capabilities::ReadLabelCapability>();
         if( !ric )
         {
             debug() << "No Read Label Capability found, no labels available.";
@@ -1537,7 +1537,7 @@ TagDialog::loadLabels( Meta::TrackPtr track )
 void
 TagDialog::loadGlobalLabels()
 {
-    Meta::ReadLabelCapability *ric = m_currentTrack->create<Meta::ReadLabelCapability>();
+    Capabilities::ReadLabelCapability *ric = m_currentTrack->create<Capabilities::ReadLabelCapability>();
     if( !ric )
     {
         debug() << "No Read Label Capability found, no labels available.";
@@ -1637,10 +1637,10 @@ TagDialog::saveTags()
             emit lyricsChanged( track->uidUrl() );
         }
 
-        Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
         if( !ec )
         {
-            debug() << "Track does not have Meta::EditCapability. Aborting loop.";
+            debug() << "Track does not have Capabilities::EditCapability. Aborting loop.";
             continue;
         }
         if( !ec->isEditable() )
@@ -1697,7 +1697,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
         if( !uc )
         {
             continue;
@@ -1717,7 +1717,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, collectionsToUpdateMap )
     {
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
 
         uc->collectionUpdated();
     }

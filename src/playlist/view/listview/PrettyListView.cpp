@@ -236,7 +236,7 @@ void Playlist::PrettyListView::selectSource()
 
     //get multiSource capability:
 
-    Meta::MultiSourceCapability *msc = track->create<Meta::MultiSourceCapability>();
+    Capabilities::MultiSourceCapability *msc = track->create<Capabilities::MultiSourceCapability>();
     if ( msc )
     {
         debug() << "sources: " << msc->sources();
@@ -381,9 +381,9 @@ Playlist::PrettyListView::findInSource()
     Meta::TrackPtr track = currentIndex().data( TrackRole ).value<Meta::TrackPtr>();
     if ( track )
     {
-        if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::FindInSource ) )
         {
-            Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
+            Capabilities::FindInSourceCapability *fis = track->create<Capabilities::FindInSourceCapability>();
             if ( fis )
             {
                 fis->findInSource();

@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-namespace Meta
+namespace Capabilities
 {
     class AMAROK_EXPORT Capability : public QObject
     {

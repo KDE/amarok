@@ -100,8 +100,8 @@ namespace MetaProxy
             virtual void subscribe( Meta::Observer *observer );
             virtual void unsubscribe( Meta::Observer *observer );
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
             virtual bool operator==( const Meta::Track &track ) const;
 

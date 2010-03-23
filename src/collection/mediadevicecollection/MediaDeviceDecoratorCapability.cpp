@@ -21,7 +21,7 @@
 
 #include <QAction>
 
-using namespace Meta;
+using namespace Capabilities;
 
 MediaDeviceDecoratorCapability::MediaDeviceDecoratorCapability( MediaDeviceCollection *coll )
     : DecoratorCapability()
@@ -36,7 +36,7 @@ MediaDeviceDecoratorCapability::decoratorActions()
     QList<QAction*> actions;
     CollectionCapability *collCap =
             dynamic_cast<CollectionCapability *>(
-                    m_coll->createCapabilityInterface( Meta::Capability::Collection ) );
+                    m_coll->createCapabilityInterface( Capabilities::Capability::Collection ) );
     if( collCap )
         actions << collCap->collectionActions();
     else

@@ -22,107 +22,11 @@
 #include "core/capabilities/CustomActionsCapability.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeEditCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.h"
 
 using namespace Meta;
-
-
-////////////////// BoundedPlaybackCapabilityImpl //////////////////
-
-qint64 BoundedPlaybackCapabilityImpl::startPosition()
-{
-    return m_track->start();
-}
-
-qint64 BoundedPlaybackCapabilityImpl::endPosition()
-{
-    return m_track->end();
-}
-
-////////////////// TimecodeEditCapabilityImpl //////////////////
-
-TimecodeEditCapabilityImpl::TimecodeEditCapabilityImpl( TimecodeTrack * track )
-{
-    m_track = track;
-}
-
-void
-TimecodeEditCapabilityImpl::setAlbum( const QString &newAlbum )
-{
-   m_track->setAlbum( newAlbum );
-}
-
-void
-TimecodeEditCapabilityImpl::setArtist( const QString &newArtist )
-{
-     m_track->setArtist( newArtist );
-}
-
-void
-TimecodeEditCapabilityImpl::setComposer( const QString &newComposer )
-{
-    m_track->setComposer( newComposer );
-}
-
-void
-TimecodeEditCapabilityImpl::setGenre( const QString &newGenre )
-{
-     m_track->setGenre( newGenre );
-}
-
-void
-TimecodeEditCapabilityImpl::setYear( const QString &newYear )
-{
-     m_track->setYear( newYear );
-}
-
-void
-TimecodeEditCapabilityImpl::setBpm( const qreal newBpm )
-{
-     m_track->setBpm( newBpm );
-}
-
-void
-TimecodeEditCapabilityImpl::setTitle( const QString &newTitle )
-{
-     m_track->setTitle( newTitle );
-}
-
-void
-TimecodeEditCapabilityImpl::setComment( const QString &newComment )
-{
-     m_track->setComment( newComment );
-}
-
-void
-TimecodeEditCapabilityImpl::setTrackNumber( int newTrackNumber )
-{
-     m_track->setTrackNumber( newTrackNumber );
-}
-
-void
-TimecodeEditCapabilityImpl::setDiscNumber( int newDiscNumber )
-{
-    m_track->setDiscNumber( newDiscNumber );
-}
-
-
-void
-TimecodeEditCapabilityImpl::beginMetaDataUpdate()
-{
-    m_track->beginMetaDataUpdate();
-}
-
-void
-TimecodeEditCapabilityImpl::endMetaDataUpdate()
-{
-    m_track->endMetaDataUpdate();
-}
-
-void
-TimecodeEditCapabilityImpl::abortMetaDataUpdate()
-{
-    m_track->abortMetaDataUpdate();
-}
+using namespace Capabilities;
 
 ////////////////// TRACK //////////////////
 
@@ -511,21 +415,21 @@ TimecodeTrack::setArtist( TimecodeArtistPtr artist )
 
 
 bool
-TimecodeTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
+TimecodeTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Meta::Capability::BoundedPlayback
-           || type == Meta::Capability::Editable;
+    return type == Capabilities::Capability::BoundedPlayback
+           || type == Capabilities::Capability::Editable;
 }
 
-Meta::Capability *
-TimecodeTrack::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability *
+TimecodeTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     DEBUG_BLOCK
 
-    if ( type == Meta::Capability::BoundedPlayback )
-        return new BoundedPlaybackCapabilityImpl( this );
-    else if( type == Meta::Capability::Editable )
-        return new TimecodeEditCapabilityImpl( this );
+    if ( type == Capabilities::Capability::BoundedPlayback )
+        return new Capabilities::TimecodeBoundedPlaybackCapability( this );
+    else if( type == Capabilities::Capability::Editable )
+        return new Capabilities::TimecodeEditCapability( this );
     else
         return 0;
 }
@@ -679,14 +583,14 @@ void TimecodeAlbum::setIsCompilation( bool compilation )
     m_isCompilation = compilation;
 }
 
-bool TimecodeAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+bool TimecodeAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Meta::Capability::CustomActions;
+    return type == Capabilities::Capability::CustomActions;
 }
 
-Meta::Capability* TimecodeAlbum::asCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Meta::Capability::CustomActions )
+    if( type == Capabilities::Capability::CustomActions )
     {
         QList<QAction*> actions;
 

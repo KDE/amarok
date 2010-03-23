@@ -17,14 +17,13 @@
 #ifndef MEDIADEVICE_DECORATOR_CAPABILITY_H
 #define MEDIADEVICE_DECORATOR_CAPABILITY_H
 
-#include "core/meta/Meta.h"
-
+#include "core/capabilities/Capability.h"
 #include "core/capabilities/DecoratorCapability.h"
 
 class MediaDeviceCollection;
 class QAction;
 
-namespace Meta
+namespace Capabilities
 {
     class MediaDeviceDecoratorCapability : public DecoratorCapability
     {

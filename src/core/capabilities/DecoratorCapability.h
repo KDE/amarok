@@ -26,16 +26,16 @@
 #include <QList>
 #include <QObject>
 
-namespace Meta
+namespace Capabilities
 {
-    class AMAROK_EXPORT DecoratorCapability : public Meta::Capability
+    class AMAROK_EXPORT DecoratorCapability : public Capabilities::Capability
     {
         Q_OBJECT
 
         public:
             virtual ~DecoratorCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Decorator; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Decorator; }
             virtual QList<QAction*> decoratorActions() = 0;
     };
 }

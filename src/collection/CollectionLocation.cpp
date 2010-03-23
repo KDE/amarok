@@ -400,7 +400,7 @@ CollectionLocation::slotFinishRemove()
         if(!track)
             continue;
 
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
         if(!uc)
             continue;
 

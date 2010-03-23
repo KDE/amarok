@@ -37,11 +37,11 @@ class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
 
-class EditCapabilityProxy : public Meta::EditCapability
+class EditCapabilityProxy : public Capabilities::EditCapability
 {
     public:
         EditCapabilityProxy( MetaProxy::Track *track )
-            : Meta::EditCapability()
+            : Capabilities::EditCapability()
             , m_track( track ) {}
 
         virtual bool isEditable() const { return true; }
@@ -454,23 +454,23 @@ MetaProxy::Track::updateTrack( Meta::TrackPtr track )
 }
 
 bool
-MetaProxy::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+MetaProxy::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( d->realTrack )
         return d->realTrack->hasCapabilityInterface( type );
     else
-        if( type == Meta::Capability::Editable )
+        if( type == Capabilities::Capability::Editable )
             return true;
     return false;
 }
 
-Meta::Capability*
-MetaProxy::Track::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( d->realTrack )
         return d->realTrack->createCapabilityInterface( type );
     else
-        if( type == Meta::Capability::Editable )
+        if( type == Capabilities::Capability::Editable )
             return new EditCapabilityProxy( this );
     return 0;
 }

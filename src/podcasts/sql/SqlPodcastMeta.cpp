@@ -22,33 +22,33 @@
 #include "Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
-#include "core/capabilities/TimecodeLoadCapability.h"
-#include "core/capabilities/TimecodeWriteCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
 #include <QDate>
 #include <QFile>
 
-class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
+class TimecodeWriteCapabilityPodcastImpl : public Capabilities::TimecodeWriteCapability
 {
     public:
         TimecodeWriteCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
-            : Meta::TimecodeWriteCapability()
+            : Capabilities::TimecodeWriteCapability()
             , m_episode( episode )
         {}
 
     virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds,
+        return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
     virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds,
+        return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
@@ -56,11 +56,11 @@ class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
         Meta::PodcastEpisodePtr m_episode;
 };
 
-class TimecodeLoadCapabilityPodcastImpl : public Meta::TimecodeLoadCapability
+class TimecodeLoadCapabilityPodcastImpl : public Capabilities::TimecodeLoadCapability
 {
     public:
         TimecodeLoadCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
-        : Meta::TimecodeLoadCapability()
+        : Capabilities::TimecodeLoadCapability()
         , m_episode( episode )
         {
             DEBUG_BLOCK
@@ -229,18 +229,18 @@ Meta::SqlPodcastEpisode::length() const
 }
 
 bool
-Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) const
+Meta::SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::CurrentTrackActions:
-        case Meta::Capability::WriteTimecode:
-        case Meta::Capability::LoadTimecode:
+        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::WriteTimecode:
+        case Capabilities::Capability::LoadTimecode:
             //only downloaded episodes can be position marked
 //            return !localUrl().isEmpty();
             return true;
             //TODO: downloaded episodes can be edited
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return isEditable();
 
         default:
@@ -248,23 +248,23 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
     }
 }
 
-Meta::Capability*
-Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Meta::SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::CurrentTrackActions:
+        case Capabilities::Capability::CurrentTrackActions:
         {
             QList< QAction * > actions;
             QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
             actions << flag;
-            return new Meta::CurrentTrackActionsCapability( actions );
+            return new Capabilities::CurrentTrackActionsCapability( actions );
         }
-        case Meta::Capability::WriteTimecode:
+        case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityPodcastImpl( this );
-        case Meta::Capability::LoadTimecode:
+        case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             if( !m_localFile.isNull() )
                 return m_localFile->createCapabilityInterface( type );
         default:
@@ -370,7 +370,7 @@ Meta::SqlPodcastEpisode::writeTagsToFile()
     if( m_localFile.isNull() )
         return false;
 
-    Meta::EditCapability *ec = m_localFile->create<Meta::EditCapability>();
+    Capabilities::EditCapability *ec = m_localFile->create<Capabilities::EditCapability>();
     if( ec == 0 )
         return false;
 

@@ -19,7 +19,7 @@
 
 
 ServiceBookmarkThisCapability::ServiceBookmarkThisCapability( BookmarkThisProvider * provider )
-    : Meta::BookmarkThisCapability()
+    : Capabilities::BookmarkThisCapability()
     , m_provider( provider )
 {
 }
@@ -60,7 +60,7 @@ QAction * ServiceBookmarkThisCapability::bookmarkAction()
 
 
 ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
-    : Meta::CurrentTrackActionsCapability( )
+    : Capabilities::CurrentTrackActionsCapability( )
     , m_currentTrackActionsProvider( currentTrackActionsProvider )
 {
 }
@@ -81,7 +81,7 @@ ServiceCurrentTrackActionsCapability::customActions() const
 
 
 ServiceCustomActionsCapability::ServiceCustomActionsCapability(CustomActionsProvider * customActionsProvider)
-    : Meta::CustomActionsCapability( )
+    : Capabilities::CustomActionsCapability( )
     , m_customActionsProvider( customActionsProvider )
 {
 }
@@ -138,7 +138,7 @@ ServiceSourceInfoCapability::scalableEmblem()
 
 
 ServiceFindInSourceCapability::ServiceFindInSourceCapability( Meta::ServiceTrack *track )
-    : Meta::FindInSourceCapability()
+    : Capabilities::FindInSourceCapability()
     , m_track( track )
 {}
 

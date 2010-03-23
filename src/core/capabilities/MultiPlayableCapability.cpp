@@ -16,7 +16,7 @@
 
 #include "MultiPlayableCapability.h"
 
-Meta::MultiPlayableCapability::~MultiPlayableCapability()
+Capabilities::MultiPlayableCapability::~MultiPlayableCapability()
 {
     //nothing to do
 }

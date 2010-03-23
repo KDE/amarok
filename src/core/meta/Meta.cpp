@@ -203,14 +203,14 @@ Meta::Observer::metadataChanged( YearPtr year )
 //Meta::MetaCapability
 
 bool
-Meta::MetaCapability::hasCapabilityInterface( Meta::Capability::Type type ) const
+Meta::MetaCapability::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     Q_UNUSED( type );
     return false;
 }
 
-Meta::Capability*
-Meta::MetaCapability::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Meta::MetaCapability::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;

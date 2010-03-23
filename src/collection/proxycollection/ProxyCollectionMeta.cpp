@@ -30,14 +30,14 @@
 #include <QSet>
 #include <QTimer>
 
-#define FORWARD( call ) { foreach( Meta::EditCapability *ec, m_ec ) { ec->call; } \
+#define FORWARD( call ) { foreach( Capabilities::EditCapability *ec, m_ec ) { ec->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) ); }
 
-class ProxyEditCapability : public Meta::EditCapability
+class ProxyEditCapability : public Capabilities::EditCapability
 {
 public:
-    ProxyEditCapability( ProxyCollection::Collection *coll, const QList<Meta::EditCapability*> &ecs )
-        : Meta::EditCapability()
+    ProxyEditCapability( ProxyCollection::Collection *coll, const QList<Capabilities::EditCapability*> &ecs )
+        : Capabilities::EditCapability()
         , m_batchMode( false )
         , m_collection( coll )
         , m_ec( ecs ) {}
@@ -46,17 +46,17 @@ public:
     void beginMetaDataUpdate()
     {
         m_batchMode = true;
-        foreach( Meta::EditCapability *ec, m_ec ) ec->beginMetaDataUpdate();
+        foreach( Capabilities::EditCapability *ec, m_ec ) ec->beginMetaDataUpdate();
     }
     void endMetaDataUpdate()
     {
-        foreach( Meta::EditCapability *ec, m_ec ) ec->endMetaDataUpdate();
+        foreach( Capabilities::EditCapability *ec, m_ec ) ec->endMetaDataUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) );
     }
     void abortMetaDataUpdate()
     {
-        foreach( Meta::EditCapability *ec, m_ec ) ec->abortMetaDataUpdate();
+        foreach( Capabilities::EditCapability *ec, m_ec ) ec->abortMetaDataUpdate();
         m_batchMode = false;
     }
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
@@ -71,7 +71,7 @@ public:
     void setYear( const QString &newYear ) { FORWARD( setYear( newYear ) ) }
     bool isEditable() const
     {
-        foreach( Meta::EditCapability *ec, m_ec )
+        foreach( Capabilities::EditCapability *ec, m_ec )
         {
             if( !ec->isEditable() )
                 return false;
@@ -81,7 +81,7 @@ public:
 private:
     bool m_batchMode;
     ProxyCollection::Collection *m_collection;
-    QList<Meta::EditCapability*> m_ec;
+    QList<Capabilities::EditCapability*> m_ec;
 };
 
 #undef FORWARD
@@ -507,7 +507,7 @@ ProxyCollection::Track::collection() const
 }
 
 bool
-ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+ProxyCollection::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( m_tracks.count() == 1 )
     {
@@ -522,7 +522,7 @@ ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) co
         //as there are no supported capabilities yet...
         switch( type )
         {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             {
                 foreach( const Meta::TrackPtr &track, m_tracks )
                 {
@@ -537,8 +537,8 @@ ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) co
     }
 }
 
-Meta::Capability*
-ProxyCollection::Track::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_tracks.count() == 1 )
     {
@@ -549,12 +549,12 @@ ProxyCollection::Track::createCapabilityInterface( Meta::Capability::Type type )
     {
         switch( type )
         {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             {
-                QList<Meta::EditCapability*> ecs;
+                QList<Capabilities::EditCapability*> ecs;
                 foreach( Meta::TrackPtr track, m_tracks )
                 {
-                    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                     if( ec )
                         ecs << ec;
                     else
@@ -721,7 +721,7 @@ ProxyCollection::Album::hasAlbumArtist() const
 }
 
 bool
-ProxyCollection::Album::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyCollection::Album::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_albums.count() == 1 )
@@ -734,8 +734,8 @@ ProxyCollection::Album::hasCapabilityInterface(Meta::Capability::Type type ) con
     }
 }
 
-Meta::Capability*
-ProxyCollection::Album::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Album::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_albums.count() == 1 )
     {
@@ -977,7 +977,7 @@ ProxyCollection::Artist::albums()
 }
 
 bool
-ProxyCollection::Artist::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyCollection::Artist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_artists.count() == 1 )
@@ -990,8 +990,8 @@ ProxyCollection::Artist::hasCapabilityInterface(Meta::Capability::Type type ) co
     }
 }
 
-Meta::Capability*
-ProxyCollection::Artist::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Artist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_artists.count() == 1 )
     {
@@ -1103,7 +1103,7 @@ ProxyCollection::Genre::tracks()
 }
 
 bool
-ProxyCollection::Genre::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyCollection::Genre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_genres.count() == 1 )
@@ -1116,8 +1116,8 @@ ProxyCollection::Genre::hasCapabilityInterface(Meta::Capability::Type type ) con
     }
 }
 
-Meta::Capability*
-ProxyCollection::Genre::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Genre::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_genres.count() == 1 )
     {
@@ -1223,7 +1223,7 @@ ProxyCollection::Composer::tracks()
 }
 
 bool
-ProxyCollection::Composer::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyCollection::Composer::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_composers.count() == 1 )
@@ -1236,8 +1236,8 @@ ProxyCollection::Composer::hasCapabilityInterface(Meta::Capability::Type type ) 
     }
 }
 
-Meta::Capability*
-ProxyCollection::Composer::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Composer::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_composers.count() == 1 )
     {
@@ -1344,7 +1344,7 @@ ProxyCollection::Year::tracks()
 }
 
 bool
-ProxyCollection::Year::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyCollection::Year::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_years.count() == 1 )
@@ -1357,8 +1357,8 @@ ProxyCollection::Year::hasCapabilityInterface(Meta::Capability::Type type ) cons
     }
 }
 
-Meta::Capability*
-ProxyCollection::Year::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+ProxyCollection::Year::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_years.count() == 1 )
     {

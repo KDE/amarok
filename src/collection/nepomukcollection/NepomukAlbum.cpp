@@ -255,11 +255,11 @@ NepomukAlbum::removeImage()
 }
 
 bool
-NepomukAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+NepomukAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
             return true;
 
         default:
@@ -267,12 +267,12 @@ NepomukAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
     }
 }
 
-Meta::Capability*
-NepomukAlbum::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+NepomukAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
         {
             QList<QAction*> actions;
             //actions.append( new CopyToDeviceAction( m_collection, this ) );

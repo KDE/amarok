@@ -76,8 +76,8 @@ namespace ProxyCollection
 
             Amarok::Collection* collection() const;
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
             void add( const Meta::TrackPtr &track );
 
@@ -111,8 +111,8 @@ namespace ProxyCollection
         bool isCompilation() const;
         bool hasAlbumArtist() const;
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         void add( Meta::AlbumPtr album );
 
@@ -159,8 +159,8 @@ namespace ProxyCollection
 
         Meta::AlbumList albums();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         void add( Meta::ArtistPtr artist );
 
@@ -186,8 +186,8 @@ namespace ProxyCollection
 
         Meta::TrackList tracks();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         void add( Meta::GenrePtr genre );
 
@@ -213,8 +213,8 @@ namespace ProxyCollection
 
         Meta::TrackList tracks();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         void add( Meta::ComposerPtr composer );
 
@@ -240,8 +240,8 @@ namespace ProxyCollection
 
         Meta::TrackList tracks();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         /**
           * adds another Meta::Year instance to be proxied.

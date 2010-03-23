@@ -26,7 +26,7 @@
 class QString;
 class KUrl;
 
-namespace Meta {
+namespace Capabilities {
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -39,7 +39,7 @@ class AMAROK_EXPORT EditablePlaylistCapability : public Capability
 
         virtual ~EditablePlaylistCapability();
 
-        static Type capabilityInterfaceType() { return Meta::Capability::EditablePlaylist; }
+        static Type capabilityInterfaceType() { return Capabilities::Capability::EditablePlaylist; }
 
         /** Returns true if the tags of this track are currently editable */
         virtual bool isEditable() const = 0;
@@ -55,7 +55,7 @@ class AMAROK_EXPORT EditablePlaylistCapability : public Capability
         virtual void setLicense( const KUrl &license ) { Q_UNUSED( license ); };
         virtual void setAttribution( const KUrl &attribution, bool append = true ) { Q_UNUSED( attribution); Q_UNUSED(append); };
         virtual void setLink( const KUrl &link ) { Q_UNUSED( link ); };
-        virtual void setTrackList( TrackList trackList, bool append = false ) { Q_UNUSED( trackList ); Q_UNUSED( append ); };
+        virtual void setTrackList( Meta::TrackList trackList, bool append = false ) { Q_UNUSED( trackList ); Q_UNUSED( append ); };
 
         /** The playlist object should not store changed meta data immediately but cache the
         changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */

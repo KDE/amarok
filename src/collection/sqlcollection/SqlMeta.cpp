@@ -897,13 +897,13 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 }
 
 bool
-SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
+SqlTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
-Meta::Capability*
-SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this) : 0 );
 }
@@ -999,13 +999,13 @@ SqlArtist::albums()
 }
 
 bool
-SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
+SqlArtist::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     return ( m_delegate ? m_delegate->hasCapabilityInterface( type, this ) : 0 );
 }
 
-Meta::Capability*
-SqlArtist::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     return ( m_delegate ? m_delegate->createCapabilityInterface( type, this ) : 0 );
 }
@@ -1664,13 +1664,13 @@ SqlAlbum::setCompilation( bool compilation )
 }
 
 bool
-SqlAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+SqlAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     return ( m_delegate ? m_delegate->hasCapabilityInterface( type, this ) : false );
 }
 
-Meta::Capability*
-SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     return ( m_delegate ? m_delegate->createCapabilityInterface( type, this ) : 0 );
 }

@@ -35,8 +35,8 @@ public:
     TrackCapabilityDelegate() {};
     virtual ~ TrackCapabilityDelegate() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const = 0;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track ) = 0;
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlTrack *track ) const = 0;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlTrack *track ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS ArtistCapabilityDelegate
@@ -45,8 +45,8 @@ public:
     ArtistCapabilityDelegate() {};
     virtual ~ArtistCapabilityDelegate() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const = 0;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist ) = 0;
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlArtist *artist ) const = 0;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlArtist *artist ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS AlbumCapabilityDelegate
@@ -55,8 +55,8 @@ public:
     AlbumCapabilityDelegate() {};
     virtual ~AlbumCapabilityDelegate() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const = 0;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album ) = 0;
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlAlbum *album ) const = 0;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS CollectionCapabilityDelegate
@@ -65,8 +65,8 @@ public:
     CollectionCapabilityDelegate() {};
     virtual ~ CollectionCapabilityDelegate() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const = 0;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection ) = 0;
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const = 0;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection ) = 0;
 };
 
 

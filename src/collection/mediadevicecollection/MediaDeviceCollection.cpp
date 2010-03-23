@@ -215,12 +215,12 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
 /// CollectionCapability for Disconnect Action
 
 bool
-MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+MediaDeviceCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::Collection:
-        case Meta::Capability::Decorator:
+        case Capabilities::Capability::Collection:
+        case Capabilities::Capability::Decorator:
             return true;
 
         default:
@@ -228,15 +228,15 @@ MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) con
     }
 }
 
-Meta::Capability*
-MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+MediaDeviceCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::Collection:
-            return new Meta::MediaDeviceCollectionCapability( this );
-        case Meta::Capability::Decorator:
-            return new Meta::MediaDeviceDecoratorCapability( this );
+        case Capabilities::Capability::Collection:
+            return new Capabilities::MediaDeviceCollectionCapability( this );
+        case Capabilities::Capability::Decorator:
+            return new Capabilities::MediaDeviceDecoratorCapability( this );
         default:
             return 0;
     }

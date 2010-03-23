@@ -171,7 +171,7 @@ namespace Amarok
             if ( title.isEmpty() )
                 title = i18n( "Unknown track" );
 
-            Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+            Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
             if ( sic )
             {
                 QString source = sic->sourceName();

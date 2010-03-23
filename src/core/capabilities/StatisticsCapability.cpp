@@ -16,7 +16,7 @@
 
 #include "StatisticsCapability.h"
 
-Meta::StatisticsCapability::~StatisticsCapability()
+Capabilities::StatisticsCapability::~StatisticsCapability()
 {
     //nothing to do
 }

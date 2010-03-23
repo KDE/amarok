@@ -20,7 +20,7 @@
 
 #include <QAction>
 
-using namespace Meta;
+using namespace Capabilities;
 
 AudioCdCollectionCapability::AudioCdCollectionCapability( AudioCdCollection *collection )
     : CollectionCapability()
@@ -29,7 +29,7 @@ AudioCdCollectionCapability::AudioCdCollectionCapability( AudioCdCollection *col
 }
 
 
-QList<QAction*> Meta::AudioCdCollectionCapability::collectionActions()
+QList<QAction*> Capabilities::AudioCdCollectionCapability::collectionActions()
 {
     QList<QAction*> actions;
     actions.append( m_collection->ejectAction() );

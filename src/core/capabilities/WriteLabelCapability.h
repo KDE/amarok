@@ -23,14 +23,14 @@
 #include "core/meta/Meta.h"
 #include "amarok_export.h"
 
-namespace Meta
+namespace Capabilities
 {
 
-class AMAROK_EXPORT WriteLabelCapability : public Meta::Capability
+class AMAROK_EXPORT WriteLabelCapability : public Capabilities::Capability
 {
     Q_OBJECT
     public:
-        static Type capabilityInterfaceType() { return Meta::Capability::WriteLabel; }
+        static Type capabilityInterfaceType() { return Capabilities::Capability::WriteLabel; }
 
         //Implementors
         virtual void setLabels( const QStringList &removedLabels, const QStringList &labels ) = 0;

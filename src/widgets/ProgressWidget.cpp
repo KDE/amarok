@@ -22,7 +22,7 @@
 #include "TimeLabel.h"
 #include "amarokconfig.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
@@ -270,9 +270,9 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
     if ( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
         {
-            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
+            Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )

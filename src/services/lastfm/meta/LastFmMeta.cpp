@@ -527,29 +527,29 @@ Track::slotWsReply()
 }
 
 bool
-Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Meta::Capability::LastFm
-                || type == Meta::Capability::MultiPlayable
-                || type == Meta::Capability::SourceInfo
-                || type == Meta::Capability::CurrentTrackActions
-                || type == Meta::Capability::StreamInfo;
+    return type == Capabilities::Capability::LastFm
+                || type == Capabilities::Capability::MultiPlayable
+                || type == Capabilities::Capability::SourceInfo
+                || type == Capabilities::Capability::CurrentTrackActions
+                || type == Capabilities::Capability::StreamInfo;
 }
 
-Meta::Capability*
-Track::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::LastFm:
+        case Capabilities::Capability::LastFm:
             return new LastFmCapabilityImpl( this );
-        case Meta::Capability::MultiPlayable:
+        case Capabilities::Capability::MultiPlayable:
             return new MultiPlayableCapabilityImpl( this );
-        case Meta::Capability::SourceInfo:
+        case Capabilities::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
-        case Meta::Capability::CurrentTrackActions:
+        case Capabilities::Capability::CurrentTrackActions:
             return new CurrentTrackActionsCapabilityImpl( this );
-        case Meta::Capability::StreamInfo:
+        case Capabilities::Capability::StreamInfo:
             return new LastFmStreamInfoCapability( this );
         default:
             return 0;

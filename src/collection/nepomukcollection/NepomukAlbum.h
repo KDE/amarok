@@ -51,9 +51,9 @@ class NepomukAlbum : public Album
         virtual void setImage( const QImage &image );
         virtual void removeImage();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         // for plugin internal use only
 

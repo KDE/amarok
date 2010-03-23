@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "collection/SqlStorage.h"
 
-namespace Meta
+namespace Capabilities
 {
 
 SqlWriteLabelCapability::SqlWriteLabelCapability( Meta::SqlTrack* track, SqlStorage* storage )

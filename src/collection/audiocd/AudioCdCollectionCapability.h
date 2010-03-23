@@ -23,7 +23,7 @@
 
 class AudioCdCollection;
 
-namespace Meta
+namespace Capabilities
 {
     class AudioCdCollectionCapability : public CollectionCapability
     {

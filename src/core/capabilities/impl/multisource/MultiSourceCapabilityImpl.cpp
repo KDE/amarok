@@ -16,9 +16,10 @@
 
 #include "MultiSourceCapabilityImpl.h"
 
+using namespace Capabilities;
 
 MultiSourceCapabilityImpl::MultiSourceCapabilityImpl(Meta::MultiTrack * track)
-    : Meta::MultiSourceCapability()
+    : Capabilities::MultiSourceCapability()
     , m_track( track )
 {
     //forward from track, as there might  be several instances of MultiSourceCapabilityImpl active for one track.

@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
 
-namespace Meta
+namespace Capabilities
 {
 TimecodeLoadCapability::~TimecodeLoadCapability()
 {}

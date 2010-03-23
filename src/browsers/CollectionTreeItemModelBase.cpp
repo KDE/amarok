@@ -92,9 +92,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
-        if( !track->hasCapabilityInterface( Meta::Capability::Editable ) )
+        if( !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
             return false;
-        Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
         if( ec )
         {
             ec->setTitle( value.toString() );
@@ -110,7 +110,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setAlbum( value.toString() );
                 delete ec;
@@ -126,7 +126,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setArtist( value.toString() );
                 delete ec;
@@ -142,7 +142,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setGenre( value.toString() );
                 delete ec;
@@ -158,7 +158,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setYear( value.toString() );
                 delete ec;
@@ -174,7 +174,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setComposer( value.toString() );
                 delete ec;

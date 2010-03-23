@@ -73,7 +73,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                     Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                     if( data )
                     {
-                        Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
+                        Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
                         if( cac )
                         {
                             QList<QAction*> actions = cac->customActions();

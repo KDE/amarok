@@ -16,9 +16,9 @@
  
 #include "BoundedPlaybackCapability.h"
 
-namespace Meta {
+namespace Capabilities {
 
-Meta::BoundedPlaybackCapability::BoundedPlaybackCapability()
+Capabilities::BoundedPlaybackCapability::BoundedPlaybackCapability()
     : Capability()
 {
 }

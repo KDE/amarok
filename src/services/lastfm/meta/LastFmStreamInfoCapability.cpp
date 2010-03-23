@@ -19,7 +19,7 @@
 #include "LastFmMeta.h"
 
 LastFmStreamInfoCapability::LastFmStreamInfoCapability( LastFm::Track *track )
-    : Meta::StreamInfoCapability()
+    : Capabilities::StreamInfoCapability()
     , m_sourceTrack( track )
 {
 }

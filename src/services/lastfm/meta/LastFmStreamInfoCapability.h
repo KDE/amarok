@@ -23,7 +23,7 @@ namespace LastFm
 {
     class Track;
 }
-class LastFmStreamInfoCapability : public Meta::StreamInfoCapability
+class LastFmStreamInfoCapability : public Capabilities::StreamInfoCapability
 {
     Q_OBJECT
     public:

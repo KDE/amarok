@@ -31,7 +31,7 @@
 #include "PlaylistManager.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 
-#include "timecode/TimecodeMeta.h"
+#include "core/meta/impl/timecode/TimecodeMeta.h"
 
 #include <kurl.h>
 #include <KMessageBox>
@@ -708,7 +708,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 
         APPENDNODE( identifier, track->uidUrl() )
 
-        Meta::StreamInfoCapability *streamInfo = track->create<Meta::StreamInfoCapability>();
+        Capabilities::StreamInfoCapability *streamInfo = track->create<Capabilities::StreamInfoCapability>();
         if( streamInfo ) // We have a stream, use it's metadata instead of the tracks.
         {
             if( !streamInfo->streamName().isEmpty() )
@@ -763,7 +763,7 @@ XSPFPlaylist::hasCapabilityInterface( Capability::Type type ) const
     }
 }
 
-Capability*
+Capabilities::Capability*
 XSPFPlaylist::createCapabilityInterface( Capability::Type type )
 {
     switch( type )

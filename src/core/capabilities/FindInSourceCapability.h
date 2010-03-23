@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta {
+namespace Capabilities {
 
 /**
 This capability exposes a method that shows this track (or the closest possible parent, such as album) in the source where it was added from.
@@ -28,7 +28,7 @@ This capability exposes a method that shows this track (or the closest possible 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
-class AMAROK_EXPORT FindInSourceCapability : public Meta::Capability
+class AMAROK_EXPORT FindInSourceCapability : public Capabilities::Capability
 {
     Q_OBJECT
 public: 
@@ -38,9 +38,9 @@ public:
 
     /**
      * Get the capabilityInterfaceType of this capability
-     * @return The capabilityInterfaceType ( always Meta::Capability::FindInSource; )
+     * @return The capabilityInterfaceType ( always Capabilities::Capability::FindInSource; )
      */
-    static Type capabilityInterfaceType() { return Meta::Capability::FindInSource; }
+    static Type capabilityInterfaceType() { return Capabilities::Capability::FindInSource; }
 };
 
 };

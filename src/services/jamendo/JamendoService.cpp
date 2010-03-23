@@ -335,7 +335,7 @@ JamendoService::downloadCurrentTrackAlbum()
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     //check if this is indeed a Jamendo track
-    Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
     if( sic )
     {
         //is the source defined

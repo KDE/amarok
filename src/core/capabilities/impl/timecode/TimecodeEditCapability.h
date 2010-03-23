@@ -14,34 +14,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef TIMECODEEDITCAPABILITY_H
+#define TIMECODEEDITCAPABILITY_H
 
-#ifndef AMAROK_MULTISOURCECAPABILITYIMPL_P_H
-#define AMAROK_MULTISOURCECAPABILITYIMPL_P_H
+#include "core/meta/impl/timecode/TimecodeMeta.h"
+#include "core/capabilities/EditCapability.h"
 
-#include "core/capabilities/MultiSourceCapability.h"
+namespace Capabilities {
 
-#include "Debug.h"
-#include "MultiTrack.h"
-
-
-class MultiSourceCapabilityImpl : public Meta::MultiSourceCapability
+class AMAROK_EXPORT TimecodeEditCapability : public EditCapability
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-    MultiSourceCapabilityImpl( Meta::MultiTrack * track );
+    TimecodeEditCapability( Meta::TimecodeTrack * track );
+    ~TimecodeEditCapability() {}
 
+    static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
-    virtual KUrl first() { return m_track->first(); }
-    virtual KUrl next() { return m_track->next(); }
-    virtual int current() { return m_track->current(); }
-    virtual QStringList sources() { return m_track->sources(); }
-    virtual void setSource( int source );
+    virtual bool isEditable() const { return true; }
+    virtual void setAlbum( const QString &newAlbum );
+    virtual void setArtist( const QString &newArtist );
+    virtual void setComposer( const QString &newComposer );
+    virtual void setGenre( const QString &newGenre );
+    virtual void setYear( const QString &newYear );
+    virtual void setBpm( const float Bpm );
+    virtual void setTitle( const QString &newTitle );
+    virtual void setComment( const QString &newComment );
+    virtual void setTrackNumber( int newTrackNumber );
+    virtual void setDiscNumber( int newDiscNumber );
+
+    virtual void beginMetaDataUpdate();
+    virtual void endMetaDataUpdate();
+    virtual void abortMetaDataUpdate();
 
 private:
-    Meta::MultiTrack * m_track;
-
+    Meta::TimecodeTrack * m_track;
 };
 
+}
 #endif
-
-

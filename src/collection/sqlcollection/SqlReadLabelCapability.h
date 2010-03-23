@@ -24,10 +24,10 @@
 
 class SqlStorage;
 
-namespace Meta
+namespace Capabilities
 {
 
-class SqlReadLabelCapability : public Meta::ReadLabelCapability
+class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
 {
     Q_OBJECT
     public:

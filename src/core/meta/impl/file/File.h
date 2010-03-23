@@ -104,8 +104,8 @@ namespace MetaFile
             virtual bool inCollection() const;
             virtual Amarok::Collection *collection() const;
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
             class Private;
 

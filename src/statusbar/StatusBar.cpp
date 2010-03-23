@@ -248,7 +248,7 @@ void StatusBar::engineNewTrackPlaying()
 void StatusBar::updateInfo( Meta::TrackPtr track )
 {
     // Check if we have any source info:
-    Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
     if ( sic )
     {
         if ( !sic->sourceName().isEmpty() )

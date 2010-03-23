@@ -16,7 +16,7 @@
 
 #include "UpdateCapability.h"
 
-Meta::UpdateCapability::~UpdateCapability()
+Capabilities::UpdateCapability::~UpdateCapability()
 {
 }
 

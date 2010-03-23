@@ -20,15 +20,15 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta
+namespace Capabilities
 {
-    class AMAROK_EXPORT StatisticsCapability : public Meta::Capability
+    class AMAROK_EXPORT StatisticsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
             virtual ~StatisticsCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Importable; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Importable; }
 
             virtual void setScore( const int score ) = 0;
             virtual void setRating( const int rating ) = 0;

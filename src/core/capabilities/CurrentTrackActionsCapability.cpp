@@ -16,12 +16,12 @@
 
 #include "CurrentTrackActionsCapability.h"
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
+Capabilities::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
     : CustomActionsCapability()
 {
 }
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< QAction * > & actions )
+Capabilities::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< QAction * > & actions )
     : CustomActionsCapability( actions )
 {
 }

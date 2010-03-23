@@ -22,7 +22,7 @@
 
 class QPixmap;
 
-namespace Meta
+namespace Capabilities
 {
 
     /**
@@ -30,7 +30,7 @@ namespace Meta
 
         @author Nikolaj Hald Nielsen <nhn@kde.org>
     */
-    class AMAROK_EXPORT SourceInfoCapability : public Meta::Capability{
+    class AMAROK_EXPORT SourceInfoCapability : public Capabilities::Capability{
     public:
         Q_OBJECT
         public:
@@ -66,9 +66,9 @@ namespace Meta
 
             /**
              * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Meta::Capability::SourceInfo; )
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::SourceInfo; )
              */
-            static Type capabilityInterfaceType() { return Meta::Capability::SourceInfo; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::SourceInfo; }
 
     };
 

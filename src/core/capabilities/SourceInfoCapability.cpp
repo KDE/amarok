@@ -16,13 +16,13 @@
  
 #include "SourceInfoCapability.h"
 
-Meta::SourceInfoCapability::SourceInfoCapability()
-    : Meta::Capability()
+Capabilities::SourceInfoCapability::SourceInfoCapability()
+    : Capabilities::Capability()
 {
 }
 
 
-Meta::SourceInfoCapability::~SourceInfoCapability()
+Capabilities::SourceInfoCapability::~SourceInfoCapability()
 {
 }
 

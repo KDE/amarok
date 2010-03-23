@@ -18,9 +18,7 @@
 #define TIMECODEMETA_H
 
 #include "core/meta/Meta.h"
-#include "core/capabilities/BoundedPlaybackCapability.h"
-#include "core/capabilities/EditCapability.h"
-
+#include "core/capabilities/Capability.h"
 
 class QAction;
 
@@ -40,50 +38,6 @@ namespace Meta {
     typedef KSharedPtr<TimecodeComposer> TimecodeComposerPtr;
     typedef KSharedPtr<TimecodeYear> TimecodeYearPtr;
 
-class BoundedPlaybackCapabilityImpl : public BoundedPlaybackCapability
-{
-Q_OBJECT
-public:
-    BoundedPlaybackCapabilityImpl( TimecodeTrack * track )
-        : m_track( track )
-    {}
-
-    virtual qint64 startPosition();
-    virtual qint64 endPosition();
-
-private:
-    TimecodeTrack * m_track;
-
-};
-
-class TimecodeEditCapabilityImpl : public EditCapability
-{
-Q_OBJECT
-public:
-    TimecodeEditCapabilityImpl( TimecodeTrack * track );
-    ~TimecodeEditCapabilityImpl() {}
-
-    static Type capabilityInterfaceType() { return Meta::Capability::Editable; }
-
-    virtual bool isEditable() const { return true; }
-    virtual void setAlbum( const QString &newAlbum );
-    virtual void setArtist( const QString &newArtist );
-    virtual void setComposer( const QString &newComposer );
-    virtual void setGenre( const QString &newGenre );
-    virtual void setYear( const QString &newYear );
-    virtual void setBpm( const qreal Bpm );
-    virtual void setTitle( const QString &newTitle );
-    virtual void setComment( const QString &newComment );
-    virtual void setTrackNumber( int newTrackNumber );
-    virtual void setDiscNumber( int newDiscNumber );
-
-    virtual void beginMetaDataUpdate();
-    virtual void endMetaDataUpdate();
-    virtual void abortMetaDataUpdate();
-
-private:
-    TimecodeTrack * m_track;
-};
 
 class TimecodeTrack : public Track
 {
@@ -144,8 +98,8 @@ public:
 
     virtual QString type() const;
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     void beginMetaDataUpdate();
     void endMetaDataUpdate();
@@ -246,8 +200,8 @@ public:
     virtual bool canUpdateImage() const;
     virtual void setImage( const QPixmap &pixmap );
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+    virtual Capabilities::Capability* asCapabilityInterface( Capabilities::Capability::Type type );
 
     //TimecodeAlbum specific methods
     void addTrack( TimecodeTrackPtr track );

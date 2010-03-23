@@ -386,9 +386,9 @@ Amarok::TrayIcon::setupMenu()
     foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
         m_extraActions.append( action );
 
-    if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if ( m_track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = m_track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = m_track->create<Capabilities::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();

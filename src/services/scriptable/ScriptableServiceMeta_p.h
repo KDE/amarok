@@ -61,7 +61,7 @@ class ScriptableServiceInternalMetaItem
 };
 
 
-class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Meta::SourceInfoCapability
+class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Capabilities::SourceInfoCapability
 {
     public:
         ScriptableServiceInternalSourceInfoCapability( ScriptableServiceInternalMetaItem * sourceInfoProvider )
@@ -113,14 +113,14 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::SourceInfo );
+            return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::SourceInfo )
+            if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
@@ -177,14 +177,14 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
 
         virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::SourceInfo );
+            return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::SourceInfo )
+            if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
@@ -220,14 +220,14 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::SourceInfo );
+            return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::SourceInfo )
+            if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
@@ -263,14 +263,14 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::SourceInfo );
+            return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::SourceInfo )
+            if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
@@ -305,14 +305,14 @@ class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServic
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::SourceInfo );
+            return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::SourceInfo )
+            if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }

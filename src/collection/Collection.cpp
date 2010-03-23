@@ -53,14 +53,14 @@ Amarok::TrackProvider::trackForUrl( const KUrl &url )
 // CollectionBase
 
 bool
-Amarok::CollectionBase::hasCapabilityInterface( Meta::Capability::Type type ) const
+Amarok::CollectionBase::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     Q_UNUSED( type );
     return false;
 }
 
-Meta::Capability*
-Amarok::CollectionBase::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Amarok::CollectionBase::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;

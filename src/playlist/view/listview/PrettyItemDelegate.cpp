@@ -694,7 +694,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if( !track )
         return;
 
-    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
     if( !ec || !ec->isEditable() )
         return;
 

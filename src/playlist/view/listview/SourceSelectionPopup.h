@@ -37,7 +37,7 @@ class SourceSelectionPopup : public QDialog
 {
     Q_OBJECT
 public:
-    SourceSelectionPopup( QWidget * parent, Meta::MultiSourceCapability * msc );
+    SourceSelectionPopup( QWidget * parent, Capabilities::MultiSourceCapability * msc );
 
     ~SourceSelectionPopup();
 
@@ -49,7 +49,7 @@ protected slots:
 
 private:
     QListWidget *m_listWidget;
-    Meta::MultiSourceCapability * m_msc;
+    Capabilities::MultiSourceCapability * m_msc;
 };
 
 }

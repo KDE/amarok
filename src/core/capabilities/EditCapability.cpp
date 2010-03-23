@@ -16,7 +16,7 @@
 
 #include "EditCapability.h"
 
-Meta::EditCapability::~EditCapability()
+Capabilities::EditCapability::~EditCapability()
 {
     //nothing to do
 }

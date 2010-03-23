@@ -56,9 +56,9 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         * better into the rest of the Meta framework someday ~Bart Cerneels
         * TODO: Playlist : public MetaBase
         */
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
         KUrl retrievableUrl() { return m_url; }
 

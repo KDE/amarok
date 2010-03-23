@@ -167,7 +167,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         return  m_items.at( row )->track()->inCollection();
 
     else if ( role == MultiSourceRole )
-        return  m_items.at( row )->track()->hasCapabilityInterface( Meta::Capability::MultiSource );
+        return  m_items.at( row )->track()->hasCapabilityInterface( Capabilities::Capability::MultiSource );
 
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
@@ -265,7 +265,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 Meta::TrackPtr track = m_items.at( row )->track();
                 if( track )
                 {
-                    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+                    Capabilities::ReadLabelCapability *rlc = track->create<Capabilities::ReadLabelCapability>();
                     if( rlc )
                     {
                         const QStringList labels = rlc->labels();
@@ -314,7 +314,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Source:
             {
                 QString sourceName;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     sourceName = sic->sourceName();
@@ -329,7 +329,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case SourceEmblem:
             {
                 QPixmap emblem;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     QString source = sic->sourceName();

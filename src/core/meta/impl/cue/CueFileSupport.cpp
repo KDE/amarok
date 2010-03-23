@@ -18,7 +18,7 @@
 #include "CueFileSupport.h"
 
 #include "Debug.h"
-#include "timecode/TimecodeMeta.h"
+#include "core/meta/impl/timecode/TimecodeMeta.h"
 
 #include <KEncodingProber>
 

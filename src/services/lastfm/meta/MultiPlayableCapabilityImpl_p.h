@@ -28,12 +28,12 @@
 #include <lastfm/ws.h>
 
 
-class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
+class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability, public Meta::Observer
 {
     Q_OBJECT
     public:
         MultiPlayableCapabilityImpl( LastFm::Track *track )
-            : Meta::MultiPlayableCapability()
+            : Capabilities::MultiPlayableCapability()
             , m_url( track->internalUrl() )
             , m_track( track )
             , m_currentTrack( lastfm::Track() )

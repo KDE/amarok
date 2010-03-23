@@ -25,7 +25,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
-#include "timecode/TimecodeMeta.h"
+#include "core/meta/impl/timecode/TimecodeMeta.h"
 
 #include <KAction>
 #include <KMenu>

@@ -171,7 +171,7 @@ CurrentTrack::changeTrackRating( int rating )
         return;
 
     // Inform collections of end of a metadata update
-    Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+    Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
     if( !uc )
         return;
 
@@ -196,7 +196,7 @@ CurrentTrack::contextualActions()
 
     if( album )
     {
-        Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
         if( cac )
         {
             QList<QAction *> customActions = cac->customActions();
@@ -414,9 +414,9 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             m_trackActions << icon;
         }
         
-        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
         {
-            Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
             if( cac )
             {
                 QList<QAction*> actions = cac->customActions();
@@ -499,7 +499,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if( track )
     {
         // Don't show collection actions for local tracks
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
         if( uc )
             updatable = true;
 

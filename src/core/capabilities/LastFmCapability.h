@@ -20,9 +20,9 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta
+namespace Capabilities
 {
-    class AMAROK_EXPORT LastFmCapability : public Meta::Capability
+    class AMAROK_EXPORT LastFmCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
@@ -32,7 +32,7 @@ namespace Meta
             virtual void ban() = 0;
             virtual void skip() = 0;
 
-            static Type capabilityInterfaceType() { return Meta::Capability::LastFm; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::LastFm; }
     };
 }
 

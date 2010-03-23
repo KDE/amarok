@@ -16,7 +16,7 @@
 
 #include "LastFmCapability.h"
 
-Meta::LastFmCapability::~LastFmCapability()
+Capabilities::LastFmCapability::~LastFmCapability()
 {
     //nothing to do
 }

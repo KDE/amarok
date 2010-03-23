@@ -19,7 +19,7 @@
 
 #include "core/capabilities/Capability.h"
 
-namespace Meta {
+namespace Capabilities {
 
 /**
 A capability for tracks that represents a given, bounded, interval of a url, for instance a single track in a long podcast.
@@ -38,7 +38,7 @@ public:
     
     /**
      * Get the capabilityInterfaceType of this capability
-     * @return The capabilityInterfaceType ( always Meta::Capability::BoundedPlayback; )
+     * @return The capabilityInterfaceType ( always Capabilities::Capability::BoundedPlayback; )
      */
     static Type capabilityInterfaceType() { return Capability::BoundedPlayback; }
 

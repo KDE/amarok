@@ -29,8 +29,9 @@
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
-#include "core/capabilities/TimecodeLoadCapability.h"
-#include "core/capabilities/TimecodeWriteCapability.h"
+#include "core/capabilities/OrganiseCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/capabilities/UpdateCapability.h"
 #include "amarokurls/PlayUrlRunner.h"
@@ -39,12 +40,12 @@
 #include <QFile>
 #include <QList>
 
-class EditCapabilityImpl : public Meta::EditCapability
+class EditCapabilityImpl : public Capabilities::EditCapability
 {
     Q_OBJECT
     public:
     EditCapabilityImpl( Meta::SqlTrack *track )
-            : Meta::EditCapability()
+            : Capabilities::EditCapability()
             , m_track( track ) {}
 
         virtual bool isEditable() const { return m_track->isEditable(); }
@@ -66,11 +67,11 @@ class EditCapabilityImpl : public Meta::EditCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class StatisticsCapabilityImpl : public Meta::StatisticsCapability
+class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
 {
     public:
         StatisticsCapabilityImpl( Meta::SqlTrack *track )
-            : Meta::StatisticsCapability()
+            : Capabilities::StatisticsCapability()
             , m_track( track ) {}
 
         virtual void setScore( const int score ) {
@@ -113,12 +114,12 @@ class StatisticsCapabilityImpl : public Meta::StatisticsCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class OrganiseCapabilityImpl : public Meta::OrganiseCapability
+class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
 {
     Q_OBJECT
     public:
         OrganiseCapabilityImpl( Meta::SqlTrack *track )
-            : Meta::OrganiseCapability()
+            : Capabilities::OrganiseCapability()
             , m_track( track ) {}
 
         virtual void deleteTrack()
@@ -134,12 +135,12 @@ class OrganiseCapabilityImpl : public Meta::OrganiseCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class UpdateCapabilityImpl : public Meta::UpdateCapability
+class UpdateCapabilityImpl : public Capabilities::UpdateCapability
 {
     Q_OBJECT
     public:
         UpdateCapabilityImpl( Meta::SqlTrack *track )
-            : Meta::UpdateCapability()
+            : Capabilities::UpdateCapability()
             , m_track( track ) {}
 
         virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
@@ -149,35 +150,35 @@ class UpdateCapabilityImpl : public Meta::UpdateCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
 {
     Q_OBJECT
     public:
         TimecodeWriteCapabilityImpl( Meta::SqlTrack *track )
-        : Meta::TimecodeWriteCapability()
+        : Capabilities::TimecodeWriteCapability()
         , m_track( track )
         {}
 
         virtual bool writeTimecode ( qint64 miliseconds )
         {
-            return Meta::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
+            return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
         }
 
         virtual bool writeAutoTimecode ( qint64 miliseconds )
         {
-            return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
+            return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
         }
 
     private:
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
 {
     Q_OBJECT
     public:
         TimecodeLoadCapabilityImpl( Meta::SqlTrack *track )
-        : Meta::TimecodeLoadCapability()
+        : Capabilities::TimecodeLoadCapability()
         , m_track( track )
         {}
 
@@ -199,12 +200,12 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 };
 
 
-class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
+class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
 {
     Q_OBJECT
     public:
         FindInSourceCapabilityImpl( Meta::SqlTrack *track )
-            : Meta::FindInSourceCapability()
+            : Capabilities::FindInSourceCapability()
             , m_track( track ) {}
 
         virtual void findInSource()
@@ -237,26 +238,26 @@ TrackCapabilityDelegateImpl::TrackCapabilityDelegateImpl()
 }
 
 bool
-TrackCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const
+TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlTrack *track ) const
 {
     if( !track )
         return false;
 
     switch( type )
     {
-        case Meta::Capability::CustomActions:
-        case Meta::Capability::Importable:
-        case Meta::Capability::Organisable:
-        case Meta::Capability::Updatable:
-        case Meta::Capability::CurrentTrackActions:
-        case Meta::Capability::WriteTimecode:
-        case Meta::Capability::LoadTimecode:
-        case Meta::Capability::ReadLabel:
-        case Meta::Capability::WriteLabel:
-        case Meta::Capability::FindInSource:
+        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Importable:
+        case Capabilities::Capability::Organisable:
+        case Capabilities::Capability::Updatable:
+        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::WriteTimecode:
+        case Capabilities::Capability::LoadTimecode:
+        case Capabilities::Capability::ReadLabel:
+        case Capabilities::Capability::WriteLabel:
+        case Capabilities::Capability::FindInSource:
             return true;
 
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return track->isEditable();
 
         default:
@@ -264,8 +265,8 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type
     }
 }
 
-Meta::Capability*
-TrackCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track )
+Capabilities::Capability*
+TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlTrack *track )
 {
     if( !track )
     {
@@ -276,46 +277,46 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type t
 
     switch( type )
     {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return new EditCapabilityImpl( track );
 
-        case Meta::Capability::Importable:
+        case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( track );
 
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
         {
             QList<QAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
 
-            return new Meta::CustomActionsCapability( actions );
+            return new Capabilities::CustomActionsCapability( actions );
         }
 
-        case Meta::Capability::Organisable:
+        case Capabilities::Capability::Organisable:
             return new OrganiseCapabilityImpl( track );
 
-        case Meta::Capability::Updatable:
+        case Capabilities::Capability::Updatable:
             return new UpdateCapabilityImpl( track );
 
-        case Meta::Capability::CurrentTrackActions:
+        case Capabilities::Capability::CurrentTrackActions:
         {
             QList< QAction * > actions;
             QAction* flag = new BookmarkCurrentTrackPositionAction( track->collection() );
             actions << flag;
             debug() << "returning bookmarkcurrenttrack action";
-            return new Meta::CurrentTrackActionsCapability( actions );
+            return new Capabilities::CurrentTrackActionsCapability( actions );
         }
-        case Meta::Capability::WriteTimecode:
+        case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( track );
-        case Meta::Capability::LoadTimecode:
+        case Capabilities::Capability::LoadTimecode:
             debug() << "creating load timecode capability";
             return new TimecodeLoadCapabilityImpl( track );
-        case Meta::Capability::ReadLabel:
-            return new Meta::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
-        case Meta::Capability::WriteLabel:
-            return new Meta::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
-        case Meta::Capability::FindInSource:
+        case Capabilities::Capability::ReadLabel:
+            return new Capabilities::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
+        case Capabilities::Capability::WriteLabel:
+            return new Capabilities::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
+        case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( track );
 
         default:
@@ -336,22 +337,22 @@ ArtistCapabilityDelegateImpl::~ArtistCapabilityDelegateImpl()
 }
 
 bool
-ArtistCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const
+ArtistCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlArtist *artist ) const
 {
     if( !artist )
         return false;
 
     switch( type )
     {
-        case Meta::Capability::BookmarkThis:
+        case Capabilities::Capability::BookmarkThis:
             return true;
         default:
             return false;
     }
 }
 
-Meta::Capability*
-ArtistCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist )
+Capabilities::Capability*
+ArtistCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlArtist *artist )
 {
     if( !artist )
     {
@@ -360,11 +361,11 @@ ArtistCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type 
 
     switch( type )
     {
-        case Meta::Capability::BookmarkThis:
+        case Capabilities::Capability::BookmarkThis:
         {
             if ( !m_bookmarkAction )
                 m_bookmarkAction = new BookmarkArtistAction( 0, Meta::ArtistPtr( artist ) );
-            return new Meta::SqlBookmarkThisCapability( m_bookmarkAction );
+            return new Capabilities::SqlBookmarkThisCapability( m_bookmarkAction );
         }
         default:
             return 0;
@@ -412,24 +413,24 @@ AlbumCapabilityDelegateImpl::~AlbumCapabilityDelegateImpl()
 }
 
 bool
-AlbumCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const
+AlbumCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlAlbum *album ) const
 {
     if( !album )
         return false;
 
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
             return true;
-        case Meta::Capability::BookmarkThis:
+        case Capabilities::Capability::BookmarkThis:
             return true;
         default:
             return false;
     }
 }
 
-Meta::Capability*
-AlbumCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album )
+Capabilities::Capability*
+AlbumCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album )
 {
     if( !album )
     {
@@ -438,7 +439,7 @@ AlbumCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type t
 
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
         {
             QList<QAction*> actions;
             actions.append( new CompilationAction( album->sqlCollection(), album ) );
@@ -458,13 +459,13 @@ AlbumCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type t
                 unsetCoverAction->setEnabled( false );
             }
             actions.append( unsetCoverAction );
-            return new Meta::CustomActionsCapability( actions );
+            return new Capabilities::CustomActionsCapability( actions );
         }
-        case Meta::Capability::BookmarkThis:
+        case Capabilities::Capability::BookmarkThis:
         {
             if ( !m_bookmarkAction )
                 m_bookmarkAction = new BookmarkAlbumAction( 0, Meta::AlbumPtr( album ) );
-            return new Meta::SqlBookmarkThisCapability( m_bookmarkAction );
+            return new Capabilities::SqlBookmarkThisCapability( m_bookmarkAction );
         }
 
         default:
@@ -477,7 +478,7 @@ CollectionCapabilityDelegateImpl::CollectionCapabilityDelegateImpl()
 {
 }
 
-bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const
+bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const
 {
     if( !collection )
         return 0;
@@ -489,8 +490,8 @@ bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability:
     }
 }
 
-Meta::Capability*
-CollectionCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection )
+Capabilities::Capability*
+CollectionCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection )
 {
     if( !collection )
         return 0;

@@ -16,7 +16,7 @@
 
 #include "Capability.h"
 
-Meta::Capability::~Capability()
+Capabilities::Capability::~Capability()
 {
     //nothing to do
 }

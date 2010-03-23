@@ -16,7 +16,7 @@
 
 #include "MultiSourceCapability.h"
 
-namespace Meta {
+namespace Capabilities {
 
 MultiSourceCapability::MultiSourceCapability()
  : Capability()

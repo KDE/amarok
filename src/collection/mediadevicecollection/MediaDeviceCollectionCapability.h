@@ -23,7 +23,7 @@
 
 class MediaDeviceCollection;
 
-namespace Meta
+namespace Capabilities
 {
     class MediaDeviceCollectionCapability : public CollectionCapability
     {

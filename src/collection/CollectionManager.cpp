@@ -28,7 +28,7 @@
 #include "PluginManager.h"
 #include "SmartPointerList.h"
 #include "SqlStorage.h"
-#include "timecode/TimecodeTrackProvider.h"
+#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
 
 #include <QList>
 #include <QMetaEnum>

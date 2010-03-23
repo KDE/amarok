@@ -16,7 +16,7 @@
 
 #include "EditablePlaylistCapability.h"
 
-namespace Meta {
+namespace Capabilities {
 
 EditablePlaylistCapability::~EditablePlaylistCapability()
 {

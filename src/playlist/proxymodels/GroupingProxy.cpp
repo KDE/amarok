@@ -317,8 +317,8 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
             {
                 QString source1, source2;
 
-                Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
-                Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
+                Capabilities::SourceInfoCapability *sic1 = track1->create< Capabilities::SourceInfoCapability >();
+                Capabilities::SourceInfoCapability *sic2 = track2->create< Capabilities::SourceInfoCapability >();
                 if( sic1 && sic2)
                 {
                     source1 = sic1->sourceName();

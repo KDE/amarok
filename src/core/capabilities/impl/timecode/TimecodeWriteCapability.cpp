@@ -14,8 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TimecodeWriteCapability.h"
 
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/PlayUrlGenerator.h"
@@ -23,9 +24,8 @@
 #include "Debug.h"
 #include "ProgressWidget.h"
 #include "EngineController.h"
-#include "TimecodeLoadCapability.h"
 
-namespace Meta
+namespace Capabilities
 {
 
 TimecodeWriteCapability::~TimecodeWriteCapability()
@@ -52,14 +52,14 @@ bool TimecodeWriteCapability::writeTimecode( qint64 miliseconds, Meta::TrackPtr 
     return true;
 }
 
-bool Meta::TimecodeWriteCapability::writeAutoTimecode( qint64 miliseconds, Meta::TrackPtr track )
+bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 miliseconds, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
     //first up, find and delete any previously added auto timecodes for this track
 
     debug() << "deleting old auto timecodes";
-    if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+    if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
     {
         TimecodeLoadCapability *tcl = track->create<TimecodeLoadCapability>();
         BookmarkList list = tcl->loadTimecodes();

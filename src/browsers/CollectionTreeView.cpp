@@ -928,7 +928,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                 if( data )
                 {
-                    Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
+                    Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
                     if( cac )
                     {
                         if ( m_caSeperator == 0 ) {
@@ -950,7 +950,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         delete cac;
                     }
                     //check if this item can be bookmarked...
-                    Meta::BookmarkThisCapability *btc = data->create<Meta::BookmarkThisCapability>();
+                    Capabilities::BookmarkThisCapability *btc = data->create<Capabilities::BookmarkThisCapability>();
                     if( btc )
                     {
                         if( btc->isBookmarkable() ) {
@@ -988,7 +988,7 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 
     // Generate CollectionCapability, test for existence
 
-    Meta::CollectionCapability *cc = collection->create<Meta::CollectionCapability>();
+    Capabilities::CollectionCapability *cc = collection->create<Capabilities::CollectionCapability>();
 
     if( cc )
     {

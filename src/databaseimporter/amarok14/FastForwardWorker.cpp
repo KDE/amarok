@@ -291,7 +291,7 @@ FastForwardWorker::run()
         if( track )
         {
             // import statistics
-            Meta::StatisticsCapability *ec = track->create<Meta::StatisticsCapability>();
+            Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
             if( !ec )
                 continue;
 

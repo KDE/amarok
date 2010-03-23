@@ -21,7 +21,7 @@
 #include "core/capabilities/Capability.h"
 
 #include <QString>
-namespace Meta
+namespace Capabilities
 {
 
     /**
@@ -34,7 +34,7 @@ namespace Meta
 
         @author Dan Meltzer <parallelgrapefruit@gmail.com>
     */
-    class AMAROK_EXPORT StreamInfoCapability : public Meta::Capability
+    class AMAROK_EXPORT StreamInfoCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
@@ -51,7 +51,7 @@ namespace Meta
              * @return The name of the owning source.
              */
             virtual QString streamSource() const { return QString(); }
-            static Type capabilityInterfaceType() { return Meta::Capability::StreamInfo; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::StreamInfo; }
 
     };
 

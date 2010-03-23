@@ -27,7 +27,7 @@
 
 namespace Playlist {
 
-    SourceSelectionPopup::SourceSelectionPopup( QWidget * parent,  Meta::MultiSourceCapability * msc )
+    SourceSelectionPopup::SourceSelectionPopup( QWidget * parent,  Capabilities::MultiSourceCapability * msc )
     : QDialog( parent )
     , m_msc( msc )
 {

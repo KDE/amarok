@@ -73,8 +73,8 @@ class SqlPlaylist : public Playlist
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
         Meta::SqlPlaylistGroupPtr parent() const;
 

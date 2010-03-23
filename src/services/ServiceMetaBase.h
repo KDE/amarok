@@ -227,26 +227,26 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                   ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                   ( type == Meta::Capability::CurrentTrackActions ) ||
-                   ( type == Meta::Capability::BookmarkThis ) ||
-                   ( type == Meta::Capability::FindInSource && isBookmarkable() );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                   ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                   ( type == Capabilities::Capability::CurrentTrackActions ) ||
+                   ( type == Capabilities::Capability::BookmarkThis ) ||
+                   ( type == Capabilities::Capability::FindInSource && isBookmarkable() );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::CurrentTrackActions )
+            else if ( type == Capabilities::Capability::CurrentTrackActions )
                 return new ServiceCurrentTrackActionsCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            else if ( type == Meta::Capability::FindInSource && isBookmarkable() )
+            else if ( type == Capabilities::Capability::FindInSource && isBookmarkable() )
                 return new ServiceFindInSourceCapability( this );
             return 0;
         }
@@ -317,20 +317,20 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         virtual void processInfoOf( InfoParserBase * infoParser );
 
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                    ( type == Meta::Capability::BookmarkThis );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
             return 0;
         }
@@ -388,20 +388,20 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                    ( type == Meta::Capability::BookmarkThis );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
             return 0;
         }
@@ -469,20 +469,20 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                    ( type == Meta::Capability::BookmarkThis );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
             return 0;
         }
@@ -525,20 +525,20 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                    ( type == Meta::Capability::BookmarkThis );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
             return 0;
         }
@@ -568,20 +568,20 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
         {
-            return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                    ( type == Meta::Capability::BookmarkThis );
+            return ( type == Capabilities::Capability::CustomActions ) ||
+                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
         {
-            if ( type == Meta::Capability::CustomActions )
+            if ( type == Capabilities::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
-            else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
+            else if ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::BookmarkThis )
+            else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
             return 0;
         }

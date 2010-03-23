@@ -20,7 +20,7 @@
 #include "Debug.h"
 #include "core/meta/impl/stream/Stream.h"
 #include "SqlStorage.h"
-#include "timecode/TimecodeMeta.h"
+#include "core/meta/impl/timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"

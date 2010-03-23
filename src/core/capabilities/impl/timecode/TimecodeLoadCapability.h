@@ -14,55 +14,53 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TIMECODEWRITECAPABILITY_H
-#define TIMECODEWRITECAPABILITY_H
+#ifndef TIMECODELOADCAPABILITY_H
+#define TIMECODELOADCAPABILITY_H
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
+#include "amarokurls/AmarokUrl.h"
 
-namespace Meta
-{
+#include <KSharedPtr>
+
+#include <QList>
+
+namespace Capabilities {
+
+typedef QList<AmarokUrlPtr> BookmarkList;
+typedef KSharedPtr<AmarokUrl> AmarokUrlPtr;
 /**
- * This capability determines whether a track can have a timecode
- * written to it.
- * @author Casey Link
- */
-class AMAROK_EXPORT TimecodeWriteCapability : public Capability
+* This capability determines whether a track has timecodes
+* that can be loaded from it, and supplies them if it can.
+* @author Casey Link
+*/
+class AMAROK_EXPORT TimecodeLoadCapability : public Capability
 {
     Q_OBJECT
 public:
-
-    virtual ~TimecodeWriteCapability();
-
-    /**
-     * Stores a timecode for the track
-     * @param seconds the position in seconds at which the timecide should be stored.
-     * @return  true if the write was successful, false if not.
-     */
-    virtual bool writeTimecode ( qint64 miliseconds ) = 0;
+    virtual ~TimecodeLoadCapability();
 
     /**
-     * Stores an auto timecode for the track and deletes any previously added auto timecodes
-     * @param seconds the position in seconds at which the timecide should be stored.
-     * @return  true if the write was successful, false if not.
+     * @return true if the track has timecodes, false if not
      */
-    virtual bool writeAutoTimecode ( qint64 miliseconds ) = 0;
+    virtual bool hasTimecodes() = 0 ;
+
+    /**
+     * @return a QList of AmarokUrlPtrs representing the track's timecodes. Might return an empty list.
+     */
+    virtual BookmarkList loadTimecodes()  = 0;
 
     /**
     * Get the capabilityInterfaceType of this capability
-    * @return The capabilityInterfaceType ( always Meta::Capability::WriteTimecode; )
+    * @return The capabilityInterfaceType ( always Capabilities::Capability::LoadTimecode; )
     */
     static Type capabilityInterfaceType()
     {
-        return Meta::Capability::WriteTimecode;
+        return Capabilities::Capability::LoadTimecode;
     }
-
-protected:
-
-    bool writeTimecode( qint64 miliseconds, Meta::TrackPtr track );
-    bool writeAutoTimecode( qint64 miliseconds, Meta::TrackPtr track );
 };
 
-#endif // TIMECODEWRITECAPABILITY_H
 }
+
+#endif // TIMECODELOADCAPABILITY_H

@@ -29,8 +29,8 @@ public:
     TrackCapabilityDelegateImpl();
     virtual ~ TrackCapabilityDelegateImpl() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlTrack *track ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlTrack *track );
 };
 
 class ArtistCapabilityDelegateImpl : public ArtistCapabilityDelegate
@@ -39,8 +39,8 @@ public:
     ArtistCapabilityDelegateImpl();
     virtual ~ArtistCapabilityDelegateImpl();
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlArtist *artist ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlArtist *artist );
 
 private:
     QAction * m_bookmarkAction;
@@ -52,8 +52,8 @@ public:
     AlbumCapabilityDelegateImpl();
     virtual ~AlbumCapabilityDelegateImpl();
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlAlbum *album ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album );
 
 private:
     QAction * m_bookmarkAction;
@@ -65,8 +65,8 @@ public:
     CollectionCapabilityDelegateImpl();
     virtual ~ CollectionCapabilityDelegateImpl() {};
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection );
 };
 
 

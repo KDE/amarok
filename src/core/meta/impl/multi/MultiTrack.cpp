@@ -17,7 +17,7 @@
 #include "MultiTrack.h"
 
 #include "Debug.h"
-#include "MultiSourceCapabilityImpl.h"
+#include "core/capabilities/impl/multisource/MultiSourceCapabilityImpl.h"
 
 namespace Meta {
 
@@ -102,17 +102,17 @@ QStringList Meta::MultiTrack::sources()
     return trackNames;
 }
 
-bool Meta::MultiTrack::hasCapabilityInterface(Meta::Capability::Type type) const
+bool Meta::MultiTrack::hasCapabilityInterface(Capabilities::Capability::Type type) const
 {
-    return type == Meta::Capability::MultiSource;
+    return type == Capabilities::Capability::MultiSource;
 }
 
-Meta::Capability * Meta::MultiTrack::createCapabilityInterface(Meta::Capability::Type type)
+Capabilities::Capability * Meta::MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
 {
     switch( type )
     {
-        case Meta::Capability::MultiSource:
-            return new MultiSourceCapabilityImpl( this );
+        case Capabilities::Capability::MultiSource:
+            return new Capabilities::MultiSourceCapabilityImpl( this );
         default:
             return 0;
     }

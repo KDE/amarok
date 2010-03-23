@@ -351,13 +351,13 @@ SqlCollection::slotDeviceRemoved( int id )
 }
 
 bool
-SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
-Meta::Capability*
-SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this ) : 0 );
 }

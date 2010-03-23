@@ -55,7 +55,7 @@ typedef QList<XSPFTrack> XSPFTrackList;
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
 class AMAROK_EXPORT XSPFPlaylist : public PlaylistFile, public QDomDocument,
-            public EditablePlaylistCapability
+            public Capabilities::EditablePlaylistCapability
 {
 public:
     XSPFPlaylist();
@@ -115,11 +115,11 @@ public:
     bool isEditable() const { return true; }
 
     /* Meta::Playlist virtual functions */
-    bool hasCapabilityInterface( Capability::Type type ) const;
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
     KUrl retrievableUrl() { return m_url; }
 
-    Capability* createCapabilityInterface( Capability::Type type );
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     /* PlaylistFile methods */
     bool isWritable();

@@ -23,7 +23,7 @@
 
 #include <QAction>
 
-using namespace Meta;
+using namespace Capabilities;
 
 MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( MediaDeviceCollection *coll )
     : CollectionCapability()

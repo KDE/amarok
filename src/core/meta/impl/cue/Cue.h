@@ -72,8 +72,8 @@ class AMAROK_EXPORT Track : public MetaFile::Track, public EngineObserver
         virtual void setTitle ( const QString &newTitle );
         virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     private:
         typedef KSharedPtr<Track> TrackPtr;

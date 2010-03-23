@@ -161,9 +161,9 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         foreach( QAction *action, globalCurrentTrackActions )
             actions << action;
 
-        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
         {
-            Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
             if ( cac )
             {
                 QList<QAction *> cActions = cac->customActions();
@@ -175,7 +175,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         }
     }
 
-    if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+    if( track->hasCapabilityInterface( Capabilities::Capability::FindInSource ) )
     {
         if( m_findInSourceAction == 0 )
         {
@@ -198,7 +198,7 @@ Playlist::ViewCommon::coverActionsFor( const QModelIndex *index )
     Meta::AlbumPtr album = track->album();
     if( album )
     {
-        Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
         if ( cac )
         {
             QList<QAction *> customActions = cac->customActions();

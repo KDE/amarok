@@ -109,9 +109,9 @@ namespace Meta
             * better into the rest of the Meta framework someday ~Bart Cerneels
             * TODO: Playlist : public MetaBase
             */
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const = 0;
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const = 0;
 
-            virtual Capability* createCapabilityInterface( Capability::Type type ) = 0;
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) = 0;
 
             /**
              * Retrieves a specialized interface which represents a capability of this
@@ -121,8 +121,8 @@ namespace Meta
              */
             template <class CapIface> CapIface *create()
             {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = createCapabilityInterface(type);
+                Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
+                Capabilities::Capability *iface = createCapabilityInterface(type);
                 return qobject_cast<CapIface *>(iface);
             }
 

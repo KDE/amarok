@@ -26,7 +26,7 @@
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "BookmarkModel.h"
 #include "SqlStorage.h"
-#include "timecode/TimecodeObserver.h"
+#include "core/meta/impl/timecode/TimecodeObserver.h"
 #include "ContextUrlGenerator.h"
 #include "PlayUrlGenerator.h"
 

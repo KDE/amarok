@@ -128,8 +128,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         //MediaDeviceTrack specific methods
 
@@ -223,8 +223,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual void setImagePath( const QString &path );
         virtual void removeImage();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         //MediaDeviceAlbum specific methods
 

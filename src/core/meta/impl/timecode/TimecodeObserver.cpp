@@ -18,7 +18,7 @@
 
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "core/capabilities/TimecodeWriteCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
 
 
 const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minutes
@@ -47,7 +47,7 @@ TimecodeObserver::engineNewTrackPlaying()
     {
         if( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 * 1000 )
         {
-            Meta::TimecodeWriteCapability *tcw = m_currentTrack->create<Meta::TimecodeWriteCapability>();
+            Capabilities::TimecodeWriteCapability *tcw = m_currentTrack->create<Capabilities::TimecodeWriteCapability>();
             if( tcw )
             {
                 tcw->writeAutoTimecode ( m_currPos ); // save the timecode
@@ -57,7 +57,7 @@ TimecodeObserver::engineNewTrackPlaying()
     }
 
     // now update to the new track
-    if( currentTrack && currentTrack->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
+    if( currentTrack && currentTrack->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
     {
         debug() << "curent track name: " << currentTrack->prettyName();
         m_trackTimecodeable = true;
@@ -79,7 +79,7 @@ TimecodeObserver::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength,
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         if( currentTrack )
         {
-            Meta::TimecodeWriteCapability *tcw = currentTrack->create<Meta::TimecodeWriteCapability>();
+            Capabilities::TimecodeWriteCapability *tcw = currentTrack->create<Capabilities::TimecodeWriteCapability>();
             if( tcw )
             {
                 tcw->writeAutoTimecode ( finalPosition ); // save the timecode

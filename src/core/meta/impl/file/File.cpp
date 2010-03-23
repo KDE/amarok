@@ -28,8 +28,8 @@
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
-#include "core/capabilities/TimecodeWriteCapability.h"
-#include "core/capabilities/TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
 #include "core/statistics/providers/url/PermanentUrlStatisticsProvider.h"
 #include "core/meta/support/MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
@@ -44,12 +44,12 @@
 #endif
 using namespace MetaFile;
 
-class EditCapabilityImpl : public Meta::EditCapability
+class EditCapabilityImpl : public Capabilities::EditCapability
 {
     Q_OBJECT
     public:
         EditCapabilityImpl( MetaFile::Track *track )
-            : Meta::EditCapability()
+            : Capabilities::EditCapability()
             , m_track( track )
         {}
 
@@ -72,11 +72,11 @@ class EditCapabilityImpl : public Meta::EditCapability
         KSharedPtr<MetaFile::Track> m_track;
 };
 
-class StatisticsCapabilityImpl : public Meta::StatisticsCapability
+class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
 {
     public:
         StatisticsCapabilityImpl( MetaFile::Track *track )
-            : Meta::StatisticsCapability()
+            : Capabilities::StatisticsCapability()
             , m_track( track )
         {}
 
@@ -93,35 +93,35 @@ class StatisticsCapabilityImpl : public Meta::StatisticsCapability
         KSharedPtr<MetaFile::Track> m_track;
 };
 
-class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
 {
     public:
         TimecodeWriteCapabilityImpl( MetaFile::Track *track )
-            : Meta::TimecodeWriteCapability()
+            : Capabilities::TimecodeWriteCapability()
             , m_track( track )
         {}
 
     virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
+        return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
     virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
+        return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
 };
 
-class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
 {
     public:
         TimecodeLoadCapabilityImpl( MetaFile::Track *track )
-        : Meta::TimecodeLoadCapability()
+        : Capabilities::TimecodeLoadCapability()
         , m_track( track )
         {}
 
@@ -143,11 +143,11 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 };
 
 
-class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
+class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
 {
 public:
     FindInSourceCapabilityImpl( MetaFile::Track *track )
-        : Meta::FindInSourceCapability()
+        : Capabilities::FindInSourceCapability()
         , m_track( track )
         {}
         
@@ -645,54 +645,54 @@ Track::collection() const
 }
 
 bool
-Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     bool readlabel = false;
 #ifdef HAVE_LIBLASTFM
     readlabel = true;
 #endif
-    return type == Meta::Capability::Editable ||
-           type == Meta::Capability::Importable ||
-           type == Meta::Capability::CurrentTrackActions ||
-           type == Meta::Capability::WriteTimecode ||
-           type == Meta::Capability::LoadTimecode ||
-           ( type == Meta::Capability::ReadLabel && readlabel ) ||
-           type == Meta::Capability::FindInSource;
+    return type == Capabilities::Capability::Editable ||
+           type == Capabilities::Capability::Importable ||
+           type == Capabilities::Capability::CurrentTrackActions ||
+           type == Capabilities::Capability::WriteTimecode ||
+           type == Capabilities::Capability::LoadTimecode ||
+           ( type == Capabilities::Capability::ReadLabel && readlabel ) ||
+           type == Capabilities::Capability::FindInSource;
 }
 
-Meta::Capability*
-Track::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return new EditCapabilityImpl( this );
 
-        case Meta::Capability::Importable:
+        case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
 
-        case Meta::Capability::CurrentTrackActions:
+        case Capabilities::Capability::CurrentTrackActions:
             {
                 QList< QAction * > actions;
                 QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
                 actions << flag;
                 debug() << "returning bookmarkcurrenttrack action";
-                return new Meta::CurrentTrackActionsCapability( actions );
+                return new Capabilities::CurrentTrackActionsCapability( actions );
             }
 
-        case Meta::Capability::WriteTimecode:
+        case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
 
-        case Meta::Capability::LoadTimecode:
+        case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
 
-        case Meta::Capability::FindInSource:
+        case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( this );
 
 #if HAVE_LIBLASTFM
-       case Meta::Capability::ReadLabel:
+       case Capabilities::Capability::ReadLabel:
            if( !d->readLabelCapability )
-               d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
+               d->readLabelCapability = new Capabilities::LastfmReadLabelCapability( this );
 #endif
 
         default: // fall-through

@@ -23,7 +23,7 @@
 #include <QAction>
 #include <QList>
 
-namespace Meta
+namespace Capabilities
 {
     /**
      * This capability allows different meta types to display custom actions in the right click menu in the tree view
@@ -33,7 +33,7 @@ namespace Meta
      *         @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
 
-    class AMAROK_EXPORT CustomActionsCapability : public Meta::Capability
+    class AMAROK_EXPORT CustomActionsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
@@ -61,9 +61,9 @@ namespace Meta
 
             /**
              * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Meta::Capability::CustomActions; )
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::CustomActions; )
              */
-            static Type capabilityInterfaceType() { return Meta::Capability::CustomActions; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::CustomActions; }
 
         protected:
             QList< QAction* > m_actions;

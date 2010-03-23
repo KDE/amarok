@@ -26,7 +26,7 @@
 #include <ws.h>
 #include "Amarok.h"
 
-namespace Meta
+namespace Capabilities
 {
 LastfmReadLabelCapability::LastfmReadLabelCapability( Meta::Track *track )
     : ReadLabelCapability()

@@ -92,8 +92,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         //sqlcollection internal methods
         void sendChangedSignal();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
         void setRegistry( SqlRegistry *registry ) { m_registry = registry; }

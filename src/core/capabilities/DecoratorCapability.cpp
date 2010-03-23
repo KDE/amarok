@@ -16,7 +16,7 @@
 
 #include "DecoratorCapability.h"
 
-Meta::DecoratorCapability::~DecoratorCapability()
+Capabilities::DecoratorCapability::~DecoratorCapability()
 {
 }
 

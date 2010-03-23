@@ -18,15 +18,15 @@
 #ifndef LASTFMREADLABELCAPABILITY_H
 #define LASTFMREADLABELCAPABILITY_H
 
+#include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/ReadLabelCapability.h"
 class QNetworkReply;
 
-namespace Meta
+namespace Capabilities
 {
-    class Track;
 
-class LastfmReadLabelCapability : public ReadLabelCapability
+class LastfmReadLabelCapability : public Capabilities::ReadLabelCapability
 {
     Q_OBJECT
     public:

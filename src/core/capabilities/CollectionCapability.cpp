@@ -16,7 +16,7 @@
 
 #include "CollectionCapability.h"
 
-Meta::CollectionCapability::~CollectionCapability()
+Capabilities::CollectionCapability::~CollectionCapability()
 {
 }
 

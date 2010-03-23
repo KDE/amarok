@@ -17,6 +17,7 @@
 #ifndef METAMEDIADEVICEPLAYLIST_H
 #define METAMEDIADEVICEPLAYLIST_H
 
+#include "core/capabilities/Capability.h"
 #include "core/playlists/Playlist.h"
 
 #include "Debug.h"
@@ -49,8 +50,8 @@ namespace Meta
 
             virtual void removeTrack( int position );
 
-	    bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-	    Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
+	    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
     private:
         Meta::TrackList m_tracks;

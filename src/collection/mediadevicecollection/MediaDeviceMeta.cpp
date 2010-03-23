@@ -38,12 +38,12 @@
 using namespace Meta;
 // Currently complaining about some vtable issue
 
-class EditCapabilityMediaDevice : public Meta::EditCapability
+class EditCapabilityMediaDevice : public Capabilities::EditCapability
 {
     Q_OBJECT
     public:
         EditCapabilityMediaDevice( MediaDeviceTrack *track )
-            : Meta::EditCapability()
+            : Capabilities::EditCapability()
             , m_track( track ) {}
 
         virtual bool isEditable() const { return m_track->isEditable(); }
@@ -65,12 +65,12 @@ class EditCapabilityMediaDevice : public Meta::EditCapability
         KSharedPtr<MediaDeviceTrack> m_track;
 };
 
-class UpdateCapabilityMediaDevice : public Meta::UpdateCapability
+class UpdateCapabilityMediaDevice : public Capabilities::UpdateCapability
 {
     Q_OBJECT
     public:
         UpdateCapabilityMediaDevice( MediaDeviceCollection *coll )
-            : Meta::UpdateCapability()
+            : Capabilities::UpdateCapability()
             , m_coll( coll )
         {}
 
@@ -383,14 +383,14 @@ MediaDeviceTrack::collection() const
 }
 
 bool
-MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
+MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return m_collection ? m_collection->isWritable() : false;
 
-        case Meta::Capability::Updatable:
+        case Capabilities::Capability::Updatable:
             return m_collection ? m_collection->isWritable() : false;
 
         default:
@@ -398,14 +398,14 @@ MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     }
 }
 
-Meta::Capability*
-MediaDeviceTrack::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::Editable:
+        case Capabilities::Capability::Editable:
             return new EditCapabilityMediaDevice( this );
-        case Meta::Capability::Updatable:
+        case Capabilities::Capability::Updatable:
             return new UpdateCapabilityMediaDevice( m_collection );
 
         default:
@@ -907,23 +907,23 @@ MediaDeviceAlbum::removeImage()
 }
 
 bool
-MediaDeviceAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+MediaDeviceAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
             return true;
         default:
             return false;
     }
 }
 
-Meta::Capability*
-MediaDeviceAlbum::createCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability*
+MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
+        case Capabilities::Capability::CustomActions:
         {
             QList<QAction*> actions;
             if( canUpdateImage() )
@@ -945,7 +945,7 @@ MediaDeviceAlbum::createCapabilityInterface( Meta::Capability::Type type )
                 }
                 actions.append( unsetCoverAction );
             }
-            return new CustomActionsCapability( actions );
+            return new Capabilities::CustomActionsCapability( actions );
         }
 
         default:

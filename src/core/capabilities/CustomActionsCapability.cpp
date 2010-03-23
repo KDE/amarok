@@ -16,27 +16,27 @@
 
 #include "CustomActionsCapability.h"
 
-Meta::CustomActionsCapability::CustomActionsCapability()
-    : Meta::Capability()
+Capabilities::CustomActionsCapability::CustomActionsCapability()
+    : Capabilities::Capability()
 {
     //nothing to do
 }
 
-Meta::CustomActionsCapability::CustomActionsCapability( const QList<QAction*> &actions )
-    : Meta::Capability()
+Capabilities::CustomActionsCapability::CustomActionsCapability( const QList<QAction*> &actions )
+    : Capabilities::Capability()
     , m_actions( actions )
 {
     //nothing to do
 }
 
-Meta::CustomActionsCapability::~CustomActionsCapability()
+Capabilities::CustomActionsCapability::~CustomActionsCapability()
 {
     //nothing to do.
     //TODO are we responsible for deleting the actions?
 }
 
 QList<QAction *>
-Meta::CustomActionsCapability::customActions() const
+Capabilities::CustomActionsCapability::customActions() const
 {
     return m_actions;
 }

@@ -123,8 +123,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); }
 
         /** Capability-related methods */
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         /** MediaDeviceCollection methods */
         QString udi() const { return m_udi; }

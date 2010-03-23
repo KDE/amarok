@@ -20,7 +20,7 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "SqlMeta.h"
 
-namespace Meta
+namespace Capabilities
 {
 
 /**

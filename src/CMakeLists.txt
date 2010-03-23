@@ -168,10 +168,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkModel.cpp
     amarokurls/BookmarkTreeView.cpp
     amarokurls/BookmarkMetaActions.cpp
-    timecode/TimecodeObserver.cpp
-    timecode/TimecodeMeta.cpp
-    timecode/TimecodeTrackProvider.cpp
-)
+    )
 
 #####################################################################
 # SCRIPTABLESERVICE
@@ -307,16 +304,22 @@ set(core_SRCS
     core/capabilities/SourceInfoCapability.cpp
     core/capabilities/StatisticsCapability.cpp
     core/capabilities/StreamInfoCapability.cpp
-    core/capabilities/TimecodeLoadCapability.cpp
-    core/capabilities/TimecodeWriteCapability.cpp
+    core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.cpp
+    core/capabilities/impl/timecode/TimecodeEditCapability.cpp
+    core/capabilities/impl/timecode/TimecodeLoadCapability.cpp
+    core/capabilities/impl/timecode/TimecodeWriteCapability.cpp
     core/capabilities/UpdateCapability.cpp
     core/capabilities/WriteLabelCapability.cpp
+    core/capabilities/impl/multisource/MultiSourceCapabilityImpl.cpp
     core/meta/impl/file/File.cpp
     core/meta/impl/multi/MultiTrack.cpp
-    core/meta/impl/multi/MultiSourceCapabilityImpl.cpp
     core/meta/impl/cue/CueFileSupport.cpp
     core/meta/impl/proxy/MetaProxy.cpp
     core/meta/impl/stream/Stream.cpp
+    core/meta/impl/timecode/TimecodeObserver.cpp
+    core/meta/impl/timecode/TimecodeMeta.cpp
+    core/meta/impl/timecode/TimecodeTrackProvider.cpp
+
     core/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
     core/statistics/providers/tag/TagStatisticsProvider.cpp
 )

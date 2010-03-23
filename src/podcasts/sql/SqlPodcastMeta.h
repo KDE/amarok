@@ -59,8 +59,8 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual QString prettyName() const;
         virtual void setTitle( const QString &title );
         virtual qint64 length() const;
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
         virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 

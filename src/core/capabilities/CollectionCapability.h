@@ -26,17 +26,17 @@
 #include <QList>
 #include <QObject>
 
-namespace Meta
+namespace Capabilities
 {
 
-    class AMAROK_EXPORT CollectionCapability : public Meta::Capability
+    class AMAROK_EXPORT CollectionCapability : public Capabilities::Capability
     {
         Q_OBJECT
 
         public:
             virtual ~CollectionCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Collection; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Collection; }
             virtual QList<QAction*> collectionActions() = 0;
     };
 }

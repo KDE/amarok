@@ -20,15 +20,15 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta
+namespace Capabilities
 {
-    class AMAROK_EXPORT OrganiseCapability : public Meta::Capability
+    class AMAROK_EXPORT OrganiseCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
             virtual ~OrganiseCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Organisable; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Organisable; }
 
             /**
              * delete this track from the collection

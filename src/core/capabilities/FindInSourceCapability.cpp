@@ -16,7 +16,7 @@
 
 #include "FindInSourceCapability.h"
 
-using namespace Meta;
+using namespace Capabilities;
 
 FindInSourceCapability::~FindInSourceCapability()
 {

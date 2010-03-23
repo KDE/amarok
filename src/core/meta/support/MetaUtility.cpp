@@ -154,10 +154,10 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
-    if( !track || !track->hasCapabilityInterface( Meta::Capability::Editable ) )
+    if( !track || !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
         return;
 
-    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();

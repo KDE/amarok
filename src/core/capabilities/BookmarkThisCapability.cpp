@@ -16,7 +16,7 @@
  
 #include "BookmarkThisCapability.h"
 
-namespace Meta {
+namespace Capabilities {
 
 BookmarkThisCapability::~BookmarkThisCapability()
 {

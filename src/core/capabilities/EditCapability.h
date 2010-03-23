@@ -20,15 +20,15 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Meta
+namespace Capabilities
 {
-    class AMAROK_EXPORT EditCapability : public Meta::Capability
+    class AMAROK_EXPORT EditCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
             virtual ~EditCapability();
 
-            static Type capabilityInterfaceType() { return Meta::Capability::Editable; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
             /** Returns true if the tags of this track are currently editable */
             virtual bool isEditable() const = 0;

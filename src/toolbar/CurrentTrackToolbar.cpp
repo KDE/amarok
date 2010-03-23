@@ -51,9 +51,9 @@ void CurrentTrackToolbar::handleAddActions()
     foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
         addAction( action );
     
-    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();

@@ -147,9 +147,9 @@ class SqlTrack : public Meta::Track
         virtual QString cachedLyrics() const;
         virtual void setCachedLyrics( const QString &lyrics );
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         //SqlTrack specific methods
         int deviceid() const { return m_deviceid; }
@@ -233,9 +233,9 @@ class SqlArtist : public Meta::Artist
 
         virtual Meta::AlbumList albums();
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -288,9 +288,9 @@ class SqlAlbum : public Meta::Album
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
         virtual bool suppressImageAutoFetch() const { return m_suppressAutoFetch; }
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         //SQL specific methods
         int id() const { return m_id; }

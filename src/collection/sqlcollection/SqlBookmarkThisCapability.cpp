@@ -20,21 +20,21 @@
 
 #include <QAction>
 
-namespace Meta
+namespace Capabilities
 {
 
 
-Meta::SqlBookmarkThisCapability::SqlBookmarkThisCapability( QAction * action )
+SqlBookmarkThisCapability::SqlBookmarkThisCapability( QAction * action )
     : BookmarkThisCapability()
     , m_action( action )
 {
 }
 
-Meta::SqlBookmarkThisCapability::~ SqlBookmarkThisCapability()
+SqlBookmarkThisCapability::~ SqlBookmarkThisCapability()
 {
 }
 
-QAction * Meta::SqlBookmarkThisCapability::bookmarkAction()
+QAction * SqlBookmarkThisCapability::bookmarkAction()
 {
     return m_action;
 }

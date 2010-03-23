@@ -29,7 +29,7 @@
  *         @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 
-namespace Meta {
+namespace Capabilities {
     
     class AMAROK_EXPORT CurrentTrackActionsCapability : public CustomActionsCapability {
 
@@ -47,9 +47,9 @@ namespace Meta {
             
             /**
              * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Meta::Capability::CurrentTrackActions; )
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::CurrentTrackActions; )
              */
-            static Type capabilityInterfaceType() { return Meta::Capability::CurrentTrackActions; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::CurrentTrackActions; }
     };
 
 }

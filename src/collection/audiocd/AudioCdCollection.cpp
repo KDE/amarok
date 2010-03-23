@@ -384,12 +384,12 @@ AudioCdCollection::ejectAction() const
 }
 
 bool
-AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+AudioCdCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::Collection:
-        case Meta::Capability::Decorator:
+        case Capabilities::Capability::Collection:
+        case Capabilities::Capability::Decorator:
             return true;
 
         default:
@@ -397,11 +397,11 @@ AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
     }
 }
 
-Meta::Capability *
-AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
+Capabilities::Capability *
+AudioCdCollection::asCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if ( type == Meta::Capability::Collection )
-        return new Meta::AudioCdCollectionCapability( this );
+    if ( type == Capabilities::Capability::Collection )
+        return new Capabilities::AudioCdCollectionCapability( this );
     return 0;
 }
 

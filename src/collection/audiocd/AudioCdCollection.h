@@ -86,8 +86,8 @@ public:
 
     void cdRemoved();
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+    virtual Capabilities::Capability* asCapabilityInterface( Capabilities::Capability::Type type );
 
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }

@@ -22,12 +22,12 @@
 
 #include "Debug.h"
 
-class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapability
+class CurrentTrackActionsCapabilityImpl : public Capabilities::CurrentTrackActionsCapability
 {
     Q_OBJECT
     public:
         CurrentTrackActionsCapabilityImpl( LastFm::Track *track )
-            : Meta::CurrentTrackActionsCapability()
+            : Capabilities::CurrentTrackActionsCapability()
             , m_track( track )
             {}
 

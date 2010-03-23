@@ -250,7 +250,7 @@ QList<QAction*>
 CollectionTreeItem::decoratorActions() const
 {
     QList<QAction*> decoratorActions;
-    Meta::DecoratorCapability *dc = m_parentCollection->create<Meta::DecoratorCapability>();
+    Capabilities::DecoratorCapability *dc = m_parentCollection->create<Capabilities::DecoratorCapability>();
     if( dc )
     {
         decoratorActions = dc->decoratorActions();

@@ -21,7 +21,7 @@
 #include "EngineController.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "core/capabilities/TimecodeWriteCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -73,10 +73,10 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     const qint64 miliseconds = The::engineController()->trackPositionMs();
 
-    if ( track && track->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
+    if ( track && track->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
     {
         debug() << " has WriteTimecode  ";
-        Meta::TimecodeWriteCapability *tcw = track->create<Meta::TimecodeWriteCapability>();
+        Capabilities::TimecodeWriteCapability *tcw = track->create<Capabilities::TimecodeWriteCapability>();
         tcw->writeTimecode( miliseconds );
         delete tcw;
     }

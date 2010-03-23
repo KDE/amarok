@@ -259,9 +259,9 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlist
                 { m_episodes << episode; return episode; }
         virtual PodcastEpisodeList episodes() { return m_episodes; }
 
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Meta::Capability* createCapabilityInterface( Meta::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Meta::Capability *>( 0 ); }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Capabilities::Capability *>( 0 ); }
 
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 

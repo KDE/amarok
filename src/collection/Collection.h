@@ -81,9 +81,9 @@ class AMAROK_EXPORT CollectionBase : public QSharedData
         CollectionBase() {}
         virtual ~CollectionBase() {}
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         /**
          * Retrieves a specialized interface which represents a capability of this
@@ -93,8 +93,8 @@ class AMAROK_EXPORT CollectionBase : public QSharedData
          */
         template <class CapIface> CapIface *create()
         {
-            Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-            Meta::Capability *iface = createCapabilityInterface(type);
+            Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
+            Capabilities::Capability *iface = createCapabilityInterface(type);
             return qobject_cast<CapIface *>(iface);
         }
 

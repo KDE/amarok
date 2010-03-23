@@ -24,7 +24,7 @@
 
 class SqlStorage;
 
-namespace Meta
+namespace Capabilities
 {
 
 class SqlWriteLabelCapability : public WriteLabelCapability

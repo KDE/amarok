@@ -49,9 +49,9 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         /** returns all tracks in this playlist */
         TrackList tracks() { return m_tracks; }
 
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
         KUrl retrievableUrl() { return m_url; }
 

@@ -21,7 +21,7 @@
 
 #include <KUrl>
 
-namespace Meta
+namespace Capabilities
 {
     class AMAROK_EXPORT MultiPlayableCapability : public Capability
     {
@@ -30,7 +30,7 @@ namespace Meta
     public:
         virtual ~MultiPlayableCapability();
 
-        static Type capabilityInterfaceType() { return Meta::Capability::MultiPlayable; }
+        static Type capabilityInterfaceType() { return Capabilities::Capability::MultiPlayable; }
 
         virtual void fetchFirst() = 0;
         virtual void fetchNext() = 0;

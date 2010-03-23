@@ -16,7 +16,7 @@
 
 #include "OrganiseCapability.h"
 
-Meta::OrganiseCapability::~OrganiseCapability()
+Capabilities::OrganiseCapability::~OrganiseCapability()
 {
     //nothing to do
 }

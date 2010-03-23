@@ -23,14 +23,14 @@
 #include "core/meta/Meta.h"
 #include "amarok_export.h"
 
-namespace Meta
+namespace Capabilities
 {
 
-class AMAROK_EXPORT ReadLabelCapability : public Meta::Capability
+class AMAROK_EXPORT ReadLabelCapability : public Capabilities::Capability
 {
     Q_OBJECT
     public:
-        static Type capabilityInterfaceType() { return Meta::Capability::ReadLabel; }
+        static Type capabilityInterfaceType() { return Capabilities::Capability::ReadLabel; }
 
         //Implementors
         virtual void fetchLabels() = 0;

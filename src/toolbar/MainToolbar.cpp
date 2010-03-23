@@ -33,7 +33,7 @@
 
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/TimecodeLoadCapability.h"
+#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -409,9 +409,9 @@ MainToolbar::updateCurrentTrackActions()
         actions << action;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
         if ( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();
@@ -588,9 +588,9 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
     m_slider->clearTriangles();
     if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
     {
-        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
         {
-            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
+            Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
