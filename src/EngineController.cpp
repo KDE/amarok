@@ -239,7 +239,7 @@ EngineController::supportedMimeTypes()
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
 
     // We special case this, as otherwise the users would hate us
-    if( ( !mimeTable.contains( "audio/mp3" ) || !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
     {
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
