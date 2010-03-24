@@ -61,16 +61,16 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 
     Playlist::AbstractModel *model = Playlist::ModelStack::instance()->top();
 
-    if( model->containsTrack( track ) )
-    {
-        model->setActiveRow( model->firstRowForTrack( track ) );
-    }
+    int row = model->firstRowForTrack( track );
+    if( row != -1 )
+        model->setActiveRow( row );
     else
     {
-        const int row = AmarokConfig::dynamicMode() ? model->activeRow() + 1 : model->rowCount();
+        row = AmarokConfig::dynamicMode() ? model->activeRow() + 1 : model->qaim()->rowCount();
         The::playlistController()->insertTrack( row, track );
         model->setActiveRow( row );
     }
+
     return true;
 }
 

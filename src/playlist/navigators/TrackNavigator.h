@@ -123,9 +123,6 @@ namespace Playlist
             QQueue<quint64> m_queue;
 
             AbstractModel *m_model;
-
-            // Needed for QObject::connect()
-            virtual QAbstractItemModel * model(){ return dynamic_cast<QAbstractItemModel *>( m_model ); }
     };
 }
 

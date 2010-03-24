@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,10 +23,17 @@
 namespace Playlist
 {
 
-ProxyBase::ProxyBase( QObject *parent )
+ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     : QSortFilterProxyModel( parent )
-    , m_belowModel( 0 )
+    , m_belowModel( belowModel )
 {
+    setSourceModel( m_belowModel->qaim() );
+
+    // Proxy the Playlist::AbstractModel signals.
+    //   If you need to do something special in a subclass, disconnect() this signal and
+    //   do your own connect() call.
+    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
 ProxyBase::~ProxyBase()
@@ -57,18 +65,16 @@ ProxyBase::activeTrack() const
 QSet<int>
 ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
 {
-    QSet<int> trackRows;
+    QSet<int> proxyModelRows;
 
-    foreach( int row, m_belowModel->allRowsForTrack( track ) )
-        trackRows.insert( rowFromSource( row ) );
+    foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+    {
+        int proxyModelRow = rowFromSource( sourceModelRow );
+        if ( proxyModelRow != -1 )
+            proxyModelRows.insert( proxyModelRow );
+    }
 
-    return trackRows;
-}
-
-int
-ProxyBase::columnCount( const QModelIndex& proxyParent ) const
-{
-    return sourceModel()->columnCount( mapToSource( proxyParent ) );
+    return proxyModelRows;
 }
 
 void
@@ -78,27 +84,9 @@ ProxyBase::clearSearchTerm()
 }
 
 bool
-ProxyBase::containsId( const quint64 id ) const
-{
-    // The complexity of this isn't optimal
-    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
-    {
-        if( idAt( i ) == id )     //O( n ) - uses .at()
-            return true;
-    }
-    return false;
-}
-
-bool
 ProxyBase::containsTrack( const Meta::TrackPtr track ) const
 {
-    // The complexity of this isn't optimal
-    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
-    {
-        if( trackAt( i ) == track )     //O( n ) - uses .at()
-            return true;
-    }
-    return false;
+    return ( firstRowForTrack( track ) != -1 );    // Let him do the clever work.
 }
 
 int
@@ -111,23 +99,6 @@ QString
 ProxyBase::currentSearchTerm()
 {
     return m_belowModel->currentSearchTerm();
-}
-
-QVariant
-ProxyBase::data( const QModelIndex & index, int role ) const
-{
-    //HACK around incomplete index causing a crash...
-    //note to self by Téo: is this still needed?
-    QModelIndex newIndex = this->index( index.row(), index.column() );
-
-    QModelIndex sourceIndex = mapToSource( newIndex );
-    return m_belowModel->data( sourceIndex, role );
-}
-
-bool
-ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
-{
-    return m_belowModel->dropMimeData( data, action, rowToSource( row ), column, parent );
 }
 
 bool
@@ -158,9 +129,8 @@ ProxyBase::findNext( const QString &searchTerm, int selectedRow, int searchField
     ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
     if ( !proxyBase )
         return -1;
-    //FIXME: selectedRow might need to be adjusted through rowToSource now that SortProxy
-    //       changes the order of rows.     -- Téo 28/6/2009
-    return rowFromSource( proxyBase->findNext( searchTerm, selectedRow, searchFields ) );
+
+    return rowFromSource( proxyBase->findNext( searchTerm, rowToSource( selectedRow ), searchFields ) );
 }
 
 int
@@ -169,22 +139,31 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
     ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
     if ( !proxyBase )
         return -1;
-    //FIXME: see findNext().
-    return rowFromSource( proxyBase->findPrevious( searchTerm, selectedRow, searchFields ) );
+
+    return rowFromSource( proxyBase->findPrevious( searchTerm, rowToSource( selectedRow ), searchFields ) );
 }
 
 int
 ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
 {
-    return rowFromSource( m_belowModel->firstRowForTrack( track ) );
-}
+    // First optimistically try 'firstRowForTrack()'. It'll usually work.
+    int proxyModelRow = rowFromSource( m_belowModel->firstRowForTrack( track ) );
+    if ( proxyModelRow != -1 )
+        return proxyModelRow;
+    else
+    {
+        // It might be that there are multiple hits in the source model, and we just got
+        // unlucky with a source row that's filtered out in this model. So, we need to
+        // check all hits.
+        foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+        {
+            proxyModelRow = rowFromSource( sourceModelRow );
+            if ( proxyModelRow != -1 )
+                return proxyModelRow;
+        }
 
-Qt::ItemFlags
-ProxyBase::flags( const QModelIndex &index ) const
-{
-    //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
-    //       every time. Needs to be checked.       -- Téo
-    return m_belowModel->flags( index );
+        return -1;
+    }
 }
 
 quint64
@@ -193,32 +172,6 @@ ProxyBase::idAt( const int row ) const
     if( rowExists( row ) )
         return m_belowModel->idAt( rowToSource( row ) );
     return 0;
-}
-
-QMimeData *
-ProxyBase::mimeData( const QModelIndexList &indexes ) const
-{
-
-    QModelIndexList sourceIndexes;
-    foreach( QModelIndex index, indexes )
-    {
-        sourceIndexes << mapToSource( index );
-    }
-    
-    return m_belowModel->mimeData( sourceIndexes );
-    
-}
-
-QStringList
-ProxyBase::mimeTypes() const
-{
-    return m_belowModel->mimeTypes();
-}
-
-int
-ProxyBase::rowCount(const QModelIndex& parent) const
-{
-    return QSortFilterProxyModel::rowCount( parent );
 }
 
 bool
@@ -290,12 +243,6 @@ Item::State
 ProxyBase::stateOfRow( int row ) const
 {
     return m_belowModel->stateOfRow( rowToSource( row ) );
-}
-
-Qt::DropActions
-ProxyBase::supportedDropActions() const
-{
-    return m_belowModel->supportedDropActions();
 }
 
 qint64
@@ -383,6 +330,32 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerm, int searchFi
     return false;
 }
 
+int
+ProxyBase::rowFromSource( int sourceModelRow ) const
+{
+    QModelIndex sourceModelIndex = sourceModel()->index( sourceModelRow, 0 );
+    QModelIndex proxyModelIndex = mapFromSource( sourceModelIndex );    // Call 'map' even for a 1:1 passthrough proxy: QSFPM might need it.
+
+    if ( proxyModelIndex.isValid() )
+        return proxyModelIndex.row();
+    else
+        return -1;
+}
+
+int
+ProxyBase::rowToSource( int proxyModelRow ) const
+{
+    QModelIndex proxyModelIndex = this->index( proxyModelRow, 0 );
+    QModelIndex sourceModelIndex = mapToSource( proxyModelIndex );    // Call 'map' even for a 1:1 passthrough proxy: QSFPM might need it.
+
+    if( sourceModelIndex.isValid() )
+        return sourceModelIndex.row();
+    else
+        if( proxyModelRow == rowCount() )
+            return sourceModel()->rowCount();
+        else
+            return -1;
+}
 
 }   //namespace Playlist
 

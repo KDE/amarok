@@ -35,8 +35,8 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
     DEBUG_BLOCK
 
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
-    connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
-    connect( model(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
+    connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
+    connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
 }
 
@@ -60,7 +60,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
     DEBUG_BLOCK
 
     int updateRow = m_model->activeRow() + 1;
-    int rowCount = m_model->rowCount();
+    int rowCount = m_model->qaim()->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 && !m_playlist.isNull() )
@@ -124,7 +124,7 @@ Playlist::DynamicTrackNavigator::repopulate()
             rows << row;
         row++;
     }
-    while( row < m_model->rowCount() );
+    while( row < m_model->qaim()->rowCount() );
 
     if( !rows.isEmpty() )
         The::playlistController()->removeRows( rows );

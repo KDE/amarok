@@ -21,15 +21,9 @@ namespace Playlist
 {
 
 SearchProxy::SearchProxy( AbstractModel *belowModel, QObject *parent )
-    : ProxyBase( parent )
+    : ProxyBase( belowModel, parent )
     , m_currentSearchFields( 0 )
 {
-    m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-
-    // Proxy the Playlist::AbstractModel signals
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
 SearchProxy::~SearchProxy()

@@ -38,8 +38,8 @@ namespace Amarok
     {
         new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
-        connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
@@ -70,7 +70,7 @@ namespace Amarok
 
     int TracklistDBusHandler::GetLength()
     {
-        return The::playlist()->rowCount();
+        return The::playlist()->qaim()->rowCount();
     }
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
@@ -89,7 +89,7 @@ namespace Amarok
         {
              AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
             The::playlistActions()->playlistModeChanged();
-        }  
+        }
     }
 
     void TracklistDBusHandler::SetRandom( bool enable )
@@ -103,7 +103,7 @@ namespace Amarok
         {
              AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
             The::playlistActions()->playlistModeChanged();
-        }  
+        }
     }
 
     void TracklistDBusHandler::PlayTrack( int index )
@@ -113,7 +113,7 @@ namespace Amarok
 
     void TracklistDBusHandler::slotTrackListChange()
     {
-        emit TrackListChange( The::playlist()->rowCount() );
+        emit TrackListChange( The::playlist()->qaim()->rowCount() );
     }
 }
 

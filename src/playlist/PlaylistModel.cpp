@@ -607,17 +607,15 @@ Playlist::Model::activeTrack() const
 int
 Playlist::Model::rowForId( const quint64 id ) const
 {
-    if ( containsId( id ) )
-        return rowForItem( m_itemIds.value( id ) );
-    else
-        return -1;
+    return m_items.indexOf( m_itemIds.value( id ) );    // Returns -1 on miss, same as our API.
 }
 
 Meta::TrackPtr
 Playlist::Model::trackForId( const quint64 id ) const
 {
-    if ( containsId( id ) )
-        return m_itemIds.value( id )->track();
+    Item* item = m_itemIds.value( id, 0 );
+    if ( item )
+        return item->track();
     else
         return Meta::TrackPtr();
 }
@@ -643,8 +641,9 @@ Playlist::Model::activeId() const
 Playlist::Item::State
 Playlist::Model::stateOfId( quint64 id ) const
 {
-    if ( containsId( id ) )
-        return m_itemIds.value( id )->state();
+    Item* item = m_itemIds.value( id, 0 );
+    if ( item )
+        return item->state();
     else
         return Item::Invalid;
 }

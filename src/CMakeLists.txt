@@ -481,11 +481,10 @@ set(libplaylist_SRCS
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp
-    playlist/proxymodels/FilterProxy.cpp
     playlist/proxymodels/GroupingProxy.cpp
     playlist/proxymodels/ProxyBase.cpp
     playlist/proxymodels/SortAlgorithms.cpp
-    playlist/proxymodels/SortProxy.cpp
+    playlist/proxymodels/SortFilterProxy.cpp
     playlist/proxymodels/SortScheme.cpp
     playlist/proxymodels/SearchProxy.cpp
 )

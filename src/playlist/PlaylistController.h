@@ -53,7 +53,7 @@ class AMAROK_EXPORT Controller : public QObject
     Q_OBJECT
 
 public:
-    Controller( AbstractModel* sourceModel, AbstractModel* topmostModel, QObject* parent = 0 );
+    Controller( AbstractModel* bottomModel, AbstractModel* topModel, QObject* parent = 0 );
     ~Controller();
 
 public slots:
@@ -82,37 +82,37 @@ public slots:
     /**
      * Handles the insertion of one or more tracks into the playlist on a specific row.
      * The rows are always considered as topmost playlist model rows.
-     * @param row the insertion row in the topmost model.
+     * @param topModelRow the insertion row in the topmost model.
      * @param track the track to be inserted.
      */
-    void insertTrack( int row, Meta::TrackPtr track );
-    void insertTracks( int row, Meta::TrackList list );
-    void insertPlaylist( int row, Meta::PlaylistPtr playlist );
-    void insertPlaylists( int row, Meta::PlaylistList playlists );
-    void insertTracks( int row, QueryMaker *qm );
-    void insertUrls( int row, const QList<KUrl>& urls );
+    void insertTrack( int topModelRow, Meta::TrackPtr track );
+    void insertTracks( int topModelRow, Meta::TrackList list );
+    void insertPlaylist( int topModelRow, Meta::PlaylistPtr playlist );
+    void insertPlaylists( int topModelRow, Meta::PlaylistList playlists );
+    void insertTracks( int topModelRow, QueryMaker *qm );
+    void insertUrls( int topModelRow, const QList<KUrl>& urls );
 
     /**
      * Handles the removal of a single track from the playlist.
      * The rows are considered as topmost playlist model rows.
-     * @param row the row to remove in the topmost model.
+     * @param topModelRow the row to remove in the topmost model.
      */
-    void removeRow( int row );
+    void removeRow( int topModelRow );
 
     /**
      * Handles the removal of tracks from the playlist.
      * The rows are considered as topmost playlist model rows.
-     * @param row the row to remove in the topmost model.
+     * @param topModelRow the row to remove in the topmost model.
      * @param count the number of rows to remove.
      */
-    void removeRows( int row, int count );
+    void removeRows( int topModelRow, int count );
 
     /**
      * Handles the removal of a list of tracks from the playlist.
      * The rows are considered as topmost playlist model rows.
-     * @param rows the list of row numbers to remove.
+     * @param topModelRows the list of row numbers to remove.
      */
-    void removeRows( QList<int>& rows );
+    void removeRows( QList<int>& topModelRows );
 
     /**
      * Removes unplayable and duplicate entries in the topmost playlist model, i.e.
@@ -125,32 +125,32 @@ public slots:
      * @param from the row containing the track that is about to be moved.
      * @param to the target row where the track should be moved.
      */
-    void moveRow( int from, int to );
+    void moveRow( int topModelFrom, int topModelTo );
 
     /**
      * Moves a list of tracks to a specified row in the playlist.
      * This function returns the real starting location where the rows ended up.
      * For example, if you start with the following playlist:
-     *   1 Alpha
-     *   2 Bravo
+     *   0 Alpha
+     *   1 Bravo
      *   2 Charlie
-     *   4 Delta
-     *   5 Echo
-     *   6 Foxtrot
-     * and you call moveRows( [1,2,3], 5 ) then the playlist will end up with
-     *   1 Delta
-     *   2 Echo
-     *   3 Alpha
-     *   4 Bravo
-     *   5 Charlie
-     *   6 Foxtrot
-     * and the function will return 3, because that's where the rows really ended up.
+     *   3 Delta
+     *   4 Echo
+     *   5 Foxtrot
+     * and you call moveRows( [0,1,2], 4 ) then the playlist will end up with
+     *   0 Delta
+     *   1 Echo
+     *   2 Alpha
+     *   3 Bravo
+     *   4 Charlie
+     *   5 Foxtrot
+     * and the function will return 2, because that's where the rows really ended up.
      * @param from the list of rows containing the tracks that are about to be moved.
      * @param to the target row where the tracks should be moved.
      * @return the first row where the tracks ended up in the new list.
      */
-    int  moveRows( QList<int>& from, int to );
-    void moveRows( QList<int>& from, QList<int>& to );
+    int  moveRows( QList<int>& topModelFrom, int topModelTo );
+    void moveRows( QList<int>& topModelFrom, QList<int>& topModelTo );
 
     void undo();
     void redo();
@@ -171,15 +171,22 @@ private slots:
 
 private:
     /**
+     * Converts a row number in 'm_topModel' to a row in 'm_bottomModel', for purposes of
+     * insert. This is not useful for remove/move.
+     */
+    int insertionTopRowToBottom( int topModelRow );
+
+    /**
      * Handles the insertion of a list of tracks into the playlist on a specific row.
-     * The rows are always considered as topmost playlist model rows.
-     * @param row the insertion row in the topmost model.
+     * The row number is always in the *bottom* playlist model, in contrast to most other
+     * functions in this class.
+     * @param bottomModelRow the insertion row in the bottom model.
      * @param tl the Meta::TrackList to be inserted.
      */
-    void insertionHelper( int row, Meta::TrackList& tl );
+    void insertionHelper( int bottomModelRow, Meta::TrackList& tl );
 
-    AbstractModel* m_topmostModel;
-    AbstractModel* m_sourceModel;
+    AbstractModel* m_topModel;
+    AbstractModel* m_bottomModel;
 
     QUndoStack* m_undoStack;
 

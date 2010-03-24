@@ -219,7 +219,7 @@ App::~App()
 
     // Use the bottom model because that provides the most dependable/invariable row
     // number to save in an external file.
-    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->bottom()->activeRow() );
 
     if ( AmarokConfig::resumePlayback() )
     {

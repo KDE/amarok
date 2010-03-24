@@ -42,17 +42,18 @@
 #include <QAction>
 #include <typeinfo>
 
-Playlist::Controller::Controller( AbstractModel* sourceModel, AbstractModel* topmostModel, QObject* parent )
+Playlist::Controller::Controller( AbstractModel* bottomModel, AbstractModel* topModel, QObject* parent )
         : QObject( parent )
         , m_undoStack( new QUndoStack( this ) )
 {
     DEBUG_BLOCK
+
     //As a rule, when talking to the playlist one should always use the topmost model, as
     //Playlist::ModelStack::instance->top() or simply The::playlist().
-    //This is an exception, because we handle the presence of tracks in the source model,
-    //so we get a pointer to the source model and use it with great care.
-    m_sourceModel = sourceModel;
-    m_topmostModel = topmostModel;
+    //This is an exception, because we handle the presence of tracks in the bottom model,
+    //so we get a pointer to the bottom model and use it with great care.
+    m_bottomModel = bottomModel;
+    m_topModel = topModel;
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -87,15 +88,16 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         while( i.hasNext() )
         {
             i.next();
-            debug()<<"About to check Model::containsTrack()";
-            if( m_sourceModel->containsTrack( i.value() ) )
+            debug()<<"About to check m_bottomModel->containsTrack()";
+            if( m_bottomModel->containsTrack( i.value() ) )
                 i.remove();
         }
     }
 
-    int firstItemAdded = -1;
+    int topModelInsertRow;
     if( options & Replace )
     {
+        debug()<<"Replace";
         emit replacingPlaylist();   //make sure that we clear filters
 
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
@@ -104,37 +106,38 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         //make sure that we turn off dynamic mode.
         Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
 
-        insertionHelper( -1, list );
+        topModelInsertRow = 0;
+        insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
         m_undoStack->endMacro();
-        firstItemAdded = 0;
     }
     else if( options & Queue )
     {
-        debug()<<"About to check for Model::activeRow() and stateOfRow()";
-        firstItemAdded = m_sourceModel->activeRow() + 1;
-        // We want to add the newly queued items after any items which are already queued
-        while( m_sourceModel->stateOfRow( firstItemAdded ) & Item::Queued )
-            firstItemAdded++;
+        debug()<<"Queue";
 
-        insertionHelper( firstItemAdded, list );
+        topModelInsertRow = m_topModel->activeRow() + 1;
+
+        while( m_topModel->stateOfRow( topModelInsertRow ) & Item::Queued )
+            topModelInsertRow++;    // We want to add the newly queued items after any items which are already queued
+
+        int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
+        insertionHelper( bottomModelInsertRow, list );
+
         // Construct list of rows to be queued
-        // NOTE: possible race condition here, if the rows get moved around?
-        // Probably not, as long as we work with source model rows.
-        QList<int> rows;
-        for( int i = firstItemAdded; i < firstItemAdded + list.size(); ++i )
+        QList<int> topModelRows;
+        for( int bottomModelRow = bottomModelInsertRow; bottomModelRow < bottomModelInsertRow + list.size(); ++bottomModelRow )
         {
-            quint64 thisTracksId = m_sourceModel->idAt( i );
-            int topmostModelRow = m_topmostModel->rowForId( thisTracksId );
-            if( topmostModelRow > -1 )      // If a filter doesn't hide the track...
-                rows << topmostModelRow;    // ... we're going to add it to the queue.
+            quint64 playlistItemId = m_bottomModel->idAt( bottomModelRow );
+            int topModelRow = m_topModel->rowForId( playlistItemId );
+            if( topModelRow >= 0 )      // If a filter doesn't hide the item...
+                topModelRows << topModelRow;
         }
-        Actions::instance()->queue( rows ); // These rows are in the topmost model!
+        Actions::instance()->queue( topModelRows );
     }
     else
     {
-        debug()<<"About to check for Model::rowCount()";
-        firstItemAdded = m_sourceModel->rowCount();
-        insertionHelper( firstItemAdded, list );
+        debug()<<"Append";
+        topModelInsertRow = m_topModel->qaim()->rowCount();
+        insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
     }
 
     const Phonon::State engineState = The::engineController()->state();
@@ -148,9 +151,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
             playNow = true;
 
     if ( playNow )
-        // We need to play an ID rather than a row because Playlist::Actions refer to the
-        // topmost model.
-        Actions::instance()->play( m_sourceModel->idAt( firstItemAdded ) );
+        Actions::instance()->play( topModelInsertRow );
 
     emit changed();
 }
@@ -169,13 +170,9 @@ void
 Playlist::Controller::insertOptioned( Meta::PlaylistList list, int options )
 {
     DEBUG_BLOCK
-    if( list.isEmpty() )
-        return;
 
     foreach( Meta::PlaylistPtr playlist, list )
-    {
         insertOptioned( playlist, options );
-    }
 }
 
 void
@@ -200,44 +197,35 @@ Playlist::Controller::insertOptioned( QList<KUrl>& urls, int options )
 }
 
 void
-Playlist::Controller::insertTrack( int row, Meta::TrackPtr track )
+Playlist::Controller::insertTrack( int topModelRow, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    if( track == Meta::TrackPtr() )
+    if( !track )
         return;
+
     Meta::TrackList tl;
     tl.append( track );
-    insertTracks( row, tl );
+    insertTracks( topModelRow, tl );
 }
 
 // Overloads use this method.
 void
-Playlist::Controller::insertTracks( int row, Meta::TrackList tl )
+Playlist::Controller::insertTracks( int topModelRow, Meta::TrackList tl )
 {
     DEBUG_BLOCK
-    if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
-    {
-        row = m_sourceModel->rowCount();    // makes no sense to insert at a specific point
-        debug()<<"SortProxy is SORTED             ... so I'll just append.";
-    }
-    else
-    {
-        row = m_topmostModel->rowToBottomModel( row );
-        debug()<<"SortProxy is NOT SORTED         ... so I'll take care of the right row.";
-    }
-    insertionHelper( row, tl );
+    insertionHelper( insertionTopRowToBottom( topModelRow ), tl );
 }
 
 void
-Playlist::Controller::insertPlaylist( int row, Meta::PlaylistPtr playlist )
+Playlist::Controller::insertPlaylist( int topModelRow, Meta::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
     Meta::TrackList tl( playlist->tracks() );
-    insertTracks( row, tl );
+    insertTracks( topModelRow, tl );
 }
 
 void
-Playlist::Controller::insertPlaylists( int row, Meta::PlaylistList playlists )
+Playlist::Controller::insertPlaylists( int topModelRow, Meta::PlaylistList playlists )
 {
     DEBUG_BLOCK
     Meta::TrackList tl;
@@ -245,7 +233,7 @@ Playlist::Controller::insertPlaylists( int row, Meta::PlaylistList playlists )
     {
         tl += playlist->tracks();
     }
-    insertTracks( row, tl );
+    insertTracks( topModelRow, tl );
 }
 
 void
@@ -275,39 +263,41 @@ Playlist::Controller::insertUrls( int row, const QList<KUrl>& urls )
 }
 
 void
-Playlist::Controller::removeRow( int row )
+Playlist::Controller::removeRow( int topModelRow )
 {
     DEBUG_BLOCK
-    QList<int> rl;
-    rl.append( row );
-    removeRows( rl );
+    removeRows( topModelRow, 1 );
 }
 
 void
-Playlist::Controller::removeRows( int row, int count )
+Playlist::Controller::removeRows( int topModelRow, int count )
 {
     DEBUG_BLOCK
     QList<int> rl;
     for( int i = 0; i < count; ++i )
-        rl.append( row++ );
+        rl.append( topModelRow++ );
     removeRows( rl );
 }
 
 void
-Playlist::Controller::removeRows( QList<int>& rows )
+Playlist::Controller::removeRows( QList<int>& topModelRows )
 {
     DEBUG_BLOCK
-    RemoveCmdList cmds;
-    foreach( int r, rows )
+    RemoveCmdList bottomModelCmds;
+    foreach( int topModelRow, topModelRows )
     {
-        if(( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
-            cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), m_topmostModel->rowToBottomModel( r ) ) );
+        if( m_topModel->rowExists( topModelRow ) )
+        {
+            Meta::TrackPtr track = m_topModel->trackAt( topModelRow );    // For "undo".
+            int bottomModelRow = m_topModel->rowToBottomModel( topModelRow );
+            bottomModelCmds.append( RemoveCmd( track, bottomModelRow ) );
+        }
         else
-            warning() << "Received command to remove non-existent row. This should NEVER happen. row=" << r;
+            warning() << "Received command to remove non-existent row. This should NEVER happen. row=" << topModelRow;
     }
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new RemoveTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }
@@ -317,32 +307,32 @@ Playlist::Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
-    QSet<Meta::TrackPtr> uniqueTracks = m_topmostModel->tracks().toSet();
-    QList<int> rowsToRemove;
+    QSet<Meta::TrackPtr> uniqueTracks = m_topModel->tracks().toSet();
+    QList<int> topModelRowsToRemove;
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
     {
-        QList<int> trackRows = m_topmostModel->allRowsForTrack( unique ).toList();
+        QList<int> trackRows = m_topModel->allRowsForTrack( unique ).toList();
 
         if( unique->playableUrl().isLocalFile() && !QFile::exists( unique->playableUrl().path() ) )
         {
             // Track is Dead
             // TODO: Check remote files as well
-            rowsToRemove <<  trackRows;
+            topModelRowsToRemove <<  trackRows;
         }
         else if( trackRows.size() > 1 )
         {
             // Track is Duplicated
             // Remove all rows except the first
             for( QList<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
-                rowsToRemove.push_back( *it );
+                topModelRowsToRemove.push_back( *it );
         }
     }
 
-    if( !rowsToRemove.empty() )
+    if( !topModelRowsToRemove.empty() )
     {
         m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
-        removeRows( rowsToRemove );
+        removeRows( topModelRowsToRemove );
         m_undoStack->endMacro();
     }
 }
@@ -394,7 +384,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
         return from.first();
 
-    to = ( to == qBound( 0, to, m_topmostModel->rowCount() ) ) ? to : m_topmostModel->rowCount();
+    to = ( to == qBound( 0, to, m_topModel->qaim()->rowCount() ) ) ? to : m_topModel->qaim()->rowCount();
 
     from.erase( std::unique( from.begin(), from.end() ), from.end() );
 
@@ -405,7 +395,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     QList<int> target;
     for( int i = min; i <= max; i++ )
     {
-        if( i >=  m_topmostModel->rowCount() )
+        if( i >=  m_topModel->qaim()->rowCount() )
             break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
         target.append( i );
@@ -454,17 +444,17 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
         }
     }
 
-    MoveCmdList cmds;
+    MoveCmdList bottomModelCmds;
     for( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
-        if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->rowCount() ) )
+        if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topModel->qaim()->rowCount() ) )
             if( from.at( i ) != to.at( i ) )
-                cmds.append( MoveCmd( m_topmostModel->rowToBottomModel( from.at( i ) ), m_topmostModel->rowToBottomModel( to.at( i ) ) ) );
+                bottomModelCmds.append( MoveCmd( m_topModel->rowToBottomModel( from.at( i ) ), m_topModel->rowToBottomModel( to.at( i ) ) ) );
     }
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new MoveTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new MoveTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }
@@ -489,7 +479,7 @@ void
 Playlist::Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Playlist::ModelStack::instance()->source()->rowCount() );
+    removeRows( 0, Playlist::ModelStack::instance()->bottom()->qaim()->rowCount() );
     emit changed();
 }
 
@@ -543,8 +533,36 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
     }
 }
 
+int
+Playlist::Controller::insertionTopRowToBottom( int topModelRow )
+{
+    DEBUG_BLOCK
+
+    if( ( topModelRow < 0 ) || ( topModelRow > m_topModel->qaim()->rowCount() ) )
+    {
+        error() << "Row number invalid:" << topModelRow;
+        topModelRow = m_topModel->qaim()->rowCount();    // Failsafe: append.
+    }
+
+    int bottomModelRow;
+    if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
+    {
+        // if the playlist is sorted there's no point in placing the added tracks at any
+        // specific point in relation to another track, so we just append them.
+        debug()<<"SortProxy is SORTED             ... so I'll just append.";
+        bottomModelRow = m_bottomModel->qaim()->rowCount();
+    }
+    else
+    {
+        debug()<<"SortProxy is NOT SORTED         ... so I'll take care of the right row.";
+        bottomModelRow = m_topModel->rowToBottomModel( topModelRow );
+    }
+
+    return bottomModelRow;
+}
+
 void
-Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
+Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
 {
     //expand any tracks that are actually playlists into multisource tracks
     //and any tracks with an associated cue file
@@ -596,25 +614,13 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
         }
     }
 
-    InsertCmdList cmds;
-
-    debug()<<"About to check for rowCount() and SortProxy::isSorted()";
-    debug()<< ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ? "SORTED" : "NOT SORTED" );
-    debug()<<"About to drop on row " << row;
-    // The qBound is ok for a filtered but not sorted playlist, but if the playlist is also
-    // sorted there's no point in placing the added tracks at any specific point in relation
-    // to another track, so we just append them.
-    row = ( Playlist::ModelStack::instance()->sortProxy()->isSorted() ) ?
-          m_sourceModel->rowCount() :
-          qBound( 0, m_topmostModel->rowToBottomModel( row ), m_sourceModel->rowCount() );
-
-    debug()<<"Fixed row to " << row;
+    InsertCmdList bottomModelCmds;
 
     foreach( Meta::TrackPtr t, modifiedList )
-        cmds.append( InsertCmd( t, row++ ) );
+        bottomModelCmds.append( InsertCmd( t, bottomModelRow++ ) );
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new InsertTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }

@@ -20,20 +20,19 @@
 #include "PlaylistController.h"
 #include "proxymodels/AbstractModel.h"
 #include "PlaylistModel.h"
-#include "proxymodels/FilterProxy.h"
-#include "proxymodels/SortProxy.h"
+#include "proxymodels/SortFilterProxy.h"
 #include "proxymodels/SearchProxy.h"
 #include "proxymodels/GroupingProxy.h"
 
 // THE PLAYLIST MODELS ARCHITECTURE
 // Amarok's playlist uses Qt's Model-View design pattern, so we have
 // * 1 source model which feeds the tracks data: Playlist::Model
-// * 4 proxies which modify the rows: FilterProxy==>SortProxy==>SearchProxy==>GroupingProxy
+// * 3 proxies which modify the rows: SortFilterProxy==>SearchProxy==>GroupingProxy
 // * 1 or more views, such as Playlist::PrettyListView.
 // At any time a view should ONLY talk to the topmost proxy model, exposed by Playlist::
 // ModelStack::instance()->top(). External classes that talk to the playlist should only
 // talk to The::playlist() which returns Playlist::ModelStack::instance()->top(), and
-// exceptionally to Playlist::ModelStack::instance()->source() if they really really need
+// exceptionally to Playlist::ModelStack::instance()->bottom() if they really really need
 // the source model.
 // Each playlist model implements the interface defined in Playlist::AbstractModel.
 // Each playlist proxy is a subclass od QSortFilterProxyModel through Playlist::ProxyBase,
@@ -49,7 +48,7 @@ namespace Playlist
 
 /**
  * Singleton class that handles and wraps around the Playlist models architecture.
- * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->source()
+ * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->bottom()
  * should only be used internally or in very specific situations.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
@@ -69,12 +68,14 @@ public:
     static void destroy();
 
     /**
-     * The topmost proxy model in the stack
+     * Use the 'top()' model unless you have a specific need for a lower model.
      */
-    GroupingProxy * top();
-    Model *         source();
-    SortProxy *     sortProxy();
-    Controller *    controller();
+    Playlist::AbstractModel *top();
+    GroupingProxy           *groupingProxy();
+    SortProxy               *sortProxy();
+    Playlist::Model         *bottom();
+
+    Controller *controller();
 
 private:
     /**
@@ -89,19 +90,19 @@ private:
 
     static ModelStack *s_instance;       //! Instance member.
 
-    Controller *        m_controller;
-    Model *             m_model;
-    FilterProxy *       m_filter;
-    SortProxy *         m_sort;
-    SearchProxy *       m_search;
-    GroupingProxy *     m_grouping;
+    GroupingProxy   *m_grouping;
+    SearchProxy     *m_search;
+    SortFilterProxy *m_sortfilter;
+    Model           *m_model;
+
+    Controller      *m_controller;
 };
 
 }   //namespace Playlist
 
 namespace The
 {
-    AMAROK_EXPORT Playlist::GroupingProxy* playlist();
+    AMAROK_EXPORT Playlist::AbstractModel* playlist();
     AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 

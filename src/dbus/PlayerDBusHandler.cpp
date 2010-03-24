@@ -243,7 +243,7 @@ namespace Amarok
         if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
         if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
         if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
-        if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->rowCount() ) )
+        if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->qaim()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;
             caps |= CAN_GO_PREV;

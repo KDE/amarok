@@ -35,11 +35,8 @@
 
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
-    : ProxyBase( parent )
+    : ProxyBase( belowModel, parent )
 {
-    m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-
     setGroupingCategory( QString( "Album" ) );
 
 
@@ -68,10 +65,6 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
     connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
 
-
-    // Proxy the Playlist::AbstractModel signals
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 
     // No need to scan the pre-existing entries in sourceModel(), because we build our
     // internal state on-the-fly.

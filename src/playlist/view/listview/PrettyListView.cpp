@@ -78,7 +78,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_firstItemInserted( 0 )
 {
     // QAbstractItemView basics
-    setModel( Playlist::ModelStack::instance()->top() );
+    setModel( m_topmostProxy->qaim() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
     setSelectionMode( ExtendedSelection );
@@ -106,8 +106,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
-    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->source()'.
-    connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
+    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
 
 
     // Timers
@@ -191,8 +191,8 @@ Playlist::PrettyListView::removeSelection()
 
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
-        firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0 );
+        firstRow = qBound( 0, firstRow, model()->rowCount() - 1 );
+        QModelIndex newSelectionIndex = model()->index( firstRow, 0 );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -360,7 +360,7 @@ void
 Playlist::PrettyListView::stopAfterTrack()
 {
     DEBUG_BLOCK
-    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    const quint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
     if( Actions::instance()->willStopAfterTrack( id ) )
     {
         Actions::instance()->setStopAfterMode( StopNever );
@@ -404,7 +404,7 @@ Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
     else
     {
         // draw it on the bottom of the last item
-        index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
+        index = model()->index( model()->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );
         m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
     }
@@ -766,7 +766,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int currentRow = m_topmostProxy->rowCount();
+    int currentRow = model()->rowCount();
     if( selected.size() > 0 )
         currentRow = selected.first();
 
@@ -852,7 +852,7 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
 
     if( m_firstItemInserted == 0 )
     {
-        m_firstItemInserted = Playlist::ModelStack::instance()->source()->idAt( start );
+        m_firstItemInserted = Playlist::ModelStack::instance()->bottom()->idAt( start );
         QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
     }
 }
