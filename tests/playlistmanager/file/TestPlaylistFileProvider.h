@@ -33,6 +33,7 @@ public:
     TestPlaylistFileProvider();
 
 private slots:
+    void init();
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();
@@ -41,6 +42,8 @@ private slots:
     void testRename();
 
 private:
+    void removeTestPlaylist();
+    void removeConfigPlaylistEntries();
     PlaylistFileProvider *m_testPlaylistFileProvider;
     QString dataPath( const QString &relPath );
 };

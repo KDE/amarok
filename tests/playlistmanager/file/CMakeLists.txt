@@ -1,6 +1,8 @@
 include_directories( .
+    ${AMAROK_TEST_TREE}
     ${AMAROK_SOURCE_TREE}/statusbar
     ${AMAROK_SOURCE_TREE}/collection
+    ${CMAKE_BINARY_DIR}/tests
     ${CMAKE_BINARY_DIR}/src
 )
 
