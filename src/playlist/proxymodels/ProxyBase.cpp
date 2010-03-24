@@ -86,13 +86,7 @@ ProxyBase::clearSearchTerm()
 bool
 ProxyBase::containsTrack( const Meta::TrackPtr track ) const
 {
-    // The complexity of this isn't optimal
-    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
-    {
-        if( trackAt( i ) == track )     //O( n ) - uses .at()
-            return true;
-    }
-    return false;
+    return ( firstRowForTrack( track ) != -1 );    // Let him do the clever work.
 }
 
 int
