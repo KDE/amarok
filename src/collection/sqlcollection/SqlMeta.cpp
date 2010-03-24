@@ -836,10 +836,22 @@ SqlTrack::finishedPlaying( double playedFraction )
 
     beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
 
-    setPlayCount( newPlayCount );
-    if( firstPlayed() == 0 )
-        setFirstPlayed( QDateTime::currentDateTime().toTime_t() );
-    setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+    bool doUpdate = false;
+
+    if( m_length < 30000 && playedFraction == 1.0 )
+        doUpdate = true;
+    if( playedFraction >= 0.5 && m_length >= 30000 ) //song >= 30 seconds and at least half played
+        doUpdate = true;
+    if( playedFraction * m_length > 240000 )
+        doUpdate = true;
+
+    if( doUpdate )
+    {
+        setPlayCount( newPlayCount );
+        if( firstPlayed() == 0 )
+            setFirstPlayed( QDateTime::currentDateTime().toTime_t() );
+        setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+    }
 
     setScore( Amarok::computeScore( score(), newPlayCount, playedFraction ) );
 

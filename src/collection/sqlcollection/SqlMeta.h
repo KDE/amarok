@@ -183,7 +183,7 @@ class SqlTrack : public Meta::Track
         QString m_rpath;
         int m_trackId;
 
-        int m_length;
+        qint64 m_length;
         qint64 m_filesize;
         int m_trackNumber;
         int m_discNumber;
