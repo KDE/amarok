@@ -31,17 +31,35 @@ Statistics::StatisticsProvider::~StatisticsProvider()
 }
 
 void
-Statistics::StatisticsProvider::played( double playedFraction )
+Statistics::StatisticsProvider::played( double playedFraction, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
     debug() << "called with playedFraction = " << playedFraction;
+
     m_lastPlayed = QDateTime::currentDateTime();
     if( !m_firstPlayed.isValid() )
     {
         m_firstPlayed = QDateTime::currentDateTime();
     }
-    m_playCount++;
+
+    bool doUpdate = false;
+
+    if( track->length() < 30000 && playedFraction == 1.0 )
+        doUpdate = true;
+    if( playedFraction >= 0.5 && track->length() >= 30000 ) //song >= 30 seconds and at least half played
+        doUpdate = true;
+    if( playedFraction * track->length() > 240000 )
+        doUpdate = true;
+
+    if( doUpdate )
+    {
+        m_playCount++;
+        if( !m_firstPlayed.isValid() )
+            setFirstPlayed( QDateTime::currentDateTime() );
+        setLastPlayed( QDateTime::currentDateTime() );
+    }
+
     m_score = Amarok::computeScore( m_score, m_playCount, playedFraction );
     save();
 }

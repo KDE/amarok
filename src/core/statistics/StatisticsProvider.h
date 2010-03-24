@@ -18,6 +18,7 @@
 #define STATISTICS_STATISTICSPROVIDER_H
 
 #include "amarok_export.h"
+#include "core/meta/Meta.h"
 
 #include <QDateTime>
 
@@ -46,7 +47,7 @@ namespace Statistics
             int playCount() const;
             void setPlayCount( int playCount );
             /** indicate to the statistics provider that a song was played */
-            void played( double playedFraction );
+            void played( double playedFraction, Meta::TrackPtr track );
 
         protected:
             virtual void save() = 0;

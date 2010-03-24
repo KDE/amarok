@@ -350,7 +350,7 @@ Track::finishedPlaying( double playedFraction )
 {
     if( d->statisticsProvider )
     {
-        d->statisticsProvider->played( playedFraction );
+        d->statisticsProvider->played( playedFraction, Meta::TrackPtr( this ) );
         notifyObservers();
     }
 }

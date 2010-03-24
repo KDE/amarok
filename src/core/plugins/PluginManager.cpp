@@ -16,7 +16,7 @@
 
 #define DEBUG_PREFIX "PluginManager"
 
-#include "core/plugins/PluginManager.h"
+#include "PluginManager.h"
 
 #include "Amarok.h"
 #include "Debug.h"

@@ -629,7 +629,7 @@ void
 Track::finishedPlaying( double playedFraction )
 {
     if( d->provider )
-        d->provider->played( playedFraction );
+        d->provider->played( playedFraction, Meta::TrackPtr( this ) );
 }
 
 bool

@@ -492,7 +492,7 @@ ServiceTrack::finishedPlaying( double playedFraction )
 {
     if( m_provider )
     {
-        m_provider->played( playedFraction );
+        m_provider->played( playedFraction, TrackPtr( this ) );
         notifyObservers();
     }
 }
