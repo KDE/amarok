@@ -22,18 +22,18 @@
 
 #include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
 
 namespace Meta {
     class MultiTrack;
 }
 
-class TestMetaMultiTrack : public TestBase
+class TestMetaMultiTrack : public QObject
 {
 Q_OBJECT
 
 public:
-    TestMetaMultiTrack( const QStringList args, const QString &logPath );
+    TestMetaMultiTrack();
 
 private slots:
     void initTestCase();
