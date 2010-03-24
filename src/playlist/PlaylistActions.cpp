@@ -350,6 +350,12 @@ Playlist::Actions::queuePosition( quint64 id )
     return m_navigator->queuePosition( id );
 }
 
+QQueue<quint64>
+Playlist::Actions::queue()
+{
+    return m_navigator->queue();
+}
+
 void
 Playlist::Actions::queue( QList<int> rows )
 {

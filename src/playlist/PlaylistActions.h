@@ -26,6 +26,7 @@
 #include "core/playlists/Playlist.h"
 #include "proxymodels/AbstractModel.h"
 
+#include <QQueue>
 
 namespace Playlist
 {
@@ -104,6 +105,11 @@ public:
 
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
+
+    // nor should this, ideally this and queuePosition
+    // should be in TrackNavigator and TrackNavigator
+    // should be publicly accessible
+    QQueue<quint64> queue();
 
 public slots:
     void play();
