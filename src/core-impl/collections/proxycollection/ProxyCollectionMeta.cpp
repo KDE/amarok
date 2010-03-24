@@ -1513,7 +1513,7 @@ ProxyLabel::sortableName() const
 }
 
 bool
-ProxyLabel::hasCapabilityInterface(Meta::Capability::Type type ) const
+ProxyLabel::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_labels.count() == 1 )
@@ -1527,7 +1527,7 @@ ProxyLabel::hasCapabilityInterface(Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-ProxyLabel::createCapabilityInterface( Meta::Capability::Type type )
+ProxyLabel::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_labels.count() == 1 )
     {
