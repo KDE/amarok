@@ -45,6 +45,13 @@ Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()
 //!***** Keeping in-sync with the source model
 
 void
+Playlist::NonlinearTrackNavigator::loadFromSourceModel()
+{
+    DEBUG_BLOCK
+    slotModelReset();
+}
+
+void
 Playlist::NonlinearTrackNavigator::slotModelReset()
 {
     DEBUG_BLOCK

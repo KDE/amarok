@@ -95,7 +95,7 @@ namespace Playlist
              * causes calls to the virtual functions below. And virtual functions don't do
              * what you want while you're in a base class constructor.
              */
-            void loadFromSourceModel() { slotModelReset(); }
+            void loadFromSourceModel();
 
             /**
              * Request-callback for child classes: try to make sure that there's at least
