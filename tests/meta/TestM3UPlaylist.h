@@ -21,16 +21,16 @@
 #define TESTM3UPLAYLIST_H
 
 #include "core/playlists/impl/file/m3u/M3UPlaylist.h"
-#include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-class TestM3UPlaylist : public TestBase
+class TestM3UPlaylist : public QObject
 {
 Q_OBJECT
 
 public:
-    TestM3UPlaylist( const QStringList args, const QString &logPath );
+    TestM3UPlaylist();
 
 private slots:
     void initTestCase();
@@ -45,6 +45,7 @@ private slots:
 
 private:
     Meta::M3UPlaylist m_testPlaylist1;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTM3UPLAYLIST_H

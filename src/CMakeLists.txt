@@ -724,7 +724,6 @@ endif( BUILD_MYSQLE_COLLECTION )
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
         ../tests/meta/TestPlaylistFileSupport.cpp

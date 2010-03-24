@@ -104,7 +104,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestDirectoryLoader.h"
-#include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
 #include "TestMetaFileTrack.h"
@@ -620,7 +619,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestM3UPlaylist             test003( options, logPath );
     TestMetaCueCueFileItem      test004( options, logPath );
     TestMetaCueTrack            test005( options, logPath );
     TestMetaFileTrack           test006( options, logPath );
