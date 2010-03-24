@@ -129,9 +129,8 @@ ProxyBase::findNext( const QString &searchTerm, int selectedRow, int searchField
     ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
     if ( !proxyBase )
         return -1;
-    //FIXME: selectedRow might need to be adjusted through rowToSource now that SortProxy
-    //       changes the order of rows.     -- Téo 28/6/2009
-    return rowFromSource( proxyBase->findNext( searchTerm, selectedRow, searchFields ) );
+
+    return rowFromSource( proxyBase->findNext( searchTerm, rowToSource( selectedRow ), searchFields ) );
 }
 
 int
@@ -140,8 +139,8 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
     ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
     if ( !proxyBase )
         return -1;
-    //FIXME: see findNext().
-    return rowFromSource( proxyBase->findPrevious( searchTerm, selectedRow, searchFields ) );
+
+    return rowFromSource( proxyBase->findPrevious( searchTerm, rowToSource( selectedRow ), searchFields ) );
 }
 
 int
