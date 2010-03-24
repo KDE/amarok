@@ -1,2 +1,19 @@
-QT4_AUTOMOC( TestSqlUserPlaylistProvider.cpp
+include_directories( .
+    ${AMAROK_SOURCE_TREE}/collection
+    ${AMAROK_SOURCE_TREE}/browsers/playlistbrowser
 )
+
+#------------------------ Test SqlUserPlaylistProvider -----------------------------
+
+set( testsqluserplaylistprovider_SRCS
+     TestSqlUserPlaylistProvider.cpp
+     ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlUserPlaylistProvider.cpp
+     ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlPlaylistGroup.cpp
+     ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlPlaylist.cpp
+     ${AMAROK_SOURCE_TREE}/core/meta/impl/timecode/TimecodeMeta.cpp
+     ${AMAROK_SOURCE_TREE}/core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.cpp
+     ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
+     ${AMAROK_SOURCE_TREE}/core/playlists/impl/file/PlaylistFileSupport.cpp
+    )
+kde4_add_unit_test( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
+target_link_libraries( testsqluserplaylistprovider ${QT_QTTEST_LIBRARY} amaroklib )

@@ -104,7 +104,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestDirectoryLoader.h"
-#include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
 #endif // DEBUG
 
@@ -610,7 +609,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestSqlUserPlaylistProvider test012( options, logPath );
     TestTimecodeTrackProvider   test013( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
