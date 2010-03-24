@@ -803,8 +803,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     if ( cmds.size() == m_items.size() )
     {
         clearCommand();
-        m_totalLength = 0;
-        m_totalSize = 0;
         return;
     }
 
@@ -897,9 +895,14 @@ void Playlist::Model::clearCommand()
     setActiveRow( -1 );
 
     beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+
+    m_totalLength = 0;
+    m_totalSize = 0;
+
     qDeleteAll( m_items );
     m_items.clear();
     m_itemIds.clear();
+
     endRemoveRows();
 }
 
