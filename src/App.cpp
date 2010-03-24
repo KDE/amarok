@@ -104,7 +104,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestDirectoryLoader.h"
-#include "TestMetaFileTrack.h"
 #include "TestMetaMultiTrack.h"
 #include "TestPlaylistFileProvider.h"
 #include "TestSqlUserPlaylistProvider.h"
@@ -613,7 +612,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestMetaFileTrack           test006( options, logPath );
     TestMetaMultiTrack          test007( options, logPath );
     TestPlaylistFileProvider    test009( options, logPath );
     TestSqlUserPlaylistProvider test012( options, logPath );
