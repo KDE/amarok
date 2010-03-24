@@ -104,7 +104,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestDirectoryLoader.h"
-#include "TestTimecodeTrackProvider.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
@@ -609,7 +608,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestTimecodeTrackProvider   test013( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
     TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );

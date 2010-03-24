@@ -18,25 +18,42 @@
  ***************************************************************************/
 
 #include "TestTimecodeTrackProvider.h"
+#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
+
+#include <KStandardDirs>
 
 #include <QtTest/QTest>
 
-TestTimecodeTrackProvider::TestTimecodeTrackProvider( const QStringList args, const QString &logPath )
-    : TestBase( "TimecodeTrackProvider" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestTimecodeTrackProvider )
+
+TestTimecodeTrackProvider::TestTimecodeTrackProvider()
+{}
+
+void TestTimecodeTrackProvider::initTestCase()
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    m_testProvider = new TimecodeTrackProvider();
 }
 
+void TestTimecodeTrackProvider::cleanupTestCase()
+{
+    delete m_testProvider;
+}
+
+QString
+TestTimecodeTrackProvider::dataPath( const QString &relPath )
+{
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+}
 
 void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 {
-    QVERIFY( !m_testProvider.possiblyContainsTrack( KUrl( "file:///home/test/test.mp3" ) ) );
-    QVERIFY( m_testProvider.possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:0-23" ) ) );
-    QVERIFY( m_testProvider.possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:23-42" ) ) );
-    QVERIFY( m_testProvider.possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:42-23" ) ) );
-    QVERIFY( !m_testProvider.possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:-12-42" ) ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3" ) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:0-23" ) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:23-42" ) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:42-23" ) ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:-12-42" ) ) );
 }
 
 void TestTimecodeTrackProvider::testTrackForUrl()
@@ -44,7 +61,7 @@ void TestTimecodeTrackProvider::testTrackForUrl()
     KUrl testUrl;
     testUrl = dataPath( "amarok/testdata/album/Track01.ogg:23-42" );
 
-    Meta::TrackPtr resultTrack = m_testProvider.trackForUrl( testUrl );
+    Meta::TrackPtr resultTrack = m_testProvider->trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 

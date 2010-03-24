@@ -18,13 +18,10 @@
 
 #include "TimecodeMeta.h"
 
-#include "Debug.h"
-
 #include "QRegExp"
 
 TimecodeTrackProvider::TimecodeTrackProvider()
 {
-    DEBUG_BLOCK
 }
 
 
@@ -34,15 +31,12 @@ TimecodeTrackProvider::~TimecodeTrackProvider()
 
 bool TimecodeTrackProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    // DEBUG_BLOCK
     return url.url().contains( QRegExp(":\\d+-\\d+$") );
 }
 
 Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const KUrl & url )
 {
-    DEBUG_BLOCK
     QString urlString = url.url();
-    debug() << "looking at url: " << urlString;
 
     QRegExp rx;
     rx.setPattern( "^(.+):(\\d+)-(\\d+)$" );
