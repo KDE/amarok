@@ -18,10 +18,10 @@
 
 #include "Debug.h"
 #include "moodbar/MoodbarManager.h"
+#include "playlist/PlaylistDefines.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
-#include "playlist/proxymodels/GroupingProxy.h"
 
 #include <kratingwidget.h>
 #include <KHBox>
@@ -43,11 +43,10 @@ const qreal Playlist::MARGINH = 6.0;
 const qreal Playlist::MARGINBODY = 1.0;
 const qreal Playlist::PADDING = 1.0;
 
-InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
+InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, bool hasHeader )
     : KVBox( parent )
     , m_index( index )
     , m_layout( layout )
-    , m_groupMode( groupMode )
     , m_layoutChanged( false )
 {
     setContentsMargins( 0, 0, 0, 0 );
@@ -62,35 +61,15 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
 
     int s_fontHeight = bfm.height();
 
-    int rowCount = 1;
+    int rowCount = PrettyItemDelegate::rowsForItem( m_index );
 
     m_headerHeight = 0;
-
-    switch ( groupMode )
-    {
-        case Head:
-            rowCount = layout.head().rows() + layout.body().rows();
-            break;
-
-        case Body:
-            rowCount = layout.body().rows();
-            break;
-
-        case Tail:
-            rowCount = layout.body().rows();
-            break;
-
-        case None:
-        default:
-            rowCount = layout.single().rows();
-            break;
-    }
 
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     setFixedHeight( height );
     setFixedWidth( parent->width() );
 
-    if( groupMode == Head )
+    if( hasHeader )
         m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
@@ -108,7 +87,7 @@ void InlineEditorWidget::createChildWidgets()
     DEBUG_BLOCK
 
     debug() << "width: " << width();
-    
+
     //if we are a head item, create a blank widget to make space for the head info
 
     if ( m_headerHeight != 0 )
@@ -119,20 +98,8 @@ void InlineEditorWidget::createChildWidgets()
 
     KHBox * trackBox = new KHBox( this );
 
-    LayoutItemConfig config;
-    switch(m_groupMode)
-    {
-        //For now, we don't allow editing of the "head" data, just the body
-        case Head:
-        case Body:
-        case Tail:
-            config = m_layout.body();
-            break;
-        case None:
-        default:
-            config = m_layout.single();
-            break;
-    }
+    //For now, we don't allow editing of the "head" data, just the body
+    LayoutItemConfig config = m_layout.layoutForItem( m_index );
 
     int rowCount = config.rows();
 
@@ -148,7 +115,7 @@ void InlineEditorWidget::createChildWidgets()
         //add a small "spacer" widget to offset the cover a little.
         QWidget * coverSpacer = new QWidget( trackBox );
         coverSpacer->setFixedWidth( MARGINH - MARGIN );
-        
+
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
@@ -182,7 +149,7 @@ void InlineEditorWidget::createChildWidgets()
 
         QSplitter *rowWidget = new QSplitter( rowsWidget );
         connect( rowWidget, SIGNAL( splitterMoved ( int, int ) ), this, SLOT( splitterMoved( int, int ) ) );
-        
+
         m_splitterRowMap.insert( rowWidget, i );
 
         // the Oxygen widget style causes the frame around items too squashed
@@ -380,8 +347,8 @@ void InlineEditorWidget::editValueChanged()
         debug() << "Storing changed value: " << edit->text();
         m_changedValues.insert( role, edit->text() );
     }
-    
-    
+
+
 }
 
 void InlineEditorWidget::ratingValueChanged()
@@ -413,14 +380,14 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
 
     Q_UNUSED( pos )
     Q_UNUSED( index )
-    
+
     QSplitter * splitter = dynamic_cast<QSplitter *>( sender() );
     if ( !splitter )
         return;
 
     int row = m_splitterRowMap.value( splitter );
     debug() << "on row: " << row;
-    
+
     //first, get total size of all items;
     QList<int> sizes = splitter->sizes();
 
@@ -437,21 +404,7 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
         newSizes << newSize;
     }
 
-    LayoutItemConfig itemConfig;
-
-    switch ( m_groupMode )
-    {
-        case Head:
-        case Body:
-        case Tail:
-            itemConfig = m_layout.body();
-            break;
-
-        case None:
-        default:
-            itemConfig = m_layout.single();
-            break;
-    }
+    LayoutItemConfig itemConfig = m_layout.layoutForItem( m_index );
 
     LayoutItemConfigRow rowConfig = itemConfig.row( row );
 
@@ -459,7 +412,7 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     LayoutItemConfigRow newRowConfig;
 
     for( int i = 0; i<rowConfig.count(); i++ )
-    {  
+    {
         LayoutItemConfigRowElement element = rowConfig.element( i );
         debug() << "item " << i << " old/new: " << element.size() << "/" << newSizes.at( i );
         element.setSize( newSizes.at( i ) );
@@ -478,20 +431,8 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
             newItemConfig.addRow( itemConfig.row( i ) );
     }
 
-    switch ( m_groupMode )
-    {
-        case Head:
-        case Body:
-        case Tail:
-            m_layout.setBody( newItemConfig );
-            break;
+    m_layout.setLayout( m_layout.layoutTypeForItem( m_index ), newItemConfig );
 
-        case None:
-        default:
-            m_layout.setSingle( newItemConfig );
-            break;
-    }
-    
     m_layoutChanged = true;
 }
 
@@ -516,7 +457,7 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
                     debug() << "emitting editingDone!";
                     emit editingDone( this );
                 }
-                
+
                 return true;
             }
             else

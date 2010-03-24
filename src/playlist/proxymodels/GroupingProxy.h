@@ -40,6 +40,8 @@ enum GroupDataRoles
     GroupedTracksRole, // deprecated
 };
 
+namespace Grouping
+{
 enum GroupMode
 {
     None = 1,
@@ -50,6 +52,7 @@ enum GroupMode
     Collapsed, // deprecated
     Invalid
 };
+}
 
 class GroupingProxy : public ProxyBase
 {
@@ -126,7 +129,7 @@ private:
     /**
      * This function determines the "Status within the group" of a model row.
      */
-    GroupMode groupModeForIndex( const QModelIndex & index );
+    Grouping::GroupMode groupModeForIndex( const QModelIndex & index );
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.
@@ -145,7 +148,7 @@ private:
     QString m_groupingCategory;
     int m_groupingCategoryIndex;
 
-    QHash<int, GroupMode> m_cachedGroupModeForRow;
+    QHash<int, Grouping::GroupMode> m_cachedGroupModeForRow;
 };
 
 } // namespace Playlist

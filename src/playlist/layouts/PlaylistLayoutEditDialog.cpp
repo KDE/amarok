@@ -98,12 +98,14 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     //add an editor to each tab
     m_headEdit = new Playlist::LayoutEditWidget( this );
-    m_bodyEdit = new Playlist::LayoutEditWidget( this );
+    m_standardBodyEdit = new Playlist::LayoutEditWidget( this );
+    m_variousArtistsBodyEdit = new Playlist::LayoutEditWidget( this );
     m_singleEdit = new Playlist::LayoutEditWidget( this );
     m_layoutsMap = new QMap<QString, PlaylistLayout>();
 
     elementTabs->addTab( m_headEdit, i18n( "Head" ) );
-    elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
+    elementTabs->addTab( m_standardBodyEdit, i18n( "Body" ) );
+    elementTabs->addTab( m_variousArtistsBodyEdit, i18n( "Body (Various artists)" ) );
     elementTabs->addTab( m_singleEdit, i18n( "Single" ) );
 
     QStringList layoutNames = LayoutManager::instance()->layouts();
@@ -160,7 +162,8 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     toggleUpDownButtons();
 
     connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
-    connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( m_standardBodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( m_variousArtistsBodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
     connect( tooltipsCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
@@ -202,10 +205,12 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     layoutListWidget->addItem( layoutName );
     layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
     m_headEdit->clear();
-    m_bodyEdit->clear();
+    m_standardBodyEdit->clear();
+    m_variousArtistsBodyEdit->clear();
     m_singleEdit->clear();
     layout.setHead( m_headEdit->config() );
-    layout.setBody( m_bodyEdit->config() );
+    layout.setStandardBody( m_standardBodyEdit->config() );
+    layout.setVariousArtistsBody( m_variousArtistsBodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     m_layoutsMap->insert( layoutName, layout );
 
@@ -217,7 +222,8 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
 void PlaylistLayoutEditDialog::copyLayout()
 {
     LayoutItemConfig headConfig = m_headEdit->config();
-    LayoutItemConfig bodyConfig = m_bodyEdit->config();
+    LayoutItemConfig standardBodyConfig = m_standardBodyEdit->config();
+    LayoutItemConfig variousArtistsBodyConfig = m_variousArtistsBodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
 
     QString layoutName = layoutListWidget->currentItem()->text();
@@ -246,7 +252,8 @@ void PlaylistLayoutEditDialog::copyLayout()
 
     headConfig.setActiveIndicatorRow( -1 );
     layout.setHead( headConfig );
-    layout.setBody( bodyConfig );
+    layout.setStandardBody( standardBodyConfig );
+    layout.setVariousArtistsBody( variousArtistsBodyConfig );
     layout.setSingle( singleConfig );
 
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
@@ -316,7 +323,8 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     {
         PlaylistLayout layout = m_layoutsMap->value( layoutName );
         m_headEdit->readLayout( layout.head() );
-        m_bodyEdit->readLayout( layout.body() );
+        m_standardBodyEdit->readLayout( layout.standardBody() );
+        m_variousArtistsBodyEdit->readLayout( layout.variousArtistsBody() );
         m_singleEdit->readLayout( layout.single() );
         inlineControlsChekbox->setChecked( layout.inlineControls() );
         tooltipsCheckbox->setChecked( layout.tooltips() );
@@ -330,7 +338,8 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     else
     {
         m_headEdit->clear();
-        m_bodyEdit->clear();
+        m_standardBodyEdit->clear();
+        m_variousArtistsBodyEdit->clear();
         m_singleEdit->clear();
     }
 }
@@ -343,7 +352,8 @@ void PlaylistLayoutEditDialog::preview()
     headConfig.setActiveIndicatorRow( -1 );
 
     layout.setHead( headConfig );
-    layout.setBody( m_bodyEdit->config() );
+    layout.setStandardBody( m_standardBodyEdit->config() );
+    layout.setVariousArtistsBody( m_variousArtistsBodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
     layout.setTooltips( tooltipsCheckbox->isChecked() );
@@ -485,13 +495,15 @@ void PlaylistLayoutEditDialog::setEnabledTabs()
     {
         //Grouping allowed - enable all tabs
         elementTabs->setTabEnabled(elementTabs->indexOf(m_headEdit), true);
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_bodyEdit), true);
+        elementTabs->setTabEnabled(elementTabs->indexOf(m_standardBodyEdit), true);
+        elementTabs->setTabEnabled(elementTabs->indexOf(m_variousArtistsBodyEdit), true);
     }
     else
     {
         //Disable the head and body tabs, leaving only the single tab
         elementTabs->setTabEnabled(elementTabs->indexOf(m_headEdit), false);
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_bodyEdit), false);
+        elementTabs->setTabEnabled(elementTabs->indexOf(m_standardBodyEdit), false);
+        elementTabs->setTabEnabled(elementTabs->indexOf(m_variousArtistsBodyEdit), false);
         elementTabs->setCurrentWidget(m_singleEdit);
     }
 }
@@ -520,7 +532,8 @@ void PlaylistLayoutEditDialog::setLayoutChanged()
     setEnabledTabs();
 
     (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
-    (*m_layoutsMap)[m_layoutName].setBody( m_bodyEdit->config() );
+    (*m_layoutsMap)[m_layoutName].setStandardBody( m_standardBodyEdit->config() );
+    (*m_layoutsMap)[m_layoutName].setVariousArtistsBody( m_variousArtistsBodyEdit->config() );
     (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
 
     (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );

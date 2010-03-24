@@ -16,7 +16,7 @@
                 <element value="Album" size="1" bold="true" alignment="center"/>
             </row>
             <row>
-                <element value="Artist" size="1" bold="true" alignment="center"/>
+                <element value="Album artist" size="1" bold="true" alignment="center"/>
             </row>
         </group_head>
         <group_body show_cover="false">
@@ -25,6 +25,15 @@
                 <element value="Length" size="0.2" bold="false" alignment="right"/>
             </row>
         </group_body>
+        <group_variousArtistsBody show_cover="false">
+            <row>
+                <element value="Title (with track number)" size="0.8" bold="false" alignment="left"/>
+                <element value="Length" size="0.2" bold="false" alignment="right"/>
+            </row>
+            <row>
+                <element value="Artist" prefix="     " size="0" bold="false" italic="true" alignment="left"/>
+            </row>
+        </group_variousArtistsBody>
     </layout>
     <layout name="No Grouping" group_by="None">
         <single_track show_cover="true">
@@ -84,7 +93,7 @@
                 <element size="1" bold="true" alignment="left" value="Album" italic="false" />
             </row>
             <row>
-                <element size="0.8" bold="true" alignment="left" value="Artist" italic="true" />
+                <element size="0.8" bold="true" alignment="left" value="Album artist" italic="true" />
                 <element size="0" bold="false" alignment="right" value="Type" italic="false" />
             </row>
             <row>
@@ -103,5 +112,15 @@
                 <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
             </row>
         </group_body>
+        <group_variousArtistsBody active_indicator_row="0" show_cover="false" >
+            <row>
+                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="true" />
+                <element size="0.15" bold="false" alignment="center" value="Rating" italic="false" />
+                <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
+            </row>
+            <row>
+                <element value="Artist" prefix="     " size="0" bold="false" italic="true" alignment="left"/>
+            </row>
+        </group_variousArtistsBody>
     </layout>
 </playlist_layouts>

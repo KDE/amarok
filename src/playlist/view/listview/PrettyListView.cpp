@@ -119,20 +119,12 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
     m_animationTimer->setInterval( 250 );
 
-    if ( LayoutManager::instance()->activeLayout().inlineControls() )
-        m_animationTimer->start();
-
 
     // Tooltips
     m_toolTipManager = new ToolTipManager(this);
 
-    //   Indicate to the tooltip manager what to display based on the layout
-    //   That way, we avoid doing it every time we want to display the tooltip
-    //   This will be done every time the layout will be changed
-    m_toolTipManager->cancelExclusions();
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
+
+    playlistLayoutChanged();
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -565,7 +557,7 @@ bool
 Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 {
     QModelIndex index = indexAt( event->pos() );
-    if ( index.data( GroupRole ).toInt() == Head )
+    if ( index.data( GroupRole ).toInt() == Grouping::Head )
     {
         QPoint mousePressPos = event->pos();
         mousePressPos.rx() += horizontalOffset();
@@ -893,7 +885,8 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     // This will be done every time the layout will be changed
     m_toolTipManager->cancelExclusions();
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().body(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().standardBody(), false);
+    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().variousArtistsBody(), false);
     excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
 
     update();

@@ -34,6 +34,8 @@ class PrettyItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
+    static int rowsForItem( const QModelIndex &index );
+
     PrettyItemDelegate( QObject* parent = 0 );
     ~PrettyItemDelegate();
 
@@ -81,9 +83,7 @@ private:
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 
-    int rowsForItem( const QModelIndex &index ) const;
-
-    int getGroupMode( const QModelIndex &index) const;
+    static int getGroupMode( const QModelIndex &index);
 
     static QFontMetricsF* s_nfm; //normal
     static QFontMetricsF* s_ufm; //underline

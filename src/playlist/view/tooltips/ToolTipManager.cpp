@@ -98,7 +98,7 @@ void ToolTipManager::requestToolTip(const QModelIndex& index)
         m_track = track;
         KToolTip::hideTip();
 
-        m_singleItem = (index.data( Playlist::GroupRole ).toInt() == Playlist::None);
+        m_singleItem = (index.data( Playlist::GroupRole ).toInt() == Playlist::Grouping::None);
 
         m_itemRect = m_view->visualRect(index);
         const QPoint pos = m_view->viewport()->mapToGlobal(m_itemRect.topLeft());
@@ -189,11 +189,11 @@ void ToolTipManager::prepareToolTip()
         text = QString( i18n( "No extra information available" ) );
     }
     else
-    {       
+    {
         text = QString("<table>"+ text +"</table>");
     }
     showToolTip(image, text);
-    
+
 }
 
 void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
@@ -308,7 +308,7 @@ QString ToolTipManager::breakLongLinesHTML(const QString& text)
     else
     {
         QString textInLines;
-        
+
         QStringList words = text.trimmed().split(' ');
         int lineLength = 0;
         while(words.size() > 0)

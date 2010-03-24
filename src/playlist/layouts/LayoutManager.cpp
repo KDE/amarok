@@ -205,7 +205,12 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
 
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
-        currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        currentLayout.setStandardBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        QDomElement variousArtistsXML = layout.toElement().firstChildElement( "group_variousArtistsBody" );
+        if ( !variousArtistsXML.isNull() )
+            currentLayout.setVariousArtistsBody( parseItemConfig( variousArtistsXML ) );
+        else    // Handle old custom layout XMLs
+            currentLayout.setVariousArtistsBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
         currentLayout.setSingle( parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
 
         if ( !layoutName.isEmpty() )
@@ -299,7 +304,8 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     newLayout.appendChild( createItemElement( doc, "single_track", layout.single() ) );
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
-    newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
+    newLayout.appendChild( createItemElement( doc, "group_body", layout.standardBody() ) );
+    newLayout.appendChild( createItemElement( doc, "group_variousArtistsBody", layout.variousArtistsBody() ) );
 
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" );

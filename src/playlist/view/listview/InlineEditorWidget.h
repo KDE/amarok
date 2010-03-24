@@ -32,7 +32,7 @@ class InlineEditorWidget : public KVBox
     Q_OBJECT
 
 public:
-    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
+    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, bool hasHeader );
     ~InlineEditorWidget();
 
     QMap<int, QString> changedValues();
@@ -56,7 +56,6 @@ private:
 
     QPersistentModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
-    int m_groupMode;
 
     QMap<QWidget *, int> m_editorRoleMap;
     QMap<int, QString> m_changedValues;

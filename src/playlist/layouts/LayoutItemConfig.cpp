@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,8 +15,10 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "LayoutItemConfig.h"
+
+#include "playlist/proxymodels/GroupingProxy.h"    // For 'GroupMode'
 
 namespace Playlist {
 
@@ -163,9 +166,14 @@ LayoutItemConfig Playlist::PlaylistLayout::head() const
     return m_head;
 }
 
-LayoutItemConfig Playlist::PlaylistLayout::body() const
+LayoutItemConfig Playlist::PlaylistLayout::standardBody() const
 {
-    return m_body;
+    return m_standardBody;
+}
+
+LayoutItemConfig Playlist::PlaylistLayout::variousArtistsBody() const
+{
+    return m_variousArtistsBody;
 }
 
 LayoutItemConfig Playlist::PlaylistLayout::single() const
@@ -173,14 +181,85 @@ LayoutItemConfig Playlist::PlaylistLayout::single() const
     return m_single;
 }
 
+Playlist::PlaylistLayout::LayoutType
+Playlist::PlaylistLayout::layoutTypeForItem( const QModelIndex &index ) const
+{
+    switch ( index.data( GroupRole ).toInt() )
+    {
+        case Grouping::Head:    // GroupMode
+        case Grouping::Body:
+        case Grouping::Tail:
+        {
+            Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+
+            if( !track->artist() || !track->album() || !track->album()->albumArtist() || ( track->artist()->name() != track->album()->albumArtist()->name() ) )
+                return VariousArtistsBody;
+            else
+                return StandardBody;
+        }
+
+        case Grouping::None:
+        default:
+            return Single;
+    }
+}
+
+Playlist::LayoutItemConfig
+Playlist::PlaylistLayout::layoutForItem( const QModelIndex &index ) const
+{
+    switch( layoutTypeForItem( index ) )
+    {
+        case PlaylistLayout::Head:    // LayoutType
+            return head();
+
+        case PlaylistLayout::StandardBody:
+            return standardBody();
+
+        case PlaylistLayout::VariousArtistsBody:
+            return variousArtistsBody();
+
+        case PlaylistLayout::Single:
+        default:
+            return single();
+    }
+}
+
+void
+Playlist::PlaylistLayout::setLayout( LayoutType layoutType, LayoutItemConfig itemConfig )
+{
+    switch( layoutType )
+    {
+        case PlaylistLayout::Head:    // LayoutType
+            setHead( itemConfig );
+            break;
+
+        case PlaylistLayout::StandardBody:
+            setStandardBody( itemConfig );
+            break;
+
+        case PlaylistLayout::VariousArtistsBody:
+            setVariousArtistsBody( itemConfig );
+            break;
+
+        case PlaylistLayout::Single:
+            setSingle( itemConfig );
+            break;
+    }
+}
+
 void Playlist::PlaylistLayout::setHead( LayoutItemConfig head )
 {
     m_head = head;
 }
 
-void Playlist::PlaylistLayout::setBody( LayoutItemConfig body )
+void Playlist::PlaylistLayout::setStandardBody( LayoutItemConfig standardBody )
 {
-    m_body = body;
+    m_standardBody = standardBody;
+}
+
+void Playlist::PlaylistLayout::setVariousArtistsBody( LayoutItemConfig variousArtistsBody )
+{
+    m_variousArtistsBody = variousArtistsBody;
 }
 
 void Playlist::PlaylistLayout::setSingle( LayoutItemConfig single )

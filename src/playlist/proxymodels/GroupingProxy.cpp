@@ -102,15 +102,15 @@ Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 bool
 Playlist::GroupingProxy::isFirstInGroup( const QModelIndex & index )
 {
-    GroupMode mode = groupModeForIndex( index );
-    return ( (mode == Head) || (mode == None) );
+    Grouping::GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Grouping::Head) || (mode == Grouping::None) );
 }
 
 bool
 Playlist::GroupingProxy::isLastInGroup( const QModelIndex & index )
 {
-    GroupMode mode = groupModeForIndex( index );
-    return ( (mode == Tail) || (mode == None) );
+    Grouping::GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Grouping::Tail) || (mode == Grouping::None) );
 }
 
 QModelIndex
@@ -243,14 +243,14 @@ Playlist::GroupingProxy::proxyRowsRemoved( const QModelIndex& parent, int proxyS
 }
 
 
-Playlist::GroupMode
+Playlist::Grouping::GroupMode
 Playlist::GroupingProxy::groupModeForIndex( const QModelIndex & thisIndex )
 {
-    GroupMode groupMode;
+    Grouping::GroupMode groupMode;
 
-    groupMode = m_cachedGroupModeForRow.value( thisIndex.row(), Invalid );    // Try to get from cache
+    groupMode = m_cachedGroupModeForRow.value( thisIndex.row(), Grouping::Invalid );    // Try to get from cache
 
-    if ( groupMode == Invalid )
+    if ( groupMode == Grouping::Invalid )
     {   // Not in our cache
         QModelIndex prevIndex = thisIndex.sibling( thisIndex.row() - 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the first playlist item.
         QModelIndex nextIndex = thisIndex.sibling( thisIndex.row() + 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the last playlist item.
@@ -263,13 +263,13 @@ Playlist::GroupingProxy::groupModeForIndex( const QModelIndex & thisIndex )
         bool matchAfter  = shouldBeGrouped( thisTrack, nextTrack );    //
 
         if ( !matchBefore && matchAfter )
-            groupMode = Head;
+            groupMode = Grouping::Head;
         else if ( matchBefore && matchAfter )
-            groupMode = Body;
+            groupMode = Grouping::Body;
         else if ( matchBefore && !matchAfter )
-            groupMode = Tail;
+            groupMode = Grouping::Tail;
         else
-            groupMode = None;
+            groupMode = Grouping::None;
 
         m_cachedGroupModeForRow.insert( thisIndex.row(), groupMode );    // Cache our decision
     }

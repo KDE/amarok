@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,7 @@
 #define LAYOUTITEMCONFIG_H
 
 #include <QList>
+#include <QModelIndex>
 #include <QString>
 
 namespace Playlist {
@@ -226,6 +228,13 @@ class LayoutItemConfig
 class PlaylistLayout
 {
     public:
+        enum LayoutType {
+            Head,
+            StandardBody,
+            VariousArtistsBody,
+            Single
+        };
+
         /**
         * Default Constructor
         */
@@ -239,9 +248,15 @@ class PlaylistLayout
 
         /**
          * Get the config to use for painting group members.
-         * @return The config for group member tracks.
+         * @return The config for standard group member tracks.
          */
-        LayoutItemConfig body() const;
+        LayoutItemConfig standardBody() const;
+
+        /**
+         * Get the config to use for painting group members.
+         * @return The config for group member tracks with a different artist than their album.
+         */
+        LayoutItemConfig variousArtistsBody() const;
 
         /**
          * Get the config to use for painting single (non grouped) tracks.
@@ -263,6 +278,17 @@ class PlaylistLayout
         bool isDirty() const;
 
         /**
+         * Determine the layout type for an item in a QAbstractItemModel.
+         */
+        LayoutType layoutTypeForItem( const QModelIndex &index ) const;
+        LayoutItemConfig layoutForItem( const QModelIndex &index ) const;
+
+        /**
+         * Calls 'setHead()', 'setSingle()' etc. based on 'type'.
+         */
+        void setLayout( LayoutType type, LayoutItemConfig itemConfig );
+
+        /**
          * Set the head config for this layout.
          * @param head The head config.
          */
@@ -272,7 +298,13 @@ class PlaylistLayout
          * Set the body config for this layout.
          * @param body The body config.
          */
-        void setBody( LayoutItemConfig body );
+        void setStandardBody( LayoutItemConfig body );
+
+        /**
+         * Set the body config for this layout.
+         * @param body The body config.
+         */
+        void setVariousArtistsBody( LayoutItemConfig body );
 
         /**
          * Set the single track config for this layout.
@@ -303,7 +335,8 @@ class PlaylistLayout
 
     private:
         LayoutItemConfig m_head;
-        LayoutItemConfig m_body;
+        LayoutItemConfig m_standardBody;
+        LayoutItemConfig m_variousArtistsBody;
         LayoutItemConfig m_single;
         bool m_isEditable;
         bool m_isDirty;
