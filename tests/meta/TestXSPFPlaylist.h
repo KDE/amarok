@@ -20,20 +20,19 @@
 #ifndef TESTXSPFPLAYLIST_H
 #define TESTXSPFPLAYLIST_H
 
-#include "TestBase.h"
-
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 namespace Meta {
     class XSPFPlaylist;
 }
 
-class TestXSPFPlaylist : public TestBase
+class TestXSPFPlaylist : public QObject
 {
 Q_OBJECT
 
 public:
-    TestXSPFPlaylist( const QStringList args, const QString &logPath );
+    TestXSPFPlaylist();
 
 private slots:
     void initTestCase();
@@ -60,6 +59,7 @@ private slots:
 
 private:
     Meta::XSPFPlaylist *m_testPlaylist1;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTXSPFPLAYLIST_H

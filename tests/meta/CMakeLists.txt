@@ -3,7 +3,6 @@ include_directories( .
 
 if(KDE4_BUILD_TESTS)
 QT4_AUTOMOC( TestMetaTrack.cpp
-             TestXSPFPlaylist.cpp
              )
 add_subdirectory( cue )
 add_subdirectory( file )
@@ -20,6 +19,12 @@ target_link_libraries( testm3uplaylist ${QT_QTTEST_LIBRARY} amaroklib )
 set( testplsplaylist_SRCS TestPLSPlaylist.cpp )
 kde4_add_unit_test( testplsplaylist ${testplsplaylist_SRCS} )
 target_link_libraries( testplsplaylist ${QT_QTTEST_LIBRARY} amaroklib )
+
+#------------------------ Test XSPFPLAYLIST -----------------------------
+
+set( testxspfplaylist_SRCS TestXSPFPlaylist.cpp )
+kde4_add_unit_test( testxspfplaylist ${testxspfplaylist_SRCS} )
+target_link_libraries( testxspfplaylist ${QT_QTTEST_LIBRARY} amaroklib )
 
 #------------------------ Test PlaylistFileSupport -----------------------------
 

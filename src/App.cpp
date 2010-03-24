@@ -112,7 +112,6 @@ extern void setupEventHandler_mac(long);
 #include "TestPlaylistFileProvider.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
-#include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
@@ -625,7 +624,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     TestPlaylistFileProvider    test009( options, logPath );
     TestSqlUserPlaylistProvider test012( options, logPath );
     TestTimecodeTrackProvider   test013( options, logPath );
-    TestXSPFPlaylist            test014( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
     TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
