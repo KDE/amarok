@@ -26,7 +26,7 @@
             </row>
         </group_body>
     </layout>
-    <layout name="No Grouping">
+    <layout name="No Grouping" group_by="None">
         <single_track show_cover="true">
             <row>
                 <element value="Title" size="0.5" bold="false" alignment="left"/>
@@ -50,7 +50,7 @@
             </row>
         </group_body>
     </layout>
-    <layout group_by="None" name="No Grouping (Single Line)" >
+    <layout name="No Grouping (Single Line)" group_by="None">
         <single_track active_indicator_row="0" show_cover="false" >
             <row>
                 <element suffix="" prefix="" size="0.5" bold="true" alignment="left" value="Title" underline="false" italic="false" />
