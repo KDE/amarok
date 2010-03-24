@@ -19,21 +19,29 @@
 
 #include "TestPLSPlaylist.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 
-TestPLSPlaylist::TestPLSPlaylist( const QStringList args, const QString &logPath )
-    : TestBase( "PLSPlaylist" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestPLSPlaylist )
+
+TestPLSPlaylist::TestPLSPlaylist()
+{}
+
+QString
+TestPLSPlaylist::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 void TestPLSPlaylist::initTestCase()
 {
-    QFile playlistFile1( dataPath( "amarok/testdata/playlists/test.pls" ) );
+    const KUrl url = dataPath( "amarok/testdata/playlists/test.pls" );
+    QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
 
     if( !playlistFile1.open( QFile::ReadOnly ) )
@@ -46,7 +54,7 @@ void TestPLSPlaylist::initTestCase()
 }
 
 
-void TestPLSPlaylist::setAndGetName()
+void TestPLSPlaylist::testSetAndGetName()
 {
     QCOMPARE( m_testPlaylist1.name(), QString( "Playlist_1pls" ) );
 
@@ -60,12 +68,12 @@ void TestPLSPlaylist::setAndGetName()
     QCOMPARE( m_testPlaylist1.name(), QString( "playlists" ) );
 }
 
-void TestPLSPlaylist::prettyName()
+void TestPLSPlaylist::testPrettyName()
 {
     QCOMPARE( m_testPlaylist1.prettyName(), QString( "playlists" ) );
 }
 
-void TestPLSPlaylist::tracks()
+void TestPLSPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1.tracks();
 
@@ -75,17 +83,17 @@ void TestPLSPlaylist::tracks()
     QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Stream (http://85.214.44.27:8200)" ) );
 }
 
-void TestPLSPlaylist::retrievableUrl()
+void TestPLSPlaylist::testRetrievableUrl()
 {
     QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.pls" ) );
 }
 
-void TestPLSPlaylist::isWritable()
+void TestPLSPlaylist::testIsWritable()
 {
     QVERIFY( !m_testPlaylist1.isWritable() );
 }
 
-void TestPLSPlaylist::save()
+void TestPLSPlaylist::testSave()
 {
     QFile::remove( QDir::tempPath() + QDir::separator() + "test.pls" );
     QVERIFY( m_testPlaylist1.save( QDir::tempPath() + QDir::separator() + "test.pls", false ) );

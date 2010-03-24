@@ -21,29 +21,30 @@
 #define TESTPLSPLAYLIST_H
 
 #include "core/playlists/impl/file/pls/PLSPlaylist.h"
-#include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-class TestPLSPlaylist : public TestBase
+class TestPLSPlaylist : public QObject
 {
 Q_OBJECT
 
 public:
-    TestPLSPlaylist( const QStringList args, const QString &logPath );
+    TestPLSPlaylist();
 
 private slots:
     void initTestCase();
 
-    void setAndGetName();
-    void prettyName();
-    void tracks();
-    void retrievableUrl();
-    void isWritable();
-    void save();
+    void testSetAndGetName();
+    void testPrettyName();
+    void testTracks();
+    void testRetrievableUrl();
+    void testIsWritable();
+    void testSave();
 
 private:
     Meta::PLSPlaylist m_testPlaylist1;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTPLSPLAYLIST_H
