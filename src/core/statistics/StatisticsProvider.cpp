@@ -44,6 +44,7 @@ Statistics::StatisticsProvider::played( double playedFraction, Meta::TrackPtr tr
     }
 
     bool doUpdate = false;
+    int oldPlayCount = m_playCount;
 
     if( track->length() < 30000 && playedFraction == 1.0 )
         doUpdate = true;
@@ -60,7 +61,7 @@ Statistics::StatisticsProvider::played( double playedFraction, Meta::TrackPtr tr
         setLastPlayed( QDateTime::currentDateTime() );
     }
 
-    m_score = Amarok::computeScore( m_score, m_playCount, playedFraction );
+    m_score = Amarok::computeScore( m_score, oldPlayCount, playedFraction );
     save();
 }
 

@@ -845,13 +845,13 @@ SqlTrack::finishedPlaying( double playedFraction )
 
     if( doUpdate )
     {
-        setPlayCount( m_playCount++ );
+        setPlayCount( playCount() + 1 );
         if( firstPlayed() == 0 )
             setFirstPlayed( QDateTime::currentDateTime().toTime_t() );
         setLastPlayed( QDateTime::currentDateTime().toTime_t() );
     }
 
-    setScore( Amarok::computeScore( score(), m_playCount, playedFraction ) );
+    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
 
     endMetaDataUpdate();
 }
