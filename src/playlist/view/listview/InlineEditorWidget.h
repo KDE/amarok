@@ -48,13 +48,13 @@ protected slots:
     void editValueChanged();
     void ratingValueChanged();
     void splitterMoved( int pos, int index );
-        
+
 private:
     void createChildWidgets();
     QPoint centerImage( const QPixmap&, const QRectF& ) const;
     bool eventFilter( QObject *obj, QEvent *event );
 
-    QModelIndex m_index;
+    QPersistentModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
     int m_groupMode;
 
