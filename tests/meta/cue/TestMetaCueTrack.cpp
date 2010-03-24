@@ -27,14 +27,12 @@
 #include <QtCore/QDir>
 #include <QtCore/QString>
 
+#include <qtest_kde.h>
 
-TestMetaCueTrack::TestMetaCueTrack( const QStringList args, const QString &logPath )
-    : TestBase( "MetaCueTrack" )
-{
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+QTEST_KDEMAIN_CORE( TestMetaCueTrack )
+
+TestMetaCueTrack::TestMetaCueTrack()
+{}
 
 void TestMetaCueTrack::initTestCase()
 {

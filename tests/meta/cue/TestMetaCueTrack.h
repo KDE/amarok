@@ -20,19 +20,16 @@
 #ifndef TESTMETACUETRACK_H
 #define TESTMETACUETRACK_H
 
-#include "core/meta/impl/cue/Cue.h"
-#include "TestBase.h"
-
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
 
 class QString;
 
-class TestMetaCueTrack : public TestBase
+class TestMetaCueTrack : public QObject
 {
 Q_OBJECT
 
 public:
-    TestMetaCueTrack( const QStringList args, const QString &logPath );
+    TestMetaCueTrack();
 
 private slots:
     void initTestCase();

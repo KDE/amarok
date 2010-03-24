@@ -20,16 +20,14 @@
 #ifndef TESTMETACUECUEFILEITEM_H
 #define TESTMETACUECUEFILEITEM_H
 
-#include "TestBase.h"
+#include <QtCore/QObject>
 
-#include <QtCore/QStringList>
-
-class TestMetaCueCueFileItem : public TestBase
+class TestMetaCueCueFileItem : public QObject
 {
 Q_OBJECT
 
 public:
-    TestMetaCueCueFileItem( const QStringList args, const QString &logPath );
+    TestMetaCueCueFileItem();
 
 private slots:
     void testSetAndGetLength();
