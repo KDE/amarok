@@ -84,6 +84,7 @@ set(likeback_SRCS
 set(libplugin_SRCS
     core/plugins/Plugin.cpp
     core/plugins/PluginManager.cpp
+    core/plugins/PluginConfig.cpp
 )
 
 #####################################################################

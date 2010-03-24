@@ -14,6 +14,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-// this is only to get the pluginconfig.moc into libamarok
-//#include "pluginconfig.h"
-//#include "pluginconfig.moc"
+// this is only to get the PluginConfig.moc into libamarok
+#include "core/plugins/PluginConfig.h"
+#include "PluginConfig.moc"

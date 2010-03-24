@@ -22,7 +22,6 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"
-#include "core/plugins/PluginConfig.h"
 #include "core/plugins/PluginManager.h"
 #include "ScriptManager.h"
 
