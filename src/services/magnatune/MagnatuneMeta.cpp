@@ -30,6 +30,7 @@
 #include <QObject>
 
 using namespace Meta;
+using namespace Statistics;
 
 MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneStore * store )
     : ServiceMetaFactory( dbPrefix )

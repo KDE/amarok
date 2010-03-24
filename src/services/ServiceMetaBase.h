@@ -258,7 +258,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
-        void setStatisticsProvider( StatisticsProvider *provider );
+        void setStatisticsProvider( Statistics::StatisticsProvider *provider );
 
         void setLength( qint64 length );
 
@@ -274,7 +274,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
-        StatisticsProvider* m_provider;
+        Statistics::StatisticsProvider* m_provider;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;

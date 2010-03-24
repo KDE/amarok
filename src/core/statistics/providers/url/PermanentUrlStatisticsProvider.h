@@ -23,7 +23,7 @@
 
 #include <QString>
 
-class AMAROK_EXPORT PermanentUrlStatisticsProvider : public Meta::StatisticsProvider
+class AMAROK_EXPORT PermanentUrlStatisticsProvider : public Statistics::StatisticsProvider
 {
 public:
     PermanentUrlStatisticsProvider( const QString &permanentUrl );

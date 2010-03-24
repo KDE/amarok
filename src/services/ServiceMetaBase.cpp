@@ -535,7 +535,7 @@ ServiceTrack::setYear( YearPtr year )
 }
 
 void
-ServiceTrack::setStatisticsProvider( StatisticsProvider *provider )
+ServiceTrack::setStatisticsProvider( Statistics::StatisticsProvider *provider )
 {
     if( m_provider )
         delete m_provider;

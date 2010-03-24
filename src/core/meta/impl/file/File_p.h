@@ -123,7 +123,7 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    Meta::StatisticsProvider *provider;
+    Statistics::StatisticsProvider *provider;
     QPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
 
     void readMetaData();

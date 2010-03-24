@@ -14,14 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef META_STATISTICSPROVIDER_H
-#define META_STATISTICSPROVIDER_H
+#ifndef STATISTICS_STATISTICSPROVIDER_H
+#define STATISTICS_STATISTICSPROVIDER_H
 
 #include "amarok_export.h"
 
 #include <QDateTime>
 
-namespace Meta
+namespace Statistics
 {
     class AMAROK_EXPORT StatisticsProvider
     {                

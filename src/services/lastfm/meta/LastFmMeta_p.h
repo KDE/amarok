@@ -77,7 +77,7 @@ class Track::Private : public QObject
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
 
-        Meta::StatisticsProvider *statisticsProvider;
+        Statistics::StatisticsProvider *statisticsProvider;
         uint currentTrackStartTime;
 
     public:

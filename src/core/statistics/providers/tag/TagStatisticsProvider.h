@@ -23,7 +23,7 @@
 
 #include <QString>
 
-class AMAROK_EXPORT TagStatisticsProvider : public Meta::StatisticsProvider
+class AMAROK_EXPORT TagStatisticsProvider : public Statistics::StatisticsProvider
 {
 public:
     TagStatisticsProvider( const QString &name, const QString &artist, const QString &album );

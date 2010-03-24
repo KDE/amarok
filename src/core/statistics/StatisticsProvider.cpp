@@ -19,19 +19,19 @@
 #include "Amarok.h"
 #include "Debug.h"
 
-Meta::StatisticsProvider::StatisticsProvider()
+Statistics::StatisticsProvider::StatisticsProvider()
         : m_score( 0.0 )
         , m_rating( 0 )
         , m_playCount( 0 )
 {
 }
 
-Meta::StatisticsProvider::~StatisticsProvider()
+Statistics::StatisticsProvider::~StatisticsProvider()
 {
 }
 
 void
-Meta::StatisticsProvider::played( double playedFraction )
+Statistics::StatisticsProvider::played( double playedFraction )
 {
     DEBUG_BLOCK
 
@@ -47,65 +47,65 @@ Meta::StatisticsProvider::played( double playedFraction )
 }
 
 QDateTime
-Meta::StatisticsProvider::firstPlayed() const
+Statistics::StatisticsProvider::firstPlayed() const
 {
     return m_firstPlayed;
 }
 
 void
-Meta::StatisticsProvider::setFirstPlayed( const QDateTime &dt )
+Statistics::StatisticsProvider::setFirstPlayed( const QDateTime &dt )
 {
     m_firstPlayed = dt;
     save();
 }
 
 QDateTime
-Meta::StatisticsProvider::lastPlayed() const
+Statistics::StatisticsProvider::lastPlayed() const
 {
     return m_lastPlayed;
 }
 
 void
-Meta::StatisticsProvider::setLastPlayed( const QDateTime &dt )
+Statistics::StatisticsProvider::setLastPlayed( const QDateTime &dt )
 {
     m_lastPlayed = dt;
     save();
 }
 
 int
-Meta::StatisticsProvider::playCount() const
+Statistics::StatisticsProvider::playCount() const
 {
     return m_playCount;
 }
 
 void
-Meta::StatisticsProvider::setPlayCount( int playCount )
+Statistics::StatisticsProvider::setPlayCount( int playCount )
 {
     m_playCount = playCount;
     save();
 }
 
 int
-Meta::StatisticsProvider::rating() const
+Statistics::StatisticsProvider::rating() const
 {
     return m_rating;
 }
 
 double
-Meta::StatisticsProvider::score() const
+Statistics::StatisticsProvider::score() const
 {
     return m_score;
 }
 
 void
-Meta::StatisticsProvider::setRating( int newRating )
+Statistics::StatisticsProvider::setRating( int newRating )
 {
     m_rating = newRating;
     save();
 }
 
 void
-Meta::StatisticsProvider::setScore( double newScore )
+Statistics::StatisticsProvider::setScore( double newScore )
 {
     m_score = newScore;
     save();
