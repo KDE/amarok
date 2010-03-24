@@ -108,7 +108,6 @@ extern void setupEventHandler_mac(long);
 #include "TestMetaCueTrack.h"
 #include "TestMetaFileTrack.h"
 #include "TestMetaMultiTrack.h"
-#include "TestMetaTrack.h"
 #include "TestPlaylistFileProvider.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
@@ -620,7 +619,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     TestMetaCueTrack            test005( options, logPath );
     TestMetaFileTrack           test006( options, logPath );
     TestMetaMultiTrack          test007( options, logPath );
-    TestMetaTrack               test008( options, logPath );
     TestPlaylistFileProvider    test009( options, logPath );
     TestSqlUserPlaylistProvider test012( options, logPath );
     TestTimecodeTrackProvider   test013( options, logPath );

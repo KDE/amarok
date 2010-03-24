@@ -2,8 +2,6 @@ include_directories( .
 )
 
 if(KDE4_BUILD_TESTS)
-QT4_AUTOMOC( TestMetaTrack.cpp
-             )
 add_subdirectory( cue )
 add_subdirectory( file )
 add_subdirectory( multi )
@@ -13,6 +11,12 @@ add_subdirectory( multi )
 set( testm3uplaylist_SRCS TestM3UPlaylist.cpp )
 kde4_add_unit_test( testm3uplaylist ${testm3uplaylist_SRCS} )
 target_link_libraries( testm3uplaylist ${QT_QTTEST_LIBRARY} amaroklib )
+
+#------------------------ Test MetaTrack -----------------------------
+
+set( testmetatrack_SRCS TestMetaTrack.cpp )
+kde4_add_unit_test( testmetatrack ${testmetatrack_SRCS} )
+target_link_libraries( testmetatrack ${QT_QTTEST_LIBRARY} amaroklib )
 
 #------------------------ Test PLSPlaylist -----------------------------
 
