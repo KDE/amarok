@@ -109,13 +109,6 @@ public:
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
 
     /**
-     * Reports if the current model exposes a given id.
-     * @param id the id to check for.
-     * @return true if the id is present, otherwise false.
-     */
-    virtual bool containsId( const quint64 id ) const = 0;
-
-    /**
      * Reports if the current model exposes a given track.
      * @param track the track to check for.
      * @return true if the track is present, otherwise false.

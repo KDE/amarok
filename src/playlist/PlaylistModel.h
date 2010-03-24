@@ -72,7 +72,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
         QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
         Meta::TrackPtr activeTrack() const;
-        bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
         bool containsTrack( const Meta::TrackPtr track ) const;
         inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
         virtual bool exportPlaylist( const QString &path ) const;

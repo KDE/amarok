@@ -84,18 +84,6 @@ ProxyBase::clearSearchTerm()
 }
 
 bool
-ProxyBase::containsId( const quint64 id ) const
-{
-    // The complexity of this isn't optimal
-    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
-    {
-        if( idAt( i ) == id )     //O( n ) - uses .at()
-            return true;
-    }
-    return false;
-}
-
-bool
 ProxyBase::containsTrack( const Meta::TrackPtr track ) const
 {
     // The complexity of this isn't optimal

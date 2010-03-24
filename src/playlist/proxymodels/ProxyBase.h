@@ -53,7 +53,6 @@ public:
     virtual Meta::TrackPtr activeTrack() const;
     virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
     virtual void clearSearchTerm();
-    virtual bool containsId( const quint64 id ) const;
     virtual bool containsTrack( const Meta::TrackPtr track ) const;
     virtual int currentSearchFields();
     virtual QString currentSearchTerm();

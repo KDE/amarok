@@ -205,7 +205,8 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    if ( m_topmostModel->containsId( trackid ) )
+    Meta::TrackPtr track = m_topmostModel->trackForId( trackid );
+    if ( track )
     {
         if ( now )
         {
@@ -220,10 +221,10 @@ Playlist::Actions::play( const quint64 trackid, bool now )
                 debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
                 currentTrack->finishedPlaying( finishedPercent );
             }
-            The::engineController()->play( m_topmostModel->trackForId( trackid ) );
+            The::engineController()->play( track );
         }
         else
-            The::engineController()->setNextTrack( m_topmostModel->trackForId( trackid ) );
+            The::engineController()->setNextTrack( track );
     }
     else
     {
@@ -411,21 +412,21 @@ Playlist::Actions::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if ( track )
+    Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
+    if ( engineTrack )
     {
-        if ( m_topmostModel->containsId( m_nextTrackCandidate )
-             && track == m_topmostModel->trackForId( m_nextTrackCandidate ) )
-        {
+        Meta::TrackPtr candidateTrack = m_topmostModel->trackForId( m_nextTrackCandidate );    // May be 0.
+        if ( engineTrack == candidateTrack )
+        {   // The engine is playing what we planned: everything is OK.
             m_topmostModel->setActiveId( m_nextTrackCandidate );
         }
         else
         {
-            warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
-            if ( m_topmostModel->activeTrack() != track )
+            warning() << "engineNewTrackPlaying:" << engineTrack->prettyName() << "does not match what the playlist controller thought it should be";
+            if ( m_topmostModel->activeTrack() != engineTrack )
             {
                  // this will set active row to -1 if the track isn't in the playlist at all
-                int row = m_topmostModel->firstRowForTrack( track );
+                int row = m_topmostModel->firstRowForTrack( engineTrack );
                 if( row != -1 )
                     m_topmostModel->setActiveRow( row );
                 else
