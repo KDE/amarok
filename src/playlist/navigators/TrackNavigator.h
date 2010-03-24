@@ -107,6 +107,12 @@ namespace Playlist
             void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );
 
         protected:
+            /**
+             * Choose the most reasonable fallback item in case a navigator wants to play
+             * something, but doesn't have a good choice itself.
+             */
+            quint64 bestFallbackItem();
+
             // Holds the list of tracks to be played next. General
             // workflow should dictate that the TrackAdvancer should
             // respect the queue list as an override to what the Advancer

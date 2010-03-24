@@ -894,13 +894,13 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
 void Playlist::Model::clearCommand()
 {
+    setActiveRow( -1 );
+
     beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     qDeleteAll( m_items );
     m_items.clear();
     m_itemIds.clear();
     endRemoveRows();
-
-    m_activeRow = -1;
 }
 
 

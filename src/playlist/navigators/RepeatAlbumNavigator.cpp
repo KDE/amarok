@@ -41,11 +41,17 @@ Playlist::RepeatAlbumNavigator::planOne()
     {
         ItemList itemsInAlbum = m_itemsPerAlbum.value( currentAlbum() );    // May be default-constructed empty list.
 
-        int currentRow = itemsInAlbum.indexOf( currentItem() );    // -1 if currentItem() == 0.
+        int currentRow = itemsInAlbum.indexOf( currentItem() );
         if ( currentRow != -1 )
         {
             int nextRow = (currentRow + 1) % itemsInAlbum.size();    // Circulate within same album
             m_plannedItems.append( itemsInAlbum.at( nextRow ) );
+        }
+        else    // This happens if 'currentItem() == 0'.
+        {
+            quint64 item = bestFallbackItem();
+            if ( item )
+                m_plannedItems.append( item );
         }
     }
 }

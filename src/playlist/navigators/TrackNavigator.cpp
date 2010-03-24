@@ -93,3 +93,15 @@ Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, i
     for (int row = startRow; row <= endRow; row++)
         dequeueId( m_model->idAt( row ) );
 }
+
+quint64
+Playlist::TrackNavigator::bestFallbackItem()
+{
+    quint64 item = m_model->activeId();
+
+    if ( !item )
+        if ( m_model->rowCount() > 0 )
+            item = m_model->idAt( 0 );
+
+    return item;
+}

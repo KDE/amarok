@@ -228,6 +228,8 @@ Playlist::NonlinearTrackNavigator::nextItemChooseDonorList()
             planOne();
         if ( !m_plannedItems.isEmpty() )    // The normal case.
             return &m_plannedItems;
+        else
+            debug() << "planOne() didn't plan a next item.";
     }
 
     return 0;
