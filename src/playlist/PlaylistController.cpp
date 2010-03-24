@@ -263,39 +263,41 @@ Playlist::Controller::insertUrls( int row, const QList<KUrl>& urls )
 }
 
 void
-Playlist::Controller::removeRow( int row )
+Playlist::Controller::removeRow( int topModelRow )
 {
     DEBUG_BLOCK
-    QList<int> rl;
-    rl.append( row );
-    removeRows( rl );
+    removeRows( topModelRow, 1 );
 }
 
 void
-Playlist::Controller::removeRows( int row, int count )
+Playlist::Controller::removeRows( int topModelRow, int count )
 {
     DEBUG_BLOCK
     QList<int> rl;
     for( int i = 0; i < count; ++i )
-        rl.append( row++ );
+        rl.append( topModelRow++ );
     removeRows( rl );
 }
 
 void
-Playlist::Controller::removeRows( QList<int>& rows )
+Playlist::Controller::removeRows( QList<int>& topModelRows )
 {
     DEBUG_BLOCK
-    RemoveCmdList cmds;
-    foreach( int r, rows )
+    RemoveCmdList bottomModelCmds;
+    foreach( int topModelRow, topModelRows )
     {
-        if(( r >= 0 ) && ( r < m_topModel->qaim()->rowCount() ) )
-            cmds.append( RemoveCmd( m_topModel->trackAt( r ), m_topModel->rowToBottomModel( r ) ) );
+        if( m_topModel->rowExists( topModelRow ) )
+        {
+            Meta::TrackPtr track = m_topModel->trackAt( topModelRow );    // For "undo".
+            int bottomModelRow = m_topModel->rowToBottomModel( topModelRow );
+            bottomModelCmds.append( RemoveCmd( track, bottomModelRow ) );
+        }
         else
-            warning() << "Received command to remove non-existent row. This should NEVER happen. row=" << r;
+            warning() << "Received command to remove non-existent row. This should NEVER happen. row=" << topModelRow;
     }
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new RemoveTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }
@@ -306,7 +308,7 @@ Playlist::Controller::removeDeadAndDuplicates()
     DEBUG_BLOCK
 
     QSet<Meta::TrackPtr> uniqueTracks = m_topModel->tracks().toSet();
-    QList<int> rowsToRemove;
+    QList<int> topModelRowsToRemove;
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
     {
@@ -316,21 +318,21 @@ Playlist::Controller::removeDeadAndDuplicates()
         {
             // Track is Dead
             // TODO: Check remote files as well
-            rowsToRemove <<  trackRows;
+            topModelRowsToRemove <<  trackRows;
         }
         else if( trackRows.size() > 1 )
         {
             // Track is Duplicated
             // Remove all rows except the first
             for( QList<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
-                rowsToRemove.push_back( *it );
+                topModelRowsToRemove.push_back( *it );
         }
     }
 
-    if( !rowsToRemove.empty() )
+    if( !topModelRowsToRemove.empty() )
     {
         m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
-        removeRows( rowsToRemove );
+        removeRows( topModelRowsToRemove );
         m_undoStack->endMacro();
     }
 }
@@ -442,17 +444,17 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
         }
     }
 
-    MoveCmdList cmds;
+    MoveCmdList bottomModelCmds;
     for( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
         if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topModel->qaim()->rowCount() ) )
             if( from.at( i ) != to.at( i ) )
-                cmds.append( MoveCmd( m_topModel->rowToBottomModel( from.at( i ) ), m_topModel->rowToBottomModel( to.at( i ) ) ) );
+                bottomModelCmds.append( MoveCmd( m_topModel->rowToBottomModel( from.at( i ) ), m_topModel->rowToBottomModel( to.at( i ) ) ) );
     }
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new MoveTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new MoveTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }
@@ -612,13 +614,13 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         }
     }
 
-    InsertCmdList cmds;
+    InsertCmdList bottomModelCmds;
 
     foreach( Meta::TrackPtr t, modifiedList )
-        cmds.append( InsertCmd( t, bottomModelRow++ ) );
+        bottomModelCmds.append( InsertCmd( t, bottomModelRow++ ) );
 
-    if( cmds.size() > 0 )
-        m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
+    if( bottomModelCmds.size() > 0 )
+        m_undoStack->push( new InsertTracksCmd( 0, bottomModelCmds ) );
 
     emit changed();
 }

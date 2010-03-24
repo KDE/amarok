@@ -125,32 +125,32 @@ public slots:
      * @param from the row containing the track that is about to be moved.
      * @param to the target row where the track should be moved.
      */
-    void moveRow( int from, int to );
+    void moveRow( int topModelFrom, int topModelTo );
 
     /**
      * Moves a list of tracks to a specified row in the playlist.
      * This function returns the real starting location where the rows ended up.
      * For example, if you start with the following playlist:
-     *   1 Alpha
-     *   2 Bravo
+     *   0 Alpha
+     *   1 Bravo
      *   2 Charlie
-     *   4 Delta
-     *   5 Echo
-     *   6 Foxtrot
-     * and you call moveRows( [1,2,3], 5 ) then the playlist will end up with
-     *   1 Delta
-     *   2 Echo
-     *   3 Alpha
-     *   4 Bravo
-     *   5 Charlie
-     *   6 Foxtrot
-     * and the function will return 3, because that's where the rows really ended up.
+     *   3 Delta
+     *   4 Echo
+     *   5 Foxtrot
+     * and you call moveRows( [0,1,2], 4 ) then the playlist will end up with
+     *   0 Delta
+     *   1 Echo
+     *   2 Alpha
+     *   3 Bravo
+     *   4 Charlie
+     *   5 Foxtrot
+     * and the function will return 2, because that's where the rows really ended up.
      * @param from the list of rows containing the tracks that are about to be moved.
      * @param to the target row where the tracks should be moved.
      * @return the first row where the tracks ended up in the new list.
      */
-    int  moveRows( QList<int>& from, int to );
-    void moveRows( QList<int>& from, QList<int>& to );
+    int  moveRows( QList<int>& topModelFrom, int topModelTo );
+    void moveRows( QList<int>& topModelFrom, QList<int>& topModelTo );
 
     void undo();
     void redo();

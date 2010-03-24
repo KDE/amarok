@@ -110,7 +110,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
     private:
-        //! Inherited from QAbstractListModel, and make private so that nobody uses them
+        //! Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool removeRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
