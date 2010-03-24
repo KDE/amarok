@@ -206,7 +206,6 @@ CoverFoundDialog::~CoverFoundDialog()
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
-    clearView();
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     saveDialogSize( config );
     event->accept();
@@ -319,10 +318,11 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 void CoverFoundDialog::saveRequested()
 {
     CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( item && !item->hasBigPix() )
+    if( item )
     {
-        item->fetchBigPix();
-        m_pixmap = item->bigPix();
+        if( !item->hasBigPix() )
+            item->fetchBigPix();
+        m_pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
     }
     KDialog::accept();
 }
