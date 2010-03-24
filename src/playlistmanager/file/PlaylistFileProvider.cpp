@@ -16,7 +16,6 @@
 
 #include "PlaylistFileProvider.h"
 #include "App.h"
-#include "amarokconfig.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "core/capabilities/EditablePlaylistCapability.h"
 #include "Amarok.h"

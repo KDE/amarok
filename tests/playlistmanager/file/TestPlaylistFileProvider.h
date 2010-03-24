@@ -20,26 +20,29 @@
 #ifndef TESTPLAYLISTFILEPROVIDER_H
 #define TESTPLAYLISTFILEPROVIDER_H
 
-#include "playlistmanager/file/PlaylistFileProvider.h"
-#include "TestBase.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-#include <QtCore/QStringList>
+class PlaylistFileProvider;
 
-class TestPlaylistFileProvider : public TestBase
+class TestPlaylistFileProvider : public QObject
 {
 Q_OBJECT
 
 public:
-    TestPlaylistFileProvider( const QStringList args, const QString &logPath );
+    TestPlaylistFileProvider();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testPlaylists();
     void testSave();
     void testImportAndDeletePlaylists();
     void testRename();
 
 private:
-    PlaylistFileProvider m_testPlaylistFileProvider;
+    PlaylistFileProvider *m_testPlaylistFileProvider;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTPLAYLISTFILEPROVIDER_H
