@@ -36,9 +36,9 @@ Playlist::StandardTrackNavigator::likelyLastTrack()
 {
     int lastRow = m_model->activeRow() - 1;
 
+    // Don't make wrap-around conditional on 'm_repeatPlaylist': the user is explicitly asking for this.
     if( lastRow < 0 )
-        if( m_repeatPlaylist )
-            lastRow = m_model->qaim()->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
+        lastRow = m_model->qaim()->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
 
     if( m_model->rowExists( lastRow ) )
         return m_model->idAt( lastRow );
@@ -52,7 +52,17 @@ Playlist::StandardTrackNavigator::requestNextTrack()
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
 
-    return chooseNextTrack();
+    return chooseNextTrack( m_repeatPlaylist );
+}
+
+quint64
+Playlist::StandardTrackNavigator::requestUserNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.takeFirst();
+
+    // Don't make wrap-around conditional on 'm_repeatPlaylist': the user is explicitly asking for this.
+    return chooseNextTrack( true );
 }
 
 quint64
@@ -62,7 +72,7 @@ Playlist::StandardTrackNavigator::requestLastTrack()
 }
 
 quint64
-Playlist::StandardTrackNavigator::chooseNextTrack()
+Playlist::StandardTrackNavigator::chooseNextTrack( bool repeatPlaylist )
 {
     if( !m_queue.isEmpty() )
         return m_queue.first();
@@ -70,7 +80,7 @@ Playlist::StandardTrackNavigator::chooseNextTrack()
     int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
 
     if( nextRow >= m_model->qaim()->rowCount() )
-        if( m_repeatPlaylist )
+        if( repeatPlaylist )
             nextRow = 0;    // This row is still invalid if 'rowCount() == 0'.
 
     if( m_model->rowExists( nextRow ) )
