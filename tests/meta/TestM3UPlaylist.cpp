@@ -19,17 +19,23 @@
 
 #include "TestM3UPlaylist.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
-#include <QtCore/QString>
 
-TestM3UPlaylist::TestM3UPlaylist( const QStringList args, const QString &logPath )
-    : TestBase( "M3UPlaylist" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestM3UPlaylist )
+
+TestM3UPlaylist::TestM3UPlaylist()
+{}
+
+QString
+TestM3UPlaylist::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 void TestM3UPlaylist::initTestCase()

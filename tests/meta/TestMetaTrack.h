@@ -21,16 +21,16 @@
 #define TESTMETATRACK_H
 
 #include "core/meta/Meta.h"
-#include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-class TestMetaTrack : public TestBase
+class TestMetaTrack : public QObject
 {
 Q_OBJECT
 
 public:
-    TestMetaTrack( const QStringList args, const QString &logPath );
+    TestMetaTrack();
 
 private slots:
     void initTestCase();
@@ -49,7 +49,7 @@ private slots:
     void testYear();
 
     void testComment();
-    void setAndGetScore();
+    void testSetAndGetScore();
     void testSetAndGetRating();
     void testLength();
     void testFilesize();
@@ -73,6 +73,8 @@ private slots:
 private:
     Meta::TrackPtr m_testTrack1;
     Meta::TrackPtr m_testTrack2;
+
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTMETATRACK_H

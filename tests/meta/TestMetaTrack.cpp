@@ -19,16 +19,23 @@
 
 #include "TestMetaTrack.h"
 
-#include "CollectionManager.h"
+#include "collection/CollectionManager.h"
+
+#include <KStandardDirs>
 
 #include <QtTest/QTest>
 
-TestMetaTrack::TestMetaTrack( const QStringList args, const QString &logPath )
-    : TestBase( "MetaTrack" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestMetaTrack )
+
+TestMetaTrack::TestMetaTrack()
+{}
+
+QString
+TestMetaTrack::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 void TestMetaTrack::initTestCase()
@@ -100,7 +107,7 @@ void TestMetaTrack::testComment()
     QCOMPARE( m_testTrack1->comment(), QString( "" ) );
 }
 
-void TestMetaTrack::setAndGetScore()
+void TestMetaTrack::testSetAndGetScore()
 {
     QCOMPARE( m_testTrack1->score(), 0.0 );
 

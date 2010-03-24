@@ -22,21 +22,23 @@
 #include "core/meta/impl/multi/MultiTrack.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestMetaMultiTrack::TestMetaMultiTrack( const QStringList args, const QString &logPath )
-    : TestBase( "MetaMultiTrack" )
-    , m_testMultiTrack( 0 )
-{
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestMetaMultiTrack )
+
+TestMetaMultiTrack::TestMetaMultiTrack()
+    : m_testMultiTrack( 0 )
+{}
 
 void TestMetaMultiTrack::initTestCase()
 {
-    const KUrl url = dataPath( "amarok/testdata/playlists/test.pls" );
+    const QString relPath = "amarok/testdata/playlists/test.pls";
+    const KUrl url = KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url.toLocalFile() ) );
 
     if( !playlist )

@@ -22,18 +22,17 @@
 
 #include <QtTest/QTest>
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestMetaCueCueFileItem )
+
 MetaCue::CueFileItem testItem1( "", "", "", 0, 0 );
 MetaCue::CueFileItem testItem2( "title", "artist", "album", 10, 10 );
 MetaCue::CueFileItem testItem3( " title ", " artist ", " album ", 100, 100 );
 MetaCue::CueFileItem testItem4( "ti tle", "ar tist", "al bum", 1000, 1000 );
 
-TestMetaCueCueFileItem::TestMetaCueCueFileItem( const QStringList args, const QString &logPath )
-    : TestBase( "MetaCueCueFileItem" )
-{
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+TestMetaCueCueFileItem::TestMetaCueCueFileItem()
+{}
 
 void TestMetaCueCueFileItem::testSetAndGetLength()
 {

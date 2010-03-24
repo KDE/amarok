@@ -19,23 +19,40 @@
 
 #include "TestPlaylistFileProvider.h"
 #include "collection/CollectionManager.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
+
+#include <KStandardDirs>
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestPlaylistFileProvider::TestPlaylistFileProvider( const QStringList args, const QString &logPath )
-    : TestBase( "PlaylistFileProvider" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestPlaylistFileProvider )
+
+TestPlaylistFileProvider::TestPlaylistFileProvider()
+{}
+
+QString
+TestPlaylistFileProvider::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
+void TestPlaylistFileProvider::initTestCase()
+{
+    m_testPlaylistFileProvider = new PlaylistFileProvider();
+}
+
+void TestPlaylistFileProvider::cleanupTestCase()
+{
+    delete m_testPlaylistFileProvider;
+}
 
 void TestPlaylistFileProvider::testPlaylists()
 {
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider.playlists();
+    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 }
 
@@ -49,7 +66,7 @@ void TestPlaylistFileProvider::testSave()
     if( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" ) )
         QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" );
 
-    Meta::PlaylistPtr testPlaylist = m_testPlaylistFileProvider.save( tempTrackList, "Amarok Test Playlist.m3u" );
+    Meta::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
 
     QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.m3u" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
@@ -58,26 +75,26 @@ void TestPlaylistFileProvider::testSave()
 
 void TestPlaylistFileProvider::testImportAndDeletePlaylists()
 {
-    QVERIFY( m_testPlaylistFileProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testPlaylistFileProvider->import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider.playlists();
+    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
 
-    m_testPlaylistFileProvider.deletePlaylists( tempList );
-    tempList = m_testPlaylistFileProvider.playlists();
+    m_testPlaylistFileProvider->deletePlaylists( tempList );
+    tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 }
 
 void TestPlaylistFileProvider::testRename()
 {
-    QVERIFY( m_testPlaylistFileProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testPlaylistFileProvider->import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider.playlists();
+    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
-    m_testPlaylistFileProvider.rename( tempList.at( 0 ), "New Test Name" );
-    tempList = m_testPlaylistFileProvider.playlists();
+    m_testPlaylistFileProvider->rename( tempList.at( 0 ), "New Test Name" );
+    tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
 
-    m_testPlaylistFileProvider.deletePlaylists( tempList );
+    m_testPlaylistFileProvider->deletePlaylists( tempList );
 }

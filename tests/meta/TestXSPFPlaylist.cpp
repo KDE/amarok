@@ -20,17 +20,25 @@
 #include "TestXSPFPlaylist.h"
 #include "core/playlists/impl/file/xspf/XSPFPlaylist.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestXSPFPlaylist::TestXSPFPlaylist( const QStringList args, const QString &logPath )
-    : TestBase( "XSPFPlaylist" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestXSPFPlaylist )
+
+TestXSPFPlaylist::TestXSPFPlaylist()
+{}
+
+QString
+TestXSPFPlaylist::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
+
 
 void TestXSPFPlaylist::initTestCase()
 {

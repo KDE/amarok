@@ -45,7 +45,7 @@ namespace Meta
         NotPlaylist = Unknown
     };
     PlaylistFormat getFormat( const KUrl &path );
-    bool isPlaylist( const KUrl &path );
+    AMAROK_EXPORT bool isPlaylist( const KUrl &path );
 
     AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );

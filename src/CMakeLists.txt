@@ -724,19 +724,6 @@ endif( BUILD_MYSQLE_COLLECTION )
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/meta/TestM3UPlaylist.cpp
-        ../tests/meta/TestMetaTrack.cpp
-        ../tests/meta/TestPLSPlaylist.cpp
-        ../tests/meta/TestPlaylistFileSupport.cpp
-        ../tests/meta/TestXSPFPlaylist.cpp
-        ../tests/meta/cue/TestMetaCueCueFileItem.cpp
-        ../tests/meta/cue/TestMetaCueTrack.cpp
-        ../tests/meta/file/TestMetaFileTrack.cpp
-        ../tests/meta/multi/TestMetaMultiTrack.cpp
-        ../tests/playlistmanager/file/TestPlaylistFileProvider.cpp
-        ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
-        ../tests/timecode/TestTimecodeTrackProvider.cpp
-        ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
         ../tests/TestDirectoryLoader.cpp
     )

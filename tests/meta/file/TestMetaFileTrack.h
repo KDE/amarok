@@ -22,18 +22,18 @@
 
 #include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
 
 namespace MetaFile {
     class Track;
 }
 
-class TestMetaFileTrack : public TestBase
+class TestMetaFileTrack : public QObject
 {
 Q_OBJECT
 
 public:
-    TestMetaFileTrack( const QStringList args, const QString &logPath );
+    TestMetaFileTrack();
 
 private slots:
     void initTestCase();

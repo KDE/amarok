@@ -103,20 +103,7 @@ extern void setupEventHandler_mac(long);
 #endif
 
 #ifdef DEBUG
-#include "TestAmarok.h"
 #include "TestDirectoryLoader.h"
-#include "TestM3UPlaylist.h"
-#include "TestMetaCueCueFileItem.h"
-#include "TestMetaCueTrack.h"
-#include "TestMetaFileTrack.h"
-#include "TestMetaMultiTrack.h"
-#include "TestMetaTrack.h"
-#include "TestPlaylistFileProvider.h"
-#include "TestPlaylistFileSupport.h"
-#include "TestPLSPlaylist.h"
-#include "TestSqlUserPlaylistProvider.h"
-#include "TestTimecodeTrackProvider.h"
-#include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
@@ -621,19 +608,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  test001( options, logPath );
-    TestM3UPlaylist             test003( options, logPath );
-    TestMetaCueCueFileItem      test004( options, logPath );
-    TestMetaCueTrack            test005( options, logPath );
-    TestMetaFileTrack           test006( options, logPath );
-    TestMetaMultiTrack          test007( options, logPath );
-    TestMetaTrack               test008( options, logPath );
-    TestPlaylistFileProvider    test009( options, logPath );
-    TestPlaylistFileSupport     test010( options, logPath );
-    TestPLSPlaylist             test011( options, logPath );
-    TestSqlUserPlaylistProvider test012( options, logPath );
-    TestTimecodeTrackProvider   test013( options, logPath );
-    TestXSPFPlaylist            test014( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
     TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );

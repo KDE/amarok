@@ -20,17 +20,23 @@
 #include "TestAmarok.h"
 #include "Amarok.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QDir>
-#include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( const QStringList args, const QString &logPath )
-    : TestBase( "Amarok" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestAmarok )
+
+TestAmarok::TestAmarok()
+{}
+
+QString
+TestAmarok::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 void TestAmarok::testAsciiPath()

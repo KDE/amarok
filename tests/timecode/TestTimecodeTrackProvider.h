@@ -20,23 +20,27 @@
 #ifndef TESTTIMECODETRACKPROVIDER_H
 #define TESTTIMECODETRACKPROVIDER_H
 
-#include "TestBase.h"
-#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-#include <QtCore/QStringList>
+class TimecodeTrackProvider;
 
-class TestTimecodeTrackProvider : public TestBase
+class TestTimecodeTrackProvider : public QObject
 {
 Q_OBJECT
 
 public:
-    TestTimecodeTrackProvider( const QStringList args, const QString &logPath );
+    TestTimecodeTrackProvider();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testPossiblyContainsTrack();
     void testTrackForUrl();
+
 private:
-    TimecodeTrackProvider m_testProvider;
+    TimecodeTrackProvider *m_testProvider;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTTIMECODETRACKPROVIDER_H
