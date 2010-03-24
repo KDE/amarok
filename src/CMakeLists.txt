@@ -726,7 +726,6 @@ if(KDE4_BUILD_TESTS)
         ${amaroklib_LIB_SRCS}
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
-        ../tests/meta/TestPlaylistFileSupport.cpp
         ../tests/meta/TestXSPFPlaylist.cpp
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
         ../tests/meta/cue/TestMetaCueTrack.cpp

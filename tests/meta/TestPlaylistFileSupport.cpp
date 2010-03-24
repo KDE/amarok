@@ -20,21 +20,22 @@
 #include "TestPlaylistFileSupport.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 
+#include <KStandardDirs>
+
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
+#include <qtest_kde.h>
 
-TestPlaylistFileSupport::TestPlaylistFileSupport( const QStringList args, const QString &logPath )
-    : TestBase( "PlaylistFileSupport" )
-{
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+QTEST_KDEMAIN_CORE( TestPlaylistFileSupport )
+
+TestPlaylistFileSupport::TestPlaylistFileSupport()
+{}
 
 void TestPlaylistFileSupport::initTestCase()
 {
-    m_testPlaylistPath = dataPath( "amarok/testdata/playlists/" );
+    const QString relPath( "amarok/testdata/playlists/" );
+    m_testPlaylistPath = KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 void TestPlaylistFileSupport::testGetFormat()

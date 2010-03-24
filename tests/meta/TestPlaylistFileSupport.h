@@ -20,17 +20,15 @@
 #ifndef TESTPLAYLISTFILESUPPORT_H
 #define TESTPLAYLISTFILESUPPORT_H
 
-#include "TestBase.h"
-
+#include <QtCore/QObject>
 #include <QtCore/QString>
-#include <QtCore/QStringList>
 
-class TestPlaylistFileSupport : public TestBase
+class TestPlaylistFileSupport : public QObject
 {
 Q_OBJECT
 
 public:
-    TestPlaylistFileSupport( const QStringList args, const QString &logPath );
+    TestPlaylistFileSupport();
 
 private slots:
     void initTestCase();
