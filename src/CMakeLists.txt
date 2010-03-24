@@ -736,7 +736,6 @@ if(KDE4_BUILD_TESTS)
         ../tests/playlistmanager/file/TestPlaylistFileProvider.cpp
         ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
         ../tests/timecode/TestTimecodeTrackProvider.cpp
-        ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
         ../tests/TestDirectoryLoader.cpp
     )

@@ -211,34 +211,6 @@ CollectionTreeItemModel::requestCollectionsExpansion()
     }
 }
 
-
-namespace Amarok {
-    // TODO Internationlise
-    void manipulateThe( QString &str, bool reverse )
-    {
-        if( reverse )
-        {
-            if( !str.startsWith( "the ", Qt::CaseInsensitive ) )
-                return;
-
-            QString begin = str.left( 3 );
-            str = str.append( ", %1" ).arg( begin );
-            str = str.mid( 4 );
-            return;
-        }
-
-        if( !str.endsWith( ", the", Qt::CaseInsensitive ) )
-            return;
-
-        QString end = str.right( 3 );
-        str = str.prepend( "%1 " ).arg( end );
-
-        uint newLen = str.length() - end.length() - 2;
-
-        str.truncate( newLen );
-    }
-}
-
 void CollectionTreeItemModel::update()
 {
     for( int i = 0; i < m_rootItem->childCount(); i++ )
