@@ -206,7 +206,6 @@ CoverFoundDialog::~CoverFoundDialog()
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
-    clearView();
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
     saveDialogSize( config );
     event->accept();
