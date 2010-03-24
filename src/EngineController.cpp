@@ -38,7 +38,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 
 #include <KFileItem>
 #include <KIO/Job>

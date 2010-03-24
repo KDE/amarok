@@ -4,7 +4,6 @@ macro_optional_find_package(Mtp)
 if (MTP_FOUND)
    include_directories(
        ${Amarok_SOURCE_DIR}/src
-       ${Amarok_SOURCE_DIR}/src/plugin
        ${Amarok_SOURCE_DIR}/src/collection
        ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection
        ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection/support

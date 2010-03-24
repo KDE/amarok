@@ -1,7 +1,6 @@
         include_directories(
             ../
             ../..
-            ../../plugin
             ../../collection
             ../../servicebrowser
             ../../statusbar

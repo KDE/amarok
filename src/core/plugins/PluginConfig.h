@@ -21,7 +21,7 @@
 
 class QWidget;
 
-namespace Amarok
+namespace Plugins
 {
     /**
      * Class to allow user configuration of your plugin; you provide a GUI widget via view()

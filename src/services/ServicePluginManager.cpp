@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "ServiceBrowser.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 
 #include <KService>
 
@@ -58,11 +58,11 @@ ServicePluginManager::collect()
 {
     DEBUG_BLOCK
 
-    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
     foreach( KService::Ptr service, plugins )
     {
-        Amarok::Plugin *plugin = PluginManager::createFromService( service );
+        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( service );
         if ( plugin )
         {
             debug() << "Got hold of a valid plugin";

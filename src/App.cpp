@@ -44,7 +44,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 #include "podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"

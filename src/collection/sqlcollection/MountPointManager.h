@@ -19,8 +19,8 @@
 
 #include "Amarok.h"
 #include "amarok_sqlcollection_export.h"
-#include "plugin/plugin.h"
-#include "PluginManager.h"
+#include "core/plugins/Plugin.h"
+#include "core/plugins/PluginManager.h"
 
 #include <KConfig>
 #include <KUrl>
@@ -39,7 +39,7 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public Amarok::Plugin
+class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public Plugins::Plugin
 {
 public:
     DeviceHandlerFactory() {}

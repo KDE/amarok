@@ -25,7 +25,7 @@
 #include "MetaQueryMaker.h"
 #include "core/meta/impl/file/File.h"
 #include "core/meta/impl/stream/Stream.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 #include "SmartPointerList.h"
 #include "SqlStorage.h"
 #include "core/meta/impl/timecode/TimecodeTrackProvider.h"
@@ -145,7 +145,7 @@ CollectionManager::init()
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
 
-    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
 
     if( plugins.isEmpty() )
@@ -153,7 +153,7 @@ CollectionManager::init()
         debug() << "No Amarok plugins found, running kbuildsycoca4.";
         KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
-        plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+        plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
         debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
 
         if( plugins.isEmpty() )

@@ -50,7 +50,6 @@ include_directories(
     dynamic
     likeback
     playlistmanager
-    plugin
     podcasts
     statusbar
     synchronization
@@ -83,8 +82,8 @@ set(likeback_SRCS
 # PLUGIN
 #####################################################################
 set(libplugin_SRCS
-    plugin/plugin.cpp
-    plugin/pluginconfig.cpp
+    core/plugins/Plugin.cpp
+    core/plugins/PluginManager.cpp
 )
 
 #####################################################################
@@ -617,7 +616,6 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    PluginManager.cpp
     SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp

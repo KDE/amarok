@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2007 Martin Aumueller <aumuell@reserv.at>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,41 +14,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "plugin.h"
-#include "pluginconfig.h"
-
-namespace Amarok {
-
-
-Plugin::Plugin()
-{}
-
-
-Plugin::~Plugin()
-{}
-
-
-void
-Plugin::addPluginProperty( const QString& key, const QString& value )
-{
-    m_properties[key.toLower()] = value;
-}
-
-
-QString
-Plugin::pluginProperty( const QString& key )
-{
-    if ( m_properties.find( key.toLower() ) == m_properties.end() )
-        return "false";
-
-    return m_properties[key.toLower()];
-}
-
-
-bool
-Plugin::hasPluginProperty( const QString& key )
-{
-    return m_properties.find( key.toLower() ) != m_properties.end();
-}
-
-}
+// this is only to get the pluginconfig.moc into libamarok
+//#include "pluginconfig.h"
+//#include "pluginconfig.moc"

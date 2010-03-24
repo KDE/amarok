@@ -24,8 +24,11 @@
 
 #include "amarok_export.h"
 
-namespace Amarok { class Plugin; }
 class KLibrary;
+
+namespace Plugins {
+
+class Plugin;
 
 class PluginManager
 {
@@ -62,27 +65,27 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static Amarok::Plugin* createFromQuery( const QString& constraint = QString() );
+        static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from service
          * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
-        AMAROK_EXPORT static Amarok::Plugin* createFromService( const KService::Ptr service );
+        AMAROK_EXPORT static Plugins::Plugin* createFromService( const KService::Ptr service );
 
         /**
          * Remove library and delete plugin
          * @param plugin      Pointer to plugin
          */
-        static void unload( Amarok::Plugin* plugin );
+        static void unload( Plugins::Plugin* plugin );
 
         /**
          * Look up service for loaded plugin from store
          * @param pointer     Pointer to plugin
          * @return            KService, or 0 if not found
          */
-        static KService::Ptr getService( const Amarok::Plugin* plugin );
+        static KService::Ptr getService( const Plugins::Plugin* plugin );
 
         /**
          * Dump properties from a service to stdout for debugging
@@ -98,17 +101,18 @@ class PluginManager
 
     private:
         struct StoreItem {
-            Amarok::Plugin* plugin;
+            Plugins::Plugin* plugin;
             KLibrary* library;
             KService::Ptr service;
         };
 
-        static std::vector<StoreItem>::iterator lookupPlugin( const Amarok::Plugin* plugin );
+        static std::vector<StoreItem>::iterator lookupPlugin( const Plugins::Plugin* plugin );
 
     //attributes:
         static std::vector<StoreItem> m_store;
 };
 
+}
 
 #endif /* AMAROK_PLUGINMANAGER_H */
 

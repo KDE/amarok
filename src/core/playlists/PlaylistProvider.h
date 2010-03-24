@@ -18,7 +18,7 @@
 #define AMAROK_PLAYLISTPROVIDER_H
 
 #include "amarok_export.h"
-#include "plugin/plugin.h"
+#include "core/plugins/Plugin.h"
 #include "Playlist.h"
 
 #include <QString>
@@ -26,7 +26,7 @@
 class QAction;
 class KIcon;
 
-class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
+class AMAROK_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
 {
     Q_OBJECT
 

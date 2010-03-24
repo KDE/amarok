@@ -1,5 +1,4 @@
 include_directories( ../..
-  ../../plugin
   ../../collection
   ../../metadata/audible
   ../mediadevicecollection

@@ -24,7 +24,7 @@
 #include "ServiceMetaBase.h"
 #include "amarok_export.h"
 #include "CollectionManager.h"
-#include "plugin/plugin.h"
+#include "core/plugins/Plugin.h"
 #include "core/meta/impl/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -46,7 +46,7 @@ A virtual base class for factories for creating and handling the different types
 
 @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public Amarok::TrackProvider
+class AMAROK_EXPORT ServiceFactory : public QObject, public Plugins::Plugin, public Amarok::TrackProvider
 {
     Q_OBJECT
     public:

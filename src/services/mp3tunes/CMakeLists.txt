@@ -4,7 +4,6 @@ if(LIBXML2_FOUND AND CURL_FOUND)
         include_directories(
             ../
             ../../
-            ../../plugin
             ../../collection
             ../../servicebrowser
             ../../statusbar

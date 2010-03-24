@@ -22,7 +22,7 @@
 
 #define AMAROK_EXPORT_PLUGIN( classname ) \
     extern "C" { \
-          KDE_EXPORT Amarok::Plugin* create_plugin() { return new classname; } \
+          KDE_EXPORT Plugins::Plugin* create_plugin() { return new classname; } \
     }
 
 #include <qmap.h>
@@ -30,8 +30,11 @@
 
 class QWidget;
 
-namespace Amarok
+namespace Plugins
 {
+    /** Bump this number whenever the plugin framework gets incompatible with older versions */
+    static const int PluginFrameworkVersion = 54;
+
     class PluginConfig;
 
     class AMAROK_EXPORT Plugin

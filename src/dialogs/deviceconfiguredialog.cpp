@@ -22,8 +22,8 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"
-#include "plugin/pluginconfig.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginConfig.h"
+#include "core/plugins/PluginManager.h"
 #include "ScriptManager.h"
 
 #include <KLocale>

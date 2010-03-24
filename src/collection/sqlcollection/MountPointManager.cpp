@@ -20,7 +20,6 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "PluginManager.h"
 #include "statusbar/StatusBar.h"
 #include "collection/SqlStorage.h"
 
@@ -91,11 +90,11 @@ void
 MountPointManager::init()
 {
     DEBUG_BLOCK
-    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers";
     oldForeachType( KService::List, plugins )
     {
-        Amarok::Plugin *plugin = PluginManager::createFromService( *it );
+        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( *it );
         if( plugin )
         {
             DeviceHandlerFactory *factory = static_cast<DeviceHandlerFactory*>( plugin );

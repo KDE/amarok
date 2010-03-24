@@ -1,5 +1,4 @@
 include_directories( ../..
-        ../../plugin
         ../../collection
         ../mediadevicecollection
         ../mediadevicecollection/support

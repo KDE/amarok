@@ -16,11 +16,11 @@
 
 #define DEBUG_PREFIX "PluginManager"
 
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "plugin.h"
+#include "core/plugins/Plugin.h"
 
 #include <KLibLoader>
 #include <KLocale>
@@ -29,11 +29,9 @@
 #include <QFile>
 
 using std::vector;
-using Amarok::Plugin;
 
-
-vector<PluginManager::StoreItem>
-PluginManager::m_store;
+vector<Plugins::PluginManager::StoreItem>
+Plugins::PluginManager::m_store;
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -41,12 +39,12 @@ PluginManager::m_store;
 /////////////////////////////////////////////////////////////////////////////////////
 
 KService::List
-PluginManager::query( const QString& constraint )
+Plugins::PluginManager::query( const QString& constraint )
 {
     // Add versioning constraint
     QString
     str  = "[X-KDE-Amarok-framework-version] == ";
-    str += QString::number( Amarok::PluginFrameworkVersion );
+    str += QString::number( Plugins::PluginFrameworkVersion );
     if ( !constraint.trimmed().isEmpty() )
         str += " and " + constraint;
     str += " and ";
@@ -58,8 +56,8 @@ PluginManager::query( const QString& constraint )
 }
 
 
-Plugin*
-PluginManager::createFromQuery( const QString &constraint )
+Plugins::Plugin*
+Plugins::PluginManager::createFromQuery( const QString &constraint )
 {
     Debug::Block block( __PRETTY_FUNCTION__ );
 
@@ -82,8 +80,8 @@ PluginManager::createFromQuery( const QString &constraint )
 }
 
 
-Plugin*
-PluginManager::createFromService( const KService::Ptr service )
+Plugins::Plugin*
+Plugins::PluginManager::createFromService( const KService::Ptr service )
 {
     DEBUG_BLOCK
     debug() << "Trying to load: " << service->library();
@@ -109,7 +107,7 @@ PluginManager::createFromService( const KService::Ptr service )
         return 0;
     }
     //create plugin on the heap
-    Plugin* plugin = create_plugin();
+    Plugins::Plugin* plugin = create_plugin();
 
     //put plugin into store
     StoreItem item;
@@ -124,7 +122,7 @@ PluginManager::createFromService( const KService::Ptr service )
 
 
 void
-PluginManager::unload( Plugin* plugin )
+Plugins::PluginManager::unload( Plugins::Plugin* plugin )
 {
     DEBUG_FUNC_INFO
 
@@ -143,7 +141,7 @@ PluginManager::unload( Plugin* plugin )
 
 
 KService::Ptr
-PluginManager::getService( const Plugin* plugin )
+Plugins::PluginManager::getService( const Plugins::Plugin* plugin )
 {
     if ( !plugin ) {
         warning() << "pointer == NULL\n";
@@ -163,7 +161,7 @@ PluginManager::getService( const Plugin* plugin )
 
 
 void
-PluginManager::showAbout( const QString &constraint )
+Plugins::PluginManager::showAbout( const QString &constraint )
 {
     KService::List offers = query( constraint );
 
@@ -190,7 +188,7 @@ PluginManager::showAbout( const QString &constraint )
 
 
 void
-PluginManager::dump( const KService::Ptr service )
+Plugins::PluginManager::dump( const KService::Ptr service )
 {
     #define ENDLI endl << Debug::indent()
 
@@ -218,8 +216,8 @@ PluginManager::dump( const KService::Ptr service )
 // PRIVATE INTERFACE
 /////////////////////////////////////////////////////////////////////////////////////
 
-vector<PluginManager::StoreItem>::iterator
-PluginManager::lookupPlugin( const Plugin* plugin )
+vector<Plugins::PluginManager::StoreItem>::iterator
+Plugins::PluginManager::lookupPlugin( const Plugins::Plugin* plugin )
 {
     vector<StoreItem>::iterator iter;
 
