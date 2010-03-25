@@ -41,6 +41,14 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
 
+        /** Special function to get an episode for a given guid.
+          *
+          * note: this functions is required because KUrl does not preserve every possible guids.
+          * This means we can not use trackForUrl().
+          * Problematic guids contain non-latin characters, percent encoded parts, capitals, etc.
+          */
+        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid ) = 0;
+
         virtual void addPodcast( const KUrl &url ) = 0;
 
         virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel ) = 0;

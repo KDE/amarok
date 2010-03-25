@@ -50,6 +50,8 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::PlaylistList playlists();
 
         //PodcastProvider methods
+        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid );
+
         void addPodcast( const KUrl &url );
 
         Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
@@ -114,9 +116,8 @@ class SqlPodcastProvider : public PodcastProvider
         void createTables() const;
         void loadPodcasts();
 
-        /** return the url as a string. Removes percent encoding if it actually has a non-url guid.
-        */
-        static QString cleanUrlOrGuid( const KUrl &url );
+        /** @arg string: a url, localUrl or guid in string form */
+        Meta::SqlPodcastEpisodePtr sqlEpisodeForString( const QString &string );
 
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
