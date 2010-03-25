@@ -16,9 +16,8 @@
 
 #include "TestCueFileSupport.h"
 
+#include "config-amarok-test.h"
 #include "core/meta/impl/cue/CueFileSupport.h"
-
-#include <KStandardDirs>
 
 #include <QtDebug>
 
@@ -37,51 +36,47 @@ TestCueFileSupport::TestCueFileSupport()
 
 void TestCueFileSupport::testLocateCueFile()
 {
-  
-  //Check that we found the right .cue file and that it passed the validator
-  
-  //we use a non existant filename here, so only look for the patch and then append filename 
-  //as KStandardDirs::locate will return an empty url otherwise. 
-  KUrl testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/" );
-  testUrl.addPath( "testsheet01-iso8859-1.mp3" );
-  
-  KUrl cueTestUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/testsheet01-iso8859-1.cue" );
-  KUrl cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
-  
+  //Check that we find the right .cue file and that it passes the validator
+  KUrl cueTestUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
+  KUrl cueResultUrl = CueFileSupport::locateCueSheet( cueTestUrl );
+
   QVERIFY( !cueResultUrl.url().isEmpty() );
   QCOMPARE( cueResultUrl.url(), cueTestUrl.url() );
-  
+
   //Check that a nonexisting cue file returns an empty url
-  testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/test_silence.ogg" );
+  KUrl testUrl = dataPath( "data/cue/test_silence.ogg" );
   cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
-  
+
   QVERIFY( cueResultUrl.isEmpty() );
-  
-  //check that an existing but invalid cue file returns an empty url
-  testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/invalid.ogg" );
+
+  //Check that an existing but invalid cue file returns an empty url
+  testUrl = dataPath( "data/cue/invalid.cue" );
   cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
-   
+
   QVERIFY( cueResultUrl.isEmpty() );
 }
 
 void TestCueFileSupport::testIso88591Cue()
 {
-  
-    KUrl testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/testsheet01-iso8859-1.cue" );   
+    KUrl testUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
-      
+
     QCOMPARE( cueItemMap.size(), 14 );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).title(), QString( "Disco" ) );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).artist(), QString( "Die Toten Hosen" ) );
-    
 }
 
 void TestCueFileSupport::testUtf8Cue()
 {
-    KUrl testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/testsheet01-utf8.cue" );   
+    KUrl testUrl = dataPath( "data/cue/testsheet01-utf8.cue" );
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
-      
+
     QCOMPARE( cueItemMap.size(), 14 );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).title(), QString( "Ertrinken" ) );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).artist(), QString( "Die Toten Hosen" ) );
+}
+
+QString TestCueFileSupport::dataPath( const QString &relPath )
+{
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }

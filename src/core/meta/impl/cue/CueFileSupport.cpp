@@ -413,6 +413,13 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
             }
         }
 
+        if( mode == BEGIN )
+        {
+            file.close();
+            debug() << "Cue file is invalid";
+            return false;
+        }
+
         if ( artist.isNull() )
             artist = defaultArtist;
 

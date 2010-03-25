@@ -17,9 +17,8 @@
 #ifndef TESTCUEFILESUPPORT_H
 #define TESTCUEFILESUPPORT_H
 
-#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
-
-#include <QtCore/QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 class TestCueFileSupport : public QObject
 {
@@ -32,6 +31,9 @@ private slots:
     void testLocateCueFile();
     void testIso88591Cue();
     void testUtf8Cue();
+
+private:
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTCUEFILESUPPORT_H
