@@ -59,7 +59,8 @@ void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     KUrl testUrl;
-    testUrl = dataPath( "amarok/testdata/album/Track01.ogg:23-42" );
+    testUrl = dataPath( "amarok/testdata/album/" );
+    testUrl.addPath( "Track01.ogg:23-42" );
 
     Meta::TrackPtr resultTrack = m_testProvider->trackForUrl( testUrl );
 
