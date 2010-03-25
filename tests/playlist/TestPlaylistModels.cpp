@@ -47,8 +47,6 @@ void TestPlaylistModels::initTestCase()
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
-    bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
-    Q_ASSERT( invoked );
   
     //we want to add a few tracks to the playlist so we can test sorting, filtering and so on. So first create a bunch of dummy tracks we can use.
     
