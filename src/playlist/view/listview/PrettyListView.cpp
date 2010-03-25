@@ -906,10 +906,12 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     // That way, we avoid doing it every time we want to display the tooltip
     // This will be done every time the layout will be changed
     m_toolTipManager->cancelExclusions();
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().head(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().standardBody(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().variousArtistsBody(), false);
-    excludeFieldsFromTooltip(LayoutManager::instance()->activeLayout().single(), true);
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+    {
+        bool single = ( part == PlaylistLayout::Single );
+        PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+        excludeFieldsFromTooltip( layout.layoutForPart( (PlaylistLayout::Part)part ), single );
+    }
 
     update();
 }

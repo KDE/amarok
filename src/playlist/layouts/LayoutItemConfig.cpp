@@ -161,28 +161,8 @@ Playlist::PlaylistLayout::PlaylistLayout()
     , m_tooltips(false)
 {}
 
-LayoutItemConfig Playlist::PlaylistLayout::head() const
-{
-    return m_head;
-}
-
-LayoutItemConfig Playlist::PlaylistLayout::standardBody() const
-{
-    return m_standardBody;
-}
-
-LayoutItemConfig Playlist::PlaylistLayout::variousArtistsBody() const
-{
-    return m_variousArtistsBody;
-}
-
-LayoutItemConfig Playlist::PlaylistLayout::single() const
-{
-    return m_single;
-}
-
-Playlist::PlaylistLayout::LayoutType
-Playlist::PlaylistLayout::layoutTypeForItem( const QModelIndex &index ) const
+Playlist::PlaylistLayout::Part
+Playlist::PlaylistLayout::partForItem( const QModelIndex &index ) const
 {
     switch ( index.data( GroupRole ).toInt() )
     {
@@ -204,67 +184,16 @@ Playlist::PlaylistLayout::layoutTypeForItem( const QModelIndex &index ) const
     }
 }
 
-Playlist::LayoutItemConfig
-Playlist::PlaylistLayout::layoutForItem( const QModelIndex &index ) const
+LayoutItemConfig
+Playlist::PlaylistLayout::layoutForPart( Part part ) const
 {
-    switch( layoutTypeForItem( index ) )
-    {
-        case PlaylistLayout::Head:    // LayoutType
-            return head();
-
-        case PlaylistLayout::StandardBody:
-            return standardBody();
-
-        case PlaylistLayout::VariousArtistsBody:
-            return variousArtistsBody();
-
-        case PlaylistLayout::Single:
-        default:
-            return single();
-    }
+    return m_layoutItemConfigs[part];
 }
 
 void
-Playlist::PlaylistLayout::setLayout( LayoutType layoutType, LayoutItemConfig itemConfig )
+Playlist::PlaylistLayout::setLayoutForPart( Part part, LayoutItemConfig itemConfig )
 {
-    switch( layoutType )
-    {
-        case PlaylistLayout::Head:    // LayoutType
-            setHead( itemConfig );
-            break;
-
-        case PlaylistLayout::StandardBody:
-            setStandardBody( itemConfig );
-            break;
-
-        case PlaylistLayout::VariousArtistsBody:
-            setVariousArtistsBody( itemConfig );
-            break;
-
-        case PlaylistLayout::Single:
-            setSingle( itemConfig );
-            break;
-    }
-}
-
-void Playlist::PlaylistLayout::setHead( LayoutItemConfig head )
-{
-    m_head = head;
-}
-
-void Playlist::PlaylistLayout::setStandardBody( LayoutItemConfig standardBody )
-{
-    m_standardBody = standardBody;
-}
-
-void Playlist::PlaylistLayout::setVariousArtistsBody( LayoutItemConfig variousArtistsBody )
-{
-    m_variousArtistsBody = variousArtistsBody;
-}
-
-void Playlist::PlaylistLayout::setSingle( LayoutItemConfig single )
-{
-    m_single = single;
+    m_layoutItemConfigs[part] = itemConfig;
 }
 
 bool Playlist::PlaylistLayout::isEditable() const

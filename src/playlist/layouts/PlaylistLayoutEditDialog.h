@@ -19,10 +19,13 @@
 #define PLAYLISTLAYOUTEDITDIALOG_H
 
 #include "playlist/layouts/LayoutEditWidget.h"
+#include "playlist/layouts/LayoutItemConfig.h"
 
 #include <QDialog>
 
 #include "ui_PlaylistLayoutEditDialog.h"
+
+namespace Playlist {
 
 /**
  *  Dialog for adding, deleting, copying and editing playlist layouts. The order in which the layouts are
@@ -133,16 +136,15 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void setupGroupByCombo();
 
 
-        Playlist::LayoutEditWidget *m_headEdit;
-        Playlist::LayoutEditWidget *m_standardBodyEdit;
-        Playlist::LayoutEditWidget *m_variousArtistsBodyEdit;
-        Playlist::LayoutEditWidget *m_singleEdit;
+        Playlist::LayoutEditWidget *m_partsEdit[Playlist::PlaylistLayout::NumParts];
 
-        QMap<QString, Playlist::PlaylistLayout> *m_layoutsMap;
+        QMap<QString, PlaylistLayout> *m_layoutsMap;
 
         QString m_layoutName;
 
         QString m_firstActiveLayout;
 };
+
+}
 
 #endif

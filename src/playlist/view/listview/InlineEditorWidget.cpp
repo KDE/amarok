@@ -70,7 +70,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     setFixedWidth( parent->width() );
 
     if( hasHeader )
-        m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
+        m_headerHeight = ( height * layout.layoutForPart( PlaylistLayout::Head) .rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
     setFocusPolicy( Qt::StrongFocus );
@@ -323,7 +323,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
         PrettyItemDelegate delegate;
         QStyleOptionViewItem option;
         option.rect = QRect( 0, 0, width(), m_headerHeight );
-        delegate.paintItem( m_layout.head(), &painter, option, m_index, true );
+        delegate.paintItem( m_layout.layoutForPart( PlaylistLayout::Head ), &painter, option, m_index, true );
     }
 
     event->accept();
@@ -431,7 +431,7 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
             newItemConfig.addRow( itemConfig.row( i ) );
     }
 
-    m_layout.setLayout( m_layout.layoutTypeForItem( m_index ), newItemConfig );
+    m_layout.setLayoutForPart( m_layout.partForItem( m_index ), newItemConfig );
 
     m_layoutChanged = true;
 }

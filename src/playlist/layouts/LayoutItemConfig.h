@@ -228,41 +228,18 @@ class LayoutItemConfig
 class PlaylistLayout
 {
     public:
-        enum LayoutType {
-            Head,
+        enum Part {
+            Head = 0,
             StandardBody,
             VariousArtistsBody,
-            Single
+            Single,
+            NumParts    // The number of Part values
         };
 
         /**
         * Default Constructor
         */
         PlaylistLayout();
-
-        /**
-         * Get the config to use for painting group headers.
-         * @return The config for group headers.
-         */
-        LayoutItemConfig head() const;
-
-        /**
-         * Get the config to use for painting group members.
-         * @return The config for standard group member tracks.
-         */
-        LayoutItemConfig standardBody() const;
-
-        /**
-         * Get the config to use for painting group members.
-         * @return The config for group member tracks with a different artist than their album.
-         */
-        LayoutItemConfig variousArtistsBody() const;
-
-        /**
-         * Get the config to use for painting single (non grouped) tracks.
-         * @return The config for non grouped tracks.
-         */
-        LayoutItemConfig single() const;
 
         /**
          * Get whether this config can be edited/deleted. The default layouts shipped with Amarok are read only,
@@ -278,39 +255,25 @@ class PlaylistLayout
         bool isDirty() const;
 
         /**
-         * Determine the layout type for an item in a QAbstractItemModel.
+         * Determine the layout config for an item in a QAbstractItemModel.
+         * Convenience function.
          */
-        LayoutType layoutTypeForItem( const QModelIndex &index ) const;
-        LayoutItemConfig layoutForItem( const QModelIndex &index ) const;
+        LayoutItemConfig layoutForItem( const QModelIndex &index ) const { return layoutForPart( partForItem( index ) ); }
 
         /**
-         * Calls 'setHead()', 'setSingle()' etc. based on 'type'.
+         * Determine the part type for an item in a QAbstractItemModel.
          */
-        void setLayout( LayoutType type, LayoutItemConfig itemConfig );
+        Part partForItem( const QModelIndex &index ) const;
 
         /**
-         * Set the head config for this layout.
-         * @param head The head config.
+         * Get the layout config for the specified part type.
          */
-        void setHead( LayoutItemConfig head );
+        LayoutItemConfig layoutForPart( Part part ) const;
 
         /**
-         * Set the body config for this layout.
-         * @param body The body config.
+         * Set the layout config for the specified part type.
          */
-        void setStandardBody( LayoutItemConfig body );
-
-        /**
-         * Set the body config for this layout.
-         * @param body The body config.
-         */
-        void setVariousArtistsBody( LayoutItemConfig body );
-
-        /**
-         * Set the single track config for this layout.
-         * @param single The single track config.
-         */
-        void setSingle( LayoutItemConfig single );
+        void setLayoutForPart( Part part, LayoutItemConfig itemConfig );
 
         /**
          * Set whether this config can be edited by the user.
@@ -334,10 +297,8 @@ class PlaylistLayout
         void setGroupBy( const QString & );
 
     private:
-        LayoutItemConfig m_head;
-        LayoutItemConfig m_standardBody;
-        LayoutItemConfig m_variousArtistsBody;
-        LayoutItemConfig m_single;
+        LayoutItemConfig m_layoutItemConfigs[NumParts];
+
         bool m_isEditable;
         bool m_isDirty;
         bool m_inlineControls;

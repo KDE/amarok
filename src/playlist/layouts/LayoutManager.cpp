@@ -204,14 +204,14 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         debug() << "grouping mode is: " << layout.toElement().attribute( "group_by", "Album" );
 
 
-        currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
-        currentLayout.setStandardBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::Head, parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::StandardBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
         QDomElement variousArtistsXML = layout.toElement().firstChildElement( "group_variousArtistsBody" );
         if ( !variousArtistsXML.isNull() )
-            currentLayout.setVariousArtistsBody( parseItemConfig( variousArtistsXML ) );
+            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( variousArtistsXML ) );
         else    // Handle old custom layout XMLs
-            currentLayout.setVariousArtistsBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
-        currentLayout.setSingle( parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
+            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::Single, parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
 
         if ( !layoutName.isEmpty() )
             m_layouts.insert( layoutName, currentLayout );
@@ -302,10 +302,10 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     QDomElement body = doc.createElement( "body" );
     QDomElement single = doc.createElement( "single" );
 
-    newLayout.appendChild( createItemElement( doc, "single_track", layout.single() ) );
-    newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
-    newLayout.appendChild( createItemElement( doc, "group_body", layout.standardBody() ) );
-    newLayout.appendChild( createItemElement( doc, "group_variousArtistsBody", layout.variousArtistsBody() ) );
+    newLayout.appendChild( createItemElement( doc, "single_track", layout.layoutForPart( PlaylistLayout::Single ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_head", layout.layoutForPart( PlaylistLayout::Head ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_body", layout.layoutForPart( PlaylistLayout::StandardBody ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_variousArtistsBody", layout.layoutForPart( PlaylistLayout::VariousArtistsBody ) ) );
 
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" );

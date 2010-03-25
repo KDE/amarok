@@ -71,7 +71,7 @@ PrettyItemDelegate::rowsForItem( const QModelIndex &index )
     int rowCount = 0;
 
     if( getGroupMode( index ) == Grouping::Head )
-        rowCount += layout.head().rows();
+        rowCount += layout.layoutForPart( PlaylistLayout::Head ).rows();
 
     rowCount += layout.layoutForItem( index ).rows();
 
@@ -154,7 +154,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem headOption( option );
         QStyleOptionViewItem trackOption( option );
 
-        int headRows = layout.head().rows();
+        int headRows = layout.layoutForPart( PlaylistLayout::Head ).rows();
         int trackRows = layout.layoutForItem( index ).rows();
         int totalRows = headRows + trackRows;
 
@@ -176,7 +176,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         if ( headRows > 0 )
         {
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
-            paintItem( layout.head(), painter, headOption, index, true );
+            paintItem( layout.layoutForPart( PlaylistLayout::Head ), painter, headOption, index, true );
             painter->translate( 0, headHeight );
         }
 
@@ -200,7 +200,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 bool
 PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
-    int headRows = LayoutManager::instance()->activeLayout().head().rows();
+    int headRows = LayoutManager::instance()->activeLayout().layoutForPart( PlaylistLayout::Head ).rows();
 
     if ( headRows < 1 )
         return false;
