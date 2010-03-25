@@ -780,10 +780,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_activeRow += activeShift;
     else
         m_activeRow = -1;
-
-    if( Amarok::actionCollection()->action( "playlist_clear" ) )
-        Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );    //TODO either re-enable or remove this. 2009-11-17
 }
 
 
@@ -875,9 +871,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         m_activeRow = -1;
     }
-
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
     //make sure that there are enough tracks if we just removed from a dynamic playlist.
     Playlist::Actions::instance()->normalizeDynamicPlaylist();
