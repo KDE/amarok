@@ -355,6 +355,8 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
+    DEBUG_BLOCK
+
     const quint64 totalLength = The::playlist()->totalLength();
     const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->qaim()->rowCount();
