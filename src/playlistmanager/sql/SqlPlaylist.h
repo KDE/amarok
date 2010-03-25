@@ -36,7 +36,7 @@ typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class SqlPlaylist : public Playlist
+class SqlPlaylist : public Playlist, public Observer
 {
     public:
         SqlPlaylist( const QString &name, const TrackList &tracks,
@@ -75,6 +75,9 @@ class SqlPlaylist : public Playlist
                 { Q_UNUSED( type ); return false; }
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
                 { Q_UNUSED( type ); return 0; }
+
+        /* Meta::Observer methods */
+        virtual void metadataChanged( TrackPtr track );
 
         Meta::SqlPlaylistGroupPtr parent() const;
 

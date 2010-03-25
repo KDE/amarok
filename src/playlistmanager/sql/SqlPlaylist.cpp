@@ -101,7 +101,7 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
     if( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if( !m_urlId.isEmpty() )
@@ -178,7 +178,7 @@ Meta::SqlPlaylist::saveTracks()
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
-        if( trackPtr && trackPtr->album() && trackPtr->artist() )
+        if( trackPtr )
         {
             debug() << "saving track with url " << trackPtr->uidUrl();
             QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, "
@@ -187,11 +187,11 @@ Meta::SqlPlaylist::saveTracks()
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
                         sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),
-                        sql->escape( trackPtr->album()->prettyName() ),
-                        sql->escape( trackPtr->artist()->prettyName() ),
+                        trackPtr->album() ? sql->escape( trackPtr->album()->prettyName() ) : "",
+                        trackPtr->artist()? sql->escape( trackPtr->artist()->prettyName() ) : "",
                         QString::number( trackPtr->length() ),
                         sql->escape( trackPtr->uidUrl() ) );
-            sql->insert( query, NULL );
+            sql->insert( query, "playlist_tracks" );
 
             trackNum++;
         }
@@ -211,6 +211,7 @@ void
 Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
     int insertAt = (position == -1) ? m_tracks.count() : position;
+    subscribeTo( track ); //keep track of metadata changes.
     m_tracks.insert( insertAt, track );
     saveToDb( true );
     notifyObserversTrackAdded( track, position );
@@ -221,9 +222,24 @@ Meta::SqlPlaylist::removeTrack( int position )
 {
     if( position < 0 || position >= m_tracks.size() )
         return;
-    m_tracks.removeAt( position );
+    Meta::TrackPtr track = m_tracks.takeAt( position );
+    unsubscribeFrom( track );
     saveToDb( true );
     notifyObserversTrackRemoved( position );
+}
+
+void
+Meta::SqlPlaylist::metadataChanged( TrackPtr track )
+{
+    //When AFT detects a moved file it will update the track and make it signal it's observers.
+    if( !m_tracks.contains( track ) )
+    {
+        error() << "Got a metadataChanged for a track that is not in the playlist.";
+        return;
+    }
+
+    //force update of tracks in database
+    saveToDb();
 }
 
 void
@@ -276,6 +292,7 @@ Meta::SqlPlaylist::loadTracks()
                 }
             }
 
+            subscribeTo( trackPtr );
             m_tracks << trackPtr;
         }
     }
@@ -284,7 +301,7 @@ Meta::SqlPlaylist::loadTracks()
 }
 
 void
-Meta::SqlPlaylist::setName( const QString & name )
+Meta::SqlPlaylist::setName( const QString &name )
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
