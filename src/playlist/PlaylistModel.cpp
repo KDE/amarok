@@ -760,7 +760,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_itemIds.insert( newitem->id(), newitem );
     }
     endInsertRows();
-    emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 
@@ -796,14 +795,10 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         return;
     }
 
-    int min = m_items.size();
-    int max = 0;
     int activeShift = 0;
     bool activeDeleted = false;
     foreach( const RemoveCmd &rc, cmds )
     {
-        min = qMin( min, rc.second );
-        max = qMax( max, rc.second );
         activeShift += ( rc.second < m_activeRow ) ? 1 : 0;
         if ( rc.second == m_activeRow )
             activeDeleted = true;
@@ -854,13 +849,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
     qDeleteAll(delitems);
     delitems.clear();
-
-    if ( m_items.size() > 0 )
-    {
-        min = qMin( min, m_items.size() -1 );
-        max = ( max < m_items.size() ) ? max : m_items.size() - 1;
-        emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
-    }
 
     //update the active row
     if ( !activeDeleted && ( m_activeRow >= 0 ) )
@@ -939,10 +927,15 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
                 newActiveRow = mc.second;
         }
     }
-    m_activeRow = newActiveRow;
+
+    // We have 3 choices:
+    //   - Qt 4.6 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
+    //   - Emit 'layoutAboutToChange' / 'layoutChanged'. Drawback: unspecific, 'changePersistentIndex()' complications.
+    //   - Emit 'dataChanged'. Drawback: a bit inappropriate. But not wrong.
     emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
 
     //update the active row
+    m_activeRow = newActiveRow;
 }
 
 
