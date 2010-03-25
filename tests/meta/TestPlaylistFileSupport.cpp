@@ -18,9 +18,8 @@
  ***************************************************************************/
 
 #include "TestPlaylistFileSupport.h"
+#include "config-amarok-test.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
-
-#include <KStandardDirs>
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
@@ -34,8 +33,9 @@ TestPlaylistFileSupport::TestPlaylistFileSupport()
 
 void TestPlaylistFileSupport::initTestCase()
 {
-    const QString relPath( "amarok/testdata/playlists/" );
-    m_testPlaylistPath = KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+    const QDir dir( QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists" ) );
+    QVERIFY( dir.exists() );
+    m_testPlaylistPath = dir.absolutePath();
 }
 
 void TestPlaylistFileSupport::testGetFormat()
