@@ -17,7 +17,9 @@
 
 #include "TestSimilarArtistsEngine.h"
 
-#include <KStandardDirs>
+#include "Components.h"
+#include "EngineController.h"
+
 #include <QtTest/QTest>
 #include <qtest_kde.h>
 
@@ -34,6 +36,12 @@ TestSimilarArtistsEngine::TestSimilarArtistsEngine(QObject* parent)
 void
 TestSimilarArtistsEngine::initTestCase()
 {
+    //apparently the engine controller is needed somewhere, or we will get a crash...
+    EngineController *controller = new EngineController();
+    Amarok::Components::setEngineController( controller );
+    bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
+    Q_ASSERT( invoked );
+
     //Write here initilizations
     QList<QVariant> args;
     m_engine = new SimilarArtistsEngine(0, args);
@@ -51,7 +59,7 @@ void
 TestSimilarArtistsEngine::cleanupTestCase()
 {
     //Write here cleaning
-    //delete m_engine;
+    delete m_engine;
 }
 
 #include "TestSimilarArtistsEngine.moc"
