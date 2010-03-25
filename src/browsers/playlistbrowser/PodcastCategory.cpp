@@ -140,7 +140,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
-    m_podcastTreeView->setContentsMargins(0,0,0,0);
+    m_podcastTreeView->setContentsMargins( 0, 0, 0, 0 );
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
     toggleAction->setToolTip( i18n( "Merged View" ) );
@@ -732,7 +732,7 @@ PodcastView::actionsFor( QModelIndexList indexes )
 }
 
 void
-PodcastView::contextMenuEvent( QContextMenuEvent * event )
+PodcastView::contextMenuEvent( QContextMenuEvent *event )
 {
     QList<QAction *> actions = actionsFor( selectedIndexes() );
 

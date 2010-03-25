@@ -771,6 +771,7 @@ SqlPodcastProvider::slotRemoveChannels()
 
     Podcasts::PodcastChannelList channels = action->data().value<Podcasts::PodcastChannelList>();
 
+    bool removedSomething = false;
     foreach( Podcasts::PodcastChannelPtr channel, channels )
     {
         Podcasts::SqlPodcastChannelPtr sqlChannel =
@@ -789,6 +790,8 @@ SqlPodcastProvider::slotRemoveChannels()
             removeSubscription( channel );
         }
     }
+    if( removedSomething )
+        emit updated();
 }
 
 void

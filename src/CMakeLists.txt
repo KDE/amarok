@@ -400,6 +400,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/MetaPlaylistModel.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
     browsers/playlistbrowser/UserPlaylistModel.cpp

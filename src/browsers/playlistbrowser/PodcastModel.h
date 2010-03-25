@@ -49,15 +49,13 @@ enum
     ImageColumn,    // channel only (for now)
     DateColumn,
     IsEpisodeColumn,
-    OnDiskColumn,
     ColumnCount
 };
 
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
-                     public Playlists::PlaylistObserver
+class PodcastModel : public MetaPlaylistModel
 {
     Q_OBJECT
     public:
@@ -70,40 +68,12 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
-        virtual QModelIndex index(int row, int column,
-                        const QModelIndex &parent = QModelIndex()) const;
-        virtual QModelIndex parent(const QModelIndex &index) const;
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
         virtual QStringList mimeTypes() const;
         virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row,
-                                   int column, const QModelIndex & parent );
-
-        //MetaPlaylistModel methods
-        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
-        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
-        /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
-                                 int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
-
-        //Own methods
-        void downloadItems(  QModelIndexList list );
-        void deleteItems(  QModelIndexList list );
-        void refreshItems( QModelIndexList list );
-        void removeSubscription( QModelIndexList list );
-
-        /** @returns all channels currently selected
-        **/
-        Podcasts::PodcastChannelList selectedChannels() { return m_selectedChannels; }
-
-        /** @returns all episodes currently selected, this includes children of a selected
-        * channel
-        **/
-        Podcasts::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
+//        virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row,
+//                                   int column, const QModelIndex & parent );
 
         void importOpml( const KUrl &url );
 
@@ -111,39 +81,30 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         void renameIndex( const QModelIndex &index ); // TODO: this signal is not being used atm
 
     public slots:
-        void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
-        void setPodcastsInterval();
-        void emitLayoutChanged();
 
     private slots:
-        void slotAppend();
-        void slotLoad();
         void slotSetNew( bool newState );
         void slotOpmlOutlineParsed( OpmlOutline* );
         void slotOpmlParsingDone();
+
+    protected:
+        QActionList actionsFor( QModelIndex idx ) const;
 
     private:
         static PodcastModel* s_instance;
         PodcastModel();
         ~PodcastModel();
-        static int podcastItemType( const QModelIndex &index );
-        static Podcasts::PodcastChannelPtr channelForIndex( const QModelIndex &index );
-        static Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
+
+        int podcastItemType( const QModelIndex &idx ) const;
+
+        Podcasts::PodcastChannelPtr channelForIndex( const QModelIndex &index ) const;
+        Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index ) const;
 
         Q_DISABLE_COPY( PodcastModel )
 
-        Playlists::PlaylistProvider *getProviderByName( const QString &name );
-        Podcasts::PodcastChannelList selectedChannels( const QModelIndexList &indices );
-        Podcasts::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
-        QList<QAction *> createCommonActions( QModelIndexList indices );
-        QList< QAction * > createEpisodeActions( Podcasts::PodcastEpisodeList epsiodes );
-        QAction * m_appendAction;
-        QAction * m_loadAction;
         QAction *m_setNewAction;
-        Podcasts::PodcastEpisodeList m_selectedEpisodes;
-        Podcasts::PodcastChannelList m_selectedChannels;
 
         /** A convenience function to convert a PodcastEpisodeList into a TrackList.
         **/
@@ -151,15 +112,7 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         podcastEpisodesToTracks(
             Podcasts::PodcastEpisodeList episodes );
 
-        /** Get the provider associated with a PodcastMetaCommon object */
-        Podcasts::PodcastProvider *providerForPmc( Podcasts::PodcastMetaCommon *pmc ) const;
-
-        void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
         void refreshPodcast( Podcasts::PodcastChannelPtr channel );
-        Podcasts::PodcastChannelList m_channels;
-        void removeSubscription( Podcasts::PodcastChannelPtr channel );
-        void configureChannel( Podcasts::PodcastChannelPtr channel );
 
         bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
         QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;

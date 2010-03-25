@@ -33,8 +33,7 @@ namespace PlaylistBrowserNS {
 /**
         @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
-                  public Playlists::PlaylistObserver
+class UserModel : public MetaPlaylistModel
 {
     Q_OBJECT
     public:
@@ -43,15 +42,6 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         ~UserModel();
 
-        virtual QVariant data( const QModelIndex &index, int role ) const;
-        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QVariant headerData( int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole ) const;
-        virtual QModelIndex index( int row, int column,
-                        const QModelIndex &parent = QModelIndex() ) const;
-        virtual QModelIndex parent( const QModelIndex &index ) const;
-        virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
         virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
@@ -63,47 +53,14 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
             return Qt::MoveAction | Qt::CopyAction;
         }
 
-        virtual QStringList mimeTypes() const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
-
-        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
-        /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
-                                 int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
-
-    public slots:
-        void slotLoad();
-        void slotAppend();
-
-        void slotUpdate();
-        void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
-
-    signals:
-        void renameIndex( const QModelIndex &index );
-        void rowsInserted( const QModelIndex &parent, int start, int end );
 
     private:
         UserModel();
-        QList<QAction *> actionsFor( const QModelIndex &idx ) const;
-        Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
-        Playlists::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
-        Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
-
-        void loadPlaylists();
-
         static UserModel * s_instance;
-
-        Playlists::PlaylistList m_playlists;
-        QAction *m_appendAction;
-        QAction *m_loadAction;
 };
 
 }
-
-Q_DECLARE_METATYPE( QModelIndexList )
 
 namespace The {
     AMAROK_EXPORT PlaylistBrowserNS::UserModel* userPlaylistModel();
