@@ -18,9 +18,8 @@
  ***************************************************************************/
 
 #include "TestTimecodeTrackProvider.h"
+#include "config-amarok-test.h"
 #include "core/meta/impl/timecode/TimecodeTrackProvider.h"
-
-#include <KStandardDirs>
 
 #include <QtTest/QTest>
 
@@ -44,7 +43,7 @@ void TestTimecodeTrackProvider::cleanupTestCase()
 QString
 TestTimecodeTrackProvider::dataPath( const QString &relPath )
 {
-    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
 void TestTimecodeTrackProvider::testPossiblyContainsTrack()
@@ -59,12 +58,12 @@ void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     KUrl testUrl;
-    testUrl = dataPath( "amarok/testdata/album/" );
+    testUrl = dataPath( "data/audio/album/" );
     testUrl.addPath( "Track01.ogg:23-42" );
 
     Meta::TrackPtr resultTrack = m_testProvider->trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "amarok/testdata/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "data/audio/album/Track01.ogg" ) );
 }

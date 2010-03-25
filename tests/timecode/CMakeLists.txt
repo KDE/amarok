@@ -1,3 +1,7 @@
+include_directories( .
+  ${AMAROK_TEST_TREE}
+  ${CMAKE_BINARY_DIR}/tests
+)
 #------------------------ Test TimecodeTrackProvider -----------------------------
 
 set( testtimecodetrackprovider_SRCS
