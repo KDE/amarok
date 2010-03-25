@@ -49,7 +49,7 @@ void TestCueFileSupport::testLocateCueFile()
   KUrl cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
   
   QVERIFY( !cueResultUrl.url().isEmpty() );
-  QVERIFY( cueResultUrl.url() == cueTestUrl.url() );
+  QCOMPARE( cueResultUrl.url(), cueTestUrl.url() );
   
   //Check that a nonexisting cue file returns an empty url
   testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/test_silence.ogg" );
@@ -70,9 +70,9 @@ void TestCueFileSupport::testIso88591Cue()
     KUrl testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/testsheet01-iso8859-1.cue" );   
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
       
-    QVERIFY( cueItemMap.size() == 14 );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).title() == "Disco" );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).artist() == "Die Toten Hosen" );
+    QCOMPARE( cueItemMap.size(), 14 );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).title(), QString( "Disco" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).artist(), QString( "Die Toten Hosen" ) );
     
 }
 
@@ -81,7 +81,7 @@ void TestCueFileSupport::testUtf8Cue()
     KUrl testUrl = KStandardDirs::locate( "data", "amarok/testdata/cue/testsheet01-utf8.cue" );   
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
       
-    QVERIFY( cueItemMap.size() == 14 );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).title() == "Ertrinken" );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).artist() == "Die Toten Hosen" );
+    QCOMPARE( cueItemMap.size(), 14 );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).title(), QString( "Ertrinken" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).artist(), QString( "Die Toten Hosen" ) );
 }
