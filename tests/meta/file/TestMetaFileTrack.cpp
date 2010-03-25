@@ -23,6 +23,8 @@
 
 #include <KStandardDirs>
 
+#include <QDebug>
+
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -47,12 +49,13 @@ void TestMetaFileTrack::initTestCase()
 
 
 void TestMetaFileTrack::testNameAndSetTitle()
-{
+{ 
     // why aren't those called set/getTitle?
     QCOMPARE( track->name(), QString( "Platz 01" ) );
 
     track->setTitle( "" );
-    QCOMPARE( track->name(), QString( "" ) );
+    //when there is no title, we default to using the filename
+    QCOMPARE( track->name(), QString( "tempfile.mp3" ) );
 
     track->setTitle( "test" );
     QCOMPARE( track->name(), QString( "test" ) );
@@ -72,7 +75,8 @@ void TestMetaFileTrack::testPrettyName()
     QCOMPARE( track->prettyName(), QString( "Platz 01" ) );
 
     track->setTitle( "" );
-    QCOMPARE( track->prettyName(), QString( "" ) );
+    //when there is no title, we default to using the filename
+    QCOMPARE( track->prettyName(), QString( "tempfile.mp3" ) );
 
     track->setTitle( "test" );
     QCOMPARE( track->prettyName(), QString( "test" ) );
@@ -92,7 +96,8 @@ void TestMetaFileTrack::testFullPrettyName()
     QCOMPARE( track->fullPrettyName(), QString( "Platz 01" ) );
 
     track->setTitle( "" );
-    QCOMPARE( track->fullPrettyName(), QString( "" ) );
+    //when there is no title, we default to using the filename
+    QCOMPARE( track->fullPrettyName(), QString( "tempfile.mp3" ) );
 
     track->setTitle( "test" );
     QCOMPARE( track->fullPrettyName(), QString( "test" ) );
@@ -202,7 +207,7 @@ void TestMetaFileTrack::testSetGetArtist()
 
 void TestMetaFileTrack::testSetGetGenre()
 {
-    QCOMPARE( track->genre().data()->name(), QString( "28 Vocal" ) );
+    QCOMPARE( track->genre().data()->name(), QString( "Vocal" ) );
 
     track->setGenre( "rock" );
     QCOMPARE( track->genre().data()->name(), QString( "rock" ) );
@@ -362,7 +367,7 @@ void TestMetaFileTrack::testSampleRate()
 
 void TestMetaFileTrack::testBitrate()
 {
-    QCOMPARE( track->bitrate(), 258 );
+    QCOMPARE( track->bitrate(), 256 );
 }
 
 void TestMetaFileTrack::testSetGetLastPlayed()
