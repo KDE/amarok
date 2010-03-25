@@ -158,7 +158,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                             if ( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
                             {
                                 length = index - prevIndex;
-                                debug() << "Setting length of track " << cueItems[prevIndex].getTitle() << " to " << length << " msecs.";
+                                debug() << "Setting length of track " << cueItems[prevIndex].title() << " to " << length << " msecs.";
                                 cueItems[prevIndex].setLength ( length );
                             }
 
@@ -176,7 +176,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                             if ( prevIndex != -1 )
                             {
                                 length -= prevIndex; //this[prevIndex].getIndex();
-                                debug() << "Setting length of track " << cueItems[prevIndex].getTitle() << " to " << length << " msecs.";
+                                debug() << "Setting length of track " << cueItems[prevIndex].title() << " to " << length << " msecs.";
                                 cueItems[prevIndex].setLength ( length );
                                 index00Present = true;
                             }
@@ -215,7 +215,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
         */
 
         cueItems[index].setLength ( mediaLength - index );
-        debug() << "Setting length of track " << cueItems[index].getTitle() << " to " << mediaLength - index << " msecs.";
+        debug() << "Setting length of track " << cueItems[index].title() << " to " << mediaLength - index << " msecs.";
 
         return cueItems;
     }
@@ -429,11 +429,11 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
 
     foreach( CueFileItem item, itemMap )
     {
-        Meta::TimecodeTrack * track = new Meta::TimecodeTrack( item.getTitle(), baseTrack->playableUrl().url(), item.getIndex(), item.getIndex() + item.getLength() );
+        Meta::TimecodeTrack * track = new Meta::TimecodeTrack( item.title(), baseTrack->playableUrl().url(), item.index(), item.index() + item.length() );
         track->beginMetaDataUpdate();
-        track->setArtist( item.getArtist() );
-        track->setAlbum( item.getAlbum() );
-        track->setTrackNumber( item.getTrackNumber() );
+        track->setArtist( item.artist() );
+        track->setAlbum( item.album() );
+        track->setTrackNumber( item.trackNumber() );
         track->endMetaDataUpdate();
 
         trackList << Meta::TrackPtr( track );

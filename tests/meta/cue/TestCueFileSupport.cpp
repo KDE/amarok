@@ -71,8 +71,8 @@ void TestCueFileSupport::testIso88591Cue()
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
       
     QVERIFY( cueItemMap.size() == 14 );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).getTitle() == "Disco" );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).getArtist() == "Die Toten Hosen" );
+    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).title() == "Disco" );
+    QVERIFY( cueItemMap.value( cueItemMap.keys()[2] ).artist() == "Die Toten Hosen" );
     
 }
 
@@ -82,6 +82,6 @@ void TestCueFileSupport::testUtf8Cue()
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
       
     QVERIFY( cueItemMap.size() == 14 );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).getTitle() == "Ertrinken" );
-    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).getArtist() == "Die Toten Hosen" );
+    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).title() == "Ertrinken" );
+    QVERIFY( cueItemMap.value( cueItemMap.keys()[6] ).artist() == "Die Toten Hosen" );
 }

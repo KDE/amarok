@@ -53,27 +53,27 @@ public:
     {
         m_length = length;
     }
-    const QString getTitle () const
+    const QString title () const
     {
         return m_title;
     }
-    const QString getArtist () const
+    const QString artist () const
     {
         return m_artist;
     }
-    const QString getAlbum () const
+    const QString album () const
     {
         return m_album;
     }
-    int getTrackNumber () const
+    int trackNumber () const
     {
         return m_trackNumber;
     }
-    long getIndex () const
+    long index () const
     {
         return m_index;
     }
-    long getLength () const
+    long length () const
     {
         return m_length;
     }
