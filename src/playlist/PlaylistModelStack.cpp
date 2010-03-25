@@ -60,6 +60,7 @@ ModelStack::destroy()
 ModelStack::ModelStack()
     : QObject()
 {
+    DEBUG_BLOCK
     m_model = new Model( this );
     m_sortfilter = new SortFilterProxy( m_model, this );
     m_search = new SearchProxy( m_sortfilter, this );

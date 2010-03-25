@@ -37,6 +37,7 @@
 class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
+class TestPlaylistModels;
 
 
 namespace Playlist
@@ -47,6 +48,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     friend class InsertTracksCmd;
     friend class RemoveTracksCmd;
     friend class MoveTracksCmd;
+    friend class ::TestPlaylistModels; //this test really needs access to the private functions.
 
     Q_OBJECT
 

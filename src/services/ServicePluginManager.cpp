@@ -28,6 +28,7 @@ ServicePluginManager * ServicePluginManager::m_instance = 0;
 
 ServicePluginManager * ServicePluginManager::instance()
 {
+    DEBUG_BLOCK
     if ( m_instance == 0 )
         m_instance = new ServicePluginManager();
 

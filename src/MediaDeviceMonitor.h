@@ -34,7 +34,7 @@ IpodCollectionFactory.
 //#include "MediaDeviceInfo.h"
 
 #include "amarok_export.h"
-#include "ConnectionAssistant.h"
+#include "collection/mediadevicecollection/support/ConnectionAssistant.h"
 #include "Debug.h"
 
 #include <QHash>

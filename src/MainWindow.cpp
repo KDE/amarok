@@ -158,6 +158,17 @@ MainWindow::MainWindow()
     GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
 
+
+    /* The ServicePluginManager needs to be loaded before the playlist model
+    * (which gets started by "statusBar" below up so that it can handle any
+    * tracks in the saved playlist that are associated with services. Eg, if
+    * the playlist has a Magnatune track in it when Amarok is closed, then the
+    * Magnatune service needs to be initialized before the playlist is loaded
+    * here. */
+
+    ServicePluginManager::instance();
+
+
     StatusBar * statusBar = new StatusBar( this );
 
     setStatusBar( statusBar );

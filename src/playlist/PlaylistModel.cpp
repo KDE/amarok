@@ -30,6 +30,8 @@
 #include "Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
+#include "core/capabilities/SourceInfoCapability.h"
+#include "collection/Collection.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
@@ -37,11 +39,11 @@
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "services/ServicePluginManager.h" // used in constructor
 
 #include <KGlobal>
 #include <KUrl>
 
+#include <QAction>
 #include <QDate>
 #include <QStringList>
 #include <QTextDocument>
@@ -57,14 +59,6 @@ Playlist::Model::Model( QObject *parent )
         , m_setStateOfItem_batchMinRow( -1 )
 {
     DEBUG_BLOCK
-
-    /* The ServicePluginManager needs to be loaded up so that it can handle
-     * any tracks in the saved playlist that are associated with services.
-     * Eg, if the playlist has a Magnatune track in it when Amarok is
-     * closed, then the Magnatune service needs to be initialized before the
-     * playlist is loaded here. */
-
-    ServicePluginManager::instance();
 
     /* The PlaylistManager needs to be loaded or podcast episodes and other
      * non-collection Tracks will not be loaded correctly.
