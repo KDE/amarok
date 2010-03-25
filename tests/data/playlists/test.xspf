@@ -1,231 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<playlist version="1" xmlns="http://xspf.org/ns/0/" >
+<playlist version="1" xmlns="http://xspf.org/ns/0/">
+  <title>my playlist</title>
   <trackList>
     <track>
-      <location>file:///backup/darkerradio/fmc/jingles/MP3/Free%20Music%20Charts%20(One-Intro%20by%20darkermusic).mp3</location>
-      <identifier>file:///backup/darkerradio/fmc/jingles/MP3/Free%20Music%20Charts%20(One-Intro%20by%20darkermusic).mp3</identifier>
-      <title>Free Music Charts (One-Intro by darkermusic)</title>
-      <creator>darkerradio - Sven</creator>
-      <album>Unknown</album>
-      <duration>126000</duration>
+      <location>http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg</identifier>
+      <title>Sunset</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>1</trackNum>
+      <duration>191000</duration>
     </track>
     <track>
-      <location>file:///home/sven/freemusic/2008%20-%20Lost%20Horizon/Chronique%20-%20Lost%20Horizon%20-%2002%20-%20Lay%20Down.mp3</location>
-      <identifier>file:///home/sven/freemusic/2008%20-%20Lost%20Horizon/Chronique%20-%20Lost%20Horizon%20-%2002%20-%20Lay%20Down.mp3</identifier>
-      <title>Lay Down</title>
-      <creator>Chronique</creator>
-      <album>Lost Horizon</album>
+      <location>http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg</identifier>
+      <title>Heaven</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
       <trackNum>2</trackNum>
-      <duration>244000</duration>
+      <duration>337000</duration>
     </track>
     <track>
-      <location>file:///home/sven/freemusic/2009%20-%20Punkverr%C3%A4ter/Das%20frivole%20Burgfr%C3%A4ulein%20-%20Punkverr%C3%A4ter%20-%2002%20-%20Sportbeutel%20Killer.mp3</location>
-      <identifier>file:///home/sven/freemusic/2009%20-%20Punkverr%C3%A4ter/Das%20frivole%20Burgfr%C3%A4ulein%20-%20Punkverr%C3%A4ter%20-%2002%20-%20Sportbeutel%20Killer.mp3</identifier>
-      <title>Sportbeutel Killer</title>
-      <creator>Das frivole Burgfräulein</creator>
-      <album>Punkverräter</album>
-      <trackNum>2</trackNum>
-      <duration>185000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/2009%20-%20Solanum/Die%20Schatten%20-%20Solanum%20-%2006%20-%20Winter.mp3</location>
-      <identifier>file:///home/sven/freemusic/2009%20-%20Solanum/Die%20Schatten%20-%20Solanum%20-%2006%20-%20Winter.mp3</identifier>
-      <title>Winter</title>
-      <creator>Die Schatten</creator>
-      <album>Solanum</album>
-      <trackNum>6</trackNum>
-      <duration>298000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/2009%20-%20EP%20-%20Dr.%20Night/Mach%20FoX%20-%20Dr.%20Night%20-%2001%20-%20Dr.%20Night.mp3</location>
-      <identifier>file:///home/sven/freemusic/2009%20-%20EP%20-%20Dr.%20Night/Mach%20FoX%20-%20Dr.%20Night%20-%2001%20-%20Dr.%20Night.mp3</identifier>
-      <title>Dr. Night</title>
-      <creator>Mach FoX</creator>
-      <album>Dr. Night</album>
-      <trackNum>1</trackNum>
-      <duration>200000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/Smoke%20Fish/2009%20-%20CDS%20-%20Insane%20inside/Smoke%20Fish%20-%20Insane%20inside%20-%2001%20-%20Insane%20inside.mp3</location>
-      <identifier>file:///home/sven/freemusic/Smoke%20Fish/2009%20-%20CDS%20-%20Insane%20inside/Smoke%20Fish%20-%20Insane%20inside%20-%2001%20-%20Insane%20inside.mp3</identifier>
-      <title>Insane inside</title>
-      <creator>Smoke Fish</creator>
-      <album>Insane inside</album>
-      <trackNum>1</trackNum>
-      <duration>281000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/me-you-mp3-192-kbps/2009%20-%20Me%20and%20you/The%20Leftovers%20-%20Me%20and%20you%20-%2001%20-%20Me%20and%20you.mp3</location>
-      <identifier>file:///home/sven/freemusic/me-you-mp3-192-kbps/2009%20-%20Me%20and%20you/The%20Leftovers%20-%20Me%20and%20you%20-%2001%20-%20Me%20and%20you.mp3</identifier>
-      <title>Me and you</title>
-      <creator>The Leftovers</creator>
-      <album>Me and you</album>
-      <trackNum>1</trackNum>
-      <duration>245000</duration>
-    </track>
-    <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/t/The%20Maximilians/2009%20-%20Waves/The%20Maximilians%20-%20Waves%20-%2008%20-%20Waiting%20for%20the%20Waves%20to%20come.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/t/The%20Maximilians/2009%20-%20Waves/The%20Maximilians%20-%20Waves%20-%2008%20-%20Waiting%20for%20the%20Waves%20to%20come.mp3</identifier>
-      <title>Waiting for the Waves to come</title>
-      <creator>The Maximilians</creator>
-      <annotation>http://www.jamendo.com/</annotation>
-      <album>Waves</album>
-      <trackNum>8</trackNum>
-      <duration>185000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/2008%20-%20ZwischenWelt/Soul%20in%20Sadness%20-%20ZwischenWelt%20-%2007%20-%20Tote%20Seelen%20lieben%20nicht.mp3</location>
-      <identifier>file:///home/sven/freemusic/2008%20-%20ZwischenWelt/Soul%20in%20Sadness%20-%20ZwischenWelt%20-%2007%20-%20Tote%20Seelen%20lieben%20nicht.mp3</identifier>
-      <title>Tote Seelen lieben nicht</title>
-      <creator>Soul in Sadness</creator>
-      <album>ZwischenWelt</album>
-      <trackNum>7</trackNum>
-      <duration>302000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/VA-Far_away_from_home/10%20Songs%20for%20free%20download%20-%20Vol.7%20-%20Far%20away%20from%20home/10%20Sleepmakeswaves%20-%20One%20Day%20You%20Will%20Teach%20Me%20To%20Let%20Go%20Of%20My%20Fears.mp3</location>
-      <identifier>file:///home/sven/freemusic/VA-Far_away_from_home/10%20Songs%20for%20free%20download%20-%20Vol.7%20-%20Far%20away%20from%20home/10%20Sleepmakeswaves%20-%20One%20Day%20You%20Will%20Teach%20Me%20To%20Let%20Go%20Of%20My%20Fears.mp3</identifier>
-      <title>One Day You Will Teach Me To Let Go Of My Fears</title>
-      <creator>Sleepmakeswaves</creator>
-      <album>10 Songs for free download - Vol.7: Far away from home</album>
-      <trackNum>10</trackNum>
-      <duration>381000</duration>
-    </track>
-    <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/s/Sleepwalk/2009%20-%20EP%20-%20Revenge%20of%20the%20Lost/Sleepwalk%20-%20Revenge%20of%20the%20Lost%20-%2002%20-%20Blindness.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/s/Sleepwalk/2009%20-%20EP%20-%20Revenge%20of%20the%20Lost/Sleepwalk%20-%20Revenge%20of%20the%20Lost%20-%2002%20-%20Blindness.mp3</identifier>
-      <title>Blindness</title>
-      <creator>Sleepwalk</creator>
-      <album>Revenge of the Lost</album>
-      <trackNum>2</trackNum>
-      <duration>304000</duration>
-    </track>
-    <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/a/All:My:Faults/2009%20-%20CDS%20-%20First.Aid.killed.the.Jerboa/All:My:Faults%20-%20First.Aid.killed.the.Jerboa%20-%2001%20-%20Taste%20these%20forbidden%20Fruits%20and%20they'll%20do%20you%20much%20worse%20than%20just%20throwing%20you%20out%20of%20Paradise.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/a/All:My:Faults/2009%20-%20CDS%20-%20First.Aid.killed.the.Jerboa/All:My:Faults%20-%20First.Aid.killed.the.Jerboa%20-%2001%20-%20Taste%20these%20forbidden%20Fruits%20and%20they'll%20do%20you%20much%20worse%20than%20just%20throwing%20you%20out%20of%20Paradise.mp3</identifier>
-      <title>Taste these forbidden Fruits and they'll do you much worse than just throwing you out of Paradise</title>
-      <creator>all:my:faults</creator>
-      <album>First.Aid.killed.the.Jerboa</album>
-      <trackNum>1</trackNum>
-      <duration>318000</duration>
-    </track>
-    <track>
-      <location>file:///backup/mucke/freemusic/cologne_commons_compilation_01/cc01.08_professor_kliq__plastic_and_flashing_lights_(www.rec72.net).mp3</location>
-      <identifier>file:///backup/mucke/freemusic/cologne_commons_compilation_01/cc01.08_professor_kliq__plastic_and_flashing_lights_(www.rec72.net).mp3</identifier>
-      <title>Plastic and Flashing Lights</title>
-      <creator>Professor Kliq</creator>
-      <annotation>thanks to rec72</annotation>
-      <album>cologne commons 001</album>
-      <trackNum>8</trackNum>
-      <duration>292000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/2009%20-%20EP%20-%20Spot%20on/Trick%20Seventeen%20-%20Spot%20on%20-%2003%20-%20Get%20up!.mp3</location>
-      <identifier>file:///home/sven/freemusic/2009%20-%20EP%20-%20Spot%20on/Trick%20Seventeen%20-%20Spot%20on%20-%2003%20-%20Get%20up!.mp3</identifier>
-      <title>Get up!</title>
-      <creator>Trick Seventeen</creator>
-      <album>Spot on</album>
+      <location>http://he3.magnatune.com/all/03-Liquid%20Sun-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/03-Liquid%20Sun-Ammonite.ogg</identifier>
+      <title>Liquid Sun</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
       <trackNum>3</trackNum>
-      <duration>207000</duration>
+      <duration>383000</duration>
     </track>
     <track>
-      <location>file:///home/sven/freemusic/Cavashawn%20-%20Cavashawn%20--%20Jamendo%20-%20MP3%20VBR%20192k%20-%202008.06.03%20%5Bwww.jamendo.com%5D/01%20-%20Out%20Of%20My%20Mind.mp3</location>
-      <identifier>file:///home/sven/freemusic/Cavashawn%20-%20Cavashawn%20--%20Jamendo%20-%20MP3%20VBR%20192k%20-%202008.06.03%20%5Bwww.jamendo.com%5D/01%20-%20Out%20Of%20My%20Mind.mp3</identifier>
-      <title>Out Of My Mind</title>
-      <creator>Cavashawn</creator>
-      <annotation>http://www.jamendo.com/</annotation>
-      <album>Cavashawn</album>
-      <trackNum>1</trackNum>
-      <duration>191000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/2008%20-%20EP%20-%20In%20pura%20assenza%20di%20gravita'/Libidomeccanica%20-%20In%20pura%20assenza%20di%20gravita'%20-%2001%20-%20G.mp3</location>
-      <identifier>file:///home/sven/freemusic/2008%20-%20EP%20-%20In%20pura%20assenza%20di%20gravita'/Libidomeccanica%20-%20In%20pura%20assenza%20di%20gravita'%20-%2001%20-%20G.mp3</identifier>
-      <title>G</title>
-      <creator>Libidomeccanica</creator>
-      <annotation>http://www.jamendo.com/</annotation>
-      <album>In pura assenza di gravita'</album>
-      <trackNum>1</trackNum>
-      <duration>191000</duration>
-    </track>
-    <track>
-      <location>file:///home/sven/freemusic/viola_everything_hifi/Viola%20-%20Melancholydisco%202/Viola%20-%2004%20-%20We%20Owe%20Love.mp3</location>
-      <identifier>file:///home/sven/freemusic/viola_everything_hifi/Viola%20-%20Melancholydisco%202/Viola%20-%2004%20-%20We%20Owe%20Love.mp3</identifier>
-      <title>We Owe Love</title>
-      <creator>Viola</creator>
-      <annotation>(c) If Society</annotation>
-      <album>Melancholydisco 2</album>
+      <location>http://he3.magnatune.com/all/04-Restrained%20Mind-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/04-Restrained%20Mind-Ammonite.ogg</identifier>
+      <title>Restrained Mind</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
       <trackNum>4</trackNum>
-      <duration>251000</duration>
+      <duration>308000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/r/Rebentisch/2009%20-%20Herz%20zerrissen/Rebentisch%20-%20Herz%20zerrissen%20-%2006%20-%20Mein%20Blick%20ins%20Leere.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/r/Rebentisch/2009%20-%20Herz%20zerrissen/Rebentisch%20-%20Herz%20zerrissen%20-%2006%20-%20Mein%20Blick%20ins%20Leere.mp3</identifier>
-      <title>Mein Blick ins Leere</title>
-      <creator>Rebentisch</creator>
-      <album>Herz zerrissen</album>
-      <trackNum>6</trackNum>
-      <duration>235000</duration>
-    </track>
-    <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/d/Diskoteket/2009%20-%20Diskoteket/Diskoteket%20-%20Diskoteket%20-%2005%20-%20K%C3%A4rlek%20och%20Sk%C3%B6nhet.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/d/Diskoteket/2009%20-%20Diskoteket/Diskoteket%20-%20Diskoteket%20-%2005%20-%20K%C3%A4rlek%20och%20Sk%C3%B6nhet.mp3</identifier>
-      <title>Kärlek och Skönhet</title>
-      <creator>Diskoteket</creator>
-      <album>Diskoteket</album>
+      <location>http://he3.magnatune.com/all/05-Rapture-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/05-Rapture-Ammonite.ogg</identifier>
+      <title>Rapture</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
       <trackNum>5</trackNum>
-      <duration>256000</duration>
+      <duration>255000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2003.mp3</location>
-      <identifier>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2003.mp3</identifier>
-      <title>Platz 03</title>
-      <creator>Free Music Charts</creator>
-      <album>Unknown</album>
-      <duration>9000</duration>
+      <location>http://he3.magnatune.com/all/06-Calm-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/06-Calm-Ammonite.ogg</identifier>
+      <title>Calm</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>6</trackNum>
+      <duration>301000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/c/Curious/2008%20-%20CDS%20-%20Days/Curious%20-%20Days%20-%2001%20-%20Days%20(Single%20Version).mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/c/Curious/2008%20-%20CDS%20-%20Days/Curious%20-%20Days%20-%2001%20-%20Days%20(Single%20Version).mp3</identifier>
-      <title>Days (Single Version)</title>
-      <creator>Curious</creator>
-      <album>Days</album>
+      <location>http://he3.magnatune.com/all/07-Angel%20(hold%20on...)-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/07-Angel%20(hold%20on...)-Ammonite.ogg</identifier>
+      <title>Angel (hold on...)</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>7</trackNum>
+      <duration>432000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/08-Broken-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/08-Broken-Ammonite.ogg</identifier>
+      <title>Broken</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>8</trackNum>
+      <duration>257000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/09-Open%20Road-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/09-Open%20Road-Ammonite.ogg</identifier>
+      <title>Open Road</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>9</trackNum>
+      <duration>343000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/10-Distant%20Love-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/10-Distant%20Love-Ammonite.ogg</identifier>
+      <title>Distant Love</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>10</trackNum>
+      <duration>384000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/11-Touch-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/11-Touch-Ammonite.ogg</identifier>
+      <title>Touch</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>11</trackNum>
+      <duration>571000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/12-Reconnection%20(outro)-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/12-Reconnection%20(outro)-Ammonite.ogg</identifier>
+      <title>Reconnection (outro)</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>12</trackNum>
+      <duration>163000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/01--Should%20Be--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/01--Should%20Be--Arthur%20Yoria.ogg</identifier>
+      <title>Should Be</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
       <trackNum>1</trackNum>
+      <duration>174000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/02--Clean%20For%20Free--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/02--Clean%20For%20Free--Arthur%20Yoria.ogg</identifier>
+      <title>Clean For Free</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>2</trackNum>
       <duration>198000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2002.mp3</location>
-      <identifier>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2002.mp3</identifier>
-      <title>Platz 02</title>
-      <creator>Free Music Charts</creator>
-      <album>Unknown</album>
-      <duration>8000</duration>
-    </track>
-    <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/j/Josh%20Woodward/2009%20-%20Only%20whispering/Josh%20Woodward%20-%20Only%20whispering%20-%2003%20-%20I'll%20be%20right%20behind%20you,%20Josephine.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/j/Josh%20Woodward/2009%20-%20Only%20whispering/Josh%20Woodward%20-%20Only%20whispering%20-%2003%20-%20I'll%20be%20right%20behind%20you,%20Josephine.mp3</identifier>
-      <title>I'll be right behind you, Josephine</title>
-      <creator>Josh Woodward</creator>
-      <album>Only whispering</album>
+      <location>http://he3.magnatune.com/all/03--Handshake%20Smiles--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/03--Handshake%20Smiles--Arthur%20Yoria.ogg</identifier>
+      <title>Handshake Smiles</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
       <trackNum>3</trackNum>
-      <duration>259000</duration>
+      <duration>157000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2001.mp3</location>
-      <identifier>file:///backup/darkerradio/fmc/jingles/MP3/Platz%2001.mp3</identifier>
-      <title>Platz 01</title>
-      <creator>Free Music Charts</creator>
-      <album>Unknown</album>
-      <duration>12000</duration>
+      <location>http://he3.magnatune.com/all/04--Jimmy's%20Rig--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/04--Jimmy's%20Rig--Arthur%20Yoria.ogg</identifier>
+      <title>Jimmy's Rig</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>4</trackNum>
+      <duration>177000</duration>
     </track>
     <track>
-      <location>file:///backup/darkerradio/freemusic/Interpret/b/Bilk/2008%20-%20EP%20-%20Ich%20will%20hier%20raus/Bilk%20-%20Ich%20will%20hier%20raus%20-%2003%20-%20Raus.mp3</location>
-      <identifier>file:///backup/darkerradio/freemusic/Interpret/b/Bilk/2008%20-%20EP%20-%20Ich%20will%20hier%20raus/Bilk%20-%20Ich%20will%20hier%20raus%20-%2003%20-%20Raus.mp3</identifier>
-      <title>Raus</title>
-      <creator>Bilk</creator>
-      <album>Ich will hier raus</album>
-      <trackNum>3</trackNum>
-      <duration>183000</duration>
+      <location>http://he3.magnatune.com/all/05--Love%20Song%20in%20G--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/05--Love%20Song%20in%20G--Arthur%20Yoria.ogg</identifier>
+      <title>Love Song in G</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>5</trackNum>
+      <duration>221000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/06--Cuttin%20a%20Rug--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/06--Cuttin%20a%20Rug--Arthur%20Yoria.ogg</identifier>
+      <title>Cuttin a Rug</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>6</trackNum>
+      <duration>230000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/07--Sandy--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/07--Sandy--Arthur%20Yoria.ogg</identifier>
+      <title>Sandy</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>7</trackNum>
+      <duration>261000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/08--I%20Told%20You%20Not%20to%20Write%20Again--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/08--I%20Told%20You%20Not%20to%20Write%20Again--Arthur%20Yoria.ogg</identifier>
+      <title>I Told You Not to Write Again</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>8</trackNum>
+      <duration>227000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/09--Fool%20Me%20Again--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/09--Fool%20Me%20Again--Arthur%20Yoria.ogg</identifier>
+      <title>Fool Me Again</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>9</trackNum>
+      <duration>169000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/10--Rim%20Job--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/10--Rim%20Job--Arthur%20Yoria.ogg</identifier>
+      <title>Rim Job</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>10</trackNum>
+      <duration>246000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/11--Trash%20Bag--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/11--Trash%20Bag--Arthur%20Yoria.ogg</identifier>
+      <title>Trash Bag</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>11</trackNum>
+      <duration>297000</duration>
     </track>
   </trackList>
 </playlist>

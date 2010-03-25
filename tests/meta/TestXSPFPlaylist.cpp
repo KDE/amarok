@@ -18,9 +18,16 @@
  ***************************************************************************/
 
 #include "TestXSPFPlaylist.h"
+
+#include "config-amarok-test.h"
 #include "core/playlists/impl/file/xspf/XSPFPlaylist.h"
 
+#include "Components.h"
+#include "EngineController.h"
+
 #include <KStandardDirs>
+
+#include <QDebug>
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
@@ -36,26 +43,43 @@ TestXSPFPlaylist::TestXSPFPlaylist()
 QString
 TestXSPFPlaylist::dataPath( const QString &relPath )
 {
-    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
 
 void TestXSPFPlaylist::initTestCase()
 {
-    const QString testXspf = "amarok/testdata/playlists/test.xspf";
-    const KUrl url         = dataPath( testXspf );
-    m_testPlaylist1        = new Meta::XSPFPlaylist( url.toLocalFile(), false );
+  
+    //apparently the engine controller is needed somewhere, or we will get a crash...
+    EngineController *controller = new EngineController();
+    Amarok::Components::setEngineController( controller );
+  
+    const QString testXspf = "data/playlists/test.xspf";
+    const KUrl url = dataPath( testXspf );
+    qDebug() << "got playlist path: " << url.url();
+    
+    
+    //we need to copy this laylist file to a temp dir as some of the tests we do will delete/overwrite it
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
+    qDebug() << "got temp path: " << tempPath;
+    QFile::remove( tempPath );
+    QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
+    QVERIFY( QFile::exists( tempPath ) );
+    
+    m_testPlaylist1 = new Meta::XSPFPlaylist( tempPath, false );
+    
 }
 
 void TestXSPFPlaylist::cleanupTestCase()
 {
+  
     delete m_testPlaylist1;
 }
 
 
 void TestXSPFPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist1->name(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->name(), QString( "my playlist" ) );
 
     m_testPlaylist1->setName( "test" );
     QCOMPARE( m_testPlaylist1->name(), QString( "test" ) );
@@ -76,12 +100,12 @@ void TestXSPFPlaylist::testSetAndGetTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 25 );
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Free Music Charts (One-Intro by darkermusic)" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Lay Down" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Sportbeutel Killer" ) );
-    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Winter" ) );
-    QCOMPARE( tracklist.at( 24 ).data()->name(), QString( "Raus" ) );
+    QCOMPARE( tracklist.size(), 23 );
+    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Sunset" ) );
+    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Heaven" ) );
+    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Liquid Sun" ) );
+    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Restrained Mind" ) );
+    QCOMPARE( tracklist.at( 22 ).data()->name(), QString( "Trash Bag" ) );
 }
 
 void TestXSPFPlaylist::testSetAndGetTitle()
@@ -283,7 +307,11 @@ void TestXSPFPlaylist::testHasCapabilityInterface()
 
 void TestXSPFPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.xspf" ) );
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
+    
+    //we have chaged the name around so much, better reset it
+    m_testPlaylist1->setName( "test" );
+    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), tempPath );
 }
 
 void TestXSPFPlaylist::testIsWritable()
@@ -293,6 +321,7 @@ void TestXSPFPlaylist::testIsWritable()
 
 void TestXSPFPlaylist::testSave()
 {
-    QFile::remove( QDir::tempPath() + QDir::separator() + "test.xspf" );
-    QVERIFY( m_testPlaylist1->save( QDir::tempPath() + QDir::separator() + "test.xspf", false ) );
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
+    QFile::remove( tempPath );
+    QVERIFY( m_testPlaylist1->save( tempPath, false ) );
 }
