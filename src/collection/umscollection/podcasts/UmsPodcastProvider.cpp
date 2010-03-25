@@ -55,6 +55,13 @@ UmsPodcastProvider::trackForUrl( const KUrl &url )
     return TrackPtr();
 }
 
+PodcastEpisodePtr
+UmsPodcastProvider::episodeForGuid( const QString &guid )
+{
+    Q_UNUSED( guid )
+    return PodcastEpisodePtr();
+}
+
 void
 UmsPodcastProvider::addPodcast( const KUrl &url )
 {

@@ -36,6 +36,8 @@ class UmsPodcastProvider : public PodcastProvider
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
+        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid );
+
         virtual void addPodcast( const KUrl &url );
 
         virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
