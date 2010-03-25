@@ -18,7 +18,6 @@
 #define METASQLPLAYLIST_H
 
 #include "core/playlists/Playlist.h"
-// #include "playlistmanager/sql/SqlPlaylistGroup.h"
 
 class PlaylistProvider;
 
@@ -37,10 +36,9 @@ typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class SqlPlaylist : public Playlist
+class SqlPlaylist : public Playlist, public Observer
 {
     public:
-        //SqlPlaylist( int id );
         SqlPlaylist( const QString &name, const TrackList &tracks,
                 SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
                 const QString &urlId = QString() );
@@ -73,8 +71,13 @@ class SqlPlaylist : public Playlist
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+                { Q_UNUSED( type ); return false; }
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+                { Q_UNUSED( type ); return 0; }
+
+        /* Meta::Observer methods */
+        virtual void metadataChanged( TrackPtr track );
 
         Meta::SqlPlaylistGroupPtr parent() const;
 
