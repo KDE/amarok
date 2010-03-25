@@ -34,7 +34,7 @@ set( testplaylistmodels_SRCS
 
 kde4_add_unit_test( testplaylistmodels ${testplaylistmodels_SRCS} )
 
-add_dependencies( testplaylistmodels amaroklib)
+add_dependencies( testplaylistmodels amaroklib )
 
 target_link_libraries( testplaylistmodels
     amaroklib
