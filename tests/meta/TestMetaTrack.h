@@ -73,6 +73,7 @@ private slots:
 private:
     Meta::TrackPtr m_testTrack1;
     Meta::TrackPtr m_testTrack2;
+    const QString  m_trackPath;
 
     QString dataPath( const QString &relPath );
 };

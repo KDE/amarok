@@ -21,14 +21,13 @@
 
 #include "Components.h"
 #include "EngineController.h"
-
+#include "config-amarok-test.h"
 #include "core/meta/impl/multi/MultiTrack.h"
 #include "core/playlists/impl/file/PlaylistFileSupport.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 
 #include <qtest_kde.h>
 
@@ -40,14 +39,15 @@ TestMetaMultiTrack::TestMetaMultiTrack()
 
 void TestMetaMultiTrack::initTestCase()
 {
-  
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
   
-    const QString relPath = "amarok/testdata/playlists/test.pls";
-    const KUrl url = KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url.toLocalFile() ) );
+    const QString path = QString( AMAROK_TEST_DIR ) + "/data/playlists/test.pls";
+    const QFileInfo file( QDir::toNativeSeparators( path ) );
+    QVERIFY( file.exists() );
+    const QString filePath = file.absoluteFilePath();
+    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( filePath ) );
 
     if( !playlist )
         QVERIFY( false ); // no playlist -> no test. that's life ;)

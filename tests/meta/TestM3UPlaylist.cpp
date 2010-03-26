@@ -18,8 +18,10 @@
  ***************************************************************************/
 
 #include "TestM3UPlaylist.h"
+#include "config-amarok-test.h"
+#include "core/playlists/impl/file/m3u/M3UPlaylist.h"
 
-#include <KStandardDirs>
+#include <KTemporaryFile>
 
 #include <QtTest/QTest>
 #include <QtCore/QFile>
@@ -35,58 +37,71 @@ TestM3UPlaylist::TestM3UPlaylist()
 QString
 TestM3UPlaylist::dataPath( const QString &relPath )
 {
-    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
 void TestM3UPlaylist::initTestCase()
 {
-    const KUrl url = dataPath( "amarok/testdata/playlists/test.m3u" );
+    const KUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
-    QTextStream playlistStream1;
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
 
-    if( !playlistFile1.open( QFile::ReadOnly ) )
-        QVERIFY( false );
+    const QString tmpFile = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) ) + "/test.m3u";
+    if( QFile::exists( tmpFile ) )
+        QFile::remove( tmpFile );
+    QVERIFY( QFile::copy( url.toLocalFile(), tmpFile ) );
+    QFile playlistFile2( tmpFile );
+    QVERIFY( playlistFile2.open( QFile::ReadOnly ) );
 
-    playlistStream1.setDevice( &playlistFile1 );
+    m_testPlaylist = new Meta::M3UPlaylist( KUrl( tmpFile ) );
+    QVERIFY( m_testPlaylist );
 
-    m_testPlaylist1.load( playlistStream1 );
+    QTextStream playlistStream;
+    playlistStream.setDevice( &playlistFile2 );
+    QVERIFY( playlistStream.device() );
+
+    QVERIFY( m_testPlaylist->load( playlistStream ) );
+    QCOMPARE( m_testPlaylist->tracks().size(), 10 );
     playlistFile1.close();
+
+    QVERIFY( QFile::remove( tmpFile ) );
 }
 
+void TestM3UPlaylist::cleanupTestCase()
+{
+    delete m_testPlaylist;
+}
 
 void TestM3UPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist1.name(), QString( "Playlist_1m3u" ) );
+    QCOMPARE( m_testPlaylist->prettyName(), QString( "test.m3u" ) );
 
-    m_testPlaylist1.setName( "test" );
-    QCOMPARE( m_testPlaylist1.name(), QString( "test" ) );
+    QCOMPARE( m_testPlaylist->name(), QString( "test.m3u" ) );
 
-    m_testPlaylist1.setName( "test aäoöuüß" );
-    QCOMPARE( m_testPlaylist1.name(), QString( "test aäoöuüß" ) );
+    m_testPlaylist->setName( "set name test" );
+    QCOMPARE( m_testPlaylist->name(), QString( "set name test" ) );
 
-    m_testPlaylist1.setName( "" );
-    QCOMPARE( m_testPlaylist1.name(), QString( "playlists" ) );
-}
+    m_testPlaylist->setName( "set name test aäoöuüß" );
+    QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß" ) );
 
-void TestM3UPlaylist::testPrettyName()
-{
-    QCOMPARE( m_testPlaylist1.prettyName(), QString( "playlists" ) );
+    m_testPlaylist->setName( "" );
+    QCOMPARE( m_testPlaylist->name(), QString( "tests" ) );
 }
 
 void TestM3UPlaylist::testTracks()
 {
-    Meta::TrackList tracklist = m_testPlaylist1.tracks();
+    Meta::TrackList tracklist = m_testPlaylist->tracks();
 
-    QCOMPARE( tracklist.size(), 25 );
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Free Music Charts (One-Intro by darkermusic)" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Reloj de arena" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Get up!" ) );
-    QCOMPARE( tracklist.at( 24 ).data()->name(), QString( "Raus" ) );
+    QCOMPARE( tracklist.size(), 10 );
+    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Platz 01" ) );
+    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Platz 02" ) );
+    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Platz 03" ) );
+    QCOMPARE( tracklist.at( 9 ).data()->name(), QString( "Platz 10" ) );
 }
 
 void TestM3UPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.m3u" ) );
+    QCOMPARE( m_testPlaylist->retrievableUrl().pathOrUrl(), dataPath() );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()
@@ -94,23 +109,25 @@ void TestM3UPlaylist::testSetAndGetGroups()
     QStringList grouplist;
     QStringList newGrouplist;
 
-    grouplist = m_testPlaylist1.groups();
+    grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 0 );
 
     newGrouplist.append( "test" );
-    m_testPlaylist1.setGroups( newGrouplist );
-    grouplist = m_testPlaylist1.groups();
+    m_testPlaylist->setGroups( newGrouplist );
+    grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 1 );
     QCOMPARE( grouplist.at(0), QString( "test" ) );
 }
 
 void TestM3UPlaylist::testIsWritable()
 {
-    QVERIFY( m_testPlaylist1.isWritable() );
+    QVERIFY( m_testPlaylist->isWritable() );
 }
 
 void TestM3UPlaylist::testSave()
 {
-    QFile::remove( QDir::tempPath() + QDir::separator() + "test.m3u" );
-    QVERIFY( m_testPlaylist1.save( QDir::tempPath() + QDir::separator() + "test.m3u", false ) );
+    KTemporaryFile temp;
+    temp.setSuffix( ".m3u" );
+    QVERIFY( temp.open() );
+    QVERIFY( m_testPlaylist->save( temp.fileName(), false ) );
 }

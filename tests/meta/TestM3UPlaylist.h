@@ -20,10 +20,10 @@
 #ifndef TESTM3UPLAYLIST_H
 #define TESTM3UPLAYLIST_H
 
-#include "core/playlists/impl/file/m3u/M3UPlaylist.h"
-
 #include <QtCore/QObject>
 #include <QtCore/QString>
+
+namespace Meta { class M3UPlaylist; }
 
 class TestM3UPlaylist : public QObject
 {
@@ -34,9 +34,9 @@ public:
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
 
     void testSetAndGetName();
-    void testPrettyName();
     void testTracks();
     void testRetrievableUrl();
     void testSetAndGetGroups();
@@ -44,8 +44,8 @@ private slots:
     void testSave();
 
 private:
-    Meta::M3UPlaylist m_testPlaylist1;
-    QString dataPath( const QString &relPath );
+    Meta::M3UPlaylist *m_testPlaylist;
+    QString dataPath( const QString &relPath = QString() );
 };
 
 #endif // TESTM3UPLAYLIST_H

@@ -126,10 +126,10 @@ namespace Amarok
      * (playlists are ignored)
      */
 
-    // New in Amarok2 -> recursiveUrlExpand has been replaced
+    // TODO: New in Amarok2 -> recursiveUrlExpand has been replaced
     // existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); // defined in PlaylistManager.cpp
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); // defined in PlaylistManager.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
 
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
     AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
@@ -179,14 +179,14 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString cleanPath( const QString &path ); // defined in App.cpp
+    AMAROK_EXPORT QString cleanPath( const QString &path );
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    AMAROK_EXPORT QString asciiPath( const QString &path ); // defined in App.cpp
+    AMAROK_EXPORT QString asciiPath( const QString &path );
 
     /**
      * Transforms path into one valid on VFAT file systems, leaves QDir::separator()s untouched.
@@ -197,7 +197,7 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString vfatPath( const QString &path ); // defined in App.cpp
+    AMAROK_EXPORT QString vfatPath( const QString &path );
 
     /**
      * Compare both strings from left to right and remove the common part from input
@@ -210,8 +210,8 @@ namespace Amarok
     /*
      * Transform to be usable within HTML/XHTML attributes
      */
-    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s ); // defined in App.cpp
-    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); // defined in App.cpp
+    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
+    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**

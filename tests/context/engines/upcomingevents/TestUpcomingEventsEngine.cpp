@@ -17,13 +17,13 @@
 
 #include "TestUpcomingEventsEngine.h"
 
-#include <KStandardDirs>
+#include "Components.h"
+#include "ContextObserver.h"
+#include "EngineController.h"
+#include "UpcomingEventsEngine.h"
+
 #include <QtTest/QTest>
 #include <qtest_kde.h>
-#include <QDebug>
-
-#include "src/context/ContextObserver.h"
-#include "src/context/engines/upcomingevents/UpcomingEventsEngine.h"
 
 QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
 
@@ -38,13 +38,16 @@ TestUpcomingEventsEngine::TestUpcomingEventsEngine(QObject* parent)
 void
 TestUpcomingEventsEngine::initTestCase()
 {
-     qDebug() << "coucou" ;
-     //Write here initilizations
-     QList<QVariant> args;
-     qDebug() << "coucou" ;
-     m_engine = new UpcomingEventsEngine(this, args);
-}
+    //apparently the engine controller is needed somewhere, or we will get a crash...
+    EngineController *controller = new EngineController();
+    Amarok::Components::setEngineController( controller );
+    bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
+    Q_ASSERT( invoked );
 
+    //Write here initilizations
+    QList<QVariant> args;
+    m_engine = new UpcomingEventsEngine(this, args);
+}
 
 void
 TestUpcomingEventsEngine::testDataEngineMethod()
