@@ -29,7 +29,7 @@ class QAction;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public PlaylistProvider
+class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playlists::PlaylistProvider
 {
     //Q_OBJECT
     public:
@@ -65,9 +65,9 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual QString prettyName() const = 0;
         virtual KIcon icon() const = 0;
 
-        virtual int category() const { return (int)Meta::PodcastChannelPlaylist; }
+        virtual int category() const { return (int)Playlists::PodcastChannelPlaylist; }
 
-        virtual Meta::PlaylistList playlists() = 0;
+        virtual Playlists::PlaylistList playlists() = 0;
 
         virtual QList<QAction *> episodeActions( Meta::PodcastEpisodeList )
             { return QList<QAction *>(); }
@@ -75,9 +75,9 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
             { return QList<QAction *>(); }
 
         virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
-        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
+        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist )
                 { Q_UNUSED( playlist ) return QList<QAction *>(); }
-        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 

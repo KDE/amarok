@@ -32,7 +32,7 @@
 #include <QFile>
 #include <QFileInfo>
 
-namespace Meta {
+namespace Playlists {
 
 PlaylistFormat
 getFormat( const KUrl &path )
@@ -92,7 +92,7 @@ loadPlaylistFile( const KUrl &url )
             if( The::statusBar() )
                 The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
 
-            return Meta::PlaylistFilePtr( 0 );
+            return Playlists::PlaylistFilePtr( 0 );
         }
         fileToLoad = url;
     }
@@ -110,7 +110,7 @@ loadPlaylistFile( const KUrl &url )
             if( The::statusBar() )
                 The::statusBar()->longMessage( i18n( "Could not create a temporary file to download playlist.") );
 
-            return Meta::PlaylistFilePtr( 0 ); //error
+            return Playlists::PlaylistFilePtr( 0 ); //error
         }
 
 
@@ -128,7 +128,7 @@ loadPlaylistFile( const KUrl &url )
         if( !job->exec() ) //Job deletes itself after execution
         {
             error() << "error";
-            return Meta::PlaylistFilePtr( 0 );
+            return Playlists::PlaylistFilePtr( 0 );
         }
         else
         {
@@ -136,7 +136,7 @@ loadPlaylistFile( const KUrl &url )
             if( !file.open( QFile::ReadOnly ) )
             {
                 debug() << "error opening file: " << tempFileName;
-                return Meta::PlaylistFilePtr( 0 );
+                return Playlists::PlaylistFilePtr( 0 );
             }
             fileToLoad = KUrl::fromPath( file.fileName() );
         }
@@ -187,19 +187,19 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
 }
 
 bool
-canExpand( TrackPtr track )
+canExpand( Meta::TrackPtr track )
 {
     if( !track )
         return false;
 
-    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
+    return Playlists::getFormat( track->uidUrl() ) != Playlists::NotPlaylist;
 }
 
 PlaylistPtr
-expand( TrackPtr track )
+expand( Meta::TrackPtr track )
 {
    //this should really be made asyncrhonous
-   return Meta::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
+   return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
 }
 
 KUrl

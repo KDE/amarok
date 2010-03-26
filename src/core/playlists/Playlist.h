@@ -32,12 +32,12 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
-class PlaylistProvider;
 class QTextStream;
 
-namespace Meta
+namespace Playlists
 {
     class Playlist;
+    class PlaylistProvider;
 
     typedef KSharedPtr<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
@@ -56,7 +56,7 @@ namespace Meta
 
             /** This method is called when a track has been added to the playlist.
              */
-            virtual void trackAdded( PlaylistPtr playlist, TrackPtr track, int position ) = 0;
+            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
             /** This method is called when a track is removed from to the playlist.
              */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
@@ -85,7 +85,7 @@ namespace Meta
               */
             virtual int trackCount() const { return -1; }
             /** returns all tracks in this playlist */
-            virtual TrackList tracks() = 0;
+            virtual Meta::TrackList tracks() = 0;
             virtual void addTrack( Meta::TrackPtr track, int position = -1 )
                     { Q_UNUSED(track); Q_UNUSED(position); }
             virtual void removeTrack( int position ) { Q_UNUSED(position); }
@@ -141,29 +141,29 @@ namespace Meta
         protected:
             inline void notifyObserversTrackAdded( Meta::TrackPtr track, int position )
             {
-                foreach( Meta::PlaylistObserver *observer, m_observers )
+                foreach( Playlists::PlaylistObserver *observer, m_observers )
                 {
                     if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-                        observer->trackAdded( Meta::PlaylistPtr( this ), track, position );
+                        observer->trackAdded( Playlists::PlaylistPtr( this ), track, position );
                 }
             }
 
             inline void notifyObserversTrackRemoved( int position )
             {
-                foreach( Meta::PlaylistObserver *observer, m_observers )
+                foreach( Playlists::PlaylistObserver *observer, m_observers )
                 {
                     if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-                        observer->trackRemoved( Meta::PlaylistPtr( this ), position );
+                        observer->trackRemoved( Playlists::PlaylistPtr( this ), position );
                 }
             }
 
-            QSet<Meta::PlaylistObserver*> m_observers;
+            QSet<Playlists::PlaylistObserver*> m_observers;
             QString m_name;
     };
 
 }
 
-Q_DECLARE_METATYPE( Meta::PlaylistPtr )
-Q_DECLARE_METATYPE( Meta::PlaylistList )
+Q_DECLARE_METATYPE( Playlists::PlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::PlaylistList )
 
 #endif

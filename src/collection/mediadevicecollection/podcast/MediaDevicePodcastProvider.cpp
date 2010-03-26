@@ -59,13 +59,13 @@ MediaDevicePodcastProvider::prettyName() const
             .arg(  m_handler->prettyName() );
 }
 
-PlaylistList
+Playlists::PlaylistList
 MediaDevicePodcastProvider::playlists()
 {
-    PlaylistList playlists;
+    Playlists::PlaylistList playlists;
 
     foreach( PodcastChannelPtr channel, channels() )
-        playlists << PlaylistPtr::dynamicCast( channel );
+        playlists << Playlists::PlaylistPtr::dynamicCast( channel );
 
     return playlists;
 }

@@ -198,7 +198,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
         Meta::YearPtr m_yearPtr;
 };
 
-class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlist
+class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
 {
     public:
 

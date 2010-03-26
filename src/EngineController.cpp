@@ -193,7 +193,7 @@ EngineController::canDecode( const KUrl &url ) //static
    //NOTE this function must be thread-safe
 
     // We can't use playlists in the engine
-    if( Meta::isPlaylist( url ) )
+    if( Playlists::isPlaylist( url ) )
         return false;
 
     KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );

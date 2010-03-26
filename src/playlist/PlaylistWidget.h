@@ -30,9 +30,12 @@
 
 class KActionCollection;
 class KActionMenu;
-class PlaylistProvider;
-class UserPlaylistProvider;
 class QWidget;
+
+namespace Playlists {
+    class PlaylistProvider;
+    class UserPlaylistProvider;
+}
 
 namespace Playlist
 {
@@ -60,8 +63,8 @@ protected:
 
 private slots:
     void paletteChanged( const QPalette& palette );
-    void playlistProviderAdded( PlaylistProvider *provider, int category );
-    void playlistProviderRemoved( PlaylistProvider *provider, int category );
+    void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
+    void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
 
 private:
@@ -76,5 +79,5 @@ private:
 };
 }
 
-Q_DECLARE_METATYPE( QPointer<UserPlaylistProvider> )
+Q_DECLARE_METATYPE( QPointer<Playlists::UserPlaylistProvider> )
 #endif

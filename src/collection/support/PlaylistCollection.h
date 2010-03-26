@@ -27,10 +27,10 @@
   * Utility class that wraps a playlist as collection and makes it possible to
   * query the content of the playlist using QueryMaker.
   */
-class PlaylistCollection : public Amarok::Collection, public Meta::PlaylistObserver
+class PlaylistCollection : public Amarok::Collection, public Playlists::PlaylistObserver
 {
 public:
-    PlaylistCollection( const Meta::PlaylistPtr &playlist );
+    PlaylistCollection( const Playlists::PlaylistPtr &playlist );
     virtual ~PlaylistCollection();
 
     virtual QString collectionId() const;
@@ -40,14 +40,14 @@ public:
 
     KIcon icon() const; //why is this pure virtual?
 
-    virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
-    virtual void trackRemoved( Meta::PlaylistPtr playlist, int position ) = 0;
+    virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
+    virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position ) = 0;
 
-    Meta::PlaylistPtr playlist() const;
+    Playlists::PlaylistPtr playlist() const;
 private:
     void insertTrack( const Meta::TrackPtr &track );
 
-    Meta::PlaylistPtr m_playlist;
+    Playlists::PlaylistPtr m_playlist;
 
     QSharedPointer<MemoryCollection> m_mc;
 };

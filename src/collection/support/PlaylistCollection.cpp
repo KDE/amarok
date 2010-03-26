@@ -20,9 +20,9 @@
 #include "PlaylistCollectionLocation.h"
 #include "core/playlists/PlaylistProvider.h"
 
-PlaylistCollection::PlaylistCollection( const Meta::PlaylistPtr &playlist )
+PlaylistCollection::PlaylistCollection( const Playlists::PlaylistPtr &playlist )
         : Amarok::Collection()
-        , Meta::PlaylistObserver()
+        , Playlists::PlaylistObserver()
         , m_playlist( playlist )
         , m_mc( new MemoryCollection() )
 {
@@ -74,7 +74,7 @@ PlaylistCollection::icon() const
 }
 
 void
-PlaylistCollection::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position )
+PlaylistCollection::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position )
 {
     Q_UNUSED( position );
     if( playlist != m_playlist )
@@ -89,7 +89,7 @@ PlaylistCollection::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track
 }
 
 void
-PlaylistCollection::trackRemoved( Meta::PlaylistPtr playlist, int position )
+PlaylistCollection::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 {
     Q_UNUSED( position )
 
@@ -127,7 +127,7 @@ PlaylistCollection::insertTrack( const Meta::TrackPtr &track )
         m_mc->addYear( track->year() );
 }
 
-Meta::PlaylistPtr
+Playlists::PlaylistPtr
 PlaylistCollection::playlist() const
 {
     return m_playlist;

@@ -66,7 +66,7 @@ void TestXSPFPlaylist::initTestCase()
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
     
-    m_testPlaylist1 = new Meta::XSPFPlaylist( tempPath, false );
+    m_testPlaylist1 = new Playlists::XSPFPlaylist( tempPath, false );
     
 }
 
@@ -302,7 +302,7 @@ void TestXSPFPlaylist::testSetAndGetLink()
 
 void TestXSPFPlaylist::testHasCapabilityInterface()
 {
-    QVERIFY( m_testPlaylist1->hasCapabilityInterface( Meta::XSPFPlaylist::Capability::EditablePlaylist ) );
+    QVERIFY( m_testPlaylist1->hasCapabilityInterface( Playlists::XSPFPlaylist::Capability::EditablePlaylist ) );
 }
 
 void TestXSPFPlaylist::testRetrievableUrl()

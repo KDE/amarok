@@ -41,8 +41,10 @@
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
-typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
+typedef QMultiMap<Playlists::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
 Q_DECLARE_METATYPE( PlaylistTrackMap )
+
+namespace Playlists {
 
 SqlUserPlaylistProvider::SqlUserPlaylistProvider( bool debug )
     : UserPlaylistProvider()
@@ -52,27 +54,27 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider( bool debug )
     , m_debug( debug )
 {
     checkTables();
-    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( QString(),
-            Meta::SqlPlaylistGroupPtr(), this ) );
+    m_root = Playlists::SqlPlaylistGroupPtr( new Playlists::SqlPlaylistGroup( QString(),
+            Playlists::SqlPlaylistGroupPtr(), this ) );
 }
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
 }
 
-Meta::PlaylistList
+Playlists::PlaylistList
 SqlUserPlaylistProvider::playlists()
 {
-    Meta::PlaylistList playlists;
-    foreach( Meta::SqlPlaylistPtr sqlPlaylist, m_root->allChildPlaylists() )
+    Playlists::PlaylistList playlists;
+    foreach( Playlists::SqlPlaylistPtr sqlPlaylist, m_root->allChildPlaylists() )
     {
-        playlists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
+        playlists << Playlists::PlaylistPtr::staticCast( sqlPlaylist );
     }
     return playlists;
 }
 
 void
-SqlUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
+SqlUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     if( !m_debug )
     {
@@ -96,7 +98,7 @@ SqlUserPlaylistProvider::slotDelete()
         return;
 
     //only one playlist can be selected at this point
-    Meta::SqlPlaylistList playlists = action->data().value<Meta::SqlPlaylistList>();
+    Playlists::SqlPlaylistList playlists = action->data().value<Playlists::SqlPlaylistList>();
 
     if( playlists.count() > 0 )
         deleteSqlPlaylists( playlists );
@@ -110,7 +112,7 @@ SqlUserPlaylistProvider::slotRename()
         return;
 
     //only one playlist can be renamed at a time.
-    Meta::SqlPlaylistPtr playlist = action->data().value<Meta::SqlPlaylistPtr>();
+    Playlists::SqlPlaylistPtr playlist = action->data().value<Playlists::SqlPlaylistPtr>();
     if( playlist.isNull() )
         return;
 
@@ -131,9 +133,9 @@ SqlUserPlaylistProvider::slotRemove()
         return;
 
     PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    QList< Meta::PlaylistPtr > uniquePlaylists = playlistMap.uniqueKeys();
+    QList< Playlists::PlaylistPtr > uniquePlaylists = playlistMap.uniqueKeys();
 
-    foreach( Meta::PlaylistPtr playlist, uniquePlaylists )
+    foreach( Playlists::PlaylistPtr playlist, uniquePlaylists )
     {
         QList< Meta::TrackPtr > tracks = playlistMap.values( playlist );
         foreach( Meta::TrackPtr track, tracks )
@@ -145,11 +147,11 @@ SqlUserPlaylistProvider::slotRemove()
 }
 
 QList<QAction *>
-SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
+SqlUserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
 {
     QList<QAction *> actions;
 
-    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr::dynamicCast( playlist );
+    Playlists::SqlPlaylistPtr sqlPlaylist = Playlists::SqlPlaylistPtr::dynamicCast( playlist );
     if( !sqlPlaylist )
     {
         error() << "Action requested for a non-SQL playlist";
@@ -175,7 +177,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
 
-    Meta::SqlPlaylistList actionList = m_deleteAction->data().value<Meta::SqlPlaylistList>();
+    Playlists::SqlPlaylistList actionList = m_deleteAction->data().value<Playlists::SqlPlaylistList>();
     actionList << sqlPlaylist;
     m_deleteAction->setData( QVariant::fromValue( actionList ) );
 
@@ -185,7 +187,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
 }
 
 QList<QAction *>
-SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( trackIndex );
     QList<QAction *> actions;
@@ -220,16 +222,16 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
 }
 
 void
-SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistList )
+SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 {
-    Meta::SqlPlaylistList sqlPlaylists;
-    foreach( Meta::PlaylistPtr playlist, playlistList )
-        sqlPlaylists << Meta::SqlPlaylistPtr::dynamicCast( playlist );
+    Playlists::SqlPlaylistList sqlPlaylists;
+    foreach( Playlists::PlaylistPtr playlist, playlistList )
+        sqlPlaylists << Playlists::SqlPlaylistPtr::dynamicCast( playlist );
     deleteSqlPlaylists( sqlPlaylists );
 }
 
 void
-SqlUserPlaylistProvider::deleteSqlPlaylists( Meta::SqlPlaylistList playlistList )
+SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
     if( !m_debug )
     {
@@ -247,7 +249,7 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Meta::SqlPlaylistList playlistList 
             return;
     }
 
-    foreach( Meta::SqlPlaylistPtr sqlPlaylist, playlistList )
+    foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
     {
         if( sqlPlaylist )
         {
@@ -258,7 +260,7 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Meta::SqlPlaylistList playlistList 
     reloadFromDb();
 }
 
-Meta::PlaylistPtr
+Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
@@ -266,19 +268,19 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
           QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
 }
 
-Meta::PlaylistPtr
+Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to db with name" << name;
-    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr(
-            new Meta::SqlPlaylist( name, tracks,
-                Meta::SqlPlaylistGroupPtr(),
+    Playlists::SqlPlaylistPtr sqlPlaylist = Playlists::SqlPlaylistPtr(
+            new Playlists::SqlPlaylist( name, tracks,
+                Playlists::SqlPlaylistGroupPtr(),
                 this )
             );
     reloadFromDb();
 
-    return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
+    return Playlists::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
 }
 
 bool
@@ -304,19 +306,19 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
 
 
     KUrl url( fromLocation );
-    Meta::Playlist* playlist = 0;
-    Meta::PlaylistFormat format = Meta::getFormat( fromLocation );
+    Playlists::Playlist* playlist = 0;
+    Playlists::PlaylistFormat format = Playlists::getFormat( fromLocation );
 
     switch( format )
     {
-        case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( url );
+        case Playlists::PLS:
+            playlist = new Playlists::PLSPlaylist( url );
             break;
-        case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( url );
+        case Playlists::M3U:
+            playlist = new Playlists::M3UPlaylist( url );
             break;
-        case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( url );
+        case Playlists::XSPF:
+            playlist = new Playlists::XSPFPlaylist( url );
             break;
 
         default:
@@ -329,9 +331,9 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
     if( tracks.isEmpty() )
         return false;
 
-    Meta::SqlPlaylistPtr sqlPlaylist =
-        Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( playlist->name(), tracks,
-                                                     Meta::SqlPlaylistGroupPtr(),
+    Playlists::SqlPlaylistPtr sqlPlaylist =
+        Playlists::SqlPlaylistPtr( new Playlists::SqlPlaylist( playlist->name(), tracks,
+                                                     Playlists::SqlPlaylistGroupPtr(),
                                                      this,
                                                      fromLocation )
                               );
@@ -349,11 +351,11 @@ SqlUserPlaylistProvider::reloadFromDb()
     emit updated();
 }
 
-Meta::SqlPlaylistGroupPtr
+Playlists::SqlPlaylistGroupPtr
 SqlUserPlaylistProvider::group( const QString &name )
 {
     DEBUG_BLOCK
-    Meta::SqlPlaylistGroupPtr group;
+    Playlists::SqlPlaylistGroupPtr group;
 
     if( name.isEmpty() )
         return m_root;
@@ -361,7 +363,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     //clear the root first to force a reload.
     m_root->clear();
 
-    foreach( const Meta::SqlPlaylistGroupPtr &group, m_root->allChildGroups() )
+    foreach( const Playlists::SqlPlaylistGroupPtr &group, m_root->allChildGroups() )
     {
         debug() << group->name();
         if( group->name() == name )
@@ -372,7 +374,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     }
 
     debug() << "Creating a new group " << name;
-    group = new Meta::SqlPlaylistGroup( name, m_root, this );
+    group = new Playlists::SqlPlaylistGroup( name, m_root, this );
     group->save();
 
     return group;
@@ -480,18 +482,20 @@ SqlUserPlaylistProvider::checkTables()
     }
 }
 
-Meta::SqlPlaylistList
-SqlUserPlaylistProvider::toSqlPlaylists( Meta::PlaylistList playlists )
+Playlists::SqlPlaylistList
+SqlUserPlaylistProvider::toSqlPlaylists( Playlists::PlaylistList playlists )
 {
-    Meta::SqlPlaylistList sqlPlaylists;
-    foreach( Meta::PlaylistPtr playlist, playlists )
+    Playlists::SqlPlaylistList sqlPlaylists;
+    foreach( Playlists::PlaylistPtr playlist, playlists )
     {
-        Meta::SqlPlaylistPtr sqlPlaylist =
-            Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        Playlists::SqlPlaylistPtr sqlPlaylist =
+            Playlists::SqlPlaylistPtr::dynamicCast( playlist );
         if( !sqlPlaylist.isNull() )
             sqlPlaylists << sqlPlaylist;
     }
     return sqlPlaylists;
 }
+
+} //namespace Playlists
 
 #include "SqlUserPlaylistProvider.moc"

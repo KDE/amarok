@@ -47,7 +47,7 @@ void TestMetaMultiTrack::initTestCase()
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( filePath ) );
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
 
     if( !playlist )
         QVERIFY( false ); // no playlist -> no test. that's life ;)

@@ -26,6 +26,8 @@
 class QAction;
 class KIcon;
 
+namespace Playlists {
+
 class AMAROK_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
 {
     Q_OBJECT
@@ -50,16 +52,18 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
          * can not determine that before loading them all.
          */
         virtual int playlistCount() const { return -1; }
-        virtual Meta::PlaylistList playlists() = 0;
+        virtual Playlists::PlaylistList playlists() = 0;
 
         virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
-        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist ) = 0;
-        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist ) = 0;
+        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex ) = 0;
 
     signals:
         void updated();
 
 };
+
+} //namespace Playlists
 
 #endif // AMAROK_PLAYLISTPROVIDER_H

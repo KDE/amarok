@@ -97,7 +97,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
-        virtual UserPlaylistProvider* userPlaylistProvider();
+        virtual Playlists::UserPlaylistProvider* userPlaylistProvider();
         virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
         virtual void startFullScanDevice();
 

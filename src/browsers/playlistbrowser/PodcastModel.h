@@ -56,7 +56,7 @@ enum
     @author Bart Cerneels
 */
 class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
-                     public Meta::PlaylistObserver
+                     public Playlists::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -85,9 +85,9 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
         /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
-        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
+        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 
         //Own methods
         void downloadItems(  QModelIndexList list );
@@ -133,7 +133,7 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         Q_DISABLE_COPY( PodcastModel )
 
-        PlaylistProvider *getProviderByName( const QString &name );
+        Playlists::PlaylistProvider *getProviderByName( const QString &name );
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );

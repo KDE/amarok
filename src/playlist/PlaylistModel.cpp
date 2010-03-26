@@ -65,7 +65,7 @@ Playlist::Model::Model( QObject *parent )
      */
     The::playlistManager();
 
-    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( defaultPlaylistPath() );
+    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( defaultPlaylistPath() );
     if ( playlist )
     {
         Meta::TrackList tracks = playlist->tracks();
@@ -77,9 +77,9 @@ Playlist::Model::Model( QObject *parent )
             Meta::TrackPtr track = i.value();
             if ( ! track )
                 i.remove();
-            else if( Meta::canExpand( track ) )
+            else if( Playlists::canExpand( track ) )
             {
-                Meta::PlaylistPtr playlist = Meta::expand( track );
+                Playlists::PlaylistPtr playlist = Playlists::expand( track );
                 //expand() can return 0 if the KIO job errors out
                 if( playlist )
                 {
@@ -673,7 +673,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    return Meta::exportPlaylistFile( tracks(), path );
+    return Playlists::exportPlaylistFile( tracks(), path );
 }
 
 Meta::TrackList

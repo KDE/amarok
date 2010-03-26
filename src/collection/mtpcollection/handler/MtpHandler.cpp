@@ -860,16 +860,16 @@ MtpHandler::libGetPlaylistName()
 }
 
 void
-MtpHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+MtpHandler::setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     m_mtpPlaylisthash[ playlist ] = m_currentPlaylist;
 }
 
 void
-MtpHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+MtpHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
-    Meta::TrackList tracklist = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
+    Meta::TrackList tracklist = const_cast<Playlists::MediaDevicePlaylistPtr&> ( playlist )->tracks();
     // Make new playlist
 
     LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
@@ -907,7 +907,7 @@ MtpHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const
 }
 
 void
-MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+MtpHandler::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
 
@@ -936,7 +936,7 @@ MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 }
 
 void
-MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+MtpHandler::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     LIBMTP_playlist_t *pl = m_mtpPlaylisthash.value( playlist );

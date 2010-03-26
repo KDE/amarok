@@ -19,6 +19,7 @@
 
 #include "PodcastMeta.h"
 #include "core/meta/impl/file/File.h"
+#include "core/playlists/PlaylistProvider.h"
 
 class SqlPodcastProvider;
 
@@ -89,8 +90,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 class SqlPodcastChannel : public PodcastChannel
 {
     public:
-        static PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
-        static SqlPodcastChannelPtr fromPlaylistPtr( PlaylistPtr playlist );
+        static Playlists::PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
+        static SqlPodcastChannelPtr fromPlaylistPtr( Playlists::PlaylistPtr playlist );
 
         SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
@@ -99,9 +100,9 @@ class SqlPodcastChannel : public PodcastChannel
         SqlPodcastChannel( SqlPodcastProvider *provider, PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
-        // Meta::Playlist methods
+        // Playlists::Playlist methods
         virtual TrackList tracks() { return Meta::SqlPodcastEpisode::toTrackList( m_episodes ); }
-        virtual PlaylistProvider *provider() const;
+        virtual Playlists::PlaylistProvider *provider() const;
 
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );

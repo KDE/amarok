@@ -115,10 +115,10 @@ class MtpHandler : public MediaDeviceHandler
         virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
         virtual QString libGetPlaylistName();
-        virtual void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        virtual void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-        virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        virtual void setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        virtual void libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
+        virtual void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        virtual void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
 
         virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
         virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
@@ -224,7 +224,7 @@ class MtpHandler : public MediaDeviceHandler
         LIBMTP_playlist_t* m_currentPlaylistList;
         LIBMTP_playlist_t* m_currentPlaylist;
 
-        QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
+        QHash<Playlists::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
 
         uint32_t m_trackcounter;
 

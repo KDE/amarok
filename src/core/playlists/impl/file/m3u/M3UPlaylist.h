@@ -23,7 +23,7 @@ class QTextStream;
 class QString;
 class QFile;
 
-namespace Meta {
+namespace Playlists {
 
 class M3UPlaylist;
 
@@ -49,7 +49,7 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         virtual int trackCount() const { return -1; }
         /** returns all tracks in this playlist */
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
 
        /* the following has been copied from Meta.h
         * it is my hope that we can integrate Playlists
@@ -75,12 +75,12 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         KUrl m_url;
 
         bool m_tracksLoaded;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
 };
 
 }
 
-Q_DECLARE_METATYPE( Meta::M3UPlaylistPtr )
-Q_DECLARE_METATYPE( Meta::M3UPlaylistList )
+Q_DECLARE_METATYPE( Playlists::M3UPlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::M3UPlaylistList )
 
 #endif

@@ -41,7 +41,7 @@ PlaylistCollectionLocation::isWritable() const
 bool
 PlaylistCollectionLocation::remove( const Meta::TrackPtr &track )
 {
-    Meta::PlaylistPtr playlist = m_collection->playlist();
+    Playlists::PlaylistPtr playlist = m_collection->playlist();
     int index = playlist->tracks().indexOf( track );
     if( index != -1 )
     {
@@ -54,7 +54,7 @@ PlaylistCollectionLocation::remove( const Meta::TrackPtr &track )
 void
 PlaylistCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    Meta::PlaylistPtr playlist = m_collection->playlist();
+    Playlists::PlaylistPtr playlist = m_collection->playlist();
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
         playlist->addTrack( track );
