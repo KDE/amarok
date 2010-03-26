@@ -693,12 +693,12 @@ CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
                 case CoverFetch::NormalSize:
                     metadata[ "normalarturl" ] = elementText;
                     break;
+                default:
+                    continue;
                 }
 
-                if( sizeStr == coverSize2str( m_size ) )
-                {
+                if( m_size == imageSize )
                     url = elementText;
-                }
             }
         }
 
