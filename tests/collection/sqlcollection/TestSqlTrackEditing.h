@@ -44,6 +44,7 @@ private slots:
     void testChangeComposerToNew();
     void testChangeYearToExisting();
     void testChangeYearToNew();
+    void testChangeAlbumToExisting();
 
 private:
     SqlCollection *m_collection;

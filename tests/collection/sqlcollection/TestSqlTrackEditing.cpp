@@ -366,4 +366,32 @@ TestSqlTrackEditing::testChangeYearToNew()
     QCOMPARE( spy.count(), 1);
 }
 
+void
+TestSqlTrackEditing::testChangeAlbumToExisting()
+{
+    Meta::TrackPtr track1 = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::SqlTrack *sqlTrack = static_cast<Meta::SqlTrack*>( track1.data() );
+    Meta::TrackPtr track2 = m_registry->getTrack( "/IDoNotExistAsWell.mp3" );
+
+    Meta::AlbumPtr targetAlbum = track2->album();
+
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track1 );
+
+    QCOMPARE( track1->album()->albumArtist(), track2->album()->albumArtist() );
+    QCOMPARE( track1->album()->name(), QString( "album1" ) );
+    QCOMPARE( track2->album()->name(), QString( "album2" ) );
+
+    sqlTrack->beginMetaDataUpdate();
+    sqlTrack->setAlbum( "album2" );
+    sqlTrack->endMetaDataUpdate();
+
+    QCOMPARE( track1->album()->name(), QString( "album2" ) );
+    QCOMPARE( track1->album(), track2->album() );
+    QCOMPARE( track1->album(), targetAlbum );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
+
+}
+
 #include "TestSqlTrackEditing.moc"
