@@ -101,6 +101,7 @@ void TestPlaylistModels::initTestCase()
     //make sure sort mode is reset
     SortScheme scheme = SortScheme();
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+    ModelStack::instance()->filterProxy()->clearSearchTerm();
     
     Model * model = ModelStack::instance()->bottom();
     model->insertTracksCommand( insertCmds );
@@ -116,6 +117,7 @@ void TestPlaylistModels::testSorting()
     SortScheme scheme = SortScheme();
     scheme.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+    ModelStack::instance()->filterProxy()->clearSearchTerm();
     
     AbstractModel * topModel = ModelStack::instance()->top();
     
@@ -126,12 +128,28 @@ void TestPlaylistModels::testSorting()
     QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "xTreme buzzing sound" ) );
     QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "Zlick" ) );
     
-    //TODO: More advanced sorting scheme test go here
+    //TODO: More advanced sorting scheme tests go here
   
 }
 
 void TestPlaylistModels::testFiltering()
 {
+  
+    //make sure sort mode is reset
+    SortScheme scheme = SortScheme();
+    ModelStack::instance()->sortProxy()->updateSortMap( scheme ); 
+    ModelStack::instance()->filterProxy()->showOnlyMatches( true );
+    ModelStack::instance()->filterProxy()->find( "ou" ); 
+    
+    AbstractModel * topModel = ModelStack::instance()->top();
+    
+    QCOMPARE( topModel->qaim()->rowCount(), 3 );
+    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "xTreme buzzing sound" ) );
+    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "Alphabet soup" ) );
+    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "23 hours is not enough" ) );
+  
+   //TODO: More advanced filtering tests go here
+  
 }
 
 void TestPlaylistModels::testSearching()

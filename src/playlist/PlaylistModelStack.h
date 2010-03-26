@@ -72,7 +72,8 @@ public:
      */
     Playlist::AbstractModel *top();
     GroupingProxy           *groupingProxy();
-    SortProxy               *sortProxy();
+    SortFilterProxy         *sortProxy();
+    SortFilterProxy         *filterProxy();
     Playlist::Model         *bottom();
 
     Controller *controller();

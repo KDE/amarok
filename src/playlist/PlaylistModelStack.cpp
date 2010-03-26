@@ -92,8 +92,14 @@ ModelStack::groupingProxy()
     return m_grouping;
 }
 
-SortProxy *
+SortFilterProxy *
 ModelStack::sortProxy()
+{
+    return m_sortfilter;
+}
+
+SortFilterProxy *
+ModelStack::filterProxy()
 {
     return m_sortfilter;
 }
