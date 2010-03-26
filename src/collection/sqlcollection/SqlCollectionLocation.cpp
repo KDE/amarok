@@ -125,14 +125,16 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     {
         debug() << "much much";
         bool removed;
+        KUrl originalUrl = m_originalUrls[track];
         // we are going to delete it from the database only if is no longer on disk
-        removed = !QFile::exists( sqlTrack->playableUrl().path() );
+        removed = !QFile::exists( originalUrl.path() );
 
         if( removed )
         {
-
+            int deviceId = m_collection->mountPointManager()->getIdForUrl( originalUrl );
+            QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, originalUrl.url() );
             QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
-                                .arg( QString::number( sqlTrack->deviceid() ), m_collection->sqlStorage()->escape( sqlTrack->rpath() ) );
+                                .arg( QString::number( deviceId ), m_collection->sqlStorage()->escape( rpath ) );
             QStringList res = m_collection->sqlStorage()->query( query );
             if( res.isEmpty() )
             {
@@ -147,7 +149,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         }
         if( removed )
         {
-            QFileInfo file( sqlTrack->playableUrl().path() );
+            QFileInfo file( m_originalUrls[track].path() );
             QDir dir = file.dir();
             const QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
             while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
@@ -163,7 +165,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     }
     else
     {
-        debug() << "Remove Failed: track exists on disk." << sqlTrack->playableUrl().path();
+        debug() << "Remove Failed: track exists on disk." << m_originalUrls[track].path();
         return false;
     }
 }
@@ -323,6 +325,7 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
     {
         if( !QFileInfo( m_destinations[ track ] ).exists() )
             m_destinations.remove( track );
+        m_originalUrls[track] = track->playableUrl();
     }
     insertTracks( m_destinations );
     insertStatistics( m_destinations );
@@ -342,6 +345,7 @@ void SqlCollectionLocation::slotTransferJobAborted()
     {
         if( !QFileInfo( m_destinations[ track ] ).exists() )
             m_destinations.remove( track );
+        m_originalUrls[track] = track->playableUrl();
     }
     insertTracks( m_destinations );
     insertStatistics( m_destinations );
@@ -561,7 +565,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
     while ( !m_removetracks.isEmpty() )
     {
         Meta::TrackPtr track = m_removetracks.takeFirst();
-        KUrl src = track->playableUrl();
+        KUrl src = m_originalUrls[track];
 
         KIO::DeleteJob *job = 0;
 

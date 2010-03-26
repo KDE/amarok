@@ -104,6 +104,7 @@ class SqlCollectionLocation : public CollectionLocation
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
         Meta::TrackList m_removetracks;
+        QHash<Meta::TrackPtr, KUrl> m_originalUrls;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
