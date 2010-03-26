@@ -33,6 +33,8 @@
 #include <QtTest/QTest>
 #include <qtest_kde.h>
 
+using namespace Playlist;
+
 QTEST_KDEMAIN_CORE( TestPlaylistModels )
 
 
@@ -77,7 +79,7 @@ void TestPlaylistModels::initTestCase()
     tracks << Meta::TrackPtr( new MetaMock( map4 ) );
     
     QVariantMap map5;
-    map5.insert( Meta::Field::TITLE,  QString( "23 hours is not enough " ) );
+    map5.insert( Meta::Field::TITLE,  QString( "23 hours is not enough" ) );
     map5.insert( Meta::Field::ARTIST,  QString( "Grumpy Grizzlies" ) );
     map4.insert( Meta::Field::ALBUM,  QString( "Nice Long Nap" ) );
     tracks << Meta::TrackPtr( new MetaMock( map5 ) );
@@ -88,24 +90,44 @@ void TestPlaylistModels::initTestCase()
     map6.insert( Meta::Field::ALBUM,  QString( "Pretty Flowers" ) );
     tracks << Meta::TrackPtr( new MetaMock( map6 ) );
       
-    Playlist::InsertCmdList insertCmds;
+    InsertCmdList insertCmds;
     int row = 0;
     foreach( Meta::TrackPtr t, tracks )
     {
-        insertCmds.append( Playlist::InsertCmd( t, row ) );
+        insertCmds.append( InsertCmd( t, row ) );
 	row++;
     }
     
-    Playlist::Model * model = Playlist::ModelStack::instance()->bottom();
+    //make sure sort mode is reset
+    SortScheme scheme = SortScheme();
+    ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+    
+    Model * model = ModelStack::instance()->bottom();
     model->insertTracksCommand( insertCmds );
     
-    Playlist::AbstractModel * topModel = Playlist::ModelStack::instance()->top();
+    AbstractModel * topModel = ModelStack::instance()->top();
     
     QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "Zlick" ) );
 }
 
 void TestPlaylistModels::testSorting()
 {
+  
+    SortScheme scheme = SortScheme();
+    scheme.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
+    ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+    
+    AbstractModel * topModel = ModelStack::instance()->top();
+    
+    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "1 song to rule them all" ) );
+    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "23 hours is not enough" ) );
+    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "Alphabet soup" ) );
+    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "Cool as honey" ) );
+    QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "xTreme buzzing sound" ) );
+    QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "Zlick" ) );
+    
+    //TODO: More advanced sorting scheme test go here
+  
 }
 
 void TestPlaylistModels::testFiltering()
