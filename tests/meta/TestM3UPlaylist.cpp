@@ -29,7 +29,7 @@
 
 #include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestM3UPlaylist )
+QTEST_KDEMAIN( TestM3UPlaylist, GUI )
 
 TestM3UPlaylist::TestM3UPlaylist()
 {}

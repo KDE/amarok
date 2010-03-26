@@ -31,7 +31,7 @@
 
 #include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaMultiTrack )
+QTEST_KDEMAIN( TestMetaMultiTrack, GUI )
 
 TestMetaMultiTrack::TestMetaMultiTrack()
     : m_testMultiTrack( 0 )

@@ -26,7 +26,7 @@
 
 #include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaTrack )
+QTEST_KDEMAIN( TestMetaTrack, GUI )
 
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )

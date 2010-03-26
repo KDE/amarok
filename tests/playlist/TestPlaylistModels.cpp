@@ -35,7 +35,7 @@
 
 using namespace Playlist;
 
-QTEST_KDEMAIN_CORE( TestPlaylistModels )
+QTEST_KDEMAIN( TestPlaylistModels, GUI )
 
 
 TestPlaylistModels::TestPlaylistModels() 
