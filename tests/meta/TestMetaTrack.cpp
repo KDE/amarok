@@ -20,8 +20,7 @@
 #include "TestMetaTrack.h"
 
 #include "collection/CollectionManager.h"
-
-#include <KStandardDirs>
+#include "config-amarok-test.h"
 
 #include <QtTest/QTest>
 
@@ -30,17 +29,18 @@
 QTEST_KDEMAIN_CORE( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
+    : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
 {}
 
 QString
 TestMetaTrack::dataPath( const QString &relPath )
 {
-    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
 void TestMetaTrack::initTestCase()
 {
-    m_testTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/cue/test_silence.ogg" ) );
+    m_testTrack1 = CollectionManager::instance()->trackForUrl( m_trackPath );
 
     // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
     QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
@@ -53,24 +53,23 @@ void TestMetaTrack::cleanupTestCase()
 
 void TestMetaTrack::testPrettyName()
 {
-    QCOMPARE( m_testTrack1->prettyName(), QString( "Test Silence" ) );
+    QCOMPARE( m_testTrack1->prettyName(), QString( "Platz 01" ) );
 }
 
 void TestMetaTrack::testPlayableUrl()
 {
-    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), dataPath( "amarok/testdata/cue/test_silence.ogg" ) );
+    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), m_trackPath );
 }
 
 void TestMetaTrack::testPrettyUrl()
 {
-    QCOMPARE( m_testTrack1->prettyUrl(), QUrl::fromLocalFile( dataPath( "amarok/testdata/cue/test_silence.ogg" ) ).path() );
+    QCOMPARE( m_testTrack1->prettyUrl(), m_trackPath );
 }
 
 void TestMetaTrack::testUidUrl()
 {
-    QCOMPARE( m_testTrack1->uidUrl(), QUrl::fromLocalFile( dataPath( "amarok/testdata/cue/test_silence.ogg" ) ).toString() );
+    QCOMPARE( m_testTrack1->uidUrl(), KUrl( m_trackPath ).url() );
 }
-
 
 void TestMetaTrack::testIsPlayable()
 {
@@ -84,7 +83,7 @@ void TestMetaTrack::testAlbum()
 
 void TestMetaTrack::testArtist()
 {
-    QCOMPARE( m_testTrack1->artist().data()->name(), QString( "Amarok" ) );
+    QCOMPARE( m_testTrack1->artist().data()->name(), QString( "Free Music Charts" ) );
 }
 
 void TestMetaTrack::testComposer()
@@ -94,12 +93,12 @@ void TestMetaTrack::testComposer()
 
 void TestMetaTrack::testGenre()
 {
-    QCOMPARE( m_testTrack1->genre().data()->name(), QString( "" ) );
+    QCOMPARE( m_testTrack1->genre().data()->name(), QString( "Vocal" ) );
 }
 
 void TestMetaTrack::testYear()
 {
-    QCOMPARE( m_testTrack1->year().data()->name(), QString( "2009" ) );
+    QCOMPARE( m_testTrack1->year().data()->name(), QString( "2010" ) );
 }
 
 void TestMetaTrack::testComment()
@@ -143,12 +142,12 @@ void TestMetaTrack::testSetAndGetRating()
 
 void TestMetaTrack::testLength()
 {
-    QCOMPARE( m_testTrack1->length(), 10800000LL );
+    QCOMPARE( m_testTrack1->length(), 12000LL );
 }
 
 void TestMetaTrack::testFilesize()
 {
-    QCOMPARE( m_testTrack1->filesize(), 983482 );
+    QCOMPARE( m_testTrack1->filesize(), 389454 );
 }
 
 void TestMetaTrack::testSampleRate()
@@ -158,7 +157,7 @@ void TestMetaTrack::testSampleRate()
 
 void TestMetaTrack::testBitrate()
 {
-    QCOMPARE( m_testTrack1->bitrate(), 0 );
+    QCOMPARE( m_testTrack1->bitrate(), 256 );
 }
 
 void TestMetaTrack::testTrackNumber()
@@ -188,23 +187,20 @@ void TestMetaTrack::testPlayCount()
 
 void TestMetaTrack::testReplayGain()
 {
-    /* not yet implemented */
-    QCOMPARE( m_testTrack1->replayGain( Meta::Track::TrackReplayGain ), 1.0 );
-    QCOMPARE( m_testTrack1->replayGain( Meta::Track::AlbumReplayGain ), 1.0 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::Track::TrackReplayGain ) * 1000), -6655 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::Track::AlbumReplayGain ) * 1000), -6655 );
 }
 
 void TestMetaTrack::testReplayPeakGain()
 {
-    /* not yet implemented */
-    QCOMPARE( m_testTrack1->replayPeakGain( Meta::Track::TrackReplayGain ), 1.0 );
-    QCOMPARE( m_testTrack1->replayPeakGain( Meta::Track::AlbumReplayGain ), 1.0 );
+    QCOMPARE( int(m_testTrack1->replayPeakGain( Meta::Track::TrackReplayGain ) * 10000), 41263 );
+    QCOMPARE( int(m_testTrack1->replayPeakGain( Meta::Track::AlbumReplayGain ) * 10000), 41263 );
 }
 
 void TestMetaTrack::testType()
 {
-    QCOMPARE( m_testTrack1->type(), QString( "ogg" ) );
+    QCOMPARE( m_testTrack1->type(), QString( "mp3" ) );
 }
-
 
 void TestMetaTrack::testInCollection()
 {
@@ -218,7 +214,7 @@ void TestMetaTrack::testCollection()
 
 void TestMetaTrack::testSetAndGetCachedLyrics()
 {
-    /* setCachedLyrics is not yet implemented */
+    /* TODO: setCachedLyrics is not yet implemented
     QCOMPARE( m_testTrack1->cachedLyrics(), QString( "" ) );
 
     m_testTrack1->setCachedLyrics( "test" );
@@ -229,6 +225,7 @@ void TestMetaTrack::testSetAndGetCachedLyrics()
 
     m_testTrack1->setCachedLyrics( "" );
     QCOMPARE( m_testTrack1->cachedLyrics(), QString( "" ) );
+    */
 }
 
 void TestMetaTrack::testOperatorEquals()
@@ -241,9 +238,13 @@ void TestMetaTrack::testLessThan()
 {
     Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
 
-    albumTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track01.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track02.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track02.ogg" ) );
+    albumTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track02.ogg" ) );
+    albumTrack3 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track03.ogg" ) );
+
+    QVERIFY( albumTrack1 );
+    QVERIFY( albumTrack2 );
+    QVERIFY( albumTrack3 );
 
     QVERIFY( !Meta::Track::lessThan( m_testTrack1, m_testTrack1 ) );
 
