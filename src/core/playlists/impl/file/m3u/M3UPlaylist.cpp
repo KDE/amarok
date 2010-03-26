@@ -16,6 +16,8 @@
 
 #include "M3UPlaylist.h"
 
+#define DEBUG_PREFIX "M3UPlaylist"
+
 #include "Amarok.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -102,22 +104,23 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     DEBUG_BLOCK
 
     const QString directory = m_url.directory();
+    bool hasTracks( false );
+    m_tracksLoaded = false;
 
-    for( QString line; !stream.atEnd(); )
+    do
     {
-        line = stream.readLine();
+        QString line = stream.readLine();
         if( line.startsWith( "#EXTINF" ) )
         {
             //const QString extinf = line.section( ':', 1 );
             //const int length = extinf.section( ',', 0, 0 ).toInt();
         }
-
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
             line = line.replace( "\\", "/" );
 
-            debug() << "line: " << line;
-            
+            debug() << "line:" << line;
+
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             if( url.startsWith( '/' ) )
@@ -137,6 +140,8 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 if ( trackPtr ) {
                     debug() << "track url: " << trackPtr->prettyUrl();
                     m_tracks.append( trackPtr );
+                    hasTracks = true;
+                    m_tracksLoaded = true;
                 }
             }
             else
@@ -144,11 +149,13 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
                 if ( trackPtr ) {
                     m_tracks.append( trackPtr );
+                    hasTracks = true;
+                    m_tracksLoaded = true;
                 }
             }
         }
-    }
-    return true;
+    } while( !stream.atEnd() );
+    return hasTracks;
 }
 
 bool
