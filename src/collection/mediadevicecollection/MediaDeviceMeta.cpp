@@ -143,7 +143,7 @@ MediaDeviceTrack::uidUrl() const
 QString
 MediaDeviceTrack::prettyUrl() const
 {
-    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
+    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : QString( collection()->prettyName() + ": " + artist()->prettyName() + " - " + prettyName() );
 }
 
 bool
