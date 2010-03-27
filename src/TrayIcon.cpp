@@ -95,7 +95,7 @@ Amarok::TrayIcon::setupToolTip()
 {
     if( m_track )
     {
-        setToolTipTitle( The::engineController->prettyNowPlaying() );
+        setToolTipTitle( The::engineController()->prettyNowPlaying() );
 
         QStringList tooltip;
         // TODO: Use Observer to get notified about changed album art
@@ -182,7 +182,7 @@ Amarok::TrayIcon::setupToolTip()
         setToolTipIconByName( "amarok" );
         m_toolTipIconUid.clear();
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
-        setToolTipSubTitle( The::engineController->prettyNowPlaying() );
+        setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
     }
 }
 
