@@ -98,11 +98,6 @@ namespace Amarok
     }
 
     /**
-     * The mainWindow is the playlistWindow
-     */
-    AMAROK_EXPORT QWidget *mainWindow(); // defined in App.cpp
-
-    /**
      * Allocate one on the stack, and it'll set the busy cursor for you until it
      * is destroyed
      */
@@ -119,8 +114,6 @@ namespace Amarok
      */
     AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); // defined in App.cpp
 
-    KIO::Job *trashFiles( const KUrl::List &files ); // defined in App.cpp
-
     /**
      * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
@@ -134,8 +127,6 @@ namespace Amarok
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
     AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
     AMAROK_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
-
-    AMAROK_EXPORT QString prettyNowPlaying(); // defined in App.cpp
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
@@ -259,7 +250,5 @@ namespace Amarok
  */
 #define for_iterators( Type, x ) \
     Type::ConstIterator it = x.constBegin(), end = x.constEnd(), last = x.fromLast()
-
-
 
 #endif

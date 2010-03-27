@@ -119,7 +119,7 @@ Amarok::KNotificationBackend::showCurrentTrack() // slot
 
         m_notify->setTitle( i18n( "Now playing" ) );
 
-        m_notify->setText( Amarok::prettyNowPlaying() );
+        m_notify->setText( The::engineController()->prettyNowPlaying() );
         m_notify->sendEvent();
     }
 }

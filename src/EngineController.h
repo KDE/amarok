@@ -180,6 +180,11 @@ public:
     */
     bool isPlayingAudioCd();
 
+    /**
+     * @return QString with a pretty name for the current track
+     */
+    AMAROK_EXPORT QString prettyNowPlaying();
+
 public slots:
     /**
      * Plays the current track, if there is one

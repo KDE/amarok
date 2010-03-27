@@ -117,7 +117,7 @@ Amarok::TrayIcon::setupToolTip()
     QString tooltip;
 
     tooltip = "<center>";
-    tooltip += Amarok::prettyNowPlaying();
+    tooltip += The::engineController()->prettyNowPlaying();
     tooltip += "</center>";
 
     if( m_track )

@@ -263,7 +263,7 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
     else
         m_nowPlayingEmblem->hide();
 
-    m_nowPlayingLabel->setText( i18n( "Playing: %1", Amarok::prettyNowPlaying() ) );
+    m_nowPlayingLabel->setText( i18n( "Playing: %1", The::engineController()->prettyNowPlaying() ) );
 }
 
 void StatusBar::longMessage( const QString & text, MessageType type )
