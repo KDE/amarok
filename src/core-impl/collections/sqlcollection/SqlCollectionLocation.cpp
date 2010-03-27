@@ -26,7 +26,6 @@
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
@@ -51,7 +50,8 @@ using namespace Collections;
 
 SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation( collection )
-    , m_collection( const_cast<SqlCollection*>( collection ) )
+    , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
+    , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
     , m_transferjob( 0 )
 {
@@ -61,6 +61,7 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
 SqlCollectionLocation::~SqlCollectionLocation()
 {
     //nothing to do
+    delete m_delegateFactory;
 }
 
 QString
@@ -227,25 +228,21 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
         return;
     }
 
-    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks,
-                available_folders,
-                The::mainWindow(), //parent
-                "", //name is unused
-                true, //modal
-                i18n( "Organize Files" ) //caption
-            );
-    connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
-    connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
-    dialog->show();
+    OrganizeCollectionDelegate *delegate = m_delegateFactory->createDelegate();
+    delegate->setTracks( tracks );
+    delegate->setFolders( available_folders );
+    connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
+    connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
+    delegate->show();
 }
 
 void
 SqlCollectionLocation::slotDialogAccepted()
 {
     sender()->deleteLater();
-    OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
-    m_destinations = dialog->getDestinations();
-    m_overwriteFiles = dialog->overwriteDestinations();
+    OrganizeCollectionDelegate *ocDelegate = qobject_cast<OrganizeCollectionDelegate*>( sender() );
+    m_destinations = ocDelegate->destinations();
+    m_overwriteFiles = ocDelegate->overwriteDestinations();
     if( isGoingToRemoveSources() )
     {
         CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
@@ -503,6 +500,12 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
                     QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->sqlStorage()->insert( insert.arg( data ), "statistics" );
     }
+}
+
+void
+SqlCollectionLocation::setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac )
+{
+    m_delegateFactory = fac;
 }
 
 bool SqlCollectionLocation::startNextJob()

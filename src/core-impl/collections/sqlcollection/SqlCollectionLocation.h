@@ -31,6 +31,7 @@ namespace Collections {
 class SqlCollection;
 
 class SqlCollectionLocation;
+class OrganizeCollectionDelegateFactory;
 /**
  * @class TransferJob
  * A simple class that provides KJob functionality (progress reporting, aborting, etc) for sqlcollectionlocation.
@@ -83,6 +84,10 @@ class SqlCollectionLocation : public CollectionLocation
         virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
 
+
+        //dependency injectors
+        void setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac );
+
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
@@ -102,7 +107,8 @@ class SqlCollectionLocation : public CollectionLocation
 
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
+        OrganizeCollectionDelegateFactory *m_delegateFactory;
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
         Meta::TrackList m_removetracks;
@@ -122,5 +128,31 @@ class SqlCollectionLocationFactory
 };
 
 } //namespace Collections
+
+class OrganizeCollectionDelegate : public QObject
+{
+    Q_OBJECT
+public:
+    OrganizeCollectionDelegate() : QObject() {}
+    virtual ~ OrganizeCollectionDelegate() {}
+
+    virtual void setTracks( const Meta::TrackList &tracks ) = 0;
+    virtual void setFolders( const QStringList &folders ) = 0;
+
+    virtual void show() = 0;
+
+    virtual bool overwriteDestinations() const = 0;
+    virtual QMap<Meta::TrackPtr, QString> destinations() const = 0;
+
+signals:
+    void accepted();
+    void rejected();
+};
+
+class OrganizeCollectionDelegateFactory
+{
+public:
+    virtual OrganizeCollectionDelegate* createDelegate() = 0;
+};
 
 #endif

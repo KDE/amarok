@@ -26,6 +26,11 @@
 #include "SqlRegistry.h"
 #include "MountPointManager.h"
 
+#include "dialogs/OrganizeCollectionDialog.h"
+#include "MainWindow.h"
+
+#include <KLocale>
+
 class SqlMountPointManagerImpl : public SqlMountPointManager
 {
 public:
@@ -83,6 +88,44 @@ protected:
 };
 
 namespace Collections {
+class OrganizeCollectionDelegateImpl : public OrganizeCollectionDelegate
+{
+public:
+    OrganizeCollectionDelegateImpl() : OrganizeCollectionDelegate(), m_dialog( 0 ) {}
+    virtual ~ OrganizeCollectionDelegateImpl() { delete m_dialog; }
+
+    virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
+    virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
+
+    virtual void show()
+    {
+        m_dialog = new OrganizeCollectionDialog( m_tracks,
+                    m_folders,
+                    The::mainWindow(), //parent
+                    "", //name is unused
+                    true, //modal
+                    i18n( "Organize Files" ) //caption
+                );
+
+        connect( m_dialog, SIGNAL( accepted() ), SIGNAL( accepted() ) );
+        connect( m_dialog, SIGNAL( rejected() ), SIGNAL( rejected() ) );
+        m_dialog->show();
+    }
+
+    virtual bool overwriteDestinations() const { return m_dialog->overwriteDestinations(); }
+    virtual QMap<Meta::TrackPtr, QString> destinations() const { return m_dialog->getDestinations(); }
+
+private:
+    Meta::TrackList m_tracks;
+    QStringList m_folders;
+    OrganizeCollectionDialog *m_dialog;
+};
+
+class OrganizeCollectionDelegateFactoryImpl : public OrganizeCollectionDelegateFactory
+{
+public:
+    virtual OrganizeCollectionDelegate* createDelegate() { return new OrganizeCollectionDelegateImpl(); }
+};
 
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
 {
@@ -94,7 +137,9 @@ public:
     SqlCollectionLocation *createSqlCollectionLocation() const
     {
         Q_ASSERT( m_collection );
-        return new SqlCollectionLocation( m_collection );
+        SqlCollectionLocation *loc = new SqlCollectionLocation( m_collection );
+        loc->setOrganizeCollectionDelegateFactory( new OrganizeCollectionDelegateFactoryImpl() );
+        return loc;
     }
 
     Collections::SqlCollection *m_collection;
