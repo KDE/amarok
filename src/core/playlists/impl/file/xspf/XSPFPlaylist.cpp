@@ -350,19 +350,15 @@ XSPFPlaylist::license() const
 KUrl::List
 XSPFPlaylist::attribution() const
 {
-    QDomNode node = documentElement().namedItem( "attribution" );
+    const QDomNodeList nodes = documentElement().namedItem( "attribution" ).childNodes();
     KUrl::List list;
 
-    while ( !node.isNull() )
+    for( int i = 0, count = nodes.length(); i < count; ++i  )
     {
-        if ( !node.namedItem( "location" ).firstChild().nodeValue().isNull() )
-            list.append( node.namedItem( "location" ).firstChild().nodeValue() );
-        else if ( !node.namedItem( "identifier" ).firstChild().nodeValue().isNull() )
-            list.append( node.namedItem( "identifier" ).firstChild().nodeValue() );
-
-        node = node.nextSibling();
+        const QDomNode &node = nodes.at( i );
+        if( !node.firstChild().nodeValue().isNull() )
+            list.append( node.firstChild().nodeValue() );
     }
-
     return list;
 }
 
@@ -545,15 +541,20 @@ XSPFPlaylist::setLicense( const KUrl &license )
 void
 XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
 {
-    if ( documentElement().namedItem( "attribution" ).isNull() )
+    if( !attribution.isValid() )
+        return;
+
+    if( documentElement().namedItem( "attribution" ).isNull() )
         documentElement().insertBefore( createElement( "attribution" ), documentElement().namedItem( "trackList" ) );
 
-    if ( append )
+    if( append )
     {
         QDomNode subNode = createElement( "location" );
         QDomNode subSubNode = createTextNode( attribution.url() );
         subNode.appendChild( subSubNode );
-        documentElement().namedItem( "attribution" ).insertBefore( subNode, documentElement().namedItem( "attribution" ).firstChild() );
+
+        QDomNode first = documentElement().namedItem( "attribution" ).firstChild();
+        documentElement().namedItem( "attribution" ).insertBefore( subNode, first );
     }
     else
     {
