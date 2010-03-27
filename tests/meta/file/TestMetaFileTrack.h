@@ -23,10 +23,13 @@
 #include "TestBase.h"
 
 #include <QtCore/QObject>
+#include <QtCore/QString>
 
 namespace MetaFile {
     class Track;
 }
+
+class KTempDir;
 
 class TestMetaFileTrack : public QObject
 {
@@ -37,6 +40,8 @@ public:
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
+
     //methods inherited from Meta::MetaBase
     void testNameAndSetTitle();
     void testPrettyName();
@@ -74,7 +79,9 @@ private slots:
     void testCreateDate();
 
 private:
-    MetaFile::Track *track;
+    MetaFile::Track *m_track;
+    KTempDir *m_tmpDir;
+    const QString m_tmpFileName;
 };
 
 #endif // TESTMETAFILETRACK_H
