@@ -68,6 +68,14 @@ extern "C" {
 using namespace Meta;
 
 /// IpodHandler
+// Define the maximum number of concurrent kio jobs allowed.
+// This used to be 150, but ipods don't handle parallel
+// writes well, so by forcing this constant to 1 the jobs
+// are run sequentially.
+// BUG: 218152
+#ifndef IPOD_MAX_CONCURRENT_JOBS
+#define IPOD_MAX_CONCURRENT_JOBS 1
+#endif
 
 IpodHandler::IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
     : MediaDeviceHandler( mc )
@@ -1276,9 +1284,9 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
     job->setDefaultPermissions(true);
-    m_jobcounter++;
+    ++m_jobcounter;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < IPOD_MAX_CONCURRENT_JOBS )
         copyNextTrackToDevice();
 
 
@@ -1308,10 +1316,10 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         return;
     }
 
-    // Limit max number of jobs to 150, make sure more tracks left
+    // Limit max number of jobs to IPOD_MAX_CONCURRENT_JOBS, make sure more tracks left
     // to copy
     debug() << "Tracks to copy still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < IPOD_MAX_CONCURRENT_JOBS )
     {
         debug() << "Jobs: " << m_jobcounter;
         copyNextTrackToDevice();
@@ -1344,7 +1352,7 @@ IpodHandler::deleteFile( const KUrl &url )
 
     m_jobcounter++;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < IPOD_MAX_CONCURRENT_JOBS )
         removeNextTrackFromDevice();
 
     connect( job, SIGNAL( result( KJob * ) ),
@@ -1362,10 +1370,10 @@ IpodHandler::fileDeleted( KJob *job )  //SLOT
 
     m_jobcounter--;
 
-    // Limit max number of jobs to 150, make sure more tracks left
+    // Limit max number of jobs to IPOD_MAX_CONCURRENT_JOBS, make sure more tracks left
     // to delete
     debug() << "Tracks to delete still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < IPOD_MAX_CONCURRENT_JOBS )
     {
         debug() << "Jobs: " << m_jobcounter;
         removeNextTrackFromDevice();
