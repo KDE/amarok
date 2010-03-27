@@ -18,7 +18,7 @@
 #include "SlimToolbar.h"
 
 #include "ActionClasses.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "EngineController.h"
 #include "VolumePopupButton.h"
 

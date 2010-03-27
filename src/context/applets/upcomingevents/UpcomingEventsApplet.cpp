@@ -19,7 +19,7 @@
 
 #include "UpcomingEventsApplet.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "context/ContextView.h"
 #include "core/support/Debug.h"

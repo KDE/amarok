@@ -16,7 +16,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
 #include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"

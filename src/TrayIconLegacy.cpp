@@ -21,7 +21,7 @@
 
 #include "TrayIconLegacy.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"

@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/collections/QueryMaker.h"

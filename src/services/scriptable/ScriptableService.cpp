@@ -21,7 +21,7 @@
 #include "ScriptManager.h"
 #include "ServiceBrowser.h"
 #include "ScriptableServiceInfoParser.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "SearchWidget.h"
 

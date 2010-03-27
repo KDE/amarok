@@ -18,7 +18,7 @@
 #include "SqlPodcastProvider.h"
 #include <kprogressdialog.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"

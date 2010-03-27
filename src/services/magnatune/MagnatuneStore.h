@@ -18,7 +18,7 @@
 #define AMAROKMAGNATUNESTORE_H
 
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 //#include "MagnatunePurchaseDialog.h"
 #include "MagnatunePurchaseHandler.h"
 #include "MagnatuneRedownloadHandler.h"

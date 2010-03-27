@@ -17,7 +17,7 @@
 #ifndef AMAROK_LABELLISTMODEL_H
 #define AMAROK_LABELLISTMODEL_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include <QAbstractListModel>
 

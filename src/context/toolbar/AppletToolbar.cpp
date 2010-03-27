@@ -17,7 +17,7 @@
 
 #include "AppletToolbar.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "AppletItemOverlay.h"
 #include "AppletToolbarAddItem.h"

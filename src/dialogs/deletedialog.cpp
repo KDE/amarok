@@ -19,7 +19,7 @@
 
 #include "deletedialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include "statusbar/StatusBar.h"
 

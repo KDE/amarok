@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "TestAmarok.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "config-amarok-test.h"
 
 #include <QtTest/QTest>

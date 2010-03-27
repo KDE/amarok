@@ -60,7 +60,7 @@ link_database_test( testdatabaseupdater )
 set( testalbumcompilationchange_SRCS
         TestAlbumCompilationChange.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
@@ -197,7 +197,7 @@ target_link_libraries( testartisthelper
 set( testsqltrack_SRCS
         TestSqlTrack.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp

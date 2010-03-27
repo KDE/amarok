@@ -18,7 +18,7 @@
 
 #include "DynamicCategory.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CustomBias.h"
 #include "core/support/Debug.h"
 #include "DynamicModel.h"

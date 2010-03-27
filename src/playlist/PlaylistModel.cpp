@@ -23,7 +23,7 @@
 
 #include "PlaylistModel.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"

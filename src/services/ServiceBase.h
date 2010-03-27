@@ -18,7 +18,7 @@
 #define AMAROKSERVICEBASE_H
 
 #include "browsers/BrowserCategory.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "InfoParserBase.h"
 #include "ServiceCollectionTreeView.h"
 #include "ServiceMetaBase.h"

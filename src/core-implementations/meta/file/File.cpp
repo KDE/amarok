@@ -18,7 +18,7 @@
 #include "File.h"
 #include "File_p.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include <config-amarok.h>

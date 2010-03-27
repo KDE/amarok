@@ -20,7 +20,7 @@
 
 #include "CoverFetcher.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"

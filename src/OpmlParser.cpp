@@ -17,7 +17,7 @@
 
 #include "OpmlParser.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "statusbar/StatusBar.h"
 

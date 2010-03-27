@@ -18,7 +18,7 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "ScrobblerAdapter.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"

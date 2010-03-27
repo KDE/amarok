@@ -16,7 +16,7 @@
 
 #include "CollectionConfig.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CollectionSetup.h"
 #include "amarokconfig.h"
 #include <config-amarok.h>

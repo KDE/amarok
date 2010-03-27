@@ -17,7 +17,7 @@
 #ifndef AMAROK_OCSDATA_H
 #define AMAROK_OCSDATA_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_export.h"
 
 #include "kaboutdata.h"

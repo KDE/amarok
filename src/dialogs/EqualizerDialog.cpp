@@ -18,7 +18,7 @@
 #include "EqualizerDialog.h"
 
 #include "amarokconfig.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "core/support/Debug.h"

@@ -20,7 +20,7 @@
 
 #include <config-amarok.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokconfig.h"
 #include "App.h"

@@ -28,7 +28,7 @@ add_subdirectory( synchronization )
 
 set( testamarok_SRCS
         TestAmarok.cpp
-        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
     )
 
 kde4_add_unit_test( testamarok ${testamarok_SRCS} )

@@ -16,7 +16,7 @@
 
 #include "LastFmServiceSettings.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ui_LastFmConfigWidget.h"
 

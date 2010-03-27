@@ -24,7 +24,7 @@
 
 #include "PlaylistActions.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "dbus/PlayerDBusHandler.h"
 #include "core/support/Debug.h"

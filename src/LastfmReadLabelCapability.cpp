@@ -24,7 +24,7 @@
 
 #include <lastfm/XmlQuery>
 #include <ws.h>
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 namespace Capabilities
 {

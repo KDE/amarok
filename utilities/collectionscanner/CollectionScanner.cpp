@@ -26,7 +26,7 @@
 #include "AFTUtility.h"
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
-#include "Version.h"  // for AMAROK_VERSION
+#include "shared/Version.h"  // for AMAROK_VERSION
 
 #include <cerrno>
 #include <cstdlib>

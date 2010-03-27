@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLAYLISTMANAGER_H
 #define AMAROK_PLAYLISTMANAGER_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_export.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"

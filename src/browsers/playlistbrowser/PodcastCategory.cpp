@@ -18,7 +18,7 @@
 
 #include "PodcastCategory.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"

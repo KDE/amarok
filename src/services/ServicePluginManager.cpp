@@ -17,7 +17,7 @@
  
 #include "ServicePluginManager.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ServiceBrowser.h"
 #include "core/plugins/PluginManager.h"
 

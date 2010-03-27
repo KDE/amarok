@@ -18,7 +18,7 @@
 
 #include <config-amarok.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"

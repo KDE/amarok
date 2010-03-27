@@ -21,7 +21,7 @@
 #include "SortAlgorithms.h"
 #include "SortScheme.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 
 

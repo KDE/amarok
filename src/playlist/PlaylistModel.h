@@ -24,7 +24,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "proxymodels/AbstractModel.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "UndoCommands.h"
 #include "core/meta/Meta.h"
 

@@ -20,7 +20,7 @@
 
 #include "amarokurls/AmarokUrlAction.h"
 #include "amarokurls/AmarokUrlHandler.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include <KColorScheme>
 #include <KIcon>

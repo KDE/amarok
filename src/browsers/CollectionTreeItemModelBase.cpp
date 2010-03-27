@@ -20,7 +20,7 @@
 
 #include "CollectionTreeItemModelBase.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
 #include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"

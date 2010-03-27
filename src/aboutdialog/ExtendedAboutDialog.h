@@ -22,7 +22,7 @@
 #ifndef AMAROK_EXTENDEDABOUTDIALOG_H
 #define AMAROK_EXTENDEDABOUTDIALOG_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_export.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"

@@ -29,7 +29,7 @@ set( testplaylistmodels_SRCS
         ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/DirectoryLoader.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistItem.cpp
-        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
     )
 
 kde4_add_unit_test( testplaylistmodels ${testplaylistmodels_SRCS} )

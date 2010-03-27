@@ -17,7 +17,7 @@
 
 #include "MySqlStorage.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 

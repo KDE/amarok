@@ -16,7 +16,7 @@
 
 #include "MagnatuneStore.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"

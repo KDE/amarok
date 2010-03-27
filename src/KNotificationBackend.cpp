@@ -16,7 +16,7 @@
 
 #include "KNotificationBackend.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "SvgHandler.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"

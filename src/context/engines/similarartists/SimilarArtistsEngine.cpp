@@ -17,7 +17,7 @@
 ****************************************************************************************/
 #include "SimilarArtistsEngine.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include <lastfm/Artist>
 #include "ContextView.h"
 #include "EngineController.h"

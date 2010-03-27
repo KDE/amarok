@@ -20,7 +20,7 @@
 
 #include <config-amarok.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"

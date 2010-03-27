@@ -17,7 +17,7 @@
 #include "VideoclipEngine.h"
 
 // Amarok
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "core/support/Debug.h"

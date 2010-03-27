@@ -18,7 +18,7 @@
 
 #define DEBUG_PREFIX "M3UPlaylist"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CollectionManager.h"
 #include "core/support/Debug.h"
 #include "PlaylistManager.h"

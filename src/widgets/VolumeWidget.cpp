@@ -18,7 +18,7 @@
 
 #include "VolumeWidget.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "EngineController.h"
 #include "SliderWidget.h"

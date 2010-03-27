@@ -17,7 +17,7 @@
 #ifndef AMAROK_MOUNTPOINTMANAGER_H
 #define AMAROK_MOUNTPOINTMANAGER_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_sqlcollection_export.h"
 #include "core/plugins/Plugin.h"
 #include "core/plugins/PluginManager.h"

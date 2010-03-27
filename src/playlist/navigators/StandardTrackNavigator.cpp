@@ -22,7 +22,7 @@
 
 #include "StandardTrackNavigator.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 
 

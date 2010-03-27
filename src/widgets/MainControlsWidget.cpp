@@ -18,7 +18,7 @@
 #include "MainControlsWidget.h"
 
 #include "ActionClasses.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "MainControlsButton.h"
 #include "SvgHandler.h"
 

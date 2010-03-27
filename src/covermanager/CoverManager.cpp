@@ -20,7 +20,7 @@
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/collections/Collection.h"
 #include "CollectionManager.h"

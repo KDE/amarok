@@ -19,7 +19,7 @@
 #include "SimilarArtistsApplet.h"
 
 //Amarok
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "EngineController.h"
 #include "core/support/Debug.h"

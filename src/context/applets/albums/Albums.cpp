@@ -21,7 +21,7 @@
 #include "AlbumItem.h"
 #include "AlbumsView.h"
 #include "AlbumsModel.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
 #include "core/support/Debug.h"

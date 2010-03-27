@@ -598,7 +598,7 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
-    Amarok.cpp
+    core/support/Amarok.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp

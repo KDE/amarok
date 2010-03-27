@@ -22,7 +22,7 @@
 
 #include "ContextView.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "core/support/Debug.h"

@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 
 #include "ActionClasses.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainWindow.h"

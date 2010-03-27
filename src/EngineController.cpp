@@ -24,7 +24,7 @@
 
 #include "EngineController.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "core/support/Components.h"

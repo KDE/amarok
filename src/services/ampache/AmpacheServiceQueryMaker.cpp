@@ -18,7 +18,7 @@
 
 #include "AmpacheServiceQueryMaker.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "AmpacheMeta.h"
 #include "collection/support/MemoryMatcher.h"

@@ -24,7 +24,7 @@
 
 #include "TagDialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "CoverLabel.h"

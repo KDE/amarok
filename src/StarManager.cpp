@@ -16,7 +16,7 @@
 
 #include "StarManager.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include <config-amarok.h>  
 #include "core/support/Debug.h"
 #include "MainWindow.h"

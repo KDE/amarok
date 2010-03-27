@@ -18,7 +18,7 @@
 #include "App.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "core/capabilities/EditablePlaylistCapability.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
 #include "core-implementations/playlists/file/pls/PLSPlaylist.h"

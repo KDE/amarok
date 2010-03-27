@@ -14,8 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amarok.h"
-
+#include "core/support/Amarok.h"
 
 #include "App.h"
 #include "core/meta/Meta.h"

@@ -16,7 +16,7 @@
 
 #include "boomanalyzer.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include <cmath>
 #include <QGridLayout>
 #include <QLabel>

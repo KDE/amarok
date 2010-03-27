@@ -16,7 +16,7 @@
 
 #include "CoverFetchUnit.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include <QDomNodeList>
 #include <QRegExp>

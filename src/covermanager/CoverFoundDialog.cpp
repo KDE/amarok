@@ -21,7 +21,7 @@
 #include "CoverFoundDialog.h"
 
 #include "AlbumBreadcrumbWidget.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CoverViewDialog.h"
 #include "PixmapViewer.h"
 #include "statusbar/KJobProgressBar.h"

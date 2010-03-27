@@ -16,7 +16,7 @@
 
 #include "FastForwardWorker.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CollectionManager.h"
 #include "core/collections/CollectionLocation.h"
 #include "core/support/Debug.h"

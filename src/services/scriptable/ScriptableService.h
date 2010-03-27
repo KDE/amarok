@@ -18,7 +18,7 @@
 #define AMAROKSCRIPTABLESERVICE_H
 
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "../ServiceBase.h"
 #include "ScriptableServiceMeta.h"
 #include "ScriptableServiceCollection.h"

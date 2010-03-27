@@ -18,7 +18,7 @@
 
 #include "AmarokInfoScript.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include <KIconLoader>
 

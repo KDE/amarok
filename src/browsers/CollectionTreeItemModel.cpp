@@ -23,7 +23,7 @@
 #include <amarokconfig.h>
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "SvgHandler.h"
 #include "core/collections/Collection.h"
 #include "CollectionManager.h"

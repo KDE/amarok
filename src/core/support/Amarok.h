@@ -18,8 +18,8 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include "amarok_export.h"
-#include "Version.h"
+#include "shared/amarok_export.h"
+#include "shared/Version.h"
 
 #include <KActionCollection>
 #include <KConfig>

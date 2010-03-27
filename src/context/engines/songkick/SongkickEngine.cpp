@@ -20,7 +20,7 @@
 #include "JsonQt/lib/JsonToVariant.h"
 #include "JsonQt/lib/ParseException.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"

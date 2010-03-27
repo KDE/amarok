@@ -23,7 +23,7 @@
 #include "VideoItemButton.h"
 
 // Amarok
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core-implementations/meta/stream/Stream.h"

@@ -18,7 +18,7 @@
 #include "SqlMeta.h"
 
 #include "amarokconfig.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CapabilityDelegate.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"

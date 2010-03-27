@@ -19,7 +19,7 @@
 
 #include "turbine.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
 #include <QPainter>
 
