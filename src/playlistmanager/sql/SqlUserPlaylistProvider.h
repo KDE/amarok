@@ -30,7 +30,12 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
     public:
-        SqlUserPlaylistProvider();
+        /**
+         * SqlUserPlaylistProvider constructor
+         * @param debug used for unit testing; enabling means skipping
+         * confirmation dialogs when deleting or renaming playlists.
+         */
+        explicit SqlUserPlaylistProvider( bool debug = false );
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
@@ -52,6 +57,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         /* UserPlaylistProvider functions */
         virtual void deletePlaylists( Meta::PlaylistList playlistlist );
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
         bool import( const QString& fromLocation );
@@ -83,6 +89,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         QAction *m_renameAction;
         QAction *m_deleteAction;
         QAction *m_removeTrackAction;
+
+        const bool m_debug;
 };
 
 #endif

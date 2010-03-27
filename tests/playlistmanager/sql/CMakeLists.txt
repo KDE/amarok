@@ -1,6 +1,7 @@
 include_directories( .
     ${AMAROK_SOURCE_TREE}/collection
     ${AMAROK_SOURCE_TREE}/browsers/playlistbrowser
+    ${CMAKE_BINARY_DIR}/tests
 )
 
 #------------------------ Test SqlUserPlaylistProvider -----------------------------

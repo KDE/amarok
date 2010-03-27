@@ -44,11 +44,12 @@ static const QString key("AMAROK_USERPLAYLIST");
 typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
 Q_DECLARE_METATYPE( PlaylistTrackMap )
 
-SqlUserPlaylistProvider::SqlUserPlaylistProvider()
+SqlUserPlaylistProvider::SqlUserPlaylistProvider( bool debug )
     : UserPlaylistProvider()
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
     , m_removeTrackAction( 0 )
+    , m_debug( debug )
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( QString(),
@@ -68,6 +69,23 @@ SqlUserPlaylistProvider::playlists()
         playlists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
     }
     return playlists;
+}
+
+void
+SqlUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
+{
+    if( !m_debug )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Rename" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18n( "Are you sure you want to rename this playlist to '%1'?", newName ), &dialog );
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, rename this playlist." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+    }
+    playlist->setName( newName.trimmed() );
 }
 
 void
@@ -213,18 +231,22 @@ SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistList )
 void
 SqlUserPlaylistProvider::deleteSqlPlaylists( Meta::SqlPlaylistList playlistList )
 {
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                         "Are you sure you want to delete these %1 playlists?",
-                         playlistList.count() )
-                    , &dialog
-                  );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
-    dialog.setMainWidget( &label );
-    if( dialog.exec() != QDialog::Accepted )
-        return;
+    if( !m_debug )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                             "Are you sure you want to delete these %1 playlists?",
+                             playlistList.count() )
+                      , &dialog
+                    );
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+    }
+
     foreach( Meta::SqlPlaylistPtr sqlPlaylist, playlistList )
     {
         if( sqlPlaylist )
