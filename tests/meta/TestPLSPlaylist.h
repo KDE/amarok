@@ -20,10 +20,12 @@
 #ifndef TESTPLSPLAYLIST_H
 #define TESTPLSPLAYLIST_H
 
-#include "core/playlists/impl/file/pls/PLSPlaylist.h"
-
 #include <QtCore/QObject>
 #include <QtCore/QString>
+
+namespace Meta {
+class PLSPlaylist;
+}
 
 class TestPLSPlaylist : public QObject
 {
@@ -34,6 +36,7 @@ public:
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
 
     void testSetAndGetName();
     void testPrettyName();
@@ -43,7 +46,7 @@ private slots:
     void testSave();
 
 private:
-    Meta::PLSPlaylist m_testPlaylist1;
+    Meta::PLSPlaylist *m_testPlaylist1;
     QString dataPath( const QString &relPath );
 };
 
