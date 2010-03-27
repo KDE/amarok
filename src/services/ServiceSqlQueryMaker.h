@@ -20,7 +20,7 @@
 
 #include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <threadweaver/Job.h>
 

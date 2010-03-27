@@ -18,7 +18,7 @@
 
 #include "SqlCollectionAdaptor.h"
 #include "SqlCollection.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 SqlCollectionDBusHandler::SqlCollectionDBusHandler( QObject *parent )
     : QObject( parent )

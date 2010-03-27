@@ -28,7 +28,7 @@
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"

@@ -17,7 +17,7 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
 #include "InfoProxy.h"

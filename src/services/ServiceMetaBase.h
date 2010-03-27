@@ -20,9 +20,9 @@
 
 #include "amarok_export.h"
 #include "amarokurls/BookmarkMetaActions.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "InfoParserBase.h"
-#include "core/meta/impl/proxy/MetaProxy.h"
+#include "core-implementations/meta/proxy/MetaProxy.h"
 #include "core/statistics/StatisticsProvider.h"
 #include "ServiceCapabilities.h"
 

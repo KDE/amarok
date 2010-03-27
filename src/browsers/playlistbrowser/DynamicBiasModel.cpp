@@ -19,7 +19,7 @@
 
 #include "DynamicBiasModel.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "CustomBias.h"
 #include "BiasedPlaylist.h"

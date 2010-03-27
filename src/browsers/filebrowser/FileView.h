@@ -18,7 +18,7 @@
 #ifndef AMAROK_FILEVIEW_H
 #define AMAROK_FILEVIEW_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>

@@ -17,7 +17,7 @@
 #ifndef STATISTICS_STATISTICSPROVIDER_H
 #define STATISTICS_STATISTICSPROVIDER_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <QDateTime>

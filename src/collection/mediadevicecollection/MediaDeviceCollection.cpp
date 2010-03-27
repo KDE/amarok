@@ -29,7 +29,7 @@
 #include "MediaDeviceMonitor.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 

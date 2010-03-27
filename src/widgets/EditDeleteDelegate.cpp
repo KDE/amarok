@@ -16,7 +16,7 @@
  
 #include "EditDeleteDelegate.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 

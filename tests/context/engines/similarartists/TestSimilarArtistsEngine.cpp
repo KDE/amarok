@@ -17,7 +17,7 @@
 
 #include "TestSimilarArtistsEngine.h"
 
-#include "Components.h"
+#include "core/support/Components.h"
 #include "EngineController.h"
 
 #include <QtTest/QTest>

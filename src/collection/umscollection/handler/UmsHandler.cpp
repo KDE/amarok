@@ -20,12 +20,12 @@
 
 #include "UmsCollection.h"
 #include "UmsPodcastProvider.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include "SvgHandler.h"
 
-#include "core/meta/impl/file/File.h" // for KIO file handling
+#include "core-implementations/meta/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
 #include <KDirLister>

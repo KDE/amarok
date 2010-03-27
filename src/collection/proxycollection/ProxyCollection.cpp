@@ -20,7 +20,7 @@
 
 #include "ProxyCollection.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/CollectionManager.h"
 #include "ProxyCollectionMeta.h"
 #include "ProxyCollectionQueryMaker.h"

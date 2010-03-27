@@ -22,7 +22,7 @@
 #include "PlaylistViewCommon.h"
 
 #include "covermanager/CoverFetchingActions.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"

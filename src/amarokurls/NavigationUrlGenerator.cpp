@@ -18,7 +18,7 @@
 #include <amarokconfig.h>
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
 #include "core/capabilities/SourceInfoCapability.h"

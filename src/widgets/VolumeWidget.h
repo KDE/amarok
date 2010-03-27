@@ -19,7 +19,7 @@
 #ifndef VOLUMEWIDGET_H
 #define VOLUMEWIDGET_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "SliderWidget.h"
 #include "ToolBar.h"
 

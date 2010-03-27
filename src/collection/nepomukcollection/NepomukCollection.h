@@ -17,7 +17,7 @@
 #ifndef NEPOMUKCOLLECTION_H
 #define NEPOMUKCOLLECTION_H
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 
 #include <QString>
 #include <QStringList>

@@ -1,0 +1,6 @@
+This library needs to be solely self-referential.
+
+If you are putting any code in here that includes files outside of this
+library, with the exception of includes in the top-level shared/ directory,
+YOU ARE DOING IT WRONG and should cease and desist immediately.
+

@@ -20,7 +20,7 @@
 #define SERVICECOLLECTION_H
 
 #include "amarok_export.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "support/MemoryCollection.h"
 #include "ServiceBase.h"
 

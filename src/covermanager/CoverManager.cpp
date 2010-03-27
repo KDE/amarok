@@ -22,13 +22,13 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "CollectionManager.h"
 #include "CompoundProgressBar.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/meta/Meta.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModelStack.h"

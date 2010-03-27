@@ -16,7 +16,7 @@
 
 #include "core/meta/support/MetaUtility.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/EditCapability.h"

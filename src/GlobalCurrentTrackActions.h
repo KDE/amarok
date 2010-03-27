@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
-#include "SmartPointerList.h"
+#include "core/support/SmartPointerList.h"
 
 #include <QAction>
 

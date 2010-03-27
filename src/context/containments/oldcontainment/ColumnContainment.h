@@ -21,7 +21,7 @@
 
 #include "Containment.h"
 #include "ContextView.h"
-#include "SmartPointerList.h"
+#include "core/support/SmartPointerList.h"
 #include "widgets/ContainmentSelectionLayer.h"
 #include "widgets/ToolBoxMenu.h"
 

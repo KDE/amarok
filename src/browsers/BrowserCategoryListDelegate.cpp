@@ -19,7 +19,7 @@
 #include "BrowserCategoryListDelegate.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategory.h"
 

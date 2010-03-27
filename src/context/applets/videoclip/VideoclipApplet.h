@@ -21,8 +21,8 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
-#include "SmartPointerList.h"
+#include "core/engine/EngineObserver.h"
+#include "core/support/SmartPointerList.h"
 
 #include "VideoclipInfo.h"
 

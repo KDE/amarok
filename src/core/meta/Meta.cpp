@@ -19,11 +19,9 @@
 #include "core/meta/Meta.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
-#include "collection/Collection.h"
-#include "Debug.h"
-#include "collection/QueryMaker.h"
-#include "SvgHandler.h"
+#include "core/collections/Collection.h"
+#include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QDir>
 #include <QImage>
@@ -445,18 +443,6 @@ Meta::Album::image( int size )
     }
     return pixmap;
 }
-
-
-QPixmap
-Meta::Album::imageWithBorder( int size, int borderWidth )
-{
-    const int imageSize = size - ( borderWidth * 2 );
-    const QString loc   = imageLocation( imageSize ).url();
-    const QString key   = !loc.isEmpty() ? loc : name();
-    const QPixmap cover = image( imageSize );
-    return The::svgHandler()->addBordersToPixmap( cover, borderWidth, key );
-}
-
 
 bool
 Meta::Album::operator==( const Meta::Album &album ) const

@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PrivateMetaRegistry.h"
+#include "core/meta/support/PrivateMetaRegistry.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 namespace Meta {
 

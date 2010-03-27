@@ -16,7 +16,7 @@
  
 #ifndef AMAROK_PLUGINCONFIG_H
 #define AMAROK_PLUGINCONFIG_H
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include <QObject>
 
 class QWidget;

@@ -16,7 +16,7 @@
 
 #include "CustomBiasEntry.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 // CLASS CustomBiasEntry
 Dynamic::CustomBiasEntry::CustomBiasEntry()

@@ -19,7 +19,7 @@
 #include "JamendoService.h"
 #include "SvgHandler.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include <KStandardDirs>
 
 #include <QAction>

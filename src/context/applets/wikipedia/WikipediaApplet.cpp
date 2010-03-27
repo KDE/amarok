@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "EngineController.h"

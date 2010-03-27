@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "OrganiseCapability.h"
+#include "core/capabilities/OrganiseCapability.h"
 
 Capabilities::OrganiseCapability::~OrganiseCapability()
 {

@@ -19,7 +19,7 @@
 #ifndef AMAROK_SQLCOLLECTIONLOCATION_H
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
-#include "collection/CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 #include <KJob>
 #include <KCompositeJob>
 #include <QSet>

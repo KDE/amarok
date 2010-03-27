@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "DatabaseImporter.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "amarok14/FastForwardImporter.h"
 #include "itunes/ITunesImporter.h"

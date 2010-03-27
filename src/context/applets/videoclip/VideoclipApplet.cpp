@@ -24,9 +24,9 @@
 
 // Amarok
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "core/meta/impl/stream/Stream.h"
+#include "core-implementations/meta/stream/Stream.h"
 #include "collection/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
@@ -565,4 +565,4 @@ VideoclipApplet::saveSettings()
 }
 
 #include "VideoclipApplet.moc"
-#include "../../../SmartPointerList.moc"
+#include "../../../core/support/SmartPointerList.moc"

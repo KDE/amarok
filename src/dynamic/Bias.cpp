@@ -21,15 +21,15 @@
 
 #include "Bias.h"
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "CollectionManager.h"
 #include "CustomBias.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
 #include "core/meta/support/MetaConstants.h"
-#include "MetaQueryMaker.h"
-#include "QueryMaker.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "collection/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>

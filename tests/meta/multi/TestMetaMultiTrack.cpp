@@ -19,11 +19,11 @@
 
 #include "TestMetaMultiTrack.h"
 
-#include "Components.h"
+#include "core/support/Components.h"
 #include "EngineController.h"
 #include "config-amarok-test.h"
 #include "core/meta/impl/multi/MultiTrack.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>

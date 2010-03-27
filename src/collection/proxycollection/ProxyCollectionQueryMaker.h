@@ -18,8 +18,8 @@
 #ifndef PROXYCOLLECTIONQUERYMAKER_H
 #define PROXYCOLLECTIONQUERYMAKER_H
 
-#include "QueryMaker.h"
-#include "Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/collections/Collection.h"
 #include "ProxyCollectionMeta.h"
 
 #include <QList>

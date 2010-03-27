@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "ActionClasses.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
@@ -61,7 +61,8 @@ namespace Amarok
     PlayerDBusHandler *PlayerDBusHandler::s_instance = 0;
 
     PlayerDBusHandler::PlayerDBusHandler()
-        : QObject(kapp)
+        : QObject(kapp),
+          EngineObserver( The::engineController() )
     {
         qDBusRegisterMetaType<DBusStatus>();
 

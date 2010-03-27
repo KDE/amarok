@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 #include "UmsPodcastProvider.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KDialog>
 #include <KIO/DeleteJob>

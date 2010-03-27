@@ -25,8 +25,8 @@
 
 #include "GroupingProxy.h"
 
-#include "Debug.h"
-#include "collection/Collection.h"
+#include "core/support/Debug.h"
+#include "core/collections/Collection.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"

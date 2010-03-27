@@ -16,7 +16,7 @@
 
 #include "MagnatuneSqlCollection.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MagnatuneCollectionLocation.h"
 #include "MagnatuneMeta.h"
 

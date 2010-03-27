@@ -16,8 +16,8 @@
 
 #include "TestUnionJob.h"
 
-#include "Debug.h"
-#include "collection/CollectionLocation.h"
+#include "core/support/Debug.h"
+#include "core/collections/CollectionLocation.h"
 #include "synchronization/UnionJob.h"
 
 #include "CollectionTestImpl.h"

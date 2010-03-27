@@ -19,7 +19,7 @@
 #include "MediaDeviceCache.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KConfig>
 #include <solid/device.h>

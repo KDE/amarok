@@ -18,7 +18,7 @@
 #define AMAROK_ENGINE_SCRIPT_H
 
 #include "MetaTypeExporter.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QtScript>

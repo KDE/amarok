@@ -16,9 +16,9 @@
 
 #include "CollectionLocationTest.h"
 
-#include "Components.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/support/Components.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 #include "../tests/mocks/MetaMock.h"
 #include "MockCollectionLocationDelegate.h"

@@ -24,7 +24,7 @@
 #include "collection/CollectionManager.h"
 #include "collection/support/MemoryQueryMaker.h"
 #include "covermanager/CoverFetcher.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 #include "SvgHandler.h"

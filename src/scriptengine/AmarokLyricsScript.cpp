@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
 #include "core/meta/Meta.h"

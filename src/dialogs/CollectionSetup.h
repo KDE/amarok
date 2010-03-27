@@ -26,7 +26,7 @@
 #include <QFileSystemModel>
 #include <QTreeWidgetItem>
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 class QTreeView;
 

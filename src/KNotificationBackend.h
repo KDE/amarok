@@ -17,7 +17,7 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <KNotification>
 

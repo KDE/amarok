@@ -17,7 +17,7 @@
 #ifndef PLAYLISTCOLLECTIONLOCATION_H
 #define PLAYLISTCOLLECTIONLOCATION_H
 
-#include "collection/CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 
 class PlaylistCollection;
 

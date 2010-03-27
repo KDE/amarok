@@ -17,7 +17,7 @@
  
 #include "LayoutConfigAction.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "LayoutManager.h"
 #include "PlaylistLayoutEditDialog.h"
 #include "widgets/EditDeleteDelegate.h"

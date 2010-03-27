@@ -16,7 +16,7 @@
 
 #include "FirstRunTutorial.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "FirstRunTutorialPage.h"
 #include "MainWindow.h"
 

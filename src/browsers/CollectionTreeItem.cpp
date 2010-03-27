@@ -18,7 +18,7 @@
 
 #include "CollectionTreeItem.h"
 #include "CollectionTreeItemModelBase.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
 
 #include "core/capabilities/DecoratorCapability.h"

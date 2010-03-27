@@ -16,7 +16,7 @@
 
 #include "PopupDropperFactory.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "ContextView.h"
 #include "PaletteHandler.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"

@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 
 #include "MemoryCollection.h"
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QWeakPointer>
 

@@ -18,7 +18,7 @@
 #include "AmarokScriptableServiceScript.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptManager.h"
 

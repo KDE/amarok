@@ -13,12 +13,12 @@ include_directories(
 
 set( testmasterslave_SRCS
         TestMasterSlaveSynchronizationJob.cpp
-        ${AMAROK_SOURCE_TREE}/Components.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/MasterSlaveSynchronizationJob.cpp
-        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
-        ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
@@ -49,12 +49,12 @@ target_link_libraries(testmasterslavesynchronizationjob
 
 set( testunion_SRCS
         TestUnionJob.cpp
-        ${AMAROK_SOURCE_TREE}/Components.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/UnionJob.cpp
-        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
-        ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
@@ -84,12 +84,12 @@ target_link_libraries(testunionjob
 
 set( testonewaysynchronization_SRCS
         TestOneWaySynchronizationJob.cpp
-        ${AMAROK_SOURCE_TREE}/Components.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/OneWaySynchronizationJob.cpp
-        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
-        ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp

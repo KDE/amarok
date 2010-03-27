@@ -23,7 +23,7 @@
 #include "NepomukCollection.h"
 #include "NepomukRegistry.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QString>
 #include <QStringList>

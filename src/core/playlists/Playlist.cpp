@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Playlist.h"
+#include "core/playlists/Playlist.h"
 
 
 Playlists::PlaylistObserver::~PlaylistObserver()

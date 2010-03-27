@@ -17,7 +17,7 @@
 #include "PopupWidget.h"
 #include "MainWindow.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 
 PopupWidget::PopupWidget( QWidget * anchor, const QString &name )

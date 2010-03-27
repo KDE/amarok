@@ -16,7 +16,7 @@
  ****************************************************************************************/
 
 #include "ITunesImporter.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 
 ITunesImporter::ITunesImporter( QObject *parent )

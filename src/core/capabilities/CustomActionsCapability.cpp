@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CustomActionsCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
 
 Capabilities::CustomActionsCapability::CustomActionsCapability()
     : Capabilities::Capability()

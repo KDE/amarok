@@ -16,13 +16,13 @@
 
 #include "PlaylistFileProvider.h"
 #include "App.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "core/capabilities/EditablePlaylistCapability.h"
 #include "Amarok.h"
-#include "Debug.h"
-#include "core/playlists/impl/file/m3u/M3UPlaylist.h"
-#include "core/playlists/impl/file/pls/PLSPlaylist.h"
-#include "core/playlists/impl/file/xspf/XSPFPlaylist.h"
+#include "core/support/Debug.h"
+#include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
+#include "core-implementations/playlists/file/pls/PLSPlaylist.h"
+#include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
 #include "playlist/PlaylistModelStack.h"
 #include "StatusBar.h"
 

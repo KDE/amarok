@@ -17,7 +17,7 @@
 #ifndef METADYNAMICPLAYLIST_H
 #define METADYNAMICPLAYLIST_H
 
-#include <Playlist.h>
+#include "core/playlists/Playlist.h"
 
 namespace Playlists {
 

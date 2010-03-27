@@ -17,7 +17,7 @@
 #include "MagnatuneAlbumDownloader.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MagnatuneMeta.h"
 #include "statusbar/StatusBar.h"
 

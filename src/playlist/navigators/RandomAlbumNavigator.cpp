@@ -23,7 +23,7 @@
 
 #include "RandomAlbumNavigator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
 #include <algorithm> // For std::random_shuffle

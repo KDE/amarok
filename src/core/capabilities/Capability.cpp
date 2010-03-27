@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Capability.h"
+#include "core/capabilities/Capability.h"
 
 Capabilities::Capability::~Capability()
 {

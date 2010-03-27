@@ -16,7 +16,7 @@
 
 #include "PlaylistViewUrlGenerator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
 #include "PlaylistWidget.h"

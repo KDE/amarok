@@ -17,7 +17,7 @@
 #ifndef AMAROK_FILECOLLECTIONLOCATION_H
 #define AMAROK_FILECOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 
 #include <QSet>
 #include <QMap>

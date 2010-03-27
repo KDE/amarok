@@ -18,7 +18,7 @@
 
 #include "PlaylistLayoutEditDialog.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"

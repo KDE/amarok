@@ -19,11 +19,11 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 #include "collection/support/FileCollectionLocation.h"
 #include "core/capabilities/StatisticsCapability.h"
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

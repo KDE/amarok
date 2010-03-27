@@ -35,7 +35,7 @@
 #include <KToggleAction>
 
 #ifdef DEBUG_LIKEBACK
-#include "Debug.h"
+#include "core/support/Debug.h"
 #endif
 
 // Constructor

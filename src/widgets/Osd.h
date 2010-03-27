@@ -18,7 +18,7 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QImage>

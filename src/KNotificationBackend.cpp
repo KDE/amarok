@@ -17,7 +17,8 @@
 #include "KNotificationBackend.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "SvgHandler.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/Meta.h"
 
@@ -114,7 +115,7 @@ Amarok::KNotificationBackend::showCurrentTrack() // slot
         connect( m_notify, SIGNAL(closed()), this, SLOT(notificationClosed()) );
 
         if( track->album() )
-            m_notify->setPixmap( track->album()->imageWithBorder( 80 ) );
+            m_notify->setPixmap( The::svgHandler()->imageWithBorder( track->album(), 80 ) );
 
         m_notify->setTitle( i18n( "Now playing" ) );
 

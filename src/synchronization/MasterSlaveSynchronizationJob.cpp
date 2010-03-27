@@ -16,9 +16,9 @@
 
 #include "MasterSlaveSynchronizationJob.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 
 MasterSlaveSynchronizationJob::MasterSlaveSynchronizationJob()
         : SynchronizationBaseJob()

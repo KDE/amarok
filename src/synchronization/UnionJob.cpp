@@ -16,9 +16,9 @@
 
 #include "UnionJob.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 
 UnionJob::UnionJob( Amarok::Collection *collA, Amarok::Collection *collB )
         : SynchronizationBaseJob()

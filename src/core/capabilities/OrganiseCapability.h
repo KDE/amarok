@@ -17,7 +17,7 @@
 #ifndef AMAROK_ORGANISECAPABILITY_H
 #define AMAROK_ORGANISECAPABILITY_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 namespace Capabilities

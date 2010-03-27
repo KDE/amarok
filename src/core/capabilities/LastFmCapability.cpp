@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "LastFmCapability.h"
+#include "core/capabilities/LastFmCapability.h"
 
 Capabilities::LastFmCapability::~LastFmCapability()
 {

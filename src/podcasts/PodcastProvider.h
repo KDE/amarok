@@ -17,7 +17,7 @@
 #ifndef PODCASTPROVIDER_H
 #define PODCASTPROVIDER_H
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "PodcastMeta.h"
 
 #include <kio/jobclasses.h>

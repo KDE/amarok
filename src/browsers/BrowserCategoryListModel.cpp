@@ -16,7 +16,7 @@
 
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategory.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 BrowserCategoryListModel::BrowserCategoryListModel()
  : QAbstractListModel()

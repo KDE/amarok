@@ -16,5 +16,5 @@
 
 */
 
-#include "ReadLabelCapability.h"
+#include "core/capabilities/ReadLabelCapability.h"
 

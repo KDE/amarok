@@ -18,14 +18,14 @@
 #define AMAROK_PLUGIN_H
 
 #include <config-amarok.h>  
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 
 #define AMAROK_EXPORT_PLUGIN( classname ) \
     extern "C" { \
           KDE_EXPORT Plugins::Plugin* create_plugin() { return new classname; } \
     }
 
-#include <qmap.h>
+#include <QMap>
 #include <QString>
 
 class QWidget;
@@ -60,7 +60,7 @@ namespace Plugins
             QMap<QString, QString> m_properties;
     };
 
-} //namespace Amarok
+} //namespace Plugins
 
 
 #endif /* AMAROK_PLUGIN_H */

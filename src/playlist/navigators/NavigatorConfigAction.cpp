@@ -17,7 +17,7 @@
 #include "NavigatorConfigAction.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KMenu>

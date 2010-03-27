@@ -17,7 +17,7 @@
 #include "MediaDeviceCollectionCapability.h"
 #include "MediaDeviceCollection.h"
 #include "SvgHandler.h"
-#include "MetaQueryMaker.h"
+#include "core/collections/MetaQueryMaker.h"
 
 #include <KIcon>
 

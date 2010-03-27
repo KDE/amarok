@@ -24,7 +24,7 @@
 #include "MediaDeviceMonitor.h"
 
 #include "covermanager/CoverFetchingActions.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "core/capabilities/CustomActionsCapability.h"
 #include "core/capabilities/EditCapability.h"

@@ -21,7 +21,7 @@
 #include "MemoryMatcher.h"
 #include "MemoryQueryMakerHelper.h"
 #include "MemoryQueryMakerInternal.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

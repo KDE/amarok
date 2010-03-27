@@ -16,9 +16,9 @@
 
 #include "TestMemoryQueryMaker.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "MemoryCollection.h"
 #include "MemoryQueryMaker.h"

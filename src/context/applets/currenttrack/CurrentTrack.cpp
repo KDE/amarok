@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"

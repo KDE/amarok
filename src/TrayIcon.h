@@ -19,9 +19,9 @@
 #ifndef AMAROK_TRAYICON_H
 #define AMAROK_TRAYICON_H
 
-#include "EngineObserver.h" //baseclass
+#include "core/engine/EngineObserver.h" //baseclass
 #include "core/meta/Meta.h"
-#include "SmartPointerList.h"
+#include "core/support/SmartPointerList.h"
 
 #include <KStatusNotifierItem> //baseclass
 

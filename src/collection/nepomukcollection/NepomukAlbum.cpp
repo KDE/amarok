@@ -23,7 +23,7 @@
 
 #include "covermanager/CoverFetchingActions.h"
 #include "core/meta/CustomActionsCapability.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
 #include <QAction>

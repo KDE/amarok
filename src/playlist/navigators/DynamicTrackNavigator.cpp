@@ -19,7 +19,7 @@
 
 #include "DynamicTrackNavigator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"

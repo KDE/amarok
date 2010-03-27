@@ -25,7 +25,7 @@
 #include "amarok_export.h"
 #include "CollectionManager.h"
 #include "core/plugins/Plugin.h"
-#include "core/meta/impl/proxy/MetaProxy.h"
+#include "core-implementations/meta/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KPluginInfo>

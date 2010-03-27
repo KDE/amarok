@@ -16,7 +16,7 @@
 
 #include "PlaylistSortWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
 

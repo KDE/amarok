@@ -15,7 +15,7 @@ include_directories(
 set( testmetamultitrack_SRCS 
     TestMetaMultiTrack.cpp 
     ${AMAROK_SOURCE_TREE}/EngineController.cpp
-    ${AMAROK_SOURCE_TREE}/EngineObserver.cpp
+    ${AMAROK_SOURCE_TREE}/core/engine/EngineObserver.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
     ${AMAROK_SOURCE_TREE}/core/meta/impl/multi/MultiTrack.cpp

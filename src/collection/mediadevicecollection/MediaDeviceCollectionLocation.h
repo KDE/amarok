@@ -17,7 +17,7 @@
 #ifndef AMAROK_MEDIADEVICECOLLECTIONLOCATION_H
 #define AMAROK_MEDIADEVICECOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 #include "MediaDeviceHandler.h"
 
 #include "mediadevicecollection_export.h"

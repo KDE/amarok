@@ -16,7 +16,7 @@
 
 #include "Mp3tunesWorkers.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
 #include "statusbar/StatusBar.h"
 

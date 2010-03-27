@@ -18,11 +18,11 @@
 
 #include "Amarok.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModelBase.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "SearchWidget.h"
 #include "browsers/InfoProxy.h"
 

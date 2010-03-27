@@ -17,7 +17,7 @@
 
 #include "FileView.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/CollectionManager.h"
 #include "collection/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
@@ -27,7 +27,7 @@
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"

@@ -17,7 +17,7 @@
 #ifndef AMAROK_XMLQUERYREADER_H
 #define AMAROK_XMLQUERYREADER_H
 
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QList>
 #include <QXmlStreamReader>

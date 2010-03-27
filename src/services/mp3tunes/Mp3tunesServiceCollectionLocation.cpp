@@ -22,7 +22,7 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 using namespace Meta;
 
 Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )

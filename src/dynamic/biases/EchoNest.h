@@ -20,7 +20,7 @@
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
 #include <QNetworkReply>
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 /**
 *  This is a bias which adds the suggested songs to the playlist.

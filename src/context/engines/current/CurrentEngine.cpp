@@ -18,9 +18,9 @@
 
 #include "Amarok.h"
 #include "ContextView.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"

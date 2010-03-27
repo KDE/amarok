@@ -16,9 +16,9 @@
 
 #include "OneWaySynchronizationJob.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
 OneWaySynchronizationJob::OneWaySynchronizationJob()

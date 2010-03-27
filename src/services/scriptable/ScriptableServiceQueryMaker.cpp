@@ -22,7 +22,7 @@
 
 #include "collection/support/MemoryMatcher.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QTimer>
 

@@ -19,7 +19,7 @@
 #include "LayoutManager.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"

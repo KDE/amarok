@@ -19,7 +19,7 @@
 
 #include "TestExpression.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Expression.h"
 
 #include <QtTest/QTest>

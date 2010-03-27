@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "AppletItemOverlay.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "toolbar/AppletToolbarAddItem.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 #include "ToolbarView.h"

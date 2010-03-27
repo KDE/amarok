@@ -31,7 +31,7 @@
 #include <KUrl>
 
 #define DEBUG_PREFIX "CoverFetcher"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 

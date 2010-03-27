@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "SourceInfoCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 Capabilities::SourceInfoCapability::SourceInfoCapability()
     : Capabilities::Capability()

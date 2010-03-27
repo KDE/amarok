@@ -18,7 +18,7 @@
 #include "TokenDropTarget.h"
 #include "playlist/PlaylistDefines.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KHBox>
 #include <KMessageBox>

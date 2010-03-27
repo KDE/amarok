@@ -17,7 +17,7 @@
 
 #include "TestUpcomingEventsEngine.h"
 
-#include "Components.h"
+#include "core/support/Components.h"
 #include "ContextObserver.h"
 #include "EngineController.h"
 #include "UpcomingEventsEngine.h"

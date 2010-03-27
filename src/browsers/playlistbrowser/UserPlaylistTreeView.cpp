@@ -16,7 +16,7 @@
 
 #include "UserPlaylistTreeView.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 #include "context/ContextView.h"

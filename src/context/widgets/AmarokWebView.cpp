@@ -16,7 +16,7 @@
 
 
 #include "AmarokWebView.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 AmarokWebView::AmarokWebView( QGraphicsItem *parent )
     : Plasma::WebView( parent )

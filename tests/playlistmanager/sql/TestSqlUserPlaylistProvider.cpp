@@ -21,7 +21,7 @@
 #include "collection/CollectionManager.h"
 #include "config-amarok-test.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
-#include "Components.h"
+#include "core/support/Components.h"
 #include "EngineController.h"
 
 #include <QtTest/QTest>

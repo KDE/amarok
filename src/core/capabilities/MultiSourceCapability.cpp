@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MultiSourceCapability.h"
+#include "core/capabilities/MultiSourceCapability.h"
 
 namespace Capabilities {
 

@@ -17,7 +17,7 @@
 #ifndef COLLECTIONTESTIMPL_H
 #define COLLECTIONTESTIMPL_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/support/MemoryCollection.h"
 #include "collection/support/MemoryQueryMaker.h"
 

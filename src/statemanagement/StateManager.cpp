@@ -16,7 +16,7 @@
 
 #include "StateManager.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "State.h"
 #include "Transition.h"

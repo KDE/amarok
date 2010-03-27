@@ -21,7 +21,7 @@
 
 #include "AmarokMimeData.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 
 #include <KIcon>

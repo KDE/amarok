@@ -16,7 +16,7 @@
 
 #include "PlayUrlRunner.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"

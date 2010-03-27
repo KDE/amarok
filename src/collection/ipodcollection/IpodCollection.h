@@ -24,7 +24,7 @@ extern "C" {
 #include "IpodHandler.h"
 
 #include "MediaDeviceCollection.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 

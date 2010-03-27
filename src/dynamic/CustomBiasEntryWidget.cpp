@@ -16,7 +16,7 @@
 
 #include "CustomBiasEntryWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "CustomBias.h"
 #include "SliderWidget.h"
 

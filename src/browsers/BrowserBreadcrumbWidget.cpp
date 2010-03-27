@@ -17,7 +17,7 @@
 #include "BrowserBreadcrumbWidget.h"
 
 #include "amarokurls/AmarokUrl.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "MainWindow.h"
 #include "widgets/BreadcrumbItemButton.h"

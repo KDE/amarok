@@ -18,7 +18,7 @@
  ****************************************************************************************/
 
 #include "PixmapViewer.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KApplication>
 

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MultiPlayableCapability.h"
+#include "core/capabilities/MultiPlayableCapability.h"
 
 Capabilities::MultiPlayableCapability::~MultiPlayableCapability()
 {

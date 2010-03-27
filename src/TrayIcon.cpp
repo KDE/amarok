@@ -22,7 +22,7 @@
 #include "TrayIcon.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
@@ -30,6 +30,7 @@
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "SvgHandler.h"
 #include <KAboutData>
 #include <KAction>
 #include <KCmdLineArgs>
@@ -102,7 +103,7 @@ Amarok::TrayIcon::setupToolTip()
         {
             const QString uid = m_track->uidUrl();
             if ( uid != m_toolTipIconUid ) {
-                const QPixmap image = m_track->album()->imageWithBorder( KIconLoader::SizeLarge, 5 );
+                const QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
                 if ( image.isNull() )
                 {
                     setToolTipIconByName( "amarok" );

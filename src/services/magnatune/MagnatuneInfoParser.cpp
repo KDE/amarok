@@ -16,7 +16,7 @@
 
 #include "MagnatuneInfoParser.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MagnatuneConfig.h"
 #include "statusbar/StatusBar.h"
 

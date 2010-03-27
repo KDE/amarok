@@ -24,19 +24,20 @@
 #include "PlaylistModel.h"
 
 #include "Amarok.h"
+#include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "core/capabilities/ReadLabelCapability.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -214,7 +215,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case CoverImage:
             {
                 if ( m_items.at( row )->track()->album() )
-                    return m_items.at( row )->track()->album()->imageWithBorder( 100 ); //FIXME:size?
+                    return The::svgHandler()->imageWithBorder( m_items.at( row )->track()->album(), 100 ); //FIXME:size?
                 return QImage();
             }
             case Directory:

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "UserPlaylistProvider.h"
+#include "core/playlists/providers/user/UserPlaylistProvider.h"
 
 Playlists::UserPlaylistProvider::~UserPlaylistProvider()
 {

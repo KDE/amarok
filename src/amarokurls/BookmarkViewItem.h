@@ -17,7 +17,7 @@
 #ifndef BOOKMARKVIEWITEM_H
 #define BOOKMARKVIEWITEM_H
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QSharedData>
 #include <KSharedPtr>

@@ -16,7 +16,7 @@
  
 #include "MainControlsButton.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 
 #include <QKeyEvent>

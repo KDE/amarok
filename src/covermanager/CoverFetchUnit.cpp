@@ -23,7 +23,7 @@
 #include <QSet>
 
 #define DEBUG_PREFIX "CoverFetchUnit"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 /*
  * CoverFetchUnit

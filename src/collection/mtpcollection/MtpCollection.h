@@ -22,7 +22,7 @@
 #include "MtpHandler.h"
 
 #include "MediaDeviceCollection.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QtGlobal>
 

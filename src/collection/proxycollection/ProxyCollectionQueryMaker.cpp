@@ -22,7 +22,7 @@
 
 #include "collection/support/MemoryCustomValue.h"
 #include "collection/support/MemoryQueryMakerHelper.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "ProxyCollection.h"
 

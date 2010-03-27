@@ -22,6 +22,7 @@
 class QStyleOptionSlider;
 
 #include "amarok_export.h"
+#include "core/meta/Meta.h"
 
 #include <KPixmapCache>
 #include <QReadWriteLock>
@@ -73,6 +74,15 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * @return The svg element/file rendered into a pixmap.
          */
         QPixmap renderSvgWithDividers( const QString& keyname, int width, int height, const QString& element = QString() );
+
+        /**
+         * Take an album and extract the pixmap for sending to addBordersToPixmap.
+         *
+         * @param album The AlbumPtr
+         * @param size Some size or another
+         * @borderWidth The desired width of the border
+         */
+        QPixmap imageWithBorder( Meta::AlbumPtr album, int size = 1, int borderWidth = 5 );
 
         /**
          * Add nice borders to a pixmap. The function will create and return a new

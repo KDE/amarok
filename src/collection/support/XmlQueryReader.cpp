@@ -17,7 +17,7 @@
 
 #include "XmlQueryReader.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/CollectionManager.h"
 
 #include <QString>

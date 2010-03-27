@@ -24,7 +24,7 @@
 
 #include "NonlinearTrackNavigator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 
 Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()

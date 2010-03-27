@@ -18,7 +18,7 @@
 #define LYRICS_MANAGER_H
 
 #include "amarok_export.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QList>
 #include <QByteArray>

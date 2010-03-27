@@ -16,7 +16,7 @@
 
 #include "InlineEditorWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/layouts/LayoutManager.h"

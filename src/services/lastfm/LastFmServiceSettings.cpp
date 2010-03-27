@@ -17,7 +17,7 @@
 #include "LastFmServiceSettings.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "ui_LastFmConfigWidget.h"
 
 #include "kdenetwork/knetworkaccessmanager.h"

@@ -17,7 +17,7 @@
 #ifndef AMAROK_CUSTOMACTIONSCAPABILITY_H
 #define AMAROK_CUSTOMACTIONSCAPABILITY_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 #include <QAction>

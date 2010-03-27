@@ -25,7 +25,7 @@
 #include "Amarok.h"
 #include "Context.h"
 #include "ContextScene.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"

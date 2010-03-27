@@ -19,7 +19,7 @@
 
 #include "MediaDeviceCache.h" // for mountpoint
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QString>
 

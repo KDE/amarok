@@ -18,7 +18,7 @@
 #include "AmarokNetworkScript.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QtScript>
 

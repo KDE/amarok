@@ -18,7 +18,7 @@
 
 AMAROK_EXPORT_PLUGIN( SmbDeviceHandlerFactory )
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KConfig>
 #include <KUrl>

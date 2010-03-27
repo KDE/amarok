@@ -16,10 +16,10 @@
 
 #include "TestMasterSlaveSynchronizationJob.h"
 
-#include "Debug.h"
-#include "collection/CollectionLocation.h"
-#include "collection/CollectionLocationDelegate.h"
-#include "Components.h"
+#include "core/support/Debug.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/collections/CollectionLocationDelegate.h"
+#include "core/support/Components.h"
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
 #include "CollectionTestImpl.h"

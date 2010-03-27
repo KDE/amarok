@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CurrentTrackActionsCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 
 Capabilities::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
     : CustomActionsCapability()

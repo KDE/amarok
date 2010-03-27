@@ -21,7 +21,7 @@
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "collection/sqlcollection/SqlCollectionLocation.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 
 namespace AmarokScript

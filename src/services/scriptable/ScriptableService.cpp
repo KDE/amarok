@@ -22,7 +22,7 @@
 #include "ServiceBrowser.h"
 #include "ScriptableServiceInfoParser.h"
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SearchWidget.h"
 
 #include <KStandardDirs>

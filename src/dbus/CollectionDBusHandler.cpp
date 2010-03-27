@@ -19,7 +19,7 @@
 #include "CollectionAdaptor.h"
 #include "collection/support/XmlQueryReader.h"
 #include "dbus/DBusQueryHelper.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 class QueryMaker;
 

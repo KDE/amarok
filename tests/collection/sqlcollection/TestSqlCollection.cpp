@@ -16,9 +16,9 @@
 
 #include "TestSqlCollection.h"
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "DatabaseUpdater.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
 

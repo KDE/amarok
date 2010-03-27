@@ -18,7 +18,7 @@
 #include "TrackWidget.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"

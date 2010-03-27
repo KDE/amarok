@@ -11,10 +11,10 @@ set( testsqluserplaylistprovider_SRCS
      ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlUserPlaylistProvider.cpp
      ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlPlaylistGroup.cpp
      ${AMAROK_SOURCE_TREE}/playlistmanager/sql/SqlPlaylist.cpp
-     ${AMAROK_SOURCE_TREE}/core/meta/impl/timecode/TimecodeMeta.cpp
-     ${AMAROK_SOURCE_TREE}/core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.cpp
+     ${AMAROK_SOURCE_TREE}/core-implementations/meta/timecode/TimecodeMeta.cpp
+     ${AMAROK_SOURCE_TREE}/core-implementations/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
      ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
-     ${AMAROK_SOURCE_TREE}/core/playlists/impl/file/PlaylistFileSupport.cpp
+     ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
     )
 kde4_add_unit_test( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
 target_link_libraries( testsqluserplaylistprovider ${QT_QTTEST_LIBRARY} amaroklib )

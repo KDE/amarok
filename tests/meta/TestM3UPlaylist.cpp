@@ -19,7 +19,7 @@
 
 #include "TestM3UPlaylist.h"
 #include "config-amarok-test.h"
-#include "core/playlists/impl/file/m3u/M3UPlaylist.h"
+#include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
 
 #include <KTemporaryFile>
 

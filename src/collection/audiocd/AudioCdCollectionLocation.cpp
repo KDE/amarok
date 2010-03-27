@@ -17,7 +17,7 @@
 #include "AudioCdCollectionLocation.h"
 
 #include "AudioCdMeta.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "FormatSelectionDialog.h"
 
 AudioCdCollectionLocation::AudioCdCollectionLocation( const AudioCdCollection* parentCollection )

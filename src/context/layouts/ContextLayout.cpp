@@ -18,7 +18,7 @@
 #include "ContextLayout.h"
 
 #include "Applet.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "VerticalLayout.h"
 
 #include <limits.h>

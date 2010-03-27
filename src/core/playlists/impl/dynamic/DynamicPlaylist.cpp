@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DynamicPlaylist.h"
+#include "core/playlists/impl/dynamic/DynamicPlaylist.h"
 
 #include <KLocale>
 

@@ -23,9 +23,9 @@
 #include "MtpHandler.h"
 
 #include "MtpCollection.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
-#include "core/meta/impl/file/File.h" // for KIO file handling
+#include "core-implementations/meta/file/File.h" // for KIO file handling
 
 #include <KIO/Job>
 #include <KIO/DeleteJob>

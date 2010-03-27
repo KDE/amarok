@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "Expression.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 ExpressionParser::ExpressionParser( const QString &expression )
     : m_expression( expression )

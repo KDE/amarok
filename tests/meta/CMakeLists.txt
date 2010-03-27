@@ -36,7 +36,7 @@ target_link_libraries( testxspfplaylist ${QT_QTTEST_LIBRARY} amaroklib )
 
 set( testplaylistfilesupport_SRCS
      TestPlaylistFileSupport.cpp
-     ${AMAROK_SOURCE_TREE}/core/playlists/impl/file/PlaylistFileSupport.cpp
+     ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
      )
 kde4_add_unit_test( testplaylistfilesupport ${testplaylistfilesupport_SRCS} )
 target_link_libraries( testplaylistfilesupport ${QT_QTTEST_LIBRARY} amaroklib )

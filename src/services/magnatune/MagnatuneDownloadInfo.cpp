@@ -17,7 +17,7 @@
 #include "MagnatuneDownloadInfo.h"
 
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QFile>
 #include <QTextStream>

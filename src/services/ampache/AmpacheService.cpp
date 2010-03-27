@@ -21,7 +21,7 @@
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
 #include <config-amarok.h>
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "sha256/sha256.h"
 #include "statusbar/StatusBar.h"
 

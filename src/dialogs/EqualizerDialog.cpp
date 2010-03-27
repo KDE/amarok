@@ -21,7 +21,7 @@
 #include "Amarok.h"
 #include "ActionClasses.h"
 #include "EngineController.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KMessageBox>
 

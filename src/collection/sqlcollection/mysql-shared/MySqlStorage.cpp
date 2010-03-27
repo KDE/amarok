@@ -18,7 +18,7 @@
 #include "MySqlStorage.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
 
 #include <QMutexLocker>

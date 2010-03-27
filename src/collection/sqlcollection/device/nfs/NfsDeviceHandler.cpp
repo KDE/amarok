@@ -18,7 +18,7 @@
 
 AMAROK_EXPORT_PLUGIN( NfsDeviceHandlerFactory )
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KConfig>
 #include <KUrl>

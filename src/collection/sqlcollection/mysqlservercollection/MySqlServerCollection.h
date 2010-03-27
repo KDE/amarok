@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
 #include "mysql-shared/MySqlStorage.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "amarok_export.h"
 
 class MySqlServerCollectionFactory : public Amarok::CollectionFactory

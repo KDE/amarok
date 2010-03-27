@@ -16,7 +16,7 @@
 
 #include "Mp3tunesLocker.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QByteArray>
 #include <memory>

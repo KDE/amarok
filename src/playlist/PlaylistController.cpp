@@ -25,17 +25,17 @@
 
 #define DEBUG_PREFIX "Playlist::Controller"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "collection/QueryMaker.h"
-#include "core/meta/impl/cue/CueFileSupport.h"
+#include "core/collections/QueryMaker.h"
+#include "core-implementations/meta/cue/CueFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "core/meta/impl/multi/MultiTrack.h"
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 
 
 #include <algorithm> // STL

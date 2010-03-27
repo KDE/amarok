@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "StatisticsProvider.h"
+#include "core/statistics/StatisticsProvider.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 Statistics::StatisticsProvider::StatisticsProvider()
         : m_score( 0.0 )

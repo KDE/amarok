@@ -19,7 +19,7 @@
 
 #define DEBUG_PREFIX "SqlQueryMaker"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"

@@ -24,7 +24,7 @@
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
 #include "Containment.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
 #include <QGraphicsScene>

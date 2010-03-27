@@ -19,7 +19,7 @@
 #include "AmarokMimeData.h"
 #include "UserPlaylistModel.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
         "application/x-amarok-providerproxy-indexes";

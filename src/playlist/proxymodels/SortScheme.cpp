@@ -16,7 +16,7 @@
 
 #include "SortScheme.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 namespace Playlist
 {

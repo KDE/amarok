@@ -17,7 +17,7 @@
 #include "VerticalToolbarContainment.h"
 
 #include "ContextView.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "VerticalAppletLayout.h"
 

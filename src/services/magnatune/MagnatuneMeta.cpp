@@ -18,10 +18,10 @@
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MagnatuneActions.h"
 #include "MagnatuneConfig.h"
-#include "core/statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "core-implementations/statistics/providers/url/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
 #include <KLocale>

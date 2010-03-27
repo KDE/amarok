@@ -25,7 +25,7 @@
 #include "CollectionBrowserTreeView.h"
 #include "collection/CollectionManager.h"
 #include "collection/proxycollection/ProxyCollection.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SearchWidget.h"
 #include "SingleCollectionTreeItemModel.h"
 #include <amarokconfig.h>

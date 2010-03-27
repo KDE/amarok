@@ -22,9 +22,9 @@
 #include "OrganizeCollectionDialog.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 

@@ -19,7 +19,7 @@
 
 #include "ActionClasses.h"
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
 
@@ -35,6 +35,7 @@
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
     : QToolButton( parent )
+    , EngineObserver( The::engineController() )
 {
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );

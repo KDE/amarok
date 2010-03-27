@@ -21,7 +21,7 @@
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "CollectionManager.h"
 #include "SqlStorage.h"
 

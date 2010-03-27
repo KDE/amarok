@@ -17,7 +17,7 @@
 
 #include "FileCollectionLocation.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "statusbar/StatusBar.h"
 
 #include <kio/job.h>

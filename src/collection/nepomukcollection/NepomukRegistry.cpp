@@ -18,8 +18,8 @@
 
 #include "NepomukCollection.h"
 
-#include "Debug.h"
-#include "QueryMaker.h"
+#include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QDateTime>
 #include <QUrl>

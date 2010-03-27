@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "EditablePlaylistCapability.h"
+#include "core/capabilities/EditablePlaylistCapability.h"
 
 namespace Capabilities {
 

@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "browsers/BrowserWidget.h"
 
 #include <KMainWindow>

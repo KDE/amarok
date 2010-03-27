@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "BookmarkThisCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 
 namespace Capabilities {
 

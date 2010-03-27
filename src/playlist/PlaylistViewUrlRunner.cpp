@@ -18,7 +18,7 @@
 #include "PlaylistViewUrlRunner.h"
 
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "PlaylistWidget.h"
 #include "ProgressiveSearchWidget.h"

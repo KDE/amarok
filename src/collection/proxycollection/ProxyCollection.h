@@ -19,7 +19,7 @@
 #ifndef PROXYCOLLECTION_H
 #define PROXYCOLLECTION_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"

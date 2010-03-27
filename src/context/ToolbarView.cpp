@@ -17,7 +17,7 @@
 #include "ToolbarView.h"
 
 #include "Containment.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "toolbar/AppletItemOverlay.h"
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"

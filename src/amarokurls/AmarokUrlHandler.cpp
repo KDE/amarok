@@ -18,7 +18,7 @@
 
 #include "BookmarkMetaActions.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "GlobalCurrentTrackActions.h"
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
@@ -26,7 +26,7 @@
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "BookmarkModel.h"
 #include "SqlStorage.h"
-#include "core/meta/impl/timecode/TimecodeObserver.h"
+#include "core-implementations/meta/timecode/TimecodeObserver.h"
 #include "ContextUrlGenerator.h"
 #include "PlayUrlGenerator.h"
 

@@ -16,7 +16,7 @@
 
 #include "DropPixmapItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KIO/Job>
 #include <KUrl>

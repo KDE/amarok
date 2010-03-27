@@ -19,7 +19,7 @@
 #ifndef AMAROK_XMLQUERYWRITER_H
 #define AMAROK_XMLQUERYWRITER_H
 
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QDomDocument>
 #include <QDomElement>

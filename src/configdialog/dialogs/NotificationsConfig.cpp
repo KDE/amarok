@@ -18,7 +18,7 @@
 #include "NotificationsConfig.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "KNotificationBackend.h"
 #include "Osd.h"
 //#include "QStringx.h"

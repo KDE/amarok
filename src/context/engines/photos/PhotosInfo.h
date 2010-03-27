@@ -18,7 +18,7 @@
 #define AMAROK_PHOTOS_INFO
 
 #include "context/DataEngine.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 //!  Struct PhotosInfo, contain all the info vor a photos
 class PhotosInfo {

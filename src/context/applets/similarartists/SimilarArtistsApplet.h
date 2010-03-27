@@ -26,7 +26,7 @@
 //Amarok
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <ui_similarArtistsSettings.h>
 

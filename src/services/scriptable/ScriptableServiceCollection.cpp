@@ -16,7 +16,7 @@
 
 #include "ScriptableServiceCollection.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "ScriptableServiceQueryMaker.h"
 
 ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )

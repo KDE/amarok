@@ -19,7 +19,7 @@
 
 #include "CaseConverter.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QObject>
 #include <QString>

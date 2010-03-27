@@ -21,7 +21,7 @@
 
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 
 namespace Capabilities
 {

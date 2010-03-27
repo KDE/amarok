@@ -18,13 +18,13 @@
 #ifndef AMAROK_LASTFMMETA_P_H
 #define AMAROK_LASTFMMETA_P_H
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core/statistics/StatisticsProvider.h"
-#include "core/statistics/providers/tag/TagStatisticsProvider.h"
+#include "core-implementations/statistics/providers/tag/TagStatisticsProvider.h"
 
 #include <lastfm/Track>
 #include <lastfm/ws.h>

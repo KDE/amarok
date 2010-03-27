@@ -21,7 +21,7 @@
 #include "MediaDeviceHandler.h"
 #include "MediaDeviceCollectionLocation.h"
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "MemoryCollection.h"
 
 #include "mediadevicecollection_export.h"

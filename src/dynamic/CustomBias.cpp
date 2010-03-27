@@ -19,7 +19,7 @@
 #define DEBUG_PREFIX "CustomBias"
 
 #include "CustomBiasEntryWidget.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 
 QList< Dynamic::CustomBiasEntryFactory* > Dynamic::CustomBias::s_biasFactories = QList< Dynamic::CustomBiasEntryFactory* >();

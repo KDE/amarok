@@ -17,7 +17,7 @@
 #ifndef CURRENTTRACKTOOLBAR_H
 #define CURRENTTRACKTOOLBAR_H
 
-#include "EngineObserver.h" //baseclass
+#include "core/engine/EngineObserver.h" //baseclass
 
 #include <QToolBar>
 

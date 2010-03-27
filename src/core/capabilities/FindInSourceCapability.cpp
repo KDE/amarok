@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FindInSourceCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
 
 using namespace Capabilities;
 

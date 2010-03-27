@@ -17,7 +17,7 @@
 #ifndef AUDIOCDCOLLECTIONLOCATION_H
 #define AUDIOCDCOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 
 #include "AudioCdCollection.h"
 

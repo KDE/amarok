@@ -274,19 +274,19 @@ set(libstatusbar_SRCS
 #####################################################################
 set(core_SRCS
     core/capabilities/Capability.cpp
-    core/playlists/impl/file/m3u/M3UPlaylist.cpp
+    core-implementations/playlists/file/m3u/M3UPlaylist.cpp
     core/meta/Meta.cpp
     core/meta/support/MetaUtility.cpp
-    core/meta/impl/file/TagLibUtils.cpp
+    core-implementations/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     core/playlists/Playlist.cpp
-    core/playlists/impl/file/pls/PLSPlaylist.cpp
+    core-implementations/playlists/file/pls/PLSPlaylist.cpp
     core/statistics/StatisticsProvider.cpp
     core/playlists/PlaylistProvider.cpp
     core/playlists/providers/user/UserPlaylistProvider.cpp
-    core/playlists/impl/file/PlaylistFileSupport.cpp
+    core-implementations/playlists/file/PlaylistFileSupport.cpp
     core/meta/support/PrivateMetaRegistry.cpp
-    core/playlists/impl/file/xspf/XSPFPlaylist.cpp
+    core-implementations/playlists/file/xspf/XSPFPlaylist.cpp
     core/capabilities/BookmarkThisCapability.cpp
     core/capabilities/BoundedPlaybackCapability.cpp
     core/capabilities/CollectionCapability.cpp
@@ -304,36 +304,32 @@ set(core_SRCS
     core/capabilities/SourceInfoCapability.cpp
     core/capabilities/StatisticsCapability.cpp
     core/capabilities/StreamInfoCapability.cpp
-    core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.cpp
-    core/capabilities/impl/timecode/TimecodeEditCapability.cpp
-    core/capabilities/impl/timecode/TimecodeLoadCapability.cpp
-    core/capabilities/impl/timecode/TimecodeWriteCapability.cpp
+    core-implementations/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
+    core-implementations/capabilities/timecode/TimecodeEditCapability.cpp
+    core-implementations/capabilities/timecode/TimecodeLoadCapability.cpp
+    core-implementations/capabilities/timecode/TimecodeWriteCapability.cpp
     core/capabilities/UpdateCapability.cpp
     core/capabilities/WriteLabelCapability.cpp
     core/capabilities/impl/multisource/MultiSourceCapabilityImpl.cpp
-    core/meta/impl/file/File.cpp
+    core-implementations/meta/file/File.cpp
     core/meta/impl/multi/MultiTrack.cpp
-    core/meta/impl/cue/CueFileSupport.cpp
-    core/meta/impl/proxy/MetaProxy.cpp
-    core/meta/impl/stream/Stream.cpp
-    core/meta/impl/timecode/TimecodeObserver.cpp
-    core/meta/impl/timecode/TimecodeMeta.cpp
-    core/meta/impl/timecode/TimecodeTrackProvider.cpp
-
-    core/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
-    core/statistics/providers/tag/TagStatisticsProvider.cpp
+    core-implementations/meta/cue/CueFileSupport.cpp
+    core-implementations/meta/proxy/MetaProxy.cpp
+    core-implementations/meta/stream/Stream.cpp
+    core-implementations/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
+    core-implementations/statistics/providers/tag/TagStatisticsProvider.cpp
 )
 
 #####################################################################
 # COLLECTION
 #####################################################################
 set(collection_SRCS
-    collection/Collection.cpp
+    core/collections/Collection.cpp
     collection/CollectionManager.cpp
-    collection/CollectionLocation.cpp
+    core/collections/CollectionLocation.cpp
     collection/CollectionLocationDelegateImpl.cpp
-    collection/MetaQueryMaker.cpp
-    collection/QueryMaker.cpp
+    core/collections/MetaQueryMaker.cpp
+    core/collections/QueryMaker.cpp
     collection/TrackForUrlWorker.cpp
     collection/support/MemoryCustomValue.cpp
     collection/support/MemoryFilter.cpp
@@ -607,19 +603,22 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
-    Components.cpp
+    core/support/Components.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    EngineObserver.cpp
+    core/engine/EngineObserver.cpp
     Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    SmartPointerList.cpp
+    core/support/SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
+    core-implementations/meta/timecode/TimecodeObserver.cpp
+    core-implementations/meta/timecode/TimecodeMeta.cpp
+    core-implementations/meta/timecode/TimecodeTrackProvider.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp

@@ -16,7 +16,7 @@
 
 #include "TestPlaylistModels.h"
 
-#include "Components.h"
+#include "core/support/Components.h"
 #include "EngineController.h"
 
 #include "playlist/PlaylistActions.h"

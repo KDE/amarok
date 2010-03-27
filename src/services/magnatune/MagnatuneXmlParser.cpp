@@ -17,7 +17,7 @@
 #include "MagnatuneXmlParser.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "statusbar/StatusBar.h"
 
 #include <KFilterDev>

@@ -18,7 +18,7 @@
 
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "core/meta/Meta.h"
 #include "Playlist.h"

@@ -16,7 +16,7 @@
 
 #include "MySqlServerTester.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include <mysql.h>
 
 bool MySqlServerTester::testSettings( const QString &host, const QString &user, const QString &password, int port )

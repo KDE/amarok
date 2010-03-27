@@ -1,2 +1,2 @@
-#include "PlaylistProvider.h"
+#include "core/playlists/PlaylistProvider.h"
 #include "PlaylistProvider.moc"

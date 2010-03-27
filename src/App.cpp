@@ -22,12 +22,12 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
-#include "Components.h"
+#include "core/support/Components.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
 #include "dbus/CollectionDBusHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
 #include "KNotificationBackend.h"
@@ -39,7 +39,7 @@
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "core/playlists/Playlist.h"
-#include "core/playlists/impl/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
@@ -94,7 +94,10 @@
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
 
+#ifdef DESKTOP_UI
 QMutex Debug::mutex;
+#endif
+
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC

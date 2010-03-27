@@ -18,7 +18,7 @@
 #include "widgets/BreadcrumbItemButton.h"
 
 #include "BrowserCategoryList.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QDir>
 #include <QMenu>

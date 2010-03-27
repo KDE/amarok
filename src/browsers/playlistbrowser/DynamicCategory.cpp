@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "CustomBias.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
 #include "DynamicBiasModel.h"

@@ -18,7 +18,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "amarok_export.h"
 #include "amarok_sqlcollection_export.h"
 

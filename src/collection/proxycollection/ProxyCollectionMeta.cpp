@@ -23,8 +23,9 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/EditCapability.h"
 #include "ProxyCollection.h"
+#include "SvgHandler.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QDateTime>
 #include <QSet>
@@ -807,7 +808,7 @@ ProxyCollection::Album::imageWithBorder( int size, int borderWidth )
     {
         if( album->hasImage( size ) )
         {
-            return album->imageWithBorder( size, borderWidth );
+            return The::svgHandler()->imageWithBorder( album, size, borderWidth );
         }
     }
     return QPixmap();

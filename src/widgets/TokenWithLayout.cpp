@@ -17,7 +17,7 @@
 
 #include "TokenWithLayout.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "TokenDropTarget.h"
 #include "playlist/layouts/LayoutEditDialog.h"
 

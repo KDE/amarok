@@ -17,7 +17,7 @@
 #ifndef AMAROK_SERVICECOLLECTIONLOCATION_H
 #define AMAROK_SERVICECOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 #include "amarok_export.h"
 #include "ServiceCollection.h"
 

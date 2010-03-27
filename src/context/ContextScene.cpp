@@ -18,7 +18,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <plasma/containment.h>
 #include <plasma/theme.h>

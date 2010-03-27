@@ -16,7 +16,7 @@
 
 #include "PodcastImageFetcher.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KIO/Job>
 #include <KMD5>

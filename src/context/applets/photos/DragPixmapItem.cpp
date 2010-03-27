@@ -16,7 +16,7 @@
 
 #include "DragPixmapItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 // KDE
 #include <KIcon>

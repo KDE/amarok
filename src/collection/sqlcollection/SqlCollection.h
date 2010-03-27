@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
 #include "amarok_sqlcollection_export.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "EditCapability.h"
+#include "core/capabilities/EditCapability.h"
 
 Capabilities::EditCapability::~EditCapability()
 {

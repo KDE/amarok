@@ -18,7 +18,7 @@
 #include "deviceconfiguredialog.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"

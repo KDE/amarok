@@ -15,5 +15,5 @@
  ****************************************************************************************/
 
  //Stupid cmake.
-#include "StreamInfoCapability.h"
+#include "core/capabilities/StreamInfoCapability.h"
 #include "StreamInfoCapability.moc"

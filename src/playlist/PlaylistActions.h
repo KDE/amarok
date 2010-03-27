@@ -21,8 +21,8 @@
 #ifndef AMAROK_PLAYLISTACTIONS_H
 #define AMAROK_PLAYLISTACTIONS_H
 
-#include "Debug.h"
-#include "EngineObserver.h"
+#include "core/support/Debug.h"
+#include "core/engine/EngineObserver.h"
 #include "core/playlists/Playlist.h"
 #include "proxymodels/AbstractModel.h"
 

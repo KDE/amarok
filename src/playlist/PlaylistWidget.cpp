@@ -22,7 +22,7 @@
 #include "ActionClasses.h"
 #include "amarokconfig.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"

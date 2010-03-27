@@ -17,7 +17,7 @@
 #include "OpmlDirectoryDatabaseHandler.h"
 
 #include "collection/CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/SqlStorage.h"
 
 using namespace Meta;

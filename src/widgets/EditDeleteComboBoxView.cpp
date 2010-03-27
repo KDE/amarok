@@ -16,7 +16,7 @@
  
 #include "EditDeleteComboBoxView.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EditDeleteDelegate.h"
 
 #include <QModelIndex>

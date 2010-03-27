@@ -18,7 +18,7 @@
 #include "InfoEngine.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "browsers/InfoProxy.h"

@@ -17,7 +17,7 @@
 
 #include "ToolBoxIcon.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
 #include <plasma/animator.h>

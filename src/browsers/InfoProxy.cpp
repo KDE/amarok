@@ -17,7 +17,7 @@
 #include "InfoProxy.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
 #include <KStandardDirs>

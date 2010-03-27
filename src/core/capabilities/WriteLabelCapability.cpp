@@ -16,5 +16,5 @@
 
 */
 
-#include "WriteLabelCapability.h"
+#include "core/capabilities/WriteLabelCapability.h"
 

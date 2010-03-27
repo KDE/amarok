@@ -16,7 +16,7 @@
 
 #include "OcsPersonItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "libattica-ocsclient/provider.h"
 #include "libattica-ocsclient/providerinitjob.h"
 #include "libattica-ocsclient/personjob.h"

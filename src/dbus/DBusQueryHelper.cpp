@@ -16,8 +16,8 @@
  
 #include "DBusQueryHelper.h"
 
-#include "Debug.h"
-#include "collection/QueryMaker.h"
+#include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/support/MetaUtility.h"
 
 #include <QTimer>

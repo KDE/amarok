@@ -22,7 +22,7 @@
 #include "TrayIconLegacy.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
@@ -30,6 +30,7 @@
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "SvgHandler.h"
 #include <KAction>
 #include <KIcon>
 #include <KIconEffect>
@@ -129,7 +130,7 @@ Amarok::TrayIcon::setupToolTip()
         const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
         if( m_track->album() )
         {
-            const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
+            const QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), 100, 5 );
             image.save( tmpFilename, "PNG" );
             tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
             tooltip += "<img src='"+tmpFilename+"' /></td></tr>";

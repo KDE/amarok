@@ -17,7 +17,7 @@
 #include "PodcastModel.h"
 
 #include "AmarokMimeData.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "OpmlParser.h"
 #include "PodcastMeta.h"
 #include "PodcastProvider.h"

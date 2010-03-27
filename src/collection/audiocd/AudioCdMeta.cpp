@@ -18,7 +18,7 @@
 #include "AudioCdMeta.h"
 #include "AudioCdCollection.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 using namespace Meta;
 

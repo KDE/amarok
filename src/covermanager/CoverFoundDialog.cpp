@@ -46,7 +46,7 @@
 #include <QTabWidget>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const QPixmap cover,

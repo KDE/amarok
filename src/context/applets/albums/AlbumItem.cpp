@@ -16,6 +16,7 @@
 
 #include "AlbumItem.h"
 #include "core/meta/support/MetaUtility.h"
+#include "SvgHandler.h"
 
 #include <KLocale>
 
@@ -104,7 +105,7 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
 
     setText( displayText );
 
-    QPixmap cover = album->imageWithBorder( m_iconSize, 3 );
+    QPixmap cover = The::svgHandler()->imageWithBorder( album, m_iconSize, 3 );
     setIcon( QIcon( cover ) );
 }
 

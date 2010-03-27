@@ -20,7 +20,7 @@
 
 #include "CapabilityDelegate.h"
 #include "DatabaseUpdater.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"

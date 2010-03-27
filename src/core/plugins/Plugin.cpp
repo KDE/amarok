@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Plugin.h"
+#include "core/plugins/Plugin.h"
 
 namespace Plugins {
 

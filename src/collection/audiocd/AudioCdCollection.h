@@ -17,10 +17,10 @@
 #ifndef AUDIOCDCOLLECTION_H
 #define AUDIOCDCOLLECTION_H
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "MediaDeviceCollection.h"
 #include "MemoryCollection.h"
-#include "core/meta/impl/proxy/MetaProxy.h"
+#include "core-implementations/meta/proxy/MetaProxy.h"
 
 #include <kio/jobclasses.h>
 #include <KUrl>

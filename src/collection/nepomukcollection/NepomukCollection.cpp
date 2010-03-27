@@ -20,9 +20,9 @@
 #include "NepomukQueryMaker.h"
 #include "NepomukRegistry.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "proxy/MetaProxy.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QHash>
 #include <QString>

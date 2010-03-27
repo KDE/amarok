@@ -28,7 +28,7 @@
 #include <KMessageBox>
 #include <KPushButton>
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "LikeBack.h"
 
 

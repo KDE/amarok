@@ -17,7 +17,7 @@
 #include "VerticalAppletLayout.h"
 
 #include "Containment.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <plasma/applet.h>
 

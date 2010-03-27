@@ -19,7 +19,7 @@
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QNetworkReply>
 

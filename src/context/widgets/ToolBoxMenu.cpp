@@ -16,7 +16,7 @@
 
 #include "ToolBoxMenu.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <plasma/applet.h>
 #include <plasma/corona.h>

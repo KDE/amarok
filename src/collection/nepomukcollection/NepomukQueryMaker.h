@@ -20,7 +20,7 @@
 
 #include "NepomukArtist.h"
 
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QStack>
 #include <QString>

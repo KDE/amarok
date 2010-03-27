@@ -23,7 +23,7 @@
 
 #include "IpodCollection.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 extern "C" {
 #include <glib-object.h> // g_type_init
@@ -34,7 +34,7 @@ extern "C" {
 
 #include "SvgHandler.h"
 
-#include "core/meta/impl/file/File.h" // for KIO file handling
+#include "core-implementations/meta/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
 #include <kdiskfreespaceinfo.h>

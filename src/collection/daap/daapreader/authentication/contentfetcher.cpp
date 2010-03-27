@@ -17,7 +17,7 @@
  ****************************************************************************************/
 
 #include "contentfetcher.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "hasher.h"
 
 #include <QBuffer>

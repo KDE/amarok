@@ -17,7 +17,7 @@
 #include "TestAlbumCompilationChange.h"
 
 #include "DatabaseUpdater.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"

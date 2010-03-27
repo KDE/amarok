@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "StatisticsCapability.h"
+#include "core/capabilities/StatisticsCapability.h"
 
 Capabilities::StatisticsCapability::~StatisticsCapability()
 {

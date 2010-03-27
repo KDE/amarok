@@ -22,11 +22,11 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
-#include "MetaQueryMaker.h"
+#include "core/collections/MetaQueryMaker.h"
 #include "playlist/PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 

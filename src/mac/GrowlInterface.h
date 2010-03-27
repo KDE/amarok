@@ -22,10 +22,10 @@
 #include <QString> 
 #include <QImage>
  
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "EngineController.h" 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
     
  // NOTE if not on mac, this whole file is useless, so not even going to try
 class GrowlInterface : public EngineObserver , public Meta::Observer

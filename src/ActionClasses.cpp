@@ -22,7 +22,7 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "statusbar/StatusBar.h"

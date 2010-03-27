@@ -32,7 +32,7 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 #include "MoodbarManager.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QFile>
 #include <QFileInfo>

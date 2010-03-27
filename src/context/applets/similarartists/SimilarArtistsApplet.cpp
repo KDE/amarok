@@ -21,7 +21,8 @@
 //Amarok
 #include "Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "EngineController.h"
+#include "core/support/Debug.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "context/widgets/DropPixmapItem.h"
@@ -52,6 +53,7 @@
  */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
+        , EngineObserver( The::engineController() )
         , m_aspectRatio( 0 )
         , m_headerAspectRatio( 0.0 )
         , m_headerLabel( 0 )

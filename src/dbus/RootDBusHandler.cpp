@@ -18,7 +18,7 @@
 #include "RootDBusHandler.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "RootAdaptor.h"
 #include "Version.h"
 

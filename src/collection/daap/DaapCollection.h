@@ -19,7 +19,7 @@
 #ifndef DAAPCOLLECTION_H
 #define DAAPCOLLECTION_H
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "MemoryCollection.h"
 #include "Reader.h"
 

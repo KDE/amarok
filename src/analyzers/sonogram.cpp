@@ -20,7 +20,7 @@
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QPaintEvent>
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 
 Sonogram::Sonogram(QWidget *parent) :

@@ -20,7 +20,7 @@
 
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 class CurrentTrackActionsCapabilityImpl : public Capabilities::CurrentTrackActionsCapability
 {

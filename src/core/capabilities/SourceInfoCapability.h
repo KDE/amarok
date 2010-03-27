@@ -17,7 +17,7 @@
 #ifndef SOURCEINFOCAPABILITY_H
 #define SOURCEINFOCAPABILITY_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 class QPixmap;

@@ -17,7 +17,7 @@
 #include "Mp3tunesHarmonyHandler.h"
 #include "mp3tunesharmonyhandleradaptor.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QList>
 #include <QVariant>

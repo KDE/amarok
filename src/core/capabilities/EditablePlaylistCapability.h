@@ -17,7 +17,7 @@
 #ifndef METAEDITABLEPLAYLISTCAPABILITY_H
 #define METAEDITABLEPLAYLISTCAPABILITY_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
 

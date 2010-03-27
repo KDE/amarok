@@ -17,7 +17,7 @@
 #include "PlaylistsInGroupsProxy.h"
 
 #include "AmarokMimeData.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"

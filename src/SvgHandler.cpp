@@ -19,7 +19,7 @@
 #include "SvgHandler.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "moodbar/MoodbarManager.h"
@@ -246,6 +246,15 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     App::instance()->mainWindow()->update();
 }
 
+QPixmap
+SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
+{
+    const int imageSize = size - ( borderWidth * 2 );
+    const QString loc   = album->imageLocation( imageSize ).url();
+    const QString key   = !loc.isEmpty() ? loc : album->name();
+    const QPixmap cover = album->image( imageSize );
+    return addBordersToPixmap( cover, borderWidth, key );
+}
 
 QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
 {

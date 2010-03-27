@@ -17,7 +17,7 @@
 #include "AlbumsModel.h"
 #include <AmarokMimeData.h>
 #include "AlbumItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "TrackItem.h"
 
 QMimeData*

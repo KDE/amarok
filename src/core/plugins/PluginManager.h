@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 
 class KLibrary;
 

@@ -18,7 +18,7 @@
 
 #include "Amarok.h"
 #include <config-amarok.h>  
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 
 #include <KIconEffect>

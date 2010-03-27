@@ -18,7 +18,7 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 
 #include "core/meta/Meta.h"
 

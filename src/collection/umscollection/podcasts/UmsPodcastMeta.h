@@ -17,10 +17,10 @@
 #ifndef UMSPODCASTMETA_H
 #define UMSPODCASTMETA_H
 
-#include "core/playlists/impl/file/PlaylistFile.h"
+#include "core-implementations/playlists/file/PlaylistFile.h"
 #include "podcasts/PodcastMeta.h"
 
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 
 class UmsPodcastEpisode;
 class UmsPodcastChannel;

@@ -17,7 +17,7 @@
 #include "PodcastSettingsDialog.h"
 #include "ui_PodcastSettingsBase.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QApplication>
 #include <QClipboard>

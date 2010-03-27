@@ -19,7 +19,7 @@
 
 #include "TestSmartPointerList.h"
 
-#include "SmartPointerList.h"
+#include "core/support/SmartPointerList.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QTimer>

@@ -20,7 +20,7 @@
 #include "TestMetaFileTrack.h"
 
 #include "config-amarok-test.h"
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 
 #include <KTempDir>
 

@@ -19,10 +19,11 @@
 
 // Amarok
 #include "Amarok.h"
-#include "Debug.h"
+#include "EngineController.h"
+#include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
@@ -52,6 +53,7 @@
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
 

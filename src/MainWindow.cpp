@@ -28,7 +28,7 @@
 #include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
 #include "Osd.h"

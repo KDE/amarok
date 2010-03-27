@@ -19,7 +19,7 @@
 #ifndef AMAROK_STATUS_BAR_H
 #define AMAROK_STATUS_BAR_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "MainWindow.h"
 #include "amarok_export.h"
 #include "core/meta/Meta.h"

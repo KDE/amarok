@@ -18,9 +18,9 @@
 #define AMAROK_CURRENT_ENGINE
 
 #include "ContextObserver.h"
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h" // album observer
 
 class QTimer;

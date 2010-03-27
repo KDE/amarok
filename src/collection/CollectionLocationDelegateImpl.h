@@ -19,7 +19,7 @@
 #define COLLECTIONLOCATIONDELEGATEIMPL_H
 
 #include "amarok_export.h"
-#include "collection/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocationDelegate.h"
 
 class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
 {

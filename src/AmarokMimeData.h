@@ -22,7 +22,7 @@
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "podcasts/PodcastMeta.h"
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QList>
 #include <QMap>

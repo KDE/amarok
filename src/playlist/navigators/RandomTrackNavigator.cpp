@@ -24,7 +24,7 @@
 
 #include "RandomTrackNavigator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QtGlobal> // For 'qrand()'
 #include <math.h> // For 'round()'

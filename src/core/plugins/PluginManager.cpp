@@ -16,10 +16,9 @@
 
 #define DEBUG_PREFIX "PluginManager"
 
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/plugins/Plugin.h"
 
 #include <KLibLoader>

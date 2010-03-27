@@ -27,7 +27,7 @@ class VolumeDial;
 
 namespace Amarok { class TimeSlider; }
 
-#include "EngineObserver.h" //baseclass
+#include "core/engine/EngineObserver.h" //baseclass
 #include <QToolBar>
 
 

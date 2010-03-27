@@ -20,7 +20,7 @@
 
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"

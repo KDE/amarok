@@ -19,7 +19,7 @@
 
 #include "TestTimecodeTrackProvider.h"
 #include "config-amarok-test.h"
-#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
+#include "core-implementations/meta/timecode/TimecodeTrackProvider.h"
 
 #include <QtTest/QTest>
 

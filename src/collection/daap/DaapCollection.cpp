@@ -22,7 +22,7 @@
 
 #include "amarokconfig.h"
 #include "DaapMeta.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
 #include "Reader.h"
 #include "statusbar/StatusBar.h"

@@ -25,7 +25,7 @@
 #include "AppletExplorer.h"
 
 #include "AppletIcon.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
 #include <plasma/containment.h>

@@ -17,7 +17,7 @@
  
 #include "LongMessageWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KPushButton>
 

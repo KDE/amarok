@@ -19,7 +19,7 @@
 
 #include "amarokconfig.h"
 #include "CollectionTreeItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QVariant>
 #include <QString>

@@ -17,7 +17,7 @@
 #ifndef AMAROK_UPDATECAPABILITY_H
 #define AMAROK_UPDATECAPABILITY_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 namespace Capabilities

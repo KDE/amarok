@@ -19,7 +19,7 @@
 #include "CollectionTreeItemDelegate.h"
 #include "browsers/CollectionTreeItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QAction>
 #include <QMouseEvent>

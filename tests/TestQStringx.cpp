@@ -19,7 +19,7 @@
 
 #include "TestQStringx.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QString>

@@ -18,7 +18,7 @@
 #ifndef VOLUMEPOPUPBUTTON_H
 #define VOLUMEPOPUPBUTTON_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QToolButton>
 

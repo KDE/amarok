@@ -18,7 +18,7 @@
 #include "LastfmInfoParser.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QNetworkReply>
 #include <lastfm/XmlQuery>

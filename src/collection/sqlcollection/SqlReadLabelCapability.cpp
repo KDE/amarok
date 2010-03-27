@@ -19,7 +19,7 @@
 #include "SqlReadLabelCapability.h"
 
 #include "collection/CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/SqlStorage.h"
 
 namespace Capabilities

@@ -19,7 +19,7 @@
 #define PLAYER_DBUS_HANDLER_H
 
 #include "core/meta/Meta.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QVariantMap>

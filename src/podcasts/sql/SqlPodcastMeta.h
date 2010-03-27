@@ -18,7 +18,7 @@
 #define SQLPODCASTMETA_H
 
 #include "PodcastMeta.h"
-#include "core/meta/impl/file/File.h"
+#include "core-implementations/meta/file/File.h"
 #include "core/playlists/PlaylistProvider.h"
 
 class SqlPodcastProvider;

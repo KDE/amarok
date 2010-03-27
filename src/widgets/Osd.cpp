@@ -23,7 +23,7 @@
 #include "Osd.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "StarManager.h"
 #include "SvgHandler.h"
@@ -602,7 +602,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     QImage image;
     if( track && track->album() )
-        image = track->album()->imageWithBorder( 100, 5 ).toImage();
+        image = The::svgHandler()->imageWithBorder( track->album(), 100, 5 ).toImage();
 
     OSDWidget::show( text, image );
 }

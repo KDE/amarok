@@ -22,7 +22,7 @@
 #define AMAROK_ENGINECONTROLLER_H
 
 #include "core/capabilities/BoundedPlaybackCapability.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QMap>

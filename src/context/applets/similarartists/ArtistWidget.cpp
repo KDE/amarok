@@ -19,10 +19,10 @@
 
 //Amarok
 #include "amarokurls/AmarokUrl.h"
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "collection/CollectionManager.h"
-#include "collection/QueryMaker.h"
-#include "Debug.h"
+#include "core/collections/QueryMaker.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 
 //KDE

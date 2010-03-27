@@ -23,7 +23,7 @@
 #include "ServiceCollectionLocation.h"
 #include "amarokconfig.h"
 #include "ServiceMetaBase.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "support/MemoryQueryMaker.h"
 //#include "reader.h"
 

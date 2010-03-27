@@ -23,7 +23,7 @@
 #include <context/DataEngine.h>
 #include <context/Svg.h>
 
-#include "core/playlists/impl/file/xspf/XSPFPlaylist.h"
+#include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
 #include "core/playlists/Playlist.h"
 
 #include <Plasma/FrameSvg>

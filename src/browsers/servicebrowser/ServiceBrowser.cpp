@@ -16,7 +16,7 @@
 
 #include "ServiceBrowser.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"

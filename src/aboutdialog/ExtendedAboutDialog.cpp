@@ -22,7 +22,7 @@
 #include "ExtendedAboutDialog.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "OcsPersonItem.h"
 #include "libattica-ocsclient/providerinitjob.h"
 

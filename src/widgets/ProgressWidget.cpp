@@ -16,13 +16,13 @@
 
 #include "ProgressWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
 #include "TimeLabel.h"
 #include "amarokconfig.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
+#include "core-implementations/capabilities/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 

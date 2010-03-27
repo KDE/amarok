@@ -24,7 +24,7 @@
 #include "PrettyItemDelegate.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "InlineEditorWidget.h"
 #include "SvgHandler.h"

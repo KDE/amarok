@@ -17,7 +17,7 @@
 #ifndef MEMORYQUERYMAKERINTERNAL_H
 #define MEMORYQUERYMAKERINTERNAL_H
 
-#include "collection/QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 
 #include <QObject>

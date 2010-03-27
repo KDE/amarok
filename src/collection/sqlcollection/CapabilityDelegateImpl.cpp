@@ -16,7 +16,7 @@
 
 #include "CapabilityDelegateImpl.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
@@ -30,8 +30,8 @@
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
-#include "core/capabilities/impl/timecode/TimecodeLoadCapability.h"
-#include "core/capabilities/impl/timecode/TimecodeWriteCapability.h"
+#include "core-implementations/capabilities/timecode/TimecodeLoadCapability.h"
+#include "core-implementations/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/capabilities/UpdateCapability.h"
 #include "amarokurls/PlayUrlRunner.h"

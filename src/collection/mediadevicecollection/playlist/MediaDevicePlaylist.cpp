@@ -17,7 +17,7 @@
 #include "MediaDevicePlaylist.h"
 
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 //#include "core/meta/stream/Stream.h"
 //#include "MediaDeviceStorage.h"
 #include "playlistmanager/PlaylistManager.h"

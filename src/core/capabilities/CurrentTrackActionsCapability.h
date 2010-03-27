@@ -17,8 +17,8 @@
 #ifndef CURRENTTRACKACTIONSCAPABILITY_H
 #define CURRENTTRACKACTIONSCAPABILITY_H
 
-#include "CustomActionsCapability.h"
-#include "amarok_export.h"
+#include "core/capabilities/CustomActionsCapability.h"
+#include "shared/amarok_export.h"
 
 /**
  * This capability allows tracks to display custom actions in different places ( such as the playlist context menu,

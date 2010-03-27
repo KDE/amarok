@@ -17,7 +17,7 @@
 #include "PlaylistBrowser.h"
 
 #include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicCategory.h"
 #include "core/playlists/Playlist.h"
 #include "UserPlaylistCategory.h"

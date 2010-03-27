@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "BookmarkTriangle.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"

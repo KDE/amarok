@@ -15,9 +15,9 @@ include_directories(
 set( testcuefilesupport_SRCS
         TestCueFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/impl/cue/CueFileSupport.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/impl/timecode/TimecodeMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core/capabilities/impl/timecode/TimecodeBoundedPlaybackCapability.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/meta/cue/CueFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/meta/timecode/TimecodeMeta.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
     )
 
 kde4_add_unit_test( testcuefilesupport ${testcuefilesupport_SRCS} )

@@ -17,7 +17,7 @@
 #include "BrowserCategoryListSortFilterProxyModel.h"
 #include "BrowserCategoryListModel.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QVariant>
 

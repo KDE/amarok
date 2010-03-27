@@ -19,7 +19,7 @@
 #include "DynamicBiasDelegate.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicBiasModel.h"
 

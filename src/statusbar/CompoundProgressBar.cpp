@@ -16,7 +16,7 @@
 
 #include "CompoundProgressBar.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 
 #include <KIcon>

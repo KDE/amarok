@@ -16,11 +16,11 @@
 
 #include "WeeklyTopBias.h"
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <lastfm/Artist>
 #include <lastfm/ws.h>

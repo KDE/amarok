@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionCapability.h"
+#include "core/capabilities/CollectionCapability.h"
 
 Capabilities::CollectionCapability::~CollectionCapability()
 {

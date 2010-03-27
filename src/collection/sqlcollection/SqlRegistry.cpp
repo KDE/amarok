@@ -18,7 +18,7 @@
 
 #include "SqlRegistry.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "SqlCollection.h"
 

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DecoratorCapability.h"
+#include "core/capabilities/DecoratorCapability.h"
 
 Capabilities::DecoratorCapability::~DecoratorCapability()
 {

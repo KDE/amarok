@@ -16,9 +16,9 @@
 
 #include "SynchronizationBaseJob.h"
 
-#include "collection/Collection.h"
-#include "collection/QueryMaker.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 
 #include <QMetaEnum>

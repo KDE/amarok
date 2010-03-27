@@ -18,7 +18,7 @@
 #ifndef AMAROK_META_H
 #define AMAROK_META_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 
 #include "core/capabilities/Capability.h"
 
@@ -30,8 +30,8 @@
 #include <QSharedData>
 #include <QString>
 
-#include <ksharedptr.h>
-#include <kurl.h>
+#include <KSharedPtr>
+#include <KUrl>
 
 class QueryMaker;
 
@@ -348,8 +348,6 @@ namespace Meta
             virtual QPixmap image( int size = 1 );
             /** returns the image location on disk */
             virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl(); }
-            /** returns the cover of the album with a nice border around it*/
-            virtual QPixmap imageWithBorder( int size = 1, int borderWidth = 5 );
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */

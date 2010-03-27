@@ -20,7 +20,7 @@
 #include "LastFmServiceConfig.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KWallet/Wallet>
 #include <KDialog>

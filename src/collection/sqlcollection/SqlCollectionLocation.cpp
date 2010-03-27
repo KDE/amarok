@@ -20,9 +20,9 @@
 
 #include "collectionscanner/AFTUtility.h"
 
-#include "collection/CollectionLocationDelegate.h"
-#include "Components.h"
-#include "Debug.h"
+#include "core/collections/CollectionLocationDelegate.h"
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
 #include "collection/SqlStorage.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"

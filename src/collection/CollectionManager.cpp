@@ -18,17 +18,17 @@
 
 #include "CollectionManager.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "EngineController.h"
-#include "MetaQueryMaker.h"
-#include "core/meta/impl/file/File.h"
-#include "core/meta/impl/stream/Stream.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core-implementations/meta/file/File.h"
+#include "core-implementations/meta/stream/Stream.h"
 #include "core/plugins/PluginManager.h"
-#include "SmartPointerList.h"
+#include "core/support/SmartPointerList.h"
 #include "SqlStorage.h"
-#include "core/meta/impl/timecode/TimecodeTrackProvider.h"
+#include "core-implementations/meta/timecode/TimecodeTrackProvider.h"
 
 #include <QList>
 #include <QMetaEnum>

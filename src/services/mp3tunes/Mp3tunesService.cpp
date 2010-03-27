@@ -19,7 +19,7 @@
 
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
 #include "statusbar/StatusBar.h"
 

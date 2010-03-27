@@ -22,12 +22,13 @@
 
 #include <amarokconfig.h>
 #include "CollectionTreeItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Amarok.h"
-#include "Collection.h"
+#include "SvgHandler.h"
+#include "core/collections/Collection.h"
 #include "CollectionManager.h"
 #include "covermanager/CoverFetcher.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <KLocale>
 #include <QTimer>
@@ -114,7 +115,7 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     {
                         Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                         if( album )
-                            return album->imageWithBorder( 32, 2 );
+                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
                         return iconForLevel( level  );
                     }
                 }

@@ -17,7 +17,7 @@
 #ifndef AMAROK_META_PLAYLIST_H
 #define AMAROK_META_PLAYLIST_H
 
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
 
@@ -29,8 +29,8 @@
 #include <QString>
 #include <QTextStream>
 
-#include <ksharedptr.h>
-#include <kurl.h>
+#include <KSharedPtr>
+#include <KUrl>
 
 class QTextStream;
 

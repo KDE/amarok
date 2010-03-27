@@ -17,7 +17,7 @@
 #include "SqlQueryMakerInternal.h"
 
 #include "collection/SqlStorage.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 #include "SqlRegistry.h"

@@ -16,7 +16,7 @@
 
 #include "ContextObserver.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 //////////////////////////////////////////////////////////////
 ////// CLASS ContextObserver

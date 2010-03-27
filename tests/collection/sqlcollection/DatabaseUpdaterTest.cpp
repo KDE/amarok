@@ -16,7 +16,7 @@
 
 #include "DatabaseUpdaterTest.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DatabaseUpdater.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 

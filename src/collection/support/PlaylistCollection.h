@@ -17,7 +17,7 @@
 #ifndef PLAYLISTCOLLECTION_H
 #define PLAYLISTCOLLECTION_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "MemoryCollection.h"
 #include "core/playlists/Playlist.h"
 

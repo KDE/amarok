@@ -22,12 +22,12 @@
 
 #include "Amarok.h"
 #include "AmarokMimeData.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Expression.h"
 #include "core/meta/support/MetaConstants.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
 

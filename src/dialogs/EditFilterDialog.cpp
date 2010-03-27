@@ -17,9 +17,9 @@
 #include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "collection/CollectionManager.h"
-#include "collection/MetaQueryMaker.h"
+#include "core/collections/MetaQueryMaker.h"
 
 #include <KGlobal>
 #include <KLineEdit>

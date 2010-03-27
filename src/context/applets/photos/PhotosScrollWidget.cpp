@@ -19,7 +19,7 @@
 #include "DragPixmapItem.h"
 
 // Amarok
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 
 // KDE

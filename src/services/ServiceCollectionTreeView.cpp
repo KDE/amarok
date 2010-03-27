@@ -17,7 +17,7 @@
 #include "ServiceCollectionTreeView.h"
 
 #include "browsers/CollectionTreeItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/capabilities/CustomActionsCapability.h"
 
 #include <KMenu>

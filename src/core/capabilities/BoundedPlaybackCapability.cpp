@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "BoundedPlaybackCapability.h"
+#include "core/capabilities/BoundedPlaybackCapability.h"
 
 namespace Capabilities {
 

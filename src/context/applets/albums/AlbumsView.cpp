@@ -18,7 +18,7 @@
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"

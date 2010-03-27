@@ -20,7 +20,7 @@
 #include "core/capabilities/Capability.h"
 #include "core/playlists/Playlist.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 namespace Playlists
 {

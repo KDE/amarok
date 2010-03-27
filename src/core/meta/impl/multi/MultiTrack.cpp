@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MultiTrack.h"
+#include "core/meta/impl/multi/MultiTrack.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "core/capabilities/impl/multisource/MultiSourceCapabilityImpl.h"
 
 namespace Meta {

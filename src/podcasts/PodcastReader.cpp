@@ -17,7 +17,7 @@
 
 #include "PodcastReader.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "statusbar/StatusBar.h"
 #include "core/meta/support/MetaUtility.h"
 

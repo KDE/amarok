@@ -17,7 +17,7 @@
 #include "SqlPlaylistGroup.h"
 
 #include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SqlStorage.h"
 
 #include <typeinfo>
