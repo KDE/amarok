@@ -26,6 +26,7 @@
 BrowserWidget::BrowserWidget( QWidget * parent )
     : KVBox( parent )
 {
+    DEBUG_BLOCK
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( this );
     new HorizontalDivider( this );
     

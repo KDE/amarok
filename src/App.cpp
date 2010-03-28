@@ -109,6 +109,8 @@ extern void setupEventHandler_mac(long);
 #include "TestDirectoryLoader.h"
 #endif // DEBUG
 
+QStringList App::s_delayedAmarokUrls = QStringList();
+
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), AMAROK_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
@@ -307,8 +309,7 @@ App::handleCliArgs() //static
             }
             else if( url.protocol() == "amarok" )
             {
-                AmarokUrl aUrl( url.url() );
-                aUrl.run();
+                s_delayedAmarokUrls.append( url.url() );
             }
             else
             {
@@ -783,6 +784,15 @@ App::continueInit()
 
     // Using QTimer, so that we won't block the GUI
     QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
+
+    //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
+    foreach( QString urlString, s_delayedAmarokUrls )
+    {
+        AmarokUrl aUrl( urlString );
+        aUrl.run();
+    }
+    s_delayedAmarokUrls.clear();
+    
 }
 
 void App::checkCollectionScannerVersion()  // SLOT

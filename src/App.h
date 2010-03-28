@@ -112,6 +112,8 @@ class AMAROK_EXPORT App : public KUniqueApplication
         QPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon        *m_tray;
         MediaDeviceManager      *m_mediaDeviceManager;
+
+        static QStringList       s_delayedAmarokUrls;
 };
 
 #define pApp static_cast<App*>(kapp)
