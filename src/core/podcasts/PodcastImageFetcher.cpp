@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PodcastImageFetcher.h"
+#include "core/podcasts/PodcastImageFetcher.h"
 
 #include "core/support/Debug.h"
 
@@ -27,7 +27,7 @@ PodcastImageFetcher::PodcastImageFetcher()
 }
 
 void
-PodcastImageFetcher::addChannel( Meta::PodcastChannelPtr channel )
+PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
 {
     DEBUG_BLOCK
     if( channel->imageUrl().isEmpty() )
@@ -53,19 +53,19 @@ PodcastImageFetcher::addChannel( Meta::PodcastChannelPtr channel )
 }
 
 void
-PodcastImageFetcher::addEpisode( Meta::PodcastEpisodePtr episode )
+PodcastImageFetcher::addEpisode( Podcasts::PodcastEpisodePtr episode )
 {
     Q_UNUSED( episode );
 }
 
 KUrl
-PodcastImageFetcher::cachedImagePath( Meta::PodcastChannelPtr channel )
+PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannelPtr channel )
 {
     return cachedImagePath( channel.data() );
 }
 
 KUrl
-PodcastImageFetcher::cachedImagePath( Meta::PodcastChannel *channel )
+PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 {
     KUrl imagePath = channel->saveLocation();
     if( imagePath.isEmpty() )
@@ -78,11 +78,11 @@ PodcastImageFetcher::cachedImagePath( Meta::PodcastChannel *channel )
 }
 
 bool
-PodcastImageFetcher::hasCachedImage( Meta::PodcastChannelPtr channel )
+PodcastImageFetcher::hasCachedImage( Podcasts::PodcastChannelPtr channel )
 {
     DEBUG_BLOCK
     return QFile( PodcastImageFetcher::cachedImagePath(
-            Meta::PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() ).exists();
+            Podcasts::PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() ).exists();
 }
 
 void
@@ -105,7 +105,7 @@ PodcastImageFetcher::run()
         return;
     }
 
-    foreach( Meta::PodcastChannelPtr channel, m_channels )
+    foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {
         debug() << "Download image from " << channel->imageUrl();
         KUrl cachedPath = cachedImagePath( channel );
@@ -127,7 +127,7 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
     DEBUG_BLOCK
 
     //QMap::take() also removes the entry from the map.
-    Meta::PodcastChannelPtr channel = m_jobChannelMap.take( job );
+    Podcasts::PodcastChannelPtr channel = m_jobChannelMap.take( job );
     if( channel.isNull() )
     {
         error() << "got null PodcastChannelPtr " << __FILE__ << ":" << __LINE__;

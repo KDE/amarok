@@ -30,10 +30,12 @@
 #include <QDate>
 #include <QFile>
 
+using namespace Podcasts;
+
 class TimecodeWriteCapabilityPodcastImpl : public Capabilities::TimecodeWriteCapability
 {
     public:
-        TimecodeWriteCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
+        TimecodeWriteCapabilityPodcastImpl( Podcasts::PodcastEpisode *episode )
             : Capabilities::TimecodeWriteCapability()
             , m_episode( episode )
         {}
@@ -53,13 +55,13 @@ class TimecodeWriteCapabilityPodcastImpl : public Capabilities::TimecodeWriteCap
     }
 
     private:
-        Meta::PodcastEpisodePtr m_episode;
+        Podcasts::PodcastEpisodePtr m_episode;
 };
 
 class TimecodeLoadCapabilityPodcastImpl : public Capabilities::TimecodeLoadCapability
 {
     public:
-        TimecodeLoadCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
+        TimecodeLoadCapabilityPodcastImpl( Podcasts::PodcastEpisode *episode )
         : Capabilities::TimecodeLoadCapability()
         , m_episode( episode )
         {
@@ -87,31 +89,31 @@ class TimecodeLoadCapabilityPodcastImpl : public Capabilities::TimecodeLoadCapab
         }
 
     private:
-        Meta::PodcastEpisodePtr m_episode;
+        Podcasts::PodcastEpisodePtr m_episode;
 };
 
 Meta::TrackList
-Meta::SqlPodcastEpisode::toTrackList( Meta::SqlPodcastEpisodeList episodes )
+SqlPodcastEpisode::toTrackList( Podcasts::SqlPodcastEpisodeList episodes )
 {
     Meta::TrackList tracks;
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+    foreach( SqlPodcastEpisodePtr sqlEpisode, episodes )
         tracks << Meta::TrackPtr::dynamicCast( sqlEpisode );
 
     return tracks;
 }
 
-Meta::PodcastEpisodeList
-Meta::SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
+Podcasts::PodcastEpisodeList
+SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
 {
-    Meta::PodcastEpisodeList sqlEpisodes;
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
-        sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
+    Podcasts::PodcastEpisodeList sqlEpisodes;
+    foreach( SqlPodcastEpisodePtr sqlEpisode, episodes )
+        sqlEpisodes << Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 
     return sqlEpisodes;
 }
 
-Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
-    : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
+SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
+    : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
     , m_channel( sqlChannel )
 {
@@ -142,8 +144,8 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
 }
 
 // XXX: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
-Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
-    : Meta::PodcastEpisode()
+SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
+    : Podcasts::PodcastEpisode()
     , m_dbId( 0 )
 {
     m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
@@ -175,7 +177,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 
     // The album, artist, composer, genre and year fields
     // contain proxy objects with internal references to this.
-    // These proxies are created by Meta::PodcastEpisode(), so
+    // These proxies are created by Podcasts::PodcastEpisode(), so
     // these fields don't have to be set here.
 
     //commit to the database
@@ -187,19 +189,19 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     }
 }
 
-Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
+SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
 void
-Meta::SqlPodcastEpisode::setNew( bool isNew )
+SqlPodcastEpisode::setNew( bool isNew )
 {
     m_isNew = isNew;
     updateInDb();
 }
 
 void
-Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
+SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 {
     m_localUrl = url;
     updateInDb();
@@ -219,7 +221,7 @@ Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 }
 
 qint64
-Meta::SqlPodcastEpisode::length() const
+SqlPodcastEpisode::length() const
 {
     //if downloaded get the duration from the file, else use the value read from the feed
     if( m_localFile.isNull() )
@@ -229,7 +231,7 @@ Meta::SqlPodcastEpisode::length() const
 }
 
 bool
-Meta::SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     switch( type )
     {
@@ -249,7 +251,7 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type 
 }
 
 Capabilities::Capability*
-Meta::SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type type )
+SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
@@ -273,7 +275,7 @@ Meta::SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Ty
 }
 
 bool
-Meta::SqlPodcastEpisode::isEditable() const
+SqlPodcastEpisode::isEditable() const
 {
      if( m_localFile.isNull() )
          return false;
@@ -282,7 +284,7 @@ Meta::SqlPodcastEpisode::isEditable() const
 }
 
 void
-Meta::SqlPodcastEpisode::finishedPlaying( double playedFraction )
+SqlPodcastEpisode::finishedPlaying( double playedFraction )
 {
     if( length() <= 0 || playedFraction >= 0.1 )
         setNew( false );
@@ -291,7 +293,7 @@ Meta::SqlPodcastEpisode::finishedPlaying( double playedFraction )
 }
 
 QString
-Meta::SqlPodcastEpisode::name() const
+SqlPodcastEpisode::name() const
 {
     if( m_localFile.isNull() )
         return m_title;
@@ -300,7 +302,7 @@ Meta::SqlPodcastEpisode::name() const
 }
 
 QString
-Meta::SqlPodcastEpisode::prettyName() const
+SqlPodcastEpisode::prettyName() const
 {
     /*for now just do the same as name, but in the future we might want to used a cleaned
       up string using some sort of regex tag rewrite for podcasts. decapitateString on
@@ -309,7 +311,7 @@ Meta::SqlPodcastEpisode::prettyName() const
 }
 
 void
-Meta::SqlPodcastEpisode::setTitle( const QString &title )
+SqlPodcastEpisode::setTitle( const QString &title )
 {
     if( !m_localFile.isNull() )
     {
@@ -320,7 +322,7 @@ Meta::SqlPodcastEpisode::setTitle( const QString &title )
 }
 
 Meta::AlbumPtr
-Meta::SqlPodcastEpisode::album() const
+SqlPodcastEpisode::album() const
 {
     if( m_localFile.isNull() )
         return m_albumPtr;
@@ -329,7 +331,7 @@ Meta::SqlPodcastEpisode::album() const
 }
 
 Meta::ArtistPtr
-Meta::SqlPodcastEpisode::artist() const
+SqlPodcastEpisode::artist() const
 {
     if( m_localFile.isNull() )
         return m_artistPtr;
@@ -338,7 +340,7 @@ Meta::SqlPodcastEpisode::artist() const
 }
 
 Meta::ComposerPtr
-Meta::SqlPodcastEpisode::composer() const
+SqlPodcastEpisode::composer() const
 {
     if( m_localFile.isNull() )
         return m_composerPtr;
@@ -347,7 +349,7 @@ Meta::SqlPodcastEpisode::composer() const
 }
 
 Meta::GenrePtr
-Meta::SqlPodcastEpisode::genre() const
+SqlPodcastEpisode::genre() const
 {
     if( m_localFile.isNull() )
         return m_genrePtr;
@@ -356,7 +358,7 @@ Meta::SqlPodcastEpisode::genre() const
 }
 
 Meta::YearPtr
-Meta::SqlPodcastEpisode::year() const
+SqlPodcastEpisode::year() const
 {
     if( m_localFile.isNull() )
         return m_yearPtr;
@@ -365,7 +367,7 @@ Meta::SqlPodcastEpisode::year() const
 }
 
 bool
-Meta::SqlPodcastEpisode::writeTagsToFile()
+SqlPodcastEpisode::writeTagsToFile()
 {
     if( m_localFile.isNull() )
         return false;
@@ -394,7 +396,7 @@ Meta::SqlPodcastEpisode::writeTagsToFile()
 }
 
 void
-Meta::SqlPodcastEpisode::updateInDb()
+SqlPodcastEpisode::updateInDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
@@ -462,7 +464,7 @@ Meta::SqlPodcastEpisode::updateInDb()
 }
 
 void
-Meta::SqlPodcastEpisode::deleteFromDb()
+SqlPodcastEpisode::deleteFromDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     sqlStorage->query(
@@ -470,22 +472,22 @@ Meta::SqlPodcastEpisode::deleteFromDb()
 }
 
 Playlists::PlaylistPtr
-Meta::SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
+SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
 {
     Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlChannel );
     return playlist;
 }
 
-Meta::SqlPodcastChannelPtr
-Meta::SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
+SqlPodcastChannelPtr
+SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
 {
-    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( playlist );
+    SqlPodcastChannelPtr sqlChannel = SqlPodcastChannelPtr::dynamicCast( playlist );
     return sqlChannel;
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
+SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
-    : Meta::PodcastChannel()
+    : Podcasts::PodcastChannel()
     , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -508,9 +510,9 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     loadEpisodes();
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
-                                            PodcastChannelPtr channel )
-    : Meta::PodcastChannel()
+SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
+                                            Podcasts::PodcastChannelPtr channel )
+    : Podcasts::PodcastChannel()
     , m_dbId( 0 )
     , m_provider( provider )
 {
@@ -545,7 +547,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
 
     updateInDb();
 
-    foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+    foreach( Podcasts::PodcastEpisodePtr episode, channel->episodes() )
     {
         episode->setChannel( PodcastChannelPtr( this ) );
         SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episode );
@@ -555,18 +557,18 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
 }
 
 Playlists::PlaylistProvider *
-Meta::SqlPodcastChannel::provider() const
+SqlPodcastChannel::provider() const
 {
     return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
 }
 
-Meta::SqlPodcastChannel::~SqlPodcastChannel()
+SqlPodcastChannel::~SqlPodcastChannel()
 {
     m_episodes.clear();
 }
 
 void
-Meta::SqlPodcastChannel::setTitle( const QString &title )
+SqlPodcastChannel::setTitle( const QString &title )
 {
     /* also change the savelocation if a title is not set yet.
        This is a special condition that can happen when first fetching a podcast feed */
@@ -575,14 +577,14 @@ Meta::SqlPodcastChannel::setTitle( const QString &title )
     m_title = title;
 }
 
-Meta::PodcastEpisodeList
-Meta::SqlPodcastChannel::episodes()
+Podcasts::PodcastEpisodeList
+SqlPodcastChannel::episodes()
 {
-    return Meta::SqlPodcastEpisode::toPodcastEpisodeList( m_episodes );
+    return SqlPodcastEpisode::toPodcastEpisodeList( m_episodes );
 }
 
 void
-Meta::SqlPodcastChannel::setImage( const QPixmap &image )
+SqlPodcastChannel::setImage( const QPixmap &image )
 {
     DEBUG_BLOCK
 
@@ -590,7 +592,7 @@ Meta::SqlPodcastChannel::setImage( const QPixmap &image )
 }
 
 void
-Meta::SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
+SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
 {
     DEBUG_BLOCK
     debug() << imageUrl;
@@ -605,8 +607,8 @@ Meta::SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
     debug() << "Image is remote, handled by podcastImageFetcher.";
 }
 
-Meta::PodcastEpisodePtr
-Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+Podcasts::PodcastEpisodePtr
+SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
@@ -648,7 +650,7 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 }
 
 void
-Meta::SqlPodcastChannel::updateInDb()
+SqlPodcastChannel::updateInDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
@@ -691,10 +693,10 @@ Meta::SqlPodcastChannel::updateInDb()
 }
 
 void
-Meta::SqlPodcastChannel::deleteFromDb()
+SqlPodcastChannel::deleteFromDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_episodes )
+    foreach( SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
        m_episodes.removeOne( sqlEpisode );
@@ -705,7 +707,7 @@ Meta::SqlPodcastChannel::deleteFromDb()
 }
 
 void
-Meta::SqlPodcastChannel::loadEpisodes()
+SqlPodcastChannel::loadEpisodes()
 {
     m_episodes.clear();
 

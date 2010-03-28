@@ -17,7 +17,8 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "PodcastProvider.h"
+#include "core/podcasts/PodcastReader.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "SqlPodcastMeta.h"
 
 #include <kio/jobclasses.h>
@@ -31,10 +32,12 @@ class PodcastReader;
 class SqlStorage;
 class QTimer;
 
+namespace Podcasts {
+
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class SqlPodcastProvider : public PodcastProvider
+class SqlPodcastProvider : public Podcasts::PodcastProvider
 {
     Q_OBJECT
     public:
@@ -50,43 +53,46 @@ class SqlPodcastProvider : public PodcastProvider
         Playlists::PlaylistList playlists();
 
         //PodcastProvider methods
-        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid );
+        virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
 
         void addPodcast( const KUrl &url );
 
-        Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
-        Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
-        Meta::PodcastChannelList channels();
+        Podcasts::PodcastChannelList channels();
 
-        void removeSubscription( Meta::PodcastChannelPtr channel );
+        void removeSubscription( Podcasts::PodcastChannelPtr channel );
 
         void configureProvider();
-        void configureChannel( Meta::PodcastChannelPtr channel );
+        void configureChannel( Podcasts::PodcastChannelPtr channel );
 
-        QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
-        QList<QAction *> channelActions( Meta::PodcastChannelList );
+        QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
+        QList<QAction *> channelActions( Podcasts::PodcastChannelList );
 
         virtual QList<QAction *> providerActions();
 
         void completePodcastDownloads();
 
         //SqlPodcastProvider specific methods
-        Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
+        Podcasts::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
         KUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
     public slots:
         void updateAll();
-        void update( Meta::PodcastChannelPtr channel );
-        void downloadEpisode( Meta::PodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
+        void update( Podcasts::PodcastChannelPtr channel );
+        void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
         void slotUpdated();
 
-        void slotReadResult( PodcastReader *podcastReader );
-        void update( Meta::SqlPodcastChannelPtr channel );
-        void downloadEpisode( Meta::SqlPodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
+        void slotReadResult( Podcasts::PodcastReader *podcastReader );
+        void update( Podcasts::SqlPodcastChannelPtr channel );
+        void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr episode );
+
+        void slotStatusBarSorryMessage( const QString &message );
+        void slotStatusBarNewProgressOperation( KIO::TransferJob * job, const QString & description, Podcasts::PodcastReader* reader );
 
     private slots:
         void downloadResult( KJob * );
@@ -107,7 +113,7 @@ class SqlPodcastProvider : public PodcastProvider
         void totalPodcastDownloadProgress( int progress );
 
     private slots:
-        void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
+        void channelImageReady( Podcasts::PodcastChannelPtr, QPixmap );
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();
 
@@ -117,17 +123,17 @@ class SqlPodcastProvider : public PodcastProvider
         void loadPodcasts();
 
         /** @arg string: a url, localUrl or guid in string form */
-        Meta::SqlPodcastEpisodePtr sqlEpisodeForString( const QString &string );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisodeForString( const QString &string );
 
         void updateDatabase( int fromVersion, int toVersion );
-        void fetchImage( Meta::SqlPodcastChannelPtr channel );
+        void fetchImage( Podcasts::SqlPodcastChannelPtr channel );
 
         /** shows a modal dialog asking the user if he really wants to unsubscribe
             and if he wants to keep the podcast media */
-        QPair<bool, bool> confirmUnsubscribe(Meta::PodcastChannelPtr channel);
+        QPair<bool, bool> confirmUnsubscribe(Podcasts::PodcastChannelPtr channel);
 
         /** remove the episodes in the list from the filesystem */
-        void deleteDownloadedEpisodes( Meta::PodcastEpisodeList &episodes );
+        void deleteDownloadedEpisodes( Podcasts::PodcastEpisodeList &episodes );
 
         void subscribe( const KUrl &url );
         QFile* createTmpFile ( KJob *job );
@@ -136,20 +142,20 @@ class SqlPodcastProvider : public PodcastProvider
         /** returns true if the file that is downloaded by 'job' is already locally available */
         bool checkEnclosureLocallyAvailable( KIO::Job *job );
 
-        Meta::SqlPodcastChannelList m_channels;
+        Podcasts::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
         int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
-        Meta::PodcastChannelList m_updateQueue;
+        Podcasts::PodcastChannelList m_updateQueue;
         QList<KUrl> m_subscribeQueue;
 
-        QHash<KJob *, Meta::SqlPodcastEpisodePtr> m_downloadJobMap;
+        QHash<KJob *, Podcasts::SqlPodcastEpisodePtr> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
         QHash<KJob *, QFile*> m_tmpFileMap;
 
-        Meta::SqlPodcastEpisodeList m_downloadQueue;
+        Podcasts::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
 
@@ -169,5 +175,7 @@ class SqlPodcastProvider : public PodcastProvider
 
         PodcastImageFetcher *m_podcastImageFetcher;
 };
+
+} //namespace Podcasts
 
 #endif

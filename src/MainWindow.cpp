@@ -168,7 +168,6 @@ MainWindow::MainWindow()
 
     ServicePluginManager::instance();
 
-
     StatusBar * statusBar = new StatusBar( this );
 
     setStatusBar( statusBar );

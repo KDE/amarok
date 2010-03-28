@@ -17,11 +17,13 @@
 #ifndef UMSPODCASTPROVIDER_H
 #define UMSPODCASTPROVIDER_H
 
-#include "podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "UmsHandler.h"
 #include "UmsPodcastMeta.h"
 
 class KJob;
+
+namespace Podcasts {
 
 class UmsPodcastProvider : public PodcastProvider
 {
@@ -36,19 +38,19 @@ class UmsPodcastProvider : public PodcastProvider
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid );
+        virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
 
         virtual void addPodcast( const KUrl &url );
 
-        virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
-        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
+        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
-        virtual Meta::PodcastChannelList channels();
+        virtual Podcasts::PodcastChannelList channels();
 
-        virtual void removeSubscription( Meta::PodcastChannelPtr channel );
+        virtual void removeSubscription( Podcasts::PodcastChannelPtr channel );
 
         virtual void configureProvider();
-        virtual void configureChannel( Meta::PodcastChannelPtr channel );
+        virtual void configureChannel( Podcasts::PodcastChannelPtr channel );
 
         // PlaylistProvider methods
         virtual QString prettyName() const;
@@ -56,8 +58,8 @@ class UmsPodcastProvider : public PodcastProvider
 
         virtual Playlists::PlaylistList playlists();
 
-        virtual QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
-        virtual QList<QAction *> channelActions( Meta::PodcastChannelList );
+        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
+        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList );
 
         virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
         virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
@@ -67,9 +69,9 @@ class UmsPodcastProvider : public PodcastProvider
 
     public slots:
         virtual void updateAll();
-        virtual void update( Meta::PodcastChannelPtr channel );
-        virtual void downloadEpisode( Meta::PodcastEpisodePtr episode );
-        virtual void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
+        virtual void update( Podcasts::PodcastChannelPtr channel );
+        virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
+        virtual void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
         virtual void slotUpdated();
         virtual void scan();
 
@@ -98,5 +100,7 @@ class UmsPodcastProvider : public PodcastProvider
 
         QMap<KJob *,UmsPodcastEpisodeList> m_deleteJobMap;
 };
+
+} //namespace Podcasts
 
 #endif // UMSPODCASTPROVIDER_H

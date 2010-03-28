@@ -17,7 +17,8 @@
 #ifndef PLAYLISTBROWSERNSPODCASTMODEL_H
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
+#include "core/podcasts/PodcastProvider.h"
 
 #include "MetaPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
@@ -97,12 +98,12 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         /** @returns all channels currently selected
         **/
-        Meta::PodcastChannelList selectedChannels() { return m_selectedChannels; }
+        Podcasts::PodcastChannelList selectedChannels() { return m_selectedChannels; }
 
         /** @returns all episodes currently selected, this includes children of a selected
         * channel
         **/
-        Meta::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
+        Podcasts::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
 
         void importOpml( const KUrl &url );
 
@@ -128,40 +129,40 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         PodcastModel();
         ~PodcastModel();
         static int podcastItemType( const QModelIndex &index );
-        static Meta::PodcastChannelPtr channelForIndex( const QModelIndex &index );
-        static Meta::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
+        static Podcasts::PodcastChannelPtr channelForIndex( const QModelIndex &index );
+        static Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
 
         Q_DISABLE_COPY( PodcastModel )
 
         Playlists::PlaylistProvider *getProviderByName( const QString &name );
-        Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
-        Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
+        Podcasts::PodcastChannelList selectedChannels( const QModelIndexList &indices );
+        Podcasts::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );
-        QList< QAction * > createEpisodeActions( Meta::PodcastEpisodeList epsiodes );
+        QList< QAction * > createEpisodeActions( Podcasts::PodcastEpisodeList epsiodes );
         QAction * m_appendAction;
         QAction * m_loadAction;
         QAction *m_setNewAction;
-        Meta::PodcastEpisodeList m_selectedEpisodes;
-        Meta::PodcastChannelList m_selectedChannels;
+        Podcasts::PodcastEpisodeList m_selectedEpisodes;
+        Podcasts::PodcastChannelList m_selectedChannels;
 
         /** A convenience function to convert a PodcastEpisodeList into a TrackList.
         **/
         static Meta::TrackList
         podcastEpisodesToTracks(
-            Meta::PodcastEpisodeList episodes );
+            Podcasts::PodcastEpisodeList episodes );
 
         /** Get the provider associated with a PodcastMetaCommon object */
-        PodcastProvider *providerForPmc( Meta::PodcastMetaCommon *pmc ) const;
+        Podcasts::PodcastProvider *providerForPmc( Podcasts::PodcastMetaCommon *pmc ) const;
 
-        void downloadEpisode( Meta::PodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
-        void refreshPodcast( Meta::PodcastChannelPtr channel );
-        Meta::PodcastChannelList m_channels;
-        void removeSubscription( Meta::PodcastChannelPtr channel );
-        void configureChannel( Meta::PodcastChannelPtr channel );
+        void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
+        void refreshPodcast( Podcasts::PodcastChannelPtr channel );
+        Podcasts::PodcastChannelList m_channels;
+        void removeSubscription( Podcasts::PodcastChannelPtr channel );
+        void configureChannel( Podcasts::PodcastChannelPtr channel );
 
-        bool isOnDisk( Meta::PodcastMetaCommon *pmc ) const;
-        QVariant icon( Meta::PodcastMetaCommon *pmc ) const;
+        bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
+        QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;
 };
 
 }

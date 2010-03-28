@@ -67,3 +67,4 @@ COMPONENT_ACCESSORS( SqlStorage*, sqlStorage, setSqlStorage )
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
 COMPONENT_ACCESSORS( CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate );
+

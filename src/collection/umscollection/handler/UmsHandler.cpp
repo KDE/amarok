@@ -173,7 +173,7 @@ UmsHandler::init()
                 debug() << "scan for podcasts in " <<
                         m_podcastPath.toLocalFile( KUrl::AddTrailingSlash );
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
-                m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
+                m_podcastProvider = new Podcasts::UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
                                                      Playlists::PodcastChannelPlaylist );
             }

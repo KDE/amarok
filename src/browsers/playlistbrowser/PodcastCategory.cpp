@@ -26,7 +26,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
@@ -499,7 +499,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     int width = m_view->viewport()->size().width() - 4;
 
     //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
-    //Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+    //Podcasts::PodcastMetaCommon* pmc = static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() );
     int height = 24;
 
     if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )

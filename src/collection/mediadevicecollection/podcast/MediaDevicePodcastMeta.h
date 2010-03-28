@@ -3,7 +3,7 @@
 
 #endif // MEDIADEVICEPODCASTMETA_H
 
-#include "podcasts/PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 
 namespace Handler
 {
@@ -15,12 +15,12 @@ namespace Handler
     typedef KSharedPtr<MediaDevicePodcastEpisode> MediaDevicePodcastEpisodePtr;
     typedef QList<MediaDevicePodcastEpisodePtr> MediaDevicePodcastEpisodeList;
 
-    class MediaDevicePodcastChannel : public Meta::PodcastChannel
+    class MediaDevicePodcastChannel : public Podcasts::PodcastChannel
     {
 
     };
 
-    class MediaDevicePodcastEpisode : public Meta::PodcastEpisode
+    class MediaDevicePodcastEpisode : public Podcasts::PodcastEpisode
     {
 
     };

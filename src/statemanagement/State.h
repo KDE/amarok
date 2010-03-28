@@ -23,6 +23,7 @@ class CollectionManager;
 class EngineController;
 class MountPointManager;
 class ServiceBrowser;
+class StatusBar;
 namespace Playlist {
     class Model;
 }
@@ -36,17 +37,20 @@ namespace Amarok {
         EngineController* engineController() const { return m_engineController; }
         MountPointManager* mountPointManager() const { return m_mountPointManager; }
         ServiceBrowser* serviceBrowser() const { return m_serviceBrowser; }
+        StatusBar* statusBar() const { return m_statusBar; }
 
         void setCollectionManager( CollectionManager *mgr ) { m_collectionManager = mgr; }
         void setEngineController( EngineController *ec ) { m_engineController = ec; }
         void setMountPointManager( MountPointManager *mpm ) { m_mountPointManager = mpm; }
         void setServiceBrowser( ServiceBrowser *sb ) { m_serviceBrowser = sb; }
+        void setStatusBar( StatusBar *sb ) { m_statusBar = sb; }
 
     private:
         CollectionManager* m_collectionManager;
         EngineController* m_engineController;
         MountPointManager* m_mountPointManager;
         ServiceBrowser* m_serviceBrowser;
+        StatusBar *m_statusBar;
 
     };
 
@@ -69,6 +73,7 @@ namespace Amarok {
         virtual EngineController* engineController() const = 0;
         virtual MountPointManager* mountPointManager() const = 0;
         virtual ServiceBrowser* serviceBrowser() const = 0;
+        virtual StatusBar* statusBar() const = 0;
 
         public void setContext( ApplicationContext *context );
 

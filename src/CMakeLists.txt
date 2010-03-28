@@ -50,7 +50,6 @@ include_directories(
     dynamic
     likeback
     playlistmanager
-    podcasts
     statusbar
     synchronization
     timecode
@@ -383,13 +382,13 @@ set( libcontextview_SRCS
 # PODCASTS
 #####################################################################
 set(libpodcasts_SRCS
-    podcasts/PodcastReader.cpp
-    podcasts/PodcastMeta.cpp
-    podcasts/PodcastImageFetcher.cpp
-    podcasts/PodcastProvider.cpp
-    podcasts/sql/SqlPodcastMeta.cpp
-    podcasts/sql/SqlPodcastProvider.cpp
-    podcasts/sql/PodcastSettingsDialog.cpp
+    core/podcasts/PodcastReader.cpp
+    core/podcasts/PodcastMeta.cpp
+    core/podcasts/PodcastImageFetcher.cpp
+    core/podcasts/PodcastProvider.cpp
+    core-implementations/podcasts/sql/SqlPodcastMeta.cpp
+    core-implementations/podcasts/sql/SqlPodcastProvider.cpp
+    core-implementations/podcasts/sql/PodcastSettingsDialog.cpp
 )
 
 #####################################################################
@@ -773,8 +772,8 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     likeback/LikeBackBar.ui
     likeback/LikeBackDialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
-    podcasts/sql/PodcastSettingsBase.ui
-    podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-implementations/podcasts/sql/PodcastSettingsBase.ui
+    core-implementations/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

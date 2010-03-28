@@ -19,7 +19,7 @@
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
 #include "UmsPodcastProvider.h"
 
-using namespace Meta;
+using namespace Podcasts;
 
 UmsPodcastEpisodePtr
 UmsPodcastEpisode::fromPodcastEpisodePtr( PodcastEpisodePtr episode )
@@ -43,7 +43,7 @@ UmsPodcastEpisode::toPodcastEpisodeList( UmsPodcastEpisodeList episodes )
 }
 
 UmsPodcastEpisode::UmsPodcastEpisode( UmsPodcastChannelPtr channel )
-        : Meta::PodcastEpisode( UmsPodcastChannel::toPodcastChannelPtr( channel ) )
+        : Podcasts::PodcastEpisode( UmsPodcastChannel::toPodcastChannelPtr( channel ) )
 {
 }
 
@@ -110,7 +110,7 @@ UmsPodcastEpisode::setTitle( const QString &title )
     m_title = title;
 }
 
-AlbumPtr
+Meta::AlbumPtr
 UmsPodcastEpisode::album() const
 {
     if( m_localFile.isNull() )
@@ -119,7 +119,7 @@ UmsPodcastEpisode::album() const
     return m_localFile->album();
 }
 
-ArtistPtr
+Meta::ArtistPtr
 UmsPodcastEpisode::artist() const
 {
     if( m_localFile.isNull() )
@@ -128,7 +128,7 @@ UmsPodcastEpisode::artist() const
     return m_localFile->artist();
 }
 
-ComposerPtr
+Meta::ComposerPtr
 UmsPodcastEpisode::composer() const
 {
     if( m_localFile.isNull() )
@@ -137,7 +137,7 @@ UmsPodcastEpisode::composer() const
     return m_localFile->composer();
 }
 
-GenrePtr
+Meta::GenrePtr
 UmsPodcastEpisode::genre() const
 {
     if( m_localFile.isNull() )
@@ -146,7 +146,7 @@ UmsPodcastEpisode::genre() const
     return m_localFile->genre();
 }
 
-YearPtr
+Meta::YearPtr
 UmsPodcastEpisode::year() const
 {
     if( m_localFile.isNull() )
@@ -177,7 +177,7 @@ UmsPodcastChannel::toPodcastChannelList( UmsPodcastChannelList umsChannels )
 }
 
 UmsPodcastChannel::UmsPodcastChannel( UmsPodcastProvider *provider )
-        : Meta::PodcastChannel()
+        : Podcasts::PodcastChannel()
         , m_provider( provider )
 {
 
@@ -185,7 +185,7 @@ UmsPodcastChannel::UmsPodcastChannel( UmsPodcastProvider *provider )
 
 UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
                                       UmsPodcastProvider *provider )
-        : Meta::PodcastChannel( channel )
+        : Podcasts::PodcastChannel( channel )
         , m_provider( provider )
 {
     foreach( PodcastEpisodePtr episode, channel->episodes() )

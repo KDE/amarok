@@ -23,9 +23,9 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "core/support/Debug.h"
-#include "PodcastImageFetcher.h"
+#include "core/podcasts/PodcastImageFetcher.h"
 #include "PodcastModel.h"
-#include "PodcastReader.h"
+#include "core/podcasts/PodcastReader.h"
 #include "PodcastSettingsDialog.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 #include "SqlStorage.h"
@@ -49,7 +49,7 @@
 #include <QTimer>
 #include <QCheckBox>
 
-using namespace Meta;
+using namespace Podcasts;
 
 static const int PODCAST_DB_VERSION = 4;
 static const QString key( "AMAROK_PODCAST" );
@@ -111,7 +111,7 @@ SqlPodcastProvider::SqlPodcastProvider()
             updateDatabase( version /*from*/, PODCAST_DB_VERSION /*to*/ );
 
         bool startAutoRefreshTimer = false;
-        foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+        foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
         {
             startAutoRefreshTimer = channel->autoScan();
         }
@@ -126,10 +126,10 @@ SqlPodcastProvider::SqlPodcastProvider()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
     {
         channel->updateInDb();
-        foreach( Meta::SqlPodcastEpisodePtr episode, channel->sqlEpisodes() )
+        foreach( Podcasts::SqlPodcastEpisodePtr episode, channel->sqlEpisodes() )
             episode->updateInDb();
     }
     m_channels.clear();
@@ -193,7 +193,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
     int episodeId = dbResult[0].toInt();
     int channelId = dbResult[2].toInt();
     bool found = false;
-    Meta::SqlPodcastChannelPtr channel;
+    Podcasts::SqlPodcastChannelPtr channel;
     foreach( channel, m_channels )
     {
         if( channel->dbId() == channelId )
@@ -211,7 +211,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
         return SqlPodcastEpisodePtr();
     }
 
-    Meta::SqlPodcastEpisodePtr episode;
+    Podcasts::SqlPodcastEpisodePtr episode;
     foreach( episode, channel->sqlEpisodes() )
         if( episode->dbId() == episodeId )
             return episode;
@@ -240,7 +240,7 @@ Meta::TrackPtr
 SqlPodcastProvider::trackForUrl( const KUrl &url )
 {
     if( url.isEmpty() )
-        return TrackPtr();
+        return Meta::TrackPtr();
 
     SqlPodcastEpisodePtr episode = sqlEpisodeForString( url.url() );
 
@@ -252,7 +252,7 @@ SqlPodcastProvider::playlists()
 {
     Playlists::PlaylistList playlistList;
 
-    QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
+    QListIterator<Podcasts::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
         playlistList << Playlists::PlaylistPtr::staticCast( i.next() );
@@ -260,7 +260,7 @@ SqlPodcastProvider::playlists()
     return playlistList;
 }
 
-Meta::PodcastEpisodePtr
+Podcasts::PodcastEpisodePtr
 SqlPodcastProvider::episodeForGuid( const QString &guid )
 {
     return PodcastEpisodePtr::dynamicCast( sqlEpisodeForString( guid ) );
@@ -313,40 +313,44 @@ SqlPodcastProvider::subscribe( const KUrl &url )
     PodcastReader * podcastReader = new PodcastReader( this );
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
+    connect( podcastReader, SIGNAL( statusBarSorryMessage( const QString & ) ),
+            this, SLOT( slotStatusBarSorryMessage( const QString & ) ) );
+    connect( podcastReader, SIGNAL( statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ),
+            this, SLOT( slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ) );
 
     m_updatingChannels++;
     podcastReader->read( url );
 }
 
-Meta::PodcastChannelPtr
-SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
+Podcasts::PodcastChannelPtr
+SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
 {
-    Meta::SqlPodcastChannel *sqlChannel = new Meta::SqlPodcastChannel( this, channel );
+    Podcasts::SqlPodcastChannel *sqlChannel = new Podcasts::SqlPodcastChannel( this, channel );
     m_channels << SqlPodcastChannelPtr( sqlChannel );
-    return Meta::PodcastChannelPtr( sqlChannel );
+    return Podcasts::PodcastChannelPtr( sqlChannel );
 }
 
-Meta::PodcastEpisodePtr
-SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
+Podcasts::PodcastEpisodePtr
+SqlPodcastProvider::addEpisode( Podcasts::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
-    Meta::SqlPodcastEpisodePtr sqlEpisode =
-            Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+    Podcasts::SqlPodcastEpisodePtr sqlEpisode =
+            Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
     if( sqlEpisode.isNull() )
-        return Meta::PodcastEpisodePtr();
+        return Podcasts::PodcastEpisodePtr();
 
     if( sqlEpisode->channel().isNull() )
     {
         debug() << "channel is null";
-        return Meta::PodcastEpisodePtr();
+        return Podcasts::PodcastEpisodePtr();
     }
 
-    if( sqlEpisode->channel()->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable )
+    if( sqlEpisode->channel()->fetchType() == Podcasts::PodcastChannel::DownloadWhenAvailable )
         downloadEpisode( sqlEpisode );
-    return Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
+    return Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
-Meta::PodcastChannelList
+Podcasts::PodcastChannelList
 SqlPodcastProvider::channels()
 {
     PodcastChannelList list;
@@ -359,10 +363,10 @@ SqlPodcastProvider::channels()
 }
 
 void
-SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
+SqlPodcastProvider::removeSubscription( Podcasts::PodcastChannelPtr channel )
 {
     DEBUG_BLOCK
-    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
     if( !sqlChannel )
         return;
 
@@ -440,9 +444,9 @@ SqlPodcastProvider::slotConfigChanged()
 }
 
 void
-SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
+SqlPodcastProvider::configureChannel( Podcasts::PodcastChannelPtr channel )
 {
-    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
     if( !sqlChannel )
         return;
 
@@ -463,7 +467,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
         {
             debug() << "purge to " << toPurge << " newest episodes for "
                     << sqlChannel->title();
-            foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+            foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
             {
                 if( --toPurge < 0 )
                     if( !episode->localUrl().isEmpty() )
@@ -488,7 +492,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
                 .arg( sqlChannel->saveLocation().prettyUrl() );
 
         KUrl::List filesToMove;
-        foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+        foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
         {
             if( !episode->localUrl().isEmpty() )
             {
@@ -516,13 +520,13 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 }
 
 QList<QAction *>
-SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
+SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
 {
     QList< QAction * > actions;
     if( episodes.isEmpty() )
         return actions;
 
-    Meta::PodcastEpisodeList actionEpisodes;
+    Podcasts::PodcastEpisodeList actionEpisodes;
     if( m_deleteAction == 0 )
     {
         m_deleteAction = new QAction(
@@ -548,10 +552,10 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     }
 
     bool hasDownloaded = false;
-    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode
-                = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode
+                = Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
         if( sqlEpisode.isNull() )
             break;
 
@@ -563,7 +567,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     }
     if( hasDownloaded )
     {
-        Meta::PodcastEpisodeList actionEpisodes = m_deleteAction->data().value<Meta::PodcastEpisodeList>();
+        Podcasts::PodcastEpisodeList actionEpisodes = m_deleteAction->data().value<Podcasts::PodcastEpisodeList>();
         actionEpisodes << episodes;
         m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
         //these lists are the same anyway
@@ -585,7 +589,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
         }
         else
         {
-            actionEpisodes = m_downloadAction->data().value<Meta::PodcastEpisodeList>();
+            actionEpisodes = m_downloadAction->data().value<Podcasts::PodcastEpisodeList>();
         }
         actionEpisodes << episodes;
         m_downloadAction->setData( QVariant::fromValue( actionEpisodes ) );
@@ -596,7 +600,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
 }
 
 QList<QAction *>
-SqlPodcastProvider::channelActions( Meta::PodcastChannelList channels )
+SqlPodcastProvider::channelActions( Podcasts::PodcastChannelList channels )
 {
     QList< QAction * > actions;
 
@@ -620,7 +624,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList channels )
 
     actions << m_configureChannelAction;
 
-    Meta::PodcastChannelList actionChannels;
+    Podcasts::PodcastChannelList actionChannels;
     if( m_removeAction == 0 )
     {
         m_removeAction = new QAction(
@@ -633,7 +637,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList channels )
     }
     else
     {
-        actionChannels = m_removeAction->data().value<Meta::PodcastChannelList>();
+        actionChannels = m_removeAction->data().value<Podcasts::PodcastChannelList>();
     }
 
     actionChannels << channels;
@@ -654,7 +658,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList channels )
     }
     else
     {
-        actionChannels = m_updateAction->data().value<Meta::PodcastChannelList>();
+        actionChannels = m_updateAction->data().value<Podcasts::PodcastChannelList>();
     }
 
     actionChannels << channels;
@@ -691,12 +695,12 @@ SqlPodcastProvider::providerActions()
 }
 
 void
-SqlPodcastProvider::deleteDownloadedEpisodes( Meta::PodcastEpisodeList &episodes )
+SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::PodcastEpisodeList &episodes )
 {
-    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode =
-                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
+                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
         if( !sqlEpisode )
             continue;
 
@@ -710,7 +714,7 @@ SqlPodcastProvider::slotDeleteDownloadedEpisodes()
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
         return;
-    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
+    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
     deleteDownloadedEpisodes( episodes );
 }
 
@@ -720,12 +724,12 @@ SqlPodcastProvider::slotDownloadEpisodes()
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
         if( action == 0 )
             return;
-    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
+    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
 
-    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode =
-                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
+                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
         if( !sqlEpisode )
             continue;
 
@@ -734,7 +738,7 @@ SqlPodcastProvider::slotDownloadEpisodes()
 }
 
 QPair<bool, bool>
-SqlPodcastProvider::confirmUnsubscribe( Meta::PodcastChannelPtr channel )
+SqlPodcastProvider::confirmUnsubscribe( Podcasts::PodcastChannelPtr channel )
 {
     KDialog unsubscribeDialog;
     unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
@@ -765,12 +769,12 @@ SqlPodcastProvider::slotRemoveChannels()
     if( action == 0 )
         return;
 
-    Meta::PodcastChannelList channels = action->data().value<Meta::PodcastChannelList>();
+    Podcasts::PodcastChannelList channels = action->data().value<Podcasts::PodcastChannelList>();
 
-    foreach( Meta::PodcastChannelPtr channel, channels )
+    foreach( Podcasts::PodcastChannelPtr channel, channels )
     {
-        Meta::SqlPodcastChannelPtr sqlChannel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+        Podcasts::SqlPodcastChannelPtr sqlChannel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
 
         QPair<bool, bool> result = confirmUnsubscribe( channel );        
         if( result.first )
@@ -793,12 +797,12 @@ SqlPodcastProvider::slotUpdateChannels()
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
         if( action == 0 )
             return;
-    Meta::PodcastChannelList channels = action->data().value<Meta::PodcastChannelList>();
+    Podcasts::PodcastChannelList channels = action->data().value<Podcasts::PodcastChannelList>();
 
-    foreach( Meta::PodcastChannelPtr channel, channels )
+    foreach( Podcasts::PodcastChannelPtr channel, channels )
     {
-        Meta::SqlPodcastChannelPtr sqlChannel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+        Podcasts::SqlPodcastChannelPtr sqlChannel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
         if( !sqlChannel.isNull() )
             update( channel );
     }
@@ -828,11 +832,11 @@ SqlPodcastProvider::slotWriteTagsToFiles()
     if( action == 0 )
         return;
 
-    Meta::PodcastEpisodeList episodes = action->data().value<Meta::PodcastEpisodeList>();
-    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode =
-                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
+                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
         if( !sqlEpisode )
             continue;
 
@@ -847,13 +851,13 @@ SqlPodcastProvider::slotConfigureChannel()
     if( action == 0 )
         return;
 
-    Meta::PodcastChannelPtr podcastChannel = action->data().value<Meta::PodcastChannelPtr>();
+    Podcasts::PodcastChannelPtr podcastChannel = action->data().value<Podcasts::PodcastChannelPtr>();
     if( !podcastChannel.isNull() )
         configureChannel( podcastChannel );
 }
 
 void
-SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode )
+SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr episode )
 {
     if( !episode || episode->localUrl().isEmpty() )
         return;
@@ -865,17 +869,17 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode 
     emit( updated() );
 }
 
-Meta::SqlPodcastChannelPtr
+Podcasts::SqlPodcastChannelPtr
 SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
 {
-    QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
+    QListIterator<Podcasts::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
         int id = i.next()->dbId();
         if( id == podcastChannelId )
             return i.previous();
     }
-    return Meta::SqlPodcastChannelPtr();
+    return Podcasts::SqlPodcastChannelPtr();
 }
 
 void
@@ -917,7 +921,7 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::updateAll()
 {
-    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
         update( channel );
 }
 
@@ -932,7 +936,7 @@ SqlPodcastProvider::autoUpdate()
         return;
     }
 
-    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
     {
         if( channel->autoScan() )
             update( channel );
@@ -940,7 +944,7 @@ SqlPodcastProvider::autoUpdate()
 }
 
 void
-SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
+SqlPodcastProvider::update( Podcasts::PodcastChannelPtr channel )
 {
     if( channel.isNull() )
         return;
@@ -958,20 +962,23 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
-    //PodcastReader will create a progress bar in The StatusBar.
-
+    connect( podcastReader, SIGNAL( statusBarMessage( const QString & ) ),
+            this, SLOT( slotStatusBarSorryMessage( const QString & ) ) );
+    connect( podcastReader, SIGNAL( statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ),
+                this, SLOT( slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ) );
+    
     m_updatingChannels++;
     podcastReader->update( channel );
 }
 
 void
-SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
+SqlPodcastProvider::update( Podcasts::SqlPodcastChannelPtr channel )
 {
     update( PodcastChannelPtr::dynamicCast( channel ) );
 }
 
 void
-SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
+SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
 {
     DEBUG_BLOCK
     if( podcastReader->error() != QXmlStreamReader::NoError )
@@ -983,8 +990,8 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
     --m_updatingChannels;
     debug() << "Updating counter reached " << m_updatingChannels;
 
-    Meta::SqlPodcastChannelPtr channel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
+    Podcasts::SqlPodcastChannelPtr channel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
 
     if( channel.isNull() )
     {
@@ -1021,11 +1028,18 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
 }
 
 void
-SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
+SqlPodcastProvider::slotStatusBarNewProgressOperation( KIO::TransferJob * job, const QString &description, Podcasts::PodcastReader* reader)
+{
+    The::statusBar()->newProgressOperation( job, description )
+            ->setAbortSlot( reader, SLOT( slotAbort() ) );
+}
+
+void
+SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 {
     if( sqlEpisode.isNull() )
     {
-        error() << "SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
+        error() << "SqlPodcastProvider::downloadEpisode(  Podcasts::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
         return;
     }
 
@@ -1073,7 +1087,7 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 }
 
 void
-SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
+SqlPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode )
 {
     downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
@@ -1102,14 +1116,14 @@ SqlPodcastProvider::createTmpFile( KJob *job )
 {
     DEBUG_BLOCK
 
-    Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+    Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
     if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
         return 0;
     }
-    Meta::SqlPodcastChannelPtr sqlChannel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    Podcasts::SqlPodcastChannelPtr sqlChannel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
     if( sqlChannel.isNull() )
     {
         error() << "sqlChannelPtr is NULL after download";
@@ -1141,14 +1155,14 @@ SqlPodcastProvider::createTmpFile( KJob *job )
 bool
 SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
 {
-    Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+    Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
     if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
         return false;
     }
-    Meta::SqlPodcastChannelPtr sqlChannel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    Podcasts::SqlPodcastChannelPtr sqlChannel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
     if( sqlChannel.isNull() )
     {
         error() << "sqlChannelPtr is NULL after download";
@@ -1208,10 +1222,16 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
 }
 
 void
-SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
+SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     deleteDownloadedEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
+}
+
+void
+SqlPodcastProvider::slotStatusBarSorryMessage( const QString &message )
+{
+    The::statusBar()->longMessage( message, StatusBar::Sorry );
 }
 
 void
@@ -1244,15 +1264,15 @@ SqlPodcastProvider::downloadResult( KJob *job )
     }
     else
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
         if( sqlEpisode.isNull() )
         {
             error() << "sqlEpisodePtr is NULL after download";
             cleanupDownload( job, true );
             return;
         }
-        Meta::SqlPodcastChannelPtr sqlChannel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+        Podcasts::SqlPodcastChannelPtr sqlChannel =
+            Podcasts::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
         if( sqlChannel.isNull() )
         {
             error() << "sqlChannelPtr is NULL after download";
@@ -1441,8 +1461,8 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
     {
         m_podcastImageFetcher = new PodcastImageFetcher();
         connect( m_podcastImageFetcher,
-                 SIGNAL( imageReady( Meta::PodcastChannelPtr, QPixmap ) ),
-                 SLOT( channelImageReady( Meta::PodcastChannelPtr, QPixmap ) )
+                 SIGNAL( imageReady( Podcasts::PodcastChannelPtr, QPixmap ) ),
+                 SLOT( channelImageReady( Podcasts::PodcastChannelPtr, QPixmap ) )
                );
         connect( m_podcastImageFetcher,
                  SIGNAL( done( PodcastImageFetcher * ) ),
@@ -1454,7 +1474,7 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::channelImageReady( Meta::PodcastChannelPtr channel, QPixmap pixmap )
+SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QPixmap pixmap )
 {
     DEBUG_BLOCK
     debug() << "channel: " << channel->title();

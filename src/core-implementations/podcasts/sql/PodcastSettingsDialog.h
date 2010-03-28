@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2006-2008 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,56 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PodcastProvider.h"
+#ifndef AMAROK_PODCASTSETTINGSDIALOG_H
+#define AMAROK_PODCASTSETTINGSDIALOG_H
 
-#include "core/support/Debug.h"
+#include "SqlPodcastMeta.h"
 
-#include <KUrl>
+#include <KDialog>
 
-bool
-PodcastProvider::couldBeFeed( const QString &urlString )
-{
-    DEBUG_BLOCK
-
-    QStringList feedProtocols;
-    feedProtocols << "itpc";
-    feedProtocols << "pcast";
-    feedProtocols << "feed";
-
-    QString matchString = QString( "^(%1)" ).arg( feedProtocols.join( "|" ) );
-    qDebug() << "matchString = " << matchString;
-
-    QRegExp rx( matchString );
-    int pos = rx.indexIn( urlString.trimmed() );
-    qDebug() << "found at " << pos;
-
-    return pos != -1;
+namespace Ui {
+    class PodcastSettingsBase;
 }
 
-KUrl
-PodcastProvider::toFeedUrl( const QString &urlString )
+class PodcastSettingsDialog : public KDialog
 {
-    DEBUG_BLOCK
-    debug() << urlString;
+    Q_OBJECT
 
-    KUrl kurl( urlString.trimmed() );
+    public:
+        explicit PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget* parent=0 );
 
-    if( kurl.protocol() == "itpc" )
-    {
-        debug() << "itpc:// url.";
-        kurl.setProtocol( "http" );
-    }
-    else if( kurl.protocol() == "pcast" )
-    {
-        debug() << "pcast:// url.";
-        kurl.setProtocol( "http" );
-    }
-    else if( kurl.protocol() == "feed" )
-    {
-        //TODO: also handle the case feed:https://example.com/entries.atom
-        debug() << "feed:// url.";
-        kurl.setProtocol( "http" );
-    }
+        bool configure();
 
-    return kurl;
-}
+    protected:
+        bool hasChanged();
+
+    protected slots:
+        void checkModified();
+        void slotApply();
+        void slotFeedUrlClicked( const QString &url );
+
+    private:
+        void init();
+        QString requesterSaveLocation();
+
+        Ui::PodcastSettingsBase *m_ps;
+
+        Podcasts::SqlPodcastChannelPtr m_channel;
+};
+
+#endif /*AMAROK_PODCASTSETTINGSDIALOG_H*/

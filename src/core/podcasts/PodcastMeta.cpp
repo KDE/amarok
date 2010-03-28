@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 
-using namespace Meta;
+using namespace Podcasts;
 
 PodcastEpisode::PodcastEpisode()
     : PodcastMetaCommon()
@@ -30,11 +30,11 @@ PodcastEpisode::PodcastEpisode()
     , m_sequenceNumber( 0 )
     , m_isNew( true )
 {
-    m_albumPtr = AlbumPtr( new PodcastAlbum( this ) );
-    m_artistPtr = ArtistPtr( new PodcastArtist( this ) );
-    m_composerPtr = ComposerPtr( new PodcastComposer( this ) );
-    m_genrePtr = GenrePtr( new PodcastGenre( this ) );
-    m_yearPtr = YearPtr( new PodcastYear( this ) );
+    m_albumPtr = Meta::AlbumPtr( new PodcastAlbum( this ) );
+    m_artistPtr = Meta::ArtistPtr( new PodcastArtist( this ) );
+    m_composerPtr = Meta::ComposerPtr( new PodcastComposer( this ) );
+    m_genrePtr = Meta::GenrePtr( new PodcastGenre( this ) );
+    m_yearPtr = Meta::YearPtr( new PodcastYear( this ) );
 }
 
 PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
@@ -49,11 +49,11 @@ PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
     , m_sequenceNumber( 0 )
     , m_isNew( true )
 {
-    m_albumPtr = AlbumPtr( new PodcastAlbum( this ) );
-    m_artistPtr = ArtistPtr( new PodcastArtist( this ) );
-    m_composerPtr = ComposerPtr( new PodcastComposer( this ) );
-    m_genrePtr = GenrePtr( new PodcastGenre( this ) );
-    m_yearPtr = YearPtr( new PodcastYear( this ) );
+    m_albumPtr = Meta::AlbumPtr( new PodcastAlbum( this ) );
+    m_artistPtr = Meta::ArtistPtr( new PodcastArtist( this ) );
+    m_composerPtr = Meta::ComposerPtr( new PodcastComposer( this ) );
+    m_genrePtr = Meta::GenrePtr( new PodcastGenre( this ) );
+    m_yearPtr = Meta::YearPtr( new PodcastYear( this ) );
 }
 
 PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
@@ -105,3 +105,4 @@ PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
                 new PodcastEpisode( episode, PodcastChannelPtr( this ) ) );
     }
 }
+

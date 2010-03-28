@@ -27,7 +27,6 @@
 
 class KJob;
 class PlaylistManager;
-class PodcastProvider;
 class QAction;
 
 namespace Playlists {
@@ -36,6 +35,10 @@ namespace Playlists {
     class PlaylistProvider;
     class UserPlaylistProvider;
     typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+}
+
+namespace Podcasts {
+    class PodcastProvider;
 }
 
 namespace The {
@@ -114,7 +117,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void deletePlaylists( Playlists::PlaylistList playlistlist );
 
-        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
+        Podcasts::PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
         Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
 
         /**
@@ -154,7 +157,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         PlaylistManager();
         ~PlaylistManager();
 
-        PodcastProvider *m_defaultPodcastProvider;
+        Podcasts::PodcastProvider *m_defaultPodcastProvider;
         Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;
         Playlists::PlaylistFileProvider *m_playlistFileProvider;
 
