@@ -345,7 +345,7 @@ FileView::addSelectionToPlaylist( bool replace )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         debug() << "file path: " << file.url();
-        if( EngineController::canDecode( file.url() ) || Meta::isPlaylist( file.url() ) || file.isDir() )
+        if( EngineController::canDecode( file.url() ) || Playlists::isPlaylist( file.url() ) || file.isDir() )
         {
             urls << file.url();
         }

@@ -21,7 +21,7 @@
 
 namespace Meta {
 
-MultiTrack::MultiTrack( PlaylistPtr playlist )
+MultiTrack::MultiTrack( Playlists::PlaylistPtr playlist )
     : QObject()
     , Track()
     , m_playlist( playlist )

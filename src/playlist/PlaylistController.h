@@ -74,8 +74,8 @@ public slots:
      * @see enum AddOptions.
      */
     void insertOptioned( Meta::TrackList list, int options );
-    void insertOptioned( Meta::PlaylistPtr playlist, int options );
-    void insertOptioned( Meta::PlaylistList list, int options );
+    void insertOptioned( Playlists::PlaylistPtr playlist, int options );
+    void insertOptioned( Playlists::PlaylistList list, int options );
     void insertOptioned( QueryMaker *qm, int options );
     void insertOptioned( QList<KUrl>& urls, int options );
 
@@ -87,8 +87,8 @@ public slots:
      */
     void insertTrack( int topModelRow, Meta::TrackPtr track );
     void insertTracks( int topModelRow, Meta::TrackList list );
-    void insertPlaylist( int topModelRow, Meta::PlaylistPtr playlist );
-    void insertPlaylists( int topModelRow, Meta::PlaylistList playlists );
+    void insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist );
+    void insertPlaylists( int topModelRow, Playlists::PlaylistList playlists );
     void insertTracks( int topModelRow, QueryMaker *qm );
     void insertUrls( int topModelRow, const QList<KUrl>& urls );
 

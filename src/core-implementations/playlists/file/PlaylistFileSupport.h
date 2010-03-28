@@ -30,7 +30,7 @@
 
 class QFile;
 
-namespace Meta
+namespace Playlists
 {
     enum PlaylistFormat
     {

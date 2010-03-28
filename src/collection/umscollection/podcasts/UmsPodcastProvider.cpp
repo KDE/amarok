@@ -161,12 +161,13 @@ UmsPodcastProvider::icon() const
     return KIcon("drive-removable-media-usb-pendrive");
 }
 
-Meta::PlaylistList
+Playlists::PlaylistList
 UmsPodcastProvider::playlists()
 {
-    Meta::PlaylistList playlists;
+    Playlists::PlaylistList playlists;
     foreach( UmsPodcastChannelPtr channel, m_umsChannels )
-        playlists << Meta::PlaylistPtr::dynamicCast( channel );
+        playlists << Playlists::PlaylistPtr::dynamicCast( channel );
+    debug() << "there are " << playlists.count() << " channels";
     return playlists;
 }
 
@@ -369,14 +370,14 @@ UmsPodcastProvider::slotDeleteChannels()
 }
 
 QList<QAction *>
-UmsPodcastProvider::playlistActions( Meta::PlaylistPtr playlist )
+UmsPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
 {
     Q_UNUSED( playlist )
     return channelActions( PodcastChannelList() );
 }
 
 QList<QAction *>
-UmsPodcastProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+UmsPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( playlist)
     Q_UNUSED( trackIndex )

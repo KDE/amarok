@@ -31,17 +31,17 @@
 #include <QString>
 #include <QFile>
 
-namespace Meta {
+namespace Playlists {
 
 PLSPlaylist::PLSPlaylist()
-    : m_url( Meta::newPlaylistFilePath( "pls" ) )
+    : m_url( Playlists::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
-PLSPlaylist::PLSPlaylist( TrackList tracks )
+PLSPlaylist::PLSPlaylist( Meta::TrackList tracks )
     : m_tracks( tracks )
-    , m_url( Meta::newPlaylistFilePath( "pls" ) )
+    , m_url( Playlists::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }

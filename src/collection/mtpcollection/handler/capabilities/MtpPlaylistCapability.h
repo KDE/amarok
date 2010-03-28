@@ -44,9 +44,9 @@ class MtpPlaylistCapability : public PlaylistCapability
         virtual void prepareToParseNextPlaylistTrack();
         virtual void nextPlaylistTrackToParse();
         
-        virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-        virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        virtual void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
+        virtual void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        virtual void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
 
         virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
         virtual QString libGetPlaylistName();

@@ -168,10 +168,10 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
         virtual QString libGetPlaylistName();
-        void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-        void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        void setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        void libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
+        void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
 
         virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
         virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
@@ -362,7 +362,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
 
         // Hash that associates an Itdb_Playlist* to every PlaylistPtr
-        QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
+        QHash<Playlists::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
 
         // tracks that failed to copy
         QMap<Meta::TrackPtr, QString> m_tracksFailed;

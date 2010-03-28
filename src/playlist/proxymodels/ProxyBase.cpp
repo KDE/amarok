@@ -104,7 +104,7 @@ ProxyBase::currentSearchTerm()
 bool
 ProxyBase::exportPlaylist( const QString &path ) const
 {
-    return Meta::exportPlaylistFile( tracks(), path );
+    return Playlists::exportPlaylistFile( tracks(), path );
 }
 
 void

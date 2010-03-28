@@ -118,19 +118,19 @@ namespace Handler
              * @param tracks the tracks that make up the playlist to be made
              * @param name the name of the playlist
              */
-            virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;
+            virtual void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;
             
             /**
              * Deletes a particular playlist from the device
              * @param playlist the playlist to remove
              */
-            virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
+            virtual void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist ) = 0;
 
             /**
              * Renames a particular playlist on the device
              * @param playlist the playlist to rename
              */
-            virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
+            virtual void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist ) = 0;
 
             /** 
              * This method must create a two-way association of the current Meta::Playlist
@@ -140,7 +140,7 @@ namespace Handler
              * does not matter.
              * @param playlist The list to two-way associate with a library list struct
              */
-            virtual void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
+            virtual void setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
 
             static Type capabilityInterfaceType() { return Handler::Capability::Playlist; }
     };

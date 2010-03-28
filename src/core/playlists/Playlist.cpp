@@ -17,16 +17,16 @@
 #include "core/playlists/Playlist.h"
 
 
-Meta::PlaylistObserver::~PlaylistObserver()
+Playlists::PlaylistObserver::~PlaylistObserver()
 {
-    foreach( Meta::PlaylistPtr playlist, m_playlistSubscriptions )
+    foreach( Playlists::PlaylistPtr playlist, m_playlistSubscriptions )
     {
         playlist->unsubscribe( this );
     }
 }
 
 void
-Meta::PlaylistObserver::subscribeTo( Meta::PlaylistPtr playlist )
+Playlists::PlaylistObserver::subscribeTo( Playlists::PlaylistPtr playlist )
 {
     if( playlist )
     {
@@ -36,7 +36,7 @@ Meta::PlaylistObserver::subscribeTo( Meta::PlaylistPtr playlist )
 }
 
 void
-Meta::PlaylistObserver::unsubscribeFrom( Meta::PlaylistPtr playlist )
+Playlists::PlaylistObserver::unsubscribeFrom( Playlists::PlaylistPtr playlist )
 {
     if( playlist )
     {

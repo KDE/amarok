@@ -89,8 +89,8 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 class SqlPodcastChannel : public Podcasts::PodcastChannel
 {
     public:
-        static Meta::PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
-        static SqlPodcastChannelPtr fromPlaylistPtr( Meta::PlaylistPtr playlist );
+        static Playlists::PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
+        static SqlPodcastChannelPtr fromPlaylistPtr( Playlists::PlaylistPtr playlist );
 
         SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
@@ -99,9 +99,9 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         SqlPodcastChannel( SqlPodcastProvider *provider, PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
-        // Meta::Playlist methods
-        virtual Meta::TrackList tracks() { return SqlPodcastEpisode::toTrackList( m_episodes ); }
-        virtual PlaylistProvider *provider() const;
+        // Playlists::Playlist methods
+        virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual Playlists::PlaylistProvider *provider() const;
 
         //Podcasts::PodcastChannel methods
         virtual void setTitle( const QString &title );

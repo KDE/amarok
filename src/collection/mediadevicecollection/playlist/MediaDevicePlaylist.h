@@ -22,7 +22,7 @@
 
 #include "core/support/Debug.h"
 
-namespace Meta
+namespace Playlists
 {
 
     class MediaDevicePlaylist;
@@ -33,7 +33,7 @@ namespace Meta
     class MediaDevicePlaylist : public Playlist
     {
         public:
-	MediaDevicePlaylist( const QString &name, const TrackList &tracks );
+	MediaDevicePlaylist( const QString &name, const Meta::TrackList &tracks );
 	~MediaDevicePlaylist();
 
 	// Playlist Functions
@@ -45,7 +45,7 @@ namespace Meta
             virtual void setName( const QString &name );
 
             /** returns all tracks in this playlist */
-            virtual TrackList tracks();
+            virtual Meta::TrackList tracks();
             virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
             virtual void removeTrack( int position );
@@ -61,7 +61,7 @@ namespace Meta
 
 }
 
-Q_DECLARE_METATYPE( Meta::MediaDevicePlaylistPtr )
-Q_DECLARE_METATYPE( Meta::MediaDevicePlaylistList )
+Q_DECLARE_METATYPE( Playlists::MediaDevicePlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::MediaDevicePlaylistList )
 
 #endif

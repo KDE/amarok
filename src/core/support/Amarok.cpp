@@ -375,7 +375,7 @@ namespace Amarok
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
-        if ( !Meta::isPlaylist( ( *it ).fileName() ) )
+        if ( !Playlists::isPlaylist( ( *it ).fileName() ) )
             urls += *it;
         return urls;
     }

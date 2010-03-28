@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef METASQLPLAYLIST_H
-#define METASQLPLAYLIST_H
+#ifndef PLAYLISTSSQLPLAYLIST_H
+#define PLAYLISTSSQLPLAYLIST_H
 
 #include "core/playlists/Playlist.h"
 
-class PlaylistProvider;
 
-namespace Meta
+namespace Playlists
 {
+class PlaylistProvider;
 class SqlPlaylist;
 typedef KSharedPtr<SqlPlaylist> SqlPlaylistPtr;
 typedef QList<SqlPlaylistPtr> SqlPlaylistList;
@@ -36,10 +36,10 @@ typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class SqlPlaylist : public Playlist, public Observer
+class SqlPlaylist : public Playlist, public Meta::Observer
 {
     public:
-        SqlPlaylist( const QString &name, const TrackList &tracks,
+        SqlPlaylist( const QString &name, const Meta::TrackList &tracks,
                 SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
                 const QString &urlId = QString() );
         SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent,
@@ -62,12 +62,12 @@ class SqlPlaylist : public Playlist, public Observer
         bool saveToDb( bool tracks = true );
         void setDescription( const QString &description ) { m_description = description; }
 
-        void setParent( Meta::SqlPlaylistGroupPtr parent );
+        void setParent( SqlPlaylistGroupPtr parent );
 
         int id();
 
         /** returns all tracks in this playlist */
-        virtual TrackList tracks();
+        virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
@@ -77,9 +77,14 @@ class SqlPlaylist : public Playlist, public Observer
                 { Q_UNUSED( type ); return 0; }
 
         /* Meta::Observer methods */
-        virtual void metadataChanged( TrackPtr track );
+        virtual void metadataChanged( Meta::TrackPtr track );
+        virtual void metadataChanged( Meta::ArtistPtr artist ) { Q_UNUSED( artist ) }
+        virtual void metadataChanged( Meta::AlbumPtr album ) { Q_UNUSED( album ) }
+        virtual void metadataChanged( Meta::GenrePtr genre ) { Q_UNUSED( genre ) }
+        virtual void metadataChanged( Meta::ComposerPtr composer ) { Q_UNUSED( composer ) }
+        virtual void metadataChanged( Meta::YearPtr year ) { Q_UNUSED( year ) }
 
-        Meta::SqlPlaylistGroupPtr parent() const;
+        SqlPlaylistGroupPtr parent() const;
 
         void removeFromDb();
 
@@ -88,7 +93,7 @@ class SqlPlaylist : public Playlist, public Observer
         void saveTracks();
 
         int m_dbId;
-        Meta::SqlPlaylistGroupPtr m_parent;
+        SqlPlaylistGroupPtr m_parent;
         Meta::TrackList m_tracks;
         PlaylistProvider *m_provider;
         QString m_name;
@@ -100,7 +105,7 @@ class SqlPlaylist : public Playlist, public Observer
 
 }
 
-Q_DECLARE_METATYPE( Meta::SqlPlaylistPtr )
-Q_DECLARE_METATYPE( Meta::SqlPlaylistList )
+Q_DECLARE_METATYPE( Playlists::SqlPlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::SqlPlaylistList )
 
 #endif

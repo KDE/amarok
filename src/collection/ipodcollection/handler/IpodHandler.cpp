@@ -1976,13 +1976,13 @@ IpodHandler::libGetPlaylistName()
 }
 
 void
-IpodHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+IpodHandler::setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     m_itdbplaylisthash[ playlist ] = m_currplaylist;
 }
 
 void
-IpodHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+IpodHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
     // Make new playlist
@@ -1990,7 +1990,7 @@ IpodHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, cons
     Itdb_Playlist *pl = itdb_playlist_new( name.toUtf8(), 0 );
     itdb_playlist_add( m_itdb, pl, -1 );
 
-    Meta::TrackList tracks = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
+    Meta::TrackList tracks = const_cast<Playlists::MediaDevicePlaylistPtr&> ( playlist )->tracks();
 
     foreach( const Meta::TrackPtr track, tracks )
     {
@@ -2003,7 +2003,7 @@ IpodHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, cons
 }
 
 void
-IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+IpodHandler::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     Itdb_Playlist *pl = m_itdbplaylisthash.value( playlist );
@@ -2018,7 +2018,7 @@ IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 }
 
 void
-IpodHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+IpodHandler::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];

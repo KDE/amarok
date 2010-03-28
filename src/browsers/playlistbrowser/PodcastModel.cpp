@@ -75,9 +75,9 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
  , m_setNewAction( 0 )
 {
     s_instance = this;
-    QList<Meta::PlaylistPtr> playlists =
+    QList<Playlists::PlaylistPtr> playlists =
             The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
-    QListIterator<Meta::PlaylistPtr> i(playlists);
+    QListIterator<Playlists::PlaylistPtr> i(playlists);
     while (i.hasNext())
         m_channels << Podcasts::PodcastChannelPtr::staticCast( i.next() );
 
@@ -198,7 +198,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) cons
         //get data from empty providers
         PlaylistProviderList providerList =
                 The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
-        foreach( PlaylistProvider *provider, providerList )
+        foreach( Playlists::PlaylistProvider *provider, providerList )
         {
             if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
                 continue;
@@ -312,8 +312,9 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) cons
                     return icon( pmc );
                 case ProviderColumn:
                 {
-                    PlaylistProvider *provider = providerForPmc(
+                    Playlists::PlaylistProvider *provider = providerForPmc(
                             static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() ) );
+
                     if( !provider )
                         return KIcon( "server-database" );
 
@@ -327,8 +328,9 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) cons
         {
             if( index.column() == ProviderColumn )
             {
-                PlaylistProvider *provider = providerForPmc(
+                Playlists::PlaylistProvider *provider = providerForPmc(
                         static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() ) );
+
                 if( !provider )
                     return QString();
 
@@ -345,7 +347,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) cons
         {
             if( index.column() == ProviderColumn )
             {
-                PlaylistProvider *provider = providerForPmc(
+                Playlists::PlaylistProvider *provider = providerForPmc(
                         static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() ) );
                 if( provider )
                     return provider->providerActions().count();
@@ -354,7 +356,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &index, int role ) cons
 
         case PlaylistBrowserNS::MetaPlaylistModel::ActionRole:
         {
-            PlaylistProvider *provider = providerForPmc(
+            Playlists::PlaylistProvider *provider = providerForPmc(
                     static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() ) );
             if( !provider )
                 return QVariant();
@@ -401,7 +403,7 @@ PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant
     {
         if( role == Qt::DisplayRole )
         {
-            PlaylistProvider *provider = getProviderByName( value.toString() );
+            Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
             if( !provider )
                 return false;
             Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>( provider );
@@ -724,9 +726,9 @@ PlaylistBrowserNS::PodcastModel::slotUpdate()
 {
     //TODO: emit dataChanged( QModelIndex(),  QModelIndex() );
 
-    QList<Meta::PlaylistPtr> playlists =
+    QList<Playlists::PlaylistPtr> playlists =
     The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
-    QListIterator<Meta::PlaylistPtr> i(playlists);
+    QListIterator<Playlists::PlaylistPtr> i(playlists);
     m_channels.clear();
     while( i.hasNext() )
     {
@@ -779,7 +781,7 @@ void
 PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
     Meta::TrackList episodes;
-    Meta::PlaylistList channels;
+    Playlists::PlaylistList channels;
     foreach( const QModelIndex &item, list )
     {
         Podcasts::PodcastMetaCommon *pmc =
@@ -790,11 +792,10 @@ PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddO
         switch( pmc->podcastType() )
         {
             case Podcasts::ChannelType:
-                channels << Meta::PlaylistPtr( reinterpret_cast<Podcasts::PodcastChannel *>(pmc) );
+                channels << Playlists::PlaylistPtr( reinterpret_cast<Podcasts::PodcastChannel *>(pmc) );
                 break;
             case Podcasts::EpisodeType:
-                episodes <<
-                        Meta::TrackPtr( reinterpret_cast<Podcasts::PodcastEpisode *>(pmc) ); break;
+                episodes << Meta::TrackPtr( reinterpret_cast<Podcasts::PodcastEpisode *>(pmc) ); break;
                 default: debug() << "error, neither Channel nor Episode";
         }
     }
@@ -803,7 +804,7 @@ PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddO
 }
 
 void
-PlaylistBrowserNS::PodcastModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+PlaylistBrowserNS::PodcastModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position )
 {
     DEBUG_BLOCK
@@ -813,7 +814,7 @@ PlaylistBrowserNS::PodcastModel::trackAdded( Meta::PlaylistPtr playlist, Meta::T
 }
 
 void
-PlaylistBrowserNS::PodcastModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
+PlaylistBrowserNS::PodcastModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 {
     DEBUG_BLOCK
     debug() << "From playlist: " << playlist->prettyName();
@@ -867,7 +868,7 @@ PlaylistBrowserNS::PodcastModel::removeSubscription( Podcasts::PodcastChannelPtr
 {
     debug() << "remove Podcast subscription for " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
+    Playlists::PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>(provider);
@@ -895,7 +896,7 @@ PlaylistBrowserNS::PodcastModel::refreshPodcast( Podcasts::PodcastChannelPtr cha
 {
     debug() << "refresh Podcast " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
+    Playlists::PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         Podcasts::PodcastProvider * podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>(provider);
@@ -968,7 +969,7 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Podcasts::PodcastEpisodePtr ep
     DEBUG_BLOCK
     debug() << "downloading " << episode->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
+    Playlists::PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>(provider);
@@ -988,7 +989,7 @@ PlaylistBrowserNS::PodcastModel::deleteDownloadedEpisode( Podcasts::PodcastEpiso
     DEBUG_BLOCK
     debug() << "deleting " << episode->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+    Playlists::PlaylistProvider *provider = The::playlistManager()->playlistProvider(
     PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
     {
@@ -1010,7 +1011,7 @@ PlaylistBrowserNS::PodcastModel::configureChannel( Podcasts::PodcastChannelPtr c
     DEBUG_BLOCK
     debug() << "configuring " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
+    Playlists::PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>(provider);
@@ -1214,12 +1215,12 @@ PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
     }
 }
 
-PlaylistProvider *
+Playlists::PlaylistProvider *
 PlaylistBrowserNS::PodcastModel::getProviderByName( const QString &name )
 {
-    QList<PlaylistProvider *> providers =
+    QList<Playlists::PlaylistProvider *> providers =
             The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
-    foreach( PlaylistProvider *provider, providers )
+    foreach( Playlists::PlaylistProvider *provider, providers )
     {
         if( provider->prettyName() == name )
             return provider;
@@ -1343,7 +1344,7 @@ PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Podcasts::PodcastEpiso
 Podcasts::PodcastProvider *
 PlaylistBrowserNS::PodcastModel::providerForPmc( Podcasts::PodcastMetaCommon *pmc ) const
 {
-    PlaylistProvider *provider = 0;
+    Playlists::PlaylistProvider *provider = 0;
     if( pmc->podcastType() == Podcasts::ChannelType )
     {
         Podcasts::PodcastChannel *pc =

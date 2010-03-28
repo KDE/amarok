@@ -157,7 +157,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 }
 
 void
-Playlist::Controller::insertOptioned( Meta::PlaylistPtr playlist, int options )
+Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int options )
 {
     DEBUG_BLOCK
     if( !playlist )
@@ -167,11 +167,11 @@ Playlist::Controller::insertOptioned( Meta::PlaylistPtr playlist, int options )
 }
 
 void
-Playlist::Controller::insertOptioned( Meta::PlaylistList list, int options )
+Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options )
 {
     DEBUG_BLOCK
 
-    foreach( Meta::PlaylistPtr playlist, list )
+    foreach( Playlists::PlaylistPtr playlist, list )
         insertOptioned( playlist, options );
 }
 
@@ -217,7 +217,7 @@ Playlist::Controller::insertTracks( int topModelRow, Meta::TrackList tl )
 }
 
 void
-Playlist::Controller::insertPlaylist( int topModelRow, Meta::PlaylistPtr playlist )
+Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
     Meta::TrackList tl( playlist->tracks() );
@@ -225,11 +225,11 @@ Playlist::Controller::insertPlaylist( int topModelRow, Meta::PlaylistPtr playlis
 }
 
 void
-Playlist::Controller::insertPlaylists( int topModelRow, Meta::PlaylistList playlists )
+Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists )
 {
     DEBUG_BLOCK
     Meta::TrackList tl;
-    foreach( Meta::PlaylistPtr playlist, playlists )
+    foreach( Playlists::PlaylistPtr playlist, playlists )
     {
         tl += playlist->tracks();
     }
@@ -578,9 +578,9 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         if ( track == Meta::TrackPtr() )
         { /*ignore*/ }
 
-        else if( Meta::canExpand( track ) )
+        else if( Playlists::canExpand( track ) )
         {
-            Meta::PlaylistPtr playlist = Meta::expand( track ); //expand() can return 0 if the KIO job times out
+            Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:

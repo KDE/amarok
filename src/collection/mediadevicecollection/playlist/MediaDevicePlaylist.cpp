@@ -25,7 +25,7 @@
 
 #include <typeinfo>
 
-Meta::MediaDevicePlaylist::MediaDevicePlaylist( const QString & name, const Meta::TrackList
+Playlists::MediaDevicePlaylist::MediaDevicePlaylist( const QString & name, const Meta::TrackList
         &tracks )
     : m_tracks( tracks )
     , m_description( QString() )
@@ -34,18 +34,18 @@ Meta::MediaDevicePlaylist::MediaDevicePlaylist( const QString & name, const Meta
     // Tell the handler to save it
 }
 
-Meta::MediaDevicePlaylist::~MediaDevicePlaylist()
+Playlists::MediaDevicePlaylist::~MediaDevicePlaylist()
 {
 }
 
 Meta::TrackList
-Meta::MediaDevicePlaylist::tracks()
+Playlists::MediaDevicePlaylist::tracks()
 {
     return m_tracks;
 }
 
 void
-Meta::MediaDevicePlaylist::addTrack( Meta::TrackPtr track, int position )
+Playlists::MediaDevicePlaylist::addTrack( Meta::TrackPtr track, int position )
 {
     DEBUG_BLOCK
     int insertAt = (position == -1) ? m_tracks.count() : position;
@@ -53,14 +53,14 @@ Meta::MediaDevicePlaylist::addTrack( Meta::TrackPtr track, int position )
 }
 
 void
-Meta::MediaDevicePlaylist::removeTrack( int position )
+Playlists::MediaDevicePlaylist::removeTrack( int position )
 {
     DEBUG_BLOCK
     m_tracks.removeAt( position );
 }
 
 void
-Meta::MediaDevicePlaylist::setName( const QString & name )
+Playlists::MediaDevicePlaylist::setName( const QString & name )
 {
     m_name = name;
 }

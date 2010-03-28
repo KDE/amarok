@@ -27,7 +27,7 @@
 class QTextStream;
 class KUrl;
 
-namespace Meta
+namespace Playlists
 {
 class XSPFPlaylist;
 
@@ -76,7 +76,7 @@ public:
     virtual QString description() const;
 
     /** returns all tracks in this playlist */
-    TrackList tracks();
+    Meta::TrackList tracks();
     virtual void addTrack( Meta::TrackPtr track, int position = -1 );
     virtual void removeTrack( int position );
 
@@ -105,7 +105,7 @@ public:
     void setLicense( const KUrl &license );
     void setAttribution( const KUrl &attribution, bool append = true );
     void setLink( const KUrl &link );
-    void setTrackList( TrackList trackList, bool append = false );
+    void setTrackList( Meta::TrackList trackList, bool append = false );
 
     //TODO: implement these
     void beginMetaDataUpdate() {}
@@ -134,7 +134,7 @@ private:
     bool loadXSPF( QTextStream& );
     bool m_tracksLoaded;
     //cache for the tracklist since a tracks() is a called *a lot*.
-    TrackList m_tracks;
+    Meta::TrackList m_tracks;
 
     KUrl m_url;
     bool m_autoAppendAfterLoad;
@@ -142,7 +142,7 @@ private:
 
 }
 
-Q_DECLARE_METATYPE( Meta::XSPFPlaylistPtr )
-Q_DECLARE_METATYPE( Meta::XSPFPlaylistList )
+Q_DECLARE_METATYPE( Playlists::XSPFPlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::XSPFPlaylistList )
 
 #endif

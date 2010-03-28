@@ -471,15 +471,15 @@ SqlPodcastEpisode::deleteFromDb()
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
-Meta::PlaylistPtr
-Podcasts::SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
+Playlists::PlaylistPtr
+SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
 {
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( sqlChannel );
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlChannel );
     return playlist;
 }
 
-Podcasts::SqlPodcastChannelPtr
-Podcasts::SqlPodcastChannel::fromPlaylistPtr( Meta::PlaylistPtr playlist )
+SqlPodcastChannelPtr
+SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
 {
     SqlPodcastChannelPtr sqlChannel = SqlPodcastChannelPtr::dynamicCast( playlist );
     return sqlChannel;
@@ -556,10 +556,10 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     }
 }
 
-PlaylistProvider *
-Podcasts::SqlPodcastChannel::provider() const
+Playlists::PlaylistProvider *
+SqlPodcastChannel::provider() const
 {
-    return dynamic_cast<PlaylistProvider *>( m_provider );
+    return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
 }
 
 SqlPodcastChannel::~SqlPodcastChannel()
@@ -740,3 +740,4 @@ SqlPodcastChannel::loadEpisodes()
         m_episodes << SqlPodcastEpisodePtr( episode );
     }
 }
+

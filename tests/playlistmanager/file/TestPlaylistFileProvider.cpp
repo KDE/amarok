@@ -54,7 +54,7 @@ void TestPlaylistFileProvider::cleanupTestCase()
 
 void TestPlaylistFileProvider::testPlaylists()
 {
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
+    Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 }
 
@@ -64,7 +64,7 @@ void TestPlaylistFileProvider::testSave()
     const KUrl trackUrl = dataPath( "data/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
-    Meta::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
+    Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
 
     QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.m3u" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
@@ -75,7 +75,7 @@ void TestPlaylistFileProvider::testImportAndDeletePlaylists()
 {
     QVERIFY( m_testPlaylistFileProvider->import( dataPath( "data/playlists/test.m3u" ) ) );
 
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
+    Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
 
     // FIXME: deleting playlist causes a confirm dialog to appear
@@ -88,7 +88,7 @@ void TestPlaylistFileProvider::testRename()
 {
     QVERIFY( m_testPlaylistFileProvider->import( dataPath( "data/playlists/test.m3u" ) ) );
 
-    Meta::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
+    Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
     m_testPlaylistFileProvider->rename( tempList.at( 0 ), "New Test Name" );
@@ -113,7 +113,7 @@ void TestPlaylistFileProvider::removeTestPlaylist()
 
 void TestPlaylistFileProvider::removeConfigPlaylistEntries()
 {
-    m_testPlaylistFileProvider = new PlaylistFileProvider();
+    m_testPlaylistFileProvider = new Playlists::PlaylistFileProvider();
     KConfigGroup config = Amarok::config( "Loaded Playlist Files" );
     config.deleteGroup();
 }

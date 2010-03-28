@@ -50,7 +50,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         QString prettyName() const { return i18n("Local Podcasts"); }
         KIcon icon() const { return KIcon( "server-database" ); }
 
-        Meta::PlaylistList playlists();
+        Playlists::PlaylistList playlists();
 
         //PodcastProvider methods
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );

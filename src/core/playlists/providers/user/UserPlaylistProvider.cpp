@@ -16,32 +16,31 @@
 
 #include "core/playlists/providers/user/UserPlaylistProvider.h"
 
-
-UserPlaylistProvider::~UserPlaylistProvider()
+Playlists::UserPlaylistProvider::~UserPlaylistProvider()
 {
 }
 
 int
-UserPlaylistProvider::category() const
+Playlists::UserPlaylistProvider::category() const
 {
-     return Meta::UserPlaylist;
+     return Playlists::UserPlaylist;
 }
 
 bool
-UserPlaylistProvider::supportsEmptyGroups()
+Playlists::UserPlaylistProvider::supportsEmptyGroups()
 {
     return false;
 }
 
 QList<QAction *>
-UserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
+Playlists::UserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
 {
     Q_UNUSED( playlist );
     return QList<QAction *>();
 }
 
 QList<QAction *>
-UserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+Playlists::UserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( playlist );
     Q_UNUSED( trackIndex );

@@ -878,10 +878,10 @@ MediaDeviceHandler::privateParseTracks()
         // Register the playlist provider with the playlistmanager
 
         // register a playlist provider for this type of device
-        m_provider = new MediaDeviceUserPlaylistProvider( m_memColl );
+        m_provider = new Playlists::MediaDeviceUserPlaylistProvider( m_memColl );
 
         // Begin parsing the playlists
-        Meta::MediaDevicePlaylistList playlists;
+        Playlists::MediaDevicePlaylistList playlists;
 
         for( m_pc->prepareToParsePlaylists(); !m_pc->isEndOfParsePlaylistsList(); m_pc->prepareToParseNextPlaylist() )
         {
@@ -908,7 +908,7 @@ MediaDeviceHandler::privateParseTracks()
             }
 
             // Make a playlist out of this tracklist
-            Meta::MediaDevicePlaylistPtr playlist( new Meta::MediaDevicePlaylist( m_pc->libGetPlaylistName(), tracklist ) );
+            Playlists::MediaDevicePlaylistPtr playlist( new Playlists::MediaDevicePlaylist( m_pc->libGetPlaylistName(), tracklist ) );
 
             m_pc->setAssociatePlaylist( playlist );
 
@@ -920,12 +920,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL( playlistSaved( const Meta::MediaDevicePlaylistPtr &, const QString& ) ),
-                 SLOT( savePlaylist( const Meta::MediaDevicePlaylistPtr &, const QString& ) ) );
-        connect( m_provider, SIGNAL( playlistRenamed( const Meta::MediaDevicePlaylistPtr &) ),
-                 SLOT( renamePlaylist( const Meta::MediaDevicePlaylistPtr & ) ) );
-        connect( m_provider, SIGNAL( playlistsDeleted( const Meta::MediaDevicePlaylistList & ) ),
-                 SLOT( deletePlaylists( const Meta::MediaDevicePlaylistList &  ) ) );
+        connect( m_provider, SIGNAL( playlistSaved( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ),
+                 SLOT( savePlaylist( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ) );
+        connect( m_provider, SIGNAL( playlistRenamed( const Playlists::MediaDevicePlaylistPtr &) ),
+                 SLOT( renamePlaylist( const Playlists::MediaDevicePlaylistPtr & ) ) );
+        connect( m_provider, SIGNAL( playlistsDeleted( const Playlists::MediaDevicePlaylistList & ) ),
+                 SLOT( deletePlaylists( const Playlists::MediaDevicePlaylistList &  ) ) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1050,15 +1050,15 @@ MediaDeviceHandler::setDestinations( const QMap<Meta::TrackPtr, QString> &destin
     m_destinations = destinations;
 }
 
-UserPlaylistProvider*
+Playlists::UserPlaylistProvider*
 MediaDeviceHandler::provider()
 {
     DEBUG_BLOCK
-    return (qobject_cast<UserPlaylistProvider *>( m_provider ) );
+    return (qobject_cast<Playlists::UserPlaylistProvider *>( m_provider ) );
 }
 
 void
-MediaDeviceHandler::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+MediaDeviceHandler::savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
     if( !m_pc )
@@ -1081,7 +1081,7 @@ MediaDeviceHandler::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, 
 }
 
 void
-MediaDeviceHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+MediaDeviceHandler::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     if( !m_pc )
@@ -1105,7 +1105,7 @@ MediaDeviceHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist
 }
 
 void
-MediaDeviceHandler::deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist )
+MediaDeviceHandler::deletePlaylists( const Playlists::MediaDevicePlaylistList &playlistlist )
 {
     DEBUG_BLOCK
     if( !m_pc )
@@ -1123,7 +1123,7 @@ MediaDeviceHandler::deletePlaylists( const Meta::MediaDevicePlaylistList &playli
     if( m_pc )
     {
         debug() << "Deleting playlists";
-        foreach( Meta::MediaDevicePlaylistPtr playlist, playlistlist )
+        foreach( Playlists::MediaDevicePlaylistPtr playlist, playlistlist )
         {
             m_pc->deletePlaylist( playlist );
         }

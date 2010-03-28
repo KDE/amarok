@@ -45,13 +45,13 @@ public:
     }
 
     Meta::TrackList tracks;
-    Meta::PlaylistList playlists;
+    Playlists::PlaylistList playlists;
     QStringList playlistGroups;
     Podcasts::PodcastChannelList m_podcastChannels;
     Podcasts::PodcastEpisodeList m_podcastEpisodes;
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
-    QMap<QueryMaker*, Meta::PlaylistList> playlistMap;
+    QMap<QueryMaker*, Playlists::PlaylistList> playlistMap;
     BookmarkList bookmarks;
     BookmarkGroupList bookmarkGroups;
 
@@ -168,25 +168,25 @@ AmarokMimeData::getTrackListSignal() const
     }
 }
 
-Meta::PlaylistList
+Playlists::PlaylistList
 AmarokMimeData::playlists() const
 {
     while( d->completedQueries < d->queryMakers.count() )
     {
         QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
     }
-    Meta::PlaylistList result = d->playlists;
+    Playlists::PlaylistList result = d->playlists;
     return result;
 }
 
 void
-AmarokMimeData::setPlaylists( const Meta::PlaylistList &playlists )
+AmarokMimeData::setPlaylists( const Playlists::PlaylistList &playlists )
 {
     d->playlists = playlists;
 }
 
 void
-AmarokMimeData::addPlaylists( const Meta::PlaylistList &playlists )
+AmarokMimeData::addPlaylists( const Playlists::PlaylistList &playlists )
 {
     d->playlists << playlists;
 }
@@ -298,7 +298,7 @@ QVariant
 AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
 {
     Meta::TrackList tracks = this->tracks();
-    Meta::PlaylistList playlists = this->playlists();
+    Playlists::PlaylistList playlists = this->playlists();
     Podcasts::PodcastChannelList channels = this->podcastChannels();
     Podcasts::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
@@ -314,7 +314,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             {
                 list.append( QVariant( QUrl( episode->playableUrl() ) ) );
             }
-            foreach( Meta::PlaylistPtr playlist, playlists )
+            foreach( Playlists::PlaylistPtr playlist, playlists )
             {
                 list.append( QVariant( QUrl( playlist->retrievableUrl() ) ) );
             }
@@ -343,7 +343,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += " - ";
                 result += episode->channel()->prettyName();
             }
-            foreach( Meta::PlaylistPtr playlist, playlists )
+            foreach( Playlists::PlaylistPtr playlist, playlists )
             {
                 if( !result.isEmpty() )
                     result += '\n';

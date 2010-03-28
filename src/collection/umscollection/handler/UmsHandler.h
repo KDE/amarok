@@ -153,10 +153,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
 #if 0
 
         virtual QString libGetPlaylistName();
-        void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-        void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        void setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        void libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
+        void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
 
         // TODO: MediaDeviceTrackPtr
         virtual void libSetCoverArt( Itdb_Track *umstrack, const QPixmap &image );
@@ -269,7 +269,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QHash<QString,Meta::MediaDeviceTrackPtr> m_files; // path, MDTrackPtr
 
         // Hash that associates an Itdb_Playlist* to every PlaylistPtr
-        //QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
+        //QHash<Playlists::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
 
         // tracks that failed to copy
         QMap<Meta::TrackPtr, QString> m_tracksFailed;

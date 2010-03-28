@@ -28,6 +28,7 @@
 
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
+#include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "core/meta/Meta.h"
 #include "statusbar/StatusBar.h"
 
@@ -46,8 +47,6 @@ class QString;
 class QMutex;
 
 class MediaDeviceCollection;
-class MediaDevicePlaylistPtr;
-class MediaDeviceUserPlaylistProvider;
 
 namespace Meta
 {
@@ -191,7 +190,7 @@ public:
     virtual float usedcapacity() const;
     virtual float totalcapacity() const;
 
-    UserPlaylistProvider* provider();
+    Playlists::UserPlaylistProvider* provider();
 
     // HACK: Used for device-specific actions, such as initialize for iPod
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
@@ -227,9 +226,9 @@ public slots:
 
     virtual void writeDatabase() { slotDatabaseWritten( true ); }
 
-    void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-    void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-    void deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist );
+    void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
+    void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+    void deletePlaylists( const Playlists::MediaDevicePlaylistList &playlistlist );
 
     bool privateParseTracks();
     
@@ -355,7 +354,7 @@ private:
     * Handler Variables
     */
 
-    MediaDeviceUserPlaylistProvider *m_provider; /// Associated playlist provider
+    Playlists::MediaDeviceUserPlaylistProvider *m_provider; /// Associated playlist provider
 
     bool m_copyFailed; /// Indicates whether a copy failed or not
     bool m_isCopying;

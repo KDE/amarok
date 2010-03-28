@@ -19,7 +19,7 @@
 
 #include "core/playlists/Playlist.h"
 
-namespace Meta {
+namespace Playlists {
 
 /**
  * Base Class for all dynamic playlists.
@@ -32,7 +32,7 @@ class AMAROK_EXPORT DynamicPlaylist : public Playlist
 
         ~DynamicPlaylist();
 
-        /* Meta::Playlist virtuals */
+        /* Playlists::Playlist virtuals */
         virtual QString name() const { return prettyName(); };
         virtual QString prettyName() const;
 

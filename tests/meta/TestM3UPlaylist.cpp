@@ -53,7 +53,7 @@ void TestM3UPlaylist::initTestCase()
     QFile playlistFile2( tmpFile );
     QVERIFY( playlistFile2.open( QFile::ReadOnly ) );
 
-    m_testPlaylist = new Meta::M3UPlaylist( KUrl( tmpFile ) );
+    m_testPlaylist = new Playlists::M3UPlaylist( KUrl( tmpFile ) );
     QVERIFY( m_testPlaylist );
 
     QTextStream playlistStream;

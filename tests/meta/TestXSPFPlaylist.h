@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace Meta {
+namespace Playlists {
     class XSPFPlaylist;
 }
 
@@ -58,7 +58,7 @@ private slots:
     void testSave();
 
 private:
-    Meta::XSPFPlaylist *m_testPlaylist1;
+    Playlists::XSPFPlaylist *m_testPlaylist1;
     QString dataPath( const QString &relPath );
 };
 

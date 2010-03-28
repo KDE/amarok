@@ -56,13 +56,13 @@ class UmsPodcastProvider : public PodcastProvider
         virtual QString prettyName() const;
         virtual KIcon icon() const;
 
-        virtual Meta::PlaylistList playlists();
+        virtual Playlists::PlaylistList playlists();
 
         virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
         virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList );
 
-        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
+        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex );
 
         virtual void completePodcastDownloads();
