@@ -421,8 +421,8 @@ App::handleCliArgs() //static
         if( format == "xml" || format == "lightxml" )
             testOpt << QString( '-' + format );
 
-        const bool stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
-        runUnitTests( testOpt, stdout );
+        const bool _stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
+        runUnitTests( testOpt, _stdout );
     }
 #endif // DEBUG
 
