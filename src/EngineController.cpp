@@ -305,7 +305,7 @@ EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
-        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedQuit );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), Engine::EngineObserver::EndedQuit );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 }
@@ -515,7 +515,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         const qint64 pos = trackPositionMs();
         const qint64 length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        playbackEnded( pos, length, EngineObserver::EndedStopped );
+        playbackEnded( pos, length, Engine::EngineObserver::EndedStopped );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 
@@ -948,7 +948,7 @@ EngineController::slotQueueEnded()
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         m_media->setCurrentSource( Phonon::MediaSource() );
-        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), Engine::EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
     }

@@ -32,7 +32,7 @@ class QWheelEvent;
 namespace Amarok { class VolumeSlider; }
 
 
-class VolumePopupButton : public QToolButton, public EngineObserver
+class VolumePopupButton : public QToolButton, public Engine::EngineObserver
 {
     Q_OBJECT
 

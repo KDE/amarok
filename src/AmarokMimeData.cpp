@@ -47,8 +47,8 @@ public:
     Meta::TrackList tracks;
     Playlists::PlaylistList playlists;
     QStringList playlistGroups;
-    Meta::PodcastChannelList m_podcastChannels;
-    Meta::PodcastEpisodeList m_podcastEpisodes;
+    Podcasts::PodcastChannelList m_podcastChannels;
+    Podcasts::PodcastEpisodeList m_podcastEpisodes;
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
     QMap<QueryMaker*, Playlists::PlaylistList> playlistMap;
@@ -209,38 +209,38 @@ AmarokMimeData::addPlaylistGroup( const QString &group )
     d->playlistGroups << group;
 }
 
-Meta::PodcastChannelList
+Podcasts::PodcastChannelList
 AmarokMimeData::podcastChannels() const
 {
     return d->m_podcastChannels;
 }
 
 void
-AmarokMimeData::setPodcastChannels( const Meta::PodcastChannelList &channels )
+AmarokMimeData::setPodcastChannels( const Podcasts::PodcastChannelList &channels )
 {
     d->m_podcastChannels = channels;
 }
 
 void
-AmarokMimeData::addPodcastChannels( const Meta::PodcastChannelList &channels )
+AmarokMimeData::addPodcastChannels( const Podcasts::PodcastChannelList &channels )
 {
     d->m_podcastChannels << channels;
 }
 
-Meta::PodcastEpisodeList
+Podcasts::PodcastEpisodeList
 AmarokMimeData::podcastEpisodes() const
 {
     return d->m_podcastEpisodes;
 }
 
 void
-AmarokMimeData::setPodcastEpisodes( const Meta::PodcastEpisodeList &episodes )
+AmarokMimeData::setPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes )
 {
     d->m_podcastEpisodes = episodes;
 }
 
 void
-AmarokMimeData::addPodcastEpisodes( const Meta::PodcastEpisodeList &episodes )
+AmarokMimeData::addPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes )
 {
     d->m_podcastEpisodes << episodes;
 }
@@ -299,8 +299,8 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
 {
     Meta::TrackList tracks = this->tracks();
     Playlists::PlaylistList playlists = this->playlists();
-    Meta::PodcastChannelList channels = this->podcastChannels();
-    Meta::PodcastEpisodeList episodes = this->podcastEpisodes();
+    Podcasts::PodcastChannelList channels = this->podcastChannels();
+    Podcasts::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
     {
         if( mimeType == "text/uri-list" && (type == QVariant::List || type == QVariant::ByteArray) )
@@ -310,7 +310,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             {
                 list.append( QVariant( QUrl( track->playableUrl() ) ) );
             }
-            foreach( Meta::PodcastEpisodePtr episode, episodes )
+            foreach( Podcasts::PodcastEpisodePtr episode, episodes )
             {
                 list.append( QVariant( QUrl( episode->playableUrl() ) ) );
             }
@@ -318,7 +318,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             {
                 list.append( QVariant( QUrl( playlist->retrievableUrl() ) ) );
             }
-            foreach( Meta::PodcastChannelPtr channel, channels )
+            foreach( Podcasts::PodcastChannelPtr channel, channels )
             {
                 list.append( QVariant( QUrl( channel->url() ) ) );
             }
@@ -335,7 +335,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += " - ";
                 result += track->prettyName();
             }
-            foreach( Meta::PodcastEpisodePtr episode, episodes )
+            foreach( Podcasts::PodcastEpisodePtr episode, episodes )
             {
                 if( !result.isEmpty() )
                     result += '\n';
@@ -349,7 +349,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                     result += '\n';
                 result += playlist->prettyName();
             }
-            foreach( Meta::PodcastChannelPtr channel, channels )
+            foreach( Podcasts::PodcastChannelPtr channel, channels )
             {
                 if( !result.isEmpty() )
                     result += '\n';

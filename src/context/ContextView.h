@@ -47,7 +47,7 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public Plasma::View, public EngineObserver, public ContextSubject
+class AMAROK_EXPORT ContextView : public Plasma::View, public Engine::EngineObserver, public ContextSubject
 {
     Q_OBJECT
 

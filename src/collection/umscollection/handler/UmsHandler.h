@@ -61,7 +61,9 @@ class KDirLister;
 class KFileItem;
 class KUrl;
 
-class UmsPodcastProvider;
+namespace Podcasts {
+    class UmsPodcastProvider;
+}
 
 class QAction;
 class QString;
@@ -277,7 +279,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QSet<QString> m_coverArt;
 
         //direct implementation of a podcast provider NOT using the MD::Capabilities
-        UmsPodcastProvider *m_podcastProvider;
+        Podcasts::UmsPodcastProvider *m_podcastProvider;
         QAction *m_configureAction;
 
         Ui::UmsConfiguration *m_settings;

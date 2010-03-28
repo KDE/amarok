@@ -26,8 +26,11 @@
 #include <QPointer>
 #include <QSet>
 
-class EngineSubject;
 class QString;
+
+namespace Engine {
+
+class EngineSubject;
 
 /**
  * If you want to observe the engine, inherit from this class.
@@ -196,5 +199,7 @@ private:
     QSet<EngineObserver*> Observers;
     Phonon::State m_realState; // To work around the buffering issue
 };
+
+} //namespace Engine
 
 #endif // AMAROK_ENGINEOBSERVER_H

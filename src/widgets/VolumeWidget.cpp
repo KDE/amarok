@@ -32,7 +32,7 @@
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     setIconDimensions( 16 );
     setToolButtonStyle( Qt::ToolButtonIconOnly );

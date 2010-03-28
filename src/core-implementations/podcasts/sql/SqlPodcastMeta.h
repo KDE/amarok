@@ -17,17 +17,16 @@
 #ifndef SQLPODCASTMETA_H
 #define SQLPODCASTMETA_H
 
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 #include "core-implementations/meta/file/File.h"
 #include "core/playlists/PlaylistProvider.h"
 
-class SqlPodcastProvider;
-
-namespace Meta
+namespace Podcasts
 {
 
 class SqlPodcastEpisode;
 class SqlPodcastChannel;
+class SqlPodcastProvider;
 
 typedef KSharedPtr<SqlPodcastEpisode> SqlPodcastEpisodePtr;
 typedef KSharedPtr<SqlPodcastChannel> SqlPodcastChannelPtr;
@@ -35,10 +34,10 @@ typedef KSharedPtr<SqlPodcastChannel> SqlPodcastChannelPtr;
 typedef QList<SqlPodcastEpisodePtr> SqlPodcastEpisodeList;
 typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
 
-class SqlPodcastEpisode : public PodcastEpisode
+class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 {
     public:
-        static TrackList toTrackList( SqlPodcastEpisodeList episodes );
+        static Meta::TrackList toTrackList( SqlPodcastEpisodeList episodes );
         static PodcastEpisodeList toPodcastEpisodeList( SqlPodcastEpisodeList episodes );
 
         SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
@@ -65,11 +64,11 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual ComposerPtr composer() const;
-        virtual GenrePtr genre() const;
-        virtual YearPtr year() const;
+        virtual Meta::AlbumPtr album() const;
+        virtual Meta::ArtistPtr artist() const;
+        virtual Meta::ComposerPtr composer() const;
+        virtual Meta::GenrePtr genre() const;
+        virtual Meta::YearPtr year() const;
 
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
@@ -87,7 +86,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         MetaFile::TrackPtr m_localFile;
 };
 
-class SqlPodcastChannel : public PodcastChannel
+class SqlPodcastChannel : public Podcasts::PodcastChannel
 {
     public:
         static Playlists::PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
@@ -101,12 +100,12 @@ class SqlPodcastChannel : public PodcastChannel
 
         ~SqlPodcastChannel();
         // Playlists::Playlist methods
-        virtual TrackList tracks() { return Meta::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 
-        //Meta::PodcastChannel methods
+        //Podcasts::PodcastChannel methods
         virtual void setTitle( const QString &title );
-        virtual Meta::PodcastEpisodeList episodes();
+        virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual void setImage( const QPixmap &image );
         virtual QPixmap image() const { return m_image; }
@@ -136,11 +135,11 @@ class SqlPodcastChannel : public PodcastChannel
         SqlPodcastProvider *m_provider;
 };
 
-}
+} //namespace Podcasts
 
-Q_DECLARE_METATYPE( Meta::SqlPodcastEpisodePtr )
-Q_DECLARE_METATYPE( Meta::SqlPodcastEpisodeList )
-Q_DECLARE_METATYPE( Meta::SqlPodcastChannelPtr )
-Q_DECLARE_METATYPE( Meta::SqlPodcastChannelList )
+Q_DECLARE_METATYPE( Podcasts::SqlPodcastEpisodePtr )
+Q_DECLARE_METATYPE( Podcasts::SqlPodcastEpisodeList )
+Q_DECLARE_METATYPE( Podcasts::SqlPodcastChannelPtr )
+Q_DECLARE_METATYPE( Podcasts::SqlPodcastChannelList )
 
 #endif

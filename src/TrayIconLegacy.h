@@ -33,7 +33,7 @@ class App;
 
 namespace Amarok {
 
-class TrayIcon : public KSystemTrayIcon, public EngineObserver, public Meta::Observer
+class TrayIcon : public KSystemTrayIcon, public Engine::EngineObserver, public Meta::Observer
 {
     Q_OBJECT
 

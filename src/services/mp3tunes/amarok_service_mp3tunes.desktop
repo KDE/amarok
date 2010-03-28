@@ -20,6 +20,7 @@ Name[sr@ijekavianlatin]=MP3Tunes
 Name[sr@latin]=MP3Tunes
 Name[sv]=MP3tunes
 Name[uk]=MP3tunes
+Name[x-test]=xxMP3tunesxx
 Comment=Browse and listen to the music stored in your MP3tunes account
 Comment[ca]=Navegueu i escolteu la música emmagatzemada en el vostre compte de MP3tunes
 Comment[cs]=Procházejte a poslouchejte hudbu uloženou na vašem mp3tunes účtu
@@ -38,6 +39,7 @@ Comment[sr@ijekavianlatin]=Pregledajte i slušajte muziku sa svog naloga na MP3T
 Comment[sr@latin]=Pregledajte i slušajte muziku sa svog naloga na MP3Tunesu
 Comment[sv]=Bläddra igenom och lyssna på musik lagrad på ditt Mp3tunes-konto
 Comment[uk]=Перегляньте і прослухайте музику з вашого рахунку у MP3tunes
+Comment[x-test]=xxBrowse and listen to the music stored in your MP3tunes accountxx
 
 ServiceTypes=Amarok/Plugin
 

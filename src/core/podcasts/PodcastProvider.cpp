@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,42 +13,59 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef AMAROK_GROWL_INTERFACE_H
-#define AMAROK_GROWL_INTERFACE_H
 
- 
- 
-#include <QString> 
-#include <QImage>
- 
+#include "core/podcasts/PodcastProvider.h"
+
 #include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-#include "EngineController.h" 
-#include "core/engine/EngineObserver.h"
-    
- // NOTE if not on mac, this whole file is useless, so not even going to try
-class GrowlInterface : public Engine::EngineObserver , public Meta::Observer
+
+#include <KUrl>
+
+using namespace Podcasts;
+
+bool
+PodcastProvider::couldBeFeed( const QString &urlString )
 {
-    public:
-        GrowlInterface( QString appName );
-     
-        void show( Meta::TrackPtr );
-     
-    protected:
-        // Reimplemented from EngineObserver
-        virtual void engineVolumeChanged( int );
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
+    DEBUG_BLOCK
 
-        // Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track ); 
-    private:
-        QString m_appName;
-        Meta::TrackPtr m_currentTrack;
-     
-};
+    QStringList feedProtocols;
+    feedProtocols << "itpc";
+    feedProtocols << "pcast";
+    feedProtocols << "feed";
 
-#endif
- 
+    QString matchString = QString( "^(%1)" ).arg( feedProtocols.join( "|" ) );
+    qDebug() << "matchString = " << matchString;
+
+    QRegExp rx( matchString );
+    int pos = rx.indexIn( urlString.trimmed() );
+    qDebug() << "found at " << pos;
+
+    return pos != -1;
+}
+
+KUrl
+PodcastProvider::toFeedUrl( const QString &urlString )
+{
+    DEBUG_BLOCK
+    debug() << urlString;
+
+    KUrl kurl( urlString.trimmed() );
+
+    if( kurl.protocol() == "itpc" )
+    {
+        debug() << "itpc:// url.";
+        kurl.setProtocol( "http" );
+    }
+    else if( kurl.protocol() == "pcast" )
+    {
+        debug() << "pcast:// url.";
+        kurl.setProtocol( "http" );
+    }
+    else if( kurl.protocol() == "feed" )
+    {
+        //TODO: also handle the case feed:https://example.com/entries.atom
+        debug() << "feed:// url.";
+        kurl.setProtocol( "http" );
+    }
+
+    return kurl;
+}

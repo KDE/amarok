@@ -18,13 +18,15 @@
 #define PODCASTPROVIDER_H
 
 #include "core/collections/Collection.h"
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 
 #include <kio/jobclasses.h>
-#include <klocale.h>
+#include <KLocale>
 
 class KUrl;
 class QAction;
+
+namespace Podcasts {
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -47,19 +49,19 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
           * This means we can not use trackForUrl().
           * Problematic guids contain non-latin characters, percent encoded parts, capitals, etc.
           */
-        virtual Meta::PodcastEpisodePtr episodeForGuid( const QString &guid ) = 0;
+        virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid ) = 0;
 
         virtual void addPodcast( const KUrl &url ) = 0;
 
-        virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel ) = 0;
-        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) = 0;
+        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
 
-        virtual Meta::PodcastChannelList channels() = 0;
+        virtual Podcasts::PodcastChannelList channels() = 0;
 
-        virtual void removeSubscription( Meta::PodcastChannelPtr channel ) = 0;
+        virtual void removeSubscription( Podcasts::PodcastChannelPtr channel ) = 0;
 
         virtual void configureProvider() = 0;
-        virtual void configureChannel( Meta::PodcastChannelPtr channel ) = 0;
+        virtual void configureChannel( Podcasts::PodcastChannelPtr channel ) = 0;
 
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
@@ -69,9 +71,9 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         virtual Playlists::PlaylistList playlists() = 0;
 
-        virtual QList<QAction *> episodeActions( Meta::PodcastEpisodeList )
+        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList )
             { return QList<QAction *>(); }
-        virtual QList<QAction *> channelActions( Meta::PodcastChannelList )
+        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList )
             { return QList<QAction *>(); }
 
         virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
@@ -87,14 +89,16 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
     public slots:
         virtual void updateAll() = 0;
-        virtual void update( Meta::PodcastChannelPtr channel ) = 0;
-        virtual void downloadEpisode( Meta::PodcastEpisodePtr episode ) = 0;
-        virtual void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+        virtual void update( Podcasts::PodcastChannelPtr channel ) = 0;
+        virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
+        virtual void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
         virtual void slotUpdated() = 0;
 
     signals:
         virtual void updated() = 0;
 
 };
+
+} //namespace Podcasts
 
 #endif

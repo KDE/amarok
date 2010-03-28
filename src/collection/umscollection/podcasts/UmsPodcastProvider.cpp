@@ -25,9 +25,9 @@
 #include <QListWidget>
 #include <QObject>
 
-using namespace Meta;
+using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, KUrl scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory )
         : m_handler( handler )
         , m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
@@ -48,11 +48,11 @@ UmsPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
     return false;
 }
 
-TrackPtr
+Meta::TrackPtr
 UmsPodcastProvider::trackForUrl( const KUrl &url )
 {
     Q_UNUSED( url )
-    return TrackPtr();
+    return Meta::TrackPtr();
 }
 
 PodcastEpisodePtr
@@ -396,19 +396,19 @@ UmsPodcastProvider::updateAll() //slot
 }
 
 void
-UmsPodcastProvider::update( Meta::PodcastChannelPtr channel ) //slot
+UmsPodcastProvider::update( Podcasts::PodcastChannelPtr channel ) //slot
 {
     Q_UNUSED( channel );
 }
 
 void
-UmsPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode ) //slot
+UmsPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode ) //slot
 {
     Q_UNUSED( episode );
 }
 
 void
-UmsPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode ) //slot
+UmsPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode ) //slot
 {
     Q_UNUSED( episode );
 }

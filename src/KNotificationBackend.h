@@ -27,7 +27,7 @@ namespace Amarok {
  * A class for accessing KNotify in KDE
  *
  **/
-class KNotificationBackend : public QObject, public EngineObserver
+class KNotificationBackend : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 

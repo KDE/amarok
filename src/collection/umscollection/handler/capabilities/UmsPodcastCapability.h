@@ -38,7 +38,7 @@ public:
     virtual Handler::MediaDevicePodcastEpisodePtr libGetEpisodePtrForEpisodeStruct();
     virtual QString libGetPodcastName();
     
-    virtual void addPodcast( const Meta::PodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
+    virtual void addPodcast( const Podcasts::PodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
     virtual void removePodcast( const Handler::MediaDevicePodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
     virtual void removePodcastEpisode( const Handler::MediaDevicePodcastEpisodePtr &episode ) { Q_UNUSED( episode ); }
 

@@ -67,6 +67,7 @@ Comment[sr@ijekavianlatin]=Servis koji ugrađuje last.fm‑ove mogućnosti u Ama
 Comment[sr@latin]=Servis koji ugrađuje last.fm‑ove mogućnosti u Amarok
 Comment[sv]=En tjänst som integrerar funktioner från Last.fm i Amarok
 Comment[uk]=Служба, яка інтегрує функціональність Last.fm до Amarok
+Comment[x-test]=xxA service that integrates Last.fm functionality into Amarokxx
 
 
 ServiceTypes=Amarok/Plugin

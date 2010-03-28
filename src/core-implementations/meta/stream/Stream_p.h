@@ -30,7 +30,7 @@
 
 using namespace MetaStream;
 
-class MetaStream::Track::Private : public QObject, public EngineObserver
+class MetaStream::Track::Private : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
     public:

@@ -55,7 +55,7 @@ enum StopAfterMode
  * Next", etc. commands to the GUI code.
  */
 
-class AMAROK_EXPORT Actions : public QObject, public EngineObserver
+class AMAROK_EXPORT Actions : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 

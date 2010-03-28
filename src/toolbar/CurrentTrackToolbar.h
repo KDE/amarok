@@ -24,7 +24,7 @@
 /**
 A toolbar that contains the CurrentTrackActions of the currently playing track.
 */
-class CurrentTrackToolbar : public QToolBar, public EngineObserver
+class CurrentTrackToolbar : public QToolBar, public Engine::EngineObserver
 {
 public:
     CurrentTrackToolbar( QWidget * parent );

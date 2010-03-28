@@ -18,8 +18,8 @@
 #ifndef PODCASTREADER_H
 #define PODCASTREADER_H
 
-#include "PodcastProvider.h"
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastMeta.h"
 
 #include <QDateTime>
 #include <QXmlStreamReader>
@@ -35,6 +35,8 @@ namespace KIO
 
 class KUrl;
 
+namespace Podcasts {
+
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
             Mathias Panzenböck <grooser.meister.morti@gmx.net>
@@ -48,19 +50,23 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
         bool read( QIODevice *device );
         bool read( const KUrl &url );
-        bool update( Meta::PodcastChannelPtr channel );
+        bool update( Podcasts::PodcastChannelPtr channel );
         KUrl & url() { return m_url; }
 
-        Meta::PodcastChannelPtr channel() { return m_channel; }
+        Podcasts::PodcastChannelPtr channel() { return m_channel; }
 
     signals:
         void finished( PodcastReader *podcastReader );
+        void statusBarSorryMessage( const QString &message );
+        void statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* );
+
+    public slots:
+        virtual void slotAbort();
 
     private slots:
         void slotRedirection( KIO::Job *job, const KUrl & url );
         void slotPermanentRedirection ( KIO::Job * job, const KUrl & fromUrl,
                 const KUrl & toUrl );
-        void slotAbort();
         void slotAddData( KIO::Job *, const QByteArray & data );
 
         void downloadResult( KJob * );
@@ -235,7 +241,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         * @return A pointer to a PodcastEpisode that has been fetched before or the \
         *   same pointer as the argument.
         */
-        Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
+        Podcasts::PodcastEpisodePtr podcastEpisodeCheck( Podcasts::PodcastEpisodePtr episode );
 
         // TODO: move this to PodcastMeta and add a field
         //       descriptionType to PodcastCommonMeta.
@@ -354,8 +360,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
         KUrl m_url;
         PodcastProvider *m_podcastProvider;
         KIO::TransferJob *m_transferJob;
-        Meta::PodcastChannelPtr m_channel;
-        Meta::PodcastEpisodePtr m_item;
+        Podcasts::PodcastChannelPtr m_channel;
+        Podcasts::PodcastEpisodePtr m_item;
         
         // this somewhat emulates a callstack (whithout local variables):
         QStack<const Action*> m_actionStack;
@@ -363,7 +369,9 @@ class PodcastReader : public QObject, public QXmlStreamReader
         ContentType m_contentType;
         QString m_buffer;
         QList<Enclosure> m_enclosures;
-        Meta::PodcastMetaCommon *m_current;
+        Podcasts::PodcastMetaCommon *m_current;
 };
+
+} //namespace Podcasts
 
 #endif

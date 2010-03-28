@@ -54,7 +54,7 @@ namespace Dynamic
     };
     
     // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-    class EchoNestBias : public CustomBiasEntry, public EngineObserver
+    class EchoNestBias : public CustomBiasEntry, public Engine::EngineObserver
     {
         Q_OBJECT
         public:

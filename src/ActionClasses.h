@@ -54,7 +54,7 @@ namespace Amarok
             MenuAction( KActionCollection*, QObject* );
     };
 
-    class PlayPauseAction : public KToggleAction, public EngineObserver
+    class PlayPauseAction : public KToggleAction, public Engine::EngineObserver
     {
         public:
             PlayPauseAction( KActionCollection*, QObject* );
@@ -162,14 +162,14 @@ namespace Amarok
             virtual QWidget* createWidget( QWidget* );
     };
 
-    class StopAction : public KAction, public EngineObserver
+    class StopAction : public KAction, public Engine::EngineObserver
     {
         public:
             StopAction( KActionCollection*, QObject* );
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
-    class StopPlayingAfterCurrentTrackAction : public KAction, public EngineObserver
+    class StopPlayingAfterCurrentTrackAction : public KAction, public Engine::EngineObserver
     {
         Q_OBJECT
         public:

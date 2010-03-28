@@ -18,7 +18,7 @@
 #define PODCASTMETA_H
 
 #include "core/support/Amarok.h"
-#include "amarok_export.h"
+#include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 
@@ -32,7 +32,7 @@
 #include <QTextStream>
 
 
-namespace Meta
+namespace Podcasts
 {
 
 class PodcastMetaCommon;
@@ -92,7 +92,7 @@ class AMAROK_EXPORT PodcastMetaCommon
         QString m_author; // TODO: save to DB
 };
 
-class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
+class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Track
 {
     public:
         PodcastEpisode();
@@ -112,11 +112,11 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
         virtual bool isPlayable() const { return true; }
         virtual bool isEditable() const { return false; }
 
-        virtual AlbumPtr album() const { return m_albumPtr; }
-        virtual ArtistPtr artist() const { return m_artistPtr; }
-        virtual ComposerPtr composer() const { return m_composerPtr; }
-        virtual GenrePtr genre() const { return m_genrePtr; }
-        virtual YearPtr year() const { return m_yearPtr; }
+        virtual Meta::AlbumPtr album() const { return m_albumPtr; }
+        virtual Meta::ArtistPtr artist() const { return m_artistPtr; }
+        virtual Meta::ComposerPtr composer() const { return m_composerPtr; }
+        virtual Meta::GenrePtr genre() const { return m_genrePtr; }
+        virtual Meta::YearPtr year() const { return m_yearPtr; }
 
         virtual void setTitle( const QString &title ) { m_title = title; }
 
@@ -220,14 +220,14 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
             , m_purgeCount( 0 )
         { }
 
-        PodcastChannel( Meta::PodcastChannelPtr channel );
+        PodcastChannel( Podcasts::PodcastChannelPtr channel );
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
         virtual QString name() const { return title(); }
         virtual QString prettyName() const { return title(); }
 
-        virtual TrackList tracks() { return m_tracks; }
+        virtual Meta::TrackList tracks() { return m_tracks; }
 
         virtual KUrl retrievableUrl() { return KUrl(); }
 
@@ -255,7 +255,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
         virtual void addLabel( const QString &label ) { m_labels << label; }
         virtual void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        virtual Meta::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode )
+        virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode )
                 { m_episodes << episode; return episode; }
         virtual PodcastEpisodeList episodes() { return m_episodes; }
 
@@ -293,7 +293,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
         int m_purgeCount; //how many episodes do we keep on disk?
 
         PodcastEpisodeList m_episodes;
-        TrackList m_tracks;
+        Meta::TrackList m_tracks;
 };
 
 // internal helper classes
@@ -503,12 +503,12 @@ public:
     PodcastEpisode const *episode;
 };
 
-}
+} //namespace Podcasts
 
-Q_DECLARE_METATYPE( Meta::PodcastMetaCommon* )
-Q_DECLARE_METATYPE( Meta::PodcastEpisodePtr )
-Q_DECLARE_METATYPE( Meta::PodcastEpisodeList )
-Q_DECLARE_METATYPE( Meta::PodcastChannelPtr )
-Q_DECLARE_METATYPE( Meta::PodcastChannelList )
+Q_DECLARE_METATYPE( Podcasts::PodcastMetaCommon* )
+Q_DECLARE_METATYPE( Podcasts::PodcastEpisodePtr )
+Q_DECLARE_METATYPE( Podcasts::PodcastEpisodeList )
+Q_DECLARE_METATYPE( Podcasts::PodcastChannelPtr )
+Q_DECLARE_METATYPE( Podcasts::PodcastChannelList )
 
 #endif

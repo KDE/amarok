@@ -46,7 +46,7 @@ A new, much simpler status bar as the old one really did not survive the porting
 
 	@author
 */
-class AMAROK_EXPORT StatusBar : public KStatusBar, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT StatusBar : public KStatusBar, public Engine::EngineObserver, public Meta::Observer
 {
     Q_OBJECT
     //friend StatusBar* The::statusBar();

@@ -32,7 +32,7 @@
 
 ProgressWidget::ProgressWidget( QWidget *parent )
         : QWidget( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
 {
 
     QHBoxLayout *box = new QHBoxLayout( this );

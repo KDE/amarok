@@ -45,7 +45,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "core/plugins/PluginManager.h"
-#include "podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statemanagement/ApplicationController.h"
@@ -300,9 +300,9 @@ App::handleCliArgs() //static
         {
             KUrl url = args->url( i );
             //TODO:PORTME
-            if( PodcastProvider::couldBeFeed( url.url() ) )
+            if( Podcasts::PodcastProvider::couldBeFeed( url.url() ) )
             {
-                KUrl feedUrl = PodcastProvider::toFeedUrl( url.url() );
+                KUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
             else if( url.protocol() == "amarok" )

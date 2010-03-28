@@ -111,7 +111,7 @@ namespace Handler
             /**
              * Adds a podcast
              */
-            virtual void addPodcast( const Meta::PodcastChannelPtr &channel ) = 0;
+            virtual void addPodcast( const Podcasts::PodcastChannelPtr &channel ) = 0;
 
             /**
              * Deletes a particular Podcast from the device
@@ -126,7 +126,7 @@ namespace Handler
             virtual void removePodcastEpisode( const MediaDevicePodcastEpisodePtr &episode ) = 0;
 
             /**
-             * This method must create a two-way association of the current Meta::Podcast
+             * This method must create a two-way association of the current Podcasts::Podcast
              * to the special struct provided by the library to read/write information.
              * For example, for libgpod one would associate Itdb_Podcast*.  It makes
              * the most sense to use a QHash since it is fastest lookup and order

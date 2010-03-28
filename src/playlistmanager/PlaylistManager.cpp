@@ -24,10 +24,10 @@
 #include "core-implementations/playlists/file/PlaylistFile.h"
 #include "playlist/PlaylistModelStack.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
-#include "PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
-#include "sql/SqlPodcastProvider.h"
-#include "sql/SqlUserPlaylistProvider.h"
+#include "core-implementations/podcasts/sql/SqlPodcastProvider.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
@@ -67,7 +67,7 @@ PlaylistManager::PlaylistManager()
 {
     s_instance = this;
 
-    m_defaultPodcastProvider = new SqlPodcastProvider();
+    m_defaultPodcastProvider = new Podcasts::SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
 
@@ -384,7 +384,7 @@ PlaylistManager::completePodcastDownloads()
 {
     foreach( Playlists::PlaylistProvider *prov, providersForCategory( PodcastChannel ) )
     {
-        PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( prov );
+        Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>( prov );
         if( !podcastProvider )
             continue;
 

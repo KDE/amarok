@@ -53,7 +53,7 @@
  */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_aspectRatio( 0 )
         , m_headerAspectRatio( 0.0 )
         , m_headerLabel( 0 )

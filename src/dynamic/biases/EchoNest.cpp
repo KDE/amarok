@@ -81,7 +81,7 @@ Dynamic::EchoNestBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::EchoNestBias::EchoNestBias()
     : Dynamic::CustomBiasEntry()
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_artistSuggestedQuery( 0 )
     , m_qm( 0 )
     , m_currentOnly( true )

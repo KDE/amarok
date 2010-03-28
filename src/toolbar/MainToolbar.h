@@ -31,7 +31,7 @@ namespace Amarok { class TimeSlider; }
 #include <QToolBar>
 
 
-class MainToolbar : public QToolBar, public EngineObserver
+class MainToolbar : public QToolBar, public Engine::EngineObserver
 {
     Q_OBJECT
 

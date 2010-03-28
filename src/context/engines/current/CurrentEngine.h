@@ -47,7 +47,7 @@ class QTimer;
 
 class CurrentEngine : public Context::DataEngine, 
                       public ContextObserver,
-                      public EngineObserver,
+                      public Engine::EngineObserver,
                       public Meta::Observer
 {
     Q_OBJECT

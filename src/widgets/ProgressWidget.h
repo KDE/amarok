@@ -29,7 +29,7 @@
 class TimeLabel;
 namespace Amarok { class TimeSlider; }
 
-class ProgressWidget : public QWidget, public EngineObserver
+class ProgressWidget : public QWidget, public Engine::EngineObserver
 {
     Q_OBJECT
     public:

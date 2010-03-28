@@ -84,7 +84,7 @@ Dynamic::LastFmBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::LastFmBias::LastFmBias( bool similarArtists )
     : Dynamic::CustomBiasEntry()
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_similarArtists( similarArtists )
     , m_artistQuery( 0 )
     , m_qm( 0 )

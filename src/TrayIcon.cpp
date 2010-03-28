@@ -51,7 +51,7 @@
 
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_trackLength( 0 )
         , m_separator( 0 )
 {

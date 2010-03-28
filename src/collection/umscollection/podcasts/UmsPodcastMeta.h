@@ -18,15 +18,18 @@
 #define UMSPODCASTMETA_H
 
 #include "core-implementations/playlists/file/PlaylistFile.h"
-#include "podcasts/PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 
 #include "core-implementations/meta/file/File.h"
+
+class KUrl;
+
+namespace Podcasts {
 
 class UmsPodcastEpisode;
 class UmsPodcastChannel;
 class UmsPodcastProvider;
 
-class KUrl;
 
 typedef KSharedPtr<UmsPodcastEpisode> UmsPodcastEpisodePtr;
 typedef KSharedPtr<UmsPodcastChannel> UmsPodcastChannelPtr;
@@ -34,14 +37,14 @@ typedef KSharedPtr<UmsPodcastChannel> UmsPodcastChannelPtr;
 typedef QList<UmsPodcastEpisodePtr> UmsPodcastEpisodeList;
 typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;
 
-class UmsPodcastEpisode : public Meta::PodcastEpisode
+class UmsPodcastEpisode : public Podcasts::PodcastEpisode
 {
     friend class UmsPodcastProvider;
 
     public:
-        static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
-        static Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
-        static Meta::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
+        static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Podcasts::PodcastEpisodePtr episode );
+        static Podcasts::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
+        static Podcasts::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
 
         UmsPodcastEpisode( UmsPodcastChannelPtr channel );
         ~UmsPodcastEpisode();
@@ -71,21 +74,21 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
         UmsPodcastChannelPtr m_umsChannel;
 };
 
-class UmsPodcastChannel : public Meta::PodcastChannel
+class UmsPodcastChannel : public Podcasts::PodcastChannel
 {
     friend class UmsPodcastProvider;
     public:
         static UmsPodcastChannelPtr fromPodcastChannelPtr(
-                Meta::PodcastChannelPtr channel );
-        static Meta::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
-        static Meta::PodcastChannelList toPodcastChannelList(
+                Podcasts::PodcastChannelPtr channel );
+        static Podcasts::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
+        static Podcasts::PodcastChannelList toPodcastChannelList(
                 UmsPodcastChannelList umsChannels );
 
         UmsPodcastChannel( UmsPodcastProvider *provider );
-        UmsPodcastChannel( Meta::PodcastChannelPtr channel, UmsPodcastProvider *provider );
+        UmsPodcastChannel( Podcasts::PodcastChannelPtr channel, UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 
-        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
         void addUmsEpisode( UmsPodcastEpisodePtr episode );
@@ -93,7 +96,7 @@ class UmsPodcastChannel : public Meta::PodcastChannel
         void setPlaylistFileSource( const KUrl &playlistFilePath );
         KUrl playlistFilePath() const { return m_playlistFilePath; }
 
-        virtual Meta::PodcastEpisodeList episodes()
+        virtual Podcasts::PodcastEpisodeList episodes()
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 
@@ -108,9 +111,11 @@ class UmsPodcastChannel : public Meta::PodcastChannel
         UmsPodcastEpisodeList m_umsEpisodes;
 };
 
-Q_DECLARE_METATYPE( UmsPodcastEpisodePtr )
-Q_DECLARE_METATYPE( UmsPodcastEpisodeList )
-Q_DECLARE_METATYPE( UmsPodcastChannelPtr )
-Q_DECLARE_METATYPE( UmsPodcastChannelList )
+} //namespace Podcasts
+
+Q_DECLARE_METATYPE( Podcasts::UmsPodcastEpisodePtr )
+Q_DECLARE_METATYPE( Podcasts::UmsPodcastEpisodeList )
+Q_DECLARE_METATYPE( Podcasts::UmsPodcastChannelPtr )
+Q_DECLARE_METATYPE( Podcasts::UmsPodcastChannelList )
 
 #endif // UMSPODCASTMETA_H

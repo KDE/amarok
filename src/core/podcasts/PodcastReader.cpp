@@ -15,10 +15,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PodcastReader.h"
+#include "core/podcasts/PodcastReader.h"
 
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
 #include "core/meta/support/MetaUtility.h"
 
 #include <kio/job.h>
@@ -29,7 +30,7 @@
 #include <QDate>
 #include <QSet>
 
-using namespace Meta;
+using namespace Podcasts;
 
 #define ITUNES_NS  "http://www.itunes.com/dtds/podcast-1.0.dtd"
 #define RDF_NS     "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -459,8 +460,7 @@ PodcastReader::read( const KUrl &url )
                       : i18n( "Updating \"%1\"", m_channel->title() );
     }
 
-    The::statusBar()->newProgressOperation( m_transferJob, description )
-        ->setAbortSlot( this, SLOT( slotAbort() ) );
+    emit statusBarNewProgressOperation( m_transferJob, description, this );
 
     // parse data
     return read();
@@ -514,7 +514,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
+        emit statusBarSorryMessage( errorMessage );
     }
     else if( job->error() )
     {
@@ -528,7 +528,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
+        emit statusBarSorryMessage( errorMessage );
     }
 
     m_transferJob = 0;
@@ -1070,7 +1070,7 @@ PodcastReader::createChannel()
     {
         debug() << "new channel";
 
-        Meta::PodcastChannelPtr channel( new Meta::PodcastChannel() );
+        Podcasts::PodcastChannelPtr channel( new Podcasts::PodcastChannel() );
         channel->setUrl( m_url );
         channel->setSubscribeDate( QDate::currentDate() );
         /* add this new channel to the provider, we get a pointer to a
@@ -1103,7 +1103,7 @@ PodcastReader::beginItem()
     // first the <item> elements followed by the <channel> element:
     createChannel();
 
-    m_item = new Meta::PodcastEpisode( m_channel );
+    m_item = new Podcasts::PodcastEpisode( m_channel );
     m_current = m_item.data();
 
     m_enclosures.clear();
@@ -1149,11 +1149,11 @@ PodcastReader::endItem()
             m_item->setDescription( description );
         }
 
-        Meta::PodcastEpisodePtr episode;
+        Podcasts::PodcastEpisodePtr episode;
         QString guid = m_item->guid();
         if( guid.isEmpty() )
         {
-             episode = Meta::PodcastEpisodePtr::dynamicCast(
+             episode = Podcasts::PodcastEpisodePtr::dynamicCast(
                                               m_podcastProvider->trackForUrl( m_item->uidUrl() )
                                           );
         }
@@ -1654,12 +1654,12 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
         m_channel->setUrl( m_url );
 }
 
-Meta::PodcastEpisodePtr
-PodcastReader::podcastEpisodeCheck( Meta::PodcastEpisodePtr episode )
+Podcasts::PodcastEpisodePtr
+PodcastReader::podcastEpisodeCheck( Podcasts::PodcastEpisodePtr episode )
 {
 //     DEBUG_BLOCK
-    Meta::PodcastEpisodePtr episodeMatch = episode;
-    Meta::PodcastEpisodeList episodes = m_channel->episodes();
+    Podcasts::PodcastEpisodePtr episodeMatch = episode;
+    Podcasts::PodcastEpisodeList episodes = m_channel->episodes();
 
 //     debug() << "episode title: " << episode->title();
 //     debug() << "episode url: " << episode->prettyUrl();

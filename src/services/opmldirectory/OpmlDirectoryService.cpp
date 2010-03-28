@@ -22,7 +22,7 @@
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlParser.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
 
 #include <KTemporaryFile>
@@ -317,7 +317,7 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
 void OpmlDirectoryService::subscribe()
 {
-    PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+    Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
     if( podcastProvider )
     {
         if( m_currentFeed != 0 )

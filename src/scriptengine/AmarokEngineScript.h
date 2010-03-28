@@ -25,7 +25,7 @@
 
 namespace AmarokScript
 {
-    class AmarokEngineScript : public QObject, public EngineObserver
+    class AmarokEngineScript : public QObject, public Engine::EngineObserver
     {
         Q_OBJECT
 

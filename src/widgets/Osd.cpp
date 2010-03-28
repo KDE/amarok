@@ -559,7 +559,7 @@ Amarok::OSD::destroy()
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     s_instance = this;
 }

@@ -102,3 +102,4 @@ DefaultApplicationController::initCollectionLocationDelegate()
 {
     Components::setCollectionLocationDelegate( new CollectionLocationDelegateImpl() );
 }
+

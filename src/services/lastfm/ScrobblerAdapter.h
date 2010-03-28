@@ -27,7 +27,7 @@
 #include <QVariant>
 
 
-class ScrobblerAdapter : public QObject, public EngineObserver
+class ScrobblerAdapter : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 

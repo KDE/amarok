@@ -76,7 +76,7 @@ static const int track_action_spacing = 6;
 
 MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_lastTime( -1 )
 {
     setObjectName( "MainToolbar" );

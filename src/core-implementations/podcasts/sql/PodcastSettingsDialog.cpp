@@ -23,7 +23,7 @@
 #include <QClipboard>
 #include <QFontMetrics>
 
-PodcastSettingsDialog::PodcastSettingsDialog( Meta::SqlPodcastChannelPtr channel, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget* parent )
     : KDialog( parent )
     , m_ps( new Ui::PodcastSettingsBase() )
     , m_channel( channel )
@@ -52,12 +52,12 @@ PodcastSettingsDialog::init()
 
     m_ps->m_autoFetchCheck->setChecked( m_channel->autoScan() );
 
-    if( m_channel->fetchType() == Meta::PodcastChannel::StreamOrDownloadOnDemand )
+    if( m_channel->fetchType() == Podcasts::PodcastChannel::StreamOrDownloadOnDemand )
     {
         m_ps->m_streamRadio->setChecked( true );
         m_ps->m_downloadRadio->setChecked( false );
     }
-    else if( m_channel->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable )
+    else if( m_channel->fetchType() == Podcasts::PodcastChannel::DownloadWhenAvailable )
     {
         m_ps->m_streamRadio->setChecked( false );
         m_ps->m_downloadRadio->setChecked( true );
@@ -105,8 +105,8 @@ PodcastSettingsDialog::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( ( m_ps->m_streamRadio->isChecked() && m_channel->fetchType() == Meta::PodcastChannel::StreamOrDownloadOnDemand ) ||
-        ( m_ps->m_downloadRadio->isChecked() && m_channel->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable ) )
+    if( ( m_ps->m_streamRadio->isChecked() && m_channel->fetchType() == Podcasts::PodcastChannel::StreamOrDownloadOnDemand ) ||
+        ( m_ps->m_downloadRadio->isChecked() && m_channel->fetchType() == Podcasts::PodcastChannel::DownloadWhenAvailable ) )
     {
         fetchTypeChanged = false;
     }
@@ -134,8 +134,8 @@ PodcastSettingsDialog::slotApply()       //slot
     m_channel->setAutoScan( m_ps->m_autoFetchCheck->isChecked() );
     m_channel->setFetchType(
         m_ps->m_downloadRadio->isChecked() ?
-        Meta::PodcastChannel::DownloadWhenAvailable :
-        Meta::PodcastChannel::StreamOrDownloadOnDemand
+        Podcasts::PodcastChannel::DownloadWhenAvailable :
+        Podcasts::PodcastChannel::StreamOrDownloadOnDemand
     );
     m_channel->setSaveLocation( m_ps->m_saveLocation->url() );
 

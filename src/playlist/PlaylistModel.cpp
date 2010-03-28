@@ -454,7 +454,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Meta::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
+            foreach( Podcasts::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
                 tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -467,8 +467,8 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Meta::PodcastChannelPtr channel, dragList->podcastChannels() )
-                foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+            foreach( Podcasts::PodcastChannelPtr channel, dragList->podcastChannels() )
+                foreach( Podcasts::PodcastEpisodePtr episode, channel->episodes() )
                     tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }

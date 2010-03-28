@@ -17,7 +17,7 @@
 #ifndef PODCASTIMAGEFETCHER_H
 #define PODCASTIMAGEFETCHER_H
 
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 
 #include <KJob>
 
@@ -27,29 +27,29 @@ Q_OBJECT
 public:
     PodcastImageFetcher();
 
-    void addChannel( Meta::PodcastChannelPtr channel );
-    void addEpisode( Meta::PodcastEpisodePtr episode );
+    void addChannel( Podcasts::PodcastChannelPtr channel );
+    void addEpisode( Podcasts::PodcastEpisodePtr episode );
 
     void run();
 
-    static KUrl cachedImagePath( Meta::PodcastChannelPtr channel );
-    static KUrl cachedImagePath( Meta::PodcastChannel *channel );
+    static KUrl cachedImagePath( Podcasts::PodcastChannelPtr channel );
+    static KUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
 signals:
-    void imageReady( Meta::PodcastChannelPtr channel, QPixmap image );
-    void imageReady( Meta::PodcastEpisodePtr episode, QPixmap image );
+    void imageReady( Podcasts::PodcastChannelPtr channel, QPixmap image );
+    void imageReady( Podcasts::PodcastEpisodePtr episode, QPixmap image );
     void done( PodcastImageFetcher * );
 
 private slots:
     void slotDownloadFinished( KJob *job );
 
 private:
-    static bool hasCachedImage( Meta::PodcastChannelPtr channel );
+    static bool hasCachedImage( Podcasts::PodcastChannelPtr channel );
 
-    Meta::PodcastChannelList m_channels;
-    Meta::PodcastEpisodeList m_episodes;
-    QMap<KJob *, Meta::PodcastChannelPtr> m_jobChannelMap;
-    QMap<KJob *, Meta::PodcastEpisodePtr> m_jobEpisodeMap;
+    Podcasts::PodcastChannelList m_channels;
+    Podcasts::PodcastEpisodeList m_episodes;
+    QMap<KJob *, Podcasts::PodcastChannelPtr> m_jobChannelMap;
+    QMap<KJob *, Podcasts::PodcastEpisodePtr> m_jobEpisodeMap;
 };
 
 #endif // PODCASTIMAGEFETCHER_H

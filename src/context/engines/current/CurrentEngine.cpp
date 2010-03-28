@@ -36,7 +36,7 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
     , m_state( Phonon::StoppedState )
 	, m_qm( 0 )

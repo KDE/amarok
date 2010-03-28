@@ -1,8 +1,8 @@
 #include "MediaDevicePodcastProvider.h"
 
-using namespace Meta;
+using namespace Podcasts;
 
-MediaDevicePodcastProvider::MediaDevicePodcastProvider( MediaDeviceHandler *handler )
+MediaDevicePodcastProvider::MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler )
         : m_handler( handler )
 {
 }

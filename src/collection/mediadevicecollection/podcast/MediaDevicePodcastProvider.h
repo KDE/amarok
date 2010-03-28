@@ -1,10 +1,12 @@
 #ifndef MEDIADEVICEPODCASTPROVIDER_H
 #define MEDIADEVICEPODCASTPROVIDER_H
 
-#include "PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "handler/MediaDeviceHandler.h"
 
-class MediaDevicePodcastProvider : public PodcastProvider
+namespace Podcasts {
+
+class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
 {
     public:
         MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler );
@@ -15,15 +17,15 @@ class MediaDevicePodcastProvider : public PodcastProvider
 
         virtual void addPodcast( const KUrl &url );
 
-        virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
-        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
+        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
-        virtual Meta::PodcastChannelList channels();
+        virtual Podcasts::PodcastChannelList channels();
 
-        virtual void removeSubscription( Meta::PodcastChannelPtr channel );
+        virtual void removeSubscription( Podcasts::PodcastChannelPtr channel );
 
         virtual void configureProvider();
-        virtual void configureChannel( Meta::PodcastChannelPtr channel );
+        virtual void configureChannel( Podcasts::PodcastChannelPtr channel );
 
         // PlaylistProvider methods
         virtual QString prettyName() const;
@@ -34,5 +36,7 @@ class MediaDevicePodcastProvider : public PodcastProvider
     private:
         Meta::MediaDeviceHandler *m_handler;
 };
+
+} //namespace Podcasts
 
 #endif // MEDIADEVICEPODCASTPROVIDER_H
