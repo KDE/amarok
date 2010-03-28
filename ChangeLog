@@ -44,6 +44,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed crash when running some Amarok urls on startup (such as when passed on
+       the command line or cliked in another app) (BR 231626)
      * Fixed organize collection dialog deleting tracks at new location
        instead of old. (BR 217002)
      * Fixed a broken podcast feed that had a minor compliance issue in date
