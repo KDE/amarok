@@ -584,12 +584,12 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests( const QStringList options, bool stdout )
+App::runUnitTests( const QStringList options, bool _stdout )
 {
     DEBUG_BLOCK
 
     QString logPath;
-    if( !stdout )
+    if( !_stdout )
     {
         const QString location = Amarok::saveLocation( "testresults/" );
         const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
