@@ -145,9 +145,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
                 QString query = QString( "DELETE FROM tracks where url = %1;" ).arg( id );
                 m_collection->sqlStorage()->query( query );
             }
-        }
-        if( removed )
-        {
+
             QFileInfo file( m_originalUrls[track].path() );
             QDir dir = file.dir();
             const QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
