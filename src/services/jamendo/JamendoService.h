@@ -52,7 +52,7 @@ public:
     ~JamendoService();
 
     void polish();
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
     void updateButtonClicked();

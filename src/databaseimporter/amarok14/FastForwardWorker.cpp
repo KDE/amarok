@@ -190,7 +190,7 @@ FastForwardWorker::run()
                 debug() << c << " inserting track:" << track->playableUrl();
             }
             else {
-                Amarok::Collection* collection = track->collection();
+                Collections::Collection* collection = track->collection();
                 if (collection)
                     debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
             }
@@ -207,7 +207,7 @@ FastForwardWorker::run()
 
                 debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
 
-                Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
                 if( !coll )
                     continue;
 

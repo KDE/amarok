@@ -418,7 +418,7 @@ MetaProxy::Track::inCollection() const
     return false;
 }
 
-Amarok::Collection*
+Collections::Collection*
 MetaProxy::Track::collection() const
 {
     if( d->realTrack )
@@ -442,7 +442,7 @@ MetaProxy::Track::unsubscribe( Meta::Observer *observer )
 }
 
 void
-MetaProxy::Track::lookupTrack( Amarok::TrackProvider *provider )
+MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 {
 	d->slotNewTrackProvider( provider );
 }

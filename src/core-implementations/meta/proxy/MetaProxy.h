@@ -22,7 +22,7 @@
 
 #include <QObject>
 
-namespace Amarok
+namespace Collections
 {
     class TrackProvider;
 }
@@ -95,7 +95,7 @@ namespace MetaProxy
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
-            virtual Amarok::Collection *collection() const;
+            virtual Collections::Collection *collection() const;
 
             virtual void subscribe( Meta::Observer *observer );
             virtual void unsubscribe( Meta::Observer *observer );
@@ -113,7 +113,7 @@ namespace MetaProxy
 		/**
 		 * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
 		 */
-		void lookupTrack(Amarok::TrackProvider *provider);
+		void lookupTrack(Collections::TrackProvider *provider);
 
         /**
          * MetaProxy will update the proxy with the track.

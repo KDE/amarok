@@ -40,7 +40,7 @@ namespace DNSSD {
 
 class DaapCollection;
 
-class DaapCollectionFactory : public Amarok::CollectionFactory
+class DaapCollectionFactory : public Collections::CollectionFactory
 {
     Q_OBJECT
     public:
@@ -71,7 +71,7 @@ class DaapCollectionFactory : public Amarok::CollectionFactory
         QHash<int, quint16> m_lookupHash;
 };
 
-class DaapCollection : public Amarok::Collection
+class DaapCollection : public Collections::Collection
 {
     Q_OBJECT
     public:

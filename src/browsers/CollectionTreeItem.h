@@ -56,7 +56,7 @@ class CollectionTreeItem : public QObject
 
         CollectionTreeItem( CollectionTreeItemModelBase *model ); //root node
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //data node
-        CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //collection node
+        CollectionTreeItem( Collections::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //collection node
         //this ctor creates a "Various Artists" node. do not use it for anything else
         CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //various artist node
 
@@ -89,7 +89,7 @@ class CollectionTreeItem : public QObject
         bool operator<( const CollectionTreeItem& other ) const;
 
         const Meta::DataPtr data() const { return m_data; }
-        Amarok::Collection* parentCollection() const { return m_parentCollection; }
+        Collections::Collection* parentCollection() const { return m_parentCollection; }
 
         KUrl::List urls() const;
         QList<Meta::TrackPtr> descendentTracks();
@@ -117,7 +117,7 @@ class CollectionTreeItem : public QObject
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
         CollectionTreeItemModelBase *m_model;
-        Amarok::Collection *m_parentCollection;
+        Collections::Collection *m_parentCollection;
 
         QList<CollectionTreeItem*> m_childItems;
         bool m_updateRequired;

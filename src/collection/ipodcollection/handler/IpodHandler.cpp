@@ -605,7 +605,7 @@ IpodHandler::syncArtwork()
 {
     DEBUG_BLOCK
 
-    Amarok::Collection *localCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *localCollection = CollectionManager::instance()->primaryCollection();
 
     if( !localCollection )
         return false;

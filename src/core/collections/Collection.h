@@ -34,7 +34,7 @@
 
 class CollectionLocation;
 
-namespace Amarok
+namespace Collections
 {
 
 class Collection;
@@ -49,7 +49,7 @@ class AMAROK_EXPORT CollectionFactory : public QObject
         virtual void init() = 0;
 
     signals:
-        void newCollection( Amarok::Collection *newCollection );
+        void newCollection( Collections::Collection *newCollection );
 
 };
 

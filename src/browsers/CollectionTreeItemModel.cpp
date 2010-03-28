@@ -38,13 +38,13 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Amarok::Collection* ) ), this, SLOT( collectionAdded( Amarok::Collection* ) ), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
     d->m_collections.clear();
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Amarok::Collection *coll, collections )
+    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
@@ -70,8 +70,8 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
     d->m_collections.clear();
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Amarok::Collection *coll, collections )
+    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
@@ -149,7 +149,7 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 }
 
 void
-CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
+CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection )
 {
     DEBUG_BLOCK
     if ( !newCollection )

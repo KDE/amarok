@@ -38,7 +38,7 @@ class MediaDeviceCollection;
  * HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
  * Templates used to reduce duplicated code in subclasses.
  */
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Amarok::CollectionFactory
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Collections::CollectionFactory
 {
     Q_OBJECT
 
@@ -80,7 +80,7 @@ class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
 };
 
 
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::Collection
 {
     Q_OBJECT
 
@@ -141,7 +141,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
     signals:
-        void collectionReady( Amarok::Collection* );
+        void collectionReady( Collections::Collection* );
         void collectionDisconnected( const QString &udi );
         void deletingCollection();
 

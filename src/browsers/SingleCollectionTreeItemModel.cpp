@@ -27,7 +27,7 @@
 #include <KLocale>
 
 
-SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Amarok::Collection * collection, const QList<int> &levelType )
+SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( )
 {
     m_collection = collection;

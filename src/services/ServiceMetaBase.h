@@ -270,7 +270,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         int  artistId() const;
         void setUidUrl( const QString &url );
         void setDownloadableUrl( const QString &url );
-        void refresh( Amarok::TrackProvider *provider );
+        void refresh( Collections::TrackProvider *provider );
         void update( Meta::TrackPtr track );
 
     private:

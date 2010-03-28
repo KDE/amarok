@@ -71,7 +71,7 @@ class MockTrack : public Meta::Track
     MOCK_METHOD0( prepareToPlay, void() );
     MOCK_METHOD1( finishedPlaying, void( double playedFraction ) );
     MOCK_CONST_METHOD0( inCollection, bool() );
-    MOCK_CONST_METHOD0( collection, Amarok::Collection*() );
+    MOCK_CONST_METHOD0( collection, Collections::Collection*() );
     MOCK_CONST_METHOD0( cachedLyrics, QString() );
 };
 }

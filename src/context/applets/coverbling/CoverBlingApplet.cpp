@@ -91,7 +91,7 @@ CoverBlingApplet::init()
 
     m_pictureflow->show();
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Album );

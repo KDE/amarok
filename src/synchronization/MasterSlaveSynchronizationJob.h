@@ -41,15 +41,15 @@ class MasterSlaveSynchronizationJob : public SynchronizationBaseJob
         //master/slave are not settable in the ctor
         //to make explicit which collection is the master and which is the slave
         //for this synchronization
-        void setMaster( Amarok::Collection *master );
-        void setSlave( Amarok::Collection *slave );
+        void setMaster( Collections::Collection *master );
+        void setSlave( Collections::Collection *slave );
 
     protected:
-        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB );
+        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
 
     private:
-        Amarok::Collection *m_master;
-        Amarok::Collection *m_slave;
+        Collections::Collection *m_master;
+        Collections::Collection *m_slave;
 };
 
 #endif

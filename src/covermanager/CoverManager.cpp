@@ -119,7 +119,7 @@ CoverManager::CoverManager()
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     m_items.append( item );
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Artist );
@@ -357,7 +357,7 @@ CoverManager::slotArtistSelected() //SLOT
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
 
     QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
@@ -611,7 +611,7 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 void
 CoverManager::playSelectedAlbums()
 {
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     foreach( CoverViewItem *item, selectedItems() )
     {

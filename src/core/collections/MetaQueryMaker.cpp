@@ -19,12 +19,12 @@
 
 using namespace Meta;
 
-MetaQueryMaker::MetaQueryMaker( const QList<Amarok::Collection*> &collections )
+MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collections )
     : QueryMaker()
     , m_queryDoneCount( 0 )
     , m_queryDoneCountMutex()
 {
-    foreach( Amarok::Collection *c, collections )
+    foreach( Collections::Collection *c, collections )
     {
         QueryMaker *b = c->queryMaker();
         builders.append( b );

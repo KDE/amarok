@@ -105,7 +105,7 @@ class AudioCdTrack : public Meta::Track
         virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
-        virtual Amarok::Collection* collection() const;
+        virtual Collections::Collection* collection() const;
 
         //AudioCdTrack specific methods
         void setAlbum( AudioCdAlbumPtr album );

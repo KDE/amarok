@@ -67,7 +67,7 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     loadAutoSavedPlaylist();
 
     connect( CollectionManager::instance(),
-            SIGNAL(collectionDataChanged(Amarok::Collection*)),
+            SIGNAL(collectionDataChanged(Collections::Collection*)),
             SLOT(universeNeedsUpdate()) );
 
     connect( this, SIGNAL( activeChanged() ), this, SLOT( savePlaylists() ) );

@@ -152,7 +152,7 @@ NepomukTrack::inCollection() const
     return true;
 }
 
-Amarok::Collection*
+Collections::Collection*
 NepomukTrack::collection() const
 {
     return m_collection;

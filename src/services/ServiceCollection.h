@@ -39,7 +39,7 @@ typedef QMap<int, Meta::GenrePtr> GenreIdMap;
  *  fetch their data from somewhere ( a web service, an external program, etc....)
  */
 
-class AMAROK_EXPORT ServiceCollection : public Amarok::Collection
+class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 {
     Q_OBJECT
     public:

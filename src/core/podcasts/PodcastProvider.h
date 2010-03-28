@@ -31,7 +31,7 @@ namespace Podcasts {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playlists::PlaylistProvider
+class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public Playlists::PlaylistProvider
 {
     //Q_OBJECT
     public:

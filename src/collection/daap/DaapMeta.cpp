@@ -281,7 +281,7 @@ DaapTrack::inCollection() const
     return true;
 }
 
-Amarok::Collection*
+Collections::Collection*
 DaapTrack::collection() const
 {
     return m_collection;

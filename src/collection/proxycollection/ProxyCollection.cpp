@@ -32,7 +32,7 @@
 
 
 ProxyCollection::Collection::Collection()
-        : Amarok::Collection()
+        : Collections::Collection()
 {
     QTimer *timer = new QTimer( this );
     timer->setSingleShot( false );
@@ -61,7 +61,7 @@ ProxyCollection::Collection::icon() const
 bool
 ProxyCollection::Collection::possiblyContainsTrack( const KUrl &url ) const
 {
-    foreach( Amarok::Collection *collection, m_idCollectionMap )
+    foreach( Collections::Collection *collection, m_idCollectionMap )
     {
         if( collection->possiblyContainsTrack( url ) )
             return true;
@@ -72,7 +72,7 @@ ProxyCollection::Collection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 ProxyCollection::Collection::trackForUrl( const KUrl &url )
 {
-    foreach( Amarok::Collection *collection, m_idCollectionMap )
+    foreach( Collections::Collection *collection, m_idCollectionMap )
     {
         Meta::TrackPtr track = collection->trackForUrl( url );
         if( track )
@@ -89,7 +89,7 @@ QueryMaker*
 ProxyCollection::Collection::queryMaker()
 {
     QList<QueryMaker*> list;
-    foreach( Amarok::Collection *collection, m_idCollectionMap )
+    foreach( Collections::Collection *collection, m_idCollectionMap )
     {
         list.append( collection->queryMaker() );
     }
@@ -104,7 +104,7 @@ ProxyCollection::Collection::collectionId() const
 }
 
 void
-ProxyCollection::Collection::addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status )
+ProxyCollection::Collection::addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status )
 {
     if( !collection )
         return;
@@ -125,7 +125,7 @@ ProxyCollection::Collection::removeCollection( const QString &collectionId )
 }
 
 void
-ProxyCollection::Collection::removeCollection( Amarok::Collection *collection )
+ProxyCollection::Collection::removeCollection( Collections::Collection *collection )
 {
     m_idCollectionMap.remove( collection->collectionId() );
     emit updated();

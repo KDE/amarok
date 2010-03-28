@@ -245,7 +245,7 @@ Meta::Track::inCollection() const
     return false;
 }
 
-Amarok::Collection*
+Collections::Collection*
 Meta::Track::collection() const
 {
     return 0;

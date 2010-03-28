@@ -41,14 +41,14 @@ namespace ProxyCollection
 
 
 
-    class AMAROK_EXPORT_TESTS Collection : public Amarok::Collection
+    class AMAROK_EXPORT_TESTS Collection : public Collections::Collection
     {
         Q_OBJECT
         public:
         Collection();
         ~Collection();
 
-        //Amarok::Collection methods
+        //Collections::Collection methods
 
         virtual QString prettyName() const;
         virtual KIcon icon() const;
@@ -94,15 +94,15 @@ namespace ProxyCollection
 
         public slots:
         void removeCollection( const QString &collectionId );
-        void removeCollection( Amarok::Collection *collection );
-        void addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status );
+        void removeCollection( Collections::Collection *collection );
+        void addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status );
         void slotUpdated();
 
         private slots:
         void emptyCache();
 
         private:
-        QHash<QString, Amarok::Collection*> m_idCollectionMap;
+        QHash<QString, Collections::Collection*> m_idCollectionMap;
 
         QHash<QString, KSharedPtr<Year> > m_yearMap;
         QHash<QString, KSharedPtr<Genre> > m_genreMap;

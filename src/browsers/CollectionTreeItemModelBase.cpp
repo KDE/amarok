@@ -1002,7 +1002,7 @@ CollectionTreeItemModelBase::slotFilter()
     filterChildren();
     if ( !m_expandedCollections.isEmpty() )
     {
-        foreach( Amarok::Collection *expanded, m_expandedCollections )
+        foreach( Collections::Collection *expanded, m_expandedCollections )
         {
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
             if( expandedItem )

@@ -21,7 +21,7 @@
 #include "core/playlists/PlaylistProvider.h"
 
 PlaylistCollection::PlaylistCollection( const Playlists::PlaylistPtr &playlist )
-        : Amarok::Collection()
+        : Collections::Collection()
         , Playlists::PlaylistObserver()
         , m_playlist( playlist )
         , m_mc( new MemoryCollection() )

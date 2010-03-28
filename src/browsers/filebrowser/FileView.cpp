@@ -96,12 +96,12 @@ FileView::contextMenuEvent ( QContextMenuEvent * e )
 
     // Create Copy/Move to menu items
     // ported from old filebrowser
-    QList<Amarok::Collection*> writableCollections;
-    QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-    QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+    QList<Collections::Collection*> writableCollections;
+    QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+    QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
     while ( it != hash.constEnd() )
     {
-        Amarok::Collection *coll = it.key();
+        Collections::Collection *coll = it.key();
         if ( coll && coll->isWritable() )
         {
             writableCollections.append( coll );
@@ -111,7 +111,7 @@ FileView::contextMenuEvent ( QContextMenuEvent * e )
     if ( !writableCollections.isEmpty() )
     {
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
-        foreach( Amarok::Collection *coll, writableCollections )
+        foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
             connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotPrepareMoveTracks() ) );
@@ -120,7 +120,7 @@ FileView::contextMenuEvent ( QContextMenuEvent * e )
         menu->addMenu( moveMenu );
 
         QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), this );
-        foreach( Amarok::Collection *coll, writableCollections )
+        foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, this );
             connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotPrepareCopyTracks() ) );
@@ -207,7 +207,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
     if( !m_copyAction || !m_copyActivated )
         return;
 
-    QSet<Amarok::Collection*> collections;
+    QSet<Collections::Collection*> collections;
     foreach( const Meta::TrackPtr &track, tracks )
     {
         collections.insert( track->collection() );
@@ -215,7 +215,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
 
     if( collections.count() == 1 )
     {
-        Amarok::Collection *sourceCollection = collections.values().first();
+        Collections::Collection *sourceCollection = collections.values().first();
         CollectionLocation *source;
         if( sourceCollection )
         {
@@ -242,14 +242,14 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
     if( !m_moveAction || !m_moveActivated )
         return;
 
-    QSet<Amarok::Collection*> collections;
+    QSet<Collections::Collection*> collections;
     foreach( const Meta::TrackPtr &track, tracks )
     {
         collections.insert( track->collection() );
     }
     if( collections.count() == 1 )
     {
-        Amarok::Collection *sourceCollection = collections.values().first();
+        Collections::Collection *sourceCollection = collections.values().first();
         CollectionLocation *source;
         if( sourceCollection )
         {

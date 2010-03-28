@@ -24,7 +24,7 @@ A track provider that recognizes timecode track urls
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class TimecodeTrackProvider : public Amarok::TrackProvider{
+class TimecodeTrackProvider : public Collections::TrackProvider{
 public:
     TimecodeTrackProvider();
 

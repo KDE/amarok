@@ -376,7 +376,7 @@ MediaDeviceTrack::inCollection() const
     return true;
 }
 
-Amarok::Collection*
+Collections::Collection*
 MediaDeviceTrack::collection() const
 {
     return m_collection;

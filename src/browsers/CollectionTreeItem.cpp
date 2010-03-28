@@ -56,7 +56,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
         m_parent->appendChild( this );
 }
 
-CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
+CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
     , m_model( model )

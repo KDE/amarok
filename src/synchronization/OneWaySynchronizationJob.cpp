@@ -34,14 +34,14 @@ OneWaySynchronizationJob::~OneWaySynchronizationJob()
 }
 
 void
-OneWaySynchronizationJob::setSource( Amarok::Collection *source )
+OneWaySynchronizationJob::setSource( Collections::Collection *source )
 {
     m_source = source;
     setCollectionA( source );
 }
 
 void
-OneWaySynchronizationJob::setTarget( Amarok::Collection *target )
+OneWaySynchronizationJob::setTarget( Collections::Collection *target )
 {
     m_target = target;
     //this will be slightly inefficient as SynchronizationBaseJob will figure out
@@ -51,7 +51,7 @@ OneWaySynchronizationJob::setTarget( Amarok::Collection *target )
 }
 
 void
-OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection* collB )
+OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection* collB )
 {
     DEBUG_BLOCK
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )

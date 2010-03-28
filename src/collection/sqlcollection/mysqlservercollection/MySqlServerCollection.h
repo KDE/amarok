@@ -22,7 +22,7 @@
 #include "core/collections/Collection.h"
 #include "amarok_export.h"
 
-class MySqlServerCollectionFactory : public Amarok::CollectionFactory
+class MySqlServerCollectionFactory : public Collections::CollectionFactory
 {
     Q_OBJECT
 

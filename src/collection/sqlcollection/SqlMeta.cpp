@@ -862,7 +862,7 @@ SqlTrack::inCollection() const
     return true;
 }
 
-Amarok::Collection*
+Collections::Collection*
 SqlTrack::collection() const
 {
     return m_collection;

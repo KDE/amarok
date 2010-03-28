@@ -36,7 +36,7 @@
 #include <kdiskfreespaceinfo.h>
 
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
-    : Amarok::CollectionFactory()
+    : Collections::CollectionFactory()
     , m_assistant( assistant )
 {
 }
@@ -74,8 +74,8 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
         {
             // insert it into the map of known collections
             m_collectionMap.insert( info->udi(), coll );
-            connect( coll, SIGNAL( collectionReady( Amarok::Collection* ) ),
-                     this, SIGNAL( newCollection(Amarok::Collection*)) );
+            connect( coll, SIGNAL( collectionReady( Collections::Collection* ) ),
+                     this, SIGNAL( newCollection(Collections::Collection*)) );
             connect( coll, SIGNAL( collectionDisconnected( const QString& ) ),
                      this, SLOT( slotDeviceDisconnected( const QString& ) ) );
             coll->init();

@@ -361,7 +361,7 @@ Track::inCollection() const
     return false;
 }
 
-Amarok::Collection*
+Collections::Collection*
 Track::collection() const
 {
     return 0;

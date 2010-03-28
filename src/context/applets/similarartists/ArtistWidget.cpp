@@ -241,7 +241,7 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
         m_qm->reset();
     else
     {
-        Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
         m_qm = coll->queryMaker();
     }
     

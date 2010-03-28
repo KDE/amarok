@@ -350,7 +350,7 @@ void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
 {
     DEBUG_BLOCK
     debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
-    foreach( Amarok::Collection *coll, CollectionManager::instance()->collections().keys() ) {
+    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() ) {
         if( coll && coll->isWritable() && m_collection )
         {
             debug() << "got collection" << coll->prettyName();

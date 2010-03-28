@@ -39,7 +39,7 @@
 AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
 
 DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )
-    : Amarok::CollectionFactory()
+    : Collections::CollectionFactory()
     , m_browser( 0 )
 {
     setParent( parent );

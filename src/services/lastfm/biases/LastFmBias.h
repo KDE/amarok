@@ -99,7 +99,7 @@ private:
     QNetworkReply* m_trackQuery;
     QueryMaker* m_qm; // stored so it can be refreshed
     // if the collection changes
-    Amarok::Collection* m_collection; // null => all queryable collections
+    Collections::Collection* m_collection; // null => all queryable collections
     bool m_needsUpdating;
     QMutex m_mutex;
 

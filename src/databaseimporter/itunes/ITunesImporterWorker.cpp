@@ -114,7 +114,7 @@ ITunesImporterWorker::readTrackElement()
                 debug() << " inserting track:" << track->playableUrl();
             }
             else {
-                Amarok::Collection* collection = track->collection();
+                Collections::Collection* collection = track->collection();
                 if (collection)
                     debug() << "track in collection (" << collection->location()->prettyLocation() << "):" << track->playableUrl();
             }

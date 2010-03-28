@@ -19,32 +19,32 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
-Amarok::CollectionFactory::CollectionFactory() : QObject()
+Collections::CollectionFactory::CollectionFactory() : QObject()
 {
 }
 
-Amarok::CollectionFactory::~CollectionFactory()
+Collections::CollectionFactory::~CollectionFactory()
 {
 }
 
 
-Amarok::TrackProvider::TrackProvider()
+Collections::TrackProvider::TrackProvider()
 {
 }
 
-Amarok::TrackProvider::~TrackProvider()
+Collections::TrackProvider::~TrackProvider()
 {
 }
 
 bool
-Amarok::TrackProvider::possiblyContainsTrack( const KUrl &url ) const
+Collections::TrackProvider::possiblyContainsTrack( const KUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-Amarok::TrackProvider::trackForUrl( const KUrl &url )
+Collections::TrackProvider::trackForUrl( const KUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
@@ -53,14 +53,14 @@ Amarok::TrackProvider::trackForUrl( const KUrl &url )
 // CollectionBase
 
 bool
-Amarok::CollectionBase::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+Collections::CollectionBase::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     Q_UNUSED( type );
     return false;
 }
 
 Capabilities::Capability*
-Amarok::CollectionBase::createCapabilityInterface( Capabilities::Capability::Type type )
+Collections::CollectionBase::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;
@@ -68,30 +68,30 @@ Amarok::CollectionBase::createCapabilityInterface( Capabilities::Capability::Typ
 
 // Collection
 
-Amarok::Collection::Collection()
+Collections::Collection::Collection()
     : QObject()
-    , Amarok::TrackProvider()
+    , Collections::TrackProvider()
 {
 }
 
-Amarok::Collection::~Collection()
+Collections::Collection::~Collection()
 {
 }
 
 QString
-Amarok::Collection::uidUrlProtocol() const
+Collections::Collection::uidUrlProtocol() const
 {
     return QString();
 }
 
 CollectionLocation*
-Amarok::Collection::location() const
+Collections::Collection::location() const
 {
     return new CollectionLocation( this );
 }
 
 bool
-Amarok::Collection::isWritable() const
+Collections::Collection::isWritable() const
 {
     CollectionLocation* loc = this->location();
     bool writable = loc->isWritable();
@@ -100,7 +100,7 @@ Amarok::Collection::isWritable() const
 }
 
 bool
-Amarok::Collection::isOrganizable() const
+Collections::Collection::isOrganizable() const
 {
     CollectionLocation* loc = this->location();
     bool org = loc->isOrganizable();

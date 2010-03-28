@@ -36,20 +36,20 @@ class PopupDropper;
 class CollectionAction : public QAction
 {
     public:
-        explicit CollectionAction( Amarok::Collection *coll, QObject *parent = 0 )
+        explicit CollectionAction( Collections::Collection *coll, QObject *parent = 0 )
         : QAction( parent )
         , m_collection( coll )
         {
             setText( m_collection->prettyName() );
         }
 
-        Amarok::Collection *collection() const
+        Collections::Collection *collection() const
         {
             return m_collection;
         }
 
     private:
-        Amarok::Collection *m_collection;
+        Collections::Collection *m_collection;
 };
 
 

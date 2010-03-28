@@ -33,21 +33,21 @@ MasterSlaveSynchronizationJob::~MasterSlaveSynchronizationJob()
 }
 
 void
-MasterSlaveSynchronizationJob::setMaster( Amarok::Collection *master )
+MasterSlaveSynchronizationJob::setMaster( Collections::Collection *master )
 {
     m_master = master;
     setCollectionA( master );
 }
 
 void
-MasterSlaveSynchronizationJob::setSlave( Amarok::Collection *slave )
+MasterSlaveSynchronizationJob::setSlave( Collections::Collection *slave )
 {
     m_slave = slave;
     setCollectionB( slave );
 }
 
 void
-MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB )
+MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB )
 {
     DEBUG_BLOCK
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )

@@ -70,7 +70,7 @@ Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
 }
 
 
-Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Amarok::Collection* collection )
+Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Collections::Collection* collection )
     : DynamicPlaylist(collection)
     , m_numRequested( 0 )
     , m_biases( biases )

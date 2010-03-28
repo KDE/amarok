@@ -787,7 +787,7 @@ void TagDialog::init()
 void
 TagDialog::startDataQuery()
 {
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
         return;
 
@@ -859,7 +859,7 @@ const QStringList TagDialog::statisticsData()
 {
     QStringList data;
     QueryMaker *qm = 0;
-    Amarok::Collection *coll = m_currentTrack->collection();
+    Collections::Collection *coll = m_currentTrack->collection();
     if( coll )
         qm = coll->queryMaker();
 

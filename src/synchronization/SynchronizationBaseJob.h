@@ -76,31 +76,31 @@ class SynchronizationBaseJob : public QObject
         void timeout();
 
     protected:
-        void setCollectionA( Amarok::Collection *collection );
-        void setCollectionB( Amarok::Collection *collection );
+        void setCollectionA( Collections::Collection *collection );
+        void setCollectionB( Collections::Collection *collection );
 
         /**
           * perform the actual synchronization in this method.
           * SynchronizationBaseJob will delete itself afterwards.
           */
-        virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB ) = 0;
+        virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) = 0;
 
     private:
-        QueryMaker* createQueryMaker( Amarok::Collection *collection );
+        QueryMaker* createQueryMaker( Collections::Collection *collection );
 
         void handleAlbumResult();
         void handleArtistResult();
         void handleTrackResult();
 
     private:
-        QueryMaker* setupArtistQuery( Amarok::Collection *coll );
-        QueryMaker* setupAlbumQuery( Amarok::Collection *coll );
-        QueryMaker* setupTrackQuery( Amarok::Collection *coll );
+        QueryMaker* setupArtistQuery( Collections::Collection *coll );
+        QueryMaker* setupAlbumQuery( Collections::Collection *coll );
+        QueryMaker* setupTrackQuery( Collections::Collection *coll );
 
         State m_state;
         int m_currentResultCount;
-        Amarok::Collection *m_collectionA;
-        Amarok::Collection *m_collectionB;
+        Collections::Collection *m_collectionA;
+        Collections::Collection *m_collectionB;
 
         QSet<QString> m_artistsA;
         QSet<QString> m_artistsB;

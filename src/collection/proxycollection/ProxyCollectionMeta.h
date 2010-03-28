@@ -74,7 +74,7 @@ namespace ProxyCollection
             int discNumber() const;
             QString type() const;
 
-            Amarok::Collection* collection() const;
+            Collections::Collection* collection() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );

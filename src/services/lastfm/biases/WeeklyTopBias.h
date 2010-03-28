@@ -121,7 +121,7 @@ private:
     
     QNetworkReply* m_rangeJob;
     QNetworkReply* m_dataJob;
-    Amarok::Collection* m_collection;
+    Collections::Collection* m_collection;
 
     friend class WeeklyTopBiasCollectionFilterCapability; // so it can report the property and weight
 };

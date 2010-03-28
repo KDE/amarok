@@ -652,7 +652,7 @@ void LastFmService::playLastFmStation( const KUrl &url )
     The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
 }
 
-Amarok::Collection * LastFmService::collection()
+Collections::Collection * LastFmService::collection()
 {
     return m_collection;
 }

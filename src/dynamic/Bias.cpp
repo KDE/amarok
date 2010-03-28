@@ -174,11 +174,11 @@ Dynamic::CollectionDependantBias::CollectionDependantBias()
     : m_collection(0)
     , m_needsUpdating( true )
 {
-    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Amarok::Collection*)),
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
             this, SLOT(collectionUpdated()) );
 }
 
-Dynamic::CollectionDependantBias::CollectionDependantBias( Amarok::Collection* coll )
+Dynamic::CollectionDependantBias::CollectionDependantBias( Collections::Collection* coll )
     : m_collection(coll)
     , m_needsUpdating( true )
 {
@@ -204,7 +204,7 @@ Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
     setQuery( filter );
 }
 
-Dynamic::GlobalBias::GlobalBias( Amarok::Collection* coll, double weight, XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, XmlQueryReader::Filter filter )
     : CollectionDependantBias( coll )
     , m_qm(0)
 {

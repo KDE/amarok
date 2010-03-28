@@ -1411,9 +1411,9 @@ bool MainWindow::playAudioCd()
     DEBUG_BLOCK
     //drop whatever we are doing and play auidocd
 
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
 
-    foreach( Amarok::Collection *collection, collections )
+    foreach( Collections::Collection *collection, collections )
     {
         if( collection->collectionId() == "AudioCd" )
         {

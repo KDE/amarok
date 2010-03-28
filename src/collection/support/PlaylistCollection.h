@@ -27,7 +27,7 @@
   * Utility class that wraps a playlist as collection and makes it possible to
   * query the content of the playlist using QueryMaker.
   */
-class PlaylistCollection : public Amarok::Collection, public Playlists::PlaylistObserver
+class PlaylistCollection : public Collections::Collection, public Playlists::PlaylistObserver
 {
 public:
     PlaylistCollection( const Playlists::PlaylistPtr &playlist );

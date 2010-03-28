@@ -43,7 +43,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual void setLevels( const QList<int> &levelType );
 
     public slots:
-        virtual void collectionAdded( Amarok::Collection *newCollection );
+        virtual void collectionAdded( Collections::Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
 
     protected:

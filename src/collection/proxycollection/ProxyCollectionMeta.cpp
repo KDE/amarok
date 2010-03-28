@@ -501,7 +501,7 @@ ProxyCollection::Track::type() const
     }
 }
 
-Amarok::Collection*
+Collections::Collection*
 ProxyCollection::Track::collection() const
 {
     return m_collection;

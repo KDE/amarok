@@ -62,7 +62,7 @@ public:
     void polish();
     void reauthenticate();
 
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
     void authenticate(KJob *job);

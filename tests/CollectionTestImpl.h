@@ -23,15 +23,15 @@
 
 #include <QSharedPointer>
 
-//simple Amarok::Collection implementation based on MemoryCollection
+//simple Collections::Collection implementation based on MemoryCollection
 
 class CollectionLocationTestImpl;
 
-class CollectionTestImpl : public Amarok::Collection
+class CollectionTestImpl : public Collections::Collection
 {
 public:
     CollectionTestImpl( const QString &collectionId )
-        : Amarok::Collection(), mc( new MemoryCollection() )
+        : Collections::Collection(), mc( new MemoryCollection() )
     { this->id = collectionId; }
 
     QueryMaker* queryMaker() { return new MemoryQueryMaker( mc.toWeakRef(), id ); }

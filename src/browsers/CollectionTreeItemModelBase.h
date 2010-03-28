@@ -33,7 +33,7 @@ class CollectionTreeItem;
 class QTimeLine;
 class QueryMaker;
 
-typedef QPair<Amarok::Collection*, CollectionTreeItem* > CollectionRoot;
+typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 
 namespace CategoryId
 {
@@ -138,8 +138,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
-        QSet<Amarok::Collection*> m_expandedCollections;
-        QSet<Amarok::Collection*> m_expandedVariousArtistsNodes;
+        QSet<Collections::Collection*> m_expandedCollections;
+        QSet<Collections::Collection*> m_expandedVariousArtistsNodes;
         
     protected slots:
         void startAnimationTick();

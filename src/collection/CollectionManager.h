@@ -54,14 +54,14 @@ class AMAROK_EXPORT CollectionManager : public QObject
         /**
          * returns all viewable collections.
          */
-        QList<Amarok::Collection*> viewableCollections() const;
+        QList<Collections::Collection*> viewableCollections() const;
 
         /**
          * returns all queryable collections.
          */
-        QList<Amarok::Collection*> queryableCollections() const;
+        QList<Collections::Collection*> queryableCollections() const;
 
-        Amarok::Collection* primaryCollection() const;
+        Collections::Collection* primaryCollection() const;
 
         /**
             This method will try to get a Track object for the given url. This method will return 0 if no Track object
@@ -87,12 +87,12 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * CollectionManger uses the default status passed as the second argument unless a custom
          * status is stored in Amarok's config file.
          */
-        void addUnmanagedCollection( Amarok::Collection *newCollection, CollectionStatus defaultStatus );
-        void removeUnmanagedCollection( Amarok::Collection *collection );
+        void addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus );
+        void removeUnmanagedCollection( Collections::Collection *collection );
 
         void setCollectionStatus( const QString &collectionId, CollectionStatus status );
         CollectionStatus collectionStatus( const QString &collectionId ) const;
-        QHash<Amarok::Collection*, CollectionStatus> collections() const;
+        QHash<Collections::Collection*, CollectionStatus> collections() const;
 
         /**
          * adds a TrackProvider to the list of TrackProviders,
@@ -104,7 +104,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          *
          * @param provider the new TrackProvider
          */
-        void addTrackProvider( Amarok::TrackProvider *provider );
+        void addTrackProvider( Collections::TrackProvider *provider );
 
         /**
          * removes a TrackProvider. Does not do anything if
@@ -115,7 +115,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          *
          * @param provider the provider to be removed
          */
-        void removeTrackProvider( Amarok::TrackProvider *provider );
+        void removeTrackProvider( Collections::TrackProvider *provider );
 
         bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
 
@@ -127,22 +127,22 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     signals:
         void scanFinished();
-        //deprecated, use collectionAdded( Amarok::Collection*, CollectionStatus ) instead
-        void collectionAdded( Amarok::Collection *newCollection );
+        //deprecated, use collectionAdded( Collections::Collection*, CollectionStatus ) instead
+        void collectionAdded( Collections::Collection *newCollection );
 
-        void collectionAdded( Amarok::Collection *newCollection, CollectionManager::CollectionStatus status );
+        void collectionAdded( Collections::Collection *newCollection, CollectionManager::CollectionStatus status );
         void collectionRemoved( QString collectionId );
-        void trackProviderAdded( Amarok::TrackProvider *provider );
+        void trackProviderAdded( Collections::TrackProvider *provider );
         //this signal will be emitted after major changes to the collection
         //e.g. new songs where added, or an album changed
         //from compilation to non-compilation (and vice versa)
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
-        void collectionDataChanged( Amarok::Collection *changedCollection );
+        void collectionDataChanged( Collections::Collection *changedCollection );
 
         void foundRelatedArtists( Meta::ArtistList artists );
 
     private slots:
-        void slotNewCollection( Amarok::Collection *newCollection );
+        void slotNewCollection( Collections::Collection *newCollection );
         void slotRemoveCollection();
         void slotCollectionChanged();
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );

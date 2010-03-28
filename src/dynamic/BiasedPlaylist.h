@@ -39,7 +39,7 @@ namespace Dynamic
             static BiasedPlaylist* fromXml( QDomElement );
             static QString nameFromXml( QDomElement );
 
-            BiasedPlaylist( QString title, QList<Bias*>, Amarok::Collection* m_collection = 0 );
+            BiasedPlaylist( QString title, QList<Bias*>, Collections::Collection* m_collection = 0 );
             ~BiasedPlaylist();
 
             QDomElement xml() const;

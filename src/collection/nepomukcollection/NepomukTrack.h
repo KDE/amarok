@@ -54,7 +54,7 @@ class NepomukTrack : public Track
 
         virtual bool isPlayable() const;
         virtual bool inCollection() const;
-        virtual Amarok::Collection* collection() const;
+        virtual Collections::Collection* collection() const;
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;

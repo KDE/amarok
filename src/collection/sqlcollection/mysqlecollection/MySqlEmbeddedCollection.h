@@ -24,7 +24,7 @@
 
 #include <QString>
 
-class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
+class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
 {
     Q_OBJECT
 

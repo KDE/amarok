@@ -36,7 +36,7 @@ class DynamicPlaylist : public QObject, public QSharedData
     Q_OBJECT
 
     public:
-        DynamicPlaylist( Amarok::Collection* coll = 0 );
+        DynamicPlaylist( Collections::Collection* coll = 0 );
 
         virtual ~DynamicPlaylist();
 
@@ -59,7 +59,7 @@ class DynamicPlaylist : public QObject, public QSharedData
         virtual void invalidate();
         
     protected:
-        Amarok::Collection* m_collection;
+        Collections::Collection* m_collection;
         QString m_title;
         bool m_active;
 };

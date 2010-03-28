@@ -40,15 +40,15 @@ public:
     //source/target are not settable in the ctor
     //to make explicit which collection is the source and which is the target
     //for this synchronization
-    void setSource( Amarok::Collection *source );
-    void setTarget( Amarok::Collection *target );
+    void setSource( Collections::Collection *source );
+    void setTarget( Collections::Collection *target );
 
 protected:
-    void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB );
+    void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
 
 private:
-    Amarok::Collection *m_source;
-    Amarok::Collection *m_target;
+    Collections::Collection *m_source;
+    Collections::Collection *m_target;
 };
 
 #endif // ONEWAYSYNCHRONIZATIONJOB_H

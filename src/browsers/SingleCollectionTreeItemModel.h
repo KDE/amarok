@@ -37,7 +37,7 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
     Q_OBJECT
 
     public:
-        SingleCollectionTreeItemModel( Amarok::Collection * collection,  const QList<int> &levelType );
+        SingleCollectionTreeItemModel( Collections::Collection * collection,  const QList<int> &levelType );
 
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
@@ -51,7 +51,7 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
 
     private:
 
-        Amarok::Collection* m_collection;
+        Collections::Collection* m_collection;
         QueryMaker* m_queryMaker;
 };
 

@@ -139,7 +139,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
     
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList dirs = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     m_model->setDirectories( dirs );
     
@@ -158,7 +158,7 @@ CollectionSetup::hasChanged() const
 {
     DEBUG_BLOCK
 
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     const bool foldersChanged = m_model->directories() != collectionFolders;
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
@@ -177,7 +177,7 @@ CollectionSetup::writeConfig()
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
     if( m_model->directories() != collectionFolders )

@@ -138,7 +138,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotUser1() ) );
     connect( this, SIGNAL( user2Clicked() ), this, SLOT( slotUser2() ) );
     
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
         return;
 

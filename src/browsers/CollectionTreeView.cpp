@@ -701,7 +701,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     while( item->isDataItem() )
         item = item->parent();
 
-    Amarok::Collection *coll = item->parentCollection();
+    Collections::Collection *coll = item->parentCollection();
     CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
     {
@@ -715,7 +715,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 }
 
 void
-CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::Collection *destination, bool removeSources ) const
+CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -743,7 +743,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
     {
         item = item->parent();
     }
-    Amarok::Collection *coll = item->parentCollection();
+    Collections::Collection *coll = item->parentCollection();
     CollectionLocation *source = coll->location();
     CollectionLocation *dest = destination->location();
     if( removeSources )
@@ -786,7 +786,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     while( item->isDataItem() )
         item = item->parent();
 
-    Amarok::Collection *coll = item->parentCollection();
+    Collections::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
         return;
@@ -870,7 +870,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 item = item->parent();
             }
 
-            Amarok::Collection *collection = item->parentCollection();
+            Collections::Collection *collection = item->parentCollection();
             const CollectionLocation* location = collection->location();
 
             if( location->isOrganizable() )
@@ -984,7 +984,7 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
     if( item->isDataItem() )
         return actions;
 
-    Amarok::Collection *collection = item->parentCollection();
+    Collections::Collection *collection = item->parentCollection();
 
     // Generate CollectionCapability, test for existence
 
@@ -1000,26 +1000,26 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 }
 
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentCopyDestination;
+    QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
-        QList<Amarok::Collection*> writableCollections;
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        Collections::Collection *collection = getCollection( indices.first() );
+        QList<Collections::Collection*> writableCollections;
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
         while ( it != hash.constEnd() )
         {
-            Amarok::Collection *coll = it.key();
+            Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
                 writableCollections.append( coll );
             ++it;
         }
         if( !writableCollections.isEmpty() )
         {
-            foreach( Amarok::Collection *coll, writableCollections )
+            foreach( Collections::Collection *coll, writableCollections )
             {
                 QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
                 action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1032,19 +1032,19 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QM
     return m_currentCopyDestination;
 }
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentMoveDestination;
+    QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
-        QList<Amarok::Collection*> writableCollections;
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        Collections::Collection *collection = getCollection( indices.first() );
+        QList<Collections::Collection*> writableCollections;
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
         while ( it != hash.constEnd() )
         {
-            Amarok::Collection *coll = it.key();
+            Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
                 writableCollections.append( coll );
             ++it;
@@ -1053,7 +1053,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
         {
             if( collection->isWritable() )
             {
-                foreach( Amarok::Collection *coll, writableCollections )
+                foreach( Collections::Collection *coll, writableCollections )
                 {
                     QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
                     action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1066,13 +1066,13 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
     return m_currentMoveDestination;
 }
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentRemoveDestination;
+    QHash<QAction*, Collections::Collection*> m_currentRemoveDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
+        Collections::Collection *collection = getCollection( indices.first() );
         if( collection && collection->isWritable() )
         {
             //writableCollections.append( collection );
@@ -1095,10 +1095,10 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 
     if( !indices.isEmpty() )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
+        Collections::Collection *collection = getCollection( indices.first() );
         foreach( const QModelIndex &index, indices )
         {
-            Amarok::Collection *currentCollection = getCollection( index );
+            Collections::Collection *currentCollection = getCollection( index );
             if( collection != currentCollection )
                 return false;
         }
@@ -1107,9 +1107,9 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
     return true;
 }
 
-Amarok::Collection * CollectionTreeView::getCollection( const QModelIndex & index )
+Collections::Collection * CollectionTreeView::getCollection( const QModelIndex & index )
 {
-    Amarok::Collection *collection = 0;
+    Collections::Collection *collection = 0;
     if( index.isValid() )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );

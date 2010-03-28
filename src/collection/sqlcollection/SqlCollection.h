@@ -40,7 +40,7 @@ class SqlQueryMakerFactory;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 {
     Q_OBJECT
 

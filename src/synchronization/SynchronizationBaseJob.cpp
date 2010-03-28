@@ -49,13 +49,13 @@ SynchronizationBaseJob::~SynchronizationBaseJob()
 }
 
 void
-SynchronizationBaseJob::setCollectionA( Amarok::Collection *collection )
+SynchronizationBaseJob::setCollectionA( Collections::Collection *collection )
 {
     m_collectionA = collection;
 }
 
 void
-SynchronizationBaseJob::setCollectionB( Amarok::Collection *collection )
+SynchronizationBaseJob::setCollectionB( Collections::Collection *collection )
 {
     m_collectionB = collection;
 }
@@ -67,7 +67,7 @@ SynchronizationBaseJob::setFilter( const QString &filter )
 }
 
 QueryMaker*
-SynchronizationBaseJob::createQueryMaker( Amarok::Collection *collection )
+SynchronizationBaseJob::createQueryMaker( Collections::Collection *collection )
 {
     //TODO: apply filters. This allows us to only sync a subset of a collection
     QueryMaker *qm = collection->queryMaker();
@@ -143,7 +143,7 @@ SynchronizationBaseJob::slotQueryDone()
 }
 
 QueryMaker*
-SynchronizationBaseJob::setupArtistQuery( Amarok::Collection *coll )
+SynchronizationBaseJob::setupArtistQuery( Collections::Collection *coll )
 {
     QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( QueryMaker::Artist );
@@ -153,7 +153,7 @@ SynchronizationBaseJob::setupArtistQuery( Amarok::Collection *coll )
 }
 
 QueryMaker*
-SynchronizationBaseJob::setupAlbumQuery( Amarok::Collection *coll )
+SynchronizationBaseJob::setupAlbumQuery( Collections::Collection *coll )
 {
     QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( QueryMaker::Album );
@@ -163,7 +163,7 @@ SynchronizationBaseJob::setupAlbumQuery( Amarok::Collection *coll )
 }
 
 QueryMaker*
-SynchronizationBaseJob::setupTrackQuery( Amarok::Collection *coll )
+SynchronizationBaseJob::setupTrackQuery( Collections::Collection *coll )
 {
     QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( QueryMaker::Track );

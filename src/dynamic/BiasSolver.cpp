@@ -54,7 +54,7 @@ const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
 QMutex            Dynamic::BiasSolver::s_universeMutex;
 QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
-Amarok::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
+Collections::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
 bool              Dynamic::BiasSolver::s_universeOutdated = true;
 unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
 
@@ -828,7 +828,7 @@ Dynamic::BiasSolver::updateUniverse()
 {
     DEBUG_BLOCK
 
-    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
+    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
 
     /* TODO: Using multiple collections.
      * One problem with just using MetaQueryMaker is that we can't store uids as
@@ -852,7 +852,7 @@ Dynamic::BiasSolver::updateUniverse()
             s_universeCollection = CollectionManager::instance()->primaryCollection();
         if( !s_universeCollection ) // WTF we really can't get a primarycollection?
         {                           //  whenever a collection is added lets check again, so we catch the loading of the primary colletion
-            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
+            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
             return;
         }
         
@@ -918,7 +918,7 @@ Dynamic::BiasSolver::outdateUniverse()
 }
 
 void
-Dynamic::BiasSolver::setUniverseCollection( Amarok::Collection* coll )
+Dynamic::BiasSolver::setUniverseCollection( Collections::Collection* coll )
 {
     QMutexLocker locker( &s_universeMutex );
 

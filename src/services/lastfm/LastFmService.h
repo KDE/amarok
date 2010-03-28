@@ -78,7 +78,7 @@ public:
 
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
-    virtual Amarok::Collection * collection();
+    virtual Collections::Collection * collection();
 
     void love( Meta::TrackPtr track );
 
