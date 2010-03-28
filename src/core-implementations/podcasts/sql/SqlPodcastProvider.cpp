@@ -260,6 +260,176 @@ SqlPodcastProvider::playlists()
     return playlistList;
 }
 
+QList<QAction *>
+SqlPodcastProvider::providerActions()
+{
+    if( m_providerActions.isEmpty() )
+    {
+        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
+                                         i18n( "&Update All Channels" ),
+                                         this
+                                       );
+        updateAllAction->setProperty( "popupdropper_svg_id", "update" );
+        connect( updateAllAction, SIGNAL( triggered() ), this, SLOT( updateAll() ) );
+        m_providerActions << updateAllAction;
+
+        QAction *configureAction = new QAction( KIcon( "configure" ),
+            i18n( "&Configure General Settings" ),
+            this
+        );
+        configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureProvider() ) );
+        m_providerActions << configureAction;
+    }
+
+    return m_providerActions;
+}
+
+QList<QAction *>
+SqlPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
+{
+    QList<QAction *> actions;
+
+    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannel::fromPlaylistPtr( playlist );
+    if( sqlChannel.isNull() )
+        return actions;
+
+    if( m_configureChannelAction == 0 )
+    {
+        m_configureChannelAction = new QAction(
+            KIcon( "configure" ),
+            i18n( "&Configure" ),
+            this
+        );
+        m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureChannelAction, SIGNAL( triggered() ), SLOT( slotConfigureChannel() ) );
+    }
+
+    //only one channel can be configured at a time.
+    if( m_configureChannelAction->data().isNull() )
+        m_configureChannelAction->setData( QVariant::fromValue( sqlChannel ) );
+
+    actions << m_configureChannelAction;
+
+    Podcasts::SqlPodcastChannelList actionChannels;
+    if( m_removeAction == 0 )
+    {
+        m_removeAction = new QAction(
+            KIcon( "news-unsubscribe" ),
+            i18n( "&Remove Subscription" ),
+            this
+        );
+        m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
+        connect( m_removeAction, SIGNAL( triggered() ), SLOT( slotRemoveChannels() ) );
+    }
+    else
+    {
+        actionChannels = m_removeAction->data().value<Podcasts::SqlPodcastChannelList>();
+    }
+
+    actionChannels << sqlChannel;
+    m_removeAction->setData( QVariant::fromValue( actionChannels ) );
+
+    actions << m_removeAction;
+
+    actionChannels.clear();
+    if( m_updateAction == 0 )
+    {
+        m_updateAction = new QAction(
+            KIcon( "view-refresh-amarok" ),
+            i18n( "&Update Channel" ),
+            this
+        );
+        m_updateAction->setProperty( "popupdropper_svg_id", "update" );
+        connect( m_updateAction, SIGNAL( triggered() ), SLOT( slotUpdateChannels() ) );
+    }
+    else
+    {
+        actionChannels = m_updateAction->data().value<Podcasts::SqlPodcastChannelList>();
+    }
+
+    actionChannels << sqlChannel;
+    m_updateAction->setData( QVariant::fromValue( actionChannels ) );
+
+    actions << m_updateAction;
+
+    return actions;
+}
+
+QList<QAction *>
+SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
+{
+    QList<QAction *> actions;
+    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannel::fromPlaylistPtr( playlist );
+    if( sqlChannel.isNull() )
+        return actions;
+
+    Podcasts::SqlPodcastEpisodeList sqlEpisodes = sqlChannel->sqlEpisodes();
+    if( trackIndex >= sqlEpisodes.count() )
+        return actions;
+
+    Podcasts::SqlPodcastEpisodePtr sqlEpisode = sqlEpisodes.at( trackIndex );
+    if( sqlEpisode.isNull() )
+        return actions;
+
+    if( m_deleteAction == 0 )
+    {
+        m_deleteAction = new QAction(
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Downloaded Episode" ),
+            this
+        );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDeleteDownloadedEpisodes() ) );
+    }
+
+    if( m_writeTagsAction == 0 )
+    {
+        m_writeTagsAction = new QAction(
+            KIcon( "media-track-edit-amarok" ),
+            i18n( "&Write Feed Information to File" ),
+            this
+        );
+        m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
+        connect( m_writeTagsAction, SIGNAL( triggered() ), SLOT( slotWriteTagsToFiles() ) );
+    }
+
+    Podcasts::SqlPodcastEpisodeList actionEpisodes;
+    bool hasDownloaded = false;
+    if( !sqlEpisode->localUrl().isEmpty() )
+    {
+        actionEpisodes = m_deleteAction->data().value<Podcasts::SqlPodcastEpisodeList>();
+        actionEpisodes << sqlEpisode;
+        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
+        //these lists are the same anyway
+        m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
+        actions << m_deleteAction;
+        actions << m_writeTagsAction;
+    }
+    else
+    {
+        if( m_downloadAction == 0 )
+        {
+            m_downloadAction = new QAction(
+                KIcon( "go-down" ),
+                i18n( "&Download Episode" ),
+                this
+            );
+            m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
+            connect( m_downloadAction, SIGNAL( triggered() ), SLOT( slotDownloadEpisodes() ) );
+        }
+        else
+        {
+            actionEpisodes = m_downloadAction->data().value<Podcasts::SqlPodcastEpisodeList>();
+        }
+        actionEpisodes << sqlEpisode;
+        m_downloadAction->setData( QVariant::fromValue( actionEpisodes ) );
+        actions << m_downloadAction;
+    }
+
+    return actions;
+}
+
 Podcasts::PodcastEpisodePtr
 SqlPodcastProvider::episodeForGuid( const QString &guid )
 {
@@ -292,6 +462,13 @@ SqlPodcastProvider::addPodcast( const KUrl &url )
     {
         subscribe( kurl );
     }
+}
+
+void
+SqlPodcastProvider::updateAll()
+{
+    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+        updateSqlChannel( channel );
 }
 
 void
@@ -363,13 +540,8 @@ SqlPodcastProvider::channels()
 }
 
 void
-SqlPodcastProvider::removeSubscription( Podcasts::PodcastChannelPtr channel )
+SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChannel )
 {
-    DEBUG_BLOCK
-    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
-    if( !sqlChannel )
-        return;
-
     debug() << "Deleting channel " << sqlChannel->title();
     sqlChannel->deleteFromDb();
 
@@ -444,9 +616,8 @@ SqlPodcastProvider::slotConfigChanged()
 }
 
 void
-SqlPodcastProvider::configureChannel( Podcasts::PodcastChannelPtr channel )
+SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel )
 {
-    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
     if( !sqlChannel )
         return;
 
@@ -485,7 +656,7 @@ SqlPodcastProvider::configureChannel( Podcasts::PodcastChannelPtr channel )
         emit( updated() );
     }
 
-    if( oldSaveLocation != channel->saveLocation() )
+    if( oldSaveLocation != sqlChannel->saveLocation() )
     {
         debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
                 .arg( sqlChannel->title() )
@@ -515,8 +686,8 @@ SqlPodcastProvider::configureChannel( Podcasts::PodcastChannelPtr channel )
     }
 
     //if the url changed force an update.
-    if( oldUrl != channel->url() )
-        update( channel );
+    if( oldUrl != sqlChannel->url() )
+        updateSqlChannel( sqlChannel );
 }
 
 QList<QAction *>
@@ -669,43 +840,11 @@ SqlPodcastProvider::channelActions( Podcasts::PodcastChannelList channels )
     return actions;
 }
 
-QList<QAction *>
-SqlPodcastProvider::providerActions()
-{
-    if( m_providerActions.isEmpty() )
-    {
-        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
-                                         i18n( "&Update All Channels" ),
-                                         this
-                                       );
-        updateAllAction->setProperty( "popupdropper_svg_id", "update" );
-        connect( updateAllAction, SIGNAL( triggered() ), this, SLOT( updateAll() ) );
-        m_providerActions << updateAllAction;
-
-        QAction *configureAction = new QAction( KIcon( "configure" ),
-            i18n( "&Configure General Settings" ),
-            this
-        );
-        configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureProvider() ) );
-        m_providerActions << configureAction;
-    }
-
-    return m_providerActions;
-}
-
 void
-SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::PodcastEpisodeList &episodes )
+SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &episodes )
 {
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
-                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
-        if( !sqlEpisode )
-            continue;
-
-        deleteDownloadedEpisode( sqlEpisode );
-    }
+    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+        deleteDownloadedEpisode( episode );
 }
 
 void
@@ -714,7 +853,7 @@ SqlPodcastProvider::slotDeleteDownloadedEpisodes()
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
         return;
-    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
+    Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
     deleteDownloadedEpisodes( episodes );
 }
 
@@ -722,23 +861,16 @@ void
 SqlPodcastProvider::slotDownloadEpisodes()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-        if( action == 0 )
-            return;
-    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
+    if( action == 0 )
+        return;
+    Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
 
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
-                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
-        if( !sqlEpisode )
-            continue;
-
-        downloadEpisode( sqlEpisode );
-    }
+    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+        downloadEpisode( episode );
 }
 
 QPair<bool, bool>
-SqlPodcastProvider::confirmUnsubscribe( Podcasts::PodcastChannelPtr channel )
+SqlPodcastProvider::confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel )
 {
     KDialog unsubscribeDialog;
     unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
@@ -769,14 +901,11 @@ SqlPodcastProvider::slotRemoveChannels()
     if( action == 0 )
         return;
 
-    Podcasts::PodcastChannelList channels = action->data().value<Podcasts::PodcastChannelList>();
+    Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
     bool removedSomething = false;
-    foreach( Podcasts::PodcastChannelPtr channel, channels )
+    foreach( Podcasts::SqlPodcastChannelPtr channel, channels )
     {
-        Podcasts::SqlPodcastChannelPtr sqlChannel =
-            Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
-
         QPair<bool, bool> result = confirmUnsubscribe( channel );        
         if( result.first )
         {
@@ -784,10 +913,12 @@ SqlPodcastProvider::slotRemoveChannels()
             if( result.second )
             {
                 debug() << "removing all episodes";
-                PodcastEpisodeList episodes = channel->episodes();
-                deleteDownloadedEpisodes(episodes);
+                Podcasts::SqlPodcastEpisodeList sqlEpisodes = channel->sqlEpisodes();
+                deleteDownloadedEpisodes( sqlEpisodes );
+                removedSomething = true;
             }
             removeSubscription( channel );
+            removedSomething = true;
         }
     }
     if( removedSomething )
@@ -800,15 +931,10 @@ SqlPodcastProvider::slotUpdateChannels()
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
         if( action == 0 )
             return;
-    Podcasts::PodcastChannelList channels = action->data().value<Podcasts::PodcastChannelList>();
+    Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
-    foreach( Podcasts::PodcastChannelPtr channel, channels )
-    {
-        Podcasts::SqlPodcastChannelPtr sqlChannel =
-            Podcasts::SqlPodcastChannelPtr::dynamicCast( channel );
-        if( !sqlChannel.isNull() )
-            update( channel );
-    }
+    foreach( Podcasts::SqlPodcastChannelPtr channel, channels )
+            updateSqlChannel( channel );
 }
 
 void
@@ -835,16 +961,9 @@ SqlPodcastProvider::slotWriteTagsToFiles()
     if( action == 0 )
         return;
 
-    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        Podcasts::SqlPodcastEpisodePtr sqlEpisode =
-                Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
-        if( !sqlEpisode )
-            continue;
-
-        sqlEpisode->writeTagsToFile();
-    }
+    Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
+    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+        episode->writeTagsToFile();
 }
 
 void
@@ -854,7 +973,7 @@ SqlPodcastProvider::slotConfigureChannel()
     if( action == 0 )
         return;
 
-    Podcasts::PodcastChannelPtr podcastChannel = action->data().value<Podcasts::PodcastChannelPtr>();
+    Podcasts::SqlPodcastChannelPtr podcastChannel = action->data().value<Podcasts::SqlPodcastChannelPtr>();
     if( !podcastChannel.isNull() )
         configureChannel( podcastChannel );
 }
@@ -922,13 +1041,6 @@ SqlPodcastProvider::completePodcastDownloads()
 }
 
 void
-SqlPodcastProvider::updateAll()
-{
-    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
-        update( channel );
-}
-
-void
 SqlPodcastProvider::autoUpdate()
 {
     DEBUG_BLOCK
@@ -942,12 +1054,12 @@ SqlPodcastProvider::autoUpdate()
     foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
     {
         if( channel->autoScan() )
-            update( channel );
+            updateSqlChannel( channel );
     }
 }
 
 void
-SqlPodcastProvider::update( Podcasts::PodcastChannelPtr channel )
+SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 {
     if( channel.isNull() )
         return;
@@ -971,13 +1083,7 @@ SqlPodcastProvider::update( Podcasts::PodcastChannelPtr channel )
                 this, SLOT( slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ) );
     
     m_updatingChannels++;
-    podcastReader->update( channel );
-}
-
-void
-SqlPodcastProvider::update( Podcasts::SqlPodcastChannelPtr channel )
-{
-    update( PodcastChannelPtr::dynamicCast( channel ) );
+    podcastReader->update( Podcasts::PodcastChannelPtr::dynamicCast( channel ) );
 }
 
 void
@@ -1020,7 +1126,7 @@ SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
     }
     else if( !m_updateQueue.isEmpty() )
     {
-        update( m_updateQueue.takeFirst() );
+        updateSqlChannel( m_updateQueue.takeFirst() );
     }
     else if( m_updatingChannels == 0 )
     {
@@ -1031,7 +1137,9 @@ SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
 }
 
 void
-SqlPodcastProvider::slotStatusBarNewProgressOperation( KIO::TransferJob * job, const QString &description, Podcasts::PodcastReader* reader)
+SqlPodcastProvider::slotStatusBarNewProgressOperation( KIO::TransferJob * job,
+                                                       const QString &description,
+                                                       Podcasts::PodcastReader* reader )
 {
     The::statusBar()->newProgressOperation( job, description )
             ->setAbortSlot( reader, SLOT( slotAbort() ) );

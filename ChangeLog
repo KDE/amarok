@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * It's now possible to mark all episodes in a channel as old or new at once.
      * New "Upcoming Events" applet, displays future concerts for the artist of
        the currently playing track. The event info is fetched from Last.fm.
      * New "Similar Artists" applet, displays a list of artists which are

@@ -52,25 +52,23 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
 
         Playlists::PlaylistList playlists();
 
+        //PlaylistProvider methods
+        virtual QList<QAction *> providerActions();
+        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
+        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist, int trackIndex );
+
         //PodcastProvider methods
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
 
-        void addPodcast( const KUrl &url );
+        virtual void addPodcast( const KUrl &url );
 
         Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
         Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
         Podcasts::PodcastChannelList channels();
 
-        void removeSubscription( Podcasts::PodcastChannelPtr channel );
-
-        void configureProvider();
-        void configureChannel( Podcasts::PodcastChannelPtr channel );
-
         QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
         QList<QAction *> channelActions( Podcasts::PodcastChannelList );
-
-        virtual QList<QAction *> providerActions();
 
         void completePodcastDownloads();
 
@@ -81,18 +79,13 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
 
     public slots:
         void updateAll();
-        void update( Podcasts::PodcastChannelPtr channel );
         void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
         void slotUpdated();
 
-        void slotReadResult( Podcasts::PodcastReader *podcastReader );
-        void update( Podcasts::SqlPodcastChannelPtr channel );
+        void slotReadResult( PodcastReader *podcastReader );
         void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr episode );
-
-        void slotStatusBarSorryMessage( const QString &message );
-        void slotStatusBarNewProgressOperation( KIO::TransferJob * job, const QString & description, Podcasts::PodcastReader* reader );
 
     private slots:
         void downloadResult( KJob * );
@@ -117,7 +110,16 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();
 
+        void slotStatusBarNewProgressOperation( KIO::TransferJob * job,
+                                                               const QString &description,
+                                                               Podcasts::PodcastReader* reader );
+        void slotStatusBarSorryMessage( const QString &message );
+
     private:
+        void configureProvider();
+        void configureChannel( Podcasts::SqlPodcastChannelPtr channel );
+        void updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel );
+
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
@@ -130,10 +132,15 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
 
         /** shows a modal dialog asking the user if he really wants to unsubscribe
             and if he wants to keep the podcast media */
-        QPair<bool, bool> confirmUnsubscribe(Podcasts::PodcastChannelPtr channel);
+        QPair<bool, bool> confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel );
 
         /** remove the episodes in the list from the filesystem */
-        void deleteDownloadedEpisodes( Podcasts::PodcastEpisodeList &episodes );
+        void deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &episodes );
+
+        /** Removes a podcast from the list. Will ask for confirmation to delete the episodes
+          * as well
+          */
+        void removeSubscription( Podcasts::SqlPodcastChannelPtr channel );
 
         void subscribe( const KUrl &url );
         QFile* createTmpFile ( KJob *job );
@@ -148,7 +155,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
-        Podcasts::PodcastChannelList m_updateQueue;
+        Podcasts::SqlPodcastChannelList m_updateQueue;
         QList<KUrl> m_subscribeQueue;
 
         QHash<KJob *, Podcasts::SqlPodcastEpisodePtr> m_downloadJobMap;

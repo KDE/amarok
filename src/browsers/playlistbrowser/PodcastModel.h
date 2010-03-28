@@ -29,7 +29,6 @@
 #include <QVariant>
 
 class OpmlOutline;
-class PodcastProvider;
 
 namespace PlaylistBrowserNS {
 
@@ -90,7 +89,7 @@ class PodcastModel : public MetaPlaylistModel
         void slotOpmlParsingDone();
 
     protected:
-        QActionList actionsFor( QModelIndex idx ) const;
+        virtual QActionList actionsFor( const QModelIndex &idx ) const;
 
     private:
         static PodcastModel* s_instance;
@@ -111,8 +110,6 @@ class PodcastModel : public MetaPlaylistModel
         static Meta::TrackList
         podcastEpisodesToTracks(
             Podcasts::PodcastEpisodeList episodes );
-
-        void refreshPodcast( Podcasts::PodcastChannelPtr channel );
 
         bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
         QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;

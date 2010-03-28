@@ -20,7 +20,6 @@
 #include "core/support/Debug.h"
 #include "OpmlParser.h"
 #include "core/podcasts/PodcastMeta.h"
-#include "core/podcasts/PodcastProvider.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -35,6 +34,8 @@
 #include <QListIterator>
 #include <QtAlgorithms>
 #include <typeinfo>
+
+using namespace Podcasts;
 
 namespace The
 {
@@ -62,7 +63,7 @@ PlaylistBrowserNS::PodcastModel::destroy()
 }
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
-    : MetaPlaylistModel( Meta::PodcastChannelPlaylist )
+    : MetaPlaylistModel( PlaylistManager::PodcastChannel )
  , m_setNewAction( 0 )
 {
     s_instance = this;
@@ -195,93 +196,72 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
         {
             case Qt::DisplayRole:
             case Qt::ToolTipRole:
-                return displayList;
-            case Qt::DecorationRole: return iconList;
-            case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
-            case MetaPlaylistModel::ActionRole: return providerActionsList;
-            case MetaPlaylistModel::ByLineRole: return providerByLineList;
-            case Qt::EditRole: return QVariant();
-        }
-    }
-
-    if( !index.isValid() )
-        return QVariant();
-    
-    Podcasts::PodcastMetaCommon* pmc =
-            static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() );
-
-    if( !pmc )
-        return QVariant();
-
-    switch( role )
-    {
-        case Qt::DisplayRole:
-        case Qt::ToolTipRole:
-            switch( index.column() )
-            {
-                case MetaPlaylistModel::PlaylistColumn:
-                    return pmc->title();
-
-                case SubtitleColumn:
-                    return pmc->subtitle();
-
-                case AuthorColumn:
-                    return pmc->author();
                 switch( idx.column() )
                 {
+                    case MetaPlaylistModel::PlaylistColumn:
+                        return pmc->title();
+
                     case SubtitleColumn:
                         return pmc->subtitle();
+
                     case AuthorColumn:
                         return pmc->author();
+                    switch( idx.column() )
+                    {
+                        case SubtitleColumn:
+                            return pmc->subtitle();
+                        case AuthorColumn:
+                            return pmc->author();
 
-                    case KeywordsColumn:
-                        return pmc->keywords();
+                        case KeywordsColumn:
+                            return pmc->keywords();
 
-                    case FilesizeColumn:
-                        if( pmc->podcastType() == Meta::EpisodeType )
-                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                ->filesize();
-                        break;
+                        case FilesizeColumn:
+                            if( pmc->podcastType() == Podcasts::EpisodeType )
+                                return static_cast<Podcasts::PodcastEpisode *>( pmc )
+                                    ->filesize();
+                            break;
 
-                    case ImageColumn:
-                        if( pmc->podcastType() == Meta::ChannelType )
-                        {
-                            Podcasts::PodcastChannel *pc =
-                                    static_cast<Podcasts::PodcastChannel *>( pmc );
-                            KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
-
-                            if( !QFile( imageUrl.toLocalFile() ).exists() )
+                        case ImageColumn:
+                            if( pmc->podcastType() == Podcasts::ChannelType )
                             {
-                                imageUrl = pc->imageUrl();
+                                Podcasts::PodcastChannel *pc =
+                                        static_cast<Podcasts::PodcastChannel *>( pmc );
+                                KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
+
+                                if( !QFile( imageUrl.toLocalFile() ).exists() )
+                                {
+                                    imageUrl = pc->imageUrl();
+                                }
+                                return imageUrl;
                             }
-                            return imageUrl;
-                        }
-                        break;
+                            break;
 
-                    case DateColumn:
-                        if( pmc->podcastType() == Meta::EpisodeType )
-                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                ->pubDate();
-                        else
-                            return static_cast<Podcasts::PodcastChannel *>( pmc )
-                                ->subscribeDate();
+                        case DateColumn:
+                            if( pmc->podcastType() == Podcasts::EpisodeType )
+                                return static_cast<Podcasts::PodcastEpisode *>( pmc )
+                                    ->pubDate();
+                            else
+                                return static_cast<Podcasts::PodcastChannel *>( pmc )
+                                    ->subscribeDate();
 
-                    case IsEpisodeColumn:
-                        return bool( pmc->podcastType() == Meta::EpisodeType );
+                        case IsEpisodeColumn:
+                            return bool( pmc->podcastType() == Podcasts::EpisodeType );
 
+                    }
+                    break;
+
+                case ShortDescriptionRole:
+                    if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                        return pmc->description();
+                    break;
+
+                case Qt::DecorationRole:
+                {
+                    if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                            return icon( pmc );
+                    break;
                 }
-                break;
-
-            case ShortDescriptionRole:
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
-                    return pmc->description();
-                break;
-
-            case Qt::DecorationRole:
-            {
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
-                        return icon( pmc );
-                break;
             }
         }
     }
@@ -358,7 +338,7 @@ PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
     }
 
     Qt::ItemFlags channelFlags;
-    if( podcastItemType( idx ) == Meta::ChannelType )
+    if( podcastItemType( idx ) == Podcasts::ChannelType )
     {
         channelFlags = Qt::ItemIsDropEnabled;
         if( idx.column() == ProviderColumn )
@@ -410,7 +390,7 @@ PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) cons
     {
         switch( podcastItemType( idx ) )
         {
-            case Meta::ChannelType:
+            case Podcasts::ChannelType:
             {
                 Podcasts::PodcastChannelPtr channel = channelForIndex( idx );
                 if( channel.isNull() )
@@ -420,7 +400,7 @@ PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) cons
                 break;
             }
 
-            case Meta::EpisodeType:
+            case Podcasts::EpisodeType:
             {
                 Podcasts::PodcastEpisodePtr episode = episodeForIndex( idx );
                 if( episode.isNull() )
@@ -525,7 +505,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 
     //TODO: request the user to which PodcastProvider he wants to add it in case
     // of multiple (enabled) Podcast Providers.
-    PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+    Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
     if( podcastProvider )
     {
         bool ok;
@@ -556,31 +536,12 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 void
 PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 {
-    foreach( Playlists::PlaylistPtr playlist, m_playlists )
+    foreach( Playlists::PlaylistProvider *provider,
+             The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel ) )
     {
-        Podcasts::PodcastChannelPtr channel = Podcasts::PodcastChannelPtr::dynamicCast( playlist );
-        if( !channel.isNull() )
-            refreshPodcast( channel );
-    }
-}
-
-void
-PlaylistBrowserNS::PodcastModel::refreshPodcast( Podcasts::PodcastChannelPtr channel )
-{
-    debug() << "refresh Podcast " << channel->title();
-    //HACK: since we only have one PodcastProvider implementation
-    Playlists::PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( provider )
-    {
-        Podcasts::PodcastProvider * podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>(provider);
-        if( !podcastProvider )
-            return;
-
-        podcastProvider->update( channel );
-    }
-    else
-    {
-        debug() << "PodcastChannel provider is null";
+        PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+        if( podcastProvider )
+            podcastProvider->updateAll();
     }
 }
 
@@ -634,14 +595,14 @@ PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
 }
 
 QActionList
-PlaylistBrowserNS::PodcastModel::actionsFor( QModelIndex idx ) const
+PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 {
     QActionList actions = MetaPlaylistModel::actionsFor( idx );
 
     /* by default a list of podcast episodes can only be changed to isNew = false, except
        when all selected episodes are the same state */
     m_setNewAction->setChecked( false );
-    Podcasts::PodcastEpisodeList episodes;
+    Podcasts::PodcastEpisodeList episodes = m_setNewAction->data().value<Podcasts::PodcastEpisodeList>();
     if( IS_TRACK(idx) )
         episodes << episodeForIndex( idx );
     else
@@ -652,6 +613,9 @@ PlaylistBrowserNS::PodcastModel::actionsFor( QModelIndex idx ) const
         if( episode->isNew() )
             m_setNewAction->setChecked( true );
     }
+    m_setNewAction->setData( QVariant::fromValue( episodes ) );
+
+    actions << m_setNewAction;
 
     return actions;
 }
@@ -659,18 +623,29 @@ PlaylistBrowserNS::PodcastModel::actionsFor( QModelIndex idx ) const
 void
 PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
 {
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
+
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
+    {
+        if( !episode.isNull() )
+            episode->setNew( action->isChecked() );
+    }
 }
 
 int
 PlaylistBrowserNS::PodcastModel::podcastItemType( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
-        return Meta::NoType;
+        return NoType;
 
     if( IS_TRACK(idx) )
-        return Meta::EpisodeType;
+        return EpisodeType;
     else
-        return Meta::ChannelType;
+        return ChannelType;
 }
 
 Podcasts::PodcastChannelPtr

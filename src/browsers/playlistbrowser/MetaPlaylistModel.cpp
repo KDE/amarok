@@ -19,7 +19,7 @@
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "core/playlists/PlaylistProvider.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 
@@ -29,7 +29,7 @@ using namespace PlaylistBrowserNS;
 
 // to be used with qSort.
 static bool
-lessThanPlaylistTitles( const Meta::PlaylistPtr &lhs, const Meta::PlaylistPtr &rhs )
+lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::PlaylistPtr &rhs )
 {
     return lhs->prettyName().toLower() < rhs->prettyName().toLower();
 }
@@ -51,11 +51,11 @@ MetaPlaylistModel::MetaPlaylistModel( int playlistCategory )
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
-    connect( The::playlistManager(), SIGNAL( providerRemoved( PlaylistProvider*, int ) ),
+    connect( The::playlistManager(), SIGNAL( providerRemoved( Playlists::PlaylistProvider*, int ) ),
              SLOT( slotUpdate() ) );
 
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Meta::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Meta::PlaylistPtr )) );
+    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
+             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
 
     m_playlists = loadPlaylists();
 }
@@ -76,7 +76,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
         //get data from empty providers
         PlaylistProviderList providerList =
                 The::playlistManager()->providersForCategory( m_playlistCategory );
-        foreach( PlaylistProvider *provider, providerList )
+        foreach( Playlists::PlaylistProvider *provider, providerList )
         {
             if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
                 continue;
@@ -108,7 +108,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     int row = REMOVE_TRACK_MASK(index.internalId());
-    Meta::PlaylistPtr playlist = m_playlists.value( row );
+    Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
     QVariant food = QVariant();
     QString name;
@@ -149,7 +149,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
 
             case MetaPlaylistModel::ProviderColumn: //source
             {
-                PlaylistProvider *provider =
+                Playlists::PlaylistProvider *provider =
                         The::playlistManager()->getProviderForPlaylist( playlist );
                 //if provider is 0 there is something seriously wrong.
                 if( provider )
@@ -202,7 +202,7 @@ MetaPlaylistModel::index( int row, int column, const QModelIndex &parent) const
     else //if it has a parent it is a track
     {
         //but check if the playlist indeed has that track
-        Meta::PlaylistPtr playlist = m_playlists.value( parent.row() );
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.row() );
         if( row < playlist->tracks().count() )
             return createIndex( row, column, SET_TRACK_MASK(parent.row()) );
     }
@@ -234,7 +234,7 @@ MetaPlaylistModel::rowCount( const QModelIndex &parent ) const
     }
     else if( !IS_TRACK(parent) )
     {
-        Meta::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
         return playlist->tracks().count();
     }
 
@@ -304,7 +304,7 @@ MetaPlaylistModel::mimeData( const QModelIndexList &indices ) const
 {
     AmarokMimeData* mime = new AmarokMimeData();
 
-    Meta::PlaylistList playlists;
+    Playlists::PlaylistList playlists;
     Meta::TrackList tracks;
 
     foreach( const QModelIndex &index, indices )
@@ -322,7 +322,7 @@ MetaPlaylistModel::mimeData( const QModelIndexList &indices ) const
 }
 
 void
-MetaPlaylistModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+MetaPlaylistModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                           int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
@@ -337,7 +337,7 @@ MetaPlaylistModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
 }
 
 void
-MetaPlaylistModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
+MetaPlaylistModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
@@ -351,13 +351,13 @@ MetaPlaylistModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
 }
 
 void
-MetaPlaylistModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
+MetaPlaylistModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 {
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
     // several playlists with the same name
     int row = -1;
-    foreach( const Meta::PlaylistPtr p, m_playlists )
+    foreach( const Playlists::PlaylistPtr p, m_playlists )
     {
         row++;
         if( p->name() == playlist->name() )
@@ -375,7 +375,7 @@ MetaPlaylistModel::slotUpdate()
 {
     emit layoutAboutToBeChanged();
 
-    foreach( Meta::PlaylistPtr playlist, m_playlists )
+    foreach( Playlists::PlaylistPtr playlist, m_playlists )
         unsubscribeFrom( playlist );
 
     m_playlists.clear();
@@ -384,16 +384,16 @@ MetaPlaylistModel::slotUpdate()
     emit layoutChanged();
 }
 
-Meta::PlaylistList
+Playlists::PlaylistList
 MetaPlaylistModel::loadPlaylists()
 {
-    Meta::PlaylistList playlists =
+    Playlists::PlaylistList playlists =
             The::playlistManager()->playlistsOfCategory( m_playlistCategory );
-    QListIterator<Meta::PlaylistPtr> i( playlists );
+    QListIterator<Playlists::PlaylistPtr> i( playlists );
 
     while( i.hasNext() )
     {
-        Meta::PlaylistPtr playlist = i.next();
+        Playlists::PlaylistPtr playlist = i.next();
         subscribeTo( playlist );
     }
 
@@ -438,7 +438,7 @@ MetaPlaylistModel::tracksFromIndexes( const QModelIndexList &list ) const
     {
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
-        else if( Meta::PlaylistPtr playlist = playlistFromIndex( index ) )
+        else if( Playlists::PlaylistPtr playlist = playlistFromIndex( index ) )
             tracks << playlist->tracks();
     }
     return tracks;
@@ -454,18 +454,18 @@ MetaPlaylistModel::trackFromIndex( const QModelIndex &idx ) const
     if( playlistRow >= m_playlists.count() )
         return Meta::TrackPtr();
 
-    Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+    Playlists::PlaylistPtr playlist = m_playlists.value( playlistRow );
     if( playlist.isNull() || playlist->tracks().count() <= idx.row() )
         return Meta::TrackPtr();
 
     return playlist->tracks()[idx.row()];
 }
 
-Meta::PlaylistPtr
+Playlists::PlaylistPtr
 MetaPlaylistModel::playlistFromIndex( const QModelIndex &index ) const
 {
     if( !index.isValid() )
-        return Meta::PlaylistPtr();
+        return Playlists::PlaylistPtr();
 
     return m_playlists.value( index.internalId() );
 }
@@ -486,13 +486,13 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
 
     if( !IS_TRACK(idx) )
     {
-        Meta::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
+        Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
         if( playlist->provider() )
             actions << playlist->provider()->playlistActions( playlist );
     }
     else
     {
-        Meta::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
+        Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
         if( playlist->provider() )
             actions << playlist->provider()->trackActions( playlist, idx.row() );
     }
@@ -500,12 +500,12 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
     return actions;
 }
 
-PlaylistProvider *
+Playlists::PlaylistProvider *
 MetaPlaylistModel::getProviderByName( const QString &name )
 {
-    QList<PlaylistProvider *> providers =
+    QList<Playlists::PlaylistProvider *> providers =
             The::playlistManager()->providersForCategory( m_playlistCategory );
-    foreach( PlaylistProvider *provider, providers )
+    foreach( Playlists::PlaylistProvider *provider, providers )
     {
         if( provider->prettyName() == name )
             return provider;

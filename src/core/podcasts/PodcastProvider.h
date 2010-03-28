@@ -33,7 +33,6 @@ namespace Podcasts {
 */
 class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public Playlists::PlaylistProvider
 {
-    //Q_OBJECT
     public:
         static bool couldBeFeed( const QString &urlString );
         static KUrl toFeedUrl( const QString &urlString );
@@ -52,16 +51,12 @@ class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public 
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid ) = 0;
 
         virtual void addPodcast( const KUrl &url ) = 0;
+        virtual void updateAll() {}
 
         virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) = 0;
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
 
         virtual Podcasts::PodcastChannelList channels() = 0;
-
-        virtual void removeSubscription( Podcasts::PodcastChannelPtr channel ) = 0;
-
-        virtual void configureProvider() = 0;
-        virtual void configureChannel( Podcasts::PodcastChannelPtr channel ) = 0;
 
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
@@ -86,17 +81,6 @@ class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public 
         //TODO: need to move this to SqlPodcastProvider since it's provider specific.
         //perhaps use a more general transferprogress for playlists
         virtual void completePodcastDownloads() = 0;
-
-    public slots:
-        virtual void updateAll() = 0;
-        virtual void update( Podcasts::PodcastChannelPtr channel ) = 0;
-        virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
-        virtual void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
-        virtual void slotUpdated() = 0;
-
-    signals:
-        virtual void updated() = 0;
-
 };
 
 } //namespace Podcasts

@@ -66,7 +66,7 @@ PlaylistBrowserNS::UserModel::destroy()
 }
 
 PlaylistBrowserNS::UserModel::UserModel()
-    : MetaPlaylistModel( Meta::UserPlaylist )
+    : MetaPlaylistModel( PlaylistManager::UserPlaylist )
 {
     s_instance = this;
 

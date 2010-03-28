@@ -42,7 +42,7 @@ namespace PlaylistBrowserNS {
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
 class MetaPlaylistModel : public QAbstractItemModel,
-                          public Meta::PlaylistObserver
+                          public Playlists::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -79,28 +79,28 @@ class MetaPlaylistModel : public QAbstractItemModel,
         virtual QStringList mimeTypes() const;
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
 
-        /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position );
-        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
+        /* Playlists::PlaylistObserver methods */
+        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
+        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 
     public slots:
-        void slotRenamePlaylist( Meta::PlaylistPtr playlist );
+        void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
         void slotUpdate();
 
     signals:
         void renameIndex( const QModelIndex &index );
 
     protected:
-        Meta::PlaylistList loadPlaylists();
+        virtual Playlists::PlaylistList loadPlaylists();
+        virtual QActionList actionsFor( const QModelIndex &idx ) const;
 
         Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
         Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
-        Meta::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
+        Playlists::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
 
-        Meta::PlaylistList m_playlists;
-        QActionList actionsFor( const QModelIndex &idx ) const;
+        Playlists::PlaylistList m_playlists;
 
-        PlaylistProvider *getProviderByName( const QString &name );
+        Playlists::PlaylistProvider *getProviderByName( const QString &name );
 
     private slots:
         void slotLoad();
