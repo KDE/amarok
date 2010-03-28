@@ -183,7 +183,7 @@ public:
     /**
      * @return QString with a pretty name for the current track
      */
-    AMAROK_EXPORT QString prettyNowPlaying();
+    QString prettyNowPlaying();
 
 public slots:
     /**
