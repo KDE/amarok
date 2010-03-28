@@ -564,15 +564,18 @@ bool SqlCollectionLocation::startNextRemoveJob()
         Meta::TrackPtr track = m_removetracks.takeFirst();
         KUrl src = m_originalUrls[track];
 
+        if( src == track->playableUrl() ) // src == dst
+            break;
+
         KIO::DeleteJob *job = 0;
 
         src.cleanPath();
         debug() << "deleting  " << src;
         KIO::JobFlags flags = KIO::HideProgressInfo;
-        job = KIO::del(src, flags);
+        job = KIO::del( src, flags );
         if( job )   //just to be safe
         {
-            connect( job, SIGNAL( result(KJob*) ), SLOT( slotRemoveJobFinished(KJob*) ) );
+            connect( job, SIGNAL( result( KJob* ) ), SLOT( slotRemoveJobFinished( KJob* ) ) );
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
