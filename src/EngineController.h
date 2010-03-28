@@ -326,6 +326,12 @@ private slots:
     void slotStopFadeout(); //called after the fade-out has finished
 
     /**
+     * For volume/mute changes from the phonon side
+     */
+    void slotVolumeChanged( qreal );
+    void slotMutedChanged( bool );
+
+    /**
      *  Notify the engine that a new title has been reached when playing a cd. This
      *  is needed as a cd counts as basically one lone track, and we want to be able
      *  to play something else once one track has finished

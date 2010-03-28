@@ -172,6 +172,9 @@ EngineController::initializePhonon()
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 
+    connect( m_audio, SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
+    connect( m_audio, SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
+
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
 
@@ -1217,6 +1220,28 @@ void EngineController::slotTitleChanged( int titleNumber )
 
     slotAboutToFinish();
 }
+
+void EngineController::slotVolumeChanged( qreal newVolume )
+{
+    int percent = qBound<qreal>( 0, round(newVolume * 100), 100 );
+    m_volume = percent;
+
+    AmarokConfig::setMasterVolume( percent );
+    // FIXME: This triggers a feedback loop.
+    // This ultimately triggers VolumeWidget::engineVolumeChanged() which in turn
+    // will call VolumeDial::setValue() which in turn will call
+    // EngineController::setVolume() (due to connect in MainToolbar). Goto 10.
+    volumeChangedNotify( percent );
+}
+
+void EngineController::slotMutedChanged( bool mute )
+{
+    AmarokConfig::setMuteState( mute );
+    // FIXME: This also has a feedback loop but with only two states
+    // it's less of a problem.
+    muteStateChangedNotify( mute );
+}
+
 
 bool EngineController::isPlayingAudioCd()
 {
