@@ -61,25 +61,25 @@ void FormatSelectionDialog::selectionChanged( bool checked )
     {
         descriptionLabel->setText( i18n( "Ogg Vorbis is a fully free and unencumbered compressed audio format that is perfect for storing your compressed music on your computer. The sound quality is slightly better than Mp3 at the same bitrate. Note that not all mobile players support the Ogg Vorbis format." ) );
 
-        m_selectedFormat = AudioCdCollection::OGG;
+        m_selectedFormat = Collections::AudioCdCollection::OGG;
     }
     else if( sender() == flacButton )
     {
         descriptionLabel->setText( i18n( "Flac is a lossless compressed audio format free of any patents or license fees. It maintains perfect CD audio quality while reducing file size by about 50%. Because the filesize is much larger than Ogg Vorbis or Mp3 it is not recommended if you want to transfer your music to a mobile player." ) );
 
-        m_selectedFormat = AudioCdCollection::FLAC;
+        m_selectedFormat = Collections::AudioCdCollection::FLAC;
     }
     else if( sender() == wavButton )
     {
         descriptionLabel->setText( i18n( "Wav is a basic, uncompressed audio file format. It takes up a lot of space but maintains perfect quality. It is generally not recommended unless you know what you are doing. If you want perfect quality, use Flac instead." ) );
 
-        m_selectedFormat = AudioCdCollection::WAV;
+        m_selectedFormat = Collections::AudioCdCollection::WAV;
     }
     else if( sender() == mp3Button )
     {
         descriptionLabel->setText( i18n( "Mp3 is the de facto standard in compressed audio compatible with almost all mobile players. It is however non free and generally not recommended." ) );
 
-        m_selectedFormat = AudioCdCollection::MP3;
+        m_selectedFormat = Collections::AudioCdCollection::MP3;
     }
         
 }
@@ -91,13 +91,13 @@ void FormatSelectionDialog::accept()
 
     QString format;
     
-    if( m_selectedFormat == AudioCdCollection::OGG )
+    if( m_selectedFormat == Collections::AudioCdCollection::OGG )
         format = "ogg";
-    else if( m_selectedFormat == AudioCdCollection::FLAC )
+    else if( m_selectedFormat == Collections::AudioCdCollection::FLAC )
         format = "flac";
-    else if( m_selectedFormat == AudioCdCollection::WAV )
+    else if( m_selectedFormat == Collections::AudioCdCollection::WAV )
         format = "wav";
-    else if( m_selectedFormat == AudioCdCollection::MP3 )
+    else if( m_selectedFormat == Collections::AudioCdCollection::MP3 )
         format = "mp3";
 
     KConfigGroup config = Amarok::config("Audio CD Collection");

@@ -20,7 +20,9 @@
 #include "amarok_sqlcollection_export.h"
 #include "core/capabilities/Capability.h"
 
-class SqlCollection;
+namespace Collections {
+    class SqlCollection;
+}
 
 namespace Meta
 {
@@ -28,6 +30,8 @@ namespace Meta
     class SqlArtist;
     class SqlAlbum;
 }
+
+namespace Capabilities {
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS TrackCapabilityDelegate
 {
@@ -65,9 +69,10 @@ public:
     CollectionCapabilityDelegate() {};
     virtual ~ CollectionCapabilityDelegate() {};
 
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const = 0;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection ) = 0;
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const = 0;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection ) = 0;
 };
 
+} //namespace Capabilities
 
 #endif // CAPABILITYDELEGATE_H

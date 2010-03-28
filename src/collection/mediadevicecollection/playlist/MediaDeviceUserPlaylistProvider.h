@@ -25,7 +25,9 @@
 
 class QAction;
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
 
 namespace Playlists {
 
@@ -33,7 +35,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 {
     Q_OBJECT
     public:
-        MediaDeviceUserPlaylistProvider( MediaDeviceCollection *collection );
+        MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection );
         ~MediaDeviceUserPlaylistProvider();
 
         /* PlaylistProvider functions */
@@ -80,7 +82,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
     MediaDevicePlaylistList m_playlists;
 
     QAction *m_renameAction;
-    MediaDeviceCollection *m_collection;
+    Collections::MediaDeviceCollection *m_collection;
 };
 
 } //namespace Playlists

@@ -16,6 +16,8 @@
 
 #include "core/collections/QueryMaker.h"
 
+using namespace Collections;
+
 QueryMaker::QueryMaker() : QObject()
 {
 }

@@ -31,7 +31,7 @@
 
 #include <QStack>
 
-using namespace Meta;
+using namespace Collections;
 
 class ServiceSqlWorkerThread : public ThreadWeaver::Job
 {
@@ -301,7 +301,7 @@ ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
+ServiceSqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     //DEBUG_BLOCK
     Q_UNUSED( track );
@@ -310,7 +310,7 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
+ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
@@ -318,7 +318,7 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
         return this;
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
-    const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
+    const Meta::ServiceArtist * serviceArtist = dynamic_cast<const Meta::ServiceArtist *>( artist.data() );
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( serviceArtist )
     {
@@ -332,7 +332,7 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
+ServiceSqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
@@ -340,7 +340,7 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
         return this;
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
-    const ServiceAlbumPtr serviceAlbum = ServiceAlbumPtr::dynamicCast( album );
+    const Meta::ServiceAlbumPtr serviceAlbum = Meta::ServiceAlbumPtr::dynamicCast( album );
 
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
@@ -358,12 +358,12 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
+ServiceSqlQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
-    const ServiceGenre* serviceGenre = static_cast<const ServiceGenre *>( genre.data() );
+    const Meta::ServiceGenre* serviceGenre = static_cast<const Meta::ServiceGenre *>( genre.data() );
     if( !d || !serviceGenre )
         return this;
 
@@ -384,7 +384,7 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const ComposerPtr &composer )
+ServiceSqlQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     Q_UNUSED( composer );
     //TODO
@@ -392,7 +392,7 @@ ServiceSqlQueryMaker::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const YearPtr &year )
+ServiceSqlQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     Q_UNUSED( year );
     //TODO
@@ -400,9 +400,9 @@ ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const DataPtr &data )
+ServiceSqlQueryMaker::addMatch( const Meta::DataPtr &data )
 {
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     //TODO needed at all?
     return this;
 }
@@ -681,9 +681,9 @@ template<class PointerType, class ListType>
 void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
 {
     if ( d->returnDataPtrs ) {
-        DataList data;
+        Meta::DataList data;
         foreach( PointerType p, list )
-            data << DataPtr::staticCast( p );
+            data << Meta::DataPtr::staticCast( p );
 
         emit newResultReady( m_collection->collectionId(), data );
     }
@@ -694,7 +694,7 @@ void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 {
-    TrackList tracks;
+    Meta::TrackList tracks;
     //SqlRegistry* reg = m_collection->registry();
     int rowCount = ( m_metaFactory->getTrackSqlRowCount() +
                    m_metaFactory->getAlbumSqlRowCount() +
@@ -707,17 +707,17 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
     {
         QStringList row = result.mid( i*rowCount, rowCount );
 
-        TrackPtr trackptr =  m_registry->getTrack( row );
+        Meta::TrackPtr trackptr =  m_registry->getTrack( row );
         tracks.append( trackptr );
     }
 
-    emitProperResult<TrackPtr, TrackList>( tracks );
+    emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
 }
 
 void
 ServiceSqlQueryMaker::handleArtists( const QStringList &result )
 {
-    ArtistList artists;
+    Meta::ArtistList artists;
    // SqlRegistry* reg = m_collection->registry();
     int rowCount = m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
@@ -726,13 +726,13 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emitProperResult<ArtistPtr, ArtistList>( artists );
+    emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
 }
 
 void
 ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 {
-    AlbumList albums;
+    Meta::AlbumList albums;
     int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
 
@@ -741,13 +741,13 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emitProperResult<AlbumPtr, AlbumList>( albums );
+    emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
 }
 
 void
 ServiceSqlQueryMaker::handleGenres( const QStringList &result )
 {
-    GenreList genres;
+    Meta::GenreList genres;
 
     int rowCount = m_metaFactory->getGenreSqlRowCount();
     int resultRows = result.size() / rowCount;
@@ -756,13 +756,13 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emitProperResult<GenrePtr, GenreList>( genres );
+    emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres );
 }
 
 /*void
 ServiceSqlQueryMaker::handleComposers( const QStringList &result )
 {
-    ComposerList composers;
+    Meta::ComposerList composers;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
@@ -770,13 +770,13 @@ ServiceSqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitProperResult<ComposerPtr, ComposerList>( composers );
+    emitProperResult<Meta::ComposerPtr, Meta::ComposerList>( composers );
 }
 
 void
 ServiceSqlQueryMaker::handleYears( const QStringList &result )
 {
-    YearList years;
+    Meta::YearList years;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
@@ -784,7 +784,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitProperResult<YearPtr, YearList>( years );
+    emitProperResult<Meta::YearPtr, Meta::YearList>( years );
 }*/
 
 QString

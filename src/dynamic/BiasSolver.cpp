@@ -53,7 +53,7 @@ const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
 QMutex            Dynamic::BiasSolver::s_universeMutex;
-QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
+Collections::QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
 Collections::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
 bool              Dynamic::BiasSolver::s_universeOutdated = true;
 unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
@@ -857,7 +857,7 @@ Dynamic::BiasSolver::updateUniverse()
         }
         
         s_universeQuery = s_universeCollection->queryMaker();
-        s_universeQuery->setQueryType( QueryMaker::Custom );
+        s_universeQuery->setQueryType( Collections::QueryMaker::Custom );
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
 

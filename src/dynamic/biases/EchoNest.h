@@ -27,10 +27,11 @@
 *
 */
 
-namespace Amarok
-{
+namespace Collections {
     class Collection;
+    class QueryMaker;
 }
+
 namespace KIO {
     class StoredTransferJob;
 }
@@ -95,7 +96,7 @@ namespace Dynamic
             
             QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
             KIO::StoredTransferJob* m_artistSuggestedQuery;
-            QueryMaker* m_qm; // stored so it can be refreshed
+            Collections::QueryMaker* m_qm; // stored so it can be refreshed
             // if the collection changes
             Collections::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;

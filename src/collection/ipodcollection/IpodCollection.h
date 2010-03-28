@@ -30,8 +30,11 @@ extern "C" {
 
 #include <QtGlobal>
 
-class IpodCollection;
 class MediaDeviceInfo;
+
+namespace Collections {
+
+class IpodCollection;
 
 class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection>
 {
@@ -65,5 +68,7 @@ class IpodCollection : public MediaDeviceCollection
     private:
         QString m_mountPoint;
 };
+
+} //namespace Collections
 
 #endif

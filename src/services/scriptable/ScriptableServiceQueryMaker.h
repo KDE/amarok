@@ -23,7 +23,7 @@
 
 #include "ScriptableServiceCollection.h"
 
-using namespace Meta;
+namespace Collections {
 
 /**
 A query maker for fetching external data
@@ -101,5 +101,7 @@ private:
     QString m_name;
  
 };
+
+} //namespace Collections
 
 #endif

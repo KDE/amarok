@@ -62,7 +62,9 @@ namespace Solid {
 class QString;
 class QMutex;
 
-class IpodCollection;
+namespace Collections {
+    class IpodCollection;
+}
 
 typedef QHash<QString, QString> AttributeHash;
 typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
@@ -96,7 +98,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
     Q_OBJECT
 
     public:
-        IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo );
+        IpodHandler( Collections::IpodCollection *mc, const IpodDeviceInfo *deviceInfo );
         virtual ~IpodHandler();
 
         virtual void init(); // collection

@@ -84,7 +84,7 @@ class CollectionTreeItem : public QObject
         bool isTrackItem() const;
         bool isVariousArtistItem() const;
 
-        QueryMaker* queryMaker() const;
+        Collections::QueryMaker* queryMaker() const;
 
         bool operator<( const CollectionTreeItem& other ) const;
 

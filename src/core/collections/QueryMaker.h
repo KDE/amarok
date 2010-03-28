@@ -25,6 +25,8 @@
 #include <QStringList>
 #include <QtGlobal>
 
+namespace Collections {
+
 class AMAROK_EXPORT QueryMaker : public QObject
 {
     Q_OBJECT
@@ -213,6 +215,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
         void queryDone();
 };
+
+} //namespace Collections
 
 #endif /* AMAROK_COLLECTION_QUERYMAKER_H */
 

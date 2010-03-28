@@ -120,10 +120,10 @@ CoverManager::CoverManager()
     m_items.append( item );
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Artist );
-    qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+    qm->setQueryType( Collections::QueryMaker::Artist );
+    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
@@ -359,9 +359,9 @@ CoverManager::slotArtistSelected() //SLOT
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
 
-    QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Album );
+    qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
 
     qm->beginOr();
@@ -612,7 +612,7 @@ void
 CoverManager::playSelectedAlbums()
 {
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = coll->queryMaker();
     foreach( CoverViewItem *item, selectedItems() )
     {
         qm->addMatch( item->albumPtr() );

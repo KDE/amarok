@@ -24,6 +24,8 @@
 
 #include <QString>
 
+namespace Collections {
+
 class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
 {
     Q_OBJECT
@@ -34,5 +36,7 @@ class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
 
         virtual void init();
 };
+
+} //namespace Collections
 
 #endif

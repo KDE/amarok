@@ -25,7 +25,7 @@
 
 using namespace Capabilities;
 
-MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( MediaDeviceCollection *coll )
+MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( Collections::MediaDeviceCollection *coll )
     : CollectionCapability()
     ,  m_coll( coll )
 {

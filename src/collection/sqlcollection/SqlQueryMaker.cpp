@@ -31,7 +31,7 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-using namespace Meta;
+using namespace Collections;
 
 class SqlWorkerThread : public ThreadWeaver::Job
 {
@@ -263,7 +263,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->linkedTables |= Private::COMPOSER_TAB;
             d->linkedTables |= Private::YEAR_TAB;
             d->linkedTables |= Private::STATISTICS_TAB;
-            d->queryReturnValues = SqlTrack::getTrackReturnValues();
+            d->queryReturnValues = Meta::SqlTrack::getTrackReturnValues();
         }
         return this;
 
@@ -353,7 +353,7 @@ SqlQueryMaker::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const TrackPtr &track )
+SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     QString url = track->uidUrl();
     KUrl kurl( url );
@@ -381,7 +381,7 @@ SqlQueryMaker::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const ArtistPtr &artist )
+SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
     d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
@@ -389,12 +389,12 @@ SqlQueryMaker::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const AlbumPtr &album )
+SqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
     d->queryMatch += QString( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
-    ArtistPtr albumArtist = album->albumArtist();
+    Meta::ArtistPtr albumArtist = album->albumArtist();
     if( albumArtist )
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
@@ -408,7 +408,7 @@ SqlQueryMaker::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const GenrePtr &genre )
+SqlQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
     d->queryMatch += QString( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
@@ -416,7 +416,7 @@ SqlQueryMaker::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const ComposerPtr &composer )
+SqlQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
     d->queryMatch += QString( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
@@ -424,7 +424,7 @@ SqlQueryMaker::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const YearPtr &year )
+SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
     d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
@@ -432,9 +432,9 @@ SqlQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const DataPtr &data )
+SqlQueryMaker::addMatch( const Meta::DataPtr &data )
 {
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 
@@ -878,76 +878,76 @@ SqlQueryMaker::nameForValue( qint64 value )
 {
     switch( value )
     {
-        case valUrl:
+        case Meta::valUrl:
             d->linkedTables |= Private::URLS_TAB;
             return "urls.rpath";  //TODO figure out how to handle deviceid
-        case valTitle:
+        case Meta::valTitle:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.title";
-        case valArtist:
+        case Meta::valArtist:
             d->linkedTables |= Private::ARTIST_TAB;
             return "artists.name";
-        case valAlbum:
+        case Meta::valAlbum:
             d->linkedTables |= Private::ALBUM_TAB;
             return "albums.name";
-        case valGenre:
+        case Meta::valGenre:
             d->linkedTables |= Private::GENRE_TAB;
             return "genres.name";
-        case valComposer:
+        case Meta::valComposer:
             d->linkedTables |= Private::COMPOSER_TAB;
             return "composers.name";
-        case valYear:
+        case Meta::valYear:
             d->linkedTables |= Private::YEAR_TAB;
             return "years.name";
-        case valBpm:
+        case Meta::valBpm:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.bpm";
-        case valComment:
+        case Meta::valComment:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.comment";
-        case valTrackNr:
+        case Meta::valTrackNr:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.tracknumber";
-        case valDiscNr:
+        case Meta::valDiscNr:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.discnumber";
-        case valLength:
+        case Meta::valLength:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.length";
-        case valBitrate:
+        case Meta::valBitrate:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.bitrate";
-        case valSamplerate:
+        case Meta::valSamplerate:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.samplerate";
-        case valFilesize:
+        case Meta::valFilesize:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.filesize";
-        case valFormat:
+        case Meta::valFormat:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.filetype";
-        case valCreateDate:
+        case Meta::valCreateDate:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.createdate";
-        case valScore:
+        case Meta::valScore:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.score";
-        case valRating:
+        case Meta::valRating:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.rating";
-        case valFirstPlayed:
+        case Meta::valFirstPlayed:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.createdate";
-        case valLastPlayed:
+        case Meta::valLastPlayed:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.accessdate";
-        case valPlaycount:
+        case Meta::valPlaycount:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcount";
-        case valUniqueId:
+        case Meta::valUniqueId:
             d->linkedTables |= Private::URLS_TAB;
             return "urls.uniqueid";
-        case valAlbumArtist:
+        case Meta::valAlbumArtist:
             d->linkedTables |= Private::ALBUMARTIST_TAB;
             //albumartist_tab means that the artist table is joined to the albums table
             //so add albums as well

@@ -25,9 +25,7 @@
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 
-using namespace Meta;
-
-SqlRegistry::SqlRegistry( SqlCollection* collection )
+SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     : QObject( 0 )
     , m_collection( collection )
     , m_storage( 0 )
@@ -47,7 +45,7 @@ SqlRegistry::~SqlRegistry()
 }
 
 
-TrackPtr
+Meta::TrackPtr
 SqlRegistry::getTrack( const QString &url )
 {
     int deviceid = m_collection->mountPointManager()->getIdForUrl( url );
@@ -59,17 +57,17 @@ SqlRegistry::getTrack( const QString &url )
         return m_trackMap.value( id );
     else
     {
-        TrackPtr track = SqlTrack::getTrack( deviceid, rpath, m_collection );
+        Meta::TrackPtr track = Meta::SqlTrack::getTrack( deviceid, rpath, m_collection );
         if( track )
         {
             m_trackMap.insert( id, track );
-            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
+            m_uidMap.insert( KSharedPtr<Meta::SqlTrack>::staticCast( track )->uidUrl(), track );
         }
         return track;
     }
 }
 
-TrackPtr
+Meta::TrackPtr
 SqlRegistry::getTrack( const QStringList &rowData )
 {
     TrackId id( rowData[0].toInt(), rowData[1] );
@@ -82,13 +80,13 @@ SqlRegistry::getTrack( const QStringList &rowData )
         return m_uidMap.value( uid );
     else
     {
-        SqlTrack *sqlTrack =  new SqlTrack( m_collection, rowData );
+        Meta::SqlTrack *sqlTrack =  new Meta::SqlTrack( m_collection, rowData );
         sqlTrack->setCapabilityDelegate( createTrackDelegate() );
-        TrackPtr track( sqlTrack );
+        Meta::TrackPtr track( sqlTrack );
         if( track )
         {
             m_trackMap.insert( id, track );
-            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
+            m_uidMap.insert( KSharedPtr<Meta::SqlTrack>::staticCast( track )->uidUrl(), track );
 
         }
         return track;
@@ -105,7 +103,7 @@ SqlRegistry::updateCachedUrl( const QPair<QString, QString> &oldnew )
     TrackId id(deviceid, rpath);
     if( m_trackMap.contains( id ) )
     {
-        TrackPtr track = m_trackMap[id];
+        Meta::TrackPtr track = m_trackMap[id];
         m_trackMap.remove( id );
         int newdeviceid = m_collection->mountPointManager()->getIdForUrl( oldnew.second );
         QString newrpath = m_collection->mountPointManager()->getRelativePath( newdeviceid, oldnew.second );
@@ -121,13 +119,13 @@ SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
     QMutexLocker locker2( &m_uidMutex );
     if( m_uidMap.contains( oldUid ) )
     {
-        TrackPtr track = m_uidMap[oldUid];
+        Meta::TrackPtr track = m_uidMap[oldUid];
         m_uidMap.remove( oldUid );
         m_uidMap.insert( newUid, track );
     }
 }
 
-TrackPtr
+Meta::TrackPtr
 SqlRegistry::getTrackFromUid( const QString &uid )
 {
     QMutexLocker locker( &m_trackMutex );
@@ -137,11 +135,11 @@ SqlRegistry::getTrackFromUid( const QString &uid )
     else
     {
 
-        TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
+        Meta::TrackPtr track( Meta::SqlTrack::getTrackFromUid( uid, m_collection ) );
         if( track )
         {
             //we need to ensure that this track has a capability delegate or not much will work for tracks loaded from a playlist.
-            SqlTrack * sqlTrack = dynamic_cast<SqlTrack *>( track.data() );
+            Meta::SqlTrack * sqlTrack = dynamic_cast<Meta::SqlTrack *>( track.data() );
             if( sqlTrack )
                 sqlTrack->setCapabilityDelegate( createTrackDelegate() );
 
@@ -164,7 +162,7 @@ SqlRegistry::checkUidExists( const QString &uid )
     return false;
 }
 
-ArtistPtr
+Meta::ArtistPtr
 SqlRegistry::getArtist( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_artistMutex );
@@ -190,19 +188,19 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
         if( m_artistMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( m_collection, id, name );
             return m_artistMap.value( id );
         }
 
-        SqlArtist *sqlArtist = new SqlArtist( m_collection, id, name );
+        Meta::SqlArtist *sqlArtist = new Meta::SqlArtist( m_collection, id, name );
         sqlArtist->setCapabilityDelegate( createArtistDelegate() );
-        ArtistPtr artist( sqlArtist );
+        Meta::ArtistPtr artist( sqlArtist );
         m_artistMap.insert( id, artist );
         return artist;
     }
 }
 
-GenrePtr
+Meta::GenrePtr
 SqlRegistry::getGenre( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_genreMutex );
@@ -228,17 +226,17 @@ SqlRegistry::getGenre( const QString &name, int id, bool refresh )
         if( m_genreMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( m_collection, id, name );
             return m_genreMap.value( id );
         }
 
-        GenrePtr genre( new SqlGenre( m_collection, id, name ) );
+        Meta::GenrePtr genre( new Meta::SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( id, genre );
         return genre;
     }
 }
 
-ComposerPtr
+Meta::ComposerPtr
 SqlRegistry::getComposer( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_composerMutex );
@@ -264,17 +262,17 @@ SqlRegistry::getComposer( const QString &name, int id, bool refresh )
         if( m_composerMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( m_collection, id, name );
             return m_composerMap.value( id );
         }
 
-        ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
+        Meta::ComposerPtr composer( new Meta::SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( id, composer );
         return composer;
     }
 }
 
-YearPtr
+Meta::YearPtr
 SqlRegistry::getYear( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_yearMutex );
@@ -300,17 +298,17 @@ SqlRegistry::getYear( const QString &name, int id, bool refresh )
         if( m_yearMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( m_collection, id, name );
             return m_yearMap.value( id );
         }
 
-        YearPtr year( new SqlYear( m_collection, id, name ) );
+        Meta::YearPtr year( new Meta::SqlYear( m_collection, id, name ) );
         m_yearMap.insert( id, year );
         return year;
     }
 }
 
-AlbumPtr
+Meta::AlbumPtr
 SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
 {
     QMutexLocker locker( &m_albumMutex );
@@ -344,13 +342,13 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
         if( m_albumMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( m_collection, id, name, artist );
+                KSharedPtr<Meta::SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( m_collection, id, name, artist );
             return m_albumMap.value( id );
         }
 
-        SqlAlbum *sqlAlbum = new SqlAlbum( m_collection, id, name, artist );
+        Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artist );
         sqlAlbum->setCapabilityDelegate( createAlbumDelegate() );
-        AlbumPtr album( sqlAlbum );
+        Meta::AlbumPtr album( sqlAlbum );
         m_albumMap.insert( id, album );
         return album;
     }
@@ -378,11 +376,11 @@ SqlRegistry::emptyCache()
         for( QMutableHashIterator<int,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
 
-        foreachInvalidateCache( AlbumPtr, KSharedPtr<SqlAlbum>, m_albumMap );
-        foreachInvalidateCache( ArtistPtr, KSharedPtr<SqlArtist>, m_artistMap );
-        foreachInvalidateCache( GenrePtr, KSharedPtr<SqlGenre>, m_genreMap );
-        foreachInvalidateCache( ComposerPtr, KSharedPtr<SqlComposer>, m_composerMap );
-        foreachInvalidateCache( YearPtr, KSharedPtr<SqlYear>, m_yearMap );
+        foreachInvalidateCache( Meta::AlbumPtr, KSharedPtr<Meta::SqlAlbum>, m_albumMap );
+        foreachInvalidateCache( Meta::ArtistPtr, KSharedPtr<Meta::SqlArtist>, m_artistMap );
+        foreachInvalidateCache( Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
+        foreachInvalidateCache( Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
+        foreachInvalidateCache( Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map (except for m_trackMap, where
@@ -395,14 +393,14 @@ SqlRegistry::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackId, TrackPtr, 3, m_trackMap )
-        foreachCollectGarbage( QString, TrackPtr, 2, m_uidMap )
+        foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap )
+        foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( int, AlbumPtr, 2, m_albumMap )
-        foreachCollectGarbage( int, ArtistPtr, 2, m_artistMap )
-        foreachCollectGarbage( int, GenrePtr, 2, m_genreMap )
-        foreachCollectGarbage( int, ComposerPtr, 2, m_composerMap )
-        foreachCollectGarbage( int, YearPtr, 2, m_yearMap )
+        foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap )
+        foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap )
+        foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap )
+        foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap )
+        foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap )
     }
 
     //make sure to unlock all necessary locks
@@ -417,19 +415,19 @@ SqlRegistry::emptyCache()
     if( hasUid ) m_uidMutex.unlock();
 }
 
-AlbumCapabilityDelegate*
+Capabilities::AlbumCapabilityDelegate*
 SqlRegistry::createAlbumDelegate() const
 {
     return 0;
 }
 
-ArtistCapabilityDelegate*
+Capabilities::ArtistCapabilityDelegate*
 SqlRegistry::createArtistDelegate() const
 {
     return 0;
 }
 
-TrackCapabilityDelegate*
+Capabilities::TrackCapabilityDelegate*
 SqlRegistry::createTrackDelegate() const
 {
     return 0;

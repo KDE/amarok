@@ -147,7 +147,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Trac
         }
 
         virtual void finishedPlaying( double playedFraction ) { Q_UNUSED( playedFraction ); }
-        virtual void addMatchTo( QueryMaker* qm ) { Q_UNUSED( qm ); }
+        virtual void addMatchTo( Collections::QueryMaker* qm ) { Q_UNUSED( qm ); }
         virtual bool inCollection() const { return false; }
         virtual QString cachedLyrics() const { return QString(); }
         virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); }

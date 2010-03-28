@@ -29,9 +29,9 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 
-using namespace ProxyCollection;
+using namespace Collections;
 
-ProxyQueryMaker::ProxyQueryMaker( ProxyCollection::Collection *collection, const QList<QueryMaker*> &queryMakers )
+ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<QueryMaker*> &queryMakers )
     : QueryMaker()
     , m_collection( collection )
     , m_builders( queryMakers )
@@ -425,7 +425,7 @@ ProxyQueryMaker::handleResult()
         {
             QStringList result;
             Meta::TrackList tracks;
-            foreach( KSharedPtr<ProxyCollection::Track> track, m_tracks )
+            foreach( KSharedPtr<Meta::ProxyTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -470,7 +470,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
-            foreach( KSharedPtr<ProxyCollection::Track> track, m_tracks )
+            foreach( KSharedPtr<Meta::ProxyTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -489,7 +489,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Album :
         {
             Meta::AlbumList albums;
-            foreach( KSharedPtr<ProxyCollection::Album> album, m_albums )
+            foreach( KSharedPtr<Meta::ProxyAlbum> album, m_albums )
             {
                 albums.append( Meta::AlbumPtr::staticCast( album ) );
             }
@@ -502,7 +502,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Artist :
         {
             Meta::ArtistList artists;
-            foreach( KSharedPtr<ProxyCollection::Artist> artist, m_artists )
+            foreach( KSharedPtr<Meta::ProxyArtist> artist, m_artists )
             {
                 artists.append( Meta::ArtistPtr::staticCast( artist ) );
             }
@@ -514,7 +514,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( KSharedPtr<ProxyCollection::Composer> composer, m_composers )
+            foreach( KSharedPtr<Meta::ProxyComposer> composer, m_composers )
             {
                 composers.append( Meta::ComposerPtr::staticCast( composer ) );
             }
@@ -527,7 +527,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( KSharedPtr<ProxyCollection::Genre> genre, m_genres )
+            foreach( KSharedPtr<Meta::ProxyGenre> genre, m_genres )
             {
                 genres.append( Meta::GenrePtr::staticCast( genre ) );
             }
@@ -540,7 +540,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Year :
         {
             Meta::YearList years;
-            foreach( KSharedPtr<ProxyCollection::Year> year, m_years )
+            foreach( KSharedPtr<Meta::ProxyYear> year, m_years )
             {
                 years.append( Meta::YearPtr::staticCast( year ) );
             }
@@ -573,7 +573,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Tr
 
     foreach( const Meta::TrackPtr &track, tracks )
     {
-        m_tracks.insert( KSharedPtr<ProxyCollection::Track>( m_collection->getTrack( track ) ) );
+        m_tracks.insert( KSharedPtr<Meta::ProxyTrack>( m_collection->getTrack( track ) ) );
     }
 }
 
@@ -584,7 +584,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ar
 
     foreach( const Meta::ArtistPtr &artist, artists )
     {
-        m_artists.insert( KSharedPtr<ProxyCollection::Artist>( m_collection->getArtist( artist ) ) );
+        m_artists.insert( KSharedPtr<Meta::ProxyArtist>( m_collection->getArtist( artist ) ) );
     }
 }
 
@@ -595,7 +595,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Al
 
     foreach( const Meta::AlbumPtr &album, albums )
     {
-        m_albums.insert( KSharedPtr<ProxyCollection::Album>( m_collection->getAlbum( album ) ) );
+        m_albums.insert( KSharedPtr<Meta::ProxyAlbum>( m_collection->getAlbum( album ) ) );
     }
 }
 
@@ -606,7 +606,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ge
 
     foreach( const Meta::GenrePtr &genre, genres )
     {
-        m_genres.insert( KSharedPtr<ProxyCollection::Genre>( m_collection->getGenre( genre ) ) );
+        m_genres.insert( KSharedPtr<Meta::ProxyGenre>( m_collection->getGenre( genre ) ) );
     }
 }
 
@@ -617,7 +617,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Co
 
     foreach( const Meta::ComposerPtr &composer, composers )
     {
-        m_composers.insert( KSharedPtr<ProxyCollection::Composer>( m_collection->getComposer( composer ) ) );
+        m_composers.insert( KSharedPtr<Meta::ProxyComposer>( m_collection->getComposer( composer ) ) );
     }
 }
 
@@ -628,7 +628,7 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ye
 
     foreach( const Meta::YearPtr &year, years )
     {
-        m_years.insert( KSharedPtr<ProxyCollection::Year>( m_collection->getYear( year ) ) );
+        m_years.insert( KSharedPtr<Meta::ProxyYear>( m_collection->getYear( year ) ) );
     }
 }
 

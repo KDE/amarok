@@ -23,6 +23,8 @@
 #include <QList>
 #include <QMutex>
 
+namespace Collections {
+
 class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
 {
     Q_OBJECT
@@ -80,5 +82,7 @@ class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
         QMutex m_queryDoneCountMutex;
 
 };
+
+} //namespace Collections
 
 #endif /* COLLECTION_METAQUERYMAKER_H */

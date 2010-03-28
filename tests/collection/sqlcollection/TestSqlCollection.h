@@ -21,9 +21,12 @@
 
 #include <KTempDir>
 
-class SqlCollection;
 class SqlMountPointManagerMock;
 class SqlStorage;
+
+namespace Collections {
+    class SqlCollection;
+}
 
 class TestSqlCollection : public QObject
 {
@@ -42,7 +45,7 @@ private slots:
     void testDeviceRemovedWithoutTracks();
 
 private:
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpmMock;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;

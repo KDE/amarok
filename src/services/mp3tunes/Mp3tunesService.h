@@ -123,7 +123,7 @@ private:
     bool m_authenticationFailed;
     QString m_sessionId; // the mp3tunes sid
 
-    Mp3tunesServiceCollection *  m_collection;
+    Collections::Mp3tunesServiceCollection *  m_collection;
     Mp3tunesLoginWorker * m_loginWorker; // used to see if logging in has completed
     Mp3tunesLocker * m_locker; // the actual locker
     Mp3tunesHarmonyHandler * m_harmony;

@@ -26,10 +26,7 @@
 #include <QFileInfo>
 #include <QListIterator>
 
-
-using namespace Meta;
-
-ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
+ScanResultProcessor::ScanResultProcessor( Collections::SqlCollection *collection )
     : m_collection( collection )
     , m_storage( 0 )
     , m_setupComplete( false )
@@ -322,12 +319,12 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     QString album;
     bool multipleAlbums = false;
     if( !data.isEmpty() )
-        album = data[0].value( Field::ALBUM ).toString();
+        album = data[0].value( Meta::Field::ALBUM ).toString();
 
     foreach( const QVariantMap &row, data )
     {
-        artists.insert( row.value( Field::ARTIST ).toString() );
-        if( row.value( Field::ALBUM ).toString() != album )
+        artists.insert( row.value( Meta::Field::ARTIST ).toString() );
+        if( row.value( Meta::Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
 
@@ -335,18 +332,18 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     {
         foreach( const QVariantMap &row, data )
         {
-            QString uid = row.value( Field::UNIQUEID ).toString();
+            QString uid = row.value( Meta::Field::UNIQUEID ).toString();
             if( m_uidsSeenThisScan.contains( uid ) )
             {
                 QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
                                              m_urlsHashByUid[uid] != 0 ) ?
                                              m_collection->mountPointManager()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
                 debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
-                           "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
+                           "file is at " << row.value( Meta::Field::URL ).toString() << ", original file is at " << originalLocation;
             }
             else
             {
-                int artist = genericId( &m_artists, row.value( Field::ARTIST ).toString(), &m_nextArtistNum );
+                int artist = genericId( &m_artists, row.value( Meta::Field::ARTIST ).toString(), &m_nextArtistNum );
                 //debug() << "artist found = " << artist;
                 addTrack( row, artist );
                 m_uidsSeenThisScan.insert( uid );
@@ -364,14 +361,14 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         //debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
         {
-            QString uid = row.value( Field::UNIQUEID ).toString();
+            QString uid = row.value( Meta::Field::UNIQUEID ).toString();
             if( m_uidsSeenThisScan.contains( uid ) )
             {
                 QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
                                              m_urlsHashByUid[uid] != 0 ) ?
                                              m_collection->mountPointManager()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
                 debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
-                           "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
+                           "file is at " << row.value( Meta::Field::URL ).toString() << ", original file is at " << originalLocation;
             }
             else
             {
@@ -424,10 +421,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
-    QString albumName = trackData.value( Field::ALBUM ).toString();
+    QString albumName = trackData.value( Meta::Field::ALBUM ).toString();
     int album = 0;
 
-    QString path = trackData.value( Field::URL ).toString();
+    QString path = trackData.value( Meta::Field::URL ).toString();
 
     QFileInfo file( path );
 
@@ -451,12 +448,12 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         album = checkExistingAlbums( albumName );
     }
 
-    QString uid = trackData.value( Field::UNIQUEID ).toString();
+    QString uid = trackData.value( Meta::Field::UNIQUEID ).toString();
 
-    int artist = genericId( &m_artists, trackData.value( Field::ARTIST ).toString(), &m_nextArtistNum );
-    int genre = genericId( &m_genres, trackData.value( Field::GENRE ).toString(), &m_nextGenreNum );
-    int composer = genericId( &m_composers, trackData.value( Field::COMPOSER ).toString(), &m_nextComposerNum );
-    int year = genericId( &m_years, trackData.value( Field::YEAR ).toString(), &m_nextYearNum );
+    int artist = genericId( &m_artists, trackData.value( Meta::Field::ARTIST ).toString(), &m_nextArtistNum );
+    int genre = genericId( &m_genres, trackData.value( Meta::Field::GENRE ).toString(), &m_nextGenreNum );
+    int composer = genericId( &m_composers, trackData.value( Meta::Field::COMPOSER ).toString(), &m_nextComposerNum );
+    int year = genericId( &m_years, trackData.value( Meta::Field::YEAR ).toString(), &m_nextYearNum );
 
     if( !album ) //no compilation
     {
@@ -488,36 +485,36 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( QString::number( genre ) );
     trackList->append( QString::number( composer ) );
     trackList->append( QString::number( year ) );
-    trackList->append( trackData[ Field::TITLE ].toString() );
-    trackList->append( trackData[ Field::COMMENT ].toString() );
-    trackList->append( trackData[ Field::TRACKNUMBER ].toString() );
-    trackList->append( trackData[ Field::DISCNUMBER ].toString() );
-    trackList->append( trackData[ Field::BITRATE ].toString() );
-    trackList->append( trackData[ Field::LENGTH ].toString() );
-    trackList->append( trackData[ Field::SAMPLERATE ].toString() );
-    trackList->append( trackData[ Field::FILESIZE ].toString() );
+    trackList->append( trackData[ Meta::Field::TITLE ].toString() );
+    trackList->append( trackData[ Meta::Field::COMMENT ].toString() );
+    trackList->append( trackData[ Meta::Field::TRACKNUMBER ].toString() );
+    trackList->append( trackData[ Meta::Field::DISCNUMBER ].toString() );
+    trackList->append( trackData[ Meta::Field::BITRATE ].toString() );
+    trackList->append( trackData[ Meta::Field::LENGTH ].toString() );
+    trackList->append( trackData[ Meta::Field::SAMPLERATE ].toString() );
+    trackList->append( trackData[ Meta::Field::FILESIZE ].toString() );
     trackList->append( QString() ); //filetype
-    if( trackData.contains( Field::BPM ) )
-        trackList->append( QString::number( trackData[ Field::BPM ].toDouble() ).replace( ',' , '.' ) );
+    if( trackData.contains( Meta::Field::BPM ) )
+        trackList->append( QString::number( trackData[ Meta::Field::BPM ].toDouble() ).replace( ',' , '.' ) );
     else
         trackList->append( QString() );
     trackList->append( QString::number( created ) );
     trackList->append( QString::number( modified ) );
-    if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
+    if( trackData.contains( Meta::Field::ALBUMGAIN ) && trackData.contains( Meta::Field::ALBUMPEAKGAIN ) )
     {
         //QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
-        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ).replace( ',' , '.' ) );
-        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Meta::Field::ALBUMGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Meta::Field::ALBUMPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
     }
     else
     {
         trackList->append( QString() );
         trackList->append( QString() );
     }
-    if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
+    if( trackData.contains( Meta::Field::TRACKGAIN ) && trackData.contains( Meta::Field::TRACKPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ).replace( ',' , '.' ) );
-        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Meta::Field::TRACKGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Meta::Field::TRACKPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
     }
     else
     {

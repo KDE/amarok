@@ -85,11 +85,11 @@ class MaximumReturnFunction : public CustomReturnFunction
 };
 
 CustomReturnFunction*
-CustomValueFactory::returnFunction( QueryMaker::ReturnFunction function, qint64 value )
+CustomValueFactory::returnFunction( Collections::QueryMaker::ReturnFunction function, qint64 value )
 {
     switch( function )
     {
-        case QueryMaker::Count:
+        case Collections::QueryMaker::Count:
         {
             switch( value )
             {
@@ -122,17 +122,17 @@ CustomValueFactory::returnFunction( QueryMaker::ReturnFunction function, qint64 
                     return 0;
             }
         }
-        case QueryMaker::Sum:
+        case Collections::QueryMaker::Sum:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
             return crv ? new SumReturnFunction( crv ) : 0;
         }
-        case QueryMaker::Min:
+        case Collections::QueryMaker::Min:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
             return crv ? new MinimumReturnFunction( crv ) : 0;
         }
-        case QueryMaker::Max:
+        case Collections::QueryMaker::Max:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
             return crv ? new MaximumReturnFunction( crv ) : 0;

@@ -27,12 +27,17 @@
 #include <QTimer>
 #include <QList>
 
-class SqlCollection;
 class SqlStorage;
-class AlbumCapabilityDelegate;
-class ArtistCapabilityDelegate;
-class TrackCapabilityDelegate;
 
+namespace Capabilities {
+    class AlbumCapabilityDelegate;
+    class ArtistCapabilityDelegate;
+    class TrackCapabilityDelegate;
+}
+
+namespace Collections {
+    class SqlCollection;
+}
 typedef QPair<int, QString> TrackId;
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
@@ -40,7 +45,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
     Q_OBJECT
 
     public:
-        SqlRegistry(SqlCollection *collection);
+        SqlRegistry(Collections::SqlCollection *collection);
         virtual ~SqlRegistry();
 
         Meta::TrackPtr getTrack( const QString &url );
@@ -60,9 +65,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
 
     protected:
-        virtual AlbumCapabilityDelegate *createAlbumDelegate() const;
-        virtual ArtistCapabilityDelegate *createArtistDelegate() const;
-        virtual TrackCapabilityDelegate *createTrackDelegate() const;
+        virtual Capabilities::AlbumCapabilityDelegate *createAlbumDelegate() const;
+        virtual Capabilities::ArtistCapabilityDelegate *createArtistDelegate() const;
+        virtual Capabilities::TrackCapabilityDelegate *createTrackDelegate() const;
 
     private slots:
         void emptyCache();
@@ -88,7 +93,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 
         QTimer *m_timer;
 
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
         SqlStorage *m_storage;
 };
 

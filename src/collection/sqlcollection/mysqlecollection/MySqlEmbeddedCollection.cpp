@@ -23,6 +23,8 @@
 
 #include <KLocale>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
 
 void

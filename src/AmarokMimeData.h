@@ -69,9 +69,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void setPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes );
         void addPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes );
 
-        QList<QueryMaker*> queryMakers();
-        void addQueryMaker( QueryMaker *queryMaker );
-        void setQueryMakers( const QList<QueryMaker*> &queryMakers );
+        QList<Collections::QueryMaker*> queryMakers();
+        void addQueryMaker( Collections::QueryMaker *queryMaker );
+        void setQueryMakers( const QList<Collections::QueryMaker*> &queryMakers );
 
         BookmarkList bookmarks() const;
         void setBookmarks( const BookmarkList &bookmarks );

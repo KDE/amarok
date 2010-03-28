@@ -286,7 +286,7 @@ LastFmService::init()
     m_weeklyTopBiasFactory = new Dynamic::WeeklyTopBiasFactory();
     Dynamic::CustomBias::registerNewBiasFactory( m_weeklyTopBiasFactory );
 
-    m_collection = new LastFmServiceCollection( m_userName );
+    m_collection = new Collections::LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
 

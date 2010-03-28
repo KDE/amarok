@@ -62,7 +62,7 @@ namespace FilterFactory
         return result;
     }
 
-    MemoryFilter* numberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+    MemoryFilter* numberFilter( qint64 value, qint64 filter, Collections::QueryMaker::NumberComparison compare )
     {
         NumberMemoryFilter *result = 0;
         switch( value )
@@ -393,7 +393,7 @@ CommentMemoryFilter::value( const Meta::TrackPtr &track ) const
 NumberMemoryFilter::NumberMemoryFilter()
     : MemoryFilter()
     , m_filter( 0 )
-    , m_compare( QueryMaker::Equals )
+    , m_compare( Collections::QueryMaker::Equals )
 {
 }
 
@@ -402,7 +402,7 @@ NumberMemoryFilter::~NumberMemoryFilter()
 }
 
 void
-NumberMemoryFilter::setFilter( qint64 filter, QueryMaker::NumberComparison compare )
+NumberMemoryFilter::setFilter( qint64 filter, Collections::QueryMaker::NumberComparison compare )
 {
     m_filter = filter;
     m_compare = compare;
@@ -414,11 +414,11 @@ NumberMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
     qint64 currentValue = value( track );
     switch( m_compare )
     {
-        case QueryMaker::Equals:
+        case Collections::QueryMaker::Equals:
             return currentValue == m_filter;
-        case QueryMaker::GreaterThan:
+        case Collections::QueryMaker::GreaterThan:
             return currentValue > m_filter;
-        case QueryMaker::LessThan:
+        case Collections::QueryMaker::LessThan:
             return currentValue < m_filter;
     }
     return false;

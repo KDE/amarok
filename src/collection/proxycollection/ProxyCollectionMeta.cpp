@@ -31,13 +31,15 @@
 #include <QSet>
 #include <QTimer>
 
+namespace Capabilities {
+
 #define FORWARD( call ) { foreach( Capabilities::EditCapability *ec, m_ec ) { ec->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) ); }
 
 class ProxyEditCapability : public Capabilities::EditCapability
 {
 public:
-    ProxyEditCapability( ProxyCollection::Collection *coll, const QList<Capabilities::EditCapability*> &ecs )
+    ProxyEditCapability( Collections::ProxyCollection *coll, const QList<Capabilities::EditCapability*> &ecs )
         : Capabilities::EditCapability()
         , m_batchMode( false )
         , m_collection( coll )
@@ -81,13 +83,17 @@ public:
     }
 private:
     bool m_batchMode;
-    ProxyCollection::Collection *m_collection;
+    Collections::ProxyCollection *m_collection;
     QList<Capabilities::EditCapability*> m_ec;
 };
 
 #undef FORWARD
 
-ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::TrackPtr &track )
+}
+
+namespace Meta {
+
+ProxyTrack::ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track )
         : Meta::Track()
         , Meta::Observer()
         , m_collection( coll )
@@ -113,24 +119,24 @@ ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::Tr
         m_year = Meta::YearPtr( m_collection->getYear( track->year() ) );
 }
 
-ProxyCollection::Track::~Track()
+ProxyTrack::~ProxyTrack()
 {
 }
 
 QString
-ProxyCollection::Track::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyCollection::Track::prettyName() const
+ProxyTrack::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Track::sortableName() const
+ProxyTrack::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyTrack::sortableName() const
 {
     if( !m_tracks.isEmpty() )
         return m_tracks.first()->sortableName();
@@ -139,7 +145,7 @@ ProxyCollection::Track::sortableName() const
 }
 
 KUrl
-ProxyCollection::Track::playableUrl() const
+ProxyTrack::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -167,7 +173,7 @@ ProxyCollection::Track::playableUrl() const
 }
 
 QString
-ProxyCollection::Track::prettyUrl() const
+ProxyTrack::prettyUrl() const
 {
     if( m_tracks.count() == 1 )
     {
@@ -180,7 +186,7 @@ ProxyCollection::Track::prettyUrl() const
 }
 
 QString
-ProxyCollection::Track::uidUrl() const
+ProxyTrack::uidUrl() const
 {
     //this is where it gets interesting
     //a uidUrl for a proxyTrack probably has to be generated
@@ -190,7 +196,7 @@ ProxyCollection::Track::uidUrl() const
 }
 
 bool
-ProxyCollection::Track::isPlayable() const
+ProxyTrack::isPlayable() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -201,37 +207,37 @@ ProxyCollection::Track::isPlayable() const
 }
 
 Meta::AlbumPtr
-ProxyCollection::Track::album() const
+ProxyTrack::album() const
 {
     return m_album;
 }
 
 Meta::ArtistPtr
-ProxyCollection::Track::artist() const
+ProxyTrack::artist() const
 {
     return m_artist;
 }
 
 Meta::ComposerPtr
-ProxyCollection::Track::composer() const
+ProxyTrack::composer() const
 {
     return m_composer;
 }
 
 Meta::GenrePtr
-ProxyCollection::Track::genre() const
+ProxyTrack::genre() const
 {
     return m_genre;
 }
 
 Meta::YearPtr
-ProxyCollection::Track::year() const
+ProxyTrack::year() const
 {
     return m_year;
 }
 
 QString
-ProxyCollection::Track::comment() const
+ProxyTrack::comment() const
 {
     //try to return something sensible here...
     //do not show a comment if the internal tracks disagree about the comment
@@ -251,7 +257,7 @@ ProxyCollection::Track::comment() const
 }
 
 qreal
-ProxyCollection::Track::bpm() const
+ProxyTrack::bpm() const
 {
     //Similar to comment(), try to return something sensible here...
     //do not show a common bpm value if the internal tracks disagree about the bpm
@@ -271,7 +277,7 @@ ProxyCollection::Track::bpm() const
 }
 
 double
-ProxyCollection::Track::score() const
+ProxyTrack::score() const
 {
     //again, multiple ways to implement this method:
     //return the maximum score, the minimum score, the average
@@ -294,7 +300,7 @@ ProxyCollection::Track::score() const
 }
 
 void
-ProxyCollection::Track::setScore( double newScore )
+ProxyTrack::setScore( double newScore )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -303,7 +309,7 @@ ProxyCollection::Track::setScore( double newScore )
 }
 
 int
-ProxyCollection::Track::rating() const
+ProxyTrack::rating() const
 {
     //yay, multiple options again. As this has to be defined by the user, let's take
     //the maximum here.
@@ -317,7 +323,7 @@ ProxyCollection::Track::rating() const
 }
 
 void
-ProxyCollection::Track::setRating( int newRating )
+ProxyTrack::setRating( int newRating )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -326,7 +332,7 @@ ProxyCollection::Track::setRating( int newRating )
 }
 
 uint
-ProxyCollection::Track::firstPlayed() const
+ProxyTrack::firstPlayed() const
 {
     uint result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -344,7 +350,7 @@ ProxyCollection::Track::firstPlayed() const
 }
 
 uint
-ProxyCollection::Track::lastPlayed() const
+ProxyTrack::lastPlayed() const
 {
     uint result = 0;
     //return the latest timestamp. Easier than firstPlayed because we do not have to
@@ -361,7 +367,7 @@ ProxyCollection::Track::lastPlayed() const
 }
 
 int
-ProxyCollection::Track::playCount() const
+ProxyTrack::playCount() const
 {
     //hm, there are two ways to implement this:
     //show the sum of all play counts, or show the maximum of all play counts.
@@ -377,7 +383,7 @@ ProxyCollection::Track::playCount() const
 }
 
 void
-ProxyCollection::Track::finishedPlaying( double playedFraction )
+ProxyTrack::finishedPlaying( double playedFraction )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -386,7 +392,7 @@ ProxyCollection::Track::finishedPlaying( double playedFraction )
 }
 
 qint64
-ProxyCollection::Track::length() const
+ProxyTrack::length() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -397,7 +403,7 @@ ProxyCollection::Track::length() const
 }
 
 int
-ProxyCollection::Track::filesize() const
+ProxyTrack::filesize() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -410,7 +416,7 @@ ProxyCollection::Track::filesize() const
 }
 
 int
-ProxyCollection::Track::sampleRate() const
+ProxyTrack::sampleRate() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -421,7 +427,7 @@ ProxyCollection::Track::sampleRate() const
 }
 
 int
-ProxyCollection::Track::bitrate() const
+ProxyTrack::bitrate() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -432,7 +438,7 @@ ProxyCollection::Track::bitrate() const
 }
 
 QDateTime
-ProxyCollection::Track::createDate() const
+ProxyTrack::createDate() const
 {
     QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -450,7 +456,7 @@ ProxyCollection::Track::createDate() const
 }
 
 int
-ProxyCollection::Track::trackNumber() const
+ProxyTrack::trackNumber() const
 {
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -469,7 +475,7 @@ ProxyCollection::Track::trackNumber() const
 }
 
 int
-ProxyCollection::Track::discNumber() const
+ProxyTrack::discNumber() const
 {
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -488,7 +494,7 @@ ProxyCollection::Track::discNumber() const
 }
 
 QString
-ProxyCollection::Track::type() const
+ProxyTrack::type() const
 {
     if( m_tracks.size() == 1 )
     {
@@ -502,13 +508,13 @@ ProxyCollection::Track::type() const
 }
 
 Collections::Collection*
-ProxyCollection::Track::collection() const
+ProxyTrack::collection() const
 {
     return m_collection;
 }
 
 bool
-ProxyCollection::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+ProxyTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( m_tracks.count() == 1 )
     {
@@ -518,7 +524,7 @@ ProxyCollection::Track::hasCapabilityInterface( Capabilities::Capability::Type t
     else
     {
         //if there is more than one track, check all tracks for the given
-        //capability if and only if ProxyCollection::Track supports it as well
+        //capability if and only if ProxyTrack supports it as well
 
         //as there are no supported capabilities yet...
         switch( type )
@@ -539,7 +545,7 @@ ProxyCollection::Track::hasCapabilityInterface( Capabilities::Capability::Type t
 }
 
 Capabilities::Capability*
-ProxyCollection::Track::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_tracks.count() == 1 )
     {
@@ -564,7 +570,7 @@ ProxyCollection::Track::createCapabilityInterface( Capabilities::Capability::Typ
                         return 0;
                     }
                 }
-                return new ProxyEditCapability( m_collection, ecs );
+                return new Capabilities::ProxyEditCapability( m_collection, ecs );
             }
         default:
             return 0;
@@ -574,7 +580,7 @@ ProxyCollection::Track::createCapabilityInterface( Capabilities::Capability::Typ
 
 
 void
-ProxyCollection::Track::add( const Meta::TrackPtr &track )
+ProxyTrack::add( const Meta::TrackPtr &track )
 {
     if( !track || m_tracks.contains( track ) )
         return;
@@ -586,7 +592,7 @@ ProxyCollection::Track::add( const Meta::TrackPtr &track )
 }
 
 void
-ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
+ProxyTrack::metadataChanged( Meta::TrackPtr track )
 {
     if( !track )
         return;
@@ -646,7 +652,7 @@ ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
     }
 }
 
-ProxyCollection::Album::Album( ProxyCollection::Collection *coll, Meta::AlbumPtr album )
+ProxyAlbum::ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album )
         : Meta::Album()
         , Meta::Observer()
         , m_collection( coll )
@@ -657,24 +663,24 @@ ProxyCollection::Album::Album( ProxyCollection::Collection *coll, Meta::AlbumPtr
         m_albumArtist = Meta::ArtistPtr( m_collection->getArtist( album->albumArtist() ) );
 }
 
-ProxyCollection::Album::~Album()
+ProxyAlbum::~ProxyAlbum()
 {
 }
 
 QString
-ProxyCollection::Album::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyCollection::Album::prettyName() const
+ProxyAlbum::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Album::sortableName() const
+ProxyAlbum::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyAlbum::sortableName() const
 {
     if( !m_albums.isEmpty() )
         return m_albums.first()->sortableName();
@@ -683,9 +689,9 @@ ProxyCollection::Album::sortableName() const
 }
 
 Meta::TrackList
-ProxyCollection::Album::tracks()
+ProxyAlbum::tracks()
 {
-    QSet<ProxyCollection::Track*> tracks;
+    QSet<ProxyTrack*> tracks;
     foreach( Meta::AlbumPtr album, m_albums )
     {
         Meta::TrackList tmp = album->tracks();
@@ -696,7 +702,7 @@ ProxyCollection::Album::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyCollection::Track *track, tracks )
+    foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -704,25 +710,25 @@ ProxyCollection::Album::tracks()
 }
 
 Meta::ArtistPtr
-ProxyCollection::Album::albumArtist() const
+ProxyAlbum::albumArtist() const
 {
     return m_albumArtist;
 }
 
 bool
-ProxyCollection::Album::isCompilation() const
+ProxyAlbum::isCompilation() const
 {
     return m_albumArtist.isNull();
 }
 
 bool
-ProxyCollection::Album::hasAlbumArtist() const
+ProxyAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
 }
 
 bool
-ProxyCollection::Album::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyAlbum::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_albums.count() == 1 )
@@ -736,7 +742,7 @@ ProxyCollection::Album::hasCapabilityInterface(Capabilities::Capability::Type ty
 }
 
 Capabilities::Capability*
-ProxyCollection::Album::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_albums.count() == 1 )
     {
@@ -749,7 +755,7 @@ ProxyCollection::Album::createCapabilityInterface( Capabilities::Capability::Typ
 }
 
 void
-ProxyCollection::Album::add( Meta::AlbumPtr album )
+ProxyAlbum::add( Meta::AlbumPtr album )
 {
     if( !album || m_albums.contains( album ) )
         return;
@@ -761,7 +767,7 @@ ProxyCollection::Album::add( Meta::AlbumPtr album )
 }
 
 bool
-ProxyCollection::Album::hasImage( int size ) const
+ProxyAlbum::hasImage( int size ) const
 {
     foreach( const Meta::AlbumPtr &album, m_albums )
     {
@@ -772,7 +778,7 @@ ProxyCollection::Album::hasImage( int size ) const
 }
 
 QPixmap
-ProxyCollection::Album::image( int size )
+ProxyAlbum::image( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -785,7 +791,7 @@ ProxyCollection::Album::image( int size )
 }
 
 KUrl
-ProxyCollection::Album::imageLocation( int size )
+ProxyAlbum::imageLocation( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -802,7 +808,7 @@ ProxyCollection::Album::imageLocation( int size )
 }
 
 QPixmap
-ProxyCollection::Album::imageWithBorder( int size, int borderWidth )
+ProxyAlbum::imageWithBorder( int size, int borderWidth )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -815,7 +821,7 @@ ProxyCollection::Album::imageWithBorder( int size, int borderWidth )
 }
 
 bool
-ProxyCollection::Album::canUpdateImage() const
+ProxyAlbum::canUpdateImage() const
 {
     if( m_albums.count() == 0 )
         return false;
@@ -830,7 +836,7 @@ ProxyCollection::Album::canUpdateImage() const
 }
 
 void
-ProxyCollection::Album::setImage( const QPixmap &pixmap )
+ProxyAlbum::setImage( const QPixmap &pixmap )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -839,7 +845,7 @@ ProxyCollection::Album::setImage( const QPixmap &pixmap )
 }
 
 void
-ProxyCollection::Album::removeImage()
+ProxyAlbum::removeImage()
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -848,7 +854,7 @@ ProxyCollection::Album::removeImage()
 }
 
 void
-ProxyCollection::Album::setSuppressImageAutoFetch( bool suppress )
+ProxyAlbum::setSuppressImageAutoFetch( bool suppress )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -857,7 +863,7 @@ ProxyCollection::Album::setSuppressImageAutoFetch( bool suppress )
 }
 
 bool
-ProxyCollection::Album::suppressImageAutoFetch() const
+ProxyAlbum::suppressImageAutoFetch() const
 {
     foreach( const Meta::AlbumPtr &album, m_albums )
     {
@@ -868,7 +874,7 @@ ProxyCollection::Album::suppressImageAutoFetch() const
 }
 
 void
-ProxyCollection::Album::metadataChanged( Meta::AlbumPtr album )
+ProxyAlbum::metadataChanged( Meta::AlbumPtr album )
 {
     if( !album || !m_albums.contains( album ) )
         return;
@@ -900,7 +906,7 @@ ProxyCollection::Album::metadataChanged( Meta::AlbumPtr album )
     notifyObservers();
 }
 
-ProxyCollection::Artist::Artist( ProxyCollection::Collection *coll, Meta::ArtistPtr artist )
+ProxyArtist::ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr artist )
         : Meta::Artist()
         , Meta::Observer()
         , m_collection( coll )
@@ -910,24 +916,24 @@ ProxyCollection::Artist::Artist( ProxyCollection::Collection *coll, Meta::Artist
     subscribeTo( artist );
 }
 
-ProxyCollection::Artist::~Artist()
+ProxyArtist::~ProxyArtist()
 {
 }
 
 QString
-ProxyCollection::Artist::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyCollection::Artist::prettyName() const
+ProxyArtist::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Artist::sortableName() const
+ProxyArtist::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyArtist::sortableName() const
 {
     if( !m_artists.isEmpty() )
         return m_artists.first()->sortableName();
@@ -936,9 +942,9 @@ ProxyCollection::Artist::sortableName() const
 }
 
 Meta::TrackList
-ProxyCollection::Artist::tracks()
+ProxyArtist::tracks()
 {
-    QSet<ProxyCollection::Track*> tracks;
+    QSet<ProxyTrack*> tracks;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
         Meta::TrackList tmp = artist->tracks();
@@ -949,7 +955,7 @@ ProxyCollection::Artist::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyCollection::Track *track, tracks )
+    foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -957,9 +963,9 @@ ProxyCollection::Artist::tracks()
 }
 
 Meta::AlbumList
-ProxyCollection::Artist::albums()
+ProxyArtist::albums()
 {
-    QSet<ProxyCollection::Album*> albums;
+    QSet<ProxyAlbum*> albums;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
         Meta::AlbumList tmp = artist->albums();
@@ -970,7 +976,7 @@ ProxyCollection::Artist::albums()
     }
 
     Meta::AlbumList result;
-    foreach( ProxyCollection::Album *album, albums )
+    foreach( ProxyAlbum *album, albums )
     {
         result.append( Meta::AlbumPtr( album ) );
     }
@@ -978,7 +984,7 @@ ProxyCollection::Artist::albums()
 }
 
 bool
-ProxyCollection::Artist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyArtist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_artists.count() == 1 )
@@ -992,7 +998,7 @@ ProxyCollection::Artist::hasCapabilityInterface(Capabilities::Capability::Type t
 }
 
 Capabilities::Capability*
-ProxyCollection::Artist::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_artists.count() == 1 )
     {
@@ -1005,7 +1011,7 @@ ProxyCollection::Artist::createCapabilityInterface( Capabilities::Capability::Ty
 }
 
 void
-ProxyCollection::Artist::add( Meta::ArtistPtr artist )
+ProxyArtist::add( Meta::ArtistPtr artist )
 {
     if( !artist || m_artists.contains( artist ) )
         return;
@@ -1017,7 +1023,7 @@ ProxyCollection::Artist::add( Meta::ArtistPtr artist )
 }
 
 void
-ProxyCollection::Artist::metadataChanged( Meta::ArtistPtr artist )
+ProxyArtist::metadataChanged( Meta::ArtistPtr artist )
 {
     if( !artist || !m_artists.contains( artist ) )
         return;
@@ -1047,7 +1053,7 @@ ProxyCollection::Artist::metadataChanged( Meta::ArtistPtr artist )
     notifyObservers();
 }
 
-ProxyCollection::Genre::Genre( ProxyCollection::Collection *coll, Meta::GenrePtr genre )
+ProxyGenre::ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre )
         : Meta::Genre()
         , Meta::Observer()
         , m_collection( coll )
@@ -1057,24 +1063,24 @@ ProxyCollection::Genre::Genre( ProxyCollection::Collection *coll, Meta::GenrePtr
     subscribeTo( genre );
 }
 
-ProxyCollection::Genre::~Genre()
+ProxyGenre::~ProxyGenre()
 {
 }
 
 QString
-ProxyCollection::Genre::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyCollection::Genre::prettyName() const
+ProxyGenre::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Genre::sortableName() const
+ProxyGenre::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyGenre::sortableName() const
 {
     if( !m_genres.isEmpty() )
         return m_genres.first()->sortableName();
@@ -1083,9 +1089,9 @@ ProxyCollection::Genre::sortableName() const
 }
 
 Meta::TrackList
-ProxyCollection::Genre::tracks()
+ProxyGenre::tracks()
 {
-    QSet<ProxyCollection::Track*> tracks;
+    QSet<ProxyTrack*> tracks;
     foreach( Meta::GenrePtr genre, m_genres )
     {
         Meta::TrackList tmp = genre->tracks();
@@ -1096,7 +1102,7 @@ ProxyCollection::Genre::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyCollection::Track *track, tracks )
+    foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1104,7 +1110,7 @@ ProxyCollection::Genre::tracks()
 }
 
 bool
-ProxyCollection::Genre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyGenre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_genres.count() == 1 )
@@ -1118,7 +1124,7 @@ ProxyCollection::Genre::hasCapabilityInterface(Capabilities::Capability::Type ty
 }
 
 Capabilities::Capability*
-ProxyCollection::Genre::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyGenre::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_genres.count() == 1 )
     {
@@ -1131,7 +1137,7 @@ ProxyCollection::Genre::createCapabilityInterface( Capabilities::Capability::Typ
 }
 
 void
-ProxyCollection::Genre::add( Meta::GenrePtr genre )
+ProxyGenre::add( Meta::GenrePtr genre )
 {
     if( !genre || m_genres.contains( genre ) )
         return;
@@ -1143,7 +1149,7 @@ ProxyCollection::Genre::add( Meta::GenrePtr genre )
 }
 
 void
-ProxyCollection::Genre::metadataChanged( Meta::GenrePtr genre )
+ProxyGenre::metadataChanged( Meta::GenrePtr genre )
 {
     if( !genre || !m_genres.contains( genre ) )
         return;
@@ -1167,7 +1173,7 @@ ProxyCollection::Genre::metadataChanged( Meta::GenrePtr genre )
     notifyObservers();
 }
 
-ProxyCollection::Composer::Composer( ProxyCollection::Collection *coll, Meta::ComposerPtr composer )
+ProxyComposer::ProxyComposer( Collections::ProxyCollection *coll, Meta::ComposerPtr composer )
         : Meta::Composer()
         , Meta::Observer()
         , m_collection( coll )
@@ -1177,24 +1183,24 @@ ProxyCollection::Composer::Composer( ProxyCollection::Collection *coll, Meta::Co
     subscribeTo( composer );
 }
 
-ProxyCollection::Composer::~Composer()
+ProxyComposer::~ProxyComposer()
 {
 }
 
 QString
-ProxyCollection::Composer::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyCollection::Composer::prettyName() const
+ProxyComposer::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Composer::sortableName() const
+ProxyComposer::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyComposer::sortableName() const
 {
     if( !m_composers.isEmpty() )
         return m_composers.first()->sortableName();
@@ -1203,9 +1209,9 @@ ProxyCollection::Composer::sortableName() const
 }
 
 Meta::TrackList
-ProxyCollection::Composer::tracks()
+ProxyComposer::tracks()
 {
-    QSet<ProxyCollection::Track*> tracks;
+    QSet<ProxyTrack*> tracks;
     foreach( Meta::ComposerPtr composer, m_composers )
     {
         Meta::TrackList tmp = composer->tracks();
@@ -1216,7 +1222,7 @@ ProxyCollection::Composer::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyCollection::Track *track, tracks )
+    foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1224,7 +1230,7 @@ ProxyCollection::Composer::tracks()
 }
 
 bool
-ProxyCollection::Composer::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyComposer::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_composers.count() == 1 )
@@ -1238,7 +1244,7 @@ ProxyCollection::Composer::hasCapabilityInterface(Capabilities::Capability::Type
 }
 
 Capabilities::Capability*
-ProxyCollection::Composer::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyComposer::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_composers.count() == 1 )
     {
@@ -1251,7 +1257,7 @@ ProxyCollection::Composer::createCapabilityInterface( Capabilities::Capability::
 }
 
 void
-ProxyCollection::Composer::add( Meta::ComposerPtr composer )
+ProxyComposer::add( Meta::ComposerPtr composer )
 {
     if( !composer || m_composers.contains( composer ) )
         return;
@@ -1263,7 +1269,7 @@ ProxyCollection::Composer::add( Meta::ComposerPtr composer )
 }
 
 void
-ProxyCollection::Composer::metadataChanged( Meta::ComposerPtr composer )
+ProxyComposer::metadataChanged( Meta::ComposerPtr composer )
 {
     if( !composer || !m_composers.contains( composer ) )
         return;
@@ -1287,7 +1293,7 @@ ProxyCollection::Composer::metadataChanged( Meta::ComposerPtr composer )
     notifyObservers();
 }
 
-ProxyCollection::Year::Year( ProxyCollection::Collection *coll, Meta::YearPtr year )
+ProxyYear::ProxyYear( Collections::ProxyCollection *coll, Meta::YearPtr year )
         : Meta::Year()
         , Meta::Observer()
         , m_collection( coll )
@@ -1297,25 +1303,25 @@ ProxyCollection::Year::Year( ProxyCollection::Collection *coll, Meta::YearPtr ye
     subscribeTo( year );
 }
 
-ProxyCollection::Year::~Year()
+ProxyYear::~ProxyYear()
 {
     //nothing to do
 }
 
 QString
-ProxyCollection::Year::name() const
+ProxyYear::name() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Year::prettyName() const
+ProxyYear::prettyName() const
 {
     return m_name;
 }
 
 QString
-ProxyCollection::Year::sortableName() const
+ProxyYear::sortableName() const
 {
     if( !m_years.isEmpty() )
         return m_years.first()->sortableName();
@@ -1324,9 +1330,9 @@ ProxyCollection::Year::sortableName() const
 }
 
 Meta::TrackList
-ProxyCollection::Year::tracks()
+ProxyYear::tracks()
 {
-    QSet<ProxyCollection::Track*> tracks;
+    QSet<ProxyTrack*> tracks;
     foreach( Meta::YearPtr year, m_years )
     {
         Meta::TrackList tmp = year->tracks();
@@ -1337,7 +1343,7 @@ ProxyCollection::Year::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyCollection::Track *track, tracks )
+    foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1345,7 +1351,7 @@ ProxyCollection::Year::tracks()
 }
 
 bool
-ProxyCollection::Year::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyYear::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_years.count() == 1 )
@@ -1359,7 +1365,7 @@ ProxyCollection::Year::hasCapabilityInterface(Capabilities::Capability::Type typ
 }
 
 Capabilities::Capability*
-ProxyCollection::Year::createCapabilityInterface( Capabilities::Capability::Type type )
+ProxyYear::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_years.count() == 1 )
     {
@@ -1372,7 +1378,7 @@ ProxyCollection::Year::createCapabilityInterface( Capabilities::Capability::Type
 }
 
 void
-ProxyCollection::Year::add( Meta::YearPtr year )
+ProxyYear::add( Meta::YearPtr year )
 {
     if( !year || m_years.contains( year ) )
         return;
@@ -1384,7 +1390,7 @@ ProxyCollection::Year::add( Meta::YearPtr year )
 }
 
 void
-ProxyCollection::Year::metadataChanged( Meta::YearPtr year )
+ProxyYear::metadataChanged( Meta::YearPtr year )
 {
     if( !year || !m_years.contains( year ) )
         return;
@@ -1425,3 +1431,5 @@ ProxyCollection::Year::metadataChanged( Meta::YearPtr year )
 
     notifyObservers();
 }
+
+} //namespace Meta

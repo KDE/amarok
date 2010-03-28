@@ -27,13 +27,15 @@
 #include <QPair>
 #include <QString>
 
-class SqlCollection;
+namespace Collections {
+    class SqlCollection;
+}
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS XesamCollectionBuilder : public QObject
 {
     Q_OBJECT
     public:
-        XesamCollectionBuilder( SqlCollection *collection );
+        XesamCollectionBuilder( Collections::SqlCollection *collection );
         ~XesamCollectionBuilder();
 
     private slots:
@@ -57,7 +59,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS XesamCollectionBuilder : public QObject
         int urlId( const QString &url );
 
     private:
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
         org::freedesktop::xesam::search *m_xesam;
 
         QString m_session;

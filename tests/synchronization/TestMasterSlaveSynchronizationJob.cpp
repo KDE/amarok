@@ -47,7 +47,7 @@ static int trackRemoveCount;
 class MyCollectionLocation : public CollectionLocation
 {
 public:
-    CollectionTestImpl *coll;
+    Collections::CollectionTestImpl *coll;
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
@@ -74,6 +74,8 @@ public:
     }
 };
 
+namespace Collections {
+
 class MyCollectionTestImpl : public CollectionTestImpl
 {
 public:
@@ -87,7 +89,9 @@ public:
     }
 };
 
-void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
+} //namespace Collections
+
+void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
     Meta::MockTrack *track = new Meta::MockTrack();
     ::testing::Mock::AllowLeak( track );
@@ -170,8 +174,8 @@ TestMasterSlaveSynchronizationJob::init()
 void
 TestMasterSlaveSynchronizationJob::testAddTracksToEmptySlave()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     //setup master
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -197,8 +201,8 @@ TestMasterSlaveSynchronizationJob::testAddTracksToEmptySlave()
 void
 TestMasterSlaveSynchronizationJob::testAddSingleTrack()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -230,8 +234,8 @@ TestMasterSlaveSynchronizationJob::testAddSingleTrack()
 void
 TestMasterSlaveSynchronizationJob::testAddAlbum()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -263,8 +267,8 @@ TestMasterSlaveSynchronizationJob::testAddAlbum()
 void
 TestMasterSlaveSynchronizationJob::testAddArtist()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -296,8 +300,8 @@ TestMasterSlaveSynchronizationJob::testAddArtist()
 void
 TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
@@ -334,8 +338,8 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
 void
 TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
@@ -372,8 +376,8 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 void
 TestMasterSlaveSynchronizationJob::testRemoveArtist()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
@@ -410,8 +414,8 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
 void
 TestMasterSlaveSynchronizationJob::testEmptyMaster()
 {
-    CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
-    CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+    Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
+    Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
     MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );

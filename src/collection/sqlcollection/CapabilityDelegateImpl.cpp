@@ -40,6 +40,34 @@
 #include <QFile>
 #include <QList>
 
+class CompilationAction : public QAction
+{
+    Q_OBJECT
+    public:
+        CompilationAction( QObject* parent, Meta::SqlAlbum *album )
+            : QAction( parent )
+                , m_album( album )
+                , m_isCompilation( album->isCompilation() )
+            {
+                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+                if( m_isCompilation )
+                    setText( i18n( "Do not show under Various Artists" ) );
+                else
+                    setText( i18n( "Show under Various Artists" ) );
+            }
+
+    private slots:
+        void slotTriggered()
+        {
+            m_album->setCompilation( !m_isCompilation );
+        }
+    private:
+        KSharedPtr<Meta::SqlAlbum> m_album;
+        bool m_isCompilation;
+};
+
+namespace Capabilities {
+
 class EditCapabilityImpl : public Capabilities::EditCapability
 {
     Q_OBJECT
@@ -375,32 +403,6 @@ ArtistCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capabilit
 
 //---------------Album compilation management actions-----
 
-class CompilationAction : public QAction
-{
-    Q_OBJECT
-    public:
-        CompilationAction( QObject* parent, Meta::SqlAlbum *album )
-            : QAction( parent )
-                , m_album( album )
-                , m_isCompilation( album->isCompilation() )
-            {
-                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-                if( m_isCompilation )
-                    setText( i18n( "Do not show under Various Artists" ) );
-                else
-                    setText( i18n( "Show under Various Artists" ) );
-            }
-
-    private slots:
-        void slotTriggered()
-        {
-            m_album->setCompilation( !m_isCompilation );
-        }
-    private:
-        KSharedPtr<Meta::SqlAlbum> m_album;
-        bool m_isCompilation;
-};
-
 AlbumCapabilityDelegateImpl::AlbumCapabilityDelegateImpl()
     : AlbumCapabilityDelegate()
     , m_bookmarkAction( 0 )
@@ -478,7 +480,7 @@ CollectionCapabilityDelegateImpl::CollectionCapabilityDelegateImpl()
 {
 }
 
-bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const
+bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const
 {
     if( !collection )
         return 0;
@@ -491,7 +493,7 @@ bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Cap
 }
 
 Capabilities::Capability*
-CollectionCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection )
+CollectionCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection )
 {
     if( !collection )
         return 0;
@@ -502,6 +504,8 @@ CollectionCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capab
             return 0;
     }
 }
+
+} //namespace Capabilities
 
 #include "CapabilityDelegateImpl.moc"
 

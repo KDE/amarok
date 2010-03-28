@@ -41,7 +41,7 @@ QMap<QString, Code> Reader::s_codes;
 //#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
 #define DEBUGTAG( VAR )
 
-Reader::Reader( DaapCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
+Reader::Reader( Collections::DaapCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
     : QObject( parent )
     , m_memColl( mc )
     , m_host( host )
@@ -646,7 +646,7 @@ Reader::fetchingError( const QString& error )
     emit httpError( error );
 }
 
-WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, DaapCollection *coll )
+WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, Collections::DaapCollection *coll )
     : ThreadWeaver::Job()
     , m_success( false )
     , m_data( data )

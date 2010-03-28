@@ -92,9 +92,9 @@ CoverBlingApplet::init()
     m_pictureflow->show();
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Album );
+    qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valArtist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),

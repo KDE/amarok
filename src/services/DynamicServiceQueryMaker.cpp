@@ -20,8 +20,7 @@
 #include "core/support/Debug.h"
 #include "ServiceCollection.h"
 
-using namespace Meta;
-
+using namespace Collections;
 
 DynamicServiceQueryMaker::DynamicServiceQueryMaker( )
  : QueryMaker()
@@ -111,7 +110,7 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::YearPtr & year)
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
 {
     DEBUG_BLOCK
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 
@@ -157,20 +156,20 @@ QueryMaker * DynamicServiceQueryMaker::limitMaxResultSize(int size)
     return this;
 }
 
-AlbumList
+Meta::AlbumList
 DynamicServiceQueryMaker::matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist )
 {
     if( !artist || !coll )
-        return AlbumList();
+        return Meta::AlbumList();
     ArtistMap artistMap = coll->artistMap();
     if ( artist && artistMap.contains( artist->name() ) )
     {
-        ArtistPtr artist2 = artistMap.value( artist->name() );
+        Meta::ArtistPtr artist2 = artistMap.value( artist->name() );
 
-        AlbumList matchingAlbums;
-        AlbumList albums = coll->albumMap().values();
+        Meta::AlbumList matchingAlbums;
+        Meta::AlbumList albums = coll->albumMap().values();
 
-        foreach( AlbumPtr albumPtr, albums ) {
+        foreach( Meta::AlbumPtr albumPtr, albums ) {
 
             if ( albumPtr->albumArtist() == artist2 )
                 matchingAlbums.push_back( albumPtr );
@@ -179,7 +178,7 @@ DynamicServiceQueryMaker::matchAlbums( ServiceCollection *coll, const Meta::Arti
         return matchingAlbums;
     }
     else
-        return AlbumList();
+        return Meta::AlbumList();
 }
 
 

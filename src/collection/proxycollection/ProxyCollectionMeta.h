@@ -23,20 +23,17 @@
 
 #include <QList>
 
-namespace Amarok
-{
-    class Collection;
+namespace Collections {
+    class ProxyCollection;
 }
 
-namespace ProxyCollection
-{
-    class Collection;
+namespace Meta {
 
-    class AMAROK_EXPORT_TESTS Track : public Meta::Track, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyTrack : public Meta::Track, private Meta::Observer
     {
         public:
-            Track( Collection *coll, const Meta::TrackPtr &track );
-            ~Track();
+            ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track );
+            ~ProxyTrack();
 
             QString name() const;
             QString prettyName() const;
@@ -86,7 +83,7 @@ namespace ProxyCollection
             virtual void metadataChanged( Meta::TrackPtr track );
 
         private:
-            Collection *m_collection;
+            Collections::ProxyCollection *m_collection;
             Meta::TrackList m_tracks;
             QString m_name;
             Meta::AlbumPtr m_album;
@@ -96,11 +93,11 @@ namespace ProxyCollection
             Meta::YearPtr m_year;
     };
 
-    class AMAROK_EXPORT_TESTS Album : public Meta::Album, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyAlbum : public Meta::Album, private Meta::Observer
     {
         public:
-        Album( Collection *coll, Meta::AlbumPtr album );
-        ~Album();
+        ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album );
+        ~ProxyAlbum();
 
         QString name() const;
         QString prettyName() const;
@@ -139,17 +136,17 @@ namespace ProxyCollection
         virtual void metadataChanged( Meta::AlbumPtr album );
 
         private:
-        Collection *m_collection;
+        Collections::ProxyCollection *m_collection;
         Meta::AlbumList m_albums;
         QString m_name;
         Meta::ArtistPtr m_albumArtist;
     };
 
-    class AMAROK_EXPORT_TESTS Artist : public Meta::Artist, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyArtist : public Meta::Artist, private Meta::Observer
     {
         public:
-        Artist( Collection *coll, Meta::ArtistPtr artist );
-        ~Artist();
+        ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr artist );
+        ~ProxyArtist();
 
         QString name() const;
         QString prettyName() const;
@@ -169,16 +166,16 @@ namespace ProxyCollection
         virtual void metadataChanged( Meta::ArtistPtr artist );
 
         private:
-        Collection *m_collection;
+        Collections::ProxyCollection *m_collection;
         Meta::ArtistList m_artists;
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS Genre : public Meta::Genre, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyGenre : public Meta::Genre, private Meta::Observer
     {
         public:
-        Genre( Collection *coll, Meta::GenrePtr genre );
-        ~Genre();
+        ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre );
+        ~ProxyGenre();
 
         QString name() const;
         QString prettyName() const;
@@ -196,16 +193,16 @@ namespace ProxyCollection
         virtual void metadataChanged( Meta::GenrePtr genre );
 
         private:
-        Collection *m_collection;
+        Collections::ProxyCollection *m_collection;
         Meta::GenreList m_genres;
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS Composer : public Meta::Composer, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyComposer : public Meta::Composer, private Meta::Observer
     {
         public:
-        Composer( Collection *coll, Meta::ComposerPtr composer );
-        ~Composer();
+        ProxyComposer( Collections::ProxyCollection *coll, Meta::ComposerPtr composer );
+        ~ProxyComposer();
 
         QString name() const;
         QString prettyName() const;
@@ -223,16 +220,16 @@ namespace ProxyCollection
         virtual void metadataChanged( Meta::ComposerPtr composer );
 
         private:
-        Collection *m_collection;
+        Collections::ProxyCollection *m_collection;
         Meta::ComposerList m_composers;
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS Year : public Meta::Year, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyYear : public Meta::Year, private Meta::Observer
     {
         public:
-        Year( Collection * coll, Meta::YearPtr year );
-        ~Year();
+        ProxyYear( Collections::ProxyCollection * coll, Meta::YearPtr year );
+        ~ProxyYear();
 
         QString name() const;
         QString prettyName() const;
@@ -253,11 +250,11 @@ namespace ProxyCollection
         virtual void metadataChanged( Meta::YearPtr year );
 
         private:
-        Collection *m_collection;
+        Collections::ProxyCollection *m_collection;
         Meta::YearList m_years;
         QString m_name;
 
     };
-}
+} //namespace Meta
 
 #endif

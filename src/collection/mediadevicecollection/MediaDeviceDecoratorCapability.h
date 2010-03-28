@@ -20,7 +20,10 @@
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/DecoratorCapability.h"
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
+
 class QAction;
 
 namespace Capabilities
@@ -30,12 +33,12 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            MediaDeviceDecoratorCapability( MediaDeviceCollection *coll );
+            MediaDeviceDecoratorCapability( Collections::MediaDeviceCollection *coll );
 
             virtual QList<QAction*> decoratorActions();
 
         private:
-            MediaDeviceCollection *m_coll;
+            Collections::MediaDeviceCollection *m_coll;
     };
 }
 #endif

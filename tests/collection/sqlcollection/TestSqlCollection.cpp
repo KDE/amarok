@@ -39,7 +39,7 @@ TestSqlCollection::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new SqlCollection( "testId", "testcollection" );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
     m_mpmMock = new SqlMountPointManagerMock();
     m_collection->setMountPointManager( m_mpmMock );

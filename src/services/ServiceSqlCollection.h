@@ -23,6 +23,7 @@
 #include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
 
+namespace Collections {
 
 class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
 {
@@ -55,6 +56,8 @@ class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
         QString m_collectionId;
         QString m_prettyName;
 };
+
+} //namespace Collections
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */
 

@@ -33,11 +33,10 @@
 #include <KSharedPtr>
 #include <KUrl>
 
-class QueryMaker;
-
 namespace Collections
 {
     class Collection;
+    class QueryMaker;
 }
 
 namespace Meta
@@ -156,7 +155,7 @@ namespace Meta
              */
             virtual QString fixedName() const { return prettyName(); }
 
-            virtual void addMatchTo( QueryMaker *qm ) = 0;
+            virtual void addMatchTo( Collections::QueryMaker *qm ) = 0;
 
 
 
@@ -263,7 +262,7 @@ namespace Meta
                 The argument is the percentage of the track which was played, in the range 0 to 1*/
             virtual void finishedPlaying( double playedFraction );
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             /** returns true if the track is part of a collection false otherwise */
             virtual bool inCollection() const;
@@ -302,7 +301,7 @@ namespace Meta
             /** returns all albums by this artist */
             virtual AlbumList albums() = 0;
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
@@ -359,7 +358,7 @@ namespace Meta
             /** should automatic artwork retrieval be suppressed? */
             virtual bool suppressImageAutoFetch() const { return false; }
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Album &album ) const;
 
@@ -376,7 +375,7 @@ namespace Meta
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Composer &composer ) const;
 
@@ -393,7 +392,7 @@ namespace Meta
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Genre &genre ) const;
 
@@ -410,7 +409,7 @@ namespace Meta
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
 
-            virtual void addMatchTo( QueryMaker* qm );
+            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Year &year ) const;
 

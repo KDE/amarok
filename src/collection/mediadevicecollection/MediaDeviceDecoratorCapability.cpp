@@ -23,7 +23,7 @@
 
 using namespace Capabilities;
 
-MediaDeviceDecoratorCapability::MediaDeviceDecoratorCapability( MediaDeviceCollection *coll )
+MediaDeviceDecoratorCapability::MediaDeviceDecoratorCapability( Collections::MediaDeviceCollection *coll )
     : DecoratorCapability()
     , m_coll( coll )
 {

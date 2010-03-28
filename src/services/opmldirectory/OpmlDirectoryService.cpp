@@ -123,7 +123,7 @@ void OpmlDirectoryService::polish()
 
     ServiceMetaFactory * metaFactory = new OpmlDirectoryMetaFactory( "opmldirectory", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new ServiceSqlCollection( "opmldirectory", "opmldirectory", metaFactory, registry );
+    m_collection = new Collections::ServiceSqlCollection( "opmldirectory", "opmldirectory", metaFactory, registry );
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 

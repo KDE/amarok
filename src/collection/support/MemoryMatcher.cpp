@@ -53,7 +53,7 @@ TrackMatcher::TrackMatcher( TrackPtr track )
     , m_track( track )
 {}
 
-TrackList TrackMatcher::match( MemoryCollection *memColl )
+TrackList TrackMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_track || !memColl )
         return TrackList();
@@ -86,7 +86,7 @@ ArtistMatcher::ArtistMatcher( ArtistPtr artist )
     , m_artist( artist )
 {}
 
-TrackList ArtistMatcher::match( MemoryCollection *memColl )
+TrackList ArtistMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_artist || !memColl )
         return TrackList();
@@ -127,7 +127,7 @@ AlbumMatcher::AlbumMatcher( AlbumPtr album )
     , m_album( album )
 {}
 
-TrackList AlbumMatcher::match( MemoryCollection *memColl )
+TrackList AlbumMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_album || !memColl )
         return TrackList();
@@ -167,7 +167,7 @@ GenreMatcher::GenreMatcher( GenrePtr genre )
     , m_genre( genre )
 {}
 
-TrackList GenreMatcher::match( MemoryCollection *memColl )
+TrackList GenreMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_genre || !memColl )
         return TrackList();
@@ -207,7 +207,7 @@ ComposerMatcher::ComposerMatcher( ComposerPtr composer )
     , m_composer( composer )
 {}
 
-TrackList ComposerMatcher::match( MemoryCollection *memColl )
+TrackList ComposerMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_composer || !memColl )
         return TrackList();
@@ -247,7 +247,7 @@ YearMatcher::YearMatcher( YearPtr year )
     , m_year( year )
 {}
 
-TrackList YearMatcher::match( MemoryCollection *memColl )
+TrackList YearMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_year || !memColl )
         return TrackList();

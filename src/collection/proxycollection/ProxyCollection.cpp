@@ -30,8 +30,9 @@
 
 #include <KIcon>
 
+using namespace Collections;
 
-ProxyCollection::Collection::Collection()
+ProxyCollection::ProxyCollection()
         : Collections::Collection()
 {
     QTimer *timer = new QTimer( this );
@@ -41,25 +42,25 @@ ProxyCollection::Collection::Collection()
     timer->start();
 }
 
-ProxyCollection::Collection::~Collection()
+ProxyCollection::~ProxyCollection()
 {
     //TODO
 }
 
 QString
-ProxyCollection::Collection::prettyName() const
+ProxyCollection::prettyName() const
 {
     return i18n( "Proxy Collection" );
 }
 
 KIcon
-ProxyCollection::Collection::icon() const
+ProxyCollection::icon() const
 {
     return KIcon("drive-harddisk");
 }
 
 bool
-ProxyCollection::Collection::possiblyContainsTrack( const KUrl &url ) const
+ProxyCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     foreach( Collections::Collection *collection, m_idCollectionMap )
     {
@@ -70,7 +71,7 @@ ProxyCollection::Collection::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-ProxyCollection::Collection::trackForUrl( const KUrl &url )
+ProxyCollection::trackForUrl( const KUrl &url )
 {
     foreach( Collections::Collection *collection, m_idCollectionMap )
     {
@@ -86,25 +87,25 @@ ProxyCollection::Collection::trackForUrl( const KUrl &url )
 }
 
 QueryMaker*
-ProxyCollection::Collection::queryMaker()
+ProxyCollection::queryMaker()
 {
     QList<QueryMaker*> list;
     foreach( Collections::Collection *collection, m_idCollectionMap )
     {
         list.append( collection->queryMaker() );
     }
-    return new ProxyCollection::ProxyQueryMaker( this, list );
+    return new Collections::ProxyQueryMaker( this, list );
 }
 
 QString
-ProxyCollection::Collection::collectionId() const
+ProxyCollection::collectionId() const
 {
     //do we need more than one proxycollection??
     return "ProxyCollection";
 }
 
 void
-ProxyCollection::Collection::addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status )
+ProxyCollection::addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status )
 {
     if( !collection )
         return;
@@ -118,41 +119,41 @@ ProxyCollection::Collection::addCollection( Collections::Collection *collection,
 }
 
 void
-ProxyCollection::Collection::removeCollection( const QString &collectionId )
+ProxyCollection::removeCollection( const QString &collectionId )
 {
     m_idCollectionMap.remove( collectionId );
     emit updated();
 }
 
 void
-ProxyCollection::Collection::removeCollection( Collections::Collection *collection )
+ProxyCollection::removeCollection( Collections::Collection *collection )
 {
     m_idCollectionMap.remove( collection->collectionId() );
     emit updated();
 }
 
 void
-ProxyCollection::Collection::slotUpdated()
+ProxyCollection::slotUpdated()
 {
     //TODO
     emit updated();
 }
 
 void
-ProxyCollection::Collection::removeYear( const QString &name )
+ProxyCollection::removeYear( const QString &name )
 {
     m_yearLock.lockForWrite();
     m_yearMap.remove( name );
     m_yearLock.unlock();
 }
 
-ProxyCollection::Year*
-ProxyCollection::Collection::getYear( Meta::YearPtr year )
+Meta::ProxyYear*
+ProxyCollection::getYear( Meta::YearPtr year )
 {
     m_yearLock.lockForRead();
     if( m_yearMap.contains( year->name() ) )
     {
-        KSharedPtr<ProxyCollection::Year> proxyYear = m_yearMap.value( year->name() );
+        KSharedPtr<Meta::ProxyYear> proxyYear = m_yearMap.value( year->name() );
         proxyYear->add( year );
         m_yearLock.unlock();
         return proxyYear.data();
@@ -163,43 +164,43 @@ ProxyCollection::Collection::getYear( Meta::YearPtr year )
         m_yearLock.lockForWrite();
         //we might create two year instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Year *proxyYear = new ProxyCollection::Year( this, year );
-        m_yearMap.insert( year->name(), KSharedPtr<Year>( proxyYear ) );
+        Meta::ProxyYear *proxyYear = new Meta::ProxyYear( this, year );
+        m_yearMap.insert( year->name(), KSharedPtr<Meta::ProxyYear>( proxyYear ) );
         m_yearLock.unlock();
         return proxyYear;
     }
 }
 
 void
-ProxyCollection::Collection::setYear( ProxyCollection::Year *year )
+ProxyCollection::setYear( Meta::ProxyYear *year )
 {
     m_yearLock.lockForWrite();
-    m_yearMap.insert( year->name(), KSharedPtr<ProxyCollection::Year>( year ) );
+    m_yearMap.insert( year->name(), KSharedPtr<Meta::ProxyYear>( year ) );
     m_yearLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasYear( const QString &name )
+ProxyCollection::hasYear( const QString &name )
 {
     QReadLocker locker( &m_yearLock );
     return m_yearMap.contains( name );
 }
 
 void
-ProxyCollection::Collection::removeGenre( const QString &name )
+ProxyCollection::removeGenre( const QString &name )
 {
     m_genreLock.lockForWrite();
     m_genreMap.remove( name );
     m_genreLock.unlock();
 }
 
-ProxyCollection::Genre*
-ProxyCollection::Collection::getGenre( Meta::GenrePtr genre )
+Meta::ProxyGenre*
+ProxyCollection::getGenre( Meta::GenrePtr genre )
 {
     m_genreLock.lockForRead();
     if( m_genreMap.contains( genre->name() ) )
     {
-        KSharedPtr<ProxyCollection::Genre> proxy = m_genreMap.value( genre->name() );
+        KSharedPtr<Meta::ProxyGenre> proxy = m_genreMap.value( genre->name() );
         proxy->add( genre );
         m_genreLock.unlock();
         return proxy.data();
@@ -210,43 +211,43 @@ ProxyCollection::Collection::getGenre( Meta::GenrePtr genre )
         m_genreLock.lockForWrite();
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Genre *proxy = new ProxyCollection::Genre( this, genre );
-        m_genreMap.insert( genre->name(), KSharedPtr<ProxyCollection::Genre>( proxy ) );
+        Meta::ProxyGenre *proxy = new Meta::ProxyGenre( this, genre );
+        m_genreMap.insert( genre->name(), KSharedPtr<Meta::ProxyGenre>( proxy ) );
         m_genreLock.unlock();
         return proxy;
     }
 }
 
 void
-ProxyCollection::Collection::setGenre( ProxyCollection::Genre *genre )
+ProxyCollection::setGenre( Meta::ProxyGenre *genre )
 {
     m_genreLock.lockForWrite();
-    m_genreMap.insert( genre->name(), KSharedPtr<ProxyCollection::Genre>( genre ) );
+    m_genreMap.insert( genre->name(), KSharedPtr<Meta::ProxyGenre>( genre ) );
     m_genreLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasGenre( const QString &genre )
+ProxyCollection::hasGenre( const QString &genre )
 {
     QReadLocker locker( &m_genreLock );
     return m_genreMap.contains( genre );
 }
 
 void
-ProxyCollection::Collection::removeComposer( const QString &name )
+ProxyCollection::removeComposer( const QString &name )
 {
     m_composerLock.lockForWrite();
     m_composerMap.remove( name );
     m_composerLock.unlock();
 }
 
-ProxyCollection::Composer*
-ProxyCollection::Collection::getComposer( Meta::ComposerPtr composer )
+Meta::ProxyComposer*
+ProxyCollection::getComposer( Meta::ComposerPtr composer )
 {
     m_composerLock.lockForRead();
     if( m_composerMap.contains( composer->name() ) )
     {
-        KSharedPtr<ProxyCollection::Composer> proxy = m_composerMap.value( composer->name() );
+        KSharedPtr<Meta::ProxyComposer> proxy = m_composerMap.value( composer->name() );
         proxy->add( composer );
         m_composerLock.unlock();
         return proxy.data();
@@ -257,43 +258,43 @@ ProxyCollection::Collection::getComposer( Meta::ComposerPtr composer )
         m_composerLock.lockForWrite();
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Composer *proxy = new ProxyCollection::Composer( this, composer );
-        m_composerMap.insert( composer->name(), KSharedPtr<ProxyCollection::Composer>( proxy ) );
+        Meta::ProxyComposer *proxy = new Meta::ProxyComposer( this, composer );
+        m_composerMap.insert( composer->name(), KSharedPtr<Meta::ProxyComposer>( proxy ) );
         m_composerLock.unlock();
         return proxy;
     }
 }
 
 void
-ProxyCollection::Collection::setComposer( ProxyCollection::Composer *composer )
+ProxyCollection::setComposer( Meta::ProxyComposer *composer )
 {
     m_composerLock.lockForWrite();
-    m_composerMap.insert( composer->name(), KSharedPtr<ProxyCollection::Composer>( composer ) );
+    m_composerMap.insert( composer->name(), KSharedPtr<Meta::ProxyComposer>( composer ) );
     m_composerLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasComposer( const QString &name )
+ProxyCollection::hasComposer( const QString &name )
 {
     QReadLocker locker( &m_composerLock );
     return m_composerMap.contains( name );
 }
 
 void
-ProxyCollection::Collection::removeArtist( const QString &name )
+ProxyCollection::removeArtist( const QString &name )
 {
     m_artistLock.lockForWrite();
     m_artistMap.remove( name );
     m_artistLock.unlock();
 }
 
-ProxyCollection::Artist*
-ProxyCollection::Collection::getArtist( Meta::ArtistPtr artist )
+Meta::ProxyArtist*
+ProxyCollection::getArtist( Meta::ArtistPtr artist )
 {
     m_artistLock.lockForRead();
     if( m_artistMap.contains( artist->name() ) )
     {
-        KSharedPtr<ProxyCollection::Artist> proxy = m_artistMap.value( artist->name() );
+        KSharedPtr<Meta::ProxyArtist> proxy = m_artistMap.value( artist->name() );
         proxy->add( artist );
         m_artistLock.unlock();
         return proxy.data();
@@ -304,30 +305,30 @@ ProxyCollection::Collection::getArtist( Meta::ArtistPtr artist )
         m_artistLock.lockForWrite();
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Artist *proxy = new ProxyCollection::Artist( this, artist );
-        m_artistMap.insert( artist->name(), KSharedPtr<ProxyCollection::Artist>( proxy ) );
+        Meta::ProxyArtist *proxy = new Meta::ProxyArtist( this, artist );
+        m_artistMap.insert( artist->name(), KSharedPtr<Meta::ProxyArtist>( proxy ) );
         m_artistLock.unlock();
         return proxy;
     }
 }
 
 void
-ProxyCollection::Collection::setArtist( ProxyCollection::Artist *artist )
+ProxyCollection::setArtist( Meta::ProxyArtist *artist )
 {
     m_artistLock.lockForWrite();
-    m_artistMap.insert( artist->name(), KSharedPtr<ProxyCollection::Artist>( artist ) );
+    m_artistMap.insert( artist->name(), KSharedPtr<Meta::ProxyArtist>( artist ) );
     m_artistLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasArtist( const QString &artist )
+ProxyCollection::hasArtist( const QString &artist )
 {
     QReadLocker locker( &m_artistLock );
     return m_artistMap.contains( artist );
 }
 
 void
-ProxyCollection::Collection::removeAlbum( const QString &album, const QString &albumartist )
+ProxyCollection::removeAlbum( const QString &album, const QString &albumartist )
 {
     AlbumKey key;
     key.albumName = album;
@@ -337,8 +338,8 @@ ProxyCollection::Collection::removeAlbum( const QString &album, const QString &a
     m_albumLock.unlock();
 }
 
-ProxyCollection::Album*
-ProxyCollection::Collection::getAlbum( Meta::AlbumPtr album )
+Meta::ProxyAlbum*
+ProxyCollection::getAlbum( Meta::AlbumPtr album )
 {
     AlbumKey key;
     key.albumName = album->name();
@@ -347,7 +348,7 @@ ProxyCollection::Collection::getAlbum( Meta::AlbumPtr album )
     m_albumLock.lockForRead();
     if( m_albumMap.contains( key ) )
     {
-        KSharedPtr<ProxyCollection::Album> proxy = m_albumMap.value( key );
+        KSharedPtr<Meta::ProxyAlbum> proxy = m_albumMap.value( key );
         proxy->add( album );
         m_albumLock.unlock();
         return proxy.data();
@@ -358,27 +359,27 @@ ProxyCollection::Collection::getAlbum( Meta::AlbumPtr album )
         m_albumLock.lockForWrite();
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Album *proxy = new ProxyCollection::Album( this, album );
-        m_albumMap.insert( key, KSharedPtr<ProxyCollection::Album>( proxy ) );
+        Meta::ProxyAlbum *proxy = new Meta::ProxyAlbum( this, album );
+        m_albumMap.insert( key, KSharedPtr<Meta::ProxyAlbum>( proxy ) );
         m_albumLock.unlock();
         return proxy;
     }
 }
 
 void
-ProxyCollection::Collection::setAlbum( ProxyCollection::Album *album )
+ProxyCollection::setAlbum( Meta::ProxyAlbum *album )
 {
     AlbumKey key;
     key.albumName = album->name();
     if( album->albumArtist() )
         key.artistName = album->albumArtist()->name();
     m_albumLock.lockForWrite();
-    m_albumMap.insert( key, KSharedPtr<ProxyCollection::Album>( album ) );
+    m_albumMap.insert( key, KSharedPtr<Meta::ProxyAlbum>( album ) );
     m_albumLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasAlbum( const QString &album, const QString &albumArtist )
+ProxyCollection::hasAlbum( const QString &album, const QString &albumArtist )
 {
     AlbumKey key;
     key.albumName = album;
@@ -388,21 +389,21 @@ ProxyCollection::Collection::hasAlbum( const QString &album, const QString &albu
 }
 
 void
-ProxyCollection::Collection::removeTrack( const TrackKey &key )
+ProxyCollection::removeTrack( const TrackKey &key )
 {
     m_trackLock.lockForWrite();
     m_trackMap.remove( key );
     m_trackLock.unlock();
 }
 
-ProxyCollection::Track*
-ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
+Meta::ProxyTrack*
+ProxyCollection::getTrack( Meta::TrackPtr track )
 {
     const TrackKey key = Meta::keyFromTrack( track );
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
-        KSharedPtr<ProxyCollection::Track> proxy = m_trackMap.value( key );
+        KSharedPtr<Meta::ProxyTrack> proxy = m_trackMap.value( key );
         proxy->add( track );
         m_trackLock.unlock();
         return proxy.data();
@@ -413,32 +414,32 @@ ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
         m_trackLock.lockForWrite();
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
-        ProxyCollection::Track *proxy = new ProxyCollection::Track( this, track );
-        m_trackMap.insert( key, KSharedPtr<ProxyCollection::Track>( proxy ) );
+        Meta::ProxyTrack *proxy = new Meta::ProxyTrack( this, track );
+        m_trackMap.insert( key, KSharedPtr<Meta::ProxyTrack>( proxy ) );
         m_trackLock.unlock();
         return proxy;
     }
 }
 
 void
-ProxyCollection::Collection::setTrack( ProxyCollection::Track *track )
+ProxyCollection::setTrack( Meta::ProxyTrack *track )
 {
     Meta::TrackPtr ptr( track );
     const TrackKey key = Meta::keyFromTrack( ptr );
     m_trackLock.lockForWrite();
-    m_trackMap.insert( key, KSharedPtr<ProxyCollection::Track>( track ) );
+    m_trackMap.insert( key, KSharedPtr<Meta::ProxyTrack>( track ) );
     m_trackLock.unlock();
 }
 
 bool
-ProxyCollection::Collection::hasTrack( const TrackKey &key )
+ProxyCollection::hasTrack( const TrackKey &key )
 {
     QReadLocker locker( &m_trackLock );
     return m_trackMap.contains( key );
 }
 
 void
-ProxyCollection::Collection::emptyCache()
+ProxyCollection::emptyCache()
 {
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
@@ -469,13 +470,13 @@ ProxyCollection::Collection::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackKey, KSharedPtr<ProxyCollection::Track>, 2, m_trackMap )
+        foreachCollectGarbage( TrackKey, KSharedPtr<Meta::ProxyTrack>, 2, m_trackMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( AlbumKey, KSharedPtr<ProxyCollection::Album>, 2, m_albumMap )
-        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Artist>, 2, m_artistMap )
-        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Genre>, 2, m_genreMap )
-        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Composer>, 2, m_composerMap )
-        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Year>, 2, m_yearMap )
+        foreachCollectGarbage( AlbumKey, KSharedPtr<Meta::ProxyAlbum>, 2, m_albumMap )
+        foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyArtist>, 2, m_artistMap )
+        foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyGenre>, 2, m_genreMap )
+        foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyComposer>, 2, m_composerMap )
+        foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyYear>, 2, m_yearMap )
     }
 
     //make sure to unlock all necessary locks

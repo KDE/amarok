@@ -29,7 +29,7 @@ class MemoryFilter;
 namespace FilterFactory
 {
     MemoryFilter* filter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
-    MemoryFilter* numberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
+    MemoryFilter* numberFilter( qint64 value, qint64 filter, Collections::QueryMaker::NumberComparison compare );
 }
 
 class AMAROK_EXPORT MemoryFilter
@@ -178,13 +178,13 @@ class AMAROK_EXPORT NumberMemoryFilter : public MemoryFilter
     public:
         NumberMemoryFilter();
         virtual ~NumberMemoryFilter();
-        void setFilter( qint64 filter, QueryMaker::NumberComparison compare );
+        void setFilter( qint64 filter, Collections::QueryMaker::NumberComparison compare );
         bool filterMatches( const Meta::TrackPtr &track ) const;
     protected:
         virtual qint64 value( const Meta::TrackPtr &track ) const = 0;
     private:
         qint64 m_filter;
-        QueryMaker::NumberComparison m_compare;
+        Collections::QueryMaker::NumberComparison m_compare;
 };
 
 class AMAROK_EXPORT TrackNumberFilter : public NumberMemoryFilter

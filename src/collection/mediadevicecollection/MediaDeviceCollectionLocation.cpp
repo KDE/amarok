@@ -34,9 +34,9 @@
 
 using namespace Meta;
 
-MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollection const *collection )
+MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( Collections::MediaDeviceCollection const *collection )
     : CollectionLocation()
-    , m_collection( const_cast<MediaDeviceCollection*>( collection ) )
+    , m_collection( const_cast<Collections::MediaDeviceCollection*>( collection ) )
     , m_handler( m_collection->handler() )
 {
     //nothing to do

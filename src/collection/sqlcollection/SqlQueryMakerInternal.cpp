@@ -24,6 +24,8 @@
 
 #include <QStringList>
 
+using namespace Collections;
+
 SqlQueryMakerInternal::SqlQueryMakerInternal( SqlCollection *collection )
     : QObject()
     , m_collection( collection )

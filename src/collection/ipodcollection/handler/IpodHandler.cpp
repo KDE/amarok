@@ -77,7 +77,7 @@ using namespace Meta;
 #define IPOD_MAX_CONCURRENT_JOBS 1
 #endif
 
-IpodHandler::IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
+IpodHandler::IpodHandler( Collections::IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
     : MediaDeviceHandler( mc )
     , m_itdb( 0 )
     , m_masterPlaylist( 0 )

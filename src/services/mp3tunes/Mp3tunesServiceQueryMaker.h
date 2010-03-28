@@ -32,6 +32,7 @@ namespace ThreadWeaver
     class Job;
 }
 
+namespace Collections {
 
 /**
 A query maker for fetching external data
@@ -100,7 +101,8 @@ public slots:
     void albumDownloadComplete( QList<Mp3tunesLockerAlbum> albums );
     void trackDownloadComplete( QList<Mp3tunesLockerTrack> tracks );
 
-
 };
+
+} //namespace Collections
 
 #endif

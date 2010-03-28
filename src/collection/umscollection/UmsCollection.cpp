@@ -26,6 +26,8 @@
 
 #include <KUrl>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )

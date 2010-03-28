@@ -46,7 +46,9 @@
 class QString;
 class QMutex;
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
 
 namespace Meta
 {
@@ -284,7 +286,7 @@ protected:
 
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
-    MediaDeviceCollection   *m_memColl; /// Associated collection
+    Collections::MediaDeviceCollection   *m_memColl; /// Associated collection
     ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
 
     bool m_success;

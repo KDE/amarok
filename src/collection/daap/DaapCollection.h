@@ -38,6 +38,8 @@ namespace DNSSD {
     class ServiceBrowser;
 }
 
+namespace Collections {
+
 class DaapCollection;
 
 class DaapCollectionFactory : public Collections::CollectionFactory
@@ -108,5 +110,7 @@ class DaapCollection : public Collections::Collection
         Daap::Reader *m_reader;
         QSharedPointer<MemoryCollection> m_mc;
 };
+
+} //namespace Collections
 
 #endif

@@ -19,6 +19,8 @@
 
 #include "SqlQueryMaker.h"
 
+namespace Collections {
+
 class DefaultSqlQueryMakerFactory : public SqlQueryMakerFactory
 {
 public:
@@ -35,5 +37,7 @@ public:
 private:
     SqlCollection *m_collection;
 };
+
+} //namespace Collections
 
 #endif // DEFAULTSQLQUERYMAKERFACTORY_H

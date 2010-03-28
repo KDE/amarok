@@ -20,6 +20,8 @@
 #include <QList>
 #include "core/meta/Meta.h"
 
+namespace Collections {
+
 namespace MemoryQueryMakerHelper
 {
     template <class PointerType>
@@ -33,5 +35,7 @@ namespace MemoryQueryMakerHelper
     template<typename T>
     QList<T> reverse(const QList<T> &l);
 }
+
+} //namespace Collections
 
 #endif

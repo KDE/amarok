@@ -28,8 +28,11 @@
 #include <QAction>
 #include <QObject>
 
-class AudioCdCollection;
 class MediaDeviceInfo;
+
+namespace Collections {
+
+class AudioCdCollection;
 
 class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdCollection>
 {
@@ -128,5 +131,7 @@ private:
 
     bool m_ready;
 };
+
+} //namespace Collections
 
 #endif

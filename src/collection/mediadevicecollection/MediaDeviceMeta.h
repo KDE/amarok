@@ -25,7 +25,10 @@
 #include <QMultiMap>
 #include <QPointer>
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
+
 class QAction;
 
 namespace Handler { class ArtworkCapability; }
@@ -52,7 +55,7 @@ typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 {
     public:
-        MediaDeviceTrack( MediaDeviceCollection *collection );
+        MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
         virtual ~MediaDeviceTrack();
 
         virtual QString name() const;
@@ -146,7 +149,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
-        QPointer<MediaDeviceCollection> m_collection;
+        QPointer<Collections::MediaDeviceCollection> m_collection;
 
         MediaDeviceArtistPtr m_artist;
         MediaDeviceAlbumPtr m_album;
@@ -203,7 +206,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
 {
     public:
-        MediaDeviceAlbum( MediaDeviceCollection *collection, const QString &name );
+        MediaDeviceAlbum( Collections::MediaDeviceCollection *collection, const QString &name );
         virtual ~MediaDeviceAlbum();
 
         virtual QString name() const;
@@ -233,7 +236,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         void setAlbumArtist( MediaDeviceArtistPtr artist );
 
     private:
-        MediaDeviceCollection *m_collection;
+        Collections::MediaDeviceCollection *m_collection;
 
         Handler::ArtworkCapability *m_artworkCapability;
 

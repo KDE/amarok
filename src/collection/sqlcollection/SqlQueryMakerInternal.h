@@ -24,6 +24,8 @@
 #include <QPointer>
 #include <QString>
 
+namespace Collections {
+
 class SqlCollection;
 
 class SqlQueryMakerInternal : public QObject
@@ -64,5 +66,7 @@ private:
     QString m_query;
 
 };
+
+} //namespace Collections
 
 #endif // SQLQUERYMAKERINTERNAL_H

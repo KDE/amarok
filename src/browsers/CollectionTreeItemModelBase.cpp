@@ -285,7 +285,7 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
         return 0;
 
     Meta::TrackList tracks;
-    QList<QueryMaker*> queries;
+    QList<Collections::QueryMaker*> queries;
 
     foreach( CollectionTreeItem *item, items )
     {
@@ -294,14 +294,14 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
         }
         else
         {
-            QueryMaker *qm = item->queryMaker();
+            Collections::QueryMaker *qm = item->queryMaker();
             CollectionTreeItem *tmpItem = item;
             while( tmpItem->isDataItem() )
             {
                 if( tmpItem->data() )
                     qm->addMatch( tmpItem->data() );
                 else
-                    qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
                 tmpItem = tmpItem->parent();
             }
             addFilters( qm );
@@ -366,7 +366,7 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
     return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
-void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent)
+void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
     if ( qm && parent )
     {
@@ -381,37 +381,37 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             return;
 
         if ( level == m_levelType.count() )
-            qm->setQueryType( QueryMaker::Track );
+            qm->setQueryType( Collections::QueryMaker::Track );
         else
         {
             switch( m_levelType[level] )
             {
                 case CategoryId::Album :
-                    qm->setQueryType( QueryMaker::Album );
+                    qm->setQueryType( Collections::QueryMaker::Album );
                     //restrict query to normal albums if the previous level
                     //was the artist category. in that case we handle compilations below
                     if( level > 0 && m_levelType[level-1] == CategoryId::Artist && !parent->isVariousArtistItem() )
                     {
-                        qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
                 case CategoryId::Artist :
-                    qm->setQueryType( QueryMaker::Artist );
+                    qm->setQueryType( Collections::QueryMaker::Artist );
                     //handle compilations only if the next level ist CategoryId::Album
                     if( level + 1 < m_levelType.count() && m_levelType[level+1] == CategoryId::Album )
                     {
                         handleCompilations( parent );
-                        qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
                 case CategoryId::Composer:
-                    qm->setQueryType( QueryMaker::Composer );
+                    qm->setQueryType( Collections::QueryMaker::Composer );
                     break;
                 case CategoryId::Genre:
-                    qm->setQueryType( QueryMaker::Genre );
+                    qm->setQueryType( Collections::QueryMaker::Genre );
                     break;
                 case CategoryId::Year:
-                    qm->setQueryType( QueryMaker::Year );
+                    qm->setQueryType( Collections::QueryMaker::Year );
                     break;
                 default : //TODO handle error condition. return tracks?
                     break;
@@ -423,7 +423,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             //ignore Various artists node (which will not have a data pointer)
             if( tmpItem->isVariousArtistItem() )
             {
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             }
             else
                 qm->addMatch( tmpItem->data() );
@@ -445,7 +445,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
 }
 
 void
-CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
+CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
 {
     int validFilters = qm->validFilterMask();
 
@@ -479,23 +479,23 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     switch ( level )
                     {
                         case CategoryId::Album:
-                            if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
+                            if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
                             value = Meta::valAlbum;
                             break;
                         case CategoryId::Artist:
-                            if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
+                            if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
                             value = Meta::valArtist;
                             break;
                         case CategoryId::Composer:
-                            if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
+                            if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
                             value = Meta::valComposer;
                             break;
                         case CategoryId::Genre:
-                            if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
+                            if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
                             value = Meta::valGenre;
                             break;
                         case CategoryId::Year:
-                            if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
+                            if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
                             value = Meta::valYear;
                             break;
                         default:
@@ -508,12 +508,12 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 }
 
                 //always add track filter ( if supported..)
-                if ( ( validFilters & QueryMaker::TitleFilter ) != 0 ) {
+                if ( ( validFilters & Collections::QueryMaker::TitleFilter ) != 0 ) {
                     qm->beginOr();
                     ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false ); //always filter for track title too
                     qm->endAndOr();
                 }
-                if ( ( validFilters & QueryMaker::UrlFilter ) != 0 ) {
+                if ( ( validFilters & Collections::QueryMaker::UrlFilter ) != 0 ) {
                     qm->beginOr();
                     ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false ); //always filter for track URL
                     qm->endAndOr();
@@ -524,48 +524,48 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
             {
                 //get field values based on name
                 QString lcField = elem.field.toLower();
-                QueryMaker::NumberComparison compare = QueryMaker::Equals;
+                Collections::QueryMaker::NumberComparison compare = Collections::QueryMaker::Equals;
                 switch( elem.match )
                 {
                     case expression_element::More:
-                        compare = QueryMaker::GreaterThan;
+                        compare = Collections::QueryMaker::GreaterThan;
                         break;
                     case expression_element::Less:
-                        compare = QueryMaker::LessThan;
+                        compare = Collections::QueryMaker::LessThan;
                         break;
                     case expression_element::Contains:
-                        compare = QueryMaker::Equals;
+                        compare = Collections::QueryMaker::Equals;
                         break;
                 }
 
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
                 }
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
                 {
-                    if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
                 }
                 else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "title" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if ( ( validFilters & QueryMaker::TitleFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
                 }
                 else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
-                    if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
+                    if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
                 }
                 else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bpm" ), Qt::CaseInsensitive ) == 0)
@@ -610,7 +610,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == QueryMaker::Equals ) // just do some basic string matching
+                    if( compare == Collections::QueryMaker::Equals ) // just do some basic string matching
                     {
                         QDateTime curTime = QDateTime::currentDateTime();
                         uint dateCutOff = 0;
@@ -627,10 +627,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 
                         if( dateCutOff > 0 )
                         {
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, QueryMaker::GreaterThan );
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
                         }
                     }
-                    else if( compare == QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    else if( compare == Collections::QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
                     {
                         int months = 0, weeks = 0, days = 0;
                         QString tmp;
@@ -653,7 +653,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                                 break;
                             }
                         }
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), QueryMaker::GreaterThan );
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), Collections::QueryMaker::GreaterThan );
                     }
                 }
             }
@@ -668,7 +668,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
 
@@ -695,7 +695,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
-    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
 
@@ -710,7 +710,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 }
 
 void
-CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
+CollectionTreeItemModelBase::handleCompilationQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
     CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
     QModelIndex parentIndex;
@@ -812,7 +812,7 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const
 }
 
 void
-CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
+CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
     CollectionTreeItem *parent = d->m_childQueries.value( qm );
     QModelIndex parentIndex;
@@ -943,9 +943,9 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     //this method will be called when we retrieve a list of artists from the database.
     //we have to query for all compilations, and then add a "Various Artists" node if at least
     //one compilation exists
-    QueryMaker *qm = parent->queryMaker();
-    qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-    qm->setQueryType( QueryMaker::Album );
+    Collections::QueryMaker *qm = parent->queryMaker();
+    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+    qm->setQueryType( Collections::QueryMaker::Album );
     CollectionTreeItem *tmpItem = parent;
     while( tmpItem->isDataItem()  )
     {
@@ -1078,7 +1078,7 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     if( !d->m_runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
-    QueryMaker *qm = d->m_runningQueries.take( item );
+    Collections::QueryMaker *qm = d->m_runningQueries.take( item );
     if( qm )
     {
 

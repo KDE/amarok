@@ -221,7 +221,7 @@ private:
     KIO::StoredTransferJob* m_updateTimestampDownloadJob;
     KIO::StoredTransferJob* m_favoritesJob;
 
-    MagnatuneSqlCollection * m_collection;
+    Collections::MagnatuneSqlCollection * m_collection;
 
     QString m_tempFileName;
 

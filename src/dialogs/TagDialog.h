@@ -43,7 +43,10 @@ namespace Ui
     class TagDialogBase;
 }
 
-class QueryMaker;
+namespace Collections {
+    class QueryMaker;
+}
+
 class QComboBox;
 
 class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
@@ -57,7 +60,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
-        explicit TagDialog( QueryMaker *qm );
+        explicit TagDialog( Collections::QueryMaker *qm );
         ~TagDialog();
 
         void setTab( int id );
@@ -219,8 +222,8 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QListIterator<Meta::TrackPtr > m_trackIterator;
         QMap< QString, bool > m_fieldEdited;
         QVariantMap m_currentData;
-        QueryMaker *m_queryMaker;
-        QueryMaker *m_dataQueryMaker;
+        Collections::QueryMaker *m_queryMaker;
+        Collections::QueryMaker *m_dataQueryMaker;
         QStringList m_artists;
         QStringList m_albums;
         QStringList m_composers;

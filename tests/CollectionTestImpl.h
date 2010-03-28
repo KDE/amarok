@@ -27,6 +27,8 @@
 
 class CollectionLocationTestImpl;
 
+namespace Collections {
+
 class CollectionTestImpl : public Collections::Collection
 {
 public:
@@ -46,5 +48,7 @@ public:
     QSharedPointer<MemoryCollection> mc;
 
 };
+
+} //namespace Collections
 
 #endif

@@ -19,7 +19,9 @@
 
 #include "core/collections/CollectionLocation.h"
 
-class PlaylistCollection;
+namespace Collections {
+    class PlaylistCollection;
+}
 
 /**
   * Utility class that allows modification of playlists using the standard
@@ -32,7 +34,7 @@ class PlaylistCollection;
 class PlaylistCollectionLocation : public CollectionLocation
 {
 public:
-    PlaylistCollectionLocation( const PlaylistCollection *collection );
+    PlaylistCollectionLocation( const Collections::PlaylistCollection *collection );
 
     QString prettyLocation() const;
     bool isWritable() const;
@@ -44,7 +46,7 @@ protected:
     void removeUrlsFromCollection( const Meta::TrackList &tracks );
 
 private:
-    const PlaylistCollection *m_collection;
+    const Collections::PlaylistCollection *m_collection;
 };
 
 #endif // PLAYLISTCOLLECTIONLOCATION_H

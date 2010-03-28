@@ -29,7 +29,7 @@ class CustomReturnValue;
 
 namespace CustomValueFactory
 {
-    CustomReturnFunction* returnFunction( QueryMaker::ReturnFunction function, qint64 value );
+    CustomReturnFunction* returnFunction( Collections::QueryMaker::ReturnFunction function, qint64 value );
     CustomReturnValue* returnValue( qint64 value );
 }
 

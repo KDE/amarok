@@ -87,9 +87,9 @@ private:
     QTimer *m_timer;
 
     Phonon::State m_state;
-    QueryMaker *m_qm;
-    QueryMaker *m_qmTracks;
-    QueryMaker *m_qmFavTracks;
+    Collections::QueryMaker *m_qm;
+    Collections::QueryMaker *m_qmTracks;
+    Collections::QueryMaker *m_qmFavTracks;
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
     Meta::TrackList m_latestTracks;

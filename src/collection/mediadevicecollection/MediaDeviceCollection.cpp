@@ -35,6 +35,8 @@
 
 #include <kdiskfreespaceinfo.h>
 
+using namespace Collections;
+
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
     : Collections::CollectionFactory()
     , m_assistant( assistant )

@@ -93,7 +93,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     startDataQuery();
 }
 
-TagDialog::TagDialog( QueryMaker *qm )
+TagDialog::TagDialog( Collections::QueryMaker *qm )
     : KDialog( The::mainWindow() )
     , m_currentCover()
     , m_tracks()
@@ -107,7 +107,7 @@ TagDialog::TagDialog( QueryMaker *qm )
     ui->setupUi( mainWidget() );
     resize( minimumSizeHint() );
     startDataQuery();
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
     qm->run();
@@ -791,17 +791,17 @@ TagDialog::startDataQuery()
     if( !coll )
         return;
 
-    QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
-    QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
-    QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
-    QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
-    QList<QueryMaker*> queries;
+    Collections::QueryMaker *artist = coll->queryMaker()->setQueryType( Collections::QueryMaker::Artist );
+    Collections::QueryMaker *album = coll->queryMaker()->setQueryType( Collections::QueryMaker::Album );
+    Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
+    Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    QList<Collections::QueryMaker*> queries;
     queries << artist << album << composer << genre;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
 
-    m_dataQueryMaker = new MetaQueryMaker( queries );
+    m_dataQueryMaker = new Collections::MetaQueryMaker( queries );
     connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
     connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
     connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
@@ -858,7 +858,7 @@ TagDialog::showCoverMenu( const QPoint &pos )
 const QStringList TagDialog::statisticsData()
 {
     QStringList data;
-    QueryMaker *qm = 0;
+    Collections::QueryMaker *qm = 0;
     Collections::Collection *coll = m_currentTrack->collection();
     if( coll )
         qm = coll->queryMaker();
@@ -888,7 +888,7 @@ const QStringList TagDialog::statisticsData()
         if( qm )
         {
             // favorite track by this artist
-            qm->setQueryType( QueryMaker::Custom );
+            qm->setQueryType( Collections::QueryMaker::Custom );
             qm->addReturnValue( Meta::valTitle );
             qm->addMatch( trackArtist );
             qm->orderBy( Meta::valPlaycount );
@@ -907,7 +907,7 @@ const QStringList TagDialog::statisticsData()
         {
             // Favorite track on this album
             qm->reset();
-            qm->setQueryType( QueryMaker::Custom );
+            qm->setQueryType( Collections::QueryMaker::Custom );
             qm->addReturnValue( Meta::valTitle );
             qm->addMatch( trackAlbum );
             qm->orderBy( Meta::valPlaycount );

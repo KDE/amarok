@@ -20,7 +20,7 @@
 
 using namespace Meta;
 
-DaapTrack::DaapTrack( DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
+DaapTrack::DaapTrack( Collections::DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )

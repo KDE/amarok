@@ -19,6 +19,8 @@
 
 #include "DynamicServiceQueryMaker.h"
 
+namespace Collections {
+
 class LastFmServiceCollection;
 
 class LastFmServiceQueryMaker : public DynamicServiceQueryMaker
@@ -38,5 +40,7 @@ public:
 private:
     bool m_resultAsDataPtrs;
 };
+
+} //namespace Collections
 
 #endif // LASTFMSERVICEQUERYMAKER_H

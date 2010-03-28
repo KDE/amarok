@@ -28,6 +28,8 @@
 
 #include <QRegExp>
 
+using namespace Collections;
+
 Mp3tunesServiceCollection::Mp3tunesServiceCollection( ServiceBase * service, const QString
 &sessionId, Mp3tunesLocker * locker )
  : ServiceCollection( service, "Mp3tunesCollection", "Mp3tunesCollection" )

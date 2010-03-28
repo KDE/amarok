@@ -19,6 +19,8 @@
 
 #include "../ServiceSqlCollection.h"
 
+namespace Collections {
+
 /**
 A simple ServiceSqlCollection subclass for providing a magnatune membership specific implementaion of trackForUrl
 
@@ -35,5 +37,7 @@ public:
     virtual CollectionLocation* location() const;
 
 };
+
+} //namespace Collections
 
 #endif

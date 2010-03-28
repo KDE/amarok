@@ -16,6 +16,8 @@
 
 #include "LastFmServiceQueryMaker.h"
 
+using namespace Collections;
+
 LastFmServiceQueryMaker::LastFmServiceQueryMaker( LastFmServiceCollection *collection )
     : m_resultAsDataPtrs( false )
 {

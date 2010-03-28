@@ -69,7 +69,7 @@ class UpdateCapabilityMediaDevice : public Capabilities::UpdateCapability
 {
     Q_OBJECT
     public:
-        UpdateCapabilityMediaDevice( MediaDeviceCollection *coll )
+        UpdateCapabilityMediaDevice( Collections::MediaDeviceCollection *coll )
             : Capabilities::UpdateCapability()
             , m_coll( coll )
         {}
@@ -81,11 +81,11 @@ class UpdateCapabilityMediaDevice : public Capabilities::UpdateCapability
         }
 
     private:
-        MediaDeviceCollection *m_coll;
+        Collections::MediaDeviceCollection *m_coll;
 };
 
 
-MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection )
+MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collection )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -763,7 +763,7 @@ MediaDeviceArtist::remAlbum( MediaDeviceAlbumPtr album )
 
 //---------------MediaDeviceAlbum-----------------------------------
 
-MediaDeviceAlbum::MediaDeviceAlbum( MediaDeviceCollection *collection, const QString &name )
+MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collection, const QString &name )
     : Meta::Album()
     , m_collection( collection )
     , m_artworkCapability( 0 )

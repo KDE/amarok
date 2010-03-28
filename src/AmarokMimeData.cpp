@@ -49,9 +49,9 @@ public:
     QStringList playlistGroups;
     Podcasts::PodcastChannelList m_podcastChannels;
     Podcasts::PodcastEpisodeList m_podcastEpisodes;
-    QList<QueryMaker*> queryMakers;
-    QMap<QueryMaker*, Meta::TrackList> trackMap;
-    QMap<QueryMaker*, Playlists::PlaylistList> playlistMap;
+    QList<Collections::QueryMaker*> queryMakers;
+    QMap<Collections::QueryMaker*, Meta::TrackList> trackMap;
+    QMap<Collections::QueryMaker*, Playlists::PlaylistList> playlistMap;
     BookmarkList bookmarks;
     BookmarkGroupList bookmarkGroups;
 
@@ -128,7 +128,7 @@ AmarokMimeData::tracks() const
         QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
     }
     Meta::TrackList result = d->tracks;
-    foreach( QueryMaker *qm, d->queryMakers )
+    foreach( Collections::QueryMaker *qm, d->queryMakers )
     {
         if( d->trackMap.contains( qm ) )
             result << d->trackMap.value( qm );
@@ -159,7 +159,7 @@ AmarokMimeData::getTrackListSignal() const
     else
     {
         Meta::TrackList result = d->tracks;
-        foreach( QueryMaker *qm, d->queryMakers )
+        foreach( Collections::QueryMaker *qm, d->queryMakers )
         {
             if( d->trackMap.contains( qm ) )
                 result << d->trackMap.value( qm );
@@ -245,7 +245,7 @@ AmarokMimeData::addPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes
     d->m_podcastEpisodes << episodes;
 }
 
-QList<QueryMaker*>
+QList<Collections::QueryMaker*>
 AmarokMimeData::queryMakers()
 {
     d->deleteQueryMakers = false;
@@ -253,13 +253,13 @@ AmarokMimeData::queryMakers()
 }
 
 void
-AmarokMimeData::addQueryMaker( QueryMaker *queryMaker )
+AmarokMimeData::addQueryMaker( Collections::QueryMaker *queryMaker )
 {
     d->queryMakers.append( queryMaker );
 }
 
 void
-AmarokMimeData::setQueryMakers( const QList<QueryMaker*> &queryMakers )
+AmarokMimeData::setQueryMakers( const QList<Collections::QueryMaker*> &queryMakers )
 {
     d->queryMakers << queryMakers;
 }
@@ -364,9 +364,9 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
 void
 AmarokMimeData::startQueries()
 {
-    foreach( QueryMaker *qm, d->queryMakers )
+    foreach( Collections::QueryMaker *qm, d->queryMakers )
     {
-        qm->setQueryType( QueryMaker::Track );
+        qm->setQueryType( Collections::QueryMaker::Track );
         connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
         qm->run();
@@ -377,7 +377,7 @@ void
 AmarokMimeData::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
     Q_UNUSED( collectionId )
-    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
     if( qm )
     {
         d->trackMap.insert( qm, tracks );

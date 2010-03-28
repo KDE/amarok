@@ -26,14 +26,17 @@
 #include <QMap>
 #include <QString>
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
+
 class KJob;
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
-        MediaDeviceCollectionLocation( MediaDeviceCollection const *collection );
+        MediaDeviceCollectionLocation( Collections::MediaDeviceCollection const *collection );
         virtual ~MediaDeviceCollectionLocation();
 
         virtual QString prettyLocation() const;
@@ -57,7 +60,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 
     private:
         QMap<Meta::TrackPtr, QString> m_destinations;
-        MediaDeviceCollection *m_collection;
+        Collections::MediaDeviceCollection *m_collection;
         Meta::MediaDeviceHandler *m_handler;
 };
 

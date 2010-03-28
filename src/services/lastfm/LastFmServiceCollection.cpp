@@ -32,6 +32,8 @@
 
 #include <KLocale>
 
+using namespace Collections;
+
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     : ServiceCollection( 0, "last.fm", "last.fm" )
 {

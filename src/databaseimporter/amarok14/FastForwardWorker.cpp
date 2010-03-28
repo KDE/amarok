@@ -216,7 +216,7 @@ FastForwardWorker::run()
                 // state var to make the query synchronous (not exactly elegant, but'll do..)
                 m_queryRunning = true;
 
-                QueryMaker *qm_track = coll->queryMaker()->setQueryType( QueryMaker::Track );
+                Collections::QueryMaker *qm_track = coll->queryMaker()->setQueryType( Collections::QueryMaker::Track );
 
                 // set matching criteria to narrow down the corresponding track in
                 // the new collection as good as possible
@@ -228,10 +228,10 @@ FastForwardWorker::run()
                 qm_track->addFilter( Meta::valArtist, artist, true, true );
                 qm_track->addFilter( Meta::valComposer, composer, true, true );
                 qm_track->addFilter( Meta::valGenre, genre, true, true );
-                qm_track->addNumberFilter( Meta::valYear, year, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valDiscNr, discNr, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valFilesize, filesize, QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
                 connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
                 connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );

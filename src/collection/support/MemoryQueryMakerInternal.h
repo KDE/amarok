@@ -26,9 +26,12 @@
 
 class CustomReturnFunction;
 class CustomReturnValue;
-class MemoryCollection;
 class MemoryFilter;
 class MemoryMatcher;
+
+namespace Collections {
+
+class MemoryCollection;
 
 /**
   * A helper class for MemoryQueryMaker
@@ -50,7 +53,7 @@ public:
       * pointer.
       * @param collection the MemoryCollection instance that the query should be run on.
       */
-    MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection );
+    MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
     ~MemoryQueryMakerInternal();
 
 
@@ -87,15 +90,15 @@ private:
     void emitProperResult( const QList<PointerType > &list );
 
 private:
-    QWeakPointer<MemoryCollection> m_collection;
+    QWeakPointer<Collections::MemoryCollection> m_collection;
     QPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     bool m_randomize;
     int m_maxSize;
     bool m_returnAsDataPtrs;
-    QueryMaker::QueryType m_type;
-    QueryMaker::AlbumQueryMode m_albumQueryMode;
+    Collections::QueryMaker::QueryType m_type;
+    Collections::QueryMaker::AlbumQueryMode m_albumQueryMode;
     bool m_orderDescending;
     bool m_orderByNumberField;
     qint64 m_orderByField;
@@ -103,5 +106,7 @@ private:
     QList<CustomReturnFunction*> m_returnFunctions;
     QList<CustomReturnValue*> m_returnValues;
 };
+
+} //namespace Collections
 
 #endif

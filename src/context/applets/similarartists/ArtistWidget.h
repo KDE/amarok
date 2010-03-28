@@ -34,7 +34,10 @@ class QLabel;
 class QGraphicsScene;
 class QGridLayout;
 class QPushButton;
-class QueryMaker;
+
+namespace Collections {
+    class QueryMaker;
+}
 
 /**
  * A widget for display an artist with some details
@@ -168,7 +171,7 @@ private:
     /**
      * QueryMaker used for checking if a given artist exists in the local collection.
      */
-    QueryMaker *m_qm;
+    Collections::QueryMaker *m_qm;
 
 
 

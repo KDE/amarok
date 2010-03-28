@@ -30,7 +30,7 @@ A ServiceCollectionLocation subclass responsible for showing a small Magnatune s
 class MagnatuneCollectionLocation : public ServiceCollectionLocation
 {
 public:
-    MagnatuneCollectionLocation( MagnatuneSqlCollection const *parentCollection );
+    MagnatuneCollectionLocation( Collections::MagnatuneSqlCollection const *parentCollection );
 
     virtual ~MagnatuneCollectionLocation();
 

@@ -42,7 +42,7 @@ static const QString key("AMAROK_USERPLAYLIST");
 
 namespace Playlists {
 
-MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( MediaDeviceCollection *collection )
+MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection )
     : Playlists::UserPlaylistProvider()
     , m_renameAction( 0 )
     , m_collection( collection )

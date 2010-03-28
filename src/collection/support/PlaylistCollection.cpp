@@ -20,11 +20,13 @@
 #include "PlaylistCollectionLocation.h"
 #include "core/playlists/PlaylistProvider.h"
 
+using namespace Collections;
+
 PlaylistCollection::PlaylistCollection( const Playlists::PlaylistPtr &playlist )
         : Collections::Collection()
         , Playlists::PlaylistObserver()
         , m_playlist( playlist )
-        , m_mc( new MemoryCollection() )
+        , m_mc( new Collections::MemoryCollection() )
 {
     subscribeTo( playlist );
     m_mc->acquireWriteLock();

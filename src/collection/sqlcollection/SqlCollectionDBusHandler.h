@@ -20,7 +20,9 @@
 #include <QObject>
 #include <QDBusArgument>
 
-class SqlCollection;
+namespace Collections {
+    class SqlCollection;
+}
 
 class SqlCollectionDBusHandler : public QObject
 {
@@ -29,13 +31,13 @@ class SqlCollectionDBusHandler : public QObject
     public:
         SqlCollectionDBusHandler( QObject *parent );
 
-        void setCollection( SqlCollection *collection ) { m_collection = collection; }
+        void setCollection( Collections::SqlCollection *collection ) { m_collection = collection; }
 
     public slots:
         bool isDirInCollection( const QString& path );
     
     private:
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
 };
 
 

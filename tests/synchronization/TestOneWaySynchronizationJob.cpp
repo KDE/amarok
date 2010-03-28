@@ -43,7 +43,7 @@ static int trackCopyCount;
 class MyCollectionLocation : public CollectionLocation
 {
 public:
-    CollectionTestImpl *coll;
+    Collections::CollectionTestImpl *coll;
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
@@ -68,6 +68,8 @@ public:
     }
 };
 
+namespace Collections {
+
 class MyCollectionTestImpl : public CollectionTestImpl
 {
 public:
@@ -81,7 +83,9 @@ public:
     }
 };
 
-void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
+} //namespace Collections
+
+void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
     Meta::MockTrack *track = new Meta::MockTrack();
     ::testing::Mock::AllowLeak( track );
@@ -163,8 +167,8 @@ TestOneWaySynchronizationJob::init()
 void
 TestOneWaySynchronizationJob::testAddTrackToTarget()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( source, "track1", "artist1", "album1" );
     addMockTrack( source, "track2", "artist1", "album1" );
@@ -191,8 +195,8 @@ TestOneWaySynchronizationJob::testAddTrackToTarget()
 void
 TestOneWaySynchronizationJob::testAddAlbumToTarget()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( source, "track1", "artist1", "album1" );
     addMockTrack( source, "track1", "artist1", "album2" );
@@ -219,8 +223,8 @@ TestOneWaySynchronizationJob::testAddAlbumToTarget()
 void
 TestOneWaySynchronizationJob::testAddArtistToTarget()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( source, "track1", "artist1", "album1" );
     addMockTrack( source, "track1", "artist2", "album1" );
@@ -247,8 +251,8 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
 void
 TestOneWaySynchronizationJob::testEmptyTarget()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( source, "track1", "artist1", "album1" );
     addMockTrack( source, "track2", "artist1", "album1" );
@@ -274,8 +278,8 @@ TestOneWaySynchronizationJob::testEmptyTarget()
 void
 TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( target, "track1", "artist1", "album1" );
 
@@ -300,8 +304,8 @@ TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
 void
 TestOneWaySynchronizationJob::testNoActionNecessary()
 {
-    CollectionTestImpl *source = new MyCollectionTestImpl( "source" );
-    CollectionTestImpl *target = new MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
     addMockTrack( source, "track1", "artist1", "album1" );
     addMockTrack( source, "track2", "artist1", "album1" );

@@ -28,25 +28,23 @@
 #include <QHash>
 #include <QReadWriteLock>
 
-namespace ProxyCollection
-{
-    class Year;
-    class Track;
-    class Artist;
-    class Album;
-    class Genre;
-    class Composer;
+namespace Meta {
+    class ProxyYear;
+    class ProxyTrack;
+    class ProxyArtist;
+    class ProxyAlbum;
+    class ProxyGenre;
+    class ProxyComposer;
+}
 
+namespace Collections {
 
-
-
-
-    class AMAROK_EXPORT_TESTS Collection : public Collections::Collection
+    class AMAROK_EXPORT_TESTS ProxyCollection : public Collections::Collection
     {
         Q_OBJECT
         public:
-        Collection();
-        ~Collection();
+        ProxyCollection();
+        ~ProxyCollection();
 
         //Collections::Collection methods
 
@@ -63,34 +61,34 @@ namespace ProxyCollection
         //ProxyCollection::Collection methods
 
         void removeTrack( const TrackKey &key );
-        Track* getTrack( Meta::TrackPtr track );
-        void setTrack( ProxyCollection::Track *track );
+        Meta::ProxyTrack* getTrack( Meta::TrackPtr track );
+        void setTrack( Meta::ProxyTrack *track );
         bool hasTrack( const TrackKey &key );
 
         void removeAlbum( const QString &album, const QString &albumArtist );
-        Album* getAlbum( Meta::AlbumPtr album );
-        void setAlbum( ProxyCollection::Album *album );
+        Meta::ProxyAlbum* getAlbum( Meta::AlbumPtr album );
+        void setAlbum( Meta::ProxyAlbum *album );
         bool hasAlbum( const QString &album, const QString &albumArtist );
 
         void removeArtist( const QString &artist );
-        Artist* getArtist( Meta::ArtistPtr artist );
-        void setArtist( ProxyCollection::Artist *artist );
+        Meta::ProxyArtist* getArtist( Meta::ArtistPtr artist );
+        void setArtist( Meta::ProxyArtist *artist );
         bool hasArtist( const QString &artist );
 
         void removeGenre( const QString &genre );
-        Genre* getGenre( Meta::GenrePtr genre );
-        void setGenre( ProxyCollection::Genre *genre );
+        Meta::ProxyGenre* getGenre( Meta::GenrePtr genre );
+        void setGenre( Meta::ProxyGenre *genre );
         bool hasGenre( const QString &genre );
 
         void removeComposer( const QString &name );
-        Composer* getComposer( Meta::ComposerPtr composer );
-        void setComposer( ProxyCollection::Composer *composer );
+        Meta::ProxyComposer* getComposer( Meta::ComposerPtr composer );
+        void setComposer( Meta::ProxyComposer *composer );
         bool hasComposer( const QString &name );
 
         bool hasYear( const QString &name );
         void removeYear( const QString &name );
-        Year* getYear( Meta::YearPtr year );
-        void setYear( ProxyCollection::Year *year );
+        Meta::ProxyYear* getYear( Meta::YearPtr year );
+        void setYear( Meta::ProxyYear *year );
 
         public slots:
         void removeCollection( const QString &collectionId );
@@ -104,12 +102,12 @@ namespace ProxyCollection
         private:
         QHash<QString, Collections::Collection*> m_idCollectionMap;
 
-        QHash<QString, KSharedPtr<Year> > m_yearMap;
-        QHash<QString, KSharedPtr<Genre> > m_genreMap;
-        QHash<QString, KSharedPtr<Composer> > m_composerMap;
-        QHash<QString, KSharedPtr<Artist> > m_artistMap;
-        QHash<AlbumKey, KSharedPtr<Album> > m_albumMap;
-        QHash<TrackKey, KSharedPtr<Track> > m_trackMap;
+        QHash<QString, KSharedPtr<Meta::ProxyYear> > m_yearMap;
+        QHash<QString, KSharedPtr<Meta::ProxyGenre> > m_genreMap;
+        QHash<QString, KSharedPtr<Meta::ProxyComposer> > m_composerMap;
+        QHash<QString, KSharedPtr<Meta::ProxyArtist> > m_artistMap;
+        QHash<AlbumKey, KSharedPtr<Meta::ProxyAlbum> > m_albumMap;
+        QHash<TrackKey, KSharedPtr<Meta::ProxyTrack> > m_trackMap;
 
         QReadWriteLock m_yearLock;
         QReadWriteLock m_genreLock;
@@ -119,6 +117,7 @@ namespace ProxyCollection
         QReadWriteLock m_trackLock;
 
     };
-}
+
+} //namespace Collections
 
 #endif

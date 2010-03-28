@@ -32,13 +32,19 @@
 typedef QHash<QString, QString> TrackUrls;
 typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
-class CollectionCapabilityDelegate;
+namespace Capabilities {
+    class CollectionCapabilityDelegate;
+}
+
 class CollectionLocation;
 class SqlMountPointManager;
 class SqlCollectionLocationFactory;
-class SqlQueryMakerFactory;
 class XesamCollectionBuilder;
 class ScanManager;
+
+namespace Collections {
+
+class SqlQueryMakerFactory;
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 {
@@ -98,7 +104,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
         void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
         void setRegistry( SqlRegistry *registry ) { m_registry = registry; }
         void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
-        void setCapabilityDelegate( CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
+        void setCapabilityDelegate( Capabilities::CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
         void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
         void setScanManager( ScanManager *scanMgr );
@@ -123,7 +129,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
     private:
         SqlRegistry* m_registry;
         DatabaseUpdater * m_updater;
-        CollectionCapabilityDelegate * m_capabilityDelegate;
+        Capabilities::CollectionCapabilityDelegate * m_capabilityDelegate;
         SqlStorage * m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
@@ -135,6 +141,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 
         XesamCollectionBuilder *m_xesamBuilder;
 };
+
+}
 
 typedef QList<int> IdList;
 

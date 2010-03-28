@@ -30,11 +30,16 @@
 #include <QStringList>
 #include <QVariant>
 
-class AlbumCapabilityDelegate;
-class ArtistCapabilityDelegate;
-class TrackCapabilityDelegate;
-class SqlCollection;
+namespace Capabilities {
+    class AlbumCapabilityDelegate;
+    class ArtistCapabilityDelegate;
+    class TrackCapabilityDelegate;
+}
 class QAction;
+
+namespace Collections {
+    class SqlCollection;
+}
 
 namespace Meta
 {
@@ -46,10 +51,10 @@ class SqlTrack : public Meta::Track
         static QString getTrackReturnValues();
         /** returns the number of return values in getTrackReturnValues() */
         static int getTrackReturnValueCount();
-        static TrackPtr getTrack( int deviceid, const QString &rpath, SqlCollection *collection );
-        static TrackPtr getTrackFromUid( const QString &uid, SqlCollection *collection );
+        static TrackPtr getTrack( int deviceid, const QString &rpath, Collections::SqlCollection *collection );
+        static TrackPtr getTrackFromUid( const QString &uid, Collections::SqlCollection *collection );
 
-        SqlTrack( SqlCollection *collection, const QStringList &queryResult );
+        SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
         ~ SqlTrack();
 
         /** returns the title of this track as stored in the database **/
@@ -155,10 +160,10 @@ class SqlTrack : public Meta::Track
         int deviceid() const { return m_deviceid; }
         QString rpath() const { return m_rpath; }
         int trackId() const { return m_trackId; }
-        SqlCollection* sqlCollection() const { return m_collection; }
-        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
+        Collections::SqlCollection* sqlCollection() const { return m_collection; }
+        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, Collections::SqlCollection* collection, bool updateObservers = true );
         void updateData( const QStringList &result, bool forceUpdates = false );
-        void setCapabilityDelegate( TrackCapabilityDelegate *delegate );
+        void setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate );
 
     protected:
         void commitMetaDataChanges();
@@ -173,8 +178,8 @@ class SqlTrack : public Meta::Track
         static QString getTrackJoinConditions();
         void updateFileSize();
 
-        SqlCollection* m_collection;
-        TrackCapabilityDelegate *m_capabilityDelegate;
+        Collections::SqlCollection* m_collection;
+        Capabilities::TrackCapabilityDelegate *m_capabilityDelegate;
 
         QString m_title;
         KUrl m_url;
@@ -219,13 +224,13 @@ class SqlTrack : public Meta::Track
 class SqlArtist : public Meta::Artist
 {
     public:
-        SqlArtist( SqlCollection* collection, int id, const QString &name );
+        SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
         ~SqlArtist();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
 
-        void updateData( SqlCollection* collection, int id, const QString &name );
+        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -239,12 +244,12 @@ class SqlArtist : public Meta::Artist
 
         //SQL specific methods
         int id() const { return m_id; }
-        void setCapabilityDelegate( ArtistCapabilityDelegate *delegate ) { m_delegate = delegate; }
+        void setCapabilityDelegate( Capabilities::ArtistCapabilityDelegate *delegate ) { m_delegate = delegate; }
 
 
     private:
-        SqlCollection* m_collection;
-        ArtistCapabilityDelegate *m_delegate;
+        Collections::SqlCollection* m_collection;
+        Capabilities::ArtistCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -261,13 +266,13 @@ class SqlArtist : public Meta::Artist
 class SqlAlbum : public Meta::Album
 {
     public:
-        SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist );
+        SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
         ~SqlAlbum();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( SqlCollection* collection, int id, const QString &name, int artist );
+        void updateData( Collections::SqlCollection* collection, int id, const QString &name, int artist );
 
         virtual void invalidateCache();
 
@@ -296,8 +301,8 @@ class SqlAlbum : public Meta::Album
         int id() const { return m_id; }
 
         void setCompilation( bool compilation );
-        void setCapabilityDelegate( AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
-        SqlCollection *sqlCollection() const { return m_collection; }
+        void setCapabilityDelegate( Capabilities::AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
+        Collections::SqlCollection *sqlCollection() const { return m_collection; }
 
     private:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
@@ -311,8 +316,8 @@ class SqlAlbum : public Meta::Album
         int unsetImageId() const;
 
     private:
-        SqlCollection* m_collection;
-        AlbumCapabilityDelegate *m_delegate;
+        Collections::SqlCollection* m_collection;
+        Capabilities::AlbumCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
         int m_artistId;
@@ -336,12 +341,12 @@ class SqlAlbum : public Meta::Album
 class SqlComposer : public Meta::Composer
 {
     public:
-        SqlComposer( SqlCollection* collection, int id, const QString &name );
+        SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( SqlCollection* collection, int id, const QString &name );
+        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -351,7 +356,7 @@ class SqlComposer : public Meta::Composer
         int id() const { return m_id; }
 
     private:
-        SqlCollection* m_collection;
+        Collections::SqlCollection* m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -365,12 +370,12 @@ class SqlComposer : public Meta::Composer
 class SqlGenre : public Meta::Genre
 {
     public:
-        SqlGenre( SqlCollection* collection, int id, const QString &name );
+        SqlGenre( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( SqlCollection* collection, int id, const QString &name );
+        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -380,7 +385,7 @@ class SqlGenre : public Meta::Genre
         int id() const { return m_id; }
 
     private:
-        SqlCollection* m_collection;
+        Collections::SqlCollection* m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -394,12 +399,12 @@ class SqlGenre : public Meta::Genre
 class SqlYear : public Meta::Year
 {
     public:
-        SqlYear( SqlCollection* collection, int id, const QString &name );
+        SqlYear( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( SqlCollection* collection, int id, const QString &name );
+        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -409,7 +414,7 @@ class SqlYear : public Meta::Year
         int id() const { return m_id; }
 
     private:
-        SqlCollection* m_collection;
+        Collections::SqlCollection* m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;

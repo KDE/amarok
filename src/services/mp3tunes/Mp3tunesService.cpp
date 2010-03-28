@@ -279,7 +279,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         m_sessionId = sessionId;
         m_authenticated = true;
 
-        m_collection = new Mp3tunesServiceCollection( this, m_sessionId, m_locker );
+        m_collection = new Collections::Mp3tunesServiceCollection( this, m_sessionId, m_locker );
         CollectionManager::instance()->addUnmanagedCollection( m_collection,
                                     CollectionManager::CollectionDisabled );
         QList<int> levels;

@@ -85,18 +85,20 @@ public:
         return new SqlCollectionLocation( m_collection );
     }
 
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
 };
 
 class DelegateSqlRegistry : public SqlRegistry
 {
 public:
-    DelegateSqlRegistry( SqlCollection *coll ) : SqlRegistry( coll ) {}
+    DelegateSqlRegistry( Collections::SqlCollection *coll ) : SqlRegistry( coll ) {}
 protected:
-    AlbumCapabilityDelegate *createAlbumDelegate() const { return new AlbumCapabilityDelegateImpl(); }
-    ArtistCapabilityDelegate *createArtistDelegate() const { return new ArtistCapabilityDelegateImpl(); }
-    TrackCapabilityDelegate *createTrackDelegate() const { return new TrackCapabilityDelegateImpl(); }
+    Capabilities::AlbumCapabilityDelegate *createAlbumDelegate() const { return new Capabilities::AlbumCapabilityDelegateImpl(); }
+    Capabilities::ArtistCapabilityDelegate *createArtistDelegate() const { return new Capabilities::ArtistCapabilityDelegateImpl(); }
+    Capabilities::TrackCapabilityDelegate *createTrackDelegate() const { return new Capabilities::TrackCapabilityDelegateImpl(); }
 };
+
+namespace Collections {
 
 SqlCollectionFactory::SqlCollectionFactory()
 {
@@ -106,7 +108,7 @@ SqlCollection*
 SqlCollectionFactory::createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const
 {
     SqlCollection *coll = new SqlCollection( id, prettyName );
-    coll->setCapabilityDelegate( new CollectionCapabilityDelegateImpl() );
+    coll->setCapabilityDelegate( new Capabilities::CollectionCapabilityDelegateImpl() );
 
     MountPointManager *mpm = new MountPointManager( coll, storage );
 
@@ -133,3 +135,5 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
     coll->init();
     return coll;
 }
+
+} //namespace Collections

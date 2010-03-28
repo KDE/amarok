@@ -32,7 +32,7 @@ static const QString XESAM_NS = "http://freedesktop.org/standards/xesam/1.0/quer
 
 #define DEBUG_XML true
 
-XesamCollectionBuilder::XesamCollectionBuilder( SqlCollection *collection )
+XesamCollectionBuilder::XesamCollectionBuilder( Collections::SqlCollection *collection )
     : QObject( collection )
     , m_collection( collection )
 {

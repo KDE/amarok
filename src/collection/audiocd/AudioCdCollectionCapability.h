@@ -21,7 +21,9 @@
 
 #include "core/capabilities/CollectionCapability.h"
 
-class AudioCdCollection;
+namespace Collections {
+    class AudioCdCollection;
+}
 
 namespace Capabilities
 {
@@ -30,11 +32,11 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            AudioCdCollectionCapability( AudioCdCollection *coll );
+            AudioCdCollectionCapability( Collections::AudioCdCollection *coll );
             virtual QList<QAction*> collectionActions();
 
         private:
-            AudioCdCollection *m_collection;
+            Collections::AudioCdCollection *m_collection;
     };
 }
 

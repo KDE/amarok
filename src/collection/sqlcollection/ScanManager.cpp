@@ -283,7 +283,7 @@ ScanManager::setBlockScan( bool blockScan )
 }
 
 void
-ScanManager::setCollection( SqlCollection *collection )
+ScanManager::setCollection( Collections::SqlCollection *collection )
 {
     m_collection = collection;
     m_dbusHandler->setCollection( collection );
@@ -633,7 +633,7 @@ ScanManager::writeBatchIncrementalInfoFile()
 // class XmlParseJob
 ///////////////////////////////////////////////////////////////////////////////
 
-XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
+XmlParseJob::XmlParseJob( ScanManager *parent, Collections::SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_abortRequested( false )

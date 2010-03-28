@@ -29,7 +29,7 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
     Q_OBJECT
     public:
-        Mp3tunesServiceCollectionLocation(Mp3tunesServiceCollection const *parentCollection);
+        Mp3tunesServiceCollectionLocation( Collections::Mp3tunesServiceCollection const *parentCollection );
         virtual ~Mp3tunesServiceCollectionLocation();
 
         
@@ -39,7 +39,7 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
         
     private:
-        Mp3tunesServiceCollection *m_collection;
+        Collections::Mp3tunesServiceCollection *m_collection;
 };
 
 #endif

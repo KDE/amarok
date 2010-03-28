@@ -82,7 +82,7 @@ private:
 
     InfoParserBase *m_infoParser;
 
-    AmpacheServiceCollection *  m_collection;
+    Collections::AmpacheServiceCollection *  m_collection;
 
     // Disable copy constructor and assignment
     AmpacheService( const AmpacheService& );

@@ -29,7 +29,7 @@
 
 #include <QList>
 
-using namespace Meta;
+using namespace Collections;
 
 struct Mp3tunesServiceQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
@@ -154,11 +154,11 @@ Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 
 
 
-QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
+QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const Meta::ArtistPtr & artist )
 {
     DEBUG_BLOCK
     if ( m_parentAlbumId.isEmpty() ) {
-        const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
+        const Meta::ServiceArtist * serviceArtist = static_cast< const Meta::ServiceArtist * >( artist.data() );
         m_parentArtistId = QString::number( serviceArtist->id() );
         debug() << "artist parent id set to: " << m_parentArtistId;
     }
@@ -169,7 +169,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
 QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
     DEBUG_BLOCK
-    const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
+    const Meta::ServiceAlbum * serviceAlbum = static_cast< const Meta::ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
     debug() << "album parent id set to: " << m_parentAlbumId;
     m_parentArtistId.clear();
@@ -181,9 +181,9 @@ template<class PointerType, class ListType>
 void Mp3tunesServiceQueryMaker::emitProperResult( const ListType& list )
 {
     if ( d->returnDataPtrs ) {
-        DataList data;
+        Meta::DataList data;
         foreach( PointerType p, list )
-            data << DataPtr::staticCast( p );
+            data << Meta::DataPtr::staticCast( p );
 
         emit newResultReady( m_collection->collectionId(), data );
     }
@@ -196,36 +196,36 @@ void Mp3tunesServiceQueryMaker::handleResult()
     DEBUG_BLOCK
 }
 
-void Mp3tunesServiceQueryMaker::handleResult( const ArtistList & artists )
+void Mp3tunesServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
-        emitProperResult<ArtistPtr, ArtistList>( artists.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<ArtistPtr, ArtistList>( artists );
+        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
     }
 }
 
-void Mp3tunesServiceQueryMaker::handleResult( const AlbumList &albums )
+void Mp3tunesServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
 {
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
-        emitProperResult<AlbumPtr, AlbumList>( albums.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<AlbumPtr, AlbumList>( albums );
+        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
     }
 }
 
-void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
+void Mp3tunesServiceQueryMaker::handleResult(const Meta::TrackList & tracks)
 {
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
-        emitProperResult<TrackPtr, TrackList>( tracks.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<TrackPtr, TrackList>( tracks );
+        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
     }
 }
 
@@ -252,7 +252,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
 {
     DEBUG_BLOCK
 
-    AlbumList albums;
+    Meta::AlbumList albums;
 
     debug() << "Fetching Albums for parentArtist id: " << m_parentArtistId;
 
@@ -279,8 +279,8 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 {
     DEBUG_BLOCK
 
-    AlbumList albums;
-    TrackList tracks;
+    Meta::AlbumList albums;
+    Meta::TrackList tracks;
 
     debug() << "album parent id: " << m_parentAlbumId;
     debug() << "artist parent id: " << m_parentArtistId;
@@ -322,17 +322,17 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArti
 {
     DEBUG_BLOCK
 
-    ArtistList artists;
+    Meta::ArtistList artists;
 
     debug() << "Received artists";
     foreach(const Mp3tunesLockerArtist &artist, artistList) {
-        ServiceArtist * serviceArtist = new ServiceArtist( artist.artistName() );
+        Meta::ServiceArtist * serviceArtist = new Meta::ServiceArtist( artist.artistName() );
 
         //debug() << "Adding artist: " <<  artist.artistName();
 
         serviceArtist->setId( artist.artistId() );
 
-        ArtistPtr artistPtr( serviceArtist );
+        Meta::ArtistPtr artistPtr( serviceArtist );
 
         artists.push_back( artistPtr );
 
@@ -353,7 +353,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
 
     debug() << "Received albums";
 
-    AlbumList albums;
+    Meta::AlbumList albums;
     foreach(const Mp3tunesLockerAlbum &album, albumsList) {
 
         QString title = album.albumTitle();
@@ -365,7 +365,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
 
         bool hasArt = album.hasArt();
 
-        Mp3TunesAlbum * serviceAlbum = new Mp3TunesAlbum( title );
+        Meta::Mp3TunesAlbum * serviceAlbum = new Meta::Mp3TunesAlbum( title );
 
         if ( hasArt )
         {
@@ -379,7 +379,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
             serviceAlbum->setCoverUrl(coverUrl);
         }
 
-        AlbumPtr albumPtr( serviceAlbum );
+        Meta::AlbumPtr albumPtr( serviceAlbum );
 
         //debug() << "Adding album: " <<  title;
 
@@ -388,7 +388,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
         m_collection->addAlbum( albumPtr );
         m_collection->releaseLock();
 
-        ArtistPtr artistPtr = m_collection->artistById( album.artistId() );
+        Meta::ArtistPtr artistPtr = m_collection->artistById( album.artistId() );
         if ( artistPtr.data() != 0 )
         {
            //debug() << "Found parent artist";
@@ -409,7 +409,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
     DEBUG_BLOCK
     //debug() << "Received Tracks";
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
      //so lets figure out what we got here:
 
@@ -419,8 +419,8 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
         QString title = track.trackTitle();
         if ( title.isEmpty() ) title = "Unknown";
 
-        Mp3TunesTrack * serviceTrack = new Mp3TunesTrack( title );
-        TrackPtr trackPtr( serviceTrack );
+        Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title );
+        Meta::TrackPtr trackPtr( serviceTrack );
 
       //  debug() << "Adding track: " <<  title;
 
@@ -446,18 +446,18 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
         QString albumId = QString::number( track.albumId() );
         QString artistId = QString::number( track.artistId() );
 
-        ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
+        Meta::ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) {
             debug() << "Found parent artist";
-            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
+            Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
             serviceTrack->setArtist( artistPtr );
             artist->addTrack( trackPtr );
         }
 
-        AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
+        Meta::AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
         if ( albumPtr.data() != 0 ) {
             debug() << "Found parent album";
-            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
+            Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
             serviceTrack->setAlbumPtr( albumPtr );
             album->addTrack( trackPtr );
         }
@@ -478,7 +478,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & 
     DEBUG_BLOCK
     //debug() << "value: " << value;
     //for now, only accept artist filters
-    if ( value == valArtist ) {
+    if ( value == Meta::valArtist ) {
         //debug() << "Filter: " << filter;
         m_artistFilter = filter;
     }

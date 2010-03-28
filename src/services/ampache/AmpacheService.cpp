@@ -307,7 +307,7 @@ void AmpacheService::authenticationComplete(KJob * job)
 
         m_authenticated = true;
 
-        m_collection = new AmpacheServiceCollection( this, m_server, m_sessionId );
+        m_collection = new Collections::AmpacheServiceCollection( this, m_server, m_sessionId );
         connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
 
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );

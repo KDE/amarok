@@ -19,7 +19,7 @@
 #include "core/playlists/Playlist.h"
 #include "PlaylistCollection.h"
 
-PlaylistCollectionLocation::PlaylistCollectionLocation( const PlaylistCollection *collection )
+PlaylistCollectionLocation::PlaylistCollectionLocation( const Collections::PlaylistCollection *collection )
         : CollectionLocation()
         , m_collection( collection )
 {

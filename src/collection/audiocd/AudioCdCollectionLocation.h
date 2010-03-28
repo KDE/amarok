@@ -30,7 +30,7 @@ class AudioCdCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 public:
-    AudioCdCollectionLocation( const AudioCdCollection* parentCollection );
+    AudioCdCollectionLocation( const Collections::AudioCdCollection* parentCollection );
     ~AudioCdCollectionLocation();
 
     virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -47,7 +47,7 @@ private slots:
     
 private:
 
-    const AudioCdCollection * m_collection;
+    const Collections::AudioCdCollection * m_collection;
 
 };
 

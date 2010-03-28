@@ -31,6 +31,8 @@ namespace ThreadWeaver
     class Job;
 }
 
+namespace Collections {
+
 class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
 {
     Q_OBJECT
@@ -93,5 +95,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         Private * const d;
 };
 
+} //namespace Collections
 
 #endif

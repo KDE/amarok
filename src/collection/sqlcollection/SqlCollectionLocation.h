@@ -26,7 +26,10 @@
 #include <QMap>
 #include <QString>
 
-class SqlCollection;
+namespace Collections {
+    class SqlCollection;
+}
+
 class SqlCollectionLocation;
 /**
  * @class TransferJob
@@ -63,7 +66,7 @@ class SqlCollectionLocation : public CollectionLocation
     Q_OBJECT
 
     public:
-        SqlCollectionLocation( SqlCollection const *collection );
+        SqlCollectionLocation( Collections::SqlCollection const *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;
@@ -100,7 +103,7 @@ class SqlCollectionLocation : public CollectionLocation
 
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
         Meta::TrackList m_removetracks;

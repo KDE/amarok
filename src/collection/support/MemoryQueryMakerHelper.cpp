@@ -27,6 +27,8 @@
 #include <KRandomSequence>
 #include <KSortableList>
 
+using namespace Collections;
+
 template <class PointerType>
 QList<PointerType>
 MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, bool descendingOrder )

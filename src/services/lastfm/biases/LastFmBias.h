@@ -30,9 +30,10 @@
 
 class KComboBox;
 
-namespace Amarok
+namespace Collections
 {
-class Collection;
+    class Collection;
+    class QueryMaker;
 }
 
 namespace Dynamic
@@ -97,7 +98,7 @@ private:
     QString m_currentTrack;
     QNetworkReply* m_artistQuery;
     QNetworkReply* m_trackQuery;
-    QueryMaker* m_qm; // stored so it can be refreshed
+    Collections::QueryMaker* m_qm; // stored so it can be refreshed
     // if the collection changes
     Collections::Collection* m_collection; // null => all queryable collections
     bool m_needsUpdating;

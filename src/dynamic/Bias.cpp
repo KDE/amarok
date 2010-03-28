@@ -67,7 +67,7 @@ Dynamic::Bias::fromXml( QDomElement e )
         if( !queryElement.isNull() )
         {
             // I don't actually need a qm from XmlQueryReader, I just want the filters.
-            QueryMaker* dummyQM = new MetaQueryMaker( QList<QueryMaker*>() );
+            Collections::QueryMaker* dummyQM = new Collections::MetaQueryMaker( QList<Collections::QueryMaker*>() );
 
             QString rawXml;
             QTextStream rawXmlStream( &rawXml );
@@ -283,14 +283,14 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    QueryMaker* qm;
+    Collections::QueryMaker* qm;
 
     if( !m_collection )
         m_collection = CollectionManager::instance()->primaryCollection();
 
     qm = m_collection->queryMaker();
 
-    m_qm = new XmlQueryWriter( qm,
+    m_qm = new Collections::XmlQueryWriter( qm,
             QDomDocument() );
 
     if( filter.field != 0 )
@@ -299,10 +299,10 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
             m_qm->addFilter( filter.field, filter.value );
         else
             m_qm->addNumberFilter( filter.field, filter.value.toLongLong(),
-                    (QueryMaker::NumberComparison)filter.compare );
+                    (Collections::QueryMaker::NumberComparison)filter.compare );
     }
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 

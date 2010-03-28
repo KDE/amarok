@@ -23,6 +23,8 @@
 
 #include <threadweaver/Job.h>
 
+namespace Collections {
+
 class SqlCollection;
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
@@ -133,5 +135,7 @@ public:
     virtual SqlQueryMaker* createQueryMaker() const = 0;
     virtual ~SqlQueryMakerFactory() {};
 };
+
+} //namespace Collections
 
 #endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */

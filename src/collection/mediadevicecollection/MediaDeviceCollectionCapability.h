@@ -21,7 +21,9 @@
 
 #include "core/capabilities/CollectionCapability.h"
 
-class MediaDeviceCollection;
+namespace Collections {
+    class MediaDeviceCollection;
+}
 
 namespace Capabilities
 {
@@ -30,12 +32,12 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            MediaDeviceCollectionCapability( MediaDeviceCollection *coll );
+            MediaDeviceCollectionCapability( Collections::MediaDeviceCollection *coll );
 
             virtual QList<QAction*> collectionActions();
 
         private:
-            MediaDeviceCollection *m_coll;
+            Collections::MediaDeviceCollection *m_coll;
     };
 }
 #endif

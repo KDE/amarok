@@ -25,6 +25,8 @@
 
 #include <QMap>
 
+namespace Collections {
+
 class Mp3tunesServiceCollection : public ServiceCollection
 {
     Q_OBJECT
@@ -56,5 +58,7 @@ private:
     Mp3tunesLocker * m_locker;
     QMap<QString, Meta::Mp3TunesTrack*> m_tracksFetching; // a list of tracks that are being fetched via trackForUrl and their associated threadweaver jobs
 };
+
+} //namespace Collections
 
 #endif

@@ -49,7 +49,7 @@ TestScanResultProcessorFull::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new SqlCollection( "testId", "testcollection" );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
     SqlMountPointManagerMock *mpm = new SqlMountPointManagerMock();
     m_collection->setMountPointManager( mpm );

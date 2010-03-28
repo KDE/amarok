@@ -29,6 +29,8 @@
 #include <KRandomSequence>
 #include <KSortableList>
 
+namespace Collections {
+
 MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection )
     : QObject()
     , m_collection( collection )
@@ -532,5 +534,7 @@ MemoryQueryMakerInternal::setCustomReturnValues( const QList<CustomReturnValue *
 {
     m_returnValues = values;
 }
+
+} //namespace Collections
 
 #include "MemoryQueryMakerInternal.moc"

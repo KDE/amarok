@@ -111,7 +111,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 }
 
 void
-CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination )
+CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -128,7 +128,7 @@ CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination
     m_isRemoveAction = false;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
 
@@ -157,7 +157,7 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 }
 
 void
-CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination )
+CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -174,7 +174,7 @@ CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination
     m_removeSources = true;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
 
@@ -193,7 +193,7 @@ CollectionLocation::prepareRemove( const Meta::TrackList &tracks )
 }
 
 void
-CollectionLocation::prepareRemove( QueryMaker *qm )
+CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
 {
     DEBUG_BLOCK
     if( !isWritable() )
@@ -210,7 +210,7 @@ CollectionLocation::prepareRemove( QueryMaker *qm )
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
 

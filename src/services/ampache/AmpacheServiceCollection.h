@@ -51,6 +51,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         KIO::StoredTransferJob * m_storedTransferJob;
 };
 
+namespace Collections {
 
 /**
 A collection that dynamically fetches data from a remote location as needed
@@ -90,4 +91,7 @@ private:
 
     AmpacheTrackForUrlWorker * m_trackForUrlWorker;
 };
+
+} //namespace Collections
+
 #endif

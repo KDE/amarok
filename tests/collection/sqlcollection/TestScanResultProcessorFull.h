@@ -26,7 +26,10 @@
 #include <KTempDir>
 
 class SqlStorage;
-class SqlCollection;
+
+namespace Collections {
+    class SqlCollection;
+}
 
 typedef QPair<QString, uint> DirMtime;
 
@@ -50,7 +53,7 @@ private:
 
     QList<DirMtime> setupFileSystem( const QList<QVariantMap> &trackData );
 
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
 

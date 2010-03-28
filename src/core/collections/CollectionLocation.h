@@ -27,7 +27,9 @@
 
 #include <KUrl>
 
-class QueryMaker;
+namespace Collections {
+    class QueryMaker;
+}
 
 /**
     This base class defines the the methods necessary to allow the copying and moving
@@ -154,7 +156,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
-        void prepareCopy( QueryMaker *qm, CollectionLocation *destination );
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
            convenience method for moving a single track,
@@ -162,13 +164,13 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
-        void prepareMove( QueryMaker *qm, CollectionLocation *destination );
+        void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
            method to get tracks from qm to prepare them to be removed
         */
         void prepareRemove( const Meta::TrackList &tracks );
-        void prepareRemove( QueryMaker *qm );
+        void prepareRemove( Collections::QueryMaker *qm );
 
         /**
            remove the track from the collection.

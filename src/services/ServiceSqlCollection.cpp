@@ -23,7 +23,7 @@
 
 #include <klocale.h>
 
-
+using namespace Collections;
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
     : ServiceCollection()

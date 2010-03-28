@@ -31,7 +31,10 @@
 class Collection;
 class CollectionTreeItem;
 class QTimeLine;
-class QueryMaker;
+
+namespace Collections {
+    class QueryMaker;
+}
 
 typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 
@@ -82,13 +85,13 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         virtual QPixmap iconForLevel( int level ) const;
-        virtual void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent );
+        virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
 
         virtual void setLevels( const QList<int> &levelType ) = 0;
         virtual QList<int> levels() const { return m_levelType; }
 
-        virtual void addFilters( QueryMaker *qm ) const;
+        virtual void addFilters( Collections::QueryMaker *qm ) const;
 
         void setCurrentFilter( const QString &filter );
 
@@ -109,8 +112,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void slotExpanded( const QModelIndex &index );
 
     private:
-        void handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList );
-        void handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList );
+        void handleCompilationQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
+        void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
 
     protected:
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
@@ -151,9 +154,9 @@ class CollectionTreeItemModelBase::Private
 {
  public:
     QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
-    QHash<QueryMaker* , CollectionTreeItem* > m_childQueries;
-    QHash<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
-    QHash<CollectionTreeItem*, QueryMaker*> m_runningQueries;
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
 };
 
 #endif

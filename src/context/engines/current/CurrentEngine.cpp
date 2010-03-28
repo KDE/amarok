@@ -164,7 +164,7 @@ CurrentEngine::stoppedState()
                 m_qm->reset();
             else
                 m_qm = coll->queryMaker();
-            m_qm->setQueryType( QueryMaker::Album );
+            m_qm->setQueryType( Collections::QueryMaker::Album );
             m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
             m_qm->orderBy( Meta::valCreateDate, true );
             m_qm->limitMaxResultSize( 5 );
@@ -190,7 +190,7 @@ CurrentEngine::stoppedState()
             m_qmTracks->reset();
         else
             m_qmTracks = coll->queryMaker();
-        m_qmTracks->setQueryType( QueryMaker::Track );
+        m_qmTracks->setQueryType( Collections::QueryMaker::Track );
         m_qmTracks->excludeFilter( Meta::valTitle, QString(), true, true );
         m_qmTracks->orderBy( Meta::valLastPlayed, true );
         m_qmTracks->limitMaxResultSize( 5 );
@@ -210,7 +210,7 @@ CurrentEngine::stoppedState()
         m_qmFavTracks->reset();
     else
         m_qmFavTracks = coll->queryMaker();
-    m_qmFavTracks->setQueryType( QueryMaker::Track );
+    m_qmFavTracks->setQueryType( Collections::QueryMaker::Track );
     m_qmFavTracks->excludeFilter( Meta::valTitle, QString(), true, true );
     m_qmFavTracks->orderBy( Meta::valScore, true );
     m_qmFavTracks->limitMaxResultSize( 5 );
@@ -318,7 +318,7 @@ CurrentEngine::update()
                 //try searching the collection as we might be dealing with a non local track
                 Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
                 m_qm = coll->queryMaker();
-                m_qm->setQueryType( QueryMaker::Album );
+                m_qm->setQueryType( Collections::QueryMaker::Album );
                 m_qm->addMatch( artist );
 
                 m_albums.clear();

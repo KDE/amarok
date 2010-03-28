@@ -81,7 +81,7 @@ QString UmsHandler::s_audioFolderKey( "audio_folder" );
 QString UmsHandler::s_podcastFolderKey( "podcast_folder" );
 QString UmsHandler::s_autoConnectKey( "use_automatically" );
 
-UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
+UmsHandler::UmsHandler( Collections::UmsCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     , m_watcher()
     , m_listpos( 0 )

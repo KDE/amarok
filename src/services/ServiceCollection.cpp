@@ -28,7 +28,7 @@
 //#include "reader.h"
 
 
-using namespace Meta;
+using namespace Collections;
 
 
 //ServiceCollection
@@ -59,10 +59,10 @@ ServiceCollection::startFullScan()
     //ignore
 }
 
-QueryMaker*
+Collections::QueryMaker*
 ServiceCollection::queryMaker()
 {
-    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
+    return new Collections::MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 QString

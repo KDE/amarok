@@ -266,7 +266,7 @@ namespace Dynamic
              */
             static QList<QByteArray>  s_universe;
             static QMutex             s_universeMutex;
-            static QueryMaker*        s_universeQuery;
+            static Collections::QueryMaker*        s_universeQuery;
             static Collections::Collection*  s_universeCollection;
             static bool               s_universeOutdated;
             static unsigned int       s_uidUrlProtocolPrefixLength;

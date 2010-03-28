@@ -22,7 +22,7 @@
 
 using namespace Capabilities;
 
-AudioCdCollectionCapability::AudioCdCollectionCapability( AudioCdCollection *collection )
+AudioCdCollectionCapability::AudioCdCollectionCapability( Collections::AudioCdCollection *collection )
     : CollectionCapability()
     , m_collection( collection )
 {

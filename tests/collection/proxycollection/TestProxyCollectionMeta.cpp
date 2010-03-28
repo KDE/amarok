@@ -206,7 +206,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    ProxyCollection::Track cut( 0, ptr );
+    Meta::ProxyTrack cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -226,7 +226,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    ProxyCollection::Track cut( 0, ptr );
+    Meta::ProxyTrack cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -245,7 +245,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    ProxyCollection::Album album( 0, ptr );
+    Meta::ProxyAlbum album( 0, ptr );
 
     QVERIFY( album.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !album.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -265,7 +265,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    ProxyCollection::Album album( 0, ptr );
+    Meta::ProxyAlbum album( 0, ptr );
 
     QVERIFY( ! album.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( album.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -284,7 +284,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    ProxyCollection::Artist artist( 0, ptr );
+    Meta::ProxyArtist artist( 0, ptr );
 
     QVERIFY( artist.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !artist.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -304,7 +304,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    ProxyCollection::Artist artist( 0, ptr );
+    Meta::ProxyArtist artist( 0, ptr );
 
     QVERIFY( ! artist.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( artist.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -323,7 +323,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    ProxyCollection::Composer cut( 0, ptr );
+    Meta::ProxyComposer cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -343,7 +343,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    ProxyCollection::Composer cut( 0, ptr );
+    Meta::ProxyComposer cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -362,7 +362,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    ProxyCollection::Genre cut( 0, ptr );
+    Meta::ProxyGenre cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -382,7 +382,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    ProxyCollection::Genre cut( 0, ptr );
+    Meta::ProxyGenre cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -401,7 +401,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    ProxyCollection::Year cut( 0, ptr );
+    Meta::ProxyYear cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -421,7 +421,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    ProxyCollection::Year cut( 0, ptr );
+    Meta::ProxyYear cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -473,12 +473,12 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     Meta::TrackPtr ptr1( mock1 );
     Meta::TrackPtr ptr2( mock2 );
 
-    ProxyCollection::Collection *proxyCollection = new ProxyCollection::Collection();
+    Collections::ProxyCollection *proxyCollection = new Collections::ProxyCollection();
 
     QSignalSpy spy( proxyCollection, SIGNAL(updated()));
     QVERIFY( spy.isValid() );
 
-    ProxyCollection::Track cut( proxyCollection, ptr1 );
+    Meta::ProxyTrack cut( proxyCollection, ptr1 );
     cut.add( ptr2 );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::Editable ) );
@@ -530,7 +530,7 @@ TestProxyCollectionMeta::testPrettyUrl()
 
     Meta::TrackPtr trackPtr( mock );
 
-    ProxyCollection::Track track( 0, trackPtr );
+    Meta::ProxyTrack track( 0, trackPtr );
 
     QCOMPARE( track.prettyUrl(), QString( "foo" ) );
 }

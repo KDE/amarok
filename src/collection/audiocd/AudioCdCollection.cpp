@@ -46,9 +46,9 @@
 #include <QDir>
 #include <QTextCodec>
 
-AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
+using namespace Collections;
 
-using namespace Meta;
+AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
@@ -76,7 +76,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 
     connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 
-    m_handler = new AudioCdHandler( this );
+    m_handler = new Meta::AudioCdHandler( this );
 }
 
 
@@ -141,11 +141,11 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             album = compoundTitleList.at( 1 );
         }
 
-        AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
-        memoryCollection()->addArtist( ArtistPtr::staticCast( artistPtr ) );
-        AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
+        Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new  Meta::AudioCdArtist( artist ) );
+        memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
+        Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
         albumPtr->setAlbumArtist( artistPtr );
-        memoryCollection()->addAlbum( AlbumPtr::staticCast( albumPtr ) );
+        memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
@@ -156,8 +156,8 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             year = cddbInfo.mid( startIndex, endIndex - startIndex );
         }
 
-        AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
-        memoryCollection()->addYear( YearPtr::staticCast( yearPtr ) );
+        Meta::AudioCdYearPtr yearPtr = Meta::AudioCdYearPtr( new Meta::AudioCdYear( year ) );
+        memoryCollection()->addYear( Meta::YearPtr::staticCast( yearPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
@@ -168,8 +168,8 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             genre = cddbInfo.mid( startIndex, endIndex - startIndex );
         }
 
-        AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
-        memoryCollection()->addGenre( GenrePtr::staticCast( genrePtr ) );
+        Meta::AudioCdGenrePtr genrePtr = Meta::AudioCdGenrePtr( new Meta::AudioCdGenre( genre ) );
+        memoryCollection()->addGenre( Meta::GenrePtr::staticCast( genrePtr ) );
 
         m_discCddbId = "unknown";
 
@@ -233,12 +233,12 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
 
-                AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
+                Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
 
                 trackPtr->setTrackNumber( i + 1 );
                 trackPtr->setFileNameBase( baseFileName );
 
-                memoryCollection()->addTrack( TrackPtr::staticCast( trackPtr ) );
+                memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
 
                 artistPtr->addTrack( trackPtr );
 
@@ -248,7 +248,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 {
                     albumPtr->setIsCompilation( true );
 
-                    AudioCdArtistPtr trackArtistPtr = AudioCdArtistPtr( new  AudioCdArtist( trackArtist ) );
+                    Meta::AudioCdArtistPtr trackArtistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( trackArtist ) );
                     trackArtistPtr->addTrack( trackPtr );
                     trackPtr->setArtist( trackArtistPtr );
                 }
@@ -267,7 +267,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
         //lets see if we can find a cover for the album:
         if( AmarokConfig::autoGetCoverArt() )
-            The::coverFetcher()->queueAlbum( AlbumPtr::staticCast( albumPtr ) );
+            The::coverFetcher()->queueAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
 
     }
 
@@ -419,15 +419,15 @@ AudioCdCollection::noInfoAvailable()
     QString year = i18n( "Unknown" );
     QString genre = i18n( "Unknown" );
 
-    AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
-    memoryCollection()->addArtist( ArtistPtr::staticCast( artistPtr ) );
-    AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
+    Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( artist ) );
+    memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
+    Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
     albumPtr->setAlbumArtist( artistPtr );
-    memoryCollection()->addAlbum( AlbumPtr::staticCast( albumPtr ) );
-    AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
-    memoryCollection()->addYear( YearPtr::staticCast( yearPtr ) );
-    AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
-    memoryCollection()->addGenre( GenrePtr::staticCast( genrePtr ) );
+    memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
+    Meta::AudioCdYearPtr yearPtr = Meta::AudioCdYearPtr( new Meta::AudioCdYear( year ) );
+    memoryCollection()->addYear( Meta::YearPtr::staticCast( yearPtr ) );
+    Meta::AudioCdGenrePtr genrePtr = Meta::AudioCdGenrePtr( new Meta::AudioCdGenre( genre ) );
+    memoryCollection()->addGenre( Meta::GenrePtr::staticCast( genrePtr ) );
 
 
     int i = 1;
@@ -440,12 +440,12 @@ AudioCdCollection::noInfoAvailable()
 
         QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
 
-        AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
+        Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
 
         trackPtr->setTrackNumber( i );
         trackPtr->setFileNameBase( trackName );
 
-        memoryCollection()->addTrack( TrackPtr::staticCast( trackPtr ) );
+        memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
 
         artistPtr->addTrack( trackPtr );
         trackPtr->setArtist( artistPtr );
@@ -505,35 +505,35 @@ AudioCdCollection::trackForUrl( const KUrl & url )
         QStringList parts = urlString.split( '/' );
 
         if ( parts.count() != 2 )
-            return TrackPtr();
+            return Meta::TrackPtr();
 
         QString discId = parts.at( 0 );
 
         if ( discId != m_discCddbId )
-            return TrackPtr();
+            return Meta::TrackPtr();
 
         int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( TrackPtr track, memoryCollection()->trackMap().values() )
+        foreach( Meta::TrackPtr track, memoryCollection()->trackMap().values() )
         {
             if ( track->trackNumber() == trackNumber )
                 return track;
         }
 
-        return TrackPtr();
+        return Meta::TrackPtr();
 
     }
     else
     {
         if ( m_proxyMap.contains( url ) )
         {
-            return TrackPtr( m_proxyMap.value( url ) );
+            return Meta::TrackPtr( m_proxyMap.value( url ) );
         }
         else
         {
             MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
             m_proxyMap.insert( url, ptrack );
-            return TrackPtr( ptrack );
+            return Meta::TrackPtr( ptrack );
         }
     }
 
@@ -558,7 +558,7 @@ AudioCdCollection::updateProxyTracks()
 
         const int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( const TrackPtr &track, memoryCollection()->trackMap().values() )
+        foreach( const Meta::TrackPtr &track, memoryCollection()->trackMap().values() )
         {
             if( track->trackNumber() == trackNumber )
             {

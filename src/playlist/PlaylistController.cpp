@@ -176,10 +176,10 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 }
 
 void
-Playlist::Controller::insertOptioned( QueryMaker *qm, int options )
+Playlist::Controller::insertOptioned( Collections::QueryMaker *qm, int options )
 {
     DEBUG_BLOCK
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
     m_optionedQueryMap.insert( qm, options );
@@ -237,10 +237,10 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
 }
 
 void
-Playlist::Controller::insertTracks( int row, QueryMaker *qm )
+Playlist::Controller::insertTracks( int row, Collections::QueryMaker *qm )
 {
     DEBUG_BLOCK
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
     m_queryMap.insert( qm, row );
@@ -492,7 +492,7 @@ Playlist::Controller::newResultReady( const QString&, const Meta::TrackList& tra
 {
     DEBUG_BLOCK
 
-    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
     if( qm )
     {
         m_queryMakerTrackResults[qm] += tracks;
@@ -504,7 +504,7 @@ Playlist::Controller::queryDone()
 {
     DEBUG_BLOCK
 
-    QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
     if( qm )
     {
         qStableSort( m_queryMakerTrackResults[qm].begin(), m_queryMakerTrackResults[qm].end(), Meta::Track::lessThan );

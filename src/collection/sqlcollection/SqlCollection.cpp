@@ -30,7 +30,7 @@
 class XesamCollectionBuilder
 {
 public:
-    XesamCollectionBuilder(SqlCollection *collection) {}
+    XesamCollectionBuilder(Collections::SqlCollection *collection) {}
 };
 #else
 #include "XesamCollectionBuilder.h"
@@ -40,6 +40,8 @@ public:
 #include <KIcon>
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 #include <QTimer>
+
+using namespace Collections;
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()

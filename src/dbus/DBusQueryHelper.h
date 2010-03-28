@@ -26,7 +26,10 @@
 #include <QObject>
 #include <QString>
 #include <QVariant>
-class QueryMaker;
+
+namespace Collections {
+    class QueryMaker;
+}
 
 typedef QList<QVariantMap> VariantMapList;
 
@@ -35,7 +38,7 @@ class DBusQueryHelper : public QObject
     Q_OBJECT
     
     public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
+        DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
         
     private slots:
         void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );

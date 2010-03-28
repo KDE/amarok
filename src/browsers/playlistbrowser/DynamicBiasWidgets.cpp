@@ -402,9 +402,9 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 {
     m_compareSelection = new KComboBox( parent );
     m_compareSelection->addItem( "", -1 );
-    m_compareSelection->addItem( i18n( "less than" ),    (int)QueryMaker::LessThan );
-    m_compareSelection->addItem( i18n( "equal to" ),     (int)QueryMaker::Equals );
-    m_compareSelection->addItem( i18n( "greater than" ), (int)QueryMaker::GreaterThan );
+    m_compareSelection->addItem( i18n( "less than" ),    (int)Collections::QueryMaker::LessThan );
+    m_compareSelection->addItem( i18n( "equal to" ),     (int)Collections::QueryMaker::Equals );
+    m_compareSelection->addItem( i18n( "greater than" ), (int)Collections::QueryMaker::GreaterThan );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
             SLOT(compareChanged(int)) );
@@ -413,17 +413,17 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 
     if( val == -1 )
         m_compareSelection->setCurrentIndex( 0 );
-    if( val == (int)QueryMaker::LessThan )
+    if( val == (int)Collections::QueryMaker::LessThan )
         m_compareSelection->setCurrentIndex( 1 );
-    else if( val == (int)QueryMaker::Equals )
+    else if( val == (int)Collections::QueryMaker::Equals )
         m_compareSelection->setCurrentIndex( 2 );
-    else if( val == (int)QueryMaker::GreaterThan )
+    else if( val == (int)Collections::QueryMaker::GreaterThan )
         m_compareSelection->setCurrentIndex( 3 );
 
 }
 
 void
-PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, QueryMaker* populateQuery )
+PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery )
 {
     KComboBox* combo = new KComboBox( m_controlFrame );
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
@@ -456,7 +456,7 @@ PlaylistBrowserNS::BiasGlobalWidget::populateComboBox( QString collectionId, QSt
 {
     Q_UNUSED(collectionId);
 
-    QueryMaker* query = qobject_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker* query = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !query )
         return;
 
@@ -484,7 +484,7 @@ PlaylistBrowserNS::BiasGlobalWidget::populateComboBox( QString collectionId, QSt
 void
 PlaylistBrowserNS::BiasGlobalWidget::comboBoxPopulated()
 {
-    QueryMaker* query = qobject_cast<QueryMaker*>( sender() );
+    Collections::QueryMaker* query = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !query )
         return;
 
@@ -497,8 +497,8 @@ PlaylistBrowserNS::BiasGlobalWidget::comboBoxPopulated()
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 {
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Custom );
+    Collections::QueryMaker* qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( Meta::valArtist );
     makeGenericComboSelection( false, qm );
 }
@@ -507,8 +507,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
 {
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Custom );
+    Collections::QueryMaker* qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( Meta::valComposer );
     makeGenericComboSelection( false, qm );
 }
@@ -517,8 +517,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Custom );
+    Collections::QueryMaker* qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( Meta::valAlbum );
     makeGenericComboSelection( false, qm );
 }
@@ -535,8 +535,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeTitleSelection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Custom );
+    Collections::QueryMaker* qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( Meta::valGenre );
     makeGenericComboSelection( false, qm );
 }

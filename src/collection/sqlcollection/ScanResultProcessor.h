@@ -43,7 +43,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
             IncrementalScan = 1
         };
 
-        ScanResultProcessor( SqlCollection *collection );
+        ScanResultProcessor( Collections::SqlCollection *collection );
         ~ScanResultProcessor();
 
         void addDirectory( const QString &dir, uint mtime );
@@ -85,7 +85,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
         void genericCopyHash( const QString &tableName, const QHash<QString, int> *hash, int maxSize );
 
     private:
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
         SqlStorage *m_storage;
         bool m_setupComplete;
 

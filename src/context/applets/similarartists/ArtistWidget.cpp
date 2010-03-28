@@ -245,8 +245,8 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
         m_qm = coll->queryMaker();
     }
     
-    m_qm->setQueryType( QueryMaker::Artist );
-    m_qm->addFilter( QueryMaker::ArtistFilter, m_name );
+    m_qm->setQueryType( Collections::QueryMaker::Artist );
+    m_qm->addFilter( Collections::QueryMaker::ArtistFilter, m_name );
     m_qm->limitMaxResultSize( 1 );
 
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),

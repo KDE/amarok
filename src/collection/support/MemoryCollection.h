@@ -29,6 +29,7 @@ typedef QMap<QString, Meta::GenrePtr> GenreMap;
 typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
 typedef QMap<QString, Meta::YearPtr> YearMap;
 
+namespace Collections {
 
 class MemoryCollection
 {
@@ -70,5 +71,7 @@ class MemoryCollection
         YearMap m_yearMap;
 
 };
+
+} //namespace Collections
 
 #endif

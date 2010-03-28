@@ -49,7 +49,7 @@ MetaHandlerCapability::createCapabilityInterface( Handler::Capability::Type type
 
 MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     : QObject( parent )
-    , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
+    , m_memColl( qobject_cast<Collections::MediaDeviceCollection*>(parent) )
     , m_provider( 0 )
     , m_isCopying( false )
     , m_isDeleting( false )

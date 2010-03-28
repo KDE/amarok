@@ -29,6 +29,8 @@ namespace ThreadWeaver
     class Job;
 }
 
+namespace Collections {
+
 class AmpacheServiceQueryMaker : public DynamicServiceQueryMaker
 {
     Q_OBJECT
@@ -95,5 +97,7 @@ private:
     template<class PointerType, class ListType>
     void emitProperResult(const ListType& list);
 };
+
+} //namespace Collections
 
 #endif

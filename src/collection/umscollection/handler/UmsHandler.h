@@ -54,7 +54,9 @@ namespace Solid {
     class StorageAccess;
 }
 
-class UmsCollection;
+namespace Collections {
+    class UmsCollection;
+}
 
 class KDialog;
 class KDirLister;
@@ -88,7 +90,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         static QString s_podcastFolderKey;
         static QString s_autoConnectKey;
 
-        UmsHandler( UmsCollection *mc, const QString& mountPoint );
+        UmsHandler( Collections::UmsCollection *mc, const QString& mountPoint );
         virtual ~UmsHandler();
 
         virtual void init(); // collection

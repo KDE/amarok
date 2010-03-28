@@ -34,7 +34,7 @@
 #include <KRandomSequence>
 #include <KSortableList>
 
-using namespace Meta;
+using namespace Collections;
 
 //QueryJob
 
@@ -320,7 +320,7 @@ MemoryQueryMaker::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const TrackPtr &track )
+MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     MemoryMatcher *trackMatcher = new TrackMatcher( track );
     if ( d->matcher == 0 )
@@ -336,7 +336,7 @@ MemoryQueryMaker::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const ArtistPtr &artist )
+MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     MemoryMatcher *artistMatcher = new ArtistMatcher( artist );
     if ( d->matcher == 0 )
@@ -352,7 +352,7 @@ MemoryQueryMaker::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const AlbumPtr &album )
+MemoryQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     MemoryMatcher *albumMatcher = new AlbumMatcher( album );
     if ( d->matcher == 0 )
@@ -368,7 +368,7 @@ MemoryQueryMaker::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const GenrePtr &genre )
+MemoryQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     MemoryMatcher *genreMatcher = new GenreMatcher( genre );
     if ( d->matcher == 0 )
@@ -384,7 +384,7 @@ MemoryQueryMaker::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const ComposerPtr &composer )
+MemoryQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     MemoryMatcher *composerMatcher = new ComposerMatcher( composer );
     if ( d->matcher == 0 )
@@ -400,7 +400,7 @@ MemoryQueryMaker::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const YearPtr &year )
+MemoryQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     MemoryMatcher *yearMatcher = new YearMatcher( year );
     if ( d->matcher == 0 )
@@ -416,9 +416,9 @@ MemoryQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const DataPtr &data )
+MemoryQueryMaker::addMatch( const Meta::DataPtr &data )
 {
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

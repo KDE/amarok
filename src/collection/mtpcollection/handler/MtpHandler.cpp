@@ -40,7 +40,7 @@
 
 using namespace Meta;
 
-MtpHandler::MtpHandler( MtpCollection *mc )
+MtpHandler::MtpHandler( Collections::MtpCollection *mc )
     : MediaDeviceHandler( mc )
     , m_device( 0 )
     , m_capacity( 0.0 )

@@ -209,12 +209,12 @@ CollectionTreeItem::data( int role ) const
             {
                 m_isCounting = true;
 
-                QueryMaker *qm = m_parentCollection->queryMaker();
+                Collections::QueryMaker *qm = m_parentCollection->queryMaker();
                 connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
 
                 qm->setAutoDelete( true )
-                  ->setQueryType( QueryMaker::Custom )
-                  ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
+                  ->setQueryType( Collections::QueryMaker::Custom )
+                  ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
                   ->run();
 
                 return counting;
@@ -318,7 +318,7 @@ CollectionTreeItem::isTrackItem() const
     return isDataItem() && !isVariousArtistItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
-QueryMaker*
+Collections::QueryMaker*
 CollectionTreeItem::queryMaker() const
 {
     if ( m_parentCollection )
@@ -327,7 +327,7 @@ CollectionTreeItem::queryMaker() const
     CollectionTreeItem *tmp = m_parent;
     while( tmp->isDataItem() )
         tmp = tmp->parent();
-    QueryMaker *qm = 0;
+    Collections::QueryMaker *qm = 0;
     if( tmp->parentCollection() )
         qm = tmp->parentCollection()->queryMaker();
     return qm;

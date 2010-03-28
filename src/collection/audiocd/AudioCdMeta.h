@@ -20,7 +20,9 @@
 
 #include "core/meta/Meta.h"
 
-class AudioCdCollection;
+namespace Collections {
+    class AudioCdCollection;
+}
 
 namespace Meta
 {
@@ -42,7 +44,7 @@ typedef KSharedPtr<AudioCdYear> AudioCdYearPtr;
 class AudioCdTrack : public Meta::Track
 {
     public:
-        AudioCdTrack( AudioCdCollection *collection, const QString &name, const QString &url );
+        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QString &url );
         virtual ~AudioCdTrack();
 
         virtual QString name() const;
@@ -120,7 +122,7 @@ class AudioCdTrack : public Meta::Track
         QString fileNameBase();
 
     private:
-        AudioCdCollection *m_collection;
+        Collections::AudioCdCollection *m_collection;
 
         AudioCdArtistPtr m_artist;
         AudioCdAlbumPtr m_album;

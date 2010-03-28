@@ -16,8 +16,7 @@
 
 #include "core/collections/MetaQueryMaker.h"
 
-
-using namespace Meta;
+using namespace Collections;
 
 MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collections )
     : QueryMaker()
@@ -191,7 +190,7 @@ MetaQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Nu
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const TrackPtr &track )
+MetaQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( track );
@@ -199,7 +198,7 @@ MetaQueryMaker::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const ArtistPtr &artist )
+MetaQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( artist );
@@ -207,7 +206,7 @@ MetaQueryMaker::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const AlbumPtr &album )
+MetaQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( album );
@@ -215,7 +214,7 @@ MetaQueryMaker::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const GenrePtr &genre )
+MetaQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( genre );
@@ -223,7 +222,7 @@ MetaQueryMaker::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const ComposerPtr &composer )
+MetaQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( composer );
@@ -231,7 +230,7 @@ MetaQueryMaker::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const YearPtr &year )
+MetaQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( year );
@@ -239,9 +238,9 @@ MetaQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const DataPtr &data )
+MetaQueryMaker::addMatch( const Meta::DataPtr &data )
 {
-    DataPtr tmp = const_cast<DataPtr&>( data );
+    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
     foreach( QueryMaker *b, builders )
         tmp->addMatchTo( b );
     return this;

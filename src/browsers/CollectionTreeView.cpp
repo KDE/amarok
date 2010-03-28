@@ -693,7 +693,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         return;
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -731,7 +731,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
     {
         warning() << "could not get qm!";
@@ -778,7 +778,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
         return;
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -807,7 +807,7 @@ void
 CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -1206,7 +1206,7 @@ CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
     return parents;
 }
 
-QueryMaker*
+Collections::QueryMaker*
 CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems ) const
 {
     if( !m_treeModel )
@@ -1214,15 +1214,15 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
 
     QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
 
-    QList<QueryMaker*> queryMakers;
+    QList<Collections::QueryMaker*> queryMakers;
     foreach( CollectionTreeItem *item, parents )
     {
-        QueryMaker *qm = item->queryMaker();
+        Collections::QueryMaker *qm = item->queryMaker();
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
             if ( tmp->isVariousArtistItem() )
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             else
                 qm->addMatch( tmp->data() );
             tmp = tmp->parent();
@@ -1230,7 +1230,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
         m_treeModel->addFilters( qm );
         queryMakers.append( qm );
     }
-    return new MetaQueryMaker( queryMakers );
+    return new Collections::MetaQueryMaker( queryMakers );
 }
 
 

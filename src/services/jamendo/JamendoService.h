@@ -81,7 +81,7 @@ private:
     JamendoDatabaseHandler * m_dbHandler;
     QString m_tempFileName;
     QString m_torrentFileName;
-    ServiceSqlCollection * m_collection;
+    Collections::ServiceSqlCollection * m_collection;
     Meta::JamendoAlbum * m_currentAlbum;
 
     JamendoXmlParser * m_xmlParser;

@@ -31,7 +31,10 @@
 
 #include <threadweaver/Job.h>
 
-class SqlCollection;
+namespace Collections {
+    class SqlCollection;
+}
+
 class SqlCollectionDBusHandler;
 class SqlStorage;
 class XmlParseJob;
@@ -50,7 +53,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public QObject
         void setBlockScan( bool blockScan );
 
         //DI setters
-        void setCollection( SqlCollection * collection );
+        void setCollection( Collections::SqlCollection * collection );
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
 
     public slots:
@@ -76,7 +79,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public QObject
         bool readBatchFile( QString fileLocation );
         
     private:
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
         SqlCollectionDBusHandler *m_dbusHandler;
         SqlStorage *m_storage;
 
@@ -95,7 +98,7 @@ class XmlParseJob : public ThreadWeaver::Job
     Q_OBJECT
 
     public:
-        XmlParseJob( ScanManager *parent, SqlCollection *collection );
+        XmlParseJob( ScanManager *parent, Collections::SqlCollection *collection );
         ~XmlParseJob();
 
         void run();
@@ -111,7 +114,7 @@ class XmlParseJob : public ThreadWeaver::Job
 
     private:
         ScanManager *m_scanManager;
-        SqlCollection *m_collection;
+        Collections::SqlCollection *m_collection;
 
         bool m_abortRequested;
         bool m_isIncremental;

@@ -25,14 +25,14 @@
 struct XmlQueryReader::Private
 {
     ReturnValueEnum flag;
-    QueryMaker *qm;
+    Collections::QueryMaker *qm;
     QList<Filter> filters;
 };
 
-QueryMaker*
+Collections::QueryMaker*
 XmlQueryReader::getQueryMaker( const QString &xmlData, ReturnValueEnum flag )
 {
-    QueryMaker *qm = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     XmlQueryReader reader( qm, flag );
     if( reader.read( xmlData ) )
         return qm;
@@ -40,7 +40,7 @@ XmlQueryReader::getQueryMaker( const QString &xmlData, ReturnValueEnum flag )
         return 0;
 }
 
-XmlQueryReader::XmlQueryReader( QueryMaker *qm, ReturnValueEnum flag )
+XmlQueryReader::XmlQueryReader( Collections::QueryMaker *qm, ReturnValueEnum flag )
     : QXmlStreamReader()
     , d( new Private )
 {
@@ -142,11 +142,11 @@ XmlQueryReader::readQuery()
             }
             else if( name() == "onlyCompilations" )
             {
-                d->qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             }
             else if( name() == "onlyNormalAlbums" )
             {
-                d->qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
             else if( name() == "returnValues" )
                 readReturnValues();
@@ -188,33 +188,33 @@ XmlQueryReader::readReturnValues()
             readNext();
             if( name() == "tracks" )
             {
-                d->qm->setQueryType( QueryMaker::Track );
+                d->qm->setQueryType( Collections::QueryMaker::Track );
             }
             else if( name() == "artists" )
             {
-                d->qm->setQueryType( QueryMaker::Artist );
+                d->qm->setQueryType( Collections::QueryMaker::Artist );
             }
             else if( name() == "albums" )
             {
-                d->qm->setQueryType( QueryMaker::Album );
+                d->qm->setQueryType( Collections::QueryMaker::Album );
             }
             else if( name() == "genres" )
             {
-                d->qm->setQueryType( QueryMaker::Genre );
+                d->qm->setQueryType( Collections::QueryMaker::Genre );
             }
             else if( name() == "composers" )
             {
-                d->qm->setQueryType( QueryMaker::Composer );
+                d->qm->setQueryType( Collections::QueryMaker::Composer );
             }
             else if( name() == "year" )
             {
-                d->qm->setQueryType( QueryMaker::Year );
+                d->qm->setQueryType( Collections::QueryMaker::Year );
             }
             else
             {
                 if( !customQueryStarted )
                 {
-                    d->qm->setQueryType( QueryMaker::Custom );
+                    d->qm->setQueryType( Collections::QueryMaker::Custom );
                 }
                 //TODO write a mapping function somewhere
                 if( name() == "title" )
@@ -281,13 +281,13 @@ XmlQueryReader::readFilters()
                 {
                     debug() << "XQR: number include filter:";
                     d->qm->addNumberFilter( filter.field, numValue,
-                            (QueryMaker::NumberComparison)filter.compare );
+                            (Collections::QueryMaker::NumberComparison)filter.compare );
                 }
                 else
                 {
                     debug() << "XQR: number exclude filter: ";
                     d->qm->excludeNumberFilter( filter.field, numValue,
-                            (QueryMaker::NumberComparison)filter.compare );
+                            (Collections::QueryMaker::NumberComparison)filter.compare );
                 }
             }
             else
@@ -350,11 +350,11 @@ int
 XmlQueryReader::compareVal( QStringRef compare )
 {
     if( compare == "less" )
-        return QueryMaker::LessThan;
+        return Collections::QueryMaker::LessThan;
     else if( compare == "greater" )
-        return QueryMaker::GreaterThan;
+        return Collections::QueryMaker::GreaterThan;
     else if( compare == "equals" )
-        return QueryMaker::Equals;
+        return Collections::QueryMaker::Equals;
     else
         return -1;
 }

@@ -89,7 +89,7 @@ SqlTrack::getTrackReturnValueCount()
 }
 
 TrackPtr
-SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
+SqlTrack::getTrack( int deviceid, const QString &rpath, Collections::SqlCollection *collection )
 {
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.deviceid = %3 AND urls.rpath = '%4';";
@@ -102,7 +102,7 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
 }
 
 TrackPtr
-SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
+SqlTrack::getTrackFromUid( const QString &uid, Collections::SqlCollection* collection )
 {
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
@@ -115,7 +115,7 @@ SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 }
 
 void
-SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers )
+SqlTrack::refreshFromDatabase( const QString &uid, Collections::SqlCollection* collection, bool updateObservers )
 {
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
@@ -189,12 +189,12 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId, forceUpdates );
-    //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
+    //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( Collections::SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
 }
 
-SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
+SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
     : Track()
-    , m_collection( QPointer<SqlCollection>( collection ) )
+    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
     , m_capabilityDelegate( 0 )
     , m_batchUpdate( false )
     , m_writeAllStatisticsFields( false )
@@ -919,15 +919,15 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-SqlTrack::setCapabilityDelegate( TrackCapabilityDelegate *delegate )
+SqlTrack::setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate )
 {
     m_capabilityDelegate = delegate;
 }
 
 //---------------------- class Artist --------------------------
 
-SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
+SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QString &name ) : Artist()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_delegate( 0 )
     ,m_name( name )
     ,m_id( id )
@@ -944,10 +944,10 @@ Meta::SqlArtist::~SqlArtist()
 }
 
 void
-SqlArtist::updateData( SqlCollection *collection, int id, const QString &name )
+SqlArtist::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<SqlCollection>( collection );
+    m_collection = QPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -972,8 +972,8 @@ SqlArtist::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
@@ -995,8 +995,8 @@ SqlArtist::albums()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Album );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Album );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
@@ -1024,8 +1024,8 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 //---------------SqlAlbum---------------------------------
 const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
-SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
-    , m_collection( QPointer<SqlCollection>( collection ) )
+SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist ) : Album()
+    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
     , m_delegate( 0 )
     , m_name( name )
     , m_id( id )
@@ -1047,10 +1047,10 @@ Meta::SqlAlbum::~SqlAlbum()
 }
 
 void
-SqlAlbum::updateData( SqlCollection *collection, int id, const QString &name, int artist )
+SqlAlbum::updateData( Collections::SqlCollection *collection, int id, const QString &name, int artist )
 {
     m_mutex.lock();
-    m_collection = QPointer<SqlCollection>( collection );
+    m_collection = QPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_artistId = artist;
@@ -1079,8 +1079,8 @@ SqlAlbum::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->orderBy( Meta::valDiscNr );
         qm->orderBy( Meta::valTrackNr );
@@ -1687,8 +1687,8 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 
 //---------------SqlComposer---------------------------------
 
-SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
+SqlComposer::SqlComposer( Collections::SqlCollection* collection, int id, const QString &name ) : Composer()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1698,10 +1698,10 @@ SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name
 }
 
 void
-SqlComposer::updateData( SqlCollection *collection, int id, const QString &name )
+SqlComposer::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<SqlCollection>( collection );
+    m_collection = QPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1726,8 +1726,8 @@ SqlComposer::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
@@ -1742,8 +1742,8 @@ SqlComposer::tracks()
 
 //---------------SqlGenre---------------------------------
 
-SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : Genre()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
+SqlGenre::SqlGenre( Collections::SqlCollection* collection, int id, const QString &name ) : Genre()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1753,10 +1753,10 @@ SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : G
 }
 
 void
-SqlGenre::updateData( SqlCollection *collection, int id, const QString &name )
+SqlGenre::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<SqlCollection>( collection );
+    m_collection = QPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1781,8 +1781,8 @@ SqlGenre::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
@@ -1797,8 +1797,8 @@ SqlGenre::tracks()
 
 //---------------SqlYear---------------------------------
 
-SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Year()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
+SqlYear::SqlYear( Collections::SqlCollection* collection, int id, const QString &name ) : Year()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1808,10 +1808,10 @@ SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Yea
 }
 
 void
-SqlYear::updateData( SqlCollection *collection, int id, const QString &name )
+SqlYear::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<SqlCollection>( collection );
+    m_collection = QPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1836,8 +1836,8 @@ SqlYear::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();

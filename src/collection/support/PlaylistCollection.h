@@ -23,6 +23,10 @@
 
 #include <QSharedPointer>
 
+namespace Collections {
+
+class MemoryCollection;
+
 /**
   * Utility class that wraps a playlist as collection and makes it possible to
   * query the content of the playlist using QueryMaker.
@@ -49,7 +53,9 @@ private:
 
     Playlists::PlaylistPtr m_playlist;
 
-    QSharedPointer<MemoryCollection> m_mc;
+    QSharedPointer<Collections::MemoryCollection> m_mc;
 };
+
+} //namespace Collections
 
 #endif // PLAYLISTCOLLECTION_H

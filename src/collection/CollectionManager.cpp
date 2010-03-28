@@ -282,7 +282,7 @@ CollectionManager::checkCollectionChanges()
     }
 }
 
-QueryMaker*
+Collections::QueryMaker*
 CollectionManager::queryMaker() const
 {
     QList<Collections::Collection*> colls;
@@ -293,7 +293,7 @@ CollectionManager::queryMaker() const
             colls << pair.first;
         }
     }
-    return new MetaQueryMaker( colls );
+    return new Collections::MetaQueryMaker( colls );
 }
 
 void
@@ -522,12 +522,12 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     {
         artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
     }*/
-    QueryMaker *qm = queryMaker();
+    Collections::QueryMaker *qm = queryMaker();
     foreach( const QString &artistName, artistNames )
     {
         qm->addFilter( Meta::valArtist, artistName, true, true );
     }
-    qm->setQueryType( QueryMaker::Artist );
+    qm->setQueryType( Collections::QueryMaker::Artist );
     qm->limitMaxResultSize( maxArtists );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),

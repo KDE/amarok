@@ -20,7 +20,7 @@
 #include "core/support/Debug.h"
 #include "FormatSelectionDialog.h"
 
-AudioCdCollectionLocation::AudioCdCollectionLocation( const AudioCdCollection* parentCollection )
+AudioCdCollectionLocation::AudioCdCollectionLocation( const Collections::AudioCdCollection* parentCollection )
     : CollectionLocation( parentCollection )
     , m_collection( parentCollection )
 {

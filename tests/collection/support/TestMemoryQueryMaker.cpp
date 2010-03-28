@@ -54,7 +54,7 @@ TestMemoryQueryMaker::TestMemoryQueryMaker()
 void
 TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
 {
-    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
+    QSharedPointer<Collections::MemoryCollection> mc( new Collections::MemoryCollection() );
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     Meta::MockTrack *mock = new Meta::MockTrack();
@@ -62,8 +62,8 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     Meta::TrackPtr trackPtr( mock );
     mc->addTrack( trackPtr );
 
-    MemoryQueryMaker *qm = new MemoryQueryMaker( mc.toWeakRef(), "test" );
-    qm->setQueryType( QueryMaker::Track );
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc.toWeakRef(), "test" );
+    qm->setQueryType( Collections::QueryMaker::Track );
 
     qm->run();
     delete qm;
@@ -74,12 +74,12 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
 void
 TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
 {
-    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
+    QSharedPointer<Collections::MemoryCollection> mc( new Collections::MemoryCollection() );
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
 
-    MemoryQueryMaker *qm = new MemoryQueryMaker( mc, "test" );
-    qm->setQueryType( QueryMaker::Track );
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc, "test" );
+    qm->setQueryType( Collections::QueryMaker::Track );
 
     QSignalSpy spy( qm, SIGNAL(queryDone()));
 

@@ -22,8 +22,11 @@
 #include <KTempDir>
 
 class SqlStorage;
-class SqlCollection;
 class SqlRegistry;
+
+namespace Collections {
+    class SqlCollection;
+}
 
 class TestSqlTrackEditing : public QObject
 {
@@ -47,7 +50,7 @@ private slots:
     void testChangeAlbumToExisting();
 
 private:
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
     SqlRegistry *m_registry;

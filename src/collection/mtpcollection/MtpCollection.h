@@ -28,8 +28,11 @@
 
 #include <KIcon>
 
-class MtpCollection;
 class MediaDeviceInfo;
+
+namespace Collections {
+
+class MtpCollection;
 
 class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 {
@@ -54,5 +57,7 @@ class MtpCollection : public MediaDeviceCollection
 
     //void writeDatabase();
 };
+
+} //namespace Collections
 
 #endif

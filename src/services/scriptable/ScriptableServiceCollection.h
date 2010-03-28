@@ -20,6 +20,8 @@
 #include "../ServiceCollection.h"
 #include "AmarokProcess.h"
 
+namespace Collections {
+
 /**
 A collection that can call back a script to populate items as needed.
 
@@ -33,7 +35,7 @@ public:
 
     ~ScriptableServiceCollection();
 
-    virtual QueryMaker* queryMaker();
+    virtual Collections::QueryMaker* queryMaker();
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
@@ -63,5 +65,7 @@ private:
     QString m_lastFilter;
 
 };
+
+} //namespace Collections
 
 #endif

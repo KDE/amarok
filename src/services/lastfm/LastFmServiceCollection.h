@@ -27,6 +27,8 @@ namespace Meta
     class ServiceGenre;
 }
 
+namespace Collections {
+
 class LastFmServiceCollection : public ServiceCollection
 {
     Q_OBJECT
@@ -58,5 +60,7 @@ private:
     Meta::ServiceGenre *m_recentlyLoved;
     Meta::ServiceGenre *m_recentlyPlayed;
 };
+
+} //namespace Collections
 
 #endif // LASTFMSERVICECOLLECTION_H

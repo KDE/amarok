@@ -27,11 +27,9 @@
 #include <QString>
 #include <QTimer>
 
-class QueryMaker;
-
-namespace Amarok
-{
+namespace Collections {
     class Collection;
+    class QueryMaker;
 }
 
 class SynchronizationBaseJob : public QObject
@@ -86,16 +84,16 @@ class SynchronizationBaseJob : public QObject
         virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) = 0;
 
     private:
-        QueryMaker* createQueryMaker( Collections::Collection *collection );
+        Collections::QueryMaker* createQueryMaker( Collections::Collection *collection );
 
         void handleAlbumResult();
         void handleArtistResult();
         void handleTrackResult();
 
     private:
-        QueryMaker* setupArtistQuery( Collections::Collection *coll );
-        QueryMaker* setupAlbumQuery( Collections::Collection *coll );
-        QueryMaker* setupTrackQuery( Collections::Collection *coll );
+        Collections::QueryMaker* setupArtistQuery( Collections::Collection *coll );
+        Collections::QueryMaker* setupAlbumQuery( Collections::Collection *coll );
+        Collections::QueryMaker* setupTrackQuery( Collections::Collection *coll );
 
         State m_state;
         int m_currentResultCount;

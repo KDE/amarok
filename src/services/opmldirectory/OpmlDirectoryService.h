@@ -84,7 +84,7 @@ private:
     QPushButton *m_subscribeButton;
     KIO::FileCopyJob * m_listDownloadJob;
     OpmlDirectoryDatabaseHandler * m_dbHandler;
-    ServiceSqlCollection * m_collection;
+    Collections::ServiceSqlCollection * m_collection;
     Meta::OpmlDirectoryFeed * m_currentFeed;
     QString m_tempFileName;
     int m_currentCategoryId;

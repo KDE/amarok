@@ -139,7 +139,7 @@ namespace PlaylistBrowserNS
 
             void makeCompareSelection( QWidget* parent );
 
-            void makeGenericComboSelection( bool editable, QueryMaker* populateQuery );
+            void makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery );
 
             void makeArtistSelection();
             void makeComposerSelection();
@@ -166,7 +166,7 @@ namespace PlaylistBrowserNS
             Dynamic::GlobalBias* m_gbias;
             XmlQueryReader::Filter m_filter;
 
-            QMap< QueryMaker*, KComboBox* > m_runningQueries;
+            QMap< Collections::QueryMaker*, KComboBox* > m_runningQueries;
     };
 
     class BiasNormalWidget : public BiasWidget

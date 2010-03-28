@@ -26,8 +26,11 @@
 
 #include <QtGlobal>
 
-class UmsCollection;
 class MediaDeviceInfo;
+
+namespace Collections {
+
+class UmsCollection;
 
 class UmsCollectionFactory : public MediaDeviceCollectionFactory<UmsCollection>
 {
@@ -61,5 +64,7 @@ class UmsCollection : public MediaDeviceCollection
     private:
         QString m_mountPoint;
 };
+
+} //namespace Collections
 
 #endif

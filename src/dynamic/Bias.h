@@ -28,9 +28,11 @@
 #include <QObject>
 #include <QSet>
 
-class Collection;
-class QueryMaker;
-class XmlQueryWriter;
+namespace Collections {
+    class Collection;
+    class QueryMaker;
+    class XmlQueryWriter;
+}
 
 namespace PlaylistBrowserNS
 {
@@ -223,7 +225,7 @@ namespace Dynamic
         private:
             double m_weight; /// range: [0,1]
             QSet<QByteArray> m_property;
-            XmlQueryWriter* m_qm;
+            Collections::XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
 
             // Disable copy constructor and assignment

@@ -24,9 +24,9 @@ ServiceCollectionLocation::ServiceCollectionLocation()
     , m_overwriteFiles( false )
 {}
 
-ServiceCollectionLocation::ServiceCollectionLocation( const ServiceCollection* parentCollection )
+ServiceCollectionLocation::ServiceCollectionLocation( const Collections::ServiceCollection* parentCollection )
     : CollectionLocation()
-    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
+    , m_collection( const_cast<Collections::ServiceCollection*>( parentCollection ) )
     , m_removeSources( false )
     , m_overwriteFiles( false )
 {}
@@ -56,7 +56,7 @@ ServiceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
     QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
-        ServiceTrack *servtrack = static_cast<ServiceTrack *>( track.data() );
+        Meta::ServiceTrack *servtrack = static_cast<Meta::ServiceTrack *>( track.data() );
         if( servtrack->isPlayable() )
             urls.insert( track, servtrack->downloadableUrl() );
     }

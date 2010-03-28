@@ -23,6 +23,8 @@
 
 #include <QTextStream>
 
+using namespace Collections;
+
 XmlQueryWriter::XmlQueryWriter( QueryMaker* qm, QDomDocument doc )
     : m_qm( qm ), m_doc( doc ), m_andorLevel( 0 )
 {

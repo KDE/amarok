@@ -21,7 +21,7 @@
 #include <KLocale>
 #include <threadweaver/ThreadWeaver.h>
 
-using namespace Meta;
+using namespace Collections;
 
 AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId )
     : ServiceCollection( service, "AmpacheCollection", "AmpacheCollection" )
@@ -104,8 +104,8 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 
     element = song.firstChildElement("url");
 
-    m_urlTrack = new AmpacheTrack( title, m_service );
-    TrackPtr trackPtr( m_urlTrack );
+    m_urlTrack = new Meta::AmpacheTrack( title, m_service );
+    Meta::TrackPtr trackPtr( m_urlTrack );
 
     //debug() << "Adding track: " <<  title;
     m_urlTrack->setUidUrl( element.text() );
@@ -120,18 +120,18 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
     QDomElement albumElement = song.firstChildElement("album");
     //m_urlAlbumId = albumElement.attribute( "id", "0").toInt();
 
-    AmpacheAlbum * album = new AmpacheAlbum( albumElement.text() );
+    Meta::AmpacheAlbum * album = new Meta::AmpacheAlbum( albumElement.text() );
 
     QDomElement artElement = song.firstChildElement("art");
     album->setCoverUrl( artElement.text() );
 
     album->addTrack( trackPtr );
-    m_urlTrack->setAlbumPtr( AlbumPtr( album ) );
+    m_urlTrack->setAlbumPtr( Meta::AlbumPtr( album ) );
 
     QDomElement artistElement = song.firstChildElement("artist");
-    ServiceArtist * artist = new ServiceArtist( artistElement.text() );
+    Meta::ServiceArtist * artist = new Meta::ServiceArtist( artistElement.text() );
 
-    ArtistPtr artistPtr( artist );
+    Meta::ArtistPtr artistPtr( artist );
     m_urlTrack->setArtist( artistPtr );
     album->setAlbumArtist( artistPtr );
 }
@@ -180,6 +180,6 @@ AmpacheTrackForUrlWorker::run()
     parseTrack( m_storedTransferJob->data() );
     m_storedTransferJob->deleteLater();
 
-    mTrack = TrackPtr( m_urlTrack );
+    mTrack = Meta::TrackPtr( m_urlTrack );
     mProxy->updateTrack( mTrack );
 }

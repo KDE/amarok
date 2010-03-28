@@ -26,6 +26,8 @@
 
 #include <KUrl>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( MtpCollectionFactory, mtpcollection )
 
 MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )

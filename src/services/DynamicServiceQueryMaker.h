@@ -31,6 +31,7 @@ namespace ThreadWeaver
     class Job;
 }
 
+namespace Collections {
 
 /**
 A base class for implementing custom querymakers that fetch data from an external source.
@@ -90,5 +91,7 @@ public:
 
     static Meta::AlbumList matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist );
 };
+
+} //namespace Collections
 
 #endif

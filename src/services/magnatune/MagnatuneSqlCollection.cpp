@@ -20,6 +20,7 @@
 #include "MagnatuneCollectionLocation.h"
 #include "MagnatuneMeta.h"
 
+using namespace Collections;
 
 MagnatuneSqlCollection::MagnatuneSqlCollection(const QString & id, const QString & prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry)
     : ServiceSqlCollection( id, prettyName, metaFactory, registry )

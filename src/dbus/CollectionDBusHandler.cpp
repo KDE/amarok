@@ -41,7 +41,7 @@ CollectionDBusHandler::Query( const QString &xmlQuery )
     if( !calledFromDBus() )
         return VariantMapList();
 
-    QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
+    Collections::QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
     
     //probably invalid XML
     if( !qm )
@@ -64,7 +64,7 @@ CollectionDBusHandler::MprisQuery( const QString &xmlQuery )
     if( !calledFromDBus() )
         return VariantMapList();
 
-    QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
+    Collections::QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
 
     //probably invalid XML
     if( !qm )

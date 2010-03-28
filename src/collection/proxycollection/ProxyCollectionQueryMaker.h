@@ -32,16 +32,26 @@
 class CustomReturnFunction;
 class CustomReturnValue;
 
-namespace ProxyCollection
+namespace Meta {
+    class ProxyTrack;
+    class ProxyAlbum;
+    class ProxyArtist;
+    class ProxyGenre;
+    class ProxyComposer;
+    class ProxyYear;
+}
+
+namespace Collections
 {
-    class Collection;
+
+class Collection;
 
 class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        ProxyQueryMaker( ProxyCollection::Collection *collection, const QList<QueryMaker*> &queryMakers );
+        ProxyQueryMaker( Collections::ProxyCollection *collection, const QList<QueryMaker*> &queryMakers );
         ~ProxyQueryMaker();
 
         virtual QueryMaker* reset();
@@ -99,7 +109,7 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         void slotNewResultReady( const QString &collectionId, const Meta::YearList &years );
 
     private:
-        Collection *m_collection;
+        ProxyCollection *m_collection;
         QList<QueryMaker*> m_builders;
         int m_queryDoneCount;
         bool m_returnDataPointers;
@@ -112,12 +122,12 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         QMutex m_queryDoneCountMutex;
         //store ProxyCollection meta stuff using KSharedPtr,
         //otherwise ProxyCollection might delete it (as soon as it gets garbage collection)
-        QSet<KSharedPtr<ProxyCollection::Track> > m_tracks;
-        QSet<KSharedPtr<ProxyCollection::Artist> > m_artists;
-        QSet<KSharedPtr<ProxyCollection::Album> > m_albums;
-        QSet<KSharedPtr<ProxyCollection::Genre> > m_genres;
-        QSet<KSharedPtr<ProxyCollection::Composer> > m_composers;
-        QSet<KSharedPtr<ProxyCollection::Year> > m_years;
+        QSet<KSharedPtr<Meta::ProxyTrack> > m_tracks;
+        QSet<KSharedPtr<Meta::ProxyArtist> > m_artists;
+        QSet<KSharedPtr<Meta::ProxyAlbum> > m_albums;
+        QSet<KSharedPtr<Meta::ProxyGenre> > m_genres;
+        QSet<KSharedPtr<Meta::ProxyComposer> > m_composers;
+        QSet<KSharedPtr<Meta::ProxyYear> > m_years;
         KRandomSequence m_sequence; //do not reset
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;

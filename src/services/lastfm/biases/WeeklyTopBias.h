@@ -36,9 +36,9 @@ class QNetworkReply;
  *
  */
 
-namespace Amarok
-{
-class Collection;
+namespace Collections {
+    class Collection;
+    class QueryMaker;
 }
 
 namespace Dynamic
@@ -100,7 +100,7 @@ private:
 
     QSet< QByteArray > m_trackList;
     
-    QueryMaker* m_qm;
+    Collections::QueryMaker* m_qm;
 
     QVBoxLayout* m_layout;
     QDateTimeEdit* m_fromEdit;

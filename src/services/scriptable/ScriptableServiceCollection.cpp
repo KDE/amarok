@@ -19,6 +19,8 @@
 #include "core/support/Debug.h"
 #include "ScriptableServiceQueryMaker.h"
 
+using namespace Collections;
+
 ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
     : ServiceCollection( 0, name, name )
 {
@@ -31,7 +33,7 @@ ScriptableServiceCollection::~ScriptableServiceCollection()
 {
 }
 
-QueryMaker * ScriptableServiceCollection::queryMaker()
+Collections::QueryMaker * ScriptableServiceCollection::queryMaker()
 {
     return new ScriptableServiceQueryMaker( this, m_name );
 }

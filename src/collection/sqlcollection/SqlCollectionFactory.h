@@ -21,8 +21,11 @@
 
 #include <QString>
 
-class SqlCollection;
 class SqlStorage;
+
+namespace Collections {
+
+class SqlCollection;
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionFactory
 {
@@ -31,5 +34,7 @@ public:
 
     SqlCollection* createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const;
 };
+
+} //namespace Collections
 
 #endif // SQLCOLLECTIONFACTORY_H

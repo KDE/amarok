@@ -66,11 +66,11 @@ SynchronizationBaseJob::setFilter( const QString &filter )
     Q_UNUSED( filter )
 }
 
-QueryMaker*
+Collections::QueryMaker*
 SynchronizationBaseJob::createQueryMaker( Collections::Collection *collection )
 {
     //TODO: apply filters. This allows us to only sync a subset of a collection
-    QueryMaker *qm = collection->queryMaker();
+    Collections::QueryMaker *qm = collection->queryMaker();
     qm->setAutoDelete( true );
     return qm;
 }
@@ -142,31 +142,31 @@ SynchronizationBaseJob::slotQueryDone()
     }
 }
 
-QueryMaker*
+Collections::QueryMaker*
 SynchronizationBaseJob::setupArtistQuery( Collections::Collection *coll )
 {
-    QueryMaker *qm = createQueryMaker( coll );
-    qm->setQueryType( QueryMaker::Artist );
+    Collections::QueryMaker *qm = createQueryMaker( coll );
+    qm->setQueryType( Collections::QueryMaker::Artist );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotResultReady(QString,Meta::ArtistList) ), Qt::QueuedConnection );
     return qm;
 }
 
-QueryMaker*
+Collections::QueryMaker*
 SynchronizationBaseJob::setupAlbumQuery( Collections::Collection *coll )
 {
-    QueryMaker *qm = createQueryMaker( coll );
-    qm->setQueryType( QueryMaker::Album );
+    Collections::QueryMaker *qm = createQueryMaker( coll );
+    qm->setQueryType( Collections::QueryMaker::Album );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotResultReady(QString,Meta::AlbumList) ), Qt::QueuedConnection );
     return qm;
 }
 
-QueryMaker*
+Collections::QueryMaker*
 SynchronizationBaseJob::setupTrackQuery( Collections::Collection *coll )
 {
-    QueryMaker *qm = createQueryMaker( coll );
-    qm->setQueryType( QueryMaker::Track );
+    Collections::QueryMaker *qm = createQueryMaker( coll );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotResultReady(QString,Meta::TrackList) ), Qt::QueuedConnection );
     return qm;
@@ -280,8 +280,8 @@ SynchronizationBaseJob::handleArtistResult()
     {
         m_artistResult.insert( artist, InBoth );
     }
-    QueryMaker *qmA = setupAlbumQuery( m_collectionA );
-    QueryMaker *qmB = setupAlbumQuery( m_collectionB );
+    Collections::QueryMaker *qmA = setupAlbumQuery( m_collectionA );
+    Collections::QueryMaker *qmB = setupAlbumQuery( m_collectionB );
     //we are going to exclude artists below, so make sure we exclude all of them by setting the QMs to And mode
     qmA->beginAnd();
     qmB->beginAnd();
@@ -327,8 +327,8 @@ SynchronizationBaseJob::handleAlbumResult()
     {
         m_albumResult.insert( album, InBoth );
     }
-    QueryMaker *qmA = setupTrackQuery( m_collectionA );
-    QueryMaker *qmB = setupTrackQuery( m_collectionB );
+    Collections::QueryMaker *qmA = setupTrackQuery( m_collectionA );
+    Collections::QueryMaker *qmB = setupTrackQuery( m_collectionB );
     qmA->beginAnd();
     qmB->beginAnd();
     {
@@ -400,10 +400,10 @@ SynchronizationBaseJob::handleTrackResult()
     bool haveToStartQueryB = false;
 
     //we do not care about tracks in both collections
-    QueryMaker *qmA = createQueryMaker( m_collectionA );
-    QueryMaker *qmB = createQueryMaker( m_collectionB );
-    qmA->setQueryType( QueryMaker::Track );
-    qmB->setQueryType( QueryMaker::Track );
+    Collections::QueryMaker *qmA = createQueryMaker( m_collectionA );
+    Collections::QueryMaker *qmB = createQueryMaker( m_collectionB );
+    qmA->setQueryType( Collections::QueryMaker::Track );
+    qmB->setQueryType( Collections::QueryMaker::Track );
     qmA->beginOr();
     qmB->beginOr();
     {

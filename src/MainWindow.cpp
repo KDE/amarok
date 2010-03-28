@@ -1420,9 +1420,7 @@ bool MainWindow::playAudioCd()
 
             debug() << "got audiocd collection";
 
-            MemoryCollection * cdColl = dynamic_cast<MemoryCollection *>( collection );
-
-
+            Collections::MemoryCollection * cdColl = dynamic_cast<Collections::MemoryCollection *>( collection );
 
             if( !cdColl || cdColl->trackMap().count() == 0 )
             {
@@ -1434,8 +1432,8 @@ bool MainWindow::playAudioCd()
             The::engineController()->stop( true );
             The::playlistController()->clear();
 
-            QueryMaker * qm = collection->queryMaker();
-            qm->setQueryType( QueryMaker::Track );
+            Collections::QueryMaker * qm = collection->queryMaker();
+            qm->setQueryType( Collections::QueryMaker::Track );
             The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
 
             m_waitingForCd = false;

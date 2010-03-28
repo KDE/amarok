@@ -26,7 +26,7 @@
 
 #include <QTimer>
 
-
+using namespace Collections;
 
 struct ScriptableServiceQueryMaker::Private {
     //don't change the order of items in this enum
@@ -60,7 +60,7 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
     delete d;
 }
 
-QueryMaker * ScriptableServiceQueryMaker::reset()
+Collections::QueryMaker * ScriptableServiceQueryMaker::reset()
 {
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
@@ -75,7 +75,7 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     return this;
 }
 
-QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
+Collections::QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->returnDataPtrs = resultAsDataPtrs;
     return this;
@@ -206,9 +206,9 @@ template<class PointerType, class ListType>
 void ScriptableServiceQueryMaker::emitProperResult( const ListType& list )
 {
     if ( d->returnDataPtrs ) {
-        DataList data;
+        Meta::DataList data;
         foreach( PointerType p, list )
-            data << DataPtr::staticCast( p );
+            data << Meta::DataPtr::staticCast( p );
 
         emit newResultReady( m_collection->collectionId(), data );
     }
@@ -224,39 +224,34 @@ void ScriptableServiceQueryMaker::handleResult()
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
     if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-        emitProperResult<GenrePtr, Meta::GenreList>( genres.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres.mid( 0, d->maxsize ) );
     else
-        emitProperResult<GenrePtr, Meta::GenreList>( genres );
+        emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::AlbumList & albums )
 {
     if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-        emitProperResult<AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
     else
-        emitProperResult<AlbumPtr, Meta::AlbumList>( albums );
+        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-        emitProperResult<ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
+        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
     else
-        emitProperResult<ArtistPtr, Meta::ArtistList>( artists );
+        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
 {
+    debug() << "Emitting " << tracks.count() << " tracks";
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
-    {
-        debug() << "Emitting " << tracks.count() << " tracks";
-        emitProperResult<TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
-    }
+        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
     else
-    {
-        debug() << "Emitting " << tracks.count() << " tracks";
-        emitProperResult<TrackPtr, Meta::TrackList>( tracks );
-    }
+        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
 }
 
 
@@ -265,7 +260,7 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
 void ScriptableServiceQueryMaker::fetchGenre()
 {
     DEBUG_BLOCK
-    GenreList genre  = m_collection->genreMap().values();
+    Meta::GenreList genre  = m_collection->genreMap().values();
 
     if ( genre.count() > 0 )
     {
@@ -280,19 +275,19 @@ void ScriptableServiceQueryMaker::fetchGenre()
 void ScriptableServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    ArtistList artists;
+    Meta::ArtistList artists;
 
     if ( d->parentId != -1 )
     {
-        GenrePtr genrePtr =  m_collection->genreById( d->parentId );
-        ScriptableServiceGenre * scGenre = dynamic_cast<ScriptableServiceGenre *> ( genrePtr.data() );
+        Meta::GenrePtr genrePtr =  m_collection->genreById( d->parentId );
+        Meta::ScriptableServiceGenre * scGenre = dynamic_cast<Meta::ScriptableServiceGenre *> ( genrePtr.data() );
         if ( scGenre )
         {
-            ArtistList allArtists = m_collection->artistMap().values();
+            Meta::ArtistList allArtists = m_collection->artistMap().values();
 
-            foreach ( ArtistPtr artistPtr, allArtists )
+            foreach ( Meta::ArtistPtr artistPtr, allArtists )
             {
-                ScriptableServiceArtist *scArtist = dynamic_cast<ScriptableServiceArtist *> ( artistPtr.data() );
+                Meta::ScriptableServiceArtist *scArtist = dynamic_cast<Meta::ScriptableServiceArtist *> ( artistPtr.data() );
                 if ( scArtist && scArtist->genreId() == d->parentId )
                     artists.append( artistPtr );
             }
@@ -317,7 +312,7 @@ void ScriptableServiceQueryMaker::fetchAlbums()
     if ( d->albumMode == OnlyCompilations)
         return;
 
-    AlbumList albums;
+    Meta::AlbumList albums;
 
     if ( d->parentId != -1 )
     {
@@ -339,11 +334,11 @@ void ScriptableServiceQueryMaker::fetchTracks()
 {
     DEBUG_BLOCK
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
     debug() << "parent id: " << d->parentId;
 
-    AlbumPtr album;
+    Meta::AlbumPtr album;
     if ( d->parentId != -1 && ( album = m_collection->albumById( d->parentId ) ) )
     {
         AlbumMatcher albumMatcher( album );
@@ -370,23 +365,23 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
 
     if ( d->type == Private::GENRE )
     {
-        GenreList genre = m_collection->genreMap().values();
+        Meta::GenreList genre = m_collection->genreMap().values();
         handleResult( genre );
     }
     else if ( d->type == Private::ARTIST )
     {
-        ArtistList artists;
+        Meta::ArtistList artists;
         if ( d->parentId != -1 )
         {
-            GenrePtr genrePtr =  m_collection->genreById( d->parentId );
-            ScriptableServiceGenre * scGenre = dynamic_cast<ScriptableServiceGenre *> ( genrePtr.data() );
+            Meta::GenrePtr genrePtr =  m_collection->genreById( d->parentId );
+            Meta::ScriptableServiceGenre * scGenre = dynamic_cast<Meta::ScriptableServiceGenre *> ( genrePtr.data() );
             if ( scGenre )
             {
-                ArtistList allArtists = m_collection->artistMap().values();
+                Meta::ArtistList allArtists = m_collection->artistMap().values();
 
-                foreach ( ArtistPtr artistPtr, allArtists )
+                foreach ( Meta::ArtistPtr artistPtr, allArtists )
                 {
-                    ScriptableServiceArtist *scArtist = dynamic_cast<ScriptableServiceArtist *> ( artistPtr.data() );
+                    Meta::ScriptableServiceArtist *scArtist = dynamic_cast<Meta::ScriptableServiceArtist *> ( artistPtr.data() );
 
                     if ( scArtist && scArtist->genreId() == d->parentId )
                         artists.append( artistPtr );
@@ -400,7 +395,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
     }
     else if ( d->type == Private::ALBUM )
     {
-       AlbumList albums;
+       Meta::AlbumList albums;
        if ( d->parentId != -1 )
        {
             albums = matchAlbums( m_collection, m_collection->artistById( d->parentId ) );
@@ -413,7 +408,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
     }
     else if ( d->type == Private::TRACK )
     {
-        TrackList tracks;
+        Meta::TrackList tracks;
         if ( d->parentId != -1 )
         {
             Meta::AlbumPtr album = m_collection->albumById( d->parentId );
@@ -481,7 +476,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
 QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )
 {
     //DEBUG_BLOCK
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

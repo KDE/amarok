@@ -24,6 +24,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+namespace Collections {
+
 /**
  * A special query maker that acts as a wrapper for another query maker. It
  * behaves just like the query maker it wraps, but records the query
@@ -94,6 +96,7 @@ class XmlQueryWriter : public QueryMaker
         int m_andorLevel;
 };
 
+} //namespace Collections
 
 #endif
 

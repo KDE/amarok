@@ -25,7 +25,10 @@
 #include <QLabel>
 class ScrobblerAdapter;
 class LastFmService;
-class LastFmServiceCollection;
+
+namespace Collections {
+    class LastFmServiceCollection;
+}
 
 class QNetworkReply;
 
@@ -100,7 +103,7 @@ private:
     bool m_inited;
     bool m_scrobble;
     ScrobblerAdapter *m_scrobbler;
-    LastFmServiceCollection *m_collection;
+    Collections::LastFmServiceCollection *m_collection;
 
     void playLastFmStation( const KUrl &url );
     void updateProfileInfo();

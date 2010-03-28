@@ -22,6 +22,8 @@
 #include "core/collections/Collection.h"
 #include "amarok_export.h"
 
+namespace Collections {
+
 class MySqlServerCollectionFactory : public Collections::CollectionFactory
 {
     Q_OBJECT
@@ -32,6 +34,8 @@ class MySqlServerCollectionFactory : public Collections::CollectionFactory
 
         virtual void init();
 };
+
+} //namespace Collections
 
 /**
  * Implements a MySqlStorage using a MySQL Server

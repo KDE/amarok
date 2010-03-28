@@ -28,7 +28,7 @@
 
 #include <QDomDocument>
 
-using namespace Meta;
+using namespace Collections;
 
 struct AmpacheServiceQueryMaker::Private
 {
@@ -142,12 +142,12 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker *
-AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
+AmpacheServiceQueryMaker::addMatch( const Meta::ArtistPtr & artist )
 {
     DEBUG_BLOCK
     if( m_parentAlbumId.isEmpty() )
     {
-        const ServiceArtist * serviceArtist = dynamic_cast< const ServiceArtist * >( artist.data() );
+        const Meta::ServiceArtist * serviceArtist = dynamic_cast< const Meta::ServiceArtist * >( artist.data() );
         if( serviceArtist )
         {
             m_parentArtistId = QString::number( serviceArtist->id() );
@@ -156,7 +156,7 @@ AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
         {
             if( m_collection->artistMap().contains( artist->name() ) )
             {
-                serviceArtist = static_cast< const ServiceArtist* >( m_collection->artistMap().value( artist->name() ).data() );
+                serviceArtist = static_cast< const Meta::ServiceArtist* >( m_collection->artistMap().value( artist->name() ).data() );
                 m_parentArtistId = QString::number( serviceArtist->id() );
             }
             else
@@ -173,7 +173,7 @@ QueryMaker *
 AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
 {
     DEBUG_BLOCK
-    const ServiceAlbum * serviceAlbum = dynamic_cast< const ServiceAlbum * >( album.data() );
+    const Meta::ServiceAlbum * serviceAlbum = dynamic_cast< const Meta::ServiceAlbum * >( album.data() );
     if( serviceAlbum )
     {
         m_parentAlbumId = QString::number( serviceAlbum->id() );
@@ -184,7 +184,7 @@ AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
     {
         if( m_collection->albumMap().contains( album->name() ) )
         {
-            serviceAlbum = static_cast< const ServiceAlbum* >( m_collection->albumMap().value( album->name() ).data() );
+            serviceAlbum = static_cast< const Meta::ServiceAlbum* >( m_collection->albumMap().value( album->name() ).data() );
             m_parentAlbumId = QString::number( serviceAlbum->id() );
         }
         else
@@ -200,9 +200,9 @@ template<class PointerType, class ListType>
 void AmpacheServiceQueryMaker::emitProperResult( const ListType& list )
 {
     if ( d->returnDataPtrs ) {
-        DataList data;
+        Meta::DataList data;
         foreach( PointerType p, list )
-            data << DataPtr::staticCast( p );
+            data << Meta::DataPtr::staticCast( p );
 
         emit newResultReady( m_collection->collectionId(), data );
     }
@@ -215,27 +215,27 @@ void AmpacheServiceQueryMaker::handleResult()
     DEBUG_BLOCK
 }
 
-void AmpacheServiceQueryMaker::handleResult( const ArtistList & artists )
+void AmpacheServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     DEBUG_BLOCK
 
-    emitProperResult<ArtistPtr, ArtistList>( artists );
+    emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
 }
 
 void
-AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
+AmpacheServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
 {
     DEBUG_BLOCK
 
-    emitProperResult<AlbumPtr, AlbumList>( albums );
+    emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
 }
 
 void
-AmpacheServiceQueryMaker::handleResult( const TrackList & tracks )
+AmpacheServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
 {
     DEBUG_BLOCK
 
-    emitProperResult<TrackPtr, TrackList>( tracks );
+    emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
 }
 
 void
@@ -287,7 +287,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
 {
     DEBUG_BLOCK
 
-    AlbumList albums;
+    Meta::AlbumList albums;
 
     if( !m_parentArtistId.isEmpty() )
     {
@@ -329,7 +329,7 @@ AmpacheServiceQueryMaker::fetchTracks()
 {
     DEBUG_BLOCK
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
     //debug() << "parent album id: " << m_parentAlbumId;
 
@@ -394,7 +394,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
         return;
     }
 
-    ArtistList artists;
+    Meta::ArtistList artists;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -426,7 +426,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
         //    break;
 
         QDomElement element = n.firstChildElement( "name" );
-        ServiceArtist * artist = new AmpacheArtist( element.text(), m_collection->service() );
+        Meta::ServiceArtist * artist = new Meta::AmpacheArtist( element.text(), m_collection->service() );
 
         int artistId = e.attribute( "id", "0").toInt();
 
@@ -434,7 +434,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 
         artist->setId( artistId );
 
-        ArtistPtr artistPtr( artist );
+        Meta::ArtistPtr artistPtr( artist );
 
         artists.push_back( artistPtr );
 
@@ -465,7 +465,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
 
     //debug() << "Received response: " << m_storedTransferJob->data();
 
-    AlbumList albums;
+    Meta::AlbumList albums;
 
     //debug() << "received artists: " <<  m_storedTransferJob->data();
 
@@ -506,7 +506,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
 
         int albumId = e.attribute( "id", "0" ).toInt();
 
-        AmpacheAlbum * album = new AmpacheAlbum( title );
+        Meta::AmpacheAlbum * album = new Meta::AmpacheAlbum( title );
         album->setId( albumId );
 
 
@@ -515,7 +515,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
         QString coverUrl = element.text();
         album->setCoverUrl( coverUrl );
 
-        AlbumPtr albumPtr( album );
+        Meta::AlbumPtr albumPtr( album );
 
         //debug() << "Adding album: " <<  title;
         //debug() << "   Id: " <<  albumId;
@@ -527,11 +527,11 @@ AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
 
         element = n.firstChildElement( "artist" );
 
-        ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
+        Meta::ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
         if ( artistPtr.data() != 0 )
         {
            //debug() << "Found parent artist";
-           //ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
+           //Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
            album->setAlbumArtist( artistPtr );
         }
 
@@ -560,7 +560,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
 
     //debug() << "Received response: " << m_storedTransferJob->data();
 
-    TrackList tracks;
+    Meta::TrackList tracks;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -598,8 +598,8 @@ AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
         if ( title.isEmpty() )
             title = "Unknown";
         element = n.firstChildElement( "url" );
-        AmpacheTrack * track = new AmpacheTrack( title, m_collection->service() );
-        TrackPtr trackPtr( track );
+        Meta::AmpacheTrack * track = new Meta::AmpacheTrack( title, m_collection->service() );
+        Meta::TrackPtr trackPtr( track );
 
         //debug() << "Adding track: " <<  title;
 
@@ -622,20 +622,20 @@ AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
         QDomElement artistElement = n.firstChildElement( "artist" );
         int artistId = artistElement.attribute( "id", "0").toInt();
 
-        ArtistPtr artistPtr = m_collection->artistById( artistId );
+        Meta::ArtistPtr artistPtr = m_collection->artistById( artistId );
         if ( artistPtr.data() != 0 )
         {
             //debug() << "Found parent artist " << artistPtr->name();
-           ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
+           Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
            artist->addTrack( trackPtr );
         }
 
-        AlbumPtr albumPtr = m_collection->albumById( albumId );
+        Meta::AlbumPtr albumPtr = m_collection->albumById( albumId );
         if ( albumPtr.data() != 0 )
         {
            //debug() << "Found parent album " << albumPtr->name() ;
-           ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
+           Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
            track->setAlbumPtr( albumPtr );
            album->addTrack( trackPtr );
         }
@@ -659,7 +659,7 @@ AmpacheServiceQueryMaker::addFilter( qint64 value, const QString & filter, bool 
 
     //debug() << "value: " << value;
     //for now, only accept artist filters
-    if ( value == valArtist )
+    if ( value == Meta::valArtist )
     {
         //debug() << "Filter: " << filter;
         m_artistFilter = filter;
@@ -672,7 +672,7 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
 {
     DEBUG_BLOCK
 
-    if( value == valCreateDate && compare == QueryMaker::GreaterThan )
+    if( value == Meta::valCreateDate && compare == QueryMaker::GreaterThan )
     {
         debug() << "asking to filter based on added date";
         m_dateFilter = filter;

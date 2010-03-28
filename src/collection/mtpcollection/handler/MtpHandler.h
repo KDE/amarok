@@ -46,7 +46,9 @@ class QString;
 class QMutex;
 class QStringList;
 
-class MtpCollection;
+namespace Collections {
+    class MtpCollection;
+}
 
 namespace Meta
 {
@@ -59,7 +61,7 @@ class MtpHandler : public MediaDeviceHandler
         Q_OBJECT
 
     public:
-        MtpHandler( MtpCollection *mc );
+        MtpHandler( Collections::MtpCollection *mc );
         virtual ~MtpHandler();
 
         friend class WorkerThread;

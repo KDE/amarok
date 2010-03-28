@@ -264,7 +264,7 @@ Meta::Track::setCachedLyrics( const QString &lyrics )
 }
 
 void
-Meta::Track::addMatchTo( QueryMaker *qm )
+Meta::Track::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( TrackPtr( this ) );
 }
@@ -364,7 +364,7 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 //Meta::Artist
 
 void
-Meta::Artist::addMatchTo( QueryMaker *qm )
+Meta::Artist::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( ArtistPtr( this ) );
 }
@@ -403,7 +403,7 @@ Meta::Artist::sortableName() const
 //Meta::Album
 
 void
-Meta::Album::addMatchTo( QueryMaker *qm )
+Meta::Album::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( AlbumPtr( this ) );
 }
@@ -453,7 +453,7 @@ Meta::Album::operator==( const Meta::Album &album ) const
 //Meta::Genre
 
 void
-Meta::Genre::addMatchTo( QueryMaker *qm )
+Meta::Genre::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( GenrePtr( this ) );
 }
@@ -479,7 +479,7 @@ Meta::Genre::operator==( const Meta::Genre &genre ) const
 //Meta::Composer
 
 void
-Meta::Composer::addMatchTo( QueryMaker *qm )
+Meta::Composer::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( ComposerPtr( this ) );
 }
@@ -503,7 +503,7 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 //Meta::Year
 
 void
-Meta::Year::addMatchTo( QueryMaker *qm )
+Meta::Year::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( YearPtr( this ) );
 }

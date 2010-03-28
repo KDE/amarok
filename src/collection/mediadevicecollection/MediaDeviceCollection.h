@@ -31,8 +31,9 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-class MediaDeviceCollection;
+namespace Collections {
 
+class MediaDeviceCollection;
 
 /**
  * HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
@@ -171,5 +172,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
 };
 
+} //namespace Collections
 
 #endif

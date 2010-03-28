@@ -23,6 +23,12 @@
 
 #include <QAction>
 
+namespace Collections {
+    class SqlCollection;
+}
+
+namespace Capabilities {
+
 class TrackCapabilityDelegateImpl : public TrackCapabilityDelegate
 {
 public:
@@ -65,9 +71,10 @@ public:
     CollectionCapabilityDelegateImpl();
     virtual ~ CollectionCapabilityDelegateImpl() {};
 
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const SqlCollection *collection ) const;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, SqlCollection *collection );
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection );
 };
 
+} //namespace Capabilities
 
 #endif // CAPABILITYDELEGATEIMPL_H

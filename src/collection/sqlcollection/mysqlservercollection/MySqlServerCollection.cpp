@@ -29,6 +29,8 @@
 
 #include <mysql.h>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( MySqlServerCollectionFactory, mysqlservercollection )
 
 void

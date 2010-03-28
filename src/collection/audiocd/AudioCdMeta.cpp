@@ -22,7 +22,7 @@
 
 using namespace Meta;
 
-AudioCdTrack::AudioCdTrack( AudioCdCollection *collection, const QString &name, const QString &url )
+AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QString &url )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )

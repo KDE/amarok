@@ -49,9 +49,9 @@
 
 using namespace Meta;
 
-SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
+SqlCollectionLocation::SqlCollectionLocation( Collections::SqlCollection const *collection )
     : CollectionLocation( collection )
-    , m_collection( const_cast<SqlCollection*>( collection ) )
+    , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
     , m_overwriteFiles( false )
     , m_transferjob( 0 )
 {

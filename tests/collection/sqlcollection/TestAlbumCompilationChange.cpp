@@ -43,10 +43,10 @@ TestAlbumCompilationChange::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new SqlCollection( "testId", "testcollection" );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock() );
-    m_collection->setQueryMakerFactory( new DefaultSqlQueryMakerFactory( m_collection ) );
+    m_collection->setQueryMakerFactory( new Collections::DefaultSqlQueryMakerFactory( m_collection ) );
     DatabaseUpdater updater;
     updater.setStorage( m_storage );
     updater.setCollection( m_collection );

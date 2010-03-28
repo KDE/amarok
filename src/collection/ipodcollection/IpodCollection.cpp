@@ -27,6 +27,8 @@
 #include <KUrl>
 #include <KStandardDirs>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 
 IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )

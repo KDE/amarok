@@ -84,7 +84,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     m_multiModel = new CollectionTreeItemModel( m_levels );
 
-    ProxyCollection::Collection *proxyColl = new ProxyCollection::Collection();
+    Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
     connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
     connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), proxyColl, SLOT(removeCollection(QString)));
     foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )

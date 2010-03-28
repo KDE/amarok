@@ -56,9 +56,9 @@ Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
 }
 
 //required for QTest, this is not done in Querymaker.h
-Q_DECLARE_METATYPE( QueryMaker::QueryType )
-Q_DECLARE_METATYPE( QueryMaker::NumberComparison )
-Q_DECLARE_METATYPE( QueryMaker::ReturnFunction )
+Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
+Q_DECLARE_METATYPE( Collections::QueryMaker::NumberComparison )
+Q_DECLARE_METATYPE( Collections::QueryMaker::ReturnFunction )
 
 TestSqlQueryMaker::TestSqlQueryMaker()
 {
@@ -76,9 +76,9 @@ TestSqlQueryMaker::TestSqlQueryMaker()
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
-    qRegisterMetaType<QueryMaker::QueryType>();
-    qRegisterMetaType<QueryMaker::NumberComparison>();
-    qRegisterMetaType<QueryMaker::ReturnFunction>();
+    qRegisterMetaType<Collections::QueryMaker::QueryType>();
+    qRegisterMetaType<Collections::QueryMaker::NumberComparison>();
+    qRegisterMetaType<Collections::QueryMaker::ReturnFunction>();
 }
 
 void
@@ -86,7 +86,7 @@ TestSqlQueryMaker::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new SqlCollection( "testId", "testcollection" );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
 
     QMap<int,QString> mountPoints;
@@ -174,10 +174,10 @@ TestSqlQueryMaker::cleanup()
 void
 TestSqlQueryMaker::testQueryAlbums()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setAlbumQueryMode( QueryMaker::AllAlbums );
-    qm.setQueryType( QueryMaker::Album );
+    qm.setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
+    qm.setQueryType( Collections::QueryMaker::Album );
     qm.run();
     QCOMPARE( qm.albums( "testId" ).count(), 5 );
 }
@@ -185,9 +185,9 @@ TestSqlQueryMaker::testQueryAlbums()
 void
 TestSqlQueryMaker::testQueryArtists()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Artist );
+    qm.setQueryType( Collections::QueryMaker::Artist );
     qm.run();
     QCOMPARE( qm.artists( "testId" ).count(), 3 );
 }
@@ -195,9 +195,9 @@ TestSqlQueryMaker::testQueryArtists()
 void
 TestSqlQueryMaker::testQueryComposers()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Composer );
+    qm.setQueryType( Collections::QueryMaker::Composer );
     qm.run();
     QCOMPARE( qm.composers( "testId" ).count(), 3 );
 }
@@ -205,9 +205,9 @@ TestSqlQueryMaker::testQueryComposers()
 void
 TestSqlQueryMaker::testQueryGenres()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Genre );
+    qm.setQueryType( Collections::QueryMaker::Genre );
     qm.run();
     QCOMPARE( qm.genres( "testId" ).count(), 3 );
 }
@@ -215,9 +215,9 @@ TestSqlQueryMaker::testQueryGenres()
 void
 TestSqlQueryMaker::testQueryYears()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Year );
+    qm.setQueryType( Collections::QueryMaker::Year );
     qm.run();
     QCOMPARE( qm.years( "testId" ).count(), 3 );
 }
@@ -225,9 +225,9 @@ TestSqlQueryMaker::testQueryYears()
 void
 TestSqlQueryMaker::testQueryTracks()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.run();
     QCOMPARE( qm.tracks( "testId" ).count(), 6 );
 }
@@ -235,60 +235,60 @@ TestSqlQueryMaker::testQueryTracks()
 void
 TestSqlQueryMaker::testAlbumQueryMode()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
 
     qm.setBlocking( true );
-    qm.setAlbumQueryMode( QueryMaker::OnlyCompilations );
-    qm.setQueryType( QueryMaker::Album );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+    qm.setQueryType( Collections::QueryMaker::Album );
     qm.run();
     QCOMPARE( qm.albums( "testId" ).count(), 1 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
-    qm.setQueryType( QueryMaker::Album );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+    qm.setQueryType( Collections::QueryMaker::Album );
     qm.run();
     QCOMPARE( qm.albums( "testId" ).count(), 4 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
-    qm.setAlbumQueryMode( QueryMaker::OnlyCompilations );
+    qm.setQueryType( Collections::QueryMaker::Track );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
     qm.run();
     QCOMPARE( qm.tracks( "testId" ).count(), 2 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
-    qm.setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+    qm.setQueryType( Collections::QueryMaker::Track );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm.run();
     QCOMPARE( qm.tracks( "testId" ).count(), 4 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Artist );
-    qm.setAlbumQueryMode( QueryMaker::OnlyCompilations );
+    qm.setQueryType( Collections::QueryMaker::Artist );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
     qm.run();
     QCOMPARE( qm.artists( "testId" ).count() , 2 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Artist );
-    qm.setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+    qm.setQueryType( Collections::QueryMaker::Artist );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm.run();
     QCOMPARE( qm.artists( "testId" ).count(), 3 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setAlbumQueryMode( QueryMaker::OnlyCompilations );
-    qm.setQueryType( QueryMaker::Genre );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+    qm.setQueryType( Collections::QueryMaker::Genre );
     qm.run();
     QCOMPARE( qm.genres( "testId" ).count(), 2 );
 
     qm.reset();
     qm.setBlocking( true );
-    qm.setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
-    qm.setQueryType( QueryMaker::Genre );
+    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+    qm.setQueryType( Collections::QueryMaker::Genre );
     qm.run();
     QCOMPARE( qm.genres( "testId" ).count(), 3 );
 
@@ -303,9 +303,9 @@ TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery()
     //wait one second per query in total, that should be enough for it to complete
     do
     {
-        SqlQueryMaker *qm = new SqlQueryMaker( m_collection );
+        Collections::SqlQueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
         QSignalSpy spy( qm, SIGNAL(queryDone()) );
-        qm->setQueryType( QueryMaker::Track );
+        qm->setQueryType( Collections::QueryMaker::Track );
         qm->addFilter( Meta::valTitle, QString::number( iteration), false, false );
         qm->run();
         //wait 10 msec more per iteration, might have to be tweaked
@@ -328,8 +328,8 @@ TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery()
 void
 TestSqlQueryMaker::testAsyncAlbumQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Album );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Album );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::AlbumList)));
 
@@ -344,8 +344,8 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
     QCOMPARE( doneSpy1.count(), 1);
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Album );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Album );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::AlbumList)));
     qm->addFilter( Meta::valAlbum, "foo" ); //should result in no match
@@ -364,8 +364,8 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
 void
 TestSqlQueryMaker::testAsyncArtistQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Artist );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Artist );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::ArtistList)));
 
@@ -380,8 +380,8 @@ TestSqlQueryMaker::testAsyncArtistQuery()
     QCOMPARE( doneSpy1.count(), 1);
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Artist );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Artist );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::ArtistList)));
     qm->addFilter( Meta::valArtist, "foo" ); //should result in no match
@@ -400,8 +400,8 @@ TestSqlQueryMaker::testAsyncArtistQuery()
 void
 TestSqlQueryMaker::testAsyncComposerQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Composer );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Composer );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::ComposerList)));
 
@@ -417,8 +417,8 @@ TestSqlQueryMaker::testAsyncComposerQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Composer );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Composer );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::ComposerList)));
     qm->addFilter( Meta::valComposer, "foo" ); //should result in no match
@@ -437,8 +437,8 @@ TestSqlQueryMaker::testAsyncComposerQuery()
 void
 TestSqlQueryMaker::testAsyncTrackQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Track );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Track );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::TrackList)));
 
@@ -454,8 +454,8 @@ TestSqlQueryMaker::testAsyncTrackQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Track );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Track );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::TrackList)));
     qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
@@ -474,8 +474,8 @@ TestSqlQueryMaker::testAsyncTrackQuery()
 void
 TestSqlQueryMaker::testAsyncGenreQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Genre );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Genre );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::GenreList)));
 
@@ -491,8 +491,8 @@ TestSqlQueryMaker::testAsyncGenreQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Genre );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Genre );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::GenreList)));
     qm->addFilter( Meta::valGenre, "foo" ); //should result in no match
@@ -511,8 +511,8 @@ TestSqlQueryMaker::testAsyncGenreQuery()
 void
 TestSqlQueryMaker::testAsyncYearQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Year );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Year );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::YearList)));
 
@@ -528,8 +528,8 @@ TestSqlQueryMaker::testAsyncYearQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Year );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Year );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::YearList)));
     qm->addFilter( Meta::valYear, "foo" ); //should result in no match
@@ -548,8 +548,8 @@ TestSqlQueryMaker::testAsyncYearQuery()
 void
 TestSqlQueryMaker::testAsyncTrackDataQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Track );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Track );
     qm->setReturnResultAsDataPtrs( true );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::DataList)));
@@ -566,8 +566,8 @@ TestSqlQueryMaker::testAsyncTrackDataQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Track );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Track );
     qm->setReturnResultAsDataPtrs( true );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,Meta::DataList)));
@@ -587,9 +587,9 @@ TestSqlQueryMaker::testAsyncTrackDataQuery()
 void
 TestSqlQueryMaker::testAsyncCustomQuery()
 {
-    QueryMaker *qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnFunction( QueryMaker::Count, Meta::valTitle );
+    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Custom );
+    qm->addReturnFunction( Collections::QueryMaker::Count, Meta::valTitle );
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,QStringList)));
 
@@ -606,9 +606,9 @@ TestSqlQueryMaker::testAsyncCustomQuery()
 
     delete qm;
 
-    qm = new SqlQueryMaker( m_collection );
-    qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnFunction( QueryMaker::Count, Meta::valTitle );
+    qm = new Collections::SqlQueryMaker( m_collection );
+    qm->setQueryType( Collections::QueryMaker::Custom );
+    qm->addReturnFunction( Collections::QueryMaker::Count, Meta::valTitle );
     QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
     QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QString,QStringList)));
     qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
@@ -628,56 +628,56 @@ TestSqlQueryMaker::testAsyncCustomQuery()
 void
 TestSqlQueryMaker::testFilter_data()
 {
-    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
     QTest::addColumn<qint64>( "value" );
     QTest::addColumn<QString>( "filter" );
     QTest::addColumn<bool>( "matchBeginning" );
     QTest::addColumn<bool>( "matchEnd" );
     QTest::addColumn<int>( "count" );
 
-    QTest::newRow( "track match all titles" ) << QueryMaker::Track << Meta::valTitle << "track" << false << false << 6;
-    QTest::newRow( "track match all title beginnings" ) << QueryMaker::Track << Meta::valTitle << "track" << true << false << 6;
-    QTest::newRow( "track match one title beginning" ) << QueryMaker::Track << Meta::valTitle << "track1" << true << false << 1;
-    QTest::newRow( "track match one title end" ) << QueryMaker::Track << Meta::valTitle << "rack2" << false << true << 1;
-    QTest::newRow( "track match title on both ends" ) << QueryMaker::Track << Meta::valTitle << "track3" << true << true << 1;
-    QTest::newRow( "track match artist" ) << QueryMaker::Track << Meta::valArtist << "artist1" << false << false << 3;
-    QTest::newRow( "artist match artist" ) << QueryMaker::Artist << Meta::valArtist << "artist1" << true << true << 1;
-    QTest::newRow( "album match artist" ) << QueryMaker::Album << Meta::valArtist << "artist3" << false << false << 2;
-    QTest::newRow( "track match genre" ) << QueryMaker::Track << Meta::valGenre << "genre1" << false << false << 3;
-    QTest::newRow( "genre match genre" ) << QueryMaker::Genre << Meta::valGenre << "genre1" << false << false << 1;
-    QTest::newRow( "track match composer" ) << QueryMaker::Track << Meta::valComposer << "composer2" << false << false << 2;
-    QTest::newRow( "composer match composer" ) << QueryMaker::Composer << Meta::valComposer << "composer2" << false << false << 1;
-    QTest::newRow( "track match year" ) << QueryMaker::Track << Meta::valYear << "2" << true << true << 2;
-    QTest::newRow( "year match year" ) << QueryMaker::Year << Meta::valYear << "1" << false << false << 1;
-    QTest::newRow( "album match album" ) << QueryMaker::Album << Meta::valAlbum << "album1" << false << false << 1;
-    QTest::newRow( "track match album" ) << QueryMaker::Track << Meta::valAlbum << "album1" << false << false << 1;
-    QTest::newRow( "track match albumartit" ) << QueryMaker::Track << Meta::valAlbumArtist << "artist1" << false << false << 2;
-    QTest::newRow( "album match albumartist" ) << QueryMaker::Album << Meta::valAlbumArtist << "artist2" << false << false << 1;
-    QTest::newRow( "album match all albumartists" ) << QueryMaker::Album << Meta::valAlbumArtist << "artist" << true << false << 4;
-    QTest::newRow( "genre match albumartist" ) << QueryMaker::Genre << Meta::valAlbumArtist << "artist1" << false << false << 1;
-    QTest::newRow( "year match albumartist" ) << QueryMaker::Year << Meta::valAlbumArtist << "artist1" << false << false << 1;
-    QTest::newRow( "composer match albumartist" ) << QueryMaker::Composer << Meta::valAlbumArtist << "artist1" << false << false << 1;
-    QTest::newRow( "genre match title" ) << QueryMaker::Genre << Meta::valTitle << "track1" << false << false << 1;
-    QTest::newRow( "composer match title" ) << QueryMaker::Composer << Meta::valTitle << "track1" << false << false << 1;
-    QTest::newRow( "year match title" ) << QueryMaker::Year << Meta::valTitle << "track1" << false << false << 1;
-    QTest::newRow( "album match title" ) << QueryMaker::Album << Meta::valTitle << "track1" << false << false << 1;
-    QTest::newRow( "artist match title" ) << QueryMaker::Artist << Meta::valTitle << "track1" << false << false << 1;
-    QTest::newRow( "track match comment" ) << QueryMaker::Track << Meta::valComment << "comment" << true << false << 4;
-    QTest::newRow( "track match url" ) << QueryMaker::Track << Meta::valUrl << "Exist" << false << false << 2;
-    QTest::newRow( "album match comment" ) << QueryMaker::Track << Meta::valComment << "comment1" << true << true << 1;
+    QTest::newRow( "track match all titles" ) << Collections::QueryMaker::Track << Meta::valTitle << "track" << false << false << 6;
+    QTest::newRow( "track match all title beginnings" ) << Collections::QueryMaker::Track << Meta::valTitle << "track" << true << false << 6;
+    QTest::newRow( "track match one title beginning" ) << Collections::QueryMaker::Track << Meta::valTitle << "track1" << true << false << 1;
+    QTest::newRow( "track match one title end" ) << Collections::QueryMaker::Track << Meta::valTitle << "rack2" << false << true << 1;
+    QTest::newRow( "track match title on both ends" ) << Collections::QueryMaker::Track << Meta::valTitle << "track3" << true << true << 1;
+    QTest::newRow( "track match artist" ) << Collections::QueryMaker::Track << Meta::valArtist << "artist1" << false << false << 3;
+    QTest::newRow( "artist match artist" ) << Collections::QueryMaker::Artist << Meta::valArtist << "artist1" << true << true << 1;
+    QTest::newRow( "album match artist" ) << Collections::QueryMaker::Album << Meta::valArtist << "artist3" << false << false << 2;
+    QTest::newRow( "track match genre" ) << Collections::QueryMaker::Track << Meta::valGenre << "genre1" << false << false << 3;
+    QTest::newRow( "genre match genre" ) << Collections::QueryMaker::Genre << Meta::valGenre << "genre1" << false << false << 1;
+    QTest::newRow( "track match composer" ) << Collections::QueryMaker::Track << Meta::valComposer << "composer2" << false << false << 2;
+    QTest::newRow( "composer match composer" ) << Collections::QueryMaker::Composer << Meta::valComposer << "composer2" << false << false << 1;
+    QTest::newRow( "track match year" ) << Collections::QueryMaker::Track << Meta::valYear << "2" << true << true << 2;
+    QTest::newRow( "year match year" ) << Collections::QueryMaker::Year << Meta::valYear << "1" << false << false << 1;
+    QTest::newRow( "album match album" ) << Collections::QueryMaker::Album << Meta::valAlbum << "album1" << false << false << 1;
+    QTest::newRow( "track match album" ) << Collections::QueryMaker::Track << Meta::valAlbum << "album1" << false << false << 1;
+    QTest::newRow( "track match albumartit" ) << Collections::QueryMaker::Track << Meta::valAlbumArtist << "artist1" << false << false << 2;
+    QTest::newRow( "album match albumartist" ) << Collections::QueryMaker::Album << Meta::valAlbumArtist << "artist2" << false << false << 1;
+    QTest::newRow( "album match all albumartists" ) << Collections::QueryMaker::Album << Meta::valAlbumArtist << "artist" << true << false << 4;
+    QTest::newRow( "genre match albumartist" ) << Collections::QueryMaker::Genre << Meta::valAlbumArtist << "artist1" << false << false << 1;
+    QTest::newRow( "year match albumartist" ) << Collections::QueryMaker::Year << Meta::valAlbumArtist << "artist1" << false << false << 1;
+    QTest::newRow( "composer match albumartist" ) << Collections::QueryMaker::Composer << Meta::valAlbumArtist << "artist1" << false << false << 1;
+    QTest::newRow( "genre match title" ) << Collections::QueryMaker::Genre << Meta::valTitle << "track1" << false << false << 1;
+    QTest::newRow( "composer match title" ) << Collections::QueryMaker::Composer << Meta::valTitle << "track1" << false << false << 1;
+    QTest::newRow( "year match title" ) << Collections::QueryMaker::Year << Meta::valTitle << "track1" << false << false << 1;
+    QTest::newRow( "album match title" ) << Collections::QueryMaker::Album << Meta::valTitle << "track1" << false << false << 1;
+    QTest::newRow( "artist match title" ) << Collections::QueryMaker::Artist << Meta::valTitle << "track1" << false << false << 1;
+    QTest::newRow( "track match comment" ) << Collections::QueryMaker::Track << Meta::valComment << "comment" << true << false << 4;
+    QTest::newRow( "track match url" ) << Collections::QueryMaker::Track << Meta::valUrl << "Exist" << false << false << 2;
+    QTest::newRow( "album match comment" ) << Collections::QueryMaker::Track << Meta::valComment << "comment1" << true << true << 1;
 }
 
 void
 TestSqlQueryMaker::testFilter()
 {
-    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( qint64, value );
     QFETCH( QString, filter );
     QFETCH( bool, matchBeginning );
     QFETCH( bool, matchEnd );
     QFETCH( int, count );
 
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
     qm.setReturnResultAsDataPtrs( true );
@@ -730,29 +730,29 @@ Meta::DataList asList( const Meta::YearPtr &year )
 void
 TestSqlQueryMaker::testMatch_data()
 {
-    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
     QTest::addColumn<Meta::DataList>( "dataList" );
     QTest::addColumn<int>( "count" );
 
     SqlRegistry *r = m_collection->registry();
 
-    QTest::newRow( "track matches artist" ) << QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
-    QTest::newRow( "track matches album" ) << QueryMaker::Track << asList( r->getAlbum( "album1",1,1 ) ) << 1;
-    QTest::newRow( "track matches genre" ) << QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
-    QTest::newRow( "track matches composer" ) << QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
-    QTest::newRow( "track matches year" ) << QueryMaker::Track << asList( r->getYear("1")) << 3;
-    QTest::newRow( "artist matches album" ) << QueryMaker::Artist << asList(r->getAlbum("album1",1,1)) << 1;
-    QTest::newRow( "artist matches genre" ) << QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
+    QTest::newRow( "track matches artist" ) << Collections::QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
+    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1",1,1 ) ) << 1;
+    QTest::newRow( "track matches genre" ) << Collections::QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
+    QTest::newRow( "track matches composer" ) << Collections::QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
+    QTest::newRow( "track matches year" ) << Collections::QueryMaker::Track << asList( r->getYear("1")) << 3;
+    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1",1,1)) << 1;
+    QTest::newRow( "artist matches genre" ) << Collections::QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
 }
 
 void
 TestSqlQueryMaker::testMatch()
 {
-    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( Meta::DataList, dataList );
     QFETCH( int, count );
 
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
     qm.setReturnResultAsDataPtrs( true );
@@ -779,8 +779,8 @@ TestSqlQueryMaker::testDynamicCollection()
 
     m_collection->setMountPointManager( &mpm );
 
-    SqlQueryMaker trackQm( m_collection );
-    trackQm.setQueryType( QueryMaker::Track );
+    Collections::SqlQueryMaker trackQm( m_collection );
+    trackQm.setQueryType( Collections::QueryMaker::Track );
     trackQm.setBlocking( true );
     trackQm.run();
     QCOMPARE( trackQm.tracks( "testId" ).count(), 3 );
@@ -788,37 +788,37 @@ TestSqlQueryMaker::testDynamicCollection()
     mpm.mountPoints.insert( 1, "/foo" );
 
     trackQm.reset();
-    trackQm.setQueryType( QueryMaker::Track );
+    trackQm.setQueryType( Collections::QueryMaker::Track );
     trackQm.setBlocking( true );
     trackQm.run();
     QCOMPARE( trackQm.tracks( "testId" ).count(), 4 );
 
-    SqlQueryMaker artistQm( m_collection );
-    artistQm.setQueryType( QueryMaker::Artist );
+    Collections::SqlQueryMaker artistQm( m_collection );
+    artistQm.setQueryType( Collections::QueryMaker::Artist );
     artistQm.setBlocking( true );
     artistQm.run();
     QCOMPARE( artistQm.artists( "testId" ).count(), 2 );
 
-    SqlQueryMaker albumQm( m_collection );
-    albumQm.setQueryType( QueryMaker::Album );
+    Collections::SqlQueryMaker albumQm( m_collection );
+    albumQm.setQueryType( Collections::QueryMaker::Album );
     albumQm.setBlocking( true );
     albumQm.run();
     QCOMPARE( albumQm.albums( "testId" ).count(), 4 );
 
-    SqlQueryMaker genreQm( m_collection );
-    genreQm.setQueryType( QueryMaker::Genre );
+    Collections::SqlQueryMaker genreQm( m_collection );
+    genreQm.setQueryType( Collections::QueryMaker::Genre );
     genreQm.setBlocking( true );
     genreQm.run();
     QCOMPARE( genreQm.genres( "testId" ).count(), 2 );
 
-    SqlQueryMaker composerQm( m_collection );
-    composerQm.setQueryType( QueryMaker::Composer );
+    Collections::SqlQueryMaker composerQm( m_collection );
+    composerQm.setQueryType( Collections::QueryMaker::Composer );
     composerQm.setBlocking( true );
     composerQm.run();
     QCOMPARE( composerQm.composers( "testId" ).count(), 2 );
 
-    SqlQueryMaker yearQm( m_collection );
-    yearQm.setQueryType( QueryMaker::Year );
+    Collections::SqlQueryMaker yearQm( m_collection );
+    yearQm.setQueryType( Collections::QueryMaker::Year );
     yearQm.setBlocking( true );
     yearQm.run();
     QCOMPARE( yearQm.years( "testId" ).count(), 2 );
@@ -869,9 +869,9 @@ TestSqlQueryMaker::testSpecialCharacters()
     QCOMPARE( m_storage->query( "select count(*) from urls where id = 999" ).first(), QString("1") );
     QCOMPARE( m_storage->query( "select count(*) from tracks where id = 999" ).first(), QString("1") );
 
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.setReturnResultAsDataPtrs( true );
     qm.addFilter( Meta::valTitle, filter, !like, !like );
 
@@ -886,36 +886,36 @@ TestSqlQueryMaker::testSpecialCharacters()
 void
 TestSqlQueryMaker::testNumberFilter_data()
 {
-    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
     QTest::addColumn<qint64>( "value" );
     QTest::addColumn<int>( "filter" );
-    QTest::addColumn<QueryMaker::NumberComparison>( "comparison" );
+    QTest::addColumn<Collections::QueryMaker::NumberComparison>( "comparison" );
     QTest::addColumn<bool>( "exclude" );
     QTest::addColumn<int>( "count" );
 
-    QTest::newRow( "include rating greater 4" ) << QueryMaker::Track << Meta::valRating << 4 << QueryMaker::GreaterThan << false << 2;
-    QTest::newRow( "exclude rating smaller 4" ) << QueryMaker::Album << Meta::valRating << 4 << QueryMaker::LessThan << true << 2;
-    QTest::newRow( "exclude tracks first played later than 2000" ) << QueryMaker::Track << Meta::valFirstPlayed << 2000 << QueryMaker::GreaterThan << true << 1;
+    QTest::newRow( "include rating greater 4" ) << Collections::QueryMaker::Track << Meta::valRating << 4 << Collections::QueryMaker::GreaterThan << false << 2;
+    QTest::newRow( "exclude rating smaller 4" ) << Collections::QueryMaker::Album << Meta::valRating << 4 << Collections::QueryMaker::LessThan << true << 2;
+    QTest::newRow( "exclude tracks first played later than 2000" ) << Collections::QueryMaker::Track << Meta::valFirstPlayed << 2000 << Collections::QueryMaker::GreaterThan << true << 1;
     //having never been played does not mean played before 20000
-    QTest::newRow( "include last played before 20000" ) << QueryMaker::Track << Meta::valLastPlayed << 20000 << QueryMaker::LessThan << false << 1;
-    QTest::newRow( "playcount equals 100" ) << QueryMaker::Album << Meta::valPlaycount << 100 << QueryMaker::Equals << false << 1;
+    QTest::newRow( "include last played before 20000" ) << Collections::QueryMaker::Track << Meta::valLastPlayed << 20000 << Collections::QueryMaker::LessThan << false << 1;
+    QTest::newRow( "playcount equals 100" ) << Collections::QueryMaker::Album << Meta::valPlaycount << 100 << Collections::QueryMaker::Equals << false << 1;
     //should include unplayed songs
-    QTest::newRow( "playcount != 50" ) << QueryMaker::Track << Meta::valPlaycount << 50 << QueryMaker::Equals << true << 5;
-    QTest::newRow( "score greater 60" ) << QueryMaker::Genre << Meta::valScore << 60 << QueryMaker::GreaterThan << false << 1;
+    QTest::newRow( "playcount != 50" ) << Collections::QueryMaker::Track << Meta::valPlaycount << 50 << Collections::QueryMaker::Equals << true << 5;
+    QTest::newRow( "score greater 60" ) << Collections::QueryMaker::Genre << Meta::valScore << 60 << Collections::QueryMaker::GreaterThan << false << 1;
 }
 
 void
 TestSqlQueryMaker::testNumberFilter()
 {
 
-    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( qint64, value );
     QFETCH( int, filter );
     QFETCH( bool, exclude );
-    QFETCH( QueryMaker::NumberComparison, comparison );
+    QFETCH( Collections::QueryMaker::NumberComparison, comparison );
     QFETCH( int, count );
 
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
     qm.setReturnResultAsDataPtrs( true );
@@ -933,26 +933,26 @@ TestSqlQueryMaker::testNumberFilter()
 void
 TestSqlQueryMaker::testReturnFunctions_data()
 {
-    QTest::addColumn<QueryMaker::ReturnFunction>( "function" );
+    QTest::addColumn<Collections::QueryMaker::ReturnFunction>( "function" );
     QTest::addColumn<qint64>( "value" );
     QTest::addColumn<QString>( "result" );
 
-    QTest::newRow( "count tracks" ) << QueryMaker::Count << Meta::valTitle << QString( "6" );
-    QTest::newRow( "sum of playcount" ) << QueryMaker::Sum << Meta::valPlaycount << QString( "150" );
-    QTest::newRow( "min score" ) << QueryMaker::Min << Meta::valScore << QString( "50" );
-    QTest::newRow( "max rating" ) << QueryMaker::Max << Meta::valRating << QString( "9" );
+    QTest::newRow( "count tracks" ) << Collections::QueryMaker::Count << Meta::valTitle << QString( "6" );
+    QTest::newRow( "sum of playcount" ) << Collections::QueryMaker::Sum << Meta::valPlaycount << QString( "150" );
+    QTest::newRow( "min score" ) << Collections::QueryMaker::Min << Meta::valScore << QString( "50" );
+    QTest::newRow( "max rating" ) << Collections::QueryMaker::Max << Meta::valRating << QString( "9" );
 }
 
 void
 TestSqlQueryMaker::testReturnFunctions()
 {
-    QFETCH( QueryMaker::ReturnFunction, function );
+    QFETCH( Collections::QueryMaker::ReturnFunction, function );
     QFETCH( qint64, value );
     QFETCH( QString, result );
 
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Custom );
+    qm.setQueryType( Collections::QueryMaker::Custom );
     qm.addReturnFunction( function, value );
 
     qm.run();

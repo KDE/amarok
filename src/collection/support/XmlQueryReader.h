@@ -22,7 +22,9 @@
 #include <QList>
 #include <QXmlStreamReader>
 
-class QueryMaker;
+namespace Collections {
+    class QueryMaker;
+}
 
 class XmlQueryReader : public QXmlStreamReader
 {
@@ -32,9 +34,9 @@ public:
                            , ParseReturnValues
                          };
 
-    static QueryMaker* getQueryMaker( const QString &xmlData, ReturnValueEnum flag );
+    static Collections::QueryMaker* getQueryMaker( const QString &xmlData, ReturnValueEnum flag );
 
-    XmlQueryReader( QueryMaker *qm, ReturnValueEnum flag );
+    XmlQueryReader( Collections::QueryMaker *qm, ReturnValueEnum flag );
     virtual ~XmlQueryReader();
 
     bool read( const QString &xmlData );

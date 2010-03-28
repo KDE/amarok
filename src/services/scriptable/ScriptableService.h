@@ -59,7 +59,7 @@ public:
 
     void polish();
 
-    ServiceCollection * collection();
+    Collections::ServiceCollection * collection();
 
     int insertItem( int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,
                     const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
@@ -103,7 +103,7 @@ private:
     int addArtist( Meta::ScriptableServiceArtist * artist );
     int addGenre( Meta::ScriptableServiceGenre * genre );
 
-    ScriptableServiceCollection * m_collection;
+    Collections::ScriptableServiceCollection * m_collection;
     int m_trackIdCounter;
     int m_albumIdCounter;
     int m_artistIdCounter;

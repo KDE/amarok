@@ -117,7 +117,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indcies );
         QHash<QAction*, Collections::Collection*> getRemoveActions( const QModelIndexList & indices );
 
-        QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
+        Collections::QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
         CollectionTreeItem* getItemFromIndex( QModelIndex &index );
 
         CollectionSortFilterProxyModel *m_filterModel;

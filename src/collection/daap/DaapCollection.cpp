@@ -36,6 +36,8 @@
 #include <dnssd/servicebase.h>
 #include <dnssd/servicebrowser.h>
 
+using namespace Collections;
+
 AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
 
 DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )

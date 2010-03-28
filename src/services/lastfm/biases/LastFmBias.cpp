@@ -267,7 +267,7 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     }
     m_qm->endAndOr();
     
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
@@ -338,7 +338,7 @@ void Dynamic::LastFmBias::trackQueryDone()
     }
     m_qm->endAndOr();
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
