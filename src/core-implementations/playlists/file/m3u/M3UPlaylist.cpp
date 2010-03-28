@@ -31,17 +31,17 @@
 #include <QFileInfo>
 #include <QTextStream>
 
-namespace Playlists {
+namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
-    : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
+    : m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracksLoaded( false )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
-    : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
+    : m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracksLoaded( true )
     , m_tracks( tracks )
 {
@@ -68,7 +68,7 @@ M3UPlaylist::description() const
     return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
 }
 
-Meta::TrackList
+TrackList
 M3UPlaylist::tracks()
 {
     if( m_tracksLoaded )
@@ -233,5 +233,5 @@ M3UPlaylist::setName( const QString &name )
     m_url.setFileName( name );
 }
 
-} //namespace Playlists
+} //namespace Meta
 

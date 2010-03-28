@@ -92,19 +92,19 @@ MtpPlaylistCapability::libGetPlaylistName()
 }
 
 void
-MtpPlaylistCapability::savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
+MtpPlaylistCapability::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     m_handler->libSavePlaylist( playlist, name );
 }
 
 void
-MtpPlaylistCapability::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+MtpPlaylistCapability::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->deletePlaylist( playlist );
 }
 
 void
-MtpPlaylistCapability::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+MtpPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->renamePlaylist( playlist );
 }

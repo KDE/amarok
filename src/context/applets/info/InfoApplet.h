@@ -62,7 +62,7 @@ private slots:
 private:
     AmarokWebView * m_webView;
     bool m_initialized;
-    Playlists::XSPFPlaylist * m_currentPlaylist;
+    Meta::XSPFPlaylist * m_currentPlaylist;
 
     static QString s_defaultHtml;
 };

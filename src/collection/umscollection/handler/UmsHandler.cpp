@@ -175,7 +175,7 @@ UmsHandler::init()
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
                 m_podcastProvider = new Podcasts::UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
-                                                     Playlists::PodcastChannelPlaylist );
+                                                     Meta::PodcastChannelPlaylist );
             }
             else if( line.startsWith( s_autoConnectKey + "=" ) )
             {
@@ -978,13 +978,13 @@ UmsHandler::libGetPlaylistName()
 }
 
 void
-UmsHandler::setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+UmsHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_itdbplaylisthash[ playlist ] = m_currplaylist;
 }
 
 void
-UmsHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
+UmsHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
     // Make new playlist
@@ -992,7 +992,7 @@ UmsHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
     Itdb_Playlist *pl = itdb_playlist_new( name.toUtf8(), 0 );
     itdb_playlist_add( m_itdb, pl, -1 );
 
-    Meta::TrackList tracks = const_cast<Playlists::MediaDevicePlaylistPtr&> ( playlist )->tracks();
+    Meta::TrackList tracks = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
 
     foreach( const Meta::TrackPtr track, tracks )
     {
@@ -1005,7 +1005,7 @@ UmsHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
 }
 
 void
-UmsHandler::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+UmsHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     Itdb_Playlist *pl = m_itdbplaylisthash.value( playlist );
@@ -1020,7 +1020,7 @@ UmsHandler::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 }
 
 void
-UmsHandler::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+UmsHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
     Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];

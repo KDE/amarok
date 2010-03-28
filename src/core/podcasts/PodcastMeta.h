@@ -198,7 +198,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Trac
         Meta::YearPtr m_yearPtr;
 };
 
-class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
+class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Meta::Playlist
 {
     public:
 
@@ -210,7 +210,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
 
         PodcastChannel()
             : PodcastMetaCommon()
-            , Playlist()
+            , Meta::Playlist()
             , m_image()
             , m_subscribeDate()
             , m_copyright()

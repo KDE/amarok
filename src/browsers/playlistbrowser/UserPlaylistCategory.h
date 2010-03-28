@@ -33,9 +33,7 @@ class KAction;
 class KActionMenu;
 class KLineEdit;
 
-namespace Playlists {
-    class PlaylistProvider;
-}
+class PlaylistProvider;
 
 class PlaylistsInGroupsProxy;
 class PlaylistsByProviderProxy;
@@ -62,20 +60,20 @@ public:
 private slots:
     void newPalette( const QPalette &palette );
     void toggleView( bool );
-    void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );
-    void slotProviderRemoved( Playlists::PlaylistProvider *provider, int category );
+    void slotProviderAdded( PlaylistProvider *provider, int category );
+    void slotProviderRemoved( PlaylistProvider *provider, int category );
     void slotToggleProviderButton( bool enabled );
 
     void createNewGroup();
 
 private:
-    void createProviderButton( const Playlists::PlaylistProvider *provider );
+    void createProviderButton( const PlaylistProvider *provider );
 
     UserPlaylistTreeView *m_playlistView;
 
     KAction *m_addGroupAction;
     KActionMenu *m_providerMenu;
-    QMap<const Playlists::PlaylistProvider *, QAction *> m_providerActions;
+    QMap<const PlaylistProvider *, QAction *> m_providerActions;
     
     PlaylistTreeItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemView;
@@ -88,6 +86,6 @@ private:
 }
 
 //for saving it in a QVariant
-Q_DECLARE_METATYPE( const Playlists::PlaylistProvider * );
+Q_DECLARE_METATYPE( const PlaylistProvider * );
 
 #endif

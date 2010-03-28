@@ -27,13 +27,14 @@
 
 class KJob;
 class PlaylistManager;
+class PlaylistProvider;
+typedef QList<PlaylistProvider *> PlaylistProviderList;
 class QAction;
+class UserPlaylistProvider;
+class PlaylistFileProvider;
 
-namespace Playlists {
+namespace Meta {
     class PlaylistFile;
-    class PlaylistFileProvider;
-    class PlaylistProvider;
-    class UserPlaylistProvider;
     typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
 }
 
@@ -44,8 +45,6 @@ namespace Podcasts {
 namespace The {
     AMAROK_EXPORT PlaylistManager* playlistManager();
 }
-
-typedef QList<Playlists::PlaylistProvider *> PlaylistProviderList;
 
 /**
  * Facility for managing PlaylistProviders registered by other
@@ -73,7 +72,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         /**
          * returns playlists of a certain category from all registered PlaylistProviders
          */
-        Playlists::PlaylistList playlistsOfCategory( int playlistCategory );
+        Meta::PlaylistList playlistsOfCategory( int playlistCategory );
 
         /**
         * returns all PlaylistProviders that provider a certain playlist category.
@@ -86,18 +85,18 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          * @arg provider a PlaylistProvider
          * @arg category a default Category from the PlaylistManager::PlaylistCategory enum or a custom one registered before with registerCustomCategory.
          */
-        void addProvider( Playlists::PlaylistProvider * provider, int category );
+        void addProvider( PlaylistProvider * provider, int category );
 
         /**
          * Remove a PlaylistProvider.
          * @arg provider a PlaylistProvider
          */
 
-        void removeProvider( Playlists::PlaylistProvider * provider );
+        void removeProvider( PlaylistProvider * provider );
 
-        Playlists::PlaylistProvider * playlistProvider( int category, QString name );
+        PlaylistProvider * playlistProvider( int category, QString name );
 
-        void downloadPlaylist( const KUrl & path, const Playlists::PlaylistFilePtr playlist );
+        void downloadPlaylist( const KUrl & path, const Meta::PlaylistFilePtr playlist );
 
         /**
         *   Saves a list of tracks to a new SQL playlist. Used in the Playlist save button.
@@ -105,7 +104,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         *   @arg name name of playlist to save
         */
         bool save( Meta::TrackList tracks, const QString &name = QString(),
-                   Playlists::UserPlaylistProvider *toProvider = 0 );
+                   UserPlaylistProvider *toProvider = 0 );
 
         /**
          *  Saves a playlist from a file to the database.
@@ -113,18 +112,18 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
          bool import( const QString &fromLocation );
 
-        void rename( Playlists::PlaylistPtr playlist );
+        void rename( Meta::PlaylistPtr playlist );
 
-        void deletePlaylists( Playlists::PlaylistList playlistlist );
+        void deletePlaylists( Meta::PlaylistList playlistlist );
 
         Podcasts::PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
-        Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
+        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
 
         /**
          *  Retrieves the provider owning the given playlist
          *  @arg playlist the playlist whose provider we want
          */
-        Playlists::PlaylistProvider* getProviderForPlaylist( const Playlists::PlaylistPtr playlist );
+        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr playlist );
 
         /**
          *  Checks if the provider to whom this playlist belongs supports writing
@@ -132,10 +131,10 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          *  @return whether or not the playlist is writable
          */
 
-        bool isWritable( const Playlists::PlaylistPtr &playlist );
+        bool isWritable( const Meta::PlaylistPtr &playlist );
 
-        QList<QAction *> playlistActions( const Playlists::PlaylistList lists );
-        QList<QAction *> trackActions( const Playlists::PlaylistPtr playlist,
+        QList<QAction *> playlistActions( const Meta::PlaylistList lists );
+        QList<QAction *> trackActions( const Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         void completePodcastDownloads();
@@ -143,10 +142,10 @@ class AMAROK_EXPORT PlaylistManager : public QObject
     signals:
         void updated();
         void categoryAdded( int category );
-        void providerAdded( Playlists::PlaylistProvider *provider, int category );
-        void providerRemoved( Playlists::PlaylistProvider *provider, int category );
+        void providerAdded( PlaylistProvider *provider, int category );
+        void providerRemoved( PlaylistProvider *provider, int category );
 
-        void renamePlaylist( Playlists::PlaylistPtr playlist );
+        void renamePlaylist( Meta::PlaylistPtr playlist );
 
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );
@@ -158,13 +157,13 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         ~PlaylistManager();
 
         Podcasts::PodcastProvider *m_defaultPodcastProvider;
-        Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;
-        Playlists::PlaylistFileProvider *m_playlistFileProvider;
+        UserPlaylistProvider *m_defaultUserPlaylistProvider;
+        PlaylistFileProvider *m_playlistFileProvider;
 
-        QMultiMap<int, Playlists::PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
+        QMultiMap<int, PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
 
-        QMap<KJob *, Playlists::PlaylistFilePtr> m_downloadJobMap;
+        QMap<KJob *, Meta::PlaylistFilePtr> m_downloadJobMap;
 };
 
 #endif

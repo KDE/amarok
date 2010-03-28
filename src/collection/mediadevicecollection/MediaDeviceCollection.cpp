@@ -137,7 +137,7 @@ MediaDeviceCollection::queryMaker()
     return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
-Playlists::UserPlaylistProvider*
+UserPlaylistProvider*
 MediaDeviceCollection::userPlaylistProvider()
 {
     return m_handler->provider();

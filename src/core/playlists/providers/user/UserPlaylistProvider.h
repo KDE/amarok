@@ -23,8 +23,6 @@
 
 class QAction;
 
-namespace Playlists {
-
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -45,28 +43,26 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         /**
             Save a list of tracks as a playlist in the database.
-            @returns a non-null Playlists::PlaylistPtr if successful
+            @returns a non-null Meta::PlaylistPtr if successful
         **/
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks ) = 0;
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks ) = 0;
 
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
 
         virtual bool supportsEmptyGroups();
 
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
+        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
+        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         // UserPlaylistProvider-specific
 
         virtual bool isWritable() { return false; }
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName ) {Q_UNUSED( playlist ) Q_UNUSED(newName)}
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName ) {Q_UNUSED( playlist ) Q_UNUSED(newName)}
+        virtual void deletePlaylists( Meta::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
 
     signals:
             void updated();
 };
-
-} //namespace Playlists
 
 #endif

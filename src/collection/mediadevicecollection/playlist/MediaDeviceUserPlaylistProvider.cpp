@@ -40,24 +40,22 @@
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
-namespace Playlists {
-
 MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( MediaDeviceCollection *collection )
-    : Playlists::UserPlaylistProvider()
+    : UserPlaylistProvider()
     , m_renameAction( 0 )
     , m_collection( collection )
 {
     DEBUG_BLOCK
 //    checkTables();
-//    m_root = Playlists::MediaDevicePlaylistGroupPtr( new Playlists::MediaDevicePlaylistGroup( "",
-//            Playlists::MediaDevicePlaylistGroupPtr() ) );
+//    m_root = Meta::MediaDevicePlaylistGroupPtr( new Meta::MediaDevicePlaylistGroup( "",
+//            Meta::MediaDevicePlaylistGroupPtr() ) );
 //    The::playlistManager()->addProvider( this, category() );
 }
 
 MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 {
     DEBUG_BLOCK
-//     foreach( Playlists::MediaDevicePlaylistPtr playlist, m_playlists )
+//     foreach( Meta::MediaDevicePlaylistPtr playlist, m_playlists )
 //     {
 //         playlist->saveToDb( true );
 //     }
@@ -67,27 +65,27 @@ MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 
 }
 
-Playlists::PlaylistList
+Meta::PlaylistList
 MediaDeviceUserPlaylistProvider::playlists()
 {
     DEBUG_BLOCK
-    Playlists::PlaylistList playlists;
+    Meta::PlaylistList playlists;
 
-    foreach( Playlists::MediaDevicePlaylistPtr mediadevicePlaylist, m_playlists )
+    foreach( Meta::MediaDevicePlaylistPtr mediadevicePlaylist, m_playlists )
     {
-        playlists << Playlists::PlaylistPtr::staticCast( mediadevicePlaylist );
+        playlists << Meta::PlaylistPtr::staticCast( mediadevicePlaylist );
     }
 
     return playlists;
 }
 #if 0
 void
-SqlPlaylists::UserPlaylistProvider::slotDelete()
+SqlUserPlaylistProvider::slotDelete()
 {
     DEBUG_BLOCK
 
     //TODO FIXME Confirmation of delete
-    foreach( Playlists::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
+    foreach( Meta::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
     {
         Meta::SqlPlaylistPtr sqlPlaylist =
                 Meta::SqlPlaylistPtr::dynamicCast( playlist );
@@ -107,7 +105,7 @@ MediaDeviceUserPlaylistProvider::slotRename()
 {
     DEBUG_BLOCK
     //only one playlist can be selected at this point
-    Playlists::MediaDevicePlaylistPtr playlist = selectedPlaylists().first();
+    Meta::MediaDevicePlaylistPtr playlist = selectedPlaylists().first();
     if( playlist.isNull() )
         return;
 
@@ -124,14 +122,14 @@ MediaDeviceUserPlaylistProvider::slotRename()
 #endif
 #if 0
 void
-SqlPlaylists::UserPlaylistProvider::slotRemove()
+SqlUserPlaylistProvider::slotRemove()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
         return;
 
     PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    foreach( Playlists::PlaylistPtr playlist, playlistMap.keys() )
+    foreach( Meta::PlaylistPtr playlist, playlistMap.keys() )
         foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
             playlist->removeTrack( playlist->tracks().indexOf( track ) );
 
@@ -139,7 +137,7 @@ SqlPlaylists::UserPlaylistProvider::slotRemove()
     action->setData( QVariant() );
 }
 #endif
-Playlists::PlaylistPtr
+Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
@@ -153,27 +151,27 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
                  QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm" ) );
 }
 
-Playlists::PlaylistPtr
+Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to device with name" << name;
     // NOTE: the playlist constructor tells the handler to make the playlist, save to db etc.
-    Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr( new Playlists::MediaDevicePlaylist( name, tracks ) );
+    Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr( new Meta::MediaDevicePlaylist( name, tracks ) );
     //pl = 0;
 
     emit playlistSaved( pl, name ); // inform handler of new playlist
 
     addPlaylist( pl );
 
-    return Playlists::PlaylistPtr::dynamicCast( pl );
+    return Meta::PlaylistPtr::dynamicCast( pl );
 }
 
 void
-MediaDeviceUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+MediaDeviceUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
-    Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr::staticCast( playlist );
+    Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
     if( pl )
     {
         debug() << "Setting name of playlist";
@@ -184,12 +182,12 @@ MediaDeviceUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const 
 }
 
 void
-MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
+MediaDeviceUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistlist )
 {
-    Playlists::MediaDevicePlaylistList pllist;
-    foreach( Playlists::PlaylistPtr playlist, playlistlist )
+    Meta::MediaDevicePlaylistList pllist;
+    foreach( Meta::PlaylistPtr playlist, playlistlist )
     {
-        Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr::staticCast( playlist );
+        Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
 
         if( pl )
         {
@@ -203,19 +201,17 @@ MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playli
 }
 
 void
-MediaDeviceUserPlaylistProvider::addPlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
+MediaDeviceUserPlaylistProvider::addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists << playlist;
     emit updated();
 }
 
 void
-MediaDeviceUserPlaylistProvider::removePlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
+MediaDeviceUserPlaylistProvider::removePlaylist( Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists.removeOne( playlist );
     emit updated();
 }
-
-} //namespace Playlists
 
 #include "MediaDeviceUserPlaylistProvider.moc"

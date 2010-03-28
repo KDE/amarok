@@ -53,9 +53,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void setTracks( const Meta::TrackList &tracks );
         void addTracks( const Meta::TrackList &tracks );
 
-        Playlists::PlaylistList playlists() const;
-        void setPlaylists( const Playlists::PlaylistList &playlists );
-        void addPlaylists( const Playlists::PlaylistList &playlists );
+        Meta::PlaylistList playlists() const;
+        void setPlaylists( const Meta::PlaylistList &playlists );
+        void addPlaylists( const Meta::PlaylistList &playlists );
 
         QStringList playlistGroups() const;
         void setPlaylistGroups( const QStringList &groups );

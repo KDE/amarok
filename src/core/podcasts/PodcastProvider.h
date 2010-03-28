@@ -18,6 +18,7 @@
 #define PODCASTPROVIDER_H
 
 #include "core/collections/Collection.h"
+#include "core/playlists/PlaylistProvider.h"
 #include "core/podcasts/PodcastMeta.h"
 
 #include <kio/jobclasses.h>
@@ -31,7 +32,7 @@ namespace Podcasts {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public Playlists::PlaylistProvider
+class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public PlaylistProvider
 {
     //Q_OBJECT
     public:
@@ -67,9 +68,9 @@ class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public 
         virtual QString prettyName() const = 0;
         virtual KIcon icon() const = 0;
 
-        virtual int category() const { return (int)Playlists::PodcastChannelPlaylist; }
+        virtual int category() const { return (int)Meta::PodcastChannelPlaylist; }
 
-        virtual Playlists::PlaylistList playlists() = 0;
+        virtual Meta::PlaylistList playlists() = 0;
 
         virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList )
             { return QList<QAction *>(); }
@@ -77,9 +78,9 @@ class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public 
             { return QList<QAction *>(); }
 
         virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist )
+        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
                 { Q_UNUSED( playlist ) return QList<QAction *>(); }
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
+        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 

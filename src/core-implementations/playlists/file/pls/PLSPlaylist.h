@@ -22,7 +22,7 @@
 class QTextStream;
 class QFile;
 
-namespace Playlists {
+namespace Meta {
 
 class PLSPlaylist;
 
@@ -36,7 +36,7 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
 {
     public:
         PLSPlaylist();
-        PLSPlaylist( Meta::TrackList tracks );
+        PLSPlaylist( TrackList tracks );
         PLSPlaylist( const KUrl &url );
 
         ~PLSPlaylist();
@@ -47,7 +47,7 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         virtual QString description() const;
 
         /** returns all tracks in this playlist */
-        Meta::TrackList tracks() { return m_tracks; }
+        TrackList tracks() { return m_tracks; }
 
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
@@ -71,7 +71,7 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
 
 }
 
-Q_DECLARE_METATYPE( Playlists::PLSPlaylistPtr )
-Q_DECLARE_METATYPE( Playlists::PLSPlaylistList )
+Q_DECLARE_METATYPE( Meta::PLSPlaylistPtr )
+Q_DECLARE_METATYPE( Meta::PLSPlaylistList )
 
 #endif

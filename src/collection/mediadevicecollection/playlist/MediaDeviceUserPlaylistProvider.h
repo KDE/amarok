@@ -27,9 +27,7 @@ class QAction;
 
 class MediaDeviceCollection;
 
-namespace Playlists {
-
-class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlaylistProvider
+class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
     public:
@@ -40,12 +38,12 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
         virtual QString prettyName() const { return i18n("Media Device playlists"); };
         virtual KIcon icon() const { return KIcon( "multimedia-player" ); }
 
-        /* Playlists::UserPlaylistProvider functions */
-        virtual Playlists::PlaylistList playlists();
+        /* UserPlaylistProvider functions */
+        virtual Meta::PlaylistList playlists();
 
         virtual bool canSavePlaylists() { return true; };
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
         //      virtual bool supportsEmptyGroups() { return true; }
 
@@ -53,22 +51,22 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         virtual bool isWritable() { return true; }
 
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
 
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist );
+        virtual void deletePlaylists( Meta::PlaylistList playlistlist );
 
         /// MediaDevice-specific Functions
 
-        void addPlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
-        void removePlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
+        void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
+        void removePlaylist( Meta::MediaDevicePlaylistPtr &playlist );
 
         public slots:
             void sendUpdated() { emit updated(); }
 
         signals:
-            void playlistSaved( const MediaDevicePlaylistPtr &playlist, const QString& name );
-            void playlistRenamed( const MediaDevicePlaylistPtr &playlist );
-            void playlistsDeleted( const MediaDevicePlaylistList &playlistlist );
+            void playlistSaved( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
+            void playlistRenamed( const Meta::MediaDevicePlaylistPtr &playlist );
+            void playlistsDeleted( const Meta::MediaDevicePlaylistList &playlistlist );
 
         private slots:
         //void slotDelete();
@@ -77,12 +75,10 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
  private:
 
-    MediaDevicePlaylistList m_playlists;
+    Meta::MediaDevicePlaylistList m_playlists;
 
     QAction *m_renameAction;
     MediaDeviceCollection *m_collection;
 };
-
-} //namespace Playlists
 
 #endif

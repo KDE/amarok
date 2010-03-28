@@ -20,9 +20,9 @@
 #include "PlaylistCollectionLocation.h"
 #include "core/playlists/PlaylistProvider.h"
 
-PlaylistCollection::PlaylistCollection( const Playlists::PlaylistPtr &playlist )
+PlaylistCollection::PlaylistCollection( const Meta::PlaylistPtr &playlist )
         : Collections::Collection()
-        , Playlists::PlaylistObserver()
+        , Meta::PlaylistObserver()
         , m_playlist( playlist )
         , m_mc( new MemoryCollection() )
 {
@@ -74,7 +74,7 @@ PlaylistCollection::icon() const
 }
 
 void
-PlaylistCollection::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position )
+PlaylistCollection::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position )
 {
     Q_UNUSED( position );
     if( playlist != m_playlist )
@@ -89,7 +89,7 @@ PlaylistCollection::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr 
 }
 
 void
-PlaylistCollection::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+PlaylistCollection::trackRemoved( Meta::PlaylistPtr playlist, int position )
 {
     Q_UNUSED( position )
 
@@ -127,7 +127,7 @@ PlaylistCollection::insertTrack( const Meta::TrackPtr &track )
         m_mc->addYear( track->year() );
 }
 
-Playlists::PlaylistPtr
+Meta::PlaylistPtr
 PlaylistCollection::playlist() const
 {
     return m_playlist;

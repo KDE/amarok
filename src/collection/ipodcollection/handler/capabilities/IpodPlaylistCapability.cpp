@@ -92,25 +92,25 @@ IpodPlaylistCapability::libGetPlaylistName()
 }
 
 void
-IpodPlaylistCapability::savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name )
+IpodPlaylistCapability::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     m_handler->libSavePlaylist( playlist, name );
 }
 
 void
-IpodPlaylistCapability::deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+IpodPlaylistCapability::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->deletePlaylist( playlist );
 }
 
 void
-IpodPlaylistCapability::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+IpodPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->renamePlaylist( playlist );
 }
 
 void
-IpodPlaylistCapability::setAssociatePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
+IpodPlaylistCapability::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->setAssociatePlaylist( playlist );
 }

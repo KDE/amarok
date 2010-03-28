@@ -28,12 +28,10 @@ class KUrl;
 
 class QAction;
 
-namespace Playlists {
-
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PlaylistFileProvider : public Playlists::UserPlaylistProvider
+class PlaylistFileProvider : public UserPlaylistProvider
 {
     Q_OBJECT
 
@@ -44,26 +42,26 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
-        virtual int category() const { return Playlists::UserPlaylist; }
+        virtual int category() const { return Meta::UserPlaylist; }
 
         virtual int playlistCount() const;
-        virtual Playlists::PlaylistList playlists();
+        virtual Meta::PlaylistList playlists();
 
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
+        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
+        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         virtual bool canSavePlaylists() { return true; }
 
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
                                         const QString &name );
 
         virtual bool import( const KUrl &path );
 
         virtual bool isWritable() { return true; }
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual void deletePlaylists( Playlists::PlaylistList playlistList );
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
+        virtual void deletePlaylists( Meta::PlaylistList playlistList );
 
         virtual void loadPlaylists();
 
@@ -77,13 +75,11 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
-        Playlists::PlaylistList m_playlists;
-        Playlists::PlaylistFormat m_defaultFormat;
-        QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
+        Meta::PlaylistList m_playlists;
+        Meta::PlaylistFormat m_defaultFormat;
+        QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;
 
         QAction *m_removeTrackAction;
 };
-
-} //namespace Playlists
 
 #endif

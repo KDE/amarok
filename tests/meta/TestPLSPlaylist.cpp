@@ -55,7 +55,7 @@ void TestPLSPlaylist::initTestCase()
     playlistStream1.setDevice( &playlistFile1 );
     QVERIFY( playlistStream1.device() );
 
-    m_testPlaylist1 = new Playlists::PLSPlaylist( url );
+    m_testPlaylist1 = new Meta::PLSPlaylist( url );
     QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
     playlistFile1.close();
 }

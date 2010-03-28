@@ -34,7 +34,7 @@ namespace PlaylistBrowserNS {
         @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
-                  public Playlists::PlaylistObserver
+                  public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -70,16 +70,16 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
         /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
 
     public slots:
         void slotLoad();
         void slotAppend();
 
         void slotUpdate();
-        void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
+        void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 
     signals:
         void renameIndex( const QModelIndex &index );
@@ -89,14 +89,14 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         UserModel();
         QList<QAction *> actionsFor( const QModelIndex &idx ) const;
         Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
-        Playlists::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
+        Meta::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
         Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
 
         void loadPlaylists();
 
         static UserModel * s_instance;
 
-        Playlists::PlaylistList m_playlists;
+        Meta::PlaylistList m_playlists;
         QAction *m_appendAction;
         QAction *m_loadAction;
 };

@@ -18,7 +18,7 @@
 
 #include <KLocale>
 
-namespace Playlists {
+namespace Meta {
 
 DynamicPlaylist::DynamicPlaylist( PlaylistPtr playlist )
  : Playlist()

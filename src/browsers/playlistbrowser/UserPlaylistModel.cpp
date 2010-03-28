@@ -87,8 +87,8 @@ PlaylistBrowserNS::UserModel::UserModel()
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
+    connect( The::playlistManager(), SIGNAL(renamePlaylist( Meta::PlaylistPtr )),
+             SLOT(slotRenamePlaylist( Meta::PlaylistPtr )) );
 }
 
 PlaylistBrowserNS::UserModel::~UserModel()
@@ -105,13 +105,13 @@ PlaylistBrowserNS::UserModel::slotUpdate()
 }
 
 void
-PlaylistBrowserNS::UserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
+PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
 {
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
     // several playlists with the same name
     int row = -1;
-    foreach( const Playlists::PlaylistPtr p, m_playlists )
+    foreach( const Meta::PlaylistPtr p, m_playlists )
     {
         row++;
         if( p->name() == playlist->name() )
@@ -127,13 +127,13 @@ PlaylistBrowserNS::UserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlis
 void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
-    QList<Playlists::PlaylistPtr> playlists =
-            The::playlistManager()->playlistsOfCategory( Playlists::UserPlaylist );
-    QListIterator<Playlists::PlaylistPtr> i( playlists );
+    QList<Meta::PlaylistPtr> playlists =
+            The::playlistManager()->playlistsOfCategory( Meta::UserPlaylist );
+    QListIterator<Meta::PlaylistPtr> i( playlists );
     m_playlists.clear();
     while( i.hasNext() )
     {
-        Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( i.next() );
+        Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( i.next() );
         if( playlist.isNull() )
         {
           error() << "Playlist was NULL!";
@@ -160,8 +160,8 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
 
             //get data from empty providers
             PlaylistProviderList providerList =
-                    The::playlistManager()->providersForCategory( Playlists::UserPlaylist );
-            foreach( Playlists::PlaylistProvider *provider, providerList )
+                    The::playlistManager()->providersForCategory( Meta::UserPlaylist );
+            foreach( PlaylistProvider *provider, providerList )
             {
                 if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
                     continue;
@@ -194,7 +194,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     int row = REMOVE_TRACK_MASK(index.internalId());
-    Playlists::PlaylistPtr playlist = m_playlists.value( row );
+    Meta::PlaylistPtr playlist = m_playlists.value( row );
 
     QVariant food = QVariant();
     QString name;
@@ -236,7 +236,7 @@ PlaylistBrowserNS::UserModel::data( const QModelIndex &index, int role ) const
 
             case MetaPlaylistModel::ProviderColumn: //source
             {
-                Playlists::PlaylistProvider *provider =
+                PlaylistProvider *provider =
                         The::playlistManager()->getProviderForPlaylist( playlist );
                 //if provider is 0 there is something seriously wrong.
                 if( provider )
@@ -290,7 +290,7 @@ PlaylistBrowserNS::UserModel::index( int row, int column, const QModelIndex &par
     else //if it has a parent it is a track
     {
         //but check if the playlist indeed has that track
-        Playlists::PlaylistPtr playlist = m_playlists.value( parent.row() );
+        Meta::PlaylistPtr playlist = m_playlists.value( parent.row() );
         if( row < playlist->tracks().count() )
             return createIndex( row, column, SET_TRACK_MASK(parent.row()) );
     }
@@ -322,7 +322,7 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
     }
     else if( !IS_TRACK(parent) )
     {
-        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        Meta::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
         return playlist->tracks().count();
     }
 
@@ -388,14 +388,14 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
         case MetaPlaylistModel::PlaylistColumn:
         {
             debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
-            Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
         case MetaPlaylistModel::LabelColumn:
         {
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
-            Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
             break;
         }
@@ -414,12 +414,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 
     if( !parent.isValid() )
     {
-      Playlists::PlaylistList playlistToRemove;
+      Meta::PlaylistList playlistToRemove;
       for( int i = row; i < row + count; i++ )
       {
         if( m_playlists.count() > i )
         {
-            Playlists::PlaylistPtr playlist = m_playlists[i];
+            Meta::PlaylistPtr playlist = m_playlists[i];
             debug() << "Removing " << playlist->name();
             playlistToRemove << playlist;
         }
@@ -440,7 +440,7 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
         return false;
     }
 
-    Playlists::PlaylistPtr playlist = m_playlists.value( playlistRow );
+    Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
 
     //if we are trying to delete more tracks then what the playlist has, return.
     //count will be at least 1 to delete one track
@@ -479,7 +479,7 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 {
     AmarokMimeData* mime = new AmarokMimeData();
 
-    Playlists::PlaylistList playlists;
+    Meta::PlaylistList playlists;
     Meta::TrackList tracks;
 
     foreach( const QModelIndex &index, indices )
@@ -515,7 +515,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 
         emit layoutAboutToBeChanged();
         int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
-        Playlists::PlaylistPtr playlist = m_playlists.value( playlistRow );
+        Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
         if( playlist )
         {
             int insertAt = (row == -1) ? playlist->tracks().count() : row;
@@ -554,14 +554,14 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndex &idx ) const
     // It's a playlist, we return playlist actions
     if( !IS_TRACK(idx) )
     {
-        Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
+        Meta::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
         if( playlist->provider() )
             actions << playlist->provider()->playlistActions( playlist );
     }
     // Otherwise, tracks are selected, so we bring up track actions
     else
     {
-        Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
+        Meta::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
         if( playlist->provider() )
             actions << playlist->provider()->trackActions( playlist, idx.row() );
     }
@@ -573,10 +573,10 @@ void
 PlaylistBrowserNS::UserModel::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
     DEBUG_BLOCK
-    Playlists::PlaylistList playlists;
+    Meta::PlaylistList playlists;
     foreach( const QModelIndex &index, list )
     {
-        Playlists::PlaylistPtr playlist =
+        Meta::PlaylistPtr playlist =
                 m_playlists.value( index.internalId() );
         if( playlist )
             playlists << playlist;
@@ -621,7 +621,7 @@ PlaylistBrowserNS::UserModel::tracksFromIndexes( const QModelIndexList &list ) c
     {
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
-        else if( Playlists::PlaylistPtr playlist = playlistFromIndex( index ) )
+        else if( Meta::PlaylistPtr playlist = playlistFromIndex( index ) )
             tracks << playlist->tracks();
     }
     return tracks;
@@ -633,24 +633,24 @@ PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
     if( !index.isValid() )
         return Meta::TrackPtr();
 
-    Playlists::PlaylistPtr playlist = m_playlists.value( REMOVE_TRACK_MASK(index.internalId()) );
+    Meta::PlaylistPtr playlist = m_playlists.value( REMOVE_TRACK_MASK(index.internalId()) );
     if( playlist.isNull() || playlist->tracks().count() <= index.row() )
         return Meta::TrackPtr();
 
     return playlist->tracks()[index.row()];
 }
 
-Playlists::PlaylistPtr
+Meta::PlaylistPtr
 PlaylistBrowserNS::UserModel::playlistFromIndex( const QModelIndex &index ) const
 {
     if( !index.isValid() )
-        return Playlists::PlaylistPtr();
+        return Meta::PlaylistPtr();
 
     return m_playlists.value( index.internalId() );
 }
 
 void
-PlaylistBrowserNS::UserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+PlaylistBrowserNS::UserModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
                                           int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
@@ -664,7 +664,7 @@ PlaylistBrowserNS::UserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta:
 }
 
 void
-PlaylistBrowserNS::UserModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+PlaylistBrowserNS::UserModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )

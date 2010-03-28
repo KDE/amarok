@@ -231,15 +231,15 @@ void
 UmsPodcastChannel::setPlaylistFileSource( const KUrl &playlistFilePath )
 {
     m_playlistFilePath = playlistFilePath;
-    m_playlistFile = Playlists::loadPlaylistFile( playlistFilePath );
+    m_playlistFile = Meta::loadPlaylistFile( playlistFilePath );
 
     //now parse the playlist and use it to create out episode list
 }
 
-Playlists::PlaylistProvider *
+PlaylistProvider *
 UmsPodcastChannel::provider() const
 {
-     return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
+     return dynamic_cast<PlaylistProvider *>( m_provider );
 }
 
 void

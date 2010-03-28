@@ -29,7 +29,8 @@
 #include <QVariant>
 
 class OpmlOutline;
-class PodcastProvider;
+
+using namespace Podcasts;
 
 namespace PlaylistBrowserNS {
 
@@ -57,7 +58,7 @@ enum
     @author Bart Cerneels
 */
 class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
-                     public Playlists::PlaylistObserver
+                     public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -86,9 +87,9 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
         /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
 
         //Own methods
         void downloadItems(  QModelIndexList list );
@@ -134,16 +135,17 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         Q_DISABLE_COPY( PodcastModel )
 
-        Playlists::PlaylistProvider *getProviderByName( const QString &name );
-        Podcasts::PodcastChannelList selectedChannels( const QModelIndexList &indices );
-        Podcasts::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
+        PlaylistProvider *getProviderByName( const QString &name );
+        PodcastChannelList selectedChannels( const QModelIndexList &indices );
+        PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
+
         QList<QAction *> createCommonActions( QModelIndexList indices );
         QList< QAction * > createEpisodeActions( Podcasts::PodcastEpisodeList epsiodes );
         QAction * m_appendAction;
         QAction * m_loadAction;
         QAction *m_setNewAction;
-        Podcasts::PodcastEpisodeList m_selectedEpisodes;
-        Podcasts::PodcastChannelList m_selectedChannels;
+        PodcastEpisodeList m_selectedEpisodes;
+        PodcastChannelList m_selectedChannels;
 
         /** A convenience function to convert a PodcastEpisodeList into a TrackList.
         **/

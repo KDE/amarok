@@ -42,7 +42,7 @@
 
 #include <typeinfo>
 
-namespace Playlists
+namespace Meta
 {
 
 XSPFPlaylist::XSPFPlaylist()
@@ -176,23 +176,23 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 
     //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
     if( m_autoAppendAfterLoad )
-        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->bottom()->rowCount(), Playlists::PlaylistPtr( this ) );
+        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->bottom()->rowCount(), Meta::PlaylistPtr( this ) );
 
     return true;
 }
 
-Meta::TrackList
+TrackList
 XSPFPlaylist::tracks()
 {
     if( m_tracksLoaded )
         return m_tracks;
 
     XSPFTrackList xspfTracks = trackList();
-    Meta::TrackList tracks;
+    TrackList tracks;
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-        Meta::TrackPtr trackPtr;
+        TrackPtr trackPtr;
         if( !track.identifier.isEmpty() )
             trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
         else
@@ -263,7 +263,7 @@ XSPFPlaylist::tracks()
 void
 XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
-    Meta::TrackList trackList = tracks();
+    TrackList trackList = tracks();
     int trackPos = position < 0 ? trackList.count() : position;
     if( trackPos > trackList.count() )
         trackPos = trackList.count();
@@ -278,7 +278,7 @@ XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
 void
 XSPFPlaylist::removeTrack( int position )
 {
-    Meta::TrackList trackList = tracks();
+    TrackList trackList = tracks();
     if( position < 0  || position > trackList.count() )
         return;
 
@@ -798,4 +798,4 @@ XSPFPlaylist::setName( const QString &name )
     setTitle( name );
 }
 
-} //namespace Playlists
+} //namespace Meta

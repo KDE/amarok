@@ -247,15 +247,15 @@ SqlPodcastProvider::trackForUrl( const KUrl &url )
     return Meta::TrackPtr::dynamicCast( episode );
 }
 
-Playlists::PlaylistList
+Meta::PlaylistList
 SqlPodcastProvider::playlists()
 {
-    Playlists::PlaylistList playlistList;
+    Meta::PlaylistList playlistList;
 
     QListIterator<Podcasts::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
-        playlistList << Playlists::PlaylistPtr::staticCast( i.next() );
+        playlistList << Meta::PlaylistPtr::staticCast( i.next() );
     }
     return playlistList;
 }

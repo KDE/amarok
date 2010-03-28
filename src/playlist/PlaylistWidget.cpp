@@ -122,19 +122,19 @@ Playlist::Widget::Widget( QWidget* parent )
         m_saveActions = new KActionCollection( this );
         connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
                  SLOT( slotSaveCurrentPlaylist() ) );
-        foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
+        foreach( PlaylistProvider *provider, The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
         {
             playlistProviderAdded( provider, PlaylistManager::UserPlaylist );
         }
 
         connect( The::playlistManager(),
-                 SIGNAL( providerAdded( Playlists::PlaylistProvider *, int ) ),
-                 SLOT( playlistProviderAdded( Playlists::PlaylistProvider *, int ) )
+                 SIGNAL( providerAdded( PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderAdded( PlaylistProvider *, int ) )
                  );
         connect( The::playlistManager(),
-                 SIGNAL( providerRemoved( Playlists::PlaylistProvider *, int ) ),
-                 SLOT( playlistProviderRemoved( Playlists::PlaylistProvider *, int ) )
+                 SIGNAL( providerRemoved( PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderRemoved( PlaylistProvider *, int ) )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
@@ -179,18 +179,18 @@ Playlist::Widget::paletteChanged( const QPalette& palette )
 }
 
 void
-Playlist::Widget::playlistProviderAdded( Playlists::PlaylistProvider *provider, int category )
+Playlist::Widget::playlistProviderAdded( PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
 
     debug() << "Adding provider: " << provider->objectName();
-    Playlists::UserPlaylistProvider *userProvider =
-            dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
+    UserPlaylistProvider *userProvider =
+            dynamic_cast<UserPlaylistProvider *>(provider);
     if( userProvider == 0 )
         return;
     QAction *action = new KAction( userProvider->icon(), i18n("&Save playlist to \"%1\"", provider->prettyName() ), this );
-    action->setData( QVariant::fromValue( QPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
+    action->setData( QVariant::fromValue( QPointer<UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( provider->objectName(), action );
 
     m_savePlaylistMenu->addAction( action );
@@ -198,7 +198,7 @@ Playlist::Widget::playlistProviderAdded( Playlists::PlaylistProvider *provider, 
 }
 
 void
-Playlist::Widget::playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category )
+Playlist::Widget::playlistProviderRemoved( PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
@@ -217,8 +217,8 @@ Playlist::Widget::slotSaveCurrentPlaylist()
     if( action == 0 )
         return;
 
-    Playlists::UserPlaylistProvider *provider =
-            action->data().value< QPointer<Playlists::UserPlaylistProvider> >();
+    UserPlaylistProvider *provider =
+            action->data().value< QPointer<UserPlaylistProvider> >();
 
     The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
 }

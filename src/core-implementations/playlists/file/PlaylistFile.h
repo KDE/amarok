@@ -21,7 +21,7 @@
 
 class PlaylistProvider;
 
-namespace Playlists
+namespace Meta
 {
 
     class PlaylistFile;
@@ -62,7 +62,7 @@ namespace Playlists
 
 }
 
-Q_DECLARE_METATYPE( Playlists::PlaylistFilePtr )
-Q_DECLARE_METATYPE( Playlists::PlaylistFileList )
+Q_DECLARE_METATYPE( Meta::PlaylistFilePtr )
+Q_DECLARE_METATYPE( Meta::PlaylistFileList )
 
 #endif

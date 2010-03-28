@@ -23,9 +23,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace Playlists {
-    class SqlUserPlaylistProvider;
-}
+class SqlUserPlaylistProvider;
 
 class TestSqlUserPlaylistProvider : public QObject
 {
@@ -43,7 +41,7 @@ private slots:
     void testRename();
 
 private:
-    Playlists::SqlUserPlaylistProvider *m_testSqlUserPlaylistProvider;
+    SqlUserPlaylistProvider *m_testSqlUserPlaylistProvider;
     QString dataPath( const QString &relPath );
 };
 

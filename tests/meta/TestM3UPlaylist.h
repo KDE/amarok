@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace Playlists { class M3UPlaylist; }
+namespace Meta { class M3UPlaylist; }
 
 class TestM3UPlaylist : public QObject
 {
@@ -44,7 +44,7 @@ private slots:
     void testSave();
 
 private:
-    Playlists::M3UPlaylist *m_testPlaylist;
+    Meta::M3UPlaylist *m_testPlaylist;
     QString dataPath( const QString &relPath = QString() );
 };
 

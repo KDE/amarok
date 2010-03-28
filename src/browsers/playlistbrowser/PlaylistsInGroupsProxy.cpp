@@ -181,8 +181,8 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
         if( !parent.isValid() )
         {
             debug() << "dropped on the root";
-            Playlists::PlaylistList playlists = amarokMime->playlists();
-            foreach( Playlists::PlaylistPtr playlist, playlists )
+            Meta::PlaylistList playlists = amarokMime->playlists();
+            foreach( Meta::PlaylistPtr playlist, playlists )
                 playlist->setGroups( QStringList() );
             buildTree();
             return true;
@@ -202,8 +202,8 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
                 //apply the new groupname to the source index
                 QString groupName = parent.data( Qt::DisplayRole ).toString();
                 //TODO: apply the new groupname to the source index
-                Playlists::PlaylistList playlists = amarokMime->playlists();
-                foreach( Playlists::PlaylistPtr playlist, playlists )
+                Meta::PlaylistList playlists = amarokMime->playlists();
+                foreach( Meta::PlaylistPtr playlist, playlists )
                     playlist->setGroups( QStringList( groupName ) );
                 buildTree();
                 return true;

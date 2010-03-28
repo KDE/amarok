@@ -157,7 +157,7 @@ void InfoApplet::linkClicked( const QUrl & url )
     }
     else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
     {
-        new Playlists::XSPFPlaylist( url, true );
+        new Meta::XSPFPlaylist( url, true );
     }
     else
         QDesktopServices::openUrl( url.toString() );

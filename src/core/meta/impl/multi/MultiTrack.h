@@ -33,7 +33,7 @@ class MultiTrack : public QObject, public Track, public Meta::Observer
 {
     Q_OBJECT
 public:
-    MultiTrack( Playlists::PlaylistPtr playlist );
+    MultiTrack( PlaylistPtr playlist );
     ~MultiTrack();
 
     KUrl first();
@@ -88,7 +88,7 @@ signals:
     void urlChanged( const KUrl &url );
 
 private:
-    Playlists::PlaylistPtr m_playlist;
+    PlaylistPtr m_playlist;
     TrackPtr m_currentTrack;
     int m_index;
 

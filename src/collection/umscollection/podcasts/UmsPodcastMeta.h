@@ -98,7 +98,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
 
         virtual Podcasts::PodcastEpisodeList episodes()
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
-        virtual Playlists::PlaylistProvider *provider() const;
+        virtual PlaylistProvider *provider() const;
 
     protected:
         void removeEpisode( UmsPodcastEpisodePtr episode );
@@ -106,7 +106,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
     private:
         UmsPodcastProvider *m_provider;
         KUrl m_playlistFilePath;
-        Playlists::PlaylistFilePtr m_playlistFile; //used to keep track of episodes.
+        Meta::PlaylistFilePtr m_playlistFile; //used to keep track of episodes.
 
         UmsPodcastEpisodeList m_umsEpisodes;
 };

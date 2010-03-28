@@ -27,10 +27,8 @@
 
 #include <typeinfo>
 
-namespace Playlists {
-
-SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
-        &tracks, SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
+        &tracks, Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
         const QString &urlId )
     : m_dbId( -1 )
     , m_parent( parent )
@@ -44,8 +42,8 @@ SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     saveToDb();
 }
 
-SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
-                                SqlPlaylistGroupPtr parent,
+Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
+                                Meta::SqlPlaylistGroupPtr parent,
                                 PlaylistProvider *provider )
     : m_parent( parent )
     , m_provider( provider)
@@ -58,18 +56,18 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
 }
 
 
-SqlPlaylist::~SqlPlaylist()
+Meta::SqlPlaylist::~SqlPlaylist()
 {
 }
 
-SqlPlaylistGroupPtr
-SqlPlaylist::parent() const
+Meta::SqlPlaylistGroupPtr
+Meta::SqlPlaylist::parent() const
 {
     return m_parent;
 }
 
 QStringList
-SqlPlaylist::groups()
+Meta::SqlPlaylist::groups()
 {
     QStringList groups;
     if( m_parent && !m_parent->name().isNull() )
@@ -78,7 +76,7 @@ SqlPlaylist::groups()
 }
 
 void
-SqlPlaylist::setGroups( const QStringList &groups )
+Meta::SqlPlaylist::setGroups( const QStringList &groups )
 {
     SqlUserPlaylistProvider *userPlaylistProvider =
             dynamic_cast<SqlUserPlaylistProvider *>( m_provider );
@@ -89,7 +87,7 @@ SqlPlaylist::setGroups( const QStringList &groups )
     }
 
     if( groups.isEmpty() )
-        m_parent = SqlPlaylistGroupPtr();
+        m_parent = Meta::SqlPlaylistGroupPtr();
     else
         m_parent = userPlaylistProvider->group( groups.first() );
 
@@ -97,7 +95,7 @@ SqlPlaylist::setGroups( const QStringList &groups )
 }
 
 bool
-SqlPlaylist::saveToDb( bool tracks )
+Meta::SqlPlaylist::saveToDb( bool tracks )
 {
     int parentId = -1;
     if( m_parent )
@@ -173,7 +171,7 @@ SqlPlaylist::saveToDb( bool tracks )
 }
 
 void
-SqlPlaylist::saveTracks()
+Meta::SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
@@ -201,7 +199,7 @@ SqlPlaylist::saveTracks()
 }
 
 Meta::TrackList
-SqlPlaylist::tracks()
+Meta::SqlPlaylist::tracks()
 {
     if ( !m_tracksLoaded )
         loadTracks();
@@ -210,7 +208,7 @@ SqlPlaylist::tracks()
 }
 
 void
-SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
+Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
     int insertAt = (position == -1) ? m_tracks.count() : position;
     subscribeTo( track ); //keep track of metadata changes.
@@ -220,7 +218,7 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 }
 
 void
-SqlPlaylist::removeTrack( int position )
+Meta::SqlPlaylist::removeTrack( int position )
 {
     if( position < 0 || position >= m_tracks.size() )
         return;
@@ -231,7 +229,7 @@ SqlPlaylist::removeTrack( int position )
 }
 
 void
-SqlPlaylist::metadataChanged( Meta::TrackPtr track )
+Meta::SqlPlaylist::metadataChanged( TrackPtr track )
 {
     //When AFT detects a moved file it will update the track and make it signal it's observers.
     if( !m_tracks.contains( track ) )
@@ -245,7 +243,7 @@ SqlPlaylist::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-SqlPlaylist::loadTracks()
+Meta::SqlPlaylist::loadTracks()
 {
     QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM "
                     "playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
@@ -303,14 +301,14 @@ SqlPlaylist::loadTracks()
 }
 
 void
-SqlPlaylist::setName( const QString &name )
+Meta::SqlPlaylist::setName( const QString &name )
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
 }
 
 void
-SqlPlaylist::removeFromDb()
+Meta::SqlPlaylist::removeFromDb()
 {
     QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
     query = query.arg( QString::number( m_dbId ) );
@@ -322,10 +320,7 @@ SqlPlaylist::removeFromDb()
 }
 
 int
-SqlPlaylist::id()
+Meta::SqlPlaylist::id()
 {
     return m_dbId;
 }
-
-} //namespace Playlists
-

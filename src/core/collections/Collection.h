@@ -130,7 +130,7 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
            @return The UserPlaylistProvider that belongs to this collection.
 
         */
-        virtual Playlists::UserPlaylistProvider* userPlaylistProvider() { return 0; }
+        virtual UserPlaylistProvider* userPlaylistProvider() { return 0; }
         /**
             Begin a full scan on the collection.  This is not valid for all collections.
         */

@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace Playlists {
+namespace Meta {
 class PLSPlaylist;
 }
 
@@ -46,7 +46,7 @@ private slots:
     void testSave();
 
 private:
-    Playlists::PLSPlaylist *m_testPlaylist1;
+    Meta::PLSPlaylist *m_testPlaylist1;
     QString dataPath( const QString &relPath );
 };
 

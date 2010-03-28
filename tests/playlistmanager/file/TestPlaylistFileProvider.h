@@ -23,9 +23,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace Playlists {
-    class PlaylistFileProvider;
-}
+class PlaylistFileProvider;
 
 class TestPlaylistFileProvider : public QObject
 {
@@ -46,7 +44,7 @@ private slots:
 private:
     void removeTestPlaylist();
     void removeConfigPlaylistEntries();
-    Playlists::PlaylistFileProvider *m_testPlaylistFileProvider;
+    PlaylistFileProvider *m_testPlaylistFileProvider;
     QString dataPath( const QString &relPath );
 };
 

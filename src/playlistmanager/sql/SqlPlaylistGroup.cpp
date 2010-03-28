@@ -22,10 +22,8 @@
 
 #include <typeinfo>
 
-namespace Playlists {
-
-SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
-                                          SqlPlaylistGroupPtr parent,
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
+                                          Meta::SqlPlaylistGroupPtr parent,
                                           PlaylistProvider *provider )
     : m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
@@ -37,8 +35,8 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
     m_description = dbResultRow[3];
 }
 
-SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
-                                          SqlPlaylistGroupPtr parent,
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
+                                          Meta::SqlPlaylistGroupPtr parent,
                                           PlaylistProvider *provider )
     : m_dbId( -1 )
     , m_hasFetchedChildGroups( false )
@@ -49,14 +47,14 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
     , m_provider( provider )
 {}
 
-SqlPlaylistGroup::~SqlPlaylistGroup()
+Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 {
     //DEBUG_BLOCK
     //debug() << "deleting " << m_name;
 }
 
 void
-SqlPlaylistGroup::save()
+Meta::SqlPlaylistGroup::save()
 {
     int parentId = 0;
     if ( m_parent )
@@ -87,21 +85,21 @@ SqlPlaylistGroup::save()
 }
 
 void
-SqlPlaylistGroup::setName( const QString & name )
+Meta::SqlPlaylistGroup::setName( const QString & name )
 {
     m_name = name;
     save();
 }
 
 void
-SqlPlaylistGroup::setDescription( const QString &description )
+Meta::SqlPlaylistGroup::setDescription( const QString &description )
 {
     m_description = description;
     save();
 }
 
 void
-SqlPlaylistGroup::removeFromDb()
+Meta::SqlPlaylistGroup::removeFromDb()
 {
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
@@ -114,7 +112,7 @@ SqlPlaylistGroup::removeFromDb()
 }
 
 void
-SqlPlaylistGroup::clear()
+Meta::SqlPlaylistGroup::clear()
 {
     /* m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to
        just clear the list and the playlistptrs will delete themselves
@@ -127,22 +125,22 @@ SqlPlaylistGroup::clear()
 }
 
 void
-SqlPlaylistGroup::setParent( SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::setParent( Meta::SqlPlaylistGroupPtr parent )
 {
     if( parent )
-        m_parent = SqlPlaylistGroupPtr::staticCast( parent );
+        m_parent = Meta::SqlPlaylistGroupPtr::staticCast( parent );
     else
         debug() << "You have to create the parent first before " << name() <<
             " can be added to it";
     save();
 }
 
-SqlPlaylistGroupList
-SqlPlaylistGroup::childSqlGroups() const
+Meta::SqlPlaylistGroupList
+Meta::SqlPlaylistGroup::childSqlGroups() const
 {
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
-        return SqlPlaylistGroupList();
+        return Meta::SqlPlaylistGroupList();
 
     if ( !m_hasFetchedChildGroups )
     {
@@ -169,12 +167,12 @@ SqlPlaylistGroup::childSqlGroups() const
     return m_childGroups;
 }
 
-SqlPlaylistList
-SqlPlaylistGroup::childSqlPlaylists() const
+Meta::SqlPlaylistList
+Meta::SqlPlaylistGroup::childSqlPlaylists() const
 {
     SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
-        return SqlPlaylistList();
+        return Meta::SqlPlaylistList();
 
     if ( !m_hasFetchedChildPlaylists )
     {
@@ -191,8 +189,8 @@ SqlPlaylistGroup::childSqlPlaylists() const
             QStringList row = result.mid( i*5, 5 );
             SqlPlaylistGroup* mutableThis =
                     const_cast<SqlPlaylistGroup*>( this );
-            m_childPlaylists << SqlPlaylistPtr(
-                    new SqlPlaylist(
+            m_childPlaylists << Meta::SqlPlaylistPtr(
+                    new Meta::SqlPlaylist(
                                 row,
                                 SqlPlaylistGroupPtr( mutableThis ),
                                 m_provider
@@ -204,29 +202,26 @@ SqlPlaylistGroup::childSqlPlaylists() const
     return m_childPlaylists;
 }
 
-SqlPlaylistGroupList
-SqlPlaylistGroup::allChildGroups() const
+Meta::SqlPlaylistGroupList
+Meta::SqlPlaylistGroup::allChildGroups() const
 {
-    SqlPlaylistGroupList groups;
+    Meta::SqlPlaylistGroupList groups;
     groups << childSqlGroups();
-    foreach( SqlPlaylistGroupPtr childGroup, groups )
+    foreach( Meta::SqlPlaylistGroupPtr childGroup, groups )
     {
         groups << childGroup->allChildGroups();
     }
     return groups;
 }
 
-SqlPlaylistList
-SqlPlaylistGroup::allChildPlaylists() const
+Meta::SqlPlaylistList
+Meta::SqlPlaylistGroup::allChildPlaylists() const
 {
-    SqlPlaylistList playlists;
+    Meta::SqlPlaylistList playlists;
     playlists << childSqlPlaylists();
-    foreach( SqlPlaylistGroupPtr childGroup, childSqlGroups() )
+    foreach( Meta::SqlPlaylistGroupPtr childGroup, childSqlGroups() )
     {
         playlists << childGroup->allChildPlaylists();
     }
     return playlists;
 }
-
-} //namespace Playlists
-

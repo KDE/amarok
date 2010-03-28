@@ -121,8 +121,8 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    foreach( const Playlists::PlaylistProvider *provider,
-             The::playlistManager()->providersForCategory( Playlists::UserPlaylist ) )
+    foreach( const PlaylistProvider *provider,
+             The::playlistManager()->providersForCategory( Meta::UserPlaylist ) )
     {
         createProviderButton( provider );
     }
@@ -163,7 +163,7 @@ UserPlaylistCategory::toggleView( bool merged )
 }
 
 void
-UserPlaylistCategory::slotProviderAdded( Playlists::PlaylistProvider *provider, int category )
+UserPlaylistCategory::slotProviderAdded( PlaylistProvider *provider, int category )
 {
     Q_UNUSED( category )
 
@@ -172,7 +172,7 @@ UserPlaylistCategory::slotProviderAdded( Playlists::PlaylistProvider *provider, 
 }
 
 void
-UserPlaylistCategory::slotProviderRemoved( Playlists::PlaylistProvider *provider, int category )
+UserPlaylistCategory::slotProviderRemoved( PlaylistProvider *provider, int category )
 {
     Q_UNUSED( category )
 
@@ -184,7 +184,7 @@ UserPlaylistCategory::slotProviderRemoved( Playlists::PlaylistProvider *provider
 }
 
 void
-UserPlaylistCategory::createProviderButton( const Playlists::PlaylistProvider *provider )
+UserPlaylistCategory::createProviderButton( const PlaylistProvider *provider )
 {
     QAction *providerToggle = new QAction( provider->icon(), provider->prettyName(), this );
     providerToggle->setCheckable( true );
@@ -202,12 +202,12 @@ UserPlaylistCategory::slotToggleProviderButton( bool enabled )
     DEBUG_BLOCK
 
     QAction * const action = qobject_cast<QAction *>( QObject::sender() );
-    const Playlists::PlaylistProvider *provider = action->data().value<const Playlists::PlaylistProvider *>();
+    const PlaylistProvider *provider = action->data().value<const PlaylistProvider *>();
     if( !m_providerActions.keys().contains( provider ) )
         return;
 
     QString filter;
-    foreach( const Playlists::PlaylistProvider *p, m_providerActions.keys() )
+    foreach( const PlaylistProvider *p, m_providerActions.keys() )
     {
         QAction *action = m_providerActions.value( p );
         if( action->isChecked() )

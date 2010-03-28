@@ -26,8 +26,6 @@
 
 class QAction;
 
-namespace Playlists {
-
 class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
@@ -45,26 +43,26 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
         virtual KIcon icon() const { return KIcon( "server-database" ); }
 
-        virtual Playlists::PlaylistList playlists();
+        virtual Meta::PlaylistList playlists();
 
         virtual bool canSavePlaylists() { return true; }
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
         virtual bool supportsEmptyGroups() { return true; }
 
-        QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
+        QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
+        QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         /* UserPlaylistProvider functions */
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist );
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
+        virtual void deletePlaylists( Meta::PlaylistList playlistlist );
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
 
-        Playlists::SqlPlaylistGroupPtr group( const QString &name );
+        Meta::SqlPlaylistGroupPtr group( const QString &name );
         bool import( const QString& fromLocation );
 
-        static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
+        static Meta::SqlPlaylistList toSqlPlaylists( Meta::PlaylistList playlists );
 
     signals:
         void updated();
@@ -76,25 +74,23 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
     private:
         void reloadFromDb();
-        Playlists::SqlPlaylistGroupPtr m_root;
+        Meta::SqlPlaylistGroupPtr m_root;
 
         void createTables();
         void deleteTables();
         void checkTables();
         void loadFromDb();
 
-        void deleteSqlPlaylists( Playlists::SqlPlaylistList playlistlist );
+        void deleteSqlPlaylists( Meta::SqlPlaylistList playlistlist );
 
-        Playlists::SqlPlaylistList selectedPlaylists() const
+        Meta::SqlPlaylistList selectedPlaylists() const
             { return m_selectedPlaylists; }
-        Playlists::SqlPlaylistList m_selectedPlaylists;
+        Meta::SqlPlaylistList m_selectedPlaylists;
         QAction *m_renameAction;
         QAction *m_deleteAction;
         QAction *m_removeTrackAction;
 
         const bool m_debug;
 };
-
-} //namespace Playlists
 
 #endif
