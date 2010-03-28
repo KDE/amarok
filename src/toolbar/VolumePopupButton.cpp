@@ -35,7 +35,7 @@
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
     : QToolButton( parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );

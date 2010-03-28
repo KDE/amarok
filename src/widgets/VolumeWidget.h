@@ -31,7 +31,7 @@
 /**
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public Amarok::ToolBar, public EngineObserver
+class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
 {
     Q_OBJECT
 public:

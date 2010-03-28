@@ -70,7 +70,7 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {

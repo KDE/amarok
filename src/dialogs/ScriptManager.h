@@ -39,7 +39,7 @@ class KPluginSelector;
 class QScriptEngine;
 class ScriptUpdater;
 
-class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
+class AMAROK_EXPORT ScriptManager : public KDialog, public Engine::EngineObserver
 {
     Q_OBJECT
 

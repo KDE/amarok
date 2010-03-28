@@ -42,7 +42,7 @@ namespace The
 
 StatusBar::StatusBar( QWidget * parent )
         : KStatusBar( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_progressBar( new CompoundProgressBar( this ) )
         , m_busy( false )
         , m_shortMessageTimer( new QTimer( this ) )

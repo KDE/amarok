@@ -31,7 +31,7 @@ namespace AmarokScript
 {
     AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
         : QObject( kapp )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
     {
         Q_UNUSED( ScriptEngine );
     }

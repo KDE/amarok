@@ -50,7 +50,7 @@ class IconWidget;
  * @author Oleksandr Khayrullin
  * @version 0.1
  */
-class SimilarArtistsApplet : public Context::Applet, public EngineObserver
+class SimilarArtistsApplet : public Context::Applet, public Engine::EngineObserver
 {
     Q_OBJECT
 

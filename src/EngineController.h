@@ -47,7 +47,7 @@ namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect
  * replay gain, fade-out on stop and various track capabilities that affect
  * playback.
  */
-class AMAROK_EXPORT EngineController : public EngineSubject
+class AMAROK_EXPORT EngineController : public Engine::EngineSubject
 {
     Q_OBJECT
 

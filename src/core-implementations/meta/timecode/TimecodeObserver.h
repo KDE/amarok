@@ -26,7 +26,7 @@
  * when the user stops playing the track (before the ending) a timecode
  * will be created.
  */
-class TimecodeObserver : public EngineObserver
+class TimecodeObserver : public Engine::EngineObserver
 {
 public:
     TimecodeObserver();

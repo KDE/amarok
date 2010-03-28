@@ -40,7 +40,7 @@ namespace Plasma
     class IconWidget;
 }
 
-class CoverBlingApplet : public Context::Applet, public EngineObserver
+class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
 {
     Q_OBJECT
 

@@ -155,7 +155,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public EngineObserver, public Meta::Observer
+    class OSD : public OSDWidget, public Engine::EngineObserver, public Meta::Observer
     {
         Q_OBJECT
 

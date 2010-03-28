@@ -53,7 +53,7 @@
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
 

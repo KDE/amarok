@@ -23,7 +23,7 @@
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
     : QToolBar( parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     setToolButtonStyle( Qt::ToolButtonIconOnly );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );

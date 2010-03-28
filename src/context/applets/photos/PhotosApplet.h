@@ -39,7 +39,7 @@ namespace Plasma
 
  /** PhotosApplet will display photos from the Internet, relative to the current playing song
    */
-class PhotosApplet : public Context::Applet, public EngineObserver
+class PhotosApplet : public Context::Applet, public Engine::EngineObserver
 {
         Q_OBJECT
 

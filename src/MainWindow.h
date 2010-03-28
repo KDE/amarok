@@ -65,7 +65,7 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserver, public Meta::Observer
 {
     friend MainWindow* The::mainWindow();
 

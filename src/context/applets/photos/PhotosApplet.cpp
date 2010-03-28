@@ -44,7 +44,7 @@
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_stoppedstate( false )
     , m_settingsIcon( 0 )
 {

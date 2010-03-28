@@ -34,7 +34,7 @@
 
 SlimToolbar::SlimToolbar( QWidget * parent )
     : QToolBar( i18n( "Slim Toolbar" ), parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
     , m_volumePopupButton( 0 )
 {

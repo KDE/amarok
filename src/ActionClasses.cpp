@@ -173,7 +173,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
         : KToggleAction( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
@@ -485,7 +485,7 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
   : KAction( parent )
-  , EngineObserver( The::engineController() )
+  , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
@@ -520,7 +520,7 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
 
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
 : KAction( parent )
-, EngineObserver( The::engineController() )
+, Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );

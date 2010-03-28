@@ -130,7 +130,7 @@ namespace The {
 
 MainWindow::MainWindow()
     : KMainWindow( 0 )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
     , m_dockChangesIgnored( false )

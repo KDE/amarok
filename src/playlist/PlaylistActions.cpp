@@ -63,7 +63,7 @@ Playlist::Actions::destroy()
 
 Playlist::Actions::Actions()
         : QObject()
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_nextTrackCandidate( 0 )
         , m_trackToBeLast( 0 )
         , m_navigator( 0 )
