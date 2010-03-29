@@ -196,6 +196,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
         {
             case Qt::DisplayRole:
             case Qt::ToolTipRole:
+            {
                 switch( idx.column() )
                 {
                     case MetaPlaylistModel::PlaylistColumn:
@@ -250,18 +251,34 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
                     }
                     break;
-
-                case ShortDescriptionRole:
-                    if( idx.column() == MetaPlaylistModel::PlaylistColumn )
-                        return pmc->description();
-                    break;
-
-                case Qt::DecorationRole:
-                {
-                    if( idx.column() == MetaPlaylistModel::PlaylistColumn )
-                            return icon( pmc );
-                    break;
                 }
+            }
+
+            case ShortDescriptionRole:
+            {
+                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                    return pmc->description();
+                break;
+            }
+
+            case ByLineRole:
+            {
+                if( idx.column() == MetaPlaylistModel::ProviderColumn )
+                {
+                    Playlists::PlaylistProvider *provider = providerForIndex( idx );
+                    if( provider )
+                        return i18ncp( "number of podcasts from one source",
+                                       "One Channel", "%1 channels",
+                                       provider->playlists().count() );
+                }
+                break;
+            }
+
+            case Qt::DecorationRole:
+            {
+                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                        return icon( pmc );
+                break;
             }
         }
     }
@@ -623,6 +640,7 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 void
 PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
 {
+    Q_UNUSED( newState );
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
         return;

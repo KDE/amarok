@@ -472,6 +472,24 @@ MetaPlaylistModel::playlistFromIndex( const QModelIndex &index ) const
     return m_playlists.value( index.internalId() );
 }
 
+Playlists::PlaylistProvider *
+MetaPlaylistModel::providerForIndex( const QModelIndex &idx ) const
+{
+    if( !idx.isValid() )
+        return 0;
+
+    int playlistRow;
+    if( IS_TRACK( idx ) )
+        playlistRow = REMOVE_TRACK_MASK( idx.internalId() );
+    else
+        playlistRow = idx.row();
+
+    if( playlistRow >= m_playlists.count() )
+        return 0;
+
+    return m_playlists.at( playlistRow )->provider();
+}
+
 QActionList
 MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
 {

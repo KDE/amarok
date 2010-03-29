@@ -97,6 +97,7 @@ class MetaPlaylistModel : public QAbstractItemModel,
         Meta::TrackList tracksFromIndexes( const QModelIndexList &list ) const;
         Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
         Playlists::PlaylistPtr playlistFromIndex( const QModelIndex &index ) const;
+        Playlists::PlaylistProvider *providerForIndex( const QModelIndex &index ) const;
 
         Playlists::PlaylistList m_playlists;
 
