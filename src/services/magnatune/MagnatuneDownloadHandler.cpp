@@ -194,7 +194,7 @@ void MagnatuneDownloadHandler::albumDownloadComplete( bool success )
 {
     //cleanup time!
 
-    debug() << "MagnatunePurchaseHandler::albumDownloadComplete";
+    debug() << "MagnatuneDownloadHandler::albumDownloadComplete";
 
     delete m_downloadDialog;
     m_downloadDialog = 0;
