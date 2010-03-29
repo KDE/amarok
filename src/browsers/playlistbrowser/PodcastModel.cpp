@@ -207,51 +207,44 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
                     case AuthorColumn:
                         return pmc->author();
-                    switch( idx.column() )
-                    {
-                        case SubtitleColumn:
-                            return pmc->subtitle();
-                        case AuthorColumn:
-                            return pmc->author();
 
-                        case KeywordsColumn:
-                            return pmc->keywords();
+                    case KeywordsColumn:
+                        return pmc->keywords();
 
-                        case FilesizeColumn:
-                            if( pmc->podcastType() == Podcasts::EpisodeType )
-                                return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                    ->filesize();
-                            break;
+                    case FilesizeColumn:
+                        if( pmc->podcastType() == Podcasts::EpisodeType )
+                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
+                                ->filesize();
+                        break;
 
-                        case ImageColumn:
-                            if( pmc->podcastType() == Podcasts::ChannelType )
+                    case ImageColumn:
+                        if( pmc->podcastType() == Podcasts::ChannelType )
+                        {
+                            Podcasts::PodcastChannel *pc =
+                                    static_cast<Podcasts::PodcastChannel *>( pmc );
+                            KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
+
+                            if( !QFile( imageUrl.toLocalFile() ).exists() )
                             {
-                                Podcasts::PodcastChannel *pc =
-                                        static_cast<Podcasts::PodcastChannel *>( pmc );
-                                KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
-
-                                if( !QFile( imageUrl.toLocalFile() ).exists() )
-                                {
-                                    imageUrl = pc->imageUrl();
-                                }
-                                return imageUrl;
+                                imageUrl = pc->imageUrl();
                             }
-                            break;
+                            return imageUrl;
+                        }
+                        break;
 
-                        case DateColumn:
-                            if( pmc->podcastType() == Podcasts::EpisodeType )
-                                return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                    ->pubDate();
-                            else
-                                return static_cast<Podcasts::PodcastChannel *>( pmc )
-                                    ->subscribeDate();
+                    case DateColumn:
+                        if( pmc->podcastType() == Podcasts::EpisodeType )
+                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
+                                ->pubDate();
+                        else
+                            return static_cast<Podcasts::PodcastChannel *>( pmc )
+                                ->subscribeDate();
 
-                        case IsEpisodeColumn:
-                            return bool( pmc->podcastType() == Podcasts::EpisodeType );
+                    case IsEpisodeColumn:
+                        return bool( pmc->podcastType() == Podcasts::EpisodeType );
 
-                    }
-                    break;
                 }
+                break;
             }
 
             case ShortDescriptionRole:
