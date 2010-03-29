@@ -6,3 +6,4 @@ include_directories(
 
 add_subdirectory( cue )
 add_subdirectory( file )
+add_subdirectory( multi )

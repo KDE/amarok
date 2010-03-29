@@ -1,7 +1,7 @@
 include_directories(
   ${AMAROK_TEST_TREE}
   ${AMAROK_SOURCE_TREE}
-  ${AMAROK_SOURCE_TREE}/collection/support
+  ${AMAROK_SOURCE_TREE}/core-implementations/collections/support
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests

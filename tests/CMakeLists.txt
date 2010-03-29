@@ -16,7 +16,6 @@ include_directories( .
 )
 
 add_subdirectory( data )
-add_subdirectory( collection )
 add_subdirectory( context )
 add_subdirectory( core )
 add_subdirectory( core-implementations )
