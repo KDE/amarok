@@ -372,6 +372,12 @@ private:
     int m_volume;
     bool m_currentIsAudioCd;
 
+    /**
+     * Some flags to prevent feedback loops in volume updates
+     */
+    bool m_ignoreVolumeChangeAction;
+    bool m_ignoreVolumeChangeObserve;
+
     QMutex m_mutex;
 };
 

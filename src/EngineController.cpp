@@ -78,6 +78,8 @@ EngineController::EngineController()
     , m_fadeoutTimer( new QTimer( this ) )
     , m_volume( 0 )
     , m_currentIsAudioCd( false )
+    , m_ignoreVolumeChangeAction ( false )
+    , m_ignoreVolumeChangeObserve ( false )
 {
     DEBUG_BLOCK
 
@@ -177,6 +179,8 @@ EngineController::initializePhonon()
 
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
+    // Read the volume from phonon
+    m_volume = qBound<qreal>( 0, qRound(m_audio->volume()*100), 100 );
 
     if( AmarokConfig::trackDelayLength() > -1 )
         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
@@ -647,10 +651,15 @@ EngineController::setVolume( int percent ) //SLOT
     m_volume = percent;
 
     const qreal volume =  percent / 100.0;
-    m_audio->setVolume( volume );
+    if ( !m_ignoreVolumeChangeAction && m_audio->volume() != volume )
+    {
+        m_ignoreVolumeChangeObserve = true;
+        m_audio->setVolume( volume );
 
-    AmarokConfig::setMasterVolume( percent );
-    volumeChangedNotify( percent );
+        AmarokConfig::setMasterVolume( percent );
+        volumeChangedNotify( percent );
+    }
+    m_ignoreVolumeChangeAction = false;
 
     return percent;
 }
@@ -1223,22 +1232,25 @@ void EngineController::slotTitleChanged( int titleNumber )
 
 void EngineController::slotVolumeChanged( qreal newVolume )
 {
-    int percent = qBound<qreal>( 0, round(newVolume * 100), 100 );
-    m_volume = percent;
+    int percent = qBound<qreal>( 0, qRound(newVolume * 100), 100 );
 
-    AmarokConfig::setMasterVolume( percent );
-    // FIXME: This triggers a feedback loop.
-    // This ultimately triggers VolumeWidget::engineVolumeChanged() which in turn
-    // will call VolumeDial::setValue() which in turn will call
-    // EngineController::setVolume() (due to connect in MainToolbar). Goto 10.
-    volumeChangedNotify( percent );
+    if ( !m_ignoreVolumeChangeObserve && m_volume != percent )
+    {
+        m_ignoreVolumeChangeAction = true;
+
+        m_volume = percent;
+        AmarokConfig::setMasterVolume( percent );
+        volumeChangedNotify( percent );
+    }
+    else
+        m_volume = percent;
+
+    m_ignoreVolumeChangeObserve = false;
 }
 
 void EngineController::slotMutedChanged( bool mute )
 {
     AmarokConfig::setMuteState( mute );
-    // FIXME: This also has a feedback loop but with only two states
-    // it's less of a problem.
     muteStateChangedNotify( mute );
 }
 
