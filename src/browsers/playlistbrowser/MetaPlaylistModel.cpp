@@ -325,6 +325,7 @@ void
 MetaPlaylistModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                           int position )
 {
+    Q_UNUSED( track );
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
     {
@@ -332,7 +333,7 @@ MetaPlaylistModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr t
         return;
     }
     QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
-    beginInsertRows( playlistIdx, indexNumber, indexNumber+1 );
+    beginInsertRows( playlistIdx, position, position );
     endInsertRows();
 }
 

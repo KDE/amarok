@@ -166,7 +166,6 @@ class UmsHandler : public Meta::MediaDeviceHandler
 #endif
     private slots:
         void slotConfigure();
-        void slotConfigChanged();
 
     private:
         enum FileType
@@ -283,9 +282,6 @@ class UmsHandler : public Meta::MediaDeviceHandler
         //direct implementation of a podcast provider NOT using the MD::Capabilities
         Podcasts::UmsPodcastProvider *m_podcastProvider;
         QAction *m_configureAction;
-
-        Ui::UmsConfiguration *m_settings;
-        KDialog *m_umsSettingsDialog;
 
     private slots:
         void slotCreateEntry( const QString &path );

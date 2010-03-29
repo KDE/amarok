@@ -104,8 +104,6 @@ UmsHandler::UmsHandler( Collections::UmsCollection *mc, const QString& mountPoin
     , m_tempdir( new KTempDir() )
     , m_podcastProvider( 0 )
     , m_configureAction( 0 )
-    , m_settings( 0 )
-    , m_umsSettingsDialog( 0 )
 {
     DEBUG_BLOCK
 
@@ -504,50 +502,45 @@ void
 UmsHandler::slotConfigure()
 {
     DEBUG_BLOCK
-    m_umsSettingsDialog = new KDialog( The::mainWindow() );
-    QWidget *settingsWidget = new QWidget( m_umsSettingsDialog );
+    KDialog umsSettingsDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
 
-    m_settings = new Ui::UmsConfiguration();
-    m_settings->setupUi( settingsWidget );
+    Ui::UmsConfiguration *settings = new Ui::UmsConfiguration();
+    settings->setupUi( settingsWidget );
 
-    m_settings->m_autoConnect->setChecked( m_autoConnect );
+    settings->m_autoConnect->setChecked( m_autoConnect );
 
-    m_settings->m_musicFolder->setMode( KFile::Directory );
-    m_settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+    settings->m_musicFolder->setMode( KFile::Directory );
+    settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
 
-    m_settings->m_podcastFolder->setMode( KFile::Directory );
-    m_settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
+    settings->m_podcastFolder->setMode( KFile::Directory );
+    settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
                                          : m_podcastPath );
 
-    m_umsSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-    m_umsSettingsDialog->setMainWidget( settingsWidget );
+    umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    umsSettingsDialog.setMainWidget( settingsWidget );
 
-    m_umsSettingsDialog->setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
-    m_umsSettingsDialog->enableButtonApply( false );
+    umsSettingsDialog.setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
 
-    connect( m_settings->m_musicFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
-    connect( m_settings->m_podcastFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
-    connect( m_settings->m_autoConnect, SIGNAL( stateChanged( int ) ), SLOT( slotConfigChanged() ) );
-
-    if( m_umsSettingsDialog->exec() == QDialog::Accepted )
+    if( umsSettingsDialog.exec() == QDialog::Accepted )
     {
         debug() << "accepted";
 
-        if(  m_settings->m_musicFolder->url() != m_musicPath )
+        if( settings->m_musicFolder->url() != m_musicPath )
         {
             debug() << "music location changed from " << m_musicPath.toLocalFile() << " to ";
-            debug() << m_settings->m_musicFolder->url().toLocalFile();
+            debug() << settings->m_musicFolder->url().toLocalFile();
             //TODO: reparse music
         }
 
-        if( m_settings->m_podcastFolder->url() != m_podcastPath )
+        if( settings->m_podcastFolder->url() != m_podcastPath )
         {
             debug() << "podcast location changed from " << m_podcastPath << " to ";
-            debug() << m_settings->m_podcastFolder->url().url();
+            debug() << settings->m_podcastFolder->url().url();
             //TODO: reparse podcasts
         }
 
-        m_autoConnect = m_settings->m_autoConnect->isChecked();
+        m_autoConnect = settings->m_autoConnect->isChecked();
         if( m_autoConnect && !m_parsed )
             parseTracks();
 
@@ -559,13 +552,13 @@ UmsHandler::slotConfigure()
         {
             QTextStream s( &settingsFile );
             QString keyValuePair( "%1=%2\n" );
-            KUrl musicPath = m_settings->m_musicFolder->url();
+            KUrl musicPath = settings->m_musicFolder->url();
             if( musicPath != m_mountPoint )
             {
                 s << keyValuePair.arg( s_audioFolderKey, KUrl::relativePath( m_mountPoint,
                     musicPath.toLocalFile() ) );
             }
-            KUrl podcastPath = m_settings->m_podcastFolder->url();
+            KUrl podcastPath = settings->m_podcastFolder->url();
             if( podcastPath != m_mountPoint )
             {
                 s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
@@ -580,24 +573,7 @@ UmsHandler::slotConfigure()
             error() << "Could not open settingsfile " << localFile.toLocalFile();
     }
 
-    delete m_umsSettingsDialog;
-    m_umsSettingsDialog = 0;
-    delete m_settings;
-    m_settings = 0;
-}
-
-void
-UmsHandler::slotConfigChanged()
-{
-    if( !m_settings )
-        return;
-
-    if( m_settings->m_autoConnect->isChecked() != m_autoConnect
-        || m_settings->m_musicFolder->url() != m_musicPath
-        || m_settings->m_podcastFolder->url() != m_podcastPath )
-    {
-        m_umsSettingsDialog->enableButtonApply( true );
-    }
+    delete settings;
 }
 
 void
