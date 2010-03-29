@@ -3,10 +3,7 @@ include_directories( .
   ${CMAKE_BINARY_DIR}/tests
 )
 
-if(KDE4_BUILD_TESTS)
-add_subdirectory( cue )
-add_subdirectory( file )
-add_subdirectory( multi )
+add_subdirectory( impl )
 
 #------------------------ Test M3UPlaylist -----------------------------
 
@@ -40,6 +37,4 @@ set( testplaylistfilesupport_SRCS
      )
 kde4_add_unit_test( testplaylistfilesupport ${testplaylistfilesupport_SRCS} )
 target_link_libraries( testplaylistfilesupport ${QT_QTTEST_LIBRARY} amaroklib )
-
-endif()
 

@@ -23,7 +23,7 @@
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
 #include "CollectionTestImpl.h"
-#include "collection/MockCollectionLocationDelegate.h"
+#include "core/collections/MockCollectionLocationDelegate.h"
 #include "mocks/MockTrack.h"
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
