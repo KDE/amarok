@@ -395,7 +395,6 @@ SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackInde
     }
 
     Podcasts::SqlPodcastEpisodeList actionEpisodes;
-    bool hasDownloaded = false;
     if( !sqlEpisode->localUrl().isEmpty() )
     {
         actionEpisodes = m_deleteAction->data().value<Podcasts::SqlPodcastEpisodeList>();
