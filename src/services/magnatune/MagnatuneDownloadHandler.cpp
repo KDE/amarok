@@ -48,7 +48,7 @@ MagnatuneDownloadHandler::~MagnatuneDownloadHandler()
 }
 
 
-void MagnatuneDownloadHandler:: purchaseAlbum( MagnatuneAlbum * album )
+void MagnatuneDownloadHandler::downloadAlbum( MagnatuneAlbum * album )
 {
     DEBUG_BLOCK
     m_currentAlbum = album;

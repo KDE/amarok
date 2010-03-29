@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MAGNATUNEPURCHASEHANDLER_H
-#define MAGNATUNEPURCHASEHANDLER_H
+#ifndef MAGNATUNEDOWNLOADHANDLER_H
+#define MAGNATUNEDOWNLOADHANDLER_H
 
 #include <QObject>
 #include <kio/job.h>
@@ -27,7 +27,7 @@
 
 
 /**
-The main class responcible for handelig of purchases from Magnatune.com
+The main class responcible for handling of downloads from Magnatune.com
 
 @author Nikolaj Hald Nielsen
 */
@@ -40,10 +40,10 @@ public:
 
    void setParent( QWidget * parent );
    /**
-    * Starts a purchase operation
-    * @param album The album to purchase
+    * Starts a download operation
+    * @param album The album to download
     */
-   void purchaseAlbum( Meta::MagnatuneAlbum * album );
+   void downloadAlbum( Meta::MagnatuneAlbum * album );
 
 signals:
 

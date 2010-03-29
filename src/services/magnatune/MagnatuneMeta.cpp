@@ -170,13 +170,13 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
     , m_downloadMembership ( false )
-    , m_purchaseAction( 0 )
+    , m_downloadAction( 0 )
 {}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
     , m_downloadMembership ( false )
-    , m_purchaseAction( 0 )
+    , m_downloadAction( 0 )
 {
     m_lofiUrl = resultRow[7];
     m_oggUrl = resultRow[8];
@@ -213,20 +213,17 @@ QList< QAction * > Meta::MagnatuneTrack::customActions()
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if ( !m_purchaseAction ) {
+    if ( !m_downloadAction ) {
 
-        QString text = i18n( "&Purchase Album" );
-        if ( m_downloadMembership )
-            text = i18n( "&Download Album" );
-
+        QString text = i18n( "&Download Album" );
         MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
         if ( mAlbum ) {
-            m_purchaseAction = new MagnatunePurchaseAction( text, mAlbum );
+            m_downloadAction = new MagnatuneDownloadAction( text, mAlbum );
         }
     }
 
-    if ( m_purchaseAction )
-        actions.append( m_purchaseAction );
+    if ( m_downloadAction && m_downloadMembership )
+        actions.append( m_downloadAction );
 
     return actions;
 
@@ -238,20 +235,18 @@ QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if ( !m_purchaseAction ) {
+    if ( !m_downloadAction ) {
 
-        QString text = i18n( "Magnatune.com: &Purchase Album" );
-        if ( m_downloadMembership )
-            text = i18n( "Magnatune.com: &Download Album" );
+        QString text = i18n( "Magnatune.com: &Download Album" );
 
         MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
         if ( mAlbum ) {
-            m_purchaseAction = new MagnatunePurchaseAction( text, mAlbum );
+            m_downloadAction = new MagnatuneDownloadAction( text, mAlbum );
         }
     }
 
-    if ( m_purchaseAction )
-        actions.append( m_purchaseAction );
+    if ( m_downloadAction && m_downloadMembership )
+        actions.append( m_downloadAction );
 
     return actions;
 
@@ -283,7 +278,7 @@ void Meta::MagnatuneTrack::setMoods(QList< QString > moods)
     m_moods = moods;
 }
 
-void Meta::MagnatuneTrack::purchase()
+void Meta::MagnatuneTrack::download()
 {
     DEBUG_BLOCK
     MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
@@ -352,7 +347,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_albumCode()
     , m_store( 0 )
     , m_downloadMembership( false )
-    , m_purchaseAction( 0 )
+    , m_downloadAction( 0 )
     , m_addToFavoritesAction( 0 )
 
 {}
@@ -360,7 +355,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
-    , m_purchaseAction( 0 )
+    , m_downloadAction( 0 )
     , m_addToFavoritesAction( 0 )
 {
     m_coverUrl = resultRow[4];
@@ -426,12 +421,10 @@ QList< QAction * > MagnatuneAlbum::customActions()
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if ( !m_purchaseAction ) {
+    if ( !m_downloadAction ) {
 
-        QString text = i18n( "&Purchase Album" );
-        if ( m_downloadMembership )
-            text = i18n( "&Download Album" );
-        m_purchaseAction = new MagnatunePurchaseAction( text, this );
+        QString text = i18n( "&Download Album" );
+        m_downloadAction = new MagnatuneDownloadAction( text, this );
     }
 
     if ( !m_addToFavoritesAction )
@@ -443,13 +436,14 @@ QList< QAction * > MagnatuneAlbum::customActions()
     MagnatuneConfig config;
     if ( config.isMember() )
         actions.append( m_addToFavoritesAction );
-    
-    actions.append( m_purchaseAction );
+
+    if ( m_downloadAction && config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD )
+        actions.append( m_downloadAction );
 
     return actions;
 }
 
-void Meta::MagnatuneAlbum::purchase()
+void Meta::MagnatuneAlbum::download()
 {
     DEBUG_BLOCK
     if ( store() )

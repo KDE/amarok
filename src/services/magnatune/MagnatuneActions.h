@@ -26,13 +26,13 @@ A simple QAction subclass for purchasing or downloading content from Magnatune
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class MagnatunePurchaseAction : public QAction
+class MagnatuneDownloadAction : public QAction
 {
     Q_OBJECT
 public:
-    MagnatunePurchaseAction( const QString &text, Meta::MagnatuneAlbum * album );
+    MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album );
 
-    ~MagnatunePurchaseAction();
+    ~MagnatuneDownloadAction();
 
 private slots:
     void slotTriggered();

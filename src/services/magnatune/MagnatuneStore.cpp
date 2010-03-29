@@ -172,7 +172,7 @@ void MagnatuneStore::download( )
     }
 
     if ( m_currentAlbum != 0 )
-        m_downloadHandler->purchaseAlbum( m_currentAlbum );
+        m_downloadHandler->downloadAlbum( m_currentAlbum );
 }
 
 
@@ -203,7 +203,7 @@ void MagnatuneStore::download( Meta::MagnatuneAlbum * album )
         connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
     }
 
-    m_downloadHandler->purchaseAlbum( album );
+    m_downloadHandler->downloadAlbum( album );
 }
 
 
@@ -594,7 +594,7 @@ void MagnatuneStore::downloadCurrentTrackAlbum()
         connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
     }
 
-    m_downloadHandler->purchaseAlbum( magnatuneAlbum );
+    m_downloadHandler->downloadAlbum( magnatuneAlbum );
 }
 
 

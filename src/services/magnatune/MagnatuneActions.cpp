@@ -19,7 +19,7 @@
 
 #include <KIcon>
 
-MagnatunePurchaseAction::MagnatunePurchaseAction( const QString &text, Meta::MagnatuneAlbum * album )
+MagnatuneDownloadAction::MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album )
     : QAction( KIcon("download-amarok" ), text, album )
     , m_album( album )
 {
@@ -28,14 +28,14 @@ MagnatunePurchaseAction::MagnatunePurchaseAction( const QString &text, Meta::Mag
 }
 
 
-MagnatunePurchaseAction::~MagnatunePurchaseAction()
+MagnatuneDownloadAction::~MagnatuneDownloadAction()
 {
 }
 
-void MagnatunePurchaseAction::slotTriggered()
+void MagnatuneDownloadAction::slotTriggered()
 {
     DEBUG_BLOCK
-    m_album->purchase();
+    m_album->download();
 }
 
 

@@ -113,7 +113,7 @@ public slots:
     
 private slots:
     /**
-     * Slot called when the download album button is clicked. Starts a purchase
+     * Slot called when the download album button is clicked. Starts a download
      */
     void download();
 

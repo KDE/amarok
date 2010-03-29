@@ -25,7 +25,7 @@
 #include <QObject>
 
 /**
-This class handles the redownloading of previously purchased albums
+This class handles the redownloading of previously downloaded albums
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */

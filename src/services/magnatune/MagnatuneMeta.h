@@ -64,14 +64,14 @@ public:
     void setAlbumPtr( Meta::AlbumPtr album );
 
 public slots:
-    void purchase();
+    void download();
 
 private:
     QString m_lofiUrl;
     QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
-    QAction * m_purchaseAction;
+    QAction * m_downloadAction;
 
 };
 
@@ -140,10 +140,10 @@ public:
     virtual bool simpleFiltering() const { return false; }
 
 public slots:
-    void purchase();
+    void download();
     void addToFavorites();
 private:
-    QAction * m_purchaseAction;
+    QAction * m_downloadAction;
     QAction * m_addToFavoritesAction;
 };
 

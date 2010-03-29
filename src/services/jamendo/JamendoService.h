@@ -64,7 +64,7 @@ private slots:
     void doneParsing();
 
     /**
-    * Checks if purchase button should be enabled
+    * Checks if download button should be enabled
     * @param selection the new selection
     */
     void itemSelected( CollectionTreeItem * selectedItem );
