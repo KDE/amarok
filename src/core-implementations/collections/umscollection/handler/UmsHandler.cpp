@@ -530,6 +530,7 @@ UmsHandler::slotConfigure()
         {
             debug() << "music location changed from " << m_musicPath.toLocalFile() << " to ";
             debug() << settings->m_musicFolder->url().toLocalFile();
+            m_musicPath = settings->m_musicFolder->url().toLocalFile();
             //TODO: reparse music
         }
 
@@ -537,6 +538,7 @@ UmsHandler::slotConfigure()
         {
             debug() << "podcast location changed from " << m_podcastPath << " to ";
             debug() << settings->m_podcastFolder->url().url();
+            m_podcastPath = settings->m_podcastFolder->url().toLocalFile();
             //TODO: reparse podcasts
         }
 
@@ -552,17 +554,15 @@ UmsHandler::slotConfigure()
         {
             QTextStream s( &settingsFile );
             QString keyValuePair( "%1=%2\n" );
-            KUrl musicPath = settings->m_musicFolder->url();
-            if( musicPath != m_mountPoint )
+            if( m_musicPath != m_mountPoint )
             {
                 s << keyValuePair.arg( s_audioFolderKey, KUrl::relativePath( m_mountPoint,
-                    musicPath.toLocalFile() ) );
+                    m_musicPath.toLocalFile() ) );
             }
-            KUrl podcastPath = settings->m_podcastFolder->url();
-            if( podcastPath != m_mountPoint )
+            if( m_podcastPath != m_mountPoint )
             {
                 s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
-                    podcastPath.toLocalFile() ) );
+                    m_podcastPath.toLocalFile() ) );
             }
             if( m_autoConnect )
                 s << keyValuePair.arg( s_autoConnectKey, "true" );
