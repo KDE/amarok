@@ -17,7 +17,7 @@
 #include "core/meta/impl/multi/MultiTrack.h"
 
 #include "core/support/Debug.h"
-#include "core/capabilities/impl/multisource/MultiSourceCapabilityImpl.h"
+#include "core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.h"
 
 namespace Meta {
 

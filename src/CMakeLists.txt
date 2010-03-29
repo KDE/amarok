@@ -309,7 +309,7 @@ set(core_SRCS
     core-implementations/capabilities/timecode/TimecodeWriteCapability.cpp
     core/capabilities/UpdateCapability.cpp
     core/capabilities/WriteLabelCapability.cpp
-    core/capabilities/impl/multisource/MultiSourceCapabilityImpl.cpp
+    core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.cpp
     core-implementations/meta/file/File.cpp
     core/meta/impl/multi/MultiTrack.cpp
     core-implementations/meta/cue/CueFileSupport.cpp
