@@ -94,7 +94,7 @@ private:
     void readConfig();
     void writeConfig();
 
-    QList< QAction * >       m_columnActions; //! Maintains the mapping action<->column
+    QList< QAction * >       m_columnActions; //!< Maintains the mapping action<->column
 
     QStringList siblingsForDir( const QString &path );
     

@@ -80,8 +80,8 @@ struct multilevelLessThan
         long constantRandomSeqnumForRow( const QAbstractItemModel* sourceModel, int sourceModelRow ) const;
 
     private:
-        SortScheme m_scheme;           //! The current sorting scheme.
-        long m_randomSalt;    //! Change the random row order from run to run.
+        SortScheme m_scheme;    //!< The current sorting scheme.
+        long m_randomSalt;      //!< Change the random row order from run to run.
 };
 
 }   //namespace Playlist

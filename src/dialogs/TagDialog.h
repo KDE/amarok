@@ -211,10 +211,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, QString> m_storedLyrics;
         QString m_path;
         QString m_currentCover;
-        LabelListModel *m_labelModel;               //! Model MVC Class for Track label list
-        QStringList m_newLabels;                    //! List of added labels
-        QStringList m_removedLabels;                //! List of removed labels
-        QStringList m_labels;                       //! List of track labels
+        LabelListModel *m_labelModel;               //!< Model MVC Class for Track label list
+        QStringList m_newLabels;                    //!< List of added labels
+        QStringList m_removedLabels;                //!< List of removed labels
+        QStringList m_labels;                       //!< List of track labels
 
         //2.0 stuff
         Meta::TrackList m_tracks;

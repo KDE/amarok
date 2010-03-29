@@ -223,7 +223,7 @@ namespace Dynamic
             void updateFinished();
 
         private:
-            double m_weight; /// range: [0,1]
+            double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
             Collections::XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
@@ -294,8 +294,8 @@ namespace Dynamic
 
             double m_scale;
 
-            double m_mu;    //! mean
-            double m_sigma; //! standard deviation
+            double m_mu;    //!< mean
+            double m_sigma; //!< standard deviation
 
             qint64 m_field;
     };

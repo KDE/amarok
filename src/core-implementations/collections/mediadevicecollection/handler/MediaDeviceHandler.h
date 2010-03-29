@@ -286,13 +286,13 @@ protected:
 
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
-    Collections::MediaDeviceCollection   *m_memColl; /// Associated collection
-    ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
+    Collections::MediaDeviceCollection   *m_memColl; ///< Associated collection
+    ProgressBar      *m_statusbar; ///< A progressbar to show progress of an operation
 
     bool m_success;
-    bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
-    TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
-    QMap<Meta::TrackPtr, QString> m_destinations;/// Destination urls for organizable devices, on copy
+    bool m_copyingthreadsafe; ///< whether or not the handler's method of copying is threadsafe
+    TitleMap          m_titlemap; ///< Map of track titles to tracks, used to detect duplicates
+    QMap<Meta::TrackPtr, QString> m_destinations;///< Destination urls for organizable devices, on copy
 
 
 protected slots:
@@ -342,7 +342,7 @@ private:
 
     float freeSpace() const;
 
-    /// Observer Methods
+    // Observer Methods
 
     /** These methods are called when the metadata of a track has changed. They invoke an MediaDevice DB update */
     virtual void metadataChanged( Meta::TrackPtr track );
@@ -356,25 +356,25 @@ private:
     * Handler Variables
     */
 
-    Playlists::MediaDeviceUserPlaylistProvider *m_provider; /// Associated playlist provider
+    Playlists::MediaDeviceUserPlaylistProvider *m_provider; ///< Associated playlist provider
 
-    bool m_copyFailed; /// Indicates whether a copy failed or not
+    bool m_copyFailed; ///< Indicates whether a copy failed or not
     bool m_isCopying;
     bool m_isDeleting;
 
-    Meta::TrackList   m_tracksToCopy; /// List of tracks left to copy
-    Meta::TrackList   m_tracksCopying; /// List of tracks currrently copying
-    Meta::TrackList   m_tracksToDelete; /// List of tracks left to delete
+    Meta::TrackList   m_tracksToCopy; ///< List of tracks left to copy
+    Meta::TrackList   m_tracksCopying; ///< List of tracks currrently copying
+    Meta::TrackList   m_tracksToDelete; ///< List of tracks left to delete
 
-    int m_numTracksToCopy; /// The number of tracks left to copy
-    int m_numTracksToRemove; /// The number of tracks left to remove
+    int m_numTracksToCopy; ///< The number of tracks left to copy
+    int m_numTracksToRemove; ///< The number of tracks left to remove
 
-    QMap<Meta::TrackPtr, QString> m_tracksFailed; /// tracks that failed to copy
-    QHash<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_trackSrcDst; /// points source to destTracks, for completion of addition to collection
+    QMap<Meta::TrackPtr, QString> m_tracksFailed; ///< tracks that failed to copy
+    QHash<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_trackSrcDst; ///< points source to destTracks, for completion of addition to collection
 
-    QMutex m_mutex; /// A make certain operations atomic when threads are at play
+    QMutex m_mutex; ///< A make certain operations atomic when threads are at play
 
-    /// Capability-related variables
+    // Capability-related variables
 
     Handler::PlaylistCapability *m_pc;
     Handler::PodcastCapability *m_podcastCapability;
@@ -434,8 +434,8 @@ protected:
     virtual void run();
 
 private:
-    bool m_success; /// Whether or not the parse was successful
-    MediaDeviceHandler *m_handler; /// The handler
+    bool m_success; ///< Whether or not the parse was successful
+    MediaDeviceHandler *m_handler; ///< The handler
 };
 
 /**
@@ -512,9 +512,9 @@ protected:
     virtual void run();
 
 private:
-    bool m_success; /// Whether or not the copy was successful
-    Meta::TrackPtr m_track; /// The source track to copy from
-    MediaDeviceHandler *m_handler; /// The handler
+    bool m_success; ///< Whether or not the copy was successful
+    Meta::TrackPtr m_track; ///< The source track to copy from
+    MediaDeviceHandler *m_handler; ///< The handler
 };
 
 }

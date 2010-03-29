@@ -30,23 +30,23 @@ namespace CoverFetch
 {
     enum Option
     {
-        Automatic,      //! Automtically save cover for the specified album, if one is found
-        Interactive,    //! Opens a dialog for the user to decide, and add more searches if desired
-        WildInteractive //! As \ref Interactive, but without filtering results (used for web search)
+        Automatic,      //!< Automtically save cover for the specified album, if one is found
+        Interactive,    //!< Opens a dialog for the user to decide, and add more searches if desired
+        WildInteractive //!< As @ref Interactive, but without filtering results (used for web search)
     };
 
     enum ImageSize
     {
-        NormalSize,     //! Normal cover size, for storage and display
-        ThumbSize       //! Thumbnail size, for icon views
+        NormalSize,     //!< Normal cover size, for storage and display
+        ThumbSize       //!< Thumbnail size, for icon views
     };
 
     enum Source
     {
-        Discogs,        //! Use Discogs as provider for cover images
-        Google,         //! Use Google image search as provider
-        LastFm,         //! Use Last.fm as provider for cover images
-        Yahoo           //! Use Yahoo! BOSS image search as provider
+        Discogs,        //!< Use Discogs as provider for cover images
+        Google,         //!< Use Google image search as provider
+        LastFm,         //!< Use Last.fm as provider for cover images
+        Yahoo           //!< Use Yahoo! BOSS image search as provider
     };
 
     typedef QHash< QString, QString > Metadata;

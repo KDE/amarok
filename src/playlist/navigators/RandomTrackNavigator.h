@@ -35,7 +35,7 @@ namespace Playlist
         public:
             RandomTrackNavigator();
 
-            static const int AVOID_RECENTLY_PLAYED_MAX = 512;    //! Try to avoid the 'N' most recently played items.
+            static const int AVOID_RECENTLY_PLAYED_MAX = 512;    //!< Try to avoid the 'N' most recently played items.
 
         private:
             //! Overrides from 'NonlinearTrackNavigator'

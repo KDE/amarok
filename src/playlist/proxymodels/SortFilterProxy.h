@@ -102,8 +102,8 @@ class SortFilterProxy : public ProxyBase, public SortProxy
         bool filterAcceptsRow( int sourceModelRow, const QModelIndex &sourceModelParent ) const;
 
 
-        SortScheme m_scheme;               //! The current sorting scheme.
-        multilevelLessThan m_mlt;          //! Decision object for current sorting scheme.
+        SortScheme m_scheme;               //!< The current sorting scheme.
+        multilevelLessThan m_mlt;          //!< Decision object for current sorting scheme.
 
         QString m_currentSearchTerm;
         int m_currentSearchFields;

@@ -33,7 +33,7 @@ class BreadcrumbItemButton;
  *    +-------------------------------+
  *    | > X artist  > Y album         |
  *    +-------------------------------+
- *    where X and Y are eneric artist and album icons respectively.
+ *    where X and Y are generic artist and album icons respectively.
  * \endcode
  *
  * TODO: list artists/albums when clicking on the '>' to be more useful

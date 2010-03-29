@@ -66,8 +66,8 @@ private:
     const KAboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;
-    KToolBar *m_iconsBar;   //! holds the icons for email, homepage and oD.o profile
-    KToolBar *m_snBar;      //! holds any other icons for social network profiles
+    KToolBar *m_iconsBar;   //!< holds the icons for email, homepage and oD.o profile
+    KToolBar *m_snBar;      //!< holds any other icons for social network profiles
     PersonStatus m_status;
     State m_state;
 /*

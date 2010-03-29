@@ -112,7 +112,7 @@ public slots:
     void play( const quint64 id, bool now = true );
     void next();
     void back();
-    void playlistModeChanged(); //! Changes the tracknavigator
+    void playlistModeChanged(); //!< Changes the tracknavigator
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
@@ -135,14 +135,14 @@ private:
 
     quint64 m_nextTrackCandidate;
     quint64 m_trackToBeLast;
-    TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
+    TrackNavigator* m_navigator;                //!< the strategy of what to do when a track finishes playing
     Playlist::StopAfterMode m_stopAfterMode;
     bool m_trackError;
     bool m_waitingForNextTrack;
 
     AbstractModel *m_topmostModel;
 
-    static Actions* s_instance; //! instance variable
+    static Actions* s_instance; //!< instance variable
 };
 } // namespace Playlist
 

@@ -40,16 +40,16 @@ class AbstractModel;
 
 enum AddOptions
 {
-    Append     = 1,     /// inserts media after the last item in the playlist
-    Queue      = 2,     /// inserts media after the currentTrack
-    Replace    = 4,     /// clears the playlist first
-    DirectPlay = 8,     /// start playback of the first item in the list
-    Unique     = 16,    /// don't insert anything already in the playlist
-    StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
+    Append     = 1,     ///< inserts media after the last item in the playlist
+    Queue      = 2,     ///< inserts media after the currentTrack
+    Replace    = 4,     ///< clears the playlist first
+    DirectPlay = 8,     ///< start playback of the first item in the list
+    Unique     = 16,    ///< don't insert anything already in the playlist
+    StartPlay  = 32,    ///< start playback of the first item in the list if nothing else playing
     AppendAndPlay = Append | StartPlay,
     LoadAndPlay = Replace | StartPlay,
-    AppendAndPlayImmediately = Append | DirectPlay, /// append and start playback of the added item
-    LoadAndPlayImmediately = Replace | DirectPlay   /// replace and begin playing of new item
+    AppendAndPlayImmediately = Append | DirectPlay, ///< append and start playback of the added item
+    LoadAndPlayImmediately = Replace | DirectPlay   ///< replace and begin playing of new item
 };
 
 class AMAROK_EXPORT Controller : public QObject
@@ -194,8 +194,8 @@ private:
 
     QUndoStack* m_undoStack;
 
-    QHash<Collections::QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
-    QHash<Collections::QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
+    QHash<Collections::QueryMaker*, int> m_queryMap;         //!< maps queries to the row where the results should be inserted
+    QHash<Collections::QueryMaker*, int> m_optionedQueryMap; //!< maps queries to the options to be used when inserting the result
     QHash<Collections::QueryMaker*, Meta::TrackList> m_queryMakerTrackResults;
 };
 }

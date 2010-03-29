@@ -41,7 +41,6 @@ public:
     AMAROK_EXPORT static CoverFetcher* instance();
     AMAROK_EXPORT static void destroy();
 
-    /// Main fetch methods
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
@@ -60,6 +59,8 @@ private slots:
 
     /// Fetch a cover
     void slotFetch( const CoverFetchUnit::Ptr unit );
+
+    /// Handle result of a fetch job
     void slotResult( KJob *job );
 
     /// Cover found dialog is closed by the user
@@ -70,9 +71,9 @@ private:
     CoverFetcher();
     ~CoverFetcher();
 
-    const int        m_limit;      /// maximum number of concurrent fetches
-    CoverFetchQueue *m_queue;      /// current fetch queue
-    Meta::AlbumList  m_queueLater; /// put here if m_queue exceeds m_limit
+    const int m_limit;            //!< maximum number of concurrent fetches
+    CoverFetchQueue *m_queue;     //!< current fetch queue
+    Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;

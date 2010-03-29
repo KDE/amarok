@@ -51,7 +51,7 @@ class ContentFetcher : public QHttp
         quint16 m_port;
         QByteArray m_authorize;
         bool m_selfDestruct;
-        static int s_requestId; //! Apple needs this for some reason
+        static int s_requestId; //!< Apple needs this for some reason
 };
 
 

@@ -117,10 +117,10 @@ private:
     void init();
     Qt::SortOrder m_order;
     bool m_noArrows;
-    QRect m_arrowRect;      //! the QRect that contains the order inversion arrow primitive.
-    QPoint m_pressedPos;    //! the position of the last mousePressEvent, for handling clicks.
+    QRect m_arrowRect;      //!< the QRect that contains the order inversion arrow primitive.
+    QPoint m_pressedPos;    //!< the position of the last mousePressEvent, for handling clicks.
     bool m_arrowPressed;
-    bool m_arrowHovered;    //! is the arrow rect hovered?
+    bool m_arrowHovered;    //!< is the arrow rect hovered?
     int m_arrowWidth;
     int m_arrowHeight;
 };

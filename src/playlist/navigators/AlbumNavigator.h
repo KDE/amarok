@@ -62,8 +62,8 @@ namespace Playlist
              */
             AlbumId currentAlbum() { return currentItem() ? albumForItem( currentItem() ) : AlbumId(); }
 
-            QHash<AlbumId, ItemList> m_itemsPerAlbum;    //! For use by child classes. Maintained automatically.
-            QList<AlbumId> m_plannedAlbums;    //! For use by child classes. Cleared automatically.
+            QHash<AlbumId, ItemList> m_itemsPerAlbum;    //!< For use by child classes. Maintained automatically.
+            QList<AlbumId> m_plannedAlbums;    //!< For use by child classes. Cleared automatically.
 
         private:
             static bool itemLessThan( const quint64 &left, const quint64 &right );

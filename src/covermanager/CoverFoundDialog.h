@@ -55,9 +55,9 @@ public:
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
 
-    /**
-    *   @returns the currently selected cover image
-    */
+    /** 
+     * @returns the currently selected cover image
+     */
     const QPixmap image() const { return m_pixmap; }
 
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
@@ -97,25 +97,20 @@ private:
     void updateGui();
     void updateTitle();
 
-    bool            m_isSorted;      //! Are the covers sorted in the view?
-    bool            m_sortEnabled;   //! Sort covers by size
-    QAction        *m_sortAction;    //! Action to sort covers by size
-    QList< int >    m_sortSizes;     //! List of sorted cover sizes used for indexing
-
-    KLineEdit      *m_search;        //! Custom search input
-    KPushButton    *m_searchButton;  //! Button to start search or get more results for last query
-    KListWidget    *m_view;          //! View of retreived covers
-    KPushButton    *m_save;          //! Save Button
-    CoverFoundSideBar *m_sideBar;    //! View of selected cover and its metadata
-    QString         m_query;         //! Cache for the last entered custom query
-    unsigned int    m_queryPage;     //! Cache for the page number associated with \ref m_query
-
-    //! Cover fetch unit that initiated this dialog
-    const CoverFetchUnit::Ptr m_unit;
-    Meta::AlbumPtr m_album;
-
-    //! Currently selected cover image
-    QPixmap m_pixmap;
+    CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
+    KLineEdit *m_search;              //!< Custom search input
+    KListWidget *m_view;              //!< View of retrieved covers
+    KPushButton *m_save;              //!< Save Button
+    KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
+    Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
+    QAction *m_sortAction;            //!< Action to sort covers by size
+    QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
+    QPixmap m_pixmap;                 //!< Currently selected cover image
+    QString m_query;                  //!< Cache for the last entered custom query
+    bool m_isSorted;                  //!< Are the covers sorted in the view?
+    bool m_sortEnabled;               //!< Sort covers by size
+    const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
+    unsigned int m_queryPage;         //!< Cache for the page number associated with @ref m_query
 
     Q_DISABLE_COPY( CoverFoundDialog );
 };

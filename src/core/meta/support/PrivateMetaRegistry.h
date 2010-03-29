@@ -49,7 +49,7 @@ private:
     PrivateMetaRegistry();
     ~PrivateMetaRegistry();
 
-    static PrivateMetaRegistry* s_instance;      //! instance variable
+    static PrivateMetaRegistry* s_instance;      //!< instance variable
     
     QMap<QString, AlbumPtr> m_albums;
     QMap<QString, ArtistPtr> m_artists;

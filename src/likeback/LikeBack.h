@@ -83,13 +83,13 @@ public:
      * @see The LikeBack constructor and execCommentDialog().
      */
     enum Button {
-        Like           = 0x01,                           /// The user select that option to report a positive experience he got with the application.
-        Dislike        = 0x02,                           /// The user select that option to report a frustrating experience he got with the application.
-        Bug            = 0x04,                           /// The user select that option to report a bug in the application.
-        Feature        = 0x10,                           /// The user select that option to ask for a new feature he desire.
-                                                         /// If not enabled, the user is explicitely informed she cannot ask for new features.
-        AllButtons     = Like | Dislike | Bug | Feature, /// Usable in the constructor to enable every posible buttons.
-        DefaultButtons = Like | Dislike,                 /// Usable in the constructor to enable only the recommended default set of buttons.
+        Like           = 0x01,                           ///< The user select that option to report a positive experience he got with the application.
+        Dislike        = 0x02,                           ///< The user select that option to report a frustrating experience he got with the application.
+        Bug            = 0x04,                           ///< The user select that option to report a bug in the application.
+        Feature        = 0x10,                           ///< The user select that option to ask for a new feature he desire.
+                                                         ///< If not enabled, the user is explicitely informed she cannot ask for new features.
+        AllButtons     = Like | Dislike | Bug | Feature, ///< Usable in the constructor to enable every posible buttons.
+        DefaultButtons = Like | Dislike,                 ///< Usable in the constructor to enable only the recommended default set of buttons.
         AllButBugs     = Like | Dislike | Feature
     };
 
@@ -98,9 +98,9 @@ public:
      * @see The method setWindowNamesListing() explains how to use those values.
      */
     enum WindowListing {
-        NoListing = 0,          /// Do not print out any window name. For release time.
-        WarnUnnamedWindows = 1, /// Each time the user option a window, print out a message if the window is unnamed. For development needs, to check windows.
-        AllWindows = 2          /// Print out the window hierarchy of each opened windows during execution. For development needs, to check every windows have an understandable name.
+        NoListing = 0,          ///< Do not print out any window name. For release time.
+        WarnUnnamedWindows = 1, ///< Each time the user option a window, print out a message if the window is unnamed. For development needs, to check windows.
+        AllWindows = 2          ///< Print out the window hierarchy of each opened windows during execution. For development needs, to check every windows have an understandable name.
     };
 
     /**

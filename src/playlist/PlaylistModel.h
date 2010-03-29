@@ -56,7 +56,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Model( QObject *parent = 0 );
         ~Model();
 
-        //! Inherited from QAbstractItemModel  (via QAbstractListModel)
+        // Inherited from QAbstractItemModel  (via QAbstractListModel)
         int columnCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return NUM_COLUMNS; }
         QVariant data( const QModelIndex& index, int role ) const;
         bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
@@ -67,7 +67,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
         Qt::DropActions supportedDropActions() const;
 
-        //! Inherited from Playlist::AbstractModel
+        // Inherited from Playlist::AbstractModel
         QAbstractItemModel* qaim() const { return const_cast<Model*>( this ); }
 
         quint64 activeId() const;
@@ -96,13 +96,13 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Meta::TrackPtr trackForId( const quint64 id ) const;
         virtual Meta::TrackList tracks() const;
 
-        //! Inherited from Meta::Observer
+        // Inherited from Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::TrackPtr track );
         void metadataChanged( Meta::AlbumPtr album );
 
-        //! static member functions
-        static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
+        // static member functions
+        static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name
 
     signals:
         void activeTrackChanged( quint64 );
@@ -112,30 +112,30 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
     private:
-        //! Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
+        // Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool removeRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool removeRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
 
-        //! These functions do the real work of modifying the playlist, and should be called ONLY by UndoCommands
+        // These functions do the real work of modifying the playlist, and should be called ONLY by UndoCommands
         void insertTracksCommand( const InsertCmdList& );
         void removeTracksCommand( const RemoveCmdList& );
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
         void clearCommand();
 
-        //! Always alter the state of a row via one of the following functions.
+        // Always alter the state of a row via one of the following functions.
         void setStateOfItem_batchStart();
         void setStateOfItem_batchEnd();
         void setStateOfItem( Item *item, int row, Item::State state );    // 'item' must equal 'm_items.at( row )'
         void setStateOfItem( Item *item, Item::State state ) { setStateOfItem( item, rowForItem( item ), state ); }
         void setStateOfRow( int row, Item::State state )     { setStateOfItem( m_items.at( row ), row, state ); }
 
-        //! Variables
-        QList<Item*> m_items;               //! list of playlist items, in their "natural" (unsorted) order.
-        QHash<quint64, Item*> m_itemIds;    //! maps playlist item ID to Item pointer.
+        // Variables
+        QList<Item*> m_items;               //!< list of playlist items, in their "natural" (unsorted) order.
+        QHash<quint64, Item*> m_itemIds;    //!< maps playlist item ID to Item pointer.
 
-        int m_activeRow;    //! the row being played
+        int m_activeRow;    //!< the row being played
 
         qint64 m_totalLength;
         quint64 m_totalSize;
@@ -143,7 +143,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QString m_playlistName;
         bool m_proposeOverwriting;
 
-        int m_setStateOfItem_batchMinRow;    //! For 'setStateOfItem_batch*()'
+        int m_setStateOfItem_batchMinRow;    //!< For 'setStateOfItem_batch*()'
         int m_setStateOfItem_batchMaxRow;
 };
 

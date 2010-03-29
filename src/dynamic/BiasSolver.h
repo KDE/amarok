@@ -229,19 +229,19 @@ namespace Dynamic
 
             Meta::TrackList m_solution;
 
-            Meta::TrackList m_mutationPool; //! a queue of tracks used by getMutation
+            Meta::TrackList m_mutationPool; //!< a queue of tracks used by getMutation
 
-            QList<Bias*>  m_biases;     //! current energy for the whole system
-            QList<double> m_biasEnergy; //! current energy of each individual bias
-            QList<double> m_biasMutationEnergy; //! individual bias energy for the mutation
+            QList<Bias*>  m_biases;     //!< current energy for the whole system
+            QList<double> m_biasEnergy; //!< current energy of each individual bias
+            QList<double> m_biasMutationEnergy; //!< individual bias energy for the mutation
 
-            int m_n;                    //! size of playlist to generate
-            Meta::TrackList m_context;  //! tracks that precede the playlist
-            double m_epsilon;           //! highest energy we consider optimal
+            int m_n;                    //!< size of playlist to generate
+            Meta::TrackList m_context;  //!< tracks that precede the playlist
+            double m_epsilon;           //!< highest energy we consider optimal
 
             int m_pendingBiasUpdates;
 
-            QList<QByteArray> m_domain; //! set of tracks being considered, potentially different than s_universe.
+            QList<QByteArray> m_domain; //!< set of tracks being considered, potentially different than s_universe.
 
             /** List of biases which are global biases and are feasible (their
              * sets are non-empty). Set by computeDomain, but stored here so
@@ -250,7 +250,7 @@ namespace Dynamic
             QList<CollectionFilterCapability*> m_feasibleCollectionFilters;
             QList<TrackSet> m_feasibleCollectionFilterSets;
 
-            bool m_abortRequested; //! flag set when the thread is aborted
+            bool m_abortRequested; //!< flag set when the thread is aborted
 
             /**
              * We keep a list here of the uid of every track in the set
@@ -274,18 +274,18 @@ namespace Dynamic
 
             // GENETIC ALGORITHM CONSTANTS
 
-            static const int    GA_ITERATION_LIMIT;        //! iteration limit for the genetic phase
-            static const int    GA_POPULATION_SIZE;        //! population size for genetic phase
-            static const int    GA_MATING_POPULATION_SIZE; //! how many offspring are produced each generation
-            static const double GA_MUTATION_PROBABILITY;   //! the chance that an offspring gets mutated
-            static const int    GA_GIVE_UP_LIMIT;          //! if we can't reduce the energy after this many iterations, give up
+            static const int    GA_ITERATION_LIMIT;        //!< iteration limit for the genetic phase
+            static const int    GA_POPULATION_SIZE;        //!< population size for genetic phase
+            static const int    GA_MATING_POPULATION_SIZE; //!< how many offspring are produced each generation
+            static const double GA_MUTATION_PROBABILITY;   //!< the chance that an offspring gets mutated
+            static const int    GA_GIVE_UP_LIMIT;          //!< if we can't reduce the energy after this many iterations, give up
 
             // SIMULATE ANNEALING CONSTANTS
 
-            static const int    SA_ITERATION_LIMIT;     //! iteration limit for the annealing phase
-            static const double SA_INITIAL_TEMPERATURE; //! initial value of T
-            static const double SA_COOLING_RATE;        //! the factor by which T is multiplied each iteration.
-            static const int    SA_GIVE_UP_LIMIT;       //! if we con't reduce the energy after this many iterations, give up
+            static const int    SA_ITERATION_LIMIT;     //!< iteration limit for the annealing phase
+            static const double SA_INITIAL_TEMPERATURE; //!< initial value of T
+            static const double SA_COOLING_RATE;        //!< the factor by which T is multiplied each iteration.
+            static const int    SA_GIVE_UP_LIMIT;       //!< if we con't reduce the energy after this many iterations, give up
 
     };
 

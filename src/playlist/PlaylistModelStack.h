@@ -89,7 +89,7 @@ private:
      */
     ~ModelStack();
 
-    static ModelStack *s_instance;       //! Instance member.
+    static ModelStack *s_instance;       //!< Instance member.
 
     GroupingProxy   *m_grouping;
     SearchProxy     *m_search;

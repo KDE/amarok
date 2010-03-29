@@ -107,7 +107,7 @@ class FilenameLayoutDialog
         QString parsableScheme() const;
         void inferScheme( const QString &scheme );
         
-        QString m_filename;                         //! Filename to guess from
+        QString m_filename;                         //!< Filename to guess from
         bool m_isOrganizeCollection;
         bool m_advancedMode;
         TokenDropTarget *m_dropTarget;

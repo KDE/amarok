@@ -41,8 +41,8 @@ namespace Dynamic
 
             int size() const;
 
-            void clear(); //! make this the empty set
-            void setUniverseSet(); //! make this the universe set
+            void clear(); //!< make this the empty set
+            void setUniverseSet(); //!< make this the universe set
 
 
             void setTracks( const QList<QByteArray>& );

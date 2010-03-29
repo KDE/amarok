@@ -43,8 +43,8 @@ class DirectoryLoader : public QObject
         ~DirectoryLoader();
 
         void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
-        void init( const QList<KUrl>& urls ); //!list all 
-        void init( const QList<QUrl>& urls ); //!convience 
+        void init( const QList<KUrl>& urls ); //!< list all
+        void init( const QList<QUrl>& urls ); //!< convience
 
     signals:
         void finished( const Meta::TrackList& );
@@ -60,10 +60,10 @@ class DirectoryLoader : public QObject
         /**
          * the number of directory list operations. this is used so that
          * the last directory operations knows its the last */
-        int m_listOperations; 
-        bool m_localConnection; //!was insertAtRow called? otherwise finishUrlList should deleteLater
-        int m_row; //! for insertAtRow
+        int m_listOperations;
+        bool m_localConnection; //!< was insertAtRow called? otherwise finishUrlList should deleteLater
+        int m_row; //!< for insertAtRow
         KIO::KFileItemList m_expanded;
-        Meta::TrackList m_tracks; //! the tracks found. they get all sorted at the end.
+        Meta::TrackList m_tracks; //!< the tracks found. they get all sorted at the end.
 };
 #endif
