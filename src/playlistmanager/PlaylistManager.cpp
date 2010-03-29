@@ -144,10 +144,12 @@ PlaylistManager::playlistsOfCategory( int playlistCategory )
     QListIterator<Playlists::PlaylistProvider *> i( providers );
 
     Playlists::PlaylistList list;
-    while ( i.hasNext() )
+    while( i.hasNext() )
     {
         list << i.next()->playlists();
     }
+
+    debug() << list.count() << " playlists for category " << playlistCategory;
 
     return list;
 }

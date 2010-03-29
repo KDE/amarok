@@ -151,8 +151,8 @@ SqlPlaylist::saveToDb( bool tracks )
                 .arg( sql->escape( m_name ) )
                 .arg( sql->escape( m_description ) )
                 .arg( sql->escape( m_urlId ) );
-        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
-        if ( tracks )
+        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, "playlists" );
+        if( tracks )
             saveTracks();
     }
 
@@ -176,7 +176,7 @@ void
 SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
-    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
