@@ -88,8 +88,6 @@ PlaylistManager::~PlaylistManager()
 void
 PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
 {
-    DEBUG_BLOCK
-
     bool newCategory = false;
     if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
@@ -107,12 +105,10 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
 void
 PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 {
-    DEBUG_BLOCK
-
-    if ( !provider )
+    if( !provider )
         return;
 
-    if ( m_providerMap.values( provider->category() ).contains( provider ) )
+    if( m_providerMap.values( provider->category() ).contains( provider ) )
     {
         debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
         debug() << "Removing provider from map";
@@ -123,33 +119,24 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
         emit( providerRemoved( provider, provider->category() ) );
 
         slotUpdated();
-
     }
-
-
 }
 
 void
 PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 {
-    DEBUG_BLOCK
-    emit(updated());
+    emit( updated() );
 }
 
 Playlists::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
-    DEBUG_BLOCK
     QList<Playlists::PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
     QListIterator<Playlists::PlaylistProvider *> i( providers );
 
     Playlists::PlaylistList list;
     while( i.hasNext() )
-    {
         list << i.next()->playlists();
-    }
-
-    debug() << list.count() << " playlists for category " << playlistCategory;
 
     return list;
 }
@@ -179,9 +166,7 @@ PlaylistManager::playlistProvider(int category, QString name)
 void
 PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist )
 {
-    DEBUG_BLOCK
-
-    KIO::StoredTransferJob * downloadJob =  KIO::storedGet( path );
+    KIO::StoredTransferJob *downloadJob =  KIO::storedGet( path );
 
     m_downloadJobMap[downloadJob] = playlist;
 
@@ -192,11 +177,9 @@ PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFi
 }
 
 void
-PlaylistManager::downloadComplete( KJob * job )
+PlaylistManager::downloadComplete( KJob *job )
 {
-    DEBUG_BLOCK
-
-    if ( !job->error() == 0 )
+    if( !job->error() == 0 )
     {
         //TODO: error handling here
         return ;
@@ -256,25 +239,23 @@ PlaylistManager::import( const QString& fromLocation )
 void
 PlaylistManager::rename( Playlists::PlaylistPtr playlist )
 {
-    DEBUG_BLOCK
-
     if( playlist.isNull() )
         return;
 
-    Playlists::UserPlaylistProvider *prov;
-    prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+    Playlists::UserPlaylistProvider *provider
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
-    if( !prov )
+    if( !provider )
         return;
 
     bool ok;
     const QString newName = KInputDialog::getText( i18n("Change playlist"),
                 i18n("Enter new name for playlist:"), playlist->name(),
                                                    &ok );
-    if ( ok )
+    if( ok )
     {
         debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
-        prov->rename( playlist, newName.trimmed() );
+        provider->rename( playlist, newName.trimmed() );
         emit( updated() );
     }
 }
@@ -283,12 +264,10 @@ void
 PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     // Map the playlists to their respective providers
-
     QHash<Playlists::UserPlaylistProvider*, Playlists::PlaylistList> provLists;
     foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
         // Get the providers of the respective playlists
-
         Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
         if( prov )
@@ -339,11 +318,11 @@ PlaylistManager::getProviderForPlaylist( const Playlists::PlaylistPtr playlist )
 bool
 PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
 {
-    Playlists::UserPlaylistProvider *prov;
-    prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+    Playlists::UserPlaylistProvider *provider
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
-    if( prov )
-        return prov->isWritable();
+    if( provider )
+        return provider->isWritable();
     else
         return false;
 }
