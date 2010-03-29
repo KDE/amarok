@@ -68,8 +68,8 @@ MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks,
     if( ( syncDirection == OnlyInA && collA == m_master ) || ( syncDirection == OnlyInB && collB == m_master ) )
     {
         debug() << "Master " << m_master->collectionId() << " has to sync " << tracks.count() << " track(s) to " << m_slave->collectionId();
-        CollectionLocation *masterLoc = m_master->location();
-        CollectionLocation *slaveLoc = m_slave->location();
+        Collections::CollectionLocation *masterLoc = m_master->location();
+        Collections::CollectionLocation *slaveLoc = m_slave->location();
         masterLoc->prepareCopy( tracks, slaveLoc );
     }
     else
@@ -78,7 +78,7 @@ MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks,
         //so these are definitely the tracks that have to be removed from the slave
         debug() << "Delete " << tracks.count() << " track(s) from slave " << m_slave->collectionId();
         //do some more stuff, and *really* show a confirmation dialog
-        CollectionLocation *slaveLoc = m_slave->location();
+        Collections::CollectionLocation *slaveLoc = m_slave->location();
         slaveLoc->prepareRemove( tracks );
     }
 }

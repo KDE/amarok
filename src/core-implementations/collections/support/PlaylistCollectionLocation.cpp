@@ -19,7 +19,9 @@
 #include "core/playlists/Playlist.h"
 #include "PlaylistCollection.h"
 
-PlaylistCollectionLocation::PlaylistCollectionLocation( const Collections::PlaylistCollection *collection )
+using namespace Collections;
+
+PlaylistCollectionLocation::PlaylistCollectionLocation( const PlaylistCollection *collection )
         : CollectionLocation()
         , m_collection( collection )
 {

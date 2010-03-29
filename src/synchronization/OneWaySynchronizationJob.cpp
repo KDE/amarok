@@ -68,8 +68,8 @@ OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSe
     {
         debug() << "Master " << m_source->collectionId() << " has to sync " << tracks.count() << " track(s) to " << m_target->collectionId();
         //show confirmation dialog, actually do stuff
-        CollectionLocation *locSource = m_source->location();
-        CollectionLocation *locTarget = m_target->location();
+        Collections::CollectionLocation *locSource = m_source->location();
+        Collections::CollectionLocation *locTarget = m_target->location();
         if( !locTarget->isWritable() )
         {
             debug() << "target collection " << m_target->collectionId() << " is not writable, what am I doing here?";

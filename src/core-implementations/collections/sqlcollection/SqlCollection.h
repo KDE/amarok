@@ -36,14 +36,14 @@ namespace Capabilities {
     class CollectionCapabilityDelegate;
 }
 
-class CollectionLocation;
 class SqlMountPointManager;
-class SqlCollectionLocationFactory;
 class XesamCollectionBuilder;
 class ScanManager;
 
 namespace Collections {
 
+class CollectionLocation;
+class SqlCollectionLocationFactory;
 class SqlQueryMakerFactory;
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection

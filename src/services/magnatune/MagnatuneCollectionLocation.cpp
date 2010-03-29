@@ -21,7 +21,9 @@
 
 #include <QLabel>
 
-MagnatuneCollectionLocation::MagnatuneCollectionLocation( Collections::MagnatuneSqlCollection const *parentCollection )
+using namespace Collections;
+
+MagnatuneCollectionLocation::MagnatuneCollectionLocation( MagnatuneSqlCollection const *parentCollection )
     : ServiceCollectionLocation( parentCollection )
 {
 }

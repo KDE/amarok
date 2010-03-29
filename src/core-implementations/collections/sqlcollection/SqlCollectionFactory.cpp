@@ -72,6 +72,18 @@ public:
 
 };
 
+class DelegateSqlRegistry : public SqlRegistry
+{
+public:
+    DelegateSqlRegistry( Collections::SqlCollection *coll ) : SqlRegistry( coll ) {}
+protected:
+    Capabilities::AlbumCapabilityDelegate *createAlbumDelegate() const { return new Capabilities::AlbumCapabilityDelegateImpl(); }
+    Capabilities::ArtistCapabilityDelegate *createArtistDelegate() const { return new Capabilities::ArtistCapabilityDelegateImpl(); }
+    Capabilities::TrackCapabilityDelegate *createTrackDelegate() const { return new Capabilities::TrackCapabilityDelegateImpl(); }
+};
+
+namespace Collections {
+
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
 {
 public:
@@ -87,18 +99,6 @@ public:
 
     Collections::SqlCollection *m_collection;
 };
-
-class DelegateSqlRegistry : public SqlRegistry
-{
-public:
-    DelegateSqlRegistry( Collections::SqlCollection *coll ) : SqlRegistry( coll ) {}
-protected:
-    Capabilities::AlbumCapabilityDelegate *createAlbumDelegate() const { return new Capabilities::AlbumCapabilityDelegateImpl(); }
-    Capabilities::ArtistCapabilityDelegate *createArtistDelegate() const { return new Capabilities::ArtistCapabilityDelegateImpl(); }
-    Capabilities::TrackCapabilityDelegate *createTrackDelegate() const { return new Capabilities::TrackCapabilityDelegateImpl(); }
-};
-
-namespace Collections {
 
 SqlCollectionFactory::SqlCollectionFactory()
 {

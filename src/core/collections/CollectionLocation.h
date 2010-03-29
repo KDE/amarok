@@ -29,7 +29,6 @@
 
 namespace Collections {
     class QueryMaker;
-}
 
 /**
     This base class defines the the methods necessary to allow the copying and moving
@@ -339,5 +338,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         Meta::TrackList m_tracksSuccessfullyTransferred;
         QMap<Meta::TrackPtr, QString> m_tracksWithError;
 };
+
+} //namespace Collections
 
 #endif

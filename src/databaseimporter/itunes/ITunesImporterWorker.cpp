@@ -179,7 +179,7 @@ ITunesImporterWorker::run()
 
     if( m_tracksForInsert.size() > 0 )
     {
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( m_tracksForInsert );
         location->insertStatistics( m_tracksForInsert );
     }

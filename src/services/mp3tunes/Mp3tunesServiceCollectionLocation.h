@@ -24,12 +24,13 @@
 #include <QSet>
 #include <QString>
 
+namespace Collections {
 
 class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
     Q_OBJECT
     public:
-        Mp3tunesServiceCollectionLocation( Collections::Mp3tunesServiceCollection const *parentCollection );
+        Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection );
         virtual ~Mp3tunesServiceCollectionLocation();
 
         
@@ -39,7 +40,9 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
         
     private:
-        Collections::Mp3tunesServiceCollection *m_collection;
+        Mp3tunesServiceCollection *m_collection;
 };
+
+} //namespace Collections
 
 #endif

@@ -41,6 +41,8 @@ using ::testing::AnyNumber;
 
 static QList<int> trackCopyCount;
 
+namespace Collections {
+
 class MyCollectionLocation : public CollectionLocation
 {
 public:
@@ -67,8 +69,6 @@ public:
         }
     }
 };
-
-namespace Collections {
 
 class MyCollectionTestImpl : public CollectionTestImpl
 {

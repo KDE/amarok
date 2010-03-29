@@ -48,6 +48,8 @@ CollectionLocationTest::CollectionLocationTest()
     qRegisterMetaType<Meta::ArtistList>();
 }
 
+namespace Collections {
+
 class TestRemoveCL : public CollectionLocation
 {
 public:
@@ -64,13 +66,15 @@ public:
     int count;
 };
 
+} //namespace Collections
+
 void CollectionLocationTest::testSuccessfulCopy()
 {
     Collections::MockCollectionLocationDelegate *cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
-    TestRemoveCL *cl = new TestRemoveCL();
+    Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
@@ -92,7 +96,7 @@ void CollectionLocationTest::testFailedCopy()
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
-    TestRemoveCL *cl = new TestRemoveCL();
+    Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
@@ -114,7 +118,7 @@ void CollectionLocationTest::testCopyMultipleTracks()
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
-    TestRemoveCL *cl = new TestRemoveCL();
+    Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
 
     cl->setProperty( "removeSources", true );
@@ -143,7 +147,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
-    TestRemoveCL *cl = new TestRemoveCL();
+    Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
@@ -164,7 +168,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
-    cl = new TestRemoveCL();
+    cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;

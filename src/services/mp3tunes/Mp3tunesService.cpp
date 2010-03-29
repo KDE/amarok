@@ -357,8 +357,8 @@ void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
             if ( coll->prettyName() == "Local Collection")
             { //TODO Allow user to choose which collection to sync down to.
                 debug() << "got local collection";
-                CollectionLocation *dest = coll->location();
-                CollectionLocation *source = m_collection->location();
+                Collections::CollectionLocation *dest = coll->location();
+                Collections::CollectionLocation *source = m_collection->location();
                 if( !m_collection->possiblyContainsTrack( download["url"].toString() ) )
                     return; //TODO some sort of error handling
                 Meta::TrackPtr track( m_collection->trackForUrl( download["url"].toString() ) );

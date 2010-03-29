@@ -27,8 +27,8 @@
 #include <QString>
 
 namespace Collections {
-    class SqlCollection;
-}
+
+class SqlCollection;
 
 class SqlCollectionLocation;
 /**
@@ -66,7 +66,7 @@ class SqlCollectionLocation : public CollectionLocation
     Q_OBJECT
 
     public:
-        SqlCollectionLocation( Collections::SqlCollection const *collection );
+        SqlCollectionLocation( SqlCollection const *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;
@@ -103,7 +103,7 @@ class SqlCollectionLocation : public CollectionLocation
 
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
-        Collections::SqlCollection *m_collection;
+        SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
         Meta::TrackList m_removetracks;
@@ -121,5 +121,7 @@ class SqlCollectionLocationFactory
         virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
         virtual ~SqlCollectionLocationFactory() {};
 };
+
+} //namespace Collections
 
 #endif

@@ -47,8 +47,8 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
 
     debug() << "Collection " << from->collectionId() << " has to sync " << tracks.count() << " track(s) to " << to->collectionId();
     //show confirmation dialog, actually do stuff
-    CollectionLocation *fromLoc = from->location();
-    CollectionLocation *toLoc = to->location();
+    Collections::CollectionLocation *fromLoc = from->location();
+    Collections::CollectionLocation *toLoc = to->location();
 
     if( !toLoc->isWritable() )
     {

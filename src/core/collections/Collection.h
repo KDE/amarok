@@ -32,12 +32,12 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 
-class CollectionLocation;
 
 namespace Collections
 {
 
 class Collection;
+class CollectionLocation;
 
 class AMAROK_EXPORT CollectionFactory : public QObject
 {
@@ -171,7 +171,7 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         virtual float usedCapacity() const { return 0.0; }
         virtual float totalCapacity() const { return 0.0; }
 
-        virtual CollectionLocation* location() const;
+        virtual Collections::CollectionLocation* location() const;
 
         //convenience methods so that it is not necessary to create a CollectionLocation
         virtual bool isWritable() const;

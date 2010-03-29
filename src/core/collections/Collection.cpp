@@ -84,16 +84,16 @@ Collections::Collection::uidUrlProtocol() const
     return QString();
 }
 
-CollectionLocation*
+Collections::CollectionLocation*
 Collections::Collection::location() const
 {
-    return new CollectionLocation( this );
+    return new Collections::CollectionLocation( this );
 }
 
 bool
 Collections::Collection::isWritable() const
 {
-    CollectionLocation* loc = this->location();
+    Collections::CollectionLocation* loc = this->location();
     bool writable = loc->isWritable();
     delete loc;
     return writable;
@@ -102,7 +102,7 @@ Collections::Collection::isWritable() const
 bool
 Collections::Collection::isOrganizable() const
 {
-    CollectionLocation* loc = this->location();
+    Collections::CollectionLocation* loc = this->location();
     bool org = loc->isOrganizable();
     delete loc;
     return org;  

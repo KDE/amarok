@@ -44,6 +44,8 @@ using ::testing::_;
 static int trackCopyCount;
 static int trackRemoveCount;
 
+namespace Collections {
+
 class MyCollectionLocation : public CollectionLocation
 {
 public:
@@ -73,8 +75,6 @@ public:
         }
     }
 };
-
-namespace Collections {
 
 class MyCollectionTestImpl : public CollectionTestImpl
 {

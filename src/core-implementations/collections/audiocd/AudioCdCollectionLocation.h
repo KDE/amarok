@@ -21,6 +21,8 @@
 
 #include "AudioCdCollection.h"
 
+namespace Collections {
+
 /**
 A custom CollectionLocation handling the encoding file type and so on for AudioCd collections
 
@@ -30,7 +32,7 @@ class AudioCdCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 public:
-    AudioCdCollectionLocation( const Collections::AudioCdCollection* parentCollection );
+    AudioCdCollectionLocation( const AudioCdCollection* parentCollection );
     ~AudioCdCollectionLocation();
 
     virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -47,8 +49,10 @@ private slots:
     
 private:
 
-    const Collections::AudioCdCollection * m_collection;
+    const AudioCdCollection * m_collection;
 
 };
+
+} //namespace Collections
 
 #endif

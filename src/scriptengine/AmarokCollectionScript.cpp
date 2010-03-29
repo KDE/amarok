@@ -84,7 +84,7 @@ namespace AmarokScript
 
     QStringList AmarokCollectionScript::collectionLocation() const
     {
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         QStringList result = location->actualLocation();
         delete location;
         return result;

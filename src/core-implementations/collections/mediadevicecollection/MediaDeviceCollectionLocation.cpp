@@ -31,12 +31,11 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+using namespace Collections;
 
-using namespace Meta;
-
-MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( Collections::MediaDeviceCollection const *collection )
+MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollection const *collection )
     : CollectionLocation()
-    , m_collection( const_cast<Collections::MediaDeviceCollection*>( collection ) )
+    , m_collection( const_cast<MediaDeviceCollection*>( collection ) )
     , m_handler( m_collection->handler() )
 {
     //nothing to do

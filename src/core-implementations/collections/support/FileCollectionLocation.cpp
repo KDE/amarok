@@ -28,6 +28,8 @@
 #include <QFile>
 #include <QFileInfo>
 
+using namespace Collections;
+
 FileCollectionLocation::FileCollectionLocation() 
     : CollectionLocation()
 {

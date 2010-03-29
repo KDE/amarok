@@ -216,16 +216,16 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
     if( collections.count() == 1 )
     {
         Collections::Collection *sourceCollection = collections.values().first();
-        CollectionLocation *source;
+        Collections::CollectionLocation *source;
         if( sourceCollection )
         {
             source = sourceCollection->location();
         }
         else
         {
-            source = new FileCollectionLocation();
+            source = new Collections::FileCollectionLocation();
         }
-        CollectionLocation *destination = m_copyAction->collection()->location();
+        Collections::CollectionLocation *destination = m_copyAction->collection()->location();
         source->prepareCopy( tracks, destination );
     }
     else
@@ -250,16 +250,16 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
     if( collections.count() == 1 )
     {
         Collections::Collection *sourceCollection = collections.values().first();
-        CollectionLocation *source;
+        Collections::CollectionLocation *source;
         if( sourceCollection )
         {
             source = sourceCollection->location();
         }
         else
         {
-            source = new FileCollectionLocation();
+            source = new Collections::FileCollectionLocation();
         }
-        CollectionLocation *destination = m_moveAction->collection()->location();
+        Collections::CollectionLocation *destination = m_moveAction->collection()->location();
 
         source->prepareMove( tracks, destination );
     }

@@ -16,7 +16,8 @@
 
 #include "ServiceCollectionLocation.h"
 #include "core/support/Debug.h"
-using namespace Meta;
+
+using namespace Collections;
 
 ServiceCollectionLocation::ServiceCollectionLocation()
     : CollectionLocation()
@@ -24,9 +25,9 @@ ServiceCollectionLocation::ServiceCollectionLocation()
     , m_overwriteFiles( false )
 {}
 
-ServiceCollectionLocation::ServiceCollectionLocation( const Collections::ServiceCollection* parentCollection )
+ServiceCollectionLocation::ServiceCollectionLocation( const ServiceCollection* parentCollection )
     : CollectionLocation()
-    , m_collection( const_cast<Collections::ServiceCollection*>( parentCollection ) )
+    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
     , m_removeSources( false )
     , m_overwriteFiles( false )
 {}

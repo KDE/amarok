@@ -25,6 +25,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/capabilities/UpdateCapability.h"
 
+using namespace Collections;
 
 CollectionLocation::CollectionLocation()
     :QObject()

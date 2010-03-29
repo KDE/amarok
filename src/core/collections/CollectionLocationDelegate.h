@@ -21,9 +21,9 @@
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 
-class CollectionLocation;
-
 namespace Collections {
+
+class CollectionLocation;
 
 class AMAROK_EXPORT CollectionLocationDelegate
 {

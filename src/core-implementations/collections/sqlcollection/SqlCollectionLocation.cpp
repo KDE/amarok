@@ -47,11 +47,11 @@
 #include <KMessageBox>
 
 
-using namespace Meta;
+using namespace Collections;
 
-SqlCollectionLocation::SqlCollectionLocation( Collections::SqlCollection const *collection )
+SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation( collection )
-    , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
+    , m_collection( const_cast<SqlCollection*>( collection ) )
     , m_overwriteFiles( false )
     , m_transferjob( 0 )
 {
@@ -119,7 +119,7 @@ bool
 SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
-    KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
+    KSharedPtr<Meta::SqlTrack> sqlTrack = KSharedPtr<Meta::SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
         debug() << "much much";
@@ -214,7 +214,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     if( available_folders.size() <= 0 )
     {
         debug() << "No space available or not writable";
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         abort();
         return;
@@ -241,7 +241,7 @@ SqlCollectionLocation::slotDialogAccepted()
     m_overwriteFiles = dialog->overwriteDestinations();
     if( isGoingToRemoveSources() )
     {
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         const bool del = delegate->reallyMove( this, m_destinations.keys() );
         if( !del )
         {

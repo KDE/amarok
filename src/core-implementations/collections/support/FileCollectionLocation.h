@@ -23,8 +23,9 @@
 #include <QMap>
 #include <QString>
 
-class SqlCollection;
 class KJob;
+
+namespace Collections {
 
 class FileCollectionLocation : public CollectionLocation
 {
@@ -45,5 +46,7 @@ class FileCollectionLocation : public CollectionLocation
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
         Meta::TrackList m_removetracks;
 };
+
+} //namespace Collections
 
 #endif

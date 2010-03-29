@@ -702,7 +702,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         item = item->parent();
 
     Collections::Collection *coll = item->parentCollection();
-    CollectionLocation *location = coll->location();
+    Collections::CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
     {
         debug() << "Collection not organizable";
@@ -744,8 +744,8 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
         item = item->parent();
     }
     Collections::Collection *coll = item->parentCollection();
-    CollectionLocation *source = coll->location();
-    CollectionLocation *dest = destination->location();
+    Collections::CollectionLocation *source = coll->location();
+    Collections::CollectionLocation *dest = destination->location();
     if( removeSources )
     {
         if( !source->isWritable() ) //error
@@ -791,7 +791,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     if( !coll->isWritable() )
         return;
 
-    CollectionLocation *source = coll->location();
+    Collections::CollectionLocation *source = coll->location();
 
     if( !source->isWritable() ) //error
     {
@@ -871,7 +871,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
             }
 
             Collections::Collection *collection = item->parentCollection();
-            const CollectionLocation* location = collection->location();
+            const Collections::CollectionLocation* location = collection->location();
 
             if( location->isOrganizable() )
             {
