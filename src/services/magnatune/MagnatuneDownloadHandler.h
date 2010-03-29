@@ -23,7 +23,6 @@
 
 #include "MagnatuneAlbumDownloader.h"
 #include "MagnatuneDownloadDialog.h"
-#include "MagnatunePurchaseDialog.h"
 #include "MagnatuneMeta.h"
 
 
@@ -32,12 +31,12 @@ The main class responcible for handelig of purchases from Magnatune.com
 
 @author Nikolaj Hald Nielsen
 */
-class MagnatunePurchaseHandler : public QObject
+class MagnatuneDownloadHandler : public QObject
 {
 Q_OBJECT
 public:
-    MagnatunePurchaseHandler();
-    ~MagnatunePurchaseHandler();
+    MagnatuneDownloadHandler();
+    ~MagnatuneDownloadHandler();
 
    void setParent( QWidget * parent );
    /**
@@ -48,20 +47,17 @@ public:
 
 signals:
 
-    void purchaseCompleted( bool success );
+    void downloadCompleted( bool success );
 
 private:
     KIO::TransferJob * m_resultDownloadJob;
 
-
     //need a parent to pass to any dialogs we spawn
     QWidget * m_parent;
-    MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
     Meta::MagnatuneAlbum * m_currentAlbum;
     QString m_currentAlbumCoverName;
-    bool m_giftCardPurchase;
     bool m_membershipDownload;
 
     bool parseDownloadXml( const QString &xml );
@@ -69,7 +65,7 @@ private:
 
     /**
      * This function saves the xml download info received from Magnatune.com after a
-     * successful payment. This information can be used to later redownload a lost album,
+     * successful download. This information can be used to later redownload a lost album,
      * or acquire an album in a different file format. Note that no personal information
      * or credit card number is stored. The information is saved to the amarok config
      * directory in the sub folder magnatune.com/purchases. The name of each info file
@@ -81,18 +77,8 @@ private:
 
 protected slots:
 
-    void showPurchaseDialog( const QString &coverTempLocation );
     void xmlDownloadComplete( KJob* downLoadJob );
-    void albumDownloadComplete(bool success);
-    void albumPurchaseCancelled();
-
-public slots:
-
-    void processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount );
-
-    void processGiftCardPayment( const QString &giftCardCode, const QString &name, const QString &email, const QString &albumCode, int amount );
-
-
+    void albumDownloadComplete( bool success );
 
 };
 

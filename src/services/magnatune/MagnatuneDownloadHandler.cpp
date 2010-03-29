@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MagnatunePurchaseHandler.h"
+#include "MagnatuneDownloadHandler.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -31,27 +31,24 @@
 
 using namespace Meta;
 
-MagnatunePurchaseHandler::MagnatunePurchaseHandler()
+MagnatuneDownloadHandler::MagnatuneDownloadHandler()
         : QObject()
-        , m_purchaseDialog( 0 )
         , m_downloadDialog( 0 )
         , m_albumDownloader( 0 )
         , m_currentAlbum( 0 )
-        , m_giftCardPurchase ( false )
         , m_membershipDownload( false )
 {
 }
 
 
-MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
+MagnatuneDownloadHandler::~MagnatuneDownloadHandler()
 {
     delete m_downloadDialog;
-    delete m_purchaseDialog;
     delete m_albumDownloader;
 }
 
 
-void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
+void MagnatuneDownloadHandler:: purchaseAlbum( MagnatuneAlbum * album )
 {
     DEBUG_BLOCK
     m_currentAlbum = album;
@@ -63,15 +60,12 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
     if ( config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD ) {
         debug() << "membership download...";
         membershipDownload( config.membershipType(), config.username(), config.password() );
-    } else {
-        showPurchaseDialog( QString() );
     }
-
 }
 
 
 
-void MagnatunePurchaseHandler::membershipDownload( int membershipType, const QString &username, const QString &password )
+void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QString &username, const QString &password )
 {
     DEBUG_BLOCK
 
@@ -83,7 +77,6 @@ void MagnatunePurchaseHandler::membershipDownload( int membershipType, const QSt
     
     QString purchaseURL = "http://" + username + ":" + password + "@" + type + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
 
-    m_giftCardPurchase = false;
     m_membershipDownload = true;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
@@ -93,78 +86,7 @@ void MagnatunePurchaseHandler::membershipDownload( int membershipType, const QSt
     
 }
 
-void MagnatunePurchaseHandler::showPurchaseDialog(  const QString &coverTempLocation )
-{
-
-    if ( m_purchaseDialog == 0 )
-    {
-        m_purchaseDialog = new MagnatunePurchaseDialog( m_parent, "PurchaseDialog", true, 0 );
-
-        connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
-
-        connect( m_purchaseDialog, SIGNAL( makeGiftCardPurchase( QString,  QString, QString, QString, int ) ), this, SLOT( processGiftCardPayment( QString, QString, QString, QString, int ) ) );
-
-        connect ( m_purchaseDialog, SIGNAL( cancelled() ), this, SLOT( albumPurchaseCancelled() ) );
-    }
-
-
-    if ( m_currentAlbum )
-    {
-
-        debug() << "showing purchase dialog with image: " << coverTempLocation + m_currentAlbumCoverName;
-
-        KTempDir tempDir;
-        m_purchaseDialog->setAlbum( m_currentAlbum );
-        //m_purchaseDialog->setCover( coverTempLocation + m_currentAlbumCoverName );
-        m_purchaseDialog->show();
-    }
-}
-
-void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QString &expYear, const QString &expMonth, const QString &name, const QString &email, const QString &albumCode, int amount )
-{
-
-    QString amountString;
-    amountString.setNum( amount, 10 );
-
-    QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=" + ccNumber + "&mm=" + expMonth + "&yy=" + expYear + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
-
-    QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=**********&mm=**&yy=**&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
-    debug() << "purchase url : " << debugPurchaseURL;
-
-    m_giftCardPurchase = false;
-
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
-
-    The::statusBar()->newProgressOperation( m_resultDownloadJob, i18n( "Processing Payment" ) );
-
-    connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
-
-}
-
-
-void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCode, const QString & name, const QString & email, const QString & albumCode, int amount)
-{
-
-    QString amountString;
-    amountString.setNum( amount, 10 );
-
-    QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?gc=" + giftCardCode + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
-
-    QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?gc=**********&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
-    debug() << "purchase url : " << debugPurchaseURL;
-
-    m_giftCardPurchase = true;
-
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
-
-    The::statusBar() ->newProgressOperation( m_resultDownloadJob, i18n( "Processing Payment" ) );
-
-    connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
-
-}
-
-
-void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
+void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
 {
 
     debug() << "xml download complete";
@@ -220,39 +142,23 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
         
         m_downloadDialog->setDownloadInfo( downloadInfo );
         //m_purchaseDialog->close();
-        delete m_purchaseDialog;
-        m_purchaseDialog = 0;
+
+        
         m_downloadDialog->show();
-    }
-    else if ( m_membershipDownload == false )
-    {
-        QString checkInfoMessage;
-
-        if ( m_giftCardPurchase )
-            checkInfoMessage = i18n( "check the gift card code" );
-        else
-            checkInfoMessage = i18n( "check the credit card information" );
-
-
-        KMessageBox::information( m_parent, 
-            i18n("There seems to be an error in the information entered (%1), please try again\n", checkInfoMessage) , i18n("Could not process payment"));
-
-
-        m_purchaseDialog->setEnabled( true );
     } else {
         
-        KMessageBox::information( m_parent, i18n("There seems to be an error in the supplied membership information. Please correct this and try again."),i18n("Could not process download") );
+        KMessageBox::information( m_parent, i18n( "There seems to be an error in the supplied membership information. Please correct this and try again."),i18n("Could not process download") );
     }
 }
 
 
-void MagnatunePurchaseHandler::setParent( QWidget * parent )
+void MagnatuneDownloadHandler::setParent( QWidget * parent )
 {
     m_parent = parent;
 
 }
 
-void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
+void MagnatuneDownloadHandler::saveDownloadInfo( const QString &infoXml )
 {
 
     MagnatuneDatabaseHandler dbHandler;
@@ -284,7 +190,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
     }
 }
 
-void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
+void MagnatuneDownloadHandler::albumDownloadComplete( bool success )
 {
     //cleanup time!
 
@@ -293,23 +199,12 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
     delete m_downloadDialog;
     m_downloadDialog = 0;
 
-    emit( purchaseCompleted( success ) );
+    emit( downloadCompleted( success ) );
 
 }
 
-void MagnatunePurchaseHandler::albumPurchaseCancelled( )
-{
-    debug() << "Purchased dialog cancelled, deleting...";
 
-    delete m_purchaseDialog;
-    m_purchaseDialog = 0;
-
-
-    emit( purchaseCompleted( false ) );
-}
-
-
-#include "MagnatunePurchaseHandler.moc"
+#include "MagnatuneDownloadHandler.moc"
 
 
 

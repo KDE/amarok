@@ -288,7 +288,7 @@ void Meta::MagnatuneTrack::purchase()
     DEBUG_BLOCK
     MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
     if ( mAlbum )
-        mAlbum->store()->purchase( this );
+        mAlbum->store()->download( this );
 }
 
 void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
@@ -453,7 +453,7 @@ void Meta::MagnatuneAlbum::purchase()
 {
     DEBUG_BLOCK
     if ( store() )
-        store()->purchase( this );
+        store()->download( this );
 }
 
 void Meta::MagnatuneAlbum::addToFavorites()

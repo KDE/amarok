@@ -24,8 +24,7 @@ set(amarok_service_magnatune_PART_SRCS
     MagnatuneDownloadInfo.cpp
     MagnatuneInfoParser.cpp
     MagnatuneMeta.cpp
-    MagnatunePurchaseDialog.cpp
-    MagnatunePurchaseHandler.cpp
+    MagnatuneDownloadHandler.cpp
     MagnatuneRedownloadDialog.cpp
     MagnatuneRedownloadHandler.cpp
     MagnatuneSqlCollection.cpp
@@ -37,8 +36,8 @@ set(amarok_service_magnatune_PART_SRCS
 
 kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
     MagnatuneDownloadDialogBase.ui
-    MagnatunePurchaseDialogBase.ui
     MagnatuneRedownloadDialogBase.ui
+    MagnatuneSignupDialogBase.ui
 
 )
 

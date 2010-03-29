@@ -29,6 +29,8 @@
 #include "browsers/InfoProxy.h"
 #include "MagnatuneUrlRunner.h"
 
+#include "ui_MagnatuneSignupDialogBase.h"
+
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "core/support/Debug.h"
@@ -86,13 +88,14 @@ KConfigGroup MagnatuneServiceFactory::config()
 
 MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *name )
         : ServiceBase( name, parent )
-        , m_purchaseHandler( 0 )
+        , m_downloadHandler( 0 )
         , m_redownloadHandler( 0 )
-        , m_purchaseInProgress( 0 )
+        , m_downloadInProgress( 0 )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
         , m_magnatuneTimestamp( 0 )
         , m_registry( 0 )
+        , m_signupInfoWidget( 0 )
 {
     setObjectName(name);
     DEBUG_BLOCK
@@ -140,10 +143,10 @@ MagnatuneStore::~MagnatuneStore()
 }
 
 
-void MagnatuneStore::purchase( )
+void MagnatuneStore::download( )
 {
     DEBUG_BLOCK
-    if ( m_purchaseInProgress )
+    if ( m_downloadInProgress )
         return;
 
     if ( !m_polished )
@@ -151,49 +154,56 @@ void MagnatuneStore::purchase( )
 
     debug() << "here";
 
-    m_purchaseInProgress = true;
-    m_purchaseAlbumButton->setEnabled( false );
-
-    if ( !m_purchaseHandler )
+    //check if we need to start a download or show the signup dialog
+    if( !m_isMember || m_membershipType != MagnatuneConfig::DOWNLOAD )
     {
-        m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent( this );
-        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+        showSignupDialog();
+        return;
+    }
+
+    m_downloadInProgress = true;
+    m_downloadAlbumButton->setEnabled( false );
+
+    if ( !m_downloadHandler )
+    {
+        m_downloadHandler = new MagnatuneDownloadHandler();
+        m_downloadHandler->setParent( this );
+        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
     }
 
     if ( m_currentAlbum != 0 )
-        m_purchaseHandler->purchaseAlbum( m_currentAlbum );
+        m_downloadHandler->purchaseAlbum( m_currentAlbum );
 }
 
 
-void MagnatuneStore::purchase( Meta::MagnatuneTrack * track )
+void MagnatuneStore::download( Meta::MagnatuneTrack * track )
 {
     Meta::MagnatuneAlbum * album = dynamic_cast<Meta::MagnatuneAlbum *>( track->album().data() );
     if ( album )
-        purchase( album );
+        download( album );
 }
 
-void MagnatuneStore::purchase( Meta::MagnatuneAlbum * album )
+void MagnatuneStore::download( Meta::MagnatuneAlbum * album )
 {
 
     DEBUG_BLOCK
-    if ( m_purchaseInProgress )
+    if ( m_downloadInProgress )
         return;
 
     if ( !m_polished )
         polish();
 
-    m_purchaseInProgress = true;
-    m_purchaseAlbumButton->setEnabled( false );
+    m_downloadInProgress = true;
+    m_downloadAlbumButton->setEnabled( false );
 
-    if ( !m_purchaseHandler )
+    if ( !m_downloadHandler )
     {
-        m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent( this );
-        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+        m_downloadHandler = new MagnatuneDownloadHandler();
+        m_downloadHandler->setParent( this );
+        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
     }
 
-    m_purchaseHandler->purchaseAlbum( album );
+    m_downloadHandler->purchaseAlbum( album );
 }
 
 
@@ -250,20 +260,28 @@ void MagnatuneStore::initBottomPanel()
 {
     //m_bottomPanel->setMaximumHeight( 24 );
 
-    m_purchaseAlbumButton = new QPushButton;
-    m_purchaseAlbumButton->setParent( m_bottomPanel );
+    m_downloadAlbumButton = new QPushButton;
+    m_downloadAlbumButton->setParent( m_bottomPanel );
 
     MagnatuneConfig config;
     if ( config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD )
-        m_purchaseAlbumButton->setText( i18n( "Download Album" ) );
+    {
+        m_downloadAlbumButton->setText( i18n( "Download Album" ) );
+        m_downloadAlbumButton->setEnabled( false );
+    }
+    else if ( config.isMember() )
+        m_downloadAlbumButton->hide();
     else
-        m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
+    {
+        m_downloadAlbumButton->setText( i18n( "Signup" ) );
+        m_downloadAlbumButton->setEnabled( true );
+    }
 
-    m_purchaseAlbumButton->setObjectName( "purchaseButton" );
-    m_purchaseAlbumButton->setIcon( KIcon( "download-amarok" ) );
-    m_purchaseAlbumButton->setEnabled( false );
+    m_downloadAlbumButton->setObjectName( "downloadButton" );
+    m_downloadAlbumButton->setIcon( KIcon( "download-amarok" ) );
+    
 
-    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
+    connect( m_downloadAlbumButton, SIGNAL( clicked() ) , this, SLOT( download() ) );
 }
 
 
@@ -378,13 +396,13 @@ void MagnatuneStore::processRedownload( )
 }
 
 
-void MagnatuneStore::purchaseCompleted( bool )
+void MagnatuneStore::downloadCompleted( bool )
 {
-    delete m_purchaseHandler;
-    m_purchaseHandler = 0;
+    delete m_downloadHandler;
+    m_downloadHandler = 0;
 
-    m_purchaseAlbumButton->setEnabled( true );
-    m_purchaseInProgress = false;
+    m_downloadAlbumButton->setEnabled( true );
+    m_downloadInProgress = false;
 
     debug() << "Purchase operation complete";
 
@@ -396,6 +414,10 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem )
 {
     DEBUG_BLOCK
 
+    //only care if the user has a download membership
+    if( !m_isMember || m_membershipType != MagnatuneConfig::DOWNLOAD )
+        return;
+
     //we only enable the purchase button if there is only one item selected and it happens to
     //be an album or a track
     Meta::DataPtr dataPtr = selectedItem->data();
@@ -405,18 +427,18 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem )
         debug() << "is right type (track)";
         Meta::MagnatuneTrack * track = static_cast<Meta::MagnatuneTrack *> ( dataPtr.data() );
         m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( track->album().data() );
-        m_purchaseAlbumButton->setEnabled( true );
+        m_downloadAlbumButton->setEnabled( true );
 
     } else if ( typeid( * dataPtr.data() ) == typeid( Meta::MagnatuneAlbum ) ) {
 
         m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( dataPtr.data() );
         debug() << "is right type (album) named " << m_currentAlbum->name();
 
-        m_purchaseAlbumButton->setEnabled( true );
+        m_downloadAlbumButton->setEnabled( true );
     } else {
 
         debug() << "is wrong type";
-        m_purchaseAlbumButton->setEnabled( false );
+        m_downloadAlbumButton->setEnabled( false );
 
     }
 }
@@ -459,7 +481,7 @@ void MagnatuneStore::polish()
         connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
         connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
         connect( runner, SIGNAL( showRecommendations() ), this, SLOT( showRecommendationsPage() ) );
-        connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
+        connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( download( const QString & ) ) );
         connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
 
         The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
@@ -532,7 +554,7 @@ void MagnatuneStore::setStreamType( int type )
 }
 
 
-void MagnatuneStore::purchaseCurrentTrackAlbum()
+void MagnatuneStore::downloadCurrentTrackAlbum()
 {
     //get current track
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -565,14 +587,14 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
     if ( !magnatuneAlbum )
         return;
 
-    if ( !m_purchaseHandler )
+    if ( !m_downloadHandler )
     {
-        m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent( this );
-        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+        m_downloadHandler = new MagnatuneDownloadHandler();
+        m_downloadHandler->setParent( this );
+        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
     }
 
-    m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
+    m_downloadHandler->purchaseAlbum( magnatuneAlbum );
 }
 
 
@@ -677,13 +699,13 @@ void MagnatuneStore::showRecommendationsPage()
     m_magnatuneInfoParser->getRecommendationsPage();
 }
 
-void MagnatuneStore::purchase( const QString &sku )
+void MagnatuneStore::download( const QString &sku )
 {
     DEBUG_BLOCK
     debug() << "sku: " << sku;
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchAlbumBySku( sku, m_registry );
-    connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( purchase( Meta::MagnatuneAlbum * ) ) );
+    connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( download( Meta::MagnatuneAlbum * ) ) );
 
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
@@ -733,6 +755,20 @@ void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
 
     //show the favorites page
     showFavoritesPage();
+}
+
+void
+MagnatuneStore::showSignupDialog()
+{
+
+    if ( m_signupInfoWidget== 0 )
+    {
+        m_signupInfoWidget = new QDialog;
+        Ui::SignupDialog ui;
+        ui.setupUi( m_signupInfoWidget );
+    }
+
+     m_signupInfoWidget->show();
 }
 
 
