@@ -34,7 +34,7 @@
 
 #include "mediadevicecollection_export.h"
 
-#include "core/playlists/providers/user/UserPlaylistProvider.h"
+#include "core-implementations/playlists/providers/user/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>
 

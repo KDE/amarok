@@ -273,19 +273,19 @@ set(libstatusbar_SRCS
 #####################################################################
 set(core_SRCS
     core/capabilities/Capability.cpp
-    core-implementations/playlists/file/m3u/M3UPlaylist.cpp
+    core-implementations/playlists/types/file/m3u/M3UPlaylist.cpp
     core/meta/Meta.cpp
     core/meta/support/MetaUtility.cpp
     core-implementations/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     core/playlists/Playlist.cpp
-    core-implementations/playlists/file/pls/PLSPlaylist.cpp
+    core-implementations/playlists/types/file/pls/PLSPlaylist.cpp
     core/statistics/StatisticsProvider.cpp
     core/playlists/PlaylistProvider.cpp
-    core/playlists/providers/user/UserPlaylistProvider.cpp
-    core-implementations/playlists/file/PlaylistFileSupport.cpp
+    core-implementations/playlists/providers/user/UserPlaylistProvider.cpp
+    core-implementations/playlists/types/file/PlaylistFileSupport.cpp
     core/meta/support/PrivateMetaRegistry.cpp
-    core-implementations/playlists/file/xspf/XSPFPlaylist.cpp
+    core-implementations/playlists/types/file/xspf/XSPFPlaylist.cpp
     core/capabilities/BookmarkThisCapability.cpp
     core/capabilities/BoundedPlaybackCapability.cpp
     core/capabilities/CollectionCapability.cpp

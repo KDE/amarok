@@ -21,7 +21,7 @@
 
 #include "core/support/Components.h"
 #include "config-amarok-test.h"
-#include "core-implementations/playlists/file/pls/PLSPlaylist.h"
+#include "core-implementations/playlists/types/file/pls/PLSPlaylist.h"
 #include "EngineController.h"
 
 #include <QtTest/QTest>

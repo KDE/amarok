@@ -22,7 +22,7 @@
 #include "DirectoryLoader.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistController.h"
 
 

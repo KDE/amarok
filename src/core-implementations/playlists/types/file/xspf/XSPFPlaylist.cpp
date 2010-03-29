@@ -16,7 +16,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
+#include "core-implementations/playlists/types/file/xspf/XSPFPlaylist.h"
 
 #include "core/support/Debug.h"
 #include "core-implementations/collections/support/CollectionManager.h"
@@ -27,7 +27,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PlaylistManager.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 
 #include "core-implementations/meta/timecode/TimecodeMeta.h"
 

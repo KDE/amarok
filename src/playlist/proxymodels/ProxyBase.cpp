@@ -18,7 +18,7 @@
 #include "ProxyBase.h"
 
 #include "core/meta/Meta.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 
 namespace Playlist
 {

@@ -61,7 +61,7 @@ set( testalbumcompilationchange_SRCS
         TestAlbumCompilationChange.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/playlists/types/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/SqlCollection.cpp
@@ -198,7 +198,7 @@ set( testsqltrack_SRCS
         TestSqlTrack.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/core-implementations/playlists/file/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/playlists/types/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/core-implementations/collections/sqlcollection/SqlCollection.cpp

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
+#include "core-implementations/playlists/types/file/m3u/M3UPlaylist.h"
 
 #define DEBUG_PREFIX "M3UPlaylist"
 
@@ -22,7 +22,7 @@
 #include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "PlaylistManager.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 
 #include <KMimeType>
 #include <KUrl>

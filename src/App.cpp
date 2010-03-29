@@ -39,7 +39,7 @@
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "core/playlists/Playlist.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"

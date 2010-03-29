@@ -17,7 +17,7 @@
 #ifndef UMSPODCASTMETA_H
 #define UMSPODCASTMETA_H
 
-#include "core-implementations/playlists/file/PlaylistFile.h"
+#include "core-implementations/playlists/types/file/PlaylistFile.h"
 #include "core/podcasts/PodcastMeta.h"
 
 #include "core-implementations/meta/file/File.h"

@@ -18,7 +18,7 @@
 #ifndef XSPFPLAYLIST_H
 #define XSPFPLAYLIST_H
 
-#include "core-implementations/playlists/file/PlaylistFile.h"
+#include "core-implementations/playlists/types/file/PlaylistFile.h"
 #include "core/capabilities/EditablePlaylistCapability.h"
 
 #include <QDomDocument>

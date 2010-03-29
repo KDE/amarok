@@ -33,7 +33,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 #include "core-implementations/meta/multi/MultiTrack.h"
 #include "core-implementations/meta/file/File.h"
 

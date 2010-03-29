@@ -19,7 +19,7 @@
 
 #include "TestPlaylistFileSupport.h"
 #include "config-amarok-test.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,37 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/playlists/providers/user/UserPlaylistProvider.h"
+#include "core-implementations/playlists/types/dynamic/DynamicPlaylist.h"
 
-Playlists::UserPlaylistProvider::~UserPlaylistProvider()
+#include <KLocale>
+
+namespace Playlists {
+
+DynamicPlaylist::DynamicPlaylist( PlaylistPtr playlist )
+ : Playlist()
+{
+    m_tracks = playlist->tracks();
+}
+
+DynamicPlaylist::~DynamicPlaylist()
 {
 }
 
-int
-Playlists::UserPlaylistProvider::category() const
+QString
+DynamicPlaylist::prettyName() const
 {
-     return Playlists::UserPlaylist;
+    return i18n("Default Dynamic Playlist");
 }
 
-bool
-Playlists::UserPlaylistProvider::supportsEmptyGroups()
-{
-    return false;
 }
-
-QList<QAction *>
-Playlists::UserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
-{
-    Q_UNUSED( playlist );
-    return QList<QAction *>();
-}
-
-QList<QAction *>
-Playlists::UserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
-{
-    Q_UNUSED( playlist );
-    Q_UNUSED( trackIndex );
-    return QList<QAction *>();
-}
-
-#include "UserPlaylistProvider.moc"

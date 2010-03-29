@@ -20,7 +20,7 @@
 #include "TestXSPFPlaylist.h"
 
 #include "config-amarok-test.h"
-#include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
+#include "core-implementations/playlists/types/file/xspf/XSPFPlaylist.h"
 
 #include "core/support/Components.h"
 #include "EngineController.h"

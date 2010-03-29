@@ -17,11 +17,11 @@
  ****************************************************************************************/
 
 #include "core/support/Amarok.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
-#include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
-#include "core-implementations/playlists/file/pls/PLSPlaylist.h"
-#include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
+#include "core-implementations/playlists/types/file/xspf/XSPFPlaylist.h"
+#include "core-implementations/playlists/types/file/pls/PLSPlaylist.h"
+#include "core-implementations/playlists/types/file/m3u/M3UPlaylist.h"
 #include "statusbar/StatusBar.h"
 
 

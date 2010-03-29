@@ -14,48 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef METAM3UPLAYLIST_H
-#define METAM3UPLAYLIST_H
+#ifndef METAPLSPLAYLIST_H
+#define METAPLSPLAYLIST_H
 
-#include "core-implementations/playlists/file/PlaylistFile.h"
+#include "core-implementations/playlists/types/file/PlaylistFile.h"
 
 class QTextStream;
-class QString;
 class QFile;
 
 namespace Playlists {
 
-class M3UPlaylist;
+class PLSPlaylist;
 
-typedef KSharedPtr<M3UPlaylist> M3UPlaylistPtr;
-typedef QList<M3UPlaylistPtr> M3UPlaylistList;
+typedef KSharedPtr<PLSPlaylist> PLSPlaylistPtr;
+typedef QList<PLSPlaylistPtr> PLSPlaylistList;
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
+class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
 {
     public:
-        M3UPlaylist();
-        M3UPlaylist( Meta::TrackList tracks );
-        M3UPlaylist( const KUrl &url );
+        PLSPlaylist();
+        PLSPlaylist( Meta::TrackList tracks );
+        PLSPlaylist( const KUrl &url );
 
-        ~M3UPlaylist();
+        ~PLSPlaylist();
 
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); }
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
 
-        virtual int trackCount() const { return -1; }
         /** returns all tracks in this playlist */
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() { return m_tracks; }
 
-       /* the following has been copied from Meta.h
-        * it is my hope that we can integrate Playlists
-        * better into the rest of the Meta framework someday ~Bart Cerneels
-        * TODO: Playlist : public MetaBase
-        */
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
@@ -65,22 +58,20 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
-
         bool save( const KUrl &location, bool relative );
-        bool load( QTextStream &stream ) { return loadM3u( stream ); }
+        bool load( QTextStream &stream ) { return loadPls( stream ); }
 
     private:
-        bool loadM3u( QTextStream &stream );
+        bool loadPls( QTextStream &stream );
+        unsigned int loadPls_extractIndex( const QString &str ) const;
 
-        KUrl m_url;
-
-        bool m_tracksLoaded;
         Meta::TrackList m_tracks;
+        KUrl m_url;
 };
 
 }
 
-Q_DECLARE_METATYPE( Playlists::M3UPlaylistPtr )
-Q_DECLARE_METATYPE( Playlists::M3UPlaylistList )
+Q_DECLARE_METATYPE( Playlists::PLSPlaylistPtr )
+Q_DECLARE_METATYPE( Playlists::PLSPlaylistList )
 
 #endif

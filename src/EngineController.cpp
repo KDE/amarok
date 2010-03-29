@@ -39,7 +39,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "core-implementations/playlists/file/PlaylistFileSupport.h"
+#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
 #include "core/plugins/PluginManager.h"
 
 #include <KFileItem>
