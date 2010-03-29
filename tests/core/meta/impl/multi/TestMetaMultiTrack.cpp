@@ -22,7 +22,7 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 #include "config-amarok-test.h"
-#include "core/meta/impl/multi/MultiTrack.h"
+#include "core-implementations/meta/multi/MultiTrack.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
 
 #include <QtTest/QTest>

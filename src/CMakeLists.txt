@@ -311,7 +311,7 @@ set(core_SRCS
     core/capabilities/WriteLabelCapability.cpp
     core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.cpp
     core-implementations/meta/file/File.cpp
-    core/meta/impl/multi/MultiTrack.cpp
+    core-implementations/meta/multi/MultiTrack.cpp
     core-implementations/meta/cue/CueFileSupport.cpp
     core-implementations/meta/proxy/MetaProxy.cpp
     core-implementations/meta/stream/Stream.cpp
@@ -491,8 +491,8 @@ set(libplaylist_SRCS
 
 if(KDEMULTIMEDIA_FOUND)
     set(audiocdsupport_SRCS
-        core/meta/impl/cdda/AudioCdTrackProvider.cpp
-        core/meta/impl/cdda/AudioCdTrackProvider_p.cpp
+        core-implementations/meta/cdda/AudioCdTrackProvider.cpp
+        core-implementations/meta/cdda/AudioCdTrackProvider_p.cpp
        )
 endif(KDEMULTIMEDIA_FOUND)
 

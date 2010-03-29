@@ -21,7 +21,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 
 #include "core/support/Debug.h"
-#include "core/meta/impl/multi/MultiTrack.h"
+#include "core-implementations/meta/multi/MultiTrack.h"
 
 namespace Capabilities {
 

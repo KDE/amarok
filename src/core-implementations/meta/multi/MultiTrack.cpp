@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/meta/impl/multi/MultiTrack.h"
+#include "core-implementations/meta/multi/MultiTrack.h"
 
 #include "core/support/Debug.h"
 #include "core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.h"

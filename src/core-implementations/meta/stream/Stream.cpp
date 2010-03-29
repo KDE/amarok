@@ -19,7 +19,7 @@
 
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "core/meta/impl/default/DefaultMetaTypes.h"
+#include "core-implementations/meta/default/DefaultMetaTypes.h"
 
 #include <QPointer>
 #include <QString>

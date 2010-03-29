@@ -18,7 +18,7 @@ set( testmetamultitrack_SRCS
     ${AMAROK_SOURCE_TREE}/core/engine/EngineObserver.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
-    ${AMAROK_SOURCE_TREE}/core/meta/impl/multi/MultiTrack.cpp
+    ${AMAROK_SOURCE_TREE}/core-implementations/meta/multi/MultiTrack.cpp
     ${AMAROK_SOURCE_TREE}/core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.cpp )
 
 
