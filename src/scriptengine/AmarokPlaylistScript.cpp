@@ -19,7 +19,7 @@
 #include "AmarokPlaylistScript.h"
 
 #include "App.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistActions.h"

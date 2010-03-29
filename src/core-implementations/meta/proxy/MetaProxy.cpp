@@ -20,7 +20,7 @@
 
 #include "core/capabilities/EditCapability.h"
 
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 
 #include <QDateTime>
 #include <QObject>

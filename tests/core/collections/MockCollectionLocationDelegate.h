@@ -6,7 +6,7 @@
 #ifndef MOCKCOLLECTIONLOCATIONDELEGATE_H
 #define MOCKCOLLECTIONLOCATIONDELEGATE_H
 
-#include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/support/CollectionLocationDelegate.h"
 
 #include <gmock/gmock.h>
 

@@ -26,7 +26,7 @@
 #include "core/support/Amarok.h"
 #include "SvgHandler.h"
 #include "core/collections/Collection.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/collections/QueryMaker.h"
 

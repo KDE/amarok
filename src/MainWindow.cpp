@@ -43,7 +43,7 @@
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"

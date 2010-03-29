@@ -18,14 +18,14 @@
 
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core-implementations/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-implementations/capabilities/timecode/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <QDate>
 #include <QFile>

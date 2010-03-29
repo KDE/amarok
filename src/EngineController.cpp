@@ -26,7 +26,7 @@
 
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Components.h"
 #include "statusbar/StatusBar.h"
 #include "core/support/Debug.h"

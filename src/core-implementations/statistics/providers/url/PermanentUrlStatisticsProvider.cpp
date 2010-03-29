@@ -16,8 +16,8 @@
 
 #include "core-implementations/statistics/providers/url/PermanentUrlStatisticsProvider.h"
 
-#include "collection/CollectionManager.h"
-#include "collection/SqlStorage.h"
+#include "core-implementations/collections/support/CollectionManager.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include "core/support/Debug.h"
 

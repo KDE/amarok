@@ -18,9 +18,9 @@
 
 #include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <QUrl>
 

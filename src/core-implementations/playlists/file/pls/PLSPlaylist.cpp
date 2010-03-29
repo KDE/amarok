@@ -16,7 +16,7 @@
 
 #include "core-implementations/playlists/file/pls/PLSPlaylist.h"
 
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/meta/Meta.h"

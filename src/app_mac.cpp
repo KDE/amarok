@@ -17,7 +17,7 @@
 #include <Carbon/Carbon.h>
 
 #include "amarokurls/AmarokUrl.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "core/meta/Meta.h"

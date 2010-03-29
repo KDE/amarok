@@ -17,9 +17,9 @@
 
 #include "ServiceSqlCollection.h"
 
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "ServiceSqlQueryMaker.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <klocale.h>
 

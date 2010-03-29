@@ -22,8 +22,8 @@
 #include "BookmarkGroup.h"
 #include "AmarokUrlHandler.h"
 #include "core/support/Debug.h"
-#include "CollectionManager.h"
-#include "SqlStorage.h"
+#include "core-implementations/collections/support/CollectionManager.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <KIcon>
 

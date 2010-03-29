@@ -17,7 +17,7 @@
  ****************************************************************************************/
 
 #include "DynamicPlaylist.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 
 
 

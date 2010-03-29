@@ -18,8 +18,8 @@
 #define COLLECTIONTESTIMPL_H
 
 #include "core/collections/Collection.h"
-#include "collection/support/MemoryCollection.h"
-#include "collection/support/MemoryQueryMaker.h"
+#include "core-implementations/collections/support/MemoryCollection.h"
+#include "core-implementations/collections/support/MemoryQueryMaker.h"
 
 #include <QSharedPointer>
 

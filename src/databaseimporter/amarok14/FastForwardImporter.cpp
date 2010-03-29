@@ -17,7 +17,7 @@
 #include "FastForwardImporter.h"
 #include "FastForwardImporterConfig.h"
 #include "FastForwardWorker.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 
 

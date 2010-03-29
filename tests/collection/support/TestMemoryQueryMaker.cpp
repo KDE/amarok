@@ -20,8 +20,8 @@
 
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
-#include "MemoryCollection.h"
-#include "MemoryQueryMaker.h"
+#include "core-implementations/collections/support/MemoryCollection.h"
+#include "core-implementations/collections/support/MemoryQueryMaker.h"
 
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"

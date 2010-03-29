@@ -20,7 +20,7 @@
 
 #include "CollectionSetup.h"
 
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"

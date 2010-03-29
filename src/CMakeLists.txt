@@ -11,7 +11,7 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-add_subdirectory( collection )
+add_subdirectory( core-implementations/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
@@ -33,13 +33,13 @@ include_directories(
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
-    collection
-    collection/support
-    collection/mediadevicecollection
-    collection/mediadevicecollection/handler  # for Handler
-    collection/mediadevicecollection/support  # for MediaDeviceInfo
-    collection/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
-    collection/mediadevicecollection/podcast
+    core-implementations/collections
+    core-implementations/collections/support
+    core-implementations/collections/mediadevicecollection
+    core-implementations/collections/mediadevicecollection/handler  # for Handler
+    core-implementations/collections/mediadevicecollection/support  # for MediaDeviceInfo
+    core-implementations/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
+    core-implementations/collections/mediadevicecollection/podcast
     configdialog
     configdialog/dialogs
     context
@@ -90,35 +90,35 @@ set(libplugin_SRCS
 # PROXYCOLLECTION
 #####################################################################
 set(libproxycollection_SRCS
-    collection/proxycollection/ProxyCollection.cpp
-    collection/proxycollection/ProxyCollectionMeta.cpp
-    collection/proxycollection/ProxyCollectionQueryMaker.cpp
+    core-implementations/collections/proxycollection/ProxyCollection.cpp
+    core-implementations/collections/proxycollection/ProxyCollectionMeta.cpp
+    core-implementations/collections/proxycollection/ProxyCollectionQueryMaker.cpp
 )
 
 #####################################################################
 # MEDIADEVICEFRAMEWORK
 #####################################################################
 set(libmediadeviceframework_SRCS
-  collection/mediadevicecollection/MediaDeviceCollection.cpp
-  collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  collection/mediadevicecollection/MediaDeviceMeta.cpp
-  collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
-  collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
-  collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
-  collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
-  collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
-  collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
-  collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
-  collection/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
-  collection/mediadevicecollection/support/ConnectionAssistant.cpp
-  collection/mediadevicecollection/support/MediaDeviceInfo.cpp
+  core-implementations/collections/mediadevicecollection/MediaDeviceCollection.cpp
+  core-implementations/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-implementations/collections/mediadevicecollection/MediaDeviceMeta.cpp
+  core-implementations/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
+  core-implementations/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
+  core-implementations/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
+  core-implementations/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
+  core-implementations/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
+  core-implementations/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
+  core-implementations/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
+  core-implementations/collections/mediadevicecollection/support/ConnectionAssistant.cpp
+  core-implementations/collections/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
 
 #####################################################################
@@ -324,23 +324,23 @@ set(core_SRCS
 #####################################################################
 set(collection_SRCS
     core/collections/Collection.cpp
-    collection/CollectionManager.cpp
+    core-implementations/collections/support/CollectionManager.cpp
     core/collections/CollectionLocation.cpp
-    collection/CollectionLocationDelegateImpl.cpp
+    core-implementations/collections/support/CollectionLocationDelegateImpl.cpp
     core/collections/MetaQueryMaker.cpp
     core/collections/QueryMaker.cpp
-    collection/TrackForUrlWorker.cpp
-    collection/support/MemoryCustomValue.cpp
-    collection/support/MemoryFilter.cpp
-    collection/support/MemoryMatcher.cpp
-    collection/support/MemoryQueryMaker.cpp
-    collection/support/MemoryQueryMakerInternal.cpp
-    collection/support/MemoryQueryMakerHelper.cpp
-    collection/support/PlaylistCollection.cpp
-    collection/support/PlaylistCollectionLocation.cpp
-    collection/support/XmlQueryReader.cpp
-    collection/support/XmlQueryWriter.cpp
-    collection/support/FileCollectionLocation.cpp
+    core/collections/support/TrackForUrlWorker.cpp
+    core-implementations/collections/support/MemoryCustomValue.cpp
+    core-implementations/collections/support/MemoryFilter.cpp
+    core-implementations/collections/support/MemoryMatcher.cpp
+    core-implementations/collections/support/MemoryQueryMaker.cpp
+    core-implementations/collections/support/MemoryQueryMakerInternal.cpp
+    core-implementations/collections/support/MemoryQueryMakerHelper.cpp
+    core-implementations/collections/support/PlaylistCollection.cpp
+    core-implementations/collections/support/PlaylistCollectionLocation.cpp
+    core-implementations/collections/support/XmlQueryReader.cpp
+    core-implementations/collections/support/XmlQueryWriter.cpp
+    core-implementations/collections/support/FileCollectionLocation.cpp
 )
 
 #####################################################################

@@ -19,7 +19,7 @@
 #include "CoverBling.h"
 
 #include "core/support/Debug.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/meta/Meta.h"
 
 #include <math.h>

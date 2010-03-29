@@ -18,7 +18,7 @@
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/collections/MetaQueryMaker.h"
 
 #include <KGlobal>

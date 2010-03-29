@@ -23,7 +23,7 @@
 #include "ServiceCollectionTreeView.h"
 #include "ServiceMetaBase.h"
 #include "amarok_export.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/plugins/Plugin.h"
 #include "core-implementations/meta/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"

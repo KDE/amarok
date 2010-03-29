@@ -27,7 +27,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core-implementations/meta/stream/Stream.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
 #include "playlist/PlaylistModelStack.h"

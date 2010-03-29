@@ -16,9 +16,9 @@
 
 #include "JamendoDatabaseHandler.h"
 
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "collection/SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 using namespace Meta;
 

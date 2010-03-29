@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
 #include "Mp3tunesWorkers.h"
-#include "collection/support/MemoryMatcher.h"
+#include "core-implementations/collections/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

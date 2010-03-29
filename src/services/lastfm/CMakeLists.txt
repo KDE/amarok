@@ -2,7 +2,7 @@
 include_directories(
         ../
         ../../
-        ../../collection
+        ../../core-implementations/collections
         ../../statusbar
         ../../widgets
         ../../context

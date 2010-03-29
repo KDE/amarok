@@ -18,7 +18,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 
 #include <KCMultiDialog>
 

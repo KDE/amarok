@@ -22,7 +22,7 @@
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
 #include "ScanResultProcessor.h"
-#include "collection/SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 
 #include "config-amarok-test.h"

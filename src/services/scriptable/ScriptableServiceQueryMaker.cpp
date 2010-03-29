@@ -20,7 +20,7 @@
 #include "ScriptableServiceMeta.h"
 #include "ScriptManager.h"
 
-#include "collection/support/MemoryMatcher.h"
+#include "core-implementations/collections/support/MemoryMatcher.h"
 
 #include "core/support/Debug.h"
 

@@ -19,7 +19,7 @@
 #include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
 
 #include "core/support/Debug.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core-implementations/meta/proxy/MetaProxy.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-implementations/meta/stream/Stream.h"

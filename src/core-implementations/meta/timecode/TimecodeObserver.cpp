@@ -16,7 +16,7 @@
 
 #include "TimecodeObserver.h"
 
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core-implementations/capabilities/timecode/TimecodeWriteCapability.h"
 

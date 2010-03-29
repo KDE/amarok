@@ -19,7 +19,7 @@
 #include <kprogressdialog.h>
 
 #include "core/support/Amarok.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "core/support/Debug.h"
@@ -28,7 +28,7 @@
 #include "core/podcasts/PodcastReader.h"
 #include "PodcastSettingsDialog.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 

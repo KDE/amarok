@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Components.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"

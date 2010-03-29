@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
-#include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/support/CollectionLocationDelegate.h"
 #include "core/support/Components.h"
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 

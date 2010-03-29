@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/collections/Collection.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 

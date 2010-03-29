@@ -17,7 +17,7 @@
 #include "CollectionDBusHandler.h"
 
 #include "CollectionAdaptor.h"
-#include "collection/support/XmlQueryReader.h"
+#include "core-implementations/collections/support/XmlQueryReader.h"
 #include "dbus/DBusQueryHelper.h"
 #include "core/support/Debug.h"
 

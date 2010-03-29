@@ -21,7 +21,7 @@
 #define AMAROK_BIAS_H
 
 #include "core/meta/Meta.h"
-#include "collection/support/XmlQueryReader.h"
+#include "core-implementations/collections/support/XmlQueryReader.h"
 
 #include <QDomElement>
 #include <QMutex>

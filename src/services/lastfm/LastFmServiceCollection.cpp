@@ -23,7 +23,7 @@
 #include "meta/LastFmMeta.h"
 #include "ServiceMetaBase.h"
 
-#include "collection/support/MemoryQueryMaker.h"
+#include "core-implementations/collections/support/MemoryQueryMaker.h"
 
 #include <lastfm/ws.h>
 #include <lastfm/XmlQuery>

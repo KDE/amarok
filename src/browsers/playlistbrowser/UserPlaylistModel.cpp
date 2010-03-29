@@ -20,7 +20,7 @@
 #include "core/playlists/PlaylistProvider.h"
 
 #include "AmarokMimeData.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 

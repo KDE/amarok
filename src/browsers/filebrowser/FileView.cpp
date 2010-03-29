@@ -18,8 +18,8 @@
 #include "FileView.h"
 
 #include "core/support/Debug.h"
-#include "collection/CollectionManager.h"
-#include "collection/support/FileCollectionLocation.h"
+#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-implementations/collections/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"

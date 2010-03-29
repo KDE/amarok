@@ -18,14 +18,14 @@
 #include "SqlUserPlaylistProvider.h"
 
 #include "core/support/Amarok.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "core-implementations/playlists/file/m3u/M3UPlaylist.h"
 #include "core-implementations/playlists/file/pls/PLSPlaylist.h"
 #include "core-implementations/playlists/file/xspf/XSPFPlaylist.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 

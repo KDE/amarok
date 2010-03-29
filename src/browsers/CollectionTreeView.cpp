@@ -23,7 +23,7 @@
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"

@@ -16,10 +16,10 @@
 
 #include "SqlPlaylist.h"
 
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core-implementations/meta/stream/Stream.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core-implementations/meta/timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"

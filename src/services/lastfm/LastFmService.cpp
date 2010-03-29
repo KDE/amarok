@@ -35,7 +35,7 @@
 #include "widgets/FlowLayout.h"
 #include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistModelStack.h"

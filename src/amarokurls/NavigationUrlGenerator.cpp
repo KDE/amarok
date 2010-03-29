@@ -26,7 +26,7 @@
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/filebrowser/FileBrowser.h"
-#include "collection/sqlcollection/SqlMeta.h"
+#include "core-implementations/collections/sqlcollection/SqlMeta.h"
 #include "PlaylistManager.h"
 
 NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;

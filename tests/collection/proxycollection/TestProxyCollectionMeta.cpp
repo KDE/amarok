@@ -16,8 +16,8 @@
 
 #include "TestProxyCollectionMeta.h"
 
-#include "ProxyCollection.h"
-#include "ProxyCollectionMeta.h"
+#include "core-implementations/collections/proxycollection/ProxyCollection.h"
+#include "core-implementations/collections/proxycollection/ProxyCollectionMeta.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"

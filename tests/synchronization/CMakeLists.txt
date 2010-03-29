@@ -19,12 +19,12 @@ set( testmasterslave_SRCS
         ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryFilter.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryMatcher.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryCustomValue.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerHelper.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
@@ -55,12 +55,12 @@ set( testunion_SRCS
         ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryFilter.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryMatcher.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryCustomValue.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerHelper.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
@@ -90,12 +90,12 @@ set( testonewaysynchronization_SRCS
         ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryFilter.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryMatcher.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryCustomValue.cpp
+        ${AMAROK_SOURCE_TREE}/core-implementations/collections/support/MemoryQueryMakerHelper.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp

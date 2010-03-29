@@ -20,12 +20,12 @@
 #include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "collection/CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/proxymodels/AbstractModel.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
 {

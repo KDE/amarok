@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "statusbar/StatusBar.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core-implementations/playlists/file/PlaylistFile.h"
 #include "playlist/PlaylistModelStack.h"
 #include "core-implementations/playlists/file/PlaylistFileSupport.h"

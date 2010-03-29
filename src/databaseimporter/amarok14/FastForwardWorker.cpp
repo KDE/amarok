@@ -17,10 +17,10 @@
 #include "FastForwardWorker.h"
 
 #include "core/support/Amarok.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/collections/CollectionLocation.h"
 #include "core/support/Debug.h"
-#include "collection/support/FileCollectionLocation.h"
+#include "core-implementations/collections/support/FileCollectionLocation.h"
 #include "core/capabilities/StatisticsCapability.h"
 #include "core-implementations/meta/file/File.h"
 #include "core/meta/support/MetaConstants.h"

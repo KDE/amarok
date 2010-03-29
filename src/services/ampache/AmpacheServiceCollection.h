@@ -19,7 +19,7 @@
 
 #include <ServiceCollection.h>
 #include "AmpacheMeta.h"
-#include "TrackForUrlWorker.h"
+#include "core/collections/support/TrackForUrlWorker.h"
 
 #include <kio/jobclasses.h>
 

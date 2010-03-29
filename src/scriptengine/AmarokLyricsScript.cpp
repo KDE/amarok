@@ -18,7 +18,7 @@
 #include "AmarokLyricsScript.h"
 
 #include "core/support/Amarok.h"
-#include "CollectionManager.h"
+#include "core-implementations/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
