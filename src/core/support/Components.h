@@ -23,7 +23,12 @@ namespace Amarok
 {
     class ApplicationController;
 }
-class CollectionLocationDelegate;
+
+namespace Collections
+{
+    class CollectionLocationDelegate;
+}
+
 class CollectionManager;
 class EngineController;
 class SqlStorage;
@@ -44,8 +49,8 @@ namespace Amarok
         AMAROK_EXPORT Amarok::ApplicationController* applicationController();
         AMAROK_EXPORT Amarok::ApplicationController* setApplicationController( Amarok::ApplicationController *controller );
 
-        AMAROK_EXPORT CollectionLocationDelegate* collectionLocationDelegate();
-        AMAROK_EXPORT CollectionLocationDelegate* setCollectionLocationDelegate( CollectionLocationDelegate *delegate );
+        AMAROK_EXPORT Collections::CollectionLocationDelegate* collectionLocationDelegate();
+        AMAROK_EXPORT Collections::CollectionLocationDelegate* setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
     }
 }
 

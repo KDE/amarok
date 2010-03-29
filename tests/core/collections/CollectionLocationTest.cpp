@@ -66,7 +66,7 @@ public:
 
 void CollectionLocationTest::testSuccessfulCopy()
 {
-    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( cld );
 
@@ -87,7 +87,7 @@ void CollectionLocationTest::testSuccessfulCopy()
 
 void CollectionLocationTest::testFailedCopy()
 {
-    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
@@ -109,7 +109,7 @@ void CollectionLocationTest::testFailedCopy()
 
 void CollectionLocationTest::testCopyMultipleTracks()
 {
-    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
@@ -138,7 +138,7 @@ void CollectionLocationTest::testCopyMultipleTracks()
 
 void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 {
-    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );
@@ -159,7 +159,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 
-    cld = new MockCollectionLocationDelegate();
+    cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
     Amarok::Components::setCollectionLocationDelegate( cld );

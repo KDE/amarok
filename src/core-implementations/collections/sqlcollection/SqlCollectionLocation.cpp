@@ -20,7 +20,7 @@
 
 #include "collectionscanner/AFTUtility.h"
 
-#include "core/collections/support/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocationDelegate.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
@@ -214,7 +214,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     if( available_folders.size() <= 0 )
     {
         debug() << "No space available or not writable";
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         abort();
         return;
@@ -241,7 +241,7 @@ SqlCollectionLocation::slotDialogAccepted()
     m_overwriteFiles = dialog->overwriteDestinations();
     if( isGoingToRemoveSources() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         const bool del = delegate->reallyMove( this, m_destinations.keys() );
         if( !del )
         {

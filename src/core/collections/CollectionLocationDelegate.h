@@ -23,6 +23,8 @@
 
 class CollectionLocation;
 
+namespace Collections {
+
 class AMAROK_EXPORT CollectionLocationDelegate
 {
 public:
@@ -34,5 +36,7 @@ public:
     virtual void errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual void notWriteable( CollectionLocation *loc ) const = 0;
 };
+
+} //namespace Collections
 
 #endif

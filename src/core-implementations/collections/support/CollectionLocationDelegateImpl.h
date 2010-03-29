@@ -19,7 +19,9 @@
 #define COLLECTIONLOCATIONDELEGATEIMPL_H
 
 #include "amarok_export.h"
-#include "core/collections/support/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocationDelegate.h"
+
+namespace Collections {
 
 class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
 {
@@ -33,5 +35,6 @@ public:
     virtual void notWriteable(CollectionLocation* loc) const;
 };
 
+} //namespace Collections
 
 #endif

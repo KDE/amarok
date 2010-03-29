@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
-#include "core/collections/support/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocationDelegate.h"
 #include "core/support/Components.h"
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
@@ -303,7 +303,7 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
     Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
     Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
-    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *delegate = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( delegate );
 
@@ -341,7 +341,7 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
     Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
     Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
-    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *delegate = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( delegate );
 
@@ -379,7 +379,7 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
     Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
     Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
-    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *delegate = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( delegate );
 
@@ -417,7 +417,7 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
     Collections::CollectionTestImpl *master = new Collections::MyCollectionTestImpl( "master" );
     Collections::CollectionTestImpl *slave = new Collections::MyCollectionTestImpl( "slave" );
 
-    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    Collections::MockCollectionLocationDelegate *delegate = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     Amarok::Components::setCollectionLocationDelegate( delegate );
 

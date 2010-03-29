@@ -34,7 +34,7 @@ public:
     EngineController *engineController;
     SqlStorage *sqlStorage;
     Amarok::ApplicationController *applicationController;
-    CollectionLocationDelegate *collectionLocationDelegate;
+    Collections::CollectionLocationDelegate *collectionLocationDelegate;
 };
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
@@ -66,5 +66,5 @@ COMPONENT_ACCESSORS( SqlStorage*, sqlStorage, setSqlStorage )
 
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
-COMPONENT_ACCESSORS( CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate );
+COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate );
 

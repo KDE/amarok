@@ -100,6 +100,6 @@ DefaultApplicationController::initCollectionManager()
 void
 DefaultApplicationController::initCollectionLocationDelegate()
 {
-    Components::setCollectionLocationDelegate( new CollectionLocationDelegateImpl() );
+    Components::setCollectionLocationDelegate( new Collections::CollectionLocationDelegateImpl() );
 }
 

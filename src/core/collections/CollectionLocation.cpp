@@ -19,7 +19,7 @@
 #include "core/collections/CollectionLocation.h"
 
 #include "core/collections/Collection.h"
-#include "core/collections/support/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocationDelegate.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
@@ -99,7 +99,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
@@ -116,7 +116,7 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
@@ -145,7 +145,7 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
@@ -162,7 +162,7 @@ CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
@@ -184,7 +184,7 @@ CollectionLocation::prepareRemove( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     if( !isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         deleteLater();
         return;
@@ -198,7 +198,7 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
     DEBUG_BLOCK
     if( !isWritable() )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         qm->deleteLater();
         deleteLater();
@@ -295,7 +295,7 @@ CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+    Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
 
     const bool del = delegate->reallyDelete( this, tracks );
 
@@ -389,7 +389,7 @@ CollectionLocation::slotFinishRemove()
     DEBUG_BLOCK
     if( m_tracksWithError.size() > 0 )
     {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->errorDeleting( this, m_tracksWithError.keys() );
         m_tracksWithError.clear();
     }

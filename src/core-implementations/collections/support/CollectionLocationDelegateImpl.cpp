@@ -22,6 +22,8 @@
 #include <KLocale>
 #include <KMessageBox>
 
+using namespace Collections;
+
 bool
 CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const
 {
