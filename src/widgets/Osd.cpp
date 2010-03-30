@@ -93,6 +93,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
+
+    m_volume = The::engineController()->volume();
 }
 
 OSDWidget::~OSDWidget()
