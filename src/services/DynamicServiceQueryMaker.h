@@ -24,7 +24,7 @@
 
 #include <kio/jobclasses.h>
 
-class ServiceCollection;
+//class ServiceCollection;
 
 namespace ThreadWeaver
 {
