@@ -63,6 +63,7 @@ private:
 
     QString extractArtistInfo( const QString &artistPage );
     QString generateMemberMenu();
+    QString createArtistLinks( const QString &page );
 
 };
 

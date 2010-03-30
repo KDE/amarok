@@ -239,6 +239,9 @@ void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
     MagnatuneConfig config;
     if( config.isMember() )
         infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+
+    //insert fancy amarok url links to the artists
+    infoString = createArtistLinks( infoString );
     
     emit ( info( infoString ) );
 }
@@ -256,6 +259,50 @@ QString MagnatuneInfoParser::generateMemberMenu()
                     "</div>";
 
     return menu;
+}
+
+QString
+MagnatuneInfoParser::createArtistLinks( const QString &page )
+{
+    DEBUG_BLOCK
+    //the artist name is wrapped in <!--ARTIST_TOKEN-->artist<!--/ARTIST_TOKEN-->
+
+    QString returnPage = page;
+
+    int startTokenLength = QString( "<!--ARTIST_TOKEN-->" ).length();
+    int endTokenLength = QString( "<!--/ARTIST_TOKEN-->" ).length();
+
+    int offset = 0;
+    int startTokenIndex = page.indexOf( "<!--ARTIST_TOKEN-->", offset );
+    int endTokenIndex = 0;
+
+    while( startTokenIndex != -1 )
+    {
+        endTokenIndex = page.indexOf( "<!--/ARTIST_TOKEN-->", startTokenIndex );
+        if( endTokenIndex == -1 )
+            break; //bail out
+
+        offset = endTokenIndex;
+
+        //get the artist namespace
+
+        int artistLength = endTokenIndex - ( startTokenIndex + startTokenLength );
+        QString artist = page.mid( startTokenIndex + startTokenLength, artistLength );
+
+        debug() << "got artist " << artist;
+
+        //replace in the artist amarok url
+
+        QString replaceString = "<!--ARTIST_TOKEN-->" + artist + "<!--/ARTIST_TOKEN-->";
+        QString artistLink = "<a href='amarok://navigate/internet/Magnatune.com?filter=%22" + artist + "%22&levels=artist'>" + artist + "</a>";
+
+        debug() << "replacing " <<  replaceString << " with " << artistLink;
+        returnPage = returnPage.replace( replaceString, artistLink );
+
+        startTokenIndex = page.indexOf( "<!--ARTIST_TOKEN-->", offset );
+    }
+
+    return returnPage;
 }
 
 
