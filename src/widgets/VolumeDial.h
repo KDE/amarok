@@ -71,7 +71,7 @@ private slots:
 private:
     QPixmap m_icon[4];
     QPixmap m_sliderGradient;
-    int m_unmutedValue, m_formerValue;
+    int m_formerValue;
     QList<QWidget*> m_wheelProxies;
     struct
     {

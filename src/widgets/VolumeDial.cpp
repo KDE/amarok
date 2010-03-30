@@ -293,16 +293,10 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
 
 void VolumeDial::setMuted( bool mute )
 {
-    if ( mute == m_muted )
-        return;
+    m_muted = mute;
 
-    if ( mute )
-    {
-        m_unmutedValue = value();
-        setValue( minimum() );
-    }
-    else
-        setValue( m_unmutedValue );
+    setToolTip( m_muted ? i18n( "Muted" ) : i18n( "Volume: %1%", value() ) );
+    update();
 }
 
 QSize VolumeDial::sizeHint() const
@@ -338,14 +332,9 @@ void VolumeDial::sliderChange( SliderChange change )
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    setToolTip( ( v == minimum() ) ? i18n( "Muted" ) : i18n( "Volume: %1%", v ) );
-
     m_isClick = false;
 
-    if ( m_muted == ( v == minimum() ) )
-        return;
-
-    m_muted = ( v == minimum() );
+    setToolTip( m_muted ? i18n( "Muted" ) : i18n( "Volume: %1%", v ) );
     update();
 }
 
