@@ -165,7 +165,7 @@ EngineController::initializePhonon()
     m_media->setPrefinishMark( 2000 );
 
     connect( m_media, SIGNAL( finished() ), SLOT( slotQueueEnded() ) );
-    connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
+    connect( m_media, SIGNAL( prefinishMarkReached( qint32 ) ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
@@ -1032,6 +1032,14 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
+
+    if( !m_multiPlayback )
+    {
+        m_media->blockSignals( true );
+        m_media->setCurrentSource( m_currentTrack->playableUrl() );
+        m_media->blockSignals( false );
+    }
+    m_media->play();
 }
 
 void
