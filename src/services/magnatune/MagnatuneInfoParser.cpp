@@ -58,6 +58,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
 
+    infoHtml += generateHomeLink();
     infoHtml += "<div align=\"center\"><strong>";
     infoHtml += artistName;
     infoHtml += "</strong><br><em>";
@@ -144,7 +145,7 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
-
+    infoHtml += generateHomeLink();
     infoHtml += trimmedHtml;
     infoHtml += "</BODY></HTML>";
 
@@ -291,6 +292,17 @@ QString MagnatuneInfoParser::generateMemberMenu()
                     "</div>";
 
     return menu;
+}
+
+QString
+MagnatuneInfoParser::generateHomeLink()
+{
+    QString homeUrl = "amarok://service_magnatune?command=show_home";
+    QString link = "<div align='right'>"
+                    "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
+                   "</div>";
+
+    return link;
 }
 
 QString

@@ -61,6 +61,7 @@ private:
 
     QString extractArtistInfo( const QString &artistPage );
     QString generateMemberMenu();
+    QString generateHomeLink();
     QString createArtistLinks( const QString &page );
     
     KJob * m_infoDownloadJob;
