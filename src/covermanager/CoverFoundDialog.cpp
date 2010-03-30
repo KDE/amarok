@@ -53,11 +53,11 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
+    , m_album( unit->album() )
     , m_isSorted( false )
     , m_sortEnabled( false )
-    , m_queryPage( 1 )
     , m_unit( unit )
-    , m_album( unit->album() )
+    , m_queryPage( 1 )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
