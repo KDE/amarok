@@ -154,11 +154,18 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
 void MagnatuneInfoParser::getFrontPage()
 {
+
+    if( !m_cachedFrontpage.isEmpty() )
+    {
+        emit ( info( m_cachedFrontpage ) );
+        return;
+    }
+
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
     m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result( KJob * ) ), SLOT( frontpageDownloadComplete( KJob*) ) );
 }
 
 void MagnatuneInfoParser::getFavoritesPage()
@@ -220,7 +227,34 @@ void MagnatuneInfoParser::getRecommendationsPage()
     
 }
 
-void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
+void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
+{
+    DEBUG_BLOCK
+    if ( !downLoadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downLoadJob != m_pageDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+
+    //insert menu
+    MagnatuneConfig config;
+    if( config.isMember() )
+        infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+
+    //insert fancy amarok url links to the artists
+    infoString = createArtistLinks( infoString );
+
+    if( m_cachedFrontpage.isEmpty() )
+        m_cachedFrontpage = infoString;
+    
+    emit ( info( infoString ) );
+}
+
+void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
 {
     DEBUG_BLOCK
     if ( !downLoadJob->error() == 0 )
@@ -240,11 +274,9 @@ void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
     if( config.isMember() )
         infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
 
-    //insert fancy amarok url links to the artists
-    infoString = createArtistLinks( infoString );
-    
     emit ( info( infoString ) );
 }
+
 
 QString MagnatuneInfoParser::generateMemberMenu()
 {
