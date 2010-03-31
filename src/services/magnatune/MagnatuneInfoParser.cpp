@@ -275,6 +275,9 @@ void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
     if( config.isMember() )
         infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
 
+    //make sure that any pages that use the old command name "service_magnatune" replaces it with "service-magnatune"
+    infoString.replace( "service_magnatune", "service-magnatune" );
+
     emit ( info( infoString ) );
 }
 
