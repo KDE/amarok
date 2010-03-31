@@ -307,7 +307,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
     //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
-    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's." ) );
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 

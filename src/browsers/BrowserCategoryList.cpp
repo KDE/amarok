@@ -398,7 +398,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
         currentHtml.replace( "%%NAME%%", category->prettyName() );
         currentHtml.replace( "%%DESCRIPTION%%", category->longDescription() );
-        currentHtml.replace( "%%IMAGE_PATH%%", category->imagePath() );
+        currentHtml.replace( "%%IMAGE_PATH%%", "file://" + category->imagePath() );
 
         QVariantMap variantMap;
         variantMap["main_info"] = QVariant( currentHtml );
