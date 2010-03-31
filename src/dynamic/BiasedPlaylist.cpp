@@ -23,7 +23,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/collections/Collection.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "core/collections/MetaQueryMaker.h"

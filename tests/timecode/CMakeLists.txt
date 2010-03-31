@@ -6,9 +6,9 @@ include_directories( .
 
 set( testtimecodetrackprovider_SRCS
      TestTimecodeTrackProvider.cpp
-     ${AMAROK_SOURCE_TREE}/core-implementations/meta/timecode/TimecodeTrackProvider.cpp
-     ${AMAROK_SOURCE_TREE}/core-implementations/meta/timecode/TimecodeMeta.cpp
-     ${AMAROK_SOURCE_TREE}/core-implementations/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
+     ${AMAROK_SOURCE_TREE}/core-impl/meta/timecode/TimecodeTrackProvider.cpp
+     ${AMAROK_SOURCE_TREE}/core-impl/meta/timecode/TimecodeMeta.cpp
+     ${AMAROK_SOURCE_TREE}/core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
      ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     )
 

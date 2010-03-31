@@ -4,7 +4,7 @@ if(LIBXML2_FOUND AND CURL_FOUND)
         include_directories(
             ../
             ../../
-            ../../core-implementations/collections
+            ../../core-impl/collections
             ../../servicebrowser
             ../../statusbar
             ./libmp3tunes

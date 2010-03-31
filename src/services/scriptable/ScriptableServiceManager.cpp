@@ -17,7 +17,7 @@
 #include "ScriptableServiceManager.h"
 
 
-#include "core-implementations/collections/support/MemoryCollection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 #include "core/support/Debug.h"
 #include "ScriptableServiceCollection.h"
 #include "ScriptableServiceMeta.h"

@@ -1,7 +1,7 @@
         include_directories(
             ../
             ../..
-            ../../core-implementations/collections
+            ../../core-impl/collections
             ../../servicebrowser
             ../../statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..

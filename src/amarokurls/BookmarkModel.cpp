@@ -22,7 +22,7 @@
 #include "BookmarkGroup.h"
 #include "AmarokUrlHandler.h"
 #include "core/support/Debug.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
 
 #include <KIcon>

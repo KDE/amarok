@@ -16,7 +16,7 @@
 
 #include "SimilarArtistsAction.h"
 #include "playlist/PlaylistModelStack.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "SvgHandler.h"
 
 #include <KIcon>

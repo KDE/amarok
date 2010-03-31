@@ -26,7 +26,7 @@ set( testplaylistmodels_SRCS
 	${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortAlgorithms.cpp
 	${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortFilterProxy.cpp
 	${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortScheme.cpp
-        ${AMAROK_SOURCE_TREE}/core-implementations/playlists/types/file/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/DirectoryLoader.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistItem.cpp
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp

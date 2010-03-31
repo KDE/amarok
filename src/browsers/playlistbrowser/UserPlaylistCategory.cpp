@@ -17,7 +17,7 @@
 
 #include "UserPlaylistCategory.h"
 
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"

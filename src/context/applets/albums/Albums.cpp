@@ -23,7 +23,7 @@
 #include "AlbumsModel.h"
 #include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"

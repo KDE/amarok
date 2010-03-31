@@ -33,7 +33,7 @@
 
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core-implementations/capabilities/timecode/TimecodeLoadCapability.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"

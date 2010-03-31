@@ -37,7 +37,7 @@
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
-#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 

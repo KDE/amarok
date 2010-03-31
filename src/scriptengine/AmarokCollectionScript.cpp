@@ -18,9 +18,9 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core-implementations/collections/sqlcollection/SqlCollectionLocation.h"
+#include "core-impl/collections/sqlcollection/SqlCollectionLocation.h"
 #include "core/support/Debug.h"
 
 

@@ -18,7 +18,7 @@
 #include "Mp3tunesService.h"
 
 #include "browsers/SingleCollectionTreeItemModel.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
 #include "statusbar/StatusBar.h"

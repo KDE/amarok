@@ -24,7 +24,7 @@
 #include "context/ContextView.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/collections/Collection.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
 

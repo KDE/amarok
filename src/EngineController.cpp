@@ -26,7 +26,7 @@
 
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Components.h"
 #include "statusbar/StatusBar.h"
 #include "core/support/Debug.h"
@@ -39,7 +39,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/plugins/PluginManager.h"
 
 #include <KFileItem>

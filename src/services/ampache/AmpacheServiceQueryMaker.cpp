@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "AmpacheMeta.h"
-#include "core-implementations/collections/support/MemoryMatcher.h"
+#include "core-impl/collections/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

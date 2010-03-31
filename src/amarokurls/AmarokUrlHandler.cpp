@@ -17,7 +17,7 @@
 #include "AmarokUrlHandler.h"
 
 #include "BookmarkMetaActions.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "GlobalCurrentTrackActions.h"
 #include "NavigationUrlGenerator.h"
@@ -26,7 +26,7 @@
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "BookmarkModel.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core-implementations/meta/timecode/TimecodeObserver.h"
+#include "core-impl/meta/timecode/TimecodeObserver.h"
 #include "ContextUrlGenerator.h"
 #include "PlayUrlGenerator.h"
 

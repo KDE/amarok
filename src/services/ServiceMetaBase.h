@@ -22,7 +22,7 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "core/support/Debug.h"
 #include "InfoParserBase.h"
-#include "core-implementations/meta/proxy/MetaProxy.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
 #include "core/statistics/StatisticsProvider.h"
 #include "ServiceCapabilities.h"
 

@@ -11,7 +11,7 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-add_subdirectory( core-implementations/collections )
+add_subdirectory( core-impl/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
@@ -33,13 +33,13 @@ include_directories(
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
-    core-implementations/collections
-    core-implementations/collections/support
-    core-implementations/collections/mediadevicecollection
-    core-implementations/collections/mediadevicecollection/handler  # for Handler
-    core-implementations/collections/mediadevicecollection/support  # for MediaDeviceInfo
-    core-implementations/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
-    core-implementations/collections/mediadevicecollection/podcast
+    core-impl/collections
+    core-impl/collections/support
+    core-impl/collections/mediadevicecollection
+    core-impl/collections/mediadevicecollection/handler  # for Handler
+    core-impl/collections/mediadevicecollection/support  # for MediaDeviceInfo
+    core-impl/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
+    core-impl/collections/mediadevicecollection/podcast
     configdialog
     configdialog/dialogs
     context
@@ -90,35 +90,35 @@ set(libplugin_SRCS
 # PROXYCOLLECTION
 #####################################################################
 set(libproxycollection_SRCS
-    core-implementations/collections/proxycollection/ProxyCollection.cpp
-    core-implementations/collections/proxycollection/ProxyCollectionMeta.cpp
-    core-implementations/collections/proxycollection/ProxyCollectionQueryMaker.cpp
+    core-impl/collections/proxycollection/ProxyCollection.cpp
+    core-impl/collections/proxycollection/ProxyCollectionMeta.cpp
+    core-impl/collections/proxycollection/ProxyCollectionQueryMaker.cpp
 )
 
 #####################################################################
 # MEDIADEVICEFRAMEWORK
 #####################################################################
 set(libmediadeviceframework_SRCS
-  core-implementations/collections/mediadevicecollection/MediaDeviceCollection.cpp
-  core-implementations/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  core-implementations/collections/mediadevicecollection/MediaDeviceMeta.cpp
-  core-implementations/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
-  core-implementations/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
-  core-implementations/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
-  core-implementations/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
-  core-implementations/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
-  core-implementations/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
-  core-implementations/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
-  core-implementations/collections/mediadevicecollection/support/ConnectionAssistant.cpp
-  core-implementations/collections/mediadevicecollection/support/MediaDeviceInfo.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
+  core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
+  core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
+  core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
+  core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
+  core-impl/collections/mediadevicecollection/support/ConnectionAssistant.cpp
+  core-impl/collections/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
 
 #####################################################################
@@ -273,19 +273,19 @@ set(libstatusbar_SRCS
 #####################################################################
 set(core_SRCS
     core/capabilities/Capability.cpp
-    core-implementations/playlists/types/file/m3u/M3UPlaylist.cpp
+    core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
     core/meta/Meta.cpp
     core/meta/support/MetaUtility.cpp
-    core-implementations/meta/file/TagLibUtils.cpp
+    core-impl/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     core/playlists/Playlist.cpp
-    core-implementations/playlists/types/file/pls/PLSPlaylist.cpp
+    core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core/statistics/StatisticsProvider.cpp
     core/playlists/PlaylistProvider.cpp
-    core-implementations/playlists/providers/user/UserPlaylistProvider.cpp
-    core-implementations/playlists/types/file/PlaylistFileSupport.cpp
+    core-impl/playlists/providers/user/UserPlaylistProvider.cpp
+    core-impl/playlists/types/file/PlaylistFileSupport.cpp
     core/meta/support/PrivateMetaRegistry.cpp
-    core-implementations/playlists/types/file/xspf/XSPFPlaylist.cpp
+    core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
     core/capabilities/BookmarkThisCapability.cpp
     core/capabilities/BoundedPlaybackCapability.cpp
     core/capabilities/CollectionCapability.cpp
@@ -303,20 +303,20 @@ set(core_SRCS
     core/capabilities/SourceInfoCapability.cpp
     core/capabilities/StatisticsCapability.cpp
     core/capabilities/StreamInfoCapability.cpp
-    core-implementations/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
-    core-implementations/capabilities/timecode/TimecodeEditCapability.cpp
-    core-implementations/capabilities/timecode/TimecodeLoadCapability.cpp
-    core-implementations/capabilities/timecode/TimecodeWriteCapability.cpp
+    core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
+    core-impl/capabilities/timecode/TimecodeEditCapability.cpp
+    core-impl/capabilities/timecode/TimecodeLoadCapability.cpp
+    core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
     core/capabilities/UpdateCapability.cpp
     core/capabilities/WriteLabelCapability.cpp
-    core-implementations/capabilities/multisource/MultiSourceCapabilityImpl.cpp
-    core-implementations/meta/file/File.cpp
-    core-implementations/meta/multi/MultiTrack.cpp
-    core-implementations/meta/cue/CueFileSupport.cpp
-    core-implementations/meta/proxy/MetaProxy.cpp
-    core-implementations/meta/stream/Stream.cpp
-    core-implementations/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
-    core-implementations/statistics/providers/tag/TagStatisticsProvider.cpp
+    core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
+    core-impl/meta/file/File.cpp
+    core-impl/meta/multi/MultiTrack.cpp
+    core-impl/meta/cue/CueFileSupport.cpp
+    core-impl/meta/proxy/MetaProxy.cpp
+    core-impl/meta/stream/Stream.cpp
+    core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
+    core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )
 
 #####################################################################
@@ -324,23 +324,23 @@ set(core_SRCS
 #####################################################################
 set(collection_SRCS
     core/collections/Collection.cpp
-    core-implementations/collections/support/CollectionManager.cpp
+    core-impl/collections/support/CollectionManager.cpp
     core/collections/CollectionLocation.cpp
-    core-implementations/collections/support/CollectionLocationDelegateImpl.cpp
+    core-impl/collections/support/CollectionLocationDelegateImpl.cpp
     core/collections/MetaQueryMaker.cpp
     core/collections/QueryMaker.cpp
     core/collections/support/TrackForUrlWorker.cpp
-    core-implementations/collections/support/MemoryCustomValue.cpp
-    core-implementations/collections/support/MemoryFilter.cpp
-    core-implementations/collections/support/MemoryMatcher.cpp
-    core-implementations/collections/support/MemoryQueryMaker.cpp
-    core-implementations/collections/support/MemoryQueryMakerInternal.cpp
-    core-implementations/collections/support/MemoryQueryMakerHelper.cpp
-    core-implementations/collections/support/PlaylistCollection.cpp
-    core-implementations/collections/support/PlaylistCollectionLocation.cpp
-    core-implementations/collections/support/XmlQueryReader.cpp
-    core-implementations/collections/support/XmlQueryWriter.cpp
-    core-implementations/collections/support/FileCollectionLocation.cpp
+    core-impl/collections/support/MemoryCustomValue.cpp
+    core-impl/collections/support/MemoryFilter.cpp
+    core-impl/collections/support/MemoryMatcher.cpp
+    core-impl/collections/support/MemoryQueryMaker.cpp
+    core-impl/collections/support/MemoryQueryMakerInternal.cpp
+    core-impl/collections/support/MemoryQueryMakerHelper.cpp
+    core-impl/collections/support/PlaylistCollection.cpp
+    core-impl/collections/support/PlaylistCollectionLocation.cpp
+    core-impl/collections/support/XmlQueryReader.cpp
+    core-impl/collections/support/XmlQueryWriter.cpp
+    core-impl/collections/support/FileCollectionLocation.cpp
 )
 
 #####################################################################
@@ -386,9 +386,9 @@ set(libpodcasts_SRCS
     core/podcasts/PodcastMeta.cpp
     core/podcasts/PodcastImageFetcher.cpp
     core/podcasts/PodcastProvider.cpp
-    core-implementations/podcasts/sql/SqlPodcastMeta.cpp
-    core-implementations/podcasts/sql/SqlPodcastProvider.cpp
-    core-implementations/podcasts/sql/PodcastSettingsDialog.cpp
+    core-impl/podcasts/sql/SqlPodcastMeta.cpp
+    core-impl/podcasts/sql/SqlPodcastProvider.cpp
+    core-impl/podcasts/sql/PodcastSettingsDialog.cpp
 )
 
 #####################################################################
@@ -491,8 +491,8 @@ set(libplaylist_SRCS
 
 if(KDEMULTIMEDIA_FOUND)
     set(audiocdsupport_SRCS
-        core-implementations/meta/cdda/AudioCdTrackProvider.cpp
-        core-implementations/meta/cdda/AudioCdTrackProvider_p.cpp
+        core-impl/meta/cdda/AudioCdTrackProvider.cpp
+        core-impl/meta/cdda/AudioCdTrackProvider_p.cpp
        )
 endif(KDEMULTIMEDIA_FOUND)
 
@@ -616,9 +616,9 @@ set(amaroklib_LIB_SRCS
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
-    core-implementations/meta/timecode/TimecodeObserver.cpp
-    core-implementations/meta/timecode/TimecodeMeta.cpp
-    core-implementations/meta/timecode/TimecodeTrackProvider.cpp
+    core-impl/meta/timecode/TimecodeObserver.cpp
+    core-impl/meta/timecode/TimecodeMeta.cpp
+    core-impl/meta/timecode/TimecodeTrackProvider.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp
@@ -773,8 +773,8 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     likeback/LikeBackBar.ui
     likeback/LikeBackDialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
-    core-implementations/podcasts/sql/PodcastSettingsBase.ui
-    core-implementations/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-impl/podcasts/sql/PodcastSettingsBase.ui
+    core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

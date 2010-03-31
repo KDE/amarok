@@ -22,7 +22,7 @@
 #include "App.h"
 #include "Bias.h"
 #include "BiasedPlaylist.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "DynamicPlaylist.h"
 #include "DynamicBiasModel.h"
@@ -31,7 +31,7 @@
 #include "core/collections/QueryMaker.h"
 #include "SliderWidget.h"
 #include "SvgHandler.h"
-#include "core-implementations/collections/support/XmlQueryWriter.h"
+#include "core-impl/collections/support/XmlQueryWriter.h"
 #include "widgets/kratingwidget.h"
 #include "widgets/kdatecombo.h"
 

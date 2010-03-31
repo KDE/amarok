@@ -23,7 +23,7 @@
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/collections/Collection.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CompoundProgressBar.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"

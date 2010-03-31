@@ -21,7 +21,7 @@
 
 #include "core/support/Debug.h"
 
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
 #include "ServiceSqlCollection.h"

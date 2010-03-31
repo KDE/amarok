@@ -19,8 +19,8 @@
 #include "DirectoryLoader.h"
 
 #include "core/support/Debug.h"
-#include "core-implementations/collections/support/CollectionManager.h"
-#include "core-implementations/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 

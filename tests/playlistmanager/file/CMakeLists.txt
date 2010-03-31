@@ -18,7 +18,7 @@ set( testplaylistfileprovider_SRCS
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortFilterProxy.cpp
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortAlgorithms.cpp
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortScheme.cpp
-     ${AMAROK_SOURCE_TREE}/core-implementations/playlists/types/file/PlaylistFileSupport.cpp
+     ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
 kde4_add_unit_test( testplaylistfileprovider ${testplaylistfileprovider_SRCS} )
 target_link_libraries( testplaylistfileprovider ${QT_QTTEST_LIBRARY} amaroklib )

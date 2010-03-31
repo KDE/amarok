@@ -26,7 +26,7 @@
 
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CoverLabel.h"
 #include "core/collections/support/SqlStorage.h"
 #include "covermanager/CoverFetchingActions.h"

@@ -22,7 +22,7 @@
 #include "TimeLabel.h"
 #include "amarokconfig.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core-implementations/capabilities/timecode/TimecodeLoadCapability.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 

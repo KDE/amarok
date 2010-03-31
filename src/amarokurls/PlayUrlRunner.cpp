@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"

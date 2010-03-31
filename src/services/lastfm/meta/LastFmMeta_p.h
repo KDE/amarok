@@ -24,7 +24,7 @@
 #include "amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core/statistics/StatisticsProvider.h"
-#include "core-implementations/statistics/providers/tag/TagStatisticsProvider.h"
+#include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
 
 #include <lastfm/Track>
 #include <lastfm/ws.h>

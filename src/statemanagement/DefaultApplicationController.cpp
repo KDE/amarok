@@ -19,7 +19,7 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 
-#include "core-implementations/collections/support/CollectionLocationDelegateImpl.h"
+#include "core-impl/collections/support/CollectionLocationDelegateImpl.h"
 
 #include <QMetaObject>
 

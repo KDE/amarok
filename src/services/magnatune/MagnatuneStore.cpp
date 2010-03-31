@@ -32,7 +32,7 @@
 #include "ui_MagnatuneSignupDialogBase.h"
 
 #include "../ServiceSqlRegistry.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"

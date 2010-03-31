@@ -21,7 +21,7 @@
 #include "EngineController.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "core-implementations/capabilities/timecode/TimecodeWriteCapability.h"
+#include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 
 #include <KIcon>
 #include <KLocale>

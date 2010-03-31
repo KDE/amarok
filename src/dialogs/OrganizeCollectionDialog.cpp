@@ -24,7 +24,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
-#include "core-implementations/meta/file/File.h"
+#include "core-impl/meta/file/File.h"
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 

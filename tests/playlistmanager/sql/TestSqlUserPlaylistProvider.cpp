@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "TestSqlUserPlaylistProvider.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "config-amarok-test.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "core/support/Components.h"

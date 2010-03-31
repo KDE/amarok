@@ -22,7 +22,7 @@
 #include "Bias.h"
 
 #include "core/collections/Collection.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CustomBias.h"
 #include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
@@ -30,7 +30,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/QueryMaker.h"
-#include "core-implementations/collections/support/XmlQueryWriter.h"
+#include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>
 

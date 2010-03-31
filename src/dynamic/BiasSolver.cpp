@@ -19,7 +19,7 @@
 #define DEBUG_PREFIX "BiasSolver"
 
 #include "BiasSolver.h"
-#include "core-implementations/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 #include "TrackSet.h"
