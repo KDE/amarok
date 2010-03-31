@@ -6,7 +6,10 @@ add_subdirectory( wikipedia )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( coverbling )
-add_subdirectory( upcomingevents )
-add_subdirectory( similarartists )
-#add_subdirectory( songkick )
 
+if( LIBLASTFM_FOUND )
+    add_subdirectory( upcomingevents )
+    add_subdirectory( similarartists )
+endif( LIBLASTFM_FOUND )
+
+#add_subdirectory( songkick )
