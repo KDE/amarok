@@ -94,6 +94,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         return;
 
     debug() << "got data from engine: " << data[ "subject_name" ].toString();
+     debug() << "page : " << data[ "main_info" ].toString();
 
     if  ( m_initialized )
     {
@@ -148,6 +149,7 @@ void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 
 void InfoApplet::linkClicked( const QUrl & url )
 {
+    DEBUG_BLOCK
     debug() << "Link clicked: " << url.toString();
 
     if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) )

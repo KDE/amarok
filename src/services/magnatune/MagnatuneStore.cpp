@@ -484,7 +484,7 @@ void MagnatuneStore::polish()
         connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( download( const QString & ) ) );
         connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
 
-        The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
+        The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );

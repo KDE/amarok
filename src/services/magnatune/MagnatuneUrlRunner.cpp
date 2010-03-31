@@ -28,7 +28,7 @@ MagnatuneUrlRunner::~MagnatuneUrlRunner()
 
 QString MagnatuneUrlRunner::command() const
 {
-    return "service_magnatune";
+    return "service-magnatune";
 }
 
 KIcon MagnatuneUrlRunner::icon() const

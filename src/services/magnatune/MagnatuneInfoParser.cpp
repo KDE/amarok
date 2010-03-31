@@ -195,7 +195,7 @@ void MagnatuneInfoParser::getFavoritesPage()
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
 }
 
 void MagnatuneInfoParser::getRecommendationsPage()
@@ -224,7 +224,7 @@ void MagnatuneInfoParser::getRecommendationsPage()
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
     
 }
 
@@ -251,7 +251,7 @@ void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
 
     if( m_cachedFrontpage.isEmpty() )
         m_cachedFrontpage = infoString;
-    
+
     emit ( info( infoString ) );
 }
 
@@ -281,9 +281,9 @@ void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
 
 QString MagnatuneInfoParser::generateMemberMenu()
 {
-    QString homeUrl = "amarok://service_magnatune?command=show_home";
-    QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
-    QString recommendationsUrl = "amarok://service_magnatune?command=show_recommendations";
+    QString homeUrl = "amarok://service-magnatune?command=show_home";
+    QString favoritesUrl = "amarok://service-magnatune?command=show_favorites";
+    QString recommendationsUrl = "amarok://service-magnatune?command=show_recommendations";
 
     QString menu = "<div align='right'>"
                        "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
@@ -297,7 +297,7 @@ QString MagnatuneInfoParser::generateMemberMenu()
 QString
 MagnatuneInfoParser::generateHomeLink()
 {
-    QString homeUrl = "amarok://service_magnatune?command=show_home";
+    QString homeUrl = "amarok://service-magnatune?command=show_home";
     QString link = "<div align='right'>"
                     "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
                    "</div>";
