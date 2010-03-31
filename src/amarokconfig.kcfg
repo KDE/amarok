@@ -631,4 +631,11 @@
     </entry>
 </group>
 
+<group name="PlaylistGenerator">
+    <entry key="qualityFactorAPG" type="Int">
+        <label>Quality factor for Automated Playlist Generator</label>
+        <whatsthis>A value between 0 and 10 that controls whether the Automated Playlist Generator tries to optimize for speed (0) or accuracy (10).</whatsthis>
+        <default>7</default>
+    </entry>
+</group>
 </kcfg>

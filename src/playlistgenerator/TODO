@@ -1,0 +1,16 @@
+Backend:
+- replace values in constraints with Qt properties, and use properties for saving/loading
+  from XML, and put XML in Constraint superclass
+- monitor APG patent: US 11/994425
+- actually have the speed/accuracy slider do something
+- implement a playlistprovider (per Bart on merge request)
+
+Constraints:
+- fix preventduplicates: the delta functions are kinda broken
+- checkpoint constraint
+- last.fm or echonest similar artists constraint
+- proper handling of empty fingerprints in SimilarityChain
+
+GUI:
+- "simple" presets?
+- context menu for APGCategory

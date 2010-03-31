@@ -18,6 +18,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "APGCategory.h"
 #include "DynamicCategory.h"
 #include "core/playlists/Playlist.h"
 #include "UserPlaylistCategory.h"
@@ -41,6 +42,7 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *
 
     BrowserCategoryList::addCategory( new DynamicCategory( 0 ) );
     BrowserCategoryList::addCategory( new UserPlaylistCategory( 0 ) );
+    BrowserCategoryList::addCategory( new APGCategory( 0 ) );
 
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
 

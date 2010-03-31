@@ -217,6 +217,7 @@ set(libbrowserframework_SRCS
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
+    browsers/CollectionTreeViewSimple.cpp
     browsers/InfoProxy.cpp
     browsers/SingleCollectionTreeItemModel.cpp
 )
@@ -395,6 +396,7 @@ set(libpodcasts_SRCS
 # PLAYLISTBROWSER
 #####################################################################
 set(libplaylistbrowser_SRCS
+    browsers/playlistbrowser/APGCategory.cpp
     browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
@@ -403,14 +405,14 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/MetaPlaylistModel.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
-    browsers/playlistbrowser/UserPlaylistModel.cpp
-    browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/UserPlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
     browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
+    browsers/playlistbrowser/UserPlaylistModel.cpp
+    browsers/playlistbrowser/UserPlaylistTreeView.cpp
 )
 
 #####################################################################
@@ -497,6 +499,24 @@ if(KDEMULTIMEDIA_FOUND)
 endif(KDEMULTIMEDIA_FOUND)
 
 #####################################################################
+# DYNAMIC
+#####################################################################
+set(libdynamic_SRCS
+    dynamic/Bias.cpp
+    dynamic/BiasedPlaylist.cpp
+    dynamic/BiasSolver.cpp
+    dynamic/CustomBias.cpp
+    dynamic/CustomBiasEntry.cpp
+    dynamic/CustomBiasEntryWidget.cpp
+    dynamic/DynamicPlaylist.cpp
+    dynamic/TrackSet.cpp
+    dynamic/gsl/gauss.c
+
+    # biases
+    dynamic/biases/EchoNest.cpp
+)
+
+#####################################################################
 # DBUS
 #####################################################################
 set(dbus_SRCS
@@ -530,21 +550,37 @@ set(scriptengine_SRCS
 )
 
 #####################################################################
-# DYNAMIC
+# PLAYLIST GENERATOR
 #####################################################################
-set(libdynamic_SRCS
-    dynamic/BiasedPlaylist.cpp
-    dynamic/DynamicPlaylist.cpp
-    dynamic/Bias.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
-    dynamic/BiasSolver.cpp
-    dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+set(apg_SRCS
+    playlistgenerator/Constraint.cpp
+    playlistgenerator/ConstraintGroup.cpp
+    playlistgenerator/ConstraintFactory.cpp
+    playlistgenerator/ConstraintNode.cpp
+    playlistgenerator/ConstraintSolver.cpp
+    playlistgenerator/ConstraintTester.cpp
+    playlistgenerator/ConstraintTestWrapper.cpp
+    playlistgenerator/Preset.cpp
+    playlistgenerator/PresetEditDialog.cpp
+    playlistgenerator/PresetModel.cpp
+    playlistgenerator/TreeController.cpp
+    playlistgenerator/TreeModel.cpp
+    playlistgenerator/constraints/Checkpoint.cpp
+    playlistgenerator/constraints/CheckpointHandlers.cpp
+    playlistgenerator/constraints/Matching.cpp
+    playlistgenerator/constraints/PlaylistLength.cpp
+    playlistgenerator/constraints/PreventDuplicates.cpp
+    playlistgenerator/constraints/TagMatch.cpp
+    playlistgenerator/constraints/TrackSpreader.cpp
+)
 
-    # biases
-    dynamic/biases/EchoNest.cpp
+kde4_add_ui_files(apg_SRCS
+    playlistgenerator/ConstraintGroupEditWidget.ui
+    playlistgenerator/PresetEditDialog.ui
+    playlistgenerator/constraints/CheckpointEditWidget.ui
+    playlistgenerator/constraints/PlaylistLengthEditWidget.ui
+    playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
+    playlistgenerator/constraints/TagMatchEditWidget.ui
 )
 
 #####################################################################
@@ -579,6 +615,7 @@ set(amaroklib_LIB_SRCS
     ${libdynamic_SRCS}
     ${likeback_SRCS}
     ${core_SRCS}
+    ${apg_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}
@@ -694,6 +731,7 @@ set(amaroklib_LIB_SRCS
     widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
+    widgets/TrackSelectWidget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp

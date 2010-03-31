@@ -25,6 +25,9 @@ VERSION 2.3.1-Beta 1
      * Cover fetcher: Added ability to enter custom queries via Yahoo!,
        Google, or Discogs (in addition to Lasf.Fm). Note the source for
        automatic cover fetching is still Last.fm only.
+     * Automated Playlist Generator: allows smart creation of playlists that
+       match user-specified constraints. Combines the features of "Smart
+       Playlists" in Amarok 1.4 with the Bias system of Amarok 2.0.
 
   CHANGES:
      * Magnatune.com store: Added "Home" link to all artist and album pages leading
