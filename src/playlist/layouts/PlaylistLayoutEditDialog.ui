@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
-    <height>408</height>
+    <width>585</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -97,25 +97,28 @@
             </spacer>
            </item>
            <item>
-            <widget class="KArrowButton" name="moveUpButton">
+            <widget class="QToolButton" name="moveUpButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="arrowType">
+              <enum>Qt::UpArrow</enum>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="KArrowButton" name="moveDownButton">
+            <widget class="QToolButton" name="moveDownButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="arrowType" stdset="0">
-              <number>2</number>
+             <property name="arrowType">
+              <enum>Qt::DownArrow</enum>
              </property>
             </widget>
            </item>
@@ -275,7 +278,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>-1</number>
          </property>
         </widget>
        </item>
@@ -366,11 +369,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KArrowButton</class>
-   <extends>QPushButton</extends>
-   <header>karrowbutton.h</header>
-  </customwidget>
   <customwidget>
    <class>KPushButton</class>
    <extends>QPushButton</extends>
