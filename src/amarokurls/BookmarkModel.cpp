@@ -81,7 +81,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
             {
                 AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
                 if ( url )
-                    return url->command();
+                    return url->prettyCommand();
                 else
                     return i18n( "group" );
                 break;

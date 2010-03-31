@@ -213,6 +213,15 @@ AmarokUrlHandler::paintNewTimecode( const QString &name, int pos )
     emit timecodeAdded( name, pos );
 }
 
+QString
+AmarokUrlHandler::prettyCommand( const QString &command )
+{
+    if( m_registeredRunners.keys().contains( command ) )
+        return m_registeredRunners.value( command )->prettyCommand();
+
+    return i18nc( "The command type of this url is not known", "Unknown" );
+}
+
 
 
 #include "AmarokUrlHandler.moc"

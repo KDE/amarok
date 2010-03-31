@@ -38,6 +38,7 @@ public:
     void initFromString( const QString & urlString );
 
     QString command() const;
+    QString prettyCommand() const;
     QString path() const;
     QMap<QString, QString> args() const;
     

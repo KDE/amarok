@@ -33,6 +33,7 @@ public:
     virtual  ~PlayUrlRunner ();
 
     virtual QString command () const;
+    virtual QString prettyCommand() const;
     virtual bool run ( AmarokUrl url );
     virtual KIcon icon () const;
 

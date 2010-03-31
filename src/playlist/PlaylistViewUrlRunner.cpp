@@ -101,6 +101,12 @@ ViewUrlRunner::command() const
     return "playlist";
 }
 
+QString
+ViewUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that affects the sorting, layout and filtering int he Playlist", "Playlist" );
+}
+
 KIcon
 ViewUrlRunner::icon() const
 {

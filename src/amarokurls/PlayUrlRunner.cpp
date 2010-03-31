@@ -79,6 +79,11 @@ QString PlayUrlRunner::command() const
     return "play";
 }
 
+QString PlayUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that starts playing at a specific position in a track", "Play" );
+}
+
 BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
 {
     BookmarkList list;

@@ -123,6 +123,11 @@ QString NavigationUrlRunner::command() const
     return "navigate";
 }
 
+QString NavigationUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that affects the view in the browser category", "Navigate" );
+}
+
 KIcon NavigationUrlRunner::icon() const
 {
     return KIcon( "flag-amarok" );

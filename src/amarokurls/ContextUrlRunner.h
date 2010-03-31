@@ -35,6 +35,7 @@ public:
     virtual KIcon icon() const;
     virtual bool run(AmarokUrl url);
     virtual QString command() const;
+    virtual QString prettyCommand() const;
 };
 
 #endif // CONTEXTURLRUNNER_H

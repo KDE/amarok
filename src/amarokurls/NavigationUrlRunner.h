@@ -31,6 +31,7 @@ public:
     virtual ~NavigationUrlRunner();
 
     virtual QString command() const;
+    virtual QString prettyCommand() const;
     virtual KIcon icon() const;
     virtual bool run( AmarokUrl url );
 };

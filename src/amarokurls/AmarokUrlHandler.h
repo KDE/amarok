@@ -70,6 +70,8 @@ public:
     AmarokUrl createPlaylistViewBookmark();
     AmarokUrl createContextViewBookmark();
 
+    QString prettyCommand( const QString &command ); 
+
 
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );

@@ -19,6 +19,8 @@
 #include "AmarokUrlHandler.h"
 #include "context/ContextView.h"
 
+#include <KLocale>
+
 ContextUrlRunner::ContextUrlRunner()
 {}
 
@@ -63,5 +65,10 @@ bool ContextUrlRunner::run( AmarokUrl url )
 QString ContextUrlRunner::command() const
 {
     return "context";
+}
+
+QString ContextUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that affects the context view", "Context" );
 }
 

@@ -100,6 +100,12 @@ QString AmarokUrl::command() const
         return m_command;
 }
 
+QString
+AmarokUrl::prettyCommand() const
+{
+    return The::amarokUrlHandler()->prettyCommand( command() );
+}
+
 QMap<QString, QString> AmarokUrl::args() const
 {
     return m_arguments;

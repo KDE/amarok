@@ -33,6 +33,7 @@ public:
     virtual ~ViewUrlRunner();
 
     virtual QString command() const;
+    virtual QString prettyCommand() const;
     virtual KIcon icon() const;
     virtual bool run( AmarokUrl url );
 };
