@@ -15,6 +15,7 @@ include_directories( .
                      ${AMAROK_SOURCE_TREE}
 )
 
+add_subdirectory( amarokurls )
 add_subdirectory( data )
 add_subdirectory( context )
 add_subdirectory( core )

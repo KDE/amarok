@@ -127,7 +127,7 @@ QString AmarokUrl::url() const
     QString url = "amarok://";
     url += m_command;
     url += '/';
-    url += escape( m_path );
+    url += m_path;
 
     if ( url.endsWith( '/' ) )
         url.chop( 1 );
@@ -141,13 +141,15 @@ QString AmarokUrl::url() const
         {
             url += argName;
             url += '=';
-            url += escape( m_arguments.value( argName ) );
+            url += m_arguments.value( argName );
             url += '&';
         }
         url.chop( 1 );
     }
 
-    return url;
+    QUrl qUrl( url );
+
+    return QString( qUrl.toEncoded() );
 }
 
 bool AmarokUrl::saveToDb()
