@@ -140,7 +140,8 @@ private:
 
 };
 
-#endif // SIMILAR_ARTIST_H
-
 Q_DECLARE_METATYPE( SimilarArtist )
 Q_DECLARE_METATYPE( SimilarArtist::SimilarArtistsList )
+
+#endif // SIMILAR_ARTIST_H
+
