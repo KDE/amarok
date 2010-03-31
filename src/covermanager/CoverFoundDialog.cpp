@@ -524,7 +524,11 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_tabs->addTab( metaArea, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
-    setPixmap( m_album->image( 190 ) );
+    setSpacing( 4 );
+    if( m_album->hasImage( 190 ) )
+        setPixmap( m_album->image( 190 ) );
+    else
+        setPixmap( m_album->image( 190 ), false ); // m_album will return the "nocover" image
     clear();
 }
 
@@ -546,12 +550,11 @@ void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata me
     setPixmap( pixmap );
 }
 
-void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
+void CoverFoundSideBar::setPixmap( const QPixmap pixmap, bool drawBorder )
 {
     m_pixmap = pixmap;
     QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
-    QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
-    m_cover->setPixmap( prettyPix );
+    m_cover->setPixmap( drawBorder ? The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true ) : scaledPix );
     updateMetaTable();
 }
 
