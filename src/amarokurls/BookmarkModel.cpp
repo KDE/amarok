@@ -83,7 +83,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
                 if ( url )
                     return url->prettyCommand();
                 else
-                    return i18n( "group" );
+                    return i18n( "Group" );
                 break;
             }
             case Url:
