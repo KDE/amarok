@@ -51,6 +51,7 @@ Name[zh_CN]=Last.fm
 Name[zh_TW]=Last.fm 
 Comment=A service that integrates Last.fm functionality into Amarok
 Comment[ca]=Un servei que integra la funcionalitat de Last.fm en l'Amarok
+Comment[ca@valencia]=Un servei que integra la funcionalitat de Last.fm en l'Amarok
 Comment[cs]=Služba, která do Amaroku integruje funkcionalitu last.fm
 Comment[de]=Ein Dienst zur Integration der Funktionen von Last.fm in Amarok
 Comment[en_GB]=A service that integrates Last.fm functionality into Amarok
