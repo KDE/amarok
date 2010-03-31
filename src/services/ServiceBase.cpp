@@ -340,5 +340,3 @@ void ServiceBase::setLevels( const QList<int> &levels )
 
 #include "ServiceBase.moc"
 
-
-

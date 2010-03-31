@@ -142,7 +142,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Plugins::Plugin, pub
 
 
 /**
-A composite widget used as a base for building service browsers. It contains a home button ( to return to the list of services ), a name label, a tree view, grouping and filtering widgets and other conviniences that handels much of the layout of a new service. Some of these items can be shown or hidden as needed.
+A composite widget used as a base for building service browsers. It contains a home button ( to return to the list of services ), a name label, a tree view, grouping and filtering widgets and other conveniences that handle much of the layout of a new service. Some of these items can be shown or hidden as needed.
 
 @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
@@ -188,7 +188,7 @@ public:
 
     /**
      * Set if it should be possible to add the tracks shown in the tree view to the playlist. This method is a bit of a hack and might be removed!
-     * @param playable Are tracks playlable.
+     * @param playable Are tracks playable.
      */
     void setPlayableTracks( bool playable );
 
@@ -228,7 +228,7 @@ public:
     void setFilter( const QString &filter );
 
     /**
-     * Returns a list of the messages that the current service accepts. Default impelentation does not
+     * Returns a list of the messages that the current service accepts. Default implementation does not
      * accept any.
      * @return A string containing a description of accepted messages.
      */
@@ -262,7 +262,7 @@ public slots:
     //void treeViewSelectionChanged( const QItemSelection & selected );
     /**
      * New info should be shown in the service info applet ( if present ).
-     * @param infoHtml The html formnatted info to show.
+     * @param infoHtml The html formatted info to show.
      */
     void infoChanged ( const QString &infoHtml );
 
@@ -312,7 +312,7 @@ signals:
 
 protected slots:
     /**
-     * Slot called when an intem in the tree view has been activated
+     * Slot called when an item in the tree view has been activated
      * @param index The index of the activated item
      */
     void itemActivated ( const QModelIndex & index );
