@@ -27,6 +27,12 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
+     * Magnatune.com store: Added "Home" link to all artist and album pages leading
+       to the Magnatune.com front page.
+     * Magnatune.com store: Improved Magnatune.com front page.
+     * Magnatune.com store: Completely remove option to purhcase single albums as 
+       this is no longer supported by Magnatune.com and the API for doing so will
+       be disabled in the future.
      * The new file browser now supports "places".
      * Added "up" and "home" buttons to the new filebrowser.
      * Items in the breadcrumb navigation bar are now hidden if there is not enough
@@ -45,6 +51,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Readded missing hover info for the new filebrowser.
+     * Fixed missing images in the hover info shown for various browser categories.
      * Fixed crash when running some Amarok urls on startup. (such as when passed on
        the command line or cliked in another app) (BR 231626)
      * Fixed crashes when Amarok is started and the Info applet is loaded with 
