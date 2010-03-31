@@ -51,6 +51,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed crash on startup for users of MySQL 5.5. Thanks to Bartosz Fabianowski
+       for figuring it out. (BR 231166)
      * Readded missing hover info for the new filebrowser.
      * Fixed missing images in the hover info shown for various browser categories.
      * Fixed crash when running some Amarok urls on startup. (such as when passed on
