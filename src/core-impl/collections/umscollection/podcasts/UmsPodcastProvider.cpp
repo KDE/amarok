@@ -151,8 +151,7 @@ UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 QString
 UmsPodcastProvider::prettyName() const
 {
-    return i18nc( "Podcasts on a media device", "Podcasts on %1" )
-            .arg( m_handler->prettyName() );
+    return i18nc( "Podcasts on a media device", "Podcasts on %1", m_handler->prettyName() );
 }
 
 KIcon
