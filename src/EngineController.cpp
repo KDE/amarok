@@ -1045,14 +1045,12 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
 
-#if 0
-    if( !m_multiPlayback )
+    if( m_currentTrack && !m_multiPlayback )
     {
         m_media->blockSignals( true );
         m_media->setCurrentSource( m_currentTrack->playableUrl() );
         m_media->blockSignals( false );
     }
-#endif
     m_media->play();
 }
 
