@@ -61,7 +61,6 @@ bool InfoEngine::sourceRequestEvent( const QString& name )
 
 void InfoEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK;
     if( state == Current && m_requested ) {
         m_storedInfo = The::infoProxy()->info();
         update();

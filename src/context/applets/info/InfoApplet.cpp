@@ -93,9 +93,6 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     if( data.isEmpty() )
         return;
 
-    debug() << "got data from engine: " << data[ "subject_name" ].toString();
-     debug() << "page : " << data[ "main_info" ].toString();
-
     if  ( m_initialized )
     {
         QString currentHtml = data[ "main_info" ].toString();
