@@ -54,7 +54,7 @@ bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const M
         files << track->prettyUrl();
     
     const QString text( i18ncp( "@info", "Do you really want to move this track? It will be renamed and the original deleted.",
-                                "Do you really want to move these %1 tracks? They will be renamed and the originals deleted", tracks.count() ) );
+                                "Do you really want to move these %1 tracks? They will be renamed and the originals deleted.", tracks.count() ) );
     const bool del = KMessageBox::warningContinueCancelList(0,
                                                             text,
                                                             files,

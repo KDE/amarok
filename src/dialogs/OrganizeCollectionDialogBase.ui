@@ -98,10 +98,10 @@
       <item>
        <widget class="QCheckBox" name="asciiCheck">
         <property name="toolTip">
-         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-english characters in your tags. Most people can leave this option unchecked.</string>
+         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-English characters in your tags. Most people can leave this option unchecked.</string>
         </property>
         <property name="whatsThis">
-         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-english characters in your tags. Most people can leave this option unchecked.</string>
+         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-English characters in your tags. Most people can leave this option unchecked.</string>
         </property>
         <property name="text">
          <string>Restrict to &amp;ASCII</string>
