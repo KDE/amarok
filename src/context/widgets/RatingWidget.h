@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -158,11 +159,11 @@ class AMAROK_EXPORT RatingWidget : public QGraphicsWidget
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* e );
     virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent* e );
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
-//     virtual void resizeEvent( QGraphicsSceneResizeEvent* e );
 
  private:
     class Private;
     Private* const d;
+    int m_startupUpdates;
 };
 
 #endif

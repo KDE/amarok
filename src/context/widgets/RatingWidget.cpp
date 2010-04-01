@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2008 William Viana Soarjs <vianasw@gmail.com>                          *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -61,6 +62,7 @@ public:
 RatingWidget::RatingWidget( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , d( new Private() )
+    , m_startupUpdates( 2 )
 {
     setAcceptHoverEvents( true );
     setToolTip( i18n( "Track rating: %1", d->rating ) );
@@ -265,6 +267,15 @@ RatingWidget::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, 
                     contentsRect().width(), contentsRect().height() );
         d->ratingPainter.paint( painter, rect, d->rating, d->hoverRating );
     }
+
+    // HACK: (this works fine, but if a better fix is found, we should replace it)
+    // Make sure that the the parent item updates itself correctly on startup.
+    // We use a counter variable to prevent infinite recursion.
+    if( m_startupUpdates )
+    {
+        parentItem()->update();
+        m_startupUpdates--;
+    }
 }
 
 QSizeF
@@ -284,18 +295,6 @@ RatingWidget::sizeHint( Qt::SizeHint hint, const QSizeF& size ) const
     return QSizeF( pixSize.width()*numPix + spacing()*(numPix-1) + contentsRect().width(),
                   pixSize.height() + contentsRect().width() );
 }
-
-
-// void
-// RatingWidget::resizeEvent( QGraphicsSceneResizeEvent* e )
-// {
-//     DEBUG_BLOCK
-// 
-// //     QFrame::resizeEvent( e );
-// 
-//     // FIXME: Disabled because this causes infinite recursion
-//     //updateGeometry();
-// }
 
 #include "RatingWidget.moc"
 
