@@ -127,8 +127,7 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     {
         m_removeTrackAction = new QAction(
                     KIcon( "media-track-remove-amarok" ),
-                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"" )
-                        .arg( playlist->name() ),
+                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"",  playlist->name() ),
                     this
                 );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -137,7 +136,7 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     else
     {
         m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
-                                             "Remove From \"%1\"" ).arg( playlist->name() ) );
+                                             "Remove From \"%1\"", playlist->name() ) );
     }
 
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
@@ -318,7 +317,7 @@ PlaylistFileProvider::loadPlaylists()
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
+                    i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
                     StatusBar::Error
                 );
             continue;
@@ -344,7 +343,7 @@ PlaylistFileProvider::loadPlaylists()
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
+                    i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
                     StatusBar::Error
                 );
             continue;
