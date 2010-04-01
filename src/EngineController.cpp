@@ -1045,6 +1045,11 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
 
+
+// Fix for Phonon-VLC, which tends to stop after each track without this code.
+// Unfortunately it seems to break the GStreamer backend, so it's disabled for now.
+
+#if 0
     if( m_currentTrack && !m_multiPlayback )
     {
         m_media->blockSignals( true );
@@ -1052,6 +1057,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         m_media->blockSignals( false );
     }
     m_media->play();
+#endif
 }
 
 void
