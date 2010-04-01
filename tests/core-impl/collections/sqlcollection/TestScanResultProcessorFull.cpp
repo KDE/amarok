@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,13 +18,17 @@
 #include "TestScanResultProcessorFull.h"
 
 #include "core/support/Debug.h"
+#include <QDebug>
 
 #include "core/meta/support/MetaConstants.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
 #include "ScanResultProcessor.h"
 #include "core/collections/support/SqlStorage.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/collections/sqlcollection/SqlRegistry.h"
+
 
 #include "config-amarok-test.h"
 #include "SqlMountPointManagerMock.h"
@@ -53,11 +58,17 @@ TestScanResultProcessorFull::initTestCase()
     m_collection->setSqlStorage( m_storage );
     SqlMountPointManagerMock *mpm = new SqlMountPointManagerMock();
     m_collection->setMountPointManager( mpm );
+
     DatabaseUpdater *updater = new DatabaseUpdater();
     m_collection->setUpdater( updater );
     updater->setStorage( m_storage );
     updater->setCollection( m_collection );
     updater->update();
+
+    // registry needed when updating urls and nobody checks for NULL
+    SqlRegistry *registry = new SqlRegistry( m_collection );
+    registry->setStorage( m_storage );
+    m_collection->setRegistry( registry );
 }
 
 void
@@ -83,6 +94,263 @@ TestScanResultProcessorFull::cleanup()
     m_storage->query( "TRUNCATE TABLE directories;" );
     m_storage->query( "COMMIT" );
 }
+
+/**
+ * Check that a single insert really inserts all the information
+ */
+void
+TestScanResultProcessorFull::testSingleInsert()
+{
+    QString mockMountPoint = ".";
+
+    QVariantMap track;
+    track.insert( Meta::Field::TITLE, "The Morning After" );
+    track.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://459234596663341");
+    track.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Maureen Mcgovern - The Morning After.mp3" );
+    track.insert( Meta::Field::ALBUM, "The Poseidon Adventure Soundtrack");
+    track.insert( Meta::Field::ARTIST, "Maureen McGovern" );
+    track.insert( Meta::Field::COMPOSER, "Al Kasha and Joel Hirshorn" );
+    track.insert( Meta::Field::GENRE, "Soundtrack" );
+    track.insert( Meta::Field::YEAR, "1972" );
+    track.insert( Meta::Field::COMMENT, "Academy Award 1972" );
+    track.insert( Meta::Field::TRACKNUMBER, "2" );
+    track.insert( Meta::Field::DISCNUMBER, "1" );
+    track.insert( Meta::Field::BITRATE, "128" );
+    track.insert( Meta::Field::LENGTH, "321" );
+    track.insert( Meta::Field::SAMPLERATE, "44000" );
+    track.insert( Meta::Field::FILESIZE, "123456" );
+    track.insert( Meta::Field::BPM, "100" );
+    track.insert( Meta::Field::ALBUMGAIN, "1" );
+    track.insert( Meta::Field::ALBUMPEAKGAIN, "5" );
+    track.insert( Meta::Field::TRACKGAIN, "-1" );
+    track.insert( Meta::Field::TRACKPEAKGAIN, "-5" );
+
+    QList<QVariantMap> tracksInDir;
+    tracksInDir << track;
+
+    // -- scan the track
+    ScanResultProcessor scp( m_collection );
+    scp.setSqlStorage( m_storage );
+    scp.setScanType( ScanResultProcessor::FullScan );
+
+    scp.processDirectory( tracksInDir );
+    scp.commit();
+
+    // -- check the commit
+    QStringList result;
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+    QString urlId = result.first();
+
+    result = m_storage->query( QString("SELECT uniqueid FROM urls WHERE id='%1';").arg(urlId));
+    QCOMPARE( track.value(Meta::Field::UNIQUEID).toString(), result.first() );
+
+    result = m_storage->query( QString("SELECT title, comment, tracknumber, discnumber, artist, album, genre, composer, year, bitrate, length, filesize, "
+                "samplerate, albumgain, albumpeakgain, trackgain, trackpeakgain FROM tracks WHERE url='%1';").arg(urlId));
+    QCOMPARE( track.value(Meta::Field::TITLE).toString(), result.at(0) );
+    QCOMPARE( track.value(Meta::Field::COMMENT).toString(), result.at(1) );
+    QCOMPARE( track.value(Meta::Field::TRACKNUMBER).toString(), result.at(2) );
+    QCOMPARE( track.value(Meta::Field::DISCNUMBER).toString(), result.at(3) );
+    QString artistId = result.at(4);
+    QString albumId = result.at(5);
+    QString genreId = result.at(6);
+    QString composerId = result.at(7);
+    QString yearId = result.at(8);
+    QCOMPARE( track.value(Meta::Field::BITRATE).toString(), result.at(9) );
+    QCOMPARE( track.value(Meta::Field::LENGTH).toString(), result.at(10) );
+    QCOMPARE( track.value(Meta::Field::FILESIZE).toString(), result.at(11) );
+
+    result = m_storage->query( QString("SELECT name FROM artists WHERE id='%1';").arg(artistId));
+    QCOMPARE( track.value(Meta::Field::ARTIST).toString(), result.at(0) );
+
+    result = m_storage->query( QString("SELECT name FROM albums WHERE id='%1';").arg(albumId));
+    QCOMPARE( track.value(Meta::Field::ALBUM).toString(), result.at(0) );
+
+    result = m_storage->query( QString("SELECT name FROM genres WHERE id='%1';").arg(genreId));
+    QCOMPARE( track.value(Meta::Field::GENRE).toString(), result.at(0) );
+}
+
+
+/**
+ * After adding a directory all NOT scanned files should be considered removed.
+ * New directories should be added to the table.
+ */
+void
+TestScanResultProcessorFull::testAddDirectory()
+{
+#ifdef Q_OS_WIN32
+    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
+#endif
+
+    QString mockMountPoint = ".";
+    KTempDir tempDir;
+
+    QVariantMap track1;
+    track1.insert( Meta::Field::TITLE, "The Morning After" );
+    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567891");
+    track1.insert( Meta::Field::URL, tempDir.name() + "Maureen Mcgovern - The Morning After.mp3" );
+
+    QVariantMap track2;
+    track2.insert( Meta::Field::TITLE, "The Ectasy of Gold" );
+    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567892");
+    track2.insert( Meta::Field::URL, tempDir.name() + "Ennio Morricone - The Ecstasy of Gold.mp3" );
+
+    QVariantMap track3;
+    track3.insert( Meta::Field::TITLE, "Hot Night" );
+    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567893");
+    track3.insert( Meta::Field::URL, tempDir.name() + "/home/ralf/songs/Audio Einzeln/Soundtrack/Ghostbusters - Laura Branigan - Hot Night.mp3" );
+
+
+    QList<QVariantMap> tracksInDir;
+    tracksInDir << track1 << track2;
+
+    // -- create the original entries
+    cleanup();
+
+    ScanResultProcessor scp( m_collection );
+    scp.setSqlStorage( m_storage );
+    scp.setScanType( ScanResultProcessor::FullScan );
+
+    scp.addDirectory( tempDir.name(), 1000 /*time*/ );
+    scp.processDirectory( tracksInDir );
+    scp.commit();
+
+    // now two tracks
+    QStringList result;
+    result = m_storage->query( "select count(*) from tracks" );
+    QCOMPARE( result.first().toInt(), 2 );
+
+    // -- now overwrite track 2 and add track 3
+
+    tracksInDir.clear();
+    tracksInDir << track2 << track3;
+
+    // -- Overwrite here
+    // TODO: make it possible to re-use the old processor. It does seem to delete it's temporary tables upon commit
+    ScanResultProcessor scp2( m_collection );
+    scp2.setSqlStorage( m_storage );
+    scp2.setScanType( ScanResultProcessor::FullScan );
+
+    scp2.addDirectory( tempDir.name(), 2000 /*time*/ );
+    scp2.processDirectory( tracksInDir );
+    scp2.commit();
+
+    // -- check the commit
+    // Now we should have two tracks. Track 2 and 3. Track 1 should have been removed
+    result = m_storage->query( "select count(*) from tracks" );
+    QCOMPARE( result.first().toInt(), 2 );
+
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track3.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+}
+
+
+/**
+ * Test merging of the result with an incremental scan.
+ * New files should be inserted
+ * Existing files should be merged
+ */
+void
+TestScanResultProcessorFull::testMerges()
+{
+    QString mockMountPoint = ".";
+
+    QVariantMap track1;
+    track1.insert( Meta::Field::TITLE, "The Morning After" );
+    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567891");
+    track1.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Maureen Mcgovern - The Morning After.mp3" );
+    track1.insert( Meta::Field::ALBUM, "The Poseidon Adventure Soundtrack");
+    track1.insert( Meta::Field::ARTIST, "Maureen McGovern" );
+
+    QVariantMap track2;
+    track2.insert( Meta::Field::TITLE, "The Ectasy of Gold" );
+    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567892");
+    track2.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ennio Morricone - The Ecstasy of Gold.mp3" );
+    track2.insert( Meta::Field::ALBUM, "Kill Bill 2 Soundtrack");
+    track2.insert( Meta::Field::ARTIST, "Ennio Morricone" );
+
+    QVariantMap track3;
+    track3.insert( Meta::Field::TITLE, "Hot Night" );
+    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567893");
+    track3.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ghostbusters - Laura Branigan - Hot Night.mp3" );
+    track3.insert( Meta::Field::ALBUM, "Ghostbusters Soundtrack");
+    track3.insert( Meta::Field::ARTIST, "Laura Branigan" );
+
+    QList<QVariantMap> tracksInDir;
+    tracksInDir << track1;
+    tracksInDir << track2;
+
+    QStringList result;
+
+    // -- create the original entries
+    cleanup();
+
+    ScanResultProcessor scp( m_collection );
+    scp.setSqlStorage( m_storage );
+    scp.setScanType( ScanResultProcessor::FullScan );
+
+    scp.processDirectory( tracksInDir );
+    scp.commit();
+
+    result = m_storage->query( "select count(*) from tracks" );
+    QCOMPARE( result.first().toInt(), 2 );
+
+    // -- create statistics. They must not be modified
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+    QString urlId = result.first();
+
+    // result = m_storage->query( QString("INSERT id FROM statistics WHERE rpath='%1';").arg(mockMountPoint+track1.value(Meta::Field::URL).toString()));
+
+    // -- now overwrite track 2 and add track 3
+
+    track2.insert( Meta::Field::TITLE, "The Ecstasy of Gold" );
+    track2.insert( Meta::Field::ALBUM, "The Good the Bad and the Ugly Soundtrack");
+    // changing the path should not be a problem as long as the unique id stays the same
+    track2.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ennio Morricone - The Good The Bad and The Ugly Soundtrack - The Ecstasy of Gold.mp3" );
+
+    tracksInDir.clear();
+    tracksInDir << track2 << track3;
+
+    // -- Overwrite here
+    // TODO: make it possible to re-use the old processor. It does seem to delete it's temporary tables upon commit
+    ScanResultProcessor scp2( m_collection );
+    scp2.setSqlStorage( m_storage );
+    scp2.setScanType( ScanResultProcessor::IncrementalScan);
+
+    scp2.processDirectory( tracksInDir );
+    scp2.commit();
+
+    // -- check the commit
+
+    // now three tracks
+    result = m_storage->query( "select count(*) from tracks" );
+    QCOMPARE( result.first().toInt(), 3 );
+
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+    urlId = result.first();
+
+    // --- check that the changed informations are really changed.
+    // --- note that overwriting with empty information is undefined
+    result = m_storage->query( QString("SELECT title, album FROM tracks WHERE url='%1';").arg(urlId));
+    QCOMPARE( result.count(), 2 );
+    QCOMPARE( track2.value(Meta::Field::TITLE).toString(), result.at(0) );
+    QString albumId = result.at(1);
+
+    result = m_storage->query( QString("SELECT name FROM albums WHERE id='%1';").arg(albumId));
+    QCOMPARE( result.count(), 1 );
+    QCOMPARE( track2.value(Meta::Field::ALBUM).toString(), result.at(0) );
+
+    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track3.value(Meta::Field::URL).toString()));
+    QCOMPARE( result.count(), 1 );
+    urlId = result.first();
+
+}
+
 
 void
 TestScanResultProcessorFull::testLargeInsert()

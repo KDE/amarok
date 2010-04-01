@@ -45,6 +45,10 @@ private slots:
 
     void cleanup();
 
+    void testSingleInsert();
+    void testAddDirectory();
+    void testMerges();
+
     void testLargeInsert();
     void testIdentifyCompilationInMultipleDirectories();
     void testAFeatBDetectionInSingleDirectory();
