@@ -51,12 +51,15 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
 
     m_pathEdit = new KLineEdit( m_editArea );
     m_pathEdit->setClearButtonShown( true );
+    m_pathEdit->installEventFilter( this ); //we want to catch the escape button and bail out of editing
+    
     m_goButton = new KPushButton( KIcon( "dialog-ok" ), QString(), m_editArea );
     m_goButton->setToolTip( i18n( "Click For Location Navigation" ) ); //String stolen from Dolphin! :-)
     m_goButton->setFixedSize( 20, 20 );
     m_goButton->setFlat( true );
     
     connect( m_pathEdit, SIGNAL( returnPressed() ), this, SLOT( editUpdated() ) );
+    connect( m_pathEdit, SIGNAL(  ), this, SLOT( editUpdated() ) );
     connect( m_goButton, SIGNAL( clicked( bool ) ), this, SLOT( editUpdated() ) );
 
 
@@ -330,6 +333,23 @@ BrowserBreadcrumbWidget::editUpdated()
 
     m_widgetStack->setCurrentIndex( 0 );
     
+}
+
+bool
+BrowserBreadcrumbWidget::eventFilter( QObject *obj, QEvent *ev )
+{
+    if ( obj != m_pathEdit )
+        return false;
+
+    if ( ev->type() == QEvent::KeyPress) {
+        int key = static_cast< QKeyEvent* >(ev)->key();
+        if( key == Qt::Key_Escape ) {
+            m_pathEdit->clear();
+            m_widgetStack->setCurrentIndex( 0 );
+            return true;
+        }
+    }
+    return false;
 }
 
 

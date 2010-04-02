@@ -81,6 +81,8 @@ protected:
     virtual void resizeEvent( QResizeEvent * event );
     virtual void mousePressEvent( QMouseEvent * event );
 
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
 private:
     
     /**
