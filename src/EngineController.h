@@ -378,6 +378,11 @@ private:
     bool m_ignoreVolumeChangeAction;
     bool m_ignoreVolumeChangeObserve;
 
+    // Used to get a more accurate estimate of the position for slotTick
+    int m_tickInterval;
+    qint64 m_lastTickPosition;
+    qint64 m_lastTickCount;
+
     QMutex m_mutex;
 };
 
