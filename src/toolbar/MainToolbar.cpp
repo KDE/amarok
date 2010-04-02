@@ -610,7 +610,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
 void
 MainToolbar::engineTrackChanged( Meta::TrackPtr track )
 {
-    if ( !isVisible() )
+    if ( !isVisible() || (track && track.data() == m_current.key) )
         return;
     if ( m_trackBarAnimationTimer )
     {
