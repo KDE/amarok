@@ -153,8 +153,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
-        void layoutChanged();
-        void ignoreLayoutChangesTimeout();
 
         /**
          * Save state and position of dock widgets.
@@ -167,6 +165,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void restoreLayout();
 
     protected:
+        bool eventFilter(QObject *, QEvent *);
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
         virtual void resizeEvent ( QResizeEvent * event );
@@ -229,15 +228,33 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
-        bool m_dockWidthsLocked;
-        bool m_dockChangesIgnored;
-        QTimer * m_restoreLayoutTimer;
-        QTimer * m_ignoreLayoutChangesTimer;
-        QTimer * m_saveLayoutChangesTimer;
 
         bool m_waitingForCd;
 
+        // Layout hack -----------------
+        typedef struct Ratio {
+            float x,y;
+        } Ratio;
+        Ratio m_browsersRatio;
+        Ratio m_contextRatio;
+        Ratio m_playlistRatio;
+        QRect m_dockingRect;
+        bool m_mouseDown;
+        bool m_LH_initialized;
+        QTimer * m_saveLayoutChangesTimer;
+
+        bool LH_isIrrelevant( const QDockWidget *dock );
+        QTabBar *LH_dockingTabbar();
+        void LH_extend( QRect &target, const QDockWidget *dock );
+        QSize LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, float ry, int splitter );
+        bool LH_fuzzyMatch( const QSize &sz1, const QSize &sz2 );
+        bool LH_isConstrained( const QDockWidget *dock );
+
     private slots:
+        void updateDockRatio();
+        void updateDockRatio(QDockWidget*);
+        void initLayoutHack();
+        // ------------------------------
         void createContextView( Plasma::Containment *c );
 };
 
