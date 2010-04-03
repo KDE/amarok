@@ -21,6 +21,7 @@
 #include "amarokconfig.h"
 #include "playlistgenerator/ConstraintSolver.h"
 #include "playlistgenerator/PresetModel.h"
+#include "widgets/PrettyTreeView.h"
 #ifndef KDE_NO_DEBUG_OUTPUT
 #include "playlistgenerator/ConstraintTestWrapper.h"
 #endif
@@ -100,18 +101,11 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     QLabel* label_Title = new QLabel( i18n("APG Presets"), this );
     label_Title->setAlignment( Qt::AlignCenter );
 
-    // transparent background for list view
-    // TODO: make the rows a little more distinguished, like static playlist browser
-    QPalette p = palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    p.setColor( QPalette::Window, c );
-
-    QListView* listView = new QListView( this );
+    Amarok::PrettyTreeView* listView = new Amarok::PrettyTreeView( this );
+    listView->setHeaderHidden( true );
+    listView->setRootIsDecorated( false );
     listView->setModel( presetmodel );
     listView->setSelectionMode( QAbstractItemView::SingleSelection );
-    listView->setPalette( p );
     listView->setFrameShape( QFrame::NoFrame );
     listView->setAutoFillBackground( false );
     connect( listView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( activeChanged( const QModelIndex& ) ) );
