@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.3.1-Beta 1
   FEATURES:
+     * Automated Playlist Generator: allows smart creation of playlists that
+       match user-specified constraints. Combines the features of "Smart
+       Playlists" in Amarok 1.4 with the Bias system of Amarok 2.0.
      * It's now possible to mark all episodes in a channel as old or new at once.
      * New "Upcoming Events" applet, displays future concerts for the artist of
        the currently playing track. The event info is fetched from Last.fm.
@@ -25,9 +28,6 @@ VERSION 2.3.1-Beta 1
      * Cover fetcher: Added ability to enter custom queries via Yahoo!,
        Google, or Discogs (in addition to Lasf.Fm). Note the source for
        automatic cover fetching is still Last.fm only.
-     * Automated Playlist Generator: allows smart creation of playlists that
-       match user-specified constraints. Combines the features of "Smart
-       Playlists" in Amarok 1.4 with the Bias system of Amarok 2.0.
 
   CHANGES:
      * Magnatune.com store: Added "Home" link to all artist and album pages leading
