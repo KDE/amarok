@@ -57,7 +57,7 @@ VERSION 2.3.1-Beta 1
      * Fixed a hang that would occur when organizing a track and the source
        file was the same as the destination file. (BR 233181)
      * Fixed the double delete confirmation dialog when organizing tracks.
-      (BR 233200)
+       (BR 233200)
      * Fixed broken rendering of ratings in Current Track applet on startup.
      * Fixed command type names shown in the Bookmark Manager not being translated.
        (BR 226829)
