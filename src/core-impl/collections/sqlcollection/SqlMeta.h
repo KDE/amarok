@@ -436,7 +436,7 @@ class SqlYear : public Meta::Year
 class SqlLabel : public Meta::Label
 {
 public:
-    SqlLabel( SqlCollection *collection, int id, const QString &name );
+    SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );
 
     virtual QString name() const { return m_name; }
     virtual QString prettyName() const { return m_name; }
@@ -449,7 +449,7 @@ public:
     int id() const { return m_id; }
 
 private:
-    SqlCollection *m_collection;
+    Collections::SqlCollection *m_collection;
     QString m_name;
     int m_id;
     bool m_tracksLoaded;

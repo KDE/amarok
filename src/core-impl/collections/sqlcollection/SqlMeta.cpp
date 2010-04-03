@@ -919,6 +919,7 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this) : 0 );
 }
 
+void
 SqlTrack::addLabel( const QString &label )
 {
     Meta::LabelPtr realLabel = m_collection->registry()->getLabel( label, -1 );
@@ -989,8 +990,8 @@ SqlTrack::labels() const
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Label );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Label );
         const_cast<SqlTrack*>( this )->addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
@@ -1941,8 +1942,8 @@ SqlYear::tracks()
 
 //---------------SqlLabel---------------------------------
 
-SqlLabel::SqlLabel( SqlCollection *collection, int id, const QString &name ) : Meta::Label()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
+SqlLabel::SqlLabel( Collections::SqlCollection *collection, int id, const QString &name ) : Meta::Label()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1970,8 +1971,8 @@ SqlLabel::tracks()
     }
     else if( m_collection )
     {
-        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Track );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();

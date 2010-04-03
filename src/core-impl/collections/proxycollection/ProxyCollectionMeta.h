@@ -284,7 +284,6 @@ namespace Meta {
         Meta::LabelList m_labels;
         QString m_name;
     };
-}
 } //namespace Meta
 
 #endif

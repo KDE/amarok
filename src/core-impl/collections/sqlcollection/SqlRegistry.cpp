@@ -363,7 +363,7 @@ SqlRegistry::getLabel( const QString &label, int id, bool refresh )
         Meta::LabelPtr label = m_labelMap.value( id );
         if( refresh )
         {
-            KSharedPtr<SqlLabel>::staticCast( label )->invalidateCache();
+            KSharedPtr<Meta::SqlLabel>::staticCast( label )->invalidateCache();
         }
         return label;
     }
@@ -383,7 +383,7 @@ SqlRegistry::getLabel( const QString &label, int id, bool refresh )
                 id = res[0].toInt();
             }
         }
-        SqlLabel *sqlLabel = new SqlLabel( m_collection, id, label );
+        Meta::SqlLabel *sqlLabel = new Meta::SqlLabel( m_collection, id, label );
         Meta::LabelPtr label( sqlLabel );
         m_labelMap.insert( id, label );
         return label;
@@ -418,7 +418,7 @@ SqlRegistry::emptyCache()
         foreachInvalidateCache( Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
         foreachInvalidateCache( Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
         foreachInvalidateCache( Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
-        foreachInvalidateCache( Meta::LabelPtr, KSharedPtr<SqlLabel>, m_labelMap );
+        foreachInvalidateCache( Meta::LabelPtr, KSharedPtr<Meta::SqlLabel>, m_labelMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map (except for m_trackMap, where
@@ -434,20 +434,12 @@ SqlRegistry::emptyCache()
         foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap )
         foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap )
         //run before artist so that album artist pointers can be garbage collected
-<<<<<<< HEAD:src/core-impl/collections/sqlcollection/SqlRegistry.cpp
         foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap )
         foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap )
         foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap )
         foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap )
         foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap )
-=======
-        foreachCollectGarbage( int, AlbumPtr, 2, m_albumMap )
-        foreachCollectGarbage( int, ArtistPtr, 2, m_artistMap )
-        foreachCollectGarbage( int, GenrePtr, 2, m_genreMap )
-        foreachCollectGarbage( int, ComposerPtr, 2, m_composerMap )
-        foreachCollectGarbage( int, YearPtr, 2, m_yearMap )
-        foreachCollectGarbage( int, LabelPtr, 2, m_labelMap )
->>>>>>> added support for labels to the registry:src/core-impl/collections/sqlcollection/SqlRegistry.cpp
+        foreachCollectGarbage( int, Meta::LabelPtr, 2, m_labelMap )
     }
 
     //make sure to unlock all necessary locks

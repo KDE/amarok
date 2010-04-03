@@ -415,7 +415,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
                     Collections::QueryMaker::QueryType nextLevel;
                     if( level +1 == m_levelType.count() )
                     {
-                        nextLevel = QueryMaker::Track;
+                        nextLevel = Collections::QueryMaker::Track;
                     }
                     else
                     {
@@ -1037,12 +1037,12 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
 }
 
 void
-CollectionTreeItemModelBase::handleTracksWithoutLabels( QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const
+CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const
 {
     DEBUG_BLOCK
-    QueryMaker *qm = parent->queryMaker();
+    Collections::QueryMaker *qm = parent->queryMaker();
     qm->setQueryType( queryType );
-    qm->setLabelQueryMode( QueryMaker::OnlyWithoutLabels );
+    qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
     qm->setReturnResultAsDataPtrs( true );
     CollectionTreeItem *tmpItem = parent;
     while( tmpItem->isDataItem() )

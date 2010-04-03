@@ -579,7 +579,7 @@ ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyCollection::Track::addLabel( const QString &label )
+ProxyTrack::addLabel( const QString &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -588,7 +588,7 @@ ProxyCollection::Track::addLabel( const QString &label )
 }
 
 void
-ProxyCollection::Track::addLabel( const Meta::LabelPtr &label )
+ProxyTrack::addLabel( const Meta::LabelPtr &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -597,7 +597,7 @@ ProxyCollection::Track::addLabel( const Meta::LabelPtr &label )
 }
 
 void
-ProxyCollection::Track::removeLabel( const Meta::LabelPtr &label )
+ProxyTrack::removeLabel( const Meta::LabelPtr &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -606,7 +606,7 @@ ProxyCollection::Track::removeLabel( const Meta::LabelPtr &label )
 }
 
 Meta::LabelList
-ProxyCollection::Track::labels() const
+ProxyTrack::labels() const
 {
     QSet<ProxyLabel*> proxyLabels;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -1513,7 +1513,7 @@ ProxyLabel::sortableName() const
 }
 
 bool
-ProxyLabel::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+ProxyLabel::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
 
     if( m_labels.count() == 1 )
@@ -1526,7 +1526,7 @@ ProxyLabel::hasCapabilityInterface(Capabilities::Capability::Type type ) const
     }
 }
 
-Meta::Capability*
+Capabilities::Capability*
 ProxyLabel::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_labels.count() == 1 )

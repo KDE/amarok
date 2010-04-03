@@ -26,12 +26,13 @@
 #include <QMap>
 #include <QString>
 
+class OrganizeCollectionDelegateFactory;
+
 namespace Collections {
 
 class SqlCollection;
 
 class SqlCollectionLocation;
-class OrganizeCollectionDelegateFactory;
 /**
  * @class TransferJob
  * A simple class that provides KJob functionality (progress reporting, aborting, etc) for sqlcollectionlocation.

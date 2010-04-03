@@ -93,7 +93,7 @@ namespace Collections {
 
         bool hasLabel( const QString &name );
         void removeLabel( const QString &name );
-        Meta::ProxyLabel* getLabel( Meta::LabelPtr &label );
+        Meta::ProxyLabel* getLabel( Meta::LabelPtr label );
         void setLabel( Meta::ProxyLabel *label );
 
         public slots:

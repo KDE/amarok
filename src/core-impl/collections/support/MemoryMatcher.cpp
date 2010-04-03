@@ -314,7 +314,7 @@ LabelMatcher::match( const Meta::TrackList &tracks )
 }
 
 Meta::TrackList
-LabelMatcher::match( MemoryCollection *memColl )
+LabelMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_label )
         return Meta::TrackList();

@@ -76,6 +76,21 @@ private slots:
     void testReturnFunctions_data();
     void testReturnFunctions();
 
+    void testLabelMatch();
+    void testMultipleLabelMatches();
+
+    void testQueryTypesWithLabelMatching_data();
+    void testQueryTypesWithLabelMatching();
+
+    void testFilterOnLabelsAndCombination();
+    void testFilterOnLabelsOrCombination();
+    void testFilterOnLabelsNegationAndCombination();
+    void testFilterOnLabelsNegationOrCombination();
+    void testComplexLabelsFilter();
+
+    void testLabelQueryMode_data();
+    void testLabelQueryMode();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;

@@ -87,7 +87,6 @@ protected:
     Capabilities::TrackCapabilityDelegate *createTrackDelegate() const { return new Capabilities::TrackCapabilityDelegateImpl(); }
 };
 
-namespace Collections {
 class OrganizeCollectionDelegateImpl : public OrganizeCollectionDelegate
 {
 public:
@@ -126,6 +125,8 @@ class OrganizeCollectionDelegateFactoryImpl : public OrganizeCollectionDelegateF
 public:
     virtual OrganizeCollectionDelegate* createDelegate() { return new OrganizeCollectionDelegateImpl(); }
 };
+
+namespace Collections {
 
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
 {

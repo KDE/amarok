@@ -549,7 +549,7 @@ Meta::Year::operator==( const Meta::Year &year ) const
 }
 
 void
-Meta::Label::addMatchTo( QueryMaker *qm )
+Meta::Label::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( Meta::LabelPtr( this ) );
 }

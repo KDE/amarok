@@ -131,7 +131,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
         void handleCompilations( CollectionTreeItem *parent ) const;
-        void handleTracksWithoutLabels( QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
+        void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         QString m_headerText;
         CollectionTreeItem *m_rootItem;

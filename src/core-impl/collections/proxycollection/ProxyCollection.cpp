@@ -439,21 +439,21 @@ ProxyCollection::hasTrack( const TrackKey &key )
 }
 
 bool
-ProxyCollection::Collection::hasLabel( const QString &name )
+ProxyCollection::hasLabel( const QString &name )
 {
     QReadLocker locker( &m_labelLock );
     return m_labelMap.contains( name );
 }
 
 void
-ProxyCollection::Collection::removeLabel( const QString &name )
+ProxyCollection::removeLabel( const QString &name )
 {
     QWriteLocker locker( &m_labelLock );
     m_labelMap.remove( name );
 }
 
 Meta::ProxyLabel*
-ProxyCollection::Collection::getLabel( Meta::LabelPtr &label )
+ProxyCollection::getLabel( Meta::LabelPtr label )
 {
     m_labelLock.lockForRead();
     if( m_labelMap.contains( label->name() ) )
@@ -477,14 +477,14 @@ ProxyCollection::Collection::getLabel( Meta::LabelPtr &label )
 }
 
 void
-ProxyCollection::Collection::setLabel( Meta::ProxyLabel *label )
+ProxyCollection::setLabel( Meta::ProxyLabel *label )
 {
     QWriteLocker locker( &m_labelLock );
     m_labelMap.insert( label->name(), KSharedPtr<Meta::ProxyLabel>( label ) );
 }
 
 void
-ProxyCollection::Collection::emptyCache()
+ProxyCollection::emptyCache()
 {
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasLabel;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasLabel = false;

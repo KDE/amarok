@@ -804,11 +804,11 @@ void TagDialog::init()
 void
 TagDialog::startDataQuery()
 {
-    Collections::QueryMaker *artist = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Artist );
-    Collections::QueryMaker *album = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Album );
-    Collections::QueryMaker *composer = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Composer );
-    Collections::QueryMaker *genre = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Genre );
-    Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( QueryMaker::Label );
+    Collections::QueryMaker *artist = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Artist );
+    Collections::QueryMaker *album = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Album );
+    Collections::QueryMaker *composer = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
+    Collections::QueryMaker *genre = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Label );
 
     QList<Collections::QueryMaker*> queries;
     queries << artist << album << composer << genre << label;
@@ -816,7 +816,7 @@ TagDialog::startDataQuery()
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
 
-    Collections::QueryMaker *mqm = new MetaQueryMaker( queries );
+    Collections::QueryMaker *mqm = new Collections::MetaQueryMaker( queries );
     connect( mqm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
     connect( mqm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
     connect( mqm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );

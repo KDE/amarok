@@ -456,7 +456,7 @@ namespace Meta
           */
         virtual ~ Label() {}
 
-        virtual void addMatchTo( QueryMaker* qm );
+        virtual void addMatchTo( Collections::QueryMaker* qm );
 
     protected:
         virtual void notifyObservers() const;

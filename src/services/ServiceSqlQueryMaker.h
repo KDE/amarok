@@ -73,7 +73,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
         QString query();
         QStringList runQuery( const QString &query );

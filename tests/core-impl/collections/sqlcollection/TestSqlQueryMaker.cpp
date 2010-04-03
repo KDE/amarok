@@ -31,6 +31,8 @@
 
 #include <qtest_kde.h>
 
+using namespace Collections;
+
 QTEST_KDEMAIN_CORE( TestSqlQueryMaker )
 
 //defined in TagLibUtils.h
@@ -78,7 +80,7 @@ TestSqlQueryMaker::TestSqlQueryMaker()
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
-    qRegisterMetaType<Meta::Label>();
+    qRegisterMetaType<Meta::LabelPtr>();
     qRegisterMetaType<Meta::LabelList>();
     qRegisterMetaType<Collections::QueryMaker::QueryType>();
     qRegisterMetaType<Collections::QueryMaker::NumberComparison>();
@@ -974,7 +976,7 @@ void
 TestSqlQueryMaker::testLabelMatch()
 {
     Meta::LabelPtr label = m_collection->registry()->getLabel( "labelB", -1 );
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
     qm.addMatch( label );
@@ -988,7 +990,7 @@ TestSqlQueryMaker::testMultipleLabelMatches()
 {
     Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
     Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
     qm.addMatch( labelB );
@@ -1001,28 +1003,28 @@ TestSqlQueryMaker::testMultipleLabelMatches()
 void
 TestSqlQueryMaker::testQueryTypesWithLabelMatching_data()
 {
-    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
     QTest::addColumn<int>( "result" );
 
-    QTest::newRow( "query tracks" ) << QueryMaker::Track << 1;
-    QTest::newRow( "query albums" ) << QueryMaker::Album << 1;
-    QTest::newRow( "query artists" ) << QueryMaker::Artist << 1;
-    QTest::newRow( "query genre" ) << QueryMaker::Genre << 1;
-    QTest::newRow( "query composers" ) << QueryMaker::Composer << 1;
-    QTest::newRow( "query years" ) << QueryMaker::Year << 1;
-    QTest::newRow( "query labels" ) << QueryMaker::Label << 2;
+    QTest::newRow( "query tracks" ) << Collections::QueryMaker::Track << 1;
+    QTest::newRow( "query albums" ) << Collections::QueryMaker::Album << 1;
+    QTest::newRow( "query artists" ) << Collections::QueryMaker::Artist << 1;
+    QTest::newRow( "query genre" ) << Collections::QueryMaker::Genre << 1;
+    QTest::newRow( "query composers" ) << Collections::QueryMaker::Composer << 1;
+    QTest::newRow( "query years" ) << Collections::QueryMaker::Year << 1;
+    QTest::newRow( "query labels" ) << Collections::QueryMaker::Label << 2;
 }
 
 void
 TestSqlQueryMaker::testQueryTypesWithLabelMatching()
 {
 
-    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( int, result );
 
     Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
     Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setReturnResultAsDataPtrs( true );
     qm.setQueryType( type );
@@ -1036,9 +1038,9 @@ TestSqlQueryMaker::testQueryTypesWithLabelMatching()
 void
 TestSqlQueryMaker::testFilterOnLabelsAndCombination()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginAnd();
     qm.addFilter( Meta::valLabel, "labelB", true, true );
     qm.addFilter( Meta::valLabel, "labelA", false, false );
@@ -1051,9 +1053,9 @@ TestSqlQueryMaker::testFilterOnLabelsAndCombination()
 void
 TestSqlQueryMaker::testFilterOnLabelsOrCombination()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
     qm.addFilter( Meta::valLabel, "labelB", true, true );
     qm.addFilter( Meta::valLabel, "labelA", false, false );
@@ -1066,9 +1068,9 @@ TestSqlQueryMaker::testFilterOnLabelsOrCombination()
 void
 TestSqlQueryMaker::testFilterOnLabelsNegationAndCombination()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginAnd();
     qm.excludeFilter( Meta::valLabel, "labelB", true, true );
     qm.excludeFilter( Meta::valLabel, "labelA", false, false );
@@ -1081,9 +1083,9 @@ TestSqlQueryMaker::testFilterOnLabelsNegationAndCombination()
 void
 TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
     qm.excludeFilter( Meta::valLabel, "labelB", true, true );
     qm.excludeFilter( Meta::valLabel, "labelA", false, false );
@@ -1096,9 +1098,9 @@ TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
 void
 TestSqlQueryMaker::testComplexLabelsFilter()
 {
-    SqlQueryMaker qm( m_collection );
+    Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setQueryType( QueryMaker::Track );
+    qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
     qm.addFilter( Meta::valLabel, "test", true, true );
     qm.beginAnd();
@@ -1114,9 +1116,9 @@ TestSqlQueryMaker::testComplexLabelsFilter()
 void
 TestSqlQueryMaker::testLabelQueryMode_data()
 {
-    QTest::addColumn<QueryMaker::QueryType>( "type" );
-    QTest::addColumn<QueryMaker::LabelQueryMode>( "labelMode" );
-    QTest::addColumn<QueryMaker::AlbumQueryMode>( "albumMode" );
+    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Collections::QueryMaker::LabelQueryMode>( "labelMode" );
+    QTest::addColumn<Collections::QueryMaker::AlbumQueryMode>( "albumMode" );
     QTest::addColumn<int>( "result" );
 
     QTest::newRow( "labels with querymode WithoutLabels" ) << QueryMaker::Label << QueryMaker::OnlyWithoutLabels << QueryMaker::AllAlbums << 0;
