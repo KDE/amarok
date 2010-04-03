@@ -76,6 +76,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
+    contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Adding system tray icon" );
     paintIcon();

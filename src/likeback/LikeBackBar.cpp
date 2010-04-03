@@ -124,6 +124,7 @@ void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
          &&   newWindow->objectName() != "TheCoverManager"
          &&   newWindow->objectName() != "PlayMedia"
          &&   newWindow->objectName() != "PlaylistExport"
+         &&   newWindow->objectName() != "TrayIconContextMenu"
          && ( newWindow->windowType() == Qt::Window
               ||   newWindow->windowType() == Qt::Dialog ) )
     {
