@@ -523,11 +523,15 @@ bool SqlCollectionLocation::startNextJob()
                 return true; // Attempt to copy/move the next item in m_sources
             }
         }
-        if( src == dest) {
-        //no changes, so leave the database alone, and don't erase anything
-            return true; // Attempt to copy/move the next item in m_sources
+        if( src.equals( dest ) )
+        {
+            debug() << "move to itself found";
+            source()->transferSuccessful( track );
+            m_transferjob->slotJobFinished( 0 );
+            if( m_sources.isEmpty() )
+                return false;
+            return true;
         }
-        //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
         {
             debug() << "moving!";
@@ -535,7 +539,7 @@ bool SqlCollectionLocation::startNextJob()
         }
         else
         {
-        //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
+            //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
             job = KIO::file_copy( src, dest, -1, flags );
         }
         if( job )   //just to be safe
@@ -629,15 +633,16 @@ void TransferJob::doWork()
     setProcessedAmount( KJob::Files, 0 );
     if( !m_location->startNextJob() )
     {
-        if( hasSubjobs() )
+        if( !hasSubjobs() )
             emitResult();
     }
 }
 
 void TransferJob::slotJobFinished( KJob* job )
 {
-    Q_UNUSED( job );
     DEBUG_BLOCK
+    if( job )
+        removeSubjob( job );
     if( m_killed )
     {
         debug() << "slotJobFinished entered, but it should be killed!";
@@ -648,9 +653,12 @@ void TransferJob::slotJobFinished( KJob* job )
     debug() << "processed" << processedAmount( KJob::Files ) << " totalAmount" << totalAmount( KJob::Files );
     if( !m_location->startNextJob() )
     {
+        debug() << "sources empty";
         // don't quit if there are still subjobs
-        if( hasSubjobs() )
+        if( !hasSubjobs() )
             emitResult();
+        else
+            debug() << "have subjobs";
     }
 }
 

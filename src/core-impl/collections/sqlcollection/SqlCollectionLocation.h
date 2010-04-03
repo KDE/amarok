@@ -46,14 +46,13 @@ class TransferJob : public KCompositeJob
     virtual bool addSubjob( KJob* job );
 
     void emitInfo( const QString &message );
-
-    protected slots:
-        void doWork();
-
+    public slots:
         /**
          * A move or copy job finished
          */
         void slotJobFinished( KJob *job );
+    protected slots:
+        void doWork();
     protected:
         virtual bool doKill();
     private:
