@@ -111,19 +111,69 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
         QMap<QString, QString> m_permanentTablesUrlUpdates;
         QMap<QString, QString> m_permanentTablesUidUpdates;
 
+        enum UrlColNum
+        {
+            UrlColId = 0,
+            UrlColDevice = 1,
+            UrlColRPath = 2,
+            UrlColDir = 3,
+            UrlColUid = 4,
+            UrlColMaxCount = 5
+        };
+
         int m_nextUrlNum;
-        QHash<QString, QStringList*> m_urlsHashByUid;
-        QHash<QPair<int, QString>, QStringList*> m_urlsHashByLocation;
-        QHash<int, QStringList*> m_urlsHashById;
+        QHash<QString, QString*> m_urlsHashByUid;
+        QHash<QPair<int, QString>, QString*> m_urlsHashByLocation;
+        QHash<int, QString*> m_urlsHashById;
+
+        enum AlbumColNum
+        {
+            AlbumColId = 0,
+            AlbumColTitle = 1,
+            AlbumColArtist = 2,
+            AlbumColMaxImage = 3,
+            AlbumColMaxCount = 4
+        };
 
         int m_nextAlbumNum;
-        QHash<QString, QLinkedList<QStringList*> *> m_albumsHashByName;
-        QHash<int, QStringList*> m_albumsHashById;
+        QHash<QString, QLinkedList<QString*> *> m_albumsHashByName;
+        QHash<int, QString*> m_albumsHashById;
+
+
+        // the numbers must match the ones from the tracks_temp database table.
+        enum TrackColNum
+        {
+            TrackColId = 0,
+            TrackColUrl = 1,
+            TrackColArtist = 2,
+            TrackColAlbum = 3,
+            TrackColGenre = 4,
+            TrackColComposer = 5,
+            TrackColYear = 6,
+            TrackColTitle = 7,
+            TrackColComment = 8,
+            TrackColTrackNumber = 9,
+            TrackColDiscNumber = 10,
+            TrackColBitRate = 11,
+            TrackColLength = 12,
+            TrackColSampleRate = 13,
+            TrackColFileSize = 14,
+            TrackColFileType = 15,
+            TrackColBpm = 16,
+            TrackColCreated = 17,
+            TrackColModified = 18,
+            TrackColAlbumGain = 19,
+            TrackColAlbumPeakGain = 20,
+            TrackColTrackGain = 21,
+            TrackColTrackPeakGain = 22,
+
+            TrackColMaxCount = 23
+        };
 
         int m_nextTrackNum;
-        QHash<int, QStringList*> m_tracksHashById;
-        QHash<int, QStringList*> m_tracksHashByUrl;
-        QHash<int, QLinkedList<QStringList*> *> m_tracksHashByAlbum;
+        QHash<int, QString*> m_tracksHashById;
+        QHash<int, QString*> m_tracksHashByUrl;
+        QHash<int, QLinkedList<QString*> *> m_tracksHashByAlbum;
 
         int m_nextArtistNum;
         int m_nextComposerNum;
