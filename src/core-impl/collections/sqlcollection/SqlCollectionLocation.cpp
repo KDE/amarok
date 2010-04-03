@@ -122,16 +122,20 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     KSharedPtr<Meta::SqlTrack> sqlTrack = KSharedPtr<Meta::SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
-        debug() << "much much";
         bool removed;
-        KUrl originalUrl = m_originalUrls[track];
+        KUrl src = track->playableUrl();
+        if( destination() == source() ) // is organize operation?
+        {
+            SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
+            src = destinationloc->m_originalUrls[track];
+        }
         // we are going to delete it from the database only if is no longer on disk
-        removed = !QFile::exists( originalUrl.path() );
-
+        removed = !QFile::exists( src.path() );
         if( removed )
         {
-            int deviceId = m_collection->mountPointManager()->getIdForUrl( originalUrl );
-            QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, originalUrl.url() );
+            debug() << "file not on disk, remove from dbase";
+            int deviceId = m_collection->mountPointManager()->getIdForUrl( src );
+            QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, src.url() );
             QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
                                 .arg( QString::number( deviceId ), m_collection->sqlStorage()->escape( rpath ) );
             QStringList res = m_collection->sqlStorage()->query( query );
@@ -146,7 +150,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
                 m_collection->sqlStorage()->query( query );
             }
 
-            QFileInfo file( m_originalUrls[track].path() );
+            QFileInfo file( src.path() );
             QDir dir = file.dir();
             const QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
             while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
@@ -162,7 +166,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     }
     else
     {
-        debug() << "Remove Failed: track exists on disk." << m_originalUrls[track].path();
+        debug() << "Remove Failed";
         return false;
     }
 }
@@ -271,8 +275,6 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
         source()->transferError(m_jobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
         m_destinations.remove( m_jobs.value( job ) );
     }
-    //we  assume that KIO works correctly...
-    source()->transferSuccessful( m_jobs.value( job ) );
 
     m_jobs.remove( job );
     job->deleteLater();
@@ -323,7 +325,12 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
         if( !QFileInfo( m_destinations[ track ] ).exists() )
             m_destinations.remove( track );
         m_originalUrls[track] = track->playableUrl();
+        debug() << "inserting original url" << m_originalUrls[track];
+        // report successful transfer with the original url
+        source()->transferSuccessful( track );
+
     }
+    debug () << "m_originalUrls" << m_originalUrls;
     insertTracks( m_destinations );
     insertStatistics( m_destinations );
     m_collection->scanManager()->setBlockScan( false );
@@ -566,7 +573,13 @@ bool SqlCollectionLocation::startNextRemoveJob()
     while ( !m_removetracks.isEmpty() )
     {
         Meta::TrackPtr track = m_removetracks.takeFirst();
-        KUrl src = m_originalUrls[track];
+        KUrl src = track->playableUrl();
+
+        if( destination() == source() ) // is organize operation?
+        {
+            SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
+            src = destinationloc->m_originalUrls[track];
+        }
 
         if( src == track->playableUrl() ) // src == dst
             break;

@@ -35,6 +35,7 @@ CollectionLocation::CollectionLocation()
     , m_parentCollection( 0 )
     , m_removeSources( false )
     , m_isRemoveAction( false )
+    , m_noRemoveConfirmation( false )
 {
     //nothing to do
 }
@@ -296,13 +297,17 @@ CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+    if( !m_noRemoveConfirmation )
+    {
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
 
-    const bool del = delegate->reallyDelete( this, tracks );
+        const bool del = delegate->reallyDelete( this, tracks );
 
-    if( !del )
-        slotFinishRemove();
-    else
+        if( !del )
+            slotFinishRemove();
+        else
+            slotShowRemoveDialogDone();
+    } else
         slotShowRemoveDialogDone();
 }
 
@@ -368,13 +373,21 @@ CollectionLocation::slotFinishCopy()
 {
     DEBUG_BLOCK
     if( m_removeSources )
+    {
         removeSourceTracks( m_tracksSuccessfullyTransferred );
-    m_sourceTracks.clear();
-    m_tracksSuccessfullyTransferred.clear();
-    if( m_destination )
-        m_destination->deleteLater();
-    m_destination = 0;
-    this->deleteLater();
+        m_sourceTracks.clear();
+        m_tracksSuccessfullyTransferred.clear();
+    }
+    else
+    {
+        m_sourceTracks.clear();
+        m_tracksSuccessfullyTransferred.clear();
+
+        if( m_destination )
+            m_destination->deleteLater();
+        m_destination = 0;
+        this->deleteLater();
+    }
 }
 
 void
@@ -518,6 +531,7 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
     toRemove.subtract( errored );
 
     // start the remove workflow
+    m_noRemoveConfirmation = true;
     prepareRemove( toRemove.toList() );
 }
 
