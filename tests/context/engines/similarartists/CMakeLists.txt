@@ -21,4 +21,4 @@ kde4_add_unit_test( testsimilarartistsengine ${testsimilarartistsengine_SRCS} )
 
 add_dependencies( testsimilarartistsengine amaroklib)
 
-target_link_libraries( testsimilarartistsengine amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries( testsimilarartistsengine amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PLASMA_LIBS} ${LIBLASTFM_LIBRARY} ${QT_QTTEST_LIBRARY})

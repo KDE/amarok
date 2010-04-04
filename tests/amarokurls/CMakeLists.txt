@@ -5,4 +5,5 @@ include_directories(
 
 set( testamarokurls_SRCS TestAmarokUrls.cpp )
 kde4_add_unit_test( testamarokurls ${testamarokurls_SRCS} )
-target_link_libraries( testamarokurls amaroklib ${QT_QTTEST_LIBRARY} )
+target_link_libraries( testamarokurls amaroklib ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
+

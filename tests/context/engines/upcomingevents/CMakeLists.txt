@@ -24,4 +24,4 @@ kde4_add_unit_test( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
 
 add_dependencies( testupcomingeventsengine amaroklib)
 
-target_link_libraries( testupcomingeventsengine amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries( testupcomingeventsengine amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_PLASMA_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY})
