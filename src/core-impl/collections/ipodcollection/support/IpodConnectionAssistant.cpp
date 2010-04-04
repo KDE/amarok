@@ -65,7 +65,9 @@ IpodConnectionAssistant::identify( const QString& udi )
 
     /* if iPod or iPhone found, return true */
 
-    return  device.product() == "iPod" || device.product().startsWith("iPhone");
+    return device.product().startsWith("iPod")
+       || device.product().startsWith("iPhone")
+       || device.product().startsWith("iPad");
 }
 
 

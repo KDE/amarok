@@ -54,6 +54,8 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fix connecting to iPod Touch devices. Patch by Jeffrey Dodge
+       <hazridi@gmail.com>. (BR 233257)
      * Fixed the deletion of empty directories after deleting, or organizing.
        (BR 190881)
      * Fixed a hang that would occur when organizing a track and the source
