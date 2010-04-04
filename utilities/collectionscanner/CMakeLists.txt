@@ -52,6 +52,13 @@ set( taglib_filetype_resolver_SRCS
     ../../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
 )
 
+#####################################################################
+# CUE parser
+#####################################################################
+set( cue_parser_SRCS
+    ../../shared/cue_parser/CueParser.cpp
+)
+
 ########### next target ###############
 
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -68,12 +75,13 @@ set(amarokcollectionscanner_SRCS
     ../../shared/MetaReplayGain.cpp
 )
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS} ${cue_parser_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTXML_LIBRARY}
                       ${QT_QTDBUS_LIBRARY}
+                      ${KDE4_KDECORE_LIBS}
                       ${TAGLIB_LIBRARIES}
                       ${TAGLIB-EXTRAS_LIBRARIES}
                       )
