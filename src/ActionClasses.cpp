@@ -491,7 +491,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
-    connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
+    connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
     setEnabled( false );  // Disable action at startup
 }
 
@@ -511,6 +511,18 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
     case Phonon::BufferingState:
         break;
     }
+}
+
+void
+StopAction::stop()
+{
+    if( The::playlistActions()->stopAfterMode() )
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
+        The::playlistActions()->setTrackToBeLast( 0 );
+        The::playlistActions()->repaintPlaylist();
+    }
+    The::engineController()->stop();
 }
 
 
