@@ -15,7 +15,7 @@
    <string>Form</string>
   </property>
   <property name="whatsThis">
-   <string>An editor for a PreventDuplicants constraint.  When set to &quot;track&quot;, it will try to prevent more than one copy of the same track from ending up in the playlist.  When set to &quot;album&quot; or &quot;artist&quot;, it will try to prevent more than one track from a given album or a given artist from ending up in the playlist.</string>
+   <string>An editor for a Prevent Duplicates constraint.  When set to &quot;track&quot;, it will try to prevent more than one copy of the same track from ending up in the playlist.  When set to &quot;album&quot; or &quot;artist&quot;, it will try to prevent more than one track from a given album or a given artist from ending up in the playlist.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
