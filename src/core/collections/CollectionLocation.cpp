@@ -48,6 +48,7 @@ CollectionLocation::CollectionLocation( const Collections::Collection* parentCol
     , m_parentCollection( parentCollection )
     , m_removeSources( false )
     , m_isRemoveAction( false )
+    , m_noRemoveConfirmation( false )
 {
     //nothing to do
 }

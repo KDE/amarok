@@ -124,10 +124,12 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     {
         bool removed;
         KUrl src = track->playableUrl();
-        if( destination() == source() ) // is organize operation?
+        if( isGoingToRemoveSources() ) // is organize operation?
         {
             SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
             src = destinationloc->m_originalUrls[track];
+            if( src == track->playableUrl() )
+                return false;
         }
         // we are going to delete it from the database only if is no longer on disk
         removed = !QFile::exists( src.path() );
@@ -152,6 +154,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 
             QFileInfo file( src.path() );
             QDir dir = file.dir();
+            dir.setFilter( QDir::NoDotAndDotDot );
             const QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
             while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
             {
@@ -285,9 +288,11 @@ void
 SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
 {
     DEBUG_BLOCK
-    if( job->error() )
+    int error = job->error();
+    if( error != 0 && error != KIO::ERR_DOES_NOT_EXIST )
     {
         //TODO: proper error handling
+        debug() << "KIO::ERR_DOES_NOT_EXIST" << KIO::ERR_DOES_NOT_EXIST;
         warning() << "An error occurred when removing a file: " << job->errorString();
         transferError(m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
     }
@@ -575,14 +580,16 @@ bool SqlCollectionLocation::startNextRemoveJob()
         Meta::TrackPtr track = m_removetracks.takeFirst();
         KUrl src = track->playableUrl();
 
-        if( destination() == source() ) // is organize operation?
+        debug() << "isGoingToRemoveSources() " << isGoingToRemoveSources();
+        if( isGoingToRemoveSources() ) // is organize operation?
         {
             SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
             src = destinationloc->m_originalUrls[track];
+            if( src == track->playableUrl() ) {
+                debug() << "src == dst";
+                break;
+            }
         }
-
-        if( src == track->playableUrl() ) // src == dst
-            break;
 
         KIO::DeleteJob *job = 0;
 
