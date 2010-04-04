@@ -237,8 +237,7 @@ CoverFetcher::slotDialogFinished()
         }
     }
 
-    delete m_dialog;
-    m_dialog = 0;
+    m_dialog->delayedDestruct();
 }
 
 void

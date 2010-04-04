@@ -25,6 +25,7 @@
 
 #include <QHash>
 #include <QObject>      //baseclass
+#include <QPointer>
 #include <QStringList>  //stack allocated
 
 class CoverFetchQueue;
@@ -80,7 +81,7 @@ private:
 
     QStringList m_errors;
 
-    CoverFoundDialog *m_dialog;
+    QPointer<CoverFoundDialog> m_dialog;
 
     /// cleanup depending on the fetch result
     void finish( const CoverFetchUnit::Ptr unit,

@@ -165,9 +165,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     connect( m_view, SIGNAL(itemSelectionChanged()),
              this,   SLOT(itemSelected()) );
-    /* // FIXME: Double clicking on an item crashes Amarok, seems to be a qt bug.
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );*/
+             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
              this,   SLOT(itemMenuRequested(const QPoint&)) );
 
@@ -175,7 +174,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     splitter->addWidget( vbox );
     setMainWidget( splitter );
 
-    connect( m_save, SIGNAL(released()), SLOT(saveRequested()) );
+    connect( m_save, SIGNAL(clicked(bool)), SLOT(saveRequested()) );
 
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
