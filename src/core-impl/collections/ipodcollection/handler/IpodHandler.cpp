@@ -202,7 +202,66 @@ IpodHandler::init()
         {
             ok = ifuse.exitCode() == 0;
             if( !ok )
-                debug() << "ifuse exited with non-zero exit code";
+            {
+                if( ifuse.exitCode() == 255 )
+                {
+                    debug() << "ipod mount dir was not cleanly unmounted, attempting unmount";
+                    QProcess unmount;
+                    QStringList unmountarg;
+                    unmountarg << "-u" << mountPoint();
+                    unmount.start("fusermount", unmountarg);
+                    bool unmountok = unmount.waitForStarted();
+                    if( !unmountok )
+                    {
+                        debug() << "fusermount for unmounting" << mountPoint() << "failed to start";
+                    }
+                    else
+                    {
+                        unmountok = unmount.waitForFinished();
+                        if( !unmountok )
+                            debug() << "fusermount did not terminate correctly";
+                    }
+                    if( unmountok )
+                    {
+                        unmountok = unmount.exitStatus() == QProcess::NormalExit;
+                        if( !unmountok )
+                            debug() << "fusermount did not exit normally";
+                        else
+                        {
+                            // take 2
+                            debug() << "calling ifuse with args" << args;
+                            ifuse.start("ifuse", args);
+                            ok = ifuse.waitForStarted();
+                            if( !ok )
+                            {
+                                debug() << "Failed to start ifuse";
+                            }
+                            else
+                            {
+                                ok = ifuse.waitForFinished();
+                                if( !ok )
+                                    debug() << "ifuse did not yet terminate";
+                            }
+                            if( ok )
+                            {
+                                ok = ifuse.exitStatus() == QProcess::NormalExit;
+                                if( !ok )
+                                    debug() << "ifuse crashed";
+                            }
+                            if( ok )
+                            {
+                                ok = ifuse.exitCode() == 0;
+                                if( !ok )
+                                {
+                                    debug() << "ifuse exited with non-zero exit code" << ifuse.exitCode();
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                    debug() << "ifuse exited with non-zero exit code" << ifuse.exitCode();
+            }
         }
 
         if( ok )
