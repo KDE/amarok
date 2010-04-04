@@ -313,7 +313,7 @@ ConstraintTypes::TagMatch::deltaS_replace( const Meta::TrackList& tl, const Meta
 {
     bool oldT = matches( tl.at( i ) );
     bool newT = matches( t );
-    if ( !( oldT xor newT ) ) {
+    if ( !( oldT ^ newT ) ) {
         return 0.0;
     } else if ( newT ) {
         return 1.0 / ( double )tl.size();
