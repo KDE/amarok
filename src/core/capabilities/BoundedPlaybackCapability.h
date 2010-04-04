@@ -19,6 +19,8 @@
 
 #include "core/capabilities/Capability.h"
 
+#include "shared/amarok_export.h"
+
 namespace Capabilities {
 
 /**

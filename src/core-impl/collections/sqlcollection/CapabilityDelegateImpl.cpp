@@ -24,6 +24,7 @@
 #include "SqlWriteLabelCapability.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "covermanager/CoverFetchingActions.h"
+#include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/capabilities/CustomActionsCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
@@ -259,6 +260,38 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
 };
 
 
+class BoundedPlaybackCapabilityImpl : public Capabilities::BoundedPlaybackCapability
+{
+    Q_OBJECT
+    public:
+        BoundedPlaybackCapabilityImpl( Meta::SqlTrack *track )
+        : Capabilities::BoundedPlaybackCapability()
+        , m_track( track )
+        {}
+
+        virtual qint64 startPosition()
+        {
+             //get from the track url
+             QString url = m_track->playableUrl().url();
+             QString timecodeString = url.split( ':' ).last();
+             return timecodeString.split( '-' ).first().toLong();
+        }
+
+        virtual qint64 endPosition()
+        {
+             //get from the track url
+             QString url = m_track->playableUrl().url();
+             QString timecodeString = url.split( ':' ).last();
+             return timecodeString.split( '-' ).last().toLong();
+        }
+        
+    private:
+        KSharedPtr<Meta::SqlTrack> m_track;
+
+};
+
+
+
 TrackCapabilityDelegateImpl::TrackCapabilityDelegateImpl()
     : TrackCapabilityDelegate()
 {
@@ -286,6 +319,29 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
 
         case Capabilities::Capability::Editable:
             return track->isEditable();
+
+        case Capabilities::Capability::BoundedPlayback:
+        {
+
+            debug() << "checking for bounded playback for track " << track->prettyName();
+
+            //for now, do a regexp. Considder optimizing later (but this is the least intrusive way to do this for now)
+            //FIXME: this stuff also influences other capabilities, so move into the SqlTrack itself somehow.
+            QString url = track->playableUrl().url();
+            QRegExp rx(".+\\..+:\\d+-\\d+$");
+
+            if ( rx.indexIn( url ) == -1 )
+            {
+                debug() << "this track does not have BoundedPlayback";
+                return false;
+            }
+            else
+            {
+                debug() << "this track _does_ have BoundedPlayback";
+                return false;
+            }
+
+        }
 
         default:
             return false;
@@ -345,6 +401,8 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
             return new Capabilities::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
         case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( track );
+        case Capabilities::Capability::BoundedPlayback:
+            return new Capabilities::BoundedPlaybackCapabilityImpl( track );
 
         default:
             return 0;

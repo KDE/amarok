@@ -394,8 +394,19 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
     else if ( m_boundedPlayback )
     {
-        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
-        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
+        //make absolutely sure that we do not include the timecode info in the url
+        QString urlString = m_currentTrack->playableUrl().url();
+        QRegExp rx(":\\d+-\\d+$");
+
+        int index = rx.indexIn( urlString );
+        if ( index != -1 )
+        {
+            urlString = urlString.left( index );
+        }
+
+        debug() << "Starting bounded playback of url " << urlString << " at position " << m_boundedPlayback->startPosition();
+        
+        playUrl( urlString, m_boundedPlayback->startPosition() );
     }
     else
     {
