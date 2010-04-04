@@ -50,6 +50,7 @@ namespace AmarokScript
             void removeByIndex( int index );
             void savePlaylist( const QString& path );
             void setStopAfterCurrent( bool on );
+            bool stopAfterCurrent();
             void togglePlaylist();
             QStringList filenames();
             QVariant trackAt( int row );

@@ -114,6 +114,11 @@ namespace AmarokScript
         The::playlistActions()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
     }
 
+    bool AmarokPlaylistScript::stopAfterCurrent()
+    {
+        return The::playlistActions()->stopAfterMode();
+    }
+
     void AmarokPlaylistScript::togglePlaylist()
     {
         The::mainWindow()->showHide();
