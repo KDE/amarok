@@ -297,7 +297,7 @@ CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    if( !m_noRemoveConfirmation )
+    if( !isHidingRemoveConfirm() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
 
@@ -531,7 +531,7 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
     toRemove.subtract( errored );
 
     // start the remove workflow
-    m_noRemoveConfirmation = true;
+    setHidingRemoveConfirm( true );
     prepareRemove( toRemove.toList() );
 }
 
@@ -568,6 +568,18 @@ void
 CollectionLocation::setGoingToRemoveSources( bool removeSources )
 {
     m_removeSources = removeSources;
+}
+
+bool
+CollectionLocation::isHidingRemoveConfirm() const
+{
+    return m_noRemoveConfirmation;
+}
+
+void
+CollectionLocation::setHidingRemoveConfirm( bool hideRemoveConfirm )
+{
+    m_noRemoveConfirmation = hideRemoveConfirm;
 }
 
 void

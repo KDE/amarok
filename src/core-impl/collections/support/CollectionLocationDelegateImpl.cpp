@@ -17,6 +17,8 @@
 
 #include "CollectionLocationDelegateImpl.h"
 
+#include "core/collections/CollectionLocation.h"
+
 #include "statusbar/StatusBar.h"
 
 #include <KLocale>
@@ -82,3 +84,17 @@ void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
     Q_UNUSED( loc )
     The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writeable." ), StatusBar::Error );
 }
+
+bool CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation* loc ) const
+{
+    const QString text( i18n( "Do you want to remove empty folders?" ) );
+    const QString caption( i18n( "Remove empty folders?" ) );
+    const int result = KMessageBox::questionYesNo(0,
+                               text,
+                               caption,
+                               KStandardGuiItem::yes(),
+                               KStandardGuiItem::no(),
+                               QString( "collectionlocation_" + loc->prettyLocation() ) );
+    return result == KMessageBox::Yes ? true : false;
+}
+

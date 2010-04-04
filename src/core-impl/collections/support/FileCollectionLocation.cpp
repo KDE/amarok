@@ -18,6 +18,8 @@
 #include "FileCollectionLocation.h"
 
 #include "core/support/Debug.h"
+#include "core/collections/CollectionLocationDelegate.h"
+#include "core/support/Components.h"
 #include "statusbar/StatusBar.h"
 
 #include <kio/job.h>
@@ -33,13 +35,20 @@ using namespace Collections;
 FileCollectionLocation::FileCollectionLocation() 
     : CollectionLocation()
 {
-    //nothing to do
+    // nothing to do
 }
 
 FileCollectionLocation::~FileCollectionLocation()
 {
-    //nothing to do
+    // nothing to do
 }
+
+QString
+FileCollectionLocation::prettyLocation() const
+{
+    return "File Browser Location";
+}
+
 
 bool
 FileCollectionLocation::isWritable() const
@@ -68,6 +77,22 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     // the file should be removed already, so we can clean the dirs
     bool removed = !QFile::exists( track->playableUrl().path()  );
 
+    if( m_removeEmptyDirs && removed)
+    {
+        QFileInfo file( track->playableUrl().path() );
+        QDir dir = file.dir();
+        dir.setFilter( QDir::NoDotAndDotDot );
+        while( !dir.isRoot() && dir.count() == 0 )
+        {
+            debug() << "attempting to rmdir << " << dir;
+            const QString name = dir.dirName();
+            dir.cdUp();
+            if( !dir.rmdir( name ) )
+                break;
+            else
+                debug() << "rmdir succeeded";
+        }
+    }
     return removed;
 }
 void FileCollectionLocation::startRemoveJobs()
@@ -127,6 +152,23 @@ void FileCollectionLocation::removeUrlsFromCollection(const Meta::TrackList& sou
 
     debug() << "removing " << m_removetracks.size() << "tracks";
     startRemoveJobs();
+}
+
+void FileCollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+    m_removeEmptyDirs = delegate->deleteEmptyDirs( this );
+    if( !isHidingRemoveConfirm() )
+    {
+        const bool del = delegate->reallyDelete( this, tracks );
+
+        if( !del )
+            abort();
+        else
+            slotShowRemoveDialogDone();
+    } else
+        slotShowRemoveDialogDone();
 }
 
 #include "FileCollectionLocation.moc"

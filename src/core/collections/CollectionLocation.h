@@ -284,6 +284,12 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool isGoingToRemoveSources() const;
         virtual void setGoingToRemoveSources( bool removeSources );
 
+        /**
+        * Sets or gets whether to stifle the removal confirmation
+        */
+        virtual bool isHidingRemoveConfirm() const;
+        virtual void setHidingRemoveConfirm( bool hideRemoveConfirm );
+
     protected slots:
         /**
          * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )

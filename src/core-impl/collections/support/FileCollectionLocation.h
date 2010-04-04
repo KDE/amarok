@@ -34,10 +34,12 @@ class FileCollectionLocation : public CollectionLocation
         FileCollectionLocation();
         virtual ~FileCollectionLocation();
 
+        virtual QString prettyLocation() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
+        virtual void showRemoveDialog( const Meta::TrackList &tracks );
     public slots:
         void slotRemoveJobFinished( KJob *job );
     private:
@@ -45,6 +47,7 @@ class FileCollectionLocation : public CollectionLocation
 
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
         Meta::TrackList m_removetracks;
+        bool m_removeEmptyDirs;
 };
 
 } //namespace Collections

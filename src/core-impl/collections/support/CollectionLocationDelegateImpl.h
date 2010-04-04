@@ -33,6 +33,7 @@ public:
     virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
     virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
     virtual void notWriteable(CollectionLocation* loc) const;
+    virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
 };
 
 } //namespace Collections
