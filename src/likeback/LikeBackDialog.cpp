@@ -19,14 +19,12 @@
 
 #include "LikeBackDialog.h"
 
-#include <QHttp>
-#include <QHttpRequestHeader>
-
 #include <KAboutData>
 #include <KApplication>
 #include <KConfig>
 #include <KMessageBox>
 #include <KPushButton>
+#include <kio/job.h>
 
 #include "core/support/Debug.h"
 #include "LikeBack.h"
@@ -263,39 +261,29 @@ void LikeBackDialog::slotButtonClicked( int buttonId )
     #endif
 
     // Create the HTTP sending object and the actual request
-    QHttp *http = new QHttp( m_likeBack->hostName(), m_likeBack->hostPort() );
-    connect( http, SIGNAL( requestFinished(int,bool) ),
-             this, SLOT  ( requestFinished(int,bool) ) );
-
-    QHttpRequestHeader header( "POST", m_likeBack->remotePath() );
-    header.setValue( "Host", m_likeBack->hostName() );
-    header.setValue( "Content-Type", "application/x-www-form-urlencoded" );
-
-    // Then send it at the developer site
-    http->setHost( m_likeBack->hostName() );
-    m_requestNumber_ = http->request( header, data.toUtf8() );
+    KUrl url;
+    url.setHost( m_likeBack->hostName() );
+    url.setPort( m_likeBack->hostPort() );
+    url.setPath( m_likeBack->remotePath() );
+    KIO::StoredTransferJob *job = KIO::storedHttpPost( data.toUtf8(), url );
+    connect( job, SIGNAL(finished(KJob*)),
+             this, SLOT(finished(KJob*)) );
+    job->addMetaData( "content-type", "application/x-www-form-urlencoded" );
 }
 
 
 // Display confirmation of the sending action
-void LikeBackDialog::requestFinished( int id, bool error )
+void LikeBackDialog::finished( KJob *j )
 {
-    // Only analyze the request we've sent
-    if( id != m_requestNumber_ )
-    {
-        #ifdef DEBUG_LIKEBACK
-        debug() << "Ignoring request" << id;
-        #endif
-        return;
-    }
+    KIO::StoredTransferJob *job = static_cast< KIO::StoredTransferJob *>(j);
 
     #ifdef DEBUG_LIKEBACK
-    debug() << "Request has" << (error?"failed":"succeeded");
+    debug() << "Request has" << (job->error()?"failed":"succeeded");
     #endif
 
     m_likeBack->disableBar();
 
-    if( ! error )
+    if( job->error() == 0 )
     {
         KMessageBox::information( this,
                                   i18nc( "Dialog box text",
