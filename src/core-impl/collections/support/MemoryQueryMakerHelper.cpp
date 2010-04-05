@@ -164,4 +164,5 @@ template QList<Meta::AlbumPtr> MemoryQueryMakerHelper::orderListByName( const QL
 template QList<Meta::ArtistPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ArtistPtr > &list, bool );
 template QList<Meta::GenrePtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::GenrePtr > &list, bool );
 template QList<Meta::ComposerPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ComposerPtr > &list, bool );
+template QList<Meta::LabelPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::LabelPtr > &list, bool );
 
