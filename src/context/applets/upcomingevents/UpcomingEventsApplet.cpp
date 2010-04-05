@@ -207,19 +207,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
     for( int i = 0; i < events.size(); i++ )
     {
-        QString artistList;
-        for( int j = 0; j < events.at( i ).artists().size(); j++ )
-        {
-            if( j == events.at( i ).artists().size() - 1 )
-            {
-                artistList.append( events.at( i ).artists().at( j ) );
-            }
-            else
-            {
-               artistList.append( events.at( i ).artists().at( j ) + " - " );
-            }
-        }
-
+        const QString artistList = events.at( i ).artists().join( " - " );
         KDateTime limite(KDateTime::currentLocalDateTime());
         bool timeSpanDisabled = false;
 
