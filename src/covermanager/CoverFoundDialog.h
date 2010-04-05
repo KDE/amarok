@@ -120,7 +120,7 @@ class CoverFoundSideBar : public KVBox
     Q_OBJECT
 
 public:
-    CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
+    explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
     ~CoverFoundSideBar();
 
 public slots:

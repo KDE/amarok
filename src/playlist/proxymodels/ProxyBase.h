@@ -38,7 +38,7 @@ public:
     /**
      * Constructor.
      */
-    ProxyBase( AbstractModel *belowModel, QObject *parent = 0 );
+    explicit ProxyBase( AbstractModel *belowModel, QObject *parent = 0 );
 
     /**
      * Destructor.
