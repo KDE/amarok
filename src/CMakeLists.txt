@@ -270,6 +270,14 @@ set(libstatusbar_SRCS
 )
 
 #####################################################################
+# CORE INTERFACES
+#####################################################################
+set(core_interfaces_SRCS
+    core/interfaces/Logger.cpp
+)
+
+
+#####################################################################
 # META
 #####################################################################
 set(core_SRCS
@@ -615,6 +623,7 @@ set(amaroklib_LIB_SRCS
     ${libdynamic_SRCS}
     ${likeback_SRCS}
     ${core_SRCS}
+    ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}

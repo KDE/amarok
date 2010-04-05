@@ -22,6 +22,7 @@
 namespace Amarok
 {
     class ApplicationController;
+    class Logger;
 }
 
 namespace Collections
@@ -45,6 +46,9 @@ namespace Amarok
 
         AMAROK_EXPORT SqlStorage* sqlStorage();
         AMAROK_EXPORT SqlStorage* setSqlStorage( SqlStorage *storage );
+
+        AMAROK_EXPORT Amarok::Logger* logger();
+        AMAROK_EXPORT Amarok::Logger* setLogger( Amarok::Logger *logger );
 
         AMAROK_EXPORT Amarok::ApplicationController* applicationController();
         AMAROK_EXPORT Amarok::ApplicationController* setApplicationController( Amarok::ApplicationController *controller );

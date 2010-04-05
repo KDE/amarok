@@ -33,6 +33,7 @@ public:
     CollectionManager *collectionManager;
     EngineController *engineController;
     SqlStorage *sqlStorage;
+    Amarok::Logger *logger;
     Amarok::ApplicationController *applicationController;
     Collections::CollectionLocationDelegate *collectionLocationDelegate;
 };
@@ -63,6 +64,8 @@ COMPONENT_ACCESSORS( CollectionManager*, collectionManager, setCollectionManager
 COMPONENT_ACCESSORS( EngineController*, engineController, setEngineController )
 
 COMPONENT_ACCESSORS( SqlStorage*, sqlStorage, setSqlStorage )
+
+COMPONENT_ACCESSORS( Amarok::Logger*, logger, setLogger )
 
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
