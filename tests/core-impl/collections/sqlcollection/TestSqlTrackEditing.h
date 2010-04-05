@@ -49,21 +49,6 @@ private slots:
     void testChangeYearToNew();
     void testChangeAlbumToExisting();
 
-    void testLabelMatch();
-    void testMultipleLabelMatches();
-
-    void testQueryTypesWithLabelMatching_data();
-    void testQueryTypesWithLabelMatching();
-
-    void testFilterOnLabelsOrCombination();
-    void testFilterOnLabelsAndCombination();
-    void testFilterOnLabelsNegationAndCombination();
-    void testFilterOnLabelsNegationOrCombination();
-    void testComplexLabelsFilter();
-
-    void testLabelQueryMode_data();
-    void testLabelQueryMode();
-
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
