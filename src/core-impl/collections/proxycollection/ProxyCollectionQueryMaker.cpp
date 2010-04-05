@@ -541,6 +541,18 @@ ProxyQueryMaker::handleResult()
             emitProperResult<Meta::YearPtr>( years );
             break;
         }
+        case QueryMaker::Label :
+        {
+            Meta::LabelList labels;
+            foreach( KSharedPtr<Meta::ProxyLabel> label, m_labels )
+            {
+                labels.append( Meta::LabelPtr::staticCast( label ) );
+            }
+
+            labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
+            emitProperResult<Meta::LabelPtr>( labels );
+            break;
+        }
         case QueryMaker::None :
             //nothing to do
             break;
