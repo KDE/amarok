@@ -18,12 +18,13 @@
 #include "UpcomingEventsWidget.h"
 
 // Kde include
+#include <KDateTime>
 #include <KIO/Job>
+#include <KLocale>
 #include <KLocalizedString>
 #include <KUrl>
 
 // Qt include
-#include <QDateTime>
 #include <QLabel>
 #include <QString>
 #include <QGridLayout>
@@ -185,9 +186,9 @@ UpcomingEventsWidget::setParticipants( const QString &participants )
 }
 
 void
-UpcomingEventsWidget::setDate( const QDateTime &date )
+UpcomingEventsWidget::setDate( const KDateTime &date )
 {
-    m_date->setText( date.toString( Qt::DefaultLocaleLongDate ) );
+    m_date->setText( KGlobal::locale()->formatDateTime( date.toClockTime(), KLocale::FancyLongDate ) );
     m_date->setAttribute( Qt::WA_TranslucentBackground );
 }
 

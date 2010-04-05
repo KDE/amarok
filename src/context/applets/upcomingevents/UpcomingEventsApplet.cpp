@@ -43,6 +43,7 @@
 // KDE
 #include <plasma/widgets/iconwidget.h>
 #include <KConfigDialog>
+#include <KDateTime>
 #include <KStandardDirs>
 #include <Plasma/Theme>
 
@@ -201,11 +202,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
     LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
 
-    foreach( UpcomingEventsWidget *u, m_widgets )
-    {
-        delete u;
-    }
-
+    qDeleteAll( m_widgets );
     m_widgets.clear();
 
     for( int i = 0; i < events.size(); i++ )
@@ -223,7 +220,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             }
         }
 
-        QDateTime limite(QDateTime::currentDateTime());
+        KDateTime limite(KDateTime::currentLocalDateTime());
         bool timeSpanDisabled = false;
 
         if ( this->m_timeSpan == "ThisWeek")
@@ -235,11 +232,11 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         else
             timeSpanDisabled = true;
 
-        if ( timeSpanDisabled || events.at( i ).date() < limite )
+        if ( timeSpanDisabled || events.at( i ).date() < limite.dateTime() )
         {
             UpcomingEventsWidget * widget = new UpcomingEventsWidget;
             widget->setName( events.at( i ).name() );
-            widget->setDate( events.at( i ).date() );
+            widget->setDate( KDateTime( events.at( i ).date() ) );
             widget->setLocation( events.at( i ).location() );
             !artistList.isEmpty() ? widget->setParticipants( artistList ) : widget->setParticipants( "No other participants" );
             widget->setUrl( events.at( i ).url() );

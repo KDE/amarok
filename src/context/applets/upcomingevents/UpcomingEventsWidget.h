@@ -27,11 +27,11 @@
 #include <QPixmap>
 #include <QScrollArea>
 
+class KDateTime;
 class KUrl;
 class KJob;
 
 class QLabel;
-class QDateTime;
 class QGridLayout;
 
 class UpcomingEventsWidget : public QWidget
@@ -84,10 +84,10 @@ class UpcomingEventsWidget : public QWidget
          */
         void    setParticipants( const QString &participants );
         /**
-         *Set the event's date in QLabel from a QDateTime
-         *@param QDateTime, date to be displayed
+         *Set the event's date in QLabel from a KDateTime
+         *@param KDateTime, date to be displayed
          */
-        void    setDate( const QDateTime &date );
+        void    setDate( const KDateTime &date );
         /**
          *Set the event's name in QLabel from a QString
          *@param QString, name's text to be displayed
