@@ -168,6 +168,8 @@ bool
 PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropAction action, int row,
         int column, const QModelIndex &parent ) //reimplemented
 {
+    Q_UNUSED( column )
+
     if( action == Qt::IgnoreAction )
         return true;
 
