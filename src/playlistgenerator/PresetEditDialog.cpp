@@ -102,14 +102,17 @@ APG::PresetEditDialog::removeNode()
 void
 APG::PresetEditDialog::currentNodeChanged( const QModelIndex& index )
 {
-    // TODO: connect to update() signal of widget, and use it redraw the label in the treeview
-    ConstraintNode* n = static_cast<ConstraintNode*>( index.internalPointer() );
-    if ( !m_widgetStackPages.contains( n ) ) {
-        debug() << "Inserting new constraint edit widget into the stack";
-        QWidget* w = n->editWidget();
-        m_widgetStackPages.insert( n, ui.stackedWidget_Editors->addWidget( w ) );
+    if( index.isValid() )
+    {
+        // TODO: connect to update() signal of widget, and use it redraw the label in the treeview
+        ConstraintNode* n = static_cast<ConstraintNode*>( index.internalPointer() );
+        if ( !m_widgetStackPages.contains( n ) ) {
+            debug() << "Inserting new constraint edit widget into the stack";
+            QWidget* w = n->editWidget();
+            m_widgetStackPages.insert( n, ui.stackedWidget_Editors->addWidget( w ) );
+        }
+        ui.stackedWidget_Editors->setCurrentIndex( m_widgetStackPages.value( n ) );
     }
-    ui.stackedWidget_Editors->setCurrentIndex( m_widgetStackPages.value( n ) );
 }
 
 void
