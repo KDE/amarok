@@ -38,8 +38,8 @@ class XmlQueryWriter : public QueryMaker
         ~XmlQueryWriter();
 
         QString     getXml( int indent = 0 );
-        QDomElement getDomElement();
-        QueryMaker* getEmededQueryMaker();
+        QDomElement getDomElement() const;
+        QueryMaker* getEmbeddedQueryMaker() const;
 
         QueryMaker* reset();
         void run();

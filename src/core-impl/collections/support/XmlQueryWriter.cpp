@@ -64,13 +64,13 @@ XmlQueryWriter::getXml( int indent )
 }
 
 QDomElement
-XmlQueryWriter::getDomElement()
+XmlQueryWriter::getDomElement() const
 {
     return m_element;
 }
 
 QueryMaker*
-XmlQueryWriter::getEmededQueryMaker()
+XmlQueryWriter::getEmbeddedQueryMaker() const
 {
     return m_qm;
 }
@@ -147,6 +147,11 @@ XmlQueryWriter::setQueryType( QueryType type )
     case QueryMaker::Custom:
         // TODO
         m_qm->setQueryType( QueryMaker::Custom );
+        return this;
+
+    case QueryMaker::Label:
+        insertRetValue( "label" );
+        m_qm->setQueryType( QueryMaker::Label );
         return this;
     
     case QueryMaker::None:
