@@ -24,6 +24,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
+#include "SvgHandler.h"
 
 //KDE
 #include <KHBox>
@@ -49,8 +50,8 @@ ArtistWidget::ArtistWidget( QWidget *parent )
 {
 
     // set a fixed size for all widget, for harmonize the similar artists applet display
-    this->setMinimumHeight( 105 );
-    this->setMaximumHeight( 105 );
+    this->setMinimumHeight( 115 );
+    this->setMaximumHeight( 115 );
 
     this->setMinimumWidth(350);
 
@@ -151,7 +152,7 @@ ArtistWidget::~ArtistWidget()
 void
 ArtistWidget::setPhoto( const QPixmap &photo )
 {
-    m_image->setPixmap( photo );
+    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true ) );
 }
 
 /**
@@ -207,9 +208,8 @@ ArtistWidget::setImageFromInternet( KJob *job )
         {
             image = image.scaledToHeight( 100, Qt::SmoothTransformation );
         }
-
         m_image->clear();
-        m_image->setPixmap( image );
+        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
         //the height of the widget depends on the height of the artist picture
         //setMaximumHeight(image.height());
     }
@@ -354,8 +354,9 @@ ArtistWidget::elideArtistDescription()
         QString stringTmp=fontMetric.elidedText(m_descString,Qt::ElideRight,widthTot);
 
         //we delete nbHeigth words because of the wordWrap action
-        for(int i; i<nbHeight; i++) {
-            stringTmp=stringTmp.left(stringTmp.lastIndexOf(' '));
+        for( int i = 0; i < nbHeight; ++i)
+        {
+            stringTmp = stringTmp.left( stringTmp.lastIndexOf(' ') );
         }
 
         stringTmp.append("...");
