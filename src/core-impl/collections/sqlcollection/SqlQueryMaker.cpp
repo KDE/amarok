@@ -487,7 +487,7 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
     {
         d->linkedTables |= Private::TAGS_TAB;
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        QString filter = " %1 tracks.url IN (SELECT a.url FROM urls_labels A INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        QString filter = " %1 tracks.url IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
         d->queryFilter += filter.arg( andOr(), like );
     }
     else
@@ -510,7 +510,7 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
     {
         d->linkedTables |= Private::TAGS_TAB;
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        QString filter = " %1 tracks.url NOT IN (SELECT a.url FROM urls_labels A INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        QString filter = " %1 tracks.url NOT IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
         d->queryFilter += filter.arg( andOr(), like );
     }
     else
