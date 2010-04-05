@@ -267,7 +267,7 @@ void
 PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 {
     DEBUG_BLOCK
-    KDialog dialog( The::mainWindow() );
+    KDialog dialog;
     dialog.setCaption( i18n( "Confirm Delete" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
     QLabel label( i18np( "Are you sure you want to delete this playlist?",

@@ -502,7 +502,7 @@ void
 UmsHandler::slotConfigure()
 {
     DEBUG_BLOCK
-    KDialog umsSettingsDialog( The::mainWindow() );
+    KDialog umsSettingsDialog;
     QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
 
     Ui::UmsConfiguration *settings = new Ui::UmsConfiguration();
