@@ -59,8 +59,6 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     m_goButton->setFlat( true );
     
     connect( m_pathEdit, SIGNAL( returnPressed() ), this, SLOT( editUpdated() ) );
-#warning This signal connection is broken, please fix me!
-    connect( m_pathEdit, SIGNAL(  ), this, SLOT( editUpdated() ) );
     connect( m_goButton, SIGNAL( clicked( bool ) ), this, SLOT( editUpdated() ) );
 
 
