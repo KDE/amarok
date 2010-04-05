@@ -16,9 +16,11 @@
  ****************************************************************************************/
 
 #include "UpcomingEventsWidget.h"
+#include "SvgHandler.h"
 
 // Kde include
 #include <KDateTime>
+#include <KIcon>
 #include <KIO/Job>
 #include <KLocale>
 #include <KLocalizedString>
@@ -52,19 +54,21 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
     m_name->setWordWrap( true );
 
     m_layout = new QGridLayout;
-    m_layout->addWidget( m_image, 0, 0, 5, 1 );
+    m_layout->addWidget( m_image, 0, 0, 5, 1, Qt::AlignCenter );
     m_layout->addWidget( m_name, 0, 1, 1, 1 );
     m_layout->addWidget( m_participants, 1, 1, 1, 1 );
     m_layout->addWidget( m_location, 2, 1, 1, 1 );
     m_layout->addWidget( m_date, 3, 1, 1, 1 );
     m_layout->addWidget( m_url, 4, 1, 1, 1 );
     m_layout->addWidget( m_frame, 6, 0, 1, 2 );
-    m_layout->setColumnMinimumWidth(0, 126);
-
+    m_layout->setColumnMinimumWidth( 0, 140 );
+    m_layout->setHorizontalSpacing( 5 );
     m_layout->setAlignment( Qt::AlignLeft );
     m_layout->setSizeConstraint( QLayout::SetMinimumSize );
     setLayout( m_layout );
-    connect( m_url, SIGNAL( linkActivated( QString ) ), this, SLOT( openUrl( QString ) ) );
+
+    m_url->setOpenExternalLinks( true );
+    m_url->setTextInteractionFlags( Qt::TextBrowserInteraction );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -133,10 +137,12 @@ UpcomingEventsWidget::loadImage( KJob *job ) // SLOT
         if( !buffer.isEmpty() )
         {
             image.loadFromData( buffer );
-            m_image->setPixmap( image );
+            m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
         }
         else
-            m_image->setText( i18n( "No image" ) );
+        {
+            m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
+        }
     }
 }
 
@@ -215,12 +221,6 @@ UpcomingEventsWidget::setUrl( const KUrl &url )
 {
     m_url->setText( "<html><body><a href=\"" + url.prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
     m_url->setAttribute( Qt::WA_TranslucentBackground );
-}
-
-void
-UpcomingEventsWidget::openUrl( QString url )
-{
-    QDesktopServices::openUrl( KUrl( url ) );
 }
 
 #include "UpcomingEventsWidget.moc"

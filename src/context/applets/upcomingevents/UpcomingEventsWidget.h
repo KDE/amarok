@@ -122,12 +122,6 @@ class UpcomingEventsWidget : public QWidget
          *@param KJob*, pointer to the job which get the pixmap from the web
          */
         void    loadImage( KJob *job );
-        /**
-         *SLOTS
-         *Open the event's url
-         *@param QString, contain the Url
-         */
-        void    openUrl( QString );
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */
