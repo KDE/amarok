@@ -72,7 +72,7 @@ SqlTrack::getTrackReturnValues()
 QString
 SqlTrack::getTrackJoinConditions()
 {
-    return "LEFT JOIN tracks ON urls.id = tracks.url "
+    return "INNER JOIN tracks ON urls.id = tracks.url "
            "LEFT JOIN statistics ON urls.id = statistics.url "
            "LEFT JOIN artists ON tracks.artist = artists.id "
            "LEFT JOIN albums ON tracks.album = albums.id "
