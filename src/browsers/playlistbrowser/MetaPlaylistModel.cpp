@@ -187,6 +187,49 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
     }
 }
 
+bool
+MetaPlaylistModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() )
+        return false;
+
+    if( idx.column() == ProviderColumn )
+    {
+        if( role == Qt::DisplayRole )
+        {
+            Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
+            if( !provider )
+                return false;
+
+            if( IS_TRACK( idx ) )
+            {
+                Meta::TrackPtr track = trackFromIndex( idx );
+                if( !track )
+                    return false;
+                debug() << QString( "Copy track \"%1\" to \"%2\"." )
+                        .arg( track->prettyName() ).arg( provider->prettyName() );
+                //TODO:                return !provider->addTrack( track ).isNull();
+                return false;
+            }
+            else
+            {
+                Playlists::PlaylistPtr playlist = playlistFromIndex( idx );
+                if( !playlist )
+                    return false;
+                debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
+                        .arg( playlist->prettyName() ).arg( provider->prettyName() );
+                //TODO:                return !provider->addPlaylist( playlist ).isNull();
+                return false;
+            }
+        }
+        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+        //TODO: implement setItemData()
+        return true;
+    }
+
+    return false;
+}
+
 QModelIndex
 MetaPlaylistModel::index( int row, int column, const QModelIndex &parent) const
 {
@@ -319,6 +362,52 @@ MetaPlaylistModel::mimeData( const QModelIndexList &indices ) const
     mime->setTracks( tracks );
 
     return mime;
+}
+
+bool
+MetaPlaylistModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column,
+                                 const QModelIndex &parent )
+{
+    Q_UNUSED( column );
+    if( action == Qt::IgnoreAction )
+        return true;
+
+    const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
+    if( !amarokMime )
+        return false;
+
+    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    {
+        Playlists::PlaylistList playlists = amarokMime->playlists();
+
+        foreach( Playlists::PlaylistPtr playlist, playlists )
+        {
+            if( !m_playlists.contains( playlist ) )
+            {
+                debug() << "unknown playlist dragged in: " << playlist->prettyName();
+                debug() << "TODO: start synchronization";
+            }
+        }
+
+        return true;
+    }
+    else if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
+    {
+        debug() << "Dropped track on " << parent << " at row: " << row;
+
+        Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
+        if( !playlist )
+            return false;
+
+        Meta::TrackList tracks = amarokMime->tracks();
+        bool allAdded = true;
+        foreach( Meta::TrackPtr track, tracks )
+            /*allAdded = */playlist->addTrack( track, row )/* ? allAdded : false*/;
+
+        return allAdded;
+    }
+
+    return false;
 }
 
 void

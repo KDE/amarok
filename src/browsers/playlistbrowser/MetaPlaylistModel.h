@@ -67,6 +67,7 @@ class MetaPlaylistModel : public QAbstractItemModel,
 
         /* QAbstractItemModel methods */
         virtual QVariant data( const QModelIndex &index, int role ) const;
+        virtual bool setData( const QModelIndex &idx, const QVariant &value, int role );
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
         virtual QVariant headerData( int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole ) const;
@@ -77,7 +78,9 @@ class MetaPlaylistModel : public QAbstractItemModel,
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
         virtual QStringList mimeTypes() const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
+                                   int column, const QModelIndex &parent );
 
         /* Playlists::PlaylistObserver methods */
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
