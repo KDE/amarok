@@ -216,6 +216,11 @@ SqlCollection::isFileInCollection( const QString &url )
 bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
+    foreach( QString folder, collectionFolders() )
+    {
+        if ( url.path().contains( folder ) )
+            return true;
+    }
     return url.protocol() == "file" || url.protocol() == uidUrlProtocol();
 }
 
@@ -224,7 +229,12 @@ SqlCollection::trackForUrl( const KUrl &url )
 {
     if( url.protocol() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-    return m_registry->getTrack( url.path() );
+    foreach( QString folder, collectionFolders() )
+    {
+        if ( url.path().contains( folder ) )
+            return m_registry->getTrack( url.path() );
+    }
+    return Meta::TrackPtr();
 }
 
 CollectionLocation*
