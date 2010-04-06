@@ -636,6 +636,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
+    core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
