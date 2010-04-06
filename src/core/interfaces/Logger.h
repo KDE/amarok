@@ -50,9 +50,11 @@ namespace Amarok
           * @param job The job whose progress should be monitored
           * @param text An additional text that will be part of the notification
           * @param obj The object that will be called if the user cancels the job. If not set, the job will not be cancellable
-          * @param slot The slot on the given object that will be called if the user cancels the job. Not slot will be called if not set
+          * @param slot The slot on the given object that will be called if the user cancels the job. No slot will be called if not set.
+          * The signal will be emitted from the GUI thread. The receiver may not make assumptions about the sender
+          * @param type The Qt connection type to use for the connection to the receiving slot. Defaults to Qt::AutoConnection
           */
-        virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0 ) = 0;
+        virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection ) = 0;
 
         /**
           * Sends a notification to the user.
