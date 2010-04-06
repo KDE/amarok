@@ -149,3 +149,5 @@ ProxyLogger::forwardNotifications()
         }
     }
 }
+
+#include "ProxyLogger.moc"
