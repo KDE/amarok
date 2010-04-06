@@ -24,6 +24,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core/capabilities/StreamInfoCapability.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PlaylistManager.h"
@@ -689,6 +690,10 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         //QDomNode link = createElement( "link" );
 
         //QDomNode meta
+        //amarok specific queue info, see the XSPF specification's meta element
+        QDomElement queue = createElement( "meta" );
+        queue.setAttribute( "rel", "http://amarok.kde.org/queue" );
+
         //QDomNode extension
 
         #define APPENDNODE( X, Y ) \
@@ -729,6 +734,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
             APPENDNODE( trackNum, QString::number( track->trackNumber() ) );
         if ( track->length() > 0 )
             APPENDNODE( duration, QString::number( track->length() ) );
+
         node.appendChild( subNode );
     }
     #undef APPENDNODE
@@ -747,6 +753,26 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
         save( m_url, false );
+}
+
+void
+XSPFPlaylist::setQueued( const Meta::TrackList &queue )
+{
+    QDomElement q = createElement( "queue" );
+
+    foreach( Meta::TrackPtr track, queue ) {
+        QDomElement qTrack = createElement( "track" );
+        qTrack.appendChild( createTextNode( track->playableUrl().prettyUrl() ) );
+        q.appendChild( qTrack );
+    }
+
+    QDomElement extension = createElement( "extension" );
+    extension.setAttribute( "application", "http://amarok.kde.org" );
+    extension.appendChild( q );
+
+    QDomNode root = firstChild();
+    root.appendChild( extension );
+
 }
 
 bool

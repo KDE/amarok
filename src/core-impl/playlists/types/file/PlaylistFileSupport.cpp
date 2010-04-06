@@ -153,8 +153,10 @@ loadPlaylistFile( const KUrl &url )
             playlist = new M3UPlaylist( fileToLoad );
             break;
         case XSPF:
+        {
             playlist = new XSPFPlaylist( fileToLoad );
             break;
+        }
         default:
             debug() << "Could not load playlist file " << fileToLoad;
             break;
@@ -165,6 +167,12 @@ loadPlaylistFile( const KUrl &url )
 
 bool
 exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
+{
+    return exportPlaylistFile( list, path, Meta::TrackList() );
+}
+
+bool
+exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const Meta::TrackList &queued )
 {
     PlaylistFormat format = getFormat( path );
     bool result = false;
@@ -177,8 +185,12 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
             result = M3UPlaylist( list ).save( path.path(), true );
             break;
         case XSPF:
-            result = XSPFPlaylist( list ).save( path.path(), true );
+        {
+            XSPFPlaylist pl( list );
+            pl.setQueued( queued );
+            result = pl.save( path.path(), true );
             break;
+        }
         default:
             debug() << "Could not export playlist file " << path;
             break;
