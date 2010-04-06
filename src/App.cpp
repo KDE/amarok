@@ -265,8 +265,8 @@ App::~App()
     delete mainWindow();
 
     CollectionManager::destroy();
-    Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
+    Playlist::Actions::destroy();
     PlaylistManager::destroy();
     CoverFetcher::destroy();
 
