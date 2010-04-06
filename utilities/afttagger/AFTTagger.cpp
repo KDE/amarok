@@ -90,7 +90,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
 
         if( response != "y" && response != "Y")
         {
-            m_textStream << qPrintable( tr( "INFO: Terms not accepted; exiting..." ) ) << endl;
+            m_textStream << tr( "INFO: Terms not accepted; exiting..." ) << endl;
             ::exit( 1 );
         }
     }
@@ -101,7 +101,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
     foreach( const QString &path, m_fileFolderList )
         processPath( path );
 
-    m_textStream << qPrintable( tr( "INFO: All done, exiting..." ) ) << endl;
+    m_textStream << tr( "INFO: All done, exiting..." ) << endl;
     ::exit( 0 );
 }
 
@@ -112,7 +112,7 @@ AFTTagger::processPath( const QString &path )
     if( !info.isDir() && !info.isFile() )
     {
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: Skipping %1 because it is neither a directory nor file." ).arg( path ) ) << endl;
+            m_textStream << tr( "INFO: Skipping %1 because it is neither a directory nor file." ).arg( path ) << endl;
         return;
     }
     if( info.isDir() )
@@ -120,13 +120,13 @@ AFTTagger::processPath( const QString &path )
         if( !m_recurse )
         {
             if( m_verbose )
-               m_textStream << qPrintable( tr( "INFO: Skipping %1 because it is a directory and recursion is not specified." ).arg( path ) ) << endl;
+               m_textStream << tr( "INFO: Skipping %1 because it is a directory and recursion is not specified." ).arg( path ) << endl;
             return;
         }
         else
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: Processing directory %1" ).arg( path ) ) << endl;
+                m_textStream << tr( "INFO: Processing directory %1" ).arg( path ) << endl;
             foreach( const QString &pathEntry, QDir( path ).entryList() )
             {
                 if( pathEntry != "." && pathEntry != ".." )
@@ -151,11 +151,11 @@ AFTTagger::processPath( const QString &path )
         if( fileRef.isNull() )
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: file %1 not able to be opened by TagLib" ).arg( filePath ) ) << endl;
+                m_textStream << tr( "INFO: file %1 not able to be opened by TagLib" ).arg( filePath ) << endl;
             return;
         }
 
-        m_textStream << qPrintable( tr( "INFO: Processing file %1" ).arg( filePath ) ) << endl;
+        m_textStream << tr( "INFO: Processing file %1" ).arg( filePath ) << endl;
 
         SafeFileSaver sfs( filePath );
         sfs.setVerbose( false );
@@ -163,12 +163,12 @@ AFTTagger::processPath( const QString &path )
         QString tempFilePath = sfs.prepareToSave();
         if( tempFilePath.isEmpty() )
         {
-            m_textStream << qPrintable( tr( "Error: could not create temporary file when processing %1" ).arg( filePath ) ) << endl;
+            m_textStream << tr( "Error: could not create temporary file when processing %1" ).arg( filePath ) << endl;
             return;
         }
 
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: Temporary file is at %1").arg( tempFilePath ) ) << endl;
+            m_textStream << tr( "INFO: Temporary file is at %1").arg( tempFilePath ) << endl;
 
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t *encodedName = reinterpret_cast< const wchar_t * >(tempFilePath.utf16());
@@ -189,22 +189,22 @@ AFTTagger::processPath( const QString &path )
         else
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG, Ogg, and FLAC files), cleaning up temp file" ) ) << endl;
+                m_textStream << tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG, Ogg, and FLAC files), cleaning up temp file" ) << endl;
             if( !sfs.cleanupSave() )
-                m_textStream << qPrintable( tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) ) << endl;
+                m_textStream << tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) << endl;
             return;
         }
         if( saveNecessary )
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: Safe-saving file" ) ) << endl;
+                m_textStream << tr( "INFO: Safe-saving file" ) << endl;
             if( !sfs.doSave() )
-                m_textStream << qPrintable( tr( "WARNING: file at %1 could not be saved" ).arg( filePath ) ) << endl;
+                m_textStream << tr( "WARNING: file at %1 could not be saved" ).arg( filePath ) << endl;
         }
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: Cleaning up..." ) ) << endl;
+            m_textStream << tr( "INFO: Cleaning up..." ) << endl;
         if( !sfs.cleanupSave() )
-            m_textStream << qPrintable( tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) ) << endl;
+            m_textStream << tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) << endl;
         return;
     }
 }
@@ -214,7 +214,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
 {
     if( file->readOnly() )
     {
-        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
     
@@ -222,13 +222,13 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
     bool newUid = false;
     bool nothingfound = true;
     if( m_verbose )
-        m_textStream << qPrintable( tr( "INFO: File is a MPEG file, opening..." ) ) << endl;
+        m_textStream << tr( "INFO: File is a MPEG file, opening..." ) << endl;
     if ( file->ID3v2Tag( true ) )
     {
         if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: No UFID frames found" ) ) << endl;
+                m_textStream << tr( "INFO: No UFID frames found" ) << endl;
 
             if( m_delete )
                 return false;
@@ -238,11 +238,11 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
         else
         {
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: Found existing UFID frames, parsing" ) )  << endl;
+                m_textStream << tr( "INFO: Found existing UFID frames, parsing" )  << endl;
             TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
             TagLib::ID3v2::FrameList::Iterator iter;
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: Frame list size is %1" ).arg( frameList.size() ) ) << endl;
+                m_textStream << tr( "INFO: Frame list size is %1" ).arg( frameList.size() ) << endl;
             for( iter = frameList.begin(); iter != frameList.end(); ++iter )
             {
                 TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
@@ -253,7 +253,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                     {
                         nothingfound = false;
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: Removing old-style ATF identifier" ) ) << endl;
+                            m_textStream << tr( "INFO: Removing old-style ATF identifier" ) << endl;
 
                         iter = frameList.erase( iter );
                         file->ID3v2Tag()->removeFrame( currFrame );
@@ -267,13 +267,13 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                     {
                         nothingfound = false;
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( TStringToQString( TagLib::String( currFrame->identifier() ) ) ) ) << endl;
+                            m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( TStringToQString( TagLib::String( currFrame->identifier() ) ) ) << endl;
 
                         if( m_delete )
                         {
                             iter = frameList.erase( iter );
                             if( m_verbose )
-                                m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                                m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
                             file->ID3v2Tag()->removeFrame( currFrame );
                             file->save();
                             return true;
@@ -283,10 +283,10 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                         if( version < s_currentVersion )
                         {
                             if( m_verbose )
-                                m_textStream << qPrintable( tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) ) << endl;
+                                m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) << endl;
                             uid = upgradeUID( version, TStringToQString( TagLib::String( currFrame->identifier() ) ) );
                             if( m_verbose )
-                                m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                                m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
                             iter = frameList.erase( iter );
                             file->ID3v2Tag()->removeFrame( currFrame );
                             newUid = true;
@@ -294,7 +294,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                         else if( version == s_currentVersion && m_newid )
                         {
                             if( m_verbose )
-                                m_textStream << qPrintable( tr( "INFO: New IDs specified to be generated, doing so" ) ) << endl;
+                                m_textStream << tr( "INFO: New IDs specified to be generated, doing so" ) << endl;
                             iter = frameList.erase( iter );
                             file->ID3v2Tag()->removeFrame( currFrame );
                             newUid = true;
@@ -302,7 +302,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                         else
                         {
                             if( m_verbose )
-                                m_textStream << qPrintable( tr( "INFO: ID is current" ) ) << endl;
+                                m_textStream << tr( "INFO: ID is current" ) << endl;
                         }
                     }
                 }
@@ -314,7 +314,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
             if( uid.isEmpty() )
                 uid = createCurrentUID( file );
             if( m_verbose )
-                m_textStream << qPrintable( tr( "INFO: Adding new frame and saving file with UID: %1" ).arg( uid ) ) << endl;
+                m_textStream << tr( "INFO: Adding new frame and saving file with UID: %1" ).arg( uid ) << endl;
             file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
                 Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
             file->save();
@@ -329,7 +329,7 @@ AFTTagger::handleOgg( TagLib::Ogg::File *file )
 {
     if( file->readOnly() )
     {
-        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
     
@@ -361,7 +361,7 @@ AFTTagger::handleFLAC( TagLib::FLAC::File *file )
 {
     if( file->readOnly() )
     {
-        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
     
@@ -386,12 +386,12 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
     bool nothingfound = true;
     TagLib::StringList toRemove;
     if( m_verbose )
-        m_textStream << qPrintable( tr( "INFO: File has a XiphComment, opening..." ) ) << endl;
+        m_textStream << tr( "INFO: File has a XiphComment, opening..." ) << endl;
 
     if( comment->fieldListMap().isEmpty() )
     {
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: No fields found in XiphComment" ) ) << endl;
+            m_textStream << tr( "INFO: No fields found in XiphComment" ) << endl;
 
         if( m_delete )
             return false;
@@ -399,11 +399,11 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
     else
     {
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: Found existing XiphComment frames, parsing" ) )  << endl;
+            m_textStream << tr( "INFO: Found existing XiphComment frames, parsing" )  << endl;
         TagLib::Ogg::FieldListMap fieldListMap = comment->fieldListMap();
         
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: fieldListMap size is %1" ).arg( fieldListMap.size() ) ) << endl;
+            m_textStream << tr( "INFO: fieldListMap size is %1" ).arg( fieldListMap.size() ) << endl;
         
         TagLib::Ogg::FieldListMap::Iterator iter;
         for( iter = fieldListMap.begin(); iter != fieldListMap.end(); ++iter )
@@ -415,7 +415,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
                 nothingfound = false;
                 
                 if( m_verbose )
-                    m_textStream << qPrintable( tr( "INFO: Removing old-style ATF identifier %1" ).arg( qkey ) ) << endl;
+                    m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( qkey ) << endl;
 
                 toRemove.append( key );
                 if( !m_delete )
@@ -426,40 +426,40 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
                 nothingfound = false;
                 
                 if( m_verbose )
-                    m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( qkey ) ) << endl;
+                    m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( qkey ) << endl;
 
                 if( m_delete )
                 {
                     toRemove.append( key );
                     if( m_verbose )
-                        m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                        m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
                 }
                 else
                 {
                     int version = qkey.at( 13 ).digitValue();
                     if( m_verbose )
-                        m_textStream << qPrintable( tr( "INFO: AFT identifier is version %1" ).arg( version ) ) << endl;
+                        m_textStream << tr( "INFO: AFT identifier is version %1" ).arg( version ) << endl;
                     if( version < s_currentVersion )
                     {
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) ) << endl;
+                            m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) << endl;
                         uid = upgradeUID( version, TStringToQString( fieldListMap[key].front() ) );
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                            m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
                         toRemove.append( key );
                         newUid = true;
                     }
                     else if( version == s_currentVersion && m_newid )
                     {
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: New IDs specified to be generated, doing so" ) ) << endl;
+                            m_textStream << tr( "INFO: New IDs specified to be generated, doing so" ) << endl;
                         toRemove.append( key );
                         newUid = true;
                     }
                     else
                     {
                         if( m_verbose )
-                            m_textStream << qPrintable( tr( "INFO: ID is current" ) ) << endl;
+                            m_textStream << tr( "INFO: ID is current" ) << endl;
                         return false;
                     }
                 }
@@ -474,7 +474,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
         if( uid.isEmpty() )
             uid = createCurrentUID( file );
         if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) ) << endl;
+            m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
         comment->addField( Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ) );
         return true;
     }
@@ -581,17 +581,17 @@ AFTTagger::readArgs()
 void
 AFTTagger::displayHelp()
 {
-    m_textStream << qPrintable( tr( "Amarok AFT Tagger" ) ) << endl << endl;
-    m_textStream << qPrintable( tr( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ) ) << endl << endl;
-    m_textStream << qPrintable( tr( "Usage: amarok_afttagger [options] +File/Folder(s)" ) ) << endl << endl;
-    m_textStream << qPrintable( tr( "User-modifiable Options:" ) ) << endl;
-    m_textStream << qPrintable( tr( "+File/Folder(s)       : Files or folders to tag" ) ) << endl;
-    m_textStream << qPrintable( tr( "-h, --help            : This help text" ) ) << endl;
-    m_textStream << qPrintable( tr( "-r, --recursive       : Process files and folders recursively" ) ) << endl;
-    m_textStream << qPrintable( tr( "-d, --delete          : Remove AFT tag" ) ) << endl;
-    m_textStream << qPrintable( tr( "-n  --newid           : Replace any existing ID with a new one" ) ) << endl;
-    m_textStream << qPrintable( tr( "-v, --verbose         : Verbose output" ) ) << endl;
-    m_textStream << qPrintable( tr( "-q, --quiet           : Quiet output; Implies that you accept the terms of use" ) ) << endl;
+    m_textStream << tr( "Amarok AFT Tagger" ) << endl << endl;
+    m_textStream << tr( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ) << endl << endl;
+    m_textStream << tr( "Usage: amarok_afttagger [options] +File/Folder(s)" ) << endl << endl;
+    m_textStream << tr( "User-modifiable Options:" ) << endl;
+    m_textStream << tr( "+File/Folder(s)       : Files or folders to tag" ) << endl;
+    m_textStream << tr( "-h, --help            : This help text" ) << endl;
+    m_textStream << tr( "-r, --recursive       : Process files and folders recursively" ) << endl;
+    m_textStream << tr( "-d, --delete          : Remove AFT tag" ) << endl;
+    m_textStream << tr( "-n  --newid           : Replace any existing ID with a new one" ) << endl;
+    m_textStream << tr( "-v, --verbose         : Verbose output" ) << endl;
+    m_textStream << tr( "-q, --quiet           : Quiet output; Implies that you accept the terms of use" ) << endl;
     m_textStream.flush();
     ::exit( 0 );
 }
