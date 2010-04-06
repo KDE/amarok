@@ -67,8 +67,8 @@ namespace Amarok
         /**
           * Send a notification to the user with an additional context.
           * A notification will be send to the user containing the given text. Additionally, it will convey the context given by @p type.
-          * @param The text that the notification will contain
-          * @param The context of the notification
+          * @param text The text that the notification will contain
+          * @param type The context of the notification
           */
         virtual void longMessage( const QString &text, MessageType type = Information ) = 0;
     };
