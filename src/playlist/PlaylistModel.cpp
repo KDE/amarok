@@ -675,7 +675,13 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    return Playlists::exportPlaylistFile( tracks(), path );
+    // check queue state
+    QQueue<quint64> queueIds = The::playlistActions()->queue();
+    Meta::TrackList queued;
+    foreach( quint64 id, queueIds ) {
+      queued << trackForId( id );
+    }
+    return Playlists::exportPlaylistFile( tracks(), path, queued );
 }
 
 Meta::TrackList
