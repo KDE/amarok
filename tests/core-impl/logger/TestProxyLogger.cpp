@@ -39,7 +39,7 @@ using ::testing::AnyNumber;
 using ::testing::_;
 using ::testing::Mock;
 
-static Amarok::ProxyLogger *s_logger;
+static ProxyLogger *s_logger;
 
 class DummyJob : public KJob
 {
@@ -69,7 +69,7 @@ class CreateJob : public ThreadWeaver::Job
 {
 public:
     void run() {
-        s_logger = new Amarok::ProxyLogger();
+        s_logger = new ProxyLogger();
     }
 };
 
@@ -103,7 +103,7 @@ TestProxyLogger::testClassMovesToMainThread()
 void
 TestProxyLogger::testDoNotForwardDeletedJob()
 {
-    s_logger = new Amarok::ProxyLogger();
+    s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperation( _, _, _, _, _ ) ).Times( 0 );
@@ -124,7 +124,7 @@ TestProxyLogger::testDoNotForwardDeletedJob()
 void
 TestProxyLogger::testDoNotForwardDeletedSlot()
 {
-    s_logger = new Amarok::ProxyLogger();
+    s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperation( _, _, 0, 0, _ ) ).Times( 1 ).WillOnce( Return() );
@@ -145,7 +145,7 @@ TestProxyLogger::testDoNotForwardDeletedSlot()
 void
 TestProxyLogger::testForwardLongMessage()
 {
-    s_logger = new Amarok::ProxyLogger();
+    s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, longMessage( _, _ ) ).Times( 1 ).WillOnce( Return() );
@@ -163,7 +163,7 @@ TestProxyLogger::testForwardLongMessage()
 void
 TestProxyLogger::testForwardProgressOperation()
 {
-    s_logger = new Amarok::ProxyLogger();
+    s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperation( _, _, _, _, _ ) ).Times( 1 ).WillOnce( Return() );
@@ -181,7 +181,7 @@ TestProxyLogger::testForwardProgressOperation()
 void
 TestProxyLogger::testForwardShortMessage()
 {
-    s_logger = new Amarok::ProxyLogger();
+    s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, shortMessage( _ ) ).Times( 1 ).WillOnce( Return() );

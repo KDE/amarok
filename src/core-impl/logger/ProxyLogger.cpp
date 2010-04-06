@@ -19,7 +19,6 @@
 #include <QCoreApplication>
 #include <QMutexLocker>
 
-using namespace Amarok;
 ProxyLogger::ProxyLogger()
         : Amarok::Logger()
         , m_logger( 0 )

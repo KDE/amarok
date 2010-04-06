@@ -38,58 +38,55 @@ struct ProgressData
     Qt::ConnectionType type;
 };
 
-namespace Amarok
+/**
+  * Proxy implementation for the Amarok::Logger interface.
+  * This class does not notify the user, but forwards the notifications
+  * to a real logger if available. If no logger is available yet, it stores
+  * the notifications until another logger becomes available.
+  *
+  */
+class ProxyLogger : public Amarok::Logger
 {
+    Q_OBJECT
+    Q_PROPERTY( Amarok::Logger* logger
+                READ logger
+                WRITE setLogger
+                DESIGNABLE false )
+
+public:
+    ProxyLogger();
+    virtual ~ProxyLogger();
+
+    virtual bool event( QEvent *event ); //!< reimplemented to handle ThreadChange event
+
+public slots:
+    virtual void shortMessage( const QString &text );
+    virtual void longMessage( const QString &text, MessageType type );
+    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
+
     /**
-      * Proxy implementation for the Amarok::Logger interface.
-      * This class does not notify the user, but forwards the notifications
-      * to a real logger if available. If no logger is available yet, it stores
-      * the notifications until another logger becomes available.
-      *
+      * Set the real logger.
+      * The proxy logger will forward notifications to this logger.
+      * @param logger The real logger to use. ProxyLogger does not take ownership of the pointer
       */
-    class ProxyLogger : public Amarok::Logger
-    {
-        Q_OBJECT
-        Q_PROPERTY( Amarok::Logger* logger
-                    READ logger
-                    WRITE setLogger
-                    DESIGNABLE false )
+    void setLogger( Amarok::Logger *logger );
+    Amarok::Logger* logger() const;
 
-    public:
-        ProxyLogger();
-        virtual ~ProxyLogger();
+private slots:
+    void init();
+    void forwardNotifications();
 
-        virtual bool event( QEvent *event ); //!< reimplemented to handle ThreadChange event
+private:
+    void startTimer();
 
-    public slots:
-        virtual void shortMessage( const QString &text );
-        virtual void longMessage( const QString &text, MessageType type );
-        virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
-
-        /**
-          * Set the real logger.
-          * The proxy logger will forward notifications to this logger.
-          * @param logger The real logger to use. ProxyLogger does not take ownership of the pointer
-          */
-        void setLogger( Amarok::Logger *logger );
-        Amarok::Logger* logger() const;
-
-    private slots:
-        void init();
-        void forwardNotifications();
-
-    private:
-        void startTimer();
-
-    private:
-        Amarok::Logger *m_logger; //!< stores the real logger
-        bool m_initComplete; //!< initialization complete, including moving to GUI thread if necessary
-        QMutex m_lock; //!< protect members that may be accessed from multiple threads
-        QTimer *m_timer; //!< internal timer that triggers forwarding of notifications
-        QQueue<QString> m_shortMessageQueue; //!< temporary storage for notifications that have not been forwarded yet
-        QQueue<LongMessage> m_longMessageQueue; //!< temporary storage for notifications that have not been forwarded yet
-        QQueue<ProgressData> m_progressQueue; //!< temporary storage for notifications that have not been forwarded yet
-    };
-}
+private:
+    Amarok::Logger *m_logger; //!< stores the real logger
+    bool m_initComplete; //!< initialization complete, including moving to GUI thread if necessary
+    QMutex m_lock; //!< protect members that may be accessed from multiple threads
+    QTimer *m_timer; //!< internal timer that triggers forwarding of notifications
+    QQueue<QString> m_shortMessageQueue; //!< temporary storage for notifications that have not been forwarded yet
+    QQueue<LongMessage> m_longMessageQueue; //!< temporary storage for notifications that have not been forwarded yet
+    QQueue<ProgressData> m_progressQueue; //!< temporary storage for notifications that have not been forwarded yet
+};
 
 #endif
