@@ -65,6 +65,9 @@ class UmsPodcastProvider : public PodcastProvider
         virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex );
 
+        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+
         virtual void completePodcastDownloads();
 
     public slots:

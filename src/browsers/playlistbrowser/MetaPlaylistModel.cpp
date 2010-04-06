@@ -208,8 +208,9 @@ MetaPlaylistModel::setData( const QModelIndex &idx, const QVariant &value, int r
                     return false;
                 debug() << QString( "Copy track \"%1\" to \"%2\"." )
                         .arg( track->prettyName() ).arg( provider->prettyName() );
-                //TODO:                return !provider->addTrack( track ).isNull();
-                return false;
+//                return !provider->addTrack( track ).isNull();
+                provider->addTrack( track ); //ignore result since UmsPodcastProvider returns NULL
+                return true;
             }
             else
             {
@@ -218,8 +219,7 @@ MetaPlaylistModel::setData( const QModelIndex &idx, const QVariant &value, int r
                     return false;
                 debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
                         .arg( playlist->prettyName() ).arg( provider->prettyName() );
-                //TODO:                return !provider->addPlaylist( playlist ).isNull();
-                return false;
+                return !provider->addPlaylist( playlist ).isNull();
             }
         }
         //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work

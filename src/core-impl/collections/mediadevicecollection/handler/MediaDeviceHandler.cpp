@@ -916,7 +916,7 @@ MediaDeviceHandler::privateParseTracks()
             //playlists << playlist;
 
             // Inform the provider of the new playlist
-            m_provider->addPlaylist( playlist );
+            m_provider->addMediaDevicePlaylist( playlist );
         }
 
         // When the provider saves a playlist, the handler should save it internally

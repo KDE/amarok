@@ -61,7 +61,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         /// MediaDevice-specific Functions
 
-        void addPlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
+        void addMediaDevicePlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
         void removePlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
 
         public slots:

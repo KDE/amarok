@@ -33,6 +33,9 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
 
         virtual Playlists::PlaylistList playlists();
 
+        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+
     private:
         Meta::MediaDeviceHandler *m_handler;
 };

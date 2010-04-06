@@ -59,6 +59,16 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
         virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex ) = 0;
 
+        /** Copy a playlist to the provider.
+          */
+        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+
+        /** Copy a track directly to a playlist provider without being in a playlist.
+          * It's up to the implementation to decide what to do but could for instance allow the
+          * creation of a new playlist from scratch.
+          */
+        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+
     signals:
         void updated();
 

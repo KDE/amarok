@@ -536,3 +536,23 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 
     return episode;
 }
+
+Playlists::PlaylistPtr
+UmsPodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+{
+    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+    if( channel.isNull() )
+        return Playlists::PlaylistPtr();
+
+    return Playlists::PlaylistPtr::dynamicCast( addChannel( channel ) );
+}
+
+Meta::TrackPtr
+UmsPodcastProvider::addTrack( Meta::TrackPtr track )
+{
+    PodcastEpisodePtr episode = PodcastEpisodePtr::dynamicCast( track );
+    if( episode.isNull() )
+        return Meta::TrackPtr();
+
+    return Meta::TrackPtr::dynamicCast( addEpisode( episode ) );
+}

@@ -164,7 +164,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 
     emit playlistSaved( pl, name ); // inform handler of new playlist
 
-    addPlaylist( pl );
+    addMediaDevicePlaylist( pl );
 
     return Playlists::PlaylistPtr::dynamicCast( pl );
 }
@@ -203,7 +203,7 @@ MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playli
 }
 
 void
-MediaDeviceUserPlaylistProvider::addPlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
+MediaDeviceUserPlaylistProvider::addMediaDevicePlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists << playlist;
     emit updated();
