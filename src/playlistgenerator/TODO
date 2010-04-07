@@ -4,12 +4,14 @@ Backend:
 - monitor APG patent: US 11/994425
 - actually have the speed/accuracy slider do something
 - implement a playlistprovider (per Bart on merge request)
+- have constraintsolver use new notification interface
 
 Constraints:
 - fix preventduplicates: the delta functions are kinda broken
 - checkpoint constraint
 - last.fm or echonest similar artists constraint
 - proper handling of empty fingerprints in SimilarityChain
+- tagmatch: fix filtering by labels
 
 GUI:
 - "simple" presets?

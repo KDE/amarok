@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef APG_GLOBALMATCH_CONSTRAINT
-#define APG_GLOBALMATCH_CONSTRAINT
+#ifndef APG_TAGMATCH_CONSTRAINT
+#define APG_TAGMATCH_CONSTRAINT
 
 #include "ui_TagMatchEditWidget.h"
 
@@ -23,6 +23,7 @@
 
 #include "core/meta/Meta.h"
 
+#include <QAbstractListModel>
 #include <QBitArray>
 #include <QHash>
 #include <QString>
@@ -37,6 +38,8 @@ namespace Collections {
 
 namespace ConstraintTypes {
 
+    class TagMatchFieldsModel;
+
     /* Puts tracks with the specified tag into the playlist.  "Tag" is used a
      * bit loosely here; a more accurate term would probably be "metadata",
      * since the matchable properties include parameters like "rating" and
@@ -47,6 +50,8 @@ namespace ConstraintTypes {
         Q_OBJECT
 
         public:
+            enum FieldTypes { FieldTypeInt, FieldTypeDate, FieldTypeString };
+
             static Constraint* createFromXml(QDomElement&, ConstraintNode*);
             static Constraint* createNew(ConstraintNode*);
             static ConstraintFactoryEntry* registerMe();
@@ -81,6 +86,7 @@ namespace ConstraintTypes {
         private:
             TagMatch( QDomElement&, ConstraintNode* );
             TagMatch( ConstraintNode* );
+            ~TagMatch();
 
             // constraint parameters
             int m_comparison;
@@ -88,6 +94,9 @@ namespace ConstraintTypes {
             bool m_invert;
             double m_strictness;
             QVariant m_value;
+
+            // convenience class
+            const TagMatchFieldsModel* const m_fieldsModel;
 
             // internal state data
             double m_satisfaction;
@@ -99,6 +108,7 @@ namespace ConstraintTypes {
             QString valueToString() const;
 
             bool matches( const Meta::TrackPtr ) const; // match values are fuzzily calculated
+            // FIXME: should hash track pointers instead
             mutable QHash<QString, bool> m_matchCache; // internal cache for per-track true/false data
     };
 
@@ -125,7 +135,7 @@ namespace ConstraintTypes {
             void on_comboBox_ComparisonTime_currentIndexChanged( int );
 
             // field
-            void on_comboBox_Field_currentIndexChanged( const QString& );
+            void on_comboBox_Field_currentIndexChanged( int );
 
             // invert
             void on_checkBox_Invert_clicked( bool );
@@ -147,6 +157,31 @@ namespace ConstraintTypes {
 
         private:
             Ui::TagMatchEditWidget ui;
+            TagMatchFieldsModel* const m_fieldsModel;
+    };
+
+    class TagMatchFieldsModel : public QAbstractListModel {
+        Q_OBJECT
+
+        public:
+            TagMatchFieldsModel();
+            ~TagMatchFieldsModel();
+
+            // required by QAbstractListModel
+            QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const;
+            int rowCount( const QModelIndex& parent = QModelIndex() ) const;
+
+            bool contains( const QString& ) const;
+            int index_of( const QString& ) const;
+            QString field_at( int ) const;
+            qint64 meta_value_of( const QString& ) const;
+            TagMatch::FieldTypes type_of( const QString& ) const;
+
+        private:
+            QList<QString> m_fieldNames;
+            QHash<QString, TagMatch::FieldTypes> m_fieldTypes;
+            QHash<QString, qint64> m_fieldMetaValues;
+            QHash<QString, QString> m_fieldPrettyNames;
     };
 
 } // namespace ConstraintTypes

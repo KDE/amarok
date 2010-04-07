@@ -33,15 +33,9 @@
 class Constraint : public ConstraintNode {
     Q_OBJECT
     public:
-        enum FieldType { FieldTypeInt, FieldTypeDate, FieldTypeString };
         enum NumComparison { CompareNumLessThan, CompareNumEquals, CompareNumGreaterThan };
         enum StrComparison { CompareStrEquals, CompareStrStartsWith, CompareStrEndsWith, CompareStrContains, CompareStrRegExp };
         enum DateComparison { CompareDateBefore, CompareDateOn, CompareDateAfter, CompareDateWithin };
-
-        static QStringList fieldNames();
-        static FieldType typeOfField( const QString& );
-        static qint64 metaValueOfField( const QString& );
-        static QString nameOfMetaValue( const qint64 );
 
         virtual int getNodeType() const { return ConstraintNode::ConstraintType; }
 
@@ -51,16 +45,6 @@ class Constraint : public ConstraintNode {
         // A couple of helper functions for subclasses
         double compare(const QString&, const int, const QString&, const double strictness=1.0) const;
         template <typename T> double compare(const T, const int, const T, const double strictness=1.0) const;
-
-    private:
-        static void fillFieldNames();
-        static QStringList s_fieldNames;
-
-        static void fillFieldTypes();
-        static QHash<QString, FieldType> s_fieldTypes; // maps field names to their data types (enum FieldTypes)
-
-        static void fillFieldValues();
-        static QHash<QString, qint64> s_fieldValues; // maps field names to their Meta values (in MetaConstants.h)
 };
 
 // Templated function from Constraint
