@@ -23,6 +23,7 @@
 #include "core/collections/CollectionLocationDelegate.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
@@ -30,7 +31,6 @@
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
-#include "statusbar/StatusBar.h"
 
 #include <QDir>
 #include <QFile>
@@ -377,7 +377,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         statusBarTxt = i18n( "Copying tracks" );
 
     m_transferjob = new TransferJob( this );
-    The::statusBar()->newProgressOperation( m_transferjob, statusBarTxt )->setAbortSlot( this, SLOT( slotTransferJobAborted() ) );
+    Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this, SLOT( slotTransferJobAborted() ) );
     connect( m_transferjob, SIGNAL( result( KJob * ) ), this, SLOT( slotTransferJobFinished( KJob * ) ) );
     m_transferjob->start();
 }
@@ -607,7 +607,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+            Amarok::Components::logger()->newProgressOperation( job, i18n( "Removing: %1", name ) );
             m_removejobs.insert( job, track );
             return true;
         }
