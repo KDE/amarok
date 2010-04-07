@@ -28,7 +28,7 @@
 #include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Components.h"
-#include "statusbar/StatusBar.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "MediaDeviceMonitor.h"
@@ -247,10 +247,10 @@ EngineController::supportedMimeTypes()
     // We special case this, as otherwise the users would hate us
     if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
     {
-        The::statusBar()->longMessage(
+        Amarok::Components::logger()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
-                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
