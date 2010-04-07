@@ -129,7 +129,8 @@ public:
     /** save to location, relative is unused since XSPF mandates absolute paths */
     bool save( const KUrl &location, bool relative );
 
-    void setQueued( const Meta::TrackList &queue );
+    void setQueue( const Meta::TrackList &queue );
+    Meta::TrackList queue();
 
 private:
     XSPFTrackList trackList();

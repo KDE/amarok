@@ -756,7 +756,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 }
 
 void
-XSPFPlaylist::setQueued( const Meta::TrackList &queue )
+XSPFPlaylist::setQueue( const Meta::TrackList &queue )
 {
     QDomElement q = createElement( "queue" );
 
@@ -772,7 +772,32 @@ XSPFPlaylist::setQueued( const Meta::TrackList &queue )
 
     QDomNode root = firstChild();
     root.appendChild( extension );
+}
 
+Meta::TrackList
+XSPFPlaylist::queue()
+{
+    Meta::TrackList tracks;
+
+    QDomElement extension = documentElement().firstChildElement( "extension" );
+    if( extension.isNull() )
+        return tracks;
+    
+    if( extension.attribute( "application" ) != "http://amarok.kde.org" )
+        return tracks;
+
+    QDomElement queue = extension.firstChildElement( "queue" );
+    if( queue.isNull() )
+        return tracks;
+
+    for( QDomElement trackElem = queue.firstChildElement( "track" );
+         !trackElem.isNull();
+         trackElem = trackElem.nextSiblingElement( "track" ) )
+    {
+        tracks << CollectionManager::instance()->trackForUrl( trackElem.text() );
+    }
+
+    return tracks;
 }
 
 bool
