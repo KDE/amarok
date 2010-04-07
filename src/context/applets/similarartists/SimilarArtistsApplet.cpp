@@ -322,7 +322,7 @@ void
 SimilarArtistsApplet::switchToLang(const QString &lang)
 {
     DEBUG_BLOCK
-    if (lang == i18n("Automatic") )
+    if (lang == i18nc("automatic language selection", "Automatic") )
         m_descriptionPreferredLang = "aut";
 
     else if (lang == i18n("English") )

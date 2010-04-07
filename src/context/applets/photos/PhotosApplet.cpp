@@ -91,7 +91,7 @@ PhotosApplet::init()
     m_KeyWords = config.readEntry( "KeyWords", "" );
     
 
-    if ( m_Animation == i18n( "Automatic" ) )
+    if ( m_Animation == i18nc( "animation type", "Automatic" ) )
         m_widget->setMode( 0 );
     
     if ( m_Animation == i18n( "Interactive" ) )

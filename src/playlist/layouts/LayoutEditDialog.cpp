@@ -105,7 +105,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     l4->addWidget( m_fitContent = new QRadioButton( i18n( "Fit content" ), this ) );
     m_fitContent->setToolTip( i18n( "Fit the element text" ) );
 #endif
-    l4->addWidget( m_peerWidth = new QRadioButton( i18n( "Automatic" ), this ) );
+    l4->addWidget( m_peerWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
     m_peerWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
     boxWidget->connect( m_fixedWidth, SIGNAL( toggled(bool) ), SLOT( setEnabled(bool) ) );

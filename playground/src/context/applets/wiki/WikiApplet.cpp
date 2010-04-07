@@ -767,7 +767,7 @@ WikiApplet :: switchToLang(QString lang)
 {
     DEBUG_BLOCK
     // TODO change this b/c it's BAAADDD !!!
-    if (lang == i18n("Automatic") )
+    if (lang == i18nc("automatic language selection", "Automatic") )
         m_wikiPreferredLang = "aut";
 
     else if (lang == i18n("English") )

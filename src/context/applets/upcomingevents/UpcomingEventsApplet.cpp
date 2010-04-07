@@ -329,7 +329,7 @@ UpcomingEventsApplet::changeTimeSpan(QString span)
     DEBUG_BLOCK
     // TODO change this b/c it's BAAADDD !!!
     
-    if (span == i18n("Automatic") )
+    if (span == i18nc("automatic time span", "Automatic") )
         m_temp_timeSpan = "AllEvents";
 
     else if (span == i18n("This week") )
