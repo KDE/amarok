@@ -176,25 +176,26 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const Meta::T
 {
     PlaylistFormat format = getFormat( path );
     bool result = false;
+    PlaylistFilePtr playlist;
+
     switch( format )
     {
         case PLS:
-            result = PLSPlaylist( list ).save( path.path(), true );
+            playlist = new PLSPlaylist( list );
             break;
         case M3U:
-            result = M3UPlaylist( list ).save( path.path(), true );
+            playlist = new M3UPlaylist( list );
             break;
         case XSPF:
-        {
-            XSPFPlaylist pl( list );
-            pl.setQueued( queued );
-            result = pl.save( path.path(), true );
+            playlist = new XSPFPlaylist( list );
             break;
-        }
         default:
             debug() << "Could not export playlist file " << path;
             break;
     }
+
+    playlist->setQueue( queued );
+    result = playlist->save( path.path(), true );
     return result;
 }
 
