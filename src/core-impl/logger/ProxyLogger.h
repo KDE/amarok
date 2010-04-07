@@ -48,10 +48,10 @@ using namespace Amarok;
   * the notifications until another logger becomes available.
   *
   */
-class ProxyLogger : public Amarok::Logger
+class ProxyLogger : public Logger
 {
     Q_OBJECT
-    Q_PROPERTY( Amarok::Logger* logger
+    Q_PROPERTY( Logger* logger
                 READ logger
                 WRITE setLogger
                 DESIGNABLE false )
@@ -72,8 +72,8 @@ public slots:
       * The proxy logger will forward notifications to this logger.
       * @param logger The real logger to use. ProxyLogger does not take ownership of the pointer
       */
-    void setLogger( Amarok::Logger *logger );
-    Amarok::Logger* logger() const;
+    void setLogger( Logger *logger );
+    Logger* logger() const;
 
 private slots:
     void init();
@@ -83,7 +83,7 @@ private:
     void startTimer();
 
 private:
-    Amarok::Logger *m_logger; //!< stores the real logger
+    Logger *m_logger; //!< stores the real logger
     bool m_initComplete; //!< initialization complete, including moving to GUI thread if necessary
     QMutex m_lock; //!< protect members that may be accessed from multiple threads
     QTimer *m_timer; //!< internal timer that triggers forwarding of notifications
