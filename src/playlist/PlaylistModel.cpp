@@ -67,55 +67,6 @@ Playlist::Model::Model( QObject *parent )
      */
     The::playlistManager();
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( defaultPlaylistPath() );
-    if ( playlist )
-    {
-        Meta::TrackList tracks = playlist->tracks();
-
-        QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
-        {
-            i.next();
-            Meta::TrackPtr track = i.value();
-            if ( ! track )
-                i.remove();
-            else if( Playlists::canExpand( track ) )
-            {
-                Playlists::PlaylistPtr playlist = Playlists::expand( track );
-                //expand() can return 0 if the KIO job errors out
-                if( playlist )
-                {
-                    i.remove();
-                    Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks )
-                        if( t )
-                            i.insert( t );
-                }
-            }
-        }
-
-        // Insert playlist items loaded from file.
-        // Don't emit any signals, because we're in the constructor.
-        foreach( Meta::TrackPtr track, tracks )
-        {
-            m_totalLength += track->length();
-            m_totalSize += track->filesize();
-            subscribeTo( track );
-            if ( track->album() )
-                subscribeTo( track->album() );
-
-            Item* i = new Item( track );
-            m_items.append( i );
-            m_itemIds.insert( i->id(), i );
-        }
-
-        Meta::TrackList queue = playlist->queue();
-        foreach( Meta::TrackPtr track, queue )
-        {
-            setRowQueued( firstRowForTrack( track ) );
-        }
-    }
-
    //Select previously saved track
    const int playingTrack = AmarokConfig::lastPlaying();
 

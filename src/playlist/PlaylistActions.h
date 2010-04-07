@@ -122,6 +122,7 @@ public slots:
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
+    void restoreDefaultPlaylist();
 
     /**
     * Repaint the playlist.

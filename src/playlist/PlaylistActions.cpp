@@ -26,6 +26,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "amarokconfig.h"
 #include "dbus/PlayerDBusHandler.h"
 #include "core/support/Debug.h"
@@ -76,6 +77,8 @@ Playlist::Actions::Actions()
 
     m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
+
+    restoreDefaultPlaylist();
 }
 
 Playlist::Actions::~Actions()
@@ -465,6 +468,47 @@ Playlist::Actions::repaintPlaylist()
     The::mainWindow()->playlistWidget()->currentView()->repaint();
 }
 
+void
+Playlist::Actions::restoreDefaultPlaylist()
+{
+    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
+    if ( playlist )
+    {
+        Meta::TrackList tracks = playlist->tracks();
+
+        QMutableListIterator<Meta::TrackPtr> i( tracks );
+        while ( i.hasNext() )
+        {
+            i.next();
+            Meta::TrackPtr track = i.value();
+            if ( ! track )
+                i.remove();
+            else if( Playlists::canExpand( track ) )
+            {
+                Playlists::PlaylistPtr playlist = Playlists::expand( track );
+                //expand() can return 0 if the KIO job errors out
+                if( playlist )
+                {
+                    i.remove();
+                    Meta::TrackList newtracks = playlist->tracks();
+                    foreach( Meta::TrackPtr t, newtracks )
+                        if( t )
+                            i.insert( t );
+                }
+            }
+        }
+
+        The::playlistController()->insertTracks( 0, tracks );
+        Meta::TrackList queuedTracks = playlist->queue();
+        QList<int> rows;
+        foreach( Meta::TrackPtr track, queuedTracks )
+        {
+            rows << The::playlist()->firstRowForTrack( track ) ;
+        }
+        queue( rows );
+    }
+
+}
 
 namespace The
 {
