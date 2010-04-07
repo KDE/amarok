@@ -108,6 +108,12 @@ Playlist::Model::Model( QObject *parent )
             m_items.append( i );
             m_itemIds.insert( i->id(), i );
         }
+
+        Meta::TrackList queue = playlist->queue();
+        foreach( Meta::TrackPtr track, queue )
+        {
+            setRowQueued( firstRowForTrack( track ) );
+        }
     }
 
    //Select previously saved track
