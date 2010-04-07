@@ -634,9 +634,9 @@ Playlist::Model::exportPlaylist( const QString &path ) const
 {
     // check queue state
     QQueue<quint64> queueIds = The::playlistActions()->queue();
-    Meta::TrackList queued;
+    QList<int> queued;
     foreach( quint64 id, queueIds ) {
-      queued << trackForId( id );
+      queued << rowForId( id );
     }
     return Playlists::exportPlaylistFile( tracks(), path, queued );
 }

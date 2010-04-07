@@ -168,11 +168,11 @@ loadPlaylistFile( const KUrl &url )
 bool
 exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
 {
-    return exportPlaylistFile( list, path, Meta::TrackList() );
+    return exportPlaylistFile( list, path, QList<int>() );
 }
 
 bool
-exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const Meta::TrackList &queued )
+exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued )
 {
     PlaylistFormat format = getFormat( path );
     bool result = false;

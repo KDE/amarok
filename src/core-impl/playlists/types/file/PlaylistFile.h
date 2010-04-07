@@ -46,8 +46,8 @@ namespace Playlists
                 { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
-            virtual Meta::TrackList queue() { return Meta::TrackList(); }
-            virtual void setQueue( const Meta::TrackList &tracks ) { Q_UNUSED( tracks ); }
+            virtual QList<int> queue() { return QList<int>(); }
+            virtual void setQueue( const QList<int> &rows ) { Q_UNUSED( rows ); }
 
             virtual void setName( const QString &name ) = 0;
             virtual void setGroups( const QStringList &groups ) { m_groups = groups; }

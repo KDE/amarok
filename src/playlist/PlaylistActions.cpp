@@ -499,13 +499,8 @@ Playlist::Actions::restoreDefaultPlaylist()
         }
 
         The::playlistController()->insertTracks( 0, tracks );
-        Meta::TrackList queuedTracks = playlist->queue();
-        QList<int> rows;
-        foreach( Meta::TrackPtr track, queuedTracks )
-        {
-            rows << The::playlist()->firstRowForTrack( track ) ;
-        }
-        queue( rows );
+        QList<int> queuedRows = playlist->queue();
+        queue( playlist->queue() );
     }
 
 }

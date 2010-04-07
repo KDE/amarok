@@ -756,13 +756,13 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 }
 
 void
-XSPFPlaylist::setQueue( const Meta::TrackList &queue )
+XSPFPlaylist::setQueue( const QList<int> &queue )
 {
     QDomElement q = createElement( "queue" );
 
-    foreach( Meta::TrackPtr track, queue ) {
+    foreach( int row, queue ) {
         QDomElement qTrack = createElement( "track" );
-        qTrack.appendChild( createTextNode( track->playableUrl().prettyUrl() ) );
+        qTrack.appendChild( createTextNode( QString::number( row ) ) );
         q.appendChild( qTrack );
     }
 
@@ -774,10 +774,10 @@ XSPFPlaylist::setQueue( const Meta::TrackList &queue )
     root.appendChild( extension );
 }
 
-Meta::TrackList
+QList<int>
 XSPFPlaylist::queue()
 {
-    Meta::TrackList tracks;
+    QList<int> tracks;
 
     QDomElement extension = documentElement().firstChildElement( "extension" );
     if( extension.isNull() )
@@ -794,7 +794,7 @@ XSPFPlaylist::queue()
          !trackElem.isNull();
          trackElem = trackElem.nextSiblingElement( "track" ) )
     {
-        tracks << CollectionManager::instance()->trackForUrl( trackElem.text() );
+        tracks << trackElem.text().toInt();
     }
 
     return tracks;

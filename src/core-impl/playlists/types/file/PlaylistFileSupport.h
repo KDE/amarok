@@ -49,7 +49,7 @@ namespace Playlists
 
     AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const Meta::TrackList &queued );
+    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued );
 
     /* HACK:
      * the next two functions are needed to support some services that have no other way
