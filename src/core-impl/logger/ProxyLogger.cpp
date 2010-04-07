@@ -16,8 +16,6 @@
 
 #include "ProxyLogger.h"
 
-#include "core/support/Debug.h"
-
 #include <QCoreApplication>
 #include <QMutexLocker>
 
@@ -74,7 +72,6 @@ ProxyLogger::init()
 void
 ProxyLogger::setLogger( Amarok::Logger *logger )
 {
-    DEBUG_BLOCK
     m_logger = logger;
     startTimer();
 }
