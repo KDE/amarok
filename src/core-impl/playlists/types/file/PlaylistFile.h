@@ -18,6 +18,7 @@
 #define METAPLAYLISTFILE_H
 
 #include "core/playlists/Playlist.h"
+#include "core/meta/Meta.h"
 
 class PlaylistProvider;
 
@@ -44,6 +45,9 @@ namespace Playlists
             virtual bool save( const KUrl &url, bool relative )
                 { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
+
+            virtual Meta::TrackList queue() { return Meta::TrackList(); }
+            virtual void setQueue( const Meta::TrackList &tracks ) { Q_UNUSED( tracks ); }
 
             virtual void setName( const QString &name ) = 0;
             virtual void setGroups( const QStringList &groups ) { m_groups = groups; }
