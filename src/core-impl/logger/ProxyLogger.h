@@ -38,6 +38,9 @@ struct ProgressData
     Qt::ConnectionType type;
 };
 
+//fix for QTBUG-4930 using Qt < 4.6.1
+using namespace Amarok;
+
 /**
   * Proxy implementation for the Amarok::Logger interface.
   * This class does not notify the user, but forwards the notifications
