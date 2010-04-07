@@ -23,12 +23,63 @@
 #include "LongMessageWidget.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
+#include "core-impl/logger/ProxyLogger.h"
 #include "playlist/PlaylistItem.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include "KJobProgressBar.h"
 
+#include <QVariant>
+
 #include <cmath>
+
+
+class LoggerAdaptor : public Amarok::Logger
+{
+public:
+    LoggerAdaptor( StatusBar *bar )
+        : m_statusBar( bar )
+    {
+        setParent( bar );
+    }
+
+    virtual void shortMessage( const QString &text )
+    {
+        m_statusBar->shortMessage( text );
+    }
+
+    virtual void longMessage( const QString &text, MessageType type )
+    {
+        StatusBar::MessageType otherType;
+        switch( type )
+        {
+        case Amarok::Logger::Information:
+            otherType = StatusBar::Information;
+            break;
+        case Amarok::Logger::Warning:
+            otherType = StatusBar::Warning;
+            break;
+        case Amarok::Logger::Error:
+            otherType = StatusBar::Error;
+            break;
+        }
+        m_statusBar->longMessage( text, otherType );
+    }
+
+    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+    {
+        ProgressBar *bar = m_statusBar->newProgressOperation( job, text );
+        if( obj )
+        {
+            bar->setAbortSlot( obj, slot, type );
+        }
+    }
+
+private:
+    StatusBar *m_statusBar;
+};
 
 StatusBar* StatusBar::s_instance = 0;
 
@@ -95,6 +146,17 @@ StatusBar::StatusBar( QWidget * parent )
     connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
+
+    Amarok::Logger *logger = Amarok::Components::logger();
+    ProxyLogger *proxy = qobject_cast<ProxyLogger*>( logger );
+    if( proxy )
+    {
+        proxy->setLogger( new LoggerAdaptor( this ) );
+    }
+    else
+    {
+        warning() << "Was not able to register statusbar as logger";
+    }
 }
 
 

@@ -19,6 +19,7 @@
 
 #include "core/interfaces/Logger.h"
 
+#include <QMetaType>
 #include <QMutex>
 #include <QPair>
 #include <QPointer>

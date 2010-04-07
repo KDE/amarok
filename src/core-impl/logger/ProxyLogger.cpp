@@ -16,6 +16,8 @@
 
 #include "ProxyLogger.h"
 
+#include "core/support/Debug.h"
+
 #include <QCoreApplication>
 #include <QMutexLocker>
 
@@ -25,6 +27,7 @@ ProxyLogger::ProxyLogger()
         , m_initComplete( false )
         , m_timer( 0 )
 {
+    qRegisterMetaType<Logger *>( "Amarok::Logger*" );
     //ensure that the object livs in the GUI thread
     if( thread() == QCoreApplication::instance()->thread() )
     {
@@ -71,6 +74,7 @@ ProxyLogger::init()
 void
 ProxyLogger::setLogger( Amarok::Logger *logger )
 {
+    DEBUG_BLOCK
     m_logger = logger;
     startTimer();
 }

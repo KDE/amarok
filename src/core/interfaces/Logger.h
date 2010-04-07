@@ -17,6 +17,7 @@
 #ifndef AMAROK_LOGGER_H
 #define AMAROK_LOGGER_H
 
+#include <QMetaType>
 #include <QObject>
 
 class KJob;
@@ -73,5 +74,8 @@ namespace Amarok
         virtual void longMessage( const QString &text, MessageType type = Information ) = 0;
     };
 }
+
+
+Q_DECLARE_METATYPE( Amarok::Logger * )
 
 #endif

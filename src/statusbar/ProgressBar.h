@@ -41,7 +41,7 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         ~ProgressBar();
 
         void setDescription( const QString &description );
-        ProgressBar *setAbortSlot( QObject *receiver, const char *slot );
+        ProgressBar *setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type = Qt::AutoConnection );
 
         QToolButton *cancelButton() { return m_cancelButton; }
         QProgressBar *progressBar() { return m_progressBar;  }
