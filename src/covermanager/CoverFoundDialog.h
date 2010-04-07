@@ -31,6 +31,7 @@
 #include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
+#include <QPointer>
 
 class CoverFoundItem;
 class CoverFoundSideBar;
@@ -155,7 +156,7 @@ public:
                              QListWidget *parent = 0 );
     ~CoverFoundItem();
 
-    void fetchBigPix();
+    bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
     const QPixmap bigPix() const { return m_bigPix; }
@@ -182,8 +183,8 @@ private:
     CoverFetch::Metadata m_metadata;
     QPixmap m_thumb;
     QPixmap m_bigPix;
-    KDialog *m_dialog;
-    KJobProgressBar *m_progress;
+    QPointer<KDialog> m_dialog;
+    QPointer<KJobProgressBar> m_progress;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

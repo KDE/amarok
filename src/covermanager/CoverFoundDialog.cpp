@@ -319,11 +319,22 @@ void CoverFoundDialog::saveRequested()
     CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     if( item )
     {
+        bool gotBigPix( false );
         if( !item->hasBigPix() )
-            item->fetchBigPix();
-        m_pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
+            gotBigPix = item->fetchBigPix();
+
+        if( gotBigPix )
+        {
+            m_pixmap = item->bigPix();
+            KDialog::accept();
+        }
+        else
+        {
+            m_pixmap = QPixmap();
+            KDialog::reject();
+        }
     }
-    KDialog::accept();
+    KDialog::reject();
 }
 
 void CoverFoundDialog::processQuery()
@@ -709,7 +720,7 @@ CoverFoundItem::~CoverFoundItem()
     m_dialog = 0;
 }
 
-void CoverFoundItem::fetchBigPix()
+bool CoverFoundItem::fetchBigPix()
 {
     DEBUG_BLOCK
 
@@ -718,13 +729,14 @@ void CoverFoundItem::fetchBigPix()
     connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
 
     if( !url.isValid() || !job )
-        return;
+        return false;
 
     if( !m_dialog )
         m_dialog = new KDialog( listWidget() );
     m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
     m_dialog->setButtons( KDialog::Cancel );
     m_dialog->setDefaultButton( KDialog::Cancel );
+    m_dialog->setWindowModality( Qt::WindowModal );
 
     if( !m_progress )
         m_progress = new KJobProgressBar( m_dialog, job );
@@ -734,13 +746,19 @@ void CoverFoundItem::fetchBigPix()
     connect( m_dialog, SIGNAL(cancelClicked()), job, SLOT(kill()) );
 
     m_dialog->setMainWidget( m_progress );
-    m_dialog->exec();
+    return ( m_dialog->exec() == QDialog::Accepted ) ? true : false;
 }
 
 void CoverFoundItem::display()
 {
+    bool success( false );
     if( !hasBigPix() )
-        fetchBigPix();
+        success = fetchBigPix();
+    else
+        success = true;
+
+    if( !success )
+        return;
 
     QWidget *p = dynamic_cast<QWidget*>( parent() );
     int parentScreen = KApplication::desktop()->screenNumber( p );
@@ -751,10 +769,10 @@ void CoverFoundItem::display()
 
 void CoverFoundItem::slotFetchResult( KJob *job )
 {
-    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    const QByteArray data = storedJob->data();
     QPixmap pixmap;
-    if( pixmap.loadFromData( data ) )
+    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    bool dataIsGood = pixmap.loadFromData( storedJob->data() );
+    if( dataIsGood )
     {
         m_bigPix = pixmap;
         emit pixmapChanged( m_bigPix );
@@ -762,11 +780,13 @@ void CoverFoundItem::slotFetchResult( KJob *job )
 
     if( m_dialog )
     {
-        m_dialog->accept();
-        delete m_progress;
-        m_progress = 0;
-        delete m_dialog;
-        m_dialog = 0;
+        if( dataIsGood )
+            m_dialog->accept();
+        else
+            m_dialog->reject();
+
+        m_progress->deleteLater();
+        m_dialog->deleteLater();
     }
     storedJob->deleteLater();
 }
