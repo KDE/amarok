@@ -760,11 +760,11 @@ void CoverFoundItem::display()
     if( !success )
         return;
 
-    QWidget *p = dynamic_cast<QWidget*>( parent() );
-    int parentScreen = KApplication::desktop()->screenNumber( p );
-
     const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
-    ( new CoverViewDialog( pixmap, QApplication::desktop()->screen( parentScreen ) ) )->show();
+    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, listWidget() );
+    dlg->show();
+    dlg->raise();
+    dlg->activateWindow();
 }
 
 void CoverFoundItem::slotFetchResult( KJob *job )
