@@ -128,9 +128,11 @@ APG::PresetModel::edit()
 void
 APG::PresetModel::editPreset( const QModelIndex& index )
 {
+    // TODO: possible enhancement: instead of using a modal dialog, use a QMap that allows
+    // only one dialog per preset to be open at once
     PresetPtr ps = m_presetList.at( index.row() );
     QDialog* d = new PresetEditDialog( ps );
-    d->show();
+    d->exec();
 }
 
 void

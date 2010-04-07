@@ -104,7 +104,6 @@ APG::PresetEditDialog::currentNodeChanged( const QModelIndex& index )
 {
     if( index.isValid() )
     {
-        // TODO: connect to update() signal of widget, and use it redraw the label in the treeview
         ConstraintNode* n = static_cast<ConstraintNode*>( index.internalPointer() );
         if ( !m_widgetStackPages.contains( n ) ) {
             debug() << "Inserting new constraint edit widget into the stack";
