@@ -21,11 +21,12 @@
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "core/meta/support/MetaConstants.h"
 #include "meta/LastFmMeta.h"
-#include "StatusBar.h"
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
@@ -215,7 +216,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
             trackInfo.setAlbum( track->album()->name() );
 
         trackInfo.love();
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
+        Amarok::Components::logger()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     }
 }
 

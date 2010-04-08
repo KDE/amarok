@@ -20,6 +20,8 @@
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "EngineController.h"
 #include "JamendoInfoParser.h"
 #include "ServiceSqlRegistry.h"
@@ -183,8 +185,7 @@ JamendoService::updateButtonClicked()
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    The::statusBar()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com Database" ) )
-            ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com Database" ), this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -206,7 +207,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         return;
     }
 
-    The::statusBar()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
     debug() << "JamendoService: create xml parser";
 
     if( m_xmlParser == 0 )
@@ -221,8 +222,6 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 void
 JamendoService::listDownloadCancelled()
 {
-    DEBUG_BLOCK
-    //The::statusBarNg()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";

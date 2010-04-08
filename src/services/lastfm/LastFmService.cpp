@@ -31,12 +31,13 @@
 #include "LastFmTreeModel.h"
 #include "LastFmTreeView.h"
 #include "ScrobblerAdapter.h"
-#include "StatusBar.h"
 #include "widgets/FlowLayout.h"
 #include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/capabilities/LastFmCapability.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
@@ -348,12 +349,13 @@ LastFmService::onAuthenticated()
             connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
 
             break;
-        } case QNetworkReply::AuthenticationRequiredError:
-            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
+        }
+        case QNetworkReply::AuthenticationRequiredError:
+            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
             break;
 
         default:
-            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
+            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
             break;
     }
     m_jobs[ "auth" ]->deleteLater();
@@ -570,7 +572,7 @@ LastFmService::love()
     if( lastfmTrack )
     {
         lastfmTrack->love();
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
+        Amarok::Components::logger()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     }
     else
     {

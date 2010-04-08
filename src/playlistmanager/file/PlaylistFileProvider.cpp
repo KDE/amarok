@@ -20,11 +20,12 @@
 #include "core/capabilities/EditablePlaylistCapability.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "playlist/PlaylistModelStack.h"
-#include "StatusBar.h"
 
 #include <KDialog>
 #include <KInputDialog>
@@ -316,9 +317,9 @@ PlaylistFileProvider::loadPlaylists()
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
-            The::statusBar()->longMessage(
+            Amarok::Components::logger()->longMessage(
                     i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
-                    StatusBar::Error
+                    Amarok::Logger::Error
                 );
             continue;
         }
@@ -342,9 +343,9 @@ PlaylistFileProvider::loadPlaylists()
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
-            The::statusBar()->longMessage(
+            Amarok::Components::logger()->longMessage(
                     i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
-                    StatusBar::Error
+                    Amarok::Logger::Error
                 );
             continue;
         }

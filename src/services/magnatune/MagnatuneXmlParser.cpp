@@ -18,7 +18,8 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 
 #include <KFilterDev>
 #include <KLocale>
@@ -32,10 +33,7 @@ using namespace Meta;
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         : ThreadWeaver::Job()
 {
-    DEBUG_BLOCK
-    m_currentArtist = "";
     m_sFileName = filename;
-    debug() << "Creating MagnatuneXmlParser";
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
 
@@ -46,10 +44,8 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 void
 MagnatuneXmlParser::run()
 {
-    DEBUG_BLOCK
     m_pCurrentArtist = 0;
     m_pCurrentAlbum = 0;
-    debug() << "MagnatuneXmlParser::doJob";
     readConfigFile( m_sFileName );
 }
 
@@ -57,12 +53,11 @@ MagnatuneXmlParser::run()
 void
 MagnatuneXmlParser::completeJob( )
 {
-    DEBUG_BLOCK
-    The::statusBar() ->longMessage(
+    Amarok::Components::logger()->longMessage(
           i18ncp( "First part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "Magnatune.com database update complete. Added 1 track on ", "Magnatune.com database update complete. Added %1 tracks on ", m_nNumberOfTracks)
         + i18ncp( "Middle part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 album from ", "%1 albums from ", m_nNumberOfAlbums)
         + i18ncp( "Last part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 artist.", "%1 artists.", m_nNumberOfArtists )
-        , StatusBar::Information );
+        , Amarok::Logger::Information );
 
     emit doneParsing();
     deleteLater();

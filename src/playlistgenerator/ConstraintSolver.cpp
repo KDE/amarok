@@ -22,9 +22,10 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
-#include "statusbar/StatusBar.h"
 
 #include <KRandom>
 #include <QHash>
@@ -225,14 +226,14 @@ APG::ConstraintSolver::receiveQueryMakerDone()
 {
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
-            The::statusBar()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
+            Amarok::Components::logger()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
         m_qm->deleteLater();
         m_qm = 0;
         emit readyToRun();
     } else {
-        The::statusBar()->longMessage( i18n("There are no tracks that match all constraints.  The playlist generator will find the tracks that match best, but you may want to consider loosening the constraints to find more tracks.") );
+        Amarok::Components::logger()->longMessage( i18n("There are no tracks that match all constraints.  The playlist generator will find the tracks that match best, but you may want to consider loosening the constraints to find more tracks.") );
         m_domainReductionFailed = true;
         m_qm->reset();
         m_qm->setQueryType( Collections::QueryMaker::Track );

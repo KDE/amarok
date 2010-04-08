@@ -17,13 +17,14 @@
 #include "AmpacheService.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "AmpacheConfig.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include <config-amarok.h>
 #include "core/support/Debug.h"
 #include "sha256/sha256.h"
-#include "statusbar/StatusBar.h"
 
 
 #include <KMessageBox>
@@ -268,7 +269,7 @@ AmpacheService::authenticate(KJob * job)
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    The::statusBar()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
+    Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
 }
 
 void AmpacheService::authenticationComplete(KJob * job)

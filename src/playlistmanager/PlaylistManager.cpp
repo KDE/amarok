@@ -19,7 +19,6 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokconfig.h"
 #include "App.h"
-#include "statusbar/StatusBar.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 #include "playlist/PlaylistModelStack.h"
@@ -29,6 +28,8 @@
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
@@ -173,7 +174,7 @@ PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFi
     connect( downloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( downloadComplete( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
+    Amarok::Components::logger()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
 }
 
 void

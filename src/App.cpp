@@ -23,6 +23,7 @@
 #include "amarokurls/AmarokUrl.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
@@ -50,7 +51,6 @@
 #include "ScriptManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
-#include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
 #ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
@@ -849,7 +849,7 @@ void App::slotConfigShortcuts()
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
-    The::statusBar()->newProgressOperation( job, i18n("Moving files to trash") );
+    Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
 }
