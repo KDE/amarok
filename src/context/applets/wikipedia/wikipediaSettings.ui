@@ -21,7 +21,7 @@
    </property>
    <item>
     <property name="text">
-     <string>Automatic</string>
+     <string comment="automatic language selection">Automatic</string>
     </property>
    </item>
    <item>

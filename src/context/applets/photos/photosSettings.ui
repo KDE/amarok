@@ -49,7 +49,7 @@
       </property>
       <item>
        <property name="text">
-        <string>Automatic</string>
+        <string comment="animation type">Automatic</string>
        </property>
       </item>
       <item>
