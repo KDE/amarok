@@ -79,6 +79,7 @@ ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
     m_fieldMetaValues.insert( "label", Meta::valLabel );
     m_fieldMetaValues.insert( "url", Meta::valUrl );
 
+    m_fieldPrettyNames.insert( "url", i18n("url") );
     m_fieldPrettyNames.insert( "title", i18n("title") );
     m_fieldPrettyNames.insert( "artist name", i18n("artist name") );
     m_fieldPrettyNames.insert( "album name", i18n("album name") );
