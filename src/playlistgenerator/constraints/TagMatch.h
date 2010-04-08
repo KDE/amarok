@@ -175,6 +175,7 @@ namespace ConstraintTypes {
             int index_of( const QString& ) const;
             QString field_at( int ) const;
             qint64 meta_value_of( const QString& ) const;
+            QString pretty_name_of( const QString& ) const;
             TagMatch::FieldTypes type_of( const QString& ) const;
 
         private:

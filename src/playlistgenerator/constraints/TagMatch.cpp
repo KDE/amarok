@@ -170,8 +170,8 @@ QString
 ConstraintTypes::TagMatch::getName() const
 {
     QString v( "Tag Match:%1 %2 %3 %4" );
-    v = v.arg( ( m_invert ? i18n(" not") : "" ), m_field, comparisonToString() );
-    if ( m_field == i18n("rating") ) {
+    v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
+    if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
         return v.arg( QString("%1 stars").arg( r ) );
     } else if ( m_field == i18n("length") ) {

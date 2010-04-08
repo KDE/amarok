@@ -149,6 +149,12 @@ ConstraintTypes::TagMatchFieldsModel::meta_value_of( const QString& f ) const
     return m_fieldMetaValues.value( f );
 }
 
+QString
+ConstraintTypes::TagMatchFieldsModel::pretty_name_of( const QString& f ) const
+{
+    return m_fieldPrettyNames.value( f );
+}
+
 ConstraintTypes::TagMatch::FieldTypes
 ConstraintTypes::TagMatchFieldsModel::type_of( const QString& f ) const
 {
