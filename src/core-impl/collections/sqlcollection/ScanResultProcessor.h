@@ -81,6 +81,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
         QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
         void populateCacheHashes();
+
+        QString nullString(const QString &str) const;
+        QString escaString(const QString &str) const;
+        QString doubString(const QString &str) const;
+
         void copyHashesToTempTables();
         void genericCopyHash( const QString &tableName, const QHash<QString, int> *hash, int maxSize );
 

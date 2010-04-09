@@ -1258,6 +1258,31 @@ ScanResultProcessor::populateCacheHashes()
 
 }
 
+// --- some help functions for the query
+QString
+ScanResultProcessor::nullString(const QString &str) const
+{
+    if (str.isEmpty())
+        return "NULL";
+    return str;
+}
+
+QString
+ScanResultProcessor::escaString(const QString &str) const
+{
+    return "'"+m_storage->escape(str)+"'";
+}
+
+//QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
+QString
+ScanResultProcessor::doubString(const QString &str) const
+{
+    if (str.isEmpty())
+        return "NULL";
+    return QString( str ).replace( ',' , '.' );
+}
+
+
 void
 ScanResultProcessor::copyHashesToTempTables()
 {
@@ -1318,14 +1343,11 @@ ScanResultProcessor::copyHashesToTempTables()
             continue;
         }
         //debug() << "inserting following list: " << currUrl;
-#define URLLIST_VALUE(x) (currUrl[x])
-#define URLLIST_NULL_VALUE(x) (currUrl[x].isEmpty() ? "NULL" : currUrl[x])
-#define URLLIST_ESCAPE_VALUE(x) ("'"+m_storage->escape(currUrl[x])+"'")
-        currQuery =   "(" + URLLIST_VALUE(UrlColId) + ","
-                          + URLLIST_NULL_VALUE(UrlColDevice) + ","
-                          + URLLIST_ESCAPE_VALUE(UrlColRPath) + ","
-                          + URLLIST_NULL_VALUE(UrlColDir) + ","
-                          + URLLIST_ESCAPE_VALUE(UrlColUid) + ")"; //technically allowed to be NULL but it's the primary key so won't get far
+        currQuery =   "(" + currUrl[UrlColId] + ","
+                          + nullString(currUrl[UrlColDevice]) + ","
+                          + escaString(currUrl[UrlColRPath]) + ","
+                          + nullString(currUrl[UrlColDir]) + ","
+                          + escaString(currUrl[UrlColUid]) + ")"; //technically allowed to be NULL but it's the primary key so won't get far
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
@@ -1364,13 +1386,10 @@ ScanResultProcessor::copyHashesToTempTables()
     foreach( int key, keys )
     {
         QString *currAlbum = m_albumsHashById[key];
-#define ALBUMLIST_VALUE(x) (currAlbum[x])
-#define ALBUMLIST_NULL_VALUE(x) (currAlbum[x].isEmpty() ? "NULL" : currAlbum[x])
-#define ALBUMLIST_ESCAPE_VALUE(x) ("'"+m_storage->escape(currAlbum[x])+"'")
-        currQuery =   "(" + ALBUMLIST_VALUE(AlbumColId) + ","
-                          + ALBUMLIST_ESCAPE_VALUE(AlbumColTitle) + ","
-                          + ALBUMLIST_NULL_VALUE(AlbumColArtist) + ","
-                          + ALBUMLIST_NULL_VALUE(AlbumColMaxImage) + ")";
+        currQuery =   "(" + currAlbum[AlbumColId] + ","
+                          + escaString(currAlbum[AlbumColTitle]) + ","
+                          + nullString(currAlbum[AlbumColArtist]) + ","
+                          + nullString(currAlbum[AlbumColMaxImage]) + ")";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
@@ -1413,34 +1432,29 @@ ScanResultProcessor::copyHashesToTempTables()
             continue;
         }
 
-#define TRACKLIST_VALUE(x) (currTrack[x])
-#define TRACKLIST_NULL_VALUE(x) (currTrack[x].isEmpty() ? "NULL" : currTrack[x])
-#define TRACKLIST_ESCAPE_VALUE(x) ("'"+m_storage->escape(currTrack[x])+"'")
-        //QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
-#define TRACKLIST_DOUBLE_VALUE(x) (currTrack[x].isEmpty() ? "NULL" : QString( currTrack[x] ).replace( ',' , '.' ))
-        currQuery =   "(" + TRACKLIST_VALUE(TrackColId) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColUrl) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColArtist) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColAlbum) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColGenre) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColComposer) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColYear) + ","
-                          + TRACKLIST_ESCAPE_VALUE(TrackColTitle) + ","
-                          + TRACKLIST_ESCAPE_VALUE(TrackColComment) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColTrackNumber) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColDiscNumber) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColBitRate) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColLength) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColSampleRate) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColFileSize) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColFileType) + ","
-                          + TRACKLIST_DOUBLE_VALUE(TrackColBpm) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColCreated) + ","
-                          + TRACKLIST_NULL_VALUE(TrackColModified) + ","
-                          + TRACKLIST_DOUBLE_VALUE(TrackColAlbumGain) + ","
-                          + TRACKLIST_DOUBLE_VALUE(TrackColAlbumPeakGain) + ","
-                          + TRACKLIST_DOUBLE_VALUE(TrackColTrackGain) + ","
-                          + TRACKLIST_DOUBLE_VALUE(TrackColTrackPeakGain) + ")";
+        currQuery =   "(" + currTrack[TrackColId] + ","
+                          + nullString(currTrack[TrackColUrl]) + ","
+                          + nullString(currTrack[TrackColArtist]) + ","
+                          + nullString(currTrack[TrackColAlbum]) + ","
+                          + nullString(currTrack[TrackColGenre]) + ","
+                          + nullString(currTrack[TrackColComposer]) + ","
+                          + nullString(currTrack[TrackColYear]) + ","
+                          + escaString(currTrack[TrackColTitle]) + ","
+                          + escaString(currTrack[TrackColComment]) + ","
+                          + nullString(currTrack[TrackColTrackNumber]) + ","
+                          + nullString(currTrack[TrackColDiscNumber]) + ","
+                          + nullString(currTrack[TrackColBitRate]) + ","
+                          + nullString(currTrack[TrackColLength]) + ","
+                          + nullString(currTrack[TrackColSampleRate]) + ","
+                          + nullString(currTrack[TrackColFileSize]) + ","
+                          + nullString(currTrack[TrackColFileType]) + ","
+                          + doubString(currTrack[TrackColBpm]) + ","
+                          + nullString(currTrack[TrackColCreated]) + ","
+                          + nullString(currTrack[TrackColModified]) + ","
+                          + doubString(currTrack[TrackColAlbumGain]) + ","
+                          + doubString(currTrack[TrackColAlbumPeakGain]) + ","
+                          + doubString(currTrack[TrackColTrackGain]) + ","
+                          + doubString(currTrack[TrackColTrackPeakGain]) + ")";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
