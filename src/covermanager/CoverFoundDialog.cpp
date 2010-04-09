@@ -319,7 +319,7 @@ void CoverFoundDialog::saveRequested()
     CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     if( item )
     {
-        bool gotBigPix( false );
+        bool gotBigPix( true );
         if( !item->hasBigPix() )
             gotBigPix = item->fetchBigPix();
 
