@@ -127,7 +127,7 @@ public:
 public slots:
     void clear();
     void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
-    void setPixmap( const QPixmap pixmap, bool drawBorder = true );
+    void setPixmap( const QPixmap pixmap );
 
 private:
     Meta::AlbumPtr        m_album;
