@@ -21,7 +21,6 @@
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
-#include "core/capabilities/ReadLabelCapability.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
@@ -443,25 +442,22 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
     return r;
 }
 
-// FIXME
 double
 ConstraintTypes::TagMatch::labelComparison( Meta::TrackPtr t ) const
 {
-    Capabilities::ReadLabelCapability *rlc = t->create<Capabilities::ReadLabelCapability>();
-    if ( !rlc )
-        return 0.0;
-
-    QStringList labelList = rlc->labels();
+    DEBUG_BLOCK
+    Meta::LabelList labelList = t->labels();
 
     double v = 0.0;
-    foreach ( const QString& label, labelList ) {
+    foreach ( Meta::LabelPtr label, labelList ) {
         // this is correct ...
         // v = qMax( compare( label, m_comparison, m_value.toString() ), v );
 
         // ... but as long as compare() returns only 0.0 or 1.0, the following is faster:
-        v = compare( label, m_comparison, m_value.toString() );
-        if ( v == 1.0 )
+        v = compare( label->prettyName(), m_comparison, m_value.toString() );
+        if ( v == 1.0 ) {
             return 1.0;
+        }
     }
 
     return v;
@@ -536,7 +532,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
 {
     if ( !m_matchCache.contains( track->uidUrl() ) ) {
         double v = 0.0;
-        int lengthInSec, targetInSec; // these are used for track length calculations
+        int lengthInSec, targetInSec; // these are used for track length calculations below
         switch ( m_fieldsModel->meta_value_of( m_field ) ) {
             case Meta::valUrl:
                 v = compare( track->prettyUrl(), m_comparison, m_value.toString() );
@@ -600,6 +596,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 break;
             case Meta::valLabel:
                 v = labelComparison( track );
+                break;
             default:
                 v = 0.0;
                 break;
