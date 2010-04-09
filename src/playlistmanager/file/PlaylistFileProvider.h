@@ -71,16 +71,21 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
             void updated();
 
     private slots:
+            void slotDelete();
+            void slotRename();
             void slotRemove();
 
     private:
+        void deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles );
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
-        Playlists::PlaylistList m_playlists;
+        Playlists::PlaylistFileList m_playlists;
         Playlists::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
 
+        QAction *m_renameAction;
+        QAction *m_deleteAction;
         QAction *m_removeTrackAction;
 };
 
