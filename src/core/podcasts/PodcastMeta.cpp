@@ -106,3 +106,26 @@ PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
     }
 }
 
+Meta::TrackList
+PodcastChannel::tracks()
+{
+    Meta::TrackList tracks;
+    foreach( Podcasts::PodcastEpisodePtr episode, episodes() )
+        tracks << Meta::TrackPtr::dynamicCast( episode );
+    return tracks;
+}
+
+void
+PodcastChannel::addTrack( Meta::TrackPtr track, int position )
+{
+    Q_UNUSED( position );
+    addEpisode( PodcastEpisodePtr::dynamicCast( track ) );
+}
+
+Podcasts::PodcastEpisodePtr
+PodcastChannel::addEpisode( PodcastEpisodePtr episode )
+{
+    if( !episode.isNull() )
+        m_episodes << episode;
+    return episode;
+}

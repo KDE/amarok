@@ -227,7 +227,8 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
         virtual QString name() const { return title(); }
         virtual QString prettyName() const { return title(); }
 
-        virtual Meta::TrackList tracks() { return m_tracks; }
+        virtual Meta::TrackList tracks();
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
         virtual KUrl retrievableUrl() { return KUrl(); }
 
@@ -255,8 +256,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
         virtual void addLabel( const QString &label ) { m_labels << label; }
         virtual void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode )
-                { m_episodes << episode; return episode; }
+        virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
         virtual PodcastEpisodeList episodes() { return m_episodes; }
 
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
@@ -293,7 +293,6 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
         int m_purgeCount; //how many episodes do we keep on disk?
 
         PodcastEpisodeList m_episodes;
-        Meta::TrackList m_tracks;
 };
 
 // internal helper classes
