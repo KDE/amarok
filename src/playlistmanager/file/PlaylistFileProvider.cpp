@@ -250,6 +250,7 @@ PlaylistFileProvider::import( const KUrl &path )
     Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( path );
     if( !playlist )
         return false;
+    playlist->setProvider( this );
     m_playlists << Playlists::PlaylistPtr::dynamicCast( playlist );
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
