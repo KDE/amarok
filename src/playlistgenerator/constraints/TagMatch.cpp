@@ -746,17 +746,51 @@ void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int idx )
 {
     QString field = m_fieldsModel->field_at( idx );
-    if ( field == i18n("length") )
+    int c, s;
+    QVariant v;
+    if ( field == "length" ) {
         ui.stackedWidget_Field->setCurrentIndex( 3 );
-    else if ( field == i18n("rating") )
+        c = ui.comboBox_ComparisonTime->currentIndex();
+        s = ui.slider_StrictnessTime->value();
+        v = QTime().msecsTo( ui.timeEdit_TimeValue->time() );
+    } else if ( field == "rating" ) {
         ui.stackedWidget_Field->setCurrentIndex( 4 );
-    else
-        ui.stackedWidget_Field->setCurrentIndex( m_fieldsModel->type_of( field ) );
+        c = ui.comboBox_ComparisonRating->currentIndex();
+        s = ui.slider_StrictnessRating->value();
+        v = ui.rating_RatingValue->rating();
+    } else {
+        if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeInt ) {
+            ui.stackedWidget_Field->setCurrentIndex( 0 );
+            c = ui.comboBox_ComparisonInt->currentIndex();
+            s = ui.slider_StrictnessInt->value();
+            v = ui.spinBox_ValueInt->value();
+        } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeDate ) {
+            ui.stackedWidget_Field->setCurrentIndex( 1 );
+            c = ui.comboBox_ComparisonDate->currentIndex();
+            s = ui.slider_StrictnessDate->value();
+            if ( c == Constraint::CompareDateWithin ) {
+                ui.stackedWidget_Date->setCurrentIndex( 1 );
+                int a = ui.spinBox_ValueDateValue->value();
+                int b = ui.comboBox_ValueDateUnit->currentIndex();
+                v = QVariant::fromValue( DateRange( a, b ) );
+            } else {
+                ui.stackedWidget_Date->setCurrentIndex( 0 );
+                v = ui.kdatewidget_DateSpecific->date();
+            }
+        } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeString ) {
+            ui.stackedWidget_Field->setCurrentIndex( 2 );
+            c = ui.comboBox_ComparisonString->currentIndex();
+            s = 1.0;
+            v = ui.lineEdit_StringValue->text();
+        }
+    }
 
-    // TODO: set range limitations and default values
-    // FIXME: when the field changes, it should also change the comparison and the value
+    // TODO: set range limitations and default values depending on field
 
     emit fieldChanged( field );
+    emit valueChanged( v );
+    emit comparisonChanged( c );
+    emit strictnessChanged( s );
 }
 
 // Invert checkbox slot
