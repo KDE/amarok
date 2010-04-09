@@ -530,7 +530,7 @@ ConstraintTypes::TagMatch::valueToString() const
 bool
 ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
 {
-    if ( !m_matchCache.contains( track->uidUrl() ) ) {
+    if ( !m_matchCache.contains( track ) ) {
         double v = 0.0;
         int lengthInSec, targetInSec; // these are used for track length calculations below
         switch ( m_fieldsModel->meta_value_of( m_field ) ) {
@@ -604,9 +604,9 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
         if ( m_invert )
             v = 1.0 - v;
 
-        m_matchCache.insert( track->uidUrl(), ( v > ( (double)qrand() / (double)RAND_MAX ) ) );
+        m_matchCache.insert( track, ( v > ( (double)qrand() / (double)RAND_MAX ) ) );
     }
-    return m_matchCache.value( track->uidUrl() );
+    return m_matchCache.value( track );
 }
 
 void
@@ -629,8 +629,8 @@ void
 ConstraintTypes::TagMatch::setInvert( bool v )
 {
     if ( m_invert != v ) {
-        foreach( const QString& s, m_matchCache.keys() ) {
-            m_matchCache.insert( s, !m_matchCache.value( s ) );
+        foreach( const Meta::TrackPtr t, m_matchCache.keys() ) {
+            m_matchCache.insert( t, !m_matchCache.value( t ) );
         }
     }
     m_invert = v;

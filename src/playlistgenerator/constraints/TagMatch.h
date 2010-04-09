@@ -108,8 +108,7 @@ namespace ConstraintTypes {
             QString valueToString() const;
 
             bool matches( const Meta::TrackPtr ) const; // match values are fuzzily calculated
-            // FIXME: should hash track pointers instead
-            mutable QHash<QString, bool> m_matchCache; // internal cache for per-track true/false data
+            mutable QHash<Meta::TrackPtr, bool> m_matchCache; // internal cache for per-track true/false data
     };
 
     class TagMatchEditWidget : public QWidget {
