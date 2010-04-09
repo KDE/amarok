@@ -80,6 +80,9 @@ EngineController::EngineController()
     , m_currentIsAudioCd( false )
     , m_ignoreVolumeChangeAction ( false )
     , m_ignoreVolumeChangeObserve ( false )
+    , m_tickInterval( 0 )
+    , m_lastTickPosition( -1 )
+    , m_lastTickCount( 0 )
 {
     DEBUG_BLOCK
 
@@ -160,7 +163,8 @@ EngineController::initializePhonon()
     }
 
     m_media->setTickInterval( 100 );
-    debug() << "Tick Interval (actual): " << m_media->tickInterval();
+    m_tickInterval = m_media->tickInterval();
+    debug() << "Tick Interval (actual): " << m_tickInterval;
     PERF_LOG( "EngineController: loaded phonon objects" )
 
     // Get the next track when there is 2 seconds left on the current one.
@@ -880,10 +884,23 @@ EngineController::slotTick( qint64 position )
 {
     if ( m_boundedPlayback )
     {
+        qint64 newPosition = position;
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
 
+        // Calculate a better position.  Sometimes the position doesn't update
+        // with a good resolution (for example, 1 sec for TrueAudio files in the
+        // Xine-1.1.18 backend).  This tick function, in those cases, just gets
+        // called multiple times with the same position.  We count how many
+        // times this has been called prior, and adjust for it.
+        if ( position == m_lastTickPosition )
+            newPosition += ++m_lastTickCount * m_tickInterval;
+        else
+            m_lastTickCount = 0;
+
+        m_lastTickPosition = position;
+
         //don't go beyond the stop point
-        if ( position >= m_boundedPlayback->endPosition() )
+        if ( newPosition >= m_boundedPlayback->endPosition() )
         {
             slotAboutToFinish();
         }
