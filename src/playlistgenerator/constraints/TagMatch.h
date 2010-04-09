@@ -116,6 +116,7 @@ namespace ConstraintTypes {
 
         public:
             TagMatchEditWidget( const int, const QString&, const bool, const int, const QVariant& );
+            ~TagMatchEditWidget();
 
         signals:
             void comparisonChanged( int );

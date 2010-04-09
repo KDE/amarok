@@ -706,6 +706,11 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     ui.comboBox_Field->setCurrentIndex( m_fieldsModel->index_of( field ) );
 }
 
+ConstraintTypes::TagMatchEditWidget::~TagMatchEditWidget()
+{
+    delete m_fieldsModel;
+}
+
 // ComboBox slots for comparisons
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonDate_currentIndexChanged( int c )
