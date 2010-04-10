@@ -72,6 +72,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
+        , m_firstScrollToActiveTrack( true )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
@@ -106,6 +107,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
+
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
     connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
 
@@ -125,6 +128,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 
     playlistLayoutChanged();
+    slotPlaylistActiveTrackChanged();
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -242,15 +246,33 @@ void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
     DEBUG_BLOCK
-        debug() << "skipping scroll?" << m_skipAutoScroll;
+
     if( m_skipAutoScroll )
     {
         m_skipAutoScroll = false;
         return;
     }
+
     QModelIndex activeIndex = model()->index( m_topmostProxy->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
+    {
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
+        m_firstScrollToActiveTrack = false;
+    }
+}
+
+void
+Playlist::PrettyListView::slotPlaylistActiveTrackChanged()
+{
+    DEBUG_BLOCK
+
+    // A playlist 'activeTrackChanged' signal happens:
+    //   - During startup, on "saved playlist" load. (Might happen before this view exists)
+    //   - When Amarok starts playing a new item in the playlist.
+    //     In that case, don't auto-scroll if the user doesn't like us to.
+
+    if( AmarokConfig::autoScrollPlaylist() || m_firstScrollToActiveTrack )
+        scrollToActiveTrack();
 }
 
 void

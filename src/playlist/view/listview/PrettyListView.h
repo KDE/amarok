@@ -91,6 +91,7 @@ protected slots:
     void newPalette( const QPalette & palette );
 
 private slots:
+    void slotPlaylistActiveTrackChanged();
     void bottomModelRowsInserted( const QModelIndex& parent, int start, int end );
     void bottomModelRowsInsertedScroll();
 
@@ -123,6 +124,7 @@ private:
     QPersistentModelIndex m_headerPressIndex;
     bool                  m_mousePressInHeader;
     bool                  m_skipAutoScroll;
+    bool                  m_firstScrollToActiveTrack;
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
