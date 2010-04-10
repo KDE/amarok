@@ -1247,10 +1247,10 @@ SqlPodcastProvider::createTmpFile( KJob *job )
     QString tmpFileName = m_fileNameMap.value( job );
     localUrl.addPath( tmpFileName + PODCAST_TMP_POSTFIX );
 
-    QFile *tmpFile = new QFile( localUrl.path() );
+    QFile *tmpFile = new QFile( localUrl.toLocalFile() );
     if( tmpFile->open( QIODevice::WriteOnly ) )
     {
-        debug() << "podcast tmpfile created: " << localUrl.path();
+        debug() << "podcast tmpfile created: " << localUrl.toLocalFile();
         return tmpFile;
     }
     else
