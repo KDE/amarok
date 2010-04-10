@@ -408,7 +408,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     typedef QPair<QString, QString> CoverBundle;
 
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg" << "bmp";
-    QStringList validPlaylists; validPlaylists << "m3u" << "pls";
+    QStringList validPlaylists; validPlaylists << "m3u" << "pls" << "xspf";
 
     QList<CoverBundle> covers;
     QStringList images;
