@@ -210,7 +210,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * ev
     //comes through, but after the mouseDoubleClickEvent, so we need to tell
     //mouseReleaseEvent to ignore that one event
     m_justDoubleClicked = true;
-    setExpanded( index, !isExpanded( index ) );
+    if( model()->hasChildren( index ) )
+        setExpanded( index, !isExpanded( index ) );
 
     event->accept();
 }
@@ -309,7 +310,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::slotClickTimeout()
     m_clickTimer.stop();
     if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
     {
-        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+        if( model()->hasChildren( m_savedClickIndex ) )
+            setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
     }
     m_savedClickIndex = QModelIndex();
 }
