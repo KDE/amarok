@@ -531,12 +531,14 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
 PodcastView::~PodcastView()
 {}
 
-void PodcastView::mousePressEvent( QMouseEvent *event )
+void
+PodcastView::mousePressEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     if( KGlobalSettings::singleClick() )
         setItemsExpandable( false );
-    if( !index.parent().isValid() ) //not a root element, don't bother checking actions
+    //not a provider item, don't bother checking actions
+    if( model() == m_podcastModel || index.parent().isValid() )
     {
         Amarok::PrettyTreeView::mousePressEvent( event );
         return;
