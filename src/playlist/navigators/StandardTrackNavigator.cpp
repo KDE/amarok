@@ -36,9 +36,12 @@ Playlist::StandardTrackNavigator::likelyLastTrack()
 {
     int lastRow = m_model->activeRow() - 1;
 
-    // Don't make wrap-around conditional on 'm_repeatPlaylist': the user is explicitly asking for this.
+    // Even though the user is explicitly asking us to go back, still only do wrap-around
+    // in mode 'm_repeatPlaylist'. Reason: many users of the standard navigator like to
+    // move to the start of the playlist by blindly pressing "Prev" a lot of times.
     if( lastRow < 0 )
-        lastRow = m_model->qaim()->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
+        if( m_repeatPlaylist )
+            lastRow = m_model->qaim()->rowCount() - 1;    // This row is still invalid if 'rowCount() == 0'.
 
     if( m_model->rowExists( lastRow ) )
         return m_model->idAt( lastRow );
