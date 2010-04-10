@@ -92,11 +92,13 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    (new QLabel( i18n(
+    QLabel* descriptionLabel = new QLabel( i18n( 
         "These folders will be scanned for "
-        "media to make up your collection. You can\n"
+        "media to make up your collection. You can "
         "right-click on a folder to individually "
-        "rescan it, if it was previously selected:"), this ))->setAlignment( Qt::AlignJustify );
+        "rescan it, if it was previously selected:" ), this );
+    descriptionLabel->setAlignment( Qt::AlignJustify );
+    descriptionLabel->setWordWrap( true );
 
     m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
