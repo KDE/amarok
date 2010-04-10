@@ -155,7 +155,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectItems );
     m_podcastTreeView->setDragEnabled( true );
     m_podcastTreeView->setAcceptDrops( true );
     m_podcastTreeView->setDropIndicatorShown( true );
