@@ -371,8 +371,12 @@ UmsPodcastProvider::slotDeleteChannels()
 QList<QAction *>
 UmsPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
 {
-    Q_UNUSED( playlist )
-    return channelActions( PodcastChannelList() );
+    PodcastChannelList channels;
+    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+    if( channel.isNull() )
+        return QList<QAction *>();
+
+    return channelActions( channels << channel );
 }
 
 QList<QAction *>
