@@ -91,14 +91,23 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
                          index.data( Qt::DecorationRole )
                          .value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
-    QPoint expanderPos( bottomRight - QPoint( iconPadX, iconPadX ) -
-                        QPoint( iconWidth/2, iconHeight/2 ) );
+    QStyleOption expanderOption( option );
     if( isRTL )
-        expanderPos.setX( iconPadX );
-    QPixmap expander = KIcon( "arrow-up" ).pixmap( iconWidth/2, iconHeight/2 );
+        expanderOption.rect.setLeft( iconPadX );
+    else
+        expanderOption.rect.setLeft( option.rect.right() - iconPadX - iconWidth );
+
+    expanderOption.rect.setWidth( iconWidth );
+    if( m_view->model()->hasChildren( index ) )
+        expanderOption.state |= QStyle::State_Children;
     if( m_view->isExpanded( index ) )
-        expander = expander.transformed( QTransform().rotate( 180 ) );
-    painter->drawPixmap( expanderPos, expander );
+    {
+        expanderOption.state |= QStyle::State_Open;
+        //when expanded the sibling indicator (a vertical line down) goes nowhere
+        expanderOption.state &= ~QStyle::State_Sibling;
+    }
+
+    QApplication::style()->drawPrimitive( QStyle::PE_IndicatorBranch, &expanderOption, painter );
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data(
