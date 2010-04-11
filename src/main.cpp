@@ -46,8 +46,8 @@ int main( int argc, char *argv[] )
             ki18n("Developer (lfranchi)"), "lfranchi@kde.org" );
     aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"),
             ki18n("Release Vixen (Nightrose)"), "lydia@kde.org" );
-    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann"), //krazy:exclude=contractions
-            ki18n("Project founder (markey)"), "kretschmann@kde.org" );
+    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
     aboutData.addAuthor( ki18n("Maximilian Kossick"),
             ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
