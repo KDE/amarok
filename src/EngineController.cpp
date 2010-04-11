@@ -109,6 +109,7 @@ EngineController::~EngineController()
 
     delete m_media.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
 }
 
 void
@@ -118,7 +119,8 @@ EngineController::createFadeoutEffect()
     if( !m_fader )
     {
         m_fader = new Phonon::VolumeFaderEffect( this );
-        m_path.insertEffect( m_fader );
+        //m_path.insertEffect( m_fader );
+        m_dataPath.insertEffect( m_fader );
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
 
         m_fadeoutTimer = new QTimer( this );
@@ -133,9 +135,11 @@ EngineController::initializePhonon()
     DEBUG_BLOCK
 
     m_path.disconnect();
+    m_dataPath.disconnect();
     delete m_media.data();
     delete m_controller.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
     delete m_preamp.data();
     delete m_equalizer.data();
 
@@ -146,8 +150,10 @@ EngineController::initializePhonon()
     m_media.data()->setProperty("PlaybackTracking", true);
 
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
+    m_audioDataOutput = new Phonon::AudioDataOutput( this );
 
-    m_path = Phonon::createPath( m_media.data(), m_audio.data() );
+    m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
+    m_path = Phonon::createPath( m_audioDataOutput.data(), m_audio.data() );
 
     m_controller = new Phonon::MediaController( m_media.data() );
 
@@ -171,7 +177,8 @@ EngineController::initializePhonon()
     if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
-        m_path.insertEffect( m_preamp.data() );
+//      m_path.insertEffect( m_preamp );
+        m_dataPath.insertEffect( m_preamp );
     }
 
     m_media.data()->setTickInterval( 100 );
@@ -195,6 +202,7 @@ EngineController::initializePhonon()
     connect( m_audio.data(), SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
 
     connect( m_controller.data(), SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
+//  connect( m_audioDataOutput.data(), SIGNAL( dataReady( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >& ) ), this, SLOT( receiveData( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >& ) ) );
 
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
@@ -205,6 +213,10 @@ EngineController::initializePhonon()
         m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
 }
 
+void EngineController::receiveData( const QMap< Phonon::AudioDataOutput::Channel, QVector< qint16 > >& data )
+{
+    qDebug() << "DEBUGCODE112";
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -896,8 +908,11 @@ EngineController::eqUpdate() //SLOT
     if( AmarokConfig::equalizerMode() <= 0 )
     {
         // Remove effect from path
-        if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
-            m_path.removeEffect( m_equalizer.data() );
+//         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
+//             m_path.removeEffect( m_equalizer.data() );
+
+        if( m_dataPath.effects().indexOf( m_equalizer.data() ) != -1 )
+            m_dataPath.removeEffect( m_equalizer.data() );
     }
     else
     {
@@ -915,15 +930,27 @@ EngineController::eqUpdate() //SLOT
             m_equalizer.data()->setParameterValue( mParam, scaledVal );
         }
         // Insert effect into path if needed
-        if( m_path.effects().indexOf( m_equalizer.data() ) == -1 )
+//         if( m_path.effects().indexOf( m_equalizerdata() ) == -1 )
+//         {
+//             if( !m_path.effects().isEmpty() )
+//             {
+//                 m_path.insertEffect( m_equalizer, m_path.effects().first() );
+//             }
+//             else
+//             {
+//                 m_path.insertEffect( m_equalizer );
+//             }
+//         }
+
+        if( m_dataPath.effects().indexOf( m_equalizer.data() ) == -1 )
         {
-            if( !m_path.effects().isEmpty() )
+            if( !m_dataPath.effects().isEmpty() )
             {
-                m_path.insertEffect( m_equalizer.data(), m_path.effects().first() );
+                m_dataPath.insertEffect( m_equalizer.data(), m_dataPath.effects().first() );
             }
             else
             {
-                m_path.insertEffect( m_equalizer.data() );
+                m_dataPath.insertEffect( m_equalizer.data() );
             }
         }
     }
@@ -1097,7 +1124,8 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
         {
             m_preamp = new Phonon::VolumeFaderEffect( this );
-            m_path.insertEffect( m_preamp.data() );
+//             m_path.insertEffect( m_preamp );
+            m_dataPath.insertEffect( m_preamp.data() );
         }
 
         Meta::ReplayGainTag mode;

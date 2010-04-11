@@ -33,6 +33,7 @@
 #include <Phonon/MediaObject>
 #include <Phonon/Effect>
 #include <Phonon/EffectParameter>
+#include <phonon/audiodataoutput.h>
 
 class QTimer;
 
@@ -118,6 +119,11 @@ public:
      */
     // const so that it can only be used for info
     const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
+
+    /**
+    *   Provides access to the Phonon audioDataOoutput for visualization and spectrum analysis
+    */
+    const Phonon::AudioDataOutput* phononAudioData() const { return m_audioDataOutput; }
 
     /**
      * Gets the volume
@@ -208,6 +214,8 @@ public:
     QString prettyNowPlaying() const;
 
 public slots:
+    void receiveData( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> > &data );
+    
     /**
      * Plays the current track, if there is one
      * This happens asynchronously.
@@ -534,8 +542,10 @@ private:
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
     QWeakPointer<Phonon::Effect>            m_equalizer;
     QWeakPointer<Phonon::AudioOutput>       m_audio;
+    QWeakPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
     QWeakPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                            m_path;
+    Phonon::Path                            m_dataPath;
 
     Phonon::VolumeFaderEffect* m_fader;
     QTimer* m_fadeoutTimer;

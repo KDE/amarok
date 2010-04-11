@@ -7,6 +7,7 @@ add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( labels )
 add_subdirectory( tabs )
+add_subdirectory( spectrumanalyzer )
 
 if( LIBLASTFM_FOUND )
     add_subdirectory( upcomingevents )
