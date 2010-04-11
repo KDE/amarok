@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,7 +30,7 @@ namespace Playlist
 
 /**
  *  A single item that represents a level of a general-purpose breadcrumb ribbon.
- *  @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ *  @author Téo Mrnjavac <teo@kde.org>
  */
 class BreadcrumbItem : public KHBox
 {
@@ -108,7 +108,7 @@ private slots:
 
 /**
  * A button with a tiny "+" icon in it which spawns a menu to add a sort level.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class BreadcrumbAddMenuButton : public BreadcrumbItemMenuButton
 {

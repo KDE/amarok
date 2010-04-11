@@ -2,7 +2,7 @@
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>             *
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  * Copyright (c) 2009 Pierre Dumuid <pmdumuid@gmail.com>                                *

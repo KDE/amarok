@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,7 +29,7 @@ namespace Playlist
 /**
  * An abstract base class that defines a common interface of any playlist model.
  * Members declared here must be implemented by Playlist::Model and all proxies.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 
 //NOTE: While AbstractModel is ideally and logically an abstract base class with all pure

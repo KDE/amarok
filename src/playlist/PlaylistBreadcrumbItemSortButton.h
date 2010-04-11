@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@ namespace Playlist
 
 /**
  * A button that implements the non-menu part of the playlist breadcrumb item.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class BreadcrumbItemSortButton : public BreadcrumbItemButton
 {

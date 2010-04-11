@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -29,7 +29,7 @@ namespace Playlist
 /**
  * A ProxyModel that implements all the common forwarders for the interface of any
  * playlist proxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class ProxyBase : public QSortFilterProxyModel, public Playlist::AbstractModel
 {

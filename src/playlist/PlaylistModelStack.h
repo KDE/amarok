@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -50,7 +50,7 @@ namespace Playlist
  * Singleton class that handles and wraps around the Playlist models architecture.
  * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->bottom()
  * should only be used internally or in very specific situations.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class ModelStack : public QObject
 {

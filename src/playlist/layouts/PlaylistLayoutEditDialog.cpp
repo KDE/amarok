@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

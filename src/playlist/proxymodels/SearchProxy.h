@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@ namespace Playlist
 /**
  * A ProxyModel that implements Playlist searching.
  * It should sit anywhere above the FilterProxy and SortProxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class SearchProxy : public ProxyBase
 {

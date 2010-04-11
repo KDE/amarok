@@ -2,7 +2,7 @@
  * Copyright (c) 2006 Sebastien Laout <slaout@linux62.org>                              *
  * Copyright (c) 2008,2009 Valerio Pilo <amroth@kmess.org>                              *
  * Copyright (c) 2008,2009 Sjors Gielen <sjors@kmess.org>                               *
- * Copyright (c) 2010 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

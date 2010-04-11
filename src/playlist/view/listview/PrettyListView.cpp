@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
  * Copyright (c) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>                     *

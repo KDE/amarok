@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n("Developer (sebr)"), "ruiz@kde.org", "http://www.sebruiz.net" );
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
-            ki18n("Developer (Teo`)"), "teo.mrnjavac@gmail.com", "http://teom.wordpress.com/" );
+            ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
 
     ocsData.addAuthor( "xevix", aboutData.authors().at( 0 ) );
     ocsData.addAuthor( "Stecchino", aboutData.authors().at( 1 ) );
