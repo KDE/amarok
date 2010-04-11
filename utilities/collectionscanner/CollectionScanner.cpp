@@ -426,45 +426,20 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList images;
 
     int itemCount = 0;
-
+    
+    QStringList ignoredSourceFiles;
+    
+    //we need to check for cue files first, as we want to ignore any source files for which there is a valid cue sheet.
+    //We build an ignore list of these files and skip them completely in the run where we peocess all other files.
+    
     for( QStringList::ConstIterator it = entries.constBegin(), end = entries.constEnd(); it != end; ++it )
     {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
-
-        itemCount++;
-
-        // Write path to logfile
-        if( !m_logfile.isEmpty() )
-        {
-            QFile log( m_logfile );
-            if( log.open( QIODevice::WriteOnly ) )
-            {
-                QByteArray cPath = path.toUtf8();
-                log.write( cPath, cPath.length() );
-                log.close();
-            }
-        }
-
-        if( validImages.contains( ext ) )
-            images += path;
-
-        else if( m_importPlaylists && validPlaylists.contains( ext ) )
-        {
-            AttributeHash attributes;
-            if( m_batch && !m_rpath.isEmpty() )
-            {
-                QString rpath = path;
-                rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
-                rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
-                attributes["path"] = rpath;
-            }
-            else
-                attributes["path"] = path;
-            writeElement( "playlist", attributes );
-        }
-        else if( ext == "cue" )
+	
+	
+	if( ext == "cue" )
 	{
 	  
 	    //qDebug() << "found cue file: " << path;
@@ -530,12 +505,57 @@ CollectionScanner::scanFiles( const QStringList& entries )
 			
 			
 			writeElement( "tags", cueTrackAttributes );
-		    }		    
-		}
-	      
+			
+		    }	
+		    ignoredSourceFiles << sourcePath;
+		}   
 	    }
 	}
+    }
+   
+    
 
+    for( QStringList::ConstIterator it = entries.constBegin(), end = entries.constEnd(); it != end; ++it )
+    {
+        const QString path = *it;
+        const QString ext  = extension( path );
+        const QString dir  = directory( path );
+	
+	//skip files that we have already flagged as soure files for a valid cue sheet.
+	if( ignoredSourceFiles.contains( path ) )
+	    continue;
+
+        itemCount++;
+
+        // Write path to logfile
+        if( !m_logfile.isEmpty() )
+        {
+            QFile log( m_logfile );
+            if( log.open( QIODevice::WriteOnly ) )
+            {
+                QByteArray cPath = path.toUtf8();
+                log.write( cPath, cPath.length() );
+                log.close();
+            }
+        }
+
+        if( validImages.contains( ext ) )
+            images += path;
+
+        else if( m_importPlaylists && validPlaylists.contains( ext ) )
+        {
+            AttributeHash attributes;
+            if( m_batch && !m_rpath.isEmpty() )
+            {
+                QString rpath = path;
+                rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
+                rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
+                attributes["path"] = rpath;
+            }
+            else
+                attributes["path"] = path;
+            writeElement( "playlist", attributes );
+        }
         else
         {
             //FIXME: PORT 2.0
