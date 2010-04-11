@@ -31,6 +31,7 @@
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
+#include <KMessageBox>
 #include <KPushButton>
 #include <KStandardDirs>
 
@@ -774,6 +775,10 @@ void CoverFoundItem::slotFetchResult( KJob *job )
     {
         m_bigPix = pixmap;
         emit pixmapChanged( m_bigPix );
+    }
+    else
+    {
+        KMessageBox::error( listWidget(), i18n("Sorry, the cover image could not be retrieved.") );
     }
 
     if( m_dialog )
