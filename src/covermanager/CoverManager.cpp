@@ -770,6 +770,7 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
     setContextMenuPolicy( Qt::DefaultContextMenu );
+    setMouseTracking( true ); // required for setting status text when itemEntered signal is emitted
 
     connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
     connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
@@ -837,16 +838,9 @@ CoverView::setStatusText( QListWidgetItem *item )
     if ( !item )
         return;
 
-    bool sampler = false;
-    //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
-    //FIXME: Don't rely on other independent code, use an sql query
-    if( item->artist().isEmpty() )
-        sampler = true;
-
-    QString tipContent = i18n( "%1 - %2", sampler ? i18n("Various Artists") : item->artist() , item->album() );
-
+    const QString artist = item->albumPtr()->isCompilation() ? i18n( "Various Artists" ) : item->artist();
+    const QString tipContent = i18n( "%1 - %2", artist , item->album() );
     CoverManager::instance()->setStatusText( tipContent );
-
     #undef item
 }
 
