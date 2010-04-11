@@ -28,54 +28,20 @@
 Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 
-// template for the xml object needed to convert special characters in artist/title
-convertxml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><body><artist>{artist}</artist><song>{title}</song></body>";
-newconvertxml = "";
 // template for the xml object that will be populated and passed to Amarok.Lyrics.showLyrics()
 xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
+// if we change variable xml it will not reinitialized on next lyrics request, so we will get lyrics from previous song
+// because of that we need temp variable
 newxml = "";
-// information about the last artist and title that we tried to get lyrics for
-triedArtist = "";
-triedSong = "";
-retryNumber = 0;
+// maximum numbers that we can follow by #REDIRECT [[Band:Song]]
+maxredirects = 3;
+// url to get lyrics using mediawiki API
+apiurl = "http://lyrics.wikia.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles=";
 // the error message that is displayed if no lyrics were found or there was an error while trying to fetch them
 errormsg = "Lyrics not found. Sorry.";
 
-/* receives an XML response from the API call and constructs a new request out of it */
-function onFinishedAPI( response )
-{
-    try
-    {
-        if( response.length == 0 )
-            Amarok.Lyrics.showLyricsError( errormsg );
-        else
-        {
-            // construct a QDomDocument out of the response and extract the <url>...</url> part
-            doc = new QDomDocument();
-            doc.setContent( response );
-            var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
-            Amarok.debug( "returned wiki URL: " + url );
-            var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
-            Amarok.debug( "request no. 3 URL: " + url2.toString() );
-            // if we get redirected to the main page, then obviously no lyrics were found
-            if( url == "http://lyrics.wikia.com" ) {
-                Amarok.Lyrics.showLyricsNotFound( errormsg );
-                Amarok.debug( "Redirected to main page for artist=" + triedArtist + ", song=" + triedSong );
-                return;
-            }
-            // access the URL, let the response be handled by onFinished
-            new Downloader( url2, onFinished );
-        }
-    }
-    catch( err )
-    {
-        Amarok.Lyrics.showLyricsError( errormsg );
-        Amarok.debug( "script error in stage 2: " + err );
-    }
-}
-
-/* receives a Wiki page (in HTML format) and extracts lyrics from it */
-function onFinished( response )
+/* receives a Wiki page (in XML format) using wikimedia API and extracts lyrics from it */
+function onFinished( response, redirects )
 {
     try
     {
@@ -84,67 +50,42 @@ function onFinished( response )
         else
         {
             //Amarok.debug( "response: " + response );
-            response = response.replace(/[\n\r]/g, ""); // remove all line breaks
-            // if lyrics for this song don't exist, try something else
-            if ( response.indexOf( ">Create</a>" ) != -1 ) {
-                if ( retryNumber == 0 ) {
-                    // try again using the re-born API :)
-                    var urlstring = "http://lyrics.wikia.com/api.php?action=lyrics&func=getSong&fmt=xml&artist=" + triedArtist + "&song=" + triedSong;
-                    retryNumber = 1;
-                    var url = QUrl.fromEncoded( new QByteArray( urlstring ), 1 );
-                    Amarok.debug( "request no. 2 URL: " + url.toString() );
-                    // since the result will be XML stuff, we need onFinishedAPI to handle it
-                    new Downloader( url, onFinishedAPI );
-                    return;
-                }
-                // despite second attempt no lyrics were found. print an error message. 
-                Amarok.Lyrics.showLyricsNotFound( errormsg );
-                Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
-                return;
+            
+            // to allow extract lyrics with xml pasrer
+            response = response.replace('&lt;lyrics&gt;', '<lyrics>');
+            response = response.replace('&lt;/lyrics&gt;', '</lyrics>');
+            
+            var doc = new QDomDocument();
+            doc.setContent(response);
+            
+            if(response = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text())
+            { // ok, lyrics found
+                  newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( response ) );
+                  Amarok.Lyrics.showLyrics( newxml );
             }
-            // strip "display:none" parts (they would cause confusion otherwise)
-            while ( response.indexOf( "display:none" ) != -1 ) {
-                var stripstart = response.indexOf( "display:none" );
-                stripstart = response.lastIndexOf( "<", stripstart );
-                var stripend = response.indexOf( " ", stripstart );
-                var element = response.substring( stripstart + 1, stripend );
-                Amarok.debug( "stripping hidden element of type: " + element );
-                stripend = response.indexOf( "</" + element + ">", stripstart );
-                var nextStart = response.indexOf( "<" + element, stripstart + 1 );
-                while ( nextStart != -1 && nextStart < stripend ) {
-                    stripend = response.indexOf( "</" + element + ">", stripend + 1 );
-                    nextStart = response.indexOf( "<" + element, nextStart + 1 );
-                }
-                response = response.substring( 0, stripstart ) + response.substring( stripend + 3 + element.length );
+            else if(response = doc.elementsByTagName( "rev" ).at( 0 ).toElement().text())
+            {
+                  var preg;
+                  if(preg = /#redirect\s+\[\[(.+)\]\]/i.exec(response))
+                  { // redirect pragma found: #REDIRECT [[Band:Song]]
+                        redirects++;
+                        if(redirects == maxredirects)
+                        { // redirection limit exceed
+                              Amarok.Lyrics.showLyricsNotFound( errormsg );
+                              return;
+                        }
+                        var url = QUrl.fromEncoded( new QByteArray( apiurl + encodeURIComponent(preg[1]) ), 1);
+                        new Downloader( url, new Function("response", "onFinished(response, " + redirects + ")") );
+                  }
+                  else
+                  {
+                        Amarok.Lyrics.showLyricsNotFound( errormsg );
+                  }
             }
-            // parse the relevant part of the html source of the returned page
-            var pos = response.indexOf( "lyricbox" );
-            var startPos = response.indexOf( ">", pos ) + 1;
-            var endPos = response.indexOf( "</div>", startPos );
-            var otherDivPos = response.indexOf( "<div", startPos );
-            while ( otherDivPos != -1 && otherDivPos < endPos ) {
-                endPos = response.indexOf( "</div>", endPos + 1 );
-                otherDivPos = response.indexOf( "<div", otherDivPos + 1 );
+            else
+            {
+                  Amarok.Lyrics.showLyricsNotFound( errormsg );
             }
-            var relevant = response.substring( startPos, endPos );
-            // take care of a few special cases
-            relevant = relevant.replace(/<br\s*\/?>/g, "\n") + "\n\n"; // convert <br> to \n
-            relevant = relevant.replace( /&mdash;/g, "—" ); // not supported by QDomDocument
-            // strip adverts
-            pos = relevant.indexOf( "rtMatcher" );
-            while( pos != -1 ) {
-                startPos = relevant.lastIndexOf( "<div", pos );
-                endPos = relevant.indexOf( "</div>", pos );
-                relevant = relevant.substring( 0, startPos ) + relevant.substring( endPos + 6 );
-                pos = relevant.indexOf( "rtMatcher" );
-            }
-            // construct a QDomDocument to convert special characters in the lyrics text. 
-            doc2 = new QDomDocument();
-            doc2.setContent( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><lyrics>" + relevant + "</lyrics>" );
-            var lyr = doc2.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
-            // finally display the lyrics
-            newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( lyr ) );
-            Amarok.Lyrics.showLyrics( newxml );
         }
     }
     catch( err )
@@ -194,8 +135,22 @@ function URLify( string ) {
     } catch ( err ) {
         Amarok.debug ( "lyrics-URLify-error: " + err );
     } 
-} 
+}
 
+// convert all HTML entities to their applicable characters
+function entityDecode(string)
+{
+      var convertxml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><body><entity>" + string + "</entity></body>";
+      var doc = new QDomDocument();
+      if(doc.setContent(convertxml))
+      { // xml is valid
+            return doc.elementsByTagName( "entity" ).at( 0 ).toElement().text();
+      }
+      
+      return string;
+}
+
+// entry point
 function getLyrics( artist, title, url )
 {
     try
@@ -203,6 +158,7 @@ function getLyrics( artist, title, url )
         // save artist and title for later display now
         newxml = xml.replace( "{artist}", Amarok.Lyrics.escape( artist ) );
         newxml = newxml.replace( "{title}", Amarok.Lyrics.escape( title ) );
+        
         // strip "featuring <someone else>" from the artist
         var strip = artist.toLowerCase().indexOf( " ft. ");
         if ( strip != -1 ) {
@@ -216,23 +172,16 @@ function getLyrics( artist, title, url )
         if ( strip != -1 ) {
             artist = artist.substring( 0, strip );
         }
-        // for the web request, convert special characters with the help of a temporary DomDocument
-        newconvertxml = convertxml.replace( "{artist}", artist );
-        newconvertxml = newconvertxml.replace( "{title}", title );
-        var doc = new QDomDocument();
-        doc.setContent( newconvertxml );
-        // URLify artist and title and save them for later retries
-        var artist2 = URLify( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() );
-        var title2 = URLify( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
-        triedArtist = artist2;
-        triedSong = title2;
-        retryNumber = 0;
-        // assemble the (encoded!) URL, build a QUrl out of it and dispatch the download request
-        var urlstring = "http://lyrics.wikia.com/lyrics/" + artist2 + ":" + title2;
-        var url = QUrl.fromEncoded( new QByteArray( urlstring ), 1);
-        Amarok.debug( "request URL: " + url.toString() );
+        
+        // URLify artist and title
+        artist = URLify( entityDecode(artist) );
+        title = URLify( entityDecode(title) );
 
-        new Downloader( url, onFinished );
+        // assemble the (encoded!) URL, build a QUrl out of it and dispatch the download request
+        var url = QUrl.fromEncoded( new QByteArray( apiurl + artist + ":" + title ), 1);
+        Amarok.debug( "request URL: " + url.toString() );
+                                                                          //there was no redirections yet
+        new Downloader( url, new Function("response", "onFinished(response, -1)") );
     }
     catch( err )
     {
@@ -242,4 +191,3 @@ function getLyrics( artist, title, url )
 
 
 Amarok.Lyrics.fetchLyrics.connect( getLyrics );
-
