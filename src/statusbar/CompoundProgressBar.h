@@ -55,6 +55,8 @@ protected slots:
     void childBarCancelled( ProgressBar * progressBar );
     void childBarComplete( ProgressBar * progressBar );
 
+    void slotObjectDestroyed( QObject *object );
+
 private:
     void showDetails();
     void hideDetails();
@@ -64,7 +66,7 @@ private:
 
     int calcCompoundPercentage();
 
-    QMap<const QObject *, ProgressBar *> m_progressMap;
+    QMap< const QObject *, ProgressBar *> m_progressMap;
 
     QToolButton * m_showDetailsButton;
 
