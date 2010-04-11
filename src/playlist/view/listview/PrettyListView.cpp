@@ -73,10 +73,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
         , m_firstScrollToActiveTrack( true )
+        , m_rowsInsertedScrollItem( 0 )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
-        , m_rowsInsertedScrollItem( 0 )
 {
     // QAbstractItemView basics
     setModel( m_topmostProxy->qaim() );
