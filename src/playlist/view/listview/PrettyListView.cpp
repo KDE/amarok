@@ -76,7 +76,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
-        , m_firstItemInserted( 0 )
+        , m_rowsInsertedScrollItem( 0 )
 {
     // QAbstractItemView basics
     setModel( m_topmostProxy->qaim() );
@@ -258,6 +258,7 @@ Playlist::PrettyListView::scrollToActiveTrack()
     {
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
         m_firstScrollToActiveTrack = false;
+        m_rowsInsertedScrollItem = 0;    // This "new active track" scroll supersedes a pending "rows inserted" scroll.
     }
 }
 
@@ -864,9 +865,9 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
     Q_UNUSED( parent )
     Q_UNUSED( end )
 
-    if( m_firstItemInserted == 0 )
+    if( m_rowsInsertedScrollItem == 0 )
     {
-        m_firstItemInserted = Playlist::ModelStack::instance()->bottom()->idAt( start );
+        m_rowsInsertedScrollItem = Playlist::ModelStack::instance()->bottom()->idAt( start );
         QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
     }
 }
@@ -875,16 +876,16 @@ void Playlist::PrettyListView::bottomModelRowsInsertedScroll()
 {
     DEBUG_BLOCK
 
-    if( m_firstItemInserted )
+    if( m_rowsInsertedScrollItem )
     {   // Note: we don't bother handling the case "first inserted item in bottom model
         // does not have a row in the top 'model()' due to FilterProxy" nicely.
-        int firstRowInserted = m_topmostProxy->rowForId( m_firstItemInserted );    // In the *top* model.
+        int firstRowInserted = m_topmostProxy->rowForId( m_rowsInsertedScrollItem );    // In the *top* model.
         QModelIndex index = model()->index( firstRowInserted, 0 );
 
         if( index.isValid() )
             scrollTo( index, QAbstractItemView::PositionAtCenter );
 
-        m_firstItemInserted = 0;
+        m_rowsInsertedScrollItem = 0;
     }
 }
 

@@ -123,8 +123,10 @@ private:
     QRect                 m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
     bool                  m_mousePressInHeader;
+
     bool                  m_skipAutoScroll;
     bool                  m_firstScrollToActiveTrack;
+    quint64               m_rowsInsertedScrollItem;
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
@@ -138,8 +140,6 @@ private:
     ToolTipManager * m_toolTipManager;
 
     void excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item , bool single );
-
-    quint64 m_firstItemInserted;
 
 public:
     QList<int> selectedRows() const;
