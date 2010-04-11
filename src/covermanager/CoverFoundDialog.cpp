@@ -196,6 +196,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
     add( cover, data, payload->imageSize() );
     m_view->setCurrentItem( m_view->item( 0 ) );
+    updateGui();
 }
 
 CoverFoundDialog::~CoverFoundDialog()
