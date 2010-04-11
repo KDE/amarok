@@ -24,7 +24,6 @@
 #include "BookmarkGroup.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
-#include "statusbar/StatusBar.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
 #include <KAction>

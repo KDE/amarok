@@ -17,7 +17,9 @@
 #include "MagnatuneAlbumDownloader.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "MagnatuneMeta.h"
 #include "statusbar/StatusBar.h"
 
@@ -60,10 +62,17 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
+    QString msgText;
     if( !info.albumName().isEmpty() && !info.artistName().isEmpty() )
-        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading '%1' by %2 from Magnatune.com", info.albumName(), info.artistName() ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    {
+        msgText = i18n( "Downloading '%1' by %2 from Magnatune.com", info.albumName(), info.artistName() );
+    }
     else
-        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading album from Magnatune.com" ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    {
+        msgText = i18n( "Downloading album from Magnatune.com" );
+    }
+
+    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, SLOT( albumDownloadAborted() ) );
 }
 
 
@@ -92,7 +101,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     if ( !kzip.open( QIODevice::ReadOnly ) )
     {
-        The::statusBar()->shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
         emit( downloadComplete( false ) );
         return;
     }
@@ -101,7 +110,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     const KArchiveDirectory * directory = kzip.directory();
 
-    The::statusBar()->shortMessage( i18n( "Uncompressing Magnatune.com download..." ) );
+    Amarok::Components::logger()->shortMessage( i18n( "Uncompressing Magnatune.com download..." ) );
 
     //Is this really blocking with no progress status!? Why is it not a KJob?
 
@@ -125,8 +134,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
 
-    The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ) )
-    ->setAbortSlot( this, SLOT( coverAddAborted() ) );
+    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT( coverAddAborted() ) );
 
     emit( downloadComplete( true ) );
 
@@ -138,7 +146,6 @@ MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
     DEBUG_BLOCK
     
-    The::statusBar()->endProgressOperation( m_albumDownloadJob );
     m_albumDownloadJob->kill();
     m_albumDownloadJob = 0;
     debug() << "Aborted album download";

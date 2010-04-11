@@ -21,10 +21,11 @@
 #include "CoverFetcher.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
-#include "statusbar/StatusBar.h"
 
 #include <KIO/Job>
 #include <KLocale>
@@ -117,7 +118,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     {
         if( unit->isInteractive() && !m_dialog )
         {
-            The::statusBar()->shortMessage( i18n( "No covers found." ) );
+            Amarok::Components::logger()->shortMessage( i18n( "No covers found." ) );
             showCover( unit );
         }
         else
@@ -136,7 +137,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
         if( unit->isInteractive() )
         {
-            The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+            Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
         }
         else if( payload->type() == CoverFetchPayload::Art )
         {
@@ -156,7 +157,6 @@ CoverFetcher::slotResult( KJob *job )
 
     if( job && job->error() )
     {
-        The::statusBar()->endProgressOperation( job );
         finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
         return;
     }
@@ -195,7 +195,6 @@ CoverFetcher::slotResult( KJob *job )
         }
         break;
     }
-    The::statusBar()->endProgressOperation( job ); //just to be safe...
     storedJob->deleteLater();
 }
 
@@ -232,7 +231,6 @@ CoverFetcher::slotDialogFinished()
 
             const KJob *job = m_jobs.key( unit );
             const_cast< KJob* >( job )->deleteLater();
-            The::statusBar()->endProgressOperation( job );
             m_jobs.remove( job );
         }
     }
@@ -294,7 +292,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
-            The::statusBar()->shortMessage( text );
+            Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedPixmaps.take( unit ) );
@@ -304,7 +302,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
-            The::statusBar()->shortMessage( text );
+            Amarok::Components::logger()->shortMessage( text );
             QString debugMessage;
             if( !message.isEmpty() )
                 debugMessage = '[' + message + ']';
@@ -317,7 +315,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
-            The::statusBar()->shortMessage( text );
+            Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished, cancelled by user for album" << albumName;
         }
         break;
@@ -327,7 +325,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
-            The::statusBar()->shortMessage( text );
+            Amarok::Components::logger()->shortMessage( text );
             m_errors += text;
             debug() << "Finished due to cover not found for album" << albumName;
         }

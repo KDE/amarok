@@ -27,7 +27,6 @@
 #include "PopupDropperFactory.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
-#include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
 

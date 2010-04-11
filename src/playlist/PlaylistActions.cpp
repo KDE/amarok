@@ -25,12 +25,14 @@
 #include "PlaylistActions.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "amarokconfig.h"
 #include "dbus/PlayerDBusHandler.h"
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
 #include "core/engine/EngineObserver.h"
+#include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "navigators/DynamicTrackNavigator.h"
 #include "navigators/RandomAlbumNavigator.h"
@@ -41,7 +43,6 @@
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
 #include "playlist/PlaylistWidget.h"
-#include "statusbar/StatusBar.h"
 
 #include <typeinfo>
 
@@ -391,7 +392,7 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
         warning() << "Failure count: " << failures;
         if ( failures >= maxFailures )
         {
-            The::statusBar()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), StatusBar::Warning );
+            Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
             error() << "Stopping playlist.";
             failures = 0;
             m_trackError = true;

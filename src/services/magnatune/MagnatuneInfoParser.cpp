@@ -17,8 +17,9 @@
 #include "MagnatuneInfoParser.h"
 
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "MagnatuneConfig.h"
-#include "statusbar/StatusBar.h"
 
 #include <KLocale>
 
@@ -40,7 +41,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     QString orgHtml;*/
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
+    Amarok::Components::logger()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
 }
@@ -165,7 +166,7 @@ void MagnatuneInfoParser::getFrontPage()
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
     m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
     connect( m_pageDownloadJob, SIGNAL(result( KJob * ) ), SLOT( frontpageDownloadComplete( KJob*) ) );
 }
 
@@ -194,7 +195,7 @@ void MagnatuneInfoParser::getFavoritesPage()
     debug() << "loading url: " << url;
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
     connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
 }
 
@@ -223,7 +224,7 @@ void MagnatuneInfoParser::getRecommendationsPage()
     debug() << "loading url: " << url;
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
     connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
     
 }

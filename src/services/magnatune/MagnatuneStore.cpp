@@ -17,11 +17,11 @@
 #include "MagnatuneStore.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
-#include "statusbar/StatusBar.h"
-#include "statusbar/ProgressBar.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
@@ -312,9 +312,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ) )
-    ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
-
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ), this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -343,8 +341,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    The::statusBar()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
-    debug() << "MagnatuneStore: create xml parser";
+    Amarok::Components::logger()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -357,7 +354,6 @@ void MagnatuneStore::listDownloadCancelled( )
 {
     DEBUG_BLOCK
 
-    //The::statusBar()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";
@@ -751,7 +747,7 @@ void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
 
     QString result = m_favoritesJob->data();
 
-    The::statusBar()->longMessage( result );
+    Amarok::Components::logger()->longMessage( result );
 
     //show the favorites page
     showFavoritesPage();
