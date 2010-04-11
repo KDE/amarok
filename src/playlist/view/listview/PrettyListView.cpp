@@ -812,23 +812,22 @@ void Playlist::PrettyListView::clearSearchTerm()
 {
     DEBUG_BLOCK
 
-    //We really do not want to reset the view to the top when the search/filter is cleared, so
-    //we store the first shown row and scroll to that once the term is removed.
-    QModelIndex index = indexAt( QPoint( 0, 0 ) );
+    // Choose a focus item, to scroll to later.
+    QModelIndex focusIndex;
+    QModelIndexList selected = selectedIndexes();
+    if( !selected.isEmpty() )
+        focusIndex = selected.first();
+    else
+        focusIndex = indexAt( QPoint( 0, 0 ) );
 
-    //We don't want to mess around with source rows because this would break our wonderful
-    //lasagna code, but we do want to grab something unique that represents the row, like
-    //its unique 64-bit id.
-    quint64 id = m_topmostProxy->idAt( index.row() );
-
-    debug() << "first row in filtered list: " << index.row();
+    // Remember the focus item id, because the row numbers change when we reset the filter.
+    quint64 focusItemId = m_topmostProxy->idAt( focusIndex.row() );
 
     m_topmostProxy->clearSearchTerm();
     m_topmostProxy->filterUpdated();
 
-    //Now we scroll to the previously stored row again. Note that it's not the same row in
-    //the topmost model any more, so we need to grab it again using its id.
-    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( id ), 0, QModelIndex() );
+    // Now scroll to the focus item.
+    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( focusItemId ), 0, QModelIndex() );
     if ( newIndex.isValid() )
         scrollTo( newIndex, QAbstractItemView::PositionAtTop );
 }
