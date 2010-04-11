@@ -914,6 +914,9 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     }
 
     update();
+
+    // Schedule a re-scroll to the active playlist row. Assumption: Qt will run this *after* the repaint.
+    QTimer::singleShot( 0, this, SLOT( slotPlaylistActiveTrackChanged() ) );
 }
 
 void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )
