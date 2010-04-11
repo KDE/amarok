@@ -761,24 +761,19 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
     endInsertRows();
 
-    const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
-
-    if ( currentTrackPtr && m_activeRow == -1 ) // if we currently do not have a row marked as currently playing...
-    {
-        //Check if one of the tracks in the playlist is the currently playing one, and if so make it active
-        for ( int i = 0; i < m_items.size(); i++ )
-        {
-            if ( m_items.at( i )->track()->uidUrl() == currentTrackPtr->uidUrl() ) {
-                m_activeRow = i;
-                break;  // if same track is added multiple times, skip after the first one...
-            }
-        }
-    }
-
     if( m_activeRow >= 0 )
         m_activeRow += activeShift;
     else
-        m_activeRow = -1;
+    {
+         // If one of the inserted tracks is currently playing, choose it as the active track.
+        const Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
+        if( engineTrack )
+        {
+            int engineRow = firstRowForTrack( engineTrack );
+            if( engineRow > -1 )
+                setActiveRow( engineRow );
+        }
+    }
 }
 
 

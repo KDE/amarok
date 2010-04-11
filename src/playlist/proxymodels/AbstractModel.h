@@ -187,7 +187,7 @@ public:
      * Returns the first row in the current model which matches a given track pointer.
      * @see allRowsForTrack
      * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
+     * @return the row, or -1 if the track pointer is not found.
      */
     virtual int firstRowForTrack( const Meta::TrackPtr track ) const = 0;
 
