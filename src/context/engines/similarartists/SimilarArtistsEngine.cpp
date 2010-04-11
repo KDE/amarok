@@ -110,6 +110,8 @@ void
 SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
+
+    
     update();
 }
 
@@ -120,19 +122,6 @@ SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 void
 SimilarArtistsEngine::update()
 {
-    //new update, if a job is not terminated, we kill it
-    if ( m_similarArtistsJob )
-    {
-        m_similarArtistsJob->kill();
-        m_similarArtistsJob = 0;
-    }
-    
-    // we mark the jobs that fetch description as outdated
-    m_artistDescriptionJobs.clear();
-
-    // we mark the jobs that fetch artists top tracks as outdated
-    m_artistTopTrackJobs.clear();
-
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
     // We've got a new track, great, let's fetch some info from SimilarArtists !
@@ -153,11 +142,27 @@ SimilarArtistsEngine::update()
         if ( currentTrack->artist() )
         {
             if (( currentTrack->playableUrl().protocol() == "lastfm" ) ||
-                    ( currentTrack->playableUrl().protocol() == "daap" ) ||
-                    !The::engineController()->isStream() )
-                artistName = currentTrack->artist()->name();
+                     ( currentTrack->playableUrl().protocol() == "daap" ) ||
+                     !The::engineController()->isStream() )
+                 artistName = currentTrack->artist()->name();
             else
                 artistName = currentTrack->artist()->prettyName();
+        }
+
+        // we delete the previous update only if the artist requested was not the same
+        if(artistName!=m_artist) {
+            //new update, if a job is not terminated, we kill it
+            if ( m_similarArtistsJob )
+            {
+                m_similarArtistsJob->kill();
+                m_similarArtistsJob = 0;
+            }
+
+            // we mark the jobs that fetch description as outdated
+            m_artistDescriptionJobs.clear();
+
+            // we mark the jobs that fetch artists top tracks as outdated
+            m_artistTopTrackJobs.clear();
         }
 
         if ( artistName.compare( "" ) == 0 )   // Unknown artist
@@ -185,6 +190,7 @@ SimilarArtistsEngine::update()
             {
                 // if the artist has changed
                 m_maxArtists = nbArt;
+                m_artist = artistName;
                 setData( "similarArtists", "artist", artistName );
                 similarArtistsRequest( artistName );
             }
@@ -210,8 +216,6 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artistName.toLocal8Bit() );
     url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
-
-    m_artist = artistName;
 
     m_similarArtistsJob = KIO::storedGet( url,
                                           KIO::NoReload,
@@ -239,7 +243,6 @@ SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artistName.toLocal8Bit() );
     url.addQueryItem( "lang", descriptionLocale() );
-
 
     KJob *job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
 
@@ -289,7 +292,6 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
     // the artists
     m_topTrackArtists = 0;      // we mark we haven't downloaded the most know tracks of
     // the artists
-
     if ( !m_similarArtistsJob ) return; //track changed while we were fetching
 
     // It's the correct job but it errored out
