@@ -8,5 +8,7 @@ include_directories(
   ${QT_INCLUDES}
 )
 
-add_subdirectory( upcomingevents )
-add_subdirectory( similarartists )
+if(LIBLASTFM_FOUND)
+    add_subdirectory( similarartists )
+    add_subdirectory( upcomingevents )
+endif(LIBLASTFM_FOUND)
