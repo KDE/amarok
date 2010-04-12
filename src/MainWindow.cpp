@@ -1257,7 +1257,7 @@ MainWindow::initLayoutHack()
     LH_extend( m_dockingRect, m_browsersDock );
     LH_extend( m_dockingRect, m_contextDock );
     LH_extend( m_dockingRect, m_playlistDock );
-    
+
     // initially calculate ratios
     updateDockRatio( m_browsersDock );
     updateDockRatio( m_contextDock );
@@ -1274,6 +1274,8 @@ MainWindow::initLayoutHack()
     // but i think these can be omitted (move along a show event for tech. reasons)
 //     topLevelChanged(bool)
 //     dockLocationChanged(Qt::DockWidgetArea)
+
+    slotShowActiveTrack();    // See comment in 'playlist/view/PrettyListView.cpp constructor'.
 }
 
 void
@@ -1295,7 +1297,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
     m_browsersDock->removeEventFilter( this );
     m_contextDock->removeEventFilter( this );
     m_playlistDock->removeEventFilter( this );
-    
+
     QMainWindow::resizeEvent( event );
 
     // ok, the window was resized and our little docklings fill the entire docking area
@@ -1332,7 +1334,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
     QCoreApplication::sendPostedEvents( this, QEvent::LayoutRequest );
     layout()->invalidate();
     layout()->setEnabled( true );
-    
+
     // don't be super picky - there's an integer imprecision anyway and we just want to fix
     // major resize errors w/o being to intrusive or flickering
     if( !( LH_fuzzyMatch( dContextSz, m_contextDock->size() ) &&
@@ -1433,7 +1435,7 @@ bool MainWindow::eventFilter(QObject *o, QEvent *e)
         }
         return false;
     }
-    
+
     if( ( ( e->type() == QEvent::Resize && m_mouseDown ) || // only when resized by the splitter :)
              e->type() == QEvent::Show || e->type() == QEvent::Hide ) && // show/hide is _NOT_ sufficient for tab changes
         ( o == m_browsersDock || o == m_contextDock || o == m_playlistDock ) )

@@ -129,6 +129,14 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 
     playlistLayoutChanged();
+
+    // We do the following call here to be formally correct, but note:
+    //   - It happens to be redundant, because 'playlistLayoutChanged()' already schedules
+    //     another one, via a QTimer( 0 ).
+    //   - Both that one and this one don't work right (they scroll like 'PositionAtTop',
+    //     not 'PositionAtCenter'). This is probably because MainWindow changes its
+    //     geometry in a QTimer( 0 )? As a fix, MainWindow does a 'slotShowActiveTrack()'
+    //     at the end of its QTimer slot, which will finally scroll to the right spot.
     slotPlaylistActiveTrackChanged();
 }
 
@@ -830,7 +838,7 @@ void Playlist::PrettyListView::clearSearchTerm()
     // Now scroll to the focus item.
     QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( focusItemId ), 0, QModelIndex() );
     if ( newIndex.isValid() )
-        scrollTo( newIndex, QAbstractItemView::PositionAtTop );
+        scrollTo( newIndex, QAbstractItemView::PositionAtCenter );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
