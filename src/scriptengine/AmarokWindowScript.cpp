@@ -31,8 +31,8 @@ namespace AmarokScript
     AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList )
     : QObject( kapp )
     {
-        m_ToolsMenu = The::mainWindow()->ToolsMenu();
-        m_SettingsMenu = The::mainWindow()->SettingsMenu();
+        m_toolsMenu = The::mainWindow()->ToolsMenu();
+        m_settingsMenu = The::mainWindow()->SettingsMenu();
         m_ScriptEngine = ScriptEngine;
         m_guiPtrList = guiPtrList;
     }
@@ -41,56 +41,59 @@ namespace AmarokScript
     {
     }
 
-    bool AmarokWindowScript::addToolsMenu( QString id, QString MenuTitle, QString icon )
+    bool AmarokWindowScript::addToolsMenu( QString id, QString menuTitle, QString icon )
     {
-        DEBUG_BLOCK
-        KActionCollection* const ac = Amarok::actionCollection();
-        if ( !ac->action( id ) )
-        {
-            KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
-            ac->addAction( id, action );
-            ac->readSettings();
-            m_ToolsMenu->addAction( ac->action( id ) );
-            m_ToolsMenu->addAction( action );
-            QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "ToolsMenu" ).setProperty( id, newMenu );
-            m_guiPtrList->append( action );
-        }
-        else
-            return false;
-        return true;
+        return addMenuAction( m_toolsMenu, id, menuTitle, "ToolsMenu", icon );
     }
 
     void AmarokWindowScript::addToolsSeparator()
     {
-        QAction* action = m_ToolsMenu->addSeparator();
+        QAction* action = m_toolsMenu->addSeparator();
         m_guiPtrList->append( action );
     }
 
-    bool AmarokWindowScript::addSettingsMenu( QString id, QString MenuTitle, QString icon )
+    bool AmarokWindowScript::addSettingsMenu( QString id, QString menuTitle, QString icon )
     {
-        DEBUG_BLOCK
-        KActionCollection* const ac = Amarok::actionCollection();
-        if ( !ac->action( id ) )
-        {
-            KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
-            ac->addAction( id, action );
-            ac->readSettings();
-            m_SettingsMenu->addAction( ac->action( id ) );
-            m_SettingsMenu->addAction( action );
-            QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "SettingsMenu" ).setProperty( id, newMenu );
-            m_guiPtrList->append( action );
-        }
-        else
-            return false;
-        return true;
+        return addMenuAction( m_settingsMenu, id, menuTitle, "SettingsMenu", icon );
     }
 
     void AmarokWindowScript::addSettingsSeparator()
     {
-        QAction* action = m_SettingsMenu->addSeparator();
+        QAction* action = m_settingsMenu->addSeparator();
         m_guiPtrList->append( action );
+    }
+
+    bool AmarokWindowScript::addMenuAction( KMenu* menu, QString id, QString menuTitle, QString menuProperty, QString icon )
+    {
+        DEBUG_BLOCK
+
+        bool retVal = true;
+
+        KActionCollection* const ac = Amarok::actionCollection();
+
+        if ( !ac->action( id ) )
+        {
+            KAction *action = new KAction( KIcon( icon ), menuTitle, The::mainWindow() );
+            ac->addAction( id, action );
+
+            // don't forget to read the shortcut settings from the config file so
+            // the shortcuts for the actions are updated
+            ac->readSettings();
+
+            // add the action to the given menu
+            menu->addAction( ac->action( id ) );
+
+            m_guiPtrList->append( action );
+
+            QScriptValue newMenu = m_ScriptEngine->newQObject( action );
+            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
+        }
+        else
+        {
+            retVal = false;
+        }
+
+        return retVal;
     }
 
     void AmarokWindowScript::showBrowser( QString browser ) const

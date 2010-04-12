@@ -35,15 +35,28 @@ namespace AmarokScript
             ~AmarokWindowScript();
 
         public slots:
-            bool addToolsMenu( QString id, QString MenuTitle, QString icon = "amarok" );
+            bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addToolsSeparator();
-            bool addSettingsMenu( QString id, QString MenuTitle, QString icon = "amarok" );
+            bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
             void showBrowser( QString browser ) const;
 //TODO: show Tray Icon, Show Splash Screen
         private:
-            KMenu*           m_ToolsMenu;
-            KMenu*           m_SettingsMenu;
+            /**
+              * adds an action with the given ID and title to the given menu
+              *
+              * @param menu the menu to which the action will be added
+              * @param id the ID of the action
+              * @param menuTitle the title of the action
+              * @param menuProperty the name of the menu property for the script engine
+              * @param icon the icon for the action
+              *
+              * @return true if adding the action was successful, false otherwise
+              */
+            bool addMenuAction( KMenu* menu, QString id, QString menuTitle, QString menuProperty, QString icon );
+
+            KMenu*           m_toolsMenu;
+            KMenu*           m_settingsMenu;
             QScriptEngine*   m_ScriptEngine;
             QList<QObject*>* m_guiPtrList;
 
