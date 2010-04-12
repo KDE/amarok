@@ -70,6 +70,7 @@ void LastfmInfoParser::onGetTrackInfo()
             break;
     }
     m_jobs["getTrackInfo"]->deleteLater();
+    m_jobs["getTrackInfo"] = 0;
 }
 
 void LastfmInfoParser::getInfo(Meta::AlbumPtr album)
@@ -120,6 +121,7 @@ void LastfmInfoParser::onGetAlbumInfo()
             break;
     }
     m_jobs["getAlbumInfo"]->deleteLater();
+    m_jobs["getAlbumInfo"] = 0;
 }
 
 
@@ -173,6 +175,7 @@ void LastfmInfoParser::onGetArtistInfo()
             break;
     }
     m_jobs["getArtistInfo"]->deleteLater();
+    m_jobs["getArtistInfo"] = 0;
 }
 
 #include "LastfmInfoParser.moc"
