@@ -56,7 +56,7 @@ public:
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
 
-    /** 
+    /**
      * @returns the currently selected cover image
      */
     const QPixmap image() const { return m_pixmap; }
@@ -83,6 +83,7 @@ private slots:
     void itemMenuRequested( const QPoint &pos );
     void processQuery();
     void processQuery( const QString &query );
+    void saveAs();
     void saveRequested();
     void selectDiscogs();
     void selectLastFm();
@@ -174,6 +175,12 @@ public slots:
      * Opens a pixmap viewer
      */
     void display();
+
+    /**
+     * saveAs opens a dialog for choosing where to save the pixmap
+     * @param album used for dialog's start url
+     */
+    void saveAs( Meta::AlbumPtr album );
 
     void slotFetchResult( KJob *job );
 

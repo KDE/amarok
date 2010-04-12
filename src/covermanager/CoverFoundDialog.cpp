@@ -28,11 +28,13 @@
 #include "SvgHandler.h"
 
 #include <KConfigGroup>
+#include <KFileDialog>
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KMessageBox>
 #include <KPushButton>
+#include <KSaveFile>
 #include <KStandardDirs>
 
 #include <QCloseEvent>
@@ -312,8 +314,19 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
     connect( display, SIGNAL(triggered()), item, SLOT(display()) );
 
+    QAction *save = new QAction( KIcon("document-save"), i18n("Save As"), &menu );
+    connect( save, SIGNAL(triggered()), this, SLOT(saveAs()) );
+
     menu.addAction( display );
+    menu.addAction( save );
     menu.exec( globalPos );
+}
+
+void CoverFoundDialog::saveAs()
+{
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( item )
+        item->saveAs( m_album );
 }
 
 void CoverFoundDialog::saveRequested()
@@ -764,6 +777,60 @@ void CoverFoundItem::display()
     dlg->show();
     dlg->raise();
     dlg->activateWindow();
+}
+
+void CoverFoundItem::saveAs( Meta::AlbumPtr album )
+{
+    if( !hasBigPix() && !fetchBigPix() )
+        return;
+
+    KFileDialog dlg( album->tracks().first()->playableUrl().directory(), QString(), listWidget() );
+    dlg.setCaption( i18n("Cover Image Save Location") );
+    dlg.setMode( KFile::File | KFile::LocalOnly );
+    dlg.setOperationMode( KFileDialog::Saving );
+    dlg.setConfirmOverwrite( true );
+    dlg.setSelection( "cover.jpg" );
+
+    QStringList supportedMimeTypes;
+    supportedMimeTypes << "image/jpeg";
+    supportedMimeTypes << "image/png";
+    dlg.setMimeFilter( supportedMimeTypes );
+
+    KUrl saveUrl;
+    int res = dlg.exec();
+    switch( res )
+    {
+    case QDialog::Accepted:
+        saveUrl = dlg.selectedUrl();
+        break;
+    case QDialog::Rejected:
+        return;
+    }
+
+    KSaveFile saveFile( saveUrl.path() );
+    if( !saveFile.open() )
+    {
+        KMessageBox::detailedError( listWidget(),
+                                    i18n("Sorry, the cover could not be saved."),
+                                    saveFile.errorString() );
+        return;
+    }
+
+    const QString ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
+    if( ext == "jpg" || ext == "jpeg" )
+        m_bigPix.save( &saveFile, "JPG" );
+    else if( ext == "png" )
+        m_bigPix.save( &saveFile, "PNG" );
+    else
+        m_bigPix.save( &saveFile );
+
+    if( (saveFile.size() == 0) || !saveFile.finalize() )
+    {
+        KMessageBox::detailedError( listWidget(),
+                                    i18n("Sorry, the cover could not be saved."),
+                                    saveFile.errorString() );
+        saveFile.remove();
+    }
 }
 
 void CoverFoundItem::slotFetchResult( KJob *job )
