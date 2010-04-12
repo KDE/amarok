@@ -266,10 +266,10 @@ void LikeBackDialog::slotButtonClicked( int buttonId )
     url.setHost( m_likeBack->hostName() );
     url.setPort( m_likeBack->hostPort() );
     url.setPath( m_likeBack->remotePath() );
-    KIO::StoredTransferJob *job = KIO::storedHttpPost( data.toUtf8(), url );
+    KIO::StoredTransferJob *job = KIO::storedHttpPost( data.toUtf8(), url, KIO::HideProgressInfo );
     connect( job, SIGNAL(finished(KJob*)),
              this, SLOT(finished(KJob*)) );
-    job->addMetaData( "content-type", "application/x-www-form-urlencoded" );
+    job->addMetaData( "content-type", "Content-Type: application/x-www-form-urlencoded" );
 }
 
 
