@@ -16,9 +16,7 @@
 
 #include "InfoParserBase.h"
 
-#include "App.h"
 #include "core/support/Debug.h"
-#include "PaletteHandler.h"
 
 #include <KStandardDirs>
 

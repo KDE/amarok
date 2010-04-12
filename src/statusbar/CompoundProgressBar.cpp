@@ -57,6 +57,7 @@ void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner
     connect( childBar, SIGNAL( percentageChanged( int ) ), this, SLOT( childPercentageChanged() ) );
     connect( childBar, SIGNAL( cancelled( ProgressBar * ) ), this, SLOT( childBarCancelled( ProgressBar * ) ) );
     connect( childBar, SIGNAL( complete( ProgressBar * ) ), this, SLOT( childBarComplete( ProgressBar * ) ) );
+    connect( owner, SIGNAL( destroyed( QObject* ) ), this, SLOT( slotObjectDestroyed( QObject* ) ) );
 
     if ( m_progressMap.count() == 1 )
     {
@@ -130,9 +131,20 @@ void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
     childBarFinished( childBar );
 }
 
+void CompoundProgressBar::slotObjectDestroyed( QObject *object )
+{
+    if( m_progressMap.contains( object ) )
+    {
+        childBarFinished( m_progressMap.value( object ) );
+    }
+}
+
 void CompoundProgressBar::childBarFinished( ProgressBar *bar )
 {
-    m_progressMap.remove( m_progressMap.key( bar ) );
+    QObject *owner = const_cast<QObject*>( m_progressMap.key( bar ) );
+    owner->disconnect( this );
+    owner->disconnect( bar );
+    m_progressMap.remove( owner );
     m_progressDetailsWidget->layout()->removeWidget( bar );
     m_progressDetailsWidget->setFixedHeight( bar->height()  * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();

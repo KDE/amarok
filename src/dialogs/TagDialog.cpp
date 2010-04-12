@@ -25,6 +25,7 @@
 #include "TagDialog.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "CoverLabel.h"
@@ -39,10 +40,10 @@
 #include "core/capabilities/ReadLabelCapability.h"
 #include "core/capabilities/WriteLabelCapability.h"
 #include "core/collections/QueryMaker.h"
-#include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "ui_TagDialogBase.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "core/interfaces/Logger.h"
 
 #include <KGlobal>
 #include <KHTMLView>
@@ -1643,7 +1644,7 @@ TagDialog::saveTags()
         if( !ec->isEditable() )
         {
             debug() << "Track not editable. Aborting loop.";
-            The::statusBar()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
+            Amarok::Components::logger()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
             continue;
         }
 

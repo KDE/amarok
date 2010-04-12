@@ -17,15 +17,13 @@
 #include "MagnatuneRedownloadHandler.h"
 
 #include "MagnatuneConfig.h"
-#include "statusbar/StatusBar.h"
-
-
-
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 
 #include <KLocale>
-#include "KMessageBox"
+#include <KMessageBox>
 
 #include "QDir"
 
@@ -147,7 +145,7 @@ MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
     QString redownloadApiUrl = "http://magnatune.com/buy/redownload_xml?email=" + email;
 
     m_redownloadApiJob = KIO::storedGet( KUrl( redownloadApiUrl ), KIO::NoReload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
+    Amarok::Components::logger()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
     connect( m_redownloadApiJob, SIGNAL( result( KJob* ) ), SLOT( redownloadApiResult( KJob* ) ) );
 
 }

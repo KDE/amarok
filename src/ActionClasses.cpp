@@ -25,7 +25,6 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
