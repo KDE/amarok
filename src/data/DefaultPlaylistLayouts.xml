@@ -7,7 +7,7 @@
                 <element value="Length" size="0.20" bold="false" alignment="right"/>
             </row>
             <row>
-                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Artist" size="0.5" bold="false" italic="true" alignment="left"/>
                 <element value="Album" size="0.5" bold="false" alignment="right"/>
             </row>
         </single_track>
@@ -16,7 +16,7 @@
                 <element value="Album" size="1" bold="true" alignment="center"/>
             </row>
             <row>
-                <element value="Album artist" size="1" bold="true" alignment="center"/>
+                <element value="Album artist" size="1" bold="true" italic="true" alignment="center"/>
             </row>
         </group_head>
         <group_body show_cover="false">
@@ -27,11 +27,9 @@
         </group_body>
         <group_variousArtistsBody show_cover="false">
             <row>
-                <element value="Title (with track number)" size="0.8" bold="false" alignment="left"/>
-                <element value="Length" size="0.2" bold="false" alignment="right"/>
-            </row>
-            <row>
-                <element value="Artist" prefix="     " size="0" bold="false" italic="true" alignment="left"/>
+                <element value="Title (with track number)" size="0.6" bold="false" alignment="left"/>
+                <element value="Artist" size="0" bold="false" italic="true" alignment="left"/>
+                <element value="Length" size="0.15" bold="false" alignment="right"/>
             </row>
         </group_variousArtistsBody>
     </layout>
@@ -42,7 +40,7 @@
                 <element value="Length" size="0.5" bold="false" alignment="right"/>
             </row>
             <row>
-                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Artist" size="0.5" bold="false" italic="true" alignment="left"/>
                 <element value="Album" size="0.5" bold="false" alignment="right"/>
             </row>
         </single_track>
@@ -54,7 +52,7 @@
                 <element value="Length" size="0.5" bold="false" alignment="right"/>
             </row>
             <row>
-                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Artist" size="0.5" bold="false" italic="true" alignment="left"/>
                 <element value="Album" size="0.5" bold="false" alignment="right"/>
             </row>
         </group_body>
@@ -63,7 +61,7 @@
         <single_track active_indicator_row="0" show_cover="false" >
             <row>
                 <element suffix="" prefix="" size="0.5" bold="true" alignment="left" value="Title" underline="false" italic="false" />
-                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="true" />
                 <element suffix="" prefix="" size="0" bold="false" alignment="right" value="Length" underline="false" italic="false" />
             </row>
         </single_track>
@@ -71,7 +69,7 @@
         <group_body active_indicator_row="0" show_cover="false" >
             <row>
                 <element suffix="" prefix="" size="0.5" bold="true" alignment="left" value="Title" underline="false" italic="false" />
-                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="true" />
                 <element suffix="" prefix="" size="0" bold="false" alignment="right" value="Length" underline="false" italic="false" />
             </row>
         </group_body>
@@ -79,12 +77,12 @@
     <layout name="Verbose" >
         <single_track active_indicator_row="0" show_cover="true" >
             <row>
-                <element size="0.65" bold="false" alignment="left" value="Title" italic="true" />
+                <element size="0.65" bold="false" alignment="left" value="Title" italic="false" />
                 <element size="0.2" bold="false" alignment="center" value="Rating" italic="false" />
                 <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
             </row>
             <row>
-                <element size="0.5" bold="false" alignment="left" value="Artist" italic="false" />
+                <element size="0.5" bold="false" alignment="left" value="Artist" italic="true" />
                 <element size="0.5" bold="false" alignment="right" value="Album" italic="false" />
             </row>
         </single_track>
@@ -107,14 +105,14 @@
         </group_head>
         <group_body active_indicator_row="0" show_cover="false" >
             <row>
-                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="true" />
+                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="false" />
                 <element size="0.15" bold="false" alignment="center" value="Rating" italic="false" />
                 <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
             </row>
         </group_body>
         <group_variousArtistsBody active_indicator_row="0" show_cover="false" >
             <row>
-                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="true" />
+                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="false" />
                 <element size="0.15" bold="false" alignment="center" value="Rating" italic="false" />
                 <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
             </row>
