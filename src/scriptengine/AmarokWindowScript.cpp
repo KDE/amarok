@@ -49,6 +49,7 @@ namespace AmarokScript
         {
             KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
             ac->addAction( id, action );
+            ac->readSettings();
             m_ToolsMenu->addAction( ac->action( id ) );
             m_ToolsMenu->addAction( action );
             QScriptValue newMenu = m_ScriptEngine->newQObject( action );
@@ -74,6 +75,7 @@ namespace AmarokScript
         {
             KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
             ac->addAction( id, action );
+            ac->readSettings();
             m_SettingsMenu->addAction( ac->action( id ) );
             m_SettingsMenu->addAction( action );
             QScriptValue newMenu = m_ScriptEngine->newQObject( action );
