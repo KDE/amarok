@@ -388,7 +388,7 @@ LyricsApplet::refreshLyrics()
     bool refetch = true;
     if( m_hasLyrics )
     {
-        const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track ? All changes you may have made will be lost.") );
+        const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track? All changes you may have made will be lost.") );
         refetch = KMessageBox::warningContinueCancel( 0, text, i18n( "Refetch lyrics" ) ) == KMessageBox::Continue;
     }
 
