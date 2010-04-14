@@ -369,7 +369,6 @@ qreal PopupDropperItem::subitemOpacity() const
 
 void PopupDropperItem::setSubitemOpacity( qreal opacity )
 {
-#if QT_VERSION >= 0x040500
     if( d->svgItem )
         d->svgItem->setOpacity( opacity );
     if( d->textItem )
@@ -380,7 +379,6 @@ void PopupDropperItem::setSubitemOpacity( qreal opacity )
         d->hoverIndicatorRectItem->setOpacity( opacity );
     if( d->hoverIndicatorRectFillItem )
         d->hoverIndicatorRectFillItem->setOpacity( opacity );
-#endif
 }
 
 QGraphicsTextItem* PopupDropperItem::textItem() const

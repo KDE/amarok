@@ -50,12 +50,8 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
             setSelectionBehavior( QAbstractItemView::SelectItems );
-            #if QT_VERSION >= 0x040500
             setAnimated( true );
-            #endif
-            
             setRootIsDecorated( false );
-
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
         }

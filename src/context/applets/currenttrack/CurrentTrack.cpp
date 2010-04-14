@@ -290,9 +290,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
             const int iconSize = icon->size().width();
             icon->setPos( iconPos );
             iconPos.rx() += iconSize + 4;
-#if QT_VERSION >= 0x040500
 	        icon->setOpacity( .72 );
-#endif
         }
     }
 
