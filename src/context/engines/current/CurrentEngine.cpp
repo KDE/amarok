@@ -60,12 +60,6 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 CurrentEngine::~CurrentEngine()
 {
     DEBUG_BLOCK
-    if( m_qm )
-        m_qm->abortQuery();
-    delete m_qm;
-    if( m_qmTracks )
-        m_qmTracks->abortQuery();
-    delete m_qmTracks;
     if( m_qmFavTracks )
         m_qmFavTracks->abortQuery();
     delete m_qmFavTracks;
@@ -164,6 +158,7 @@ CurrentEngine::stoppedState()
                 m_qm->reset();
             else
                 m_qm = coll->queryMaker();
+            m_qm->setAutoDelete( true );
             m_qm->setQueryType( Collections::QueryMaker::Album );
             m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
             m_qm->orderBy( Meta::valCreateDate, true );
@@ -190,6 +185,7 @@ CurrentEngine::stoppedState()
             m_qmTracks->reset();
         else
             m_qmTracks = coll->queryMaker();
+        m_qmTracks->setAutoDelete( true );
         m_qmTracks->setQueryType( Collections::QueryMaker::Track );
         m_qmTracks->excludeFilter( Meta::valTitle, QString(), true, true );
         m_qmTracks->orderBy( Meta::valLastPlayed, true );
@@ -318,6 +314,7 @@ CurrentEngine::update()
                 //try searching the collection as we might be dealing with a non local track
                 Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
                 m_qm = coll->queryMaker();
+                m_qm->setAutoDelete( true );
                 m_qm->setQueryType( Collections::QueryMaker::Album );
                 m_qm->addMatch( artist );
 
