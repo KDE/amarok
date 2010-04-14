@@ -296,25 +296,23 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         bool isHQ18 = false;
         bool isHQ22 = false;
 
-
-        QString sk;
         QString t;
 
-        // Youtube has change again its api
-        // It changed once more (Oct 2009)
-        QString regex( "\'SWF_ARGS\':" );
+        // Youtube has changed again its api
+        // It changed once more (10 april 2010)
+        QString regex( "\"flashvars\\\"" );
         if ( page.indexOf( regex ) != -1 )
         {
             page = page.mid( page.indexOf( regex ) );
-            QString reg( "\'IS_WIDESCREEN\':");
+            QString reg( "flashvars=");
             if ( page.indexOf( reg ) != -1 )
                 page = page.mid( 0, page.indexOf( reg ) );
         }
 
-        QString regex1( "\"fmt_map\": " );
+        QString regex1( "&fmt_map=" );
         if ( page.indexOf( regex1 ) != -1 )
         {
-            QString fmtPage = page.mid( page.indexOf( regex1 ) + regex1.size() + 1 );
+            QString fmtPage = page.mid( page.indexOf( regex1 ) + regex1.size() );
 
             // if the next time we've got true
             if ( fmtPage.mid( 0, 3 ).contains( "18" ) || fmtPage.mid( 0, 3 ).contains( "35" ))
@@ -324,24 +322,18 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
                 isHQ22 = true ;
         }
 
-        QString regex2( "\"sk\": " );
+        QString regex2( "&t=" );
         if ( page.indexOf( regex2 ) != -1 )
         {
-            QString skPage = page.mid( page.indexOf( regex2 ) + regex2.size() + 1 );
-            sk = skPage.mid( 0, skPage.indexOf( "\"" ) );
+            QString tPage = page.mid( page.indexOf( regex2 ) + regex2.size() );
+            t = tPage.mid( 0, tPage.indexOf( "&" ) );
+   //         debug()<<" T " <<t;
         }
-
-        QString regex3( "\"t\": " );
-        if ( page.indexOf( regex3 ) != -1 )
+        
+//        debug() << page ;
+        if ( !t.isEmpty() )
         {
-            QString tPage = page.mid( page.indexOf( regex3 ) + regex3.size() + 1 );
-            t = tPage.mid( 0, tPage.indexOf( "\"" ) );
-            //debug()<<" T " <<t;
-        }
-        //debug() << page ;
-        if ( !t.isEmpty() && !sk.isEmpty() )
-        {
-            vidlink = jobUrl + "&sk=" + sk + "&t=" + t ;
+            vidlink = jobUrl + "&t=" + t + "=" ;
 
             // enable youtube HQ if user as request and HQ is available
             if ( m_youtubeHQ && isHQ18 )

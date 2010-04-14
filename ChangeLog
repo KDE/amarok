@@ -54,10 +54,13 @@ VERSION 2.3.1-Beta 1
        some MySQL versions. (BR 225052)
 
   BUGFIXES:
+     * Fixed Youtube videoclip broken engine due to their recent change.
+     * Fixed Wikipedia no loading the css on KDE 4.4 (due to a regression in Qt 4.6.)
+       (BR 222875)
      * Settings dialog could become too wide with translations. (BR 233752)
-     * Fix re-mounting iPhoneOS devices after having been unplugged without being
+     * Fixed re-mounting iPhoneOS devices after having been unplugged without being
        unmounted. Thanks to Jeffrey Dodge <hazridi@gmail.com>. (BR 233305)
-     * Fix connecting to iPod Touch devices. Patch by Jeffrey Dodge
+     * Fixed connection to iPod Touch devices. Patch by Jeffrey Dodge
        <hazridi@gmail.com>. (BR 233257)
      * Fixed the deletion of empty directories after deleting, or organizing.
        (BR 190881)
