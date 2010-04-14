@@ -173,7 +173,7 @@ ConstraintTypes::TagMatch::getName() const
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
         return v.arg( QString("%1 stars").arg( r ) );
-    } else if ( m_field == i18n("length") ) {
+    } else if ( m_field == "length" ) {
         return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
         return v.arg( valueToString() );
@@ -188,7 +188,7 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
 
         double factor;
         int range;
-        if ( m_field != i18n("length") ) {
+        if ( m_field != "length" ) {
             // compute fuzzy ranges -- this marks the boundary beyond which the fuzzy match probability is less than 1%
             factor = exp( 2.0 * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
             range = (int)ceil( 4.6051702 / factor );
@@ -526,7 +526,7 @@ ConstraintTypes::TagMatch::valueToString() const
     else
         return m_value.toString();
 }
-    
+
 bool
 ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
 {
@@ -674,11 +674,11 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     ui.comboBox_Field->setModel( m_fieldsModel );
     ui.checkBox_Invert->setChecked( invert );
 
-    if ( field == i18n("rating") ) {
+    if ( field == "rating" ) {
         ui.comboBox_ComparisonRating->setCurrentIndex( comparison );
         ui.slider_StrictnessRating->setValue( strictness );
         ui.rating_RatingValue->setRating( value.toInt() );
-    } else if ( field == i18n("length") ) {
+    } else if ( field == "length" ) {
         ui.comboBox_ComparisonTime->setCurrentIndex( comparison );
         ui.slider_StrictnessTime->setValue( strictness );
         ui.timeEdit_TimeValue->setTime( QTime().addMSecs( value.toInt() ) );
