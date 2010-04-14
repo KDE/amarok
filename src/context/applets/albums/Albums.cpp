@@ -34,16 +34,19 @@
 #include "TrackItem.h"
 
 #include <plasma/theme.h>
+#include <KConfigDialog>
 
-
+#include <QFormLayout>
 #include <QPainter>
+#include <QSpinBox>
 #include <QTreeView>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_albumWidth( 50 )
+    , m_recentCount( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
 }
 
 Albums::~Albums()
@@ -221,7 +224,27 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
         drawRoundedRectAroundText( p, m_headerText );
 }
 
+void Albums::createConfigurationInterface( KConfigDialog *parent )
+{
+    QSpinBox *spinBox = new QSpinBox;
+    spinBox->setRange( 1, 100 );
+    spinBox->setValue( m_recentCount );
+    connect( spinBox, SIGNAL(valueChanged(int)), SLOT(setRecentCount(int)) );
 
+    QFormLayout *formLayout = new QFormLayout;
+    formLayout->addRow( i18n("Number of recently added albums:"), spinBox );
+
+    QWidget *config = new QWidget;
+    config->setLayout( formLayout );
+
+    parent->addPage( config, i18n( "Albums Applet Settings" ), "preferences-system");
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveConfiguration() ) );
+}
+
+void Albums::setRecentCount( int val )
+{
+    m_recentCount = val;
+}
 
 void Albums::connectSource( const QString &source )
 {
@@ -230,6 +253,17 @@ void Albums::connectSource( const QString &source )
         dataEngine( "amarok-current" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initially
     }
+}
+
+void Albums::saveConfiguration()
+{
+    Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
+
+    dataEngine( "amarok-current" )->disconnectSource( "albums", this );
+    dataEngine( "amarok-current" )->connectSource( "albums", this );
+
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
+             this, SLOT( connectSource( const QString& ) ) );
 }
 
 #include "Albums.moc"

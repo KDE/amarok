@@ -30,6 +30,7 @@ VERSION 2.3.1-Beta 1
        automatic cover fetching is still Last.fm only.
 
   CHANGES:
+     * Allow changing the number of recently added albums in the albums applet.
      * Magnatune.com store: Added "Home" link to all artist and album pages leading
        to the Magnatune.com front page.
      * Magnatune.com store: Improved Magnatune.com front page.

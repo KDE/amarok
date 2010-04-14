@@ -44,12 +44,17 @@ public:
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
+protected:
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
     void connectSource( const QString &source );
+    void saveConfiguration();
+    void setRecentCount( int val );
 
 private:
     const qreal m_albumWidth;
+    int m_recentCount;
     Meta::AlbumList m_albums;
     QStandardItemModel *m_model;
     AlbumsView *m_albumsView;

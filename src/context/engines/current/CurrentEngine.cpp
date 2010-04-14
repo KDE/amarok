@@ -25,6 +25,8 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 
+#include <KConfigDialog>
+
 #include <QVariant>
 #include <Phonon/MediaObject>
 #include <Phonon/Path>
@@ -161,7 +163,7 @@ CurrentEngine::stoppedState()
             m_qm->setQueryType( Collections::QueryMaker::Album );
             m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
             m_qm->orderBy( Meta::valCreateDate, true );
-            m_qm->limitMaxResultSize( 5 );
+            m_qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
             m_albums.clear();
 
             connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
