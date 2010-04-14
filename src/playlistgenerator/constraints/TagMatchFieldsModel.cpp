@@ -141,7 +141,10 @@ ConstraintTypes::TagMatchFieldsModel::index_of( const QString& s ) const
 QString
 ConstraintTypes::TagMatchFieldsModel::field_at( int idx ) const
 {
-    return m_fieldNames.at( idx );
+    if ( ( idx >= 0 ) && ( idx < m_fieldNames.length() ) )
+        return m_fieldNames.at( idx );
+    else
+        return QString();
 }
 
 qint64
