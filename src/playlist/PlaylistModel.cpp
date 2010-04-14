@@ -40,7 +40,6 @@
 #include "PlaylistItem.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
-#include "playlistmanager/PlaylistManager.h"
 
 #include <KGlobal>
 #include <KUrl>
@@ -61,17 +60,6 @@ Playlist::Model::Model( QObject *parent )
         , m_setStateOfItem_batchMinRow( -1 )
 {
     DEBUG_BLOCK
-
-    /* The PlaylistManager needs to be loaded or podcast episodes and other
-     * non-collection Tracks will not be loaded correctly.
-     */
-    The::playlistManager();
-
-   //Select previously saved track
-   const int playingTrack = AmarokConfig::lastPlaying();
-
-   if ( playingTrack > -1 )
-       setActiveRow( playingTrack );
 }
 
 Playlist::Model::~Model()

@@ -44,6 +44,7 @@
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
 #include "playlist/PlaylistWidget.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <typeinfo>
 
@@ -471,6 +472,13 @@ Playlist::Actions::repaintPlaylist()
 void
 Playlist::Actions::restoreDefaultPlaylist()
 {
+    DEBUG_BLOCK
+
+    // The PlaylistManager needs to be loaded or podcast episodes and other
+    // non-collection Tracks will not be loaded correctly.
+    The::playlistManager();
+
+
     Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
     if ( playlist )
     {
@@ -499,14 +507,18 @@ Playlist::Actions::restoreDefaultPlaylist()
         }
 
         The::playlistController()->insertTracks( 0, tracks );
+
         QList<int> queuedRows = playlist->queue();
         queue( playlist->queue() );
-    }
 
+        //Select previously playing track
+        const int lastPlayingRow = AmarokConfig::lastPlaying();
+        if( lastPlayingRow >= 0 )
+            Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
+    }
 }
 
 namespace The
 {
     AMAROK_EXPORT Playlist::Actions* playlistActions() { return Playlist::Actions::instance(); }
 }
-
