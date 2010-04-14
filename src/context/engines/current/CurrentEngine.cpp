@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
@@ -41,9 +42,6 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     , Engine::EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
     , m_state( Phonon::StoppedState )
-	, m_qm( 0 )
-	, m_qmTracks( 0 )
-	, m_qmFavTracks( 0 )
     , m_currentArtist( 0 )
 {
     DEBUG_BLOCK
@@ -61,17 +59,11 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 
 CurrentEngine::~CurrentEngine()
 {
-    DEBUG_BLOCK
-    if( m_qmFavTracks )
-        m_qmFavTracks->abortQuery();
-    delete m_qmFavTracks;
 }
 
 QStringList
 CurrentEngine::sources() const
 {
-    DEBUG_BLOCK
-
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
@@ -85,12 +77,6 @@ CurrentEngine::sourceRequestEvent( const QString& name )
     m_requested[ name ] = true;
     if( The::engineController()->currentTrack() )
     {
-        if( m_qm )
-            m_qm->abortQuery();
-        if( m_qmTracks )
-            m_qmTracks->abortQuery();
-        if( m_qmFavTracks )
-            m_qmFavTracks->abortQuery();
         update();
 
     }
@@ -155,22 +141,19 @@ CurrentEngine::stoppedState()
         Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
         if( coll )
         {
-            if( m_qm )
-                m_qm->reset();
-            else
-                m_qm = coll->queryMaker();
-            m_qm->setAutoDelete( true );
-            m_qm->setQueryType( Collections::QueryMaker::Album );
-            m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-            m_qm->orderBy( Meta::valCreateDate, true );
-            m_qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
+            Collections::QueryMaker *qm = coll->queryMaker();
+            qm->setAutoDelete( true );
+            qm->setQueryType( Collections::QueryMaker::Album );
+            qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+            qm->orderBy( Meta::valCreateDate, true );
+            qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
             m_albums.clear();
 
-            connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+            connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
                     SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-            connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+            connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
 
-            m_qm->run();
+            qm->run();
         }
     }
 
@@ -182,23 +165,20 @@ CurrentEngine::stoppedState()
         if( !coll )
             return;
 
-        if( m_qmTracks )
-            m_qmTracks->reset();
-        else
-            m_qmTracks = coll->queryMaker();
-        m_qmTracks->setAutoDelete( true );
-        m_qmTracks->setQueryType( Collections::QueryMaker::Track );
-        m_qmTracks->excludeFilter( Meta::valTitle, QString(), true, true );
-        m_qmTracks->orderBy( Meta::valLastPlayed, true );
-        m_qmTracks->limitMaxResultSize( 5 );
+        Collections::QueryMaker *qm = coll->queryMaker();
+        qm->setAutoDelete( true );
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->excludeFilter( Meta::valTitle, QString(), true, true );
+        qm->orderBy( Meta::valLastPlayed, true );
+        qm->limitMaxResultSize( 5 );
 
         m_latestTracks.clear();
 
-        connect( m_qmTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
                 SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-        connect( m_qmTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
+        connect( qm, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
 
-        m_qmTracks->run();
+        qm->run();
     }
 
     // Get the favorite tracks:
@@ -224,7 +204,6 @@ CurrentEngine::stoppedState()
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     const int width = 156;
     setData( "current", "albumart", album->image( width ) );
 }
@@ -314,17 +293,17 @@ CurrentEngine::update()
             {
                 //try searching the collection as we might be dealing with a non local track
                 Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-                m_qm = coll->queryMaker();
-                m_qm->setAutoDelete( true );
-                m_qm->setQueryType( Collections::QueryMaker::Album );
-                m_qm->addMatch( artist );
+                Collections::QueryMaker *qm = coll->queryMaker();
+                qm->setAutoDelete( true );
+                qm->setQueryType( Collections::QueryMaker::Album );
+                qm->addMatch( artist );
 
                 m_albums.clear();
 
-                connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+                connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
                         SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-                connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
-                m_qm->run();
+                connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+                qm->run();
 
             }
             else
@@ -348,19 +327,16 @@ CurrentEngine::setupAlbumsData()
 void
 CurrentEngine::setupTracksData()
 {
-    DEBUG_BLOCK
-
     QVariant v;
-    if( sender() == m_qmTracks )
-    {
-        v.setValue( m_latestTracks );
-        setData( "current", "lastTracks", v );
-    }
+    v.setValue( m_latestTracks );
+    setData( "current", "lastTracks", v );
+    /*
     else if( sender() == m_qmFavTracks )
     {
         v.setValue( m_favoriteTracks );
         setData( "current", "favoriteTracks", v );
     }
+    */
 }
 
 void
@@ -378,16 +354,15 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
-    if( sender() == m_qmTracks )
-    {
-        m_latestTracks.clear();
-        m_latestTracks << tracks;
-    }
+    m_latestTracks.clear();
+    m_latestTracks << tracks;
+    /*
     else if( sender() == m_qmFavTracks )
     {
         m_favoriteTracks.clear();
         m_favoriteTracks << tracks;
     }
+    */
 }
 
 

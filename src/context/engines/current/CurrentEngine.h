@@ -18,7 +18,6 @@
 #define AMAROK_CURRENT_ENGINE
 
 #include "ContextObserver.h"
-#include "core/collections/QueryMaker.h"
 #include "context/DataEngine.h"
 #include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h" // album observer
@@ -87,9 +86,6 @@ private:
     QTimer *m_timer;
 
     Phonon::State m_state;
-    QPointer<Collections::QueryMaker> m_qm;
-    QPointer<Collections::QueryMaker> m_qmTracks;
-    QPointer<Collections::QueryMaker> m_qmFavTracks;
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
     Meta::TrackList m_latestTracks;
