@@ -41,8 +41,6 @@
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_configLayout( 0 )
-    , m_width( 0 )
     , m_albumWidth( 50 )
 {
     setHasConfigurationInterface( false );
@@ -65,8 +63,6 @@ void Albums::init()
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Recently added albums" ) );
     
-    m_width = globalConfig().readEntry( "width", 500 );
-
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
     
@@ -77,7 +73,7 @@ void Albums::init()
 
     // properly set the height
     // -1 means ask for all available space left
-    resize( m_width, -1 );
+    resize( globalConfig().readEntry( "width", 500 ), -1 );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
@@ -85,14 +81,6 @@ void Albums::init()
              this, SLOT( connectSource( const QString& ) ) );
 
     updateConstraints();
-}
-
-
-QList<QAction*>
-Albums::contextualActions()
-{
-    QList<QAction*> actions;
-    return actions;
 }
 
 void Albums::constraintsEvent( Plasma::Constraints constraints )
@@ -108,7 +96,6 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     // here we put all of the text items into the correct locations
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
     
- //   debug() << "Updating constraints for " << m_albumCount << " album rows";
     m_albumsView->resize( size().toSize().width() - 2 * standardPadding() , size().toSize().height() - m_headerText->boundingRect().height() - 3 * standardPadding()  );
     m_albumsView->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
 
@@ -232,14 +219,9 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
     // draw rounded rect around title if not currently animating
     if ( !m_headerText->isAnimating() )
         drawRoundedRectAroundText( p, m_headerText );
-
 }
 
-void Albums::showConfigurationInterface()
-{}
 
-void Albums::configAccepted() // SLOT
-{}
 
 void Albums::connectSource( const QString &source )
 {

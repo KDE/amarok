@@ -77,7 +77,6 @@ bool
 CurrentEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
-    Q_UNUSED( name );
 
     removeAllData( name );
     setData( name, QVariant() );
