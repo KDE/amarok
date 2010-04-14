@@ -37,9 +37,6 @@ namespace ConstraintTypes {
     /* This constraint sets a "checkpoint": a specific track that will be
      * played at a specific time in the playlist */
 
-    /* TODO: the internal math hasn't been written yet, so this constraint
-     * doesn't do anything yet -- sth */
-
     enum CheckpointType { CheckpointTrack, CheckpointAlbum, CheckpointArtist };
 
     class Checkpoint : public Constraint {
@@ -54,18 +51,22 @@ namespace ConstraintTypes {
             virtual void toXml(QDomDocument&, QDomElement&) const;
 
             virtual QString getName() const;
-            
+
             virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
-            virtual double satisfaction(const Meta::TrackList&);
-            virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_replace(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_delete(const Meta::TrackList&, const int) const;
-            virtual double deltaS_swap(const Meta::TrackList&, const int, const int) const;
-            virtual void insertTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void replaceTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void deleteTrack(const Meta::TrackList&, const int);
-            virtual void swapTracks(const Meta::TrackList&, const int, const int);
+            virtual double satisfaction( const Meta::TrackList& );
+            virtual double deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
+            virtual double deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
+            virtual double deltaS_delete( const Meta::TrackList&, const int ) const;
+            virtual double deltaS_swap( const Meta::TrackList&, const int, const int ) const;
+            virtual void insertTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
+            virtual void replaceTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
+            virtual void deleteTrack( const Meta::TrackList&, const int );
+            virtual void swapTracks( const Meta::TrackList&, const int, const int );
+
+            virtual int suggestInitialPlaylistSize() const;
             ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
+
+            virtual void audit( const Meta::TrackList& ) const;
 
         private slots:
             void setPosition( const int );
@@ -73,90 +74,117 @@ namespace ConstraintTypes {
             void setCheckpoint( const Meta::DataPtr& );
 
         private:
-            class AbstractCheckpointHandler; // abstract base class
-            class TrackCheckpointHandler;
-            class ArtistCheckpointHandler;
-            class AlbumCheckpointHandler;
+            /* support classes */
+            class AbstractMatcher;
+            class TrackMatcher;
+            class ArtistMatcher;
+            class AlbumMatcher;
+            class BoundaryTracker;
 
-            Checkpoint(QDomElement&, ConstraintNode*);
-            Checkpoint(ConstraintNode*);
+            Checkpoint( QDomElement&, ConstraintNode* );
+            Checkpoint( ConstraintNode* );
+            ~Checkpoint();
 
             // constraint parameters
-            int m_position;
+            qint64 m_position;
             double m_strictness;
             Meta::DataPtr m_checkpointObject;
             CheckpointType m_checkpointType;
 
-            double penalty( const int ) const;
+            // helper functions
+            qint64 findDistanceFor( const Meta::TrackList&, const BoundaryTracker* const ) const;
+            double penalty( const qint64 ) const;
 
             // internal state variables
-            int m_distance; // how far a track is (in seconds) from its checkpoint
+            qint64 m_distance; // how far a track is (in milliseconds) from its checkpoint
 
-            // checkpoint handling strategy
-            AbstractCheckpointHandler* m_handler;
+            // objects from the support classes
+            AbstractMatcher* m_handler;
+            BoundaryTracker* m_tracker;
     };
 
     // ABC for Checkpoint handlers
-    class Checkpoint::AbstractCheckpointHandler {
+    class Checkpoint::AbstractMatcher {
         public:
-            AbstractCheckpointHandler( const int );
-            virtual ~AbstractCheckpointHandler() {}
+            AbstractMatcher() {}
+            virtual ~AbstractMatcher() {}
 
-            virtual int find( const Meta::TrackList& ) const = 0;
+            virtual QList<int> find( const Meta::TrackList& ) const = 0;
             virtual bool match( const Meta::TrackPtr& ) const = 0;
             virtual Meta::TrackPtr suggest( const Meta::TrackList& ) const = 0;
-
-        protected:
-            int m_checkpointPosition;
     };
 
     // Handles Checkpoints for a specific track
-    class Checkpoint::TrackCheckpointHandler : public AbstractCheckpointHandler {
+    class Checkpoint::TrackMatcher : public AbstractMatcher {
         public:
-            TrackCheckpointHandler( const int, const Meta::TrackPtr& );
-            virtual ~TrackCheckpointHandler() {}
+            TrackMatcher( const Meta::TrackPtr& );
+            virtual ~TrackMatcher() {}
 
-            virtual int find( const Meta::TrackList& ) const;
+            virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;
             virtual Meta::TrackPtr suggest( const Meta::TrackList& ) const;
 
         private:
-            Meta::TrackPtr m_trackToMatch;
+            const Meta::TrackPtr m_trackToMatch;
     };
 
     // Handles Checkpoints for an artist (any track by this artist satisfies the checkpoint)
-    class Checkpoint::ArtistCheckpointHandler : public AbstractCheckpointHandler {
+    class Checkpoint::ArtistMatcher : public AbstractMatcher {
         public:
-            ArtistCheckpointHandler( const int, const Meta::ArtistPtr& );
-            virtual ~ArtistCheckpointHandler() {}
+            ArtistMatcher( const Meta::ArtistPtr& );
+            virtual ~ArtistMatcher() {}
 
-            virtual int find( const Meta::TrackList& ) const;
+            virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;
             virtual Meta::TrackPtr suggest( const Meta::TrackList& ) const;
 
         private:
-            Meta::ArtistPtr m_artistToMatch;
+            const Meta::ArtistPtr m_artistToMatch;
     };
 
     // Handles Checkpoints for an album (any track on this album satisfies the checkpoint)
-    class Checkpoint::AlbumCheckpointHandler : public AbstractCheckpointHandler {
+    class Checkpoint::AlbumMatcher : public AbstractMatcher {
         public:
-            AlbumCheckpointHandler( const int, const Meta::AlbumPtr& );
-            virtual ~AlbumCheckpointHandler() {}
+            AlbumMatcher( const Meta::AlbumPtr& );
+            virtual ~AlbumMatcher() {}
 
-            virtual int find( const Meta::TrackList& ) const;
+            virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;
             virtual Meta::TrackPtr suggest( const Meta::TrackList& ) const;
 
         private:
-            Meta::AlbumPtr m_albumToMatch;
+            const Meta::AlbumPtr m_albumToMatch;
+    };
+
+    class Checkpoint::BoundaryTracker {
+        public:
+            BoundaryTracker( const Meta::TrackList& );
+            ~BoundaryTracker();
+            QPair<qint64, qint64> getBoundariesAt( int ) const;
+            int indexAtTime( qint64 ) const;
+
+            void insertTrack( const Meta::TrackPtr, const int );
+            void replaceTrack( const Meta::TrackPtr, const int );
+            void deleteTrack( const int );
+            void swapTracks( const int, const int );
+
+            BoundaryTracker* cloneAndInsert( const Meta::TrackPtr, const int ) const;
+            BoundaryTracker* cloneAndReplace( const Meta::TrackPtr, const int ) const;
+            BoundaryTracker* cloneAndDelete( const int ) const;
+            BoundaryTracker* cloneAndSwap( const int, const int ) const;
+
+            void audit( const Meta::TrackList& ) const;
+
+        private:
+            BoundaryTracker( const QList<qint64>& );
+            QList<qint64> m_endpoints;
     };
 
     class CheckpointEditWidget : public QWidget {
         Q_OBJECT
 
         public:
-            CheckpointEditWidget( const int, const int );
+            CheckpointEditWidget( const qint64, const int, const Meta::DataPtr& );
 
         signals:
             void updated();

@@ -17,50 +17,78 @@
 #define DEBUG_PREFIX "TrackSelectWidget"
 
 #include "TrackSelectWidget.h"
+
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
-#include "browsers/CollectionTreeViewSimple.h"
+#include "browsers/CollectionTreeView.h"
 #include "browsers/collectionbrowser/CollectionTreeItemDelegate.h"
 #include "core/support/Debug.h"
 
+#include <amarokconfig.h>
+
+#include <KSqueezedTextLabel>
 #include <KVBox>
 
-#include <QList>
+#include <QLabel>
 
 TrackSelectWidget::TrackSelectWidget( QWidget* parent = 0 ) : KVBox( parent )
 {
     DEBUG_BLOCK
-    m_view = new CollectionTreeViewSimple( this );
+    m_label = new KSqueezedTextLabel( this );
+    m_label->hide(); // TODO: decide whether the label should be shown or not
+    m_label->setTextElideMode( Qt::ElideRight );
+    setData( Meta::DataPtr() );
+
+    m_view = new CollectionTreeView( this );
+    m_view->setAlternatingRowColors( true );
     m_view->setRootIsDecorated( false );
     m_view->setFrameShape( QFrame::NoFrame );
 
-    CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_view );
+    CollectionTreeItemDelegate* delegate = new CollectionTreeItemDelegate( m_view );
     m_view->setItemDelegate( delegate );
 
-    // TODO: use the same levels that are shown in the collection browser?
-    QList<int> levels;
-    levels << CategoryId::Artist << CategoryId::Album;
+    QList<int> levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    if ( levels.isEmpty() )
+        levels << CategoryId::Artist << CategoryId::Album;
     m_model = new CollectionTreeItemModel( levels );
     m_view->setModel( m_model );
 
-    connect( m_view->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-             this, SLOT( recvNewSelection( const QModelIndex& ) ) );
+    connect( m_view, SIGNAL( itemSelected( CollectionTreeItem* ) ),
+             this, SLOT( recvNewSelection( CollectionTreeItem* ) ) );
 }
 
 TrackSelectWidget::~TrackSelectWidget() {}
 
-void
-TrackSelectWidget::recvNewSelection( const QModelIndex& idx )
+void TrackSelectWidget::setData( const Meta::DataPtr& data )
 {
-    if ( !idx.isValid() )
-        return;
+    debug() << "setting label to" << dataToLabel( data );
+    m_label->setText( i18n("Checkpoint: <b>%1</b>", dataToLabel( data ) ) );
+}
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( idx.internalPointer() );
-
+void
+TrackSelectWidget::recvNewSelection( CollectionTreeItem* item )
+{
     if ( item && item->isDataItem() ) {
         Meta::DataPtr data = item->data();
         if ( data != Meta::DataPtr() ) {
+            setData( data );
+            debug() << "new selection" << data->prettyName();
             emit selectionChanged( data );
         }
     }
+}
+
+const QString TrackSelectWidget::dataToLabel( const Meta::DataPtr& data ) const
+{
+    if ( data != Meta::DataPtr() ) {
+        if ( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) ) {
+            return QString( i18n("Track: %1", track->prettyName() ) );
+        } else if ( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) ) {
+            return QString( i18n("Album: %1", album->prettyName() ) );
+        } else if ( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( data ) ) {
+            return QString( i18n("Artist: %1", artist->prettyName() ) );
+        }
+        // TODO: can things other than tracks, artists, and albums end up here?
+    }
+    return QString( i18n("empty") );
 }

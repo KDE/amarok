@@ -21,12 +21,13 @@
 
 #include <KVBox>
 
-#include <QModelIndex>
+#include <QString>
 
-class CollectionTreeViewSimple;
+class CollectionTreeItem;
 class CollectionTreeItemModel;
+class CollectionTreeView;
 
-namespace Amarok { class PrettyTreeView; }
+class KSqueezedTextLabel;
 
 class TrackSelectWidget: public KVBox
 {
@@ -36,15 +37,20 @@ class TrackSelectWidget: public KVBox
         TrackSelectWidget( QWidget* parent );
         ~TrackSelectWidget();
 
+        void setData( const Meta::DataPtr& );
+
     signals:
         void selectionChanged( const Meta::DataPtr& );
 
     private slots:
-        void recvNewSelection( const QModelIndex& );
+        void recvNewSelection( CollectionTreeItem* );
 
     private:
-        CollectionTreeViewSimple* m_view;
+        CollectionTreeView* m_view;
         CollectionTreeItemModel* m_model;
+        KSqueezedTextLabel* m_label;
+
+        const QString dataToLabel( const Meta::DataPtr& ) const;
 };
 
 #endif // AMAROK_TRACK_SELECT_WIDGET_H

@@ -81,12 +81,9 @@ ConstraintFactory::ConstraintFactory()
     m_registryIds[2] = r;
     m_registryNames[r->m_name] = r;
 
-    /*
-     * This is far from being implemented, so comment out for now. -- sth
     r = ConstraintTypes::Checkpoint::registerMe();
     m_registryIds[4] = r;
     m_registryNames[r->m_name] = r;
-    */
 
     // ADD NEW CONSTRAINT TYPES HERE FOLLOWING SAME PATTERN (DON'T FORGET TO INCREMENT ID)
 }

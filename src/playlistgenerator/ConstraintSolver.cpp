@@ -340,6 +340,9 @@ APG::ConstraintSolver::mutateByVote( const double temperature )
                 changeFailed = true;
             }
             break;
+        case ConstraintNode::OperationSwap:
+            satisfactionDelta = m_constraintTreeRoot->deltaS_swap( m_solvedPlaylist, vote->place, vote->other );
+            break;
     }
 
     if ( changeFailed )
@@ -352,18 +355,22 @@ APG::ConstraintSolver::mutateByVote( const double temperature )
     // make the change if it's acceptable
     if ( decisionFactor < acceptance ) {
         switch ( vote->operation ) {
-        case ConstraintNode::OperationInsert:
-            m_constraintTreeRoot->insertTrack( m_solvedPlaylist, vote->track, vote->place );
-            m_solvedPlaylist.insert( vote->place, vote->track );
-            break;
-        case ConstraintNode::OperationReplace:
-            m_constraintTreeRoot->replaceTrack( m_solvedPlaylist, vote->track, vote->place );
-            m_solvedPlaylist.replace( vote->place, vote->track );
-            break;
-        case ConstraintNode::OperationDelete:
-            m_constraintTreeRoot->deleteTrack( m_solvedPlaylist, vote->place );
-            m_solvedPlaylist.removeAt( vote->place );
-            break;
+            case ConstraintNode::OperationInsert:
+                m_constraintTreeRoot->insertTrack( m_solvedPlaylist, vote->track, vote->place );
+                m_solvedPlaylist.insert( vote->place, vote->track );
+                break;
+            case ConstraintNode::OperationReplace:
+                m_constraintTreeRoot->replaceTrack( m_solvedPlaylist, vote->track, vote->place );
+                m_solvedPlaylist.replace( vote->place, vote->track );
+                break;
+            case ConstraintNode::OperationDelete:
+                m_constraintTreeRoot->deleteTrack( m_solvedPlaylist, vote->place );
+                m_solvedPlaylist.removeAt( vote->place );
+                break;
+            case ConstraintNode::OperationSwap:
+                m_constraintTreeRoot->swapTracks( m_solvedPlaylist, vote->place, vote->other );
+                m_solvedPlaylist.swap( vote->place, vote->other );
+                break;
         }
         m_playlistEntropy -= log( acceptance );
         return satisfactionDelta;

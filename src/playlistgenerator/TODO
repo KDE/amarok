@@ -7,7 +7,6 @@ Backend:
 
 Constraints:
 - fix preventduplicates: the delta functions are kinda broken
-- checkpoint constraint
 - last.fm or echonest similar artists constraint
 - proper handling of empty fingerprints in SimilarityChain
 

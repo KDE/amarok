@@ -209,7 +209,6 @@ set(libbrowserframework_SRCS
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
-    browsers/CollectionTreeViewSimple.cpp
     browsers/InfoProxy.cpp
     browsers/SingleCollectionTreeItemModel.cpp
 )
@@ -527,7 +526,7 @@ set(apg_SRCS
     playlistgenerator/TreeController.cpp
     playlistgenerator/TreeModel.cpp
     playlistgenerator/constraints/Checkpoint.cpp
-    playlistgenerator/constraints/CheckpointHandlers.cpp
+    playlistgenerator/constraints/CheckpointSupport.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp

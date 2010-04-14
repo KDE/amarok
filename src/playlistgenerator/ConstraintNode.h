@@ -55,11 +55,12 @@ class ConstraintNode : public QObject {
     Q_OBJECT
     public:
         enum NodeType { ConstraintGroupType, ConstraintType };
-        enum Operations { OperationInsert, OperationReplace, OperationDelete };
+        enum Operations { OperationInsert, OperationReplace, OperationDelete, OperationSwap };
 
         typedef struct {
             Operations operation;
             int place;
+            int other; // for swaps
             Meta::TrackPtr track;
         } Vote;
 
