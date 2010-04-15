@@ -102,7 +102,7 @@ X-KDE-Library=amarok_collection-mysqlecollection
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=54
+X-KDE-Amarok-framework-version=55
 X-KDE-Amarok-name=mysqle-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

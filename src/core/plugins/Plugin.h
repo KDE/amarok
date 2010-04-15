@@ -33,7 +33,7 @@ class QWidget;
 namespace Plugins
 {
     /** Bump this number whenever the plugin framework gets incompatible with older versions */
-    static const int PluginFrameworkVersion = 54;
+    static const int PluginFrameworkVersion = 55;
 
     class PluginConfig;
 
