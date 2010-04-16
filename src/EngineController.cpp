@@ -41,6 +41,7 @@
 #include "playlist/PlaylistActions.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/plugins/PluginManager.h"
+#include "core/playlists/PlaylistFormat.h"
 
 #include <KFileItem>
 #include <KIO/Job>

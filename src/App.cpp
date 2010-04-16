@@ -40,6 +40,7 @@
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "core/playlists/Playlist.h"
+#include "core/playlists/PlaylistFormat.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -93,10 +94,6 @@
 #include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-
-#ifdef DESKTOP_UI
-QMutex Debug::mutex;
-#endif
 
 int App::mainThreadId = 0;
 

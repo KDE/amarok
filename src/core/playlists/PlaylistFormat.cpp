@@ -1,10 +1,13 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ *           (c) 2010 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
@@ -14,37 +17,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_META_PLAYLISTFILESUPPORT_H
-#define AMAROK_META_PLAYLISTFILESUPPORT_H
+#include "core/playlists/PlaylistFormat.h"
 
-#include "shared/amarok_export.h"
-#include "core/meta/Meta.h"
-#include "core-impl/playlists/types/file/PlaylistFile.h"
-
-#include <QString>
-#include <QTextStream>
+#include "core/support/Amarok.h"
 
 #include <KUrl>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
 
-class QFile;
+#include <QString>
 
-namespace Playlists
+namespace Playlists {
+
+PlaylistFormat
+getFormat( const KUrl &path )
 {
-    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued );
+    const QString ext = Amarok::extension( path.fileName() );
 
-    /* HACK:
-     * the next two functions are needed to support some services that have no other way
-     * of presenting data to the user than wrapping the url to a playlist in a track.
-     */
-    bool canExpand( Meta::TrackPtr track );
-    PlaylistPtr expand( Meta::TrackPtr track );
+    if( ext == "m3u" || ext == "m3u8" ) return M3U; //m3u8 is M3U in UTF8
+    if( ext == "pls" ) return PLS;
+    if( ext == "ram" ) return RAM;
+    if( ext == "smil") return SMIL;
+    if( ext == "asx" || ext == "wax" ) return ASX;
+    if( ext == "xml" ) return XML;
+    if( ext == "xspf" ) return XSPF;
 
-    AMAROK_EXPORT KUrl newPlaylistFilePath( const QString& fileExtension );
-
+    return Unknown;
 }
 
-#endif
+bool
+isPlaylist( const KUrl &path )
+{
+    return ( getFormat( path ) != Unknown );
+}
+
+}

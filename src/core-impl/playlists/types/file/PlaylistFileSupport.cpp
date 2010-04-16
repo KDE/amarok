@@ -16,6 +16,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
@@ -33,28 +34,6 @@
 #include <QFileInfo>
 
 namespace Playlists {
-
-PlaylistFormat
-getFormat( const KUrl &path )
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" || ext == "m3u8" ) return M3U; //m3u8 is M3U in UTF8
-    if( ext == "pls" ) return PLS;
-    if( ext == "ram" ) return RAM;
-    if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" ) return ASX;
-    if( ext == "xml" ) return XML;
-    if( ext == "xspf" ) return XSPF;
-
-    return Unknown;
-}
-
-bool
-isPlaylist( const KUrl &path )
-{
-    return ( getFormat( path ) != Unknown );
-}
 
 PlaylistFilePtr
 loadPlaylistFile( const KUrl &url )
@@ -142,7 +121,7 @@ loadPlaylistFile( const KUrl &url )
         }
     }
 
-    PlaylistFormat format = getFormat( fileToLoad );
+    PlaylistFormat format = Playlists::getFormat( fileToLoad );
     PlaylistFile *playlist = 0;
     switch( format )
     {
@@ -174,7 +153,7 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
 bool
 exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued )
 {
-    PlaylistFormat format = getFormat( path );
+    PlaylistFormat format = Playlists::getFormat( path );
     bool result = false;
     PlaylistFilePtr playlist;
 

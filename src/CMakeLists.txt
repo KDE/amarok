@@ -10,6 +10,7 @@ if(APPLE)
     set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
 endif(APPLE)
 
+add_subdirectory( core )
 # add_subdirectory( playlistmanager )
 add_subdirectory( core-impl/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
@@ -288,6 +289,7 @@ set(core_SRCS
     core-impl/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     core/playlists/Playlist.cpp
+    core/playlists/PlaylistFormat.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core/statistics/StatisticsProvider.cpp
     core/playlists/PlaylistProvider.cpp
@@ -637,6 +639,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
+    ../shared/Debug.cpp
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp

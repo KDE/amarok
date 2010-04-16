@@ -20,6 +20,7 @@
 #include "TestPlaylistFileSupport.h"
 #include "config-amarok-test.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/playlists/PlaylistFormat.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>

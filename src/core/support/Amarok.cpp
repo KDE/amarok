@@ -19,7 +19,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/playlists/PlaylistFormat.h"
 
 
 #include <QDateTime>

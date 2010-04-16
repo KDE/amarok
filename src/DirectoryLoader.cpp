@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/playlists/PlaylistFormat.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 

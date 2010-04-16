@@ -21,7 +21,6 @@
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/collections/QueryMaker.h"
-#include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
 #include <QObject>
 #include <QSharedData>
@@ -32,6 +31,9 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 
+namespace Playlists {
+class UserPlaylistProvider;
+}
 
 namespace Collections
 {

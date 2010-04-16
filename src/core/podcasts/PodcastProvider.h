@@ -18,6 +18,7 @@
 #define PODCASTPROVIDER_H
 
 #include "core/collections/Collection.h"
+#include "core/playlists/PlaylistProvider.h"
 #include "core/podcasts/PodcastMeta.h"
 
 #include <kio/jobclasses.h>
