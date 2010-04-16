@@ -336,14 +336,22 @@ EngineController::play() //SLOT
 
     resetFadeout();
 
-    if ( state() == Phonon::PausedState )
+    if( state() == Phonon::PausedState )
     {
-        m_media->play();
+        if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast does not support resuming, so we restart it.
+        {
+            debug() << "This is a stream that cannot be resumed after pausing. Restarting instead.";
+            play( m_currentTrack );
+            return;
+        }
+        else
+        {
+            m_media->play();
+            return;
+        }
     }
-    else
-    {
-        The::playlistActions()->play();
-    }
+
+    The::playlistActions()->play();
 }
 
 void
@@ -493,13 +501,6 @@ EngineController::playUrl( const KUrl &url, uint offset )
 void
 EngineController::pause() //SLOT
 {
-    if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast doesn't support pausing, so we stop.
-    {
-        debug() << "This is a stream that cannot be paused. Stopping instead.";
-        stop();
-        return;
-    }
-
     m_media->pause();
 }
 

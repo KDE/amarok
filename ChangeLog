@@ -3,6 +3,14 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
+VERSION 2.3.1
+  CHANGES:
+
+  BUGFIXES:
+    * Better fix for pausing SHOUTcast streams, without advancing to the next
+      track after resume. (BR 192878)
+
+
 VERSION 2.3.1-Beta 1
   FEATURES:
      * Persistant Queue Saving: The playlist queue is now saved when Amarok
