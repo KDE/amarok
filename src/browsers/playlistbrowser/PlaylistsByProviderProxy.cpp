@@ -168,7 +168,7 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
             RoleVariantMap groupData =
                     m_groupMaps.value( parent.row() ).value( parent.column() );
             bool result = !originalIndexes.isEmpty();
-            foreach( QModelIndex originalIndex, originalIndexes )
+            foreach( const QModelIndex& originalIndex, originalIndexes )
             {
                 QModelIndex groupedColumnIndex =
                         originalIndex.sibling( originalIndex.row(), m_groupedColumn );

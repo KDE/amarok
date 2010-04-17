@@ -588,7 +588,7 @@ PlaylistBrowserNS::DynamicModel::removeActive()
     QDomElement toRemove = m_playlistElements.takeAt( m_activePlaylist );
     m_playlistHash.remove( Dynamic::BiasedPlaylist::nameFromXml( toRemove ) );
     debug() << "size of m_playlistElements:" <<  m_playlistElements.size();
-    foreach( QDomElement e, m_playlistElements )
+    foreach( const QDomElement& e, m_playlistElements )
     {
         debug() << "m_playlistElements:" << e.attribute( "title" );
     }

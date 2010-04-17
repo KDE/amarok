@@ -414,7 +414,7 @@ FileView::selectedItems() const
     if( indices.isEmpty() )
         return items;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         items << item;
@@ -433,7 +433,7 @@ FileView::tracksForEdit() const
     if( indices.isEmpty() )
         return tracks;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
@@ -469,7 +469,7 @@ FileView::slotDelete()
     
     QList<KUrl> urls;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         debug() << "file path: " << file.url();
