@@ -25,7 +25,10 @@
 
 #include "core/support/Debug.h"
 
-#include <QtGui>
+#include <QMenu>
+#include <QMenuBar>
+#include <QSignalMapper>
+#include <QWhatsThis>
 
 APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
             : QDialog( 0 )
