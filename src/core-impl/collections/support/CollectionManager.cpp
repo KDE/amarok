@@ -463,6 +463,7 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
+    //TODO: create specific TrackProviders for these:
     if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
         url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );

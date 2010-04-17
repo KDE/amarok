@@ -16,14 +16,18 @@
 
 #include "TrackForUrlWorker.h"
 
-Amarok::TrackForUrlWorker::TrackForUrlWorker ( const KUrl &url ) : ThreadWeaver::Job(), mUrl ( url )
+Amarok::TrackForUrlWorker::TrackForUrlWorker( const KUrl &url )
+    : ThreadWeaver::Job()
+    , m_url( url )
 {
-    connect ( this, SIGNAL ( done ( ThreadWeaver::Job* ) ), SLOT ( completeJob() ) );
+    connect( this, SIGNAL(done( ThreadWeaver::Job * )), SLOT( completeJob()) );
 }
 
-Amarok::TrackForUrlWorker::TrackForUrlWorker( const QString &url ) : ThreadWeaver::Job(), mUrl ( KUrl ( url ) )
+Amarok::TrackForUrlWorker::TrackForUrlWorker( const QString &url )
+    : ThreadWeaver::Job()
+    , m_url( KUrl( url ) )
 {
-    connect ( this, SIGNAL ( done ( ThreadWeaver::Job* ) ), SLOT ( completeJob() ) );
+    connect( this, SIGNAL(done( ThreadWeaver::Job * )), SLOT( completeJob()) );
 }
 
 Amarok::TrackForUrlWorker::~TrackForUrlWorker()
@@ -32,6 +36,6 @@ Amarok::TrackForUrlWorker::~TrackForUrlWorker()
 void
 Amarok::TrackForUrlWorker::completeJob()
 {
-    emit ( finishedLookup ( mTrack ) );
+    emit( finishedLookup( m_track ) );
     deleteLater();
 }

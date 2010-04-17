@@ -17,6 +17,8 @@
 #ifndef AMAROK_METAPROXY_H
 #define AMAROK_METAPROXY_H
 
+#include "MetaProxyWorker.h"
+
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
 
@@ -82,6 +84,7 @@ namespace MetaProxy
             virtual void setDiscNumber( int discNumber );
 
             virtual qint64 length() const;
+            virtual void setLength( qint64 length );
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
@@ -110,11 +113,12 @@ namespace MetaProxy
 		 * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
 		 * passed to lookupTrack(TrackProvider*) for the real track.
 		 */
-		Track( const KUrl &url, bool awaitLookupNotification);
+        Track( const KUrl &url, bool awaitLookupNotification );
+
 		/**
 		 * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
 		 */
-		void lookupTrack(Collections::TrackProvider *provider);
+        void lookupTrack( Collections::TrackProvider *provider );
 
         /**
          * MetaProxy will update the proxy with the track.
@@ -123,7 +127,7 @@ namespace MetaProxy
 
         private:
 			void init( const KUrl &url, bool awaitLookupNotification );
-            Private * const d;
+            Private *const d;
     };
 
 }

@@ -25,14 +25,16 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
     public:
-        AmpacheTrackForUrlWorker( const KUrl &url, MetaProxy::TrackPtr track, const QString &server, const QString &sessionId, ServiceBase* service);
+        AmpacheTrackForUrlWorker( const KUrl &url, MetaProxy::TrackPtr track,
+                                  const QString &server, const QString &sessionId,
+                                  ServiceBase *service);
         ~AmpacheTrackForUrlWorker();
-        virtual void run ();
+        virtual void run();
         void parseTrack( const QString &xml );
     signals:
         void authenticationNeeded();
     private:
-        MetaProxy::TrackPtr mProxy;
+        MetaProxy::TrackPtr m_proxy;
         int m_urlTrackId;
         int m_urlAlbumId;
         int m_urlArtistId;
@@ -44,7 +46,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         QString m_server;
         QString m_sessionId;
 
-        ServiceBase* m_service;
+        ServiceBase *m_service;
 };
 
 namespace Collections {
@@ -59,11 +61,12 @@ class AmpacheServiceCollection : public ServiceCollection
     Q_OBJECT
 
 public:
-    AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId );
+    AmpacheServiceCollection( ServiceBase *service, const QString &server,
+                              const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
 
-    virtual QueryMaker* queryMaker();
+    virtual QueryMaker *queryMaker();
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
@@ -76,16 +79,13 @@ signals:
 
 public slots:
     void slotAuthenticationNeeded();
-    void slotLookupComplete( const Meta::TrackPtr& );
+    void slotLookupComplete( const Meta::TrackPtr & );
 
 private:
-    /*void parseAlbum( const QString &xml );
-    void parseArtist( const QString &xml );*/
-
     QString m_server;
     QString m_sessionId;
 
-    AmpacheTrackForUrlWorker * m_trackForUrlWorker;
+    AmpacheTrackForUrlWorker *m_trackForUrlWorker;
 };
 
 } //namespace Collections

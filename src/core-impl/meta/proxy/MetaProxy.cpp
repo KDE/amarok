@@ -17,6 +17,7 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
 #include "core-impl/meta/proxy/MetaProxy_p.moc"
+#include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include "core/capabilities/EditCapability.h"
 
@@ -27,6 +28,7 @@
 #include <QTimer>
 
 #include <KSharedPtr>
+#include <threadweaver/ThreadWeaver.h>
 
 using namespace MetaProxy;
 
@@ -83,18 +85,20 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 	d->url = url;
     d->proxy = this;
     d->cachedLength = 0;
-
-	if( !awaitLookupNotification )
-    {
-        QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), d, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-        QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), d, SLOT( slotNewCollection( Collections::Collection* ) ) );
-    }
-
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( d ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( d ) );
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( d ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
+
+    if( !awaitLookupNotification )
+    {
+        Worker *worker = new Worker( d->url );
+        QObject::connect( worker, SIGNAL(finishedLookup( const Meta::TrackPtr & )),
+                d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
+
+        ThreadWeaver::Weaver::instance()->enqueue( worker );
+    }
 }
 
 MetaProxy::Track::~Track()
@@ -345,6 +349,12 @@ MetaProxy::Track::length() const
     return d->cachedLength;
 }
 
+void
+MetaProxy::Track::setLength( qint64 length )
+{
+    d->cachedLength = length;
+}
+
 int
 MetaProxy::Track::filesize() const
 {
@@ -424,7 +434,7 @@ MetaProxy::Track::inCollection() const
     return false;
 }
 
-Collections::Collection*
+Collections::Collection *
 MetaProxy::Track::collection() const
 {
     if( d->realTrack )
@@ -450,7 +460,11 @@ MetaProxy::Track::unsubscribe( Meta::Observer *observer )
 void
 MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 {
-	d->slotNewTrackProvider( provider );
+    if( provider->possiblyContainsTrack( d->url ) )
+    {
+        Meta::TrackPtr track = provider->trackForUrl( d->url );
+        d->slotUpdateTrack( track );
+    }
 }
 
 void
@@ -470,7 +484,7 @@ MetaProxy::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     return false;
 }
 
-Capabilities::Capability*
+Capabilities::Capability *
 MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( d->realTrack )
@@ -484,7 +498,7 @@ MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type
 bool
 MetaProxy::Track::operator==( const Meta::Track &track ) const
 {
-    const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track*>( &track );
+    const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track *>( &track );
     if( proxy && d->realTrack )
         return d->realTrack == proxy->d->realTrack;
     else if( proxy )

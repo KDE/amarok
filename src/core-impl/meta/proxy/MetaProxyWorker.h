@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2012 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,44 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRACKFORURLWORKER_H
-#define TRACKFORURLWORKER_H
+#ifndef METAPROXY_METAPROXYWORKER_H
+#define METAPROXY_METAPROXYWORKER_H
 
-#include "core/support/Amarok.h"
-#include "shared/amarok_export.h"
-#include "core/meta/Meta.h"
+#include <core/collections/support/TrackForUrlWorker.h>
+#include <core/collections/Collection.h>
 
-#include <KUrl>
+namespace MetaProxy {
 
-#include <threadweaver/Job.h>
-
-namespace Amarok
-{
-/**
- * Derive from this class and implement the run() method to set mTrack.
- * @author Casey Link
- */
-class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
+class Worker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
-public:
-    TrackForUrlWorker( const KUrl &url );
-    TrackForUrlWorker( const QString &url );
-    ~TrackForUrlWorker();
+    public:
+        explicit Worker( const KUrl &url );
 
-    virtual void run() = 0;
-signals:
-    void finishedLookup( const Meta::TrackPtr &track );
+        //TrackForUrlWorker virtual methods
+        virtual void run();
 
-protected:
-    KUrl m_url;
-    Meta::TrackPtr m_track;
-
-private slots:
-    void completeJob();
-
+    private slots:
+        void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
+        void slotNewCollection( Collections::Collection *newCollection );
 
 };
 
-}
-#endif // TRACKFORURLWORKER_H
+} // namespace MetaProxy
+
+#endif // METAPROXY_METAPROXYWORKER_H

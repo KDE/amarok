@@ -27,7 +27,9 @@
 
 using namespace Collections;
 
-AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId )
+AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase *service,
+                                                    const QString &server,
+                                                    const QString &sessionId )
     : ServiceCollection( service, "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
     , m_sessionId( sessionId )
@@ -58,7 +60,7 @@ AmpacheServiceCollection::prettyName() const
 }
 
 bool
-AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
+AmpacheServiceCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     return url.url().contains( m_server );
 }
@@ -70,77 +72,82 @@ AmpacheServiceCollection::slotAuthenticationNeeded()
 }
 
 Meta::TrackPtr
-AmpacheServiceCollection::trackForUrl( const KUrl & url )
+AmpacheServiceCollection::trackForUrl( const KUrl &url )
 {
-    MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
-    MetaProxy::TrackPtr trackptr(ptrack);
-    AmpacheTrackForUrlWorker * worker =  new AmpacheTrackForUrlWorker(url, trackptr, m_server, m_sessionId, service() );
-//     connect( worker, SIGNAL( finishedLookup ( const Meta::TrackPtr& ) ), this,
-//              SLOT( slotLookupComplete( const Meta::TrackPtr& ) ) );
-    connect( worker, SIGNAL( authenticationNeeded() ), this,
-             SLOT( slotAuthenticationNeeded() ) );
+    MetaProxy::Track *ptrack = new MetaProxy::Track( url.url(), true );
+    MetaProxy::TrackPtr trackptr( ptrack );
+    AmpacheTrackForUrlWorker *worker = new AmpacheTrackForUrlWorker( url, trackptr,
+                                                                     m_server,
+                                                                     m_sessionId,
+                                                                     service() );
+    connect( worker, SIGNAL(authenticationNeeded()), SLOT(slotAuthenticationNeeded()) );
     ThreadWeaver::Weaver::instance()->enqueue( worker );
 
     return Meta::TrackPtr::staticCast( trackptr );
 }
+
 void AmpacheServiceCollection::slotLookupComplete( const Meta::TrackPtr& )
 {
 }
 
 void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 {
-//     DEBUG_BLOCK
-
-//      debug() << "Received track response: " << xml;
-
-     //so lets figure out what we got here:
+    //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( xml );
-    QDomElement root = doc.firstChildElement("root");
-    QDomElement song = root.firstChildElement("song");
+    QDomElement root = doc.firstChildElement( "root" );
+    QDomElement song = root.firstChildElement( "song" );
 
-    m_urlTrackId = song.attribute( "id", "0").toInt();
+    m_urlTrackId = song.attribute( "id", "0" ).toInt();
 
-    QDomElement element = song.firstChildElement("title");
+    QDomElement element = song.firstChildElement( "title" );
 
     QString title = element.text();
     if ( title.isEmpty() ) title = "Unknown";
 
-    element = song.firstChildElement("url");
+    element = song.firstChildElement( "url" );
 
     m_urlTrack = new Meta::AmpacheTrack( title, m_service );
     Meta::TrackPtr trackPtr( m_urlTrack );
 
-    //debug() << "Adding track: " <<  title;
     m_urlTrack->setUidUrl( element.text() );
     m_urlTrack->setId( m_urlTrackId );
 
-    element = song.firstChildElement("time");
+    element = song.firstChildElement( "time" );
     m_urlTrack->setLength( element.text().toInt() * 1000 );
 
-    element = song.firstChildElement("track");
+    element = song.firstChildElement( "track" );
     m_urlTrack->setTrackNumber( element.text().toInt() );
 
-    QDomElement albumElement = song.firstChildElement("album");
-    //m_urlAlbumId = albumElement.attribute( "id", "0").toInt();
+    QDomElement albumElement = song.firstChildElement( "album" );
+    m_urlAlbumId = albumElement.attribute( "id", "0" ).toInt();
 
-    Meta::AmpacheAlbum * album = new Meta::AmpacheAlbum( albumElement.text() );
+    Meta::AmpacheAlbum *album = new Meta::AmpacheAlbum( albumElement.text() );
 
-    QDomElement artElement = song.firstChildElement("art");
+    QDomElement artElement = song.firstChildElement( "art" );
     album->setCoverUrl( artElement.text() );
 
     album->addTrack( trackPtr );
     m_urlTrack->setAlbumPtr( Meta::AlbumPtr( album ) );
 
-    QDomElement artistElement = song.firstChildElement("artist");
-    Meta::ServiceArtist * artist = new Meta::ServiceArtist( artistElement.text() );
+    QDomElement artistElement = song.firstChildElement( "artist" );
+    Meta::ServiceArtist *artist = new Meta::ServiceArtist( artistElement.text() );
 
     Meta::ArtistPtr artistPtr( artist );
     m_urlTrack->setArtist( artistPtr );
     album->setAlbumArtist( artistPtr );
 }
 
-AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker(const KUrl &url, MetaProxy::TrackPtr track, const QString &server, const QString &sessionId, ServiceBase* service) : Amarok::TrackForUrlWorker(url), mProxy(track), m_server(server), m_sessionId(sessionId), m_service(service)
+AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker( const KUrl &url,
+                                                    MetaProxy::TrackPtr track,
+                                                    const QString &server,
+                                                    const QString &sessionId,
+                                                    ServiceBase *service )
+    : Amarok::TrackForUrlWorker( url )
+    , m_proxy( track )
+    , m_server( server )
+    , m_sessionId( sessionId )
+    , m_service( service )
 {
 }
 
@@ -150,8 +157,6 @@ AmpacheTrackForUrlWorker::~AmpacheTrackForUrlWorker()
 void
 AmpacheTrackForUrlWorker::run()
 {
-    // DEBUG_BLOCK;
-
     m_urlTrack = 0;
     m_urlAlbum = 0;
     m_urlArtist = 0;
@@ -162,9 +167,9 @@ AmpacheTrackForUrlWorker::run()
 
     //send url_to_song to Ampache
 
-    QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
-    . arg(  m_server,  m_sessionId,  QUrl::toPercentEncoding( mUrl.url() ) );
-    //     debug() << "request url: " << requestUrl;
+    QString requestUrl =
+            QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3" )
+                    .arg( m_server, m_sessionId, QUrl::toPercentEncoding( m_url.url() ) );
 
     QNetworkRequest req( requestUrl );
     QNetworkReply *reply = The::networkAccessManager()->get( req );
@@ -178,7 +183,7 @@ AmpacheTrackForUrlWorker::run()
         }
     }
     parseTrack( reply->readAll() );
-    mTrack = Meta::TrackPtr( m_urlTrack );
-    mProxy->updateTrack( mTrack );
+    m_track = Meta::TrackPtr( m_urlTrack );
+    m_proxy->updateTrack( m_track );
     reply->deleteLater();
 }

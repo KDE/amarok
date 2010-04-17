@@ -233,8 +233,7 @@ XSPFPlaylist::trackCount() const
 Meta::TrackList
 XSPFPlaylist::tracks()
 {
-    //If you do not load before, m_tracks
-    //can be empty before usage.
+    //If you do not load, m_tracks can be empty before usage.
     triggerTrackLoad();
 
     return m_tracks;
@@ -251,76 +250,14 @@ XSPFPlaylist::triggerTrackLoad()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-        Meta::TrackPtr trackPtr;
-        if( !track.identifier.isEmpty() )
-            trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
-        else
-            trackPtr = CollectionManager::instance()->trackForUrl( track.location );
-        if( trackPtr )
-        {
-            /**
-             * NOTE: If this is a MetaProxy::Track, it probably isn't playable yet,
-             *       but that's okay. However, it's not a good idea to get another
-             *       one from the same provider, since the proxy probably means that
-             *       making one involves quite a bit of work.
-             *         - Andy Coder <andrew.coder@gmail.com>
-             */
-            if( !trackPtr->isPlayable() && ( typeid( * trackPtr.data() ) != typeid( MetaProxy::Track ) ) )
-                trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
-        }
-
-        if( trackPtr )
-        {
-            if( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
-            {
-                MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
-                if ( streamTrack )
-                {
-                    streamTrack->setTitle( track.title );
-                    streamTrack->setAlbum( track.album );
-                    streamTrack->setArtist( track.creator );
-                }
-            }
-            else if( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
-            {
-                Meta::TimecodeTrack * timecodeTrack =
-                        dynamic_cast<Meta::TimecodeTrack *>( trackPtr.data() );
-                if( timecodeTrack )
-                {
-                    timecodeTrack->beginMetaDataUpdate();
-                    timecodeTrack->setTitle( track.title );
-                    timecodeTrack->setAlbum( track.album );
-                    timecodeTrack->setArtist( track.creator );
-                    timecodeTrack->endMetaDataUpdate();
-                }
-            }
-
-            m_tracks << trackPtr;
-        }
-
-
-        // why do we need this? sqlplaylist is not doing this
-        // we don't want (probably) unplayable tracks
-        // and it causes problems for me (DanielW) as long
-        // amarok not respects Track::isPlayable()
-        /*else {
-
-            MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
-            {
-                //Fill in values from xspf..
-                QVariantMap map;
-                map.insert( Meta::Field::TITLE, track.title );
-                map.insert( Meta::Field::ALBUM, track.album );
-                map.insert( Meta::Field::ARTIST, track.creator );
-                map.insert( Meta::Field::LENGTH, track.duration );
-                map.insert( Meta::Field::TRACKNUMBER, track.trackNum );
-                map.insert( Meta::Field::URL, track.location );
-                Meta::Field::updateTrack( proxyTrack, map );
-            }
-            m_tracks << Meta::TrackPtr( proxyTrack );
-    //         m_tracks << CollectionManager::instance()->trackForUrl( track.location );
-        }*/
-
+       MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
+       //Fill in values from xspf..
+       proxyTrack->setName( track.title );
+       proxyTrack->setAlbum( track.album );
+       proxyTrack->setArtist( track.creator );
+       proxyTrack->setLength( track.duration );
+       proxyTrack->setTrackNumber( track.trackNum );
+       m_tracks << Meta::TrackPtr( proxyTrack );
     }
 
     m_tracksLoaded = true;
