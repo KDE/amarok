@@ -25,7 +25,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication app( argc, argv );
+    QApplication app( argc, argv, false );
 
     QStringList allowedBindings;
     allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.uitools" << "qt.network";
