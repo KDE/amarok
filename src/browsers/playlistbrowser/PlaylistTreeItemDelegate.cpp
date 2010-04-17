@@ -99,16 +99,18 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     expanderOption.rect.setWidth( iconWidth );
     if( m_view->model()->hasChildren( index ) )
-        expanderOption.state |= QStyle::State_Children;
-    if( m_view->isExpanded( index ) )
     {
-        expanderOption.state |= QStyle::State_Open;
-        //when expanded the sibling indicator (a vertical line down) goes nowhere
-        expanderOption.state &= ~QStyle::State_Sibling;
+        if( m_view->isExpanded( index ) )
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowDown, &expanderOption,
+                                                  painter );
+        }
+        else
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowRight, &expanderOption,
+                                                  painter );
+        }
     }
-
-    QApplication::style()->drawPrimitive( QStyle::PE_IndicatorBranch, &expanderOption, painter );
-
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data(
             PlaylistBrowserNS::MetaPlaylistModel::ByLineRole ).toString();
