@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 
 #include <QtGlobal>
-#include <QtGui>
+
 #include <math.h>
 
 Constraint*

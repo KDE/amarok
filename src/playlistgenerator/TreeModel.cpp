@@ -23,7 +23,6 @@
 
 #include "core/support/Debug.h"
 
-#include <QtGui>
 
 APG::TreeModel::TreeModel( ConstraintNode* r, QObject* p ) : QAbstractItemModel( p ), m_rootNode( r )
 {

@@ -25,7 +25,6 @@
 #include "core/support/Debug.h"
 
 #include <QtGlobal>
-#include <QtGui>
 
 Constraint*
 ConstraintTypes::Checkpoint::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

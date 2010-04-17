@@ -23,27 +23,27 @@
 
 #include <QFile>
 #include <QtDebug>
+
 #include <kmimetype.h>
 
 #include <fileref.h>
 #include <tfile_helper.h>
 
+#include <aifffile.h>
+#include <asffile.h>
+#include <audiblefile.h>
 #include <flacfile.h>
+#include <mp4file.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
+#include <realmediafile.h>
 #include <speexfile.h>
 #include <trueaudiofile.h>
 #include <vorbisfile.h>
-#include <wavpackfile.h>
-#include <asffile.h>
-#include <realmediafile.h>
-#include <audiblefile.h>
 #include <wavfile.h>
-#include <aifffile.h>
-#include <realmediafile.h>
-#include <mp4file.h>
+#include <wavpackfile.h>
 
 TagLib::File *MimeFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,

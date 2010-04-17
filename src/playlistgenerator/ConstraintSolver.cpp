@@ -16,8 +16,9 @@
 
 #define DEBUG_PREFIX "APG::ConstraintSolver"
 
-#include "Constraint.h"
 #include "ConstraintSolver.h"
+
+#include "Constraint.h"
 
 #include "core/collections/MetaQueryMaker.h"
 #include "core/meta/Meta.h"

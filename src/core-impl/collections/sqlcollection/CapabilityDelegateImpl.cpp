@@ -32,7 +32,6 @@
 #include "core/capabilities/OrganiseCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
-#include "core/capabilities/OrganiseCapability.h"
 #include "core/capabilities/UpdateCapability.h"
 #include "amarokurls/PlayUrlRunner.h"
 

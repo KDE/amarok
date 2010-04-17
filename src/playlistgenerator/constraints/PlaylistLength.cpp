@@ -27,7 +27,7 @@
 #include <KRandom>
 
 #include <QtGlobal>
-#include <QtGui>
+
 #include <stdlib.h>
 
 Constraint*
