@@ -94,14 +94,27 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->drawPixmap( iconPos,
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
-    QPoint expanderPos( bottomRight - QPoint( iconPadX, iconPadX ) -
-                        QPoint( iconWidth/2, iconHeight/2 ) );
+    QStyleOption expanderOption( option );
     if( isRTL )
-        expanderPos.setX( iconPadX );
-    QPixmap expander = KIcon( "arrow-up" ).pixmap( iconWidth/2, iconHeight/2 );
-    if( m_view->isExpanded( index ) )
-        expander = expander.transformed( QTransform().rotate( 180 ) );
-    painter->drawPixmap( expanderPos, expander );
+        expanderOption.rect.setLeft( iconPadX );
+    else
+        expanderOption.rect.setLeft( option.rect.right() - iconPadX - iconWidth );
+
+    expanderOption.rect.setWidth( iconWidth );
+    //FIXME: CollectionTreeItemModelBase::hasChildren() returns true for root items regardless
+    if( m_view->model()->hasChildren( index ) )
+    {
+        if( m_view->isExpanded( index ) )
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowDown, &expanderOption,
+                                                  painter );
+        }
+        else
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowRight, &expanderOption,
+                                                  painter );
+        }
+    }
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data( CustomRoles::ByLineRole ).toString();
