@@ -30,8 +30,9 @@
 
 #include <KIcon>
 
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QModelIndex>
-#include <QtGui>
 
 PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     : BrowserCategory ( "APG", 0 )
