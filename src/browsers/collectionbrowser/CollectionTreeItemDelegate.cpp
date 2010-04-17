@@ -95,10 +95,17 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     QStyleOption expanderOption( option );
+    QStyle::PrimitiveElement expandedPrimitive;
     if( isRTL )
+    {
+        expandedPrimitive = QStyle::PE_IndicatorArrowLeft;
         expanderOption.rect.setLeft( iconPadX );
+    }
     else
+    {
+        expandedPrimitive = QStyle::PE_IndicatorArrowRight;
         expanderOption.rect.setLeft( option.rect.right() - iconPadX - iconWidth );
+    }
 
     expanderOption.rect.setWidth( iconWidth );
     //FIXME: CollectionTreeItemModelBase::hasChildren() returns true for root items regardless
@@ -111,7 +118,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         }
         else
         {
-            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowRight, &expanderOption,
+            QApplication::style()->drawPrimitive( expandedPrimitive, &expanderOption,
                                                   painter );
         }
     }
