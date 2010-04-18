@@ -321,27 +321,7 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
             return track->isEditable();
 
         case Capabilities::Capability::BoundedPlayback:
-        {
-
-            debug() << "checking for bounded playback for track " << track->prettyName();
-
-            //for now, do a regexp. Considder optimizing later (but this is the least intrusive way to do this for now)
-            //FIXME: this stuff also influences other capabilities, so move into the SqlTrack itself somehow.
-            QString url = track->playableUrl().url();
-            QRegExp rx(".+\\..+:\\d+-\\d+$");
-
-            if ( rx.indexIn( url ) == -1 )
-            {
-                debug() << "this track does not have BoundedPlayback";
-                return false;
-            }
-            else
-            {
-                debug() << "this track _does_ have BoundedPlayback";
-                return false;
-            }
-
-        }
+            return track->isBounded();
 
         default:
             return false;
@@ -403,7 +383,6 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
             return new FindInSourceCapabilityImpl( track );
         case Capabilities::Capability::BoundedPlayback:
             return new Capabilities::BoundedPlaybackCapabilityImpl( track );
-
         default:
             return 0;
     }

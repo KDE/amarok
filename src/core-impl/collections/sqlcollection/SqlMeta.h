@@ -170,6 +170,8 @@ class SqlTrack : public Meta::Track
         void updateData( const QStringList &result, bool forceUpdates = false );
         void setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate );
 
+        bool isBounded() const { return m_bounded; }
+
     protected:
         void commitMetaDataChanges();
         void writeMetaDataToFile();
@@ -227,6 +229,8 @@ class SqlTrack : public Meta::Track
         mutable Meta::LabelList m_labelsCache;
 
         QString m_newUid;
+
+        bool m_bounded;
 };
 
 class SqlArtist : public Meta::Artist

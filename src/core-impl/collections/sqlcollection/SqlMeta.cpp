@@ -190,6 +190,18 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId, forceUpdates );
     //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( Collections::SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
+
+    //figure out if this track is a bounded part of a larger track (a track from a cue file for instance)
+    QRegExp rx(".+\\..+:\\d+-\\d+$");
+
+    if ( rx.indexIn( m_url.url() ) == -1 )
+    {
+        m_bounded = false;
+    }
+    else
+    {
+        m_bounded = false;
+    }
 }
 
 SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
@@ -199,6 +211,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     , m_batchUpdate( false )
     , m_writeAllStatisticsFields( false )
     , m_labelsInCache( false )
+    , m_bounded( false )
 {
     updateData( result, false );
 }
@@ -218,6 +231,11 @@ SqlTrack::isPlayable() const
 bool
 SqlTrack::isEditable() const
 {
+
+    //for now, we do not support editing of tracks from .cue files and the like...
+    if( m_bounded )
+        return false;
+    
     QFile::Permissions p = QFile::permissions( m_url.path() );
     const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
     return m_collection && QFile::exists( m_url.path() ) && editable;
