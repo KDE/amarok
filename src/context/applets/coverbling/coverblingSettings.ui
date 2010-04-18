@@ -10,99 +10,68 @@
     <height>146</height>
    </rect>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="labelAlignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
-   <property name="text">
-    <string>Reflection effect</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>101</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Cover size (pixels)</string>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="coversizeSpin">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>60</y>
-     <width>51</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>10</number>
-   </property>
-   <property name="maximum">
-    <number>500</number>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="reflectionEffectCombo">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>20</y>
-     <width>101</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>None</string>
-    </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Reflection effect</string>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>Plain</string>
-    </property>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="reflectionEffectCombo">
+     <item>
+      <property name="text">
+       <string>None</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Plain</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blurred</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>Blurred</string>
-    </property>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Cover size (pixels)</string>
+     </property>
+    </widget>
    </item>
-  </widget>
-  <widget class="QCheckBox" name="autoJumpChk">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>141</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Auto jump to playing</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="animJumpChk">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>141</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Animated jump</string>
-   </property>
-  </widget>
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="coversizeSpin">
+     <property name="minimum">
+      <number>10</number>
+     </property>
+     <property name="maximum">
+      <number>500</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="autoJumpChk">
+     <property name="text">
+      <string>Auto jump to playing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="animJumpChk">
+     <property name="text">
+      <string>Animated jump</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
