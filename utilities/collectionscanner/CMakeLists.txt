@@ -54,7 +54,9 @@ set( taglib_filetype_resolver_SRCS
 
 ########### next target ###############
 
+if(CMAKE_COMPILER_IS_GNUCXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 qt4_automoc( CollectionScanner.cpp )
 
