@@ -200,7 +200,12 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     }
     else
     {
-        m_bounded = false;
+        m_bounded = true;
+
+        QString timecodeString = m_url.url().split( ':' ).last();
+        QStringList boundsList = timecodeString.split( '-' );
+        m_boundsStart = boundsList.first().toLong();
+        m_boundsEnd = boundsList.last().toLong();
     }
 }
 
@@ -212,6 +217,8 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     , m_writeAllStatisticsFields( false )
     , m_labelsInCache( false )
     , m_bounded( false )
+    , m_boundsStart( 0 )
+    , m_boundsEnd( 0 )
 {
     updateData( result, false );
 }

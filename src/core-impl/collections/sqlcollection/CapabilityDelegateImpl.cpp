@@ -271,18 +271,12 @@ class BoundedPlaybackCapabilityImpl : public Capabilities::BoundedPlaybackCapabi
 
         virtual qint64 startPosition()
         {
-             //get from the track url
-             QString url = m_track->playableUrl().url();
-             QString timecodeString = url.split( ':' ).last();
-             return timecodeString.split( '-' ).first().toLong();
+            return m_track->boundsStart(); 
         }
 
         virtual qint64 endPosition()
         {
-             //get from the track url
-             QString url = m_track->playableUrl().url();
-             QString timecodeString = url.split( ':' ).last();
-             return timecodeString.split( '-' ).last().toLong();
+            return m_track->boundsEnd();
         }
         
     private:
@@ -382,7 +376,11 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( track );
         case Capabilities::Capability::BoundedPlayback:
-            return new Capabilities::BoundedPlaybackCapabilityImpl( track );
+            if( track->isBounded() )
+                return new Capabilities::BoundedPlaybackCapabilityImpl( track );
+            else
+                return 0;
+                
         default:
             return 0;
     }
