@@ -72,7 +72,7 @@ void SongkickApplet::init()
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );
 
-    connect( m_reloadIcon, SIGNAL( activated() ), dataEngine( "amarok-songkick" ), SLOT( update() ) );
+    connect( m_reloadIcon, SIGNAL( clicked() ), dataEngine( "amarok-songkick" ), SLOT( update() ) );
 
     m_songkickProxy = new QGraphicsProxyWidget( this );
     m_songkick = new QTextBrowser;

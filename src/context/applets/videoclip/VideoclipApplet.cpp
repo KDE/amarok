@@ -106,7 +106,7 @@ VideoclipApplet::init()
     langAction->setEnabled( true );
     langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
-    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
+    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
     
     // Create label
