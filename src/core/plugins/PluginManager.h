@@ -65,7 +65,7 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
+        AMAROK_EXPORT static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from service

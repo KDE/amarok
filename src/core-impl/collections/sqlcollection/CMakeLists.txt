@@ -58,6 +58,7 @@ target_link_libraries(amarok-sqlcollection
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${TAGLIB_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+    amarokcore
     amaroklib
 )
 

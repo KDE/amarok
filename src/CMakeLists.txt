@@ -79,15 +79,6 @@ set(likeback_SRCS
 )
 
 #####################################################################
-# PLUGIN
-#####################################################################
-set(libplugin_SRCS
-    core/plugins/Plugin.cpp
-    core/plugins/PluginManager.cpp
-    core/plugins/PluginConfig.cpp
-)
-
-#####################################################################
 # PROXYCOLLECTION
 #####################################################################
 set(libproxycollection_SRCS
@@ -617,7 +608,6 @@ set(amaroklib_LIB_SRCS
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
     ${libtooltip_SRCS}
-    ${libplugin_SRCS}
     ${libproxycollection_SRCS}
     ${libpodcasts_SRCS}
     ${libmediadeviceframework_SRCS}
@@ -809,6 +799,7 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.trackl
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml CollectionDBusHandler.h CollectionDBusHandler CollectionAdaptor CollectionAdaptor)
 
 set( amaroklib_DEPENDS "amarokpud" )
+set( amaroklib_DEPENDS "amarokcore" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
@@ -853,6 +844,7 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
+    amarokcore
     amarokocsclient
 )
 

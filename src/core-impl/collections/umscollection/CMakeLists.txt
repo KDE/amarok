@@ -38,6 +38,7 @@ kde4_add_plugin(amarok_collection-umscollection ${amarok_collection-umscollectio
 	
 target_link_libraries(amarok_collection-umscollection
   amaroklib
+  amarokcore
   amarokpud
   ${KDE4_KDECORE_LIBS}
   ${KDE4_KIO_LIBS}

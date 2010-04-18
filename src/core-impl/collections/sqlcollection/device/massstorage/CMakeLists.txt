@@ -15,6 +15,7 @@ ${amarok_massstorage-device_PART_SRCS})
 target_link_libraries(amarok_massstorage-device
     amarok-sqlcollection
     amaroklib
+    amarokcore
     ${KDE4_KDECORE_LIBS}
     ${KDE4_SOLID_LIBS} )
 
