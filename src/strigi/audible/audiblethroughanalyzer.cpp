@@ -194,8 +194,8 @@ AudibleThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue(contentDescriptionField, description);
 
     analysisResult->addValue(mimeTypeField, "audio/audible");
-    analysisResult->addValue(audioDurationField, readBigEndianUInt32(buf+61));
-    analysisResult->addValue(channelsField, 1);
+    analysisResult->addValue(audioDurationField, (int32_t)readBigEndianUInt32(buf+61));
+    analysisResult->addValue(channelsField, (int32_t)1);
 
     return in;
 }
