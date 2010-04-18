@@ -21,7 +21,7 @@
 #include <kdemacros.h>
 
 #ifndef AMAROK_EXPORT
-# if defined(MAKE_AMAROKLIB_LIB)
+# if defined(MAKE_AMAROKLIB_LIB) || defined(MAKE_AMAROKCORE_LIB)
    /* We are building this library */ 
 #  define AMAROK_EXPORT KDE_EXPORT
 
