@@ -238,7 +238,6 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
 
         virtual void findInSource()
         {
-            DEBUG_BLOCK
             if( m_track->artist() && m_track->album() )
             {
                 QString artist = m_track->artist()->prettyName();
@@ -249,8 +248,6 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
                 url.setPath( "collections" );
                 url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
                 url.appendArg( "levels", "artist-album" );
-
-                debug() << "running url: " << url.url();
                 url.run();
             }
         }
@@ -300,16 +297,19 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
     switch( type )
     {
         case Capabilities::Capability::CustomActions:
-        case Capabilities::Capability::Importable:
-        case Capabilities::Capability::Organisable:
         case Capabilities::Capability::Updatable:
         case Capabilities::Capability::CurrentTrackActions:
-        case Capabilities::Capability::WriteTimecode:
-        case Capabilities::Capability::LoadTimecode:
         case Capabilities::Capability::ReadLabel:
         case Capabilities::Capability::WriteLabel:
         case Capabilities::Capability::FindInSource:
             return true;
+
+        //none of these are currently supported for .cue tracks
+        case Capabilities::Capability::WriteTimecode:
+        case Capabilities::Capability::LoadTimecode:
+        case Capabilities::Capability::Importable:
+        case Capabilities::Capability::Organisable:
+            return !track->isBounded();
 
         case Capabilities::Capability::Editable:
             return track->isEditable();
@@ -330,14 +330,14 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         return 0;
     }
 
-
-
     switch( type )
     {
         case Capabilities::Capability::Editable:
+            if( track->isBounded() ) return 0;
             return new EditCapabilityImpl( track );
 
         case Capabilities::Capability::Importable:
+            if( track->isBounded() ) return 0;
             return new StatisticsCapabilityImpl( track );
 
         case Capabilities::Capability::CustomActions:
@@ -351,6 +351,7 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         }
 
         case Capabilities::Capability::Organisable:
+            if( track->isBounded() ) return 0;
             return new OrganiseCapabilityImpl( track );
 
         case Capabilities::Capability::Updatable:
@@ -361,13 +362,13 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
             QList< QAction * > actions;
             QAction* flag = new BookmarkCurrentTrackPositionAction( track->collection() );
             actions << flag;
-            debug() << "returning bookmarkcurrenttrack action";
             return new Capabilities::CurrentTrackActionsCapability( actions );
         }
         case Capabilities::Capability::WriteTimecode:
+            if( track->isBounded() ) return 0;
             return new TimecodeWriteCapabilityImpl( track );
         case Capabilities::Capability::LoadTimecode:
-            debug() << "creating load timecode capability";
+            if( track->isBounded() ) return 0;
             return new TimecodeLoadCapabilityImpl( track );
         case Capabilities::Capability::ReadLabel:
             return new Capabilities::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
