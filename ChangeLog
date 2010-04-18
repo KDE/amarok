@@ -13,116 +13,116 @@ VERSION 2.3.1
 
 VERSION 2.3.1-Beta 1
   FEATURES:
-     * Persistant Queue Saving: The playlist queue is now saved when Amarok
-       is closed and restored upon startup. (BR 215057)
-     * Automated Playlist Generator: allows smart creation of playlists that
-       match user-specified constraints. Combines the features of "Smart
-       Playlists" in Amarok 1.4 with the Bias system of Amarok 2.0.
-     * It's now possible to mark all episodes in a channel as old or new at once.
-     * New "Upcoming Events" applet, displays future concerts for the artist of
-       the currently playing track. The event info is fetched from Last.fm.
-     * New "Similar Artists" applet, displays a list of artists which are
-       similar to the one currently played. The list is fetched from Last.fm.
-     * The scripting system now offers a new function for detecting that a 
-       track has finished. Patch by Michael MacDonald <mars@antlersoft.com>.
-       (BR 227312)
-     * New "CoverBling" applet, which allows to browse your collection in an 
-       animated 3D view. Thanks to Manu Wagner <manu.wagner@sfr.fr>.
-     * Support for the new System Tray technology from KDE SC 4.4. This adds
-       nice animations and a better looking popup menu to the System Tray.
-       Thanks to Aurelien Gateau <agateau@kde.org> for the patch.
-     * Allow playlist layouts to group tracks by directory. (BR 230594)
-     * Cover fetcher: The UI was improved. Now an icon view is used to display
-       results, with an informational sidebar that may show interesting bits
-       about an image.
-     * Cover fetcher: Added ability to enter custom queries via Yahoo!,
-       Google, or Discogs (in addition to Lasf.Fm). Note the source for
-       automatic cover fetching is still Last.fm only.
+    * Persistant Queue Saving: The playlist queue is now saved when Amarok
+      is closed and restored upon startup. (BR 215057)
+    * Automated Playlist Generator: allows smart creation of playlists that
+      match user-specified constraints. Combines the features of "Smart
+      Playlists" in Amarok 1.4 with the Bias system of Amarok 2.0.
+    * It's now possible to mark all episodes in a channel as old or new at once.
+    * New "Upcoming Events" applet, displays future concerts for the artist of
+      the currently playing track. The event info is fetched from Last.fm.
+    * New "Similar Artists" applet, displays a list of artists which are
+      similar to the one currently played. The list is fetched from Last.fm.
+    * The scripting system now offers a new function for detecting that a 
+      track has finished. Patch by Michael MacDonald <mars@antlersoft.com>.
+      (BR 227312)
+    * New "CoverBling" applet, which allows to browse your collection in an 
+      animated 3D view. Thanks to Manu Wagner <manu.wagner@sfr.fr>.
+    * Support for the new System Tray technology from KDE SC 4.4. This adds
+      nice animations and a better looking popup menu to the System Tray.
+      Thanks to Aurelien Gateau <agateau@kde.org> for the patch.
+    * Allow playlist layouts to group tracks by directory. (BR 230594)
+    * Cover fetcher: The UI was improved. Now an icon view is used to display
+      results, with an informational sidebar that may show interesting bits
+      about an image.
+    * Cover fetcher: Added ability to enter custom queries via Yahoo!,
+      Google, or Discogs (in addition to Lasf.Fm). Note the source for
+      automatic cover fetching is still Last.fm only.
 
   CHANGES:
-     * Allow changing the number of recently added albums in the albums applet.
-     * Magnatune.com store: Added "Home" link to all artist and album pages leading
-       to the Magnatune.com front page.
-     * Magnatune.com store: Improved Magnatune.com front page.
-     * Magnatune.com store: Completely remove option to purhcase single albums as 
-       this is no longer supported by Magnatune.com and the API for doing so will
-       be disabled in the future.
-     * The new file browser now supports "places".
-     * Added "up" and "home" buttons to the new filebrowser.
-     * Items in the breadcrumb navigation bar are now hidden if there is not enough
-       room to show all of them (similar to how it works in Dolphin) (BR 231497)
-     * Improved performance (dramatic in some cases) when filtering the Playlist 
-       (231185).
-     * Remove information that is already displayed elsewhere in the playlist from
-       the playlist tooltips.
-     * Make showing the playlist tooltips a per playlist layout option.
-     * When bookmarking a view in the local collection, also store (and restore)
-       the setings for "Show Cover Art" and "Show Years". (BR 230562)
-     * Allow moodbar files witout the leading '.' (both .<trackfilename>.mood 
-       and <trackfilename>.mood now work) 
-     * Change example SQL command for setting up an external database to remove
-       (sometimes incorrect) host name and possibly fix some random regression in
-       some MySQL versions. (BR 225052)
+    * Allow changing the number of recently added albums in the albums applet.
+    * Magnatune.com store: Added "Home" link to all artist and album pages leading
+      to the Magnatune.com front page.
+    * Magnatune.com store: Improved Magnatune.com front page.
+    * Magnatune.com store: Completely remove option to purhcase single albums as 
+      this is no longer supported by Magnatune.com and the API for doing so will
+      be disabled in the future.
+    * The new file browser now supports "places".
+    * Added "up" and "home" buttons to the new filebrowser.
+    * Items in the breadcrumb navigation bar are now hidden if there is not enough
+      room to show all of them (similar to how it works in Dolphin) (BR 231497)
+    * Improved performance (dramatic in some cases) when filtering the Playlist 
+      (231185).
+    * Remove information that is already displayed elsewhere in the playlist from
+      the playlist tooltips.
+    * Make showing the playlist tooltips a per playlist layout option.
+    * When bookmarking a view in the local collection, also store (and restore)
+      the setings for "Show Cover Art" and "Show Years". (BR 230562)
+    * Allow moodbar files witout the leading '.' (both .<trackfilename>.mood 
+      and <trackfilename>.mood now work) 
+    * Change example SQL command for setting up an external database to remove
+      (sometimes incorrect) host name and possibly fix some random regression in
+      some MySQL versions. (BR 225052)
 
   BUGFIXES:
-     * Fixed Youtube videoclip broken engine due to their recent change.
-     * Fixed Wikipedia no loading the css on KDE 4.4 (due to a regression in Qt 4.6.)
-       (BR 222875)
-     * Settings dialog could become too wide with translations. (BR 233752)
-     * Fixed re-mounting iPhoneOS devices after having been unplugged without being
-       unmounted. Thanks to Jeffrey Dodge <hazridi@gmail.com>. (BR 233305)
-     * Fixed connection to iPod Touch devices. Patch by Jeffrey Dodge
-       <hazridi@gmail.com>. (BR 233257)
-     * Fixed the deletion of empty directories after deleting, or organizing.
-       (BR 190881)
-     * Fixed a hang that would occur when organizing a track and the source
-       file was the same as the destination file. (BR 233181)
-     * Fixed the double delete confirmation dialog when organizing tracks.
-       (BR 233200)
-     * Fixed broken rendering of ratings in Current Track applet on startup.
-     * Fixed command type names shown in the Bookmark Manager not being translated.
-       (BR 226829)
-     * Fixed crash on startup for users of MySQL 5.5. Thanks to Bartosz Fabianowski
-       for figuring it out. (BR 231166)
-     * Readded missing hover info for the new filebrowser.
-     * Fixed missing images in the hover info shown for various browser categories.
-     * Fixed crash when running some Amarok urls on startup. (such as when passed on
-       the command line or cliked in another app) (BR 231626)
-     * Fixed crashes when Amarok is started and the Info applet is loaded with 
-       certain version of Qt. (BR 227639) (BR 229756) 
-     * Fixed organize collection dialog deleting tracks at new location
-       instead of old. (BR 217002)
-     * Fixed a broken podcast feed that had a minor compliance issue in date
-       format. (BR 231062)
-     * Fixed "files" bookmarks not storing the actual path shown in the file 
-       browser (BR 231437)
-     * Fixed incorrectly displayed cover images for albums with the same name,
-       e.g. "Greatest Hits". (BR 170146)
-     * Fixed problems with new Main Toolbar and SHOUTcast streams: Since these
-       streams cannot be paused, we detect this now and stop them instead.
-     * Fixed permission errors with each file copied to an iPhone via iFuse.
-       Thanks to Colin Guthrie <cguthrie@mandriva.org> for the patch. (BR 231021)
-     * Fixed issues with using random navigators while filetering or searching the
-       Playlist. (BR 229226) (BR 222129)
-     * Fixed crash related to the new playlist tooltips. (BR 229696)
-     * Fixed some artist/album/track names not getting shown or getting shown 
-       incorrectly in the Current Track applet because of html encoding. 
-       (BR 222765)
-     * Fixed issue with the Albums applet not correctly updating when playing a 
-       track by an artist not present in the local collection. 
-     * Fixed Albums applet not getting updated if the artist of the currently 
-       playing track was edited. (BR 210296)
-     * Fixed bad window title for the details edit dialog in the playlist layout 
-       editor. (BR 227912)
-     * Fixed wrong track getting dragged from the Playlist when sorting and/or
-       filtering is active. (BR 226503)
-     * Fixed visual indication for "Stop After This Track" not getting shown 
-       immediately when using the global shortcut. (BR 230569)
-     * Cover fetcher: Fixed a crash involving reappearing cover found dialogs
-       and pending cover fetches. (BR 230215)
-     * Display tooltips with applet names in the context toolbar. (BR 230736)
-     * File browser: "Add to Playlist" doesn't add playlist files to the playlist.
-       (BR 229290)
+    * Fixed Youtube videoclip broken engine due to their recent change.
+    * Fixed Wikipedia no loading the css on KDE 4.4 (due to a regression in Qt 4.6.)
+      (BR 222875)
+    * Settings dialog could become too wide with translations. (BR 233752)
+    * Fixed re-mounting iPhoneOS devices after having been unplugged without being
+      unmounted. Thanks to Jeffrey Dodge <hazridi@gmail.com>. (BR 233305)
+    * Fixed connection to iPod Touch devices. Patch by Jeffrey Dodge
+      <hazridi@gmail.com>. (BR 233257)
+    * Fixed the deletion of empty directories after deleting, or organizing.
+      (BR 190881)
+    * Fixed a hang that would occur when organizing a track and the source
+      file was the same as the destination file. (BR 233181)
+    * Fixed the double delete confirmation dialog when organizing tracks.
+      (BR 233200)
+    * Fixed broken rendering of ratings in Current Track applet on startup.
+    * Fixed command type names shown in the Bookmark Manager not being translated.
+      (BR 226829)
+    * Fixed crash on startup for users of MySQL 5.5. Thanks to Bartosz Fabianowski
+      for figuring it out. (BR 231166)
+    * Readded missing hover info for the new filebrowser.
+    * Fixed missing images in the hover info shown for various browser categories.
+    * Fixed crash when running some Amarok urls on startup. (such as when passed on
+      the command line or cliked in another app) (BR 231626)
+    * Fixed crashes when Amarok is started and the Info applet is loaded with 
+      certain version of Qt. (BR 227639) (BR 229756) 
+    * Fixed organize collection dialog deleting tracks at new location
+      instead of old. (BR 217002)
+    * Fixed a broken podcast feed that had a minor compliance issue in date
+      format. (BR 231062)
+    * Fixed "files" bookmarks not storing the actual path shown in the file 
+      browser (BR 231437)
+    * Fixed incorrectly displayed cover images for albums with the same name,
+      e.g. "Greatest Hits". (BR 170146)
+    * Fixed problems with new Main Toolbar and SHOUTcast streams: Since these
+      streams cannot be paused, we detect this now and stop them instead.
+    * Fixed permission errors with each file copied to an iPhone via iFuse.
+      Thanks to Colin Guthrie <cguthrie@mandriva.org> for the patch. (BR 231021)
+    * Fixed issues with using random navigators while filetering or searching the
+      Playlist. (BR 229226) (BR 222129)
+    * Fixed crash related to the new playlist tooltips. (BR 229696)
+    * Fixed some artist/album/track names not getting shown or getting shown 
+      incorrectly in the Current Track applet because of html encoding. 
+      (BR 222765)
+    * Fixed issue with the Albums applet not correctly updating when playing a 
+      track by an artist not present in the local collection. 
+    * Fixed Albums applet not getting updated if the artist of the currently 
+      playing track was edited. (BR 210296)
+    * Fixed bad window title for the details edit dialog in the playlist layout 
+      editor. (BR 227912)
+    * Fixed wrong track getting dragged from the Playlist when sorting and/or
+      filtering is active. (BR 226503)
+    * Fixed visual indication for "Stop After This Track" not getting shown 
+      immediately when using the global shortcut. (BR 230569)
+    * Cover fetcher: Fixed a crash involving reappearing cover found dialogs
+      and pending cover fetches. (BR 230215)
+    * Display tooltips with applet names in the context toolbar. (BR 230736)
+    * File browser: "Add to Playlist" doesn't add playlist files to the playlist.
+      (BR 229290)
 
 
 VERSION 2.3
