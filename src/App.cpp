@@ -549,6 +549,9 @@ void App::applySettings( bool firstTime )
         m_tray = 0;
     }
 
+    if( !firstTime ) // prevent OSD from popping up during startup
+        Amarok::OSD::instance()->applySettings();
+
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
