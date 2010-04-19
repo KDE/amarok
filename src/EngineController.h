@@ -121,11 +121,6 @@ public:
     const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
 
     /**
-    *   Provides access to the Phonon audioDataOoutput for visualization and spectrum analysis
-    */
-    const Phonon::AudioDataOutput* phononAudioData() const { return m_audioDataOutput; }
-
-    /**
      * Gets the volume
      * @return the volume as a percentage
      */
@@ -213,9 +208,13 @@ public:
      */
     QString prettyNowPlaying() const;
 
-public slots:
-    void receiveData( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> > &data );
+signals:
+    /**
+    *   Is emitted when new audio Data is ready
+    */
+    void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
     
+public slots:
     /**
      * Plays the current track, if there is one
      * This happens asynchronously.

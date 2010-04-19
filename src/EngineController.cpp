@@ -197,12 +197,11 @@ EngineController::initializePhonon()
     connect( m_media.data(), SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media.data(), SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
     connect( m_media.data(), SIGNAL( seekableChanged( bool ) ), SLOT( slotSeekableChanged( bool ) ) );
-
     connect( m_audio.data(), SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
     connect( m_audio.data(), SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
+    connect( m_audioDataOutput.data(), SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)), this, SIGNAL(audioDataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)));
 
     connect( m_controller.data(), SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
-//  connect( m_audioDataOutput.data(), SIGNAL( dataReady( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >& ) ), this, SLOT( receiveData( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >& ) ) );
 
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
@@ -212,12 +211,7 @@ EngineController::initializePhonon()
     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
         m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
 }
-
-void EngineController::receiveData( const QMap< Phonon::AudioDataOutput::Channel, QVector< qint16 > >& data )
-{
-    qDebug() << "DEBUGCODE112";
-}
-
+// 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
