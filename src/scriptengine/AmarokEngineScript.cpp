@@ -149,10 +149,12 @@ namespace AmarokScript
     }
     void AmarokEngineScript::engineTrackChanged( Meta::TrackPtr track )
     {
+        Q_UNUSED( track )
         emit trackChanged();
     }
     void AmarokEngineScript::engineTrackFinished( Meta::TrackPtr track)
     {
+        Q_UNUSED( track )
         emit trackFinished();
     }
 
