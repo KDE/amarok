@@ -26,7 +26,7 @@ A capability for tracks that represents a given, bounded, interval of a url, for
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class BoundedPlaybackCapability : public Capability
+class AMAROK_EXPORT BoundedPlaybackCapability : public Capability
 {
     Q_OBJECT
 public:

@@ -15,7 +15,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
 
 kde4_add_plugin(amarok_collection-upnpcollection ${amarok_collection-upnpcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-upnpcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
+target_link_libraries(amarok_collection-upnpcollection amarokcore amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-upnpcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

@@ -22,9 +22,11 @@ set( testcuefilesupport_SRCS
 
 kde4_add_unit_test( testcuefilesupport ${testcuefilesupport_SRCS} )
 
+add_dependencies( testcuefilesupport amarokcore )
 add_dependencies( testcuefilesupport amaroklib)
 
 target_link_libraries( testcuefilesupport
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}

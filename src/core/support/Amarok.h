@@ -78,7 +78,7 @@ namespace Amarok
     /**
      * @return the KActionCollection used by Amarok
      */
-    KActionCollection *actionCollection(); // defined in App.cpp
+    AMAROK_EXPORT KActionCollection *actionCollection(); // defined in App.cpp
 
     /**
      * Compute score for a track that has finished playing.

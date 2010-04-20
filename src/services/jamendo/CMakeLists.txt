@@ -23,6 +23,7 @@ add_subdirectory( images )
 
         kde4_add_plugin(amarok_service_jamendo ${amarok_service_jamendo_PART_SRCS})
         target_link_libraries(amarok_service_jamendo
+            amarokcore
             amaroklib
             amarokpud
             ${KDE4_KDECORE_LIBS}

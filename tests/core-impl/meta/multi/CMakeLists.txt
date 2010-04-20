@@ -26,9 +26,11 @@ kde4_add_unit_test( testmetamultitrack
     ${testmetamultitrack_SRCS}
     )
 
+add_dependencies( testmetamultitrack amarokcore )
 add_dependencies( testmetamultitrack amaroklib )
 
 target_link_libraries( testmetamultitrack
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}

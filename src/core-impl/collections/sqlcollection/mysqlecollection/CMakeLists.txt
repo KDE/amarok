@@ -28,6 +28,7 @@ SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
 
 target_link_libraries(amarok_collection-mysqlecollection
     amarok-sqlcollection
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${QT_QTCORE_LIBRARY}

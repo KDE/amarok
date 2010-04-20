@@ -166,7 +166,7 @@ private:
  * Inherited by EngineController.
  * Notify observer functionality is captured in this class.
  */
-class EngineSubject : public QObject
+class AMAROK_EXPORT EngineSubject : public QObject
 {
     Q_OBJECT
 

@@ -18,6 +18,7 @@ set( testcollectionlocation_SRCS
 kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
 
 add_dependencies( testcollectionlocation amarokconfig_h )
+add_dependencies( testcollectionlocation amarokcore)
 add_dependencies( testcollectionlocation amaroklib)
 
 if(APPLE)
@@ -25,6 +26,7 @@ if(APPLE)
 endif(APPLE)
 
 target_link_libraries(testcollectionlocation
+                        amarokcore
                         amaroklib
                         ${KDE4_KDECORE_LIBS}
                         ${KDE4_KDEUI_LIBS}

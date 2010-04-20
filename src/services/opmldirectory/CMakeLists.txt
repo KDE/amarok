@@ -20,6 +20,7 @@
 
         kde4_add_plugin(amarok_service_opmldirectory ${amarok_service_opmldirectory_PART_SRCS})
         target_link_libraries(amarok_service_opmldirectory
+            amarokcore
             amaroklib
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}

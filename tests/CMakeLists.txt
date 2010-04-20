@@ -39,6 +39,7 @@ target_link_libraries( testamarok
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${QT_QTTEST_LIBRARY}
+    amarokcore
     amaroklib
     )
 

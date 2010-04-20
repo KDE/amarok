@@ -22,8 +22,10 @@ kde4_add_unit_test( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )
 if(APPLE)
     SET_TARGET_PROPERTIES(testmemoryquerymaker PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
+add_dependencies( testmemoryquerymaker amarokcore )
 add_dependencies( testmemoryquerymaker amaroklib )
 target_link_libraries(testmemoryquerymaker
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${QT_QTGUI_LIBRARY}

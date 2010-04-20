@@ -43,6 +43,7 @@ kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
 
 kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})
 target_link_libraries(amarok_service_magnatunestore
+    amarokcore
     amaroklib
     amarokpud
     ${KDE4_KDECORE_LIBS}

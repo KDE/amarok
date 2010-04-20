@@ -26,7 +26,8 @@ target_link_libraries(amarok_appletscript_simple_javascript
                        ${QT_QTSCRIPT_LIBRARY}
                        ${QT_QTUITOOLS_LIBRARY}
                        ${QT_QTXML_LIBRARY}
-		       amaroklib
+		               amarokcore
+                       amaroklib
                        )
  
 install(TARGETS amarok_appletscript_simple_javascript DESTINATION ${PLUGIN_INSTALL_DIR})

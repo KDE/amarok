@@ -50,6 +50,7 @@ include_directories(
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm
+            amarokcore
             amaroklib
             amarokpud
             ${LIBLASTFM_LIBRARY}
@@ -85,6 +86,7 @@ include_directories(
         kde4_add_plugin( kcm_amarok_service_lastfm ${kcm_amarok_service_lastfm_PART_SRCS} )
 
         target_link_libraries( kcm_amarok_service_lastfm
+            amarokcore
             amaroklib
             ${LIBLASTFM_LIBRARY}
             ${KDE4_KDEUI_LIBS}

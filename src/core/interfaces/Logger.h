@@ -17,6 +17,8 @@
 #ifndef AMAROK_LOGGER_H
 #define AMAROK_LOGGER_H
 
+#include "shared/amarok_export.h"
+
 #include <QMetaType>
 #include <QObject>
 
@@ -31,7 +33,7 @@ namespace Amarok
       *
       * The class name is up for discussion btw.
       */
-    class Logger : public QObject
+    class AMAROK_EXPORT Logger : public QObject
     {
         Q_OBJECT
         Q_ENUMS( MessageType )

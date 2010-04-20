@@ -27,7 +27,7 @@ include_directories( ../..
 
         kde4_add_plugin(amarok_collection-audiocdcollection ${amarok_collection-audiocdcollection_PART_SRCS})
 
-        target_link_libraries( amarok_collection-audiocdcollection amaroklib amarokpud ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS} ${KDE4_KIO_LIBS} ${KDE4_KUTILS_LIBS} ${KDE4_SOLID_LIBRARY} )
+        target_link_libraries( amarok_collection-audiocdcollection amarokcore amaroklib amarokpud ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS} ${KDE4_KIO_LIBS} ${KDE4_KUTILS_LIBS} ${KDE4_SOLID_LIBRARY} )
 
         if(APPLE)
         SET_TARGET_PROPERTIES(amarok_collection-audiocdcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

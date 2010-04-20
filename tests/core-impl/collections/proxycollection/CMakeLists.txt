@@ -20,6 +20,7 @@ set( testproxycollectionmeta_SRCS
 kde4_add_unit_test( testproxycollectionmeta ${testproxycollectionmeta_SRCS} )
 
 add_dependencies( testproxycollectionmeta amarokconfig_h )
+add_dependencies( testproxycollectionmeta amarokcore )
 add_dependencies( testproxycollectionmeta amaroklib)
 
 if(APPLE)
@@ -27,6 +28,7 @@ if(APPLE)
 endif(APPLE)
 
 target_link_libraries(testproxycollectionmeta
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}

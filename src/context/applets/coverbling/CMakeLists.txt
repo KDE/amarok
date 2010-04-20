@@ -16,6 +16,7 @@ kde4_add_plugin(amarok_context_applet_coverbling ${coverbling_SRCS})
 
 
 target_link_libraries(amarok_context_applet_coverbling
+    amarokcore
     amaroklib
     ${KDE4_PLASMA_LIBS} 
     ${KDE4_KIO_LIBS}

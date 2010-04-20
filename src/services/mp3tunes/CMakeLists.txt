@@ -51,7 +51,9 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 ${amarok_service_mp3tunes_harmony_PART_SRCS}
             )
 
-            target_link_libraries(amarokmp3tunesharmonydaemon amaroklib
+            target_link_libraries(amarokmp3tunesharmonydaemon
+                amarokcore
+                amaroklib
                 ${KDE4_KDECORE_LIBS}
                 ${GLIB2_LIBRARIES}
                 ${GOBJECT_LIBRARIES}
@@ -93,7 +95,9 @@ if(LIBXML2_FOUND AND CURL_FOUND)
         )
 
         kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
-        target_link_libraries(amarok_service_mp3tunes amaroklib        
+        target_link_libraries(amarok_service_mp3tunes
+            amarokcore
+            amaroklib
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}

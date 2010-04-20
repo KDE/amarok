@@ -22,8 +22,9 @@
 #include <QList>   //baseclass
 #include <QObject> //baseclass
 
+#include "shared/amarok_export.h"
 
-class SmartPointerListDaddy : public QObject
+class AMAROK_EXPORT SmartPointerListDaddy : public QObject
 {
     Q_OBJECT
     QList<QObject*>& m_list;
@@ -60,7 +61,7 @@ template <class T> class SmartPointerList : private QList<T*>
     class SmartPointerListDaddy* m_daddy;
 
 public:
-    SmartPointerList() : m_daddy( new SmartPointerListDaddy( (QList<QObject*>*)this ) )
+    AMAROK_EXPORT SmartPointerList() : m_daddy( new SmartPointerListDaddy( (QList<QObject*>*)this ) )
     {}
     
     ~SmartPointerList()

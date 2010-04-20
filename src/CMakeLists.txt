@@ -261,56 +261,22 @@ set(libstatusbar_SRCS
     statusbar/LongMessageWidget.cpp
 )
 
-#####################################################################
-# CORE INTERFACES
-#####################################################################
-set(core_interfaces_SRCS
-    core/interfaces/Logger.cpp
-)
-
 
 #####################################################################
 # META
 #####################################################################
-set(core_SRCS
-    core/capabilities/Capability.cpp
+set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    core/meta/Meta.cpp
-    core/meta/support/MetaUtility.cpp
     core-impl/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
-    core/playlists/Playlist.cpp
-    core/playlists/PlaylistFormat.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
-    core/statistics/StatisticsProvider.cpp
-    core/playlists/PlaylistProvider.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
-    core/meta/support/PrivateMetaRegistry.cpp
     core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
-    core/capabilities/BookmarkThisCapability.cpp
-    core/capabilities/BoundedPlaybackCapability.cpp
-    core/capabilities/CollectionCapability.cpp
-    core/capabilities/CurrentTrackActionsCapability.cpp
-    core/capabilities/CustomActionsCapability.cpp
-    core/capabilities/DecoratorCapability.cpp
-    core/capabilities/EditCapability.cpp
-    core/capabilities/EditablePlaylistCapability.cpp
-    core/capabilities/FindInSourceCapability.cpp
-    core/capabilities/LastFmCapability.cpp
-    core/capabilities/MultiPlayableCapability.cpp
-    core/capabilities/MultiSourceCapability.cpp
-    core/capabilities/OrganiseCapability.cpp
-    core/capabilities/ReadLabelCapability.cpp
-    core/capabilities/SourceInfoCapability.cpp
-    core/capabilities/StatisticsCapability.cpp
-    core/capabilities/StreamInfoCapability.cpp
     core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
     core-impl/capabilities/timecode/TimecodeEditCapability.cpp
     core-impl/capabilities/timecode/TimecodeLoadCapability.cpp
     core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
-    core/capabilities/UpdateCapability.cpp
-    core/capabilities/WriteLabelCapability.cpp
     core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
     core-impl/meta/file/File.cpp
     core-impl/meta/multi/MultiTrack.cpp
@@ -325,13 +291,8 @@ set(core_SRCS
 # COLLECTION
 #####################################################################
 set(collection_SRCS
-    core/collections/Collection.cpp
     core-impl/collections/support/CollectionManager.cpp
-    core/collections/CollectionLocation.cpp
     core-impl/collections/support/CollectionLocationDelegateImpl.cpp
-    core/collections/MetaQueryMaker.cpp
-    core/collections/QueryMaker.cpp
-    core/collections/support/TrackForUrlWorker.cpp
     core-impl/collections/support/MemoryCustomValue.cpp
     core-impl/collections/support/MemoryFilter.cpp
     core-impl/collections/support/MemoryMatcher.cpp
@@ -384,10 +345,6 @@ set( libcontextview_SRCS
 # PODCASTS
 #####################################################################
 set(libpodcasts_SRCS
-    core/podcasts/PodcastReader.cpp
-    core/podcasts/PodcastMeta.cpp
-    core/podcasts/PodcastImageFetcher.cpp
-    core/podcasts/PodcastProvider.cpp
     core-impl/podcasts/sql/SqlPodcastMeta.cpp
     core-impl/podcasts/sql/SqlPodcastProvider.cpp
     core-impl/podcasts/sql/PodcastSettingsDialog.cpp
@@ -615,7 +572,7 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
     ${likeback_SRCS}
-    ${core_SRCS}
+    ${libmetaimpl_SRCS}
     ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
@@ -639,21 +596,17 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
-    core/support/Amarok.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
-    core/support/Components.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    core/engine/EngineObserver.cpp
     Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    core/support/SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp

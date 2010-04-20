@@ -5,10 +5,12 @@ macro(link_database_test test_target)
     endif(APPLE)
 
     add_dependencies( ${test_target} amarokconfig_h )
+    add_dependencies( ${test_target} amarokcore )
     add_dependencies( ${test_target} amaroklib)
     add_dependencies( ${test_target} amarok-sqlcollection)
 
     target_link_libraries(${test_target}
+        amarokcore
         amaroklib
         amarok-sqlcollection
         ${KDE4_KDECORE_LIBS}

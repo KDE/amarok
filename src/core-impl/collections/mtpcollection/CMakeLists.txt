@@ -34,6 +34,7 @@ if (MTP_FOUND)
 	kde4_add_plugin(amarok_collection-mtpcollection ${amarok_collection-mtpcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-mtpcollection
+        amarokcore
         amaroklib 
         amarokpud
         ${KDE4_KDECORE_LIBS}

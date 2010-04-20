@@ -22,6 +22,7 @@ set(amarok_collection-daapcollection_PART_SRCS
 kde4_add_plugin(amarok_collection-daapcollection ${amarok_collection-daapcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-daapcollection
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
