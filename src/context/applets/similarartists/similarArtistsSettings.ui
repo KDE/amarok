@@ -10,91 +10,72 @@
     <height>91</height>
    </rect>
   </property>
-  <widget class="QSpinBox" name="spinBox">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>10</y>
-     <width>52</width>
-     <height>23</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="labelAlignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
-   <property name="minimum">
-    <number>1</number>
-   </property>
-   <property name="maximum">
-    <number>50</number>
-   </property>
-   <property name="value">
-    <number>5</number>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>101</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Maximum artists</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>40</y>
-     <width>91</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string comment="automatic language selection">Automatic</string>
-    </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Maximum artists</string>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>English</string>
-    </property>
+   <item row="0" column="1">
+    <widget class="QSpinBox" name="spinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>50</number>
+     </property>
+     <property name="value">
+      <number>5</number>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>French</string>
-    </property>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Language</string>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>German</string>
-    </property>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="comboBox">
+     <item>
+      <property name="text">
+       <string comment="automatic language selection">Automatic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>English</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>French</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>German</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Italian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Spanish</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>Italian</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Spanish</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>40</y>
-     <width>61</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Language</string>
-   </property>
-  </widget>
+  </layout>
  </widget>
  <resources/>
  <connections/>

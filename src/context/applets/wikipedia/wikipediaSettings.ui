@@ -10,36 +10,35 @@
     <height>39</height>
    </rect>
   </property>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>91</width>
-     <height>25</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="labelAlignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
-   <item>
-    <property name="text">
-     <string comment="automatic language selection">Automatic</string>
-    </property>
+   <item row="0" column="0">
+    <widget class="QComboBox" name="comboBox">
+     <item>
+      <property name="text">
+       <string comment="automatic language selection">Automatic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>English</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>French</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>German</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>English</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>French</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>German</string>
-    </property>
-   </item>
-  </widget>
+  </layout>
  </widget>
  <resources/>
  <connections/>

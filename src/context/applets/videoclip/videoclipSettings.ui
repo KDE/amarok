@@ -10,19 +10,18 @@
     <height>46</height>
    </rect>
   </property>
-  <widget class="QCheckBox" name="checkYoutubeHQ">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>171</width>
-     <height>23</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="labelAlignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
-   <property name="text">
-    <string>Youtube HQ</string>
-   </property>
-  </widget>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="checkYoutubeHQ">
+     <property name="text">
+      <string>Youtube HQ</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

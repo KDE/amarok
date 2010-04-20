@@ -6,119 +6,92 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>185</height>
+    <width>388</width>
+    <height>165</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>465</width>
-    <height>185</height>
-   </size>
-  </property>
-  <widget class="QWidget" name="formLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>461</width>
-     <height>181</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="labelAlignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
-   <layout class="QFormLayout" name="formLayout">
-    <property name="fieldGrowthPolicy">
-     <enum>QFormLayout::ExpandingFieldsGrow</enum>
-    </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="animationLabel">
+   <item row="0" column="0">
+    <widget class="QLabel" name="animationLabel">
+     <property name="text">
+      <string>Animation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="KComboBox" name="animationComboBox">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
       <property name="text">
-       <string>Animation</string>
+       <string comment="animation type">Automatic</string>
       </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="KComboBox" name="animationComboBox">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <item>
-       <property name="text">
-        <string comment="animation type">Automatic</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Interactive</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fading</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="numberofphotosLabel">
+     </item>
+     <item>
       <property name="text">
-       <string>Number of photos</string>
+       <string>Interactive</string>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="KIntSpinBox" name="photosSpinBox">
-      <property name="minimum">
-       <number>5</number>
-      </property>
-      <property name="maximum">
-       <number>100</number>
-      </property>
-      <property name="singleStep">
-       <number>5</number>
-      </property>
-      <property name="value">
-       <number>10</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="additionalkeywordsLabel">
+     </item>
+     <item>
       <property name="text">
-       <string>Additional key words:</string>
+       <string>Fading</string>
       </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="KLineEdit" name="additionalkeywordsLineEdit">
-      <property name="clickMessage">
-       <string>Ex: band live 1977</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <widget class="QLabel" name="addsomemorekeynwordstothequerywithaspaceseparatorLabel">
-      <property name="text">
-       <string>Add some more key words to the Flickr.com
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="numberofphotosLabel">
+     <property name="text">
+      <string>Number of photos</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="KIntSpinBox" name="photosSpinBox">
+     <property name="minimum">
+      <number>5</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="singleStep">
+      <number>5</number>
+     </property>
+     <property name="value">
+      <number>10</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="additionalkeywordsLabel">
+     <property name="text">
+      <string>Additional key words:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="KLineEdit" name="additionalkeywordsLineEdit">
+     <property name="clickMessage">
+      <string>Ex: band live 1977</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="addsomemorekeynwordstothequerywithaspaceseparatorLabel">
+     <property name="text">
+      <string>Add some more key words to the Flickr.com
 query, with a space separator. 
 For example: band live 1977 </string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>KIntSpinBox</class>
    <extends>QSpinBox</extends>
@@ -128,6 +101,11 @@ For example: band live 1977 </string>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
