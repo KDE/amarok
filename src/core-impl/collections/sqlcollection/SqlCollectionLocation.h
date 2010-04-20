@@ -154,6 +154,7 @@ class OrganizeCollectionDelegateFactory
 {
 public:
     virtual OrganizeCollectionDelegate* createDelegate() = 0;
+    virtual ~OrganizeCollectionDelegateFactory() {}
 };
 
 #endif
