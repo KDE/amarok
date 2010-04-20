@@ -106,49 +106,49 @@ WikipediaApplet::init()
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addAction( backwardAction );
-    connect( m_backwardIcon, SIGNAL( activated() ), this, SLOT( goBackward() ) );
+    connect( m_backwardIcon, SIGNAL( clicked() ), this, SLOT( goBackward() ) );
     
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
     m_forwardIcon = addAction( forwardAction );
-    connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
+    connect( m_forwardIcon, SIGNAL( clicked() ), this, SLOT( goForward() ) );
 
     QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
     artistAction->setEnabled( false );
     artistAction->setText( i18n( "Artist" ) );
     m_artistIcon = addAction( artistAction );
-    connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( gotoArtist() ) );
+    connect( m_artistIcon, SIGNAL( clicked() ), this, SLOT( gotoArtist() ) );
     
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
     albumAction->setEnabled( false );
     albumAction->setText( i18n( "Album" ) );
     m_albumIcon = addAction( albumAction );
-    connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( gotoAlbum() ) );
+    connect( m_albumIcon, SIGNAL( clicked() ), this, SLOT( gotoAlbum() ) );
 
     QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
     trackAction->setEnabled( false );
     trackAction->setText( i18n( "Track" ) );
     m_trackIcon = addAction( trackAction );
-    connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
+    connect( m_trackIcon, SIGNAL( clicked() ), this, SLOT( gotoTrack() ) );
 
     QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setEnabled( true );
     langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
-    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
+    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( switchLang() ) );
     
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setEnabled( false );
     reloadAction->setText( i18n( "Reload" ) );
     m_reloadIcon = addAction( reloadAction );
-    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
+    connect( m_reloadIcon, SIGNAL( clicked() ), this, SLOT( reloadWikipedia() ) );
 
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );

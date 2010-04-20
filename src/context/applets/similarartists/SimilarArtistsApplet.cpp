@@ -105,7 +105,7 @@ SimilarArtistsApplet::init()
     settingsAction->setEnabled( true );
     m_settingsIcon = addAction( settingsAction );
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( configure() ) );
+    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( configure() ) );
 
     // permit to add the scrollarea in this applet
     m_scrollProxy = new QGraphicsProxyWidget( this );
