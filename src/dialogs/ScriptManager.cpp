@@ -615,6 +615,7 @@ ScriptManager::showScriptStalledDialog()  // SLOT
                                                            KStandardGuiItem::no(),
                                                            QString(),
                                                            KMessageBox::Dangerous );
+    Q_UNUSED(reply)
 }
 
 
