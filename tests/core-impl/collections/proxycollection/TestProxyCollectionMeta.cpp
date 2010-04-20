@@ -437,16 +437,16 @@ public:
             , endCallcount(0)
             , abortCallcount(0) {}
     virtual bool isEditable() const { return true; }
-    virtual void setAlbum( const QString &newAlbum ) {}
-    virtual void setArtist( const QString &newArtist ) {}
-    virtual void setComposer( const QString &newComposer ) {};
-    virtual void setGenre( const QString &newGenre ) {};
-    virtual void setYear( const QString &newYear ) {};
-    virtual void setTitle( const QString &newTitle ) {};
-    virtual void setComment( const QString &newComment ) {};
-    virtual void setTrackNumber( int newTrackNumber ) {};
-    virtual void setDiscNumber( int newDiscNumber ) {};
-    virtual void setBpm( const qreal newBpm ) {};
+    virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
+    virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
+    virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ) };
+    virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ) };
+    virtual void setYear( const QString &newYear ) { Q_UNUSED( newYear ) };
+    virtual void setTitle( const QString &newTitle ) { Q_UNUSED( newTitle ) };
+    virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ) };
+    virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ) };
+    virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ) };
+    virtual void setBpm( const qreal newBpm ) { Q_UNUSED( newBpm ) };
     virtual void beginMetaDataUpdate() { beginCallCount++; };
     virtual void endMetaDataUpdate() { endCallcount++; };
     virtual void abortMetaDataUpdate() { abortCallcount++; };

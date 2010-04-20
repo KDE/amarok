@@ -401,6 +401,14 @@ ServiceSqlQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
+ServiceSqlQueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    Q_UNUSED( label );
+    //TODO
+    return this;
+}
+
+QueryMaker*
 ServiceSqlQueryMaker::addMatch( const Meta::DataPtr &data )
 {
     ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
