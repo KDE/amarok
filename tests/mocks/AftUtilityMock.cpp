@@ -27,17 +27,20 @@ AFTUtility::AFTUtility()
 const QString
 AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
+    Q_UNUSED( fileref )
     return "AftUtilityMock";
 }
 
 const QString
 AFTUtility::randomUniqueId( QCryptographicHash &md5 )
 {
+    Q_UNUSED( md5 )
     return "AftUtilityMock";
 }
 
 const QString
 AFTUtility::readUniqueId( const QString &path )
 {
+    Q_UNUSED( path )
     return "AftUtilityMock";
 }

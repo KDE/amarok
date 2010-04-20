@@ -49,12 +49,16 @@ namespace TagLib
 void
 Meta::Field::writeFields(const QString &filename, const QVariantMap &changes )
 {
+    Q_UNUSED( filename )
+    Q_UNUSED( changes )
     return;
 }
 
 void
 Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
 {
+    Q_UNUSED( fileref )
+    Q_UNUSED( changes )
     return;
 }
 

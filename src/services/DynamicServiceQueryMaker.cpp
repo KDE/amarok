@@ -107,6 +107,13 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::YearPtr & year)
     return this;
 }
 
+QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::LabelPtr & label)
+{
+    DEBUG_BLOCK
+    Q_UNUSED( label );
+    return this;
+}
+
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
 {
     DEBUG_BLOCK
