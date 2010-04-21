@@ -7,6 +7,10 @@ VERSION 2.3.1
   CHANGES:
 
   BUGFIXES:
+    * Custom color setting in the On Screen Display was only applied after
+      restart. Patch by Frank Steinmetzger <Warp_7@gmx.de>.
+    * Track Rating was not always displayed correctly in the On Screen
+      Display. Patch by Frank Steinmetzger <Warp_7@gmx.de>.
     * Better fix for pausing SHOUTcast streams, without advancing to the next
       track after resume. (BR 192878)
 
