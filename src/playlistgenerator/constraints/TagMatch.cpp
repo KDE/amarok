@@ -243,18 +243,17 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
             DateRange r = m_value.value<DateRange>();
             switch ( r.second ) {
                 case 0:
-                    now.addDays( -1 * r.first );
+                    referenceDate = now.addDays( -1 * r.first ).toTime_t();
                     break;
                 case 1:
-                    now.addMonths( -1 * r.first );
+                    referenceDate = now.addMonths( -1 * r.first ).toTime_t();
                     break;
                 case 2:
-                    now.addYears( -1 * r.first );
+                    referenceDate = now.addYears( -1 * r.first ).toTime_t();
                     break;
                 default:
                     break;
             }
-            referenceDate = now.toTime_t();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
             else
@@ -395,18 +394,17 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
         DateRange r = m_value.value<DateRange>();
         switch ( r.second ) {
             case 0:
-                now.addDays( -1 * r.first );
+                referenceDate = now.addDays( -1 * r.first ).toTime_t();
                 break;
             case 1:
-                now.addMonths( -1 * r.first );
+                referenceDate = now.addMonths( -1 * r.first ).toTime_t();
                 break;
             case 2:
-                now.addYears( -1 * r.first );
+                referenceDate = now.addYears( -1 * r.first ).toTime_t();
                 break;
             default:
                 break;
         }
-        referenceDate = now.toTime_t();
     } else {
         comp = m_comparison;
         referenceDate = m_value.toDateTime().toTime_t();
@@ -444,7 +442,6 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
 double
 ConstraintTypes::TagMatch::labelComparison( Meta::TrackPtr t ) const
 {
-    DEBUG_BLOCK
     Meta::LabelList labelList = t->labels();
 
     double v = 0.0;
