@@ -577,8 +577,10 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     QString text;
     if( !track || track->playableUrl().isEmpty() )
+    {
         text = i18n( "No track playing" );
-
+        setRating( 0 ); // otherwise stars from last rating change are visible
+    }
     else
     {
         setRating( track->rating() );
