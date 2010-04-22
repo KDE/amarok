@@ -73,7 +73,7 @@ set(libcore_support_SRCS
     support/Amarok.cpp
     support/Components.cpp
     support/SmartPointerList.cpp
-    ../../shared/Debug.cpp
+    support/Debug.cpp
 )
 
 set(libcore_engine_SRCS
