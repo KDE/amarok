@@ -31,7 +31,7 @@
 
 namespace Capabilities {
     
-    class AMAROK_EXPORT CurrentTrackActionsCapability : public CustomActionsCapability {
+    class AMAROK_CORE_EXPORT CurrentTrackActionsCapability : public CustomActionsCapability {
 
         Q_OBJECT
         public:

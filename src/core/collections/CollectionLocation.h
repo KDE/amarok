@@ -93,7 +93,7 @@ namespace Collections {
     slotFinishRemove
 */
 
-class AMAROK_EXPORT CollectionLocation : public QObject
+class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 {
     Q_OBJECT
 

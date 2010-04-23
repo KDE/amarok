@@ -29,7 +29,7 @@
 namespace Capabilities
 {
 
-    class AMAROK_EXPORT CollectionCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT CollectionCapability : public Capabilities::Capability
     {
         Q_OBJECT
 

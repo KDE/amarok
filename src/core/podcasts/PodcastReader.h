@@ -41,7 +41,7 @@ namespace Podcasts {
     @author Bart Cerneels <bart.cerneels@kde.org>
             Mathias Panzenböck <grooser.meister.morti@gmx.net>
 */
-class AMAROK_EXPORT PodcastReader : public QObject, public QXmlStreamReader
+class AMAROK_CORE_EXPORT PodcastReader : public QObject, public QXmlStreamReader
 {
     Q_OBJECT
     public:

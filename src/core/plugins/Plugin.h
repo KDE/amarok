@@ -37,7 +37,7 @@ namespace Plugins
 
     class PluginConfig;
 
-    class AMAROK_EXPORT Plugin
+    class AMAROK_CORE_EXPORT Plugin
     {
         public:
             virtual ~Plugin();

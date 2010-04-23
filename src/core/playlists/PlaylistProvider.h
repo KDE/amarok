@@ -28,7 +28,7 @@ class KIcon;
 
 namespace Playlists {
 
-class AMAROK_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
+class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
 {
     Q_OBJECT
 

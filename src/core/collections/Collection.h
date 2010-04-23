@@ -41,7 +41,7 @@ namespace Collections
 class Collection;
 class CollectionLocation;
 
-class AMAROK_EXPORT CollectionFactory : public QObject
+class AMAROK_CORE_EXPORT CollectionFactory : public QObject
 {
     Q_OBJECT
     public:
@@ -55,7 +55,7 @@ class AMAROK_EXPORT CollectionFactory : public QObject
 
 };
 
-class AMAROK_EXPORT TrackProvider
+class AMAROK_CORE_EXPORT TrackProvider
 {
     public:
         TrackProvider();
@@ -76,7 +76,7 @@ class AMAROK_EXPORT TrackProvider
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 };
 
-class AMAROK_EXPORT CollectionBase : public QSharedData
+class AMAROK_CORE_EXPORT CollectionBase : public QSharedData
 {
 
     public:
@@ -114,7 +114,7 @@ class AMAROK_EXPORT CollectionBase : public QSharedData
             Q_DISABLE_COPY(CollectionBase)
 };
 
-class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public CollectionBase
+class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public CollectionBase
 {
     Q_OBJECT
     public:

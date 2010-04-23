@@ -48,7 +48,7 @@ namespace Playlists
         PodcastChannelPlaylist
     };
 
-    class AMAROK_EXPORT PlaylistObserver
+    class AMAROK_CORE_EXPORT PlaylistObserver
     {
         public:
             void subscribeTo( PlaylistPtr );
@@ -67,7 +67,7 @@ namespace Playlists
             QSet<PlaylistPtr> m_playlistSubscriptions;
     };
 
-    class AMAROK_EXPORT Playlist : public virtual QSharedData
+    class AMAROK_CORE_EXPORT Playlist : public virtual QSharedData
     {
         public:
             virtual ~Playlist() {}

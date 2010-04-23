@@ -28,7 +28,7 @@ A capability for tracks that can have several different source urls, such as mul
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_EXPORT MultiSourceCapability : public Capability
+class AMAROK_CORE_EXPORT MultiSourceCapability : public Capability
 {
     Q_OBJECT
 public:

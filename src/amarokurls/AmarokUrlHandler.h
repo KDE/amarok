@@ -35,7 +35,7 @@ class PlayUrlRunner;
 
 namespace The
 {
-AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
+    AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
 }
 
 /**

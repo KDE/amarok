@@ -56,7 +56,7 @@ class PluginManager
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        AMAROK_EXPORT static KService::List query( const QString& constraint = QString() );
+        AMAROK_CORE_EXPORT static KService::List query( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from query
@@ -65,14 +65,14 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        AMAROK_EXPORT static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
+        AMAROK_CORE_EXPORT static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from service
          * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
-        AMAROK_EXPORT static Plugins::Plugin* createFromService( const KService::Ptr service );
+        AMAROK_CORE_EXPORT static Plugins::Plugin* createFromService( const KService::Ptr service );
 
         /**
          * Remove library and delete plugin

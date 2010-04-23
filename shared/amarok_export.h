@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 David Faure <faure@kde.org>                                       *
+ * Copyright (c) 2010 Patrick von Reth <patrick.vonreth@gmail.com>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,7 +22,7 @@
 #include <kdemacros.h>
 
 #ifndef AMAROK_EXPORT
-# if defined(MAKE_AMAROKLIB_LIB) || defined(MAKE_AMAROKCORE_LIB)
+# ifdef MAKE_AMAROKLIB_LIB 
    /* We are building this library */ 
 #  define AMAROK_EXPORT KDE_EXPORT
 
@@ -41,12 +42,40 @@
 #    define AMAROK_EXPORT_TESTS
 #  endif
 
-# endif
-
-#endif
+# endif//MAKE_AMAROKLIB_LIB 
+#endif// AMAROK_EXPORT
 
 # ifndef AMAROK_EXPORT_DEPRECATED
 #  define AMAROK_EXPORT_DEPRECATED KDE_DEPRECATED AMAROK_EXPORT
+# endif
+
+
+#ifndef AMAROK_CORE_EXPORT
+# ifdef MAKE_AMAROKCORE_LIB 
+   /* We are building this library */ 
+#  define AMAROK_CORE_EXPORT KDE_EXPORT
+
+#  if defined(DEBUG)
+#    define AMAROK_CORE_EXPORT_TESTS KDE_EXPORT
+#  else
+#    define AMAROK_CORE_EXPORT_TESTS
+#  endif
+
+# else
+   /* We are using this library */ 
+#  define AMAROK_CORE_EXPORT KDE_IMPORT
+
+#  if defined(DEBUG)
+#    define AMAROK_CORE_EXPORT_TESTS KDE_IMPORT
+#  else
+#    define AMAROK_CORE_EXPORT_TESTS
+#  endif
+
+# endif
+#endif//AMAROK_CORE_EXPORT
+
+# ifndef AMAROK_CORE_EXPORT_DEPRECATED
+#  define AMAROK_CORE_EXPORT_DEPRECATED KDE_DEPRECATED AMAROK_CORE_EXPORT
 # endif
 
 #endif

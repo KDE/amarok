@@ -25,7 +25,7 @@
 class PaletteHandler;
 
 namespace The {
-    AMAROK_EXPORT PaletteHandler* paletteHandler();
+    PaletteHandler* paletteHandler();
 }
 
 /**

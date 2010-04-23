@@ -73,12 +73,12 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    AMAROK_EXPORT KConfigGroup config( const QString &group = "General" ); //defined in App.cpp
+    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = "General" ); //defined in App.cpp
 
     /**
      * @return the KActionCollection used by Amarok
      */
-    AMAROK_EXPORT KActionCollection *actionCollection(); // defined in App.cpp
+    AMAROK_CORE_EXPORT KActionCollection *actionCollection(); // defined in App.cpp
 
     /**
      * Compute score for a track that has finished playing.
@@ -111,7 +111,7 @@ namespace Amarok
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() ); // defined in App.cpp
 
     /**
      * For recursively expanding the contents of a directory into a KUrl::List
@@ -120,12 +120,12 @@ namespace Amarok
 
     // TODO: New in Amarok2 -> recursiveUrlExpand has been replaced
     // existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
+    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
+    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
 
-    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
-    AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
-    AMAROK_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
@@ -169,14 +169,14 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString cleanPath( const QString &path );
+    AMAROK_CORE_EXPORT QString cleanPath( const QString &path );
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    AMAROK_EXPORT QString asciiPath( const QString &path );
+    AMAROK_CORE_EXPORT QString asciiPath( const QString &path );
 
     /**
      * Transforms path into one valid on VFAT file systems, leaves QDir::separator()s untouched.
@@ -187,7 +187,7 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString vfatPath( const QString &path );
+    AMAROK_CORE_EXPORT QString vfatPath( const QString &path );
 
     /**
      * Compare both strings from left to right and remove the common part from input
@@ -195,13 +195,13 @@ namespace Amarok
      * @param ref a reference to compare input with.
      * @return The cleaned up string.
      */
-    AMAROK_EXPORT QString decapitateString( const QString &input, const QString &ref );
+    AMAROK_CORE_EXPORT QString decapitateString( const QString &input, const QString &ref );
 
     /*
      * Transform to be usable within HTML/XHTML attributes
      */
-    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
-    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
+    AMAROK_CORE_EXPORT QString escapeHTMLAttr( const QString &s );
+    AMAROK_CORE_EXPORT QString unescapeHTMLAttr( const QString &s );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
@@ -209,7 +209,7 @@ namespace Amarok
      * @param str the string to manipulate
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
-    AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
+    AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
 
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }

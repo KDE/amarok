@@ -25,7 +25,7 @@
 
 namespace Collections {
 
-class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
+class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
 {
     Q_OBJECT
 

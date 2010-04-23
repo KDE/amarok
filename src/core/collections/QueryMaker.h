@@ -27,7 +27,7 @@
 
 namespace Collections {
 
-class AMAROK_EXPORT QueryMaker : public QObject
+class AMAROK_CORE_EXPORT QueryMaker : public QObject
 {
     Q_OBJECT
 

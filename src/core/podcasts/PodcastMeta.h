@@ -60,7 +60,7 @@ enum PodcastType
     EpisodeType
 };
 
-class AMAROK_EXPORT PodcastMetaCommon
+class AMAROK_CORE_EXPORT PodcastMetaCommon
 {
     public:
         PodcastMetaCommon() {}
@@ -92,7 +92,7 @@ class AMAROK_EXPORT PodcastMetaCommon
         QString m_author; // TODO: save to DB
 };
 
-class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Track
+class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Track
 {
     public:
         PodcastEpisode();
@@ -198,7 +198,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Trac
         Meta::YearPtr m_yearPtr;
 };
 
-class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
+class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
 {
     public:
 
@@ -297,7 +297,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists:
 
 // internal helper classes
 
-class AMAROK_EXPORT PodcastArtist : public Meta::Artist
+class AMAROK_CORE_EXPORT PodcastArtist : public Meta::Artist
 {
 public:
     PodcastArtist( PodcastEpisode *episode )
@@ -337,7 +337,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_EXPORT PodcastAlbum : public Meta::Album
+class AMAROK_CORE_EXPORT PodcastAlbum : public Meta::Album
 {
 public:
     PodcastAlbum( PodcastEpisode *episode )
@@ -395,7 +395,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_EXPORT PodcastGenre : public Meta::Genre
+class AMAROK_CORE_EXPORT PodcastGenre : public Meta::Genre
 {
 public:
     PodcastGenre( PodcastEpisode *episode )
@@ -427,7 +427,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_EXPORT PodcastComposer : public Meta::Composer
+class AMAROK_CORE_EXPORT PodcastComposer : public Meta::Composer
 {
 public:
     PodcastComposer( PodcastEpisode *episode )
@@ -465,7 +465,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_EXPORT PodcastYear : public Meta::Year
+class AMAROK_CORE_EXPORT PodcastYear : public Meta::Year
 {
 public:
     PodcastYear( PodcastEpisode *episode )

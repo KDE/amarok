@@ -28,7 +28,7 @@
 
 namespace Capabilities
 {
-    class AMAROK_EXPORT DecoratorCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT DecoratorCapability : public Capabilities::Capability
     {
         Q_OBJECT
 

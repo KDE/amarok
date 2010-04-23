@@ -67,7 +67,7 @@ namespace Meta
     typedef KSharedPtr<Label> LabelPtr;
     typedef QList<LabelPtr> LabelList;
 
-    class AMAROK_EXPORT Observer
+    class AMAROK_CORE_EXPORT Observer
     {
         public:
             void subscribeTo( TrackPtr );
@@ -102,7 +102,7 @@ namespace Meta
             QSet<YearPtr> m_yearSubscriptions;
     };
 
-    class AMAROK_EXPORT MetaCapability
+    class AMAROK_CORE_EXPORT MetaCapability
     {
     public:
         virtual ~MetaCapability() {}
@@ -135,7 +135,7 @@ namespace Meta
         }
     };
 
-    class AMAROK_EXPORT MetaBase : public QSharedData, public MetaCapability
+    class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
     {
         friend class Observer;
 
@@ -174,7 +174,7 @@ namespace Meta
             Q_DISABLE_COPY(MetaBase)
     };
 
-    class AMAROK_EXPORT Track : public MetaBase
+    class AMAROK_CORE_EXPORT Track : public MetaBase
     {
         public:
 
@@ -312,7 +312,7 @@ namespace Meta
 
     };
 
-    class AMAROK_EXPORT Artist : public MetaBase
+    class AMAROK_CORE_EXPORT Artist : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         Q_PROPERTY( AlbumList albums READ albums )
@@ -338,7 +338,7 @@ namespace Meta
             mutable QString m_sortableName;
     };
 
-    class AMAROK_EXPORT Album : public MetaBase
+    class AMAROK_CORE_EXPORT Album : public MetaBase
     {
         Q_PROPERTY( bool compilation READ isCompilation )
         Q_PROPERTY( bool hasAlbumArtist READ hasAlbumArtist )
@@ -390,7 +390,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_EXPORT Composer : public MetaBase
+    class AMAROK_CORE_EXPORT Composer : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -407,7 +407,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_EXPORT Genre : public MetaBase
+    class AMAROK_CORE_EXPORT Genre : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -424,7 +424,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_EXPORT Year : public MetaBase
+    class AMAROK_CORE_EXPORT Year : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -444,7 +444,7 @@ namespace Meta
     /**
       A Label represents an arbitrary classification of a Track.
       */
-    class AMAROK_EXPORT Label : public MetaBase
+    class AMAROK_CORE_EXPORT Label : public MetaBase
     {
     public:
         /**

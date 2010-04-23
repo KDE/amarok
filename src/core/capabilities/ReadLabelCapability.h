@@ -26,7 +26,7 @@
 namespace Capabilities
 {
 
-class AMAROK_EXPORT ReadLabelCapability : public Capabilities::Capability
+class AMAROK_CORE_EXPORT ReadLabelCapability : public Capabilities::Capability
 {
     Q_OBJECT
     public:

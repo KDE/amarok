@@ -74,7 +74,7 @@
 
 namespace Debug
 {
-    extern AMAROK_EXPORT QMutex mutex;
+    extern AMAROK_CORE_EXPORT QMutex mutex;
 
     // we can't use a statically instantiated QString for the indent, because
     // static namespaces are unique to each dlopened library. So we piggy back

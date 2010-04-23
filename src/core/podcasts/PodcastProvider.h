@@ -32,7 +32,7 @@ namespace Podcasts {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT PodcastProvider : public Collections::TrackProvider, public Playlists::PlaylistProvider
+class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, public Playlists::PlaylistProvider
 {
     public:
         static bool couldBeFeed( const QString &urlString );

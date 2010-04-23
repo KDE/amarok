@@ -36,7 +36,7 @@ class EngineSubject;
  * If you want to observe the engine, inherit from this class.
  * Note that all positional information and times are in milliseconds
  */
-class AMAROK_EXPORT EngineObserver
+class AMAROK_CORE_EXPORT EngineObserver
 {
 public:
     /**
@@ -166,7 +166,7 @@ private:
  * Inherited by EngineController.
  * Notify observer functionality is captured in this class.
  */
-class AMAROK_EXPORT EngineSubject : public QObject
+class AMAROK_CORE_EXPORT EngineSubject : public QObject
 {
     Q_OBJECT
 

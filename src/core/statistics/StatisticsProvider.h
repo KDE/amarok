@@ -24,7 +24,7 @@
 
 namespace Statistics
 {
-    class AMAROK_EXPORT StatisticsProvider
+    class AMAROK_CORE_EXPORT StatisticsProvider
     {                
         public:
             StatisticsProvider();

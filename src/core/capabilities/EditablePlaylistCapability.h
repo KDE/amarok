@@ -31,7 +31,7 @@ namespace Capabilities {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT EditablePlaylistCapability : public Capability
+class AMAROK_CORE_EXPORT EditablePlaylistCapability : public Capability
 {
     Q_OBJECT
 

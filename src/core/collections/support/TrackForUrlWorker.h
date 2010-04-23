@@ -31,7 +31,7 @@ namespace Amarok
  * Derive from this class and implement the run() method to set mTrack.
  * @author Casey Link
  */
-class AMAROK_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
+class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
 public:

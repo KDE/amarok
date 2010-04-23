@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 
-class AMAROK_EXPORT SqlStorage
+class SqlStorage
 {
 public:
     SqlStorage() {}

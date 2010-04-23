@@ -29,7 +29,7 @@ This capability determines whether a meta item in a collection can be directly b
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_EXPORT BookmarkThisCapability : public Capability {
+class AMAROK_CORE_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
     virtual ~BookmarkThisCapability();

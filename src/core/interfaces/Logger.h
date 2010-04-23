@@ -33,7 +33,7 @@ namespace Amarok
       *
       * The class name is up for discussion btw.
       */
-    class AMAROK_EXPORT Logger : public QObject
+    class AMAROK_CORE_EXPORT Logger : public QObject
     {
         Q_OBJECT
         Q_ENUMS( MessageType )

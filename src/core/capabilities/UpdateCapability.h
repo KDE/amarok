@@ -30,7 +30,7 @@ namespace Capabilities
       * The proper solution is to add code to the collection that allows it figure out on its
       * own whether it has been changed.
       */
-    class AMAROK_EXPORT UpdateCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT UpdateCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

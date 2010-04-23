@@ -27,7 +27,7 @@ namespace Plugins
      * Class to allow user configuration of your plugin; you provide a GUI widget via view()
      */
 
-    class AMAROK_EXPORT PluginConfig : public QObject
+    class AMAROK_CORE_EXPORT PluginConfig : public QObject
     {
         Q_OBJECT
 

@@ -23,7 +23,7 @@
 
 namespace Capabilities
 {
-    class AMAROK_EXPORT Capability : public QObject
+    class AMAROK_CORE_EXPORT Capability : public QObject
     {
         Q_OBJECT
         Q_ENUMS( Type )

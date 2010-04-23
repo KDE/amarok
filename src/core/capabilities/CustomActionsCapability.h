@@ -33,7 +33,7 @@ namespace Capabilities
      *         @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
 
-    class AMAROK_EXPORT CustomActionsCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT CustomActionsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

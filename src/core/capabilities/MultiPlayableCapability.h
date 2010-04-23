@@ -23,7 +23,7 @@
 
 namespace Capabilities
 {
-    class AMAROK_EXPORT MultiPlayableCapability : public Capability
+    class AMAROK_CORE_EXPORT MultiPlayableCapability : public Capability
     {
         Q_OBJECT
 

@@ -26,7 +26,7 @@ An extremely simple registry used where tracks often have private often have pri
 
 	@author 
 */
-class AMAROK_EXPORT PrivateMetaRegistry{
+class AMAROK_CORE_EXPORT PrivateMetaRegistry{
 public:
 
     static PrivateMetaRegistry * instance();

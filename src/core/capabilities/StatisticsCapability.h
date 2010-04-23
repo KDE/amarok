@@ -22,7 +22,7 @@
 
 namespace Capabilities
 {
-    class AMAROK_EXPORT StatisticsCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT StatisticsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

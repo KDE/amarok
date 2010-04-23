@@ -25,7 +25,7 @@
 #include <QString>
 #include <QVariant>
 
-class AMAROK_EXPORT AlbumKey
+class AMAROK_CORE_EXPORT AlbumKey
 {
 public:
     QString albumName;
@@ -39,7 +39,7 @@ public:
     { albumName = o.albumName; artistName = o.artistName; return *this; }
 };
 
-class AMAROK_EXPORT TrackKey
+class AMAROK_CORE_EXPORT TrackKey
 {
 public:
     QString trackName;
@@ -61,24 +61,24 @@ namespace Meta
     {
 
         //deprecated
-        AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
+        AMAROK_CORE_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
         //this method will return a map with keys that are compatible to the fdo MPRIS specification
-        AMAROK_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
-        AMAROK_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
-        AMAROK_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
-        AMAROK_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
+        AMAROK_CORE_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
+        AMAROK_CORE_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
+        AMAROK_CORE_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
+        AMAROK_CORE_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
     }
 
 
-    AMAROK_EXPORT QString msToPrettyTime( qint64 ms );
-    AMAROK_EXPORT QString secToPrettyTime( int seconds );
+    AMAROK_CORE_EXPORT QString msToPrettyTime( qint64 ms );
+    AMAROK_CORE_EXPORT QString secToPrettyTime( int seconds );
 
-    AMAROK_EXPORT QString prettyFilesize( quint64 size );
-    AMAROK_EXPORT QString prettyBitrate( int bitrate );
+    AMAROK_CORE_EXPORT QString prettyFilesize( quint64 size );
+    AMAROK_CORE_EXPORT QString prettyBitrate( int bitrate );
 
-    AMAROK_EXPORT QString prettyRating( int rating );
+    AMAROK_CORE_EXPORT QString prettyRating( int rating );
 
-    AMAROK_EXPORT TrackKey keyFromTrack( const Meta::TrackPtr &track );
+    AMAROK_CORE_EXPORT TrackKey keyFromTrack( const Meta::TrackPtr &track );
 }
 
 inline bool

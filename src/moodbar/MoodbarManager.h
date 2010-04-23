@@ -35,7 +35,7 @@ namespace The {
 
 typedef QVector<QColor> MoodbarColorList;
 
-class MoodbarManager : public QObject
+class AMAROK_EXPORT  MoodbarManager : public QObject
 {
     
 Q_OBJECT
