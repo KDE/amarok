@@ -134,6 +134,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     else
     {
         m_cueTrackAction->disconnect();
+        m_cueTrackAction->setText( queueText );
     }
 
     if( isQueued )
