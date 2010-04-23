@@ -667,7 +667,9 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/FileView.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
+    OpmlOutline.cpp
     OpmlParser.cpp
+    OpmlWriter.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     statemanagement/ApplicationController.cpp

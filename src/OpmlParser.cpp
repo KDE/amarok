@@ -26,13 +26,6 @@
 #include <KLocale>
 #include <threadweaver/Job.h>
 
-
-OpmlOutline::OpmlOutline( OpmlOutline *parent )
-        : m_parent( parent )
-        , m_hasChildren( false )
-{
-}
-
 const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 
 OpmlParser::OpmlParser( const QString &filename )

@@ -31,10 +31,12 @@
 #include "core/collections/support/SqlStorage.h"
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
+#include "OpmlWriter.h"
 
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
 #include <KLocale>
+#include <KFileDialog>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
@@ -280,6 +282,13 @@ SqlPodcastProvider::providerActions()
         configureAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureProvider() ) );
         m_providerActions << configureAction;
+
+        QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
+                                                 i18n( "&Export to subscriptions to OPML file" ),
+                                                 this
+                                               );
+        connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
+        m_providerActions << exportOpmlAction;
     }
 
     return m_providerActions;
@@ -294,6 +303,7 @@ SqlPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
     if( sqlChannel.isNull() )
         return actions;
 
+    //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
     if( m_configureChannelAction == 0 )
     {
         m_configureChannelAction = new QAction(
@@ -615,6 +625,52 @@ SqlPodcastProvider::slotConfigChanged()
     {
         m_providerSettingsDialog->enableButtonApply( true );
     }
+}
+
+void
+SqlPodcastProvider::slotExportOpml()
+{
+    OpmlOutline *rootOutline = new OpmlOutline();
+    //TODO: root OPML outline head
+
+    //TODO: folder outline support
+    foreach( SqlPodcastChannelPtr channel, m_channels )
+    {
+        OpmlOutline *channelOutline = new OpmlOutline( rootOutline );
+        #define addAttr( k, v ) channelOutline->addAttribute( k, v )
+        addAttr( "text", channel->title() );
+        addAttr( "xmlUrl", channel->url().url() );
+        rootOutline->addChild( channelOutline );
+    }
+
+    //TODO: add checkbox as widget to filedialog to include podcast settings.
+    KFileDialog fileDialog( KUrl( "kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
+                            The::mainWindow() );
+    fileDialog.setMode( KFile::File );
+    fileDialog.setCaption( i18n( "Select file for OPML export") );
+    if( fileDialog.exec() != KDialog::Accepted )
+        return;
+
+    KUrl filePath = fileDialog.selectedUrl();
+
+    QFile *opmlFile = new QFile( filePath.toLocalFile(), this );
+    if( !opmlFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+        error() << "could not open OPML file " << filePath.url();
+        return;
+    }
+    OpmlWriter *opmlWriter = new OpmlWriter( rootOutline, opmlFile );
+    connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
+    opmlWriter->run();
+}
+
+void
+SqlPodcastProvider::slotOpmlWriterDone( int result )
+{
+    OpmlWriter *writer = qobject_cast<OpmlWriter *>( QObject::sender() );
+    Q_ASSERT( writer );
+    writer->device()->close();
+    delete writer;
 }
 
 void

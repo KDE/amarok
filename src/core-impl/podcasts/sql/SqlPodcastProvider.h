@@ -100,6 +100,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotDownloadProgress( KJob *job, unsigned long percent );
         void slotWriteTagsToFiles();
         void slotConfigChanged();
+        void slotExportOpml();
 
     signals:
         void totalPodcastDownloadProgress( int progress );
@@ -113,6 +114,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
                                                                const QString &description,
                                                                Podcasts::PodcastReader* reader );
         void slotStatusBarSorryMessage( const QString &message );
+        void slotOpmlWriterDone( int result );
 
     private:
         void configureProvider();
