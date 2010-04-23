@@ -32,6 +32,7 @@ Name[sr@latin]=Postavke MP3Tunesovog servisa
 Name[sv]=Inställning av Mp3tunes-tjänst
 Name[uk]=Налаштування служби MP3tunes
 Name[x-test]=xxMP3tunes Service Configxx
+Name[zh_CN]=MP3tunes 服务配置
 Comment=Configure mp3tunes credentials
 Comment[bg]=Настройване на mp3tunes
 Comment[ca]=Configura les credencials de mp3tunes

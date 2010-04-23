@@ -26,6 +26,7 @@ Name[sr@latin]=MP3Tunes
 Name[sv]=MP3tunes
 Name[uk]=MP3tunes
 Name[x-test]=xxMP3tunesxx
+Name[zh_CN]=MP3tunes
 Comment=Browse and listen to the music stored in your MP3tunes account
 Comment[ca]=Navegueu i escolteu la música emmagatzemada en el vostre compte de MP3tunes
 Comment[ca@valencia]=Navegueu i escolteu la música emmagatzemada en el vostre compte de MP3tunes
@@ -49,6 +50,7 @@ Comment[sr@latin]=Pregledajte i slušajte muziku sa svog naloga na MP3Tunesu
 Comment[sv]=Bläddra igenom och lyssna på musik lagrad på ditt Mp3tunes-konto
 Comment[uk]=Перегляньте і прослухайте музику з вашого рахунку у MP3tunes
 Comment[x-test]=xxBrowse and listen to the music stored in your MP3tunes accountxx
+Comment[zh_CN]=浏览并收听储存在您的 MP3tunes 账户中的音乐
 
 ServiceTypes=Amarok/Plugin
 

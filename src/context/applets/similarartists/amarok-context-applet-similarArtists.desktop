@@ -21,6 +21,7 @@ Name[sr@latin]=Slični izvođači
 Name[sv]=Liknande artister
 Name[uk]=Подібні виконавці
 Name[x-test]=xxSimilar Artistsxx
+Name[zh_CN]=相似艺人
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=similarartists-amarok
