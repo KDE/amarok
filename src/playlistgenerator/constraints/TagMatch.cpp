@@ -24,6 +24,8 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
+#include <KRandom>
+
 #include <QtGlobal>
 
 #include <math.h>
@@ -368,7 +370,32 @@ ConstraintTypes::TagMatch::swapTracks( const Meta::TrackList&, const int, const 
 ConstraintNode::Vote*
 ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
 {
-    // TODO: replace a track that doesn't match with one that does
+    ConstraintNode::Vote* v = new ConstraintNode::Vote();
+    v->operation = ConstraintNode::OperationReplace;
+    v->place = -1;
+    v->track = Meta::TrackPtr();
+
+    // find a non-matching track in the playlist
+    for ( int i = 0; i < playlist.length() ; i++ ) {
+        if ( !matches( playlist.at( i ) ) ) {
+            v->place = i;
+            break;
+        }
+    }
+    if ( v->place < 0 ) {
+        delete v;
+        return 0;
+    }
+
+    // replace it with a track from the domain that matches
+    for ( int i = 0; i < 100; i++ ) {
+        v->track = domain.at( KRandom::random() % domain.size() );
+        if ( matches( v->track ) ) {
+            return v;
+        }
+    }
+
+    delete v;
     return 0;
 }
 
