@@ -16,6 +16,7 @@ VERSION 2.3.1
       Thanks to Felix Geyer for the patch.
     * Better fix for pausing SHOUTcast streams, without advancing to the next
       track after resume. (BR 192878)
+    * Queued Track's Contextual Menu Entry About DeQueueing is written wrong and misleading (BR 235047).
 
 
 VERSION 2.3.1-Beta 1
