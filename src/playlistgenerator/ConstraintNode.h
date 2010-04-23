@@ -83,7 +83,7 @@ class ConstraintNode : public QObject {
         // Set up the initial query for the ConstraintSolver
         virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const = 0;
 
-        // Mathematical functions for the ConstraintSolver
+        // Mathematical functions called by the ConstraintSolver
         virtual double satisfaction( const Meta::TrackList& ) = 0;
         virtual double deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr, const int ) const = 0;
         virtual double deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const = 0;
@@ -94,7 +94,7 @@ class ConstraintNode : public QObject {
         virtual void deleteTrack( const Meta::TrackList&, const int ) = 0;
         virtual void swapTracks( const Meta::TrackList&, const int, const int ) = 0;
 
-        // helper functions for ConstraintSolver
+        // heuristic functions for the ConstraintSolver
         virtual int suggestInitialPlaylistSize() const;
         virtual Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
 

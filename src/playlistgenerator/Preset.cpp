@@ -144,7 +144,7 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     The::statusBar()->endProgressOperation( solver );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
-        if ( solver->finalSatisfaction() < 0.95 ) {
+        if ( solver->finalSatisfaction() < 0.85 ) {
             The::statusBar()->longMessage( i18n("The playlist generator created a playlist which does not meet all of your constraints.  If you are not satisfied with the results, try loosening or removing some constraints and then generating a new playlist.") );
         }
         The::playlistController()->insertOptioned( solver->getSolution() , Playlist::Replace );

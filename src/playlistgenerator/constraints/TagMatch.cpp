@@ -186,15 +186,15 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
         int v = m_value.toInt();
 
         double factor;
-        int range;
+        uint range;
         if ( m_field != "length" ) {
             // compute fuzzy ranges -- this marks the boundary beyond which the fuzzy match probability is less than 1%
-            factor = exp( 2.0 * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
-            range = (int)ceil( 4.6051702 / factor );
+            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
+            range = (uint)ceil( 4.6051702 / factor );
         } else {
             // small kludge to get fuzziness to play better in the case of track lengths
-            factor = exp( 2.0 * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
-            range = (int)ceil( 4605.1702 / factor );
+            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
+            range = (uint)ceil( 4605.1702 / factor );
         }
         if ( m_comparison == Constraint::CompareNumEquals ) {
             if ( !m_invert ) {
@@ -364,6 +364,14 @@ ConstraintTypes::TagMatch::deleteTrack( const Meta::TrackList& tl, const int i )
 
 void
 ConstraintTypes::TagMatch::swapTracks( const Meta::TrackList&, const int, const int ) {}
+
+ConstraintNode::Vote*
+ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
+{
+    // TODO: replace a track that doesn't match with one that does
+    return 0;
+}
+
 
 const QBitArray
 ConstraintTypes::TagMatch::whatTracksMatch( const Meta::TrackList& tl )

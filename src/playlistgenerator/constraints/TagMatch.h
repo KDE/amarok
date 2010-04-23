@@ -60,7 +60,7 @@ namespace ConstraintTypes {
             virtual void toXml(QDomDocument&, QDomElement&) const;
 
             virtual QString getName() const;
-            
+
             virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
             virtual double satisfaction(const Meta::TrackList&);
             virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
@@ -71,6 +71,8 @@ namespace ConstraintTypes {
             virtual void replaceTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
             virtual void deleteTrack(const Meta::TrackList&, const int);
             virtual void swapTracks(const Meta::TrackList&, const int, const int);
+
+            virtual ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
 
             // Implementation of MatchingConstraint virtuals
             const QBitArray whatTracksMatch( const Meta::TrackList& );

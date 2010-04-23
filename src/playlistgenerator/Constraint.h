@@ -37,6 +37,8 @@ class Constraint : public ConstraintNode {
         enum StrComparison { CompareStrEquals, CompareStrStartsWith, CompareStrEndsWith, CompareStrContains, CompareStrRegExp };
         enum DateComparison { CompareDateBefore, CompareDateOn, CompareDateAfter, CompareDateWithin };
 
+        static const double magicStrictnessWeight = 3.0;
+
         virtual int getNodeType() const { return ConstraintNode::ConstraintType; }
 
     protected:
@@ -54,7 +56,7 @@ template <typename T> double Constraint::compare( const T a, const int compariso
      * cases and what answers I expected, and tried a bunch of different
      * factors.  This one behaved closest to what I wanted.  -- sth */
 
-    double factor = ( exp( 2.0 * strictness) / ( sqrt( (double) b ) + 1.0 ) );
+    double factor = ( exp( magicStrictnessWeight * strictness) / ( sqrt( (double) b ) + 1.0 ) );
     if ( comparison == CompareNumEquals ) {
         // fuzzy equals -- within 1%
         if ( qAbs( a - b ) < ( ( a + b ) / 200.0 ) ) {
@@ -65,9 +67,9 @@ template <typename T> double Constraint::compare( const T a, const int compariso
             return exp( factor * ( a - b ) );
         }
     } else if ( comparison == CompareNumGreaterThan ) {
-        return (a > b) ? 1.0 : exp( factor * ( a - b ) );
+        return (a > b) ? 1.0 : exp( factor * ( a - ( b * 1.05 ) ) );
     } else if ( comparison == CompareNumLessThan ) {
-        return (a < b) ? 1.0 : exp( factor * ( b - a ) );
+        return (a < b) ? 1.0 : exp( factor * ( b - ( a * 1.05 ) ) );
     } else {
         return 0.0;
     }
