@@ -16,6 +16,8 @@ VERSION 2.3.1
       <debfx-kde@fobos.de>.
     * Made icons in applets react correctly in double-click environments.
       Thanks to Felix Geyer <debfx-kde@fobos.de>.
+    * Several bug fixes for the bundled LyricWiki script. Patch by Oleg G
+      <verdrehung@gmail.com>. (BR 233605)
     * Better fix for pausing SHOUTcast streams, without advancing to the next
       track after resume. (BR 192878)
 
