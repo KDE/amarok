@@ -43,6 +43,6 @@ public:
     static Type capabilityInterfaceType() { return Capabilities::Capability::FindInSource; }
 };
 
-};
+}
 
 #endif // FINDINSOURCECAPABILITY_H

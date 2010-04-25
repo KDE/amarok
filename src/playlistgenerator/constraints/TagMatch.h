@@ -190,6 +190,6 @@ namespace ConstraintTypes {
 } // namespace ConstraintTypes
 
 typedef QPair<int,int> DateRange;
-Q_DECLARE_METATYPE( DateRange );
+Q_DECLARE_METATYPE( DateRange )
 
 #endif

@@ -114,7 +114,7 @@ private:
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     unsigned int m_queryPage;         //!< Cache for the page number associated with @ref m_query
 
-    Q_DISABLE_COPY( CoverFoundDialog );
+    Q_DISABLE_COPY( CoverFoundDialog )
 };
 
 class CoverFoundSideBar : public KVBox
@@ -143,7 +143,7 @@ private:
     void updateMetaTable();
     void clearMetaTable();
 
-    Q_DISABLE_COPY( CoverFoundSideBar );
+    Q_DISABLE_COPY( CoverFoundSideBar )
 };
 
 class CoverFoundItem : public QObject, public QListWidgetItem

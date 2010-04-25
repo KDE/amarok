@@ -100,7 +100,7 @@ private:
     void remove( const Meta::AlbumPtr album );
 
     CoverFetchUnitList m_queue;
-    Q_DISABLE_COPY( CoverFetchQueue );
+    Q_DISABLE_COPY( CoverFetchQueue )
 };
 
 #endif /* AMAROK_COVERFETCHQUEUE_H */

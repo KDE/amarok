@@ -88,6 +88,6 @@ private:
 }
 
 //for saving it in a QVariant
-Q_DECLARE_METATYPE( const Playlists::PlaylistProvider * );
+Q_DECLARE_METATYPE( const Playlists::PlaylistProvider * )
 
 #endif

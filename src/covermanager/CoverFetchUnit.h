@@ -123,7 +123,7 @@ private:
     const QString  m_method;
     enum Type      m_type;
 
-    Q_DISABLE_COPY( CoverFetchPayload );
+    Q_DISABLE_COPY( CoverFetchPayload )
 };
 
 /**
@@ -142,7 +142,7 @@ protected:
 private:
     QString m_xml;
     void prepareDiscogsUrls( const QDomDocument &doc );
-    Q_DISABLE_COPY( CoverFetchInfoPayload );
+    Q_DISABLE_COPY( CoverFetchInfoPayload )
 };
 
 /**
@@ -166,7 +166,7 @@ private:
     const unsigned int m_page;
     const QString m_query;
 
-    Q_DISABLE_COPY( CoverFetchSearchPayload );
+    Q_DISABLE_COPY( CoverFetchSearchPayload )
 };
 
 /**
@@ -224,7 +224,7 @@ private:
     /// prepare urls from xml provided by Google Image Search
     void prepareGoogleUrls( const QString &html );
 
-    Q_DISABLE_COPY( CoverFetchArtPayload );
+    Q_DISABLE_COPY( CoverFetchArtPayload )
 };
 
 

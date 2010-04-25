@@ -37,7 +37,7 @@ namespace Playlist
 enum GroupDataRoles
 {
     GroupRole = 256,
-    GroupedTracksRole, // deprecated
+    GroupedTracksRole // deprecated
 };
 
 namespace Grouping
