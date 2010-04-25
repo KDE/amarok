@@ -37,7 +37,7 @@ class Constraint : public ConstraintNode {
         enum StrComparison { CompareStrEquals, CompareStrStartsWith, CompareStrEndsWith, CompareStrContains, CompareStrRegExp };
         enum DateComparison { CompareDateBefore, CompareDateOn, CompareDateAfter, CompareDateWithin };
 
-        static const double magicStrictnessWeight = 3.0;
+        static const double magicStrictnessWeight;
 
         virtual int getNodeType() const { return ConstraintNode::ConstraintType; }
 

@@ -22,6 +22,8 @@
 
 #include <QString>
 
+const double Constraint::magicStrictnessWeight = 3.0;
+
 Constraint::Constraint( ConstraintNode* p ) : ConstraintNode( p ) {}
 
 double Constraint::compare( const QString& a, const int comparison, const QString& b, double strictness ) const
