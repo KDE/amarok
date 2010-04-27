@@ -95,7 +95,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     protected:
         virtual bool event( QEvent *event );
-        virtual bool notify( QObject *receiver, QEvent *event );
 
     private slots:
         void slotTrashResult( KJob *job );

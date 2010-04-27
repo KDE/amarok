@@ -903,22 +903,6 @@ bool App::event( QEvent *event )
     }
 }
 
-bool App::notify( QObject *receiver, QEvent *event )
-{
-    // Here we try to catch exceptions from LiblastFm, which Qt can't handle, except in this method.
-    // @see: https://bugs.kde.org/show_bug.cgi?id=212115
-
-    try
-    {
-        return QApplication::notify( receiver, event );
-    }
-    catch(...)
-    {
-        error() << "Caught an exception, probably from LibLastfm. Ignoring.";
-        return false;
-    }
-}
-
 int App::newInstance()
 {
     DEBUG_BLOCK
