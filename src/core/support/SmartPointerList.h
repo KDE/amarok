@@ -24,7 +24,7 @@
 
 #include "shared/amarok_export.h"
 
-#ifdef Q_OS_WIN32
+#ifdef Q_CC_MSVC
 class SmartPointerListDaddy : public QObject
 #else
 class AMAROK_CORE_EXPORT SmartPointerListDaddy : public QObject
@@ -34,7 +34,7 @@ class AMAROK_CORE_EXPORT SmartPointerListDaddy : public QObject
     QList<QObject*>& m_list;
 
 public:
-#ifdef Q_OS_WIN32
+#ifdef Q_CC_MSVC
     AMAROK_CORE_EXPORT SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
 #else
 	SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
