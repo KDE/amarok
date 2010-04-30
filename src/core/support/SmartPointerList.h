@@ -24,13 +24,13 @@
 
 #include "shared/amarok_export.h"
 
-class AMAROK_CORE_EXPORT SmartPointerListDaddy : public QObject
+class SmartPointerListDaddy : public QObject
 {
     Q_OBJECT
     QList<QObject*>& m_list;
 
 public:
-    SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+    AMAROK_CORE_EXPORT SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
     {}
 
 private slots:
