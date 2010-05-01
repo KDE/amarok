@@ -355,7 +355,7 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
     QMutexLocker locker( &m_mutex );
 
     // we only want the uid part:
-    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
+    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) + 1 );
     const QByteArray uid = uidString.toAscii();
 
     return m_property.contains( uid );
