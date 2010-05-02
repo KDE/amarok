@@ -72,8 +72,8 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
         virtual QDomElement xml() const;
    
-        virtual double energy(const Meta::TrackList& playlist, const Meta::TrackList& context);
-        virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context);
+        virtual double energy(const Meta::TrackList& playlist, const Meta::TrackList& context) const;
+        virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context) const;
         virtual bool hasCollectionFilterCapability();
         virtual CollectionFilterCapability* collectionFilterCapability();
         

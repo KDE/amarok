@@ -63,7 +63,7 @@ Dynamic::CustomBias::widget( QWidget* parent )
 }
 
 double
-Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
+Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const
 {
     DEBUG_BLOCK
 
@@ -105,7 +105,7 @@ Dynamic::CustomBias::xml() const
 }
 
 double
-Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
+Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const
 {
     Q_UNUSED( context )
 

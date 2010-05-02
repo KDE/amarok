@@ -85,7 +85,7 @@ namespace Dynamic
              * satisfied, (+/-)1 that it is not satisfied at all. The tracks that
              * precede the playlist are passed as 'context'.
              */
-            virtual double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) = 0;
+            virtual double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const = 0;
 
 
             /**
@@ -93,7 +93,7 @@ namespace Dynamic
              * the energy function if possible.
              */
             virtual double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
+                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const;
 
             /**
              * This returns whether or not this bias operates on the collection in such a way
@@ -203,12 +203,12 @@ namespace Dynamic
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
             const XmlQueryReader::Filter& filter() const;
 
-            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
+            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const;
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
+                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const;
 
             virtual const QSet<QByteArray>* propertySet() { return &m_property; }
-            bool trackSatisfies( Meta::TrackPtr );
+            bool trackSatisfies( Meta::TrackPtr ) const;
             void update();
 
             virtual double weight() const;
@@ -262,7 +262,7 @@ namespace Dynamic
             QDomElement xml() const;
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
 
-            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
+            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const;
 
             /**
              * The mean of the distribution, the 'ideal' value.
@@ -289,7 +289,7 @@ namespace Dynamic
 
         private:
             double sigmaFromScale( double scale );
-            double relevantField( Meta::TrackPtr t );
+            double relevantField( Meta::TrackPtr t ) const;
             void setDefaultMu();
 
             double m_scale;

@@ -195,7 +195,7 @@ namespace Dynamic
              * QByteArray.
              * @param uid The uid stored numerically as a QByteArray.
              */
-            Meta::TrackPtr trackForUid( const QByteArray& uid );
+            Meta::TrackPtr trackForUid( const QByteArray& uid ) const;
 
             /**
              * Return a random track from the domain.

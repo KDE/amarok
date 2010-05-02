@@ -713,18 +713,13 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
         // choose a track at random from our final subset
         playlist.append( getRandomTrack( finalSubset ) );
-
-        if( optimal )
-            emit statusUpdate( (int)(100.0 * (double)(m_n - n) / (double)n) );
     }
-
-    delete[] movingWeights;
 
     return playlist;
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
+Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
 {
     if( subset.size() == 0 ) 
         return Meta::TrackPtr();
@@ -763,7 +758,7 @@ Dynamic::BiasSolver::getMutation()
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
+Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 {
     const KUrl url = s_universeCollection->uidUrlProtocol() + "://" + QString( uid );
     return s_universeCollection->trackForUrl( url );
