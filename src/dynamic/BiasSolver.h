@@ -151,6 +151,7 @@ namespace Dynamic
             Meta::TrackList ga_optimize( int iterationLimit, bool updateStatus = true );
             /**
              * Optimize a playlist using simulated annealing.
+             * If the given initial playlist is already optimal it does not do anything.
              *
              * @param initialPlaylist The starting playlist for the algorithm.
              * @param iterationLimit Maximum iterations allowed.
@@ -165,7 +166,7 @@ namespace Dynamic
              * exclude all those tracks, or include only those tracks,
              * respectively.
              */
-            void computeDomain();
+            void computeDomainAndFeasibleFilters();
 
 
             /**
@@ -207,18 +208,15 @@ namespace Dynamic
              * @param subset A list (representing a set) of uids stored in
              * QByteArrays.
              */
-            Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset );
+            Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset ) const;
 
 
             /**
              * Try to choose a good starting playlist using heuristics. The
              * details are a bit complicated, the algorithm is documented in the
              * source code.
-             *
-             * @parem optimal A flag that is set if the generated playlist is
-             * known to be optimal.
              */
-            Meta::TrackList generateInitialPlaylist( bool& optimal );
+            Meta::TrackList generateInitialPlaylist() const;
 
             /**
              * Used each iteration of the genetic algorithm. Choose

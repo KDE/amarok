@@ -157,7 +157,7 @@ void Dynamic::BiasSolver::run()
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
-    computeDomain();
+    computeDomainAndFeasibleFilters();
 
     /*
      * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
@@ -175,14 +175,11 @@ void Dynamic::BiasSolver::run()
      */
     //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
 
-    bool optimal;
-    Meta::TrackList playlist = generateInitialPlaylist( optimal );
-
+    Meta::TrackList playlist = generateInitialPlaylist();
     if( playlist.isEmpty() )
         return;
 
-    if( !optimal )
-        sa_optimize( playlist, SA_ITERATION_LIMIT, true );
+    sa_optimize( playlist, SA_ITERATION_LIMIT, true );
 
     m_solution = playlist;
 }
@@ -282,7 +279,6 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
      */
 
     // 1.  Generate initial population
-    bool optimal;
     QList<TrackListEnergyPair> population;
     Meta::TrackList playlist;
     while( population.size() < GA_POPULATION_SIZE )
@@ -291,7 +287,7 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
         // getting Meta::Tracks, since we request so many with this. Experiment
         // with lowering the population size, or finding a faster way to get a
         // bunch of random tracks.
-        playlist = generateInitialPlaylist( optimal );
+        playlist = generateInitialPlaylist();
 
         playlist.removeAll( Meta::TrackPtr() );
 
@@ -302,10 +298,12 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
             return Meta::TrackList();
         }
 
-        if( optimal )
+        double plEnergy = energy( playlist );
+
+        if( plEnergy < m_epsilon ) // no need to continue if we already found an optimal playlist
             return playlist;
 
-        population.append( TrackListEnergyPair( playlist, energy( playlist ) ) );
+        population.append( TrackListEnergyPair( playlist, plEnergy ) );
     }
 
     qSort( population ); // sort the population by energy.
@@ -526,7 +524,7 @@ double Dynamic::BiasSolver::recalculateEnergy( const Meta::TrackList& playlist, 
 
 
 Meta::TrackList
-Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
+Dynamic::BiasSolver::generateInitialPlaylist() const
 {
     DEBUG_BLOCK
 
@@ -571,39 +569,32 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
      * the proportions (p_i) and decide at random. If p_0 = 0.4, there is a 0.4
      * chance the we decide the track is in S_0, and a 0.6 chance it is not.
      *
-     * But it's not quite that simple. As the playlist gets built up, we change
-     * the p_i value to reflect the proportion of _remaining_ tracks should be
-     * in S_i. So if, p_0 = 0.4, and we add a track that is in S_0, then that
-     * number will go down, since we need fewer tracks to satisfy that bias.
-     * This way we always get the best possible playlist.
+     * This chance changes obviously.
+     * It is: songsToPick - songsAlreadyPicked / songsStillNeedsPicking
+     * Where songsToPick is the original weight * m_n
      *
      * There are a couple of other caveats (such as producing reasonable
      * playlists when given infeasible systems of biases, e.g. 100% Radiohead,
      * AND 100% Bob Dylan), that you can read on to learn about.
      *
-     */                
+     */
 
-    // this algorithm will produce an optimal solution unless there are
-    // non global biases in the system.
-    optimal = (m_biases.size() == m_feasibleCollectionFilters.size());
     Meta::TrackList playlist;
 
     // Empty collection
     if( s_universe.isEmpty() )
     {
-        optimal = false;
         debug() << "Empty collection when trying to generate initial playlist...";
         return Meta::TrackList();
     }
 
-    // No feasible global biases
+    // No feasible global biases so we just pick random tracks
     if( m_feasibleCollectionFilters.size() == 0 )
     {
         int n = m_n;
         while( n-- )
             playlist += getRandomTrack( m_domain );
 
-        optimal = m_biases.isEmpty();
         debug() << "No collection filters, returning random initial playlist";
         return playlist;
     }
@@ -612,15 +603,10 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     // memoize to try and save time (if not memory).
     QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
 
-    // As we build up the playlist the weights for each bias will change to
-    // reflect what proportion of the tracks that remain to be chosen should
-    // have the property in question.
-    double* movingWeights = new double[m_feasibleCollectionFilters.size()];
+    int addedSongsForFilter[m_feasibleCollectionFilters.size()];
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
-        movingWeights[i] = m_feasibleCollectionFilters[i]->weight();
+        addedSongsForFilter[i] = 0;
 
-    debug() << "Just set movingWeights to:" << movingWeights;
-    
     // We use this array of indexes to randomize the order the biases are looked
     // at. That way we get reasonable results when the system is infeasible.
     // That is, specifying 100% of two mutually exclusive artists, will get you
@@ -630,17 +616,9 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
         indexes.append( i );
 
 
-    Dynamic::TrackSet S, R;
-
-    double decider;
     int n = m_n;
     while( n-- && !m_abortRequested )
     {
-        // For each bias, we must make a decision whether the track being chosen
-        // should belong to it or not. This is simply a probabilistic choice
-        // based on the current weight. 
-
-
         // Randomize the order.
         int m = m_feasibleCollectionFilters.size();
         while( m > 1 )
@@ -650,32 +628,38 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             indexes.swap( m, k );
         }
 
+        // For each bias, we must make a decision whether the track being chosen
+        // should belong to it or not. This is simply a probabilistic choice
+        // based on the current weight.
 
         // The bit array represents the choice made at each branch.
         QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
+        Dynamic::TrackSet S;
         S.setUniverseSet();
 
         for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
-            R = S;
+            Dynamic::TrackSet currentSet = S;
 
             // Decide whether we should 'accept' or 'reject' a bias.
-            decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-            debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
-            if( decider < movingWeights[i] )
+            double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+            double currentWeight = (m_feasibleCollectionFilters[i]->weight() * m_n - addedSongsForFilter[i]) / (double)(n+1);
+
+            debug() << "decider is set to:" << decider << "currentWeight is:" << currentWeight;
+            if( decider < currentWeight )
             {
                 debug() << "chose track from bias";
                 branches.setBit( i, true );
-                R.intersect( m_feasibleCollectionFilterSets[i] );
+                currentSet.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
                 debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
-                R.subtract( m_feasibleCollectionFilterSets[i] );
+                currentSet.subtract( m_feasibleCollectionFilterSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
@@ -684,15 +668,16 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             // deal with infeasible systems.)
             //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
-            if( R.size() == 0 )
+            if( currentSet.size() == 0 ) {
+                debug() << "bias would result in empty set. reverting decision";
                 branches.toggleBit( i );
+            }
             else
-                S = R;
-
-            if( branches[i] )
-                movingWeights[i] = (movingWeights[i]*(double)(n+1)-1.0)/(double)n;
-            else
-                movingWeights[i] = (movingWeights[i]*(double)(n+1))/(double)n;
+            {
+                S = currentSet;
+                if( branches[i] )
+                    addedSongsForFilter[i]++;
+            }
         }
 
         // Memoize to avoid touching U as much as possible, and to avoid
@@ -747,8 +732,7 @@ Dynamic::BiasSolver::getMutation()
 {
     if( m_mutationPool.isEmpty() )
     {
-        bool optimal; // (we don't actually care if its optimal here)
-        m_mutationPool = generateInitialPlaylist( optimal );
+        m_mutationPool = generateInitialPlaylist();
     }
 
     if( m_mutationPool.isEmpty() )
@@ -766,7 +750,7 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 
 
 void
-Dynamic::BiasSolver::computeDomain()
+Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
 {
     DEBUG_BLOCK
     foreach( Dynamic::Bias* b, m_biases )
