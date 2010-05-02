@@ -442,6 +442,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, C
         populateQuery->run();
     }
 
+    m_filter.compare = -1; // set the filter to a no numerical comparision (we don't have the m_compareSelection)
 
     connect( combo, SIGNAL(editTextChanged( const QString& ) ),
             SLOT(valueChanged(const QString&)) );
