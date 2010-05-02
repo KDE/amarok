@@ -35,7 +35,13 @@
 
 
 // The bigger this is, the more accurate the result will be. Big is good.
-const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 100;
+// On the other hand optimizing a ridiculous large playlist for nothing
+// is just a waste of processing power.
+// expecially since it seems that the buffers are deleted
+// every time the playlist changes (e.g. after the rating changed)
+// So Small is good.
+// Pick your poison...
+const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 
 
 Dynamic::BiasedPlaylist*
@@ -229,16 +235,7 @@ Dynamic::BiasedPlaylist::handleRequest()
 {
     DEBUG_BLOCK
 
-    if( m_buffer.isEmpty() )
-    {
-        m_backbufferMutex.lock();
-        m_buffer = m_backbuffer;
-        m_backbuffer.clear();
-        startSolver( true );
-        m_backbufferMutex.unlock();
-    }
-
-    while( m_buffer.size() && m_numRequested-- )
+    while( !m_buffer.isEmpty() && m_numRequested-- )
         m_requestCache.append( m_buffer.takeLast() );
 
     if( m_numRequested <= 0 )
