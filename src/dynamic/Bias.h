@@ -125,6 +125,7 @@ namespace Dynamic
 
     /**
      * A bias that depends on the state of the collection.
+     * Actually this is more a bias that buffers results and needs to be updated.
      */
     class CollectionDependantBias : public QObject, public Bias
     {
@@ -217,7 +218,10 @@ namespace Dynamic
             // reimplemented
             virtual bool hasCollectionFilterCapability();
             virtual CollectionFilterCapability* collectionFilterCapability();
-            
+
+        public slots:
+            void collectionUpdated();
+
         private slots:
             void updateReady( QString collectionId, QStringList );
             void updateFinished();

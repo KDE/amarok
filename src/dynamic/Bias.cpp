@@ -283,14 +283,13 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    Collections::QueryMaker* qm;
-
     if( !m_collection )
         m_collection = CollectionManager::instance()->primaryCollection();
 
-    qm = m_collection->queryMaker();
+    if (m_qm)
+        delete m_qm;
 
-    m_qm = new Collections::XmlQueryWriter( qm,
+    m_qm = new Collections::XmlQueryWriter( m_collection->queryMaker(),
             QDomDocument() );
 
     if( filter.field != 0 )
@@ -370,6 +369,15 @@ void Dynamic::GlobalBias::update()
         return;
 
     m_qm->run();
+}
+
+void
+Dynamic::GlobalBias::collectionUpdated()
+{
+    QMutexLocker locker( &m_mutex );
+    m_property.clear();
+
+    CollectionDependantBias::collectionUpdated();
 }
 
 void
