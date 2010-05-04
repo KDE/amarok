@@ -123,10 +123,22 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 void
 TrackWidget::setTrack( Meta::TrackPtr track )
 {
+    if( m_track )
+        unsubscribeFrom( m_track );
+    
     m_track = track;
     m_rating->setRating( track->rating() );
     m_scoreText->setText( QString("%1").arg( int( track->score() ) ) );
+
+    subscribeTo( track );
 }
+
+void TrackWidget::metadataChanged( Meta::TrackPtr track )
+{
+    m_rating->setRating( track->rating() );
+    m_scoreText->setText( QString("%1").arg( int( track->score() ) ) );
+}
+
 
 void
 TrackWidget::show()

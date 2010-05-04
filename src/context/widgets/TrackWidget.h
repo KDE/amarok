@@ -32,7 +32,7 @@ namespace Plasma { class IconWidget; }
  * @class TrackWidget
  * @short A widget to show track information
  */
-class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
+class AMAROK_EXPORT TrackWidget: public ToolBoxIcon, public Meta::Observer
 {
     Q_OBJECT
 
@@ -63,6 +63,11 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
         virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
         virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
+        // Meta::Observer methods
+        virtual void metadataChanged( Meta::TrackPtr track );
+        
+        // fix warnings and overloads.
+        using Meta::Observer::metadataChanged;
         
     private slots:
         /**
