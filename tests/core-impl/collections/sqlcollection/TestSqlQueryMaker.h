@@ -91,6 +91,8 @@ private slots:
     void testLabelQueryMode_data();
     void testLabelQueryMode();
 
+    void testResetRunningQuery();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
