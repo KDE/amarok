@@ -38,7 +38,6 @@ class QNetworkReply;
 
 namespace Collections {
     class Collection;
-    class QueryMaker;
 }
 
 namespace Dynamic
@@ -99,8 +98,6 @@ private:
     void fetchNextWeeks( int num = 5 );
 
     QSet< QByteArray > m_trackList;
-    
-    Collections::QueryMaker* m_qm;
 
     QVBoxLayout* m_layout;
     QDateTimeEdit* m_fromEdit;

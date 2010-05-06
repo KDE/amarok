@@ -82,7 +82,6 @@ Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
     : Dynamic::CustomBiasEntry()
-    , m_qm( 0 )
     , m_layout( 0 )
     , m_fromEdit( 0 )
     , m_toEdit( 0 )
@@ -108,7 +107,6 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
 
 Dynamic::WeeklyTopBias::~WeeklyTopBias()
 {
-    //delete m_qm;
     delete m_fetching;
 }
 
@@ -454,32 +452,33 @@ void Dynamic::WeeklyTopBias::updateDB()
     m_collection = CollectionManager::instance()->primaryCollection();
     if( !m_collection )
         return;
-    m_qm = m_collection->queryMaker();
+    Collections::QueryMaker *qm = m_collection->queryMaker();
 
-    if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
+    if( !qm ) // maybe this is during startup and we don't have a QM for some reason yet
         return;
 
     debug() << "setting up query";
 
-    m_qm->beginOr();
+    qm->beginOr();
     foreach( QString artist, m_currentArtistList )
     {
-        m_qm->beginOr();
+        qm->beginOr();
         debug() << "adding artist to query:" << artist;
-        m_qm->addFilter( Meta::valArtist, artist, true, true );
-        m_qm->endAndOr();
+        qm->addFilter( Meta::valArtist, artist, true, true );
+        qm->endAndOr();
     }
-    m_qm->endAndOr();
+    qm->endAndOr();
 
 
-    m_qm->setQueryType( Collections::QueryMaker::Custom );
-    m_qm->addReturnValue( Meta::valUniqueId );
-    m_qm->orderByRandom(); // as to not affect the amortized time
+    qm->setQueryType( Collections::QueryMaker::Custom );
+    qm->addReturnValue( Meta::valUniqueId );
+    qm->orderByRandom(); // as to not affect the amortized time
+    qm->setAutoDelete( true );
 
-    connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ),
+    connect( qm, SIGNAL( newResultReady( QString, QStringList ) ),
              SLOT( updateReady( QString, QStringList ) ), Qt::DirectConnection );
 
-    m_qm->run();
+    qm->run();
 }
 
 
