@@ -46,7 +46,6 @@
  */
 ArtistWidget::ArtistWidget( QWidget *parent )
     : QWidget( parent )
-    , m_qm( 0 )
 {
 
     // set a fixed size for all widget, for harmonize the similar artists applet display
@@ -237,22 +236,18 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
     //Figure out of this applet is present in the local collection, and show the "show in collection" button if so
     m_navigateButton->hide();
 
-    if( m_qm )
-        m_qm->reset();
-    else
-    {
-        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-        m_qm = coll->queryMaker();
-    }
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::QueryMaker *qm = coll->queryMaker();
     
-    m_qm->setQueryType( Collections::QueryMaker::Artist );
-    m_qm->addFilter( Collections::QueryMaker::ArtistFilter, m_name );
-    m_qm->limitMaxResultSize( 1 );
+    qm->setQueryType( Collections::QueryMaker::Artist );
+    qm->addFilter( Collections::QueryMaker::ArtistFilter, m_name );
+    qm->limitMaxResultSize( 1 );
+    qm->setAutoDelete( true );
 
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
             SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
 
-    m_qm->run();
+    qm->run();
     
 }
 

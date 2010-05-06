@@ -168,13 +168,6 @@ private:
      */
     KJob *m_imageJob;
 
-    /**
-     * QueryMaker used for checking if a given artist exists in the local collection.
-     */
-    Collections::QueryMaker *m_qm;
-
-
-
 private slots:
     /**
      * Put the image of the artist in the QPixMap
