@@ -603,7 +603,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     // memoize to try and save time (if not memory).
     QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
 
-    int addedSongsForFilter[m_feasibleCollectionFilters.size()];
+    int *addedSongsForFilter = new int[m_feasibleCollectionFilters.size()];
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
         addedSongsForFilter[i] = 0;
 
@@ -699,6 +699,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         // choose a track at random from our final subset
         playlist.append( getRandomTrack( finalSubset ) );
     }
+    delete[] addedSongsForFilter;
 
     return playlist;
 }
