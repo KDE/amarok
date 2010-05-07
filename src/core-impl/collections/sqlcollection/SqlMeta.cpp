@@ -29,7 +29,6 @@
 #include "SqlRegistry.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/collections/support/SqlStorage.h"
-#include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
 #include "collectionscanner/AFTUtility.h"
