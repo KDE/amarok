@@ -46,3 +46,27 @@ MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& s
     return false;
 }
 
+bool
+MimeTypeFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
+{
+    // get the KFileItems
+    QVariant qvarLeft = left.data( KDirModel::FileItemRole );
+    QVariant qvarRight = right.data( KDirModel::FileItemRole );
+
+    KFileItem itemLeft = qvarLeft.value<KFileItem>();
+    KFileItem itemRight = qvarRight.value<KFileItem>();
+
+    // if both items are directories or files, then compare (case insensitive) on name
+    if( itemLeft.isDir() == itemRight.isDir()) {
+        return itemLeft.name(true) < itemRight.name(true);
+    }
+
+    // directories come before files
+    if (itemLeft.isDir()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+

@@ -39,6 +39,7 @@ public:
 
 protected:
     virtual bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const;
+    virtual bool lessThan( const QModelIndex& left, const QModelIndex& right ) const;
 
 private:
     QStringList m_mimeList;
