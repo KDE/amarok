@@ -19,7 +19,7 @@
 
 #include <KProcess>
 
-TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const QString &options, QObject *parent )
+TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFormat &options, QObject *parent )
     : KJob( parent )
     , m_src( src )
     , m_dest( dest )
@@ -28,7 +28,7 @@ TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const QString &op
     init();
 }
 
-TranscodeJob::TranscodeJob( const KUrl &src, const QString &options, QObject *parent )
+TranscodeJob::TranscodeJob( const KUrl &src, const TranscodeFormat &options, QObject *parent )
     : KJob( parent )
     , m_src( src )
     , m_dest( src )

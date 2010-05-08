@@ -42,13 +42,13 @@ public:
      *        uses the FFmpeg executable, @see http://ffmpeg.org/ffmpeg-doc.html#SEC6
      * @param the parent QObject.
      */
-    explicit TranscodeJob( const KUrl &src, const KUrl &dest, const QString &options, QObject *parent = 0 );
+    explicit TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFormat &options, QObject *parent = 0 );
 
     /**
      * Convenience constructor. Creates a TranscodeJob with the destination file to be
      * placed in the same directory as the source.
      */
-    explicit TranscodeJob( const KUrl &src, const QString &options, QObject *parent = 0 );
+    explicit TranscodeJob( const KUrl &src, const TranscodeFormat &options, QObject *parent = 0 );
 
     /**
      * Sets the path of the source file.
@@ -77,7 +77,7 @@ private slots:
 private:
     KUrl m_src;
     KUrl m_dest;
-    QString m_options;
+    TranscodeFormat m_options;
     KProcess *m_transcoder;
 };
 
