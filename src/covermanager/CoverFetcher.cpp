@@ -210,9 +210,11 @@ CoverFetcher::slotDialogFinished()
         break;
 
     case KDialog::Rejected:
-    default:
         finish( unit, Cancelled );
         break;
+
+    default:
+        finish( unit, Error );
     }
 
     /*
@@ -283,13 +285,12 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
                       const QString &message )
 {
     Meta::AlbumPtr album = unit->album();
-    const bool isInteractive = unit->isInteractive();
     const QString albumName = album ? album->name() : QString();
 
     switch( state )
     {
     case Success:
-        if( !isInteractive && !albumName.isEmpty() )
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             Amarok::Components::logger()->shortMessage( text );
@@ -299,7 +300,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         break;
 
     case Error:
-        if( !isInteractive && !albumName.isEmpty() )
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
             Amarok::Components::logger()->shortMessage( text );

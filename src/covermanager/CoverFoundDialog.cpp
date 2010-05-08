@@ -341,15 +341,15 @@ void CoverFoundDialog::saveRequested()
         if( gotBigPix )
         {
             m_pixmap = item->bigPix();
-            KDialog::accept();
+            accept();
+            return;
         }
         else
         {
             m_pixmap = QPixmap();
-            KDialog::reject();
         }
     }
-    KDialog::reject();
+    reject();
 }
 
 void CoverFoundDialog::processQuery()
