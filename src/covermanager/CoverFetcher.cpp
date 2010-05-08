@@ -83,7 +83,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         m_queueLater.append( album );
     else
         m_queue->add( album, CoverFetch::Automatic );
-    debug() << "Queueing interactive cover fetch for:" << album->name();
+    debug() << "Queueing automatic cover fetch for:" << album->name();
 }
 
 void
@@ -102,7 +102,7 @@ void
 CoverFetcher::queueQuery( const QString &query, unsigned int page )
 {
     m_queue->addQuery( query, fetchSource(), page );
-    debug() << "Queueing interactive cover fetch for query:" << query << "(page" << page << ')';
+    debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query ).arg( page );
 }
 
 void
