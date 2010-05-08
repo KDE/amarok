@@ -7,6 +7,8 @@ VERSION 2.3.1
   CHANGES:
 
   BUGFIXES:
+    * Cover fetcher: prevent automatic fetcher from setting album's cover if
+      it is done manually during the download. (BR 236839)
     * File browser: show folders first, files afterwards. Patch by
       <dystopticus@gmx.net>. (BR 226599)
     * Queued track's contextual menu entry about dequeueing was written wrong
