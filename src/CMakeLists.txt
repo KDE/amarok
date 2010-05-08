@@ -60,6 +60,7 @@ include_directories(
     statusbar
     synchronization
     timecode
+    transcoding
     widgets
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
@@ -572,6 +573,14 @@ set(taglib_filetype_resolver_SRCS
     ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
 )
 
+#####################################################################
+# TRANSCODING
+#####################################################################
+set(transcoding_SRCS
+    transcoding/TranscodeJob.cpp
+    transcoding/TranscodeFormat.cpp
+)
+
 
 #####################################################################
 # LIBAMAROK
@@ -607,6 +616,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
+    ${transcoding_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp

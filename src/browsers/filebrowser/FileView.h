@@ -67,9 +67,11 @@ protected slots:
     void slotEditTracks();
     void slotPrepareMoveTracks();
     void slotPrepareCopyTracks();
+    void slotPrepareTranscodeTracks();
     void slotMoveTracks( const Meta::TrackList& tracks );
     void slotCopyTracks( const Meta::TrackList& tracks );
     void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+
 
 protected:
     QList<QAction *> actionsForIndices( const QModelIndexList &indices );

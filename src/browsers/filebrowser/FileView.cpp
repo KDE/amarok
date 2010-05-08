@@ -35,6 +35,7 @@
 #include "PopupDropperFactory.h"
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
+#include "src/transcoding/TranscodeJob.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -137,6 +138,9 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         }
         menu->addMenu( copyMenu );
     }
+    KAction *transcodeAction = new KAction( "Transcode here", this );
+    connect( transcodeAction, SIGNAL( triggered() ), this, SLOT( slotPrepareTranscodeTracks() ) );
+    menu->addAction( transcodeAction );
 
     menu->exec( e->globalPos() );
  
@@ -229,6 +233,21 @@ FileView::slotEditTracks()
         TagDialog *dialog = new TagDialog( tracks, this );
         dialog->show();
     }
+}
+
+void
+FileView::slotPrepareTranscodeTracks()
+{
+    KAction *action = qobject_cast< KAction * >( sender() );
+    if( !action )
+        return;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+
+    KJob *doTranscode = new TranscodeJob( list.urlList().first(), QString(),this );
+    doTranscode->start();
 }
 
 void
