@@ -72,6 +72,9 @@ private:
     CoverFetcher();
     ~CoverFetcher();
 
+    /// Remove a fetch unit from the queue, and clean up any running jobs
+    void abortFetch( CoverFetchUnit::Ptr unit );
+
     const int m_limit;            //!< maximum number of concurrent fetches
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit

@@ -226,15 +226,7 @@ CoverFetcher::slotDialogFinished()
     foreach( const CoverFetchUnit::Ptr &unit, units )
     {
         if( unit->isInteractive() )
-        {
-            m_queue->remove( unit );
-            m_queueLater.removeAll( unit->album() );
-            m_selectedPixmaps.remove( unit );
-
-            const KJob *job = m_jobs.key( unit );
-            const_cast< KJob* >( job )->deleteLater();
-            m_jobs.remove( job );
-        }
+            abortFetch( unit );
     }
 
     m_dialog->delayedDestruct();
@@ -280,6 +272,18 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 }
 
 void
+CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
+{
+    Meta::AlbumPtr album = unit->album();
+    m_queue->remove( album );
+    m_queueLater.removeAll( album );
+    m_selectedPixmaps.remove( unit );
+    const KJob *job = m_jobs.key( unit );
+    const_cast<KJob*>( job )->deleteLater();
+    m_jobs.remove( job );
+}
+
+void
 CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
                       CoverFetcher::FinishState state,
                       const QString &message )
@@ -297,7 +301,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedPixmaps.take( unit ) );
-        m_queue->remove( album );
+        abortFetch( unit );
         break;
 
     case Error:
