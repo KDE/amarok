@@ -91,13 +91,13 @@ public:
 
 public slots:
     void remove( const CoverFetchUnit::Ptr unit );
+    void remove( const Meta::AlbumPtr album );
 
 signals:
     void fetchUnitAdded( const CoverFetchUnit::Ptr );
 
 private:
     void add( const CoverFetchUnit::Ptr unit );
-    void remove( const Meta::AlbumPtr album );
 
     CoverFetchUnitList m_queue;
     Q_DISABLE_COPY( CoverFetchQueue )

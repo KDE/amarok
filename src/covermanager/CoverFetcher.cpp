@@ -297,6 +297,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedPixmaps.take( unit ) );
+        m_queue->remove( album );
         break;
 
     case Error:
