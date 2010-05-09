@@ -175,8 +175,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     splitter->addWidget( vbox );
     setMainWidget( splitter );
 
-    connect( m_save, SIGNAL(clicked(bool)), SLOT(saveRequested()) );
-
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     m_sortEnabled = config.readEntry( "Sort by Size", false );
@@ -299,7 +297,7 @@ void CoverFoundDialog::itemSelected()
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     Q_UNUSED( item )
-    saveRequested();
+    slotButtonClicked( KDialog::Ok );
 }
 
 void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
@@ -332,11 +330,14 @@ void CoverFoundDialog::saveAs()
         item->saveAs( m_album );
 }
 
-void CoverFoundDialog::saveRequested()
+void CoverFoundDialog::slotButtonClicked( int button )
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( item )
+    if( button == KDialog::Ok )
     {
+        CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+        if( !item )
+            return;
+
         bool gotBigPix( true );
         if( !item->hasBigPix() )
             gotBigPix = item->fetchBigPix();
@@ -345,14 +346,17 @@ void CoverFoundDialog::saveRequested()
         {
             m_pixmap = item->bigPix();
             accept();
-            return;
         }
         else
         {
             m_pixmap = QPixmap();
+            reject();
         }
     }
-    reject();
+    else
+    {
+        KDialog::slotButtonClicked( button );
+    }
 }
 
 void CoverFoundDialog::processQuery()

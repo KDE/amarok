@@ -75,6 +75,9 @@ public slots:
 protected:
     void hideEvent( QHideEvent *event );
 
+protected slots:
+    void slotButtonClicked( int button );
+
 private slots:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
@@ -85,7 +88,6 @@ private slots:
     void processQuery();
     void processQuery( const QString &query );
     void saveAs();
-    void saveRequested();
     void selectDiscogs();
     void selectLastFm();
     void selectGoogle();
