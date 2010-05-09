@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverManager"
+
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
@@ -47,13 +49,12 @@
 #include <QAction>
 #include <QDesktopWidget>
 #include <QProgressBar>
+#include <QSplitter>
 #include <QStringList>
 #include <QTimer>    //search filter timer
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
-
-#define DEBUG_PREFIX "CoverManager"
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -82,14 +83,13 @@ class ArtistItem : public QTreeWidgetItem
 };
 
 
-CoverManager::CoverManager()
-        : QSplitter( 0 )
+CoverManager::CoverManager( QWidget *parent )
+        : KDialog( parent )
         , m_currentView( AllAlbums )
         , m_timer( new QTimer( this ) )    //search filter timer
         , m_fetchingCovers( false )
         , m_coversFetched( 0 )
         , m_coverErrors( 0 )
-        , m_isClosing( false )
         , m_isLoadingCancelled( false )
 {
     DEBUG_BLOCK
@@ -100,12 +100,17 @@ CoverManager::CoverManager()
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setWindowTitle( KDialog::makeStandardCaption( i18n("Cover Manager") ) );
-    setAttribute( Qt::WA_DeleteOnClose );
-    setContentsMargins( 4, 4, 4, 4 );
+    setButtons( 0 );
+    setCaption( i18n("Cover Manager") );
+
+    connect( this, SIGNAL(hidden()), SLOT(delayedDestruct()) );
+    connect( this, SIGNAL(closeClicked()), SLOT(delayedDestruct()) );
+
+    m_splitter = new QSplitter( this );
+    setMainWidget( m_splitter );
 
     //artist listview
-    m_artistView = new QTreeWidget( this );
+    m_artistView = new QTreeWidget( m_splitter );
     m_artistView->setHeaderLabel( i18n( "Albums By" ) );
     m_artistView->setSortingEnabled( false );
     m_artistView->setTextElideMode( Qt::ElideRight );
@@ -156,7 +161,7 @@ CoverManager::slotContinueConstruction() //SLOT
     }
     m_artistView->insertTopLevelItems( 0, m_items );
 
-    KVBox *vbox = new KVBox( this );
+    KVBox *vbox = new KVBox( m_splitter );
     KHBox *hbox = new KHBox( vbox );
 
     vbox->setSpacing( 4 );
@@ -219,37 +224,12 @@ CoverManager::slotContinueConstruction() //SLOT
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
 
-    setStretchFactor( indexOf( m_artistView ), 1 );
-    setStretchFactor( indexOf( vbox ), 4 );
-
-    show();
+    m_splitter->setStretchFactor( m_splitter->indexOf( m_artistView ), 1 );
+    m_splitter->setStretchFactor( m_splitter->indexOf( vbox ), 4 );
 
     m_fetcher = The::coverFetcher();
 
-    QTimer::singleShot( 0, this, SLOT(init()) );
-}
-
-CoverManager::~CoverManager()
-{
-    DEBUG_BLOCK
-
-    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
-    s_instance = 0;
-
-    m_isClosing = true;
-    m_isLoadingCancelled = true;
-    qDeleteAll( m_coverItems );
-    delete m_coverView;
-    m_coverView = 0;
-}
-
-void
-CoverManager::init()
-{
-    DEBUG_BLOCK
-
     QTreeWidgetItem *item = 0;
-
     int i = 0;
     if ( !artistToSelectInInitFunction.isEmpty() )
     {
@@ -276,8 +256,17 @@ CoverManager::init()
         item = m_artistView->invisibleRootItem()->child( 0 );
 
     item->setSelected( true );
+    show();
 }
 
+CoverManager::~CoverManager()
+{
+    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
+    qDeleteAll( m_coverItems );
+    delete m_coverView;
+    m_coverView = 0;
+    s_instance = 0;
+}
 
 void
 CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
@@ -302,8 +291,6 @@ CoverManager::metadataChanged( Meta::AlbumPtr album )
 void
 CoverManager::fetchMissingCovers() //SLOT
 {
-    DEBUG_BLOCK
-
     m_fetchCovers.clear();
     for( int i = 0, coverCount = m_coverView->count(); i < coverCount; ++i )
     {
@@ -312,6 +299,8 @@ CoverManager::fetchMissingCovers() //SLOT
         if( !coverItem->hasCover() )
             m_fetchCovers += coverItem->albumPtr();
     }
+
+    debug() << QString( "Fetching %1 missing covers" ).arg( m_fetchCovers.size() );
 
     ProgressBar *fetchProgressBar = new ProgressBar( this );
     fetchProgressBar->setDescription( i18n( "Fetching" ) );
@@ -325,7 +314,6 @@ CoverManager::fetchMissingCovers() //SLOT
     updateStatusBar();
     m_fetchButton->setEnabled( false );
     connect( m_fetcher, SIGNAL(finishedSingle(int)), SLOT(updateFetchingProgress(int)) );
-
 }
 
 void
@@ -380,8 +368,6 @@ CoverManager::slotArtistSelected() //SLOT
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->endAndOr();
 
-    m_albumList.clear();
-
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
 
@@ -393,11 +379,9 @@ CoverManager::slotArtistSelected() //SLOT
 void
 CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId );
-    m_albumList += albums;
+    m_albumList = albums;
 }
-
 
 void
 CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
@@ -423,15 +407,21 @@ CoverManager::slotArtistQueryDone() //SLOT
     m_progress->show();
 
     uint x = 0;
+    debug() << "Loading covers for selected artist(s)";
 
     //the process events calls below causes massive flickering in the m_albumList
     //so we hide this view and only show it when all items has been inserted. This
     //also provides quite a massive speed improvement when loading covers.
     m_coverView->hide();
     m_coverViewSpacer->show();
-    foreach( Meta::AlbumPtr album, m_albumList )
+    foreach( const Meta::AlbumPtr &album, m_albumList )
     {
-        kapp->processEvents();
+        kapp->processEvents( QEventLoop::ExcludeSocketNotifiers );
+        if( isHidden() )
+        {
+            m_progress->endProgressOperation( m_coverView );
+            return;
+        }
         /*
          * Loading is stopped if cancelled by the user, or the number of albums
          * has changed. The latter occurs when the artist selection changes.
@@ -450,11 +440,7 @@ CoverManager::slotArtistQueryDone() //SLOT
             m_progress->setProgress( m_coverView, x );
         }
     }
-
     m_progress->endProgressOperation( m_coverView );
-
-    if( m_isClosing )
-        return;
 
     // makes sure View is retained when artist selection changes
     changeView( m_currentView, true );
@@ -527,15 +513,13 @@ CoverManager::slotSetFilterTimeout() //SLOT
 void
 CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
 {
-    DEBUG_BLOCK
-
     if( !force && m_currentView == id )
         return;
 
     //clear the iconview without deleting items
     m_coverView->clearSelection();
-
-    while ( m_coverView->count() > 0 )
+    int itemsCount = m_coverView->count();
+    while( itemsCount-- > 0 )
        m_coverView->takeItem( 0 );
 
     foreach( QListWidgetItem *item, m_coverItems )

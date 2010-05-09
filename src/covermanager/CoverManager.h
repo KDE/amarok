@@ -20,7 +20,8 @@
 
 #include "CoverFetcher.h"
 
-#include <QSplitter>
+#include <KDialog>
+
 #include <QDropEvent>
 #include <QLabel>
 #include <QListWidget>
@@ -42,8 +43,9 @@ class KHBox;
 class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
+class QSplitter;
 
-class CoverManager : public QSplitter, public Meta::Observer
+class CoverManager : public KDialog, public Meta::Observer
 {
         Q_OBJECT
 
@@ -51,7 +53,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         static bool s_constructed;
 
     public:
-        CoverManager();
+        CoverManager( QWidget *parent = 0 );
        ~CoverManager();
 
         static bool isConstructed() { return s_constructed; }
@@ -75,7 +77,6 @@ class CoverManager : public QSplitter, public Meta::Observer
     private slots:
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
         void slotContinueConstruction();
-        void init();
 
         void slotArtistSelected();
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
@@ -102,6 +103,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
+        QSplitter        *m_splitter;
         QTreeWidget      *m_artistView;
         CoverView        *m_coverView;
 
@@ -141,7 +143,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         int m_coversFetched;
         int m_coverErrors;
 
-        bool m_isClosing;
         bool m_isLoadingCancelled;
 };
 
