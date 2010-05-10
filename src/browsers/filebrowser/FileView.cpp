@@ -245,8 +245,8 @@ FileView::slotPrepareTranscodeTracks()
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
         return;
-
-    KJob *doTranscode = new TranscodeJob( list.urlList().first(), QString(),this );
+    debug()<<list.urlList().first();
+    KJob *doTranscode = new TranscodeJob( list.urlList().first(), TranscodeFormat::Vorbis( 7 ),this );
     doTranscode->start();
 }
 

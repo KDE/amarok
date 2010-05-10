@@ -24,28 +24,31 @@ class TranscodeFormat
 public:
     enum Encoder
     {
-        aac = 0,
-        alac,
-        flac,
-        libmp3lame,
-        libvorbis,    //"libvorbis" supposedly gives better quality than "vorbis" but worse
+        AAC = 0,      //aac
+        ALAC,         //alac
+        FLAC,         //flac
+        MP3,          //libmp3lame
+        VORBIS,       //"libvorbis" supposedly gives better quality than "vorbis" but worse
                       //than oggenc. TODO: investigate
-        wmav2         //no idea what's this
+        WMA2          //wmav2  no idea what's this
     };
 
     //We make the real ctor private and use a bunch of named ctors because different codecs
     //take different parameters.
-    static TranscodeFormat * Aac();
-    static TranscodeFormat * Alac();
-    static TranscodeFormat * Flac();
-    static TranscodeFormat * Mp3();
-    static TranscodeFormat * Vorbis();
-    static TranscodeFormat * Wma();
+    static TranscodeFormat & Aac();
+    static TranscodeFormat & Alac();
+    static TranscodeFormat & Flac();
+    static TranscodeFormat & Mp3();
+    static TranscodeFormat & Vorbis( int quality );
+    static TranscodeFormat & Wma();
+
+    QString ffmpegParameters() const { return m_ffmpegParameters; }
+    Encoder encoder() const { return m_encoder; }
 
 private:
-    TranscodeFormat();
+    explicit TranscodeFormat( Encoder encoder );
     Encoder m_encoder;
-    QString m_bitrate;
+    QString m_ffmpegParameters;
 };
 
 #endif // TRANSCODEFORMAT_H
