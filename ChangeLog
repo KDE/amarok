@@ -7,6 +7,8 @@ VERSION 2.3.1
   CHANGES:
 
   BUGFIXES:
+    * Display extended characters properly in names of Last.fm streams.
+      (BR 222930)
     * Cover fetcher: prevent automatic fetcher from setting album's cover if
       it is done manually during the download. (BR 236839)
     * File browser: show folders first, files afterwards. Patch by

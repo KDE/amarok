@@ -34,6 +34,7 @@
 #include "core/support/Debug.h"
 
 #include <QPointer>
+#include <QUrl>
 
 #include <KSharedPtr>
 #include <KStandardDirs>
@@ -382,9 +383,7 @@ Track::streamName() const
     QStringList elements = d->lastFmUri.toString().split( '/', QString::SkipEmptyParts );
     if( elements.size() >= 2 && elements[0] == "lastfm:" )
     {
-        QString customPart = elements[2];
-        customPart = customPart.replace( "%20", " " );
-
+        QString customPart = QUrl::fromPercentEncoding( elements[2].toUtf8() );
 
         if( elements[1] == "globaltags" )
         {
