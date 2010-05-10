@@ -7,6 +7,7 @@ VERSION 2.3.1
   CHANGES:
 
   BUGFIXES:
+    * Don't truncate the "Label:" label in the TagDialog. (BR 235957)
     * Display extended characters properly in names of Last.fm streams.
       (BR 222930)
     * Cover fetcher: prevent automatic fetcher from setting album's cover if

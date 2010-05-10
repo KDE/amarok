@@ -745,6 +745,12 @@
              </item>
              <item>
               <widget class="KComboBox" name="kComboBox_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="toolTip">
                 <string>Insert your custom label here or select one from the list.</string>
                </property>
@@ -966,6 +972,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>KRichTextEdit</class>
+   <extends>KTextEdit</extends>
+   <header>krichtextedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
@@ -982,9 +993,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KRichTextEdit</class>
+   <class>KTextEdit</class>
    <extends>QTextEdit</extends>
-   <header>krichtextedit.h</header>
+   <header>ktextedit.h</header>
   </customwidget>
   <customwidget>
    <class>CoverLabel</class>
