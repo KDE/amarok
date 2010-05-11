@@ -290,8 +290,6 @@ CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
 void
 CoverManager::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
-
     const QString albumName = album->name();
     foreach( CoverViewItem *item, m_coverItems )
     {
