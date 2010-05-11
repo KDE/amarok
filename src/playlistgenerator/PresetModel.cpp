@@ -232,7 +232,13 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename )
             The::statusBar()->longMessage( i18n("%1 could not be opened for preset import", filename), StatusBar::Sorry );
         } else {
             QDomDocument document;
-            document.setContent( presetExamples );
+            QString translatedPresetExamples( presetExamples.arg(
+                                i18n("Example 1: new tracks added this week") ).arg(
+                                i18n("Example 2: rock or pop music") ).arg(
+                                i18n("Example 3: about one hour of tracks from different artists") ).arg(
+                                i18n("Example 4: like my favorite radio station") ).arg(
+                                i18n("Example 5: an 80-minute CD of rock, metal, and industrial") ) );
+            document.setContent( translatedPresetExamples );
             debug() << "Reading built-in example presets";
             parseXmlToPresets( document );
         }
@@ -296,7 +302,7 @@ APG::PresetModel::ExportDialog::recvAccept() const
 const QString APG::PresetModel::presetExamples =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<playlistgenerator>"
-"  <generatorpreset title=\"Example 1: new tracks added this week\">"
+"  <generatorpreset title=\"%1\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
 "        <constraint field=\"create date\" comparison=\"3\" invert=\"false\" type=\"TagMatch\" value=\"7 days\" strictness=\"0.8\"/>"
@@ -304,7 +310,7 @@ const QString APG::PresetModel::presetExamples =
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
-"  <generatorpreset title=\"Example 2: rock or pop music\">"
+"  <generatorpreset title=\"%2\">"
 "    <constrainttree>"
 "      <group matchtype=\"any\">"
 "        <constraint field=\"genre\" comparison=\"3\" invert=\"false\" type=\"TagMatch\" value=\"Rock\" strictness=\"1\"/>"
@@ -312,7 +318,7 @@ const QString APG::PresetModel::presetExamples =
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
-"  <generatorpreset title=\"Example 3: about one hour of tracks from different artists\">"
+"  <generatorpreset title=\"%3\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
 "        <constraint comparison=\"1\" length=\"3600000\" type=\"PlaylistLength\" strictness=\"0.3\"/>"
@@ -320,7 +326,7 @@ const QString APG::PresetModel::presetExamples =
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
-"  <generatorpreset title=\"Example 4: like my favorite radio station\">"
+"  <generatorpreset title=\"%4\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
 "        <constraint field=\"0\" type=\"PreventDuplicates\"/>"
@@ -330,7 +336,7 @@ const QString APG::PresetModel::presetExamples =
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
-"  <generatorpreset title=\"Example 5: an 80-minute CD of rock, metal, and industrial\">"
+"  <generatorpreset title=\"%5\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
 "        <group matchtype=\"any\">"
