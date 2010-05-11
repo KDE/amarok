@@ -29,6 +29,7 @@
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
+#include "CoverFetchingActions.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModelStack.h"
@@ -780,55 +781,74 @@ void
 CoverView::contextMenuEvent( QContextMenuEvent *event )
 {
     QList<QListWidgetItem*> items = selectedItems();
+    const int itemsCount = items.count();
 
-    if( items.count() > 0 )
+    KMenu menu;
+    menu.addTitle( i18n( "Cover Image" ) );
+
+    if( itemsCount == 1 )
     {
-        QMap<QString,QList<QAction *> >  cacs;
-        KMenu menu;
-        menu.addTitle( i18n( "Cover Image" ) );
-
-        for (int x = 0; x < items.count(); ++x)
+        // only one item selected: get all custom actions this album is capable of.
+        CoverViewItem *item = dynamic_cast<CoverViewItem*>( items.first() );
+        QList<QAction *> actions;
+        Meta::AlbumPtr album = item->albumPtr();
+        if( album )
         {
-            CoverViewItem *item = dynamic_cast<CoverViewItem*>(items.value(x));
-            Meta::AlbumPtr album = item->albumPtr();
+            Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
+            if( cac )
+            {
+                actions = cac->customActions();
+                foreach( QAction *action, actions )
+                    menu.addAction( action );
+            }
+        }
+        menu.exec( event->globalPos() );
+    }
+    else if( itemsCount > 1 )
+    {
+        // multiple albums selected: only unset cover and fetch cover actions
+        // make sense here, and perhaps (un)setting compilation flag (TODO).
+
+        Meta::AlbumList unsetAlbums;
+        Meta::AlbumList fetchAlbums;
+
+        foreach( QListWidgetItem *item, items )
+        {
+            CoverViewItem *cvItem = dynamic_cast<CoverViewItem*>(item);
+            Meta::AlbumPtr album = cvItem->albumPtr();
             if( album )
             {
                 Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
                 if( cac )
                 {
                     QList<QAction *> actions = cac->customActions();
-
                     foreach( QAction *action, actions )
                     {
-                        if( !action->text().isEmpty() )
-                        {
-                            cacs[action->text()].append(action);
-                        }
+                        if( qobject_cast<FetchCoverAction*>(action) )
+                            fetchAlbums << album;
+                        else if( qobject_cast<UnsetCoverAction*>(action) )
+                            unsetAlbums << album;
                     }
                 }
             }
         }
 
-        if( cacs.count() > 0 )
+        if( itemsCount == fetchAlbums.count() )
         {
-            menu.addSeparator();
-
-            foreach ( QList<QAction *> actionList, cacs )
-            {
-                if( actionList.count() == items.count() )
-                {
-                    MultipleAction *maction = new MultipleAction( this, actionList );
-                    menu.addAction( maction );
-                }
-            }
+            FetchCoverAction *fetchAction = new FetchCoverAction( this, fetchAlbums );
+            menu.addAction( fetchAction );
+        }
+        if( itemsCount == unsetAlbums.count() )
+        {
+            UnsetCoverAction *unsetAction = new UnsetCoverAction( this, unsetAlbums );
+            menu.addAction( unsetAction );
         }
         menu.exec( event->globalPos() );
     }
     else
         QListView::contextMenuEvent( event );
-    // TODO
-    // Play, Load and Append to playlist actions
-    // Set custom cover action
+
+    // TODO: Play, Load and Append to playlist actions
 }
 
 void

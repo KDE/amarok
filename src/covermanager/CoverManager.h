@@ -186,26 +186,4 @@ class CoverViewItem : public QListWidgetItem
         QListWidget *m_parent;
 };
 
-/**
-*   Wrapper class to connect multiple actions to a single entry
-*/
-class MultipleAction : public QAction
-{
-    Q_OBJECT
-    public:
-        MultipleAction( QObject *parent, QList<QAction *> actions )
-            : QAction( parent )
-        {
-            foreach( QAction *action, actions )
-                connect( this, SIGNAL( triggered( bool ) ), action, SLOT( trigger() ) );
-
-            if ( actions.count() > 0 )
-            {
-                setText( actions.first()->text() );
-                setIcon( actions.first()->icon() );
-                setToolTip( actions.first()->toolTip() );
-            }
-        }
-};
-
 #endif

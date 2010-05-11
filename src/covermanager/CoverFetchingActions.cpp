@@ -111,10 +111,10 @@ UnsetCoverAction::slotTriggered()
     {
         foreach( Meta::AlbumPtr album, m_albums )
         {
-            kapp->processEvents();
             if( album && album->canUpdateImage() )
                 album->removeImage();
         }
+        kapp->processEvents();
     }
 }
 
