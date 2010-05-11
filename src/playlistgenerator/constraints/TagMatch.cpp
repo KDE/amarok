@@ -148,9 +148,7 @@ void
 ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
     QDomElement c = doc.createElement( "constraint" );
-    QDomText t = doc.createTextNode( getName() );
 
-    c.appendChild( t );
     c.setAttribute( "type", "TagMatch" );
     c.setAttribute( "field", m_field );
     c.setAttribute( "comparison", m_comparison );

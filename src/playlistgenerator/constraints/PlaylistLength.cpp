@@ -98,8 +98,6 @@ void
 ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
     QDomElement c = doc.createElement( "constraint" );
-    QDomText t = doc.createTextNode( getName() );
-    c.appendChild( t );
     c.setAttribute( "type", "PlaylistLength" );
     c.setAttribute( "length", QString::number( m_length ) );
     c.setAttribute( "comparison", QString::number( m_comparison ) );

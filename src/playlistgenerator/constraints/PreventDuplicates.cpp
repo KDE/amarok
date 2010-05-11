@@ -84,8 +84,6 @@ void
 ConstraintTypes::PreventDuplicates::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
     QDomElement c = doc.createElement( "constraint" );
-    QDomText t = doc.createTextNode( getName() );
-    c.appendChild( t );
     c.setAttribute( "type", "PreventDuplicates" );
     c.setAttribute( "field", QString::number( m_field ) );
     elem.appendChild( c );
