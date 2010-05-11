@@ -9,13 +9,13 @@ include_directories( ../..
 ########### next target ###############
 
 set(amarok_collection-upnpcollection_PART_SRCS
-   upnpmeta.cpp
-   upnpcollection.cpp)
+    UpnpCollection.cpp
+)
 
 
 kde4_add_plugin(amarok_collection-upnpcollection ${amarok_collection-upnpcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-upnpcollection amarokcore amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
+target_link_libraries(amarok_collection-upnpcollection amarokcore amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDEUI_LIBS})
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-upnpcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -26,4 +26,4 @@ install(TARGETS amarok_collection-upnpcollection DESTINATION ${PLUGIN_INSTALL_DI
 
 ########### install files ###############
 
-# install( FILES amarok_collection-upnpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install( FILES amarok_collection-upnpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
