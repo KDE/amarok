@@ -43,6 +43,7 @@
 #include <QTextStream>
 #include <QTime>
 #include <QTimer>
+#include <QThread>
 
 //Taglib:
 #include <apetag.h>
@@ -94,11 +95,18 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         , m_recursively( false )
         , m_incremental( false )
         , m_restart( false )
+        , m_idlePriority( false )
         , m_amarokCollectionInterface( 0 )
 {
     setObjectName( "amarokcollectionscanner" );
 
     readArgs();
+
+    if( m_idlePriority )
+    {
+        if( QThread::currentThread() )
+            QThread::currentThread()->setPriority( QThread::IdlePriority );
+    }
 
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
@@ -963,6 +971,8 @@ CollectionScanner::readArgs()
                     m_importPlaylists = true;
                 else if( myarg == "restart" )
                     m_restart = true;
+                else if( myarg == "idlepriority" )
+                    m_idlePriority = true;
                 else if( myarg == "batch" )
                     m_batch = true;
                 else if( myarg == "charset" )
@@ -1034,6 +1044,7 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
+    s_textStream << qPrintable( tr( "--idlepriority        : Run at idle priority" ) ) << endl;
     s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
     s_textStream << qPrintable( tr( "--savelocation        : Internal command used by Amarok" ) ) << endl;
     s_textStream.flush();

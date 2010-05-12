@@ -124,6 +124,7 @@ ScanManager::startFullScan()
         if( AmarokConfig::useCharsetDetector() )
             *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
+        *m_scanner << "--idlepriority";
 
         QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
         *m_scanner << collectionFolders;
@@ -208,7 +209,7 @@ void ScanManager::startIncrementalScan( const QString &directory )
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << App::collectionScannerLocation() << "-i" << "--collectionid" << m_collection->collectionId() << "-p";
+        *m_scanner << App::collectionScannerLocation() << "-i" << "--collectionid" << m_collection->collectionId() << "-p" << "--idlepriority";
 
         if( AmarokConfig::scanRecursively() && directory.isEmpty() )
             *m_scanner << "-r";
@@ -539,7 +540,7 @@ ScanManager::restartScanner()
 
     if( m_isIncremental )
     {
-        *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
+        *m_scanner << "-i" << "--collectionid" << m_collection->collectionId() << "--idlepriority";
         if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     }

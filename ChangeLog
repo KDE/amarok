@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.3.1
   CHANGES:
+    * The Collection scanner now runs with idle priority when invoked by
+      Amarok. Batch scan users can invoke it with the --idlepriority flag.
 
   BUGFIXES:
     * Fixed factor used when filtering lengths in collection browser.

@@ -120,6 +120,7 @@ private:
     bool                        m_recursively;
     bool                        m_incremental;
     bool                        m_restart;
+    bool                        m_idlePriority;
     QString                     m_saveLocation;
     QString                     m_logfile;
     QString                     m_rpath;
