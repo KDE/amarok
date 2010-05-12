@@ -1146,7 +1146,7 @@ ScanResultProcessor::populateCacheHashes()
 
     //tracks
     res = m_storage->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
-    reserveSize = ( res.size() / 22 ) * 2;
+    reserveSize = ( res.size() / 23 ) * 2;
     m_tracksHashById.reserve( reserveSize );
     index = 0;
     lastNum = 0;
@@ -1386,7 +1386,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         //debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
-        if( invalidUrls.contains( currList->at( 1 ).toInt() ) )
+        if( invalidUrls.contains( currList->at( 1 ).toInt() ) || currList->size() < 23 )
         {
             debug() << "UHOH: Skipping track with url id " << currList->at( 1 ) << " because it's in the invalidUrls set";
             continue;
