@@ -47,11 +47,8 @@ class EditFilterDialog : public KDialog
         Ui::EditFilterDialog m_ui;
         
         bool m_appended;               // true if a filter appended
-        int m_selectedIndex;           // the position of the selected keyword in the combobox
-        QVector<QString> m_vector;     // the vector of the amarok filter keyword
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
-        QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"
 
         // Cache lists for completion
         QStringList m_artists;
@@ -60,11 +57,11 @@ class EditFilterDialog : public KDialog
         QStringList m_genres;
 
     private:
-        void exclusiveSelectOf( int which );
-        QString keywordConditionString(const QString& keyword) const;
+        QString keywordConditionNumeric(const QString& keyword) const;
+        QString keywordConditionText(const QString& keyword) const;
 
     private slots:
-        void selectedKeyword(int index);
+        void selectedAttribute( const QString &attr );
 
         void minSpinChanged(int value);
         void maxSpinChanged(int value);
@@ -76,16 +73,6 @@ class EditFilterDialog : public KDialog
         void chooseCondition(int index);
         void chooseOneValue();
         void chooseMinMaxValue();
-
-        void slotCheckAll();
-        void slotCheckAtLeastOne();
-        void slotCheckExactly();
-        void slotCheckExclude();
-
-        void slotCheckAND();
-        void slotCheckOR();
-
-        void assignPrefixNOT();
         
         void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
         void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
