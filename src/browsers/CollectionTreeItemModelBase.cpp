@@ -649,7 +649,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt(), compare );
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {

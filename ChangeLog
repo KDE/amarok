@@ -7,6 +7,7 @@ VERSION 2.3.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed factor used when filtering lengths in collection browser.
     * Fixed wrong value used when filtering comments in collection browser.
     * Don't truncate the "Label:" label in the TagDialog. (BR 235957)
     * Display extended characters properly in names of Last.fm streams.
