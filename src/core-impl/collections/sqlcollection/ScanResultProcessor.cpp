@@ -493,7 +493,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( trackData[ Meta::Field::LENGTH ].toString() );
     trackList->append( trackData[ Meta::Field::SAMPLERATE ].toString() );
     trackList->append( trackData[ Meta::Field::FILESIZE ].toString() );
-    trackList->append( QString() ); //filetype
+    trackList->append( trackData[ Meta::Field::CODEC ].toString() ); //filetype
     if( trackData.contains( Meta::Field::BPM ) )
         trackList->append( QString::number( trackData[ Meta::Field::BPM ].toDouble() ).replace( ',' , '.' ) );
     else

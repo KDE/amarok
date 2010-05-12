@@ -30,6 +30,7 @@
 #include "core/collections/QueryMaker.h"
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
+#include "shared/FileType.h"
 
 #include <KIcon>
 #include <KIconLoader>
@@ -650,6 +651,22 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
+                }
+                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "format" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    // NOTE: possible keywords that could be considered: codec, filetype, etc.
+                    const QString &ftStr = elem.text;
+                    FileType ft = Unknown;
+                    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
+                        ft = Flac;
+                    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
+                        ft = Mp3;
+                    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
+                        ft = Mp4;
+                    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
+                        ft = Ogg;
+
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
                 }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {
