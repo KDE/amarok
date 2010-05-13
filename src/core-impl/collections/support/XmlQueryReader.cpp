@@ -238,6 +238,25 @@ XmlQueryReader::readAndOr()
     d->qm->endAndOr();
 }
 
+XmlQueryReader::Filter
+XmlQueryReader::readFilter(QXmlStreamReader *reader)
+{
+    Filter filter;
+
+    QXmlStreamAttributes attr = reader->attributes();
+
+    filter.exclude = (reader->name() != "include");
+    filter.field = fieldVal( attr.value( "field" ) );
+    filter.value = attr.value( "value" ).toString();
+
+    QStringRef compareStr = attr.value( "compare" );
+    if( compareStr.isEmpty() )
+        filter.compare = -1;
+    else
+        filter.compare = compareVal( compareStr );
+
+    return filter;
+}
 
 void
 XmlQueryReader::readFilters()
@@ -262,22 +281,15 @@ XmlQueryReader::readFilters()
 
         if( name() == "include" || name() == "exclude" )
         {
-            Filter filter;
-
-            QXmlStreamAttributes attr = attributes();
-
-            filter.value = attr.value( "value" ).toString();
-            filter.field = fieldVal( attr.value( "field" ) );
+            Filter filter = readFilter(this);
 
             if( filter.field == 0 )
                 break;
 
-            filter.compare = compareVal( attr.value( "compare" ) );
-
             if( filter.compare != -1 )
             {
                 qint64 numValue = filter.value.toInt();
-                if( name() == "include" )
+                if( !filter.exclude )
                 {
                     debug() << "XQR: number include filter:";
                     d->qm->addNumberFilter( filter.field, numValue,
@@ -292,7 +304,7 @@ XmlQueryReader::readFilters()
             }
             else
             {
-                if( name() == "include" )
+                if( !filter.exclude )
                 {
                     debug() << "XQR: include filter";
                     d->qm->addFilter( filter.field, filter.value );

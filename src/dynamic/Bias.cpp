@@ -36,7 +36,6 @@
 
 #include <cmath>
 
-
 // defined in gsl/gauss.c
 extern "C" {
 double gsl_cdf_gaussian_P( const double x, const double sigma );
@@ -66,18 +65,21 @@ Dynamic::Bias::fromXml( QDomElement e )
         QDomElement queryElement = e.firstChildElement( "query" );
         if( !queryElement.isNull() )
         {
-            // I don't actually need a qm from XmlQueryReader, I just want the filters.
-            Collections::QueryMaker* dummyQM = new Collections::MetaQueryMaker( QList<Collections::QueryMaker*>() );
+            QDomElement filtersElement = queryElement.firstChildElement( "filters" );
+            if( !filtersElement.isNull() )
+            {
+                QDomElement includeElement = filtersElement.firstChildElement( "include" );
+                if( !includeElement.isNull() )
+                {
+                    QString rawXml;
+                    QTextStream rawXmlStream( &rawXml );
+                    includeElement.save( rawXmlStream, 0 );
+                    QXmlStreamReader reader(rawXml);
+                    reader.readNextStartElement();
 
-            QString rawXml;
-            QTextStream rawXmlStream( &rawXml );
-            queryElement.save( rawXmlStream, 0 );
-            XmlQueryReader reader( dummyQM, XmlQueryReader::IgnoreReturnValues );
-            reader.read( rawXml );
-            if( reader.getFilters().size() > 0 )
-                filter = reader.getFilters().first();
-
-            delete dummyQM;
+                    filter = XmlQueryReader::readFilter(&reader);
+                }
+            }
         }
 
         QDomElement weightElement = e.firstChildElement( "weight" );
