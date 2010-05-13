@@ -707,6 +707,25 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
+                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "last played time / access date", "played" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if( compare == Collections::QueryMaker::Equals )
+                    {
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
+                        if( dateCutOff > 0 )
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
+                        }
+                    }
+                    else
+                    {
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                            compareAlt = Collections::QueryMaker::LessThan;
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
+                    }
+                }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if( compare == Collections::QueryMaker::Equals )
