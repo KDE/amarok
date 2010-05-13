@@ -729,7 +729,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
                         }
                     }
-                    else if( compare == Collections::QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    else // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
                     {
                         int months = 0, weeks = 0, days = 0;
                         QString tmp;
@@ -752,7 +752,14 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                                 break;
                             }
                         }
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), Collections::QueryMaker::GreaterThan );
+
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                        {
+                            compareAlt = Collections::QueryMaker::LessThan;
+                        }
+                        uint time_t = QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
                     }
                 }
             }
