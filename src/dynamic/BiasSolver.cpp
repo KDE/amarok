@@ -86,7 +86,6 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
     , m_context(context)
     , m_epsilon( 1.0 / (double)n )
     , m_pendingBiasUpdates(0)
-    , m_domain(s_universe)
     , m_abortRequested(false)
 {
     debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
@@ -175,7 +174,7 @@ void Dynamic::BiasSolver::run()
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
-    computeDomainAndFeasibleFilters();
+    computeFeasibleFilters();
 
     /*
      * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
@@ -615,7 +614,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     {
         int n = m_n;
         while( n-- )
-            playlist += getRandomTrack( m_domain );
+            playlist += getRandomTrack( TrackSet(s_universe) );
 
         debug() << "No collection filters, returning random initial playlist";
         return playlist;
@@ -759,7 +758,7 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 
 
 void
-Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
+Dynamic::BiasSolver::computeFeasibleFilters()
 {
     DEBUG_BLOCK
     foreach( Dynamic::Bias* b, m_biases )
@@ -788,26 +787,6 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
             }
         }
     }
-    
-    TrackSet subset(s_universe);
-
-    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
-    {
-        if( m_feasibleCollectionFilters.at(i)->weight() == 1.0 )
-            subset.intersect( m_feasibleCollectionFilterSets.at(i) );
-
-        if( m_feasibleCollectionFilters.at(i)->weight() == 0.0 )
-            subset.subtract( m_feasibleCollectionFilterSets.at(i) );
-    }
-
-    m_domain = subset;
-
-    // if we are left with an empty set, better we just use the universe than
-    // give the user what they are really asking for.
-    if( m_domain.trackCount() == 0 )
-        m_domain = TrackSet(s_universe);
-
-    debug() << "domain size: " << m_domain.trackCount();
 }
 
 void

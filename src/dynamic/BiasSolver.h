@@ -172,11 +172,9 @@ namespace Dynamic
 
             /**
              * Figures out what subset of the collection eligible tracks come
-             * from. If there are global biases set at 0 or 100 percent, we can
-             * exclude all those tracks, or include only those tracks,
-             * respectively.
+             * from.
              */
-            void computeDomainAndFeasibleFilters();
+            void computeFeasibleFilters();
 
 
             /**
@@ -248,8 +246,6 @@ namespace Dynamic
             double m_epsilon;           //!< highest energy we consider optimal
 
             int m_pendingBiasUpdates;
-
-            TrackSet m_domain; //!< set of tracks being considered, potentially different than s_universe.
 
             /** List of biases which are global biases and are feasible (their
              * sets are non-empty). Set by computeDomain, but stored here so
