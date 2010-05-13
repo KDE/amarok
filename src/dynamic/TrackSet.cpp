@@ -17,31 +17,40 @@
  ****************************************************************************************/
 
 #include "TrackSet.h"
-#include "BiasSolver.h"
 
-
-Dynamic::TrackSet::TrackSet()
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe)
+    : m_bits( universe.size() )
 {
+    m_bits.fill( true );
 }
 
-
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& uidList )
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
+                             const QList<QByteArray>& uidList )
+    : m_bits( universe.size() )
 {
-    addTracks( uidList );
+    foreach( const QByteArray &t, uidList )
+    {
+        int i = universe.indexOf( t );
+        if( i != -1 )
+            m_bits.setBit( i );
+    }
 }
 
-Dynamic::TrackSet::TrackSet( const QSet<QByteArray>& uidSet )
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
+                              const QSet<QByteArray>& uidSet )
+    : m_bits( universe.size() )
 {
-    addTracks( uidSet );
+    foreach( const QByteArray &t, uidSet )
+    {
+        int i = universe.indexOf( t );
+        if( i != -1 )
+            m_bits.setBit( i );
+    }
 }
 
 void
 Dynamic::TrackSet::reset()
 {
-    m_bits.resize( Dynamic::BiasSolver::universe().size() );
     m_bits.clear();
 }
 
@@ -65,55 +74,9 @@ Dynamic::TrackSet::setUniverseSet()
     m_bits.fill( true );
 }
 
-
-void
-Dynamic::TrackSet::setTracks( const QList<QByteArray>& uidList )
-{
-    m_bits.clear();
-    addTracks( uidList );
-}
-
-void
-Dynamic::TrackSet::setTracks( const QSet<QByteArray>& uidSet )
-{
-    m_bits.clear();
-    addTracks( uidSet );
-}
-
-void
-Dynamic::TrackSet::addTracks( const QList<QByteArray>& uidList )
-{
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
-    foreach( const QByteArray &t, uidList )
-    {
-        int i = U.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
-
-void
-Dynamic::TrackSet::addTracks( const QSet<QByteArray>& uidSet )
-{
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
-    foreach( const QByteArray &t, uidSet )
-    {
-        int i = U.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
-
 QList<QByteArray>
-Dynamic::TrackSet::uidList() const
+Dynamic::TrackSet::uidList( const QList<QByteArray>& universe ) const
 {
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
     QList<QByteArray> uids;
 
     int count = m_bits.count( true );
@@ -121,7 +84,7 @@ Dynamic::TrackSet::uidList() const
     {
         if( m_bits.testBit(i) )
         {
-            uids.append( U[i] );
+            uids.append( universe[i] );
             count--;
         }
     }

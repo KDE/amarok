@@ -635,14 +635,13 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         // The bit array represents the choice made at each branch.
         QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
-        Dynamic::TrackSet S;
-        S.setUniverseSet();
+        Dynamic::TrackSet S(s_universe);
 
         for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
-            Dynamic::TrackSet currentSet = S;
+            Dynamic::TrackSet currentSet(s_universe);
 
             // Decide whether we should 'accept' or 'reject' a bias.
             double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
@@ -684,7 +683,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         // duplicate toList conversions.
         if( !memoizedIntersections.contains( branches ) )
         {
-            memoizedIntersections[branches] = S.uidList();
+            memoizedIntersections[branches] = S.uidList(s_universe);
         }
 
         const QList<QByteArray>& finalSubset = memoizedIntersections[branches];
@@ -775,14 +774,13 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
                 else
                 {
                     m_feasibleCollectionFilters.append( fc );
-                    m_feasibleCollectionFilterSets.append( TrackSet( fc->propertySet() ) );
+                    m_feasibleCollectionFilterSets.append( TrackSet( s_universe, fc->propertySet() ) );
                 }
             }
         }
     }
     
-    TrackSet subset;
-    subset.setUniverseSet();
+    TrackSet subset(s_universe);
 
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
     {
@@ -793,7 +791,7 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
             subset.subtract( m_feasibleCollectionFilterSets.at(i) );
     }
 
-    m_domain = subset.uidList();
+    m_domain = subset.uidList(s_universe);
 
     // if we are left with an empty set, better we just use the universe than
     // give the user what they are really asking for.
