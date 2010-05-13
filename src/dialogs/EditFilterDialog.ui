@@ -138,6 +138,11 @@
             </item>
             <item>
              <property name="text">
+              <string>File Size</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Format</string>
              </property>
             </item>

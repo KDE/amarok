@@ -219,7 +219,7 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
         m_ui.maximum->setValue( 48000 );
         valueWanted();
     }
-    else if( attr.compare( i18n("File Size") ) == 0 ) // TODO: add to ui
+    else if( attr.compare( i18n("File Size") ) == 0 )
     {
         m_ui.minimum->setValue( 0 );
         m_ui.maximum->setValue( 200000 );
@@ -465,6 +465,10 @@ void EditFilterDialog::slotDefault() // SLOT
     else if( attr.compare( i18n("Track Number") ) == 0 )
     {
         m_filterText += keywordConditionNumeric( i18n("tracknumber") );
+    }
+    else if( attr.compare( i18n("File Size") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("filesize") );
     }
     else if( attr.compare( i18n("Disc Number") ) == 0 )
     {
