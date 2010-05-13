@@ -122,8 +122,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     Collections::QueryMaker *album = coll->queryMaker()->setQueryType( Collections::QueryMaker::Album );
     Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
     Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    Collections::QueryMaker *label = coll->queryMaker()->setQueryType( Collections::QueryMaker::Label );
     QList<Collections::QueryMaker*> queries;
-    queries << artist << album << composer << genre;
+    queries << artist << album << composer << genre << label;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
@@ -133,9 +134,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
     dataQueryMaker->setAutoDelete( true );
     dataQueryMaker->run();
-    
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -277,9 +278,6 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
     {
         valueWanted();
     }
-    //FIXME: PORT 2.0
-//     else if( key=="label" )
-//         textWanted( CollectionDB::instance()->labelList() );
     else if( attr.compare( i18n("Album") ) == 0 )
     {
         textWanted( m_albums );
@@ -295,6 +293,10 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
     else if( attr.compare( i18n("Genre") ) == 0 )
     {
         textWanted( m_genres );
+    }
+    else if( attr.compare( i18n("Label") ) == 0 )
+    {
+        textWanted( m_labels );
     }
     else if( attr.compare( i18n("Track Title") ) == 0 )
     {
@@ -355,7 +357,7 @@ void EditFilterDialog::chooseCondition( int condition ) // SLOT
 
 void EditFilterDialog::chooseOneValue() // SLOT
 {
-    m_ui.andLabel->setEnabled( false);
+    m_ui.andLabel->setEnabled( false );
     m_ui.maximum->setEnabled( false );
 }
 
@@ -457,6 +459,11 @@ void EditFilterDialog::slotDefault() // SLOT
     {
         m_filterText += QString( "%1:\"%2\"" )
             .arg( keywordConditionText(i18n("comment")) ).arg( m_ui.editKeywordBox->text() );
+    }
+    else if( attr.compare( i18n("Label") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("label")) ).arg( m_ui.editKeywordBox->text() );
     }
     else if( attr.compare( i18n("Track Length") ) == 0 )
     {
@@ -566,6 +573,16 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::GenreLis
     foreach( Meta::GenrePtr genre, genres )
     {
         m_genres << genre->name();
+    }
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::LabelPtr label, labels )
+    {
+        m_labels << label->name();
     }
 }
 

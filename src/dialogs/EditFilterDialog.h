@@ -55,6 +55,7 @@ class EditFilterDialog : public KDialog
         QStringList m_albums;
         QStringList m_composers;
         QStringList m_genres;
+        QStringList m_labels;
 
     private:
         QString keywordConditionNumeric(const QString& keyword) const;
@@ -78,6 +79,7 @@ class EditFilterDialog : public KDialog
         void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
+        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
 
     protected slots:
         virtual void slotDefault();

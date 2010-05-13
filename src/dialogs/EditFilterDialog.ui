@@ -153,6 +153,11 @@
             </item>
             <item>
              <property name="text">
+              <string>Label</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Playcount</string>
              </property>
             </item>
