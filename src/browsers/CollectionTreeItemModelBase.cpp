@@ -709,65 +709,20 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals ) // just do some basic string matching
+                    if( compare == Collections::QueryMaker::Equals )
                     {
-                        QDateTime curTime = QDateTime::currentDateTime();
-                        uint dateCutOff = 0;
-                        if( ( elem.text.compare( "today", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "today" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "last week", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last week" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -7 ).toTime_t();
-                        else if( ( elem.text.compare( "last month", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last month" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "two months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "two months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -2 ).toTime_t();
-                        else if( ( elem.text.compare( "three months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "three months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -3 ).toTime_t();
-
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
                         if( dateCutOff > 0 )
                         {
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
                         }
                     }
-                    else // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    else
                     {
-                        int years = 0, months = 0, weeks = 0, days = 0;
-                        QString tmp;
-                        for( int i = 0; i < elem.text.length(); i++ )
-                        {
-                            QChar c = elem.text.at( i );
-                            if( c.isNumber() )
-                            {
-                                tmp += c;
-                            }
-                            else if( c == 'y' )
-                            {
-                                years = -tmp.toInt();
-                                tmp.clear();
-                            }
-                            else if( c == 'm' )
-                            {
-                                months = 0 - tmp.toInt();
-                                tmp.clear();
-                            }
-                            else if( c == 'w' )
-                            {
-                                weeks = 0 - 7 * tmp.toInt();
-                                tmp.clear();
-                            }
-                            else if( c == 'd' )
-                            {
-                                days = 0 - tmp.toInt();
-                                break;
-                            }
-                        }
-
                         Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
                         if( compare == Collections::QueryMaker::GreaterThan )
-                        {
                             compareAlt = Collections::QueryMaker::LessThan;
-                        }
-                        uint time_t = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days ).toTime_t();
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
                         ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
                     }
                 }
@@ -1124,6 +1079,66 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     d->noLabelsQueries.insert( qm, parent );
     d->m_runningQueries.insert( parent, qm );
     qm->run();
+}
+
+QDateTime
+CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
+{
+    /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
+
+    const QString lowerText = text.toLower();
+    const QDateTime curTime = QDateTime::currentDateTime();
+    QDateTime result;
+
+    if( text.at(0).isLetter() )
+    {
+        if( ( lowerText.compare( "today" ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
+            result = curTime.addDays( -1 );
+        else if( ( lowerText.compare( "last week" ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
+            result = curTime.addDays( -7 );
+        else if( ( lowerText.compare( "last month" ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
+            result = curTime.addMonths( -1 );
+        else if( ( lowerText.compare( "two months ago" ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -2 );
+        else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -3 );
+    }
+    else // first character is a number
+    {
+        // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+        int years = 0, months = 0, weeks = 0, days = 0;
+        QString tmp;
+        for( int i = 0; i < text.length(); i++ )
+        {
+            QChar c = text.at( i );
+            if( c.isNumber() )
+            {
+                tmp += c;
+            }
+            else if( c == 'y' )
+            {
+                years = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'm' )
+            {
+                months = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'w' )
+            {
+                weeks = -tmp.toInt() * 7;
+                tmp.clear();
+            }
+            else if( c == 'd' )
+            {
+                days = -tmp.toInt();
+                break;
+            }
+        }
+        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days );
+    }
+    return result;
 }
 
 void CollectionTreeItemModelBase::startAnimationTick()
