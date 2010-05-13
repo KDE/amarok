@@ -501,7 +501,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
             {
                 QModelIndex originalIdx = m_model->index( originalRow, m_groupedColumn,
                                                           m_rootNode );
-                qDebug() << "originalIdx: " << originalIdx;
+                //qDebug() << "originalIdx: " << originalIdx;
                 groupIsEditable = groupIsEditable
                                   ? originalIdx.flags().testFlag( Qt::ItemIsEditable )
                                   : false;
