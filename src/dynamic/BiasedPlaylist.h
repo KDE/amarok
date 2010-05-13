@@ -69,11 +69,9 @@ namespace Dynamic
 
             Meta::TrackList m_context;
             Meta::TrackList m_buffer;
-            Meta::TrackList m_backbuffer;
-            QMutex m_backbufferMutex;
+            QMutex m_bufferMutex;
 
             int m_numRequested;
-            Meta::TrackList m_requestCache;
 
             QList<Bias*> m_biases;
 

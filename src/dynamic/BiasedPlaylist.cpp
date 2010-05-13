@@ -177,13 +177,10 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 {
     debug() << "Requesting " << n << " tracks.";
 
-
-    if( n <= 0 )
-        emit tracksReady( Meta::TrackList() );
-
-    m_requestCache.clear();
-    m_numRequested = n;
-
+    {
+        QMutexLocker locker(&m_bufferMutex);
+        m_numRequested = n;
+    }
     handleRequest();
 }
 
@@ -192,14 +189,13 @@ Dynamic::BiasedPlaylist::recalculate()
 {
     DEBUG_BLOCK
     if ( AmarokConfig::dynamicMode() && !m_solver ) {
-        m_buffer.clear();
-        if ( m_backbufferMutex.tryLock() ) {
-            m_backbuffer.clear();
-            m_backbufferMutex.unlock();
+        {
+            QMutexLocker locker(&m_bufferMutex);
+            m_buffer.clear();
         }
 
-        getContext();
-        startSolver( true );
+        if( m_numRequested > 0 )
+            startSolver( true );
     }
 }
 
@@ -232,23 +228,24 @@ Dynamic::BiasedPlaylist::handleRequest()
 {
     DEBUG_BLOCK
 
-    while( !m_buffer.isEmpty() && m_numRequested-- )
-        m_requestCache.append( m_buffer.takeLast() );
+    QMutexLocker locker(&m_bufferMutex);
 
-    if( m_numRequested <= 0 )
+    // if we have enough tracks, submit them.
+    if( m_buffer.count() >= m_numRequested )
     {
-        m_numRequested = 0;
-        debug() << "Returning " << m_requestCache.size() << " tracks.";
-        emit tracksReady( m_requestCache );
+        Meta::TrackList tracks;
+        while( !m_buffer.isEmpty() && m_numRequested-- )
+            tracks.append( m_buffer.takeFirst() );
+        locker.unlock();
+
+        debug() << "Returning " << tracks.size() << " tracks.";
+        emit tracksReady( tracks );
     }
-    // otherwise, we ran out of buffer
     else
     {
-        m_backbufferMutex.lock();
-        m_buffer = m_backbuffer;
-        m_backbuffer.clear();
+        locker.unlock();
+        // otherwise, we ran out of buffer
         startSolver( true );
-        m_backbufferMutex.unlock();
     }
 }
 
@@ -261,24 +258,24 @@ Dynamic::BiasedPlaylist::solverFinished()
     if( !m_solver )
         return;
 
-    bool success;
     The::statusBar()->endProgressOperation( m_solver );
-    m_backbufferMutex.lock();
-    m_backbuffer = m_solver->solution();
-    m_backbufferMutex.unlock();
-    success = m_solver->success();
+
+    bool success = m_solver->success();
+    if( success )
+    {
+        QMutexLocker locker(&m_bufferMutex);
+        m_buffer.append( m_solver->solution() );
+    }
+
     m_solver = 0;
 
-    // empty collection, or it was aborted
-    if( !success || m_backbuffer.isEmpty() )
+    // empty collection just give up.
+    if(m_buffer.isEmpty())
     {
-        m_requestCache.clear();
         m_numRequested = 0;
-
-        emit tracksReady( Meta::TrackList() );
     }
-    else if( m_numRequested > 0 )
-        handleRequest();
+
+    handleRequest();
 }
 
 
