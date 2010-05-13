@@ -652,6 +652,37 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
+                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filesize" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    bool doubleOk( false );
+                    const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
+                    if( !doubleOk )
+                    {
+                        qm->endAndOr();
+                        return;
+                    }
+
+                    /*
+                     * A special case is made for Equals (e.g. filesize:100), which actually filters
+                     * for anything beween 100 and 101MBs. Megabytes are used because for audio files
+                     * they are the most reasonable units for the user to deal with.
+                     */
+                    const qreal bytes = mbytes * 1024.0 * 1024.0;
+                    const qint64 mbFloor = qint64( qAbs(mbytes) );
+                    switch( compare )
+                    {
+                    case Collections::QueryMaker::Equals:
+                        qm->endAndOr();
+                        qm->beginAnd();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
+                        break;
+                    case Collections::QueryMaker::GreaterThan:
+                    case Collections::QueryMaker::LessThan:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, bytes, compare );
+                        break;
+                    }
+                }
                 else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "format" ), Qt::CaseInsensitive ) == 0 )
                 {
                     // NOTE: possible keywords that could be considered: codec, filetype, etc.
