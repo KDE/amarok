@@ -86,6 +86,7 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
     , m_context(context)
     , m_epsilon( 1.0 / (double)n )
     , m_pendingBiasUpdates(0)
+    , m_domain(s_universe)
     , m_abortRequested(false)
 {
     debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
@@ -620,10 +621,6 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         return playlist;
     }
 
-    // We are going to be computing a lot of track set intersections so we will
-    // memoize to try and save time (if not memory).
-    QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
-
     int *addedSongsForFilter = new int[m_feasibleCollectionFilters.size()];
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
         addedSongsForFilter[i] = 0;
@@ -688,7 +685,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             // deal with infeasible systems.)
             //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
-            if( currentSet.size() == 0 ) {
+            if( currentSet.trackCount() == 0 ) {
                 debug() << "bias would result in empty set. reverting decision";
                 branches.toggleBit( i );
             }
@@ -700,24 +697,15 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             }
         }
 
-        // Memoize to avoid touching U as much as possible, and to avoid
-        // duplicate toList conversions.
-        if( !memoizedIntersections.contains( branches ) )
-        {
-            memoizedIntersections[branches] = S.uidList(s_universe);
-        }
-
-        const QList<QByteArray>& finalSubset = memoizedIntersections[branches];
-
         // this should never happen
-        if( finalSubset.size() == 0 )
+        if( S.trackCount() == 0 )
         {
             error() << "BiasSolver assumption failed.";
             continue;
         }
 
         // choose a track at random from our final subset
-        playlist.append( getRandomTrack( finalSubset ) );
+        playlist.append( getRandomTrack(S) );
     }
     delete[] addedSongsForFilter;
 
@@ -725,9 +713,9 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
+Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 {
-    if( subset.size() == 0 ) 
+    if( subset.trackCount() == 0 )
         return Meta::TrackPtr();
 
     Meta::TrackPtr track;
@@ -735,7 +723,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
     // this is really dumb, but we sometimes end up with uids that don't point to anything
     int giveup = 50;
     while( giveup-- && !track )
-        track = trackForUid( subset[ KRandom::random() % subset.size() ] );
+        track = trackForUid( subset.getRandomTrack(s_universe) );
 
     if( track )
     {
@@ -744,7 +732,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
     }
     else
         error() << "track is 0 in BiasSolver::getRandomTrack()";
-    
+
     return track;
 }
 
@@ -812,14 +800,14 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
             subset.subtract( m_feasibleCollectionFilterSets.at(i) );
     }
 
-    m_domain = subset.uidList(s_universe);
+    m_domain = subset;
 
     // if we are left with an empty set, better we just use the universe than
     // give the user what they are really asking for.
-    if( m_domain.size() == 0 )
-        m_domain = s_universe;
+    if( m_domain.trackCount() == 0 )
+        m_domain.setUniverseSet();
 
-    debug() << "domain size: " << m_domain.size();
+    debug() << "domain size: " << m_domain.trackCount();
 }
 
 void

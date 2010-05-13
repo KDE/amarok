@@ -18,6 +18,8 @@
 
 #include "TrackSet.h"
 
+#include <KRandom>
+
 Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe)
     : m_bits( universe.size() )
 {
@@ -56,7 +58,7 @@ Dynamic::TrackSet::reset()
 
 
 int
-Dynamic::TrackSet::size() const
+Dynamic::TrackSet::trackCount() const
 {
     return m_bits.count(true);
 }
@@ -110,6 +112,35 @@ Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
     m_bits |= B.m_bits;
     m_bits ^= B.m_bits;
 }
+
+QByteArray
+Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
+{
+    Q_ASSERT( universe.size() == m_bits.size() );
+
+    int count = trackCount();
+    if( count == 0 )
+        return QByteArray();
+
+    // stupid that I have to go through the set like this...
+    int trackNr = KRandom::random() % count;
+    for( int i = m_bits.size()-1; i>=0; i-- )
+    {
+        if( m_bits.at(i) )
+        {
+            if( trackNr )
+                trackNr--;
+            else
+            {
+                return universe.at(i);
+            }
+        }
+    }
+
+    return QByteArray();
+}
+
+
 
 Dynamic::TrackSet&
 Dynamic::TrackSet::operator=( const Dynamic::TrackSet& B )

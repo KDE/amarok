@@ -218,7 +218,7 @@ namespace Dynamic
              * @param subset A list (representing a set) of uids stored in
              * QByteArrays.
              */
-            Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset ) const;
+            Meta::TrackPtr getRandomTrack( const TrackSet& subset ) const;
 
 
             /**
@@ -249,7 +249,7 @@ namespace Dynamic
 
             int m_pendingBiasUpdates;
 
-            QList<QByteArray> m_domain; //!< set of tracks being considered, potentially different than s_universe.
+            TrackSet m_domain; //!< set of tracks being considered, potentially different than s_universe.
 
             /** List of biases which are global biases and are feasible (their
              * sets are non-empty). Set by computeDomain, but stored here so

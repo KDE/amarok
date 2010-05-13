@@ -45,12 +45,17 @@ namespace Dynamic
 
             void reset();
 
-            int size() const;
+            /**
+             * The number of songs contained in this trackSet
+             */
+            int trackCount() const;
 
             void clear(); //!< make this the empty set
             void setUniverseSet(); //!< make this the universe set
 
             QList<QByteArray> uidList( const QList<QByteArray>& universe ) const;
+
+            QByteArray getRandomTrack( const QList<QByteArray>& universe ) const;
 
             void unite( const TrackSet& );
             void intersect( const TrackSet& );
