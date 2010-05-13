@@ -721,7 +721,12 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                     {
                         Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
                         if( compare == Collections::QueryMaker::GreaterThan )
+                        {
+                            qm->endAndOr();
+                            qm->beginAnd();
                             compareAlt = Collections::QueryMaker::LessThan;
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
+                        }
                         const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
                         ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
                     }
