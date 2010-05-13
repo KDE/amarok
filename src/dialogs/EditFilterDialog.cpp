@@ -24,18 +24,8 @@
 #include "core/collections/MetaQueryMaker.h"
 
 #include <KGlobal>
-#include <KLineEdit>
 #include <KLocale>
 #include <KMessageBox>
-
-#include <QLabel>
-#include <QLayout>
-#include <QGroupBox>
-#include <QRadioButton>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QSpinBox>
-
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : KDialog( parent )

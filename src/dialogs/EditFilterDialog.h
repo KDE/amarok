@@ -23,10 +23,7 @@
 #include <KDialog>
 
 #include <QList>
-#include <QVector>
 
-
-class QStringList;
 class QWidget;
 
 class EditFilterDialog : public KDialog
