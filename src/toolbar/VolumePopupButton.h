@@ -42,7 +42,6 @@ public:
 protected:
     virtual void mouseReleaseEvent( QMouseEvent * event );
     virtual void wheelEvent( QWheelEvent * event );
-    virtual bool eventFilter( QObject *object, QEvent *event );
 
 private:
     void engineVolumeChanged( int newVolume );

@@ -78,8 +78,6 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
 
-    // For filtering Wheel events
-    m_volumeSlider->installEventFilter( this );
 }
 
 void
@@ -153,33 +151,6 @@ VolumePopupButton::wheelEvent( QWheelEvent * event )
 
     const int volume = qBound( 0, ec->volume() + event->delta() / 40 , 100 );
     ec->setVolume( volume );
-}
-
-bool
-VolumePopupButton::eventFilter( QObject *object, QEvent *event )
-{
-    if( event->type() == QEvent::Wheel )
-    {
-        QWheelEvent* mackintosh = static_cast<QWheelEvent*>( event );
-        Amarok::VolumeSlider* slider = qobject_cast<Amarok::VolumeSlider*>( object );
-        if( slider )
-        {
-            // TODO:
-            // This is a liiiiiiitle bit of a hack, but I can't be bothered to fix up
-            // the logic in Amarok::Slider right now, so we invert the delta of the QWheelEvent.
-
-            QWheelEvent* hackintosh;
-            hackintosh = new QWheelEvent( mackintosh->pos(), mackintosh->globalPos(), -mackintosh->delta(),
-                                          mackintosh->buttons(), mackintosh->modifiers(), mackintosh->orientation() );
-
-            slider->wheelEvent( hackintosh );
-            delete hackintosh;
-
-            return true;
-        }
-    }
-
-    return QToolButton::eventFilter( object, event );
 }
 
 
