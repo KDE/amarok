@@ -731,22 +731,31 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                     }
                     else // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
                     {
-                        int months = 0, weeks = 0, days = 0;
+                        int years = 0, months = 0, weeks = 0, days = 0;
                         QString tmp;
                         for( int i = 0; i < elem.text.length(); i++ )
                         {
                             QChar c = elem.text.at( i );
                             if( c.isNumber() )
+                            {
                                 tmp += c;
+                            }
+                            else if( c == 'y' )
+                            {
+                                years = -tmp.toInt();
+                                tmp.clear();
+                            }
                             else if( c == 'm' )
                             {
                                 months = 0 - tmp.toInt();
                                 tmp.clear();
-                            } else if( c == 'w' )
+                            }
+                            else if( c == 'w' )
                             {
                                 weeks = 0 - 7 * tmp.toInt();
                                 tmp.clear();
-                            } else if( c == 'd' )
+                            }
+                            else if( c == 'd' )
                             {
                                 days = 0 - tmp.toInt();
                                 break;
@@ -758,7 +767,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                         {
                             compareAlt = Collections::QueryMaker::LessThan;
                         }
-                        uint time_t = QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t();
+                        uint time_t = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days ).toTime_t();
                         ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
                     }
                 }
