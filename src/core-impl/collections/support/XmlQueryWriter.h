@@ -83,10 +83,17 @@ class XmlQueryWriter : public QueryMaker
 
         int validFilterMask();
 
+        /**
+         * Creates the dom element for one filter.
+         * This is the equivalent function to XmlQueryReader::readFilter.
+         */
+        static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value);
+        static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare);
+
     private:
         void insertRetValue( QString );
-        QString fieldName( qint64 );
-        QString compareName( QueryMaker::NumberComparison );
+        static QString fieldName( qint64 );
+        static QString compareName( QueryMaker::NumberComparison );
 
 
         QueryMaker* m_qm;

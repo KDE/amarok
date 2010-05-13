@@ -294,51 +294,36 @@ QueryMaker*
 XmlQueryWriter::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     DEBUG_BLOCK
+    m_filterElement.appendChild( xmlForFilter(m_doc, false, value, filter ));
 
-    QDomElement e = m_doc.createElement( "include" );
-    e.setAttribute( "field", fieldName( value ) );
-    e.setAttribute( "value", filter );
-    m_filterElement.appendChild( e );
-
-    m_qm->addFilter( value, filter, matchBegin, matchEnd );    
+    m_qm->addFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
 
 QueryMaker*
 XmlQueryWriter::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QDomElement e = m_doc.createElement( "exclude" );
-    e.setAttribute( "field", fieldName( value ) );
-    e.setAttribute( "value", filter );
-    m_filterElement.appendChild( e );
+    m_filterElement.appendChild( xmlForFilter(m_doc, true, value, filter ));
 
-    m_qm->excludeFilter( value, filter, matchBegin, matchEnd );    
+    m_qm->excludeFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
 
 QueryMaker*
 XmlQueryWriter::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    QDomElement e = m_doc.createElement( "include" );
-    e.setAttribute( "field", fieldName( value ) );
-    e.setAttribute( "value", filter );
-    e.setAttribute( "compare", compareName( compare ) );
-    m_filterElement.appendChild( e );
+    m_filterElement.appendChild( xmlForFilter(m_doc, false, value, filter, compare ));
 
-    m_qm->addNumberFilter( value, filter, compare );    
+    m_qm->addNumberFilter( value, filter, compare );
     return this;
 }
 
 QueryMaker*
 XmlQueryWriter::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    QDomElement e = m_doc.createElement( "exclude" );
-    e.setAttribute( "field", fieldName( value ) );
-    e.setAttribute( "value", filter );
-    e.setAttribute( "compare", compareName( compare ) );
-    m_filterElement.appendChild( e );
+    m_filterElement.appendChild( xmlForFilter(m_doc, true, value, filter, compare ));
 
-    m_qm->excludeNumberFilter( value, filter, compare );    
+    m_qm->excludeNumberFilter( value, filter, compare );
     return this;
 }
 
@@ -418,6 +403,27 @@ int
 XmlQueryWriter::validFilterMask()
 {
     return m_qm->validFilterMask();
+}
+
+QDomElement
+XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value)
+{
+    QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
+    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "value", value );
+
+    return e;
+}
+
+QDomElement
+XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare)
+{
+    QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
+    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "value", numValue );
+    e.setAttribute( "compare", compareName( compare ) );
+
+    return e;
 }
 
 void

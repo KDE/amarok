@@ -26,12 +26,12 @@
 #include <QDomElement>
 #include <QMutex>
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 
 namespace Collections {
     class Collection;
     class QueryMaker;
-    class XmlQueryWriter;
 }
 
 namespace PlaylistBrowserNS
@@ -151,7 +151,7 @@ namespace Dynamic
         protected:
             Collections::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
-            QMutex m_mutex;
+            QMutex m_mutex; // the mutext protecting m_property
     };
 
     /**
@@ -229,7 +229,7 @@ namespace Dynamic
         private:
             double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
-            Collections::XmlQueryWriter* m_qm;
+            QPointer<Collections::QueryMaker> m_qm;
             XmlQueryReader::Filter m_filter;
 
             // Disable copy constructor and assignment

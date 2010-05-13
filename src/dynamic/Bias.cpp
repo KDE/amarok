@@ -232,7 +232,16 @@ Dynamic::GlobalBias::xml() const
     weight.setAttribute( "value", QString::number( m_weight ) );
 
     e.appendChild( weight );
-    e.appendChild( m_qm->getDomElement() );
+
+    QDomElement queryElement = doc.createElement( "query" );
+    QDomElement filtersElement = doc.createElement( "filters" );
+    if( m_filter.compare == -1 )
+        filtersElement.appendChild( Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value ));
+    else
+        filtersElement.appendChild( Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value.toLongLong(), (Collections::QueryMaker::NumberComparison)m_filter.compare ));
+
+    queryElement.appendChild( filtersElement );
+    e.appendChild( queryElement );
 
     return e;
 }
@@ -291,8 +300,7 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     if (m_qm)
         delete m_qm;
 
-    m_qm = new Collections::XmlQueryWriter( m_collection->queryMaker(),
-            QDomDocument() );
+    m_qm = m_collection->queryMaker();
 
     if( filter.field != 0 )
     {
