@@ -805,7 +805,7 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
     // if we are left with an empty set, better we just use the universe than
     // give the user what they are really asking for.
     if( m_domain.trackCount() == 0 )
-        m_domain.setUniverseSet();
+        m_domain = TrackSet(s_universe);
 
     debug() << "domain size: " << m_domain.trackCount();
 }

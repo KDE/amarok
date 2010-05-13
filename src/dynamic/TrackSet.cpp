@@ -63,43 +63,6 @@ Dynamic::TrackSet::trackCount() const
     return m_bits.count(true);
 }
 
-
-void
-Dynamic::TrackSet::clear()
-{
-    m_bits.clear();
-}
-
-void
-Dynamic::TrackSet::setUniverseSet()
-{
-    m_bits.fill( true );
-}
-
-QList<QByteArray>
-Dynamic::TrackSet::uidList( const QList<QByteArray>& universe ) const
-{
-    QList<QByteArray> uids;
-
-    int count = m_bits.count( true );
-    for( int i = 0; count > 0 && i < m_bits.size(); ++i )
-    {
-        if( m_bits.testBit(i) )
-        {
-            uids.append( universe[i] );
-            count--;
-        }
-    }
-
-    return uids;
-}
-
-void
-Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
-{
-    m_bits |= B.m_bits;
-}
-
 void
 Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
 {
