@@ -95,7 +95,6 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
         m_biasEnergy.append( 0.0 );
         m_biasMutationEnergy.append( 0.0 );
     }
-    
 }
 
 
@@ -116,6 +115,21 @@ bool
 Dynamic::BiasSolver::success() const
 {
     return !m_abortRequested;
+}
+
+void
+Dynamic::BiasSolver::setAutoDelete( bool autoDelete )
+{
+    if( autoDelete )
+    {
+        connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    }
+    else
+    {
+        disconnect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        disconnect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    }
 }
 
 void Dynamic::BiasSolver::prepareToRun()
@@ -141,7 +155,10 @@ void Dynamic::BiasSolver::prepareToRun()
     // nothing to update
     if( !m_pendingBiasUpdates && !s_universeOutdated )
     {
-        emit readyToRun();
+        if (!m_abortRequested)
+            emit readyToRun();
+        else
+            emit failed(0);
         return;
     }
 
@@ -478,8 +495,12 @@ Dynamic::BiasSolver::biasUpdated()
     if( m_pendingBiasUpdates <= 0 )
         return;
 
-    if( --m_pendingBiasUpdates == 0 && !s_universeOutdated )
-        emit readyToRun();
+    if( --m_pendingBiasUpdates == 0 && !s_universeOutdated ) {
+        if (!m_abortRequested)
+            emit readyToRun();
+        else
+            emit failed(0);
+    }
 }
 
 
@@ -835,6 +856,7 @@ Dynamic::BiasSolver::updateUniverse()
         }
         
         s_universeQuery = s_universeCollection->queryMaker();
+        s_universeQuery->setAutoDelete( true );
         s_universeQuery->setQueryType( Collections::QueryMaker::Custom );
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
@@ -883,9 +905,13 @@ Dynamic::BiasSolver::universeUpdated()
     QMutexLocker locker( &s_universeMutex );
 
     s_universeOutdated = false;
+    s_universeQuery = 0;
 
-    if( m_pendingBiasUpdates == 0 )
+    if( m_pendingBiasUpdates == 0 ) {
         emit(readyToRun());
+        if (m_abortRequested)
+            deleteLater();
+    }
 }
 
 void
@@ -904,7 +930,10 @@ Dynamic::BiasSolver::setUniverseCollection( Collections::Collection* coll )
     {
         s_universeCollection = coll;
         s_universeOutdated = true;
-        s_universeQuery = 0; // this will get set on update
+
+        // stop the running query
+        disconnect( s_universeQuery, 0, 0, 0);
+        s_universeQuery = 0; // (we set autodelete) this will get set on update
     }
 }
 

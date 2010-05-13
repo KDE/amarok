@@ -97,6 +97,16 @@ namespace Dynamic
             bool success() const;
 
             /**
+             * Choose whether the BiasSolver instance should delete itself after the query.
+             * By passing true the instance will delete itself after emitting done, failed.
+             * Otherwise it is the responsibility of the owner to delete the instance
+             * when it is not needed anymore.
+             *
+             * Defaults to false, i.e. the BiasSolver instance will not delete itself.
+             */
+            void setAutoDelete( bool autoDelete );
+
+            /**
              * Set the collection that will be used when generating the
              * playlist.
              */
@@ -264,7 +274,7 @@ namespace Dynamic
              */
             static QList<QByteArray>  s_universe;
             static QMutex             s_universeMutex;
-            static Collections::QueryMaker*        s_universeQuery;
+            static Collections::QueryMaker*  s_universeQuery;
             static Collections::Collection*  s_universeCollection;
             static bool               s_universeOutdated;
             static unsigned int       s_uidUrlProtocolPrefixLength;

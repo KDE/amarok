@@ -92,15 +92,7 @@ Dynamic::BiasedPlaylist::~BiasedPlaylist()
 {
     DEBUG_BLOCK
 
-    if( m_solver )
-    {
-        m_solver->requestAbort();
-
-        while( !m_solver->isFinished() )
-            usleep( 20000 ); // Sleep 20 msec
-
-        delete m_solver;
-    }
+    requestAbort();
 }
 
 QDomElement
@@ -121,8 +113,11 @@ Dynamic::BiasedPlaylist::xml() const
 void
 Dynamic::BiasedPlaylist::requestAbort()
 {
-    if( m_solver )
+    if( m_solver ) {
         m_solver->requestAbort();
+        disconnect(m_solver, 0, this, 0);
+        m_solver = 0;
+    }
 }
 
 void
@@ -143,7 +138,10 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         debug() << "assigning new m_solver";
 
         m_solver = new BiasSolver( BUFFER_SIZE, m_biases, m_context );
-        connect( m_solver, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( solverFinished(ThreadWeaver::Job* ) ) );
+        m_solver->setAutoDelete(true);
+        connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
+        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
         if( withStatusBar )
         {
@@ -152,7 +150,6 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
             connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
 
-        connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
         m_solver->prepareToRun();
         debug() << "called prepareToRun";
     }
@@ -257,7 +254,7 @@ Dynamic::BiasedPlaylist::handleRequest()
 
 
 void
-Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
+Dynamic::BiasedPlaylist::solverFinished()
 {
     DEBUG_BLOCK
 
@@ -270,7 +267,6 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     m_backbuffer = m_solver->solution();
     m_backbufferMutex.unlock();
     success = m_solver->success();
-    job->deleteLater();
     m_solver = 0;
 
     // empty collection, or it was aborted

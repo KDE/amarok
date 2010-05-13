@@ -59,7 +59,7 @@ namespace Dynamic
 
         private slots:
             void solverReady();
-            void solverFinished( ThreadWeaver::Job* );
+            void solverFinished();
             void updateStatus( int progress );
 
         private:
