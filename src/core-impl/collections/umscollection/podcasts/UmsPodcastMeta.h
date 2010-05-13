@@ -43,6 +43,7 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
 
     public:
         static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Podcasts::PodcastEpisodePtr episode );
+        static UmsPodcastEpisodePtr fromTrackPtr( Meta::TrackPtr track );
         static Podcasts::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
         static Podcasts::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
 

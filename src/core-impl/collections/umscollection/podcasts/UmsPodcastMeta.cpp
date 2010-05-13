@@ -27,6 +27,12 @@ UmsPodcastEpisode::fromPodcastEpisodePtr( PodcastEpisodePtr episode )
     return UmsPodcastEpisodePtr::dynamicCast( episode );
 }
 
+UmsPodcastEpisodePtr
+UmsPodcastEpisode::fromTrackPtr( Meta::TrackPtr track )
+{
+    return UmsPodcastEpisodePtr::dynamicCast( track );
+}
+
 PodcastEpisodePtr
 UmsPodcastEpisode::toPodcastEpisodePtr( UmsPodcastEpisodePtr episode )
 {
