@@ -354,7 +354,7 @@ namespace Amarok
     {
         typedef QMap<QString, KUrl> FileMap;
 
-        KDirLister lister ( false );
+        KDirLister lister( 0 );
         lister.setAutoUpdate ( false );
         lister.setAutoErrorHandlingEnabled ( false, 0 );
         lister.openUrl ( url );
