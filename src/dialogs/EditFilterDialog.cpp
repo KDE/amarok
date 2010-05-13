@@ -87,6 +87,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
     m_ui.invertButton->setEnabled( false );
 
+    // attribute line edit settings
+    m_ui.editKeywordBox->completionObject()->setIgnoreCase( true );
+    m_ui.editKeywordBox->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_ui.editKeywordBox->setInsertPolicy( QComboBox::InsertAtTop );
+    connect( m_ui.editKeywordBox, SIGNAL(returnPressed()), SLOT(slotDefault()) );
+
     // you need to append at least one filter condition to specify if do
     // an "AND" or an "OR" with the next condition if the filter is empty
     //
@@ -320,21 +326,27 @@ void EditFilterDialog::textWanted() // SLOT
     m_ui.valueGroupBox->setEnabled( false );
 
     m_ui.editKeywordBox->completionObject()->clear();
+    m_ui.editKeywordBox->clear();
 }
 
 void EditFilterDialog::textWanted( const QStringList &completions ) // SLOT
 {
     textWanted();
 
-    m_ui.editKeywordBox->completionObject()->insertItems( completions );
-    m_ui.editKeywordBox->completionObject()->setIgnoreCase( true );
-    m_ui.editKeywordBox->setCompletionMode( KGlobalSettings::CompletionPopup );
+    QStringList sortedList = completions;
+    sortedList.sort();
+
+    m_ui.editKeywordBox->completionObject()->setItems( sortedList );
+    m_ui.editKeywordBox->insertItem( 0, QString() );
+    m_ui.editKeywordBox->insertItems( 1, sortedList );
 }
 
 void EditFilterDialog::valueWanted() // SLOT
 {
     m_ui.editKeywordBox->setEnabled( false );
     m_ui.valueGroupBox->setEnabled( true );
+    m_ui.editKeywordBox->completionObject()->clear();
+    m_ui.editKeywordBox->clear();
 }
 
 void EditFilterDialog::chooseCondition( int condition ) // SLOT
@@ -362,7 +374,7 @@ void EditFilterDialog::slotDefault() // SLOT
     const QString &attr = m_ui.keywordCombo->currentText();
 
     // now append the filter rule if not empty
-    if( m_ui.editKeywordBox->text().isEmpty() && (attr.compare(i18n("Simple Search")) == 0) )
+    if( m_ui.editKeywordBox->currentText().isEmpty() && (attr.compare(i18n("Simple Search")) == 0) )
     {
         KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
                     "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
@@ -386,15 +398,15 @@ void EditFilterDialog::slotDefault() // SLOT
             m_filterText += "OR ";
     }
 
-    QStringList list = m_ui.editKeywordBox->text().split( ' ' );
+    QStringList list = m_ui.editKeywordBox->currentText().split( ' ' );
     if( attr.compare( i18n("Simple Search") ) == 0 )
     {
         // Simple Search
-        debug() << "selected text: '" << m_ui.editKeywordBox->text() << "'";
+        debug() << "selected text: '" << m_ui.editKeywordBox->currentText() << "'";
         if (m_checkActions[0]->isChecked())
         {
             // all words
-            m_filterText += m_ui.editKeywordBox->text();
+            m_filterText += m_ui.editKeywordBox->currentText();
         }
         else if (m_checkActions[1]->isChecked())
         {
@@ -406,7 +418,7 @@ void EditFilterDialog::slotDefault() // SLOT
         else if (m_checkActions[2]->isChecked())
         {
             // exactly the words
-            m_filterText += "\"" + m_ui.editKeywordBox->text() + "\"";
+            m_filterText += "\"" + m_ui.editKeywordBox->currentText() + "\"";
         }
         else if (m_checkActions[3]->isChecked())
         {
@@ -418,42 +430,42 @@ void EditFilterDialog::slotDefault() // SLOT
     else if( attr.compare( i18n("Album") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("album")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("album")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Artist") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("artist")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("artist")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Composer") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("composer")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("composer")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Genre") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("genre")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("genre")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Track Title") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("title")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("title")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Format") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("format")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("format")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Comment") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("comment")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("comment")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Label") ) == 0 )
     {
         m_filterText += QString( "%1:\"%2\"" )
-            .arg( keywordConditionText(i18n("label")) ).arg( m_ui.editKeywordBox->text() );
+            .arg( keywordConditionText(i18n("label")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Track Length") ) == 0 )
     {
@@ -484,8 +496,6 @@ void EditFilterDialog::slotDefault() // SLOT
         m_filterText += keywordConditionNumeric( attr );
     }
     emit filterChanged( m_filterText );
-
-    m_ui.editKeywordBox->clear();
 }
 
 void EditFilterDialog::slotUser1() // SLOT
@@ -518,7 +528,7 @@ void EditFilterDialog::slotOk() // SLOT
 {
     // If there's a filter typed in but unadded, add it.
     // This makes it easier to just add one condition - you only need to press OK.
-    if ( !m_ui.editKeywordBox->text().isEmpty() )
+    if ( !m_ui.editKeywordBox->currentText().isEmpty() )
         slotDefault();
 
     // Don't let OK do anything if they haven't set any filters.
@@ -532,7 +542,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::AlbumLis
     Q_UNUSED( collectionId )
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_albums << album->name();
+        if( !album->name().isEmpty() )
+            m_albums << album->name();
     }
 }
 
@@ -542,7 +553,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::ArtistLi
     Q_UNUSED( collectionId )
     foreach( Meta::ArtistPtr artist, artists )
     {
-        m_artists << artist->name();
+        if( !artist->name().isEmpty() )
+            m_artists << artist->name();
     }
 }
 
@@ -552,7 +564,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::Composer
     Q_UNUSED( collectionId )
     foreach( Meta::ComposerPtr composer, composers )
     {
-        m_composers << composer->name();
+        if( !composer->name().isEmpty() )
+            m_composers << composer->name();
     }
 }
 
@@ -562,7 +575,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::GenreLis
     Q_UNUSED( collectionId )
     foreach( Meta::GenrePtr genre, genres )
     {
-        m_genres << genre->name();
+        if( !genre->name().isEmpty() )
+            m_genres << genre->name();
     }
 }
 
@@ -572,7 +586,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::LabelLis
     Q_UNUSED( collectionId )
     foreach( Meta::LabelPtr label, labels )
     {
-        m_labels << label->name();
+        if( !label->name().isEmpty() )
+            m_labels << label->name();
     }
 }
 

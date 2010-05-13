@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>318</height>
+    <width>450</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>400</width>
+    <width>450</width>
     <height>300</height>
    </size>
   </property>
@@ -199,15 +199,27 @@
            </widget>
           </item>
           <item>
-           <widget class="KLineEdit" name="editKeywordBox">
+           <widget class="KComboBox" name="editKeywordBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
             <property name="whatsThis">
              <string>&lt;p&gt;Type the attribute value or the text to look for here.&lt;/p&gt;</string>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="autoCompletion">
+             <bool>false</bool>
+            </property>
+            <property name="trapReturnKey">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -519,11 +531,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
