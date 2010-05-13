@@ -44,8 +44,6 @@ namespace Dynamic
 
             QDomElement xml() const;
 
-            void setContext( Meta::TrackList );
-
             void requestTracks(int);
 
             QList<Bias*>& biases();
@@ -65,9 +63,8 @@ namespace Dynamic
         private:
             void startSolver( bool withStatusBar = false );
             void handleRequest();
-            void getContext();
+            Meta::TrackList getContext();
 
-            Meta::TrackList m_context;
             Meta::TrackList m_buffer;
             QMutex m_bufferMutex;
 

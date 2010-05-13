@@ -121,12 +121,6 @@ Dynamic::BiasedPlaylist::requestAbort()
 }
 
 void
-Dynamic::BiasedPlaylist::setContext( Meta::TrackList context )
-{
-    m_context = context;
-}
-
-void
 Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 {
     DEBUG_BLOCK
@@ -137,7 +131,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         BiasSolver::setUniverseCollection( m_collection );
         debug() << "assigning new m_solver";
 
-        m_solver = new BiasSolver( BUFFER_SIZE, m_biases, m_context );
+        m_solver = new BiasSolver( BUFFER_SIZE, m_biases, getContext() );
         m_solver->setAutoDelete(true);
         connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
@@ -279,16 +273,23 @@ Dynamic::BiasedPlaylist::solverFinished()
 }
 
 
-void
+Meta::TrackList
 Dynamic::BiasedPlaylist::getContext()
 {
-    m_context.clear();
+    Meta::TrackList context;
 
     int i = qMax( 0, The::playlist()->activeRow() );
 
     for( ; i < The::playlist()->qaim()->rowCount(); ++i )
     {
-        m_context.append( The::playlist()->trackAt(i) );
+        context.append( The::playlist()->trackAt(i) );
     }
+
+    {
+        QMutexLocker locker(&m_bufferMutex);
+        context.append( m_buffer );
+    }
+
+    return context;
 }
 
