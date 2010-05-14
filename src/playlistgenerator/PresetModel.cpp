@@ -207,8 +207,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
             The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
         }
     } else {
-        // FIXME after string unfreeze
-        The::statusBar()->longMessage( i18n("Preset could not be exported to ", filename), StatusBar::Sorry );
+        The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
 }
