@@ -9,6 +9,7 @@ option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
+option(WITH_UPNP "Enable UPnP Collection support" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -130,6 +131,16 @@ if( WITH_PLAYER )
 
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
+
+    if( WITH_UPNP )
+        macro_optional_find_package(HUpnp)
+        if( HUPNP_FOUND )
+        else( HUPNP_FOUND )
+            message(FATAL_ERROR "UPnP collections requires the HUPnP library")
+        endif( HUPNP_FOUND )
+
+        macro_log_feature( HUPNP_FOUND "HUpnp" "Support UPnP devices on the network" "http://herqq.org" FALSE "" "" )
+    endif( WITH_UPNP )
 
     if( WITH_MP3Tunes )
         find_package(CURL)
