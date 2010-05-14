@@ -186,15 +186,15 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
         int v = m_value.toInt();
 
         double factor;
-        uint range;
+        int range;
         if ( m_field != "length" ) {
             // compute fuzzy ranges -- this marks the boundary beyond which the fuzzy match probability is less than 1%
             factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
-            range = (uint)ceil( 4.6051702 / factor );
+            range = (int)ceil( 4.6051702 / factor );
         } else {
             // small kludge to get fuzziness to play better in the case of track lengths
             factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
-            range = (uint)ceil( 4605.1702 / factor );
+            range = (int)ceil( 4605.1702 / factor );
         }
         if ( m_comparison == Constraint::CompareNumEquals ) {
             if ( !m_invert ) {
