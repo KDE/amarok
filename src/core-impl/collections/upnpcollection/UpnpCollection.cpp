@@ -24,15 +24,25 @@
 
 #include <QStringList>
 #include <QTimer>
+#include <QUuid>
 
 #include <KLocale>
 
-using namespace Collections;
+#include <HUpnp>
+#include <HControlPoint>
+#include <HDevice>
+#include <HDeviceInfo>
+#include <HService>
+
+using namespace Herqq::Upnp;
+
+namespace Collections {
 
 AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
     : Collections::CollectionFactory()
+    , m_controlPoint(new HControlPoint(NULL, this))
 {
     setParent( parent );
     Q_UNUSED( args );
@@ -40,12 +50,31 @@ UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantLis
 
 UpnpCollectionFactory::~UpnpCollectionFactory()
 {
+    delete m_controlPoint;
 }
 
 void UpnpCollectionFactory::init()
 {
     DEBUG_BLOCK
+    connect(m_controlPoint,
+            SIGNAL(rootDeviceOnline(Herqq::Upnp::HDevice *)),
+            this,
+            SLOT(rootDeviceOnline(Herqq::Upnp::HDevice *)));
+    if( !m_controlPoint->init() ) {
+        debug() << "HControlPoint::init failed" << m_controlPoint->errorDescription();
+        return;
+    }
+    debug() << "Control point started?" << m_controlPoint->isStarted();
     emit newCollection( new UpnpCollection );
+}
+
+void UpnpCollectionFactory::rootDeviceOnline(HDevice *device)
+{
+// TODO should we check embedded devices?
+
+    if( device->deviceInfo().deviceType().toString(HResourceType::TypeSuffix) == "MediaServer" ) {
+        //emit newCollection(new UpnpCollection(device));
+    }
 }
 
 //UpnpCollection
@@ -64,19 +93,21 @@ void
 UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
+        debug() << "+++++ FULL SCAN REQUESTED";
     //ignore
 }
 
 QueryMaker*
 UpnpCollection::queryMaker()
 {
+        debug() << "+++++ Querymaker requested";
     return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 QString
 UpnpCollection::collectionId() const
 {
-    return QString("upnp://") + "bazinga";
+    return QString("upnp://") + "bazinga" + QUuid::createUuid().toString();
 }
 
 QString
@@ -85,5 +116,13 @@ UpnpCollection::prettyName() const
     return i18n("Upnp Bazinga");
 }
 
+bool
+UpnpCollection::possiblyContainsTrack( const KUrl &url ) const
+{
+    debug() << "Requested track " << url;
+    return false;
+}
+
+} //~ namespace
 #include "UpnpCollection.moc"
 

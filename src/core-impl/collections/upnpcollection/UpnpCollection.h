@@ -29,6 +29,13 @@
 
 #include <KIcon>
 
+namespace Herqq {
+  namespace Upnp {
+    class HControlPoint;
+    class HDevice;
+  }
+}
+
 namespace Collections {
 
 class UpnpCollection;
@@ -46,8 +53,10 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
     private:
 
     private slots:
+        void rootDeviceOnline(Herqq::Upnp::HDevice *device);
 
     private:
+        Herqq::Upnp::HControlPoint *m_controlPoint;
 };
 
 class UpnpCollection : public Collections::Collection
@@ -66,6 +75,7 @@ class UpnpCollection : public Collections::Collection
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
+        bool possiblyContainsTrack( const KUrl &url ) const;
     signals:
 
     public slots:
