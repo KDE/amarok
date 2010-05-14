@@ -13,6 +13,7 @@ if(HUPNP_FOUND)
 
     set(amarok_collection-upnpcollection_PART_SRCS
         UpnpCollection.cpp
+        UpnpQueryMaker.cpp
     )
 
 

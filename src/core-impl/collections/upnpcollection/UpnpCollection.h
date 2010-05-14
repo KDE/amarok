@@ -73,8 +73,6 @@ class UpnpCollection : public Collections::Collection
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("network-server"); }
 
-        QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
-
         bool possiblyContainsTrack( const KUrl &url ) const;
     signals:
 
@@ -83,7 +81,6 @@ class UpnpCollection : public Collections::Collection
     private slots:
 
     private:
-        QSharedPointer<MemoryCollection> m_mc;
         Herqq::Upnp::HDevice *m_device;
 };
 

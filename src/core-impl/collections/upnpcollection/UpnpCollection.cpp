@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
 #include "statusbar/StatusBar.h"
+#include "UpnpQueryMaker.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -102,8 +103,7 @@ UpnpCollection::startFullScan()
 QueryMaker*
 UpnpCollection::queryMaker()
 {
-        debug() << "+++++ Querymaker requested";
-    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
+    return new UpnpQueryMaker;
 }
 
 QString
