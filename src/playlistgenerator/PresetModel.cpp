@@ -27,12 +27,15 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "statusbar/StatusBar.h"
 
+#include <KFileDialog>
+#include <KUrl>
+
 #include <QAbstractItemModel>
+#include <QDesktopServices>
 #include <QDialog>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <QFileDialog>
 #include <QList>
 #include <QVariant>
 
@@ -138,24 +141,21 @@ APG::PresetModel::editPreset( const QModelIndex& index )
 void
 APG::PresetModel::exportActive()
 {
-    QFileDialog* d = new ExportDialog( activePreset() );
+    KFileDialog* d = new ExportDialog( activePreset() );
     connect( d, SIGNAL( pleaseExport( const QString&, const QList<APG::PresetPtr> ) ),
           this, SLOT( savePresetsToXml( const QString&, const QList<APG::PresetPtr> ) ) );
-    d->show();
+    d->exec();
 }
 
 void
 APG::PresetModel::import()
 {
-    QFileDialog* d = new QFileDialog( 0, i18n("Import preset") );
-    d->setAttribute( Qt::WA_DeleteOnClose );
-    d->setDefaultSuffix( "xml" );
-    d->setModal( true );
-    d->setNameFilter( i18n("Preset files (*.xml)") );
-    d->setLabelText( QFileDialog::Accept, i18n("Import") );
-    connect( d, SIGNAL( fileSelected( const QString& ) ),
-          this, SLOT( loadPresetsFromXml( const QString& ) ) );
-    d->show();
+    QString filename = KFileDialog::getOpenFileName( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
+                                                     QString("*.xml|" + i18n("Preset files (*.xml)") ),
+                                                     0,
+                                                     i18n("Import preset") );
+    if ( ( filename != QString() ) && ( filename != "" ) )
+        loadPresetsFromXml( filename );
 }
 
 void
@@ -207,6 +207,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
             The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
         }
     } else {
+        // FIXME after string unfreeze
         The::statusBar()->longMessage( i18n("Preset could not be exported to ", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
@@ -270,25 +271,26 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
  * ExportDialog nested class
  */
 APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
-    : QFileDialog( 0, i18n("Export `%1' preset", ps->title() ) )
+    : KFileDialog( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
+                   QString("*.xml|" + i18n("Preset files (*.xml)") ),
+                   0 )
+
 {
     m_presetsToExportList.append( ps );
-    selectFile( ps->title() + ".xml" );
-    setAttribute( Qt::WA_DeleteOnClose );
-    setDefaultSuffix( "xml" );
-    setModal( true );
-    setNameFilter( i18n("Preset files (*.xml)") );
-    setLabelText( QFileDialog::Accept, i18n("Export") );
-    connect( this, SIGNAL( fileSelected( const QString& ) ),
-             this, SLOT( recvFileName( const QString& ) ) );
+    setMode( KFile::File );
+    setSelection( ps->title() + ".xml" );
+    setOperationMode( KFileDialog::Saving );
+    setKeepLocation( true );
+    setCaption( i18n("Export `%1' preset", ps->title() ) );
+    connect( this, SIGNAL( okClicked() ), this, SLOT( recvAccept() ) );
 }
 
 APG::PresetModel::ExportDialog::~ExportDialog() {}
 
 void
-APG::PresetModel::ExportDialog::recvFileName( const QString& filename ) const
+APG::PresetModel::ExportDialog::recvAccept() const
 {
-    emit pleaseExport( filename, m_presetsToExportList );
+    emit pleaseExport( selectedFile(), m_presetsToExportList );
 }
 
 const QString APG::PresetModel::presetExamples =
