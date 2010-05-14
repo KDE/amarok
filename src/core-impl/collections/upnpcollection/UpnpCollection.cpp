@@ -95,7 +95,7 @@ void
 UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
-        debug() << "+++++ FULL SCAN REQUESTED";
+
     //ignore
 }
 
