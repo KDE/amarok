@@ -24,7 +24,6 @@
 
 #include <QStringList>
 #include <QTimer>
-#include <QUuid>
 
 #include <KLocale>
 
@@ -33,6 +32,7 @@
 #include <HDevice>
 #include <HDeviceInfo>
 #include <HService>
+#include <HUdn>
 
 using namespace Herqq::Upnp;
 
@@ -65,7 +65,6 @@ void UpnpCollectionFactory::init()
         return;
     }
     debug() << "Control point started?" << m_controlPoint->isStarted();
-    emit newCollection( new UpnpCollection );
 }
 
 void UpnpCollectionFactory::rootDeviceOnline(HDevice *device)
@@ -73,20 +72,23 @@ void UpnpCollectionFactory::rootDeviceOnline(HDevice *device)
 // TODO should we check embedded devices?
 
     if( device->deviceInfo().deviceType().toString(HResourceType::TypeSuffix) == "MediaServer" ) {
-        //emit newCollection(new UpnpCollection(device));
+        emit newCollection(new UpnpCollection(device));
     }
 }
 
 //UpnpCollection
 
-UpnpCollection::UpnpCollection()
+// TODO register for the device bye bye and emit remove()
+UpnpCollection::UpnpCollection(HDevice *device)
     : Collection()
+    , m_device(device)
 {
     DEBUG_BLOCK
 }
 
 UpnpCollection::~UpnpCollection()
 {
+    // DO NOT delete m_device. It is HUpnp's job.
 }
 
 void
@@ -107,13 +109,13 @@ UpnpCollection::queryMaker()
 QString
 UpnpCollection::collectionId() const
 {
-    return QString("upnp://") + "bazinga" + QUuid::createUuid().toString();
+    return QString("upnp-ms://") + m_device->deviceInfo().udn().toString();
 }
 
 QString
 UpnpCollection::prettyName() const
 {
-    return i18n("Upnp Bazinga");
+    return m_device->deviceInfo().friendlyName();
 }
 
 bool

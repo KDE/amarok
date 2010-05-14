@@ -63,7 +63,7 @@ class UpnpCollection : public Collections::Collection
 {
     Q_OBJECT
     public:
-        UpnpCollection();
+        UpnpCollection(Herqq::Upnp::HDevice *device);
         virtual ~UpnpCollection();
 
         virtual void startFullScan();
@@ -84,6 +84,7 @@ class UpnpCollection : public Collections::Collection
 
     private:
         QSharedPointer<MemoryCollection> m_mc;
+        Herqq::Upnp::HDevice *m_device;
 };
 
 } //namespace Collections
