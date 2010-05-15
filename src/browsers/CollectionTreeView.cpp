@@ -569,18 +569,6 @@ CollectionTreeView::slotSetFilterTimeout()
 }
 
 void
-CollectionTreeView::slotExpand( const QModelIndex &index )
-{
-    DEBUG_BLOCK
-    debug() << "modelindex = " << index;
-    debug() << "m_filterModel ? " << (m_filterModel ? "true" : "false");
-    if( m_filterModel )
-        expand( m_filterModel->mapFromSource( index ) );
-    else
-        expand( index );
-}
-
-void
 CollectionTreeView::slotCollapsed( const QModelIndex &index )
 {
     if( !m_treeModel )
