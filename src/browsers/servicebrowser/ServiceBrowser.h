@@ -83,8 +83,6 @@ class ServiceBrowser : public BrowserCategoryList
 
         static ServiceBrowser    *s_instance;
 
-        SearchWidget             *m_searchWidget;
-
         QTreeView                *m_serviceListView;
 
         ScriptableServiceManager *m_scriptableServiceManager;

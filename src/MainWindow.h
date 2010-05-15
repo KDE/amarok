@@ -34,7 +34,6 @@ class SlimToolbar;
 class MainToolbar;
 class MainWindow;
 class PlaylistFileProvider;
-class SearchWidget;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
 
@@ -194,7 +193,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<KMenu>     m_searchMenu;
         //QPointer<KVBox>     m_statusbarArea;
 
-        QPointer<SearchWidget>     m_searchWidget;
         QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
