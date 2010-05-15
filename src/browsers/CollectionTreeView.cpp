@@ -299,19 +299,6 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
-    QModelIndex index = indexAt( event->pos() );
-
-    if( index.isValid() &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
-        model()->hasChildren( index ) )
-    {
-        setCurrentIndex( index );
-        setExpanded( index, !isExpanded( index ) );
-        event->accept();
-        return;
-    }
     Amarok::PrettyTreeView::mousePressEvent( event );
 }
 
@@ -324,16 +311,30 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         m_pd = 0;
     }
 
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
     if( event->button() == Qt::MidButton )
     {
-        QModelIndex origIndex = indexAt( event->pos() );
-        if( origIndex.isValid() )
-        {
-            CollectionTreeItem *item = getItemFromIndex( origIndex );
-            playChildTracks( item, Playlist::AppendAndPlay );
-            event->accept();
-            return;
-        }
+        CollectionTreeItem *item = getItemFromIndex( index );
+        playChildTracks( item, Playlist::AppendAndPlay );
+        event->accept();
+        return;
+    }
+
+    if( event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier &&
+        KGlobalSettings::singleClick() &&
+        model()->hasChildren( index ) )
+    {
+        setCurrentIndex( index );
+        setExpanded( index, !isExpanded( index ) );
+        event->accept();
+        return;
     }
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
