@@ -83,7 +83,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 #endif
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
-    setAnimated( true );
+
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        setAnimated( true );
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 

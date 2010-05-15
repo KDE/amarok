@@ -54,8 +54,9 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
     setSelectionBehavior( QAbstractItemView::SelectItems );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
-    setAnimated( true );
     setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        setAnimated( true );
 
     The::paletteHandler()->updateItemView( this );
 

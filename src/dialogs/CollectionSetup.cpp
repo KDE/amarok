@@ -103,7 +103,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
-    m_view->setAnimated( true );
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
