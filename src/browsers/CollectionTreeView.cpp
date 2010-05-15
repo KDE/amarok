@@ -66,6 +66,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_cmSeperator( 0 )
     , m_dragMutex()
     , m_ongoingDrag( false )
+    , m_expandToggledWhenPressed( false )
 {
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
@@ -299,7 +300,22 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    bool prevExpandState = isExpanded( index );
+
+    // This will toggle the expansion of the current item when clicking
+    // on the fold marker but not on the item itself. Required here to
+    // enable dragging.
     Amarok::PrettyTreeView::mousePressEvent( event );
+
+    m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
+    event->accept();
 }
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -326,11 +342,13 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->button() == Qt::LeftButton &&
+    if( !m_expandToggledWhenPressed &&
+        event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
     {
+        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
         setCurrentIndex( index );
         setExpanded( index, !isExpanded( index ) );
         event->accept();
