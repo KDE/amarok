@@ -26,7 +26,7 @@
 #include "MimeTypeFilterProxyModel.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <KLineEdit>
+#include <KComboBox>
 #include <KDirModel>
 #include <KDirLister>
 #include <KStandardDirs>
@@ -220,10 +220,10 @@ FileBrowser::itemActivated( const QModelIndex &index )
 void
 FileBrowser::slotSetFilterTimeout()
 {
-    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
-    if( lineEdit )
+    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
+    if( comboBox )
     {
-        m_currentFilter = lineEdit->text();
+        m_currentFilter = comboBox->currentText();
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }

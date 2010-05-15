@@ -49,7 +49,7 @@
 
 #include <KGlobalSettings>
 #include <KIcon>
-#include <KLineEdit>
+#include <KComboBox>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
 
@@ -556,11 +556,11 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
 void
 CollectionTreeView::slotSetFilterTimeout()
 {
-    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
-    if( lineEdit )
+    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
+    if( comboBox )
     {
         if( m_treeModel )
-            m_treeModel->setCurrentFilter( lineEdit->text() );
+            m_treeModel->setCurrentFilter( comboBox->currentText() );
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }

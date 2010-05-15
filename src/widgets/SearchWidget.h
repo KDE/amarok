@@ -18,11 +18,11 @@
 #define SEARCHWIDGET_H
 
 #include "amarok_export.h"
-#include "LineEdit.h"
+#include "ComboBox.h"
 
-#include <QToolBar>
 #include <QWidget>
 
+class QToolBar;
 class KPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
@@ -33,7 +33,9 @@ class AMAROK_EXPORT SearchWidget : public QWidget
     public:
         explicit SearchWidget( QWidget *parent, bool advanced = true );
         SearchWidget( QWidget *parent, QWidget *caller, bool advanced = true  );
-        Amarok::LineEdit *lineEdit() { return m_sw; }
+
+        QString currentText() const { return m_sw->currentText(); }
+        Amarok::ComboBox *comboBox() { return m_sw; }
         void setup( QObject* caller );
         void setSearchString( const QString &searchString );
 
@@ -42,8 +44,8 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void showAdvancedButton( bool show );
         
         /**
-         * Sets the string that will be visible when the LineEdit is empty.
-         * @param message the string that will be visible then the LineEdit is empty.
+         * Sets the string that will be visible when the ComboBox's edit text is empty.
+         * @param message the string that will be visible when the ComboBox's edit text is empty.
          */
         void setClickMessage( const QString &message );
 
@@ -51,12 +53,13 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void filterNow();
 
     private slots:
+        void addCompletion( const QString &text );
         void slotShowFilterEditor();
 
     private:
         void init( QWidget *parent, bool advanced );
 
-        Amarok::LineEdit *m_sw;
+        Amarok::ComboBox *m_sw;
         QAction          *m_filterAction;
         QToolBar         *m_toolBar;
 };

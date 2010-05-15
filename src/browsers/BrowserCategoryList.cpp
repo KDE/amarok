@@ -25,7 +25,7 @@
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
 
-#include <KLineEdit>
+#include <KComboBox>
 #include <KStandardDirs>
 
 #include <QFile>
@@ -218,10 +218,10 @@ BrowserCategoryList::removeCategory( const QString &name )
 
 void BrowserCategoryList::slotSetFilterTimeout()
 {
-    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
-    if( lineEdit )
+    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
+    if( comboBox )
     {
-        m_currentFilter = lineEdit->text();
+        m_currentFilter = comboBox->currentText();
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }

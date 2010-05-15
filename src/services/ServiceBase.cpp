@@ -27,7 +27,6 @@
 #include "browsers/InfoProxy.h"
 
 #include <khbox.h>
-#include <KLineEdit>
 #include <KMenuBar>
 
 #include <QFrame>
@@ -317,7 +316,7 @@ ServiceBase::sendMessage( const QString & message )
 QString
 ServiceBase::filter() const
 {
-    return m_searchWidget->lineEdit()->text();
+    return m_searchWidget->currentText();
 }
 
 QList<int>

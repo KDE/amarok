@@ -668,6 +668,7 @@ set(amaroklib_LIB_SRCS
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
+    widgets/ComboBox.cpp
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp

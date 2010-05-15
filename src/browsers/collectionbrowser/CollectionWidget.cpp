@@ -423,7 +423,7 @@ void CollectionWidget::setFilter( const QString &filter )
 QString
 CollectionWidget::filter() const
 {
-    return m_searchWidget->lineEdit()->text();
+    return m_searchWidget->currentText();
 }
 
 QList<int>
@@ -446,7 +446,7 @@ void CollectionWidget::toggleView( bool merged )
         m_searchWidget->disconnect( m_treeView );
         m_searchWidget->setup( m_singleTreeView );
         m_stack->setCurrentWidget( m_singleTreeView );
-        m_singleModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_singleModel->setCurrentFilter( m_searchWidget->currentText() );
         m_singleTreeView->slotFilterNow();
         if( m_levels != m_singleTreeView->levels() )
             m_singleTreeView->setLevels( m_levels );
@@ -458,7 +458,7 @@ void CollectionWidget::toggleView( bool merged )
         m_searchWidget->disconnect( m_singleTreeView );
         m_searchWidget->setup( m_treeView );
         m_stack->setCurrentWidget( m_treeView );
-        m_multiModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_multiModel->setCurrentFilter( m_searchWidget->currentText() );
         m_treeView->slotFilterNow();
         if( m_levels != m_treeView->levels() )
             m_treeView->setLevels( m_levels );
