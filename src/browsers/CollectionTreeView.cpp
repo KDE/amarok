@@ -17,11 +17,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionTreeView"
+#include "core/support/Debug.h"
+
 #include "CollectionTreeView.h"
 
 #include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "browsers/CollectionTreeItem.h"

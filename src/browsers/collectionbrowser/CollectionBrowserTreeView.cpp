@@ -15,11 +15,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionBrowserTreeView"
+#include "core/support/Debug.h"
+
 #include "CollectionBrowserTreeView.h"
 #include "CollectionTreeItemDelegate.h"
 #include "browsers/CollectionTreeItem.h"
-
-#include "core/support/Debug.h"
 
 #include <QAction>
 #include <QMouseEvent>
