@@ -36,6 +36,7 @@
 #include <KMenu>
 #include <KMenuBar>
 #include <KStandardDirs>
+#include <KStandardGuiItem>
 
 #include <QActionGroup>
 #include <QMetaEnum>
@@ -60,6 +61,14 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     KHBox *hbox = new KHBox( this );
     m_searchWidget = new SearchWidget( hbox );
     m_searchWidget->setClickMessage( i18n( "Search collection" ) );
+
+    // Filter presets. UserRole is used to store the actual syntax.
+    KComboBox *combo = m_searchWidget->comboBox();
+    const KIcon icon = KStandardGuiItem::find().icon();
+    combo->addItem( icon, i18n("Added Today"), i18n("added") + QString(":<1d") );
+    combo->addItem( icon, i18n("Added This Week"), i18n("added") + QString(":<1w") );
+    combo->addItem( icon, i18n("Added This Month"), i18n("added") + QString(":<1m") );
+    combo->insertSeparator( combo->count() );
 
     m_stack = new QStackedWidget( this );
     m_stack->setFrameShape( QFrame::NoFrame );

@@ -72,6 +72,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
     connect( m_sw, SIGNAL(returnPressed(const QString&)), SLOT(addCompletion(const QString&)) );
+    connect( m_sw, SIGNAL(currentIndexChanged(int)), SLOT(onCurrentIndexChanged(int)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
@@ -112,6 +113,16 @@ SearchWidget::addCompletion( const QString &text )
         m_sw->setCurrentIndex( index );
     }
 }
+
+void
+SearchWidget::onCurrentIndexChanged( int index )
+{
+    // if data of UserRole exists, use that as the actual filter string
+    const QString userFilter = m_sw->itemData( index ).toString();
+    if( userFilter.isEmpty() )
+        m_sw->setEditText( m_sw->itemText(index) );
+    else
+        m_sw->setEditText( userFilter );
 }
 
 void

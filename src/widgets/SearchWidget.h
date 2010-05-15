@@ -54,6 +54,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
 
     private slots:
         void addCompletion( const QString &text );
+        void onCurrentIndexChanged( int index );
         void slotShowFilterEditor();
 
     private:
