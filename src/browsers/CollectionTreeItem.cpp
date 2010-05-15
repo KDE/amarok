@@ -388,7 +388,6 @@ CollectionTreeItem::descendentTracks()
 bool
 CollectionTreeItem::allDescendentTracksLoaded() const
 {
-    Meta::TrackPtr track;
     if( isTrackItem() )
         return true;
 
@@ -400,7 +399,6 @@ CollectionTreeItem::allDescendentTracksLoaded() const
         if( !item->allDescendentTracksLoaded() )
             return false;
     }
-
     return true;
 }
 

@@ -66,7 +66,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_cmSeperator( 0 )
     , m_dragMutex()
     , m_ongoingDrag( false )
-    , m_justDoubleClicked( false )
 {
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
@@ -87,8 +86,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
-
-    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
 void CollectionTreeView::setModel( QAbstractItemModel * model )
@@ -277,38 +274,44 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    QModelIndex origIndex = indexAt( event->pos() );
-    CollectionTreeItem *item = getItemFromIndex( origIndex );
-
-    if( !item )
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
     {
         event->accept();
         return;
     }
 
-    if( event->button() != Qt::LeftButton || event->modifiers()
-        || KGlobalSettings::singleClick() || ( item && item->isTrackItem() ) )
+    if( model()->hasChildren( index ) )
     {
+        if( event->button() == Qt::LeftButton &&
+            event->modifiers() == Qt::NoModifier )
+        {
+            setExpanded( index, !isExpanded( index ) );
+        }
+    }
+    else
+    {
+        CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
-        update();
-        event->accept();
-        return;
     }
-
-    m_clickTimer.stop();
-    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
-    //comes through, but after the mouseDoubleClickEvent, so we need to tell
-    //mouseReleaseEvent to ignore that one event
-    m_justDoubleClicked = true;
-    setExpanded( origIndex, !isExpanded( origIndex ) );
     event->accept();
 }
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
-    if( KGlobalSettings::singleClick() )
-        setItemsExpandable( false );
-    update();
+    QModelIndex index = indexAt( event->pos() );
+
+    if( index.isValid() &&
+        event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier &&
+        KGlobalSettings::singleClick() &&
+        model()->hasChildren( index ) )
+    {
+        setCurrentIndex( index );
+        setExpanded( index, !isExpanded( index ) );
+        event->accept();
+        return;
+    }
     Amarok::PrettyTreeView::mousePressEvent( event );
 }
 
@@ -318,46 +321,21 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
         m_pd->hide();
+        m_pd = 0;
     }
-    m_pd = 0;
 
-    setItemsExpandable( true );
     if( event->button() == Qt::MidButton )
     {
         QModelIndex origIndex = indexAt( event->pos() );
-        CollectionTreeItem *item = getItemFromIndex( origIndex );
-        if ( item )
+        if( origIndex.isValid() )
         {
+            CollectionTreeItem *item = getItemFromIndex( origIndex );
             playChildTracks( item, Playlist::AppendAndPlay );
-            update();
             event->accept();
             return;
         }
     }
-    if( event->button() != Qt::LeftButton
-            || event->modifiers()
-            || selectedIndexes().size() > 1)
-    {
-        Amarok::PrettyTreeView::mousePressEvent( event );
-        update();
-        return;
-    }
-
-    if( m_clickTimer.isActive() || m_justDoubleClicked )
-    {
-        //it's a double-click...so ignore it
-        m_clickTimer.stop();
-        m_justDoubleClicked = false;
-        m_savedClickIndex = QModelIndex();
-        event->accept();
-        return;
-    }
-
-    m_savedClickIndex = indexAt( event->pos() );
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
-    m_clickLocation = event->pos();
-    event->accept();
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
@@ -366,16 +344,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
     if( event->buttons() || event->modifiers() )
     {
         Amarok::PrettyTreeView::mouseMoveEvent( event );
-        update();
         return;
-    }
-
-    QPoint point = event->pos() - m_clickLocation;
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
-    {
-        m_clickTimer.stop();
-        slotClickTimeout();
     }
     event->accept();
 }
@@ -390,20 +359,10 @@ CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
 
     if( !filteredIndex.isValid() )
     {
-        return NULL;
+        return 0;
     }
 
     return static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
-}
-
-void CollectionTreeView::slotClickTimeout()
-{
-    m_clickTimer.stop();
-    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
-    {
-        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
-    }
-    m_savedClickIndex = QModelIndex();
 }
 
 void CollectionTreeView::keyPressEvent( QKeyEvent *event )
@@ -555,8 +514,13 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
-    Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
+
+    QModelIndexList changedIndexes = indexes;
+    changedIndexes << deselected.indexes();
+    foreach( const QModelIndex &index, changedIndexes )
+        update( index );
+
     if ( indexes.count() < 1 )
         return;
 
@@ -566,9 +530,7 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
     else
         index = indexes[0];
 
-
     CollectionTreeItem * item = static_cast<CollectionTreeItem *>( index.internalPointer() );
-
     emit( itemSelected ( item ) );
 }
 

@@ -5,10 +5,13 @@ Amarok ChangeLog
 
 VERSION 2.3.1
   CHANGES:
+    * Improved responsiveness when expanding/collapsing items in the
+      collection browser when using single-click mode.
     * The Collection scanner now runs with idle priority when invoked by
       Amarok. Batch scan users can invoke it with the --idlepriority flag.
 
   BUGFIXES:
+    * Fixed strange selection behaviour in the music sources pane (BR 222760).
     * Fixed factor used when filtering lengths in collection browser.
     * Fixed wrong value used when filtering comments in collection browser.
     * Don't truncate the "Label:" label in the TagDialog. (BR 235957)
