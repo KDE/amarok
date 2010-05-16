@@ -11,6 +11,8 @@ VERSION 2.3.1
       Amarok. Batch scan users can invoke it with the --idlepriority flag.
 
   BUGFIXES:
+    * Fixed crash when right clicking in file browser while it is showing 
+      "Places". (BR 237562)
     * Fixed strange selection behaviour in the music sources pane (BR 222760).
     * Fixed factor used when filtering lengths in collection browser.
     * Fixed wrong value used when filtering comments in collection browser.
