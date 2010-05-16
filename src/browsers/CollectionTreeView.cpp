@@ -107,6 +107,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setSourceModel( model );
+    m_filterModel->setDynamicSortFilter( true );
 
     QTreeView::setModel( m_filterModel );
 
