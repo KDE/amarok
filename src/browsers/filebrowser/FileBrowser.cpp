@@ -382,7 +382,19 @@ FileBrowser::setDir( const QString &dir )
     if( dir == "places:" )
         showPlaces();
     else
+    {
+        
+       //if we are currently showing "places" we need to remember to change the model
+       //back to the regular file model
+       if( m_showingPlaces )
+       {
+           m_fileView->setModel( m_kdirModel );
+           m_showingPlaces = false;
+       }
+           
        addItemActivated( dir );  //This function just happens to do exactly what we need
+
+    }
 }
 
 void
