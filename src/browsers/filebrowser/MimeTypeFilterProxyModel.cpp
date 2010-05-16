@@ -18,7 +18,7 @@
 
 #include <KDirModel>
 #include <KFileItem>
-#include <kfile.h>
+#include <KFile>
 
 MimeTypeFilterProxyModel::MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent )
     : QSortFilterProxyModel( parent )
@@ -49,24 +49,39 @@ MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& s
 bool
 MimeTypeFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
-    // get the KFileItems
-    QVariant qvarLeft = left.data( KDirModel::FileItemRole );
-    QVariant qvarRight = right.data( KDirModel::FileItemRole );
+    const QVariant qvarLeft   = left.data( KDirModel::FileItemRole );
+    const QVariant qvarRight  = right.data( KDirModel::FileItemRole );
+    const KFileItem itemLeft  = qvarLeft.value<KFileItem>();
+    const KFileItem itemRight = qvarRight.value<KFileItem>();
 
-    KFileItem itemLeft = qvarLeft.value<KFileItem>();
-    KFileItem itemRight = qvarRight.value<KFileItem>();
+    switch( left.column() )
+    {
+    case KDirModel::Name:
+        // if both items are directories or files, then compare (case insensitive) on name
+        if( itemLeft.isDir() == itemRight.isDir() )
+            return itemLeft.name( true ) < itemRight.name( true );
+        // directories come before files
+        if( itemLeft.isDir() )
+            return true;
+        break;
 
-    // if both items are directories or files, then compare (case insensitive) on name
-    if( itemLeft.isDir() == itemRight.isDir()) {
-        return itemLeft.name(true) < itemRight.name(true);
+    case KDirModel::Size:
+        return itemLeft.size() < itemRight.size();
+        break;
+
+    case KDirModel::ModifiedTime:
+        return itemLeft.time( KFileItem::ModificationTime ) < itemRight.time( KFileItem::ModificationTime );
+        break;
+
+    case KDirModel::Permissions:
+    case KDirModel::Owner:
+    case KDirModel::Group:
+    case KDirModel::Type:
+    default:
+        return QString::localeAwareCompare( itemLeft.text(), itemRight.text() ) < 0;
+        break;
     }
-
-    // directories come before files
-    if (itemLeft.isDir()) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 
