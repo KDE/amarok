@@ -446,12 +446,7 @@ FileView::tracksForEdit() const
         return tracks;
 
     foreach( const QModelIndex& index, indices )
-    {
-        //yes, the spaces in the string are supposed to be there... Yes, that is
-        //quite strange. No, I have no idea why they are there...
-        if( index.data( KDirModel::FileItemRole ).typeName() != " KFileItem " )
-            return tracks;
-        
+    {   
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
         if( track )
