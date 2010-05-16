@@ -77,8 +77,20 @@ void
 FileView::contextMenuEvent ( QContextMenuEvent * e )
 {
 
+    DEBUG_BLOCK
+
     if( !model() )
         return;
+
+
+    //trying to do fancy stuff while showing places only leads to tears!
+    debug() << model()->objectName();
+    if( model()->objectName() == "PLACESMODEL" )
+    {
+        e->accept();
+        return;
+    }
+    
 
     QModelIndexList indices = selectedIndexes();
 
@@ -435,6 +447,11 @@ FileView::tracksForEdit() const
 
     foreach( const QModelIndex& index, indices )
     {
+        //yes, the spaces in the string are supposed to be there... Yes, that is
+        //quite strange. No, I have no idea why they are there...
+        if( index.data( KDirModel::FileItemRole ).typeName() != " KFileItem " )
+            return tracks;
+        
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
         if( track )

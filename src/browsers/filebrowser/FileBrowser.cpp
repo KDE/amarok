@@ -420,6 +420,7 @@ FileBrowser::showPlaces()
     if( !m_placesModel )
     {
         m_placesModel = new KFilePlacesModel( this );
+        m_placesModel->setObjectName( "PLACESMODEL");
         connect( m_placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
     }
 
