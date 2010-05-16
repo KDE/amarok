@@ -388,7 +388,7 @@ FileBrowser::setDir( const QString &dir )
        //back to the regular file model
        if( m_showingPlaces )
        {
-           m_fileView->setModel( m_kdirModel );
+           m_fileView->setModel( m_mimeFilterProxyModel );
            m_showingPlaces = false;
        }
            
