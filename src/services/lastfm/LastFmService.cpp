@@ -396,7 +396,8 @@ LastFmService::onGetUserInfo()
                     AvatarDownloader* downloader = new AvatarDownloader();
                     KUrl url( lfm["user"][ "image" ].text() );
                     downloader->downloadAvatar( m_userName,  url);
-                    connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
+                    connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
+                                         SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
                 }
                 updateProfileInfo();
 
@@ -418,10 +419,10 @@ LastFmService::onGetUserInfo()
 }
 
 void
-LastFmService::onAvatarDownloaded( QPixmap avatar )
+LastFmService::onAvatarDownloaded( const QString &username, QPixmap avatar )
 {
     DEBUG_BLOCK
-    if( !avatar.isNull() ) {
+    if( username == m_userName && !avatar.isNull() ) {
 
         if( !m_polished )
             polish();
@@ -527,7 +528,6 @@ LastFmService::polish()
             m_avatarLabel->setMargin( 5 );
         }
 
-        debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
         innerProfilebox->setSpacing(0);
         innerProfilebox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
