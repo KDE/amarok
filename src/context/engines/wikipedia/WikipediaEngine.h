@@ -24,11 +24,9 @@
 
 #include "context/DataEngine.h"
 
-#include <KIO/Job>
-
 #include <QLocale>
-#include <QPointer>
 
+class QNetworkReply;
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -65,7 +63,7 @@ protected:
     bool sourceRequestEvent( const QString& name );
     
 private slots:
-    void wikiResult( KJob* );
+    void wikiResult( QNetworkReply* );
     
 private:
     void update();
@@ -73,15 +71,12 @@ private:
     QString wikiArtistPostfix();
     QString wikiAlbumPostfix();
     QString wikiTrackPostfix();
-    QString wikiSiteUrl();
-    QString wikiUrl( const QString& item ) const;
+    QUrl wikiUrl( const QString& item ) const;
     QString wikiLocale() const;
 
     QString wikiParse();
     
     void reloadWikipedia();
-    
-    QPointer<KJob> m_wikiJob;
 
     Meta::TrackPtr m_currentTrack;
         
@@ -91,12 +86,13 @@ private:
     QString m_wiki;
     QString m_wikiCurrentEntry;
     QString m_wikiCurrentLastEntry;
-    QString m_wikiCurrentUrl;
+    QUrl m_wikiCurrentUrl;
     QString m_wikiLanguages;
     QLocale m_wikiLang;
     QString m_wikiWideLang;
     short m_triedRefinedSearch;
 
+    QSet< QUrl > m_urls;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )
