@@ -95,7 +95,6 @@ private slots:
 
 private:
     void addToView( CoverFoundItem *const item );
-    void setupSearchToolTip();
     void sortCoversBySize();
     void updateGui();
     void updateTitle();
