@@ -69,6 +69,7 @@ void NetworkAccessViewer::addRequest( QNetworkAccessManager::Operation op, const
 
     QTreeWidgetItem *item = new QTreeWidgetItem( cols );
     networkRequestsDialog->requestList->addTopLevelItem( item );
+    networkRequestsDialog->requestList->scrollToItem( item );
 
     // Add to maps
     requestMap.insert( reply, req );
