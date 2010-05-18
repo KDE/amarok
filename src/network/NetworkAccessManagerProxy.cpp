@@ -38,12 +38,15 @@ public:
     ~NetworkAccessManagerProxyPrivate() {}
 
     NetworkAccessViewer *viewer;
+    QString userAgent;
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     : KIO::Integration::AccessManager( parent )
     , d( new NetworkAccessManagerProxyPrivate() )
 {
+    setCache(0);   // disable QtWebKit cache to just use KIO one..
+    d->userAgent = KProtocolManager::defaultUserAgent();
 }
 
 NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
@@ -72,9 +75,36 @@ NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
 QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
-    QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, req, outgoingData );
+    QNetworkRequest request = req;
+    request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
+    request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
+
+    KIO::CacheControl cc = KProtocolManager::cacheControl();
+    switch (cc)
+    {
+    case KIO::CC_CacheOnly:      // Fail request if not in cache.
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+        break;
+
+    case KIO::CC_Refresh:        // Always validate cached entry with remote site.
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
+        break;
+
+    case KIO::CC_Reload:         // Always fetch from remote site
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+        break;
+
+    case KIO::CC_Cache:          // Use cached entry if available.
+    case KIO::CC_Verify:         // Validate cached entry with remote site if expired.
+    default:
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        break;
+    }
+
+    QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
+
     if( d->viewer )
-        d->viewer->addRequest( op, req, outgoingData, reply );
+        d->viewer->addRequest( op, request, outgoingData, reply );
     return reply;
 }
 
