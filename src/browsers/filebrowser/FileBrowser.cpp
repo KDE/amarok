@@ -50,15 +50,15 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     navigationToolbar->setIconDimensions( 16 );
 
     //add navigation actions
-    m_upAction = new QAction( KIcon( "go-up" ), i18n( "Up one level" ), this );
+    m_upAction = new QAction( KIcon( "go-up" ), i18nc( "Go one level up in the directory hierarchy", "Up one level" ), this );
     navigationToolbar->addAction( m_upAction );
     connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
 
-    m_homeAction = new QAction( KIcon( "user-home" ), i18n( "Home" ), this );
+    m_homeAction = new QAction( KIcon( "user-home" ), i18nc( "Go to the home directory",  "Home" ), this );
     navigationToolbar->addAction( m_homeAction );
     connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
 
-    m_placesAction = new QAction( KIcon( "folder-remote" ), i18n( "Places" ), this );
+    m_placesAction = new QAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), this );
     navigationToolbar->addAction( m_placesAction );
     connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
 
