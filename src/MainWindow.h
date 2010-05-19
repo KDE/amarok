@@ -33,6 +33,7 @@ class ContextWidget;
 class SlimToolbar;
 class MainToolbar;
 class MainWindow;
+class NetworkAccessViewer;
 class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
@@ -152,6 +153,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
+        void showNetworkRequestViewer();
 
         /**
          * Save state and position of dock widgets.
@@ -196,6 +198,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
+        QPointer<NetworkAccessViewer> m_networkViewer;
 
         QByteArray                 m_splitterState;
 
