@@ -23,7 +23,6 @@
 #include "App.h"
 #include "context/ContextView.h"
 #include "core/support/Debug.h"
-#include "context/widgets/DropPixmapItem.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "PaletteHandler.h"
 #include "context/Svg.h"

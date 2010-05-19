@@ -16,12 +16,12 @@
  ****************************************************************************************/
 
 #include "UpcomingEventsWidget.h"
+#include "NetworkAccessManagerProxy.h"
 #include "SvgHandler.h"
 
 // Kde include
 #include <KDateTime>
 #include <KIcon>
-#include <KIO/Job>
 #include <KLocale>
 #include <KLocalizedString>
 #include <KUrl>
@@ -33,6 +33,8 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QDesktopServices>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 #define NBR_MAX_PARTICIPANT 5
 
@@ -69,6 +71,9 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
 
     m_url->setOpenExternalLinks( true );
     m_url->setTextInteractionFlags( Qt::TextBrowserInteraction );
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(loadImage(QNetworkReply*)) );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -121,29 +126,34 @@ UpcomingEventsWidget::url() const
 void
 UpcomingEventsWidget::setImage( const KUrl &url )
 {
+    if( !url.isValid() )
+    {
+        m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
+        return;
+    }
+
     m_image->setText( i18n("Loading picture...") );
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KJob * ) ), SLOT( loadImage( KJob * ) ) );
+    m_imageUrl = url;
+    QNetworkRequest req( url );
+    The::networkAccessManager()->get( req );
 }
 
 void
-UpcomingEventsWidget::loadImage( KJob *job ) // SLOT
+UpcomingEventsWidget::loadImage( QNetworkReply *reply ) // SLOT
 {
-    if( job )
-    {
-        KIO::StoredTransferJob *const storedJob = static_cast< KIO::StoredTransferJob * >( job );
-        QPixmap image;
-        QByteArray buffer = storedJob->data();
-        if( !buffer.isEmpty() )
-        {
-            image.loadFromData( buffer );
-            m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-        }
-        else
-        {
-            m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
-        }
-    }
+    const KUrl url = reply->request().url();
+    if( m_imageUrl != url )
+        return;
+
+    m_imageUrl.clear();
+    QByteArray buffer = reply->readAll();
+    QPixmap image;
+    image.loadFromData( buffer );
+
+    if( !image.isNull() )
+        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
+
+    reply->deleteLater();
 }
 
 void

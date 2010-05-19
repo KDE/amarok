@@ -2,7 +2,7 @@
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
  * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
- * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 * 
+ * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +23,7 @@
 #include "core/support/Debug.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 // LastFm
 #include <lastfm/XmlQuery>
@@ -49,6 +50,9 @@ UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVarian
         , m_sources( "current" )
 {
     update();
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(upcomingEventsResultFetched(QNetworkReply*)) );
 }
 
 /**
@@ -97,7 +101,7 @@ UpcomingEventsEngine::sourceRequestEvent( const QString& name )
 
     // someone is asking for data
     m_requested = true;
-    
+
     QStringList tokens = name.split( ':' );
 
     // user has changed the timespan.
@@ -157,7 +161,7 @@ UpcomingEventsEngine::update()
     unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
-    
+
     if ( !currentTrack )
         return;
 
@@ -213,40 +217,49 @@ void
 UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 {
     // Prepares the url for LastFm request
-    QUrl url;
+    KUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getEvents" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+    m_url = url;
 
-    // The results are parsed only when the job is finished
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KJob* ) ), SLOT( upcomingEventsResultFetched( KJob* ) ) );
+    QNetworkRequest req( url );
+    The::networkAccessManager()->get( req );
 }
 
 /**
- * Runs the KJob to parse the XML file
+ * Receive a network reply and parse the XML file
  */
 void
-UpcomingEventsEngine::upcomingEventsResultFetched (KJob* job) // SLOT
+UpcomingEventsEngine::upcomingEventsResultFetched( QNetworkReply *reply ) // SLOT
 {
+    const KUrl url = reply->request().url();
+    if( m_url != url )
+        return;
+
+    m_url.clear();
     m_upcomingEvents.clear();
-    
-    if( !job->error() )
+
+    QByteArray buffer = reply->readAll();
+    if( !buffer.isNull() )
     {
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+        m_xml = QString::fromUtf8( buffer, buffer.size() );
     }
     else
+    {
+        reply->deleteLater();
         return;
-    
+    }
+
     QDomDocument doc;
     QXmlStreamReader xmlReader;
     xmlReader.addData( m_xml );
     doc.setContent( m_xml );
     upcomingEventsParseResult( xmlReader );
+    reply->deleteLater();
 }
 
 /**

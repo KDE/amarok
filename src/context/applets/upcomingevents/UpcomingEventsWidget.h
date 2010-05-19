@@ -29,10 +29,10 @@
 
 class KDateTime;
 class KUrl;
-class KJob;
 
 class QLabel;
 class QGridLayout;
+class QNetworkReply;
 
 class UpcomingEventsWidget : public QWidget
 {
@@ -114,14 +114,15 @@ class UpcomingEventsWidget : public QWidget
         QLabel *m_name;
         QLabel *m_url;
         QFrame *m_frame;
+        KUrl m_imageUrl;
 
     private slots:
         /**
          *SLOTS
-         *Get pixmap from the KJob and set it into image's QLabel
-         *@param KJob*, pointer to the job which get the pixmap from the web
+         *Get pixmap from the internet and set it into image's QLabel
+         *@param reply*, reply to the network request
          */
-        void    loadImage( KJob *job );
+        void    loadImage( QNetworkReply *reply );
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */
