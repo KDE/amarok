@@ -22,6 +22,7 @@
 #include <kio/accessmanager.h>
 
 class NetworkAccessManagerProxy;
+class NetworkAccessViewer;
 
 namespace The
 {
@@ -35,6 +36,9 @@ class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessM
 public:
     static NetworkAccessManagerProxy *instance();
     virtual ~NetworkAccessManagerProxy();
+
+    NetworkAccessViewer *networkAccessViewer();
+    void setNetworkAccessViewer( NetworkAccessViewer *viewer );
 
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);

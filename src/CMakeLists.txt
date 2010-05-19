@@ -548,6 +548,11 @@ kde4_add_ui_files(apg_SRCS
 #####################################################################
 set(network_access_SRCS
     network/NetworkAccessManagerProxy.cpp
+    network/NetworkAccessViewer.cpp
+)
+
+kde4_add_ui_files(network_access_SRCS
+    network/NetworkRequests.ui
 )
 
 #####################################################################

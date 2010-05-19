@@ -16,6 +16,9 @@
  ****************************************************************************************/
 
 #include "NetworkAccessManagerProxy.h"
+#include "NetworkAccessViewer.h"
+
+#include <KProtocolManager>
 
 #include <QNetworkReply>
 
@@ -31,7 +34,10 @@ NetworkAccessManagerProxy *NetworkAccessManagerProxy::instance()
 class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
-    NetworkAccessManagerProxyPrivate() {}
+    NetworkAccessManagerProxyPrivate() : viewer( 0 ) {}
+    ~NetworkAccessManagerProxyPrivate() {}
+
+    NetworkAccessViewer *viewer;
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
@@ -42,13 +48,33 @@ NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
 
 NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
 {
-    s_instance = 0;
     delete d;
+    s_instance = 0;
 }
 
-QNetworkReply *NetworkAccessManagerProxy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+NetworkAccessViewer *
+NetworkAccessManagerProxy::networkAccessViewer()
+{
+    return d->viewer;
+}
+
+void
+NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
+{
+    if( viewer )
+    {
+        if( d->viewer )
+            delete d->viewer;
+        d->viewer = viewer;
+    }
+}
+
+QNetworkReply *
+NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
     QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, req, outgoingData );
+    if( d->viewer )
+        d->viewer->addRequest( op, req, outgoingData, reply );
     return reply;
 }
 
