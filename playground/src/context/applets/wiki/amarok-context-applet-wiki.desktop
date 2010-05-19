@@ -37,6 +37,7 @@ Name[tr]=Wiki-Meta Gereci
 Name[uk]=Вікі-Метааплет
 Name[x-test]=xxWiki-MetaAppletxx
 Name[zh_CN]=Wiki-MetaApplet
+Name[zh_TW]=Wiki-Meta 應用小程式
 Type=Service
 ServiceTypes=Plasma/Applet
 

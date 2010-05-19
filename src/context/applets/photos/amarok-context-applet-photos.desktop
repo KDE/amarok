@@ -39,6 +39,7 @@ Name[tr]=Fotoğraflar
 Name[uk]=Фотографії
 Name[x-test]=xxPhotosxx
 Name[zh_CN]=照片
+Name[zh_TW]=Photos
 Type=Service
 Icon=photos-amarok
 ServiceTypes=Plasma/Applet

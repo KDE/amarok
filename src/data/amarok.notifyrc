@@ -38,6 +38,7 @@ Comment[tr]=Amarok
 Comment[uk]=Amarok
 Comment[x-test]=xxAmarokxx
 Comment[zh_CN]=Amarok
+Comment[zh_TW]=Amarok
 
 [Event/trackChange]
 Name=Track Change
@@ -75,6 +76,7 @@ Name[tr]=Parça Değişimi
 Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
 Name[zh_CN]=音轨更改
+Name[zh_TW]=曲目變更
 Comment=Amarok changed to a new track
 Comment[bg]=Amarok прехвърли към друг запис
 Comment[ca]=L'Amarok ha canviat a una peça nova
@@ -110,4 +112,5 @@ Comment[tr]=Amarok yeni bir parçaya geçti
 Comment[uk]=Композиція у Amarok змінилася
 Comment[x-test]=xxAmarok changed to a new trackxx
 Comment[zh_CN]=Amarok 更改到新音轨
+Comment[zh_TW]=Amarok 已變更至新的曲目
 Action=Popup

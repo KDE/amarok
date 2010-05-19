@@ -38,6 +38,7 @@ Name[tr]=Bilgiler
 Name[uk]=Інформація
 Name[x-test]=xxInfoxx
 Name[zh_CN]=信息
+Name[zh_TW]=資訊
 Type=Service
 Icon=info-amarok
 ServiceTypes=Plasma/Applet

@@ -40,6 +40,7 @@ Name[tr]=Javascript Programcığı
 Name[uk]=Аплет Javascript
 Name[x-test]=xxJavascript Appletxx
 Name[zh_CN]=Javascript 小程序
+Name[zh_TW]=Javascrpt 應用小程式
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer

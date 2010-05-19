@@ -47,6 +47,7 @@ Name[uk]=Amarok-Модель
 Name[wa]=Amarok-Mockup
 Name[x-test]=xxAmarok-Mockupxx
 Name[zh_CN]=Amarok-Mockup
+Name[zh_TW]=Amarok 鑄模機
 Comment=Theme done to look like the original mockup
 Comment[bg]=Тема, наподобяваща оригиналната
 Comment[ca]=Tema creat per semblar com el model original
@@ -92,6 +93,7 @@ Comment[uk]=Тема, розроблена з метою відтворення 
 Comment[wa]=Tinme fwait po rshonner å prumî mockup
 Comment[x-test]=xxTheme done to look like the original mockupxx
 Comment[zh_CN]=看起来像原构想的主题
+Comment[zh_TW]=做好的看起來像是原始鑄模的佈景主題
 
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
 X-KDE-PluginInfo-Email=nhnfreespirit@gmail.com

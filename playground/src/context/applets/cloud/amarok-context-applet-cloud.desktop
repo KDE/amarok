@@ -51,6 +51,7 @@ Name[uk]=Cloud
 Name[wa]=Cloud
 Name[x-test]=xxCloudxx
 Name[zh_CN]=Cloud
+Name[zh_TW]=Cloud
 Type=Service
 ServiceTypes=Plasma/Applet
 

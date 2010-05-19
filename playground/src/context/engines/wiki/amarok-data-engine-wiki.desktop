@@ -38,6 +38,7 @@ Name[tr]=Wiki Veri Motoru
 Name[uk]=Рушій даних Вікі
 Name[x-test]=xxWiki Data Enginexx
 Name[zh_CN]=维基数据引擎
+Name[zh_TW]=Wiki 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 X-KDE-Library=amarok_data_engine_wiki

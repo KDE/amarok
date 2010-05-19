@@ -49,6 +49,7 @@ Name[uk]=Рушій даних Cloud
 Name[wa]=Éndjin d' dinêyes Cloud
 Name[x-test]=xxCloud Data Enginexx
 Name[zh_CN]=Cloud 数据引擎
+Name[zh_TW]=Cloud 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok

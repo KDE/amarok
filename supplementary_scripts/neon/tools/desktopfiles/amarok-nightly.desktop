@@ -50,6 +50,7 @@ Name[uk]=Нічна версія Amarok
 Name[wa]=Amarok al nute
 Name[x-test]=xxAmarok Nightlyxx
 Name[zh_CN]=Amarok Nightly
+Name[zh_TW]=Amarok Nightly
 Exec=amarok-nightly %U
 TryExec=amarok-nightly
 Icon=amarok

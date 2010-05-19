@@ -25,6 +25,7 @@ Name[sr@latin]=Omotacija
 Name[sv]=Omslagsutsmyckning
 Name[uk]=CoverBling
 Name[x-test]=xxCoverBlingxx
+Name[zh_TW]=CoverBling
 Type=Service
 ServiceTypes=Plasma/Applet
 

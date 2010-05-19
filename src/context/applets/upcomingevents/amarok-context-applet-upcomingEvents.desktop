@@ -26,6 +26,7 @@ Name[sr@latin]=Predstojeći događaji
 Name[sv]=Kommande händelser
 Name[uk]=Майбутні події
 Name[x-test]=xxUpcoming Eventsxx
+Name[zh_TW]=即將來臨的事件
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=upcomingevents-amarok

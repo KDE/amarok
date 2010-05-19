@@ -38,6 +38,7 @@ Name[tr]=Amarok JavaScript Çalıştırıcısı
 Name[uk]=Інструмент запуску JavaScript Amarok
 Name[x-test]=xxAmarok JavaScript Runnerxx
 Name[zh_CN]=Amarok JavaScript 运行器
+Name[zh_TW]=Amarok JavaScript 執行器
 X-KDE-ServiceTypes=Plasma/ScriptEngine
 Type=Service
 Icon=text-x-script
