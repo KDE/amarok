@@ -1,6 +1,7 @@
 
-include_directories( ../../..
-                     ../../../context
+include_directories( ${Amarok_SOURCE_DIR}/src
+                     ${Amarok_SOURCE_DIR}/src/context
+                     ${Amarok_SOURCE_DIR}/src/network
                      ${LIBLASTFM_INCLUDE_DIR}
                      ${LIBLASTFM_INCLUDE_DIR}/..
                      ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h

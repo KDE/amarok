@@ -23,6 +23,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 
@@ -35,6 +36,8 @@
 #include <QGridLayout>
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPushButton>
 #include <QLabel>
 #include <QDesktopServices>
@@ -126,6 +129,9 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     // open the url of the similar artist when his name is clicked
     connect( m_nameLabel, SIGNAL( linkActivated( const QString & ) ), this
              , SLOT( openUrl( const QString  & ) ) );
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(setImageFromInternet(QNetworkReply*)) );
 }
 
 
@@ -139,7 +145,6 @@ ArtistWidget::~ArtistWidget()
     delete m_nameLabel;
     delete m_genre;
     delete m_topTrack;
-    delete m_imageJob;
     delete m_desc;
 }
 
@@ -165,60 +170,50 @@ ArtistWidget::setPhoto( const KUrl& urlPhoto )
     m_image->clear();
     m_image->setText( i18n( "Loading the picture..." ) );
 
-    m_imageJob = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_imageJob, SIGNAL( result( KJob* ) )
-             , SLOT( setImageFromInternet( KJob* ) ) );
+    m_url = urlPhoto;
+    QNetworkRequest req( urlPhoto );
+    The::networkAccessManager()->get( req );
 }
-
 
 /**
  * Put the image of the artist in the QPixMap
- * @param job, pointer to the job which get the pixmap from the web
+ * @param reply, reply from the network request
  */
 void
-ArtistWidget::setImageFromInternet( KJob *job )
+ArtistWidget::setImageFromInternet( QNetworkReply *reply )
 {
-    if ( !m_imageJob ) return; //track changed while we were fetching
+    const KUrl url = reply->request().url();
+    if( m_url != url )
+        return;
 
-    // It's the correct job but it errored out
-    if ( job->error() != KJob::NoError && job == m_imageJob )
+    m_url.clear();
+    if( reply->error() != QNetworkReply::NoError )
     {
         m_image->clear();
         m_image->setText( i18n( "Unable to fetch the picture" ) );
-        m_imageJob = 0; // clear job
+        reply->deleteLater();
         return;
     }
 
-    // not the right job, so let's ignore it
-    if ( job != m_imageJob )
-        return;
+    QByteArray data = reply->readAll();
+    QPixmap image;
+    image.loadFromData( data );
 
-    if ( job )
+    if ( image.width() > 100 )
     {
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        QPixmap image;
-        image.loadFromData( storedJob->data() );
-        if ( image.width() > 100 )
-        {
-            image = image.scaledToWidth( 100, Qt::SmoothTransformation );
-        }
-
-        if ( image.height() > 100 )
-        {
-            image = image.scaledToHeight( 100, Qt::SmoothTransformation );
-        }
-        m_image->clear();
-        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-        //the height of the widget depends on the height of the artist picture
-        //setMaximumHeight(image.height());
-    }
-    else
-    {
-        m_image->clear();
-        m_image->setText( i18n( "No picture" ) );
+        image = image.scaledToWidth( 100, Qt::SmoothTransformation );
     }
 
-    m_imageJob = 0;
+    if ( image.height() > 100 )
+    {
+        image = image.scaledToHeight( 100, Qt::SmoothTransformation );
+    }
+    m_image->clear();
+    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
+    //the height of the widget depends on the height of the artist picture
+    //setMaximumHeight(image.height());
+
+    reply->deleteLater();
 }
 
  /**

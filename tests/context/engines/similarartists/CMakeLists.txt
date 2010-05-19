@@ -1,6 +1,7 @@
 include_directories(
   ${AMAROK_SOURCE_TREE}/context/engines/similarartists
   ${AMAROK_SOURCE_TREE}/context/applets/similarartists
+  ${AMAROK_SOURCE_TREE}/network
   ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
