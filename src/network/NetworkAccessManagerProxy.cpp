@@ -1,4 +1,5 @@
 /****************************************************************************************
+ * Copyright (c) 2007 Trolltech ASA <copyright@trolltech.com>                           *
  * Copyright (c) 2008 Urs Wolfer <uwolfer@kde.org>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -14,30 +15,49 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef KNETWORKACCESSMANAGER_H
-#define KNETWORKACCESSMANAGER_H
+#include "NetworkAccessManagerProxy.h"
 
-#include <kdemacros.h>
+#include <QNetworkReply>
 
-#include <KDE/KIO/MetaData>
+NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
-#include <QNetworkAccessManager>
-
-class KDE_EXPORT KNetworkAccessManager : public QNetworkAccessManager
+NetworkAccessManagerProxy *NetworkAccessManagerProxy::instance()
 {
-    Q_OBJECT
+    if( s_instance == 0 )
+        s_instance = new NetworkAccessManagerProxy();
+    return s_instance;
+}
+
+class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
+{
 public:
-    KNetworkAccessManager(QObject *parent);
-    virtual ~KNetworkAccessManager();
-
-    static KIO::MetaData metaDataForRequest(QNetworkRequest request);
-
-protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
-
-private:
-    class KNetworkAccessManagerPrivate;
-    KNetworkAccessManagerPrivate* const d;
+    NetworkAccessManagerProxyPrivate() {}
 };
 
-#endif // KNETWORKACCESSMANAGER_H
+NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
+    : KIO::Integration::AccessManager( parent )
+    , d( new NetworkAccessManagerProxyPrivate() )
+{
+}
+
+NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
+{
+    s_instance = 0;
+    delete d;
+}
+
+QNetworkReply *NetworkAccessManagerProxy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+{
+    QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, req, outgoingData );
+    return reply;
+}
+
+namespace The
+{
+    NetworkAccessManagerProxy *networkAccessManager()
+    {
+        return NetworkAccessManagerProxy::instance();
+    }
+}
+
+#include "NetworkAccessManagerProxy.moc"

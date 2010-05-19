@@ -544,6 +544,13 @@ kde4_add_ui_files(apg_SRCS
 )
 
 #####################################################################
+# NETWORK ACCESS
+#####################################################################
+set(network_access_SRCS
+    network/NetworkAccessManagerProxy.cpp
+)
+
+#####################################################################
 # RESOLVERS
 #####################################################################
 set(taglib_filetype_resolver_SRCS
@@ -578,6 +585,7 @@ set(amaroklib_LIB_SRCS
     ${apg_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
+    ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}

@@ -14,40 +14,37 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef KNETWORKREPLY_H
-#define KNETWORKREPLY_H
+#ifndef AMAROK_NETWORKACCESSMANAGERPROXY
+#define AMAROK_NETWORKACCESSMANAGERPROXY
 
-#include <QtNetwork/QNetworkReply>
+#include "amarok_export.h"
 
-#include <kdemacros.h>
+#include <kio/accessmanager.h>
 
-namespace KIO
+class NetworkAccessManagerProxy;
+
+namespace The
 {
-    class Job;
+    AMAROK_EXPORT NetworkAccessManagerProxy *networkAccessManager();
 }
-class KJob;
 
-class KDE_EXPORT KNetworkReply : public QNetworkReply
+class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessManager
 {
     Q_OBJECT
+
 public:
-    KNetworkReply(const QNetworkRequest &request, KIO::Job *kioJob, QObject *parent);
-
-    virtual qint64 bytesAvailable() const;
-    virtual void abort();
-
-public Q_SLOTS:
-    void appendData(KIO::Job *kioJob, const QByteArray &data);
-    void setMimeType(KIO::Job *kioJob, const QString &mimeType);
-    void jobDone(KJob *kJob);
+    static NetworkAccessManagerProxy *instance();
+    virtual ~NetworkAccessManagerProxy();
 
 protected:
-    virtual qint64 readData(char *data, qint64 maxSize);
-    
-private:
-    class KNetworkReplyPrivate;
-    KNetworkReplyPrivate* const d;
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 
+private:
+    NetworkAccessManagerProxy( QObject *parent = 0 );
+    static NetworkAccessManagerProxy *s_instance;
+
+    class NetworkAccessManagerProxyPrivate;
+    NetworkAccessManagerProxyPrivate* const d;
 };
 
-#endif // KNETWORKREPLY_H
+#endif // AMAROK_NETWORKACCESSMANAGERPROXY

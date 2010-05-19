@@ -45,8 +45,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
 #include "CustomBias.h"
-
-#include "kdenetwork/knetworkaccessmanager.h"
+#include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/NetworkAccessManager>
@@ -244,8 +243,11 @@ LastFmService::init()
 
 
     // set up proxy
-    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
-    lastfm::setNetworkAccessManager( qnam );
+    if( !lastfm::nam() )
+    {
+        QNetworkAccessManager* qnam = The::networkAccessManager();
+        lastfm::setNetworkAccessManager( qnam );
+    }
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
