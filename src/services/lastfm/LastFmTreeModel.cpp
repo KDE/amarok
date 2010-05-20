@@ -16,9 +16,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "LastFmTreeModel.h"
-
+#define DEBUG_PREFIX "LastFmTreeModel"
 #include "core/support/Debug.h"
+
+#include "LastFmTreeModel.h"
 
 #include "AvatarDownloader.h"
 #include "core-impl/collections/support/CollectionManager.h"
