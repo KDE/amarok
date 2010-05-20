@@ -35,6 +35,7 @@
 TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     : QGraphicsTextItem( parent )
     , m_fm( 0 )
+    , m_textFormat( Qt::PlainText )
     , m_delta( 0 )
     , m_currentDelta( 0. )
     , m_animfor( 0 )
@@ -53,7 +54,7 @@ TextScrollingWidget::setBrush( const QBrush &brush )
 }
 
 void
-TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
+TextScrollingWidget::setScrollingText( const QString &text, const QRectF &rect )
 {
  //   DEBUG_BLOCK
     if ( !m_fm )
@@ -67,22 +68,60 @@ TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
     Plasma::Animator::self()->stopCustomAnimation( m_animfor );
     m_animating = false ;
 
-    const QRect textRect = m_fm->boundingRect( m_text );
-    m_delta = textRect.width() + 5 > m_rect.width()
-            ? textRect.width() + 8 - m_rect.width() : 0;
-    setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)m_rect.width() ) );
+    const int textWidth = m_fm->width( m_text );
+    m_delta = textWidth + 5 > m_rect.width() ? textWidth + 8 - m_rect.width() : 0;
+    setText( m_fm->elidedText( m_text, Qt::ElideRight, (int)m_rect.width() ) );
 }
 
 void
 TextScrollingWidget::setText( const QString &text )
 {
-    setPlainText( text );
+    if( requirePlainText() )
+        setPlainText( text );
+    else
+        setHtml( text );
+}
+
+void
+TextScrollingWidget::setTextFormat( Qt::TextFormat fmt )
+{
+    m_textFormat = fmt;
 }
 
 QString
 TextScrollingWidget::text() const
 {
-    return toPlainText();
+    if( requirePlainText() )
+        return toPlainText();
+    else
+        return toHtml();
+}
+
+bool
+TextScrollingWidget::requirePlainText() const
+{
+    bool plain;
+    switch( m_textFormat )
+    {
+    case Qt::RichText:
+        plain = false;
+        break;
+
+    case Qt::AutoText:
+        plain = !Qt::mightBeRichText( m_text );
+        break;
+
+    case Qt::PlainText:
+    default:
+        plain = true;
+    }
+    return plain;
+}
+
+Qt::TextFormat
+TextScrollingWidget::textFormat() const
+{
+    return m_textFormat;
 }
 
 void
@@ -136,7 +175,7 @@ TextScrollingWidget::animationFinished( int id )
         else
         {
             m_animating = false;
-            setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
+            setText( m_fm->elidedText( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
         }
     }
 }
