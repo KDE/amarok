@@ -490,7 +490,7 @@ VideoclipApplet::appendVideoClip( VideoInfo *info )
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
         tra->setArtist( info->artist );
-        tra->album()->setImage( *info->cover );
+        tra->album()->setImage( info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Append );
@@ -510,7 +510,7 @@ VideoclipApplet::queueVideoClip( VideoInfo *info )
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
         tra->setArtist( info->artist );
-        tra->album()->setImage( *info->cover );
+        tra->album()->setImage( info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Queue );
@@ -530,7 +530,7 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
         tra->setArtist( info->artist );
-        tra->album()->setImage( *info->cover );
+        tra->album()->setImage( info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );

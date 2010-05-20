@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "VideoclipEngine"
+
 #include "VideoclipEngine.h"
 
 // Amarok
@@ -22,23 +24,17 @@
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "NetworkAccessManagerProxy.h"
 
 // Qt
 #include <QDomDocument>
-
-// Standard
-#include <sstream>
-
-#define DEBUG_PREFIX "VideoclipEngine"
+#include <QNetworkReply>
 
 using namespace Context;
 
 VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_jobYoutube( 0 )
-        , m_jobDailymotion( 0 )
-        , m_jobVimeo( 0 )
         , m_nbYoutube( -1 )
         , m_nbDailymotion( -1 )
         , m_nbVimeo( -1 )
@@ -47,6 +43,14 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
         , m_requested( true )
 {
     m_sources << "youtube" << "dailymotion" << "vimeo" ;
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultYoutube(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultYoutubeGetLink(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultDailymotion(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultDailymotionGetLink(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeo(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeoBis(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeoGetLink(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultImageFetcher(QNetworkReply*)) );
     update();
 }
 
@@ -137,35 +141,33 @@ void VideoclipEngine::update()
 
         removeAllData( "videoclip" );
         m_video.clear();
-        m_listJob.clear();
 
         // Show the information
         setData( "videoclip", "message", "Fetching" );
 
         // Query youtube, order by relevance, 10 max
         // Youtube : http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
-        KUrl youtubeUrl( QString( "http://gdata.youtube.com/feeds/videos?q=" ) + m_artist + QString( " " ) + m_title + QString( "&orderby=relevance&max-results=")+ QString().setNum( m_nbVidsPerService ) );
-        m_jobYoutube = KIO::storedGet( youtubeUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( m_jobYoutube, SIGNAL( result( KJob* ) ), SLOT( resultYoutube( KJob* ) ) );
+        KUrl youtubeUrl( QString("http://gdata.youtube.com/feeds/videos?q=%1 %2").arg(m_artist).arg(m_title) + QString( "&orderby=relevance&max-results=")+ QString().setNum( m_nbVidsPerService ) );
+        m_youtubeUrl = youtubeUrl;
+        The::networkAccessManager()->get( QNetworkRequest( youtubeUrl ) );
 
         // Query dailymotion, order by rating
         // Dailymotion : http://www.dailymotion.com/rss/rated/search/ARTIST TITLE
-        KUrl dailyUrl( QString( "http://www.dailymotion.com/rss/rated/search/" ) + m_artist + QString( " " ) + m_title );
-        m_jobDailymotion = KIO::storedGet( dailyUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( m_jobDailymotion, SIGNAL( result( KJob* ) ), SLOT( resultDailymotion( KJob* ) ) );
+        KUrl dailyUrl( QString("http://www.dailymotion.com/rss/rated/search/%1 %2").arg(m_artist).arg(m_title) );
+        m_dailyUrl = dailyUrl;
+        The::networkAccessManager()->get( QNetworkRequest( dailyUrl ) );
 
         // Query vimeo
         // Vimeo : http://vimeo.com/videos/search:ARTIST TITLE
-        KUrl vimeoURL( QString( "http://vimeo.com/videos/search:" ) + m_artist + QString( " " ) + m_title );
-        m_jobVimeo = KIO::storedGet( vimeoURL, KIO::Reload, KIO::HideProgressInfo );
-        connect( m_jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeo( KJob* ) ) );
+        KUrl vimeoUrl( QString("http://vimeo.com/videos/search:%1 %2").arg(m_artist).arg(m_title) );
+        m_vimeoUrl = vimeoUrl;
+        debug() << "Vimeo query url:" << vimeoUrl;
+        The::networkAccessManager()->get( QNetworkRequest( vimeoUrl ) );
     }
 }
 
 bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
 {
-
-    item->cover = new QPixmap(); // init the QPixmap pointer, so that we can check if it as been retrieved or not
     item->relevancy=0;
     // title contain artist AND title
     if ( item->title.contains( m_artist, Qt::CaseInsensitive ))
@@ -200,25 +202,25 @@ bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
         return true;
 }
 
-void VideoclipEngine::resultYoutube( KJob* job )
+void VideoclipEngine::resultYoutube( QNetworkReply *reply )
 {
-
-    if ( !m_jobYoutube ) //track changed while we were fetching
+    const KUrl url = reply->request().url();
+    if( m_youtubeUrl != url )
         return;
 
-    DEBUG_BLOCK
-    if ( job->error() != KJob::NoError && job == m_jobYoutube ) // It's the correct job but it errored out
+    m_youtubeUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
     {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", job->errorString() ) );
-        debug() << "Unable to retrieve Youtube information: " << job->errorString();
-        m_jobYoutube = 0; // clear job
+        setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", reply->errorString() ) );
+        debug() << "Unable to retrieve Youtube information:" << reply->errorString();
         m_nbYoutube = 0; //say that we didn't fetch any youtube songs (which is true !)
+        reply->deleteLater();
         resultFinalize();
+        return;
     }
     // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QDomDocument xmlDoc;
-    xmlDoc.setContent( storedJob->data() );
+    xmlDoc.setContent( reply->readAll() );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "entry" );
 
     QTime tim, time( 0, 0 );
@@ -246,16 +248,13 @@ void VideoclipEngine::resultYoutube( KJob* job )
             m_video << item;
 
             // Send a job to get the downloadable link
-            KJob *jobu = KIO::storedGet( KUrl( item->url ), KIO::Reload, KIO::HideProgressInfo );
+            const KUrl videoUrl( item->url );
+            m_videoUrls[videoUrl] = Youtube;
+            The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
 
-            m_listJob << item->url;
-            connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultYoutubeGetLink( KJob* ) ) );
-
-            // Send a job to get every pixmap
-            KJob* jobb = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-
-            m_listJob << item->coverurl;
-            connect( jobb, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+            const KUrl coverUrl( item->coverurl );
+            m_imageUrls << coverUrl;
+            The::networkAccessManager()->get( QNetworkRequest( coverUrl ) );
         }
         else
         {
@@ -267,116 +266,114 @@ void VideoclipEngine::resultYoutube( KJob* job )
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     //debug() << "Youtube fetch : " << m_nbYoutube << " songs ";
 
-    m_jobYoutube = 0;
+    reply->deleteLater();
     resultFinalize();
 }
 
-void VideoclipEngine::resultYoutubeGetLink( KJob* job )
+void VideoclipEngine::resultYoutubeGetLink( QNetworkReply *reply )
 {
 //    DEBUG_BLOCK
-    QString jobUrl = static_cast< KIO::StoredTransferJob* >( job )->url().toMimeDataString();
+    const KUrl url = reply->request().url();
+    if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Youtube) )
+        return;
 
-    if ( m_listJob.contains( jobUrl ) )
+    m_videoUrls.remove( url );
+    if( reply->error() != QNetworkReply::NoError )
     {
-        if ( job->error() != KJob::NoError )
-        {
-            debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
-            m_listJob.removeOne( jobUrl );
-            job = 0;
-            resultFinalize();
-            return;
-        }
-
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        QString url2=jobUrl;
-        jobUrl.replace( "watch?v", "get_video?video_id" );
-
-        QString vidlink = "bad_link" ;
-        QString page = storedJob->data();
-        bool isHQ18 = false;
-        bool isHQ22 = false;
-
-        QString t;
-
-        // Youtube has changed again its api
-        // It changed once more (10 april 2010)
-        QString regex( "\"flashvars\\\"" );
-        if ( page.indexOf( regex ) != -1 )
-        {
-            page = page.mid( page.indexOf( regex ) );
-            QString reg( "flashvars=");
-            if ( page.indexOf( reg ) != -1 )
-                page = page.mid( 0, page.indexOf( reg ) );
-        }
-
-        QString regex1( "&fmt_map=" );
-        if ( page.indexOf( regex1 ) != -1 )
-        {
-            QString fmtPage = page.mid( page.indexOf( regex1 ) + regex1.size() );
-
-            // if the next time we've got true
-            if ( fmtPage.mid( 0, 3 ).contains( "18" ) || fmtPage.mid( 0, 3 ).contains( "35" ))
-                isHQ18 = true;
-
-            else if ( fmtPage.mid( 0, 3 ).contains( "22" ) )
-                isHQ22 = true ;
-        }
-
-        QString regex2( "&t=" );
-        if ( page.indexOf( regex2 ) != -1 )
-        {
-            QString tPage = page.mid( page.indexOf( regex2 ) + regex2.size() );
-            t = tPage.mid( 0, tPage.indexOf( "&" ) );
-   //         debug()<<" T " <<t;
-        }
-        
-//        debug() << page ;
-        if ( !t.isEmpty() )
-        {
-            vidlink = jobUrl + "&t=" + t + "=" ;
-
-            // enable youtube HQ if user as request and HQ is available
-            if ( m_youtubeHQ && isHQ18 )
-                vidlink+="&fmt=18";
-
-            else if ( m_youtubeHQ && isHQ22 )
-                vidlink+="&fmt=22";
-        }
-
-        foreach (VideoInfo *item, m_video )
-        {
-            if ( item->url == url2 )
-            {
-                if ( isHQ18 || isHQ22 )
-                    item->isHQ = true;
-                item->videolink = vidlink;
-            }
-        }
-        m_listJob.removeOne( url2 );
-        resultFinalize();
-
-        job = 0;
-    }
-}
-
-void VideoclipEngine::resultDailymotion( KJob* job )
-{
-    if ( !m_jobDailymotion )
-        return; //track changed while we were fetching
-    DEBUG_BLOCK
-    if ( job->error() != KJob::NoError && job == m_jobDailymotion ) // It's the correct job but it errored out
-    {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", job->errorString() ) );
-        debug() << "Unable to retrieve Dailymotion information: " << job->errorString();
-        m_jobDailymotion = 0; // clear job
-        m_nbDailymotion = 0; //say that we didn't fetch any youtube songs (which is true !)
+        debug() << "Unable to retrieve Youtube direct videolink" ;
+        reply->deleteLater();
         resultFinalize();
         return;
     }
+
+    QString jobUrl = url.url();
+    jobUrl.replace( "watch?v", "get_video?video_id" );
+
+    QString vidlink = "bad_link" ;
+    QString page = reply->readAll();
+    bool isHQ18 = false;
+    bool isHQ22 = false;
+
+    QString t;
+
+    // Youtube has changed again its api
+    // It changed once more (10 april 2010)
+    QString regex( "\"flashvars\\\"" );
+    if ( page.indexOf( regex ) != -1 )
+    {
+        page = page.mid( page.indexOf( regex ) );
+        QString reg( "flashvars=");
+        if ( page.indexOf( reg ) != -1 )
+            page = page.mid( 0, page.indexOf( reg ) );
+    }
+
+    QString regex1( "&fmt_map=" );
+    if ( page.indexOf( regex1 ) != -1 )
+    {
+        QString fmtPage = page.mid( page.indexOf( regex1 ) + regex1.size() );
+
+        // if the next time we've got true
+        if ( fmtPage.mid( 0, 3 ).contains( "18" ) || fmtPage.mid( 0, 3 ).contains( "35" ))
+            isHQ18 = true;
+
+        else if ( fmtPage.mid( 0, 3 ).contains( "22" ) )
+            isHQ22 = true ;
+    }
+
+    QString regex2( "&t=" );
+    if ( page.indexOf( regex2 ) != -1 )
+    {
+        QString tPage = page.mid( page.indexOf( regex2 ) + regex2.size() );
+        t = tPage.mid( 0, tPage.indexOf( "&" ) );
+        //         debug()<<" T " <<t;
+    }
+
+    //        debug() << page ;
+    if ( !t.isEmpty() )
+    {
+        vidlink = jobUrl + "&t=" + t + "=" ;
+
+        // enable youtube HQ if user as request and HQ is available
+        if ( m_youtubeHQ && isHQ18 )
+            vidlink+="&fmt=18";
+
+        else if ( m_youtubeHQ && isHQ22 )
+            vidlink+="&fmt=22";
+    }
+
+    foreach (VideoInfo *item, m_video )
+    {
+        if ( item->url == url.url() )
+        {
+            if ( isHQ18 || isHQ22 )
+                item->isHQ = true;
+            item->videolink = vidlink;
+        }
+    }
+    resultFinalize();
+    reply->deleteLater();
+}
+
+void VideoclipEngine::resultDailymotion( QNetworkReply *reply )
+{
+    const KUrl url = reply->request().url();
+    if( m_dailyUrl != url )
+        return;
+
+    m_dailyUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", reply->errorString() ) );
+        debug() << "Unable to retrieve Dailymotion information:" << reply->errorString();
+        m_nbDailymotion = 0; //say that we didn't fetch any youtube songs (which is true !)
+        reply->deleteLater();
+        resultFinalize();
+        return;
+    }
+
     // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QDomDocument xmlDoc;
-    xmlDoc.setContent( storedJob->data() );
+    xmlDoc.setContent( reply->readAll() );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "item" );
 
     int tmp = m_nbVidsPerService < (int)xmlNodeList.length() ? m_nbVidsPerService : (int)xmlNodeList.length();
@@ -405,16 +402,14 @@ void VideoclipEngine::resultDailymotion( KJob* job )
             m_video << item;
 
             // Send a job to get the downloadable link
-            KJob *jobu = KIO::storedGet( KUrl( item->url ), KIO::Reload, KIO::HideProgressInfo );
+            const KUrl videoUrl( item->url );
+            m_videoUrls[videoUrl] = Dailymotion;
+            The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
 
-            m_listJob << item->url;
-            connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultDailymotionGetLink( KJob* ) ) );
-
-            
             // Send a job to get the pixmap
-            KJob* jober = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-            m_listJob << item->coverurl;
-            connect( jober, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+            const KUrl coverUrl( item->coverurl );
+            m_imageUrls << coverUrl;
+            The::networkAccessManager()->get( QNetworkRequest( coverUrl ) );
         }
         else
         {
@@ -426,271 +421,274 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     //debug() << "Dailymotion fetch : " << m_nbDailymotion << " songs ";
 
-    m_jobDailymotion = 0;
     resultFinalize();
+    reply->deleteLater();
 }
 
-
-
-void VideoclipEngine::resultDailymotionGetLink( KJob* job )
+void VideoclipEngine::resultDailymotionGetLink( QNetworkReply *reply )
 {
-    DEBUG_BLOCK
-    QString jobUrl = static_cast< KIO::StoredTransferJob* >( job )->url().toMimeDataString();
+    const KUrl url = reply->request().url();
+    if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Dailymotion) )
+        return;
 
-    if ( m_listJob.contains( jobUrl ) )
+    m_videoUrls.remove( url );
+    if( reply->error() != QNetworkReply::NoError )
     {
-        if ( job->error() != KJob::NoError )
-        {
-            debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
-            m_listJob.removeOne( jobUrl );
-            job = 0;
-            resultFinalize();
-            return;
-        }
-
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-
-        QString page = storedJob->data();
-        QStringList vidlink;
-        QString vidFLV;
-        QString vidH264;
-        bool isHQ = false ;
-       
-        // Focus on the line which contain .addVariable("video", "
-        QString regex( ".addVariable(\"video\", \"" );
-        if ( page.indexOf( regex ) != -1 )
-        {
-            page = page.mid( page.indexOf( regex ) + regex.size() );
-            regex = "\");";
-            if ( page.indexOf( regex ) != -1 )
-                page = page.mid( 0, page.indexOf( regex ) );
-
-            // replace strange caracter by correct ones, and split into different url
-            page.replace( "%3A", ":");
-            page.replace( "%2F", "/");
-            page.replace( "%3F", "?");
-            page.replace( "%3D", "=");
-            page.replace( "%40", "@");
-
-            regex = "%7C%7C";
-
-            // now vidlink contain all the url (320x240xflv, 80x60flv, and HQ)
-            vidlink = page.split( regex );
-         //   debug() << vidlink ;
-
-
-            foreach( const QString &urlstring, vidlink )
-            {
-                if ( urlstring.contains( "@@h264" ) )
-                {
-                    isHQ = true ;
-                    vidH264 = urlstring ;
-                }
-                if ( urlstring.contains( "FLV-320x240" ) )
-                    vidFLV = urlstring ;
-            }
-                 
-            foreach( VideoInfo *item, m_video )
-            {
-                if ( item->url == jobUrl )
-                {
-                    if ( isHQ )
-                        item->isHQ = true;
-
-                    if ( isHQ && m_youtubeHQ )
-                        item->videolink = vidH264;
-
-                    else if ( vidFLV.size() != 0 )
-                        item->videolink = vidFLV;
-                    else
-                        item->videolink = "bad_link" ;
-                }
-            }
-        }
-        m_listJob.removeOne( jobUrl );
-        resultFinalize();
-
-        job = 0;
-    }
-}
-
-
-void VideoclipEngine::resultVimeo( KJob* job )
-{
-	if ( !m_jobVimeo )
-        return; //track changed while we were fetching
-    DEBUG_BLOCK
-    if ( job->error() != KJob::NoError && job == m_jobVimeo ) // It's the correct job but it errored out
-    {
-        debug() << "Unable to retrieve Vimeo information: " << job->errorString();
-        m_jobVimeo = 0; // clear job
-        m_nbVimeo = 0; // say that we didn't fetch any vimeo songs (which is true !)
+        debug() << "Unable to retrieve DailyMotion direct videolink" ;
+        reply->deleteLater();
         resultFinalize();
         return;
     }
-    // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString page = storedJob->data();
+    // DEBUG_BLOCK
+    QString page = reply->readAll();
+    QStringList vidlink;
+    QString vidFLV;
+    QString vidH264;
+    bool isHQ = false ;
 
-    QString regex( "<div class=\"title\"><a href=\"/" );
+    // Focus on the line which contain .addVariable("video", "
+    QString regex( ".addVariable(\"video\", \"" );
+    if ( page.indexOf( regex ) != -1 )
+    {
+        page = page.mid( page.indexOf( regex ) + regex.size() );
+        regex = "\");";
+        if ( page.indexOf( regex ) != -1 )
+            page = page.mid( 0, page.indexOf( regex ) );
+
+        // replace strange caracter by correct ones, and split into different url
+        page.replace( "%3A", ":");
+        page.replace( "%2F", "/");
+        page.replace( "%3F", "?");
+        page.replace( "%3D", "=");
+        page.replace( "%40", "@");
+
+        regex = "%7C%7C";
+
+        // now vidlink contain all the url (320x240xflv, 80x60flv, and HQ)
+        vidlink = page.split( regex );
+        //   debug() << vidlink ;
+
+
+        foreach( const QString &urlstring, vidlink )
+        {
+            if ( urlstring.contains( "@@h264" ) )
+            {
+                isHQ = true ;
+                vidH264 = urlstring ;
+            }
+            if ( urlstring.contains( "FLV-320x240" ) )
+                vidFLV = urlstring ;
+        }
+
+        foreach( VideoInfo *item, m_video )
+        {
+            if ( item->url == url.url() )
+            {
+                if ( isHQ )
+                    item->isHQ = true;
+
+                if ( isHQ && m_youtubeHQ )
+                    item->videolink = vidH264;
+
+                else if ( vidFLV.size() != 0 )
+                    item->videolink = vidFLV;
+                else
+                    item->videolink = "bad_link" ;
+            }
+        }
+    }
+    resultFinalize();
+    reply->deleteLater();
+}
+
+void VideoclipEngine::resultVimeo( QNetworkReply *reply )
+{
+    const KUrl url = reply->request().url();
+    if( m_vimeoUrl != url )
+        return;
+
+    m_vimeoUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo information: %1", reply->errorString() ) );
+        debug() << "Unable to retrieve Vimeo information:" << reply->errorString();
+        m_nbVimeo = 0; // say that we didn't fetch any vimeo songs (which is true !)
+        reply->deleteLater();
+        resultFinalize();
+        return;
+    }
+    // DEBUG_BLOCK
+    // Get the result
+    QString page = reply->readAll();
+    if( page.isNull() )
+    {
+        debug() << "Vimeo info is null";
+        reply->deleteLater();
+        return;
+    }
+
+    QRegExp regex( "<a href=\"/(\\d+)\".*</a>" );
     m_nbVimeo = 0;
-    while ( ( page.indexOf( regex ) != -1) && ( m_nbVimeo < m_nbVidsPerService ) )
+    int pos = 0;
+    while ( (pos = regex.indexIn(page, pos)) != -1 && ( m_nbVimeo < m_nbVidsPerService ) )
     {
         m_nbVimeo++;
-        page = page.mid( page.indexOf( regex ) + regex.size() );
-        QString id = QString( page.mid( 0, page.indexOf( "\"" ) ) ) ;
+        // page = page.mid( page.indexOf( regex ) + regex.size() );
+        // QString id = QString( page.mid( 0, page.indexOf( "\"" ) ) ) ;
+        QString id = regex.cap( 1 );
 
         // send a job to get info
-        QString vimeoBis = QString( "http://vimeo.com/api/clip/" ) + id + QString( ".xml" );
-        KJob *jobVimeo = KIO::storedGet( KUrl( vimeoBis ) , KIO::Reload, KIO::HideProgressInfo );
-        m_listJob << vimeoBis;
-        connect( jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeoBis( KJob* ) ) );
+        QString vimeoBis = QString( "http://vimeo.com/api/v2/video/" ) + id + QString( ".xml" );
+        debug() << "Vimeo info url" << vimeoBis;
+        m_vimeoBisUrl = KUrl( vimeoBis );
+        The::networkAccessManager()->get( QNetworkRequest( m_vimeoBisUrl ) );
+
+        pos += regex.matchedLength();
     }
     //debug() << "Vimeo fetch : " << m_nbVimeo << " songs ";
-    m_jobVimeo = 0;
     resultFinalize();
+    reply->deleteLater();
 }
 
-void VideoclipEngine::resultVimeoBis( KJob *job )
+void VideoclipEngine::resultVimeoBis( QNetworkReply *reply )
 {
- //   DEBUG_BLOCK
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString jobUrl = storedJob->url().toMimeDataString();
+    const KUrl url = reply->request().url();
+    if( m_vimeoBisUrl != url )
+        return;
 
-    if ( m_listJob.contains( jobUrl ) )
+    m_vimeoBisUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
     {
-        if ( job->error() != KJob::NoError )
-        {
-            debug() << "VideoclipEngine | Unable to retrieve Vimeo Bis: " << job->errorString();
-            m_listJob.removeOne( jobUrl );
-            job = 0;
-            resultFinalize();
-            return;
-        }
-
-        // Get the result
-        QDomDocument xmlDoc;
-        xmlDoc.setContent( storedJob->data() );
-
-        QTime tim, time( 0, 0 );
-        QDomNode xmlNode = xmlDoc.elementsByTagName( "clip" ).at( 0 );
-        VideoInfo *item = new VideoInfo;
-        item->title = xmlNode.firstChildElement( "title" ).text();
-        item->url = xmlNode.firstChildElement( "url" ).text();
-        item->coverurl = xmlNode.firstChildElement( "thumbnail_medium" ).text();
-        item->length = xmlNode.firstChildElement( "duration" ).text().toInt();
-        item->duration = time.addSecs( item->length ).toString( "mm:ss" );
-        item->views = xmlNode.firstChildElement( "stats_number_of_plays" ).text();
-        item->desc = xmlNode.firstChildElement( "caption" ).text();
-        item->source = QString( "vimeo" );
-        item->rating = 0;
-
-        // only add if it's valid (no useless jobs)
-        if ( isVideoInfoValid(item) )
-        {
-            // All vimeo are streamed in HQ
-            item->isHQ = true ;
-            // Push the VideoInfo in the main list
-            m_video << item;
-            // send a job to get the full link
-            QString getLink = QString( "http://www.vimeo.com/moogaloop/load/clip:" ) + xmlNode.firstChildElement( "clip_id" ).text();
-            KJob *jobVimeoBis = KIO::storedGet( getLink, KIO::Reload, KIO::HideProgressInfo );
-            m_listJob << getLink ;
-            connect( jobVimeoBis, SIGNAL( result( KJob* ) ), SLOT( resultVimeoGetLink( KJob* ) ) );
-
-            // Send a job to get every pixmap
-            KJob* jab = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-            m_listJob << item->coverurl;
-            connect( jab, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
-        }
-        else
-            delete item;
-
-        m_listJob.removeOne( jobUrl );
+        setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo Bis information: %1", reply->errorString() ) );
+        debug() << "Unable to retrieve Vimeo Bis information:" << reply->errorString();
+        reply->deleteLater();
         resultFinalize();
-
-        job = 0;
+        return;
     }
+    //   DEBUG_BLOCK
+
+    // Get the result
+    QDomDocument xmlDoc;
+    xmlDoc.setContent( reply->readAll() );
+
+    QTime tim, time( 0, 0 );
+    QDomNode xmlNode = xmlDoc.elementsByTagName( "video" ).at( 0 );
+    VideoInfo *item = new VideoInfo;
+    item->title = xmlNode.firstChildElement( "title" ).text();
+    item->url = xmlNode.firstChildElement( "url" ).text();
+    item->coverurl = xmlNode.firstChildElement( "thumbnail_medium" ).text();
+    item->length = xmlNode.firstChildElement( "duration" ).text().toInt();
+    item->duration = time.addSecs( item->length ).toString( "mm:ss" );
+    item->views = xmlNode.firstChildElement( "stats_number_of_plays" ).text();
+    item->desc = xmlNode.firstChildElement( "description" ).text();
+    item->source = QString( "vimeo" );
+    item->rating = 0;
+
+    // only add if it's valid (no useless jobs)
+    if ( isVideoInfoValid(item) )
+    {
+        // All vimeo are streamed in HQ
+        item->isHQ = true ;
+        // Push the VideoInfo in the main list
+        m_video << item;
+        // send a job to get the full link
+        QString getLink = QString( "http://www.vimeo.com/moogaloop/load/clip:" ) + xmlNode.firstChildElement( "id" ).text();
+        const KUrl videoUrl( getLink );
+        // m_videoUrls << videoUrl;
+        m_videoUrls[videoUrl] = Vimeo;
+        The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
+
+        // Send a job to get every pixmap
+        const KUrl imageUrl( item->coverurl );
+        m_imageUrls << imageUrl;
+        The::networkAccessManager()->get( QNetworkRequest( imageUrl ) );
+    }
+    else
+        delete item;
+
+    resultFinalize();
+    reply->deleteLater();
 }
 
-void VideoclipEngine::resultVimeoGetLink( KJob *job )
+void VideoclipEngine::resultVimeoGetLink( QNetworkReply *reply )
 {
-//    DEBUG_BLOCK
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString jobUrl = storedJob->url().toMimeDataString();
+    const KUrl url = reply->request().url();
+    if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Vimeo) )
+        return;
 
-    if ( m_listJob.contains( jobUrl ) )
+    m_videoUrls.remove( url );
+    if( reply->error() != QNetworkReply::NoError )
     {
-        if ( job->error() != KJob::NoError )
+        debug() << "Unable to retrieve Vimeo direct videolink:" << reply->errorString();
+        reply->deleteLater();
+        resultFinalize();
+        return;
+    }
+    //    DEBUG_BLOCK
+    // Get the result
+    QDomDocument xmlDoc;
+    xmlDoc.setContent( reply->readAll() );
+
+    QDomNode xmlNode = xmlDoc.elementsByTagName( "xml" ).at( 0 );
+    QString id( xmlNode.firstChildElement( "video" ).firstChildElement( "nodeId" ).text() );
+    QString key( xmlNode.firstChildElement( "request_signature" ).text() );
+    QString expire( xmlNode.firstChildElement( "request_signature_expires" ).text() );
+    QString vidlink( ( "http://vimeo.com/moogaloop/play/clip:" ) + id + QString( "/" ) + key + QString( "/" ) + expire + QString( "/?q=hd" ) );
+
+    QString urlclean( xmlNode.firstChildElement( "video" ).firstChildElement( "url_clean" ).text() );
+
+    debug() << "Vimeo video play url" << urlclean;
+
+    foreach (VideoInfo *item, m_video )
+    {
+        if ( item->url == urlclean )
         {
-            debug() << "VideoclipEngine | Unable to retrieve Vimeo get link: " << job->errorString();
-            m_listJob.removeOne( jobUrl );
-            job = 0;
-            resultFinalize();
-            return;
+            item->videolink = vidlink;
         }
+    }
+    resultFinalize();
+    reply->deleteLater();
+}
 
-        // Get the result
-        QDomDocument xmlDoc;
-        xmlDoc.setContent( storedJob->data() );
+void VideoclipEngine::resultImageFetcher( QNetworkReply *reply )
+{
+    const KUrl url = reply->request().url();
+    if( !m_imageUrls.contains( url ) )
+        return;
 
-        QDomNode xmlNode = xmlDoc.elementsByTagName( "xml" ).at( 0 );
-        QString id( xmlNode.firstChildElement( "video" ).firstChildElement( "nodeId" ).text() );
-        QString key( xmlNode.firstChildElement( "request_signature" ).text() );
-        QString expire( xmlNode.firstChildElement( "request_signature_expires" ).text() );
-        QString vidlink( ( "http://vimeo.com/moogaloop/play/clip:" ) + id + QString( "/" ) + key + QString( "/" ) + expire + QString( "/?q=hd" ) );
-
-        QString urlclean( xmlNode.firstChildElement( "video" ).firstChildElement( "url_clean" ).text() );
-
-        foreach (VideoInfo *item, m_video )
+    m_imageUrls.remove( url );
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        debug() << "Unable to retrieve an image:" << reply->errorString();
+        reply->deleteLater();
+        resultFinalize();
+        return;
+    }
+    //    DEBUG_BLOCK
+    QPixmap pix;
+    if( !pix.loadFromData( reply->readAll() ) )
+    {
+        debug() << "Error loading image data";
+    }
+    else
+    {
+        foreach( VideoInfo *item, m_video )
         {
-            if ( item->url == urlclean )
+            if( item->coverurl == url.url() )
             {
-                item->videolink = vidlink;
+                item->cover = pix;
             }
         }
-        m_listJob.removeOne( jobUrl );
-        resultFinalize();
-
-        job = 0;
     }
-}
-
-void VideoclipEngine::resultImageFetcher( KJob *job )
-{
-//    DEBUG_BLOCK
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString jobUrl( storedJob->url().toMimeDataString() );
-    if ( m_listJob.contains( jobUrl ) )
-    {
-        if ( job->error() != KJob::NoError )
-        {
-            debug() << "VideoclipEngine | Unable to retrieve an image: " << job->errorString();
-            m_listJob.removeOne( jobUrl );
-            resultFinalize();
-            job = 0;
-            return;
-        }
-
-        QPixmap *pix = new QPixmap;
-        if ( pix->loadFromData( storedJob->data() ) ) {;}
-
-        foreach ( VideoInfo *item, m_video )
-        {
-            if (item->coverurl == jobUrl )
-            {
-                item->cover = pix ;
-            }
-        }
-        m_listJob.removeOne( jobUrl );
-        resultFinalize();
-        job = 0;
-    }
+    resultFinalize();
+    reply->deleteLater();
 }
 
 
 void VideoclipEngine::resultFinalize()
 {
+    // debug() << "resultFinalize:" << m_infoUrls.size() << m_videoUrls.size() << m_imageUrls.size()
+            // << m_nbYoutube << m_nbDailymotion << m_nbVimeo;
 //    DEBUG_BLOCK
     // if 3 websites have been called, but no video :
     if ( m_nbYoutube==0 && m_nbDailymotion==0 && m_nbVimeo==0 )
@@ -701,7 +699,8 @@ void VideoclipEngine::resultFinalize()
         return;
     }
     // else if nb job finished and they have been called
-    else if ( m_listJob.empty() && m_nbYoutube!=-1 && m_nbDailymotion!=-1 && m_nbVimeo!=-1 )
+    else if ( m_infoUrls.empty() && m_videoUrls.empty() && m_imageUrls.empty() &&
+              m_nbYoutube!=-1 && m_nbDailymotion!=-1 && m_nbVimeo!=-1 )
     {
         DEBUG_BLOCK
         // add some more point with stupid criteria
@@ -737,16 +736,18 @@ void VideoclipEngine::resultFinalize()
         // remove previous message
         removeData( "videoclip", "message" );
 
+        /*
         foreach ( VideoInfo *item, m_video )
         {
             debug() << " Video Item : " << item->title ;
             debug() << " url : "<< item->url;
             debug() << " videolink : " << item->videolink;
             debug() << " coverurl : " << item->coverurl;
-            debug() << " pixmap : " << !item->cover->isNull();
+            debug() << " pixmap : " << !item->cover.isNull();
             debug() << " is HQ : " << item->isHQ;
             debug() << " ";
         }
+        */
 
 
         // if the song hasn't change while fetchin, we sen the info

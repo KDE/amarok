@@ -45,7 +45,7 @@ void VideoItemButton::setVideoInfo( VideoInfo *info )
     m_videoInfo = info;
     
     // Create a pixmap with nice border    
-    QPixmap pix( The::svgHandler()->addBordersToPixmap( *info->cover, 3, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
+    QPixmap pix( The::svgHandler()->addBordersToPixmap( info->cover, 3, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
 
     // then add info
     setText( "" );

@@ -26,7 +26,7 @@ struct VideoInfo {
     QString coverurl;   // url of the cover
     QString duration;   // formatted as a QString(mm:ss)
     QString desc;       // full description
-    QPixmap * cover;    // Image data
+    QPixmap cover;      // Image data
     QString views;      // number of view of the video
     float rating;       // rating should be beetween 0 to 5
     QString videolink;  // direct video link to the downloadable file
