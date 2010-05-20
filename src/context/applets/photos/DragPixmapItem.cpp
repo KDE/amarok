@@ -16,6 +16,7 @@
 
 #include "DragPixmapItem.h"
 
+#define DEBUG_PREFIX "DragPixmapItem"
 #include "core/support/Debug.h"
 
 // KDE
@@ -28,9 +29,6 @@
 #include <QMimeData>
 #include <QPoint>
 
-#define DEBUG_PREFIX "DragPixmapItem"
-
-
 DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
     , m_dragPos( QPoint() )
@@ -39,9 +37,9 @@ DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     setCursor( Qt::PointingHandCursor );
 }
 
-void DragPixmapItem::SetClickableUrl( QString url )
+void DragPixmapItem::SetClickableUrl( const KUrl &url )
 {
-    m_url = url ;
+    m_url = url;
 }
 
 void DragPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)

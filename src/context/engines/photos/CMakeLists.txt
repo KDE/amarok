@@ -1,5 +1,6 @@
 include_directories( ../..
                     ../../..
+                    ${Amarok_SOURCE_DIR}/src/network
                     ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
 )
 

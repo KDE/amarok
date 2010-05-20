@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PhotosScrollWidget"
+
 #include "PhotosScrollWidget.h"
 #include "DragPixmapItem.h"
 
@@ -31,8 +33,6 @@
 #include <QList>
 #include <QPixmap>
 #include <QTimer>
-
-#define DEBUG_PREFIX "PhotosScrollWidget"
 
 PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
@@ -118,7 +118,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
     {
         if ( !m_currentlist.contains( item ) )
         {
-            if ( !item->photo->isNull() )
+            if ( !item->photo.isNull() )
             {
                 switch ( m_mode )
                 {
@@ -133,7 +133,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->setPos( m_actualpos, 0 );
                         dragpix->SetClickableUrl( item->urlpage );
                         dragpix->show();
@@ -151,7 +151,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                            item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                            item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->SetClickableUrl( item->urlpage );
 
                         if ( m_id == 0 ) // only pos and show if no animation, otherwise it will be set at the end automatically
@@ -181,7 +181,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->setPos( ( size().width() - dragpix->boundingRect().width() ) / 2, 0 );
                         dragpix->SetClickableUrl( item->urlpage );
                         dragpix->hide();
