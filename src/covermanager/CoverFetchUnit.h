@@ -102,6 +102,7 @@ public:
     CoverFetchPayload( const Meta::AlbumPtr album, enum Type type, const CoverFetch::Source src );
     virtual ~CoverFetchPayload();
 
+    Meta::AlbumPtr album() const { return m_album; }
     CoverFetch::Source source() const;
     enum Type type() const;
     const CoverFetch::Urls &urls() const;
@@ -113,7 +114,6 @@ protected:
     QString sanitizeQuery( const QString &query );
     const QString  sourceString() const;
     const QString &method() const { return m_method; }
-    Meta::AlbumPtr album()  const { return m_album; }
 
     bool isPrepared() const;
     virtual void prepareUrls() = 0;
@@ -154,7 +154,8 @@ class CoverFetchSearchPayload : public CoverFetchPayload
 public:
     explicit CoverFetchSearchPayload( const QString &query = QString(),
                                       const CoverFetch::Source src = CoverFetch::LastFm,
-                                      unsigned int page = 0 );
+                                      unsigned int page = 0,
+                                      Meta::AlbumPtr album = Meta::AlbumPtr(0) );
     ~CoverFetchSearchPayload();
 
     QString query() const;

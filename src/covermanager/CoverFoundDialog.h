@@ -51,7 +51,6 @@ class CoverFoundDialog : public KDialog
 
 public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                               const QPixmap cover = QPixmap(),
                                const CoverFetch::Metadata data = CoverFetch::Metadata(),
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
@@ -61,10 +60,12 @@ public:
      */
     const QPixmap image() const { return m_pixmap; }
 
+    void setQueryPage( int page );
+
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
-    void newCustomQuery( const QString &query, unsigned int page );
+    void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
     void add( const QPixmap cover,
@@ -112,7 +113,7 @@ private:
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
-    unsigned int m_queryPage;         //!< Cache for the page number associated with @ref m_query
+    int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };

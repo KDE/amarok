@@ -72,8 +72,24 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    m_queue->add( album, CoverFetch::Interactive );
-    debug() << "Adding interactive cover fetch for:" << album->name();
+    debug() << QString("Adding interactive cover fetch for: '%1' from %2")
+        .arg( album->name() )
+        .arg( Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
+    switch( fetchSource() )
+    {
+    case CoverFetch::LastFm:
+        m_queue->add( album, CoverFetch::Interactive, fetchSource() );
+        break;
+
+    case CoverFetch::Discogs:
+    case CoverFetch::Google:
+    case CoverFetch::Yahoo:
+        queueQueryForAlbum( album );
+        break;
+
+    default:
+        break;
+    }
 }
 
 void
@@ -99,10 +115,19 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
-CoverFetcher::queueQuery( const QString &query, unsigned int page )
+CoverFetcher::queueQuery( Meta::AlbumPtr album, const QString &query, int page )
 {
-    m_queue->addQuery( query, fetchSource(), page );
+    m_queue->addQuery( query, fetchSource(), page, album );
     debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query ).arg( page );
+}
+
+void
+CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
+{
+    QString query( album->name() );
+    if( album->hasAlbumArtist() )
+        query += ' ' + album->albumArtist()->name();
+    queueQuery( album, query, 0 );
 }
 
 void
@@ -114,17 +139,14 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     const CoverFetchPayload *payload = unit->payload();
     const CoverFetch::Urls urls = payload->urls();
 
-    if( urls.isEmpty() )
+    // show the dialog straight away if fetch is interactive
+    if( !m_dialog && unit->isInteractive() )
     {
-        if( unit->isInteractive() && !m_dialog )
-        {
-            Amarok::Components::logger()->shortMessage( i18n( "No covers found." ) );
-            showCover( unit );
-        }
-        else
-        {
-            finish( unit, NotFound );
-        }
+        showCover( unit, QPixmap() );
+    }
+    else if( urls.isEmpty() )
+    {
+        finish( unit, NotFound );
         return;
     }
 
@@ -244,16 +266,15 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
             return;
         }
 
-        m_dialog = new CoverFoundDialog( unit, cover, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog, SIGNAL(newCustomQuery(const QString&, unsigned int)),
-                           SLOT(queueQuery(const QString&, unsigned int)) );
+        m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
+        connect( m_dialog, SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
+                           SLOT(queueQuery(Meta::AlbumPtr, const QString&, int)) );
         connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
         connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
 
-        QString query( album->name() );
-        if( album->hasAlbumArtist() )
-            query += ' ' + album->albumArtist()->name();
-        queueQuery( query, 0 );
+        if( fetchSource() == CoverFetch::LastFm )
+            queueQueryForAlbum( album );
+        m_dialog->setQueryPage( 1 );
 
         m_dialog->show();
         m_dialog->raise();
@@ -265,8 +286,8 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
-            const CoverFetch::ImageSize imageSize = payload->imageSize();
-            m_dialog->add( cover, data, imageSize );
+            if( payload )
+                m_dialog->add( cover, data, payload->imageSize() );
         }
     }
 }

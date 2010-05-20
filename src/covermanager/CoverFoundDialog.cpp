@@ -52,7 +52,6 @@
 #include "core/support/Debug.h"
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                                    const QPixmap cover,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
@@ -60,7 +59,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_isSorted( false )
     , m_sortEnabled( false )
     , m_unit( unit )
-    , m_queryPage( 1 )
+    , m_queryPage( 0 )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -197,7 +196,12 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     typedef CoverFetchArtPayload CFAP;
     const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
-    add( cover, data, payload->imageSize() );
+    if( !m_album->hasImage() )
+        m_sideBar->setPixmap( m_album->image(190) );
+    else if( payload )
+        add( m_album->image(), data, payload->imageSize() );
+    else
+        add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
 }
@@ -386,7 +390,7 @@ void CoverFoundDialog::processQuery( const QString &input )
 
     if( !q.isEmpty() )
     {
-        emit newCustomQuery( q, m_queryPage );
+        emit newCustomQuery( m_album, q, m_queryPage );
         updateSearchButton( q );
         m_queryPage++;
     }
@@ -430,6 +434,11 @@ void CoverFoundDialog::selectGoogle()
     m_queryPage = 0;
     processQuery();
     debug() << "Select Google as source";
+}
+
+void CoverFoundDialog::setQueryPage( int page )
+{
+    m_queryPage = page;
 }
 
 void CoverFoundDialog::sortingTriggered( bool checked )
