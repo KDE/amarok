@@ -40,7 +40,6 @@ class EditFilterDialog : public KDialog
         void filterChanged( const QString &filter );
 
     private:
-        QList<QRadioButton*> m_checkActions;
         Ui::EditFilterDialog m_ui;
         
         bool m_appended;               // true if a filter appended
@@ -64,8 +63,8 @@ class EditFilterDialog : public KDialog
         void minSpinChanged(int value);
         void maxSpinChanged(int value);
 
-        void textWanted();
-        void textWanted( const QStringList &completions );
+        void textWanted( const KIcon &icon = KIcon() );
+        void textWanted( const QStringList &completions, const KIcon &icon = KIcon() );
         void valueWanted();
 
         void chooseCondition(int index);

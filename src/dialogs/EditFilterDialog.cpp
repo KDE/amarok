@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "EditFilterDialog.h"
-
 #define DEBUG_PREFIX "EditFilterDialog"
+
+#include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
@@ -62,25 +62,17 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
                 "You cannot undo more than one action.</p>" ) );
     setButtonToolTip( User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
-    
-    connect( m_ui.keywordCombo, SIGNAL(currentIndexChanged(const QString&)),
+
+    connect( m_ui.keywordCombo, SIGNAL(activated(const QString&)),
                                 SLOT(selectedAttribute(const QString&)) );
 
     connect( m_ui.minimum, SIGNAL(valueChanged(int)), SLOT(minSpinChanged(int)) );
     connect( m_ui.maximum, SIGNAL(valueChanged(int)), SLOT(maxSpinChanged(int)) );
 
-    // type text selected
-    textWanted();
-
     // check the "One Value Choosing" by default
     chooseOneValue();
 
     connect( m_ui.conditionCombo, SIGNAL(activated( int ) ), SLOT(chooseCondition( int ) ) );
-
-    m_checkActions << m_ui.matchAll;
-    m_checkActions << m_ui.matchAny;
-    m_checkActions << m_ui.matchLiteral;
-    m_checkActions << m_ui.matchNot;
 
     // check "select all words" as default
     m_ui.matchAll->setChecked( true );
@@ -109,7 +101,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL(defaultClicked()) , this, SLOT(slotDefault()) );
     connect( this, SIGNAL(user1Clicked()), this, SLOT(slotUser1()) );
     connect( this, SIGNAL(user2Clicked()), this, SLOT(slotUser2()) );
-    
+
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
         return;
@@ -133,6 +125,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
     dataQueryMaker->setAutoDelete( true );
     dataQueryMaker->run();
+
+    // default search option
+    selectedAttribute( i18n("Simple Search") );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -202,7 +197,7 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
     {
         m_ui.filterActionGroupBox->setEnabled( true );
         m_ui.invertButton->setEnabled( false );
-        textWanted();
+        textWanted( KStandardGuiItem::find().icon() );
     }
     else if( attr.compare( i18n("Bit Rate") ) == 0 )
     {
@@ -276,33 +271,33 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
     }
     else if( attr.compare( i18n("Album") ) == 0 )
     {
-        textWanted( m_albums );
+        textWanted( m_albums, KIcon("filename-album-amarok") );
     }
     else if( attr.compare( i18n("Artist") ) == 0 )
     {
-        textWanted( m_artists );
+        textWanted( m_artists, KIcon("filename-artist-amarok") );
     }
     else if( attr.compare( i18n("Composer") ) == 0 )
     {
-        textWanted( m_composers );
+        textWanted( m_composers, KIcon("filename-composer-amarok") );
     }
     else if( attr.compare( i18n("Genre") ) == 0 )
     {
-        textWanted( m_genres );
+        textWanted( m_genres, KIcon("filename-genre-amarok") );
     }
     else if( attr.compare( i18n("Label") ) == 0 )
     {
-        textWanted( m_labels );
+        textWanted( m_labels/*, KIcon("filename-label-amarok") TODO: icon doesn't exist */ );
     }
     else if( attr.compare( i18n("Track Title") ) == 0 )
     {
-        textWanted();
+        textWanted( KIcon("filename-title-amarok") );
     }
     else if( attr.compare( i18n("Format") ) == 0 )
     {
         QStringList types;
         types << "mp3" << "flac" << "ogg" << "mp4";
-        textWanted( types );
+        textWanted( types, KIcon("filename-filetype-amarok") );
     }
     else
         textWanted();
@@ -320,25 +315,28 @@ void EditFilterDialog::maxSpinChanged( int value ) // SLOT
         m_ui.minimum->setValue( value );
 }
 
-void EditFilterDialog::textWanted() // SLOT
+void EditFilterDialog::textWanted( const KIcon &icon ) // SLOT
 {
     m_ui.editKeywordBox->setEnabled( true );
     m_ui.valueGroupBox->setEnabled( false );
 
-    m_ui.editKeywordBox->completionObject()->clear();
+    const QString editText = m_ui.editKeywordBox->currentText();
     m_ui.editKeywordBox->clear();
+    m_ui.editKeywordBox->completionObject()->clear();
+    m_ui.editKeywordBox->insertItem( 0, icon, editText );
+    m_ui.editKeywordBox->insertSeparator( 1 );
 }
 
-void EditFilterDialog::textWanted( const QStringList &completions ) // SLOT
+void EditFilterDialog::textWanted( const QStringList &completions, const KIcon &icon  ) // SLOT
 {
-    textWanted();
+    textWanted( icon );
 
     QStringList sortedList = completions;
     sortedList.sort();
+    foreach( const QString &text, sortedList )
+        m_ui.editKeywordBox->insertItem( m_ui.editKeywordBox->count(), icon, text );
 
     m_ui.editKeywordBox->completionObject()->setItems( sortedList );
-    m_ui.editKeywordBox->insertItem( 0, QString() );
-    m_ui.editKeywordBox->insertItems( 1, sortedList );
 }
 
 void EditFilterDialog::valueWanted() // SLOT
@@ -403,24 +401,24 @@ void EditFilterDialog::slotDefault() // SLOT
     {
         // Simple Search
         debug() << "selected text: '" << m_ui.editKeywordBox->currentText() << "'";
-        if (m_checkActions[0]->isChecked())
+        if( m_ui.matchAll->isChecked() )
         {
             // all words
             m_filterText += m_ui.editKeywordBox->currentText();
         }
-        else if (m_checkActions[1]->isChecked())
+        else if( m_ui.matchAny->isChecked() )
         {
             // at least one word
             m_filterText += *(list.constBegin());
             for ( QStringList::ConstIterator it = ++list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " OR " + *it;
         }
-        else if (m_checkActions[2]->isChecked())
+        else if( m_ui.matchLiteral->isChecked() )
         {
             // exactly the words
             m_filterText += "\"" + m_ui.editKeywordBox->currentText() + "\"";
         }
-        else if (m_checkActions[3]->isChecked())
+        else if( m_ui.matchNot->isChecked() )
         {
             // exclude words
             for ( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
