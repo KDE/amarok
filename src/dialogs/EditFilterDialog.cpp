@@ -299,6 +299,10 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
         types << "mp3" << "flac" << "ogg" << "mp4";
         textWanted( types, KIcon("filename-filetype-amarok") );
     }
+    else if( attr.compare( i18n("Comment") ) == 0 )
+    {
+        textWanted( KIcon("filename-comment-amarok") );
+    }
     else
         textWanted();
 }
