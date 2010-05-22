@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmpacheService"
+
 #include "AmpacheService.h"
 
 #include "core/support/Amarok.h"
@@ -25,14 +27,14 @@
 #include <config-amarok.h>
 #include "core/support/Debug.h"
 #include "sha256/sha256.h"
-
+#include "NetworkAccessManagerProxy.h"
 
 #include <KMessageBox>
 #include <kpassworddialog.h>
 #include <KMD5>
 
-
 #include <QDomDocument>
+#include <QNetworkReply>
 
 #ifdef HAVE_LIBLASTFM
   #include "LastfmInfoParser.h"
@@ -158,8 +160,12 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     m_username = username;
     m_password = password;
 
-    m_xmlVersionJob = KIO::storedGet( versionString, KIO::Reload, KIO::HideProgressInfo );
-    connect( m_xmlVersionJob, SIGNAL(result(KJob *)), this, SLOT( authenticate(KJob *) ) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(authenticate(QNetworkReply*)));
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(authenticationComplete(QNetworkReply*)));
+
+    m_xmlVersionUrl = KUrl( versionString );
+    QNetworkRequest req( m_xmlVersionUrl );
+    The::networkAccessManager()->get( req );
 #if HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif
@@ -195,16 +201,28 @@ AmpacheService::reauthenticate()
 
     debug() << "Verifying Ampache Version Using: " << versionString;
 
-    m_xmlVersionJob = KIO::storedGet( versionString, KIO::Reload, KIO::HideProgressInfo );
-    connect( m_xmlVersionJob, SIGNAL(result(KJob *)), this, SLOT( authenticate(KJob *) ) );
+    m_xmlVersionUrl = KUrl( versionString );
+    QNetworkRequest req( m_xmlVersionUrl );
+    The::networkAccessManager()->get( req );
 }
 
 void
-AmpacheService::authenticate(KJob * job)
+AmpacheService::authenticate( QNetworkReply *reply )
 {
-    DEBUG_BLOCK
+    const KUrl url = reply->request().url();
+    if( m_xmlVersionUrl != url )
+        return;
 
-    versionVerify(job);
+    m_xmlVersionUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        debug() << "authenticate Error" << reply->error();
+        reply->deleteLater();
+        return;
+    }
+
+    DEBUG_BLOCK
+    versionVerify( reply );
 
     //lets keep this around for now if we want to allow people to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
@@ -248,9 +266,11 @@ AmpacheService::authenticate(KJob * job)
 
         passPhrase = sha256( rawHandshake );
         debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
+        debug() << "Version Greater than 350000 Generating new SHA256 Auth" << authenticationString << passPhrase;
     }
-    else {
-        debug() << "Version Older then 35001 Generated MD5 Auth " << m_version;
+    else
+    {
+        debug() << "Version Older than 35001 Generated MD5 Auth " << m_version;
         authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
         rawHandshake = timestamp + m_password;
         KMD5 context( rawHandshake.toUtf8() );
@@ -267,28 +287,34 @@ AmpacheService::authenticate(KJob * job)
 
     debug() << "Authenticating with string: " << authenticationString << passPhrase;
 
-    m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
+    // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
+    m_xmlDownloadUrl = KUrl( authenticationString );
+    QNetworkRequest req( m_xmlDownloadUrl );
+    The::networkAccessManager()->get( req );
+    reply->deleteLater();
 }
 
-void AmpacheService::authenticationComplete(KJob * job)
+void AmpacheService::authenticationComplete( QNetworkReply *reply )
 {
-    if( !job->error() == 0 )
+    const KUrl url = reply->request().url();
+    if( m_xmlDownloadUrl != url )
+        return;
+
+    m_xmlDownloadUrl.clear();
+    if( reply->error() != QNetworkReply::NoError )
     {
-        //TODO: error handling here
+        debug() << "Authentication Error" << reply->error();
+        reply->deleteLater();
         return;
     }
-    if( job != m_xmlDownloadJob )
-        return; //not the right job, so let's ignore it
 
-    QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
+    QByteArray xmlReply = reply->readAll();
     debug() << "Authentication reply: " << xmlReply;
 
     //so lets figure out what we got here:
     QDomDocument doc( "reply" );
 
-    doc.setContent( m_xmlDownloadJob->data() );
+    doc.setContent( xmlReply );
     QDomElement root = doc.firstChildElement("root");
 
     //is this an error?
@@ -309,7 +335,7 @@ void AmpacheService::authenticationComplete(KJob * job)
         m_authenticated = true;
 
         m_collection = new Collections::AmpacheServiceCollection( this, m_server, m_sessionId );
-        connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
+        // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
 
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
         QList<int> levels;
@@ -317,41 +343,31 @@ void AmpacheService::authenticationComplete(KJob * job)
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
         m_serviceready = true;
         emit( ready() );
-
-        m_xmlDownloadJob->deleteLater();
     }
-
+    reply->deleteLater();
 }
 
-void AmpacheService::versionVerify(KJob * job)
+void AmpacheService::versionVerify( QNetworkReply *reply )
 {
-
     DEBUG_BLOCK
-
-    if( !job->error() == 0 )
-    {
-        debug() << "Job Error" << job->error();
-        // If an error has occurred, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
-        return;
-    }
-    QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
+    QByteArray xmlReply = reply->readAll();
     debug() << "Version Verify reply: " << xmlReply;
 
     //so lets figure out what we got here:
     QDomDocument doc( "version" );
 
-    doc.setContent(m_xmlVersionJob->data() );
+    doc.setContent( xmlReply );
     QDomElement root = doc.firstChildElement("root");
     //is this an error?
 
     QDomElement error = root.firstChildElement("error");
 
     // It's OK if we get a null response from the version, that just means we're dealing with an older version
-    if ( !error.isNull() )
+    if( !error.isNull() )
     {
         // Default the Version down if it didn't work
         m_version = 100000;
-        debug() << "AmpacheService::versionVerify Error: " << error.text();
+        debug() << "versionVerify Error: " << error.text();
     }
     else
     {
@@ -361,10 +377,8 @@ void AmpacheService::versionVerify(KJob * job)
         m_version = element.text().toInt();
 
         debug() << "versionVerify Returned: " << m_version;
-
-        job->deleteLater();
     }
-
+    reply->deleteLater();
 }
 
 #include "AmpacheService.moc"

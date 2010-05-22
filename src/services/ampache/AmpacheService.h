@@ -17,14 +17,12 @@
 #ifndef AMPACHESERVICE_H
 #define AMPACHESERVICE_H
 
-
-
-#include "../ServiceBase.h"
 #include "AmpacheServiceCollection.h"
+#include "ServiceBase.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
+#include <KUrl>
 
+class QNetworkReply;
 
 class AmpacheServiceFactory: public ServiceFactory
 {
@@ -65,13 +63,13 @@ public:
     virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
-    void authenticate(KJob *job);
-    void authenticationComplete(  KJob *job );
-    void versionVerify( KJob *job);
+    void authenticate( QNetworkReply *reply );
+    void authenticationComplete( QNetworkReply *reply );
+    void versionVerify( QNetworkReply *reply );
 
 private:
-    KIO::StoredTransferJob *m_xmlDownloadJob;
-    KIO::StoredTransferJob *m_xmlVersionJob;
+    KUrl m_xmlDownloadUrl;
+    KUrl m_xmlVersionUrl;
 
     bool m_authenticated;
     QString m_server;
