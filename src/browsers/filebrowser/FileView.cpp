@@ -36,6 +36,7 @@
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 #include "src/transcoding/TranscodeJob.h"
+#include "src/transcoding/TranscodeDialog.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -143,7 +144,6 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     menu->addAction( transcodeAction );
 
     menu->exec( e->globalPos() );
- 
 }
 
 void
@@ -248,6 +248,7 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<list.urlList().first();
     KJob *doTranscode = new TranscodeJob( list.urlList().first(), TranscodeFormat::Vorbis( 7 ),this );
     doTranscode->start();
+    TranscodeDialog *d = new TranscodeDialog( this );
 }
 
 void
@@ -368,7 +369,7 @@ QList<QAction *>
 FileView::actionsForIndices( const QModelIndexList &indices )
 {
     QList<QAction *> actions;
-    
+
     if( indices.isEmpty() )
         return actions; // get out of here!
 
@@ -404,7 +405,7 @@ FileView::actionsForIndices( const QModelIndexList &indices )
             m_separator1 = new QAction( this );
             m_separator1->setSeparator( true );
     }
-    
+
     actions.append( m_separator1 );
 
     if( m_deleteAction == 0 )
@@ -559,6 +560,14 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
                            "Are you sure you want to move these %1 items to trash?",
                            indices.count() );
     }
+
+    KDialog dialog;
+    dialog.setCaption( caption );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( labelText, &dialog );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
 
     KUrl::List urls;
     QStringList filepaths;

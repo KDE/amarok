@@ -14,26 +14,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodeFormat.h"
-#include "core/support/Debug.h"
+#include "TranscodeDialog.h"
 
-TranscodeFormat &
-TranscodeFormat::Vorbis( int quality )
+TranscodeDialog::TranscodeDialog( QWidget *parent )
+    : KDialog( parent, Qt::Dialog )
 {
-    DEBUG_BLOCK
-    TranscodeFormat format( TranscodeFormat::VORBIS );
-    /*format.m_ffmpegParameters.append( " -aq " );
-    format.m_ffmpegParameters.append( QString::number( quality ) );
-    debug()<< "In the named ctor, ffmpeg parameters are "<<format.m_ffmpegParameters;
-    */return format;
-}
-
-//private
-TranscodeFormat::TranscodeFormat( Encoder encoder )
-    : m_encoder( encoder )
-{
-    m_ffmpegParameters = QString( "-acodec " );
-    if( m_encoder == TranscodeFormat::VORBIS )
-        m_ffmpegParameters.append( "libvorbis" );
-
+    QWidget *w = new QWidget( this );
+    setMainWidget( w );
+    setupUi( w );
 }

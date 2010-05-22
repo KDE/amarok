@@ -14,26 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef TRANSCODEDIALOG_H
+#define TRANSCODEDIALOG_H
+
+#include "ui_TranscodeDialog.h"
 #include "TranscodeFormat.h"
-#include "core/support/Debug.h"
 
-TranscodeFormat &
-TranscodeFormat::Vorbis( int quality )
+#include <KDialog>
+
+/**
+ * A KDialog for initiating a transcode operation.
+ * @author Téo Mrnjavac <teo@kde.org>
+ */
+class TranscodeDialog : public KDialog, private Ui::TranscodeDialog
 {
-    DEBUG_BLOCK
-    TranscodeFormat format( TranscodeFormat::VORBIS );
-    /*format.m_ffmpegParameters.append( " -aq " );
-    format.m_ffmpegParameters.append( QString::number( quality ) );
-    debug()<< "In the named ctor, ffmpeg parameters are "<<format.m_ffmpegParameters;
-    */return format;
-}
+    Q_OBJECT
+public:
+    TranscodeDialog( QWidget *parent );
 
-//private
-TranscodeFormat::TranscodeFormat( Encoder encoder )
-    : m_encoder( encoder )
-{
-    m_ffmpegParameters = QString( "-acodec " );
-    if( m_encoder == TranscodeFormat::VORBIS )
-        m_ffmpegParameters.append( "libvorbis" );
+private:
 
-}
+};
+
+#endif // TRANSCODEDIALOG_H
