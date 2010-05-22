@@ -71,9 +71,6 @@ class PodcastModel : public MetaPlaylistModel
 
         void importOpml( const KUrl &url );
 
-    signals:
-        void renameIndex( const QModelIndex &index ); // TODO: this signal is not being used atm
-
     public slots:
         void addPodcast();
         void refreshPodcasts();

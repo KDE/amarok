@@ -102,7 +102,6 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotConfigChanged();
 
     signals:
-        void updated();
         void totalPodcastDownloadProgress( int progress );
 
     private slots:
