@@ -223,8 +223,11 @@ void CoverFoundDialog::add( const QPixmap cover,
         return;
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
-    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
-    addToView( item );
+    if( !contains(item) )
+    {
+        connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
+        addToView( item );
+    }
 }
 
 void CoverFoundDialog::addToView( CoverFoundItem *const item )
@@ -252,6 +255,20 @@ void CoverFoundDialog::addToView( CoverFoundItem *const item )
         m_view->addItem( item );
     }
     updateGui();
+}
+
+bool CoverFoundDialog::contains( CoverFoundItem *const item ) const
+{
+    bool hasItem( false );
+    for( int i = 0, count = m_view->count(); i < count; ++i )
+    {
+        CoverFoundItem *const vItem = static_cast<CoverFoundItem *const>( m_view->item(i) );
+        if( vItem )
+            hasItem = (*vItem == *item);
+        if( hasItem )
+            return true;
+    }
+    return hasItem;
 }
 
 void CoverFoundDialog::addToCustomSearch( const QString &text )
@@ -720,6 +737,16 @@ CoverFoundItem::~CoverFoundItem()
     m_progress = 0;
     delete m_dialog;
     m_dialog = 0;
+}
+
+bool CoverFoundItem::operator==( const CoverFoundItem &other ) const
+{
+    return m_metadata == other.m_metadata;
+}
+
+bool CoverFoundItem::operator!=( const CoverFoundItem &other ) const
+{
+    return !( *this == other );
 }
 
 bool CoverFoundItem::fetchBigPix()

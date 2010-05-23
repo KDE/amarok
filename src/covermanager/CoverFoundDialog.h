@@ -97,6 +97,7 @@ private slots:
 
 private:
     void addToView( CoverFoundItem *const item );
+    bool contains( CoverFoundItem *const item ) const;
     void sortCoversBySize();
     void updateGui();
     void updateTitle();
@@ -168,6 +169,9 @@ public:
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
     void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+    bool operator==( const CoverFoundItem &other ) const;
+    bool operator!=( const CoverFoundItem &other ) const;
 
 signals:
     void pixmapChanged( const QPixmap pixmap );
