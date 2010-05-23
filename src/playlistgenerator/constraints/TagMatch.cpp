@@ -497,7 +497,7 @@ ConstraintTypes::TagMatch::comparisonToString() const
 {
     if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
         if ( m_comparison == Constraint::CompareNumEquals ) {
-            return QString( i18n("equals") );
+            return QString( i18nc("a numerical tag (like year or track number) equals a value","equals") );
         } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
             return QString( i18n("greater than") );
         } else if ( m_comparison == Constraint::CompareNumLessThan ) {
@@ -515,7 +515,7 @@ ConstraintTypes::TagMatch::comparisonToString() const
         }
     } else {
         if ( m_comparison == Constraint::CompareStrEquals ) {
-            return QString( i18n("equals") );
+            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
         } else if ( m_comparison == Constraint::CompareStrStartsWith ) {
             return QString( i18n("starts with") );
         } else if ( m_comparison == Constraint::CompareStrEndsWith ) {

@@ -250,7 +250,7 @@ QString
 ConstraintTypes::PlaylistLength::comparisonToString() const
 {
     if ( m_comparison == Constraint::CompareNumEquals ) {
-        return QString( i18n("equals") );
+        return QString( i18nc("duration of playlist equals some time", "equals") );
     } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
         return QString( i18n("longer than") );
     } else if ( m_comparison == Constraint::CompareNumLessThan ) {
