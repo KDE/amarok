@@ -26,10 +26,12 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
+#include "NetworkAccessManagerProxy.h"
 
-#include <KIO/Job>
 #include <KLocale>
 #include <KUrl>
+
+#include <QNetworkReply>
 
 #define DEBUG_PREFIX "CoverFetcher"
 #include "core/support/Debug.h"
@@ -62,6 +64,8 @@ CoverFetcher::CoverFetcher()
     connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
                       SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
 
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(slotResult(QNetworkReply*)) );
     s_instance = this;
 }
 
@@ -156,13 +160,14 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         if( !url.isValid() )
             continue;
 
-        KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-        connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
-        m_jobs.insert( job, unit );
+        QNetworkRequest req( url );
+        The::networkAccessManager()->get( req );
+        m_urls.insert( url, unit );
 
         if( unit->isInteractive() )
         {
-            Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+            // FIXME: switching to using a QNAM means we can't monitor fetches using a KJob anymore
+            // Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
         }
         else if( payload->type() == CoverFetchPayload::Art )
         {
@@ -173,21 +178,27 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( KJob *job )
+CoverFetcher::slotResult( QNetworkReply *reply )
 {
-    const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
-
-    if( !unit )
+    const KUrl url = reply->request().url();
+    if( !m_urls.contains( url ) )
         return;
 
-    if( job && job->error() )
+    const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
+    if( !unit )
     {
-        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
+        reply->deleteLater();
         return;
     }
 
-    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    const QByteArray data = storedJob->data();
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
+        reply->deleteLater();
+        return;
+    }
+
+    const QByteArray data = reply->readAll();
     const CoverFetchPayload *payload = unit->payload();
 
     switch( payload->type() )
@@ -208,7 +219,6 @@ CoverFetcher::slotResult( KJob *job )
         {
             if( unit->isInteractive() )
             {
-                const KUrl url = storedJob->url();
                 const CoverFetch::Metadata metadata = payload->urls().value( url );
                 showCover( unit, pixmap, metadata );
             }
@@ -220,7 +230,7 @@ CoverFetcher::slotResult( KJob *job )
         }
         break;
     }
-    storedJob->deleteLater();
+    reply->deleteLater();
 }
 
 void
@@ -247,7 +257,7 @@ CoverFetcher::slotDialogFinished()
      * or closes the cover found dialog. This way, the dialog will not reappear
      * if there are still covers yet to be retrieved.
      */
-    QList< CoverFetchUnit::Ptr > units = m_jobs.values();
+    QList< CoverFetchUnit::Ptr > units = m_urls.values();
     foreach( const CoverFetchUnit::Ptr &unit, units )
     {
         if( unit->isInteractive() )
@@ -302,9 +312,7 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     m_queue->remove( album );
     m_queueLater.removeAll( album );
     m_selectedPixmaps.remove( unit );
-    const KJob *job = m_jobs.key( unit );
-    const_cast<KJob*>( job )->deleteLater();
-    m_jobs.remove( job );
+    m_urls.remove( m_urls.key( unit ) );
 }
 
 void

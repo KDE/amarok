@@ -50,6 +50,7 @@ include_directories(
     dialogs
     dynamic
     likeback
+    network
     playlistmanager
     statusbar
     synchronization
