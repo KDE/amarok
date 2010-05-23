@@ -326,7 +326,9 @@ CoverFetchInfoPayload::prepareUrls()
         break;
 
     }
-    m_urls.insert( url, metadata );
+
+    if( url.isValid() )
+        m_urls.insert( url, metadata );
 }
 
 void
@@ -357,11 +359,11 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QDomDocument &doc )
         url.addQueryItem( "api_key", Amarok::discogsApiKey() );
         url.addQueryItem( "f", "xml" );
 
-        if( !url.isValid() )
-            continue;
-
         CoverFetch::Metadata metadata;
-        m_urls.insert( url, metadata );
+        metadata[ "source" ] = "Discogs";
+
+        if( url.isValid() )
+            m_urls.insert( url, metadata );
     }
 }
 
@@ -444,7 +446,8 @@ CoverFetchSearchPayload::prepareUrls()
         break;
     }
 
-    m_urls.insert( url, metadata );
+    if( url.isValid() )
+        m_urls.insert( url, metadata );
 }
 
 /*
@@ -721,7 +724,8 @@ CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
         if( !urlElem.isNull() )
             metadata[ "releaseurl" ] = urlElem.text();
 
-        m_urls.insert( url, metadata );
+        if( url.isValid() )
+            m_urls.insert( url, metadata );
     }
 }
 
@@ -759,7 +763,9 @@ CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
             const QString notes = metadata.take( "abstract" );
             metadata[ "notes" ] = notes;
         }
-        m_urls.insert( url, metadata );
+
+        if( url.isValid() )
+            m_urls.insert( url, metadata );
     }
 }
 

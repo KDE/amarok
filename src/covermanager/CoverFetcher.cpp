@@ -153,6 +153,9 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     const KUrl::List uniqueUrls = urls.uniqueKeys();
     foreach( const KUrl &url, uniqueUrls )
     {
+        if( !url.isValid() )
+            continue;
+
         KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
         m_jobs.insert( job, unit );
