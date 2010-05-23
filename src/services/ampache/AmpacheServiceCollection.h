@@ -21,8 +21,6 @@
 #include "AmpacheMeta.h"
 #include "core/collections/support/TrackForUrlWorker.h"
 
-#include <kio/jobclasses.h>
-
 class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
@@ -47,8 +45,6 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         QString m_sessionId;
 
         ServiceBase* m_service;
-
-        KIO::StoredTransferJob * m_storedTransferJob;
 };
 
 namespace Collections {
