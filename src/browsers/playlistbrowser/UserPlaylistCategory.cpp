@@ -222,6 +222,13 @@ UserPlaylistCategory::slotToggleProviderButton( bool enabled )
 void
 UserPlaylistCategory::createNewGroup()
 {
-    QModelIndex idx = m_byFolderProxy->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
+    // TODO: Determine how many "New Folder" there are and set n accordingly.
+    int n = 1;
+    QString name;
+    if ( n == 1 )
+        name = i18nc( "default name for new folder", "New Folder" );
+    else
+        name = i18nc( "default name for new folder", "New Folder (%1)", n );
+    QModelIndex idx = m_byFolderProxy->createNewGroup( name );
     m_playlistView->edit( m_filterProxy->mapFromSource( idx ) );
 }
