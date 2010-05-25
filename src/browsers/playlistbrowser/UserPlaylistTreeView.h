@@ -24,12 +24,9 @@
 
 class PopupDropper;
 class QAction;
-
 class KAction;
 
 namespace PlaylistBrowserNS {
-
-class MetaPlaylistModel;
 
 class UserPlaylistTreeView : public Amarok::PrettyTreeView
 {
@@ -53,9 +50,6 @@ protected:
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
 
-private slots:
-    void slotClickTimeout();
-
 private:
     QList<QAction *> actionsFor( QModelIndexList indexes );
 
@@ -65,12 +59,9 @@ private:
 
     bool m_ongoingDrag;
     QMutex m_dragMutex;
-
-    QPoint m_clickLocation;
-    QTimer m_clickTimer;
-    QModelIndex m_savedClickIndex;
-    bool m_justDoubleClicked;
+    bool m_expandToggledWhenPressed;
 };
 
-}
-#endif
+} // namespace PlaylistBrowserNS
+
+#endif // USERPLAYLISTTREEVIEW_H
