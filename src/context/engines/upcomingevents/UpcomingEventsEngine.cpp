@@ -135,10 +135,10 @@ UpcomingEventsEngine::message( const ContextState& state )
 void
 UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track )
     DEBUG_BLOCK
 
-    update();
+    if( m_currentTrack->artist() != track->artist() )
+        update();
 }
 
 /**

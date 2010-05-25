@@ -109,10 +109,8 @@ SimilarArtistsEngine::message( const ContextState &state )
 void
 SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track )
-
-    
-    update();
+    if( m_currentTrack->artist() != track->artist() )
+        update();
 }
 
 /**
