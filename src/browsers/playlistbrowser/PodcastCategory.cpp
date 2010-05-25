@@ -523,9 +523,8 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_dragMutex()
-    , m_justDoubleClicked( false )
+    , m_expandToggledWhenPressed( false )
 {
-    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
 PodcastView::~PodcastView()
@@ -534,13 +533,10 @@ PodcastView::~PodcastView()
 void
 PodcastView::mousePressEvent( QMouseEvent *event )
 {
-    QModelIndex index = indexAt( event->pos() );
-    if( KGlobalSettings::singleClick() )
-        setItemsExpandable( false );
-    //not a provider item, don't bother checking actions
-    if( model() == m_podcastModel || index.parent().isValid() )
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
     {
-        Amarok::PrettyTreeView::mousePressEvent( event );
+        event->accept();
         return;
     }
 
@@ -553,7 +549,14 @@ PodcastView::mousePressEvent( QMouseEvent *event )
             return;
     }
 
+    bool prevExpandState = isExpanded( index );
+
+    // This will toggle the expansion of the current item when clicking
+    // on the fold marker but not on the item itself. Required here to
+    // enable dragging.
     Amarok::PrettyTreeView::mousePressEvent( event );
+
+    m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
 }
 
 void
@@ -596,25 +599,21 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
         m_pd->hide();
+        m_pd = 0;
     }
-    m_pd = 0;
 
-    setItemsExpandable( true );
-
-    if( m_clickTimer.isActive() || m_justDoubleClicked )
+    if( !m_expandToggledWhenPressed &&
+        event->button() != Qt::RightButton &&
+        event->modifiers() == Qt::NoModifier &&
+        KGlobalSettings::singleClick() &&
+        model()->hasChildren( index ) )
     {
-        //it's a double-click...so ignore it
-        m_clickTimer.stop();
-        m_justDoubleClicked = false;
-        m_savedClickIndex = QModelIndex();
+        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
+        setCurrentIndex( index );
+        setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
     }
-
-    m_savedClickIndex = indexAt( event->pos() );
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
-    m_clickLocation = event->pos();
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
@@ -624,27 +623,30 @@ PodcastView::mouseMoveEvent( QMouseEvent *event )
     if( event->buttons() || event->modifiers() )
     {
         Amarok::PrettyTreeView::mouseMoveEvent( event );
-        update();
         return;
     }
-    QPoint point = event->pos() - m_clickLocation;
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
-    {
-        m_clickTimer.stop();
-        slotClickTimeout();
-        event->accept();
-    }
-    else
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
+    event->accept();
 }
 
 void
 PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
 
-    if( index.isValid() )
+    if( model()->hasChildren( index ) )
+    {
+        if( event->button() != Qt::RightButton &&
+            event->modifiers() == Qt::NoModifier )
+        {
+            setExpanded( index, !isExpanded( index ) );
+        }
+    }
+    else
     {
         QList<QAction *> actions =
          index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
@@ -655,15 +657,6 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
             actions.first()->setData( QVariant() );
         }
     }
-
-    m_clickTimer.stop();
-    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
-    //comes through, but after the mouseDoubleClickEvent, so we need to tell
-    //mouseReleaseEvent to ignore that one event
-    m_justDoubleClicked = true;
-    if( model()->hasChildren( index ) )
-        setExpanded( index, !isExpanded( index ) );
-
     event->accept();
 }
 
@@ -754,18 +747,6 @@ PodcastView::contextMenuEvent( QContextMenuEvent *event )
     //Clear the data from all actions now that the PUD has executed.
     foreach( QAction *action, actions )
         action->setData( QVariant() );
-}
-
-void
-PodcastView::slotClickTimeout()
-{
-    m_clickTimer.stop();
-    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
-    {
-        if( model()->hasChildren( m_savedClickIndex ) )
-            setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
-    }
-    m_savedClickIndex = QModelIndex();
 }
 
 #include "PodcastCategory.moc"
