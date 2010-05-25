@@ -1076,7 +1076,7 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
-    connect( podcastReader, SIGNAL( statusBarMessage( const QString & ) ),
+    connect( podcastReader, SIGNAL( statusBarSorryMessage( const QString & ) ),
             this, SLOT( slotStatusBarSorryMessage( const QString & ) ) );
     connect( podcastReader, SIGNAL( statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ),
                 this, SLOT( slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ) );
