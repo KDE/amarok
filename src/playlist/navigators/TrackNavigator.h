@@ -28,18 +28,16 @@
 
 namespace Playlist
 {
+    typedef QList<quint64> ItemList; // A convenient typedef!
 
     /**
      * An abstract class which defines what should be done after a track
-     * finishes playing.  The Playlist::Model will have an object of the
-     * currently active strategy.  It is the "strategy" pattern from the Design
+     * finishes playing. The Playlist::Model will have an object of the
+     * currently active strategy. It is the "strategy" pattern from the Design
      * Patterns book. In Amarok 1.x, the Playlist became very confusing due to
      * random mode and dynamic playlists requiring complicated nested if
      * statements. This should prevent that.
      */
-
-    typedef QList<quint64> ItemList; // A convenient typedef!
-
     class TrackNavigator : public QObject
     {
         Q_OBJECT
@@ -49,17 +47,17 @@ namespace Playlist
             virtual ~TrackNavigator() { }
 
             /**
-             * what is the next track at this moment - could change before the track really plays
-             * (you need to catch playlist changes)
-             * does NOT affect the navigators queue
+             * what is the next track at this moment. It could change before the
+             * track really plays (you need to catch playlist changes); does NOT
+             * affect the navigators queue.
              */
             virtual quint64 likelyNextTrack() = 0;
 
             /**
-             * what is the last track at this moment - could change before the track really plays
-             * (you need to catch playlist changes)
-             * does NOT affect the navigators queue
-            */
+             * what is the last track at this moment. It could change before the
+             * track really plays (you need to catch playlist changes); does NOT
+             * affect the navigators queue.
+             */
             virtual quint64 likelyLastTrack() = 0;
 
             /**

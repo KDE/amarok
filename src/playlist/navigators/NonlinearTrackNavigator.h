@@ -29,7 +29,7 @@
 namespace Playlist
 {
     /**
-     * Base class that offers some standard services for non-linear navigators:
+     * Base class that offers some standard services for non-linear navigators.
      *   - Deterministic back/forward in history.
      *   - High-performance keep-in-sync with changes in the source model.
      *   - 'm_plannedItems', a standard way to plan ahead.
