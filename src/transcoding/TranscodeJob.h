@@ -48,7 +48,7 @@ public:
      * Convenience constructor. Creates a TranscodeJob with the destination file to be
      * placed in the same directory as the source.
      */
-    explicit TranscodeJob( const KUrl &src, const TranscodeFormat &options, QObject *parent = 0 );
+    explicit TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *parent = 0 );
 
     /**
      * Sets the path of the source file.

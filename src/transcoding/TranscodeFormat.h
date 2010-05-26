@@ -35,14 +35,14 @@ public:
 
     //We make the real ctor private and use a bunch of named ctors because different codecs
     //take different parameters.
-    static TranscodeFormat & Aac();
-    static TranscodeFormat & Alac();
-    static TranscodeFormat & Flac();
-    static TranscodeFormat & Mp3();
-    static TranscodeFormat & Vorbis( int quality );
-    static TranscodeFormat & Wma();
+    static TranscodeFormat Aac();
+    static TranscodeFormat Alac();
+    static TranscodeFormat Flac();
+    static TranscodeFormat Mp3();
+    static TranscodeFormat Vorbis( int quality );
+    static TranscodeFormat Wma();
 
-    QString ffmpegParameters() const { return m_ffmpegParameters; }
+    QString ffmpegParameters() const;
     Encoder encoder() const { return m_encoder; }
 
 private:

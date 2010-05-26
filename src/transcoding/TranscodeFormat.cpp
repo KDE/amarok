@@ -17,21 +17,35 @@
 #include "TranscodeFormat.h"
 #include "core/support/Debug.h"
 
-TranscodeFormat &
+TranscodeFormat
 TranscodeFormat::Vorbis( int quality )
 {
     DEBUG_BLOCK
     TranscodeFormat format( TranscodeFormat::VORBIS );
-    /*format.m_ffmpegParameters.append( " -aq " );
+    format.m_ffmpegParameters.append( " -aq " );
     format.m_ffmpegParameters.append( QString::number( quality ) );
     debug()<< "In the named ctor, ffmpeg parameters are "<<format.m_ffmpegParameters;
-    */return format;
+    return format;
+}
+
+QString
+TranscodeFormat::ffmpegParameters() const
+{
+    DEBUG_BLOCK
+    if( !m_ffmpegParameters.isEmpty() )
+    {
+        debug() << "About to return ffmpeg parameters: " << m_ffmpegParameters;
+        return m_ffmpegParameters;
+    }
+    debug() << "INVALID FFMPEG PARAMETERS";
+    return QString();
 }
 
 //private
 TranscodeFormat::TranscodeFormat( Encoder encoder )
     : m_encoder( encoder )
 {
+    DEBUG_BLOCK
     m_ffmpegParameters = QString( "-acodec " );
     if( m_encoder == TranscodeFormat::VORBIS )
         m_ffmpegParameters.append( "libvorbis" );

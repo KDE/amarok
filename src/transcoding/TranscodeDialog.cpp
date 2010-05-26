@@ -16,10 +16,29 @@
 
 #include "TranscodeDialog.h"
 
-TranscodeDialog::TranscodeDialog( QWidget *parent )
+TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
     : KDialog( parent, Qt::Dialog )
 {
-    QWidget *w = new QWidget( this );
-    setMainWidget( w );
-    setupUi( w );
+    DEBUG_BLOCK
+    QWidget *uiBase = new QWidget( this );
+    setMainWidget( uiBase);
+    ui.setupUi( uiBase );
+    setModal( true );
+    setWindowTitle( i18n( "Transcode Tracks" ) );
+
+
+    TranscodeFormat format = TranscodeFormat::Vorbis( 7 );
+    debug() << "\nFormat encoder is: " << format.encoder();
+    debug() << "\nabout to fetch ffmpeg parameters";
+    QString ffmpp = format.ffmpegParameters();
+    debug() << "\nParameters: ";
+    debug() << ffmpp.toAscii();
+    /*KJob *doTranscode = new TranscodeJob( url, *format,this );
+    //doTranscode->start();
+    */
+    setButtons( User1 );
+    button( User1 ).setText( "LOL Transcode NAO!" );
+    connect( button( User1 ), SIGNAL( clicked() ), this, SLOT(  ) );
 }
+
+#include "TranscodeDialog.moc"

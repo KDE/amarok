@@ -25,16 +25,18 @@ TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFo
     , m_dest( dest )
     , m_options( options )
 {
+    DEBUG_BLOCK
     init();
 }
 
-TranscodeJob::TranscodeJob( const KUrl &src, const TranscodeFormat &options, QObject *parent )
+TranscodeJob::TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *parent )
     : KJob( parent )
     , m_src( src )
     , m_dest( src )
     , m_options( options )
 {
     DEBUG_BLOCK
+    debug() << "TranscodeJob ctor!!";
     debug()<< src;
     debug()<< src.path();
     QString destPath = src.path();
@@ -64,7 +66,7 @@ TranscodeJob::init()
 
     m_transcoder->setProgram( "ffmpeg" );
     *m_transcoder << "-i" << m_src.path() << m_dest.path();
-    *m_transcoder << m_options.ffmpegParameters();
+    //*m_transcoder << m_options.ffmpegParameters();
     debug() << "foo";
     debug() << m_options.ffmpegParameters();
     debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
@@ -75,17 +77,23 @@ TranscodeJob::init()
 void
 TranscodeJob::start()
 {
+    DEBUG_BLOCK
     debug()<< "starting ffmpeg";
-    m_transcoder->start();
+    debug()<< "call is " << m_transcoder->program();
+    //m_transcoder->start();
+    debug() << m_transcoder->readAllStandardOutput();
+    debug()<< "ffmpeg started";
 }
 
 void
 TranscodeJob::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
 {
+    DEBUG_BLOCK
     Q_UNUSED( exitStatus );
     if( !exitCode )
     {
         debug() << "YAY, transcoding done!";
     }
+    debug() << "NAY, transcoding fail!";
     emitResult();
 }

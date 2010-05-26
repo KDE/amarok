@@ -238,6 +238,7 @@ FileView::slotEditTracks()
 void
 FileView::slotPrepareTranscodeTracks()
 {
+    DEBUG_BLOCK
     KAction *action = qobject_cast< KAction * >( sender() );
     if( !action )
         return;
@@ -245,10 +246,13 @@ FileView::slotPrepareTranscodeTracks()
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
         return;
-    debug()<<list.urlList().first();
-    KJob *doTranscode = new TranscodeJob( list.urlList().first(), TranscodeFormat::Vorbis( 7 ),this );
-    doTranscode->start();
-    TranscodeDialog *d = new TranscodeDialog( this );
+    debug()<<" SRC URL IS " << list.urlList().first();
+    debug()<<" SRC URL IS " << list.urlList().first();
+
+    TranscodeDialog *d = new TranscodeDialog( list.urlList(), The::mainWindow() );
+    debug() << "About to show TranscodeDialog";
+    d->show();
+    debug() << "TranscodeDialog shown.";
 }
 
 void

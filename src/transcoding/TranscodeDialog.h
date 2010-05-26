@@ -19,6 +19,7 @@
 
 #include "ui_TranscodeDialog.h"
 #include "TranscodeFormat.h"
+#include "core/support/Debug.h"
 
 #include <KDialog>
 
@@ -26,14 +27,14 @@
  * A KDialog for initiating a transcode operation.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class TranscodeDialog : public KDialog, private Ui::TranscodeDialog
+class TranscodeDialog : public KDialog
 {
     Q_OBJECT
 public:
-    TranscodeDialog( QWidget *parent );
+    TranscodeDialog( const KUrl::List &urlList, QWidget *parent );
 
 private:
-
+    Ui::TranscodeDialog ui;
 };
 
 #endif // TRANSCODEDIALOG_H
