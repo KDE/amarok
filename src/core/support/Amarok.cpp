@@ -21,13 +21,13 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/playlists/PlaylistFormat.h"
 
-
 #include <QDateTime>
 #include <QTextDocument>
 
 #include <KCalendarSystem>
 #include <KConfigGroup>
 #include <KDirLister>
+#include <KGlobalSettings>
 #include <KStandardDirs>
 #include <KUniqueApplication>
 
@@ -202,6 +202,12 @@ namespace Amarok
     OverrideCursor::~OverrideCursor()
     {
         QApplication::restoreOverrideCursor();
+    }
+
+    Qt::MouseButton contextMouseButton()
+    {
+        const int handed = KGlobalSettings::mouseSettings().handed;
+        return ( handed == KGlobalSettings::KMouseSettings::RightHanded ) ? Qt::RightButton : Qt::LeftButton;
     }
 
     QString saveLocation( const QString &directory )

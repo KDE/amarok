@@ -151,7 +151,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseReleaseEvent( QMouseEvent * event 
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() != Qt::RightButton &&
+        event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )

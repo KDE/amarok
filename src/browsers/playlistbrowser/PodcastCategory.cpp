@@ -603,7 +603,7 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() != Qt::RightButton &&
+        event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
@@ -640,7 +640,7 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 
     if( model()->hasChildren( index ) )
     {
-        if( event->button() != Qt::RightButton &&
+        if( event->button() != Amarok::contextMouseButton() &&
             event->modifiers() == Qt::NoModifier )
         {
             setExpanded( index, !isExpanded( index ) );

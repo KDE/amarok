@@ -107,6 +107,13 @@ namespace Amarok
     };
 
     /**
+     * For getting the mouse button that invokes the contextual menu.
+     * This conforms to what "handed" the mouse is configured to be.
+     * @return the mouse button that invokes the context menu.
+     */
+    AMAROK_CORE_EXPORT Qt::MouseButton contextMouseButton();
+
+    /**
      * For saving files to ~/.kde/share/apps/amarok/directory
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
@@ -214,8 +221,6 @@ namespace Amarok
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
     inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }
-
-
 }
 
 /**
