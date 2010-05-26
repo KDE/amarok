@@ -27,6 +27,7 @@
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
 
+#include <KComboBox>
 #include <KConfigGroup>
 #include <KFileDialog>
 #include <KIO/Job>
@@ -90,15 +91,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     KHBox *searchBox = new KHBox( vbox );
     vbox->setSpacing( 4 );
 
-    m_search = new KLineEdit( searchBox );
-    m_search->setClearButtonShown( true );
-    m_search->setClickMessage( i18n( "Enter Custom Search" ) );
-    m_search->setTrapReturnKey( true );
-
-    KCompletion *searchComp = m_search->completionObject();
-    searchComp->setOrder( KCompletion::Insertion );
-    searchComp->setIgnoreCase( true );
-
     QStringList completionNames;
     QString firstRunQuery( m_album->name() );
     completionNames << firstRunQuery;
@@ -109,8 +101,23 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         firstRunQuery += ' ' + name;
     }
     m_query = firstRunQuery;
-    searchComp->setItems( completionNames );
     m_album->setSuppressImageAutoFetch( true );
+
+    m_search = new KComboBox( searchBox );
+    m_search->setEditable( true ); // creates a KLineEdit for the combobox
+    m_search->setTrapReturnKey( true );
+    m_search->setInsertPolicy( QComboBox::NoInsert ); // insertion is handled by us
+    m_search->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_search->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    qobject_cast<KLineEdit*>( m_search->lineEdit() )->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->completionObject()->setOrder( KCompletion::Insertion );
+    m_search->completionObject()->setIgnoreCase( true );
+    m_search->completionObject()->setItems( completionNames );
+    m_search->insertItem( 0, KStandardGuiItem::find().icon(), QString() );
+    m_search->insertSeparator( 1 );
+    m_search->insertItem( 2, KIcon("filename-album-amarok"), m_album->name() );
+    if( m_album->hasAlbumArtist() )
+        m_search->insertItem( 3, KIcon("filename-artist-amarok"), m_album->albumArtist()->name() );
 
     m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
@@ -144,11 +151,11 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
-    connect( m_search, SIGNAL(returnPressed(const QString&)), searchComp, SLOT(addItem(const QString&)) );
+    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(insertComboText(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(processQuery(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(updateSearchButton(const QString&)) );
-    connect( m_search, SIGNAL(textChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
-    connect( m_search, SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
+    connect( m_search, SIGNAL(editTextChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
+    connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
     connect( m_searchButton, SIGNAL(pressed()), SLOT(processQuery()) );
 
     m_view = new KListWidget( vbox );
@@ -273,7 +280,7 @@ bool CoverFoundDialog::contains( CoverFoundItem *const item ) const
 
 void CoverFoundDialog::addToCustomSearch( const QString &text )
 {
-    const QString &query = m_search->text();
+    const QString &query = m_search->currentText();
     if( !text.isEmpty() && !query.contains( text ) )
     {
         QStringList q;
@@ -281,7 +288,7 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
             q << query;
         q << text;
         const QString result = q.join( QChar( ' ' ) );
-        m_search->setText( result );
+        qobject_cast<KLineEdit*>( m_search->lineEdit() )->setText( result );
     }
 }
 
@@ -298,6 +305,21 @@ void CoverFoundDialog::clearView()
     m_sideBar->clear();
     m_sortSizes.clear();
     updateGui();
+}
+
+void CoverFoundDialog::insertComboText( const QString &text )
+{
+    if( text.isEmpty() )
+        return;
+
+    if( m_search->contains( text ) )
+    {
+        m_search->setCurrentIndex( m_search->findText( text ) );
+        return;
+    }
+    m_search->completionObject()->addItem( text );
+    m_search->insertItem( 0, KStandardGuiItem::find().icon(), text );
+    m_search->setCurrentIndex( 0 );
 }
 
 void CoverFoundDialog::itemSelected()
@@ -378,7 +400,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 
 void CoverFoundDialog::processQuery()
 {
-    const QString text = m_search->text();
+    const QString text = m_search->currentText();
     processQuery( text );
 }
 

@@ -38,7 +38,7 @@ class CoverFoundSideBar;
 class KDialog;
 class KJob;
 class KJobProgressBar;
-class KLineEdit;
+class KComboBox;
 class KListWidget;
 class KPushButton;
 class QFrame;
@@ -82,6 +82,7 @@ private slots:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
+    void insertComboText( const QString &text );
     void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
@@ -103,7 +104,7 @@ private:
     void updateTitle();
 
     CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
-    KLineEdit *m_search;              //!< Custom search input
+    KComboBox *m_search;              //!< Custom search input
     KListWidget *m_view;              //!< View of retrieved covers
     KPushButton *m_save;              //!< Save Button
     KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
