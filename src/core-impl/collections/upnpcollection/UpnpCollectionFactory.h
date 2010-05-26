@@ -14,72 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "UpnpCollection"
+#ifndef UPNPCOLLECTIONFACTORY_H
+#define UPNPCOLLECTIONFACTORY_H
 
-#include "UpnpCollection.h"
+#include <kfileitem.h>
 
-#include "core/support/Debug.h"
-#include "MemoryQueryMaker.h"
-#include "statusbar/StatusBar.h"
-#include "UpnpQueryMaker.h"
+#include "core/collections/Collection.h"
 
-#include <QStringList>
-#include <QTimer>
-
-#include <KLocale>
+class KDirLister;
 
 namespace Collections {
 
-//UpnpCollection
+class UpnpCollection;
 
-// TODO register for the device bye bye and emit remove()
-UpnpCollection::UpnpCollection( const QString &udn )
-    : Collection()
-    , m_udn( udn )
+class UpnpCollectionFactory : public Collections::CollectionFactory
 {
-    DEBUG_BLOCK
-}
+  Q_OBJECT
+  public:
+    UpnpCollectionFactory( QObject *parent, const QVariantList &args );
+    virtual ~UpnpCollectionFactory();
 
-UpnpCollection::~UpnpCollection()
-{
-    // DO NOT delete m_device. It is HUpnp's job.
-}
+    void init();
 
-void
-UpnpCollection::startFullScan()
-{
-    DEBUG_BLOCK
 
-    //ignore
-}
+  private:
 
-QueryMaker*
-UpnpCollection::queryMaker()
-{
-    return new UpnpQueryMaker;
-}
+  private slots:
+    void slotNewDevices( const KFileItemList &list );
 
-QString
-UpnpCollection::collectionId() const
-{
-// TODO
-    return QString("upnp-ms://") + m_udn;
-}
+    void slotDeviceOffline( const KFileItemList &list );
+    void createCollection( const KFileItem &item );
 
-QString
-UpnpCollection::prettyName() const
-{
-// TODO
-    return m_udn;
-}
+  private:
+    KDirLister *m_networkLister;
+};
 
-bool
-UpnpCollection::possiblyContainsTrack( const KUrl &url ) const
-{
-    debug() << "Requested track " << url;
-    return false;
-}
+} //namespace Collections
 
-} //~ namespace
-#include "UpnpCollection.moc"
-
+#endif

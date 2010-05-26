@@ -29,41 +29,13 @@
 
 #include <KIcon>
 
-namespace Herqq {
-  namespace Upnp {
-    class HControlPoint;
-    class HDevice;
-  }
-}
-
 namespace Collections {
-
-class UpnpCollection;
-
-class UpnpCollectionFactory : public Collections::CollectionFactory
-{
-    Q_OBJECT
-    public:
-        UpnpCollectionFactory( QObject *parent, const QVariantList &args );
-        virtual ~UpnpCollectionFactory();
-
-        void init();
-
-
-    private:
-
-    private slots:
-        void rootDeviceOnline(Herqq::Upnp::HDevice *device);
-
-    private:
-        Herqq::Upnp::HControlPoint *m_controlPoint;
-};
 
 class UpnpCollection : public Collections::Collection
 {
     Q_OBJECT
     public:
-        UpnpCollection(Herqq::Upnp::HDevice *device);
+        UpnpCollection( const QString &udn );
         virtual ~UpnpCollection();
 
         virtual void startFullScan();
@@ -81,7 +53,7 @@ class UpnpCollection : public Collections::Collection
     private slots:
 
     private:
-        Herqq::Upnp::HDevice *m_device;
+        QString m_udn;
 };
 
 } //namespace Collections
