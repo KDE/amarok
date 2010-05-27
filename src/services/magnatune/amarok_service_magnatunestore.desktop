@@ -110,7 +110,7 @@ X-KDE-Library=amarok_service_magnatunestore
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=55
+X-KDE-Amarok-framework-version=56
 X-KDE-Amarok-name=MagnatuneStore
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
