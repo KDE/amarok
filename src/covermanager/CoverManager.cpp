@@ -102,6 +102,7 @@ CoverManager::CoverManager( QWidget *parent )
     kapp->setTopWidget( this );
     setButtons( 0 );
     setCaption( i18n("Cover Manager") );
+    setAttribute( Qt::WA_DeleteOnClose );
 
     connect( this, SIGNAL(hidden()), SLOT(delayedDestruct()) );
     connect( this, SIGNAL(closeClicked()), SLOT(delayedDestruct()) );
