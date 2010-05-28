@@ -823,7 +823,7 @@ TagDialog::startDataQuery()
     connect( mqm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( mqm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( mqm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
-    connect( mqm, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString; Meta::LabelList ) ), Qt::DirectConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString, Meta::LabelList ) ), Qt::DirectConnection );
 
     mqm->setAutoDelete( true );
 

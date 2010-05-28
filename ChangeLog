@@ -8,8 +8,11 @@ VERSION 2.3.2-Beta 1
 
   CHANGES:
     * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
+      Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Correctly load the list of labels in tag dialog. (BR 238737)
+      Patch by Daniel Faust <hessijames@gmail.com>.
     * Cover manager: fixed crash if closed shortly after opening. (BR 235796)
     * Fixed Last.fm service browser not updating its view if it's open on
       startup. (BR 231044)
