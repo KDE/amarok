@@ -119,6 +119,7 @@ void LastFmServiceConfig::save()
     {
         debug() << "Could not access the wallet to save the last.fm credentials";
     }
+    config.sync();
 }
 
 void
