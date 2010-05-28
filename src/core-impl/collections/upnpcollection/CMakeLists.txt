@@ -13,6 +13,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
     UpnpCollection.cpp
     UpnpCollectionFactory.cpp
     UpnpQueryMaker.cpp
+    UpnpMeta.cpp
 )
 
 
