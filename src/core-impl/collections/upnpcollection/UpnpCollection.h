@@ -33,27 +33,30 @@ namespace Collections {
 
 class UpnpCollection : public Collections::Collection
 {
-    Q_OBJECT
-    public:
-        UpnpCollection( const QString &udn );
-        virtual ~UpnpCollection();
+  Q_OBJECT
+  public:
+    UpnpCollection( const QString &udn, const QString &name );
+    virtual ~UpnpCollection();
 
-        virtual void startFullScan();
-        virtual QueryMaker* queryMaker();
+    virtual void startFullScan();
+    virtual void startIncrementalScan( const QString &directory = QString() );
+    virtual QueryMaker* queryMaker();
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("network-server"); }
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
+    virtual KIcon icon() const { return KIcon("network-server"); }
 
-        bool possiblyContainsTrack( const KUrl &url ) const;
-    signals:
+    bool possiblyContainsTrack( const KUrl &url ) const;
+  signals:
 
-    public slots:
+  public slots:
 
-    private slots:
+  private slots:
 
-    private:
-        QString m_udn;
+  private:
+    QString m_udn;
+    QString m_name;
+    QSharedPointer<MemoryCollection> m_mc;
 };
 
 } //namespace Collections

@@ -22,22 +22,31 @@
 #include "MemoryQueryMaker.h"
 #include "statusbar/StatusBar.h"
 #include "UpnpQueryMaker.h"
+#include "UpnpMeta.h"
 
 #include <QStringList>
 #include <QTimer>
 
 #include <KLocale>
 
+using namespace Meta;
+
 namespace Collections {
 
 //UpnpCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpCollection::UpnpCollection( const QString &udn )
+    UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
     : Collection()
     , m_udn( udn )
+    , m_name( name )
+    , m_mc( new MemoryCollection() )
 {
     DEBUG_BLOCK
+        emit updated();
+    UpnpTrackPtr t( new UpnpTrack(this) ); 
+    t->setTitle( "World Sick" );
+    m_mc->addTrack( TrackPtr::dynamicCast( t ) );
 }
 
 UpnpCollection::~UpnpCollection()
@@ -49,14 +58,20 @@ void
 UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
-
     //ignore
+}
+
+void
+UpnpCollection::startIncrementalScan( const QString &directory )
+{
+DEBUG_BLOCK
+    debug() << "Scanning directory" << directory;
 }
 
 QueryMaker*
 UpnpCollection::queryMaker()
 {
-    return new UpnpQueryMaker;
+    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 QString
@@ -70,7 +85,7 @@ QString
 UpnpCollection::prettyName() const
 {
 // TODO
-    return m_udn;
+    return m_name;
 }
 
 bool
