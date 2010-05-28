@@ -99,9 +99,9 @@ void TestM3UPlaylist::testTracks()
     QCOMPARE( tracklist.at( 9 ).data()->name(), QString( "Platz 10" ) );
 }
 
-void TestM3UPlaylist::testRetrievableUrl()
+void TestM3UPlaylist::testUidUrl()
 {
-    QCOMPARE( m_testPlaylist->retrievableUrl().pathOrUrl(), dataPath() );
+    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), dataPath() );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

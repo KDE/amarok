@@ -307,15 +307,11 @@ void TestXSPFPlaylist::testHasCapabilityInterface()
 
 void TestXSPFPlaylist::testUidUrl()
 {
-<<<<<<< HEAD:tests/core-impl/playlists/types/file/xspf/TestXSPFPlaylist.cpp
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
     
     //we have chaged the name around so much, better reset it
     m_testPlaylist1->setName( "test" );
-    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), tempPath );
-=======
-    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.xspf" ) );
->>>>>>> Add basic synchronization class and fuctions.:tests/meta/TestXSPFPlaylist.cpp
+    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), tempPath );
 }
 
 void TestXSPFPlaylist::testIsWritable()

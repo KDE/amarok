@@ -38,7 +38,7 @@ private slots:
 
     void testSetAndGetName();
     void testTracks();
-    void testRetrievableUrl();
+    void testUidUrl();
     void testSetAndGetGroups();
     void testIsWritable();
     void testSave();

@@ -53,7 +53,7 @@ private slots:
     void testSetAndGetAttribution();
     void testSetAndGetLink();
     void testHasCapabilityInterface();
-    void testRetrievableUrl();
+    void testUidUrl();
     void testIsWritable();
     void testSave();
 
