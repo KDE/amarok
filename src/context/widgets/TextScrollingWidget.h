@@ -51,11 +51,13 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         /**
         * Set the Text and more important the QRectF which will define the scrolling area
         */
-        void setScrollingText( const QString, QRectF );
+        void setScrollingText( const QString &text, const QRectF &rect );
 
         void setText( const QString &text );
+        void setTextFormat( Qt::TextFormat fmt );
 
         QString text() const;
+        Qt::TextFormat textFormat() const;
 
         bool isAnimating();
 
@@ -83,11 +85,14 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         QRectF            m_rect;           // box size
         QFontMetrics     *m_fm;             // font metrics which will cut the text.
         QString           m_text;           // full sentence
+        Qt::TextFormat    m_textFormat;     // text format
         int               m_delta;          // complete delta
         float             m_currentDelta;   // current delta
         int               m_animfor;        // anim id for
         int               m_animback;       // anim id back
         bool              m_animating;      // boolean !
+
+        bool requirePlainText() const;
 };
 
 #endif

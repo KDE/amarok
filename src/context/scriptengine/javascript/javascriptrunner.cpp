@@ -71,7 +71,7 @@ bool JavaScriptRunner::init()
     return true;
 }
 
-void JavaScriptRunner::match(Plasma::RunnerContext *search)
+void JavaScriptRunner::match(Plasma::RunnerContext &search)
 {
     QScriptValue fun = m_self.property("match");
     if (!fun.isFunction()) {
@@ -80,7 +80,7 @@ void JavaScriptRunner::match(Plasma::RunnerContext *search)
     }
 
     QScriptValueList args;
-    args << m_engine->toScriptValue(search);
+    args << m_engine->toScriptValue(&search);
 
     QScriptContext *ctx = m_engine->pushContext();
     ctx->setActivationObject(m_self);

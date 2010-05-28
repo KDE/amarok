@@ -34,7 +34,6 @@
 #include "Osd.h"
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
-#include "SearchWidget.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -94,7 +93,6 @@
 #include <QList>
 #include <QSizeGrip>
 #include <QStyle>
-#include <QSysInfo>
 #include <QVBoxLayout>
 
 #ifdef Q_WS_X11

@@ -45,8 +45,8 @@ class TrackItem : public QStandardItem, public Meta::Observer
          */
         void italicise();
 	
-	/**
-	 * Applies a bold style if the track is owned by the currently
+        /**
+         * Applies a bold style if the track is owned by the currently
          * playing artist
          */
         void bold();

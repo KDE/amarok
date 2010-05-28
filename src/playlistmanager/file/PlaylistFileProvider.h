@@ -68,13 +68,10 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
         virtual void loadPlaylists();
 
-    signals:
-            void updated();
-
     private slots:
-            void slotDelete();
-            void slotRename();
-            void slotRemove();
+        void slotDelete();
+        void slotRename();
+        void slotRemove();
 
     private:
         void deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles );

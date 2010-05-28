@@ -17,11 +17,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionTreeView"
+#include "core/support/Debug.h"
+
 #include "CollectionTreeView.h"
 
 #include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "browsers/CollectionTreeItem.h"
@@ -81,7 +83,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 #endif
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
-    setAnimated( true );
+
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        setAnimated( true );
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
@@ -99,18 +103,15 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
     connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
 
-    CollectionSortFilterProxyModel *oldFilterModel = m_filterModel;
-
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
     m_filterModel->setFilterRole( CustomRoles::FilterRole );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setSourceModel( model );
+    m_filterModel->setDynamicSortFilter( true );
 
     QTreeView::setModel( m_filterModel );
-
-    delete oldFilterModel;
 
     QTimer::singleShot( 0, this, SLOT( slotCheckAutoExpand() ) );
 }
@@ -170,6 +171,13 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
     if( !m_treeModel )
         return;
+
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        Amarok::PrettyTreeView::contextMenuEvent( event );
+        return;
+    }
 
     QAction separator( this );
     separator.setSeparator( true );
@@ -284,7 +292,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( model()->hasChildren( index ) )
     {
-        if( event->button() == Qt::LeftButton &&
+        if( event->button() != Amarok::contextMouseButton() &&
             event->modifiers() == Qt::NoModifier )
         {
             setExpanded( index, !isExpanded( index ) );
@@ -343,7 +351,7 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() == Qt::LeftButton &&
+        event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
@@ -564,18 +572,6 @@ CollectionTreeView::slotSetFilterTimeout()
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
-}
-
-void
-CollectionTreeView::slotExpand( const QModelIndex &index )
-{
-    DEBUG_BLOCK
-    debug() << "modelindex = " << index;
-    debug() << "m_filterModel ? " << (m_filterModel ? "true" : "false");
-    if( m_filterModel )
-        expand( m_filterModel->mapFromSource( index ) );
-    else
-        expand( index );
 }
 
 void

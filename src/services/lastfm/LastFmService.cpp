@@ -16,6 +16,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LastFmService"
+#include "core/support/Debug.h"
+
 #include "LastFmService.h"
 
 #include "AvatarDownloader.h"

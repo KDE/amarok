@@ -20,10 +20,8 @@
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
-#include "widgets/SearchWidget.h"
 #include "browsers/InfoProxy.h"
 
-#include <KLineEdit>
 #include <KStandardDirs>
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;

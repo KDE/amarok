@@ -18,7 +18,6 @@
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
-#include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
@@ -26,13 +25,14 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 
+#include <KAction>
+#include <KGlobalSettings>
+#include <KIcon>
+#include <KMenu>
+
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
 #include <QTreeView>
-
-#include <KAction>
-#include <KIcon>
-#include <KMenu>
 
 // Subclassed to override the access level of some methods.
 // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
@@ -50,7 +50,8 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
             setSelectionBehavior( QAbstractItemView::SelectItems );
-            setAnimated( true );
+            if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+                setAnimated( true );
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible

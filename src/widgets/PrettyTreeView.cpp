@@ -19,6 +19,8 @@
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 
+#include <KGlobalSettings>
+
 #include <QPainter>
 
 using namespace Amarok;

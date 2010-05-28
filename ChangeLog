@@ -10,6 +10,9 @@ VERSION 2.3.2-Beta 1
     * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
 
   BUGFIXES:
+    * Fixed Last.fm service browser not updating its view if it's open on
+      startup. (BR 231044)
+    * Fixed clicking on browser categories not honoring mouse settings. (BR 226533)
     * Fixed usability issue with regards to context menu item order when right
       clicking in the playlist widget. (BR 198650)
 

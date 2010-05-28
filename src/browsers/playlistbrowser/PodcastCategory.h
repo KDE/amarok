@@ -107,9 +107,6 @@ class PodcastView : public Amarok::PrettyTreeView
 
         virtual void contextMenuEvent( QContextMenuEvent* event );
 
-    private slots:
-        void slotClickTimeout();
-
     private:
         QList<QAction *> actionsFor( QModelIndexList indexes );
 
@@ -119,11 +116,7 @@ class PodcastView : public Amarok::PrettyTreeView
 
         bool m_ongoingDrag;
         QMutex m_dragMutex;
-
-        QPoint m_clickLocation;
-        QTimer m_clickTimer;
-        QModelIndex m_savedClickIndex;
-        bool m_justDoubleClicked;
+        bool m_expandToggledWhenPressed;
 };
 
 /**

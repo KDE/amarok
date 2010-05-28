@@ -448,6 +448,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->m_childQueries.insert( qm, parent );
         d->m_runningQueries.insert( parent, qm );
+        qm->setAutoDelete( true );
         qm->run();
 
         //some very quick queries may be done so fast that the loading
@@ -1033,6 +1034,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->m_compilationQueries.insert( qm, parent );
     d->m_runningQueries.insert( parent, qm );
+    qm->setAutoDelete( true );
     qm->run();
 }
 
