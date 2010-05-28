@@ -172,6 +172,13 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if( !m_treeModel )
         return;
 
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        Amarok::PrettyTreeView::contextMenuEvent( event );
+        return;
+    }
+
     QAction separator( this );
     separator.setSeparator( true );
 
