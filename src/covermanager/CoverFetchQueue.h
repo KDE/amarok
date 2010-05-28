@@ -76,10 +76,12 @@ public:
      * @param query text to be used for image search.
      * @param src the image provider to search.
      * @param page the page number to jump to.
+     * @param album optional album this query is associated with
      */
     void addQuery( const QString &query,
                    const CoverFetch::Source src = CoverFetch::LastFm,
-                   unsigned int page = 0 );
+                   unsigned int page = 0,
+                   Meta::AlbumPtr album = Meta::AlbumPtr(0) );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;

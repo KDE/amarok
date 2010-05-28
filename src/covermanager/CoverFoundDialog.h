@@ -38,7 +38,7 @@ class CoverFoundSideBar;
 class KDialog;
 class KJob;
 class KJobProgressBar;
-class KLineEdit;
+class KComboBox;
 class KListWidget;
 class KPushButton;
 class QFrame;
@@ -51,7 +51,6 @@ class CoverFoundDialog : public KDialog
 
 public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                               const QPixmap cover = QPixmap(),
                                const CoverFetch::Metadata data = CoverFetch::Metadata(),
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
@@ -61,10 +60,12 @@ public:
      */
     const QPixmap image() const { return m_pixmap; }
 
+    void setQueryPage( int page );
+
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
-    void newCustomQuery( const QString &query, unsigned int page );
+    void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
     void add( const QPixmap cover,
@@ -74,17 +75,20 @@ public slots:
 protected:
     void hideEvent( QHideEvent *event );
 
+protected slots:
+    void slotButtonClicked( int button );
+
 private slots:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
+    void insertComboText( const QString &text );
     void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void processQuery();
     void processQuery( const QString &query );
     void saveAs();
-    void saveRequested();
     void selectDiscogs();
     void selectLastFm();
     void selectGoogle();
@@ -94,13 +98,13 @@ private slots:
 
 private:
     void addToView( CoverFoundItem *const item );
-    void setupSearchToolTip();
+    bool contains( CoverFoundItem *const item ) const;
     void sortCoversBySize();
     void updateGui();
     void updateTitle();
 
     CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
-    KLineEdit *m_search;              //!< Custom search input
+    KComboBox *m_search;              //!< Custom search input
     KListWidget *m_view;              //!< View of retrieved covers
     KPushButton *m_save;              //!< Save Button
     KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
@@ -112,7 +116,7 @@ private:
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
-    unsigned int m_queryPage;         //!< Cache for the page number associated with @ref m_query
+    int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };
@@ -166,6 +170,9 @@ public:
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
     void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+    bool operator==( const CoverFoundItem &other ) const;
+    bool operator!=( const CoverFoundItem &other ) const;
 
 signals:
     void pixmapChanged( const QPixmap pixmap );

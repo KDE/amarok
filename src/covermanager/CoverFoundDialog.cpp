@@ -27,6 +27,7 @@
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
 
+#include <KComboBox>
 #include <KConfigGroup>
 #include <KFileDialog>
 #include <KIO/Job>
@@ -52,7 +53,6 @@
 #include "core/support/Debug.h"
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                                    const QPixmap cover,
                                     const CoverFetch::Metadata data,
                                     QWidget *parent )
     : KDialog( parent )
@@ -60,7 +60,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_isSorted( false )
     , m_sortEnabled( false )
     , m_unit( unit )
-    , m_queryPage( 1 )
+    , m_queryPage( 0 )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -91,16 +91,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     KHBox *searchBox = new KHBox( vbox );
     vbox->setSpacing( 4 );
 
-    m_search = new KLineEdit( searchBox );
-    m_search->setClearButtonShown( true );
-    m_search->setClickMessage( i18n( "Enter Custom Search" ) );
-    m_search->setTrapReturnKey( true );
-    setupSearchToolTip();
-
-    KCompletion *searchComp = m_search->completionObject();
-    searchComp->setOrder( KCompletion::Insertion );
-    searchComp->setIgnoreCase( true );
-
     QStringList completionNames;
     QString firstRunQuery( m_album->name() );
     completionNames << firstRunQuery;
@@ -111,8 +101,23 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         firstRunQuery += ' ' + name;
     }
     m_query = firstRunQuery;
-    searchComp->setItems( completionNames );
     m_album->setSuppressImageAutoFetch( true );
+
+    m_search = new KComboBox( searchBox );
+    m_search->setEditable( true ); // creates a KLineEdit for the combobox
+    m_search->setTrapReturnKey( true );
+    m_search->setInsertPolicy( QComboBox::NoInsert ); // insertion is handled by us
+    m_search->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_search->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    qobject_cast<KLineEdit*>( m_search->lineEdit() )->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->completionObject()->setOrder( KCompletion::Insertion );
+    m_search->completionObject()->setIgnoreCase( true );
+    m_search->completionObject()->setItems( completionNames );
+    m_search->insertItem( 0, KStandardGuiItem::find().icon(), QString() );
+    m_search->insertSeparator( 1 );
+    m_search->insertItem( 2, KIcon("filename-album-amarok"), m_album->name() );
+    if( m_album->hasAlbumArtist() )
+        m_search->insertItem( 3, KIcon("filename-artist-amarok"), m_album->albumArtist()->name() );
 
     m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
@@ -146,11 +151,11 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
-    connect( m_search, SIGNAL(returnPressed(const QString&)), searchComp, SLOT(addItem(const QString&)) );
+    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(insertComboText(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(processQuery(const QString&)) );
     connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(updateSearchButton(const QString&)) );
-    connect( m_search, SIGNAL(textChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
-    connect( m_search, SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
+    connect( m_search, SIGNAL(editTextChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
+    connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
     connect( m_searchButton, SIGNAL(pressed()), SLOT(processQuery()) );
 
     m_view = new KListWidget( vbox );
@@ -177,8 +182,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     splitter->addWidget( vbox );
     setMainWidget( splitter );
 
-    connect( m_save, SIGNAL(clicked(bool)), SLOT(saveRequested()) );
-
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     m_sortEnabled = config.readEntry( "Sort by Size", false );
@@ -197,7 +200,12 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     typedef CoverFetchArtPayload CFAP;
     const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
-    add( cover, data, payload->imageSize() );
+    if( !m_album->hasImage() )
+        m_sideBar->setPixmap( m_album->image(190) );
+    else if( payload )
+        add( m_album->image(), data, payload->imageSize() );
+    else
+        add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
 }
@@ -222,8 +230,11 @@ void CoverFoundDialog::add( const QPixmap cover,
         return;
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
-    connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
-    addToView( item );
+    if( !contains(item) )
+    {
+        connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
+        addToView( item );
+    }
 }
 
 void CoverFoundDialog::addToView( CoverFoundItem *const item )
@@ -253,9 +264,23 @@ void CoverFoundDialog::addToView( CoverFoundItem *const item )
     updateGui();
 }
 
+bool CoverFoundDialog::contains( CoverFoundItem *const item ) const
+{
+    bool hasItem( false );
+    for( int i = 0, count = m_view->count(); i < count; ++i )
+    {
+        CoverFoundItem *const vItem = static_cast<CoverFoundItem *const>( m_view->item(i) );
+        if( vItem )
+            hasItem = (*vItem == *item);
+        if( hasItem )
+            return true;
+    }
+    return hasItem;
+}
+
 void CoverFoundDialog::addToCustomSearch( const QString &text )
 {
-    const QString &query = m_search->text();
+    const QString &query = m_search->currentText();
     if( !text.isEmpty() && !query.contains( text ) )
     {
         QStringList q;
@@ -263,7 +288,7 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
             q << query;
         q << text;
         const QString result = q.join( QChar( ' ' ) );
-        m_search->setText( result );
+        qobject_cast<KLineEdit*>( m_search->lineEdit() )->setText( result );
     }
 }
 
@@ -282,6 +307,21 @@ void CoverFoundDialog::clearView()
     updateGui();
 }
 
+void CoverFoundDialog::insertComboText( const QString &text )
+{
+    if( text.isEmpty() )
+        return;
+
+    if( m_search->contains( text ) )
+    {
+        m_search->setCurrentIndex( m_search->findText( text ) );
+        return;
+    }
+    m_search->completionObject()->addItem( text );
+    m_search->insertItem( 0, KStandardGuiItem::find().icon(), text );
+    m_search->setCurrentIndex( 0 );
+}
+
 void CoverFoundDialog::itemSelected()
 {
     CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
@@ -296,7 +336,7 @@ void CoverFoundDialog::itemSelected()
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     Q_UNUSED( item )
-    saveRequested();
+    slotButtonClicked( KDialog::Ok );
 }
 
 void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
@@ -329,11 +369,14 @@ void CoverFoundDialog::saveAs()
         item->saveAs( m_album );
 }
 
-void CoverFoundDialog::saveRequested()
+void CoverFoundDialog::slotButtonClicked( int button )
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( item )
+    if( button == KDialog::Ok )
     {
+        CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+        if( !item )
+            return;
+
         bool gotBigPix( true );
         if( !item->hasBigPix() )
             gotBigPix = item->fetchBigPix();
@@ -342,19 +385,22 @@ void CoverFoundDialog::saveRequested()
         {
             m_pixmap = item->bigPix();
             accept();
-            return;
         }
         else
         {
             m_pixmap = QPixmap();
+            reject();
         }
     }
-    reject();
+    else
+    {
+        KDialog::slotButtonClicked( button );
+    }
 }
 
 void CoverFoundDialog::processQuery()
 {
-    const QString text = m_search->text();
+    const QString text = m_search->currentText();
     processQuery( text );
 }
 
@@ -386,7 +432,7 @@ void CoverFoundDialog::processQuery( const QString &input )
 
     if( !q.isEmpty() )
     {
-        emit newCustomQuery( q, m_queryPage );
+        emit newCustomQuery( m_album, q, m_queryPage );
         updateSearchButton( q );
         m_queryPage++;
     }
@@ -432,6 +478,11 @@ void CoverFoundDialog::selectGoogle()
     debug() << "Select Google as source";
 }
 
+void CoverFoundDialog::setQueryPage( int page )
+{
+    m_queryPage = page;
+}
+
 void CoverFoundDialog::sortingTriggered( bool checked )
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
@@ -441,28 +492,6 @@ void CoverFoundDialog::sortingTriggered( bool checked )
     if( m_sortEnabled )
         sortCoversBySize();
     debug() << "Enable sorting by size:" << checked;
-}
-
-void CoverFoundDialog::setupSearchToolTip()
-{
-    const KShortcut textShortcut = KStandardShortcut::completion();
-    const KShortcut nextShortcut = KStandardShortcut::nextCompletion();
-    const KShortcut prevShortcut = KStandardShortcut::prevCompletion();
-    const KShortcut subShortcut  = KStandardShortcut::substringCompletion();
-
-    const QString &textKey = textShortcut.toString( QKeySequence::NativeText );
-    const QString &nextKey = nextShortcut.toString( QKeySequence::NativeText );
-    const QString &prevKey = prevShortcut.toString( QKeySequence::NativeText );
-    const QString &subKey  = subShortcut.toString( QKeySequence::NativeText );
-
-    const QString tt = i18n( "<b>Useful text completion shortcuts:</b><br> %1 (%2)<br> %3 (%4)<br> %5 (%6)<br> %7 (%8)",
-                             i18n( "Text completion" ), textKey,
-                             i18n( "Switch to previous completion" ), nextKey,
-                             i18n( "Switch to next completion" ), prevKey,
-                             i18n( "Substring completion" ), subKey
-                             );
-
-    m_search->setToolTip( tt );
 }
 
 void CoverFoundDialog::sortCoversBySize()
@@ -730,6 +759,16 @@ CoverFoundItem::~CoverFoundItem()
     m_progress = 0;
     delete m_dialog;
     m_dialog = 0;
+}
+
+bool CoverFoundItem::operator==( const CoverFoundItem &other ) const
+{
+    return m_metadata == other.m_metadata;
+}
+
+bool CoverFoundItem::operator!=( const CoverFoundItem &other ) const
+{
+    return !( *this == other );
 }
 
 bool CoverFoundItem::fetchBigPix()

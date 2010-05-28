@@ -51,7 +51,7 @@ public:
     enum FinishState { Success, Error, NotFound, Cancelled };
 
 public slots:
-    AMAROK_EXPORT void queueQuery( const QString &query, unsigned int page = 0 );
+    AMAROK_EXPORT void queueQuery( Meta::AlbumPtr album, const QString &query, int page = 0 );
 
 signals:
     void finishedSingle( int state );
@@ -74,6 +74,8 @@ private:
 
     /// Remove a fetch unit from the queue, and clean up any running jobs
     void abortFetch( CoverFetchUnit::Ptr unit );
+
+    void queueQueryForAlbum( Meta::AlbumPtr album );
 
     const int m_limit;            //!< maximum number of concurrent fetches
     CoverFetchQueue *m_queue;     //!< current fetch queue

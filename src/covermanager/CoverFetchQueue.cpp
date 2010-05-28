@@ -90,9 +90,12 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
 }
 
 void
-CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src, unsigned int page )
+CoverFetchQueue::addQuery( const QString &query,
+                           const CoverFetch::Source src,
+                           unsigned int page,
+                           Meta::AlbumPtr album )
 {
-    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page );
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page, album );
     add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
