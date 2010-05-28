@@ -72,7 +72,7 @@ public:
 
     QStringList collectionFolders() const
     {
-        return QStringList();
+        return folders;
     }
 
     void setCollectionFolders( const QStringList &folders )
@@ -91,6 +91,7 @@ public:
     }
 
     QMap<int,QString> mountPoints;
+    QStringList folders;
 };
 
 #endif // SQLMOUNTPOINTMANAGERMOCK_H
