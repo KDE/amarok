@@ -32,11 +32,18 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    // open wallet unless explicitly told not to
-    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
-        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-    }
 
+    // we only want to load the wallet if the user has enabled features that require a user/pass
+    bool scrobble = config.readEntry( "scrobble", false );
+    bool fetch_sim = config.readEntry( "fetchSimilar", false );
+
+    if( scrobble || fetch_sim ) // if either of these are true we need the wallet.
+    {
+        // open wallet unless explicitly told not to
+        if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
+            m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+        }
+    }
     load();
 }
 
