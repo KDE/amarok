@@ -64,13 +64,13 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Before adding actions" );
 
-    #ifdef Q_WS_MAC
+#ifdef Q_WS_MAC
     // Add these functions to the dock icon menu in OS X
     extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
     contextMenu()->addSeparator();
-    #endif
+#endif
 
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
@@ -79,8 +79,15 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Adding system tray icon" );
-    paintIcon();
 
+    m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );
+    setIconByPixmap( m_baseIcon ); // show icon
+    setOverlayIconByName( QString() );
+
+    m_grayedIcon = m_baseIcon; // copies object
+    KIconEffect::semiTransparent( m_grayedIcon );
+
+    paintIcon();
     setupToolTip();
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
@@ -287,22 +294,6 @@ void
 Amarok::TrayIcon::paintIcon( qint64 trackPosition )
 {
     static qint64 oldMergePos = -1;
-
-    // start up
-    // TODO: Move these two blocks to ctor (warning: might get some regressions)
-    if( m_baseIcon.isNull() )
-    {
-        m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );
-        setIconByPixmap( m_baseIcon ); // show icon
-        setOverlayIconByName( QString() );
-        return; // HACK: return because m_baseIcon is still null after first startup (why?)
-    }
-
-    if( m_grayedIcon.isNull() )
-    {
-        m_grayedIcon = m_baseIcon; // copies object
-        KIconEffect::semiTransparent( m_grayedIcon );
-    }
 
     // trackPosition < 0 means reset
     if( trackPosition < 0 )

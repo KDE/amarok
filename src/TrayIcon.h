@@ -40,6 +40,7 @@ class TrayIcon : public KStatusNotifierItem, public Engine::EngineObserver, publ
 
 public:
     TrayIcon( QObject *parent );
+
     friend class ::App;
     
     void setVisible( bool visible );
