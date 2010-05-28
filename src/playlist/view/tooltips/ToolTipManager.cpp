@@ -265,7 +265,7 @@ QString ToolTipManager::HTMLLine( const Playlist::Column& column, const QString&
 {
     if ( (!value.isEmpty()) || (force) )
     {
-        QString line = QString();
+        QString line;
         line += "<tr><td align=\"right\">";
         line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconNames[column] , -16)+"\" />";
         line += "</td><td align=\"left\">";

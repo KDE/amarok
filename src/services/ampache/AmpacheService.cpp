@@ -34,7 +34,7 @@
 
 #include <QDomDocument>
 
-#if HAVE_LIBLASTFM
+#ifdef HAVE_LIBLASTFM
   #include "LastfmInfoParser.h"
 #endif
 
@@ -241,13 +241,13 @@ AmpacheService::authenticate(KJob * job)
     // We need to use different authentication strings depending on the version of ampache
     if ( m_version > 350000 )
     {
-	debug() << "New Password Scheme " << m_version;
+        debug() << "New Password Scheme " << m_version;
         authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
 
         rawHandshake = timestamp + sha256( m_password );
 
         passPhrase = sha256( rawHandshake );
-	debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
+        debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
     }
     else {
         debug() << "Version Older then 35001 Generated MD5 Auth " << m_version;
@@ -330,8 +330,8 @@ void AmpacheService::versionVerify(KJob * job)
 
     if( !job->error() == 0 )
     {
-	debug() << "Job Error" << job->error();
-	// If an error has occurred, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
+        debug() << "Job Error" << job->error();
+        // If an error has occurred, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
         return;
     }
     QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
@@ -349,9 +349,9 @@ void AmpacheService::versionVerify(KJob * job)
     // It's OK if we get a null response from the version, that just means we're dealing with an older version
     if ( !error.isNull() )
     {
-	// Default the Version down if it didn't work
-	m_version = 100000;
-	debug() << "AmpacheService::versionVerify Error: " << error.text();
+        // Default the Version down if it didn't work
+        m_version = 100000;
+        debug() << "AmpacheService::versionVerify Error: " << error.text();
     }
     else
     {
@@ -368,4 +368,3 @@ void AmpacheService::versionVerify(KJob * job)
 }
 
 #include "AmpacheService.moc"
-

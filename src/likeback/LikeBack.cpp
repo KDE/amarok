@@ -403,7 +403,7 @@ QString LikeBack::activeWindowPath()
         QString name( window->objectName() );
 
         // Append the class name to the window name if it is unnamed:
-        if( name == "unnamed" || name == "" )
+        if( name == "unnamed" || name.isEmpty() )
         {
             name = QString( "unnamed:" ) + window->metaObject()->className();
         }

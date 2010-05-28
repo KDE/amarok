@@ -217,7 +217,7 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
     } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
         double factor = ( exp( 5.0 * m_strictness ) ) / 1e6; // duplicated from this::dateComparison()
         uint range = (uint)ceil( 4.6051702 / factor );
-        uint referenceDate;
+        uint referenceDate = 0;
         if ( m_comparison == Constraint::CompareDateBefore ) {
             referenceDate = m_value.toDateTime().toTime_t();
             if ( m_invert )
@@ -420,7 +420,7 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
 {
     /* comparing dates is a little bit tricky, so I split it off into its own function */
     int comp;
-    uint referenceDate;
+    uint referenceDate = 0;
     if ( m_comparison == Constraint::CompareDateWithin ) {
         comp = Constraint::CompareDateAfter;
         QDateTime now = QDateTime::currentDateTime();
@@ -780,7 +780,8 @@ void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int idx )
 {
     QString field = m_fieldsModel->field_at( idx );
-    int c, s;
+    int c = 0;
+    int s = 0;
     QVariant v;
     if ( field == "length" ) {
         ui.stackedWidget_Field->setCurrentIndex( 3 );

@@ -52,7 +52,7 @@ public:
 
     virtual void longMessage( const QString &text, MessageType type )
     {
-        StatusBar::MessageType otherType;
+        StatusBar::MessageType otherType = StatusBar::Information;
         switch( type )
         {
         case Amarok::Logger::Information:

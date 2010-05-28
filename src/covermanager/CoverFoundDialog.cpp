@@ -269,7 +269,7 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
 
 void CoverFoundDialog::clearQueryButtonClicked()
 {
-    m_query = QString();
+    m_query.clear();
     m_queryPage = 0;
     updateGui();
 }

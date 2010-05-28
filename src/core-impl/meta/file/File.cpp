@@ -689,7 +689,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( this );
 
-#if HAVE_LIBLASTFM
+#ifdef HAVE_LIBLASTFM
        case Capabilities::Capability::ReadLabel:
            if( !d->readLabelCapability )
                d->readLabelCapability = new Capabilities::LastfmReadLabelCapability( this );
