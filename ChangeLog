@@ -11,6 +11,10 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Align track details dialog's labels to the right as per KDE4's HIG.
+      (BR 234555)
+    * The last.fm service will now only open the wallet on startup if the user
+      has enabled features that require authentication. (BR 230098)
     * Correctly load the list of labels in tag dialog. (BR 238737)
       Patch by Daniel Faust <hessijames@gmail.com>.
     * Cover manager: fixed crash if closed shortly after opening. (BR 235796)
