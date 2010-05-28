@@ -22,6 +22,7 @@
 
 #include "AmarokProcess.h"
 #include "amarok_sqlcollection_export.h"
+#include "SqlCollection.h"
 
 #include <QHash>
 #include <QMutex>
@@ -31,23 +32,19 @@
 
 #include <threadweaver/Job.h>
 
-namespace Collections {
-    class SqlCollection;
-}
-
 class SqlCollectionDBusHandler;
 class SqlStorage;
 class XmlParseJob;
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public IScanManager
 {
     Q_OBJECT
 
     public:
         ScanManager( QObject *parent );
-        ~ScanManager();
+        virtual ~ScanManager();
 
-        bool isDirInCollection( QString path );
+        bool isDirInCollection( const QString &path );
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );

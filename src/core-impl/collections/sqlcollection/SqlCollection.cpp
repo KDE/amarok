@@ -159,7 +159,7 @@ SqlCollection::dbUpdater() const
     return m_updater;
 }
 
-ScanManager*
+IScanManager*
 SqlCollection::scanManager() const
 {
     Q_ASSERT( m_scanManager );
@@ -167,7 +167,7 @@ SqlCollection::scanManager() const
 }
 
 void
-SqlCollection::setScanManager( ScanManager *manager )
+SqlCollection::setScanManager( IScanManager *manager )
 {
     m_scanManager = manager;
 }
@@ -205,12 +205,6 @@ bool
 SqlCollection::isDirInCollection( QString path )
 {
     return m_scanManager->isDirInCollection( path );
-}
-
-bool
-SqlCollection::isFileInCollection( const QString &url )
-{
-    return m_scanManager->isFileInCollection( url );
 }
 
 bool
@@ -286,6 +280,30 @@ void
 SqlCollection::sendChangedSignal()
 {
     emit updated();
+}
+
+QStringList
+SqlCollection::knownUIDsInDirectory( const QString &dir )
+{
+    const int deviceId = mountPointManager()->getIdForUrl( dir );
+    const QString rdir = mountPointManager()->getRelativePath( deviceId, dir );
+
+
+    const QStringList values =
+            m_sqlStorage->query( QString( "SELECT id FROM directories WHERE dir = '%2' AND deviceid = %1;" )
+            .arg( QString::number( deviceId ), m_sqlStorage->escape( rdir ) ) );
+
+    if( values.isEmpty() )
+    {
+        return QStringList();
+    }
+
+    QString id = values.first();
+
+    const QStringList uids =
+            m_sqlStorage->query( QString( "SELECT uniqueid FROM urls INNER JOIN tracks ON urls.id = tracks.url WHERE directory = %1;" ).arg( id ) );
+
+    return uids;
 }
 
 void

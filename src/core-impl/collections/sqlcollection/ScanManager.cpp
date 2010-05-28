@@ -54,7 +54,7 @@ static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 
 ScanManager::ScanManager( QObject *parent )
-    : QObject( parent )
+    : IScanManager()
     , m_collection( 0 )
     , m_dbusHandler( 0 )
     , m_storage( 0 )
@@ -65,6 +65,8 @@ ScanManager::ScanManager( QObject *parent )
     , m_blockScan( false )
 {
     DEBUG_BLOCK
+
+    setParent( parent );
 
     m_dbusHandler = new SqlCollectionDBusHandler( this );
 
@@ -231,8 +233,9 @@ void ScanManager::startIncrementalScan( const QString &directory )
 }
 
 bool
-ScanManager::isDirInCollection( QString path )
+ScanManager::isDirInCollection( const QString &p )
 {
+    QString path = p;
     // In the database all directories have a trailing slash, so we must add that
     if( !path.endsWith( '/' ) )
         path += '/';
