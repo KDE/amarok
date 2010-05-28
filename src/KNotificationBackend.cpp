@@ -64,6 +64,18 @@ Amarok::KNotificationBackend::~KNotificationBackend()
 }
 
 void
+Amarok::KNotificationBackend::setEnabled(bool enable)
+{
+    m_enabled = enable;
+}
+
+bool
+Amarok::KNotificationBackend::isEnabled() const
+{
+    return m_enabled;
+}
+
+void
 Amarok::KNotificationBackend::notificationClosed()
 {
     if( sender() == m_notify )
@@ -93,6 +105,9 @@ Amarok::KNotificationBackend::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
+    if( !m_enabled )
+        return; // KNotify is disabled, so don't start timer
+
     m_timer->start( 3000 ); // Wait some time to display the correct cover
 }
 
@@ -108,7 +123,7 @@ Amarok::KNotificationBackend::showCurrentTrack() // slot
     if( track )
     {
         if( m_notify ) {
-            m_notify->close(); // Close old notification when switching quickly between tracks
+            m_notify->close(); // Close old notification (when switching quickly between tracks)
         }
 
         m_notify = new KNotification( "trackChange" );
