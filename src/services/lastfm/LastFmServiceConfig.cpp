@@ -155,8 +155,8 @@ LastFmServiceConfig::reset()
     m_username = "";
     m_password = "";
     m_sessionKey = "";
-    m_scrobble = true;
-    m_fetchSimilar = true;
+    m_scrobble = false;
+    m_fetchSimilar = false;
 }
 
 

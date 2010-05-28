@@ -178,8 +178,8 @@ LastFmServiceSettings::defaults()
     m_config.reset();
 
     // By default this checkboxes is:
-    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( true );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( true );
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( false );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( false );
 }
 
 

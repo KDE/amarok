@@ -7,6 +7,8 @@ VERSION 2.3.2-Beta 1
   FEATURES:
 
   CHANGES:
+    * Last.fm features that require user authentication are now disabled
+    by default.
     * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
       Patch by Richard Longland <rlongland@hotmail.com>.
 
