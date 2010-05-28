@@ -241,13 +241,14 @@ LastFmTreeModel::changeData ( int row, T& old_data, const T& new_data )
 void
 LastFmTreeModel::emitRowChanged( int parent_row, int child_row )
 {
-    QModelIndex parent;
-    if (child_row != -1)
-    parent = index( parent_row, 0 );
-
-    QModelIndex i = index( child_row, 0, parent );
-
-    emit dataChanged( i, i );
+    QModelIndex parent = index( parent_row, 0 );
+    if( child_row != -1 )
+    {
+        QModelIndex i = index( child_row, 0, parent );
+        emit dataChanged( i, i );
+    }
+    else
+        emit dataChanged( parent, parent );
 }
 
 
@@ -284,8 +285,9 @@ LastFmTreeModel::downloadAvatar ( const QString& user, const KUrl& url )
 {
     //     debug() << "downloading " << user << "'s avatar @ "  << url;
     AvatarDownloader* downloader = new AvatarDownloader();
-    downloader->downloadAvatar ( user, url );
-    connect ( downloader, SIGNAL ( signalAvatarDownloaded ( QPixmap ) ), SLOT ( onAvatarDownloaded ( QPixmap ) ) );
+    downloader->downloadAvatar( user, url );
+    connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
+                         SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
 }
 
 void
@@ -316,21 +318,14 @@ LastFmTreeModel::prepareAvatar ( QPixmap& avatar, int size )
 }
 
 void
-LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
+LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
 {
     //     DEBUG_BLOCK
-    QString const username = static_cast<AvatarDownloader*> ( sender() )->username();
-
-    if ( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
+    if( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
     {
         int m = m_avatarSize;
 
-        if ( username.toLower() == m_userName.toLower() )
-        {
-            mAvatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-            //             emitRowChanged( LastFm::MyProfile );
-        }
-        else
+        if( username != m_userName )
         {
             avatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 

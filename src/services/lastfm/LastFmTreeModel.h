@@ -46,10 +46,10 @@ enum Type
     //         RecentlyPlayed,
     //         RecentlyLoved,
     //         RecentlyBanned,
+    TopArtists,
     MyTags,
     Friends,
     Neighbors,
-    TopArtists,
 
     //         History,
 
@@ -120,11 +120,11 @@ public:
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
 private slots:
-    void onAvatarDownloaded ( QPixmap );
-    void slotAddNeighbors ();
-    void slotAddFriends ();
-    void slotAddTags ();
-    void slotAddTopArtists ();
+    void onAvatarDownloaded( const QString& username, QPixmap );
+    void slotAddNeighbors();
+    void slotAddFriends();
+    void slotAddTags();
+    void slotAddTopArtists();
 
 private:
     void setupModelData( LastFmTreeItem *parent );
