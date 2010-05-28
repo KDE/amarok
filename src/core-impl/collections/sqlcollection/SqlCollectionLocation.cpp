@@ -43,7 +43,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
-#include <KMessageBox>
+#include <KSortableList>
 
 
 using namespace Collections;
@@ -53,6 +53,7 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
     , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
+    , m_migrateLabels( true )
     , m_transferjob( 0 )
 {
     //nothing to do
@@ -231,6 +232,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     OrganizeCollectionDelegate *delegate = m_delegateFactory->createDelegate();
     delegate->setTracks( tracks );
     delegate->setFolders( available_folders );
+    delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
     delegate->show();
@@ -243,6 +245,7 @@ SqlCollectionLocation::slotDialogAccepted()
     OrganizeCollectionDelegate *ocDelegate = qobject_cast<OrganizeCollectionDelegate*>( sender() );
     m_destinations = ocDelegate->destinations();
     m_overwriteFiles = ocDelegate->overwriteDestinations();
+    m_migrateLabels = ocDelegate->migrateLabels();
     if( isGoingToRemoveSources() )
     {
         CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
@@ -335,6 +338,10 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
     debug () << "m_originalUrls" << m_originalUrls;
     insertTracks( m_destinations );
     insertStatistics( m_destinations );
+    if( m_migrateLabels )
+    {
+        migrateLabels( m_destinations );
+    }
     m_collection->scanManager()->setBlockScan( false );
     slotCopyOperationFinished();
 }
@@ -401,7 +408,8 @@ SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources
 void
 SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
-    QList<QVariantMap > metadata;
+    //sort metadata by directory later on
+    KSortableList<QVariantMap, QString> metadata;
     QStringList urls;
     AFTUtility aftutil;
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
@@ -410,24 +418,46 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
         // overwrite any uidUrl that came with the track with our own sql AFT one
         trackData.insert( Meta::Field::UNIQUEID, QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( trackMap[ track ] ) );
-        metadata.append( trackData );
+        metadata.insert( trackMap[ track ], trackData );
         urls.append( trackMap[ track ] );
     }
     ScanResultProcessor processor( m_collection );
     processor.setSqlStorage( m_collection->sqlStorage() );
     processor.setScanType( ScanResultProcessor::IncrementalScan );
     QMap<QString, uint> mtime = updatedMtime( urls );
+    //ScanResultProcessor removes all existing tracks in a given directory from the db when using processDirectory
+    //therefore we pretend that the existing tracks are new as well.
+    //SRP leaves the statistics table alone, so we do not destroy anything
+    foreach( const QString &dir , mtime.keys() )
+    {
+        const QStringList uids = m_collection->knownUIDsInDirectory( dir );
+        foreach( const QString &uid, uids )
+        {
+            Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( uid );
+            QVariantMap map = Meta::Field::mapFromTrack( track );
+
+            metadata.insert(  map.value( Meta::Field::URL ).toString(), map );
+        }
+    }
+
+    //sort by url (and therefore by directory)
+    metadata.sort();
+
     foreach( const QString &dir, mtime.keys() )
     {
         processor.addDirectory( dir, mtime[ dir ] );
     }
     if( !metadata.isEmpty() )
     {
-        QFileInfo info( metadata.first().value( Meta::Field::URL ).toString() );
+        QFileInfo info( metadata.first().value().value( Meta::Field::URL ).toString() );
         QString currentDir = info.dir().absolutePath();
         QList<QVariantMap > currentMetadata;
-        foreach( const QVariantMap &map, metadata )
+
+        typedef KSortableItem<QVariantMap, QString> MetaDataListItem;
+
+        foreach( const MetaDataListItem &item, metadata )
         {
+            QVariantMap map = item.value();
             debug() << "processing file " << map.value( Meta::Field::URL );
             QFileInfo info( map.value( Meta::Field::URL ).toString() );
             QString dir = info.dir().absolutePath();
@@ -445,6 +475,36 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         }
     }
     processor.commit();
+}
+
+void
+SqlCollectionLocation::migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap )
+{
+    //there are two possible options here:
+    //either we are organizing the collection, the the track collection is equal to this->collection()
+    //or we are copying tracks from an external source.
+    //in the first case, we just have to make sure that the existing labels point to the right track in the database.
+    //in the latter case, we have to migrate the labels as well.
+    foreach( Meta::TrackPtr track, trackMap.keys() )
+    {
+        if( track->collection() == collection() )
+        {
+            //first case
+            //AFT will already have switched the playableUrl of track behind our back
+        }
+        else
+        {
+            //second case: migrate labels from the external track to the database.
+            Meta::TrackPtr dest = m_collection->registry()->getTrack( trackMap.value( track ) );
+            if( dest )
+            {
+                foreach( Meta::LabelPtr label, track->labels() )
+                {
+                    dest->addLabel( label );
+                }
+            }
+        }
+    }
 }
 
 QMap<QString, uint>

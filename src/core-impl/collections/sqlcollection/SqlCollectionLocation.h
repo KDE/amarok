@@ -103,6 +103,7 @@ class SqlCollectionLocation : public CollectionLocation
         void slotTransferJobAborted();
 
     private:
+        void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
         bool startNextJob();
         bool startNextRemoveJob();
 
@@ -115,6 +116,7 @@ class SqlCollectionLocation : public CollectionLocation
         Meta::TrackList m_removetracks;
         QHash<Meta::TrackPtr, KUrl> m_originalUrls;
         bool m_overwriteFiles;
+        bool m_migrateLabels; //!< used in the destination to determine if labels should be copied from the source track to the destination
         QMap<KJob*, Meta::TrackPtr> m_jobs;
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
         TransferJob* m_transferjob;
@@ -139,11 +141,13 @@ public:
 
     virtual void setTracks( const Meta::TrackList &tracks ) = 0;
     virtual void setFolders( const QStringList &folders ) = 0;
+    virtual void setIsOrganizing( bool organizing ) = 0;
 
     virtual void show() = 0;
 
     virtual bool overwriteDestinations() const = 0;
     virtual QMap<Meta::TrackPtr, QString> destinations() const = 0;
+    virtual bool migrateLabels() const = 0;
 
 signals:
     void accepted();
