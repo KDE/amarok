@@ -64,7 +64,8 @@ void UpnpCollectionFactory::slotNewDevices( const KFileItemList &list )
     foreach( KFileItem item, list ) {
 // TODO only add certain devices
         m_networkLister->openUrl(item.url(), KDirLister::Keep);
-        createCollection( item );
+        if( item.isReadable() )
+            createCollection( item );
     }
 }
 
@@ -72,7 +73,7 @@ void UpnpCollectionFactory::createCollection( const KFileItem &item )
 {
     QRegExp mediaServerExp("inode/vnd.kde.service.upnp.MediaServer[123]");
     if( mediaServerExp.exactMatch(item.mimetype()) )
-        emit newCollection( new UpnpCollection( item.text() ) );
+        emit newCollection( new UpnpCollection( item.url().prettyUrl(), item.text() ) );
 }
 
 void UpnpCollectionFactory::slotDeviceOffline( const KFileItemList &list )
