@@ -79,9 +79,9 @@ LastFmTreeModel::slotAddNeighbors ()
         {
             const QString name = e[ "name" ].text();
             m_neighbors << name;
-            if ( !e[ "image size=large" ].text().isEmpty() )
+            if ( !e[ "image size=small" ].text().isEmpty() )
             {
-                avatarlist.insert ( name, e[ "image size=large" ].text() );
+                avatarlist.insert ( name, e[ "image size=small" ].text() );
             }
         }
 
@@ -118,9 +118,9 @@ LastFmTreeModel::slotAddFriends ()
         {
             const QString name = e[ "name" ].text();
             m_friends << name;
-            if( !e[ "image size=large" ].text().isEmpty() )
+            if( !e[ "image size=small" ].text().isEmpty() )
             {
-                avatarlist.insert( name, e[ "image size=large" ].text() );
+                avatarlist.insert( name, e[ "image size=small" ].text() );
             }
         }
 
