@@ -160,6 +160,9 @@
            <property name="text">
             <string>T&amp;itle:</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
            <property name="wordWrap">
             <bool>false</bool>
            </property>
@@ -175,6 +178,9 @@
           <widget class="QLabel" name="textLabel1_2">
            <property name="text">
             <string>&amp;Artist:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
@@ -205,6 +211,9 @@
            <property name="text">
             <string>&amp;Composer:</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
            <property name="wordWrap">
             <bool>false</bool>
            </property>
@@ -230,6 +239,9 @@
           <widget class="QLabel" name="textLabel1_3">
            <property name="text">
             <string>Al&amp;bum:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
@@ -274,7 +286,7 @@
                 <string>&amp;Disc Number:</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
                <property name="wordWrap">
                 <bool>false</bool>
@@ -283,19 +295,6 @@
                 <cstring>qSpinBox_discNumber</cstring>
                </property>
               </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
              <item>
               <widget class="QSpinBox" name="qSpinBox_discNumber">
@@ -361,6 +360,9 @@
                </property>
                <property name="text">
                 <string>B&amp;eats Per Minute:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
                <property name="buddy">
                 <cstring>kLineEdit_Bpm</cstring>
@@ -436,6 +438,9 @@
            <property name="text">
             <string>&amp;Genre:</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
            <property name="wordWrap">
             <bool>false</bool>
            </property>
@@ -451,6 +456,9 @@
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
@@ -485,6 +493,9 @@
             <widget class="QLabel" name="textLabel1_5">
              <property name="text">
               <string>&amp;Year:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
              <property name="wordWrap">
               <bool>false</bool>
@@ -522,6 +533,9 @@
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
@@ -618,6 +632,9 @@
                  <property name="text">
                   <string>Score:</string>
                  </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
                  <property name="wordWrap">
                   <bool>false</bool>
                  </property>
@@ -646,6 +663,9 @@
                 <widget class="QLabel" name="ratingLabel">
                  <property name="text">
                   <string>Rating:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                  <property name="wordWrap">
                   <bool>false</bool>
@@ -739,7 +759,7 @@
                 <string>Label:</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -858,6 +878,9 @@
         <widget class="QLabel" name="locationLabel">
          <property name="text">
           <string>Location:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
