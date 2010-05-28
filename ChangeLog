@@ -7,6 +7,7 @@ VERSION 2.3.2-Beta 1
   FEATURES:
 
   CHANGES:
+    * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
 
   BUGFIXES:
     * Fixed usability issue with regards to context menu item order when right
