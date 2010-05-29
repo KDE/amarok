@@ -12,6 +12,7 @@ include_directories( ../..
 set(amarok_collection-upnpcollection_PART_SRCS
     UpnpCollection.cpp
     UpnpCollectionFactory.cpp
+    UpnpMemoryQueryMaker.cpp
     UpnpQueryMaker.cpp
     UpnpMeta.cpp
 )
