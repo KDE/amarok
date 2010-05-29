@@ -30,6 +30,7 @@
 #include "core/collections/QueryMaker.h"
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
+#include "shared/FileType.h"
 
 #include <KIcon>
 #include <KIconLoader>
@@ -652,6 +653,53 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
+                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filesize" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    bool doubleOk( false );
+                    const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
+                    if( !doubleOk )
+                    {
+                        qm->endAndOr();
+                        return;
+                    }
+
+                    /*
+                     * A special case is made for Equals (e.g. filesize:100), which actually filters
+                     * for anything beween 100 and 101MBs. Megabytes are used because for audio files
+                     * they are the most reasonable units for the user to deal with.
+                     */
+                    const qreal bytes = mbytes * 1024.0 * 1024.0;
+                    const qint64 mbFloor = qint64( qAbs(mbytes) );
+                    switch( compare )
+                    {
+                    case Collections::QueryMaker::Equals:
+                        qm->endAndOr();
+                        qm->beginAnd();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
+                        break;
+                    case Collections::QueryMaker::GreaterThan:
+                    case Collections::QueryMaker::LessThan:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, bytes, compare );
+                        break;
+                    }
+                }
+                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "format" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    // NOTE: possible keywords that could be considered: codec, filetype, etc.
+                    const QString &ftStr = elem.text;
+                    FileType ft = Unknown;
+                    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
+                        ft = Flac;
+                    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
+                        ft = Mp3;
+                    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
+                        ft = Mp4;
+                    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
+                        ft = Ogg;
+
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
+                }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valDiscNr, elem.text.toInt(), compare );
@@ -660,52 +708,47 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
+                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "last played time / access date", "played" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if( compare == Collections::QueryMaker::Equals )
+                    {
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
+                        if( dateCutOff > 0 )
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
+                        }
+                    }
+                    else
+                    {
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                        {
+                            qm->endAndOr();
+                            qm->beginAnd();
+                            compareAlt = Collections::QueryMaker::LessThan;
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
+                        }
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
+                    }
+                }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals ) // just do some basic string matching
+                    if( compare == Collections::QueryMaker::Equals )
                     {
-                        QDateTime curTime = QDateTime::currentDateTime();
-                        uint dateCutOff = 0;
-                        if( ( elem.text.compare( "today", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "today" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "last week", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last week" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -7 ).toTime_t();
-                        else if( ( elem.text.compare( "last month", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last month" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "two months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "two months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -2 ).toTime_t();
-                        else if( ( elem.text.compare( "three months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "three months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -3 ).toTime_t();
-
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
                         if( dateCutOff > 0 )
                         {
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
                         }
                     }
-                    else if( compare == Collections::QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    else
                     {
-                        int months = 0, weeks = 0, days = 0;
-                        QString tmp;
-                        for( int i = 0; i < elem.text.length(); i++ )
-                        {
-                            QChar c = elem.text.at( i );
-                            if( c.isNumber() )
-                                tmp += c;
-                            else if( c == 'm' )
-                            {
-                                months = 0 - tmp.toInt();
-                                tmp.clear();
-                            } else if( c == 'w' )
-                            {
-                                weeks = 0 - 7 * tmp.toInt();
-                                tmp.clear();
-                            } else if( c == 'd' )
-                            {
-                                days = 0 - tmp.toInt();
-                                break;
-                            }
-                        }
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), Collections::QueryMaker::GreaterThan );
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                            compareAlt = Collections::QueryMaker::LessThan;
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
                     }
                 }
             }
@@ -1062,6 +1105,66 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     d->noLabelsQueries.insert( qm, parent );
     d->m_runningQueries.insert( parent, qm );
     qm->run();
+}
+
+QDateTime
+CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
+{
+    /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
+
+    const QString lowerText = text.toLower();
+    const QDateTime curTime = QDateTime::currentDateTime();
+    QDateTime result;
+
+    if( text.at(0).isLetter() )
+    {
+        if( ( lowerText.compare( "today" ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
+            result = curTime.addDays( -1 );
+        else if( ( lowerText.compare( "last week" ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
+            result = curTime.addDays( -7 );
+        else if( ( lowerText.compare( "last month" ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
+            result = curTime.addMonths( -1 );
+        else if( ( lowerText.compare( "two months ago" ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -2 );
+        else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -3 );
+    }
+    else // first character is a number
+    {
+        // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+        int years = 0, months = 0, weeks = 0, days = 0;
+        QString tmp;
+        for( int i = 0; i < text.length(); i++ )
+        {
+            QChar c = text.at( i );
+            if( c.isNumber() )
+            {
+                tmp += c;
+            }
+            else if( c == 'y' )
+            {
+                years = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'm' )
+            {
+                months = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'w' )
+            {
+                weeks = -tmp.toInt() * 7;
+                tmp.clear();
+            }
+            else if( c == 'd' )
+            {
+                days = -tmp.toInt();
+                break;
+            }
+        }
+        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days );
+    }
+    return result;
 }
 
 void CollectionTreeItemModelBase::startAnimationTick()

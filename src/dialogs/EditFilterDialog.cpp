@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "EditFilterDialog"
+
 #include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
@@ -22,18 +24,8 @@
 #include "core/collections/MetaQueryMaker.h"
 
 #include <KGlobal>
-#include <KLineEdit>
 #include <KLocale>
 #include <KMessageBox>
-
-#include <QLabel>
-#include <QLayout>
-#include <QGroupBox>
-#include <QRadioButton>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QSpinBox>
-
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : KDialog( parent )
@@ -70,74 +62,46 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
                 "You cannot undo more than one action.</p>" ) );
     setButtonToolTip( User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
-    
-    //setMainWidget( m_ui );
-        
-    m_vector.push_back( "Simple Search" );
-    m_vector.push_back( "album" );
-    m_vector.push_back( "artist" );
-    m_vector.push_back( "bitrate" );
-    m_vector.push_back( "composer" );
-    m_vector.push_back( "genre" );
-    m_vector.push_back( "playcount" );
-    m_vector.push_back( "rating" );
-    m_vector.push_back( "samplerate" );
-    m_vector.push_back( "score" );
-    m_vector.push_back( "title" );
-    m_vector.push_back( "track" );
-    m_vector.push_back( "year" );
-    m_vector.push_back( "bpm" );
 
-    // the "Simple Search" text is selected in the comboKeyword
-    m_selectedIndex = 0;
-    
-    
-    connect( m_ui.keywordCombo, SIGNAL( activated( int ) ), SLOT(selectedKeyword( int ) ) );
+    connect( m_ui.keywordCombo, SIGNAL(activated(const QString&)),
+                                SLOT(selectedAttribute(const QString&)) );
 
-    connect( m_ui.minimum1, SIGNAL( valueChanged( int ) ), SLOT(minSpinChanged( int ) ) );
-    connect( m_ui.maximum1, SIGNAL( valueChanged( int ) ), SLOT(maxSpinChanged( int ) ) );
-
-    // type text selected
-    textWanted();
+    connect( m_ui.minimum, SIGNAL(valueChanged(int)), SLOT(minSpinChanged(int)) );
+    connect( m_ui.maximum, SIGNAL(valueChanged(int)), SLOT(maxSpinChanged(int)) );
 
     // check the "One Value Choosing" by default
     chooseOneValue();
 
     connect( m_ui.conditionCombo, SIGNAL(activated( int ) ), SLOT(chooseCondition( int ) ) );
 
-    m_checkActions << m_ui.matchAll;
-    m_checkActions << m_ui.matchAny;
-    m_checkActions << m_ui.matchLiteral;
-    m_checkActions << m_ui.matchNot;
-
-    connect( m_ui.matchAll,     SIGNAL( clicked() ), SLOT( slotCheckAll() ) );
-    connect( m_ui.matchAny,     SIGNAL( clicked() ), SLOT( slotCheckAtLeastOne() ) );
-    connect( m_ui.matchLiteral, SIGNAL( clicked() ), SLOT( slotCheckExactly() ) );
-    connect( m_ui.matchNot,     SIGNAL( clicked() ), SLOT( slotCheckExclude() ) );
-
     // check "select all words" as default
-    slotCheckAll();
+    m_ui.matchAll->setChecked( true );
 
     m_ui.invertButton->setEnabled( false );
 
-    connect( m_ui.invertButton, SIGNAL( clicked() ), SLOT( assignPrefixNOT() ) );
+    // attribute line edit settings
+    m_ui.editKeywordBox->completionObject()->setIgnoreCase( true );
+    m_ui.editKeywordBox->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_ui.editKeywordBox->setInsertPolicy( QComboBox::InsertAtTop );
+    connect( m_ui.editKeywordBox, SIGNAL(returnPressed()), SLOT(slotDefault()) );
 
     // you need to append at least one filter condition to specify if do
     // an "AND" or an "OR" with the next condition if the filter is empty
+    //
     if( m_filterText.isEmpty() )
-      m_ui.groupBox_3->setEnabled( false );
-
-    connect( m_ui.andButton, SIGNAL(clicked()), SLOT(slotCheckAND()) );
-    connect( m_ui.orButton, SIGNAL(clicked()), SLOT(slotCheckOR()) );
+    {
+        m_ui.andButton->setEnabled( false );
+        m_ui.orButton->setEnabled( false );
+    }
 
     // check "AND" condition as default
-    slotCheckAND();
+    m_ui.andButton->setChecked( true );
 
-    connect( this, SIGNAL(okClicked()), this, SLOT(slotOk() ) );
-    connect( this, SIGNAL( defaultClicked() ) , this, SLOT(slotDefault() ) );
-    connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotUser1() ) );
-    connect( this, SIGNAL( user2Clicked() ), this, SLOT( slotUser2() ) );
-    
+    connect( this, SIGNAL(okClicked()), this, SLOT(slotOk()) );
+    connect( this, SIGNAL(defaultClicked()) , this, SLOT(slotDefault()) );
+    connect( this, SIGNAL(user1Clicked()), this, SLOT(slotUser1()) );
+    connect( this, SIGNAL(user2Clicked()), this, SLOT(slotUser2()) );
+
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
         return;
@@ -146,8 +110,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     Collections::QueryMaker *album = coll->queryMaker()->setQueryType( Collections::QueryMaker::Album );
     Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
     Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    Collections::QueryMaker *label = coll->queryMaker()->setQueryType( Collections::QueryMaker::Label );
     QList<Collections::QueryMaker*> queries;
-    queries << artist << album << composer << genre;
+    queries << artist << album << composer << genre << label;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
@@ -157,8 +122,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
+    dataQueryMaker->setAutoDelete( true );
     dataQueryMaker->run();
-    
+
+    // default search option
+    selectedAttribute( i18n("Simple Search") );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -171,219 +140,215 @@ QString EditFilterDialog::filter() const
     return m_filterText;
 }
 
-void EditFilterDialog::exclusiveSelectOf( int which )
+QString EditFilterDialog::keywordConditionText( const QString& keyword ) const
 {
-    int size = m_checkActions.count();
-
-    for( int i = 0; i < size; i++ )
-    {
-        if ( i != which )
-            m_checkActions[i]->setChecked( false );
-        else
-            m_checkActions[i]->setChecked( true );
-    }
+    const bool toInvert = m_ui.invertButton->isChecked();
+    QString result = keyword;
+    if( toInvert )
+        result.prepend( QChar('-') );
+    return result;
 }
 
-QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
+QString EditFilterDialog::keywordConditionNumeric( const QString& keyword ) const
 {
     // this member is called when there is a keyword that needs numeric attributes
-    QString result, unit;
+    QString result;
 
-    switch(m_ui.conditionCombo->currentIndex())
+    const int minVal = m_ui.minimum->value();
+    const int maxVal = m_ui.maximum->value();
+    const QString &condition = m_ui.conditionCombo->currentText();
+    const bool toInvert = m_ui.invertButton->isChecked();
+
+    if( condition.compare( i18n("Equal To") ) == 0 )
     {
-        case 0:
-            // equal to...
-            //if (keyword == "length")
-                //result = m_strPrefixNOT + "length:" + QString::number( m_ui.minimum1->value() * 60
-                        //+ m_ui.minimum2->value() ) + unit;
-            //else
-            {
-                if( m_strPrefixNOT.isEmpty() )
-                    result = keyword + ":" + QString::number( m_ui.minimum1->value() ) + unit;
-                else
-                    result = keyword + ":<" + QString::number(m_ui.minimum1->value()) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_ui.minimum1->value()) + unit;
-            }
-            break;
-        case 1:
-            // less than...
-            result = m_strPrefixNOT + keyword + ":<";
-            //if (keyword == "length")
-            //    result += QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value() ) + unit;
-            //else
-                result += m_ui.minimum1->text() + unit;
-            break;
-        case 2:
-            // greater than...
-            result = m_strPrefixNOT + keyword + ":>";
-            //if (keyword == "length")
-                //result += QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value() ) + unit;
-            //else
-                result += m_ui.minimum1->text() + unit;
-            break;
-        case 3:
-            // between...
-           /* if (keyword == "length")
-            {
-                if (m_strPrefixNOT.isEmpty())
-                    result = "length:>" + QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value() - 1) + unit
-                        + " length:<" + QString::number( m_ui.maximum1->value() * 60 + m_ui.maximum2->value() + 1) + unit;
-                else
-                    result = "length:<" + QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value()) + unit
-                        + " OR length:>" + QString::number( m_ui.maximum1->value() * 60 + m_ui.maximum2->value()) + unit;
-            }*/
-            //else
-            {
-                if (m_strPrefixNOT.isEmpty())
-                    result = keyword + ":>" + QString::number(m_ui.minimum1->value() - 1) + unit +
-                        ' ' + keyword + ":<" + QString::number(m_ui.maximum1->value() + 1) + unit;
-                else
-                    result = keyword + ":<" + QString::number(m_ui.minimum1->value() - 1) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_ui.maximum1->value() + 1) + unit;
-            }
-            break;
+        result = keyword + ":" + QString::number( minVal );
+        if( toInvert )
+            result.prepend( QChar('-') );
     }
-
+    else if( condition.compare( i18n("Smaller Than") ) == 0 )
+    {
+        result = keyword + ":<" + QString::number( minVal );
+        if( toInvert )
+            result.prepend( QChar('-') );
+    }
+    else if( condition.compare( i18n("Larger Than") ) == 0 )
+    {
+        result = keyword + ":>" + QString::number( minVal );
+        if( toInvert )
+            result.prepend( QChar('-') );
+    }
+    else if( condition.compare( i18n("Between") ) == 0 )
+    {
+        result = QString( "%1:%2%3 %4:%5%6" )
+            .arg( keyword ).arg( toInvert ? QChar('<') : QChar('>') ).arg( QString::number(minVal - 1) )
+            .arg( keyword ).arg( toInvert ? QChar('>') : QChar('<') ).arg( QString::number(maxVal + 1) );
+    }
     return result;
 }
 
 // SLOTS
-void EditFilterDialog::selectedKeyword(int index) // SLOT
+void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
 {
-    debug() << "you selected index " << index << ": '" << m_ui.keywordCombo->currentText() << "'";
-    m_ui.groupBox_2->setEnabled( false );
+    debug() << QString( "Attribute '%1' selected: '%2'" ).arg( attr ).arg( m_ui.keywordCombo->currentText() );
+    m_ui.filterActionGroupBox->setEnabled( false );
     m_ui.invertButton->setEnabled( true );
 
-    const QString key = m_vector[index];
-    if( index == 0 )
+    if( attr.compare( i18n("Simple Search") ) == 0 )
     {
-        // Simple Search
-        m_ui.groupBox_2->setEnabled( true );
+        m_ui.filterActionGroupBox->setEnabled( true );
         m_ui.invertButton->setEnabled( false );
-        textWanted();
+        textWanted( KStandardGuiItem::find().icon() );
     }
-    else if( key == "bitrate" )
+    else if( attr.compare( i18n("Bit Rate") ) == 0 )
     {
-        // bitrate: set useful values for the spinboxes
-        m_ui.minimum1->setValue( 128 );
-        m_ui.maximum1->setValue( 384 );
+        m_ui.minimum->setValue( 128 );
+        m_ui.maximum->setValue( 384 );
         valueWanted();
     }
-    else if( key == "samplerate" )
+    else if( attr.compare( i18n("Sample Rate") ) == 0 )
     {
-        // samplerate: set useful values for the spinboxes
-        m_ui.minimum1->setValue( 8000 );
-        m_ui.maximum1->setValue( 48000 );
+        m_ui.minimum->setValue( 8000 );
+        m_ui.maximum->setValue( 48000 );
         valueWanted();
     }
-    else if( key == "size" || key == "filesize" )
+    else if( attr.compare( i18n("File Size") ) == 0 )
     {
-        // size: set useful values for the spinboxes`
-        m_ui.minimum1->setValue( 1 );
-        m_ui.maximum1->setValue( 3 );
-        //m_unitSizeCombo->setCurrentIndex( 2 );
+        m_ui.minimum->setValue( 0 );
+        m_ui.maximum->setValue( 200000 );
         valueWanted();
     }
-    else if( key == "year" )
+    else if( attr.compare( i18n("Year") ) == 0 )
     {
-        // year: set useful values for the spinboxes
-        m_ui.minimum1->setValue( 1900 );
-        m_ui.maximum1->setValue( QDate::currentDate().year() );
+        m_ui.minimum->setValue( QDate::currentDate().year() );
+        m_ui.maximum->setValue( QDate::currentDate().year() );
         valueWanted();
     }
-    else if( key == "bpm" )
+    else if( attr.compare( i18n("BPM") ) == 0 )
     {
-        // bpm: set useful values for the spinboxes
-        m_ui.minimum1->setValue( 60 );
-        m_ui.maximum1->setValue( 120 );
+        m_ui.minimum->setValue( 60 );
+        m_ui.maximum->setValue( 120 );
         valueWanted();
     }
-    else if( key == "track" || key == "disc" || key == "discnumber" )
+    else if( attr.compare( i18n("Track Number") ) == 0 )
     {
-        // track/disc: set useful values for the spinboxes
-        m_ui.minimum1->setValue( 1 );
-        m_ui.maximum1->setValue( 15 );
+        m_ui.minimum->setValue( 1 );
+        m_ui.maximum->setValue( 100 );
         valueWanted();
     }
-    else if( key == "score" || key == "playcount" )
+    else if( attr.compare( i18n("Track Length") ) == 0 )
     {
-        m_ui.minimum1->setValue( 0 );
-        m_ui.maximum1->setValue( 100 );
+        m_ui.minimum->setValue( 0 );
+        m_ui.maximum->setValue( 3600 );
         valueWanted();
     }
-    else if( key == "rating" )
+    else if( attr.compare( i18n("Disc Number") ) == 0 )
     {
-        m_ui.minimum1->setValue( 0 );
-        m_ui.maximum1->setValue( 10 );
+        m_ui.minimum->setValue( 1 );
+        m_ui.maximum->setValue( 10 );
         valueWanted();
     }
-    else if( key == "lastplayed" || key == "bpm" )
+    else if( attr.compare( i18n("Playcount") ) == 0 )
+    {
+        m_ui.minimum->setValue( 0 );
+        m_ui.maximum->setValue( 1000 );
+        valueWanted();
+    }
+    else if( attr.compare( i18n("Score") ) == 0 )
+    {
+        m_ui.minimum->setValue( 0 );
+        m_ui.maximum->setValue( 100 );
+        valueWanted();
+    }
+    else if( attr.compare( i18n("Rating") ) == 0 )
+    {
+        m_ui.minimum->setValue( 0 );
+        m_ui.maximum->setValue( 10 );
+        valueWanted();
+    }
+    else if( attr.compare( i18n("Last Played") ) == 0 ) // TODO: add to ui
     {
         valueWanted();
     }
-    //FIXME: PORT 2.0
-//     else if( key=="label" )
-//         textWanted( CollectionDB::instance()->labelList() );
-     else if( key == "album" )
-         textWanted( m_albums );
-     else if( key == "artist" )
-         textWanted( m_artists );
-     else if( key == "composer" )
-         textWanted( m_composers );
-     else if( key == "genre" )
-         textWanted( m_genres );
-    else if( key == "type" || key == "filetype" )
+    else if( attr.compare( i18n("Album") ) == 0 )
+    {
+        textWanted( m_albums, KIcon("filename-album-amarok") );
+    }
+    else if( attr.compare( i18n("Artist") ) == 0 )
+    {
+        textWanted( m_artists, KIcon("filename-artist-amarok") );
+    }
+    else if( attr.compare( i18n("Composer") ) == 0 )
+    {
+        textWanted( m_composers, KIcon("filename-composer-amarok") );
+    }
+    else if( attr.compare( i18n("Genre") ) == 0 )
+    {
+        textWanted( m_genres, KIcon("filename-genre-amarok") );
+    }
+    else if( attr.compare( i18n("Label") ) == 0 )
+    {
+        textWanted( m_labels/*, KIcon("filename-label-amarok") TODO: icon doesn't exist */ );
+    }
+    else if( attr.compare( i18n("Track Title") ) == 0 )
+    {
+        textWanted( KIcon("filename-title-amarok") );
+    }
+    else if( attr.compare( i18n("Format") ) == 0 )
     {
         QStringList types;
-        types << "mp3" << "flac" << "ogg" << "oga" << "aac" << "m4a" << "m4b" << "mp4" << "mp2" << "ac3"
-            << "wav" << "asf" << "wma";
-        textWanted( types );
+        types << "mp3" << "flac" << "ogg" << "mp4";
+        textWanted( types, KIcon("filename-filetype-amarok") );
+    }
+    else if( attr.compare( i18n("Comment") ) == 0 )
+    {
+        textWanted( KIcon("filename-comment-amarok") );
     }
     else
         textWanted();
-
-    // assign the correct value to the m_strPrefixNOT
-    assignPrefixNOT();
-
-    // assign the right index
-    m_selectedIndex = index;
 }
 
-void EditFilterDialog::minSpinChanged(int value) // SLOT
+void EditFilterDialog::minSpinChanged( int value ) // SLOT
 {
-  if (value > m_ui.maximum1->value())
-    m_ui.maximum1->setValue(value);
+    if( value > m_ui.maximum->value() )
+        m_ui.maximum->setValue( value );
 }
 
-void EditFilterDialog::maxSpinChanged(int value) // SLOT
+void EditFilterDialog::maxSpinChanged( int value ) // SLOT
 {
-  if (m_ui.minimum1->value() > value)
-    m_ui.minimum1->setValue(value);
+    if( m_ui.minimum->value() > value )
+        m_ui.minimum->setValue( value );
 }
 
-void EditFilterDialog::textWanted() // SLOT
+void EditFilterDialog::textWanted( const KIcon &icon ) // SLOT
 {
     m_ui.editKeywordBox->setEnabled( true );
-    m_ui.groupBox->setEnabled( false );
+    m_ui.valueGroupBox->setEnabled( false );
 
+    const QString editText = m_ui.editKeywordBox->currentText();
+    m_ui.editKeywordBox->clear();
     m_ui.editKeywordBox->completionObject()->clear();
+    m_ui.editKeywordBox->insertItem( 0, icon, editText );
+    m_ui.editKeywordBox->insertSeparator( 1 );
 }
 
-void EditFilterDialog::textWanted( const QStringList &completion ) // SLOT
+void EditFilterDialog::textWanted( const QStringList &completions, const KIcon &icon  ) // SLOT
 {
-    m_ui.editKeywordBox->setEnabled( true );
-    m_ui.groupBox->setEnabled( false );
+    textWanted( icon );
 
-    m_ui.editKeywordBox->completionObject()->clear();
-    m_ui.editKeywordBox->completionObject()->insertItems( completion );
-    m_ui.editKeywordBox->completionObject()->setIgnoreCase( true );
-    m_ui.editKeywordBox->setCompletionMode( KGlobalSettings::CompletionPopup );
+    QStringList sortedList = completions;
+    sortedList.sort();
+    foreach( const QString &text, sortedList )
+        m_ui.editKeywordBox->insertItem( m_ui.editKeywordBox->count(), icon, text );
+
+    m_ui.editKeywordBox->completionObject()->setItems( sortedList );
 }
 
 void EditFilterDialog::valueWanted() // SLOT
 {
     m_ui.editKeywordBox->setEnabled( false );
-    m_ui.groupBox->setEnabled( true );
+    m_ui.valueGroupBox->setEnabled( true );
+    m_ui.editKeywordBox->completionObject()->clear();
+    m_ui.editKeywordBox->clear();
 }
 
 void EditFilterDialog::chooseCondition( int condition ) // SLOT
@@ -396,131 +361,143 @@ void EditFilterDialog::chooseCondition( int condition ) // SLOT
 
 void EditFilterDialog::chooseOneValue() // SLOT
 {
-    m_ui.andLabel->setEnabled( false);
-    m_ui.maximum1->setEnabled( false );
+    m_ui.andLabel->setEnabled( false );
+    m_ui.maximum->setEnabled( false );
 }
 
 void EditFilterDialog::chooseMinMaxValue() // SLOT
 {
     m_ui.andLabel->setEnabled( true );
-    m_ui.maximum1->setEnabled( true );
-}
-
-void EditFilterDialog::slotCheckAll() // SLOT
-{
-    exclusiveSelectOf( 0 );
-}
-
-void EditFilterDialog::slotCheckAtLeastOne() // SLOT
-{
-    exclusiveSelectOf( 1 );
-}
-
-void EditFilterDialog::slotCheckExactly() // SLOT
-{
-    exclusiveSelectOf( 2 );
-}
-
-void EditFilterDialog::slotCheckExclude() // SLOT
-{
-    exclusiveSelectOf( 3 );
-}
-
-void EditFilterDialog::slotCheckAND() // SLOT
-{
-    m_ui.andButton->setChecked( true );
-    m_ui.orButton->setChecked( false );
-}
-
-void EditFilterDialog::slotCheckOR() // SLOT
-{
-    m_ui.andButton->setChecked( false );
-    m_ui.orButton->setChecked( true );
-}
-
-void EditFilterDialog::assignPrefixNOT() // SLOT
-{
-    if (m_ui.invertButton->isChecked())
-        m_strPrefixNOT = '-';
-    else
-        m_strPrefixNOT.clear();
+    m_ui.maximum->setEnabled( true );
 }
 
 void EditFilterDialog::slotDefault() // SLOT
 {
+    const QString &attr = m_ui.keywordCombo->currentText();
+
     // now append the filter rule if not empty
-    if (m_ui.editKeywordBox->text().isEmpty() && (m_selectedIndex == 0))
+    if( m_ui.editKeywordBox->currentText().isEmpty() && (attr.compare(i18n("Simple Search")) == 0) )
     {
         KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
                     "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
         m_ui.editKeywordBox->setFocus();
         return;
     }
-    if (!m_appended)
+
+    if( !m_appended )
     {
         // it's the first rule
         m_appended = true;
-        m_ui.groupBox_3->setEnabled( true );
+        m_ui.andButton->setEnabled( true );
+        m_ui.orButton->setEnabled( true );
     }
 
     m_previousFilterText = m_filterText;
-    if (!m_filterText.isEmpty())
+    if( !m_filterText.isEmpty() )
     {
         m_filterText += ' ';
-        if (m_ui.orButton->isChecked())
+        if( m_ui.orButton->isChecked() )
             m_filterText += "OR ";
     }
-    QStringList list = m_ui.editKeywordBox->text().split( ' ' );
-    const QString key = m_vector[m_selectedIndex];
-    if( m_selectedIndex == 0 )
+
+    QStringList list = m_ui.editKeywordBox->currentText().split( ' ' );
+    if( attr.compare( i18n("Simple Search") ) == 0 )
     {
         // Simple Search
-        debug() << "selected text: '" << m_ui.editKeywordBox->text() << "'";
-        if (m_checkActions[0]->isChecked())
+        debug() << "selected text: '" << m_ui.editKeywordBox->currentText() << "'";
+        if( m_ui.matchAll->isChecked() )
         {
             // all words
-            m_filterText += m_ui.editKeywordBox->text();
+            m_filterText += m_ui.editKeywordBox->currentText();
         }
-        else if (m_checkActions[1]->isChecked())
+        else if( m_ui.matchAny->isChecked() )
         {
             // at least one word
             m_filterText += *(list.constBegin());
             for ( QStringList::ConstIterator it = ++list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " OR " + *it;
         }
-        else if (m_checkActions[2]->isChecked())
+        else if( m_ui.matchLiteral->isChecked() )
         {
             // exactly the words
-            m_filterText += "\"" + m_ui.editKeywordBox->text() + "\"";
+            m_filterText += "\"" + m_ui.editKeywordBox->currentText() + "\"";
         }
-        else if (m_checkActions[3]->isChecked())
+        else if( m_ui.matchNot->isChecked() )
         {
             // exclude words
             for ( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " -" + *it;
         }
     }
-    else if( key=="bitrate"
-            || key=="disc" || key=="discnumber"
-            || key=="length"
-            || key=="playcount"
-            || key=="rating"
-            || key=="samplerate"
-            || key=="score"
-            || key=="filesize" || key=="size"
-            || key=="track"
-            || key=="year" 
-            || key=="bpm" )
+    else if( attr.compare( i18n("Album") ) == 0 )
     {
-        m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("album")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Artist") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("artist")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Composer") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("composer")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Genre") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("genre")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Track Title") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("title")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Format") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("format")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Comment") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("comment")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Label") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("label")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Track Length") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("length") );
+    }
+    else if( attr.compare( i18n("Track Number") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("tracknumber") );
+    }
+    else if( attr.compare( i18n("File Size") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("filesize") );
+    }
+    else if( attr.compare( i18n("Disc Number") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("discnumber") );
+    }
+    else if( attr.compare( i18n("Bit Rate") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("bitrate") );
+    }
+    else if( attr.compare( i18n("Sample Rate") ) == 0 )
+    {
+        m_filterText += keywordConditionNumeric( i18n("samplerate") );
     }
     else
     {
-        m_filterText += m_vector[m_selectedIndex] + ":\"" +  m_ui.editKeywordBox->text() + "\"";
+        m_filterText += keywordConditionNumeric( attr );
     }
     emit filterChanged( m_filterText );
-
-    m_ui.editKeywordBox->clear();
 }
 
 void EditFilterDialog::slotUser1() // SLOT
@@ -530,7 +507,8 @@ void EditFilterDialog::slotUser1() // SLOT
 
     // no filter appended cause all cleared
     m_appended = false;
-    m_ui.groupBox_3->setEnabled( false );
+    m_ui.andButton->setEnabled( false );
+    m_ui.orButton->setEnabled( false );
 
     emit filterChanged( m_filterText );
 }
@@ -542,7 +520,8 @@ void EditFilterDialog::slotUser2() // SLOT
     {
         // no filter appended cause all cleared
         m_appended = false;
-        m_ui.groupBox_3->setEnabled( false );
+        m_ui.andButton->setEnabled( false );
+        m_ui.orButton->setEnabled( false );
     }
     emit filterChanged( m_filterText );
 }
@@ -551,7 +530,7 @@ void EditFilterDialog::slotOk() // SLOT
 {
     // If there's a filter typed in but unadded, add it.
     // This makes it easier to just add one condition - you only need to press OK.
-    if ( !m_ui.editKeywordBox->text().isEmpty() )
+    if ( !m_ui.editKeywordBox->currentText().isEmpty() )
         slotDefault();
 
     // Don't let OK do anything if they haven't set any filters.
@@ -565,7 +544,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::AlbumLis
     Q_UNUSED( collectionId )
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_albums << album->name();
+        if( !album->name().isEmpty() )
+            m_albums << album->name();
     }
 }
 
@@ -575,7 +555,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::ArtistLi
     Q_UNUSED( collectionId )
     foreach( Meta::ArtistPtr artist, artists )
     {
-        m_artists << artist->name();
+        if( !artist->name().isEmpty() )
+            m_artists << artist->name();
     }
 }
 
@@ -585,7 +566,8 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::Composer
     Q_UNUSED( collectionId )
     foreach( Meta::ComposerPtr composer, composers )
     {
-        m_composers << composer->name();
+        if( !composer->name().isEmpty() )
+            m_composers << composer->name();
     }
 }
 
@@ -595,7 +577,19 @@ EditFilterDialog::resultReady( const QString &collectionId, const Meta::GenreLis
     Q_UNUSED( collectionId )
     foreach( Meta::GenrePtr genre, genres )
     {
-        m_genres << genre->name();
+        if( !genre->name().isEmpty() )
+            m_genres << genre->name();
+    }
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::LabelPtr label, labels )
+    {
+        if( !label->name().isEmpty() )
+            m_labels << label->name();
     }
 }
 

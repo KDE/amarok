@@ -757,7 +757,8 @@ XmlParseJob::run()
                     data.insert( Meta::Field::TRACKNUMBER, attrs.value( "track" ).toString() );
                     data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ).toString() );
                     data.insert( Meta::Field::BPM, attrs.value( "bpm" ).toString() );
-                    //filetype and uniqueid are missing in the fields, compilation is not used here
+                    data.insert( Meta::Field::CODEC, attrs.value( "filetype" ).toString() );
+                    //uniqueid are missing in the fields, compilation is not used here
 
                     if( attrs.value( "audioproperties" ) == "true" )
                     {

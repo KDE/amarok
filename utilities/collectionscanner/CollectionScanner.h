@@ -59,14 +59,6 @@ private slots:
     void doJob();
 
 private:
-    enum FileType
-    {
-        mp3,
-        ogg,
-        flac,
-        mp4
-    };
-
     bool readBatchIncrementalFile();
     bool readMtimeFile();
 

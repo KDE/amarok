@@ -5,10 +5,22 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * Filtering: added default presets to the drop down menu of the collection
+      search widget.
+    * Filtering: track format can now be used as filter keyword in the
+      collection browser, e.g. "format:flac".
+    * Filtering: track file size can now be used as filter keyword in the
+      collection browser, e.g. "filesize:<12" for tracks under 12Mb;
+      "filesize:25" for tracks that are between 25 and 26Mb.
+    * Filtering: tracks that were added to the collection since/before a
+      certain time can now be filtered using, e.g. "added:<1w".
+    * Filtering: added ability to filter last played date in the collection
+      browser, e.g. "played:<3d".
 
   CHANGES:
+    * Filtering: added year suffix for date filters in the collection browser.
     * Last.fm features that require user authentication are now disabled
-    by default.
+      by default.
     * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
       Patch by Richard Longland <rlongland@hotmail.com>.
 

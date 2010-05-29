@@ -28,6 +28,7 @@
 #include "MetaReplayGain.h"
 #include "shared/Version.h"  // for AMAROK_VERSION
 #include "shared/cue_parser/CueParser.h"
+#include "shared/FileType.h"
 
 #include <cerrno>
 #include <cstdlib>
@@ -670,8 +671,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
     AttributeHash attributes;
     bool isValid = false;
-    FileType fileType = ogg;
-    
+    FileType fileType = Unknown;
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
@@ -710,7 +710,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
            we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
-            fileType = mp3;
+            fileType = Mp3;
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
@@ -778,7 +778,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
         {
-            fileType = ogg;
+            fileType = Ogg;
             if ( file->tag() )
             {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -796,7 +796,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
-            fileType = flac;
+            fileType = Flac;
             if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -816,7 +816,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
-            fileType = mp4;
+            fileType = Mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {

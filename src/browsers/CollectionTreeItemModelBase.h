@@ -26,6 +26,7 @@
 #include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
+#include <QDateTime>
 #include <QHash>
 #include <QPair>
 #include <QSet>
@@ -116,6 +117,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     private:
         void handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList );
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
+        QDateTime semanticDateTimeParser( const QString &text ) const;
 
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
