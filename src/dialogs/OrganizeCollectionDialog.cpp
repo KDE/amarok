@@ -171,7 +171,10 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["folder"] = ui->folderCombo->currentText();
     args["title"] = cleanPath( track->prettyName() );
     args["composer"] = track->composer() ? cleanPath( track->composer()->prettyName() ) : QString();
-    args["year"] = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
+
+    // if year == 0 then we don't want include it
+    QString year = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
+    args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
     args["album"] = track->album() ? cleanPath( track->album()->prettyName() ) : QString();
 
     if( track->discNumber() )
