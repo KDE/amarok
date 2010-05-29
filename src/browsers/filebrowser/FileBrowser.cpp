@@ -474,6 +474,13 @@ FileBrowser::up()
         debug() << "special case for handling up when browsing 'places'";
         showPlaces();
     }
+    else if ( m_showingPlaces )
+    {
+        //apparently, the root level of "places" counts as a valid dir. If we are here, make the
+        //up button simply go to "home"
+        home();
+
+    }
     else
     {
         KUrl url( d->currentPath );
