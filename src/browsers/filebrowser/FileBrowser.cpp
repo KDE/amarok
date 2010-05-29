@@ -81,7 +81,8 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_fileView = new FileView( this );
     m_fileView->setModel( m_mimeFilterProxyModel );
     m_fileView->setSortingEnabled( true );
-    
+    m_fileView->header()->setVisible( true );
+
     m_fileView->hideColumn( 3 );
     m_fileView->hideColumn( 4 );
     m_fileView->hideColumn( 5 );
@@ -162,6 +163,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
         if( !placesUrl.isEmpty() )
         {
             m_fileView->setModel( m_mimeFilterProxyModel );
+            m_fileView->header()->setVisible( true );
 
             //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
             //as that will break remote, trash, ...
@@ -183,6 +185,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
             else
             {
                 m_fileView->setModel( m_mimeFilterProxyModel );
+                m_fileView->header()->setVisible( true );
             }
         }
 
@@ -389,6 +392,7 @@ FileBrowser::setDir( const QString &dir )
        if( m_showingPlaces )
        {
            m_fileView->setModel( m_mimeFilterProxyModel );
+           m_fileView->header()->setVisible( true );
            m_showingPlaces = false;
        }
            
@@ -440,8 +444,8 @@ FileBrowser::showPlaces()
 
     QStringList siblings;
     addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
-
     m_fileView->setModel( m_placesModel );
+    m_fileView->header()->setVisible( false );
     m_showingPlaces = true;
 }
 
@@ -456,6 +460,7 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
         if( !placesUrl.isEmpty() )
         {
             m_fileView->setModel( m_mimeFilterProxyModel );
+            m_fileView->header()->setVisible( true );
 
             //needed to make folder urls look nice. We cannot just strip all protocol headers
             //as that will break remote, trash, ...
