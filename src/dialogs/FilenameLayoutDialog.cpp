@@ -109,6 +109,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     else
     {
         //INIT for collection root
+        filenamePreview->hide();
         unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
         collectionRootFrame->setStyleSheet( "\
             color: palette( Text );\

@@ -88,8 +88,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL( stateChanged( int ) ), SLOT( slotUpdatePreview() ) );
 
-    connect( this, SIGNAL( updatePreview( QString ) ), ui->previewText, SLOT( setText( QString ) ) );
-
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
