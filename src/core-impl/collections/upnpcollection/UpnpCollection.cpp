@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
 #include "statusbar/StatusBar.h"
+#include "UpnpMemoryQueryMaker.h"
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
 
@@ -43,10 +44,6 @@ namespace Collections {
     , m_mc( new MemoryCollection() )
 {
     DEBUG_BLOCK
-        emit updated();
-    UpnpTrackPtr t( new UpnpTrack(this) ); 
-    t->setTitle( "World Sick" );
-    m_mc->addTrack( TrackPtr::dynamicCast( t ) );
 }
 
 UpnpCollection::~UpnpCollection()
@@ -58,7 +55,21 @@ void
 UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
-    //ignore
+    UpnpArtistPtr artist( new UpnpArtist("Broken Social Scene") );
+    UpnpAlbumPtr album( new UpnpAlbum("Forgiveness Rock Record") );
+    album->setAlbumArtist( artist );
+
+    UpnpTrackPtr t( new UpnpTrack(this) ); 
+    t->setTitle( "World Sick" );
+    t->setArtist( artist );
+    t->setAlbum( album );
+
+    artist->addTrack( t );
+    album->addTrack( t );
+    memoryCollection()->addAlbum( AlbumPtr::dynamicCast( album ) );
+    memoryCollection()->addArtist( ArtistPtr::dynamicCast( artist ) );
+    memoryCollection()->addTrack( TrackPtr::dynamicCast( t ) );
+    //emit updated();
 }
 
 void
@@ -71,7 +82,10 @@ DEBUG_BLOCK
 QueryMaker*
 UpnpCollection::queryMaker()
 {
-    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
+DEBUG_BLOCK
+    UpnpMemoryQueryMaker *umqm = new UpnpMemoryQueryMaker(m_mc.toWeakRef(), collectionId() );
+    Q_ASSERT( connect( umqm, SIGNAL(startFullScan()), this, SLOT(startFullScan()) ) );
+    return umqm;
 }
 
 QString

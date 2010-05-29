@@ -31,6 +31,8 @@
 
 namespace Collections {
 
+class UpnpMemoryQueryMaker;
+
 class UpnpCollection : public Collections::Collection
 {
   Q_OBJECT
@@ -38,7 +40,6 @@ class UpnpCollection : public Collections::Collection
     UpnpCollection( const QString &udn, const QString &name );
     virtual ~UpnpCollection();
 
-    virtual void startFullScan();
     virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
 
@@ -46,10 +47,13 @@ class UpnpCollection : public Collections::Collection
     virtual QString prettyName() const;
     virtual KIcon icon() const { return KIcon("network-server"); }
 
+    QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
+
     bool possiblyContainsTrack( const KUrl &url ) const;
   signals:
 
   public slots:
+    virtual void startFullScan();
 
   private slots:
 
@@ -57,6 +61,7 @@ class UpnpCollection : public Collections::Collection
     QString m_udn;
     QString m_name;
     QSharedPointer<MemoryCollection> m_mc;
+    UpnpMemoryQueryMaker *m_umqm;
 };
 
 } //namespace Collections
