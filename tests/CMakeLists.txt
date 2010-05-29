@@ -85,3 +85,14 @@ set( testsmartpointerlist_SRCS
 kde4_add_unit_test( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
 
 target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+
+#------------------------ Test TagGuesser -----------------------------
+
+set( testtagguesser_SRCS
+        TestTagGuesser.cpp
+        ${AMAROK_SOURCE_TREE}/dialogs/TagGuesser.cpp
+    )
+
+kde4_add_unit_test( testtagguesser  ${testtagguesser_SRCS} )
+
+target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
