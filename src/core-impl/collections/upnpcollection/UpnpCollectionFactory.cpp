@@ -56,6 +56,7 @@ void UpnpCollectionFactory::init()
             this, SLOT(slotDeviceOffline(const KFileItemList &)) );
 
     m_networkLister->openUrl(KUrl("network:/"));
+    emit newCollection( new UpnpCollection( "upnp-ms://bf7eace9-e63f-4267-a871-7b572d750653", "MediaTomb" ) );
 
 }
 
@@ -71,9 +72,9 @@ void UpnpCollectionFactory::slotNewDevices( const KFileItemList &list )
 
 void UpnpCollectionFactory::createCollection( const KFileItem &item )
 {
-    QRegExp mediaServerExp("inode/vnd.kde.service.upnp.MediaServer[123]");
-    if( mediaServerExp.exactMatch(item.mimetype()) )
-        emit newCollection( new UpnpCollection( item.url().prettyUrl(), item.text() ) );
+//    QRegExp mediaServerExp("inode/vnd.kde.service.upnp.MediaServer[123]");
+//    if( mediaServerExp.exactMatch(item.mimetype()) )
+//        emit newCollection( new UpnpCollection( item.url().prettyUrl(), item.text() ) );
 }
 
 void UpnpCollectionFactory::slotDeviceOffline( const KFileItemList &list )
