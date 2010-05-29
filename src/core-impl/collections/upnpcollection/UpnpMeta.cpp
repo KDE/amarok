@@ -17,12 +17,17 @@
 #include "UpnpMeta.h"
 
 #include "UpnpCollection.h"
+#include "core/support/Debug.h"
 
 using namespace Meta;
 
 UpnpTrack::UpnpTrack( Collections::UpnpCollection *collection )
     : Meta::Track()
     , m_collection( collection )
+    , m_album( 0 )
+    , m_genre( 0 )
+    , m_composer( 0 )
+    , m_year( 0 )
 {
 }
 
@@ -46,8 +51,10 @@ UpnpTrack::prettyName() const
 KUrl
 UpnpTrack::playableUrl() const
 {
+DEBUG_BLOCK
     KUrl url( m_playableUrl );
     url.setProtocol( "http" );
+    url.setHost("www.google.com");
     return url;
 }
 
@@ -344,6 +351,7 @@ UpnpArtist::prettyName() const
 TrackList
 UpnpArtist::tracks()
 {
+DEBUG_BLOCK
     return m_tracks;
 }
 
@@ -357,6 +365,7 @@ UpnpArtist::albums()
 void
 UpnpArtist::addTrack( UpnpTrackPtr track )
 {
+DEBUG_BLOCK
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
