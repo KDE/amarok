@@ -70,6 +70,8 @@ class UpnpTrack : public Meta::Track
 
         virtual void setTitle( const QString &newTitle );
 
+        virtual void setUidUrl( const QString &url );
+
         virtual qreal bpm() const;
 
         virtual QString comment() const;
@@ -149,10 +151,12 @@ class UpnpArtist : public Meta::Artist
 
         //UpnpArtist specific methods
         void addTrack( UpnpTrackPtr track );
+        void addAlbum( UpnpAlbumPtr album );
 
     private:
         QString m_name;
         TrackList m_tracks;
+        AlbumList m_albums;
 };
 
 class UpnpAlbum : public Meta::Album

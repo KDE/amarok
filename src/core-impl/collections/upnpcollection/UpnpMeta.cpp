@@ -142,6 +142,12 @@ UpnpTrack::setYear( const QString &newYear )
     Q_UNUSED( newYear )
 }
 
+void
+UpnpTrack::setUidUrl( const QString &url )
+{
+    m_playableUrl = url;
+}
+
 /* 
 TODO: This isn't good enough, but for now as daapreader/Reader.cpp indicates
  we can query for the BPM from daap server, but desire is to get BPM of files working
@@ -359,7 +365,7 @@ AlbumList
 UpnpArtist::albums()
 {
     //TODO
-    return AlbumList();
+    return m_albums;
 }
 
 void
@@ -367,6 +373,13 @@ UpnpArtist::addTrack( UpnpTrackPtr track )
 {
 DEBUG_BLOCK
     m_tracks.append( TrackPtr::staticCast( track ) );
+}
+
+void
+UpnpArtist::addAlbum( UpnpAlbumPtr album )
+{
+DEBUG_BLOCK
+    m_albums.append( AlbumPtr::staticCast( album ) );
 }
 
 UpnpAlbum::UpnpAlbum( const QString &name )
