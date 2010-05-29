@@ -155,12 +155,12 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
 
-    if( ui->ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
+    if( ui->ignoreTheCheck->isChecked() && artist.startsWith( "The ", Qt::CaseInsensitive ) )
         Amarok::manipulateThe( artist, true );
 
     artist = cleanPath( artist );
 
-    if( ui->ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
+    if( ui->ignoreTheCheck->isChecked() && albumartist.startsWith( "The ", Qt::CaseInsensitive ) )
         Amarok::manipulateThe( albumartist, true );
 
     albumartist = cleanPath( albumartist );

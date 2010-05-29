@@ -25,6 +25,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * The "Ignore 'The'" option in the organize files dialog is now case
+      insensitive. (BR 237831)
     * Filenames with dots (.) and other special RegEx characters will now be
       parsed correctly when guessing tags from a filename. (BR 225743)
     * Align track details dialog's labels to the right as per KDE4's HIG.
