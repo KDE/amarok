@@ -78,7 +78,7 @@ protected slots:
     void home();
 
     /**
-     * Navigates to home directory
+     * Navigates to "places"
      */
     void showPlaces();
 
