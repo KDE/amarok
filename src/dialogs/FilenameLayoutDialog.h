@@ -91,6 +91,8 @@ class FilenameLayoutDialog
         */
         void setFileName( QString FileName );
 
+        AMAROK_EXPORT void setScheme( const QString &scheme );
+
     public slots:
         void onAccept();
 

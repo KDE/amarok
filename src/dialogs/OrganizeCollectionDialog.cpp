@@ -29,6 +29,7 @@
 #include "ui_OrganizeCollectionDialogBase.h"
 
 #include <kcolorscheme.h>
+#include <KInputDialog>
 
 #include <QDir>
 
@@ -100,6 +101,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              this, SLOT( slotUpdatePreview() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotEnableOk( const QString & ) ) );
+    connect( ui->addPresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotAddFormat() ) );
+    connect( ui->removePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotRemoveFormat() ) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -372,8 +375,56 @@ OrganizeCollectionDialog::update( const QString & dummy )
 void
 OrganizeCollectionDialog::init()
 {
+    populateFormatList();
     slotUpdatePreview();
 }
+
+void OrganizeCollectionDialog::populateFormatList()
+{
+    // items are stored in the config list in the following format:
+    // Label#DELIM#format string#DELIM#selected
+    // the last item to have the third parameter is the default selected preset
+    // the third param isnis optional 
+    QStringList presets_raw;
+    int selected_index = -1;
+    ui->presetCombo->clear();
+    presets_raw = AmarokConfig::formatPresets();
+    foreach( QString str, presets_raw )
+    {
+        QStringList items;
+        items = str.split( "#DELIM#", QString::SkipEmptyParts );
+        if( items.size() < 2 )
+            continue;
+        ui->presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
+        if( items.size() == 3 )
+            selected_index = ui->presetCombo->findData( items.at( 1 ) );
+    }
+    if( selected_index > 0 )
+        ui->presetCombo->setCurrentIndex( selected_index );
+    slotFormatPresetSelected( selected_index );
+    connect( ui->presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
+}
+
+void OrganizeCollectionDialog::saveFormatList()
+{
+    QStringList presets;
+    int n = ui->presetCombo->count();
+    int current_idx = ui->presetCombo->currentIndex();
+    for( int i = 0; i < n; ++i )
+    {
+        QString item;
+        if( i == current_idx )
+            item = "%1#DELIM#%2#DELIM#selected";
+        else
+            item = "%1#DELIM#%2";
+        QString scheme = ui->presetCombo->itemData( i ).toString();
+        QString label = ui->presetCombo->itemText( i );
+        item = item.arg( label, scheme );
+        presets.append( item );
+    }
+    AmarokConfig::setFormatPresets( presets );
+}
+
 
 void
 OrganizeCollectionDialog::slotUpdatePreview()
@@ -384,6 +435,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
+    saveFormatList();
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
@@ -402,4 +454,29 @@ OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
     else
         enableButtonOk( true );
 }
+
+void OrganizeCollectionDialog::slotFormatPresetSelected( int index )
+{
+    QString scheme = ui->presetCombo->itemData( index ).toString();
+    m_filenameLayoutDialog->setScheme( scheme );
+}
+
+void OrganizeCollectionDialog::slotAddFormat()
+{
+    bool ok = false;
+    QString name = KInputDialog::getText( i18n( "New Format Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ),  &ok, this );
+    if( !ok )
+        return; // user canceled.
+    QString format = m_filenameLayoutDialog->getParsableScheme();
+    ui->presetCombo->insertItem(0, name, format);
+    ui->presetCombo->setCurrentIndex( 0 );
+}
+
+void OrganizeCollectionDialog::slotRemoveFormat()
+{
+    int idx = ui->presetCombo->currentIndex();
+    ui->presetCombo->removeItem( idx );
+}
+
+
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

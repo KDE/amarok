@@ -191,6 +191,11 @@
         <whatsthis>In basic mode graphical drag/droppable tokens are used to create a filename scheme, in advanced mode the images are replaced with text.</whatsthis>
         <default>Basic</default>
     </entry>
+    <entry key="Format Presets" type="StringList">
+        <label>Format Presets</label>
+        <whatsthis>A list of preset formats (token schemas).</whatsthis>
+        <default>Default#DELIM#%artist/%album/%track_-_%title#DELIM#selected</default>
+    </entry>
 </group>
 
 <group name="Playback">

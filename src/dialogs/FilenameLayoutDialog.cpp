@@ -337,6 +337,13 @@ FilenameLayoutDialog::setFileName( QString FileName )
     updatePreview();
 }
 
+// attempts to set the scheme
+void FilenameLayoutDialog::setScheme(const QString& scheme)
+{
+    inferScheme( scheme );
+}
+
+
 //Updates the Filename Preview
 void
 FilenameLayoutDialog::updatePreview()                 //SLOT
