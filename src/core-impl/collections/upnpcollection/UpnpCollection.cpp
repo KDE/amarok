@@ -29,6 +29,10 @@
 #include <QTimer>
 
 #include <KLocale>
+#include <KMessageBox>
+#include <kio/upnptypes.h>
+#include <kio/scheduler.h>
+#include <kio/jobclasses.h>
 
 using namespace Meta;
 
@@ -55,21 +59,63 @@ void
 UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
-    UpnpArtistPtr artist( new UpnpArtist("Broken Social Scene") );
-    UpnpAlbumPtr album( new UpnpAlbum("Forgiveness Rock Record") );
+
+        KIO::ListJob *job = KIO::listDir(KUrl("upnp-ms://bf7eace9-e63f-4267-a871-7b572d750653/PC Directory/shared/music"));
+    Q_ASSERT( connect( job, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
+                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)) ) );
+    Q_ASSERT( connect( job, SIGNAL(result(KJob*)), 
+                       this, SLOT(done(KJob*)) ) );
+
+}
+
+void
+UpnpCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
+{
+DEBUG_BLOCK
+    foreach( KIO::UDSEntry entry, list ) {
+        if( entry.contains( KIO::UPNP_CLASS )
+            && entry.stringValue( KIO::UPNP_CLASS ) == "object.item.audioItem.musicTrack" ) {
+            createTrack( entry );
+        }
+    }
+    emit updated();
+}
+
+void
+UpnpCollection::createTrack( const KIO::UDSEntry &entry )
+{
+DEBUG_BLOCK
+    debug() << "CREATING TRACK";
+    // TODO check if Meta data is actually available
+    //UpnpArtistPtr artist( new UpnpArtist(entry.stringValue(KIO::UPNP_CREATOR)) );
+    UpnpArtistPtr artist( new UpnpArtist("Various artists") );
+    UpnpAlbumPtr album( new UpnpAlbum(entry.stringValue(KIO::UPNP_ALBUM)) );
     album->setAlbumArtist( artist );
+    artist->addAlbum( album );
 
     UpnpTrackPtr t( new UpnpTrack(this) ); 
-    t->setTitle( "World Sick" );
+    t->setTitle( entry.stringValue(KIO::UDSEntry::UDS_NAME) );
     t->setArtist( artist );
     t->setAlbum( album );
+    //t->setYear( UpnpYearPtr( new UpnpYear( "2010" ) ) );
+    t->setUidUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
 
     artist->addTrack( t );
     album->addTrack( t );
     memoryCollection()->addAlbum( AlbumPtr::dynamicCast( album ) );
     memoryCollection()->addArtist( ArtistPtr::dynamicCast( artist ) );
     memoryCollection()->addTrack( TrackPtr::dynamicCast( t ) );
-    //emit updated();
+
+    debug() << "Now has" << memoryCollection()->albumMap().size();
+}
+
+void
+UpnpCollection::done( KJob *job )
+{
+DEBUG_BLOCK
+    if( job->error() ) {
+        KMessageBox::error( 0, i18n("UPNP Error:") + job->errorString() );
+    }
 }
 
 void

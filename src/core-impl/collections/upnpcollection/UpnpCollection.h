@@ -29,6 +29,11 @@
 
 #include <KIcon>
 
+namespace KIO {
+  class Job;
+}
+class KJob;
+
 namespace Collections {
 
 class UpnpMemoryQueryMaker;
@@ -56,6 +61,9 @@ class UpnpCollection : public Collections::Collection
     virtual void startFullScan();
 
   private slots:
+    void entries( KIO::Job *, const KIO::UDSEntryList& );
+    void done( KJob * );
+    void createTrack( const KIO::UDSEntry & );
 
   private:
     QString m_udn;
