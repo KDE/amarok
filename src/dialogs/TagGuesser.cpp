@@ -74,7 +74,7 @@ TagGuesser::guess()
 {
     if( ( !m_fileName.isEmpty() ) && ( !m_schema.isEmpty() ) )
     {
-        QString regExpr = getRegExpFromSchema( m_schema );
+        QString regExpr = getRegExpFromSchema( QRegExp::escape( m_schema ) );
         QRegExp fileExpr(regExpr + "\\.(.*)");
         QRegExp schemaExpr(regExpr);
         
