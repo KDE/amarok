@@ -25,6 +25,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Cleaned up some tooltips/what's this strings in the Organize dialog
+      to make it easier to read and, hopefully, understand. (BR 237857)
     * Fixed organize dialog's handling of the year tag. If there is no year
       then the %year token should be an empty string.(BR 237834)
     * The "Ignore 'The'" option in the organize files dialog is now case

@@ -57,7 +57,10 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string/>
+        <string>The collection folder to which the files will be transferred.</string>
+       </property>
+       <property name="whatsThis">
+        <string>The collection folder to which the files will be transferred.</string>
        </property>
       </widget>
      </item>
@@ -98,10 +101,24 @@
       <item>
        <widget class="QCheckBox" name="asciiCheck">
         <property name="toolTip">
-         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-English characters in your tags. Most people can leave this option unchecked.</string>
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If checked, all non-ASCII characters will be replaced with underscores.&lt;span style=&quot; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Do not check this option if you have non-English characters in your tags. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Most people can leave this option unchecked.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="whatsThis">
-         <string>If checked all non-ASCII characters will be replaced with underscores. Do not check this option if you have non-English characters in your tags. Most people can leave this option unchecked.</string>
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If checked, all non-ASCII characters will be replaced with underscores.&lt;span style=&quot; font-weight:600;&quot;&gt; Do not check this option if you have non-English characters in your tags. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Most people can leave this option &lt;span style=&quot; font-style:italic;&quot;&gt;unchecked.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Restrict to &amp;ASCII</string>
@@ -111,10 +128,14 @@
       <item>
        <widget class="QCheckBox" name="vfatCheck">
         <property name="toolTip">
-         <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems with underscores. Incompatible characters include |?*&lt;&quot;:&gt;+[] and unicode control characters. Most people can leave this option enabled as it ensures copying to media devices will function correctly.</string>
+         <string>Replace characters that are incompatible with MS-DOS/VFAT file systems with underscores. 
+
+Most people can leave this option enabled.</string>
         </property>
         <property name="whatsThis">
-         <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems with underscores. Incompatible characters include |?*&lt;&quot;:&gt;+[] and unicode control characters. Most people can leave this option enabled as it ensures copying to media devices will function correctly.</string>
+         <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems with underscores. Incompatible characters include |?*&lt;&quot;:&gt;+[] and unicode control characters. 
+
+Most people can leave this option enabled as it ensures copying to media devices will function correctly.</string>
         </property>
         <property name="text">
          <string>&amp;VFAT safe names</string>
@@ -192,6 +213,9 @@
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>Original</string>
@@ -257,7 +281,11 @@
            <string>If checked, overwrite files of the same name without asking.</string>
           </property>
           <property name="whatsThis">
-           <string>Check this to overwrite files of the same name automatically. (Warning: Overwriting is not undoable)</string>
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Check this to overwrite files of the same name automatically. &lt;span style=&quot; font-style:italic;&quot;&gt;(Warning: Overwriting is not undoable)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>Overwrite &amp;Destination</string>
