@@ -135,10 +135,15 @@ Playlist::Actions::requestNextTrack()
         return;
     }
 
-    if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
+    if( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
+    {
+        The::playlist()->setActiveId( m_nextTrackCandidate );
         setStopAfterMode( StopNever );
+    }
     else
+    {
         play( m_nextTrackCandidate, false );
+    }
 }
 
 void
