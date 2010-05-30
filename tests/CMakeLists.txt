@@ -12,7 +12,8 @@ set( STRESS_TEST_TRACK_COUNT 20000 )
 configure_file(config-amarok-test.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok-test.h )
 
 include_directories( .
-                     ${AMAROK_SOURCE_TREE}
+  ${AMAROK_SOURCE_TREE}
+  ${GOOGLEMOCK_INCLUDE_DIR}
 )
 
 add_subdirectory( amarokurls )
@@ -96,3 +97,19 @@ set( testtagguesser_SRCS
 kde4_add_unit_test( testtagguesser  ${testtagguesser_SRCS} )
 
 target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
+
+#------------------------ Test TrackOrganizer -----------------------------
+
+set( testtrackorganizer_SRCS
+        TestTrackOrganizer.cpp
+        ${AMAROK_SOURCE_TREE}/dialogs/TrackOrganizer.cpp
+        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+    )
+
+kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )
+
+add_dependencies( testtrackorganizer amarokcore )
+add_dependencies( testtrackorganizer amaroklib )
+
+target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
+
