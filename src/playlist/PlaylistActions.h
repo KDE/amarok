@@ -24,9 +24,9 @@
 #include "core/support/Debug.h"
 #include "core/engine/EngineObserver.h"
 #include "core/playlists/Playlist.h"
-#include "proxymodels/AbstractModel.h"
 
 #include <QQueue>
+#include <QModelIndex>
 
 namespace Playlist
 {
@@ -146,8 +146,6 @@ private:
     Playlist::StopAfterMode m_stopAfterMode;
     bool m_trackError;
     bool m_waitingForNextTrack;
-
-    AbstractModel *m_topmostModel;
 
     static Actions* s_instance; //!< instance variable
 };

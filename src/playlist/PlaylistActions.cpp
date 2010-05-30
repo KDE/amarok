@@ -75,10 +75,7 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
-
-    m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
-
     restoreDefaultPlaylist();
 }
 
@@ -92,13 +89,13 @@ Playlist::Actions::~Actions()
 Meta::TrackPtr
 Playlist::Actions::likelyNextTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->likelyNextTrack() );
+    return The::playlist()->trackForId( m_navigator->likelyNextTrack() );
 }
 
 Meta::TrackPtr
 Playlist::Actions::likelyPrevTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->likelyLastTrack() );
+    return The::playlist()->trackForId( m_navigator->likelyLastTrack() );
 }
 
 void
@@ -112,14 +109,13 @@ Playlist::Actions::requestNextTrack()
 
     debug() << "so far so good!";
     m_trackError = false;
-    if ( stopAfterMode() == StopAfterQueue && m_topmostModel->activeId() == m_trackToBeLast )
+    if( stopAfterMode() == StopAfterQueue && The::playlist()->activeId() == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
         m_trackToBeLast = 0;
     }
 
     m_nextTrackCandidate = m_navigator->requestNextTrack();
-
     if( m_nextTrackCandidate == 0 )
     {
 
@@ -127,10 +123,10 @@ Playlist::Actions::requestNextTrack()
         //No more stuff to play. make sure to reset the active track so that
         //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
         //instead of just replaying the last track.
-        m_topmostModel->setActiveRow( -1 );
+        The::playlist()->setActiveRow( -1 );
 
         //We also need to mark all tracks as unplayed or some navigators might be unhappy.
-        m_topmostModel->setAllUnplayed();
+        The::playlist()->setAllUnplayed();
 
         //if what is currently playing is a cd track, we need to stop playback as the cd will otherwise continue playing
         if( The::engineController()->isPlayingAudioCd() )
@@ -176,7 +172,7 @@ Playlist::Actions::play()
 
     if( 0 == m_nextTrackCandidate )
     {
-        m_nextTrackCandidate = m_topmostModel->activeId();
+        m_nextTrackCandidate = The::playlist()->activeId();
         if( 0 == m_nextTrackCandidate )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
@@ -201,7 +197,7 @@ Playlist::Actions::play( const int row )
 {
     DEBUG_BLOCK
 
-    m_nextTrackCandidate = m_topmostModel->idAt( row );
+    m_nextTrackCandidate = The::playlist()->idAt( row );
     play( m_nextTrackCandidate );
 }
 
@@ -210,7 +206,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = m_topmostModel->trackForId( trackid );
+    Meta::TrackPtr track = The::playlist()->trackForId( trackid );
     if ( track )
     {
         if ( now )
@@ -367,10 +363,10 @@ Playlist::Actions::queue( QList<int> rows )
 
     foreach( int row, rows )
     {
-        quint64 id = m_topmostModel->idAt( row );
+        quint64 id = The::playlist()->idAt( row );
         debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        m_topmostModel->setRowQueued( row );
+        The::playlist()->setRowQueued( row );
     }
 }
 
@@ -381,9 +377,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 
     foreach( int row, rows )
     {
-        quint64 id = m_topmostModel->idAt( row );
+        quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );
-        m_topmostModel->setRowDequeued( row );
+        The::playlist()->setRowDequeued( row );
     }
 }
 
@@ -426,22 +422,22 @@ Playlist::Actions::engineNewTrackPlaying()
     Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
     if ( engineTrack )
     {
-        Meta::TrackPtr candidateTrack = m_topmostModel->trackForId( m_nextTrackCandidate );    // May be 0.
+        Meta::TrackPtr candidateTrack = The::playlist()->trackForId( m_nextTrackCandidate );    // May be 0.
         if ( engineTrack == candidateTrack )
         {   // The engine is playing what we planned: everything is OK.
-            m_topmostModel->setActiveId( m_nextTrackCandidate );
+            The::playlist()->setActiveId( m_nextTrackCandidate );
         }
         else
         {
             warning() << "engineNewTrackPlaying:" << engineTrack->prettyName() << "does not match what the playlist controller thought it should be";
-            if ( m_topmostModel->activeTrack() != engineTrack )
+            if ( The::playlist()->activeTrack() != engineTrack )
             {
                  // this will set active row to -1 if the track isn't in the playlist at all
-                int row = m_topmostModel->firstRowForTrack( engineTrack );
+                int row = The::playlist()->firstRowForTrack( engineTrack );
                 if( row != -1 )
-                    m_topmostModel->setActiveRow( row );
+                    The::playlist()->setActiveRow( row );
                 else
-                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
+                    The::playlist()->setActiveRow( AmarokConfig::lastPlaying() );
             }
             //else
             //  Engine and playlist are in sync even though we didn't plan it; do nothing
