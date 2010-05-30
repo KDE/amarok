@@ -22,13 +22,12 @@ TranscodeFormat::Vorbis( int quality )
 {
     DEBUG_BLOCK
     TranscodeFormat format( TranscodeFormat::VORBIS );
-    format.m_ffmpegParameters.append( " -aq " );
-    format.m_ffmpegParameters.append( QString::number( quality ) );
+    format.m_ffmpegParameters << "-aq" << QString::number( quality );
     debug()<< "In the named ctor, ffmpeg parameters are "<<format.m_ffmpegParameters;
     return format;
 }
 
-QString
+QStringList
 TranscodeFormat::ffmpegParameters() const
 {
     DEBUG_BLOCK
@@ -38,7 +37,7 @@ TranscodeFormat::ffmpegParameters() const
         return m_ffmpegParameters;
     }
     debug() << "INVALID FFMPEG PARAMETERS";
-    return QString();
+    return QStringList();
 }
 
 //private
@@ -46,8 +45,6 @@ TranscodeFormat::TranscodeFormat( Encoder encoder )
     : m_encoder( encoder )
 {
     DEBUG_BLOCK
-    m_ffmpegParameters = QString( "-acodec " );
     if( m_encoder == TranscodeFormat::VORBIS )
-        m_ffmpegParameters.append( "libvorbis" );
-
+        m_ffmpegParameters << "-acodec" << "libvorbis";
 }

@@ -17,7 +17,7 @@
 #ifndef TRANSCODEFORMAT_H
 #define TRANSCODEFORMAT_H
 
-#include <QString>
+#include <QStringList>
 
 class TranscodeFormat
 {
@@ -42,13 +42,13 @@ public:
     static TranscodeFormat Vorbis( int quality );
     static TranscodeFormat Wma();
 
-    QString ffmpegParameters() const;
+    QStringList ffmpegParameters() const;
     Encoder encoder() const { return m_encoder; }
 
 private:
     explicit TranscodeFormat( Encoder encoder );
     Encoder m_encoder;
-    QString m_ffmpegParameters;
+    QStringList m_ffmpegParameters;
 };
 
 #endif // TRANSCODEFORMAT_H

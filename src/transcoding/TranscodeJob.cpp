@@ -64,12 +64,20 @@ TranscodeJob::init()
 
     m_transcoder->setOutputChannelMode( KProcess::MergedChannels );
 
+    //First the executable...
     m_transcoder->setProgram( "ffmpeg" );
-    *m_transcoder << "-i" << m_src.path() << m_dest.path();
-    //*m_transcoder << m_options.ffmpegParameters();
+    //... then we'd have the infile options followed by "-i" and the infile path...
+    *m_transcoder << QString( "-i" )
+                  << m_src.path();
+    //... and finally, outfile options followed by the outfile path.
+    *m_transcoder << m_options.ffmpegParameters()
+                  << m_dest.path();
+
+    //debug spam follows
     debug() << "foo";
     debug() << m_options.ffmpegParameters();
     debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
+
     connect( m_transcoder, SIGNAL( finished( int, QProcess::ExitStatus ) ),
              this, SLOT( transcoderDone( int, QProcess::ExitStatus ) ) );
 }
@@ -80,7 +88,7 @@ TranscodeJob::start()
     DEBUG_BLOCK
     debug()<< "starting ffmpeg";
     debug()<< "call is " << m_transcoder->program();
-    //m_transcoder->start();
+    m_transcoder->start();
     debug() << m_transcoder->readAllStandardOutput();
     debug()<< "ffmpeg started";
 }
@@ -90,10 +98,15 @@ TranscodeJob::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //
 {
     DEBUG_BLOCK
     Q_UNUSED( exitStatus );
+    debug() << m_transcoder->readAll();
     if( !exitCode )
     {
         debug() << "YAY, transcoding done!";
+        emitResult();
     }
-    debug() << "NAY, transcoding fail!";
-    emitResult();
+    else
+    {
+        debug() << "NAY, transcoding fail!";
+        emitResult();
+    }
 }

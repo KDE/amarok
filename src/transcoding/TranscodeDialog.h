@@ -35,6 +35,9 @@ public:
 
 private:
     Ui::TranscodeDialog ui;
+    KUrl::List m_urlList;
+private slots:
+    void onTranscodeClicked();
 };
 
 #endif // TRANSCODEDIALOG_H

@@ -15,9 +15,13 @@
  ****************************************************************************************/
 
 #include "TranscodeDialog.h"
+#include "TranscodeJob.h"
+
+#include <KPushButton>
 
 TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
     : KDialog( parent, Qt::Dialog )
+    , m_urlList( urlList )
 {
     DEBUG_BLOCK
     QWidget *uiBase = new QWidget( this );
@@ -26,19 +30,26 @@ TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
 
+    setButtons( None );
+    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeClicked() ) );
 
-    TranscodeFormat format = TranscodeFormat::Vorbis( 7 );
+    ui.explanatoryTextLabel->setText( i18n( "You are about to copy one or more tracks.\nWhile copying, you can also choose to transcode your music files into another format with an encoder (codec). This can be done to save space or to make your files readable by a portable music player or a particular software program." ) );
+
+}
+
+void
+TranscodeDialog::onTranscodeClicked() //SLOT
+{
+    TranscodeFormat format = TranscodeFormat::Vorbis( ui.spinBox->value() );
     debug() << "\nFormat encoder is: " << format.encoder();
     debug() << "\nabout to fetch ffmpeg parameters";
-    QString ffmpp = format.ffmpegParameters();
     debug() << "\nParameters: ";
-    debug() << ffmpp.toAscii();
-    /*KJob *doTranscode = new TranscodeJob( url, *format,this );
-    //doTranscode->start();
-    */
-    setButtons( User1 );
-    button( User1 ).setText( "LOL Transcode NAO!" );
-    connect( button( User1 ), SIGNAL( clicked() ), this, SLOT(  ) );
+    debug() << format.ffmpegParameters();
+    KUrl url = m_urlList.first();
+    KJob *doTranscode = new TranscodeJob( url, format,this );
+    doTranscode->start();
+
+    KDialog::done( KDialog::Accepted );
 }
 
 #include "TranscodeDialog.moc"
