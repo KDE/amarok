@@ -217,3 +217,41 @@ set( testsqltrack_SRCS
 kde4_add_unit_test( testsqltrack ${testsqltrack_SRCS} )
 
 link_database_test( testsqltrack )
+
+#-------------------------------- Test SqlCollectionLocation -----------------------
+
+set( testsqlcollectionlocation_SRCS
+        TestSqlCollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+kde4_add_unit_test( testsqlcollectionlocation ${testsqlcollectionlocation_SRCS} )
+
+add_dependencies( testsqlcollectionlocation amarokconfig_h )
+add_dependencies( testsqlcollectionlocation amarokcore )
+add_dependencies( testsqlcollectionlocation amaroklib)
+add_dependencies( testsqlcollectionlocation amarok-sqlcollection)
+
+target_link_libraries( testsqlcollectionlocation
+        amarokcore
+        amaroklib
+        amarok-sqlcollection
+        ${KDE4_KDECORE_LIBS}
+        ${KDE4_KDEUI_LIBS}
+        ${QT_QTTEST_LIBRARY}
+        ${QT_QTCORE_LIBRARY}
+        ${OPENSSL_LIBRARIES}
+        ${MYSQL_EMBEDDED_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+        ${ZLIB_LIBRARIES}
+        ${GOOGLEMOCK_LIBRARIES})
