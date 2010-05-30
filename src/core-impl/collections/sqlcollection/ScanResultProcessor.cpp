@@ -609,7 +609,7 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
         if( m_albumsHashById.contains( albumId ) && m_albumsHashById[albumId] != 0 )
         {
             QString *list = m_albumsHashById[albumId];
-            list->replace( 3, QString::number( imageId ) );
+            list[AlbumColMaxImage] = QString::number( imageId );
         }
         m_images.insert( key, imageId );
     }
