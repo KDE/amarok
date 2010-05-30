@@ -632,6 +632,7 @@ set(amaroklib_LIB_SRCS
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
+    dialogs/TrackOrganizer.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
     dialogs/ScriptUpdater.cpp

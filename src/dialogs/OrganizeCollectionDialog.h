@@ -33,6 +33,8 @@ namespace Ui
     class OrganizeCollectionDialogBase;
 }
 
+class TrackOrganizer;
+
 class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 {
     Q_OBJECT
@@ -60,8 +62,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void slotRemoveFormat();
 
     private:
-        QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
-        QString cleanPath( const QString &component ) const;
         QString buildFormatTip() const;
         QString buildFormatString() const;
         QString commonPrefix( const QStringList &list ) const;
@@ -75,7 +75,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
         Ui::OrganizeCollectionDialogBase *ui;
         FilenameLayoutDialog *m_filenameLayoutDialog;
-        Meta::TrackPtr m_previewTrack;
+        TrackOrganizer *mTrackOrganizer;
         bool m_detailed;
         Meta::TrackList m_allTracks;
 
