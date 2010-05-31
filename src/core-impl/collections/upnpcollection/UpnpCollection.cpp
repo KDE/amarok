@@ -97,8 +97,9 @@ DEBUG_BLOCK
     t->setTitle( entry.stringValue(KIO::UDSEntry::UDS_NAME) );
     t->setArtist( artist );
     t->setAlbum( album );
-    //t->setYear( UpnpYearPtr( new UpnpYear( "2010" ) ) );
-    t->setUidUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
+    t->setYear( UpnpYearPtr( new UpnpYear( "2010" ) ) );
+    t->setPlayableUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
+    t->setTrackNumber( entry.stringValue(KIO::UPNP_TRACK_NUMBER).toInt() );
 
     artist->addTrack( t );
     album->addTrack( t );
