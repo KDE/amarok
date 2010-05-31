@@ -53,8 +53,6 @@ UpnpTrack::playableUrl() const
 {
 DEBUG_BLOCK
     KUrl url( m_playableUrl );
-    url.setProtocol( "http" );
-    url.setHost("www.google.com");
     return url;
 }
 
@@ -144,6 +142,12 @@ UpnpTrack::setYear( const QString &newYear )
 
 void
 UpnpTrack::setUidUrl( const QString &url )
+{
+    m_playableUrl = url;
+}
+
+void
+UpnpTrack::setPlayableUrl( const QString& url )
 {
     m_playableUrl = url;
 }

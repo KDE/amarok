@@ -116,6 +116,7 @@ class UpnpTrack : public Meta::Track
         void setComposer( UpnpComposerPtr composer );
         void setGenre( UpnpGenrePtr genre );
         void setYear( UpnpYearPtr year );
+        void setPlayableUrl( const QString &url );
 
         void setLength( qint64 length );
 
