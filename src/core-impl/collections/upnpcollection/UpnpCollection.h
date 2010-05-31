@@ -70,6 +70,15 @@ class UpnpCollection : public Collections::Collection
     QString m_name;
     QSharedPointer<MemoryCollection> m_mc;
     UpnpMemoryQueryMaker *m_umqm;
+
+    // probably move to some separate class
+    // should we just extend MemoryCollection?
+    TrackMap m_trackMap;
+    ArtistMap m_artistMap;
+    AlbumMap m_albumMap;
+    GenreMap m_genreMap;
+    ComposerMap m_composerMap;
+    YearMap m_yearMap;
 };
 
 } //namespace Collections

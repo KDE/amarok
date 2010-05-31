@@ -78,6 +78,9 @@ DEBUG_BLOCK
             createTrack( entry );
         }
     }
+
+    memoryCollection()->setArtistMap( m_artistMap );
+    memoryCollection()->setAlbumMap( m_albumMap );
     emit updated();
 }
 
@@ -87,9 +90,21 @@ UpnpCollection::createTrack( const KIO::UDSEntry &entry )
 DEBUG_BLOCK
     debug() << "CREATING TRACK";
     // TODO check if Meta data is actually available
-    //UpnpArtistPtr artist( new UpnpArtist(entry.stringValue(KIO::UPNP_CREATOR)) );
-    UpnpArtistPtr artist( new UpnpArtist("Various artists") );
-    UpnpAlbumPtr album( new UpnpAlbum(entry.stringValue(KIO::UPNP_ALBUM)) );
+
+    QString artistName = entry.stringValue(KIO::UPNP_CREATOR);
+    UpnpArtistPtr artist( new UpnpArtist( artistName ) );
+    if( m_artistMap.contains( artistName ) )
+        artist = UpnpArtistPtr::dynamicCast( m_artistMap[artistName] );
+    else
+        m_artistMap[artistName] = ArtistPtr::dynamicCast( artist );
+
+    QString albumName = entry.stringValue(KIO::UPNP_ALBUM);
+    UpnpAlbumPtr album( new UpnpAlbum(albumName) );
+    if( m_albumMap.contains( albumName ) )
+        album = UpnpAlbumPtr::dynamicCast( m_albumMap[albumName] );
+    else
+        m_albumMap[albumName] = AlbumPtr::dynamicCast( album );
+
     album->setAlbumArtist( artist );
     artist->addAlbum( album );
 
@@ -103,11 +118,9 @@ DEBUG_BLOCK
 
     artist->addTrack( t );
     album->addTrack( t );
-    memoryCollection()->addAlbum( AlbumPtr::dynamicCast( album ) );
-    memoryCollection()->addArtist( ArtistPtr::dynamicCast( artist ) );
+
     memoryCollection()->addTrack( TrackPtr::dynamicCast( t ) );
 
-    debug() << "Now has" << memoryCollection()->albumMap().size();
 }
 
 void
