@@ -193,15 +193,15 @@ QString
 ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 {
     //DEBUG_BLOCK
-	//if there is only one Image, we already know who is the winner
-	if(paths.size()<=1)
-		return paths.first();
+    //if there is only one Image, we already know who is the winner
+    if(paths.size()<=1)
+        return paths.first();
 
     int goodnessPriority = 3;
     QString goodPath;
     foreach( const QString &path, paths )
     {
-    	QString file = QFileInfo( path ).completeBaseName();
+        QString file = QFileInfo( path ).completeBaseName();
         
         //prioritize "front"
         if( file.contains( "front", Qt::CaseInsensitive ) ||
@@ -250,7 +250,6 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
         }
     }
     return current;
-
 }
 
 void
