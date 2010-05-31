@@ -27,6 +27,9 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed keyboard shortcuts of actions from scripts lost after restart.
+      Thanks to Martin Blumenstingl <darklight.xdarklight@googlemail.com>.
+      (BR 223165)
     * Fixed tracks not changing for "stop after this track" action. (BR 231209)
     * Cleaned up some tooltips/what's this strings in the Organize dialog
       to make it easier to read and, hopefully, understand. (BR 237857)
