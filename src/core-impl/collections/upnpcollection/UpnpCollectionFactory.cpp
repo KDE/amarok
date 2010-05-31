@@ -26,21 +26,22 @@
 #include "core/support/Debug.h"
 #include "UpnpCollection.h"
 
+#include <QtDBus>
+
 namespace Collections {
 
 AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
     : Collections::CollectionFactory()
-    , m_networkLister(0)
 {
+    qRegisterMetaType<DeviceTypeMap>();
     setParent( parent );
     Q_UNUSED( args );
 }
 
 UpnpCollectionFactory::~UpnpCollectionFactory()
 {
-    delete m_networkLister;
 }
 
 // TODO need to monitor upnp devices somehow
@@ -49,39 +50,63 @@ void UpnpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-    m_networkLister = new KDirLister( this );
-    connect(m_networkLister, SIGNAL(newItems(const KFileItemList &)),
-            this, SLOT(slotNewDevices(const KFileItemList &)) );
-    connect(m_networkLister, SIGNAL(itemsDeleted(const KFileItemList &)),
-            this, SLOT(slotDeviceOffline(const KFileItemList &)) );
+        QDBusConnection bus = QDBusConnection::sessionBus();
 
-    m_networkLister->openUrl(KUrl("network:/"));
-    emit newCollection( new UpnpCollection( "upnp-ms://bf7eace9-e63f-4267-a871-7b572d750653", "MediaTomb" ) );
+    bus.connect( "org.kde.Cagibi",
+                 "/",
+                 "org.kde.Cagibi",
+                 "devicesAdded",
+                 this,
+                 SLOT( slotDevicesAdded( const DeviceTypeMap & ) ) );
 
+    bus.connect( "org.kde.Cagibi",
+                 "/",
+                 "org.kde.Cagibi",
+                 "devicesRemoved",
+                 this,
+                 SLOT( slotDevicesRemoved( const DeviceTypeMap & ) ) );
+
+    QDBusInterface *iface = new QDBusInterface("org.kde.Cagibi",
+                                               "/",
+                                               "org.kde.Cagibi",
+                                               bus,
+                                               this );
+    Q_ASSERT(iface->isValid());
+    QDBusReply<DeviceTypeMap> reply = iface->call( "allDevices" );
+    if( !reply.isValid() ) {
+        debug() << "ERROR" << reply.error().message();
+        Q_ASSERT(false);
+    }
+    slotDevicesAdded( reply.value() );
 }
 
-void UpnpCollectionFactory::slotNewDevices( const KFileItemList &list )
+void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
 {
-    foreach( KFileItem item, list ) {
-// TODO only add certain devices
-        m_networkLister->openUrl(item.url(), KDirLister::Keep);
-        if( item.isReadable() )
-            createCollection( item );
+    foreach( QString udn, map.keys() ) {
+        QString type = map[udn];
+        // TODO special case prefix for stuff like ushare
+        if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") ) {
+            QString actualUdn = udn.replace("uuid:", "");
+            m_devices[udn] = new UpnpCollection( actualUdn, actualUdn );
+            // we should get the friendly name
+            emit newCollection( m_devices[udn] );
+        }
     }
 }
 
-void UpnpCollectionFactory::createCollection( const KFileItem &item )
+void UpnpCollectionFactory::slotDevicesRemoved( const DeviceTypeMap &map )
 {
-//    QRegExp mediaServerExp("inode/vnd.kde.service.upnp.MediaServer[123]");
-//    if( mediaServerExp.exactMatch(item.mimetype()) )
-//        emit newCollection( new UpnpCollection( item.url().prettyUrl(), item.text() ) );
+    foreach( QString udn, map.keys() ) {
+        if( m_devices.contains(udn) ) {
+            debug() << "REMOVING" << udn;
+            m_devices[udn]->removeCollection();
+            m_devices.remove(udn);
+        }
+    }
 }
 
-void UpnpCollectionFactory::slotDeviceOffline( const KFileItemList &list )
+void UpnpCollectionFactory::createCollection( const QString &udn )
 {
-// TODO have a map of all collections and use that to tell
-// collection to remove itself since we can't have
-// each collection monitoring the network kioslave
 }
 
 }

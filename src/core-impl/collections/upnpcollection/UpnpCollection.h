@@ -59,6 +59,7 @@ class UpnpCollection : public Collections::Collection
 
   public slots:
     virtual void startFullScan();
+    void removeCollection() { emit remove(); }
 
   private slots:
     void entries( KIO::Job *, const KIO::UDSEntryList& );

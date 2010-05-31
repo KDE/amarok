@@ -17,11 +17,10 @@
 #ifndef UPNPCOLLECTIONFACTORY_H
 #define UPNPCOLLECTIONFACTORY_H
 
-#include <kfileitem.h>
-
 #include "core/collections/Collection.h"
 
-class KDirLister;
+typedef QHash<QString, QString> DeviceTypeMap;
+Q_DECLARE_METATYPE(DeviceTypeMap);
 
 namespace Collections {
 
@@ -40,13 +39,12 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
   private:
 
   private slots:
-    void slotNewDevices( const KFileItemList &list );
-
-    void slotDeviceOffline( const KFileItemList &list );
-    void createCollection( const KFileItem &item );
+    void slotDevicesAdded( const DeviceTypeMap &map );
+    void slotDevicesRemoved( const DeviceTypeMap &map );
+    void createCollection( const QString &udn );
 
   private:
-    KDirLister *m_networkLister;
+    QHash<QString, UpnpCollection*> m_devices;
 };
 
 } //namespace Collections
