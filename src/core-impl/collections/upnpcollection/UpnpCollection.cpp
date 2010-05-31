@@ -60,7 +60,7 @@ UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
 
-        KIO::ListJob *job = KIO::listDir(KUrl("upnp-ms://bf7eace9-e63f-4267-a871-7b572d750653/PC Directory/shared/music"));
+        KIO::ListJob *job = KIO::listDir(KUrl("upnp-ms://bf7eace9-e63f-4267-a871-7b572d750653/PC Directory/shared/music/zero project/Fairytale"));
     Q_ASSERT( connect( job, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)) ) );
     Q_ASSERT( connect( job, SIGNAL(result(KJob*)), 
