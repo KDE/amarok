@@ -131,6 +131,17 @@ DEBUG_BLOCK
 
     t->setPlayableUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
     t->setTrackNumber( entry.stringValue(KIO::UPNP_TRACK_NUMBER).toInt() );
+// TODO validate and then convert to kbps
+    t->setBitrate( entry.stringValue( KIO::UPNP_BITRATE ).toInt() / 1024 );
+
+    QTime lengthTime = QTime::fromString( entry.stringValue( KIO::UPNP_DURATION ), Qt::ISODate );
+    if( lengthTime.isValid() ) {
+        qint64 msecs = lengthTime.hour() * 60 * 60 * 1000
+            + lengthTime.minute() * 60 * 1000
+            + lengthTime.second() * 1000
+            + lengthTime.msec();
+        t->setLength( msecs );
+    }
 
     Artist->addTrack( t );
     Album->addTrack( t );

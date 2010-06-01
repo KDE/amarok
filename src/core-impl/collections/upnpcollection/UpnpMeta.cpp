@@ -220,7 +220,7 @@ UpnpTrack::sampleRate() const
 int
 UpnpTrack::bitrate() const
 {
-    return 0;
+    return m_bitrate;
 }
 
 int
@@ -329,6 +329,12 @@ void
 UpnpTrack::setLength( qint64 length )
 {
     m_length = length;
+}
+
+void
+UpnpTrack::setBitrate( int rate )
+{
+    m_bitrate = rate;
 }
 
 //UpnpArtist

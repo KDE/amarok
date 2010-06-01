@@ -119,6 +119,7 @@ class UpnpTrack : public Meta::Track
         void setPlayableUrl( const QString &url );
 
         void setLength( qint64 length );
+        void setBitrate( int rate );
 
     private:
         Collections::UpnpCollection *m_collection;
@@ -132,6 +133,7 @@ class UpnpTrack : public Meta::Track
         QString m_name;
         QString m_type;
         qint64 m_length;
+        int m_bitrate;
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;
