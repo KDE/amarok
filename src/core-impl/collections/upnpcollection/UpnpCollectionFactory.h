@@ -22,6 +22,8 @@
 typedef QHash<QString, QString> DeviceTypeMap;
 Q_DECLARE_METATYPE(DeviceTypeMap);
 
+class QDBusInterface;
+
 namespace Collections {
 
 class UpnpCollection;
@@ -45,6 +47,7 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
 
   private:
     QHash<QString, UpnpCollection*> m_devices;
+    QDBusInterface *m_iface;
 };
 
 } //namespace Collections

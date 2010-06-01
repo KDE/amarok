@@ -56,31 +56,33 @@ void UpnpCollectionFactory::init()
         QDBusConnection bus = QDBusConnection::sessionBus();
 
     bus.connect( "org.kde.Cagibi",
-                 "/",
+                 "/org/kde/Cagibi",
                  "org.kde.Cagibi",
                  "devicesAdded",
                  this,
                  SLOT( slotDevicesAdded( const DeviceTypeMap & ) ) );
 
     bus.connect( "org.kde.Cagibi",
-                 "/",
+                 "/org/kde/Cagibi",
                  "org.kde.Cagibi",
                  "devicesRemoved",
                  this,
                  SLOT( slotDevicesRemoved( const DeviceTypeMap & ) ) );
 
-    QDBusInterface *iface = new QDBusInterface("org.kde.Cagibi",
-                                               "/",
+    m_iface = new QDBusInterface("org.kde.Cagibi",
+                                               "/org/kde/Cagibi",
                                                "org.kde.Cagibi",
                                                bus,
                                                this );
-    Q_ASSERT(iface->isValid());
-    QDBusReply<DeviceTypeMap> reply = iface->call( "allDevices" );
+    Q_ASSERT(m_iface->isValid());
+    QDBusReply<DeviceTypeMap> reply = m_iface->call( "allDevices" );
     if( !reply.isValid() ) {
         debug() << "ERROR" << reply.error().message();
-        Q_ASSERT(false);
+        //Q_ASSERT(false);
     }
-    slotDevicesAdded( reply.value() );
+    else {
+        slotDevicesAdded( reply.value() );
+    }
 }
 
 void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
