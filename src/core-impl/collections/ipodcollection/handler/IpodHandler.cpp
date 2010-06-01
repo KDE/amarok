@@ -28,6 +28,10 @@
 extern "C" {
 #include <glib-object.h> // g_type_init
 #ifdef GDK_FOUND
+// work around compile issue with glib >= 2.25
+#ifdef signals
+  #undef signals
+#endif
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #endif
 }
