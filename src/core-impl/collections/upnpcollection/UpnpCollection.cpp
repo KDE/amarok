@@ -61,10 +61,10 @@ UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
 
-        KIO::ListJob *job = KIO::listRecursive(KUrl("upnp-ms://" + m_udn));
-    Q_ASSERT( connect( job, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
+    m_listJob = KIO::listRecursive(KUrl("upnp-ms://" + m_udn + "/PC Directory/shared/music/Metric"));
+    Q_ASSERT( connect( m_listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)) ) );
-    Q_ASSERT( connect( job, SIGNAL(result(KJob*)), 
+    Q_ASSERT( connect( m_listJob, SIGNAL(result(KJob*)), 
                        this, SLOT(done(KJob*)) ) );
 
 }

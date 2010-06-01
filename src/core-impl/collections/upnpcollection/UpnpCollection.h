@@ -31,6 +31,7 @@
 
 namespace KIO {
   class Job;
+  class ListJob;
 }
 class KJob;
 
@@ -71,6 +72,8 @@ class UpnpCollection : public Collections::Collection
     QString m_name;
     QSharedPointer<MemoryCollection> m_mc;
     UpnpMemoryQueryMaker *m_umqm;
+
+    KIO::ListJob *m_listJob;
 
     // probably move to some separate class
     // should we just extend MemoryCollection?
