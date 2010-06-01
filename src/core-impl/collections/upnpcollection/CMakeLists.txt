@@ -15,6 +15,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
     UpnpMemoryQueryMaker.cpp
     UpnpQueryMaker.cpp
     UpnpMeta.cpp
+    dbuscodec.cpp
 )
 
 

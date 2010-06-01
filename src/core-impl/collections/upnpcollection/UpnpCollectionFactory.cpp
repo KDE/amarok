@@ -25,6 +25,8 @@
 
 #include "core/support/Debug.h"
 #include "UpnpCollection.h"
+#include "deviceinfo.h"
+#include "dbuscodec.h"
 
 #include <QtDBus>
 
@@ -35,7 +37,8 @@ AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
     : Collections::CollectionFactory()
 {
-    qRegisterMetaType<DeviceTypeMap>();
+    qDBusRegisterMetaType<DeviceTypeMap>();
+    qDBusRegisterMetaType<DeviceInfo>();
     setParent( parent );
     Q_UNUSED( args );
 }
