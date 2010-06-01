@@ -74,12 +74,12 @@ class UpnpCollection : public Collections::Collection
 
     // probably move to some separate class
     // should we just extend MemoryCollection?
-    TrackMap m_trackMap;
-    ArtistMap m_artistMap;
-    AlbumMap m_albumMap;
-    GenreMap m_genreMap;
-    ComposerMap m_composerMap;
-    YearMap m_yearMap;
+    TrackMap m_TrackMap;
+    ArtistMap m_ArtistMap;
+    AlbumMap m_AlbumMap;
+    GenreMap m_GenreMap;
+    ComposerMap m_ComposerMap;
+    YearMap m_YearMap;
 };
 
 } //namespace Collections

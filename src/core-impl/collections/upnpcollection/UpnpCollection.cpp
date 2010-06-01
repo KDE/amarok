@@ -30,6 +30,7 @@
 
 #include <KLocale>
 #include <KMessageBox>
+#include <kdatetime.h>
 #include <kio/upnptypes.h>
 #include <kio/scheduler.h>
 #include <kio/jobclasses.h>
@@ -79,8 +80,12 @@ DEBUG_BLOCK
         }
     }
 
-    memoryCollection()->setArtistMap( m_artistMap );
-    memoryCollection()->setAlbumMap( m_albumMap );
+    memoryCollection()->setTrackMap( m_TrackMap );
+    memoryCollection()->setArtistMap( m_ArtistMap );
+    memoryCollection()->setAlbumMap( m_AlbumMap );
+    memoryCollection()->setGenreMap( m_GenreMap );
+    memoryCollection()->setComposerMap( m_ComposerMap );
+    memoryCollection()->setYearMap( m_YearMap );
     emit updated();
 }
 
@@ -88,38 +93,51 @@ void
 UpnpCollection::createTrack( const KIO::UDSEntry &entry )
 {
 DEBUG_BLOCK
-    debug() << "CREATING TRACK";
+
+#define INSERT_METADATA(type, value)\
+    QString type##String = value;\
+    Upnp##type##Ptr type( new Upnp##type( type##String ) );\
+    if( m_##type##Map.contains( type##String ) )\
+        type = Upnp##type##Ptr::dynamicCast( m_##type##Map[ type##String ] );\
+    else\
+        m_##type##Map[ type##String ] = type##Ptr::dynamicCast( type );
+
     // TODO check if Meta data is actually available
 
-    QString artistName = entry.stringValue(KIO::UPNP_CREATOR);
-    UpnpArtistPtr artist( new UpnpArtist( artistName ) );
-    if( m_artistMap.contains( artistName ) )
-        artist = UpnpArtistPtr::dynamicCast( m_artistMap[artistName] );
-    else
-        m_artistMap[artistName] = ArtistPtr::dynamicCast( artist );
+    INSERT_METADATA( Artist, entry.stringValue( KIO::UPNP_CREATOR ) );
+    INSERT_METADATA( Album, entry.stringValue( KIO::UPNP_ALBUM ) );
+    INSERT_METADATA( Genre, entry.stringValue( KIO::UPNP_GENRE ) );
 
-    QString albumName = entry.stringValue(KIO::UPNP_ALBUM);
-    UpnpAlbumPtr album( new UpnpAlbum(albumName) );
-    if( m_albumMap.contains( albumName ) )
-        album = UpnpAlbumPtr::dynamicCast( m_albumMap[albumName] );
-    else
-        m_albumMap[albumName] = AlbumPtr::dynamicCast( album );
+    QString date = entry.stringValue( KIO::UPNP_DATE );
+    KDateTime dateTime = KDateTime::fromString( date );
+    int year = dateTime.date().year();
+    if( !dateTime.isValid() ) {
+        year = 0;
+    }
+    INSERT_METADATA( Year, QString::number(year) );
 
-    album->setAlbumArtist( artist );
-    artist->addAlbum( album );
+    Album->setAlbumArtist( Artist );
+    Artist->addAlbum( Album );
 
     UpnpTrackPtr t( new UpnpTrack(this) ); 
-    t->setTitle( entry.stringValue(KIO::UDSEntry::UDS_NAME) );
-    t->setArtist( artist );
-    t->setAlbum( album );
-    t->setYear( UpnpYearPtr( new UpnpYear( "2010" ) ) );
+    QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
+    QFileInfo info(name);
+    t->setTitle( info.fileName() );
+
+    t->setArtist( Artist );
+    t->setAlbum( Album );
+    t->setGenre( Genre );
+    t->setYear( Year );
+
     t->setPlayableUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
     t->setTrackNumber( entry.stringValue(KIO::UPNP_TRACK_NUMBER).toInt() );
 
-    artist->addTrack( t );
-    album->addTrack( t );
+    Artist->addTrack( t );
+    Album->addTrack( t );
+    Genre->addTrack( t );
+    Year->addTrack( t );
 
-    memoryCollection()->addTrack( TrackPtr::dynamicCast( t ) );
+    m_TrackMap[t->uidUrl()] = TrackPtr::dynamicCast( t );
 
 }
 
