@@ -91,8 +91,15 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
         QString type = map[udn];
         // TODO special case prefix for stuff like ushare
         if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") ) {
+            QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
+            if( !reply.isValid() ) {
+                debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
+                debug() << "Error" << reply.error().message();
+                continue;
+            }
+            DeviceInfo info = reply.value();
             QString actualUdn = udn.replace("uuid:", "");
-            m_devices[udn] = new UpnpCollection( actualUdn, actualUdn );
+            m_devices[udn] = new UpnpCollection( actualUdn, info.friendlyName() );
             // we should get the friendly name
             emit newCollection( m_devices[udn] );
         }
