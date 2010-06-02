@@ -18,18 +18,21 @@
 #define AMAROK_FASTFORWARD_WORKER_H
 
 #include "FastForwardImporter.h"
+
 #include "databaseimporter/DatabaseImporter.h"
+#include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QSharedPointer>
 #include <QSqlDatabase>
 
 class FastForwardWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
-    
+
     public:
         FastForwardWorker();
 
@@ -63,7 +66,16 @@ class FastForwardWorker : public ThreadWeaver::Job
     private:
         QSqlDatabase databaseConnection();
         const QString driverName() const;
-        
+        /**
+         * Searches collection by given tags, returns a TrackPtr or 0 if no or multiple tracks match.
+         * emits trackDiscarded(), trackMatchFound(), trackMatchMultiple() as appropriate.
+         */
+        Meta::TrackPtr trySmartMatch(const int c, const QString url, const QString title,
+                                     const QString album, const QString artist, const QString composer,
+                                     const QString genre, const uint year, const uint trackNr,
+                                     const uint discNr, const uint filesize);
+        void failWithError(const QString errorMsg);
+
         bool m_aborted;
         bool m_failed;
 
@@ -77,6 +89,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         bool m_importArtwork;
         QString m_importArtworkDir;
 
+        QMap<QString, QSharedPointer<Collections::CollectionLocation> > m_collectionFolders;
         Meta::TrackList m_matchTracks;
         bool m_queryRunning;
 };

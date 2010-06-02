@@ -18,7 +18,6 @@
 
 #include "core/support/Amarok.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/CollectionLocation.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
 #include "core/capabilities/StatisticsCapability.h"
@@ -49,6 +48,25 @@ FastForwardWorker::FastForwardWorker()
     , m_importArtwork( false )
     , m_queryRunning( false )
 {
+    /* fill in m_collectionFolders.
+     * For each collection folder we remember collection location it belongs to. */
+    foreach( Collections::Collection *coll , CollectionManager::instance()->queryableCollections() )
+    {
+        QSharedPointer<Collections::CollectionLocation> location(coll->location());
+        if(location)
+        {
+            foreach( QString path , location->actualLocation() )
+            {
+                if(m_collectionFolders.contains(path))
+                {
+                    warning() << "Multiple collection locations claim the same path " << path;
+                    continue;
+                }
+                m_collectionFolders.insert(path, location);
+                debug() << "Collection folder " << path << " => collection location " << location->prettyLocation();
+            }
+        }
+    }
 }
 
 QSqlDatabase
@@ -105,13 +123,9 @@ FastForwardWorker::run()
     QSqlDatabase db = databaseConnection();
     if( !db.open() )
     {
-        QString errorMsg = i18n( "Could not open Amarok 1.4 database: %1", db.lastError().text() );
-        debug() << errorMsg;
-        emit importError( errorMsg );
-        m_failed = true;
+        failWithError( i18n( "Could not open Amarok 1.4 database: %1", db.lastError().text() ) );
         return;
     }
-
 
     QString sql =
       QString( "SELECT lastmountpoint, S.url, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
@@ -139,16 +153,11 @@ FastForwardWorker::run()
 
     if( query.lastError().isValid() )
     {
-        QString errorMsg = i18n( "Could not execute import query: %1", db.lastError().text() );
-        error() << "Error executing import query:" << errorMsg;
-        emit importError( errorMsg );
-        m_failed = true;
+        failWithError( i18n( "Could not execute import query: %1", db.lastError().text() ) );
         return;
     }
 
-    debug() << "active?" << query.isActive() << "size:" << query.size();
-
-    QMap<Meta::TrackPtr,QString> tracksForInsert;
+    QMap<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > tracksForInsert;
 
     for( int c = 0; query.next(); c++ )
     {
@@ -161,7 +170,7 @@ FastForwardWorker::run()
 
         uint firstPlayed = query.value( index++ ).toUInt();
         uint lastPlayed  = query.value( index++ ).toUInt();
-        uint score       = query.value( index++ ).toDouble();
+        double score     = query.value( index++ ).toDouble();
         int rating       = query.value( index++ ).toInt();
         int playCount    = query.value( index++ ).toInt();
         QString lyrics   = query.value( index++ ).toString();
@@ -174,146 +183,116 @@ FastForwardWorker::run()
         uint trackNr     = query.value( index++ ).toUInt();
         uint discNr      = query.value( index++ ).toUInt();
         uint filesize    = query.value( index++ ).toUInt();
-        
+
         // remove the relative part of the url, and make the url absolute
         url = mount + url.mid(1);
 
-
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-        if( track )
+        if( track ) // track url exists
         {
-            debug() << c << " found track by URL: " << url;
-
-            if( !track->inCollection() )
+            debug() << c << " file exists: " << url;
+            Collections::Collection* collection = track->collection(); // try
+            if(collection)
             {
-                tracksForInsert.insert( track, track->playableUrl().url() );
-                debug() << c << " inserting track:" << track->playableUrl();
+                debug() << c << " track already in databse -> update";
+                emit trackAdded( track );
             }
-            else {
-                Collections::Collection* collection = track->collection();
-                if (collection)
-                    debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
-            }
+            else
+            {
+                debug() << c << " track not in database";
 
-            emit trackAdded( track );
-
-        }
-        else
-        {
-            debug() << c << " no track found by URL: " << url;
-
-            // we need at least a title for a match
-            if ( m_smartMatch && !title.isEmpty() ) {
-
-                debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
-
-                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-                if( !coll )
-                    continue;
-
-                // setup query
-                m_matchTracks.clear();
-                // state var to make the query synchronous (not exactly elegant, but'll do..)
-                m_queryRunning = true;
-
-                Collections::QueryMaker *qm_track = coll->queryMaker()->setQueryType( Collections::QueryMaker::Track );
-
-                // set matching criteria to narrow down the corresponding track in
-                // the new collection as good as possible
-                // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
-                //       lengths
-                //       bitrate: same
-                qm_track->addFilter( Meta::valTitle, title, true, true );
-                qm_track->addFilter( Meta::valAlbum, album, true, true );
-                qm_track->addFilter( Meta::valArtist, artist, true, true );
-                qm_track->addFilter( Meta::valComposer, composer, true, true );
-                qm_track->addFilter( Meta::valGenre, genre, true, true );
-                qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
-
-                connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-                connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-                qm_track->run();
-
-                // block until query is finished
-                QCoreApplication::processEvents();
-                while ( m_queryRunning == true ) {
-                    thread()->msleep( 10 );
-                    QCoreApplication::processEvents();
+                Collections::CollectionLocation *location(0);
+                // go throungh collection locacions and try to find match
+                QMapIterator<QString, QSharedPointer<Collections::CollectionLocation> > i(m_collectionFolders);
+                while (i.hasNext()) {
+                    i.next();
+                    if(url.startsWith( i.key() ) )
+                    {
+                        location = i.value().data();
+                        break;
+                    }
                 }
 
-                // evaluate query result
-                if ( m_matchTracks.isEmpty() )
+                if(location)
                 {
-
-                    debug() << c << " matching done: no track found for url " << url;
-
-                    emit trackDiscarded( url );
-
-                }
-                else if ( m_matchTracks.count() == 1 )
-                {
-
-                    track = m_matchTracks.first();
-
-                    debug() << c << " matching done: matching track found for url " << url;
-                    debug() << c << "  (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
-
-                    emit trackMatchFound( m_matchTracks.first(), url );
-
+                    debug() << c << " track found under" << location->prettyLocation() << "-> add";
+                    QMap<Meta::TrackPtr,QString> *map;
+                    if(tracksForInsert.contains( location) )
+                    {
+                        map = tracksForInsert.value( location );
+                    }
+                    else
+                    {
+                        map = new QMap<Meta::TrackPtr,QString>;
+                        tracksForInsert.insert( location, map );
+                    }
+                    map->insert( track, track->playableUrl().url() );
+                    emit trackAdded( track );
                 }
                 else
                 {
-                    debug() << c << " matching done: more than one track found for url " << url;
-
-                    foreach( Meta::TrackPtr d_track, m_matchTracks )
-                    {
-                        if ( d_track && d_track->artist() && d_track->album() )
-                            debug() << c << "   found track: " << d_track->name() << " : " << d_track->artist()->name() << " : " << d_track->album()->name() << " - " << d_track->playableUrl();
-                        ;
-                    }
-
-                    emit trackMatchMultiple( m_matchTracks, url );
+                    debug() << c << " track is not under configured collection folders -> discard";
+                    track = 0;
+                    emit trackDiscarded( url );
+                    emit showMessage( i18n( "<font color='gray'>(track exists, but does not belong into any of your configured collection folders)</font>" ) );
                 }
-
-
-                delete qm_track;
-
-            } else {
-                debug() << c << " no track produced for URL " << url;
-
+            }
+        }
+        else // track url does not exist
+        {
+            debug() << c << " file does not exist: " << url;
+            // we need at least a title for a match
+            if ( m_smartMatch && !title.isEmpty() ) {
+                track = trySmartMatch(c, url, title, album, artist, composer, genre, year, trackNr, discNr, filesize);
+            }
+            else
+            {
+                debug() << c << " smart maching disabled or too few metadata -> discard";
                 emit trackDiscarded( url );
             }
         }
 
         if( track )
         {
-            // import statistics
+            /* import statistics. ec may be different object for different track types.
+             * StatisticsCapability for MetaFile::Track only caches info (thus we need to call
+             * insertStatistics() afterwards) while Meta::SqlTrack directly saves data to
+             * database (thus no insertStatistics() call is necessary)
+             */
             Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
-            if( !ec )
-                continue;
+            if( ec )
+            {
+                ec->beginStatisticsUpdate();
+                ec->setScore( score );
+                ec->setRating( rating );
+                ec->setFirstPlayed( firstPlayed );
+                ec->setLastPlayed( lastPlayed );
+                ec->setPlayCount( playCount );
+                ec->endStatisticsUpdate();
 
-            ec->beginStatisticsUpdate();
-            ec->setScore( score );
-            ec->setRating( rating );
-            ec->setFirstPlayed( firstPlayed );
-            ec->setLastPlayed( lastPlayed );
-            ec->setPlayCount( playCount );
-            ec->endStatisticsUpdate();
-            
-            if( !lyrics.isEmpty() )
-                track->setCachedLyrics( lyrics );
+                delete ec;
             }
+            else
+            {
+                warning() << c << " track->create<Capabilities::StatisticsCapability>() returned 0!";
+                emit showMessage( i18n( "<font color='red'>Cannot import statistics for %1</font>", url ) );
+            }
+
+            if( !lyrics.isEmpty() )
+                track->setCachedLyrics( lyrics ); /// TODO: this probably works only for Meta::SqlTrack
+        }
     }
 
-    if( tracksForInsert.size() > 0 )
+    // iterate over collection locations, add appropriate tracks to each
     {
-        emit showMessage( i18n( "Synchronizing Amarok database..." ) );
-        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-        location->insertTracks( tracksForInsert );
-        location->insertStatistics( tracksForInsert );
+        QMapIterator<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > i(tracksForInsert);
+        while( i.hasNext()) {
+            i.next();
+            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>", i.value()->size(), i.key()->prettyLocation() ) );
+            i.key()->insertTracks( *(i.value()) );
+            i.key()->insertStatistics( *(i.value()) );
+            delete i.value(); // i.key() is deleted by QSharedPointer
+        }
     }
 
     if( m_importArtwork )
@@ -352,14 +331,101 @@ FastForwardWorker::run()
     }
 }
 
-void FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+void
+FastForwardWorker::failWithError(const QString errorMsg)
+{
+    debug() << errorMsg;
+    emit importError( errorMsg );
+    m_failed = true;
+}
+
+Meta::TrackPtr
+FastForwardWorker::trySmartMatch(const int c, const QString url, const QString title, const QString album, const QString artist, const QString composer, const QString genre, const uint year, const uint trackNr, const uint discNr, const uint filesize)
+{
+    Meta::TrackPtr track(0);
+
+    debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
+
+    // setup query
+    m_matchTracks.clear();
+    // state var to make the query synchronous (not exactly elegant, but'll do..)
+    m_queryRunning = true;
+
+    Collections::QueryMaker *qm_track = CollectionManager::instance()->queryMaker();
+    qm_track->setQueryType( Collections::QueryMaker::Track );
+
+    debug() << c << " adding filters";
+    // set matching criteria to narrow down the corresponding track in
+    // the new collection as good as possible
+    // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
+    //       lengths
+    //       bitrate: same
+    qm_track->addFilter( Meta::valTitle, title, true, true );
+    qm_track->addFilter( Meta::valAlbum, album, true, true );
+    qm_track->addFilter( Meta::valArtist, artist, true, true );
+    qm_track->addFilter( Meta::valComposer, composer, true, true );
+    qm_track->addFilter( Meta::valGenre, genre, true, true );
+    qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
+    qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
+    qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
+    qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
+
+    debug() << c << " connecting signals";
+    connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    qm_track->run();
+
+    debug() << c << " QCoreApplication::processEvents() outside loop";
+    // block until query is finished
+    QCoreApplication::processEvents();
+    while ( m_queryRunning == true ) {
+        debug() << c << " thread()->msleep()";
+        thread()->msleep( 10 );
+        debug() << c << " QCoreApplication::processEvents() inside loop";
+        QCoreApplication::processEvents();
+    }
+
+    // evaluate query result
+    if ( m_matchTracks.isEmpty() )
+    {
+        debug() << c << " matching done: no track found -> discard";
+        emit trackDiscarded( url );
+    }
+    else if ( m_matchTracks.count() == 1 )
+    {
+        track = m_matchTracks.first();
+        debug() << c << " matching done: matching track found -> update";
+        debug() << c << "  (" << track->collection()->location()->prettyLocation()
+                << "):" << track->playableUrl();
+        emit trackMatchFound( m_matchTracks.first(), url );
+    }
+    else
+    {
+        debug() << c << " matching done: more than one track found -> discard";
+        foreach( Meta::TrackPtr d_track, m_matchTracks )
+        {
+            if ( d_track && d_track->artist() && d_track->album() )
+                debug() << c << "   found track: " << d_track->name() << " : "
+                        << d_track->artist()->name() << " : " << d_track->album()->name()
+                        << " - " << d_track->playableUrl();
+        }
+        emit trackMatchMultiple( m_matchTracks, url );
+    }
+
+    delete qm_track;
+    return track;
+}
+
+void
+FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
     Q_UNUSED( collectionId )
 
     m_matchTracks << tracks;
 }
 
-void FastForwardWorker::queryDone()
+void
+FastForwardWorker::queryDone()
 {
     m_queryRunning = false;
 }
