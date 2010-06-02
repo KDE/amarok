@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
-//Plasma applet for showing photos from flickr
-
 #ifndef COVERBLING_APPLET_H
 #define COVERBLING_APPLET_H
 
@@ -34,6 +31,7 @@ class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class RatingWidget;
 class QGraphicsPixmapItem;
+class MyGraphicsTextItem;
 
 namespace Plasma
 {
@@ -63,7 +61,9 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
         void saveSettings();
         void skipToFirst();
         void skipToLast();
-
+		void albumSearch(QString ialbum);
+		void switchSearchIcon();
+		void displaySearchName();
     protected :
         virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);
@@ -80,7 +80,9 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
         Plasma::IconWidget* m_blingfastforward;
         Plasma::IconWidget* m_fullscreen;
         Plasma::IconWidget* m_jumptoplaying;
-
+		Plasma::IconWidget* m_albumsearch;
+		MyGraphicsTextItem* m_editsearch;
+		
         bool m_fullsize;
         bool m_autojump;
         bool m_animatejump;
@@ -88,6 +90,7 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
         int m_coversize;
         PictureFlow::ReflectionEffect m_reflectionEffect;
         bool m_openGL;
+        bool m_album_or_artist;
 };
 
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )

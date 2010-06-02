@@ -1134,10 +1134,10 @@ void PictureFlow::wheelEvent( QWheelEvent * event )
 {
     int numDegrees = event->delta() / 8;
     int numSteps = numDegrees / 15;
-    bool forward = true;
+    bool forward = TRUE;
     if ( numSteps < 0 )
     {
-        forward = false;
+        forward = FALSE;
         numSteps = -numSteps;
     }
     for ( int i = 1;i <= numSteps;i++ )
