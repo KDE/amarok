@@ -46,8 +46,8 @@ namespace Amarok
     const int VOLUME_SENSITIVITY = 30; // for mouse wheels
     const int GUI_THREAD_ID = 0;
 
-    extern QMutex globalDirsMutex; // defined in App.cpp
-    extern QPointer<KActionCollection> actionCollectionObject; // defined in App.cpp
+    extern QMutex globalDirsMutex;
+    extern QPointer<KActionCollection> actionCollectionObject;
 
     namespace ColorScheme
     {
@@ -73,12 +73,12 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = "General" ); //defined in App.cpp
+    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = "General" );
 
     /**
      * @return the KActionCollection used by Amarok
      */
-    AMAROK_CORE_EXPORT KActionCollection *actionCollection(); // defined in App.cpp
+    AMAROK_CORE_EXPORT KActionCollection *actionCollection();
 
     /**
      * Compute score for a track that has finished playing.
@@ -100,7 +100,7 @@ namespace Amarok
      * Allocate one on the stack, and it'll set the busy cursor for you until it
      * is destroyed
      */
-    class OverrideCursor { // defined in App.cpp
+    class OverrideCursor {
     public:
         OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
@@ -118,7 +118,7 @@ namespace Amarok
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
     /**
      * For recursively expanding the contents of a directory into a KUrl::List
@@ -130,9 +130,9 @@ namespace Amarok
     AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
     AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
 
-    AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
-    AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
-    AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
+    AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
+    AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
+    AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
@@ -151,7 +151,7 @@ namespace Amarok
         return QString();
     }
 
-    void setUseScores( bool use ); // defined in App.cpp
+    void setUseScores( bool use );
     void setUseRatings( bool use );
 
     bool repeatNone(); // defined in ActionClasses.cpp

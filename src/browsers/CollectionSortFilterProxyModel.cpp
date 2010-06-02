@@ -147,7 +147,7 @@ CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album, bool *ok ) cons
     int year = 0;
     if( !album->tracks().isEmpty() )
     {
-        const Meta::TrackPtr track = album->tracks()[0];
+        const Meta::TrackPtr track = album->tracks().at(0);
         if( track && track->year() )
             year = track->year()->prettyName().toInt( ok );
     }
