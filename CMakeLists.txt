@@ -187,6 +187,7 @@ if( WITH_PLAYER )
     endif( KDE4_BUILD_TESTS AND NOT WIN32 )
 
     add_subdirectory( src )
+    add_subdirectory( external )
 
     macro_display_feature_log()
 
