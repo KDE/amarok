@@ -60,6 +60,12 @@ SqlRegistry::getTrack( const QString &url )
         Meta::TrackPtr track = Meta::SqlTrack::getTrack( deviceid, rpath, m_collection );
         if( track )
         {
+            /* we want to ensure that this track has a capability delegate or not much will
+             * work for it */
+            Meta::SqlTrack *sqlTrack = dynamic_cast<Meta::SqlTrack *>( track.data() );
+            if( sqlTrack )
+                sqlTrack->setCapabilityDelegate( createTrackDelegate() );
+
             m_trackMap.insert( id, track );
             m_uidMap.insert( KSharedPtr<Meta::SqlTrack>::staticCast( track )->uidUrl(), track );
         }
