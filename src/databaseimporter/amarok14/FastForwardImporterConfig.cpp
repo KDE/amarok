@@ -29,6 +29,8 @@
 FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     : DatabaseImporterConfig( parent )
 {
+    QString fastForwardDataPath = QDir::homePath() + "/.kde/share/apps/amarok";
+
     QWidget *gridHolder = new QWidget( this );
 
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
@@ -44,7 +46,7 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_databaseLocationInput->setCompleter( completer );
-    m_databaseLocationInput->setText( QDir::homePath() + "/.kde/share/apps/amarok/collection.db" );
+    m_databaseLocationInput->setText( fastForwardDataPath + "/collection.db" );
     m_databaseLocationLabel->setBuddy( m_databaseLocationInput );
 
     m_usernameLabel = new QLabel( i18n("Username"), gridHolder );
@@ -87,12 +89,18 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
 
     m_smartMatchCheck = new QCheckBox( i18n("Match tracks by meta tags"), this );
+    m_smartMatchCheck->setToolTip( i18n("Perform meta information search on non-existing"
+            "files, possibly detecting file renames. See <b>What's This</b>") );
+    m_smartMatchCheck->setWhatsThis( i18n("If enabled, tracks from old collection that "
+            "do not exist anymore in filesystem are searched by metadata in current "
+            "collection. If a match is found, statistics for matched track are updated "
+            "even if file locations differ.") );
     m_smartMatchCheck->setChecked( true );
 
     m_importArtworkCheck = new QCheckBox( i18n("Import downloaded artwork"), this );
     m_importArtworkCheck->setChecked( true );
-    
-    const QString oldCoverPath = Amarok::saveLocation( "albumcovers/large/" ).replace("kde4", "kde");
+
+    const QString oldCoverPath = fastForwardDataPath + "/albumcovers/large/";
 
     QWidget *artworkDirHolder = new QWidget( this );
 

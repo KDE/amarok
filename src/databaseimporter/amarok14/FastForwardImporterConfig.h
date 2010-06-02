@@ -62,7 +62,7 @@ class FastForwardImporterConfig : public DatabaseImporterConfig
         QLineEdit *m_hostnameInput;
         QLineEdit *m_usernameInput;
         QLineEdit *m_passwordInput;
-        
+
         QCheckBox *m_smartMatchCheck;
 
         QCheckBox *m_importArtworkCheck;
