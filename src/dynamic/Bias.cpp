@@ -30,9 +30,11 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/QueryMaker.h"
+#include "core-impl/collections/support/XmlQueryReader.h"
 #include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>
+#include <QDateTime>
 
 #include <cmath>
 
@@ -59,7 +61,7 @@ Dynamic::Bias::fromXml( QDomElement e )
     if( type == "global" )
     {
         double weight = 0.0;
-        XmlQueryReader::Filter filter;
+        Dynamic::GlobalBias::Filter filter;
 
 
         QDomElement queryElement = e.firstChildElement( "query" );
@@ -87,7 +89,35 @@ Dynamic::Bias::fromXml( QDomElement e )
                     }
 #endif
 
-                    filter = XmlQueryReader::readFilter(&reader);
+                    XmlQueryReader::Filter xmlFilter = XmlQueryReader::readFilter(&reader);
+
+                    filter.field = xmlFilter.field;
+                    if( xmlFilter.compare == -1 )
+                    {
+                        filter.value = xmlFilter.value;
+                        filter.condition = Dynamic::GlobalBias::Contains;
+                    }
+                    else
+                    {
+                        filter.numValue = xmlFilter.value.toLongLong();
+                        if( xmlFilter.compare == 0 )
+                            filter.condition = Dynamic::GlobalBias::Equals;
+                        else if( xmlFilter.compare == 1 )
+                            filter.condition = Dynamic::GlobalBias::GreaterThan;
+                        else if( xmlFilter.compare == 2 )
+                            filter.condition = Dynamic::GlobalBias::LessThan;
+                    }
+
+                    // handle special compare and value2 attributes:
+                    // TODO: don't use XmlQueryReader any longer
+                    QString compareStr = includeElement.attribute( "compare", QString() );
+                    if( compareStr == "olderThan" )
+                        filter.condition = Dynamic::GlobalBias::OlderThan;
+                    else if( compareStr == "between" )
+                        filter.condition = Dynamic::GlobalBias::Between;
+
+                    filter.numValue2 = includeElement.attribute( "value2", 0 ).toLongLong();
+
                 }
             }
         }
@@ -209,19 +239,19 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
-Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::GlobalBias( double weight, Filter filter )
     : m_qm(0)
 {
     setWeight( weight );
-    setQuery( filter );
+    setFilter( filter );
 }
 
-Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, Filter filter )
     : CollectionDependantBias( coll )
     , m_qm(0)
 {
     setWeight( weight );
-    setQuery( filter );
+    setFilter( filter );
 }
 
 Dynamic::GlobalBias::~GlobalBias()
@@ -245,11 +275,20 @@ Dynamic::GlobalBias::xml() const
 
     QDomElement queryElement = doc.createElement( "query" );
     QDomElement filtersElement = doc.createElement( "filters" );
-    if( m_filter.compare == -1 )
-        filtersElement.appendChild( Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value ));
+    QDomElement filterElement;
+    if( m_filter.condition == Contains )
+         filterElement = Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value );
     else
-        filtersElement.appendChild( Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value.toLongLong(), (Collections::QueryMaker::NumberComparison)m_filter.compare ));
+        filterElement = Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.numValue, (Collections::QueryMaker::NumberComparison)m_filter.condition );
+    // handle special compare and value2 attributes:
+    // TODO: don't use XmlQueryWriter any longer
+    if( m_filter.condition == Dynamic::GlobalBias::OlderThan )
+        filterElement.setAttribute( "compare", "olderThan" );
+    else if( m_filter.condition == Dynamic::GlobalBias::Between )
+        filterElement.setAttribute( "compare", "between" );
+    filterElement.setAttribute( "value2", m_filter.numValue2 );
 
+    filtersElement.appendChild( filterElement );
     queryElement.appendChild( filtersElement );
     e.appendChild( queryElement );
 
@@ -261,12 +300,6 @@ PlaylistBrowserNS::BiasWidget*
 Dynamic::GlobalBias::widget( QWidget* parent )
 {
     return new PlaylistBrowserNS::BiasGlobalWidget( this, parent );
-}
-
-const XmlQueryReader::Filter&
-Dynamic::GlobalBias::filter() const
-{
-    return m_filter;
 }
 
 double
@@ -298,8 +331,15 @@ Dynamic::CollectionFilterCapability* Dynamic::GlobalBias::collectionFilterCapabi
 }
 
 
+
+Dynamic::GlobalBias::Filter
+Dynamic::GlobalBias::filter() const
+{
+    return m_filter;
+}
+
 void
-Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::setFilter( const Filter &filter)
 {
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
@@ -314,11 +354,28 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
 
     if( filter.field != 0 )
     {
-        if( filter.compare == -1 )
+        switch( filter.condition )
+        {
+        case Equals:
+        case GreaterThan:
+        case LessThan:
+            m_qm->addNumberFilter( filter.field, filter.numValue,
+                    (Collections::QueryMaker::NumberComparison)filter.condition );
+            break;
+        case Between:
+            m_qm->addNumberFilter( filter.field, filter.numValue,
+                    Collections::QueryMaker::GreaterThan );
+            m_qm->addNumberFilter( filter.field, filter.numValue,
+                    Collections::QueryMaker::LessThan );
+            break;
+        case OlderThan:
+            m_qm->addNumberFilter( filter.field, QDateTime::currentDateTime().toTime_t() - filter.numValue,
+                    Collections::QueryMaker::LessThan );
+            break;
+
+        case Contains:
             m_qm->addFilter( filter.field, filter.value );
-        else
-            m_qm->addNumberFilter( filter.field, filter.value.toLongLong(),
-                    (Collections::QueryMaker::NumberComparison)filter.compare );
+        }
     }
 
     m_qm->setQueryType( Collections::QueryMaker::Custom );
@@ -342,6 +399,8 @@ Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 {
     Q_UNUSED( context );
 
+    // TODO: for lastPlayed we should check the context and the songs already in the playlist
+
     double satisfiedCount = 0;
     foreach( Meta::TrackPtr t, playlist )
     {
@@ -358,6 +417,7 @@ double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList&
 {
     Q_UNUSED( context );
 
+    // TODO: for lastPlayed we should check the context and the songs already in the playlist
     double offset = 1.0 / (double)oldPlaylist.size();
 
     bool prevSatisfied = trackSatisfies( oldPlaylist[newTrackPos] );

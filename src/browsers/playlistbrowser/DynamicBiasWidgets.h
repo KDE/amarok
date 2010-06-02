@@ -87,7 +87,6 @@ namespace PlaylistBrowserNS
             QLabel*      m_addLabel;
     };
 
-
     class BiasWidget : public BiasBoxWidget
     {
         Q_OBJECT
@@ -117,15 +116,22 @@ namespace PlaylistBrowserNS
 
         public:
             explicit BiasGlobalWidget( Dynamic::GlobalBias* bias, QWidget* parent = 0 );
+            ~BiasGlobalWidget();
 
         private slots:
             void weightChanged( int );
             void fieldChanged( int );
             void compareChanged( int );
-            void valueChanged( int );
             void valueChanged( const QString& );
-            void valueDateChanged();
-            void valueChanged( const QTime& );
+            void numValueChanged( int );
+            void numValue2Changed( int );
+            void numValueChanged( qint64 );
+            void numValue2Changed( qint64 );
+            void numValueChanged( const QTime& );
+            void numValue2Changed( const QTime& );
+            void numValueDateChanged();
+            void numValue2DateChanged();
+            void numValueTimeDistanceChanged();
 
             void populateComboBox( QString collectionId, QStringList );
             void comboBoxPopulated();
@@ -134,10 +140,15 @@ namespace PlaylistBrowserNS
             void syncControlsToBias();
             void syncBiasToControls();
 
-            void popuplateFieldSection();
-            void setValueSelection( QWidget* );
+            void makeFieldSelection();
 
-            void makeCompareSelection( QWidget* parent );
+            /** Adds the value selection widgets to the layout.
+             *  Adds m_withLabel, m_compareSelection, m_valueSelection1, m_valueSelection2 and m_andLabel to the layout.
+             */
+            void setValueSelection();
+
+            void makeCompareSelection();
+            void makeValueSelection();
 
             void makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery );
 
@@ -158,13 +169,15 @@ namespace PlaylistBrowserNS
 
             Amarok::Slider* m_weightSelection;
             QLabel*         m_weightLabel;
-            QLabel*         m_withLabel;
             KComboBox*      m_fieldSelection;
-            QWidget*        m_valueSelection;
+            QLabel*         m_withLabel;
+            QLabel*         m_andLabel;
             KComboBox*      m_compareSelection;
+            QWidget*        m_valueSelection1;
+            QWidget*        m_valueSelection2;
 
             Dynamic::GlobalBias* m_gbias;
-            XmlQueryReader::Filter m_filter;
+            Dynamic::GlobalBias::Filter m_filter;
 
             QMap< Collections::QueryMaker*, KComboBox* > m_runningQueries;
     };
