@@ -1251,7 +1251,6 @@ SqlAlbum::image( int size )
     {
         result = cachedImage;
     }
-
     // findImage will lookup the original cover and create a scaled version
     // of the cover if required (returning the path of that scaled image)
     else
@@ -1321,11 +1320,8 @@ SqlAlbum::setImage( const QPixmap &pixmap )
     if( pixmap.isNull() )
         return;
 
-    QByteArray widthKey = QString::number( pixmap.width() ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
+    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    if( artist.isEmpty() && m_name.isEmpty() )
         return;
 
     // removeImage() will destroy all scaled cached versions of the artwork
@@ -1333,10 +1329,10 @@ SqlAlbum::setImage( const QPixmap &pixmap )
     if( hasImage( -1 ) ) // -1 is a dummy
         removeImage();
 
-    QByteArray key = md5sum( artist, album, QString() );
-    QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
+    const QByteArray widthKey = QByteArray::number( pixmap.width() ) + '@';
+    const QByteArray key = md5sum( artist, m_name, QString() );
+    const QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
     pixmap.save( path, "JPG" );
-
     updateImage( path );
 
     notifyObservers();
@@ -1345,13 +1341,11 @@ SqlAlbum::setImage( const QPixmap &pixmap )
 void
 SqlAlbum::removeImage()
 {
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
+    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    if( artist.isEmpty() && m_name.isEmpty() )
         return;
 
-    QByteArray key = md5sum( artist, album, QString() );
+    const QByteArray key = md5sum( artist, m_name, QString() );
 
     // remove the large covers
     QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
@@ -1471,30 +1465,27 @@ SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& fi
     return context.hexDigest();
 }
 
-QString
+QByteArray
 SqlAlbum::imageKey() const
 {
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    if( artist.isEmpty() && m_name.isEmpty() )
+        return QByteArray();
 
-    if ( artist.isEmpty() && album.isEmpty() )
-        return QString();
-
-    return md5sum( artist, album, QString() );
+    return md5sum( artist, m_name, QString() );
 }
 
 QString
 SqlAlbum::findCachedImage( int size ) const
 {
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    const QString key = imageKey();
-
+    const QByteArray key = imageKey();
     if( key.isEmpty() )
         return QString();
 
-    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QByteArray widthKey = QByteArray::number( size ) + '@';
+    const QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     // check cache for existing cover
-    if ( cacheCoverDir.exists( widthKey + key ) )
+    if( cacheCoverDir.exists( widthKey + key ) )
         return cacheCoverDir.filePath( widthKey + key );
 
     return QString();
@@ -1503,9 +1494,8 @@ SqlAlbum::findCachedImage( int size ) const
 QString
 SqlAlbum::findLargeCachedImage() const
 {
-    const QString key = imageKey();
-
-    QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    const QByteArray key = imageKey();
+    const QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
     if( largeCoverDir.exists( key ) )
     {
         const QString filePath = largeCoverDir.filePath( key );
@@ -1518,37 +1508,29 @@ SqlAlbum::findLargeCachedImage() const
 QString
 SqlAlbum::createScaledImage( QString path, int size ) const
 {
-    if( size <= 1 )
+    if( size <= 1 || !QFile::exists(path) )
         return QString();
 
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
+    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    if( artist.isEmpty() && m_name.isEmpty() )
         return QString();
 
-    QByteArray key = md5sum( artist, album, QString() );
+    const QByteArray widthKey = QByteArray::number( size ) + '@';
+    const QByteArray key = md5sum( artist, m_name, QString() );
+    const QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
 
-    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
-
-    if( QFile::exists( path ) )
+    // Don't overwrite if it already exists
+    if( !QFile::exists( cachedImagePath ) )
     {
-        // Don't overwrite if it already exists
-        if( !QFile::exists( cachedImagePath ) )
-        {
-            QImage img( path );
-            if( img.isNull() )
-                return QString();
+        QImage img( path );
+        if( img.isNull() )
+            return QString();
 
-            // resize and save the image
-            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
-        }
-        return cachedImagePath;
+        // resize and save the image
+        img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
     }
-
-    return QString();
+    return cachedImagePath;
 }
 
 QString

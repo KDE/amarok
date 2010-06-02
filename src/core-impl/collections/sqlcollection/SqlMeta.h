@@ -326,7 +326,7 @@ class SqlAlbum : public Meta::Album
         QString findCachedImage( int size ) const;
         QString findLargeCachedImage() const;
         QString findImage( int size );
-        QString imageKey() const;
+        QByteArray imageKey() const;
         void updateImage( const QString path ) const; // Updates the database to ensure the album has the correct path
         // Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
         int unsetImageId() const;
