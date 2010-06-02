@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Emmanuel Wagner <menu.wagner@sfr.fr>                              *
+ * Copyright (c) 2010 Emmanuel Wagner <manu.wagner@sfr.fr>                              *
  * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -27,7 +27,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
-
+#include "MyGraphicsTextItem.h"
 // KDE
 #include <KAction>
 #include <KColorScheme>
@@ -142,7 +142,19 @@ CoverBlingApplet::init()
     m_jumptoplaying->setIcon( KStandardDirs::locate( "data", "amarok/images/blingjumptoplaying.png" ) );
     m_jumptoplaying->setMaximumSize( 16.0, 16.0 );
     m_jumptoplaying->setToolTip( i18n( "Jump to Current" ) );
-    
+
+    m_albumsearch = new Plasma::IconWidget( this );
+    m_albumsearch->setIcon( KStandardDirs::locate( "data", "amarok/images/blingsearchalbum.png" ) );
+    m_albumsearch->setMaximumSize( 18.0, 18.0 );
+    m_albumsearch->setToolTip( i18n( "Toggle Album/Artist search" ) );
+    m_editsearch = new MyGraphicsTextItem( this );
+    m_editsearch->setTextInteractionFlags( Qt::TextEditorInteraction );
+    labelFont.setItalic( true );
+    m_editsearch->setFont( labelFont );
+    m_editsearch->setDefaultTextColor( Qt::white );
+    m_album_or_artist = true;
+    displaySearchName();
+
     constraintsEvent();
 }
 
@@ -151,6 +163,13 @@ CoverBlingApplet::~CoverBlingApplet()
     delete m_ratingWidget;
     delete m_label;
     delete m_layout;
+    delete m_blingfastback;
+    delete m_blingfastforward;
+    delete m_blingtofirst;
+    delete m_blingtolast;
+    delete m_jumptoplaying;
+    delete m_albumsearch;
+    delete m_editsearch;
 }
 
 void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
@@ -159,8 +178,8 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     Q_UNUSED( collectionId );
 
     m_pictureflow->fillAlbums( albums );
-    
-	connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
+
+    connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
     connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
     connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
     connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
@@ -168,6 +187,8 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
     connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
     connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
+    connect( m_albumsearch, SIGNAL( clicked() ), this, SLOT( switchSearchIcon() ) );
+    connect( m_editsearch, SIGNAL( editionValidated( QString ) ), this, SLOT( albumSearch( QString ) ) );
 }
 
 void CoverBlingApplet::slideChanged( int islideindex )
@@ -238,7 +259,8 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_blingfastforward->setPos( horizontal_size - 60, vertical_size - 30 );
     m_fullscreen->setPos( horizontal_size - 30, 30 );
     m_jumptoplaying->setPos( horizontal_size - 60, 30 );
-
+    m_albumsearch->setPos( 20, 30 );
+    m_editsearch->setPos( 38, 28 );
     m_pictureflow->resize( horizontal_size, vertical_size );
 
     m_label->setPos( ( size().width() - m_label->boundingRect().width() ) / 2, m_label->y() );
@@ -339,36 +361,36 @@ void CoverBlingApplet::jumpToPlaying()
     int nbslides = m_pictureflow->slideCount();
     bool found = false;
     int index = 0;
-    if (nbslides > 0)
+    if ( nbslides > 0 )
     {
-		for ( int i = 0; i < nbslides;i++ )
-		{
-			Meta::AlbumPtr current_album = m_pictureflow->album( i );
-			if ( current_album == album )
-			{
-				index = i;
-				found = true;
-				break;
-			}
-		}
-		if ( found )
-		{
-			if ( m_animatejump )
-			{
-				if ( center - index > 10 || index - center > 10 )
-				{
-					if ( index > center )
-						m_pictureflow->skipToSlide( index - 10 );
-					else
-						m_pictureflow->skipToSlide( index + 10 );
-				}
-				m_pictureflow->showSlide( index );
-			}
-			else
-				m_pictureflow->skipToSlide( index );
-			slideChanged( index ); 
-		}	
-	}
+        for ( int i = 0; i < nbslides;i++ )
+        {
+            Meta::AlbumPtr current_album = m_pictureflow->album( i );
+            if ( current_album == album )
+            {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        if ( found )
+        {
+            if ( m_animatejump )
+            {
+                if ( center - index > 10 || index - center > 10 )
+                {
+                    if ( index > center )
+                        m_pictureflow->skipToSlide( index - 10 );
+                    else
+                        m_pictureflow->skipToSlide( index + 10 );
+                }
+                m_pictureflow->showSlide( index );
+            }
+            else
+                m_pictureflow->skipToSlide( index );
+            slideChanged( index );
+        }
+    }
 }
 
 void CoverBlingApplet::engineNewTrackPlaying( )
@@ -391,6 +413,75 @@ void CoverBlingApplet::skipToLast()
     m_pictureflow->skipToSlide( nbslides - 1 );
     slideChanged( nbslides - 1 );
 }
+void CoverBlingApplet::albumSearch( QString ialbumName )
+{
+    QString album_name = ialbumName.remove( QChar( ' ' ) );
+    int center = m_pictureflow->centerIndex();
+    int nbslides = m_pictureflow->slideCount();
+    bool found = false;
+    int index = 0;
+    if ( nbslides > 0 )
+    {
+        for ( int i = 0; i < nbslides;i++ )
+        {
+            Meta::AlbumPtr current_album = m_pictureflow->album( i );
+            if ( !current_album ) continue;
+            QString current_name = "";
+            if ( m_album_or_artist )
+            {
+                current_name = current_album->prettyName();
+            }
+            else
+            {
+                Meta::ArtistPtr artist = current_album->albumArtist();
+                if ( artist ) current_name = artist->prettyName();
+            }
+            current_name = current_name.remove( QChar( ' ' ) );
+            if ( current_name.contains( album_name, Qt::CaseInsensitive ) )
+            {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        if ( found )
+        {
+            if ( m_animatejump )
+            {
+                if ( center - index > 10 || index - center > 10 )
+                {
+                    if ( index > center )
+                        m_pictureflow->skipToSlide( index - 10 );
+                    else
+                        m_pictureflow->skipToSlide( index + 10 );
+                }
+                m_pictureflow->showSlide( index );
+            }
+            else
+                m_pictureflow->skipToSlide( index );
+            slideChanged( index );
+        }
+    }
+	displaySearchName();
+}
 
+void CoverBlingApplet::switchSearchIcon()
+{
+    m_album_or_artist = !m_album_or_artist;
+    if ( m_album_or_artist )
+        m_albumsearch->setIcon( KStandardDirs::locate( "data", "amarok/images/blingsearchalbum.png" ) );
+    else
+        m_albumsearch->setIcon( KStandardDirs::locate( "data", "amarok/images/blingsearchartist.png" ) );
+    displaySearchName();
+}
+void CoverBlingApplet::displaySearchName()
+{
+	QString album_search_str = i18n( "Search for album..." );
+	QString artist_search_str = i18n( "Search for artist..." );
+	if ( m_album_or_artist)
+		m_editsearch->setPlainText( album_search_str );
+	else
+		m_editsearch->setPlainText( artist_search_str );
+}
 #include "CoverBlingApplet.moc"
 

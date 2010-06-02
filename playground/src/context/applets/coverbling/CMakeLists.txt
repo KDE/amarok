@@ -5,6 +5,7 @@ pictureflow.cpp
 CoverBlingApplet.cpp
 ImageLoader.cpp
 PhotoBrowser.cpp
+MyGraphicsTextItem.cpp
 )
 
 include_directories( ../../..
@@ -31,3 +32,5 @@ install(FILES blingtolast.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingdefaultcover.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingfullscreen.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingjumptoplaying.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingsearchalbum.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingsearchartist.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
