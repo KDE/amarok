@@ -348,6 +348,9 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
+    if( event->modifiers() == Qt::NoModifier )
+        setCurrentIndex( index );
+
     if( !m_expandToggledWhenPressed &&
         event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
@@ -355,7 +358,6 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         model()->hasChildren( index ) )
     {
         m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setCurrentIndex( index );
         setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
