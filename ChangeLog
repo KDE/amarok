@@ -19,6 +19,7 @@ VERSION 2.3.2-Beta 1
       browser, e.g. "played:<3d".
 
   CHANGES:
+    * "Play Media" dialog now remembers the last used directory. (BR 231092)
     * Organize Dialog: tweaked the layout to fit better on smaller resolutions (BR 238000)
     * Filtering: added year suffix for date filters in the collection browser.
     * Last.fm features that require user authentication are now disabled
