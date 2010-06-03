@@ -27,7 +27,6 @@
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
 #include "shared/Version.h"  // for AMAROK_VERSION
-#include "shared/cue_parser/CueParser.h"
 #include "shared/FileType.h"
 
 #include <cerrno>
@@ -77,7 +76,6 @@
 
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
-
 int
 main( int argc, char *argv[] )
 {
@@ -102,8 +100,6 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         , m_amarokCollectionInterface( 0 )
 {
     setObjectName( "amarokcollectionscanner" );
-    
-    //qDebug() << "CollectionScanner::CollectionScanner";
 
     readArgs();
 
@@ -427,104 +423,12 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList images;
 
     int itemCount = 0;
-    
-    QStringList ignoredSourceFiles;
-    
-    //we need to check for cue files first, as we want to ignore any source files for which there is a valid cue sheet.
-    //We build an ignore list of these files and skip them completely in the run where we peocess all other files.
-    
-    for( QStringList::ConstIterator it = entries.constBegin(), end = entries.constEnd(); it != end; ++it )
-    {
-        const QString path = *it;
-        const QString ext  = extension( path );
-        const QString dir  = directory( path );
-	
-	
-	if( ext == "cue" )
-	{
-	  
-	    //qDebug() << "found cue file: " << path;
-	    
-	    //validate cue file:
-	    if( CueParser::validateCueSheet( path ) )
-	    {
-	  
-		//figure out if the file that this cue sheet referecens actually exists
-		//FIXME: this assumes that the files are in the same location
-		
-		QString sourceFileName = CueParser::sourceFile( path );
-		
-		QStringList pathParts = path.split( '/' );
-		QString cueFileame = pathParts.last();
-		
-		QString sourcePath = path;
-		sourcePath.replace( cueFileame, sourceFileName );
-		
-		//qDebug() << "got source file: " << sourcePath;
-		
-		
-		if( QFile::exists( sourcePath ) )
-		{
-		
-		    //get length of source file
-		    const AttributeHash sourceAttributes = readTags( sourcePath );
-		    qint64 sourceLength = sourceAttributes[ "length" ].toLong();
-		    
-		    //qDebug() << "length of the source file is: " << sourceLength;
-		    //parse cue file
-		    
-		    CueFileItemMap cueItemMap = CueParser::loadCueFile( path, sourceLength );
-		    //qDebug() << "got " << cueItemMap.size() << " tracks";
-		    
-		    
-		    //add tracks
-		    foreach( CueFileItem item, cueItemMap )
-		    {
-		        AttributeHash cueTrackAttributes; 
-			
-			//get common stuf from the source file
-			cueTrackAttributes["album"] = sourceAttributes["title"];
-			cueTrackAttributes["bitrate"] = sourceAttributes["bitrate"];
-			cueTrackAttributes["samplerate"] = sourceAttributes["samplerate"];
-			cueTrackAttributes["comment"] = sourceAttributes["comment"];
-			cueTrackAttributes["filetype"] = sourceAttributes["filetype"];
-			cueTrackAttributes["compilation"] = "checkforvarious";
-			cueTrackAttributes["genre"] = "";
-			cueTrackAttributes["year"] = "0";
-			
-			//for this, we store it with a bounded track url (url
-			cueTrackAttributes["path"] = QString( "%1:%2-%3").arg( sourcePath ).arg( item.index() ).arg( item.index() + item.length() );
-			cueTrackAttributes["title"] = item.title();
-			cueTrackAttributes["artist"] = item.artist();
-			cueTrackAttributes["track"]  = QString::number( item.trackNumber() );
-			cueTrackAttributes["length"]  = QString::number( item.length() );
-			cueTrackAttributes["audioproperties"] = "true";
-			
-			//hack
-			AFTUtility aftutil;
-			cueTrackAttributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( sourcePath ) + "-" + QString::number( item.trackNumber() ) );
-			
-			
-			writeElement( "tags", cueTrackAttributes );
-			
-		    }	
-		    ignoredSourceFiles << sourcePath;
-		}   
-	    }
-	}
-    }
-   
-    
 
     for( QStringList::ConstIterator it = entries.constBegin(), end = entries.constEnd(); it != end; ++it )
     {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
-	
-	//skip files that we have already flagged as soure files for a valid cue sheet.
-	if( ignoredSourceFiles.contains( path ) )
-	    continue;
 
         itemCount++;
 
@@ -557,6 +461,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 attributes["path"] = path;
             writeElement( "playlist", attributes );
         }
+
         else
         {
             //FIXME: PORT 2.0

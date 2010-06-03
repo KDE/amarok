@@ -394,19 +394,8 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
     else if ( m_boundedPlayback )
     {
-        //make absolutely sure that we do not include the timecode info in the url
-        QString urlString = m_currentTrack->playableUrl().url();
-        QRegExp rx(":\\d+-\\d+$");
-
-        int index = rx.indexIn( urlString );
-        if ( index != -1 )
-        {
-            urlString = urlString.left( index );
-        }
-
-        debug() << "Starting bounded playback of url " << urlString << " at position " << m_boundedPlayback->startPosition()  + offset;
-        
-        playUrl( urlString, m_boundedPlayback->startPosition() + offset );
+        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
+        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
@@ -453,7 +442,10 @@ EngineController::playUrl( const KUrl &url, uint offset )
         //if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
         //    return;
 
+
         int trackNumber = parts.at( 1 ).toInt();
+
+        debug() << "3.2.1...";
 
         Phonon::MediaSource::Type type = m_media->currentSource().type();
         if( type != Phonon::MediaSource::Disc )
@@ -462,7 +454,9 @@ EngineController::playUrl( const KUrl &url, uint offset )
             m_media->setCurrentSource( Phonon::Cd );
         }
 
+        debug() << "boom?";
         m_controller->setCurrentTitle( trackNumber );
+        debug() << "no boom?";
 
         if( type == Phonon::MediaSource::Disc )
         {
@@ -499,6 +493,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
         m_media->seek( offset );
     }
     m_media->play();
+
+    debug() << "track pos after play: " << trackPositionMs();
 
 
 }
@@ -890,7 +886,6 @@ EngineController::slotTick( qint64 position )
 {
     if ( m_boundedPlayback )
     {
-        
         qint64 newPosition = position;
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
 
@@ -905,8 +900,6 @@ EngineController::slotTick( qint64 position )
             m_lastTickCount = 0;
 
         m_lastTickPosition = position;
-
-          debug() << "bounded tracks: pos " <<  newPosition  << " in source, and pos " << position - m_boundedPlayback->startPosition() << "in track itself";
 
         //don't go beyond the stop point
         if ( newPosition >= m_boundedPlayback->endPosition() )
