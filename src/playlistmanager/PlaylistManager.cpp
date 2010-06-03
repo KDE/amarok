@@ -105,30 +105,6 @@ PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
     return m_syncRelStore->shouldBeSynced( playlist );
 }
 
-SyncedPlaylistPtr
-PlaylistManager::asSyncedPlaylist( Playlists::PlaylistPtr playlist )
-{
-    DEBUG_BLOCK
-    debug() << playlist->uidUrl();
-    SyncedPlaylistPtr syncedPlaylist;
-    //HACK: sync all playlists to each other for testing. Figure out proper way to store sync pairs.
-    if( m_syncedPlaylists.isEmpty() )
-    {
-        syncedPlaylist = new SyncedPlaylist( playlist );
-        m_syncedPlaylists << syncedPlaylist;
-    }
-    else
-    {
-        syncedPlaylist = m_syncedPlaylists.first();
-        syncedPlaylist->addPlaylist( playlist );
-    }
-
-    if( syncedPlaylist->syncNeeded() )
-        syncedPlaylist->doSync();
-
-    return syncedPlaylist;
-}
-
 void
 PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
 {
@@ -150,6 +126,7 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
         if( shouldBeSynced( playlist ) )
         {
             SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
+            m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
             if( !m_playlistMap.values( category ).contains(
                     Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
             {
@@ -311,7 +288,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
         return;
 
     Playlists::UserPlaylistProvider *provider
-            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
 
     if( !provider )
         return;
@@ -336,7 +313,7 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
     foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
         // Get the providers of the respective playlists
-        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
 
         if( prov )
         {
@@ -362,24 +339,34 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
     }
 }
 
-Playlists::PlaylistProvider*
-PlaylistManager::getProviderForPlaylist( const Playlists::PlaylistPtr playlist )
+QList<Playlists::PlaylistProvider*>
+PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist )
 {
+    QList<Playlists::PlaylistProvider*> providers;
     if( !playlist )
-        return 0;
+        return providers;
+
+    SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+    if( syncedPlaylist && m_syncedPlaylistMap.keys().contains( syncedPlaylist ) )
+    {
+        foreach( Playlists::PlaylistPtr playlist, m_syncedPlaylistMap.values( syncedPlaylist ) )
+            if( !providers.contains( playlist->provider() ) )
+                providers << playlist->provider();
+        return providers;
+    }
 
     Playlists::PlaylistProvider* provider = playlist->provider();
     if( provider )
-        return provider;
+        return providers << provider;
 
     // Iteratively check all providers' playlists for ownership
     QList< Playlists::PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
     foreach( Playlists::PlaylistProvider* provider, userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
-                return provider;
+                return providers << provider;
     }
-    return 0;
+    return providers;
 }
 
 
@@ -387,7 +374,7 @@ bool
 PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
 {
     Playlists::UserPlaylistProvider *provider
-            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
 
     if( provider )
         return provider->isWritable();
@@ -401,7 +388,7 @@ PlaylistManager::playlistActions( const Playlists::PlaylistList playlists )
     QList<QAction *> actions;
     foreach( const Playlists::PlaylistPtr playlist, playlists )
     {
-        Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
+        Playlists::PlaylistProvider *provider = getProvidersForPlaylist( playlist ).first();
         if( !provider )
             continue;
 
@@ -421,7 +408,7 @@ QList<QAction *>
 PlaylistManager::trackActions( const Playlists::PlaylistPtr playlist, int trackIndex )
 {
     QList<QAction *> actions;
-    Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
+    Playlists::PlaylistProvider *provider = getProvidersForPlaylist( playlist ).first();
     if( provider )
         actions << provider->trackActions( playlist, trackIndex );
 

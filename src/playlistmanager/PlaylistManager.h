@@ -128,7 +128,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          *  Retrieves the provider owning the given playlist
          *  @arg playlist the playlist whose provider we want
          */
-        Playlists::PlaylistProvider* getProviderForPlaylist( const Playlists::PlaylistPtr playlist );
+        QList<Playlists::PlaylistProvider*>
+                getProvidersForPlaylist( const Playlists::PlaylistPtr playlist );
 
         /**
          *  Checks if the provider to whom this playlist belongs supports writing
@@ -164,7 +165,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         SyncRelationStorage *m_syncRelStore;
 
         bool shouldBeSynced( Playlists::PlaylistPtr playlist );
-        SyncedPlaylistPtr asSyncedPlaylist( Playlists::PlaylistPtr playlist );
 
         Podcasts::PodcastProvider *m_defaultPodcastProvider;
         Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;
@@ -172,7 +172,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         QMultiMap<int, Playlists::PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
         QMultiMap<int, Playlists::PlaylistPtr> m_playlistMap;
-        SyncedPlaylistList m_syncedPlaylists;
+        QMultiMap<SyncedPlaylistPtr, Playlists::PlaylistPtr> m_syncedPlaylistMap;
+
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Playlists::PlaylistFilePtr> m_downloadJobMap;

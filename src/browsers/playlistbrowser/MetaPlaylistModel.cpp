@@ -149,16 +149,52 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
 
             case MetaPlaylistModel::ProviderColumn: //source
             {
-                Playlists::PlaylistProvider *provider =
-                        The::playlistManager()->getProviderForPlaylist( playlist );
-                //if provider is 0 there is something seriously wrong.
-                if( provider )
+                QList<Playlists::PlaylistProvider *> providers =
+                        The::playlistManager()->getProvidersForPlaylist( playlist );
+
+                if( providers.count() > 1 )
                 {
+                    QVariantList nameData;
+                    QVariantList descriptionData;
+                    QVariantList iconData;
+                    QVariantList playlistCountData;
+                    QVariantList providerActionsData;
+                    foreach( Playlists::PlaylistProvider *provider, providers )
+                    {
+                        name = description = provider->prettyName();
+                        nameData << name;
+                        descriptionData << description;
+                        icon = provider->icon();
+                        iconData << QVariant( icon );
+                        playlistCount = provider->playlists().count();
+                        playlistCountData << i18ncp( "number of playlists from one source",
+                                                     "One Playlist", "%1 playlists",
+                                                     playlistCount );
+                        providerActions << provider->providerActions();
+                        providerActionsData << QVariant::fromValue( providerActions );
+                    }
+                    switch( role )
+                    {
+                    case Qt::DisplayRole:
+                    case Qt::EditRole: return nameData;
+                    case DescriptionRole:
+                    case Qt::ToolTipRole: return descriptionData;
+                    case Qt::DecorationRole: return iconData;
+                    case MetaPlaylistModel::ByLineRole:
+                        return playlistCountData;
+                    case MetaPlaylistModel::ActionRole:
+                        return providerActionsData;
+                    }
+                }
+                else
+                {
+                    Playlists::PlaylistProvider *provider = providers.first();
                     name = description = provider->prettyName();
                     icon = provider->icon();
                     playlistCount = provider->playlists().count();
-                    providerActions = provider->providerActions();
+                    providerActions << provider->providerActions();
                 }
+
                 break;
             }
 
