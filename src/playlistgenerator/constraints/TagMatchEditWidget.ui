@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string comment="KDE::DoNotExtract">Form</string>
   </property>
   <property name="whatsThis">
    <string>An editor for a TagMatch constraint.  The user can specify a track characteristic, and the APG will fill the playlist with tracks that match that characteristic.  This functions similarity to the matching attributes of the smart playlists in Amarok 1.4.</string>
