@@ -25,6 +25,7 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/podcasts/PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
+#include "file/KConfigSyncRelStore.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "core/support/Debug.h"
@@ -72,6 +73,8 @@ PlaylistManager::PlaylistManager()
 {
     s_instance = this;
 
+    m_syncRelStore = new KConfigSyncRelStore();
+
     m_defaultPodcastProvider = new Podcasts::SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
@@ -96,7 +99,10 @@ PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
     DEBUG_BLOCK
     debug() << playlist->uidUrl();
 
-    return false;
+    if( !m_syncRelStore )
+        return false;
+
+    return m_syncRelStore->shouldBeSynced( playlist );
 }
 
 SyncedPlaylistPtr
@@ -143,7 +149,7 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
     {
         if( shouldBeSynced( playlist ) )
         {
-            SyncedPlaylistPtr syncedPlaylist = asSyncedPlaylist( playlist );
+            SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
             if( !m_playlistMap.values( category ).contains(
                     Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
             {

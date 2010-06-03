@@ -24,6 +24,7 @@
 #include "core/playlists/PlaylistProvider.h"
 
 #include "SyncedPlaylist.h"
+#include "SyncRelationStorage.h"
 
 #include <QMultiMap>
 #include <QList>
@@ -159,6 +160,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         static PlaylistManager *s_instance;
         PlaylistManager();
         ~PlaylistManager();
+
+        SyncRelationStorage *m_syncRelStore;
 
         bool shouldBeSynced( Playlists::PlaylistPtr playlist );
         SyncedPlaylistPtr asSyncedPlaylist( Playlists::PlaylistPtr playlist );

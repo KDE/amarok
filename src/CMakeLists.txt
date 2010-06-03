@@ -379,10 +379,12 @@ set(libplaylistbrowser_SRCS
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/file/PlaylistFileProvider.cpp
+    playlistmanager/file/KConfigSyncRelStore.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
     playlistmanager/SyncedPlaylist.cpp
+    playlistmanager/SyncRelationStorage.cpp
 )
 
 #####################################################################
