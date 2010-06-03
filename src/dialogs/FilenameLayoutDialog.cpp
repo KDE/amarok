@@ -370,42 +370,42 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
             if( tags.contains( "album" ) )
                 Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags["album"] + "</font>" );
             else
-                Album_result->setText( i18n("<empty>") );
+                Album_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "title" ) )
                 Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags["title"] + "</font>" );
             else
-                Title_result->setText( i18n("<empty>") );
+                Title_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "artist" ) )
                 Artist_result->setText( "<font color='" + QColor( artist_color ).name() + "'>" + tags["artist"] + "</font>" );
             else
-                Artist_result->setText( i18n("<empty>") );
+                Artist_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "comment" ) )
                 Comment_result->setText( "<font color='" + QColor( comment_color ).name() + "'>" + tags["comment"] + "</font>" );
             else
-                Comment_result->setText( i18n("<empty>") );
+                Comment_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "composer" ) )
                 Composer_result->setText( "<font color='" + QColor( composer_color ).name() + "'>" + tags["composer"] + "</font>" );
             else
-                Composer_result->setText( i18n("<empty>") );
+                Composer_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "genre" ) )
                 Genre_result->setText( "<font color='" + QColor( genre_color ).name() + "'>" + tags["genre"] + "</font>" );
             else
-                Genre_result->setText( i18n("<empty>") );
+                Genre_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "track" ) )
                 Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + QString( tags["track"].toInt() ) + "</font>" );
             else
-                Track_result->setText( i18n("<empty>") );
+                Track_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             if( tags.contains( "year" ) )
                 Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString( tags["year"].toInt() ) + "</font>" );
             else
-                Year_result->setText( i18n("<empty>") );
+                Year_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "<empty>" ) );
 
             filenamePreview->setText(guesser.coloredFileName());
         }
