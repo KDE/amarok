@@ -616,14 +616,22 @@ MainWindow::slotPlayMedia() //SLOT
 void
 MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
+    static KUrl lastDirectory;
+
     // open a file selector to add media to the playlist
     KUrl::List files;
     KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation)), QString("*.*|"), this );
+
+    if( !lastDirectory.isEmpty() )
+        dlg.setUrl( lastDirectory );
+
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.setObjectName( "PlayMedia" );
     dlg.exec();
     files = dlg.selectedUrls();
+
+    lastDirectory = dlg.baseUrl();
 
     if( files.isEmpty() )
         return;
