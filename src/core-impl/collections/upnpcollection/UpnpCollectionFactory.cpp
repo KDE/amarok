@@ -98,8 +98,8 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
                 continue;
             }
             DeviceInfo info = reply.value();
-            QString actualUdn = udn.replace("uuid:", "");
-            m_devices[udn] = new UpnpCollection( actualUdn, info.friendlyName() );
+            udn.replace("uuid:", "");
+            m_devices[udn] = new UpnpCollection( udn, info.friendlyName() );
             // we should get the friendly name
             emit newCollection( m_devices[udn] );
         }
@@ -109,8 +109,8 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
 void UpnpCollectionFactory::slotDevicesRemoved( const DeviceTypeMap &map )
 {
     foreach( QString udn, map.keys() ) {
+        udn.replace("uuid:", "");
         if( m_devices.contains(udn) ) {
-            debug() << "REMOVING" << udn;
             m_devices[udn]->removeCollection();
             m_devices.remove(udn);
         }
