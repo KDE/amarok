@@ -29,6 +29,27 @@
 #include <QSharedPointer>
 #include <QSqlDatabase>
 
+class ImporterMiscData
+{
+    public:
+        QString cachedLyrics() const { return m_cachedLyrics; }
+        void setCachedLyrics( const QString &lyrics ) { m_cachedLyrics = lyrics; }
+
+        QStringList labels() const { return m_labels; }
+        void addLabel( const QString &label );
+
+    private:
+        QString m_cachedLyrics;
+        QStringList m_labels;
+};
+
+class ImporterMiscDataStorage : public QMap<QString, ImporterMiscData>
+{
+    public:
+        void insertCachedLyrics( const QString &url, const QString &lyrics );
+        void insertLabel ( const QString &url, const QString &label );
+};
+
 class FastForwardWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
@@ -75,6 +96,8 @@ class FastForwardWorker : public ThreadWeaver::Job
                                      const QString genre, const uint year, const uint trackNr,
                                      const uint discNr, const uint filesize);
         void failWithError(const QString errorMsg);
+        void prettifyLyrics( QString &lyrics );
+        void updateMiscData( const ImporterMiscDataStorage &dataForInsert );
 
         bool m_aborted;
         bool m_failed;

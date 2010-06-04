@@ -128,7 +128,7 @@ FastForwardWorker::run()
     }
 
     QString sql =
-      QString( "SELECT lastmountpoint, S.url, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
+      QString( "SELECT lastmountpoint, S.url, S.uniqueid, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
         "FROM statistics S "
         "LEFT OUTER JOIN devices D "
         "  ON S.deviceid = D.id "
@@ -158,6 +158,7 @@ FastForwardWorker::run()
     }
 
     QMap<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > tracksForInsert;
+    ImporterMiscDataStorage dataForInsert;
 
     for( int c = 0; query.next(); c++ )
     {
@@ -165,8 +166,9 @@ FastForwardWorker::run()
             return;
 
         int index = 0;
-        QString mount = query.value( index++ ).toString();
-        QString url   = query.value( index++ ).toString();
+        QString mount    = query.value( index++ ).toString();
+        QString url      = query.value( index++ ).toString();
+        QString uniqueId = query.value( index++ ).toString();
 
         uint firstPlayed = query.value( index++ ).toUInt();
         uint lastPlayed  = query.value( index++ ).toUInt();
@@ -278,8 +280,33 @@ FastForwardWorker::run()
                 emit showMessage( i18n( "<font color='red'>Cannot import statistics for %1</font>", url ) );
             }
 
+            url = track->playableUrl().url(); // reassign url for tracks found by smart match
+
+            prettifyLyrics( lyrics );
             if( !lyrics.isEmpty() )
-                track->setCachedLyrics( lyrics ); /// TODO: this probably works only for Meta::SqlTrack
+                dataForInsert.insertCachedLyrics( url, lyrics );
+
+            // import labels
+            if( !uniqueId.isEmpty() )
+            {
+                QString labelsSql = QString( "SELECT L.name FROM tags_labels T "
+                    "LEFT JOIN labels L ON L.id = T.labelid "
+                    "WHERE L.name != '' AND T.uniqueid = '%1'" ).arg( uniqueId );
+                QSqlQuery labelsQuery( labelsSql, db );
+
+                if( labelsQuery.lastError().isValid() )
+                {
+                    failWithError( i18n( "Could not execute labels import query: %1; query was: %2",
+                                        db.lastError().text(), labelsSql ) );
+                    return;
+                }
+
+                for( int d = 0; labelsQuery.next(); d++ )
+                {
+                    QString label( labelsQuery.value( 0 ).toString() );
+                    dataForInsert.insertLabel( url,  label );
+                }
+            }
         }
     }
 
@@ -288,12 +315,15 @@ FastForwardWorker::run()
         QMapIterator<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > i(tracksForInsert);
         while( i.hasNext()) {
             i.next();
+            debug() << "Adding new tracks to collection";
             emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>", i.value()->size(), i.key()->prettyLocation() ) );
             i.key()->insertTracks( *(i.value()) );
             i.key()->insertStatistics( *(i.value()) );
             delete i.value(); // i.key() is deleted by QSharedPointer
         }
     }
+
+    updateMiscData( dataForInsert ); // this is a hack, see function definition
 
     if( m_importArtwork )
     {
@@ -417,6 +447,67 @@ FastForwardWorker::trySmartMatch(const int c, const QString url, const QString t
 }
 
 void
+FastForwardWorker::prettifyLyrics( QString &lyrics )
+{
+    QRegExp filter("<[^>]*>");
+    lyrics.replace( filter, QString("") );
+    lyrics.replace( QString("&apos;"), QString("'") );
+    lyrics.replace( QString("&quot;"), QString("\"") );
+    lyrics.replace( QString("&lt;"), QString("<") );
+    lyrics.replace( QString("&gt;"), QString(">") );
+}
+
+void
+FastForwardWorker::updateMiscData( const ImporterMiscDataStorage& dataForInsert )
+{
+    /* HACK: Meta::Track::setCachedLyrics() and ::addLabel() actually save data only for
+     * Meta:SqlTrack.
+     * Above call trackForUrl() returns MetaFile:Track if a file is not already in collection.
+     * Therefore, we call it again here after all tracks have been added to collection and
+     * hope it will return Meta::SqlTrack. */
+
+    debug() << "updating cached lyrics and labels...";
+    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks.",
+                            dataForInsert.size() ) );
+    int lyricsCount = 0, labelsCount = 0;
+    QMapIterator<QString, ImporterMiscData> i(dataForInsert);
+    while( i.hasNext() )
+    {
+        i.next();
+        QString url = i.key();
+        ImporterMiscData miscData = i.value();
+
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+        if( !track ) {
+            debug() << "trackForUrl() returned null for url " << url <<
+                        ", skipping lyrics and labels update";
+            emit showMessage( i18n( "<font color='red'>Failed to update lyrics/labels "
+                                    "for track %1</font>", url ) );
+            continue;
+        }
+
+        if(!miscData.cachedLyrics().isEmpty())
+        {
+            track->setCachedLyrics( miscData.cachedLyrics() );
+            lyricsCount++;
+        }
+        if(!miscData.labels().isEmpty())
+        {
+            foreach( QString label, miscData.labels() )
+            {
+                track->addLabel( label );
+            }
+            labelsCount++;
+        }
+    }
+
+    debug() << "lyrics and labels updated";
+    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks",
+                            lyricsCount, labelsCount ) );
+}
+
+
+void
 FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
     Q_UNUSED( collectionId )
@@ -430,3 +521,42 @@ FastForwardWorker::queryDone()
     m_queryRunning = false;
 }
 
+
+void
+ImporterMiscData::addLabel( const QString &label )
+{
+    if(!m_labels.contains( label) )
+    {
+        m_labels.append( label );
+    }
+}
+
+void
+ImporterMiscDataStorage::insertCachedLyrics( const QString &url, const QString &lyrics )
+{
+    if(contains( url ))
+    {
+        operator[]( url ).setCachedLyrics( lyrics );
+    }
+    else
+    {
+        ImporterMiscData data;
+        data.setCachedLyrics( lyrics );
+        insert( url, data );
+    }
+}
+
+void
+ImporterMiscDataStorage::insertLabel ( const QString &url, const QString &label )
+{
+    if(contains( url ))
+    {
+        operator[]( url ).addLabel( label );
+    }
+    else
+    {
+        ImporterMiscData data;
+        data.addLabel( label );
+        insert( url, data );
+    }
+}
