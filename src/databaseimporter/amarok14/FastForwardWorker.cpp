@@ -384,7 +384,6 @@ FastForwardWorker::trySmartMatch(const int c, const QString url, const QString t
     Collections::QueryMaker *qm_track = CollectionManager::instance()->queryMaker();
     qm_track->setQueryType( Collections::QueryMaker::Track );
 
-    debug() << c << " adding filters";
     // set matching criteria to narrow down the corresponding track in
     // the new collection as good as possible
     // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
@@ -400,18 +399,14 @@ FastForwardWorker::trySmartMatch(const int c, const QString url, const QString t
     qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
     qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
-    debug() << c << " connecting signals";
     connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     qm_track->run();
 
-    debug() << c << " QCoreApplication::processEvents() outside loop";
     // block until query is finished
     QCoreApplication::processEvents();
     while ( m_queryRunning == true ) {
-        debug() << c << " thread()->msleep()";
         thread()->msleep( 10 );
-        debug() << c << " QCoreApplication::processEvents() inside loop";
         QCoreApplication::processEvents();
     }
 
