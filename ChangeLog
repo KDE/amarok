@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * Amarok 1.4 Database Importer: added support for importing labels (BR 218996)
     * Organize Dialog: added a way to save multiple file formats as presets. (BR 122672)
     * Filtering: added default presets to the drop down menu of the collection
       search widget.
@@ -19,6 +20,8 @@ VERSION 2.3.2-Beta 1
       browser, e.g. "played:<3d".
 
   CHANGES:
+    * Amarok 1.4 Database Importer: only import tracks that actually belong into
+      collection. (BR 218999)
     * "Play Media" dialog now remembers the last used directory. (BR 231092)
     * Organize Dialog: tweaked the layout to fit better on smaller resolutions (BR 238000)
     * Filtering: added year suffix for date filters in the collection browser.
@@ -28,6 +31,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed Amarok 1.4 Database Importer not importing statistics and lyrics of
+      tracks that are not yet in database. (see comments on BR 218996)
     * Fixed keyboard shortcuts of actions from scripts lost after restart.
       Thanks to Martin Blumenstingl <darklight.xdarklight@googlemail.com>.
       (BR 223165)
