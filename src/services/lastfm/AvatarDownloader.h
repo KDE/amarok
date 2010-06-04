@@ -51,7 +51,7 @@ class AvatarDownloader : public QObject
         */
         void downloadAvatar( const QString& username, const KUrl& url );
     signals:
-        void signalAvatarDownloaded( QPixmap avatar );
+        void signalAvatarDownloaded( const QString& username, QPixmap avatar );
     private slots:
 
         /**

@@ -75,7 +75,7 @@ AvatarDownloader::downloadComplete( KJob * downloadJob )
         return;
     }
 
-    emit signalAvatarDownloaded( avatar );
+    emit signalAvatarDownloaded( m_userName,  avatar );
 
     downloadJob->deleteLater();
 }
