@@ -35,6 +35,8 @@ namespace KIO {
 }
 class KJob;
 
+class QTimer;
+
 namespace Collections {
 
 class UpnpMemoryQueryMaker;
@@ -66,6 +68,7 @@ class UpnpCollection : public Collections::Collection
     void entries( KIO::Job *, const KIO::UDSEntryList& );
     void done( KJob * );
     void createTrack( const KIO::UDSEntry & );
+    void updateMemoryCollection();
 
   private:
     QString m_udn;
@@ -74,6 +77,8 @@ class UpnpCollection : public Collections::Collection
     UpnpMemoryQueryMaker *m_umqm;
 
     KIO::ListJob *m_listJob;
+
+    QTimer *m_fullScanTimer;
 
     // probably move to some separate class
     // should we just extend MemoryCollection?

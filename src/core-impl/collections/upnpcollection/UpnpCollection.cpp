@@ -61,12 +61,20 @@ UpnpCollection::startFullScan()
 {
     DEBUG_BLOCK
 
-    m_listJob = KIO::listRecursive(KUrl("upnp-ms://" + m_udn + "/PC Directory/shared/music/Metric"));
+    m_listJob = KIO::listRecursive(KUrl("upnp-ms://" + m_udn));
     Q_ASSERT( connect( m_listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)) ) );
     Q_ASSERT( connect( m_listJob, SIGNAL(result(KJob*)), 
                        this, SLOT(done(KJob*)) ) );
 
+    m_fullScanTimer = new QTimer( this );
+    Q_ASSERT(
+        connect( m_fullScanTimer,
+                 SIGNAL(timeout()),
+                 this,
+                 SLOT(updateMemoryCollection()) )
+        );
+    m_fullScanTimer->start(5000);
 }
 
 void
@@ -79,7 +87,11 @@ DEBUG_BLOCK
             createTrack( entry );
         }
     }
+}
 
+void
+UpnpCollection::updateMemoryCollection()
+{
     memoryCollection()->setTrackMap( m_TrackMap );
     memoryCollection()->setArtistMap( m_ArtistMap );
     memoryCollection()->setAlbumMap( m_AlbumMap );
@@ -120,6 +132,8 @@ DEBUG_BLOCK
     Artist->addAlbum( Album );
 
     UpnpTrackPtr t( new UpnpTrack(this) ); 
+    // in a recursive listing, the UDS_NAME is the relative path from
+    // the base directory, so extract the filename
     QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
     QFileInfo info(name);
     t->setTitle( info.fileName() );
@@ -158,7 +172,10 @@ UpnpCollection::done( KJob *job )
 DEBUG_BLOCK
     if( job->error() ) {
         KMessageBox::error( 0, i18n("UPNP Error:") + job->errorString() );
+        return;
     }
+    updateMemoryCollection();
+    m_fullScanTimer->stop();
 }
 
 void
