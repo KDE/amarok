@@ -28,6 +28,7 @@
 #include <QSharedPointer>
 
 #include <KIcon>
+#include <KDirNotify>
 
 namespace KIO {
   class Job;
@@ -69,6 +70,7 @@ class UpnpCollection : public Collections::Collection
     void done( KJob * );
     void createTrack( const KIO::UDSEntry & );
     void updateMemoryCollection();
+    void slotFilesChanged(const QStringList &);
 
   private:
     QString m_udn;

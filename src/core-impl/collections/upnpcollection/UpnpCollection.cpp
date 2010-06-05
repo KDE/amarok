@@ -49,6 +49,16 @@ namespace Collections {
     , m_mc( new MemoryCollection() )
 {
     DEBUG_BLOCK
+
+    // experimental code, will probably be moved to a better place
+        OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
+    Q_ASSERT(connect( notify, SIGNAL( FilesChanged(const QStringList &) ),
+                      this, SLOT( slotFilesChanged(const QStringList &) ) ));
+}
+
+void UpnpCollection::slotFilesChanged(const QStringList &list )
+{
+    debug() << "Files changed" << list;
 }
 
 UpnpCollection::~UpnpCollection()
