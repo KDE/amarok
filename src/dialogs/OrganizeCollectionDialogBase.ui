@@ -112,7 +112,7 @@
      <item>
       <widget class="QPushButton" name="removePresetButton">
        <property name="toolTip">
-        <string>Removes the currently selected format reset</string>
+        <string>Removes the currently selected format preset</string>
        </property>
        <property name="text">
         <string>Remove Preset</string>
