@@ -91,13 +91,16 @@ class FastForwardWorker : public ThreadWeaver::Job
          * Searches collection by given tags, returns a TrackPtr or 0 if no or multiple tracks match.
          * emits trackDiscarded(), trackMatchFound(), trackMatchMultiple() as appropriate.
          */
-        Meta::TrackPtr trySmartMatch(const int c, const QString url, const QString title,
-                                     const QString album, const QString artist, const QString composer,
-                                     const QString genre, const uint year, const uint trackNr,
-                                     const uint discNr, const uint filesize);
-        void failWithError(const QString errorMsg);
+        Meta::TrackPtr trySmartMatch( const QString url, const QString title,
+                                      const QString album, const QString artist, const QString composer,
+                                      const QString genre, const uint year, const uint trackNr,
+                                      const uint discNr, const uint filesize );
+        void failWithError( const QString &errorMsg );
         void prettifyLyrics( QString &lyrics );
-        void updateMiscData( const ImporterMiscDataStorage &dataForInsert );
+        /**
+         * Inserts misc data such as lyrics and labels to database.
+         */
+        void insertMiscData( const ImporterMiscDataStorage &dataForInsert );
 
         bool m_aborted;
         bool m_failed;

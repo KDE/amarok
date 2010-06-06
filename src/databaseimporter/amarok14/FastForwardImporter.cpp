@@ -78,7 +78,7 @@ FastForwardImporter::import()
     m_worker->setImportArtwork( m_config->importArtwork() );
     m_worker->setImportArtworkDir( m_config->importArtworkDir() );
 
-    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ), 
+    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
              this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
              this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
@@ -88,7 +88,7 @@ FastForwardImporter::import()
              this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( importError( QString ) ),
              this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( done(ThreadWeaver::Job*) ), 
+    connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ),
              this, SLOT( finishUp() ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( showMessage( QString ) ),
              this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
@@ -103,7 +103,7 @@ FastForwardImporter::finishUp()
     m_worker->failed() ?
         emit( importFailed() ) :
         emit( importSucceeded() );
-    
+
     delete m_worker;
 }
 

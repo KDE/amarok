@@ -52,17 +52,17 @@ FastForwardWorker::FastForwardWorker()
      * For each collection folder we remember collection location it belongs to. */
     foreach( Collections::Collection *coll , CollectionManager::instance()->queryableCollections() )
     {
-        QSharedPointer<Collections::CollectionLocation> location(coll->location());
-        if(location)
+        QSharedPointer<Collections::CollectionLocation> location( coll->location() );
+        if( location )
         {
             foreach( QString path , location->actualLocation() )
             {
-                if(m_collectionFolders.contains(path))
+                if( m_collectionFolders.contains( path ) )
                 {
                     warning() << "Multiple collection locations claim the same path " << path;
                     continue;
                 }
-                m_collectionFolders.insert(path, location);
+                m_collectionFolders.insert( path, location );
                 debug() << "Collection folder " << path << " => collection location " << location->prettyLocation();
             }
         }
@@ -79,14 +79,14 @@ FastForwardWorker::databaseConnection()
     QString driver = driverName();
     if( driver.isEmpty() )
     {
-        emit importError( i18n("No database driver was selected") );
+        emit importError( i18n( "No database driver was selected" ) );
         m_failed = true;
         return QSqlDatabase();
     }
 
     if( isSqlite && !QFile::exists( m_databaseLocation ) )
     {
-        emit importError( i18n("Database could not be found at: %1", m_databaseLocation ) );
+        emit importError( i18n( "Database could not be found at: %1", m_databaseLocation ) );
         m_failed = true;
         return QSqlDatabase();
     }
@@ -187,14 +187,14 @@ FastForwardWorker::run()
         uint filesize    = query.value( index++ ).toUInt();
 
         // remove the relative part of the url, and make the url absolute
-        url = mount + url.mid(1);
+        url = mount + url.mid( 1 );
 
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
         if( track ) // track url exists
         {
             debug() << c << " file exists: " << url;
-            Collections::Collection* collection = track->collection(); // try
-            if(collection)
+            Collections::Collection* collection = track->collection(); // try, often will return 0
+            if( collection )
             {
                 debug() << c << " track already in databse -> update";
                 emit trackAdded( track );
@@ -203,23 +203,23 @@ FastForwardWorker::run()
             {
                 debug() << c << " track not in database";
 
-                Collections::CollectionLocation *location(0);
+                Collections::CollectionLocation *location( 0 );
                 // go throungh collection locacions and try to find match
-                QMapIterator<QString, QSharedPointer<Collections::CollectionLocation> > i(m_collectionFolders);
-                while (i.hasNext()) {
+                QMapIterator<QString, QSharedPointer<Collections::CollectionLocation> > i( m_collectionFolders );
+                while ( i.hasNext() ) {
                     i.next();
-                    if(url.startsWith( i.key() ) )
+                    if( url.startsWith( i.key() ) )
                     {
                         location = i.value().data();
                         break;
                     }
                 }
 
-                if(location)
+                if( location )
                 {
                     debug() << c << " track found under" << location->prettyLocation() << "-> add";
                     QMap<Meta::TrackPtr,QString> *map;
-                    if(tracksForInsert.contains( location) )
+                    if( tracksForInsert.contains( location ) )
                     {
                         map = tracksForInsert.value( location );
                     }
@@ -236,7 +236,8 @@ FastForwardWorker::run()
                     debug() << c << " track is not under configured collection folders -> discard";
                     track = 0;
                     emit trackDiscarded( url );
-                    emit showMessage( i18n( "<font color='gray'>(track exists, but does not belong into any of your configured collection folders)</font>" ) );
+                    emit showMessage( QString( "<font color='gray'>%1</font>" ).arg(
+                            i18n( "(track exists, but does not belong into any of your configured collection folders)" ) ) );
                 }
             }
         }
@@ -245,7 +246,7 @@ FastForwardWorker::run()
             debug() << c << " file does not exist: " << url;
             // we need at least a title for a match
             if ( m_smartMatch && !title.isEmpty() ) {
-                track = trySmartMatch(c, url, title, album, artist, composer, genre, year, trackNr, discNr, filesize);
+                track = trySmartMatch( url, title, album, artist, composer, genre, year, trackNr, discNr, filesize );
             }
             else
             {
@@ -277,7 +278,8 @@ FastForwardWorker::run()
             else
             {
                 warning() << c << " track->create<Capabilities::StatisticsCapability>() returned 0!";
-                emit showMessage( i18n( "<font color='red'>Cannot import statistics for %1</font>", url ) );
+                emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
+                        i18n( "Cannot import statistics for %1", url ) ) );
             }
 
             url = track->playableUrl().url(); // reassign url for tracks found by smart match
@@ -312,18 +314,22 @@ FastForwardWorker::run()
 
     // iterate over collection locations, add appropriate tracks to each
     {
-        QMapIterator<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > i(tracksForInsert);
-        while( i.hasNext()) {
+        QMapIterator<Collections::CollectionLocation*, QMap<Meta::TrackPtr, QString>* > i( tracksForInsert );
+        while( i.hasNext() ) {
             i.next();
+            Collections::CollectionLocation* location = i.key();
+            QMap<Meta::TrackPtr, QString>* tracks = i.value();
+
             debug() << "Adding new tracks to collection";
-            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>", i.value()->size(), i.key()->prettyLocation() ) );
-            i.key()->insertTracks( *(i.value()) );
-            i.key()->insertStatistics( *(i.value()) );
-            delete i.value(); // i.key() is deleted by QSharedPointer
+            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>",
+                                    tracks->size(), location->prettyLocation() ) );
+            location->insertTracks( *tracks );
+            location->insertStatistics( *tracks );
+            delete tracks; // location is deleted by QSharedPointer
         }
     }
 
-    updateMiscData( dataForInsert ); // this is a hack, see function definition
+    insertMiscData( dataForInsert ); // this is a hack, see function definition
 
     if( m_importArtwork )
     {
@@ -362,7 +368,7 @@ FastForwardWorker::run()
 }
 
 void
-FastForwardWorker::failWithError(const QString errorMsg)
+FastForwardWorker::failWithError( const QString &errorMsg )
 {
     debug() << errorMsg;
     emit importError( errorMsg );
@@ -370,38 +376,38 @@ FastForwardWorker::failWithError(const QString errorMsg)
 }
 
 Meta::TrackPtr
-FastForwardWorker::trySmartMatch(const int c, const QString url, const QString title, const QString album, const QString artist, const QString composer, const QString genre, const uint year, const uint trackNr, const uint discNr, const uint filesize)
+FastForwardWorker::trySmartMatch( const QString url, const QString title, const QString album, const QString artist, const QString composer, const QString genre, const uint year, const uint trackNr, const uint discNr, const uint filesize )
 {
-    Meta::TrackPtr track(0);
+    Meta::TrackPtr track( 0 );
 
-    debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
+    debug() << "    trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
 
     // setup query
     m_matchTracks.clear();
     // state var to make the query synchronous (not exactly elegant, but'll do..)
     m_queryRunning = true;
 
-    Collections::QueryMaker *qm_track = CollectionManager::instance()->queryMaker();
-    qm_track->setQueryType( Collections::QueryMaker::Track );
+    Collections::QueryMaker *trackQueryMaker = CollectionManager::instance()->queryMaker();
+    trackQueryMaker->setQueryType( Collections::QueryMaker::Track );
 
     // set matching criteria to narrow down the corresponding track in
     // the new collection as good as possible
     // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
     //       lengths
     //       bitrate: same
-    qm_track->addFilter( Meta::valTitle, title, true, true );
-    qm_track->addFilter( Meta::valAlbum, album, true, true );
-    qm_track->addFilter( Meta::valArtist, artist, true, true );
-    qm_track->addFilter( Meta::valComposer, composer, true, true );
-    qm_track->addFilter( Meta::valGenre, genre, true, true );
-    qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
-    qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
-    qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
-    qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
+    trackQueryMaker->addFilter( Meta::valTitle, title, true, true );
+    trackQueryMaker->addFilter( Meta::valAlbum, album, true, true );
+    trackQueryMaker->addFilter( Meta::valArtist, artist, true, true );
+    trackQueryMaker->addFilter( Meta::valComposer, composer, true, true );
+    trackQueryMaker->addFilter( Meta::valGenre, genre, true, true );
+    trackQueryMaker->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
-    connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-    qm_track->run();
+    connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    trackQueryMaker->run();
 
     // block until query is finished
     QCoreApplication::processEvents();
@@ -413,47 +419,38 @@ FastForwardWorker::trySmartMatch(const int c, const QString url, const QString t
     // evaluate query result
     if ( m_matchTracks.isEmpty() )
     {
-        debug() << c << " matching done: no track found -> discard";
+        debug() << "    matching done: no track found -> discard";
         emit trackDiscarded( url );
     }
     else if ( m_matchTracks.count() == 1 )
     {
         track = m_matchTracks.first();
-        debug() << c << " matching done: matching track found -> update";
-        debug() << c << "  (" << track->collection()->location()->prettyLocation()
-                << "):" << track->playableUrl();
+        debug() << "    matching done: matching track found -> update";
         emit trackMatchFound( m_matchTracks.first(), url );
     }
     else
     {
-        debug() << c << " matching done: more than one track found -> discard";
-        foreach( Meta::TrackPtr d_track, m_matchTracks )
-        {
-            if ( d_track && d_track->artist() && d_track->album() )
-                debug() << c << "   found track: " << d_track->name() << " : "
-                        << d_track->artist()->name() << " : " << d_track->album()->name()
-                        << " - " << d_track->playableUrl();
-        }
+        debug() << "    matching done: more than one track found -> discard";
         emit trackMatchMultiple( m_matchTracks, url );
     }
 
-    delete qm_track;
+    delete trackQueryMaker;
     return track;
 }
 
 void
 FastForwardWorker::prettifyLyrics( QString &lyrics )
 {
-    QRegExp filter("<[^>]*>");
-    lyrics.replace( filter, QString("") );
-    lyrics.replace( QString("&apos;"), QString("'") );
-    lyrics.replace( QString("&quot;"), QString("\"") );
-    lyrics.replace( QString("&lt;"), QString("<") );
-    lyrics.replace( QString("&gt;"), QString(">") );
+    QRegExp filter( "<[^>]*>" );
+    lyrics.replace( filter, QString( "" ) ); // strip html tags
+    lyrics.replace( QString( "&apos;" ), QString( "'" ) );
+    lyrics.replace( QString( "&quot;" ), QString( "\"" ) );
+    lyrics.replace( QString( "&lt;" ), QString( "<" ) );
+    lyrics.replace( QString( "&gt;" ), QString( ">" ) );
 }
 
 void
-FastForwardWorker::updateMiscData( const ImporterMiscDataStorage& dataForInsert )
+FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert )
 {
     /* HACK: Meta::Track::setCachedLyrics() and ::addLabel() actually save data only for
      * Meta:SqlTrack.
@@ -465,7 +462,7 @@ FastForwardWorker::updateMiscData( const ImporterMiscDataStorage& dataForInsert 
     emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks.",
                             dataForInsert.size() ) );
     int lyricsCount = 0, labelsCount = 0;
-    QMapIterator<QString, ImporterMiscData> i(dataForInsert);
+    QMapIterator<QString, ImporterMiscData> i( dataForInsert );
     while( i.hasNext() )
     {
         i.next();
@@ -476,17 +473,17 @@ FastForwardWorker::updateMiscData( const ImporterMiscDataStorage& dataForInsert 
         if( !track ) {
             debug() << "trackForUrl() returned null for url " << url <<
                         ", skipping lyrics and labels update";
-            emit showMessage( i18n( "<font color='red'>Failed to update lyrics/labels "
-                                    "for track %1</font>", url ) );
+            emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
+                    i18n( "Failed to update lyrics/labels for track %1", url ) ) );
             continue;
         }
 
-        if(!miscData.cachedLyrics().isEmpty())
+        if( !miscData.cachedLyrics().isEmpty() )
         {
             track->setCachedLyrics( miscData.cachedLyrics() );
             lyricsCount++;
         }
-        if(!miscData.labels().isEmpty())
+        if( !miscData.labels().isEmpty() )
         {
             foreach( QString label, miscData.labels() )
             {
@@ -497,10 +494,10 @@ FastForwardWorker::updateMiscData( const ImporterMiscDataStorage& dataForInsert 
     }
 
     debug() << "lyrics and labels updated";
-    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks",
-                            lyricsCount, labelsCount ) );
+    emit showMessage( QString( "<font color='green'>%1</font>" ).arg( i18n(
+            "Cached lyrics updated for %1 tracks, labels added to %2 tracks",
+            lyricsCount, labelsCount ) ) );
 }
-
 
 void
 FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
@@ -520,16 +517,17 @@ FastForwardWorker::queryDone()
 void
 ImporterMiscData::addLabel( const QString &label )
 {
-    if(!m_labels.contains( label) )
+    if( !m_labels.contains( label ) )
     {
         m_labels.append( label );
     }
 }
 
+
 void
 ImporterMiscDataStorage::insertCachedLyrics( const QString &url, const QString &lyrics )
 {
-    if(contains( url ))
+    if( contains( url ) )
     {
         operator[]( url ).setCachedLyrics( lyrics );
     }
@@ -544,7 +542,7 @@ ImporterMiscDataStorage::insertCachedLyrics( const QString &url, const QString &
 void
 ImporterMiscDataStorage::insertLabel ( const QString &url, const QString &label )
 {
-    if(contains( url ))
+    if( contains( url ) )
     {
         operator[]( url ).addLabel( label );
     }
