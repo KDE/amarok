@@ -69,8 +69,8 @@ FastForwardWorker::FastForwardWorker()
     }
 }
 
-QSqlDatabase
-FastForwardWorker::databaseConnection()
+void
+FastForwardWorker::setupDatabaseConnection()
 {
     DEBUG_BLOCK
 
@@ -80,27 +80,24 @@ FastForwardWorker::databaseConnection()
     if( driver.isEmpty() )
     {
         emit importError( i18n( "No database driver was selected" ) );
-        m_failed = true;
-        return QSqlDatabase();
+        return; // no need to set m_failed here, it is in failWithError()
     }
 
     if( isSqlite && !QFile::exists( m_databaseLocation ) )
     {
         emit importError( i18n( "Database could not be found at: %1", m_databaseLocation ) );
-        m_failed = true;
-        return QSqlDatabase();
+        return;
     }
 
-    QSqlDatabase connection = QSqlDatabase::addDatabase( driver );
-    connection.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
+    m_db = QSqlDatabase::addDatabase( driver );
+    m_db.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
 
     if( !isSqlite )
     {
-        connection.setHostName( m_hostname );
-        connection.setUserName( m_username );
-        connection.setPassword( m_password );
+        m_db.setHostName( m_hostname );
+        m_db.setUserName( m_username );
+        m_db.setPassword( m_password );
     }
-    return connection;
 }
 
 const QString
@@ -120,10 +117,10 @@ FastForwardWorker::run()
 {
     DEBUG_BLOCK
 
-    QSqlDatabase db = databaseConnection();
-    if( !db.open() )
+    setupDatabaseConnection();
+    if( !m_db.open() )
     {
-        failWithError( i18n( "Could not open Amarok 1.4 database: %1", db.lastError().text() ) );
+        failWithError( i18n( "Could not open Amarok 1.4 database: %1", m_db.lastError().text() ) );
         return;
     }
 
@@ -149,11 +146,11 @@ FastForwardWorker::run()
         "LEFT OUTER JOIN year Y "
         "  ON T.year = Y.id "
         "ORDER BY lastmountpoint, S.url" );
-    QSqlQuery query( sql, db );
+    QSqlQuery query( sql, m_db );
 
     if( query.lastError().isValid() )
     {
-        failWithError( i18n( "Could not execute import query: %1", db.lastError().text() ) );
+        failWithError( i18n( "Could not execute import query: %1", m_db.lastError().text() ) );
         return;
     }
 
@@ -215,7 +212,7 @@ FastForwardWorker::run()
                     }
                 }
 
-                if( location )
+                if( location ) // a collection that can accept this track exists
                 {
                     debug() << c << " track found under" << location->prettyLocation() << "-> add";
                     QMap<Meta::TrackPtr,QString> *map;
@@ -231,7 +228,7 @@ FastForwardWorker::run()
                     map->insert( track, track->playableUrl().url() );
                     emit trackAdded( track );
                 }
-                else
+                else // collection that can accept this track does not exist
                 {
                     debug() << c << " track is not under configured collection folders -> discard";
                     track = 0;
@@ -246,7 +243,8 @@ FastForwardWorker::run()
             debug() << c << " file does not exist: " << url;
             // we need at least a title for a match
             if ( m_smartMatch && !title.isEmpty() ) {
-                track = trySmartMatch( url, title, album, artist, composer, genre, year, trackNr, discNr, filesize );
+                track = trySmartMatch( url, title, album, artist, composer, genre, year,
+                                       trackNr, discNr, filesize );
             }
             else
             {
@@ -257,58 +255,8 @@ FastForwardWorker::run()
 
         if( track )
         {
-            /* import statistics. ec may be different object for different track types.
-             * StatisticsCapability for MetaFile::Track only caches info (thus we need to call
-             * insertStatistics() afterwards) while Meta::SqlTrack directly saves data to
-             * database (thus no insertStatistics() call is necessary)
-             */
-            Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
-            if( ec )
-            {
-                ec->beginStatisticsUpdate();
-                ec->setScore( score );
-                ec->setRating( rating );
-                ec->setFirstPlayed( firstPlayed );
-                ec->setLastPlayed( lastPlayed );
-                ec->setPlayCount( playCount );
-                ec->endStatisticsUpdate();
-
-                delete ec;
-            }
-            else
-            {
-                warning() << c << " track->create<Capabilities::StatisticsCapability>() returned 0!";
-                emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
-                        i18n( "Cannot import statistics for %1", url ) ) );
-            }
-
-            url = track->playableUrl().url(); // reassign url for tracks found by smart match
-
-            prettifyLyrics( lyrics );
-            if( !lyrics.isEmpty() )
-                dataForInsert.insertCachedLyrics( url, lyrics );
-
-            // import labels
-            if( !uniqueId.isEmpty() )
-            {
-                QString labelsSql = QString( "SELECT L.name FROM tags_labels T "
-                    "LEFT JOIN labels L ON L.id = T.labelid "
-                    "WHERE L.name != '' AND T.uniqueid = '%1'" ).arg( uniqueId );
-                QSqlQuery labelsQuery( labelsSql, db );
-
-                if( labelsQuery.lastError().isValid() )
-                {
-                    failWithError( i18n( "Could not execute labels import query: %1; query was: %2",
-                                        db.lastError().text(), labelsSql ) );
-                    return;
-                }
-
-                for( int d = 0; labelsQuery.next(); d++ )
-                {
-                    QString label( labelsQuery.value( 0 ).toString() );
-                    dataForInsert.insertLabel( url,  label );
-                }
-            }
+            setTrackMetadata( track, score, rating, firstPlayed, lastPlayed, playCount );
+            setTrackMiscData( dataForInsert, track, uniqueId, lyrics );
         }
     }
 
@@ -321,7 +269,7 @@ FastForwardWorker::run()
             QMap<Meta::TrackPtr, QString>* tracks = i.value();
 
             debug() << "Adding new tracks to collection";
-            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>",
+            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
                                     tracks->size(), location->prettyLocation() ) );
             location->insertTracks( *tracks );
             location->insertStatistics( *tracks );
@@ -332,39 +280,7 @@ FastForwardWorker::run()
     insertMiscData( dataForInsert ); // this is a hack, see function definition
 
     if( m_importArtwork )
-    {
-        const QString message = i18n( "Importing downloaded album art" );
-        emit showMessage( message );
-
-        QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
-        QDir newCoverDir( newCoverPath );
-        QDir oldCoverDir( m_importArtworkDir ); 
-
-        if( newCoverDir.canonicalPath() == oldCoverDir.canonicalPath() )
-            return;
-
-        oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
-
-        debug() << "new covers:" << newCoverPath;
-        debug() << "old covers:" << m_importArtworkDir;
-
-        foreach( const QFileInfo &image, oldCoverDir.entryInfoList() )
-        {
-            if( m_aborted )
-                return;
-
-            debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
-            QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
-
-            KUrl src( image.absoluteFilePath() );
-            KUrl dst( newPath );
-
-            //TODO: should this be asynchronous?
-            KIO::FileCopyJob *job = KIO::file_copy( src, dst, -1 /*no special perms*/ , KIO::HideProgressInfo );
-            if( !job->exec() ) // job deletes itself
-                error() << "Couldn't copy image" << image.fileName();
-        }
-    }
+        importArtwork();
 }
 
 void
@@ -376,7 +292,10 @@ FastForwardWorker::failWithError( const QString &errorMsg )
 }
 
 Meta::TrackPtr
-FastForwardWorker::trySmartMatch( const QString url, const QString title, const QString album, const QString artist, const QString composer, const QString genre, const uint year, const uint trackNr, const uint discNr, const uint filesize )
+FastForwardWorker::trySmartMatch( const QString url, const QString title, const QString album,
+                                  const QString artist, const QString composer, const QString genre,
+                                  const uint year, const uint trackNr, const uint discNr,
+                                  const uint filesize )
 {
     Meta::TrackPtr track( 0 );
 
@@ -439,14 +358,72 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 }
 
 void
-FastForwardWorker::prettifyLyrics( QString &lyrics )
+FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rating,
+                                        uint firstPlayed, uint lastPlayed, int playCount )
 {
-    QRegExp filter( "<[^>]*>" );
-    lyrics.replace( filter, QString( "" ) ); // strip html tags
+    /* import statistics. ec may be different object for different track types.
+     * StatisticsCapability for MetaFile::Track only caches info (thus we need to call
+     * insertStatistics() afterwards) while Meta::SqlTrack directly saves data to
+     * database (thus no insertStatistics() call is necessary)
+     */
+    Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
+    if( ec )
+    {
+        ec->beginStatisticsUpdate();
+        ec->setScore( score );
+        ec->setRating( rating );
+        ec->setFirstPlayed( firstPlayed );
+        ec->setLastPlayed( lastPlayed );
+        ec->setPlayCount( playCount );
+        ec->endStatisticsUpdate();
+
+        delete ec;
+    }
+    else
+    {
+        warning() << "    track->create<Capabilities::StatisticsCapability>() returned 0!";
+        emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
+                i18n( "Cannot import statistics for %1", track->prettyUrl() ) ) );
+    }
+}
+
+void
+FastForwardWorker::setTrackMiscData( ImporterMiscDataStorage& dataForInsert, Meta::TrackPtr track,
+                                     const QString& uniqueId, QString lyrics )
+{
+    QString url = track->playableUrl().url(); // we cannot reuse url, it may have changed in smartMatch
+
+    // lyrics:
+    QRegExp lyricsFilter( "<[^>]*>" );
+    lyrics.replace( lyricsFilter, QString( "" ) ); // strip html tags
     lyrics.replace( QString( "&apos;" ), QString( "'" ) );
     lyrics.replace( QString( "&quot;" ), QString( "\"" ) );
     lyrics.replace( QString( "&lt;" ), QString( "<" ) );
     lyrics.replace( QString( "&gt;" ), QString( ">" ) );
+    if( !lyrics.isEmpty() )
+        dataForInsert.insertCachedLyrics( url, lyrics );
+
+    // labels:
+    if( !uniqueId.isEmpty() )
+    {
+        QString labelsSql = QString( "SELECT L.name FROM tags_labels T "
+            "LEFT JOIN labels L ON L.id = T.labelid "
+            "WHERE L.name != '' AND T.uniqueid = '%1'" ).arg( uniqueId );
+        QSqlQuery labelsQuery( labelsSql, m_db );
+
+        if( labelsQuery.lastError().isValid() )
+        {
+            failWithError( i18n( "Could not execute labels import query: %1; query was: %2",
+                                m_db.lastError().text(), labelsSql ) );
+            return;
+        }
+
+        for( int d = 0; labelsQuery.next(); d++ )
+        {
+            QString label( labelsQuery.value( 0 ).toString() );
+            dataForInsert.insertLabel( url,  label );
+        }
+    }
 }
 
 void
@@ -459,7 +436,7 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
      * hope it will return Meta::SqlTrack. */
 
     debug() << "updating cached lyrics and labels...";
-    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks.",
+    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks...",
                             dataForInsert.size() ) );
     int lyricsCount = 0, labelsCount = 0;
     QMapIterator<QString, ImporterMiscData> i( dataForInsert );
@@ -494,9 +471,48 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
     }
 
     debug() << "lyrics and labels updated";
-    emit showMessage( QString( "<font color='green'>%1</font>" ).arg( i18n(
-            "Cached lyrics updated for %1 tracks, labels added to %2 tracks",
-            lyricsCount, labelsCount ) ) );
+    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks.",
+                            lyricsCount, labelsCount ) );
+}
+
+void
+FastForwardWorker::importArtwork()
+{
+    emit showMessage( i18n( "Importing downloaded album art..." ) );
+
+    QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
+    QDir newCoverDir( newCoverPath );
+    QDir oldCoverDir( m_importArtworkDir );
+
+    if( newCoverDir.canonicalPath() == oldCoverDir.canonicalPath() )
+        return;
+
+    oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
+
+    debug() << "new covers:" << newCoverPath;
+    debug() << "old covers:" << m_importArtworkDir;
+
+    int count = 0;
+    foreach( const QFileInfo &image, oldCoverDir.entryInfoList() )
+    {
+        if( m_aborted )
+            return;
+
+        debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
+        QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
+
+        KUrl src( image.absoluteFilePath() );
+        KUrl dst( newPath );
+
+        //TODO: should this be asynchronous?
+        KIO::FileCopyJob *job = KIO::file_copy( src, dst, -1 /*no special perms*/ , KIO::HideProgressInfo );
+        if( !job->exec() ) // job deletes itself
+            error() << "Couldn't copy image" << image.fileName();
+        else
+            count++;
+    }
+
+    emit showMessage( i18n( "Copied %1 cover images.", count ) );
 }
 
 void
