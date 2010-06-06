@@ -652,13 +652,13 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         // The bit array represents the choice made at each branch.
         QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
-        Dynamic::TrackSet S(s_universe);
+        Dynamic::TrackSet currentSet(s_universe);
 
         for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
-            Dynamic::TrackSet currentSet(s_universe);
+            Dynamic::TrackSet newSet = currentSet;
 
             // Decide whether we should 'accept' or 'reject' a bias.
             double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
@@ -669,13 +669,13 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             {
                 debug() << "chose track from bias";
                 branches.setBit( i, true );
-                currentSet.intersect( m_feasibleCollectionFilterSets[i] );
+                newSet.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
                 debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
-                currentSet.subtract( m_feasibleCollectionFilterSets[i] );
+                newSet.subtract( m_feasibleCollectionFilterSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
@@ -684,27 +684,27 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             // deal with infeasible systems.)
             //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
-            if( currentSet.trackCount() == 0 ) {
+            if( newSet.trackCount() == 0 ) {
                 debug() << "bias would result in empty set. reverting decision";
                 branches.toggleBit( i );
             }
             else
             {
-                S = currentSet;
+                currentSet = newSet;
                 if( branches[i] )
                     addedSongsForFilter[i]++;
             }
         }
 
         // this should never happen
-        if( S.trackCount() == 0 )
+        if( currentSet.trackCount() == 0 )
         {
             error() << "BiasSolver assumption failed.";
             continue;
         }
 
         // choose a track at random from our final subset
-        playlist.append( getRandomTrack(S) );
+        playlist.append( getRandomTrack(currentSet) );
     }
     delete[] addedSongsForFilter;
 
