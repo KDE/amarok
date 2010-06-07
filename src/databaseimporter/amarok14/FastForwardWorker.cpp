@@ -46,7 +46,7 @@ FastForwardWorker::FastForwardWorker()
     , m_password()
     , m_smartMatch( false )
     , m_importArtwork( false )
-    , m_queryRunning( false )
+    , m_eventLoop( 0 )
 {
     /* fill in m_collectionFolders.
      * For each collection folder we remember collection location it belongs to. */
@@ -301,10 +301,8 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 
     debug() << "    trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
 
-    // setup query
+    // cleanup from possible previous calls
     m_matchTracks.clear();
-    // state var to make the query synchronous (not exactly elegant, but'll do..)
-    m_queryRunning = true;
 
     Collections::QueryMaker *trackQueryMaker = CollectionManager::instance()->queryMaker();
     trackQueryMaker->setQueryType( Collections::QueryMaker::Track );
@@ -324,16 +322,17 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
     trackQueryMaker->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
     trackQueryMaker->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
-    connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ),
+             Qt::QueuedConnection );
+    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+             SLOT( resultReady( QString, Meta::TrackList ) ),
+             Qt::QueuedConnection );
     trackQueryMaker->run();
 
-    // block until query is finished
-    QCoreApplication::processEvents();
-    while ( m_queryRunning == true ) {
-        thread()->msleep( 10 );
-        QCoreApplication::processEvents();
-    }
+    m_eventLoop = new QEventLoop();
+    m_eventLoop->exec(); // wait for resultReady slot to fire
+    delete m_eventLoop;
+    m_eventLoop = 0; // avoid dangling pointer
 
     // evaluate query result
     if ( m_matchTracks.isEmpty() )
@@ -526,9 +525,18 @@ FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackLi
 void
 FastForwardWorker::queryDone()
 {
-    m_queryRunning = false;
+    if( !m_eventLoop )
+    {
+        error() << "FastForwardWorker::queryDone() was called while m_eventLoop == 0!";
+        return;
+    }
+    if( !m_eventLoop->isRunning() )
+    {
+        error() << "FastForwardWorker::queryDone() was called while m_eventLoop wasnt running!";
+        return;
+    }
+    m_eventLoop->exit();
 }
-
 
 void
 ImporterMiscData::addLabel( const QString &label )

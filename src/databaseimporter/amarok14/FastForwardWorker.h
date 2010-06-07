@@ -26,6 +26,7 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QEventLoop>
 #include <QSharedPointer>
 #include <QSqlDatabase>
 
@@ -137,7 +138,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         QSqlDatabase m_db;
         QMap<QString, QSharedPointer<Collections::CollectionLocation> > m_collectionFolders;
         Meta::TrackList m_matchTracks;
-        bool m_queryRunning;
+        QEventLoop *m_eventLoop;
 };
 
 #endif // multiple inclusion guard
