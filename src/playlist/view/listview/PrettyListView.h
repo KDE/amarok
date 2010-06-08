@@ -26,7 +26,6 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/view/tooltips/ToolTipManager.h"
 
-
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -131,8 +130,6 @@ private:
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
-
-    AbstractModel *m_topmostProxy;
 
     PrettyItemDelegate * m_prettyDelegate;
 
