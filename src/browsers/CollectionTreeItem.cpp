@@ -131,19 +131,21 @@ CollectionTreeItem::child( int row )
 QString
 CollectionTreeItem::albumYear() const
 {
-    QString year;
     if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
     {
-        if( !album->tracks().isEmpty() )
+        const Meta::TrackList tracks = album->tracks();
+        if( !tracks.isEmpty() )
         {
-            Meta::TrackPtr track = album->tracks()[0];
+            Meta::TrackPtr track = tracks.at( 0 );
             if( track && track->year() )
-                year = track->year()->prettyName();
+            {
+                const QString year = track->year()->prettyName();
+                if( year != "0" )
+                    return year;
+            }
         }
     }
-    if( year == "0" )
-        year.clear();
-    return year;
+    return QString();
 }
 
 QVariant
