@@ -91,40 +91,42 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 QVariant
 CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-     if (!index.isValid())
-         return QVariant();
+    if (!index.isValid())
+        return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
 
-    if ( item->isDataItem() )
+    if( item->isDataItem() )
     {
-        if ( role == Qt::DecorationRole )
+        if( role == Qt::DecorationRole )
         {
-            int level = item->level() -1;
+            int level = item->level() - 1;
 
-            if ( d->childQueries.values().contains( item ) )
+            if( d->childQueries.values().contains( item ) )
             {
                 if( level < m_levelType.count() )
                     return m_currentAnimPixmap;
             }
 
-            if ( level >= 0 && level < m_levelType.count() ) {
-                if (  m_levelType[level] == CategoryId::Album )
+            if( level >= 0 && level < m_levelType.count() )
+            {
+                if( m_levelType[level] == CategoryId::Album )
                 {
                     if( AmarokConfig::showAlbumArt() )
                     {
                         Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                         if( album )
                             return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                        return iconForLevel( level  );
                     }
                 }
                 return iconForLevel( level );
             }
-        } else if ( role == AlternateCollectionRowRole )
+        }
+        else if( role == AlternateCollectionRowRole )
+        {
             return ( index.row() % 2 == 1 );
+        }
     }
-
     return item->data( role );
 }
 
