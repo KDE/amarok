@@ -45,7 +45,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
+    d->collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
@@ -71,7 +71,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
             const int level = item->level();
 
-            if ( d->m_childQueries.values().contains( item ) )
+            if ( d->childQueries.values().contains( item ) )
             {
                 if ( level < m_levelType.count() )
                     return m_currentAnimPixmap;

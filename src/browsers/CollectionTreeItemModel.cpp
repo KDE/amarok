@@ -42,12 +42,12 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
@@ -69,22 +69,22 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedVariousArtistsNodes.clear();
-    d->m_runningQueries.clear();
-    d->m_childQueries.clear();
-    d->m_compilationQueries.clear();
+    d->runningQueries.clear();
+    d->childQueries.clear();
+    d->compilationQueries.clear();
     reset();
-    if ( d->m_collections.count() == 1 )
+    if ( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -102,7 +102,7 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
         {
             int level = item->level() -1;
 
-            if ( d->m_childQueries.values().contains( item ) )
+            if ( d->childQueries.values().contains( item ) )
             {
                 if( level < m_levelType.count() )
                     return m_currentAnimPixmap;
@@ -158,15 +158,15 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
     QString collectionId = newCollection->collectionId();
-    if ( d->m_collections.contains( collectionId ) )
+    if ( d->collections.contains( collectionId ) )
         return;
 
     //inserts new collection at the end. sort collection alphabetically?
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
+    d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
-    if( d->m_collections.count() == 1 )
+    if( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -181,7 +181,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
         {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
-            d->m_collections.remove( collectionId );
+            d->collections.remove( collectionId );
             m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }

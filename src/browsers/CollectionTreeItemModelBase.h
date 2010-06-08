@@ -161,11 +161,11 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 class CollectionTreeItemModelBase::Private
 {
  public:
-    QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QHash<QString, CollectionRoot > collections;  //I'll concide this one... :-)
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
+    QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
 };
 
 #endif
