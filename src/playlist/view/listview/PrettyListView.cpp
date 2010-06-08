@@ -440,7 +440,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
     DEBUG_BLOCK
     QRect oldDrop = m_dropIndicator;
     m_dropIndicator = QRect( 0, 0, 0, 0 );
-    if ( dynamic_cast<PrettyListView*>( event->source() ) == this )
+    if ( qobject_cast<PrettyListView*>( event->source() ) == this )
     {
         QAbstractItemModel* plModel = model();
         int targetRow = indexAt( event->pos() ).row();

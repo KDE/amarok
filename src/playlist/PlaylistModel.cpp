@@ -374,7 +374,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         debug() << "this is a track";
-        const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* trackListDrag = qobject_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
 
@@ -388,7 +388,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "this is a playlist";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
             The::playlistController()->insertPlaylists( beginRow, dragList->playlists() );
         return true;
@@ -396,7 +396,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
     {
         debug() << "this is a podcast episode";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
             Meta::TrackList tracks;
@@ -409,7 +409,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
     {
         debug() << "this is a podcast channel";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
             Meta::TrackList tracks;
