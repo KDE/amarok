@@ -153,19 +153,14 @@ CollectionTreeItem::data( int role ) const
     {
         if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
         {
-            QString name = m_data->prettyName();
-            if( AmarokConfig::showTrackNumbers() )
+            Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
+            QString name = track ? track->fixedName() : m_data->fixedName();
+
+            if( AmarokConfig::showTrackNumbers() && track )
             {
-                if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
-                {
-                    if( !track.isNull() )
-                    {
-                        if ( track->trackNumber() > 0 )
-                            name = QString::number( track->trackNumber() ) + " - " + track->fixedName();
-                        else
-                            name = track->fixedName();
-                    }
-                }
+                int trackNum = track->trackNumber();
+                if( trackNum > 0 )
+                    name.prepend( QString("%1 - ").arg(trackNum) );
             }
 
             // Check empty after track logic and before album logic
@@ -174,9 +169,9 @@ CollectionTreeItem::data( int role ) const
 
             if( AmarokConfig::showYears() )
             {
-                QString year = albumYear();
+                const QString year = albumYear();
                 if( !year.isEmpty() )
-                    name = year + " - " + name;
+                    name.prepend( QString("%1 - ").arg(year) );
             }
             return name;
         }
