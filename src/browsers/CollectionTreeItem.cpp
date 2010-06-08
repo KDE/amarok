@@ -194,12 +194,14 @@ CollectionTreeItem::data( int role ) const
     }
     else if( m_parentCollection )
     {
-        if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
-            return m_parentCollection->prettyName();
-        else if( role == Qt::DecorationRole )
-            return m_parentCollection->icon();
-        else if( role == CustomRoles::ByLineRole )
+        switch( role )
         {
+        case Qt::DisplayRole:
+        case CustomRoles::FilterRole:
+            return m_parentCollection->prettyName();
+        case Qt::DecorationRole:
+            return m_parentCollection->icon();
+        case CustomRoles::ByLineRole:
             static const QString counting = i18n( "Counting" );
             if( m_isCounting )
                 return counting;
@@ -217,30 +219,21 @@ CollectionTreeItem::data( int role ) const
 
                 return counting;
             }
-
             return i18np( "1 track", "%1 tracks", m_trackCount );
-        }
-        else if( role == CustomRoles::HasCapacityRole )
-        {
+        case CustomRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
-        }
-        else if( role == CustomRoles::UsedCapacityRole )
-        {
+        case CustomRoles::UsedCapacityRole:
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
-        }
-        else if( role == CustomRoles::DecoratorRoleCount )
-        {
+            break;
+        case CustomRoles::DecoratorRoleCount:
             return decoratorActions().size();
-        }
-        else if( role == CustomRoles::DecoratorRole )
-        {
+        case CustomRoles::DecoratorRole:
             QVariant v;
             v.setValue( decoratorActions() );
             return v;
         }
     }
-
     return QVariant();
 }
 
