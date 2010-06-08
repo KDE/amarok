@@ -372,7 +372,6 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
-    DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
@@ -766,9 +765,16 @@ CollectionTreeItemModelBase::queryDone()
     if( !qm )
         return;
 
-    CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
+    CollectionTreeItem* item = 0;
+    if( d->m_childQueries.contains( qm ) )
+        item = d->m_childQueries.take( qm );
+    else if( d->m_compilationQueries.contains( qm ) )
+        item = d->m_compilationQueries.take( qm );
+    else if( d->noLabelsQueries.contains( qm ) )
+        item = d->noLabelsQueries.take( qm );
 
-    d->m_runningQueries.remove( item );
+    if( item )
+        d->m_runningQueries.remove( item );
 
     //reset icon for this item
     if( item && item != m_rootItem )
@@ -1302,6 +1308,7 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
 
         d->m_childQueries.remove( qm );
         d->m_compilationQueries.remove( qm );
+        d->noLabelsQueries.remove( qm );
         //we still need to disconnect the qm below
     }
     if( qm )
