@@ -444,8 +444,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         }
         addFilters( qm );
         qm->setReturnResultAsDataPtrs( true );
-        connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+        connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
         d->childQueries.insert( qm, parent );
         d->runningQueries.insert( parent, qm );
         qm->run();
@@ -1078,8 +1078,8 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     }
     addFilters( qm );
     qm->setReturnResultAsDataPtrs( true );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     d->compilationQueries.insert( qm, parent );
     d->runningQueries.insert( parent, qm );
     qm->run();
@@ -1104,8 +1104,8 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
         tmpItem = tmpItem->parent();
     }
     addFilters( qm );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     d->noLabelsQueries.insert( qm, parent );
     d->runningQueries.insert( parent, qm );
     qm->run();
