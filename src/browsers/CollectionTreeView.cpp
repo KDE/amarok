@@ -87,8 +87,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
 
-    setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
-
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
 }

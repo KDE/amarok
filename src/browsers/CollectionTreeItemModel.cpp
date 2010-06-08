@@ -31,8 +31,9 @@
 #include "core/collections/QueryMaker.h"
 
 #include <KLocale>
-#include <QTimer>
 
+#include <QFontMetrics>
+#include <QTimer>
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
@@ -98,32 +99,47 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
     if( item->isDataItem() )
     {
-        if( role == Qt::DecorationRole )
+        switch( role )
         {
-            int level = item->level() - 1;
-
-            if( d->childQueries.values().contains( item ) )
+        case Qt::DecorationRole:
             {
-                if( level < m_levelType.count() )
-                    return m_currentAnimPixmap;
-            }
-
-            if( level >= 0 && level < m_levelType.count() )
-            {
-                if( m_levelType[level] == CategoryId::Album )
+                int level = item->level() - 1;
+                if( d->childQueries.values().contains( item ) )
                 {
-                    if( AmarokConfig::showAlbumArt() )
-                    {
-                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                        if( album )
-                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                    }
+                    if( level < m_levelType.count() )
+                        return m_currentAnimPixmap;
                 }
-                return iconForLevel( level );
+
+                if( level >= 0 && level < m_levelType.count() )
+                {
+                    if( m_levelType[level] == CategoryId::Album )
+                    {
+                        if( AmarokConfig::showAlbumArt() )
+                        {
+                            Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                            if( album )
+                                return The::svgHandler()->imageWithBorder( album, 32, 2 );
+                        }
+                    }
+                    return iconForLevel( level );
+                }
             }
-        }
-        else if( role == AlternateCollectionRowRole )
-        {
+            break;
+
+        case Qt::SizeHintRole:
+            {
+                QFont font;
+                QFontMetrics qfm( font );
+                QSize size( 1, qfm.height() + 4 );
+                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+                {
+                    if( size.height() < 34 )
+                        size.setHeight( 34 );
+                }
+                return size;
+            }
+
+        case AlternateCollectionRowRole:
             return ( index.row() % 2 == 1 );
         }
     }
