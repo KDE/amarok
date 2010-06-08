@@ -308,13 +308,13 @@ CollectionTreeItem::isNoLabelItem() const
 bool
 CollectionTreeItem::isAlbumItem() const
 {
-    return isDataItem() && !isVariousArtistItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && m_type != VariousArtist && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
 }
 
 bool
 CollectionTreeItem::isTrackItem() const
 {
-    return isDataItem() && !isVariousArtistItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && m_type != VariousArtist && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 Collections::QueryMaker*
