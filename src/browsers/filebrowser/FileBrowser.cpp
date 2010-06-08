@@ -53,6 +53,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_upAction = new QAction( KIcon( "go-up" ), i18nc( "Go one level up in the directory hierarchy", "Up one level" ), this );
     navigationToolbar->addAction( m_upAction );
     connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
+    m_upAction->setShortcut(Qt::ALT + Qt::Key_Up );
 
     m_homeAction = new QAction( KIcon( "user-home" ), i18nc( "Go to the home directory",  "Home" ), this );
     navigationToolbar->addAction( m_homeAction );
@@ -201,12 +202,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
 
         if( file.isDir() ) {
             debug() << "setting root path to: " << filePath.path();
-            m_kdirModel->dirLister()->openUrl( filePath );
-            m_fileView->setRootIndex( index );
-
-            //add this dir to the breadcrumb
-            setupAddItems();
-            activate();
+	    setDir(filePath.path());
         }
         else
         {

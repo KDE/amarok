@@ -28,6 +28,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed keyboard navigation in file browser. (BR 240668)
+      Patch thanks to Hannes Koller.
     * Fixed dropping files to playlist from Konqueror. (BR 235722)
     * Fixed keyboard shortcuts of actions from scripts lost after restart.
       Thanks to Martin Blumenstingl <darklight.xdarklight@googlemail.com>.
