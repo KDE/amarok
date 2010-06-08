@@ -125,9 +125,7 @@ CollectionTreeItem::prepareForRemoval()
 CollectionTreeItem*
 CollectionTreeItem::child( int row )
 {
-    if ( row >= 0 && row < m_childItems.count() )
-        return m_childItems.value(row);
-    return 0;
+    return m_childItems.value( row );
 }
 
 QString
