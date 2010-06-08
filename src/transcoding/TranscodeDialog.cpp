@@ -17,6 +17,7 @@
 #include "TranscodeDialog.h"
 #include "TranscodeJob.h"
 
+#include <KIcon>
 #include <KPushButton>
 
 TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
@@ -35,19 +36,24 @@ TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
 
     ui.explanatoryTextLabel->setText( i18n( "You are about to copy one or more tracks.\nWhile copying, you can also choose to transcode your music files into another format with an encoder (codec). This can be done to save space or to make your files readable by a portable music player or a particular software program." ) );
 
+    ui.justCopyButton->setIcon( KIcon( "edit-copy" ) );
+    ui.transcodeWithDefaultsButton->setIcon( KIcon( "audio-x-generic" ) );
+    ui.transcodeWithOptionsButton->setIcon( KIcon( "tools-rip-audio-cd" ) );
+
+    connect( ui.buttonBox->button( KDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
 void
 TranscodeDialog::onTranscodeClicked() //SLOT
 {
-    TranscodeFormat format = TranscodeFormat::Vorbis( ui.spinBox->value() );
+    /*TranscodeFormat format = TranscodeFormat::Vorbis( ui.spinBox->value() );
     debug() << "\nFormat encoder is: " << format.encoder();
     debug() << "\nabout to fetch ffmpeg parameters";
     debug() << "\nParameters: ";
     debug() << format.ffmpegParameters();
     KUrl url = m_urlList.first();
     KJob *doTranscode = new TranscodeJob( url, format,this );
-    doTranscode->start();
+    doTranscode->start();*/
 
     KDialog::done( KDialog::Accepted );
 }

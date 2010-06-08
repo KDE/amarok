@@ -22,9 +22,12 @@
 class TranscodeFormat
 {
 public:
+    //WARNING: TranscodeFormat does *NOT* guarantee that the FFmpeg build on the target
+    //system supports the specific encoder.
     enum Encoder
     {
-        AAC = 0,      //aac
+        NULL_CODEC = 0, //null codec
+        AAC,          //aac
         ALAC,         //alac
         FLAC,         //flac
         MP3,          //libmp3lame
@@ -35,12 +38,13 @@ public:
 
     //We make the real ctor private and use a bunch of named ctors because different codecs
     //take different parameters.
-    static TranscodeFormat Aac();
-    static TranscodeFormat Alac();
-    static TranscodeFormat Flac();
-    static TranscodeFormat Mp3();
-    static TranscodeFormat Vorbis( int quality );
-    static TranscodeFormat Wma();
+    static TranscodeFormat Null(); //don't transcode
+    static TranscodeFormat Aac( int quality = 100 );//using libfaac - quality=percent of something (?) 100-150?
+    static TranscodeFormat Alac();//http://forum.doom9.org/archive/index.php/t-140461.html - no params?
+    static TranscodeFormat Flac( int level = 5 );//http://wiki.hydrogenaudio.org/index.php?title=Flac - just use level=5
+    static TranscodeFormat Mp3( int v_rating ); //http://wiki.hydrogenaudio.org/index.php?title=LAME
+    static TranscodeFormat Vorbis( int quality = 7 );
+    static TranscodeFormat Wma( int quality );//wmav2, does it support vbr?
 
     QStringList ffmpegParameters() const;
     Encoder encoder() const { return m_encoder; }
