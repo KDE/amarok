@@ -89,6 +89,7 @@ public slots:
 protected:
     void showEvent( QShowEvent* );
     void contextMenuEvent( QContextMenuEvent* );
+    void dragEnterEvent( QDragEnterEvent *event );
     void dragLeaveEvent( QDragLeaveEvent* );
     void dragMoveEvent( QDragMoveEvent* );
     void dropEvent( QDropEvent* );

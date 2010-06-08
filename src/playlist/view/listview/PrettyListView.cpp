@@ -26,6 +26,7 @@
 #include "PrettyListView.h"
 
 #include "amarokconfig.h"
+#include "AmarokMimeData.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -413,6 +414,20 @@ Playlist::PrettyListView::findInSource()
             }
             delete fis;
         }
+    }
+}
+
+void
+Playlist::PrettyListView::dragEnterEvent( QDragEnterEvent *event )
+{
+    const QMimeData *mime = event->mimeData();
+    if( mime->hasUrls() ||
+        mime->hasFormat( AmarokMimeData::TRACK_MIME ) ||
+        mime->hasFormat( AmarokMimeData::PLAYLIST_MIME ) ||
+        mime->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) ||
+        mime->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+    {
+        event->acceptProposedAction();
     }
 }
 
