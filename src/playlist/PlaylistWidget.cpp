@@ -30,7 +30,6 @@
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
-#include "PlaylistHeader.h"
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
