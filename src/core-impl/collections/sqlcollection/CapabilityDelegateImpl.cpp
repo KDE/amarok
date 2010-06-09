@@ -45,15 +45,21 @@ class CompilationAction : public QAction
     Q_OBJECT
     public:
         CompilationAction( QObject* parent, Meta::SqlAlbum *album )
-            : QAction( parent )
+                : QAction( parent )
                 , m_album( album )
                 , m_isCompilation( album->isCompilation() )
             {
                 connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
                 if( m_isCompilation )
+                {
+                    setIcon( KIcon( "filename-artist-amarok" ) );
                     setText( i18n( "Do not show under Various Artists" ) );
+                }
                 else
+                {
+                    setIcon( KIcon( "similarartists-amarok" ) );
                     setText( i18n( "Show under Various Artists" ) );
+                }
             }
 
     private slots:
