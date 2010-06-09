@@ -67,6 +67,16 @@ void UpnpCollection::slotFilesChanged(const QStringList &list )
         return;
 
     debug() << "Files changed" << list;
+    foreach( QString urlString, list ) {
+        debug() << "Update URL is" << urlString;
+        invalidateTracksIn( urlString );
+        KUrl url( urlString );
+        if( url.scheme() != "upnp-ms" || url.host() != m_udn )
+            return;
+        debug() << "NOw increment on " << url.path();
+        startIncrementalScan( url.path() );
+    }
+    updateMemoryCollection();
 }
 
 void UpnpCollection::invalidateTracksIn( const QString &dir )
