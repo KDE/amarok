@@ -21,6 +21,8 @@
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
 
+#include <KStringHandler>
+
 #include <QVariant>
 #include <QString>
 
@@ -67,6 +69,10 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
         
         if( rightItem->isDataItem() && !rightItem->data() ) //rightItem is a various artists node
             return false;
+
+        if( !left.parent().isValid() && !right.parent().isValid() ) // collection items
+            return lessThanString( left.data( Qt::DisplayRole ).toString(),
+                                   right.data( Qt::DisplayRole ).toString() );
     }
 
     return lessThanIndex( left, right );
@@ -83,6 +89,9 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
         error() << "Should never have compared these two indexes";
         return lessThanIndex( left, right );
     }
+
+    if( !AmarokConfig::showTrackNumbers() )
+        return lessThanIndex( left, right );
 
     //First compare by disc number
     if ( leftTrack->discNumber() < rightTrack->discNumber() )
@@ -161,7 +170,7 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     QVariant leftData = left.data( CustomRoles::SortRole );
     QVariant rightData = right.data( CustomRoles::SortRole );
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
-        return lessThanString( leftData.toString().toLower(), rightData.toString().toLower() );
+        return lessThanString( leftData.toString(), rightData.toString() );
    
     warning() << "failed: an unexpected comparison was made";
     
@@ -179,39 +188,5 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
 bool
 CollectionSortFilterProxyModel::lessThanString( const QString &a, const QString &b ) const
 {
-    int compareIndices[2];
-    compareIndices[0] = a.indexOf( QRegExp("\\d") );
-
-    if ( compareIndices[0] == -1 || ( compareIndices[1] = b.indexOf(QRegExp("\\d")) ) == -1
-        || compareIndices[0] != compareIndices[1] )
-        return QString::localeAwareCompare( a, b ) < 0;
-
-    QString toCompare[2];
-    int  intToCompare[2];
-    toCompare[0] = a.left( compareIndices[0] );
-    toCompare[1] = b.left( compareIndices[1] );
-
-    int rv = QString::localeAwareCompare( toCompare[0], toCompare[1] );
-    if( rv != 0 )
-        return rv < 0;
-
-    toCompare[0] = a.mid( compareIndices[0] );
-    toCompare[1] = b.mid( compareIndices[1] );
-    for( int i = 0; i < 2; ++i )
-    {
-        compareIndices[i] = toCompare[i].indexOf( QRegExp("\\D") );
-        if( compareIndices[i] == -1 )
-            compareIndices[i] = toCompare[i].length();
-
-        intToCompare[i] = toCompare[i].left( compareIndices[i] ).toInt();
-    }
-
-    rv = intToCompare[0] - intToCompare[1];
-    if( rv != 0 )
-        return rv < 0;
-
-    for( int i = 0; i < 2; ++i )
-        toCompare[i] = toCompare[i].mid( compareIndices[i] );
-
-    return CollectionSortFilterProxyModel::lessThanString( toCompare[0], toCompare[1] );
+    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) <= 0;
 }

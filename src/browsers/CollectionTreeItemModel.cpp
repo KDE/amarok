@@ -31,23 +31,24 @@
 #include "core/collections/QueryMaker.h"
 
 #include <KLocale>
-#include <QTimer>
 
+#include <QFontMetrics>
+#include <QTimer>
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ) );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
@@ -69,62 +70,91 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedVariousArtistsNodes.clear();
-    d->m_runningQueries.clear();
-    d->m_childQueries.clear();
-    d->m_compilationQueries.clear();
+    d->runningQueries.clear();
+    d->childQueries.clear();
+    d->compilationQueries.clear();
     reset();
-    if ( d->m_collections.count() == 1 )
+    if ( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 QVariant
 CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-     if (!index.isValid())
-         return QVariant();
+    if (!index.isValid())
+        return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
 
-    if ( item->isDataItem() )
+    if( item->isDataItem() )
     {
-        if ( role == Qt::DecorationRole )
+        switch( role )
         {
-            int level = item->level() -1;
-
-            if ( d->m_childQueries.values().contains( item ) )
+        case Qt::DecorationRole:
             {
-                if( level < m_levelType.count() )
-                    return m_currentAnimPixmap;
-            }
-
-            if ( level >= 0 && level < m_levelType.count() ) {
-                if (  m_levelType[level] == CategoryId::Album )
+                int level = item->level() - 1;
+                if( d->childQueries.values().contains( item ) )
                 {
-                    if( AmarokConfig::showAlbumArt() )
-                    {
-                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                        if( album )
-                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                        return iconForLevel( level  );
-                    }
+                    if( level < m_levelType.count() )
+                        return m_currentAnimPixmap;
                 }
-                return iconForLevel( level );
-            }
-        } else if ( role == AlternateCollectionRowRole )
-            return ( index.row() % 2 == 1 );
-    }
 
+                if( level >= 0 && level < m_levelType.count() )
+                {
+                    if( m_levelType[level] == CategoryId::Album )
+                    {
+                        if( AmarokConfig::showAlbumArt() )
+                        {
+                            Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                            if( album )
+                                return The::svgHandler()->imageWithBorder( album, 32, 2 );
+                        }
+                    }
+                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
+                    {
+                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
+                                                                KIconLoader::Toolbar,
+                                                                KIconLoader::SizeSmall );
+                    }
+                    return iconForLevel( level );
+                }
+                else if( level == m_levelType.count() )
+                {
+                    return KIconLoader::global()->loadIcon( "media-album-track",
+                                                            KIconLoader::Toolbar,
+                                                            KIconLoader::SizeSmall );
+                }
+            }
+            break;
+
+        case Qt::SizeHintRole:
+            {
+                QFont font;
+                QFontMetrics qfm( font );
+                QSize size( 1, qfm.height() + 4 );
+                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+                {
+                    if( size.height() < 34 )
+                        size.setHeight( 34 );
+                }
+                return size;
+            }
+
+        case AlternateCollectionRowRole:
+            return ( index.row() % 2 == 1 );
+        }
+    }
     return item->data( role );
 }
 
@@ -158,15 +188,15 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
     QString collectionId = newCollection->collectionId();
-    if ( d->m_collections.contains( collectionId ) )
+    if ( d->collections.contains( collectionId ) )
         return;
 
     //inserts new collection at the end. sort collection alphabetically?
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
+    d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
-    if( d->m_collections.count() == 1 )
+    if( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -181,7 +211,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
         {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
-            d->m_collections.remove( collectionId );
+            d->collections.remove( collectionId );
             m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }

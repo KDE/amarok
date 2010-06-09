@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionWidget"
+
 #include "CollectionWidget.h"
 
 #include "CollectionTreeItemModel.h"
@@ -237,6 +239,11 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     showYears->setChecked( AmarokConfig::showYears() );
     connect( showYears, SIGNAL( toggled( bool ) ), SLOT( slotShowYears( bool ) ) );
 
+    QAction *showTrackNumbers = filterMenu->addAction( i18nc("@action:inmenu", "Show Track Numbers") );
+    showTrackNumbers->setCheckable( true );
+    showTrackNumbers->setChecked( AmarokConfig::showTrackNumbers() );
+    connect( showTrackNumbers, SIGNAL( toggled( bool ) ), SLOT( slotShowTrackNumbers( bool ) ) );
+
     QAction *showCovers = filterMenu->addAction( i18n( "Show Cover Art" ) );
     showCovers->setCheckable( true );
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
@@ -332,6 +339,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
+    toggleAction->setChecked( m_viewMode == CollectionWidget::UnifiedCollection );
     toggleView( m_viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
@@ -413,6 +421,13 @@ void
 CollectionWidget::slotShowYears( bool checked )
 {
     AmarokConfig::setShowYears( checked );
+    setLevels( levels() );
+}
+
+void
+CollectionWidget::slotShowTrackNumbers( bool checked )
+{
+    AmarokConfig::setShowTrackNumbers( checked );
     setLevels( levels() );
 }
 

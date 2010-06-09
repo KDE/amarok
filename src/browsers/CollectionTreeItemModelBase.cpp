@@ -335,7 +335,7 @@ void
 CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
     //only start a query if necessary and we are not querying for the item's children already
-    if ( item->requiresUpdate() && !d->m_runningQueries.contains( item ) )
+    if ( item->requiresUpdate() && !d->runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
@@ -372,11 +372,10 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
-    DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
-        if( d->m_runningQueries.contains( parent ) )
+        if( d->runningQueries.contains( parent ) )
             return;
 
         if ( level > m_levelType.count() )
@@ -445,11 +444,10 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         }
         addFilters( qm );
         qm->setReturnResultAsDataPtrs( true );
-        connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-        d->m_childQueries.insert( qm, parent );
-        d->m_runningQueries.insert( parent, qm );
-        qm->setAutoDelete( true );
+        connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+        connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+        d->childQueries.insert( qm, parent );
+        d->runningQueries.insert( parent, qm );
         qm->run();
 
         //some very quick queries may be done so fast that the loading
@@ -767,9 +765,16 @@ CollectionTreeItemModelBase::queryDone()
     if( !qm )
         return;
 
-    CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
+    CollectionTreeItem* item = 0;
+    if( d->childQueries.contains( qm ) )
+        item = d->childQueries.take( qm );
+    else if( d->compilationQueries.contains( qm ) )
+        item = d->compilationQueries.take( qm );
+    else if( d->noLabelsQueries.contains( qm ) )
+        item = d->noLabelsQueries.take( qm );
 
-    d->m_runningQueries.remove( item );
+    if( item )
+        d->runningQueries.remove( item );
 
     //reset icon for this item
     if( item && item != m_rootItem )
@@ -779,7 +784,7 @@ CollectionTreeItemModelBase::queryDone()
     }
 
     //stop timer if there are no more animations active
-    if( d->m_runningQueries.count() == 0 )
+    if( d->runningQueries.count() == 0 )
         m_timeLine->stop();
 }
 
@@ -788,17 +793,17 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 {
     Q_UNUSED( collectionId )
 
-    //if we are expanding an item, we'll find the sender in m_childQueries
+    //if we are expanding an item, we'll find the sender in childQueries
     //otherwise we are filtering all collections
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
 
-    if( d->m_childQueries.contains( qm ) )
+    if( d->childQueries.contains( qm ) )
     {
         handleNormalQueryResult( qm, data );
     }
-    else if( d->m_compilationQueries.contains( qm ) )
+    else if( d->compilationQueries.contains( qm ) )
     {
         handleSpecialQueryResult( CollectionTreeItem::VariousArtist, qm, data );
     }
@@ -815,7 +820,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
     debug() << "Received special data: " << dataList.count();
     CollectionTreeItem *parent = 0;
     if( type == CollectionTreeItem::VariousArtist )
-        parent = d->m_compilationQueries.value( qm );
+        parent = d->compilationQueries.value( qm );
     else if( type == CollectionTreeItem::NoLabel )
         parent = d->noLabelsQueries.value( qm );
 
@@ -930,7 +935,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
 void
 CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    CollectionTreeItem *parent = d->m_childQueries.value( qm );
+    CollectionTreeItem *parent = d->childQueries.value( qm );
     QModelIndex parentIndex;
     if( parent ) {
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
@@ -1073,11 +1078,10 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     }
     addFilters( qm );
     qm->setReturnResultAsDataPtrs( true );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-    d->m_compilationQueries.insert( qm, parent );
-    d->m_runningQueries.insert( parent, qm );
-    qm->setAutoDelete( true );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    d->compilationQueries.insert( qm, parent );
+    d->runningQueries.insert( parent, qm );
     qm->run();
 }
 
@@ -1100,10 +1104,10 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
         tmpItem = tmpItem->parent();
     }
     addFilters( qm );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     d->noLabelsQueries.insert( qm, parent );
-    d->m_runningQueries.insert( parent, qm );
+    d->runningQueries.insert( parent, qm );
     qm->run();
 }
 
@@ -1170,7 +1174,7 @@ CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
 void CollectionTreeItemModelBase::startAnimationTick()
 {
     //start animation
-    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->m_runningQueries.isEmpty() )
+    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->runningQueries.isEmpty() )
         m_timeLine->start();
 }
 
@@ -1185,7 +1189,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    QList< CollectionTreeItem * > items = d->m_runningQueries.keys();
+    QList< CollectionTreeItem * > items = d->runningQueries.keys();
     foreach ( CollectionTreeItem* item, items  )
     {
         if( item == m_rootItem )
@@ -1208,7 +1212,7 @@ CollectionTreeItemModelBase::slotFilter()
     {
         foreach( Collections::Collection *expanded, m_expandedCollections )
         {
-            CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
+            CollectionTreeItem *expandedItem = d->collections.value( expanded->collectionId() ).second;
             if( expandedItem )
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
         }
@@ -1295,15 +1299,16 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
-    if( !d->m_runningQueries.contains( item ) )
+    if( !d->runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
-    Collections::QueryMaker *qm = d->m_runningQueries.take( item );
+    Collections::QueryMaker *qm = d->runningQueries.take( item );
     if( qm )
     {
 
-        d->m_childQueries.remove( qm );
-        d->m_compilationQueries.remove( qm );
+        d->childQueries.remove( qm );
+        d->compilationQueries.remove( qm );
+        d->noLabelsQueries.remove( qm );
         //we still need to disconnect the qm below
     }
     if( qm )

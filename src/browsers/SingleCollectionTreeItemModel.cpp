@@ -18,6 +18,7 @@
 
 #include "SingleCollectionTreeItemModel.h"
 
+#include <amarokconfig.h>
 #include "core/support/Amarok.h"
 #include "SvgHandler.h"
 #include "core/collections/Collection.h"
@@ -26,6 +27,7 @@
 
 #include <KLocale>
 
+#include <QFontMetrics>
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( )
@@ -45,7 +47,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
+    d->collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
@@ -56,44 +58,74 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 QVariant
 SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if( !index.isValid() )
         return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
-    if ( item->isDataItem() )
+    if( item->isDataItem() )
     {
-        if ( role == Qt::DecorationRole ) {
-            //don't subtract one here like in collectiontreeitemmodel because
-            //there is no collection level here
-
-            //check if the item being queried is currently being populated
-
-            const int level = item->level();
-
-            if ( d->m_childQueries.values().contains( item ) )
+        switch( role )
+        {
+        case Qt::DecorationRole:
             {
-                if ( level < m_levelType.count() )
-                    return m_currentAnimPixmap;
-            }
+                //don't subtract one here like in collectiontreeitemmodel because
+                //there is no collection level here
 
-            if ( level < m_levelType.count() )
-            {
-                if (  m_levelType[level] == CategoryId::Album )
+                //check if the item being queried is currently being populated
+
+                const int level = item->level();
+
+                if( d->childQueries.values().contains( item ) )
                 {
-                    Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                    if( album)
-                        return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                    else
-                        return iconForLevel( level );
+                    if( level < m_levelType.count() )
+                        return m_currentAnimPixmap;
                 }
-                else
-                    return iconForLevel( level );
-            }
-        } else if ( role == AlternateCollectionRowRole )
-            return ( index.row() % 2 == 1 );
-    }
 
+                if( level < m_levelType.count() )
+                {
+                    if( m_levelType[level] == CategoryId::Album && AmarokConfig::showAlbumArt() )
+                    {
+                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                        if( album )
+                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
+                    }
+                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
+                    {
+                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
+                                                                KIconLoader::Toolbar,
+                                                                KIconLoader::SizeSmall );
+                    }
+                    return iconForLevel( level );
+                }
+                else if( level == m_levelType.count() )
+                {
+                    return KIconLoader::global()->loadIcon( "media-album-track",
+                                                            KIconLoader::Toolbar,
+                                                            KIconLoader::SizeSmall );
+                }
+            }
+            break;
+
+        case Qt::SizeHintRole:
+            {
+                QFont font;
+                QFontMetrics qfm( font );
+                QSize size( 1, qfm.height() + 4 );
+                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+                {
+                    if( size.height() < 34 )
+                        size.setHeight( 34 );
+                }
+                return size;
+            }
+            break;
+
+        case AlternateCollectionRowRole:
+            return ( index.row() % 2 == 1 );
+            break;
+        }
+    }
     return item->data( role );
 }
 

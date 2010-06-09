@@ -85,8 +85,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
 
-    setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
-
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
 }
@@ -316,7 +314,6 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
     Amarok::PrettyTreeView::mousePressEvent( event );
 
     m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
-    event->accept();
 }
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -343,6 +340,9 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
+    if( event->modifiers() == Qt::NoModifier )
+        setCurrentIndex( index );
+
     if( !m_expandToggledWhenPressed &&
         event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
@@ -350,7 +350,6 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         model()->hasChildren( index ) )
     {
         m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setCurrentIndex( index );
         setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;

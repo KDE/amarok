@@ -125,27 +125,27 @@ CollectionTreeItem::prepareForRemoval()
 CollectionTreeItem*
 CollectionTreeItem::child( int row )
 {
-    if ( row >= 0 && row < m_childItems.count() )
-        return m_childItems.value(row);
-    return 0;
+    return m_childItems.value( row );
 }
 
 QString
 CollectionTreeItem::albumYear() const
 {
-    QString year;
     if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
     {
-        if( !album->tracks().isEmpty() )
+        const Meta::TrackList tracks = album->tracks();
+        if( !tracks.isEmpty() )
         {
-            Meta::TrackPtr track = album->tracks()[0];
+            Meta::TrackPtr track = tracks.at( 0 );
             if( track && track->year() )
-                year = track->year()->prettyName();
+            {
+                const QString year = track->year()->prettyName();
+                if( year != "0" )
+                    return year;
+            }
         }
     }
-    if( year == "0" )
-        year.clear();
-    return year;
+    return QString();
 }
 
 QVariant
@@ -155,19 +155,14 @@ CollectionTreeItem::data( int role ) const
     {
         if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
         {
-            QString name = m_data->prettyName();
-            if( AmarokConfig::showTrackNumbers() )
+            Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
+            QString name = track ? track->fixedName() : m_data->fixedName();
+
+            if( AmarokConfig::showTrackNumbers() && track )
             {
-                if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
-                {
-                    if( !track.isNull() )
-                    {
-                        if ( track->trackNumber() > 0 )
-                            name = QString::number( track->trackNumber() ) + " - " + track->fixedName();
-                        else
-                            name = track->fixedName();
-                    }
-                }
+                int trackNum = track->trackNumber();
+                if( trackNum > 0 )
+                    name.prepend( QString("%1 - ").arg(trackNum) );
             }
 
             // Check empty after track logic and before album logic
@@ -176,9 +171,9 @@ CollectionTreeItem::data( int role ) const
 
             if( AmarokConfig::showYears() )
             {
-                QString year = albumYear();
+                const QString year = albumYear();
                 if( !year.isEmpty() )
-                    name = year + " - " + name;
+                    name.prepend( QString("%1 - ").arg(year) );
             }
             return name;
         }
@@ -201,12 +196,14 @@ CollectionTreeItem::data( int role ) const
     }
     else if( m_parentCollection )
     {
-        if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
-            return m_parentCollection->prettyName();
-        else if( role == Qt::DecorationRole )
-            return m_parentCollection->icon();
-        else if( role == CustomRoles::ByLineRole )
+        switch( role )
         {
+        case Qt::DisplayRole:
+        case CustomRoles::FilterRole:
+            return m_parentCollection->prettyName();
+        case Qt::DecorationRole:
+            return m_parentCollection->icon();
+        case CustomRoles::ByLineRole:
             static const QString counting = i18n( "Counting" );
             if( m_isCounting )
                 return counting;
@@ -224,30 +221,21 @@ CollectionTreeItem::data( int role ) const
 
                 return counting;
             }
-
             return i18np( "1 track", "%1 tracks", m_trackCount );
-        }
-        else if( role == CustomRoles::HasCapacityRole )
-        {
+        case CustomRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
-        }
-        else if( role == CustomRoles::UsedCapacityRole )
-        {
+        case CustomRoles::UsedCapacityRole:
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
-        }
-        else if( role == CustomRoles::DecoratorRoleCount )
-        {
+            break;
+        case CustomRoles::DecoratorRoleCount:
             return decoratorActions().size();
-        }
-        else if( role == CustomRoles::DecoratorRole )
-        {
+        case CustomRoles::DecoratorRole:
             QVariant v;
             v.setValue( decoratorActions() );
             return v;
         }
     }
-
     return QVariant();
 }
 
@@ -320,13 +308,13 @@ CollectionTreeItem::isNoLabelItem() const
 bool
 CollectionTreeItem::isAlbumItem() const
 {
-    return isDataItem() && !isVariousArtistItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && m_type != VariousArtist && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
 }
 
 bool
 CollectionTreeItem::isTrackItem() const
 {
-    return isDataItem() && !isVariousArtistItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && m_type != VariousArtist && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 Collections::QueryMaker*

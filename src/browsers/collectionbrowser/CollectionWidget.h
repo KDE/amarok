@@ -62,6 +62,7 @@ class CollectionWidget : public BrowserCategory
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
         void slotShowYears( bool checked );
+        void slotShowTrackNumbers( bool checked );
         void slotShowCovers( bool checked );
 
         void setLevels( const QList<int> &levels );

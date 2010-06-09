@@ -250,10 +250,9 @@ QPixmap
 SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
-    const QString loc   = album->imageLocation( imageSize ).url();
-    const QString key   = !loc.isEmpty() ? loc : album->name();
-    const QPixmap cover = album->image( imageSize );
-    return addBordersToPixmap( cover, borderWidth, key );
+    const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
+    const QString &key  = !loc.isEmpty() ? loc : album->name();
+    return addBordersToPixmap( album->image(imageSize), borderWidth, key );
 }
 
 QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
