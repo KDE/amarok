@@ -69,6 +69,10 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
         
         if( rightItem->isDataItem() && !rightItem->data() ) //rightItem is a various artists node
             return false;
+
+        if( !left.parent().isValid() && !right.parent().isValid() ) // collection items
+            return lessThanString( left.data( Qt::DisplayRole ).toString(),
+                                   right.data( Qt::DisplayRole ).toString() );
     }
 
     return lessThanIndex( left, right );
