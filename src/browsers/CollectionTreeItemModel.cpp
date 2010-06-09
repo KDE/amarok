@@ -121,6 +121,12 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                                 return The::svgHandler()->imageWithBorder( album, 32, 2 );
                         }
                     }
+                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
+                    {
+                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
+                                                                KIconLoader::Toolbar,
+                                                                KIconLoader::SizeSmall );
+                    }
                     return iconForLevel( level );
                 }
             }
