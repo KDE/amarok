@@ -90,6 +90,9 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
         return lessThanIndex( left, right );
     }
 
+    if( !AmarokConfig::showTrackNumbers() )
+        return lessThanIndex( left, right );
+
     //First compare by disc number
     if ( leftTrack->discNumber() < rightTrack->discNumber() )
         return true;

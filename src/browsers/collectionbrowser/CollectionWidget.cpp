@@ -237,6 +237,11 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     showYears->setChecked( AmarokConfig::showYears() );
     connect( showYears, SIGNAL( toggled( bool ) ), SLOT( slotShowYears( bool ) ) );
 
+    QAction *showTrackNumbers = filterMenu->addAction( i18nc("@action:inmenu", "Show Track Numbers") );
+    showTrackNumbers->setCheckable( true );
+    showTrackNumbers->setChecked( AmarokConfig::showTrackNumbers() );
+    connect( showTrackNumbers, SIGNAL( toggled( bool ) ), SLOT( slotShowTrackNumbers( bool ) ) );
+
     QAction *showCovers = filterMenu->addAction( i18n( "Show Cover Art" ) );
     showCovers->setCheckable( true );
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
@@ -413,6 +418,13 @@ void
 CollectionWidget::slotShowYears( bool checked )
 {
     AmarokConfig::setShowYears( checked );
+    setLevels( levels() );
+}
+
+void
+CollectionWidget::slotShowTrackNumbers( bool checked )
+{
+    AmarokConfig::setShowTrackNumbers( checked );
     setLevels( levels() );
 }
 
