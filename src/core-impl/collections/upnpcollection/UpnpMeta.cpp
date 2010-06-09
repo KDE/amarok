@@ -51,7 +51,7 @@ UpnpTrack::prettyName() const
 KUrl
 UpnpTrack::playableUrl() const
 {
-DEBUG_BLOCK
+
     KUrl url( m_playableUrl );
     return url;
 }
@@ -65,7 +65,7 @@ UpnpTrack::uidUrl() const
 QString
 UpnpTrack::prettyUrl() const
 {
-    return m_displayUrl;
+    return m_playableUrl;
 }
 
 bool
@@ -367,7 +367,7 @@ UpnpArtist::prettyName() const
 TrackList
 UpnpArtist::tracks()
 {
-DEBUG_BLOCK
+
     return m_tracks;
 }
 
@@ -381,14 +381,18 @@ UpnpArtist::albums()
 void
 UpnpArtist::addTrack( UpnpTrackPtr track )
 {
-DEBUG_BLOCK
     m_tracks.append( TrackPtr::staticCast( track ) );
+}
+
+void
+UpnpArtist::removeTrack( UpnpTrackPtr track )
+{
+    m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
 
 void
 UpnpArtist::addAlbum( UpnpAlbumPtr album )
 {
-DEBUG_BLOCK
     m_albums.append( AlbumPtr::staticCast( album ) );
 }
 
@@ -469,6 +473,12 @@ UpnpAlbum::addTrack( UpnpTrackPtr track )
 }
 
 void
+UpnpAlbum::removeTrack( UpnpTrackPtr track )
+{
+    m_tracks.removeOne( TrackPtr::staticCast( track ) );
+}
+
+void
 UpnpAlbum::setAlbumArtist( UpnpArtistPtr artist )
 {
     m_albumArtist = artist;
@@ -519,6 +529,12 @@ UpnpGenre::addTrack( UpnpTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
+void
+UpnpGenre::removeTrack( UpnpTrackPtr track )
+{
+    m_tracks.removeOne( TrackPtr::staticCast( track ) );
+}
+
 //UpnpComposer
 
 UpnpComposer::UpnpComposer( const QString &name )
@@ -556,6 +572,12 @@ void
 UpnpComposer::addTrack( UpnpTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
+}
+
+void
+UpnpComposer::removeTrack( UpnpTrackPtr track )
+{
+    m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
 
 //UpnpYear
@@ -596,3 +618,10 @@ UpnpYear::addTrack( UpnpTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+void
+UpnpYear::removeTrack( UpnpTrackPtr track )
+{
+    m_tracks.removeOne( TrackPtr::staticCast( track ) );
+}
+

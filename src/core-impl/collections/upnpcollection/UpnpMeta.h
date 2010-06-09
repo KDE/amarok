@@ -154,6 +154,7 @@ class UpnpArtist : public Meta::Artist
 
         //UpnpArtist specific methods
         void addTrack( UpnpTrackPtr track );
+        void removeTrack( UpnpTrackPtr track );
         void addAlbum( UpnpAlbumPtr album );
 
     private:
@@ -182,6 +183,7 @@ class UpnpAlbum : public Meta::Album
 
         //UpnpAlbum specific methods
         void addTrack( UpnpTrackPtr track );
+        void removeTrack( UpnpTrackPtr track );
         void setAlbumArtist( UpnpArtistPtr artist );
         void setIsCompilation( bool compilation );
 
@@ -205,6 +207,7 @@ class UpnpGenre : public Meta::Genre
 
         //UpnpGenre specific methods
         void addTrack( UpnpTrackPtr track );
+        void removeTrack( UpnpTrackPtr track );
 
     private:
         QString m_name;
@@ -224,6 +227,7 @@ class UpnpComposer : public Meta::Composer
 
         //UpnpComposer specific methods
         void addTrack( UpnpTrackPtr track );
+        void removeTrack( UpnpTrackPtr track );
 
     private:
         QString m_name;
@@ -243,6 +247,7 @@ class UpnpYear : public Meta::Year
 
         //UpnpYear specific methods
         void addTrack( UpnpTrackPtr track );
+        void removeTrack( UpnpTrackPtr track );
 
     private:
         QString m_name;
