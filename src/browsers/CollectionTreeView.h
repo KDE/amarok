@@ -106,7 +106,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
         QActionList createBasicActions( const QModelIndexList &indcies );
         QActionList createExtendedActions( const QModelIndexList &indcies );
-        QActionList createCollectionActions( const QModelIndexList & indices );
+        QActionList createCollectionActions( const QModelIndexList &indices );
+        QActionList createCustomActions( const QModelIndexList &indices );
 
         bool onlyOneCollection( const QModelIndexList &indices );
         Collections::Collection *getCollection( const QModelIndex &index );
@@ -125,9 +126,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QAction* m_loadAction;
         QAction* m_editAction;
         QAction* m_organizeAction;
-
-        QAction * m_caSeperator;
-        QAction * m_cmSeperator;
 
         QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
         QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
