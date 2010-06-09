@@ -26,7 +26,6 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/view/tooltips/ToolTipManager.h"
 
-
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -87,6 +86,19 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
+protected:
+    void showEvent( QShowEvent* );
+    void contextMenuEvent( QContextMenuEvent* );
+    void dragEnterEvent( QDragEnterEvent *event );
+    void dragLeaveEvent( QDragLeaveEvent* );
+    void dragMoveEvent( QDragMoveEvent* );
+    void dropEvent( QDropEvent* );
+    void keyPressEvent( QKeyEvent* );
+    void mousePressEvent( QMouseEvent* );
+    void mouseReleaseEvent( QMouseEvent* );
+    void paintEvent( QPaintEvent* );
+    void startDrag( Qt::DropActions supportedActions );
+
 protected slots:
     void newPalette( const QPalette & palette );
 
@@ -103,17 +115,6 @@ private slots:
     void findInSource();
 
 private:
-    void showEvent( QShowEvent* );
-    void contextMenuEvent( QContextMenuEvent* );
-    void dragLeaveEvent( QDragLeaveEvent* );
-    void dragMoveEvent( QDragMoveEvent* );
-    void dropEvent( QDropEvent* );
-    void keyPressEvent( QKeyEvent* );
-    void mousePressEvent( QMouseEvent* );
-    void mouseReleaseEvent( QMouseEvent* );
-    void paintEvent( QPaintEvent* );
-    void startDrag( Qt::DropActions supportedActions );
-
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerReleaseSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
@@ -130,8 +131,6 @@ private:
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
-
-    AbstractModel *m_topmostProxy;
 
     PrettyItemDelegate * m_prettyDelegate;
 
