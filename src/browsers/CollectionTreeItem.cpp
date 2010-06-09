@@ -196,6 +196,7 @@ CollectionTreeItem::data( int role ) const
     }
     else if( m_parentCollection )
     {
+        static const QString counting = i18n( "Counting" );
         switch( role )
         {
         case Qt::DisplayRole:
@@ -204,7 +205,6 @@ CollectionTreeItem::data( int role ) const
         case Qt::DecorationRole:
             return m_parentCollection->icon();
         case CustomRoles::ByLineRole:
-            static const QString counting = i18n( "Counting" );
             if( m_isCounting )
                 return counting;
             if( m_trackCount < 0 )
