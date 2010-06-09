@@ -69,9 +69,24 @@ void UpnpCollection::slotFilesChanged(const QStringList &list )
     debug() << "Files changed" << list;
 }
 
-UpnpCollection::~UpnpCollection()
+void UpnpCollection::invalidateTracksIn( const QString &dir )
 {
-    // DO NOT delete m_device. It is HUpnp's job.
+    debug() << "INVALIDATING" << m_tracksInContainer[dir].length();
+
+    /*
+     * when we get dir as /a/b we also have to invalidate
+     * any tracks in /a/b/* so we need to iterate over keys
+     * If performance is really affected we can use some
+     * kind of a prefix tree instead of a hash.
+     */
+    foreach( QString key, m_tracksInContainer.keys() ) {
+        if( key.startsWith( dir ) ) {
+            debug() << key << " matches " << dir;
+            foreach( TrackPtr track, m_tracksInContainer[dir] ) {
+                removeTrack( track );
+            }
+        }
+    }
 }
 
 void
@@ -98,11 +113,12 @@ UpnpCollection::startFullScan()
 void
 UpnpCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK;
+    KIO::SimpleJob *sj = static_cast<KIO::SimpleJob *>( job );
     foreach( KIO::UDSEntry entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
             && entry.stringValue( KIO::UPNP_CLASS ) == "object.item.audioItem.musicTrack" ) {
-            createTrack( entry );
+            createTrack( entry, sj->url().prettyUrl() );
         }
     }
 }
@@ -120,9 +136,13 @@ UpnpCollection::updateMemoryCollection()
 }
 
 void
-UpnpCollection::createTrack( const KIO::UDSEntry &entry )
+UpnpCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
 {
 DEBUG_BLOCK
+// TODO check for meta data updates instead of just returning
+    if( m_TrackMap.contains( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) ) ) {
+        return;
+    }
 
 #define INSERT_METADATA(type, value)\
     QString type##String = value;\
@@ -182,6 +202,24 @@ DEBUG_BLOCK
 
     m_TrackMap[t->uidUrl()] = TrackPtr::dynamicCast( t );
 
+    QString container = QDir(baseUrl).filePath( info.dir().path() );
+    debug() << "CONTAINER" << container;
+    m_tracksInContainer[container] << TrackPtr::dynamicCast( t );
+}
+
+void
+UpnpCollection::removeTrack( TrackPtr t )
+{
+#define DOWNCAST( type, var ) Upnp##type##Ptr::dynamicCast( var )
+
+    UpnpTrackPtr track = DOWNCAST( Track, t );
+    debug() << "IS NULL?" << track.isNull();
+    debug() << "REMOVING " << track->name();
+    m_TrackMap.remove( track->uidUrl() );
+    DOWNCAST( Artist, m_ArtistMap[ track->artist()->name() ] )->removeTrack( track );
+    DOWNCAST( Album, m_AlbumMap[ track->album()->name() ] )->removeTrack( track );
+    DOWNCAST( Genre, m_GenreMap[ track->genre()->name() ] )->removeTrack( track );
+    DOWNCAST( Year, m_YearMap[ track->year()->name() ] )->removeTrack( track );
 }
 
 void

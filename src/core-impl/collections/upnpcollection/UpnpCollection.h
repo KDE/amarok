@@ -68,7 +68,9 @@ class UpnpCollection : public Collections::Collection
   private slots:
     void entries( KIO::Job *, const KIO::UDSEntryList& );
     void done( KJob * );
-    void createTrack( const KIO::UDSEntry & );
+    void createTrack( const KIO::UDSEntry &, const QString &baseUrl );
+    void removeTrack( Meta::TrackPtr t );
+    void invalidateTracksIn( const QString &dir );
     void updateMemoryCollection();
     void slotFilesChanged(const QStringList &);
 
@@ -78,10 +80,15 @@ class UpnpCollection : public Collections::Collection
     QSharedPointer<MemoryCollection> m_mc;
     UpnpMemoryQueryMaker *m_umqm;
 
-    KIO::ListJob *m_listJob;
-
     QTimer *m_fullScanTimer;
     bool m_fullScanInProgress;
+
+    // associates each track with its UPNP Parent <container>
+    // when a update occurs on a <container>
+    // invalidate all tracks, and rescan
+    // it remains to be seen how badly this
+    // affects performance or memory
+    QHash<QString, Meta::TrackList> m_tracksInContainer;
 
     // probably move to some separate class
     // should we just extend MemoryCollection?
