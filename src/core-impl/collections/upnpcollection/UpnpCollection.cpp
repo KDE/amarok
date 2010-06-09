@@ -42,7 +42,7 @@ namespace Collections {
 //UpnpCollection
 
 // TODO register for the device bye bye and emit remove()
-    UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
+UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
     : Collection()
     , m_udn( udn )
     , m_name( name )
