@@ -203,83 +203,69 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     actions += &separator;
     actions += createExtendedActions( indices );
 
-    KMenu* menu = new KMenu( this );
+    KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't operate on invalid data.
     // see BUG 190056
-    connect( m_treeModel, SIGNAL( modelReset() ), menu, SLOT( deleteLater() ) );
-
-    // Destroy menu after hiding it
-    connect( menu, SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
+    connect( m_treeModel, SIGNAL( modelReset() ), &menu, SLOT( deleteLater() ) );
 
     foreach( QAction *action, actions )
-        menu->addAction( action );
+        menu.addAction( action );
 
     QActionList customActions = createCustomActions( indices );
+    KMenu menuCustom( i18n( "Album" )  );
     if( customActions.count() > 1 )
     {
-        KMenu *menuCustom = new KMenu( i18n( "Album" ), menu );
-        menuCustom->addActions( customActions );
-        menuCustom->setIcon( KIcon( "filename-album-amarok" ) );
-        menu->addMenu( menuCustom );
-        menu->addSeparator();
+        menuCustom.addActions( customActions );
+        menuCustom.setIcon( KIcon( "filename-album-amarok" ) );
+        menu.addMenu( &menuCustom );
+        menu.addSeparator();
     }
     else if( customActions.count() == 1 )
     {
-        menu->addActions( customActions );
+        menu.addActions( customActions );
     }
 
     QActionList collectionActions = createCollectionActions( indices );
+    KMenu menuCollection( i18n( "Collection" ) );
     if( collectionActions.count() > 1 )
     {
-        KMenu *menuCollection = new KMenu( i18n( "Collection" ), menu );
-        menuCollection->setIcon( KIcon( "collection-amarok" ) );
-        menuCollection->addActions( collectionActions );
-        menu->addMenu( menuCollection );
-        menu->addSeparator();
+        menuCollection.setIcon( KIcon( "collection-amarok" ) );
+        menuCollection.addActions( collectionActions );
+        menu.addMenu( &menuCollection );
+        menu.addSeparator();
     }
     else if( collectionActions.count() == 1 )
     {
-        menu->addActions( collectionActions );
+        menu.addActions( collectionActions );
     }
 
     m_currentCopyDestination =   getCopyActions(   indices );
     m_currentMoveDestination =   getMoveActions(   indices );
     m_currentRemoveDestination = getRemoveActions( indices );
 
+    KMenu copyMenu( i18n( "Copy to Collection" ) );
     if( !m_currentCopyDestination.empty() )
     {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
-        foreach( QAction *action, m_currentCopyDestination.keys() )
-        {
-            action->setParent( copyMenu );
-            copyMenu->addAction( action );
-        }
-        menu->addMenu( copyMenu );
+        copyMenu.setIcon( KIcon( "edit-copy" ) );
+        copyMenu.addActions( m_currentCopyDestination.keys() );
+        menu.addMenu( &copyMenu );
     }
 
+    KMenu moveMenu( i18n( "Move to Collection" ) );
     if( !m_currentMoveDestination.empty() )
     {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), menu );
-        // moveMenu->setIcon(); // TODO: no move icon
-        foreach( QAction * action, m_currentCopyDestination.keys() )
-        {
-            action->setParent( moveMenu );
-            moveMenu->addAction( action );
-        }
-        menu->addMenu( moveMenu );
+        // moveMenu.setIcon(); // TODO: no move icon
+        moveMenu.addActions( m_currentMoveDestination.keys() );
+        menu.addMenu( &moveMenu );
     }
 
     if( !m_currentRemoveDestination.empty() )
     {
-        foreach( QAction * action, m_currentRemoveDestination.keys() )
-        {
-            menu->addAction( action );
-        }
+        menu.addActions( m_currentRemoveDestination.keys() );
     }
 
-    menu->exec( event->globalPos() );
+    menu.exec( event->globalPos() );
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
