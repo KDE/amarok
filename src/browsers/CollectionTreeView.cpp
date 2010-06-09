@@ -321,7 +321,6 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
     Amarok::PrettyTreeView::mousePressEvent( event );
 
     m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
-    event->accept();
 }
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
