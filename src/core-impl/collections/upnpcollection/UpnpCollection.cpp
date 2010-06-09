@@ -52,7 +52,7 @@ UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
     DEBUG_BLOCK
 
     // experimental code, will probably be moved to a better place
-        OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
+    OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
     Q_ASSERT(connect( notify, SIGNAL( FilesChanged(const QStringList &) ),
                       this, SLOT( slotFilesChanged(const QStringList &) ) ));
 }
@@ -189,20 +189,38 @@ DEBUG_BLOCK
         return;
     }
     updateMemoryCollection();
-    m_fullScanTimer->stop();
+    if( m_fullScanInProgress ) {
+        m_fullScanTimer->stop();
+        m_fullScanInProgress = false;
+        debug() << "Full Scan done";
+    }
 }
 
 void
 UpnpCollection::startIncrementalScan( const QString &directory )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK;
+    if( m_fullScanInProgress ) {
+        debug() << "Full scan in progress, aborting";
+        return;
+    }
     debug() << "Scanning directory" << directory;
+    KUrl url;
+    url.setScheme( "upnp-ms" );
+    url.setHost( m_udn );
+    url.setPath( directory );
+    KIO::ListJob *listJob = KIO::listRecursive( url );
+    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
+                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)), 
+                       this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
+
 }
 
 QueryMaker*
 UpnpCollection::queryMaker()
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK;
     UpnpMemoryQueryMaker *umqm = new UpnpMemoryQueryMaker(m_mc.toWeakRef(), collectionId() );
     Q_ASSERT( connect( umqm, SIGNAL(startFullScan()), this, SLOT(startFullScan()) ) );
     return umqm;
