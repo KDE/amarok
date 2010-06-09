@@ -129,6 +129,12 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     }
                     return iconForLevel( level );
                 }
+                else if( level == m_levelType.count() )
+                {
+                    return KIconLoader::global()->loadIcon( "media-album-track",
+                                                            KIconLoader::Toolbar,
+                                                            KIconLoader::SizeSmall );
+                }
             }
             break;
 
