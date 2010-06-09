@@ -73,6 +73,40 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
                 {   decided = true;  verdict = true;   }
             }
 
+            //Handle Title, Album, Artist as special cases with Meta::MetaBase::sortableName().
+            //This is necessary in order to have the same sort order policy regarding "The" in
+            //both the playlist and the collection browser.
+            else if( m_scheme.level( i ).category() == Playlist::Title )
+            {
+                Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
+                Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
+
+                if( trackA->sortableName() < trackB->sortableName() )
+                {   decided = true; verdict = true;    }
+                else if( trackA->sortableName() > trackB->sortableName() )
+                {   decided = true; verdict = false;     }
+            }
+            else if( m_scheme.level( i ).category() == Playlist::Album )
+            {
+                Meta::AlbumPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->album();
+                Meta::AlbumPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->album();
+
+                if( trackA->sortableName() < trackB->sortableName() )
+                {   decided = true; verdict = true;    }
+                else if( trackA->sortableName() > trackB->sortableName() )
+                {   decided = true; verdict = false;     }
+            }
+            else if( m_scheme.level( i ).category() == Playlist::Artist )
+            {
+                Meta::ArtistPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->artist();
+                Meta::ArtistPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->artist();
+
+                if( trackA->sortableName() < trackB->sortableName() )
+                {   decided = true; verdict = true;    }
+                else if( trackA->sortableName() > trackB->sortableName() )
+                {   decided = true; verdict = false;     }
+            }
+
             //And now the comparison logic for ordinary columns.
             else if( m_scheme.level( i ).isString() )
             {
