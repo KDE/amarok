@@ -339,7 +339,7 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
-    debug() << "Read metadata from file for: " + m_data.title;
+    // debug() << "Read metadata from file for: " + m_data.title;
 }
 
 // internal helper classes

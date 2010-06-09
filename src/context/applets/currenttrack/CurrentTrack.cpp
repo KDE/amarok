@@ -202,6 +202,7 @@ CurrentTrack::contextualActions()
             foreach( QAction *action, customActions )
                 actions.append( action );
         }
+        delete cac;
     }
 
     return actions;

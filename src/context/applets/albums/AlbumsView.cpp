@@ -106,24 +106,24 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
-    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
-    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-    KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
-    KAction *editAction   = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
-    
+    KMenu menu;
+    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
+    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
+    KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
+    KAction *editAction   = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
+
+    menu.addAction( appendAction );
+    menu.addAction( loadAction );
+    menu.addAction( queueAction );
+    menu.addAction( editAction );
+
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
     connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
     connect( queueAction , SIGNAL( triggered() ), this, SLOT( slotQueueSelected() ) );
     connect( editAction  , SIGNAL( triggered() ), this, SLOT( slotEditSelected() ) );
 
-    KMenu menu;
-    menu.addAction( appendAction );
-    menu.addAction( loadAction );
-    menu.addAction( queueAction );
-    menu.addSeparator();
-    menu.addAction( editAction );
-
-    QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
+    KMenu menuCover( i18n( "Album" ), &menu );
+    const QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
     if( index.isValid() )
     {
         QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );
@@ -135,14 +135,15 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
             if( cac )
             {
                 QList<QAction *> actions = cac->customActions();
-
-                menu.addSeparator();
-                foreach( QAction *action, actions )
-                    menu.addAction( action );
+                if( !actions.isEmpty() )
+                {
+                    menuCover.addActions( actions );
+                    menuCover.setIcon( KIcon( "filename-album-amarok" ) );
+                    menu.addMenu( &menuCover );
+                }
             }
         }
     }
-
     menu.exec( event->screenPos() );
 }
 

@@ -774,7 +774,6 @@ UmsHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 QString
 UmsHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
-    DEBUG_BLOCK
     if ( !m_umstrackhash.contains( track ) )
         debug() << "Error!  track not in hash!";
     return m_umstrackhash.value( track )->artist()->name();

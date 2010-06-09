@@ -65,6 +65,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
             // there are no cover actions if the song/album is not in the collection
             KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
             menuCover->addActions( coverActionsList );
+            menuCover->setIcon( KIcon( "filename-album-amarok" ) );
             menu->addMenu( menuCover );
             menu->addSeparator();
         }
