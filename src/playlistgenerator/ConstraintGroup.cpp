@@ -81,11 +81,11 @@ QString
 ConstraintGroup::getName() const
 {
     if ( m_matchtype == MatchAny ) {
-        return QString( "\"Match Any\" group" );
+        return QString( i18nc("name of a type of constraint group", "\"Match Any\" group") );
     } else if ( m_matchtype == MatchAll ) {
-        return QString( "\"Match All\" group" );
+        return QString( i18nc("name of a type of constraint group", "\"Match All\" group") );
     } else {
-        return QString( "Unknown match group" );
+        return QString( i18nc("name of a type of constraint group", "Unknown match group") );
     }
 }
 
