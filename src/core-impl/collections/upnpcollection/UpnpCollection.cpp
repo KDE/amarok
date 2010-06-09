@@ -57,6 +57,10 @@ UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
                       this, SLOT( slotFilesChanged(const QStringList &) ) ));
 }
 
+UpnpCollection::~UpnpCollection()
+{
+}
+
 void UpnpCollection::slotFilesChanged(const QStringList &list )
 {
     if( m_fullScanInProgress )
