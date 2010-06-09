@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionWidget"
+
 #include "CollectionWidget.h"
 
 #include "CollectionTreeItemModel.h"
@@ -337,6 +339,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
+    toggleAction->setChecked( m_viewMode == CollectionWidget::UnifiedCollection );
     toggleView( m_viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
