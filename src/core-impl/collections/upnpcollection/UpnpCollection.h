@@ -81,6 +81,7 @@ class UpnpCollection : public Collections::Collection
     KIO::ListJob *m_listJob;
 
     QTimer *m_fullScanTimer;
+    bool m_fullScanInProgress;
 
     // probably move to some separate class
     // should we just extend MemoryCollection?

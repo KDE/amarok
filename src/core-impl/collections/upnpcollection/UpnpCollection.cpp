@@ -47,6 +47,7 @@ UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
     , m_udn( udn )
     , m_name( name )
     , m_mc( new MemoryCollection() )
+    , m_fullScanInProgress( false )
 {
     DEBUG_BLOCK
 
@@ -58,6 +59,9 @@ UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
 
 void UpnpCollection::slotFilesChanged(const QStringList &list )
 {
+    if( m_fullScanInProgress )
+        return;
+
     debug() << "Files changed" << list;
 }
 
@@ -69,14 +73,14 @@ UpnpCollection::~UpnpCollection()
 void
 UpnpCollection::startFullScan()
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
-    m_listJob = KIO::listRecursive(KUrl("upnp-ms://" + m_udn));
-    Q_ASSERT( connect( m_listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
-                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)) ) );
-    Q_ASSERT( connect( m_listJob, SIGNAL(result(KJob*)), 
-                       this, SLOT(done(KJob*)) ) );
-
+// TODO change this to "/" when we have files changed being
+/// ignored for full scans.
+// right now its good to have the full scan finish quickly for
+// development purposes
+    startIncrementalScan( "/PC Directory/shared/music" );
+    m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
     Q_ASSERT(
         connect( m_fullScanTimer,
