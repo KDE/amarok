@@ -28,6 +28,9 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed resizing and eliding issues with the file browser breadcrumbs.
+      (BR 231366 comment #5)
+    * Drop file icons in file browser breadcrumbs. (BR 231366)
     * Fixed keyboard navigation in file browser. (BR 240668)
       Patch thanks to Hannes Koller.
     * Fixed dropping files to playlist from Konqueror. (BR 235722)

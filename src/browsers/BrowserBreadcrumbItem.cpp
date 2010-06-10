@@ -39,7 +39,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
         m_menuButton = new BreadcrumbItemMenuButton( this );
         QMenu *menu = new QMenu( 0 );
         
-        QMap<QString,BrowserCategory *> siblingMap =  parentList->categories();
+        QMap<QString,BrowserCategory *> siblingMap = parentList->categories();
 
         QStringList siblingNames = siblingMap.keys();
 
@@ -49,18 +49,13 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
             if ( siblingName == m_category->name() )
                 continue;
             
-            BrowserCategory * siblingCategory = siblingMap.value( siblingName );
+            BrowserCategory *siblingCategory = siblingMap.value( siblingName );
             
-            QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
+            QAction *action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
         }
 
         m_menuButton->setMenu( menu );
-
-        //do a little magic to line up items in the menu with the current item
-        int offset = 6;
-
-        menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
@@ -102,10 +97,9 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         m_menuButton = new BreadcrumbItemMenuButton( this );
         QMenu *menu = new QMenu( 0 );
 
-
         foreach( const QString &siblingName, childItems )
         {
-            QAction * action = menu->addAction( KIcon(), siblingName );
+            QAction *action = menu->addAction( KIcon("folder-amarok"), siblingName );
             action->setProperty( "directory", siblingName );
 
             // the current action should be bolded
@@ -117,22 +111,13 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
             }
             connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
         }
-
         m_menuButton->setMenu( menu );
-
-        //do a little magic to line up items in the menu with the current item
-        int offset = 6;
-
-        menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
-    m_mainButton = new BreadcrumbItemButton( KIcon( "folder-amarok" ), name, this );
+    m_mainButton = new BreadcrumbItemButton( name, this );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
-
     connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
-    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
-
     connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
 
     adjustSize();
@@ -173,8 +158,7 @@ void BrowserBreadcrumbItem::activate()
 
 void BrowserBreadcrumbItem::activateSibling()
 {
-
-    QAction * action = dynamic_cast<QAction *>( sender() );
+    QAction *action = qobject_cast<QAction *>( sender() );
 
     if( action )
     {
@@ -192,4 +176,4 @@ int BrowserBreadcrumbItem::nominalWidth() const
     return m_nominalWidth;
 }
 
-
+#include "BrowserBreadcrumbItem.moc"
