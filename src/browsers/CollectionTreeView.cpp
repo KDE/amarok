@@ -593,6 +593,10 @@ CollectionTreeView::slotCheckAutoExpand()
 {
     if( m_filterModel )
     {
+        const QModelIndexList &selected = selectedIndexes();
+        if( !selected.isEmpty() )
+            scrollTo( selected.first() );
+
         // Cases where root is not collections but
         // for example magnatunes's plethora of genres, don't expand by default
         if( m_filterModel->rowCount() > 6 )
