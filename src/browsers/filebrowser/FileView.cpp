@@ -68,6 +68,7 @@ FileView::FileView( QWidget * parent )
     setItemsExpandable( false );
     setRootIsDecorated( false );
     setAlternatingRowColors( true );
+    setUniformRowHeights( true );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );

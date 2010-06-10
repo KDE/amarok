@@ -27,7 +27,6 @@
 #include "playlist/PlaylistModelStack.h"
 
 #include <KComboBox>
-#include <KDirModel>
 #include <KDirLister>
 #include <KStandardDirs>
 #include <KToolBar>
@@ -69,7 +68,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 
-    m_kdirModel = new KDirModel( this );
+    m_kdirModel = new DirBrowserModel( this );
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
@@ -467,5 +466,4 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
     }
 }
 
-
-
+#include "FileBrowser.moc"

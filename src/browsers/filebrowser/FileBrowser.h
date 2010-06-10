@@ -26,7 +26,10 @@
 #include <KDirModel>
 #include <KFilePlacesModel>
 
+#include <QFontMetrics>
 #include <QTimer>
+
+class DirBrowserModel;
 
 class FileBrowser : public BrowserCategory
 {
@@ -99,7 +102,7 @@ private:
     QStringList siblingsForDir( const QString &path );
     
     SearchWidget             *m_searchWidget;
-    KDirModel                *m_kdirModel;
+    DirBrowserModel          *m_kdirModel;
     KFilePlacesModel         *m_placesModel;
     
     MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
@@ -115,6 +118,28 @@ private:
 
     bool                      m_showingPlaces;
         
+};
+
+class DirBrowserModel : public KDirModel
+{
+    Q_OBJECT
+
+public:
+    DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent ) {}
+    virtual ~DirBrowserModel() {}
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    {
+        if( role == Qt::SizeHintRole )
+        {
+            QFont font;
+            return QSize( 1, QFontMetrics( font ).height() + 4 );
+        }
+        else
+        {
+            return KDirModel::data( index, role );
+        }
+    }
 };
 
 #endif // FILEBROWSERMKII_H
