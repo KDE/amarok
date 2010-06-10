@@ -5,7 +5,7 @@ pictureflow.cpp
 CoverBlingApplet.cpp
 ImageLoader.cpp
 PhotoBrowser.cpp
-MyGraphicsTextItem.cpp
+SearchBarTextItem.cpp
 )
 
 include_directories( ../../..
