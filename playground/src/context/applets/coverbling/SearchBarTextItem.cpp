@@ -1,8 +1,8 @@
-#include "MyGraphicsTextItem.h"
+#include "SearchBarTextItem.h"
 #include <QKeyEvent>
 #include <QTextDocument>
 
-MyGraphicsTextItem::MyGraphicsTextItem( QGraphicsItem* parent, QGraphicsScene* scene )
+SearchBarTextItem::SearchBarTextItem( QGraphicsItem* parent, QGraphicsScene* scene )
 
         : QGraphicsTextItem( parent, scene )
 {
@@ -11,7 +11,7 @@ MyGraphicsTextItem::MyGraphicsTextItem( QGraphicsItem* parent, QGraphicsScene* s
         textDocument->setMaximumBlockCount( 1 ); //i set max block count to 5 e.g.
 }
 
-void MyGraphicsTextItem::keyPressEvent( QKeyEvent* Event )
+void SearchBarTextItem::keyPressEvent( QKeyEvent* Event )
 
 {
     if ( Event )
@@ -23,7 +23,7 @@ void MyGraphicsTextItem::keyPressEvent( QKeyEvent* Event )
     }
     QGraphicsTextItem::keyPressEvent( Event );
 }
-void MyGraphicsTextItem::mousePressEvent ( QGraphicsSceneMouseEvent * event )
+void SearchBarTextItem::mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
 	setPlainText( "" );
 	QGraphicsTextItem::mousePressEvent( event );

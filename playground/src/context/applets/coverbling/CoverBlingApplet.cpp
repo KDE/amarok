@@ -27,7 +27,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
-#include "MyGraphicsTextItem.h"
+#include "SearchBarTextItem.h"
 // KDE
 #include <KAction>
 #include <KColorScheme>
@@ -147,7 +147,7 @@ CoverBlingApplet::init()
     m_albumsearch->setIcon( KStandardDirs::locate( "data", "amarok/images/blingsearchalbum.png" ) );
     m_albumsearch->setMaximumSize( 18.0, 18.0 );
     m_albumsearch->setToolTip( i18n( "Toggle Album/Artist search" ) );
-    m_editsearch = new MyGraphicsTextItem( this );
+    m_editsearch = new SearchBarTextItem( this );
     m_editsearch->setTextInteractionFlags( Qt::TextEditorInteraction );
     labelFont.setItalic( true );
     m_editsearch->setFont( labelFont );

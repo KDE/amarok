@@ -1,12 +1,12 @@
 #include <QGraphicsTextItem>
 class QKeyEvent;
 
-class MyGraphicsTextItem : public QGraphicsTextItem
+class SearchBarTextItem : public QGraphicsTextItem
 
 {
     Q_OBJECT
 public:
-    MyGraphicsTextItem( QGraphicsItem * parent = 0, QGraphicsScene * scene = 0 );
+    SearchBarTextItem( QGraphicsItem * parent = 0, QGraphicsScene * scene = 0 );
 signals:
     void editionValidated( QString editioncontent );
 protected:

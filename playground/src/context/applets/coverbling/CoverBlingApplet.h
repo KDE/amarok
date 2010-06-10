@@ -31,7 +31,7 @@ class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class RatingWidget;
 class QGraphicsPixmapItem;
-class MyGraphicsTextItem;
+class SearchBarTextItem;
 
 namespace Plasma
 {
@@ -81,7 +81,7 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
         Plasma::IconWidget* m_fullscreen;
         Plasma::IconWidget* m_jumptoplaying;
 		Plasma::IconWidget* m_albumsearch;
-		MyGraphicsTextItem* m_editsearch;
+		SearchBarTextItem* m_editsearch;
 		
         bool m_fullsize;
         bool m_autojump;
