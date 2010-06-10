@@ -70,6 +70,7 @@ VERSION 2.3.1
       Amarok. Batch scan users can invoke it with the --idlepriority flag.
 
   BUGFIXES:
+    * Fixed regression in Ctrl+RightClick behaviour in playlist. (BR 241238)
     * File browser: fixed sorting files by date. (BR 226941)
     * Fixed issue with file browser bookmarks not working when the file browser
       was showing "places".

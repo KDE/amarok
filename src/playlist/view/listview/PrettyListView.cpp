@@ -563,16 +563,24 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     // Queueing support for Ctrl Right click
     if( event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier )
     {
-        // HACK: Implement a nicer way in Actions class to queue just one row
-        // TODO: Make it possible to enqueue multiple rows. Tricky.
         QList<int> list;
-        list.append( index.row() );
+        if (selectedRows().contains( index.row()) )
+        {
+            // select all selected rows if mouse is over selection area
+            list = selectedRows();
+        }
+        else
+        {
+            // select only current mouse-over-index if mouse is out of selection area
+            list.append( index.row() );
+        }
 
         if( index.data( Playlist::StateRole ).toInt() & Item::Queued )
             Actions::instance()->dequeue( list );
         else
             Actions::instance()->queue( list );
-        update();
+
+        update(); // refresh view
     }
 }
 
