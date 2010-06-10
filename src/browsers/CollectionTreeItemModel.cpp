@@ -39,7 +39,7 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ) );
+    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
