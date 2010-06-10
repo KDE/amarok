@@ -38,6 +38,9 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
+        virtual QActionList actions();
+        virtual QActionList trackActions( int trackIndex );
+
         //PlaylistObserver methods
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
@@ -52,6 +55,8 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual void doSync() const;
 
         virtual void removePlaylistsFrom( Playlists::PlaylistProvider *provider );
+
+        virtual Playlists::PlaylistList playlists() const { return m_playlists; }
 
     protected:
 

@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "core/playlists/Playlist.h"
-
+#include "core/playlists/PlaylistProvider.h"
 
 Playlists::PlaylistObserver::~PlaylistObserver()
 {
@@ -43,4 +43,21 @@ Playlists::PlaylistObserver::unsubscribeFrom( Playlists::PlaylistPtr playlist )
         m_playlistSubscriptions.remove( playlist );
         playlist->unsubscribe( this );
     }
+}
+
+QActionList
+Playlists::Playlist::actions()
+{
+    if( provider() )
+        return provider()->playlistActions( Playlists::PlaylistPtr( this ) );
+
+    return QActionList();
+}
+
+QActionList
+Playlists::Playlist::trackActions( int trackIndex )
+{
+    if( provider() )
+        return provider()->trackActions( Playlists::PlaylistPtr( this ), trackIndex );
+    return QActionList();
 }

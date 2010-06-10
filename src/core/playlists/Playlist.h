@@ -34,6 +34,9 @@
 
 class QTextStream;
 
+class QAction;
+typedef QList<QAction *> QActionList;
+
 namespace Playlists
 {
     class Playlist;
@@ -115,6 +118,9 @@ namespace Playlists
               * labels.
               */
             virtual QStringList groups() { return QStringList(); }
+
+            virtual QActionList actions();
+            virtual QActionList trackActions( int trackIndex );
 
             /**
             * "labels" the playlist as part of a group. In a folder-like hierachy this means adding

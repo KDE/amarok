@@ -18,7 +18,7 @@
 
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "core/playlists/PlaylistProvider.h"
+#include "playlist/PlaylistModelStack.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
@@ -217,7 +217,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
                            playlistCount );
         case MetaPlaylistModel::ActionRole:
             return QVariant::fromValue( index.column() == MetaPlaylistModel::ProviderColumn ?
-                        providerActions : actionsFor( index ) );
+                    providerActions : actionsFor( index ) );
 
         default: return QVariant();
     }
@@ -627,20 +627,18 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
     m_appendAction->setData( value );
     m_loadAction->setData( value );
 
-    QList<QAction *> actions;
+    QActionList actions;
     actions << m_appendAction << m_loadAction;
 
     if( !IS_TRACK(idx) )
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
-        if( playlist->provider() )
-            actions << playlist->provider()->playlistActions( playlist );
+        actions << playlist->actions();
     }
     else
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
-        if( playlist->provider() )
-            actions << playlist->provider()->trackActions( playlist, idx.row() );
+        actions << playlist->actions();
     }
 
     return actions;

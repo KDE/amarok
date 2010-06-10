@@ -21,6 +21,8 @@
 
 #include "core/support/Debug.h"
 
+#include <QStack>
+
 const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
         "application/x-amarok-providerproxy-indexes";
 
@@ -28,6 +30,19 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
         : QtGroupingProxy( model, QModelIndex(), column )
 {
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
+}
+
+QVariant
+PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
+{
+    //TODO: filter out actions not from the provider, possibly using QAction separators marking
+    // the source of the actions (makes sense in the UI as well.
+//    if( isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn )
+//    {
+//        QtGroupingProxy::data( idx, role )
+//    }
+
+    return QtGroupingProxy::data( idx, role );
 }
 
 bool

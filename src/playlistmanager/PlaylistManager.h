@@ -31,12 +31,10 @@
 
 class KJob;
 class PlaylistManager;
-class QAction;
 
 namespace Playlists {
     class PlaylistFile;
     class PlaylistFileProvider;
-    class PlaylistProvider;
     class UserPlaylistProvider;
     typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
 }
@@ -138,10 +136,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
 
         bool isWritable( const Playlists::PlaylistPtr &playlist );
-
-        QList<QAction *> playlistActions( const Playlists::PlaylistList lists );
-        QList<QAction *> trackActions( const Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
 
         void completePodcastDownloads();
 

@@ -382,39 +382,6 @@ PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
         return false;
 }
 
-QList<QAction *>
-PlaylistManager::playlistActions( const Playlists::PlaylistList playlists )
-{
-    QList<QAction *> actions;
-    foreach( const Playlists::PlaylistPtr playlist, playlists )
-    {
-        Playlists::PlaylistProvider *provider = getProvidersForPlaylist( playlist ).first();
-        if( !provider )
-            continue;
-
-        //only add actions that are not in the list yet.
-        QList<QAction *> playlistActions( provider->playlistActions( playlist ) );
-        foreach( QAction *action, playlistActions )
-        {
-            if( !actions.contains( action ) )
-                actions << action;
-        }
-    }
-
-    return actions;
-}
-
-QList<QAction *>
-PlaylistManager::trackActions( const Playlists::PlaylistPtr playlist, int trackIndex )
-{
-    QList<QAction *> actions;
-    Playlists::PlaylistProvider *provider = getProvidersForPlaylist( playlist ).first();
-    if( provider )
-        actions << provider->trackActions( playlist, trackIndex );
-
-    return actions;
-}
-
 void
 PlaylistManager::completePodcastDownloads()
 {

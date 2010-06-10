@@ -18,7 +18,7 @@
 #define AMAROK_METAPLAYLISTMODEL_H
 
 #include "core/playlists/Playlist.h"
-#include "playlist/PlaylistModelStack.h"
+#include "core/playlists/PlaylistProvider.h"
 
 #include <QAbstractItemModel>
 
@@ -30,8 +30,6 @@
 #define REMOVE_TRACK_MASK(x) ((x) & ~(TRACK_MASK))
 
 class QAction;
-
-typedef QList<QAction *> QActionList;
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QActionList )
