@@ -126,7 +126,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
-    m_mainButton = new BreadcrumbItemButton( KIcon( "folder-amarok" ), name, this );
+    m_mainButton = new BreadcrumbItemButton( name, this );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 

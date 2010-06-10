@@ -50,7 +50,8 @@ ElidingButton::~ElidingButton()
 void ElidingButton::init()
 {
     m_isElided = false;
-    setMinimumWidth( iconSize().width() );
+    if( !icon().isNull() )
+        setMinimumWidth( iconSize().width() );
 }
 
 QSizePolicy ElidingButton::sizePolicy() const
@@ -87,7 +88,7 @@ void ElidingButton::setText( const QString &text )
 void ElidingButton::elideText( const QSize &widgetSize )
 {
     const int width = widgetSize.width();
-    const int iconWidth = iconSize().width();
+    const int iconWidth = icon().isNull() ? 0 : iconSize().width();
 
     int left, top, right, bottom;
     getContentsMargins( &left, &top, &right, &bottom );

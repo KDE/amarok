@@ -41,6 +41,13 @@ BreadcrumbItemButton::BreadcrumbItemButton( QWidget *parent )
     init();
 }
 
+BreadcrumbItemButton::BreadcrumbItemButton( const QString &text, QWidget *parent )
+    : Amarok::ElidingButton( text, parent )
+    , m_displayHint( 0 )
+{
+    init();
+}
+
 BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent )
     : Amarok::ElidingButton( icon, text, parent )
     , m_displayHint( 0 )
@@ -123,13 +130,21 @@ BreadcrumbItemButton::paintEvent( QPaintEvent* event )
     int left, top, right, bottom;
     getContentsMargins ( &left, &top, &right, &bottom );
     const int padding = 2;
-    const int iconWidth = iconSize().width();
-    const int iconHeight = iconSize().height();
-    const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;
-    const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
-    painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
+    int xoffset;
 
-    const QRect textRect( left + (padding * 2) + iconWidth, top, buttonWidth, buttonHeight);
+    if( !icon().isNull() )
+    {
+        const int iconWidth = iconSize().width();
+        const int iconHeight = iconSize().height();
+        const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;
+        const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
+        painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
+        xoffset = left + (padding * 2) + iconWidth;
+    }
+    else
+        xoffset = left + (padding * 2);
+
+    const QRect textRect( xoffset, top, buttonWidth, buttonHeight);
     painter.drawText(textRect, Qt::AlignVCenter, text());
 }
 
@@ -169,7 +184,10 @@ BreadcrumbItemButton::sizeHint() const
 {
     QSize size = Amarok::ElidingButton::sizeHint();
     QFontMetrics fm( font() );
-    size.setWidth( fm.width( text() ) + iconSize().width() + 8 );
+    int width = fm.width( text() );
+    if( !icon().isNull() )
+        width += iconSize().width();
+    size.setWidth( width + 8 );
     return size;
 }
 

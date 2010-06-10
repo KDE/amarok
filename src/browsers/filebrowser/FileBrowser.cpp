@@ -113,8 +113,6 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 
     setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
-
-    
 }
 
 FileBrowser::~FileBrowser()
