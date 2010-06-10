@@ -18,6 +18,12 @@
 
 #include "UpnpCollection.h"
 #include "core/support/Debug.h"
+#include "covermanager/CoverFetchingActions.h"
+#include "core/capabilities/CustomActionsCapability.h"
+
+#include <QAction>
+
+#include <kio/netaccess.h>
 
 using namespace Meta;
 
@@ -397,7 +403,8 @@ UpnpArtist::addAlbum( UpnpAlbumPtr album )
 }
 
 UpnpAlbum::UpnpAlbum( const QString &name )
-    : Meta::Album()
+    : QObject()
+    , Meta::Album()
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
@@ -447,23 +454,35 @@ UpnpAlbum::tracks()
     return m_tracks;
 }
 
+bool
+UpnpAlbum::hasImage( int size ) const
+{
+    Q_UNUSED( size );
+    return m_albumArtUrl.isValid();
+}
+
 QPixmap
 UpnpAlbum::image( int size )
 {
+    if( !m_pixmap.isNull() )
+        return size <= 0 ? m_pixmap : m_pixmap.scaled( size, size );
+
+    QString path;
+    if( m_albumArtUrl.isValid()
+        && KIO::NetAccess::download( m_albumArtUrl, path, NULL ) )
+    {
+        m_pixmap = QPixmap( path );
+        return size <= 0 ? m_pixmap : m_pixmap.scaled( size, size );
+    }
+
     return Meta::Album::image( size );
 }
 
-bool
-UpnpAlbum::canUpdateImage() const
+KUrl
+UpnpAlbum::imageLocation( int size )
 {
-    return false;
-}
-
-void
-UpnpAlbum::setImage( const QPixmap &pixmap )
-{
-    Q_UNUSED(pixmap);
-    //TODO
+    Q_UNUSED( size );
+    return m_albumArtUrl;
 }
 
 void
@@ -490,6 +509,36 @@ UpnpAlbum::setIsCompilation( bool compilation )
     m_isCompilation = compilation;
 }
 
+void
+UpnpAlbum::setAlbumArtUrl( const KUrl &url )
+{
+    m_albumArtUrl = url;
+}
+
+Capabilities::Capability*
+UpnpAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
+{
+    switch( type )
+    {
+        case Capabilities::Capability::CustomActions:
+        {
+            QList<QAction *> actions;
+
+            QAction *separator = new QAction( this );
+            separator->setSeparator( true );
+            actions << separator;
+
+            QAction * displayCoverAction = new DisplayCoverAction( this, AlbumPtr::dynamicCast( UpnpAlbumPtr( this ) ) );
+
+            actions << displayCoverAction;
+
+            return new Capabilities::CustomActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
+}
 //UpnpGenre
 
 UpnpGenre::UpnpGenre( const QString &name )

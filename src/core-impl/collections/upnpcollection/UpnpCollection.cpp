@@ -210,6 +210,10 @@ DEBUG_BLOCK
     Genre->addTrack( t );
     Year->addTrack( t );
 
+    // album art
+    if( ! Album->imageLocation().isValid() )
+        Album->setAlbumArtUrl( entry.stringValue( KIO::UPNP_ALBUMART_URI ) );
+
     m_TrackMap[t->uidUrl()] = TrackPtr::dynamicCast( t );
 
     QString container = QDir(baseUrl).filePath( info.dir().path() );
