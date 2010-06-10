@@ -50,8 +50,13 @@ ElidingButton::~ElidingButton()
 void ElidingButton::init()
 {
     m_isElided = false;
-    if( !icon().isNull() )
-        setMinimumWidth( iconSize().width() );
+    int width = iconSize().width() + 4;
+    if( !text().isEmpty() )
+    {
+        QFontMetrics fm( font() );
+        width += fm.width( text() ) / 2;
+    }
+    setMinimumWidth( width );
 }
 
 QSizePolicy ElidingButton::sizePolicy() const
@@ -93,7 +98,6 @@ void ElidingButton::elideText( const QSize &widgetSize )
     int left, top, right, bottom;
     getContentsMargins( &left, &top, &right, &bottom );
     int padding = left + right + 4;
-
     int textWidth = width - ( iconWidth + padding );
 
     QFontMetrics fm( font() );
@@ -110,12 +114,12 @@ void ElidingButton::elideText( const QSize &widgetSize )
     else if( !elided && tip == m_fullText )
         setToolTip( QString() );
 
-    if ( m_isElided )
+    if( elided )
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     else
         setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
-    if ( m_isElided != elided )
+    if( m_isElided != elided )
     {
         m_isElided = elided;
         emit( sizePolicyChanged() );

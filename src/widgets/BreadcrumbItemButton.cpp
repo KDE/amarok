@@ -183,20 +183,25 @@ QSize
 BreadcrumbItemButton::sizeHint() const
 {
     QSize size = Amarok::ElidingButton::sizeHint();
-    QFontMetrics fm( font() );
-    int width = fm.width( text() );
+    int width = 8;
     if( !icon().isNull() )
+    {
         width += iconSize().width();
-    size.setWidth( width + 8 );
+    }
+    if( !text().isEmpty() )
+    {
+        QFontMetrics fm( font() );
+        width += fm.width( text() );
+    }
+    size.setWidth( width );
     return size;
 }
 
-QSize
-BreadcrumbItemMenuButton::sizeHint() const
+
+BreadcrumbItemMenuButton::BreadcrumbItemMenuButton( QWidget* parent )
+    : BreadcrumbItemButton( parent )
 {
-    QSize size = BreadcrumbItemButton::sizeHint();
-    size.setWidth(size.height() / 2);
-    return size;
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
 void
