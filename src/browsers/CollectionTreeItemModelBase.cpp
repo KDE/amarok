@@ -780,12 +780,14 @@ CollectionTreeItemModelBase::queryDone()
     if( item && item != m_rootItem )
     {
         emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
-        emit queryFinished();
     }
 
     //stop timer if there are no more animations active
-    if( d->runningQueries.count() == 0 )
+    if( d->runningQueries.isEmpty() )
+    {
+        emit allQueriesFinished();
         m_timeLine->stop();
+    }
 }
 
 void

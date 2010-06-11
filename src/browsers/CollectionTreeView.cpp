@@ -97,7 +97,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
-    connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
+    connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
