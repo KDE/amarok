@@ -51,6 +51,19 @@ PlaylistsInGroupsProxy::~PlaylistsInGroupsProxy()
 QVariant
 PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
 {
+
+    //Turn the QVariantList of the source into a comma separated string, but only for the real items
+    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn
+        && role == Qt::DisplayRole )
+    {
+        QVariant indexData = QtGroupingProxy::data( idx, role );
+        if( indexData.type() != QVariant::List )
+            return indexData;
+
+        QString providerString = indexData.toStringList().join( ", " );
+        return QVariant( providerString );
+    }
+
     if( idx.column() == 0 && isGroup( idx ) && role ==
         PlaylistBrowserNS::MetaPlaylistModel::ActionRole )
     {

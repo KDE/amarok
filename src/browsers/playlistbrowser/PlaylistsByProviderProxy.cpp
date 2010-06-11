@@ -37,10 +37,18 @@ PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
 {
     //TODO: filter out actions not from the provider, possibly using QAction separators marking
     // the source of the actions (makes sense in the UI as well.
-//    if( isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn )
-//    {
-//        QtGroupingProxy::data( idx, role )
-//    }
+
+    //Turn the QVariantList of the source into a comma separated string, but only for the real items
+    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn
+        && role == Qt::DisplayRole )
+    {
+        QVariant indexData = QtGroupingProxy::data( idx, role );
+        if( indexData.type() != QVariant::List )
+            return indexData;
+
+        QString providerString = indexData.toStringList().join( ", " );
+        return QVariant( providerString );
+    }
 
     return QtGroupingProxy::data( idx, role );
 }

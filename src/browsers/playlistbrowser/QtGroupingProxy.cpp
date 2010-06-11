@@ -82,6 +82,9 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
                 RoleVariantMap rvm = cvm.contains( 0 ) ? cvm.take( 0 ) : RoleVariantMap();
                 rvm.insert( role, list.value( i ) );
                 cvm.insert( 0, rvm );
+                //for the grouped column the data should not be gathered from the children
+                //this will allow filtering on the content of this column with a QSFP
+                cvm.insert( m_groupedColumn, rvm );
                 cvmList.insert( i, cvm );
             }
         }
