@@ -696,6 +696,12 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
 {
     ui.setupUi( this );
 
+    // plural support in combobox labels
+    connect( ui.spinBox_ValueDateValue, SIGNAL( valueChanged( int ) ), this, SLOT( slotUpdateComboBoxLabels( int ) ) );
+    ui.comboBox_ValueDateUnit->insertItem(0, i18ncp("within the last %1 days", "day", "days", 0));
+    ui.comboBox_ValueDateUnit->insertItem(1, i18ncp("within the last %1 months", "month", "months", 0));
+    ui.comboBox_ValueDateUnit->insertItem(2, i18ncp("within the last %1 years", "year", "years", 0));
+
     // fill in appropriate defaults for some attributes
     ui.kdatewidget_DateSpecific->setDate( QDate::currentDate() );
 
@@ -904,4 +910,12 @@ ConstraintTypes::TagMatchEditWidget::on_timeEdit_TimeValue_timeChanged( const QT
 {
     int v = QTime().msecsTo( t );
     emit valueChanged( QVariant( v ) );
+}
+
+void
+ConstraintTypes::TagMatchEditWidget::slotUpdateComboBoxLabels( int value )
+{
+    ui.comboBox_ValueDateUnit->setItemText(0, i18ncp("within the last %1 days", "day", "days", value));
+    ui.comboBox_ValueDateUnit->setItemText(1, i18ncp("within the last %1 months", "month", "months", value));
+    ui.comboBox_ValueDateUnit->setItemText(2, i18ncp("within the last %1 years", "year", "years", value));
 }

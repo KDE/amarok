@@ -156,6 +156,7 @@ namespace ConstraintTypes {
             void on_lineEdit_StringValue_textChanged( const QString& );
             void on_rating_RatingValue_ratingChanged( int );
             void on_timeEdit_TimeValue_timeChanged( const QTime& );
+            void slotUpdateComboBoxLabels( int );            
 
         private:
             Ui::TagMatchEditWidget ui;

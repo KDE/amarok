@@ -131,7 +131,7 @@ p, li { white-space: pre-wrap; }
               <item row="0" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item>
-                 <widget class="QSpinBox" name="spinBox_ValueInt">
+                 <widget class="KIntSpinBox" name="spinBox_ValueInt">
                   <property name="whatsThis">
                    <string>The numerical value that the track characteristic should match.</string>
                   </property>
@@ -306,25 +306,10 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                     <item>
-                     <widget class="QSpinBox" name="spinBox_ValueDateValue"/>
+                     <widget class="KIntSpinBox" name="spinBox_ValueDateValue"/>
                     </item>
                     <item>
                      <widget class="QComboBox" name="comboBox_ValueDateUnit">
-                      <item>
-                       <property name="text">
-                        <string>days</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>months</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>years</string>
-                       </property>
-                      </item>
                      </widget>
                     </item>
                     <item>
@@ -739,6 +724,11 @@ p, li { white-space: pre-wrap; }
    <class>KDateWidget</class>
    <extends>QWidget</extends>
    <header>kdatewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
   </customwidget>
   <customwidget>
    <class>KRatingWidget</class>
