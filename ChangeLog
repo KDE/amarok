@@ -28,6 +28,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed error dialog popup if the stored directory is no longer accessible
+      when using the file browser. (BR 234286)
     * Fixed resizing and eliding issues with the file browser breadcrumbs.
       (BR 231366 comment #5)
     * Drop file icons in file browser breadcrumbs. (BR 231366)

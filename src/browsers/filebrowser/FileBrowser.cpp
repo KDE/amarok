@@ -236,10 +236,13 @@ FileBrowser::readConfig()
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = Amarok::config( "File Browser" );
-
-    KUrl currentDirectory = config.readEntry( "Current Directory", QDir::homePath() );
-    m_kdirModel->dirLister()->openUrl( currentDirectory );
+    debug() << "home path: " <<  QDir::homePath();
+    QDir currentDirectory = Amarok::config( "File Browser" ).readEntry( "Current Directory",
+                                                                        QDir::homePath() );
+    // fall back to $HOME if config dir has since disappeared
+    if( !currentDirectory.exists()  )
+        currentDirectory = QDir::homePath();
+    m_kdirModel->dirLister()->openUrl( KUrl( currentDirectory.path() ) );
     m_currentPath = currentDirectory.path();
 
     QFile file( Amarok::saveLocation() + "file_browser_layout" );
