@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "FileBrowser"
+
 #include "FileBrowser.h"
 
 #include "BrowserBreadcrumbItem.h"
@@ -39,8 +41,9 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     , m_placesModel( 0 )
     , m_showingPlaces( false )
 {
-
     DEBUG_BLOCK;
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 
     KHBox * topHBox = new KHBox( this );
 
@@ -68,6 +71,13 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 
+    m_fileView = new FileView( this );
+    QTimer::singleShot( 0, this, SLOT(initView()) );
+}
+
+void
+FileBrowser::initView()
+{
     m_kdirModel = new DirBrowserModel( this );
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
@@ -76,26 +86,16 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_mimeFilterProxyModel->setDynamicSortFilter( true );
 
-    debug() << "home path: " <<  QDir::homePath();
-
-    m_fileView = new FileView( this );
     m_fileView->setModel( m_mimeFilterProxyModel );
-    m_fileView->setSortingEnabled( true );
-    m_fileView->header()->setVisible( true );
-
-    m_fileView->hideColumn( 3 );
-    m_fileView->hideColumn( 4 );
-    m_fileView->hideColumn( 5 );
-    m_fileView->hideColumn( 6 );
-
-    m_fileView->setDragEnabled( true );
-    m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-
     readConfig();
 
     m_fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
+    m_fileView->header()->setVisible( true );
+    m_fileView->setDragEnabled( true );
+    m_fileView->setSortingEnabled( true );
+    m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-    for( int i = 0; i < m_fileView->model()->columnCount(); i++ )
+    for( int i = 0, columns = m_fileView->model()->columnCount(); i < columns ; ++i )
     {
         QAction *action = new QAction( m_fileView->model()->headerData( i, Qt::Horizontal ).toString(), m_fileView->header() );
         m_fileView->header()->addAction( action );
@@ -109,9 +109,6 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
     if( !KGlobalSettings::singleClick() )
         connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
-
-    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 }
 
 FileBrowser::~FileBrowser()
@@ -246,14 +243,20 @@ FileBrowser::readConfig()
     m_currentPath = currentDirectory.path();
 
     QFile file( Amarok::saveLocation() + "file_browser_layout" );
-    QByteArray layout;
-    if ( file.open( QIODevice::ReadOnly ) )
+    if( file.open( QIODevice::ReadOnly ) )
     {
-        layout = file.readAll();
+        m_fileView->header()->restoreState( file.readAll() );
         file.close();
     }
-
-    m_fileView->header()->restoreState( layout );
+    else
+    {
+        // default layout
+        m_fileView->hideColumn( 3 );
+        m_fileView->hideColumn( 4 );
+        m_fileView->hideColumn( 5 );
+        m_fileView->hideColumn( 6 );
+        m_fileView->sortByColumn( 0, Qt::AscendingOrder );
+    }
 }
 
 void FileBrowser::writeConfig()

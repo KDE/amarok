@@ -93,6 +93,9 @@ protected slots:
      */
     void setupDone( const QModelIndex & index, bool success );    
 
+private slots:
+    void initView();
+
 private:
     void readConfig();
     void writeConfig();
@@ -117,7 +120,6 @@ private:
     QAction                  *m_placesAction;
 
     bool                      m_showingPlaces;
-        
 };
 
 class DirBrowserModel : public KDirModel
