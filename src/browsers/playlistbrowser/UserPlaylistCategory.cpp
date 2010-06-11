@@ -207,6 +207,7 @@ UserPlaylistCategory::slotToggleProviderButton( bool enabled )
         return;
 
     QString filter;
+    QActionList checkedActions;
     foreach( const Playlists::PlaylistProvider *p, m_providerActions.keys() )
     {
         QAction *action = m_providerActions.value( p );
@@ -214,9 +215,15 @@ UserPlaylistCategory::slotToggleProviderButton( bool enabled )
         {
             QString escapedName = QRegExp::escape( p->prettyName() ).replace( " ", "\\ " );
             filter += QString( filter.isEmpty() ? "^%1" : "|^%1" ).arg( escapedName );
+            checkedActions << action;
+            action->setEnabled( true );
         }
     }
     m_filterProxy->setFilterRegExp( filter );
+
+    //don't allow the last visible provider to be hidden
+    if( checkedActions.count() == 1 )
+        checkedActions.first()->setEnabled( false );
 }
 
 void
