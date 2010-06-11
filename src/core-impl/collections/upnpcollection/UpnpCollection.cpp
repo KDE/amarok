@@ -66,17 +66,24 @@ void UpnpCollection::slotFilesChanged(const QStringList &list )
     if( m_fullScanInProgress )
         return;
 
+    m_updateQueue += list;
+
     debug() << "Files changed" << list;
-    foreach( QString urlString, list ) {
-        debug() << "Update URL is" << urlString;
-        invalidateTracksIn( urlString );
-        KUrl url( urlString );
-        if( url.scheme() != "upnp-ms" || url.host() != m_udn )
-            return;
-        debug() << "NOw increment on " << url.path();
-        startIncrementalScan( url.path() );
-    }
-    updateMemoryCollection();
+}
+
+void UpnpCollection::processUpdates()
+{
+    if( m_updateQueue.isEmpty() )
+        return;
+
+    QString urlString = m_updateQueue.dequeue();
+    debug() << "Update URL is" << urlString;
+    invalidateTracksIn( urlString );
+    KUrl url( urlString );
+    if( url.scheme() != "upnp-ms" || url.host() != m_udn )
+        return;
+    debug() << "Now incremental scanning" << url;
+    startIncrementalScan( url.path() );
 }
 
 void UpnpCollection::invalidateTracksIn( const QString &dir )
@@ -250,6 +257,12 @@ DEBUG_BLOCK
         m_fullScanInProgress = false;
         debug() << "Full Scan done";
     }
+
+    // process new updates if any
+    // this is the only place processUpdates()
+    // should be called since a full scan at the very beginning
+    // will always call done().
+    processUpdates();
 }
 
 void

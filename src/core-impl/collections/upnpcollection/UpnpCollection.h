@@ -73,6 +73,7 @@ class UpnpCollection : public Collections::Collection
     void invalidateTracksIn( const QString &dir );
     void updateMemoryCollection();
     void slotFilesChanged(const QStringList &);
+    void processUpdates();
 
   private:
     QString m_udn;
@@ -98,6 +99,8 @@ class UpnpCollection : public Collections::Collection
     GenreMap m_GenreMap;
     ComposerMap m_ComposerMap;
     YearMap m_YearMap;
+
+    QQueue<QString> m_updateQueue;
 };
 
 } //namespace Collections
