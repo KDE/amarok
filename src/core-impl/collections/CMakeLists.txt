@@ -21,6 +21,9 @@ add_subdirectory( sqlcollection )
 #    add_subdirectory(nepomukcollection)
 #endif (SOPRANO_FOUND AND NEPOMUK_FOUND)
 
-add_subdirectory( upnpcollection )
+if ( WITH_UPNP AND HUPNP_FOUND )
+    add_subdirectory( upnpcollection )
+endif ( WITH_UPNP AND HUPNP_FOUND )
 
 add_subdirectory( playdarcollection )
+
