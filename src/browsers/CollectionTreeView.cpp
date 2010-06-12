@@ -176,6 +176,16 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     separator.setSeparator( true );
 
     QModelIndexList indices = selectedIndexes();
+
+    // if previously selected indices do not contain the index of the item
+    // currently under the mouse when context menu is invoked.
+    if( !indices.contains( index ) )
+    {
+        indices.clear();
+        indices << index;
+        setCurrentIndex( index );
+    }
+
     if( m_filterModel )
     {
         QModelIndexList tmp;
