@@ -56,9 +56,9 @@ class CollectionAction : public QAction
 class FileView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
+
 public:
     FileView( QWidget * parent );
-
 
 protected slots:
 
@@ -72,12 +72,13 @@ protected slots:
     void slotDelete();
 
 protected:
-            
     QList<QAction *> actionsForIndices( const QModelIndexList &indices );
     void addSelectionToPlaylist( bool replace );
     
-    virtual void contextMenuEvent ( QContextMenuEvent * e );
-    void startDrag( Qt::DropActions supportedActions );
+    virtual void contextMenuEvent( QContextMenuEvent *e );
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    virtual void startDrag( Qt::DropActions supportedActions );
     KFileItemList selectedItems() const;
 
 private:
@@ -96,6 +97,7 @@ private:
     bool m_copyActivated;
     CollectionAction* m_moveAction;
     CollectionAction* m_copyAction;
+    QPersistentModelIndex m_lastSelectedIndex;
 };
 
 #endif // end include guard

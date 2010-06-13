@@ -31,6 +31,8 @@ VERSION 2.3.2-Beta 1
   BUGFIXES:
     * Fixed error dialog popup if the stored directory is no longer accessible
       when using the file browser. (BR 234286)
+    * Single clicking a file in the file browser now selects it instead of
+      appending to the playlist by default in single-click mode. (BR 233171)
     * Fixed resizing and eliding issues with the file browser breadcrumbs.
       (BR 231366 comment #5)
     * Drop file icons in file browser breadcrumbs. (BR 231366)
