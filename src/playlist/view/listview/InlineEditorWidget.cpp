@@ -355,9 +355,7 @@ void InlineEditorWidget::ratingValueChanged()
 {
     DEBUG_BLOCK
 
-    QObject * senderObject = sender();
-
-    KRatingWidget * edit = dynamic_cast<KRatingWidget *>( senderObject );
+    KRatingWidget * edit = qobject_cast<KRatingWidget *>( sender() );
     if( !edit )
         return;
 

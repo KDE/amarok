@@ -67,7 +67,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
 
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
-    BrowserCategoryList *list = dynamic_cast<BrowserCategoryList*>( category );
+    BrowserCategoryList *list = qobject_cast<BrowserCategoryList*>( category );
     if ( list )
     {
         connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );

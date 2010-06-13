@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "BrowserBreadcrumbWidget"
+
 #include "BrowserBreadcrumbWidget.h"
 
 #include "amarokurls/AmarokUrl.h"
@@ -136,7 +138,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         item->setActive( false );
         
         //check if this is also a list
-        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( childCategory );
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( childCategory );
         if( childList )
         {
             addLevel( childList );
@@ -171,7 +173,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         item->setActive( true );
 
         //if this item has children, add a menu button for selecting these.
-        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( list );
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( list );
         if( childList )
         {
             m_childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
@@ -271,7 +273,7 @@ BrowserBreadcrumbWidget::mousePressEvent( QMouseEvent * event )
 
     if( amarokPath.endsWith( "files" ) )
     {
-        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        FileBrowser * fileBrowser = qobject_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
         if( fileBrowser )
         {
             m_pathEdit->setText( fileBrowser->currentDir() );

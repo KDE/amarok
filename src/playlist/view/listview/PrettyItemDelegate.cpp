@@ -659,7 +659,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     Q_UNUSED( model )
     DEBUG_BLOCK
 
-    InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
+    InlineEditorWidget * inlineEditor = qobject_cast<InlineEditorWidget *>( editor );
     if( !inlineEditor )
         return;
 
