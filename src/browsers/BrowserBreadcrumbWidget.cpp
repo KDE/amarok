@@ -147,13 +147,12 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
             BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
-            leaf->setActive( true );
             
             m_items.append( leaf );
 
-
+            const QList<BrowserBreadcrumbItem*> additionalItems = childCategory->additionalItems();
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
-            foreach( BrowserBreadcrumbItem * addItem, childCategory->additionalItems() )
+            foreach( BrowserBreadcrumbItem *addItem, additionalItems )
             {
                 debug() << "adding extra item";
 
@@ -162,8 +161,12 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
                 
                 addItem->setParent( m_breadcrumbArea );
                 addItem->show();
-                addItem->setActive( true );
             }
+
+            if( !additionalItems.isEmpty() )
+                additionalItems.last()->setActive( true );
+            else
+                leaf->setActive( true );
         }
     }
     else
