@@ -17,7 +17,7 @@
 #ifndef MIMETYPEFILTERPROXYMODEL_H
 #define MIMETYPEFILTERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
+#include <KDirSortFilterProxyModel>
 
 #include <QStringList>
 
@@ -25,7 +25,7 @@
  * @class MimeTypeFilterProxyModel a proxy model to filter out KFileItem's that do not match a supplied set of mimetypes
  * Designed to be used with KDirOperator as it uses KDirModel::FileItemRole to retrieve the KFileItem
  */
-class MimeTypeFilterProxyModel : public QSortFilterProxyModel
+class MimeTypeFilterProxyModel : public KDirSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -39,7 +39,6 @@ public:
 
 protected:
     virtual bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const;
-    virtual bool lessThan( const QModelIndex& left, const QModelIndex& right ) const;
 
 private:
     QStringList m_mimeList;
