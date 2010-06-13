@@ -327,8 +327,6 @@ MountPointManager::getMountedDeviceIds() const
 QStringList
 MountPointManager::collectionFolders()
 {
-    DEBUG_BLOCK
-
     //TODO max: cache data
     QStringList result;
     KConfigGroup folders = Amarok::config( "Collection Folders" );
