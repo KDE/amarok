@@ -69,6 +69,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_expandToggledWhenPressed( false )
 {
     setSortingEnabled( true );
+    setFocusPolicy( Qt::StrongFocus );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -397,6 +398,12 @@ CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
 void CollectionTreeView::keyPressEvent( QKeyEvent *event )
 {
     QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+    {
+        QTreeView::keyPressEvent( event );
+        return;
+    }
+
     if( m_filterModel )
     {
         QModelIndexList tmp;
@@ -412,12 +419,6 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    if( indices.isEmpty() )
-    {
-        QTreeView::keyPressEvent( event );
-        return;
-    }
-
     QModelIndex current = currentIndex();
     switch( event->key() )
     {
@@ -426,23 +427,23 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
             slotAppendChildTracks();
             return;
         case Qt::Key_Up:
-            if ( current.parent() == QModelIndex() && current.row() == 0 )
+            if( current.parent() == QModelIndex() && current.row() == 0 )
             {
                 emit leavingTree();
                 return;
             }
+            break;
         case Qt::Key_Down:
-            QAbstractItemView::keyPressEvent( event );
-            return;
+            break;
         // L and R should magically work when we get a patched version of qt
         case Qt::Key_Right:
         case Qt::Key_Direction_R:
             expand( current );
-            break;
+            return;
         case Qt::Key_Left:
         case Qt::Key_Direction_L:
             collapse( current );
-            break;
+            return;
         default:
             break;
     }
