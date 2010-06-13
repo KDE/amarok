@@ -69,7 +69,7 @@ void Albums::init()
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
     
-    m_model = new AlbumsModel();
+    m_model = new AlbumsModel( this );
     m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
     m_albumsView->show();
@@ -82,6 +82,9 @@ void Albums::init()
 
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
+
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
+             this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
     updateConstraints();
 }
@@ -108,14 +111,22 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-   
+
+    QList< QStandardItem * > items = m_model->takeColumn( 0 );
+    while( !items.isEmpty() )
+    {
+        QStandardItem *item = items.takeFirst();
+        QList< QStandardItem * > kids = item->takeColumn( 0 );
+        qDeleteAll( kids );
+    }
+    m_model->clear();
+
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
     debug() << "Received" << m_albums.count() << "albums";
     m_headerText->setText( data[ "headerText" ].toString() );
 
     //Update the applet (render properly the header)
     update();
-    m_model->clear();
 
     if( m_albums.isEmpty() )
     {
@@ -258,7 +269,17 @@ void Albums::connectSource( const QString &source )
 void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
+    reconnectSource();
+}
 
+void Albums::collectionDataChanged( Collections::Collection *collection )
+{
+    Q_UNUSED( collection )
+    reconnectSource();
+}
+
+void Albums::reconnectSource()
+{
     dataEngine( "amarok-current" )->disconnectSource( "albums", this );
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 

@@ -48,6 +48,7 @@ protected:
     void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
+    void collectionDataChanged( Collections::Collection *collection );
     void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
@@ -59,6 +60,8 @@ private:
     QStandardItemModel *m_model;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;
+
+    void reconnectSource();
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )
