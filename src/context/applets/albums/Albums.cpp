@@ -111,13 +111,22 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
+
+    QList< QStandardItem * > items = m_model->takeColumn( 0 );
+    while( !items.isEmpty() )
+    {
+        QStandardItem *item = items.takeFirst();
+        QList< QStandardItem * > kids = item->takeColumn( 0 );
+        qDeleteAll( kids );
+    }
+    m_model->clear();
+
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
     debug() << "Received" << m_albums.count() << "albums";
     m_headerText->setText( data[ "headerText" ].toString() );
 
     //Update the applet (render properly the header)
     update();
-    m_model->clear();
 
     if( m_albums.isEmpty() )
     {
