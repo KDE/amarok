@@ -97,7 +97,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
-    connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
+    connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
@@ -176,6 +176,16 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     separator.setSeparator( true );
 
     QModelIndexList indices = selectedIndexes();
+
+    // if previously selected indices do not contain the index of the item
+    // currently under the mouse when context menu is invoked.
+    if( !indices.contains( index ) )
+    {
+        indices.clear();
+        indices << index;
+        setCurrentIndex( index );
+    }
+
     if( m_filterModel )
     {
         QModelIndexList tmp;
@@ -593,6 +603,10 @@ CollectionTreeView::slotCheckAutoExpand()
 {
     if( m_filterModel )
     {
+        const QModelIndexList &selected = selectedIndexes();
+        if( !selected.isEmpty() )
+            scrollTo( selected.first() );
+
         // Cases where root is not collections but
         // for example magnatunes's plethora of genres, don't expand by default
         if( m_filterModel->rowCount() > 6 )
