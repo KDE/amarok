@@ -83,6 +83,9 @@ void Albums::init()
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
 
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
+             this, SLOT(collectionDataChanged(Collections::Collection*)) );
+
     updateConstraints();
 }
 
@@ -108,7 +111,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-   
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
     debug() << "Received" << m_albums.count() << "albums";
     m_headerText->setText( data[ "headerText" ].toString() );
@@ -258,7 +260,17 @@ void Albums::connectSource( const QString &source )
 void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
+    reconnectSource();
+}
 
+void Albums::collectionDataChanged( Collections::Collection *collection )
+{
+    Q_UNUSED( collection )
+    reconnectSource();
+}
+
+void Albums::reconnectSource()
+{
     dataEngine( "amarok-current" )->disconnectSource( "albums", this );
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
