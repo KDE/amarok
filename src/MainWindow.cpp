@@ -171,36 +171,25 @@ MainWindow::MainWindow()
 
     //new K3bExporter();
 
-    KConfigGroup config = Amarok::config();
-    const QSize size = config.readEntry( "MainWindow Size", QSize() );
-    const QPoint pos = config.readEntry( "MainWindow Position", QPoint() );
-    if( size.isValid() )
-    {
-        resize( size );
-        move( pos );
-    }
-
     The::paletteHandler()->setPalette( palette() );
     setPlainCaption( i18n( AMAROK_CAPTION ) );
 
     init();  // We could as well move the code from init() here, but meh.. getting a tad long
 
     //restore active category ( as well as filters and levels and whatnot.. )
-    const QString path = config.readEntry( "Browser Path", QString() );
+    const QString path = Amarok::config().readEntry( "Browser Path", QString() );
     if( !path.isEmpty() )
         m_browsers->list()->navigate( path );
+
+    setAutoSaveSettings();
 }
 
 MainWindow::~MainWindow()
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = Amarok::config();
-    config.writeEntry( "MainWindow Size", size() );
-    config.writeEntry( "MainWindow Position", pos() );
-
     //save currently active category
-    config.writeEntry( "Browser Path", m_browsers->list()->path() );
+    Amarok::config().writeEntry( "Browser Path", m_browsers->list()->path() );
 
     QList<int> sPanels;
 
