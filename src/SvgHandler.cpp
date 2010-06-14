@@ -59,7 +59,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , m_customTheme( false )
 {
     DEBUG_BLOCK
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( reTint() ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( discardCache() ) );
 }
 
 SvgHandler::~SvgHandler()
@@ -244,9 +244,13 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     debug() << "got new theme file: " << themeFile;
     m_themeFile = themeFile;
     m_customTheme = true;
-    reTint();
-    
+    discardCache();
+}
+
+void SvgHandler::discardCache()
+{
     //redraw entire app....
+    reTint();
     m_cache->discard();
     App::instance()->mainWindow()->update();
 }

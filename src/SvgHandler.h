@@ -141,6 +141,9 @@ class AMAROK_EXPORT SvgHandler : public QObject
     signals:
         void retinted();
 
+    private slots:
+        void discardCache();
+
     private:
         SvgHandler( QObject* parent = 0 );
 
