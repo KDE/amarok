@@ -104,6 +104,7 @@ void UpnpCollection::invalidateTracksIn( const QString &dir )
             }
         }
     }
+    m_tracksInContainer.remove( dir );
 }
 
 void
