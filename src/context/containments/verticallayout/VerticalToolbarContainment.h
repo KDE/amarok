@@ -71,8 +71,6 @@ class VerticalToolbarContainment : public Containment
     private:
         ContextView* m_view;
         VerticalAppletLayout* m_applets;
-        
-        bool m_noApplets;
         QGraphicsTextItem* m_noAppletText;
 };
 

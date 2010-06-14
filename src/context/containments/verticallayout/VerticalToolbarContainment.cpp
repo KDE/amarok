@@ -31,7 +31,6 @@
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_applets( 0 )
-    , m_noApplets( true )
     , m_noAppletText( 0 )
 {
     DEBUG_BLOCK
@@ -51,12 +50,6 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
 
     connect( m_applets, SIGNAL( noApplets( bool ) ), SLOT( showEmptyText( bool ) ) );
 
-    m_noAppletText = new QGraphicsTextItem( this );
-    m_noAppletText->setHtml( QString( "<html>  <style type=\"text/css\"> body { background-color: %1; } </style> \
-                                        <body> <p align=\"center\"> %2 </</p></body></html>" )
-                                       .arg( The::paletteHandler()->highlightColor().name() )
-                                       .arg( i18n( "Please add some applets from the toolbar at the bottom of the context view." ) ) );
-
 }
 
 Context::VerticalToolbarContainment::~VerticalToolbarContainment()
@@ -70,10 +63,13 @@ Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints const
     debug() << "setting applets geom to" << contentsRect();
     m_applets->setGeometry( contentsRect() );
     
-    QRectF masterRect = contentsRect();
-    m_noAppletText->setTextWidth( masterRect.width() * .4 );
-    QPointF topLeft( ( masterRect.width() / 2 ) - ( m_noAppletText->boundingRect().width() / 2 ), ( masterRect.height() / 2 ) - ( m_noAppletText->boundingRect().height() / 2 ) );
-    m_noAppletText->setPos( topLeft );
+    if( m_noAppletText )
+    {
+        QRectF masterRect = contentsRect();
+        m_noAppletText->setTextWidth( masterRect.width() * .4 );
+        QPointF topLeft( ( masterRect.width() / 2 ) - ( m_noAppletText->boundingRect().width() / 2 ), ( masterRect.height() / 2 ) - ( m_noAppletText->boundingRect().height() / 2 ) );
+        m_noAppletText->setPos( topLeft );
+    }
 }
 
 QList<QAction*>
@@ -180,11 +176,22 @@ Context::VerticalToolbarContainment::wheelEvent( QGraphicsSceneWheelEvent* event
 void
 Context::VerticalToolbarContainment::showEmptyText( bool toShow ) // SLOT
 {
-    m_noApplets = toShow;
     if( toShow )
+    {
+        if( !m_noAppletText )
+        {
+            m_noAppletText = new QGraphicsTextItem( this );
+            m_noAppletText->setHtml( QString( "<html>  <style type=\"text/css\"> body { background-color: %1; } </style> \
+                                              <body> <p align=\"center\"> %2 </</p></body></html>" )
+                                     .arg( The::paletteHandler()->highlightColor().name() )
+                                     .arg( i18n( "Please add some applets from the toolbar at the bottom of the context view." ) ) );
+        }
         m_noAppletText->show();
-    else
+    }
+    else if( m_noAppletText )
+    {
         m_noAppletText->hide();
+    }
     updateConstraints();
     update();
 }
