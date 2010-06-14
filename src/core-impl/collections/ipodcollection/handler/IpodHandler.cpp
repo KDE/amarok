@@ -36,8 +36,6 @@ extern "C" {
 #endif
 }
 
-#include "SvgHandler.h"
-
 #include "core-impl/meta/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5

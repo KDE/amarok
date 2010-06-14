@@ -16,6 +16,7 @@
 
 #include "VolumeDial.h"
 
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 
 #include <QConicalGradient>
@@ -40,9 +41,7 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     setMouseTracking( true );
 
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
-
-    QEvent ev( QEvent::PaletteChange );
-    changeEvent( &ev );
+    connect( The::paletteHandler(), SIGNAL(newPalette(const QPalette&)), SLOT(paletteChanged(const QPalette&)) );
 }
 
 void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
@@ -58,16 +57,13 @@ void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
     }
 }
 
-void VolumeDial::changeEvent( QEvent *ev )
+void VolumeDial::paletteChanged( const QPalette &palette )
 {
-    if ( ev->type() == QEvent::PaletteChange )
-    {
-        const QColor &fg = palette().color( foregroundRole() );
-        const QColor &hg = palette().color( QPalette::Highlight );
-        const qreal contrast = KColorUtils::contrastRatio( hg, palette().color( backgroundRole() ) );
-        m_highlightColor = KColorUtils::mix( hg, fg, 1.0 - contrast/3.0 );
-    }
-    QDial::changeEvent( ev );
+    const QColor &fg = palette.color( foregroundRole() );
+    const QColor &hg = palette.color( QPalette::Highlight );
+    const qreal contrast = KColorUtils::contrastRatio( hg, palette.color( backgroundRole() ) );
+    m_highlightColor = KColorUtils::mix( hg, fg, 1.0 - contrast/3.0 );
+    renderIcons();
 }
 
 void VolumeDial::enterEvent( QEvent * )
@@ -190,24 +186,31 @@ void VolumeDial::removeWheelProxy( QObject *w )
 
 void VolumeDial::resizeEvent( QResizeEvent *re )
 {
-    if ( width() != height() )
+    if( width() != height() )
         resize( height(), height() );
     else
         QDial::resizeEvent( re );
 
-    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width(), height(), "Muted" );
-    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
-    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
-    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume" );
-    if ( layoutDirection() == Qt::RightToLeft )
+    if( re->size() != re->oldSize() )
+    {
+        renderIcons();
+        m_sliderGradient = QPixmap( size() );
+        updateSliderGradient();
+        update();
+    }
+}
+
+void VolumeDial::renderIcons()
+{
+    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width(), height(), "Muted",      true );
+    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low", true );
+    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid", true );
+    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume",     true );
+    if( layoutDirection() == Qt::RightToLeft )
     {
         for ( int i = 0; i < 4; ++i )
             m_icon[i] = QPixmap::fromImage( m_icon[i].toImage().mirrored( true, false ) );
     }
-
-    m_sliderGradient = QPixmap( size() );
-    updateSliderGradient();
-    update();
 }
 
 void VolumeDial::startFade()

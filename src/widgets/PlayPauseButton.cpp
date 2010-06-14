@@ -29,7 +29,6 @@ PlayPauseButton::PlayPauseButton( QWidget *parent ) : IconButton( parent )
 {
     connect (this, SIGNAL( clicked() ), this, SLOT( toggle() ) );
     setToolTip( i18n( "Play" ) );
-    reloadContent( size() );
 }
 
 void PlayPauseButton::enterEvent( QEvent * )
@@ -55,15 +54,15 @@ void PlayPauseButton::toggle()
 
 void PlayPauseButton::reloadContent( const QSize &sz )
 {
-    Q_UNUSED( sz )
-
+    const int width  = sz.width();
+    const int height = sz.height();
     //NOTICE this is a bit cumbersome, as Qt renders faster to images than to pixmaps
     // However we need the Image and generate the pixmap ourself - maybe extend the SvgHandler API
-    m_icon.play[0] =  The::svgHandler()->renderSvg( "PLAYpause", width(), height(), "PLAYpause" ).toImage();
-    m_icon.play[1] =  The::svgHandler()->renderSvg( "PLAYpause_active", width(), height(), "PLAYpause_active" ).toImage();
-    m_icon.pause[0] =  The::svgHandler()->renderSvg( "playPAUSE", width(), height(), "playPAUSE" ).toImage();
-    m_icon.pause[1] =  The::svgHandler()->renderSvg( "playPAUSE_active", width(), height(), "playPAUSE_active" ).toImage();
-    if ( layoutDirection() == Qt::RightToLeft )
+    m_icon.play[0] = The::svgHandler()->renderSvg( "PLAYpause", width, height, "PLAYpause", true ).toImage();
+    m_icon.play[1] = The::svgHandler()->renderSvg( "PLAYpause_active", width, height, "PLAYpause_active", true ).toImage();
+    m_icon.pause[0] = The::svgHandler()->renderSvg( "playPAUSE", width, height, "playPAUSE", true ).toImage();
+    m_icon.pause[1] = The::svgHandler()->renderSvg( "playPAUSE_active", width, height, "playPAUSE_active", true ).toImage();
+    if( layoutDirection() == Qt::RightToLeft )
     {
         for ( int i = 0; i < 2; ++i )
         {

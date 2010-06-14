@@ -44,7 +44,10 @@ protected:
      Reload the content for the given size
      The iconbutton preserves a square size, so sz.width() == sz.height()
     */
-    virtual void reloadContent( const QSize &sz );
+    virtual void reloadContent( const QSize &sz ) = 0;
+
+protected slots:
+    void svgRetinted();
 
 private:
     void updateIconBuffer();

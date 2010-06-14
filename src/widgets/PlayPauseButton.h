@@ -20,8 +20,6 @@
 #include "IconButton.h"
 
 #include <QImage>
-#include <QPixmap>
-
 
 class PlayPauseButton : public IconButton
 {
