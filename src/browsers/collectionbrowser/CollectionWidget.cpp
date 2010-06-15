@@ -60,11 +60,33 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setObjectName( name );
     setMargin( 0 );
     setSpacing( 0 );
+    //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 
-    QMenu *filterMenu = new QMenu( this );
     KHBox *hbox = new KHBox( this );
     m_searchWidget = new SearchWidget( hbox );
     m_searchWidget->setClickMessage( i18n( "Search collection" ) );
+    m_stack = new QStackedWidget( this );
+
+    QTimer::singleShot( 0, this, SLOT(init()) );
+}
+
+void
+CollectionWidget::init()
+{
+    m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    if ( m_levels.isEmpty() )
+        m_levels << CategoryId::Artist << CategoryId::Album;
+
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
+    const QString &value = Amarok::config( "Collection Browser" ).readEntry( "View Mode" );
+    int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
+    enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
+
+    m_stack->setFrameShape( QFrame::NoFrame );
+    m_stack->addWidget( view( m_viewMode ) );
 
     // Filter presets. UserRole is used to store the actual syntax.
     KComboBox *combo = m_searchWidget->comboBox();
@@ -74,19 +96,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     combo->addItem( icon, i18n("Added This Month"), i18n("added") + QString(":<1m") );
     combo->insertSeparator( combo->count() );
 
-    m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
-    if ( m_levels.isEmpty() )
-        m_levels << CategoryId::Artist << CategoryId::Album;
-
-    const QMetaObject *mo = metaObject();
-    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    const QString &value = KGlobal::config()->group( "Collection Browser" ).readEntry( "View Mode" );
-    int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
-    enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
-
-    m_stack = new QStackedWidget( this );
-    m_stack->setFrameShape( QFrame::NoFrame );
-    m_stack->addWidget( view( m_viewMode ) );
+    QMenu *filterMenu = new QMenu( this );
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -323,10 +333,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
-    //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
-    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 }
 
 CollectionBrowserTreeView *

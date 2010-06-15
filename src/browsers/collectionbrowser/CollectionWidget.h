@@ -70,6 +70,9 @@ class CollectionWidget : public BrowserCategory
 
         void toggleView( bool merged );
 
+    private slots:
+        void init();
+
     private:
         CollectionBrowserTreeView *view( ViewMode mode );
 
