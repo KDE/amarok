@@ -59,7 +59,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , m_customTheme( false )
 {
     DEBUG_BLOCK
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( reTint() ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( discardCache() ) );
 }
 
 SvgHandler::~SvgHandler()
@@ -128,7 +128,12 @@ KSvgRenderer * SvgHandler::getRenderer()
     return getRenderer( m_themeFile );
 }
 
-QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
+QPixmap SvgHandler::renderSvg( const QString &name,
+                               const QString& keyname,
+                               int width,
+                               int height,
+                               const QString& element,
+                               bool skipCache )
 {
     QPixmap pixmap;
 
@@ -137,9 +142,8 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
             .arg( width )
             .arg( height );
 
-    if ( !m_cache->find( key, pixmap ) ) {
-//         debug() << QString("svg %1 not in cache...").arg( key );
-
+    if( skipCache || !m_cache->find( key, pixmap ) )
+    {
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
 
@@ -166,9 +170,9 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     return pixmap;
 }
 
-QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element)
+QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element, bool skipCache )
 {
-    return renderSvg( m_themeFile, keyname, width, height, element );
+    return renderSvg( m_themeFile, keyname, width, height, element, skipCache );
 }
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
@@ -226,6 +230,7 @@ void SvgHandler::reTint()
     The::svgTinter()->init();
     if ( !loadSvg( m_themeFile ))
         warning() << "Unable to load theme file: " << m_themeFile;
+    emit retinted();
 }
 
 QString SvgHandler::themeFile()
@@ -239,9 +244,13 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     debug() << "got new theme file: " << themeFile;
     m_themeFile = themeFile;
     m_customTheme = true;
-    reTint();
-    
+    discardCache();
+}
+
+void SvgHandler::discardCache()
+{
     //redraw entire app....
+    reTint();
     m_cache->discard();
     App::instance()->mainWindow()->update();
 }
@@ -465,6 +474,5 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
         p->drawPixmap( knob.topLeft(), renderSvg( string, knob.width(), knob.height(), string ) );
     }
 }
-
 
 #include "SvgHandler.moc"

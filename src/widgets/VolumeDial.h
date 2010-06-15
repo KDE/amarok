@@ -46,7 +46,6 @@ signals:
     void muteToggled( bool mute );
 
 protected:
-    void changeEvent( QEvent * );
     void enterEvent( QEvent * );
     bool eventFilter( QObject *o, QEvent *e );
     void leaveEvent( QEvent * );
@@ -63,9 +62,11 @@ protected:
 private:
     void startFade();
     void stopFade();
+    void renderIcons();
     void updateSliderGradient();
 
 private slots:
+    void paletteChanged( const QPalette &palette );
     void valueChangedSlot( int );
 
 private:

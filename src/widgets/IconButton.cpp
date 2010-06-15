@@ -15,6 +15,7 @@
 ****************************************************************************************/
 
 #include "IconButton.h"
+#include "SvgHandler.h"
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -22,13 +23,17 @@
 #include <QTimerEvent>
 #include <QToolBar>
 
-
 IconButton::IconButton( QWidget *parent ) : QWidget( parent )
     , m_isClick( false )
 {
     m_anim.step = 0;
     m_anim.timer = 0;
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+
+    // cannot use paletteChanged() from the palette handler directly since the
+    // svg handler also watches it for retinting. So upon palette change, we are
+    // called first and the old svg icons will be used.
+    connect( The::svgHandler(), SIGNAL(retinted()), SLOT(svgRetinted()) );
 }
 
 void IconButton::setIcon( const QImage &img, int steps )
@@ -72,14 +77,14 @@ void IconButton::paintEvent( QPaintEvent * )
     p.end();
 }
 
-void IconButton::reloadContent( const QSize &sz )
+void IconButton::svgRetinted()
 {
-    setIcon( m_icon.scaled( sz, Qt::KeepAspectRatio, Qt::SmoothTransformation )  );
+    reloadContent( size() );
 }
 
 void IconButton::resizeEvent( QResizeEvent *re )
 {
-    if ( width() != height() )
+    if( width() != height() )
         resize( height(), height() );
     else
     {

@@ -51,7 +51,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         KSvgRenderer* getRenderer( const QString &name );
         KSvgRenderer* getRenderer();
-        QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
+        QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
 
         /**
         * Overloaded function that uses the current theme
@@ -59,9 +59,10 @@ class AMAROK_EXPORT SvgHandler : public QObject
         * @param width Width of the resulting pixmap
         * @param height Height of the resulting pixmap
         * @param element The theme element to render ( if none the entire svg is rendered )
+        * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
         * @return The svg element/file rendered into a pixmap
         */
-        QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
+        QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
         
         /**
          * Yet another overloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
@@ -136,6 +137,12 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
     public slots:
         void reTint();
+
+    signals:
+        void retinted();
+
+    private slots:
+        void discardCache();
 
     private:
         SvgHandler( QObject* parent = 0 );

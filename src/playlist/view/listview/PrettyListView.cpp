@@ -88,11 +88,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
-
     setVerticalScrollMode( ScrollPerPixel );
-
-    setMouseTracking( true );
-
 
     // Rendering adjustments
     setFrameShape( QFrame::NoFrame );
