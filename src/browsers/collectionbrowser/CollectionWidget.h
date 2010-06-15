@@ -21,29 +21,23 @@
 
 #include "BrowserCategory.h"
 
-#include <KVBox>
-
 class QAction;
-class QMenu;
-class QStackedWidget;
-
-class SearchWidget;
-class CollectionBrowserTreeView;
-class CollectionTreeItemModelBase;
 
 class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
     Q_ENUMS( ViewMode )
+
     public:
-    enum ViewMode {
-        UnifiedCollection,
-        NormalCollections
-    };
+        enum ViewMode
+        {
+            UnifiedCollection,
+            NormalCollections
+        };
 
         CollectionWidget( const QString &name , QWidget *parent );
+        ~CollectionWidget();
         static CollectionWidget *instance() { return s_instance; }
-        CollectionBrowserTreeView *view() const { return m_treeView; }
 
         /**
          * Apply a filter to the tree view.
@@ -54,7 +48,6 @@ class CollectionWidget : public BrowserCategory
         virtual QList<int> levels() const;
 
     public slots:
-
         void customFilter( QAction * );
         void sortByAlbum();
         void sortByArtist();
@@ -69,26 +62,16 @@ class CollectionWidget : public BrowserCategory
 
         void toggleView( bool merged );
 
+    private slots:
+        void init();
+
     private:
-        SearchWidget        *m_searchWidget;
-        QStackedWidget *m_stack;
-        CollectionBrowserTreeView  *m_treeView;
-        CollectionBrowserTreeView  *m_singleTreeView;
-        CollectionTreeItemModelBase *m_singleModel;
-        CollectionTreeItemModelBase *m_multiModel;
-        ViewMode m_viewMode;
-
-        QAction             *m_firstLevelSelectedAction;
-        QAction             *m_secondLevelSelectedAction;
-        QAction             *m_thirdLevelSelectedAction;
-
-        QMenu               *m_firstLevel;
-        QMenu               *m_secondLevel;
-        QMenu               *m_thirdLevel;
-
-        QList<int>          m_levels;
-
+        class Private;
+        Private *const d;
         static CollectionWidget *s_instance;
+
+        CollectionWidget( const CollectionWidget& );
+        CollectionWidget& operator=( const CollectionWidget& );
 };
 
 #endif
