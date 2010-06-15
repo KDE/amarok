@@ -50,11 +50,87 @@
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
+class CollectionWidget::Private
+{
+public:
+    Private()
+        : treeView( 0 )
+        , singleTreeView( 0 )
+        , viewMode( CollectionWidget::NormalCollections ) {}
+    ~Private() {}
+
+    CollectionBrowserTreeView *view( CollectionWidget::ViewMode mode );
+
+    CollectionBrowserTreeView *treeView;
+    CollectionBrowserTreeView *singleTreeView;
+    QStackedWidget *stack;
+    SearchWidget *searchWidget;
+    CollectionWidget::ViewMode viewMode;
+
+    QAction *selectedActionLevel[3];
+    QMenu *menuLevel[3];
+    QList<int> levels;
+};
+
+CollectionBrowserTreeView *
+CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
+{
+    CollectionBrowserTreeView *v( 0 );
+    switch( mode )
+    {
+    case CollectionWidget::NormalCollections:
+        if( !treeView )
+        {
+            v = new CollectionBrowserTreeView( stack );
+            v->setAlternatingRowColors( true );
+            v->setFrameShape( QFrame::NoFrame );
+            v->setRootIsDecorated( false );
+            connect( v, SIGNAL(leavingTree()), searchWidget->comboBox(), SLOT(setFocus()) );
+            CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( v );
+            v->setItemDelegate( delegate );
+            CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( levels );
+            v->setModel( multiModel );
+            treeView = v;
+        }
+        else
+        {
+            v = treeView;
+        }
+        break;
+
+    case CollectionWidget::UnifiedCollection:
+        if( !singleTreeView )
+        {
+            v = new CollectionBrowserTreeView( stack );
+            v->setAlternatingRowColors( true );
+            v->setFrameShape( QFrame::NoFrame );
+            Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
+            connect( CollectionManager::instance(),
+                     SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
+                     proxyColl,
+                     SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
+            connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)),
+                     proxyColl, SLOT(removeCollection(QString)));
+            foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
+            {
+                proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
+            }
+            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, levels );
+            v->setModel( singleModel );
+            singleTreeView = v;
+        }
+        else
+        {
+            v = singleTreeView;
+        }
+        break;
+    }
+    return v;
+}
+
 CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     : BrowserCategory( name, parent )
-    , m_treeView( 0 )
-    , m_singleTreeView( 0 )
-    , m_viewMode( CollectionWidget::NormalCollections )
+    , d( new Private )
 {
     s_instance = this;
     setObjectName( name );
@@ -65,31 +141,36 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 
     KHBox *hbox = new KHBox( this );
-    m_searchWidget = new SearchWidget( hbox );
-    m_searchWidget->setClickMessage( i18n( "Search collection" ) );
-    m_stack = new QStackedWidget( this );
+    d->searchWidget = new SearchWidget( hbox );
+    d->searchWidget->setClickMessage( i18n( "Search collection" ) );
+    d->stack = new QStackedWidget( this );
 
     QTimer::singleShot( 0, this, SLOT(init()) );
+}
+
+CollectionWidget::~CollectionWidget()
+{
+    delete d;
 }
 
 void
 CollectionWidget::init()
 {
-    m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
-    if ( m_levels.isEmpty() )
-        m_levels << CategoryId::Artist << CategoryId::Album;
+    d->levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    if ( d->levels.isEmpty() )
+        d->levels << CategoryId::Artist << CategoryId::Album;
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
     const QString &value = Amarok::config( "Collection Browser" ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
-    enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
+    enumValue == -1 ? d->viewMode = NormalCollections : d->viewMode = (ViewMode) enumValue;
 
-    m_stack->setFrameShape( QFrame::NoFrame );
-    m_stack->addWidget( view( m_viewMode ) );
+    d->stack->setFrameShape( QFrame::NoFrame );
+    d->stack->addWidget( d->view( d->viewMode ) );
 
     // Filter presets. UserRole is used to store the actual syntax.
-    KComboBox *combo = m_searchWidget->comboBox();
+    KComboBox *combo = d->searchWidget->comboBox();
     const KIcon icon = KStandardGuiItem::find().icon();
     combo->addItem( icon, i18n("Added Today"), i18n("added") + QString(":<1d") );
     combo->addItem( icon, i18n("Added This Week"), i18n("added") + QString(":<1w") );
@@ -112,21 +193,21 @@ CollectionWidget::init()
 
     filterMenu->addSeparator();
 
-    m_firstLevel = filterMenu->addMenu( i18n( "First Level" ) );
+    d->menuLevel[0] = filterMenu->addMenu( i18n( "First Level" ) );
 
-    QAction *firstArtistAction   = m_firstLevel->addAction( i18n( "Artist" ) );
+    QAction *firstArtistAction   = d->menuLevel[0]->addAction( i18n( "Artist" ) );
     firstArtistAction->setData( CategoryId::Artist );
 
-    QAction *firstAlbumAction    = m_firstLevel->addAction( i18n( "Album"  ) );
+    QAction *firstAlbumAction    = d->menuLevel[0]->addAction( i18n( "Album"  ) );
     firstAlbumAction->setData( CategoryId::Album );
 
-    QAction *firstGenreAction    = m_firstLevel->addAction( i18n( "Genre"  ) );
+    QAction *firstGenreAction    = d->menuLevel[0]->addAction( i18n( "Genre"  ) );
     firstGenreAction->setData( CategoryId::Genre );
 
-    QAction *firstComposerAction = m_firstLevel->addAction( i18n( "Composer" ) );
+    QAction *firstComposerAction = d->menuLevel[0]->addAction( i18n( "Composer" ) );
     firstComposerAction->setData( CategoryId::Composer );
 
-    QAction *firstLabelAction = m_firstLevel->addAction( i18n( "Label" ) );
+    QAction *firstLabelAction = d->menuLevel[0]->addAction( i18n( "Label" ) );
     firstLabelAction->setData( CategoryId::Label );
 
     firstArtistAction->setCheckable  ( true );
@@ -142,25 +223,25 @@ CollectionWidget::init()
     firstGroup->addAction( firstComposerAction );
     firstGroup->addAction( firstLabelAction );
 
-    connect( m_firstLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+    connect( d->menuLevel[0], SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
-    m_secondLevel = filterMenu->addMenu( i18n( "Second Level" ) );
-    QAction *secondNullAction     = m_secondLevel->addAction( i18n( "None" ) );
+    d->menuLevel[1] = filterMenu->addMenu( i18n( "Second Level" ) );
+    QAction *secondNullAction     = d->menuLevel[1]->addAction( i18n( "None" ) );
     secondNullAction->setData( CategoryId::None );
 
-    QAction *secondArtistAction   = m_secondLevel->addAction( i18n( "Artist" ) );
+    QAction *secondArtistAction   = d->menuLevel[1]->addAction( i18n( "Artist" ) );
     secondArtistAction->setData( CategoryId::Artist );
 
-    QAction *secondAlbumAction    = m_secondLevel->addAction( i18n( "Album"  ) );
+    QAction *secondAlbumAction    = d->menuLevel[1]->addAction( i18n( "Album"  ) );
     secondAlbumAction->setData( CategoryId::Album );
 
-    QAction *secondGenreAction    = m_secondLevel->addAction( i18n( "Genre"  ) );
+    QAction *secondGenreAction    = d->menuLevel[1]->addAction( i18n( "Genre"  ) );
     secondGenreAction->setData( CategoryId::Genre );
 
-    QAction *secondComposerAction = m_secondLevel->addAction( i18n( "Composer" ) );
+    QAction *secondComposerAction = d->menuLevel[1]->addAction( i18n( "Composer" ) );
     secondComposerAction->setData( CategoryId::Composer );
 
-    QAction *secondLabelAction = m_secondLevel->addAction( i18n( "Label" ) );
+    QAction *secondLabelAction = d->menuLevel[1]->addAction( i18n( "Label" ) );
     secondLabelAction->setData( CategoryId::Label );
 
     secondNullAction->setCheckable    ( true );
@@ -179,25 +260,25 @@ CollectionWidget::init()
     secondGroup->addAction( secondLabelAction );
     secondNullAction->setChecked( true );
 
-    connect( m_secondLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+    connect( d->menuLevel[1], SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
-    m_thirdLevel = filterMenu->addMenu( i18n( "Third Level" ) );
-    QAction *thirdNullAction     = m_thirdLevel->addAction( i18n( "None" ) );
+    d->menuLevel[2] = filterMenu->addMenu( i18n( "Third Level" ) );
+    QAction *thirdNullAction     = d->menuLevel[2]->addAction( i18n( "None" ) );
     thirdNullAction->setData( CategoryId::None );
 
-    QAction *thirdArtistAction   = m_thirdLevel->addAction( i18n( "Artist" ) );
+    QAction *thirdArtistAction   = d->menuLevel[2]->addAction( i18n( "Artist" ) );
     thirdArtistAction->setData( CategoryId::Artist );
 
-    QAction *thirdAlbumAction    = m_thirdLevel->addAction( i18n( "Album"  ) );
+    QAction *thirdAlbumAction    = d->menuLevel[2]->addAction( i18n( "Album"  ) );
     thirdAlbumAction->setData( CategoryId::Album );
 
-    QAction *thirdGenreAction    = m_thirdLevel->addAction( i18n( "Genre"  ) );
+    QAction *thirdGenreAction    = d->menuLevel[2]->addAction( i18n( "Genre"  ) );
     thirdGenreAction->setData( CategoryId::Genre );
 
-    QAction *thirdComposerAction = m_thirdLevel->addAction( i18n( "Composer" ) );
+    QAction *thirdComposerAction = d->menuLevel[2]->addAction( i18n( "Composer" ) );
     thirdComposerAction->setData( CategoryId::Composer );
 
-    QAction *thirdLabelAction = m_thirdLevel->addAction( i18n( "Label" ) );
+    QAction *thirdLabelAction = d->menuLevel[2]->addAction( i18n( "Label" ) );
     thirdLabelAction->setData( CategoryId::Label );
 
     thirdNullAction->setCheckable    ( true );
@@ -216,7 +297,7 @@ CollectionWidget::init()
     thirdGroup->addAction( thirdLabelAction );
     thirdNullAction->setChecked( true );
 
-    connect( m_thirdLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+    connect( d->menuLevel[2], SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
     filterMenu->addSeparator();
     QAction *showYears = filterMenu->addAction( i18n( "Show Years" ) );
@@ -234,10 +315,10 @@ CollectionWidget::init()
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
     connect( showCovers, SIGNAL(toggled(bool)), SLOT( slotShowCovers( bool ) ) );
 
-    //do not use m_levels directly here, otherwise
+    //do not use d->levels directly here, otherwise
     //takeFirst() removes the first item from the list,
-    //but we need the correct m_levels in toggleView()
-    QList<int> levelCopy = m_levels;
+    //but we need the correct d->levels in toggleView()
+    QList<int> levelCopy = d->levels;
     // Preset the checked status properly
     if( levelCopy.size() > 0 )
     {
@@ -311,85 +392,29 @@ CollectionWidget::init()
                 thirdNullAction->setChecked( true );
         }
     }
-    m_firstLevelSelectedAction = firstGroup->checkedAction();
-    m_secondLevelSelectedAction = secondGroup->checkedAction();
-    m_thirdLevelSelectedAction = thirdGroup->checkedAction();
+    d->selectedActionLevel[0] = firstGroup->checkedAction();
+    d->selectedActionLevel[1] = secondGroup->checkedAction();
+    d->selectedActionLevel[2] = thirdGroup->checkedAction();
 
-    m_searchWidget->toolBar()->addSeparator();
+    d->searchWidget->toolBar()->addSeparator();
 
     KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     searchMenuAction->setMenu( filterMenu );
 
-    m_searchWidget->toolBar()->addAction( searchMenuAction );
+    d->searchWidget->toolBar()->addAction( searchMenuAction );
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
-    toggleAction->setChecked( m_viewMode == CollectionWidget::UnifiedCollection );
-    toggleView( m_viewMode == CollectionWidget::UnifiedCollection );
+    toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
+    toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    m_searchWidget->toolBar()->addAction( toggleAction );
+    d->searchWidget->toolBar()->addAction( toggleAction );
 
-    QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
+    QToolButton *tbutton = qobject_cast<QToolButton*>( d->searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
 
-}
-
-CollectionBrowserTreeView *
-CollectionWidget::view( ViewMode mode )
-{
-    CollectionBrowserTreeView *view( 0 );
-    switch( mode )
-    {
-    case NormalCollections:
-        if( !m_treeView )
-        {
-            view = new CollectionBrowserTreeView( m_stack );
-            view->setAlternatingRowColors( true );
-            view->setFrameShape( QFrame::NoFrame );
-            view->setRootIsDecorated( false );
-            connect( view, SIGNAL(leavingTree()), m_searchWidget->comboBox(), SLOT(setFocus()) );
-            CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( view );
-            view->setItemDelegate( delegate );
-            CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( m_levels );
-            view->setModel( multiModel );
-            m_treeView = view;
-        }
-        else
-        {
-            view = m_treeView;
-        }
-        break;
-
-    case UnifiedCollection:
-        if( !m_singleTreeView )
-        {
-            view = new CollectionBrowserTreeView( m_stack );
-            view->setAlternatingRowColors( true );
-            view->setFrameShape( QFrame::NoFrame );
-            Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
-            connect( CollectionManager::instance(),
-                     SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
-                     proxyColl,
-                     SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
-            connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)),
-                     proxyColl, SLOT(removeCollection(QString)));
-            foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
-            {
-                proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
-            }
-            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, m_levels );
-            view->setModel( singleModel );
-            m_singleTreeView = view;
-        }
-        else
-        {
-            view = m_singleTreeView;
-        }
-        break;
-    }
-    return view;
 }
 
 void
@@ -397,61 +422,61 @@ CollectionWidget::customFilter( QAction *action )
 {
     QMenu *menu = qobject_cast<QMenu*>( sender() );
 
-    if( menu == m_firstLevel )
-        m_firstLevelSelectedAction = action;
-    else if( menu == m_secondLevel )
-        m_secondLevelSelectedAction = action;
+    if( menu == d->menuLevel[0] )
+        d->selectedActionLevel[0] = action;
+    else if( menu == d->menuLevel[1] )
+        d->selectedActionLevel[1] = action;
     else
-        m_thirdLevelSelectedAction = action;
+        d->selectedActionLevel[2] = action;
 
-    const int firstLevel = m_firstLevelSelectedAction->data().toInt();
-    const int secondLevel = m_secondLevelSelectedAction->data().toInt();
-    const int thirdLevel = m_thirdLevelSelectedAction->data().toInt();
-    m_levels.clear();
-    m_levels << firstLevel;
+    const int firstLevel = d->selectedActionLevel[0]->data().toInt();
+    const int secondLevel = d->selectedActionLevel[1]->data().toInt();
+    const int thirdLevel = d->selectedActionLevel[2]->data().toInt();
+    d->levels.clear();
+    d->levels << firstLevel;
     if( secondLevel != CategoryId::None )
-        m_levels << secondLevel;
+        d->levels << secondLevel;
     if( thirdLevel != CategoryId::None )
-        m_levels << thirdLevel;
-    setLevels( m_levels );
+        d->levels << thirdLevel;
+    setLevels( d->levels );
 }
 
 void
 CollectionWidget::sortByArtistAlbum()
 {
-    m_levels.clear();
-    m_levels << CategoryId::Artist << CategoryId::Album;
-    setLevels( m_levels );
+    d->levels.clear();
+    d->levels << CategoryId::Artist << CategoryId::Album;
+    setLevels( d->levels );
 }
 
 void
 CollectionWidget::sortByGenreArtist()
 {
-    m_levels.clear();
-    m_levels << CategoryId::Genre << CategoryId::Artist;
-    setLevels( m_levels );
+    d->levels.clear();
+    d->levels << CategoryId::Genre << CategoryId::Artist;
+    setLevels( d->levels );
 }
 
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
-    m_levels.clear();
-    m_levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-    setLevels( m_levels );
+    d->levels.clear();
+    d->levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+    setLevels( d->levels );
 }
 
 void CollectionWidget::sortByAlbum()
 {
-    m_levels.clear();
-    m_levels << CategoryId::Album;
-    setLevels( m_levels );
+    d->levels.clear();
+    d->levels << CategoryId::Album;
+    setLevels( d->levels );
 }
 
 void CollectionWidget::sortByArtist()
 {
-    m_levels.clear();
-    m_levels << CategoryId::Artist;
-    setLevels( m_levels );
+    d->levels.clear();
+    d->levels << CategoryId::Artist;
+    setLevels( d->levels );
 }
 
 void
@@ -478,25 +503,26 @@ CollectionWidget::slotShowCovers(bool checked)
 
 void CollectionWidget::setFilter( const QString &filter )
 {
-    m_searchWidget->setSearchString( filter );
+    d->searchWidget->setSearchString( filter );
 }
 
 QString
 CollectionWidget::filter() const
 {
-    return m_searchWidget->currentText();
+    return d->searchWidget->currentText();
 }
 
 QList<int>
 CollectionWidget::levels() const
 {
-    return const_cast<CollectionWidget*>( this )->view( m_viewMode )->levels();
+    // return const_cast<CollectionWidget*>( this )->view( d->viewMode )->levels();
+    return d->view( d->viewMode )->levels();
 }
 
 void CollectionWidget::setLevels( const QList<int> &levels )
 {
-    m_levels = levels;
-    view( m_viewMode )->setLevels( levels );
+    d->levels = levels;
+    d->view( d->viewMode )->setLevels( levels );
 }
 
 void CollectionWidget::toggleView( bool merged )
@@ -504,22 +530,22 @@ void CollectionWidget::toggleView( bool merged )
     if( merged )
     {
         debug() << "Switching to merged model";
-        if( m_treeView )
-            m_searchWidget->disconnect( m_treeView );
+        if( d->treeView )
+            d->searchWidget->disconnect( d->treeView );
     }
     else
     {
         debug() << "switching to multi model";
-        if( m_singleTreeView )
-            m_searchWidget->disconnect( m_singleTreeView );
+        if( d->singleTreeView )
+            d->searchWidget->disconnect( d->singleTreeView );
     }
 
-    CollectionBrowserTreeView *treeView = merged ? view( UnifiedCollection ) : view( NormalCollections );
-    m_searchWidget->setup( treeView );
-    if( m_stack->indexOf( treeView ) == -1 )
-        m_stack->addWidget( treeView );
-    m_stack->setCurrentWidget( treeView );
-    const QString &filter = m_searchWidget->currentText();
+    CollectionBrowserTreeView *treeView = merged ? d->view( UnifiedCollection ) : d->view( NormalCollections );
+    d->searchWidget->setup( treeView );
+    if( d->stack->indexOf( treeView ) == -1 )
+        d->stack->addWidget( treeView );
+    d->stack->setCurrentWidget( treeView );
+    const QString &filter = d->searchWidget->currentText();
     if( !filter.isEmpty() )
     {
         typedef CollectionTreeItemModelBase CTIMB;
@@ -527,13 +553,13 @@ void CollectionWidget::toggleView( bool merged )
         model->setCurrentFilter( filter );
         treeView->slotFilterNow();
     }
-    if( m_levels != treeView->levels() )
-        treeView->setLevels( m_levels );
-    m_viewMode = merged ? UnifiedCollection : NormalCollections;
+    if( d->levels != treeView->levels() )
+        treeView->setLevels( d->levels );
+    d->viewMode = merged ? UnifiedCollection : NormalCollections;
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    Amarok::config( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
+    Amarok::config( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( d->viewMode ) );
 }
 
 #include "CollectionWidget.moc"
