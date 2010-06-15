@@ -81,6 +81,8 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     m_treeView->setFrameShape( QFrame::NoFrame );
     m_treeView->setRootIsDecorated( false );
 
+    connect( m_treeView, SIGNAL(leavingTree()), m_searchWidget->comboBox(), SLOT(setFocus()) );
+
     CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
     m_treeView->setItemDelegate( delegate );
 
