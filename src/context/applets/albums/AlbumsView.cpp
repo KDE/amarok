@@ -106,6 +106,13 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
+    const QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
+    if( !index.isValid() )
+    {
+        QGraphicsProxyWidget::contextMenuEvent( event );
+        return;
+    }
+
     KMenu menu;
     KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
     KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
@@ -123,24 +130,20 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     connect( editAction  , SIGNAL( triggered() ), this, SLOT( slotEditSelected() ) );
 
     KMenu menuCover( i18n( "Album" ), &menu );
-    const QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
-    if( index.isValid() )
+    QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );
+    AlbumItem *album = dynamic_cast<AlbumItem*>(item);
+    if( album )
     {
-        QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );
-        AlbumItem *album = dynamic_cast<AlbumItem*>(item);
-        if( album )
+        Meta::AlbumPtr albumPtr = album->album();
+        Capabilities::CustomActionsCapability *cac = albumPtr->create<Capabilities::CustomActionsCapability>();
+        if( cac )
         {
-            Meta::AlbumPtr albumPtr = album->album();
-            Capabilities::CustomActionsCapability *cac = albumPtr->create<Capabilities::CustomActionsCapability>();
-            if( cac )
+            QList<QAction *> actions = cac->customActions();
+            if( !actions.isEmpty() )
             {
-                QList<QAction *> actions = cac->customActions();
-                if( !actions.isEmpty() )
-                {
-                    menuCover.addActions( actions );
-                    menuCover.setIcon( KIcon( "filename-album-amarok" ) );
-                    menu.addMenu( &menuCover );
-                }
+                menuCover.addActions( actions );
+                menuCover.setIcon( KIcon( "filename-album-amarok" ) );
+                menu.addMenu( &menuCover );
             }
         }
     }
