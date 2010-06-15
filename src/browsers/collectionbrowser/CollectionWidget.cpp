@@ -52,6 +52,8 @@ CollectionWidget *CollectionWidget::s_instance = 0;
 
 CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     : BrowserCategory( name, parent )
+    , m_treeView( 0 )
+    , m_singleTreeView( 0 )
     , m_viewMode( CollectionWidget::NormalCollections )
 {
     s_instance = this;
@@ -72,46 +74,19 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     combo->addItem( icon, i18n("Added This Month"), i18n("added") + QString(":<1m") );
     combo->insertSeparator( combo->count() );
 
-    m_stack = new QStackedWidget( this );
-    m_stack->setFrameShape( QFrame::NoFrame );
-
-    m_treeView = new CollectionBrowserTreeView( m_stack );
-    m_stack->addWidget( m_treeView );
-    m_treeView->setAlternatingRowColors( true );
-    m_treeView->setFrameShape( QFrame::NoFrame );
-    m_treeView->setRootIsDecorated( false );
-
-    CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
-    m_treeView->setItemDelegate( delegate );
-
-    m_singleTreeView = new CollectionBrowserTreeView( m_stack );
-    m_stack->addWidget( m_singleTreeView );
-    m_singleTreeView->setAlternatingRowColors( true );
-    m_singleTreeView->setFrameShape( QFrame::NoFrame );
-
     m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( m_levels.isEmpty() )
         m_levels << CategoryId::Artist << CategoryId::Album;
-
-    m_multiModel = new CollectionTreeItemModel( m_levels );
-
-    Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
-    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
-    connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), proxyColl, SLOT(removeCollection(QString)));
-    foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
-    {
-        proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
-    }
-
-    m_singleModel = new SingleCollectionTreeItemModel( proxyColl, m_levels );
-    m_treeView->setModel( m_multiModel );
-    m_singleTreeView->setModel( m_singleModel );
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
     const QString &value = KGlobal::config()->group( "Collection Browser" ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
+
+    m_stack = new QStackedWidget( this );
+    m_stack->setFrameShape( QFrame::NoFrame );
+    m_stack->addWidget( view( m_viewMode ) );
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -352,7 +327,62 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
+}
 
+CollectionBrowserTreeView *
+CollectionWidget::view( ViewMode mode )
+{
+    CollectionBrowserTreeView *view( 0 );
+    switch( mode )
+    {
+    case NormalCollections:
+        if( !m_treeView )
+        {
+            view = new CollectionBrowserTreeView( m_stack );
+            view->setAlternatingRowColors( true );
+            view->setFrameShape( QFrame::NoFrame );
+            view->setRootIsDecorated( false );
+            connect( view, SIGNAL(leavingTree()), m_searchWidget->comboBox(), SLOT(setFocus()) );
+            CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( view );
+            view->setItemDelegate( delegate );
+            CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( m_levels );
+            view->setModel( multiModel );
+            m_treeView = view;
+        }
+        else
+        {
+            view = m_treeView;
+        }
+        break;
+
+    case UnifiedCollection:
+        if( !m_singleTreeView )
+        {
+            view = new CollectionBrowserTreeView( m_stack );
+            view->setAlternatingRowColors( true );
+            view->setFrameShape( QFrame::NoFrame );
+            Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
+            connect( CollectionManager::instance(),
+                     SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
+                     proxyColl,
+                     SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
+            connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)),
+                     proxyColl, SLOT(removeCollection(QString)));
+            foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
+            {
+                proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
+            }
+            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, m_levels );
+            view->setModel( singleModel );
+            m_singleTreeView = view;
+        }
+        else
+        {
+            view = m_singleTreeView;
+        }
+        break;
+    }
+    return view;
 }
 
 void
@@ -453,13 +483,13 @@ CollectionWidget::filter() const
 QList<int>
 CollectionWidget::levels() const
 {
-    return m_viewMode == CollectionWidget::NormalCollections ? m_treeView->levels() : m_singleTreeView->levels();
+    return const_cast<CollectionWidget*>( this )->view( m_viewMode )->levels();
 }
 
 void CollectionWidget::setLevels( const QList<int> &levels )
 {
     m_levels = levels;
-    m_viewMode == CollectionWidget::NormalCollections ? m_treeView->setLevels( m_levels ) : m_singleTreeView->setLevels( m_levels );
+    view( m_viewMode )->setLevels( levels );
 }
 
 void CollectionWidget::toggleView( bool merged )
@@ -467,32 +497,36 @@ void CollectionWidget::toggleView( bool merged )
     if( merged )
     {
         debug() << "Switching to merged model";
-        m_searchWidget->disconnect( m_treeView );
-        m_searchWidget->setup( m_singleTreeView );
-        m_stack->setCurrentWidget( m_singleTreeView );
-        m_singleModel->setCurrentFilter( m_searchWidget->currentText() );
-        m_singleTreeView->slotFilterNow();
-        if( m_levels != m_singleTreeView->levels() )
-            m_singleTreeView->setLevels( m_levels );
-        m_viewMode = CollectionWidget::UnifiedCollection;
+        if( m_treeView )
+            m_searchWidget->disconnect( m_treeView );
     }
     else
     {
         debug() << "switching to multi model";
-        m_searchWidget->disconnect( m_singleTreeView );
-        m_searchWidget->setup( m_treeView );
-        m_stack->setCurrentWidget( m_treeView );
-        m_multiModel->setCurrentFilter( m_searchWidget->currentText() );
-        m_treeView->slotFilterNow();
-        if( m_levels != m_treeView->levels() )
-            m_treeView->setLevels( m_levels );
-        m_viewMode = CollectionWidget::NormalCollections;
+        if( m_singleTreeView )
+            m_searchWidget->disconnect( m_singleTreeView );
     }
+
+    CollectionBrowserTreeView *treeView = merged ? view( UnifiedCollection ) : view( NormalCollections );
+    m_searchWidget->setup( treeView );
+    if( m_stack->indexOf( treeView ) == -1 )
+        m_stack->addWidget( treeView );
+    m_stack->setCurrentWidget( treeView );
+    const QString &filter = m_searchWidget->currentText();
+    if( !filter.isEmpty() )
+    {
+        typedef CollectionTreeItemModelBase CTIMB;
+        CTIMB *model = qobject_cast<CTIMB*>( treeView->filterModel()->sourceModel() );
+        model->setCurrentFilter( filter );
+        treeView->slotFilterNow();
+    }
+    if( m_levels != treeView->levels() )
+        treeView->setLevels( m_levels );
+    m_viewMode = merged ? UnifiedCollection : NormalCollections;
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode",
-                                                                 me.valueToKey( m_viewMode ) );
+    Amarok::config( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
 }
 
 #include "CollectionWidget.moc"

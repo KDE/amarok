@@ -35,11 +35,13 @@ class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
     Q_ENUMS( ViewMode )
+
     public:
-    enum ViewMode {
-        UnifiedCollection,
-        NormalCollections
-    };
+        enum ViewMode
+        {
+            UnifiedCollection,
+            NormalCollections
+        };
 
         CollectionWidget( const QString &name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
@@ -54,7 +56,6 @@ class CollectionWidget : public BrowserCategory
         virtual QList<int> levels() const;
 
     public slots:
-
         void customFilter( QAction * );
         void sortByAlbum();
         void sortByArtist();
@@ -70,12 +71,12 @@ class CollectionWidget : public BrowserCategory
         void toggleView( bool merged );
 
     private:
-        SearchWidget        *m_searchWidget;
+        CollectionBrowserTreeView *view( ViewMode mode );
+
+        SearchWidget *m_searchWidget;
         QStackedWidget *m_stack;
-        CollectionBrowserTreeView  *m_treeView;
-        CollectionBrowserTreeView  *m_singleTreeView;
-        CollectionTreeItemModelBase *m_singleModel;
-        CollectionTreeItemModelBase *m_multiModel;
+        CollectionBrowserTreeView *m_treeView;
+        CollectionBrowserTreeView *m_singleTreeView;
         ViewMode m_viewMode;
 
         QAction             *m_firstLevelSelectedAction;

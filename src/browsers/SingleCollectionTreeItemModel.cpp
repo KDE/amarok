@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SingleCollectionTreeItemModel"
+
 #include "SingleCollectionTreeItemModel.h"
 
 #include <amarokconfig.h>
