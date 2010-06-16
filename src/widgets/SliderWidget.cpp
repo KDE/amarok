@@ -298,11 +298,9 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, 0, parent )
     , m_triangles()
     , m_knobX( 0.0 )
-    , m_oldShowMoodbar( false )
 {
     m_usingCustomStyle = true;
     setFocusPolicy( Qt::NoFocus );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( update() ) );
 }
 
 void
@@ -331,17 +329,6 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
 {
     if ( change == SliderValueChange || change == SliderRangeChange )
     {
-        bool showMoodbar = AmarokConfig::showMoodbarInSlider();
-
-        // If the setting has changed, request a full repaint.
-        if ( showMoodbar != m_oldShowMoodbar )
-        {
-            m_oldShowMoodbar = showMoodbar;
-            emit moodbarUsageChanged( showMoodbar );
-            update();
-            return;
-        }
-
         int oldKnobX = m_knobX;
         qreal percent = 0.0;
         if ( maximum() > minimum() )

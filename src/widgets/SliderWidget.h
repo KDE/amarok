@@ -19,8 +19,6 @@
 #ifndef SLIDERWIDGET_H
 #define SLIDERWIDGET_H
 
-#include "moodbar/MoodbarManager.h"
-
 #include <QList>
 #include <QPixmap>
 #include <QSlider>
@@ -116,26 +114,22 @@ namespace Amarok
             void drawTriangle( const QString &name, int milliSeconds, bool showPopup = false);
             void clearTriangles();
 
-        public slots:
-            void slotTriangleClicked( int );
-            void slotTriangleFocused( int );
-
-        signals:
-            void moodbarUsageChanged( bool );
-
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * event );
             virtual void sliderChange( SliderChange change );
-            virtual bool event ( QEvent * event );
+            virtual bool event( QEvent * event );
+
+        private slots:
+            void slotTriangleClicked( int );
+            void slotTriangleFocused( int );
 
         private:
             Q_DISABLE_COPY( TimeSlider )
 
             QList<BookmarkTriangle*> m_triangles;
             int m_knobX; // The position of the current indicator.
-            bool m_oldShowMoodbar;
     };
 }
 
