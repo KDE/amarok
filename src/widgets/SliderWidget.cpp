@@ -214,14 +214,14 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
 
     if( m_needsResize )
     {
-        m_topLeft = The::svgHandler()->renderSvg( topleft, m_borderWidth, m_borderHeight, topleft );
-        m_top = The::svgHandler()->renderSvg( top, width - ( 2 * m_borderWidth ), m_borderHeight, top );
-        m_topRight = The::svgHandler()->renderSvg( topright, m_borderWidth, m_borderHeight, topright );
-        m_right = The::svgHandler()->renderSvg( right, m_borderWidth, height - ( 2 * m_borderHeight ), right );
-        m_bottomRight = The::svgHandler()->renderSvg( bottomright, m_borderWidth, m_borderHeight, bottomright );
-        m_bottom = The::svgHandler()->renderSvg( bottom, width - 2 * m_borderWidth, m_borderHeight, bottom );
-        m_bottomLeft = The::svgHandler()->renderSvg( bottomleft, m_borderWidth, m_borderHeight, bottomleft );
-        m_left = The::svgHandler()->renderSvg( left, m_borderWidth, height - 2 * m_borderHeight, left );
+        m_topLeft = The::svgHandler()->renderSvg( topleft, s_borderWidth, s_borderHeight, topleft );
+        m_top = The::svgHandler()->renderSvg( top, width - ( 2 * s_borderWidth ), s_borderHeight, top );
+        m_topRight = The::svgHandler()->renderSvg( topright, s_borderWidth, s_borderHeight, topright );
+        m_right = The::svgHandler()->renderSvg( right, s_borderWidth, height - ( 2 * s_borderHeight ), right );
+        m_bottomRight = The::svgHandler()->renderSvg( bottomright, s_borderWidth, s_borderHeight, bottomright );
+        m_bottom = The::svgHandler()->renderSvg( bottom, width - 2 * s_borderWidth, s_borderHeight, bottom );
+        m_bottomLeft = The::svgHandler()->renderSvg( bottomleft, s_borderWidth, s_borderHeight, bottomleft );
+        m_left = The::svgHandler()->renderSvg( left, s_borderWidth, height - 2 * s_borderHeight, left );
         m_needsResize = false;
     }
 
@@ -230,7 +230,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     if( drawMoodbar )
     {
 
-        int moodWidth = width - ( 2 * m_borderWidth );
+        int moodWidth = width - ( 2 * s_borderWidth );
         int moodHeight = height - 8;
 
         if ( m_currentMoodBar.width() != moodWidth )
@@ -243,34 +243,34 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         }
 
         if ( !m_currentMoodBar.isNull() )
-            p->drawPixmap( x + m_borderWidth, y + 4, m_currentMoodBar );
+            p->drawPixmap( x + s_borderWidth, y + 4, m_currentMoodBar );
     }
 
     p->drawPixmap( x, y, m_topLeft );
-    p->drawPixmap( x + m_borderWidth, y, m_top );
-    p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
-    p->drawPixmap( x + ( width - m_borderWidth ), y + m_borderHeight, m_right );
-    p->drawPixmap( x + ( width - m_borderWidth ), y + ( height - m_borderHeight ), m_bottomRight );
-    p->drawPixmap( x + m_borderWidth, y + ( height - m_borderHeight ), m_bottom );
-    p->drawPixmap( x, y + ( height - m_borderHeight ) , m_bottomLeft );
-    p->drawPixmap( x, y + m_borderHeight, m_left );
+    p->drawPixmap( x + s_borderWidth, y, m_top );
+    p->drawPixmap( x + ( width - s_borderWidth ), y, m_topRight );
+    p->drawPixmap( x + ( width - s_borderWidth ), y + s_borderHeight, m_right );
+    p->drawPixmap( x + ( width - s_borderWidth ), y + ( height - s_borderHeight ), m_bottomRight );
+    p->drawPixmap( x + s_borderWidth, y + ( height - s_borderHeight ), m_bottom );
+    p->drawPixmap( x, y + ( height - s_borderHeight ) , m_bottomLeft );
+    p->drawPixmap( x, y + s_borderHeight, m_left );
 
     if( value() != minimum() )
     {
-        const int sliderHeight = height - ( m_sliderInsertY * 2 );
+        const int sliderHeight = height - ( s_sliderInsertY * 2 );
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
         
-        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
+        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + s_sliderInsertX * 2) );
 
         const QString barLeft = "slider_bar_left";
         const QString barCenter = "slider_bar_center";
         const QString barRight = "slider_bar_right";
 
-        p->drawPixmap( x + m_sliderInsertX, y + m_sliderInsertY, The::svgHandler()->renderSvg( barLeft, sliderLeftWidth , sliderHeight, barLeft ) );
-        p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
-        p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
+        p->drawPixmap( x + s_sliderInsertX, y + s_sliderInsertY, The::svgHandler()->renderSvg( barLeft, sliderLeftWidth , sliderHeight, barLeft ) );
+        p->drawPixmap( x + s_sliderInsertX + sliderLeftWidth, y + s_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
+        p->drawPixmap( x + s_sliderInsertX + knobX + sliderLeftWidth, y + s_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
     }
 }
 
@@ -440,11 +440,11 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
 void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bool showPopup )
 {
     DEBUG_BLOCK
-    int sliderHeight = height() - ( m_sliderInsertY * 2 );
+    int sliderHeight = height() - ( s_sliderInsertY * 2 );
     int sliderLeftWidth = sliderHeight / 3;
 
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
-    int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
+    int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + s_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, showPopup );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );

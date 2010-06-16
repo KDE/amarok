@@ -63,11 +63,11 @@ namespace Amarok
             bool m_sliding;
             bool m_usingCustomStyle;
 
-            static const int m_borderWidth = 6;
-            static const int m_borderHeight = 6;
+            static const int s_borderWidth = 6;
+            static const int s_borderHeight = 6;
 
-            static const int m_sliderInsertX = 5;
-            static const int m_sliderInsertY = 5;
+            static const int s_sliderInsertX = 5;
+            static const int s_sliderInsertY = 5;
 
         private:
 
