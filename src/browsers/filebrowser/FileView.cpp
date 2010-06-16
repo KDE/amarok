@@ -153,31 +153,33 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndexList indices = selectedIndexes();
     if( indices.count() == 1 && KGlobalSettings::singleClick() )
     {
-        KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        if( item.isDir() )
+        const QVariant qvar = index.data( KDirModel::FileItemRole );
+        if( qvar.canConvert<KFileItem>() )
         {
-            m_lastSelectedIndex = QModelIndex();
-            Amarok::PrettyTreeView::mouseReleaseEvent( event );
+            KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+            if( item.isDir() )
+            {
+                m_lastSelectedIndex = QModelIndex();
+                Amarok::PrettyTreeView::mouseReleaseEvent( event );
+                return;
+            }
+
+            // check if the last selected item was clicked again, if so then trigger editor
+            if( m_lastSelectedIndex != index )
+            {
+                m_lastSelectedIndex = index;
+            }
+            else
+            {
+                Amarok::PrettyTreeView::edit( index, QAbstractItemView::AllEditTriggers, event );
+                m_lastSelectedIndex = QModelIndex();
+            }
+            event->accept();
             return;
         }
-
-        // check if the last selected item was clicked again, if so then trigger editor
-        if( m_lastSelectedIndex != index )
-        {
-            m_lastSelectedIndex = index;
-        }
-        else
-        {
-            Amarok::PrettyTreeView::edit( index, QAbstractItemView::AllEditTriggers, event );
-            m_lastSelectedIndex = QModelIndex();
-        }
-        event->accept();
     }
-    else
-    {
-        m_lastSelectedIndex = QModelIndex();
-        Amarok::PrettyTreeView::mouseReleaseEvent( event );
-    }
+    m_lastSelectedIndex = QModelIndex();
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void
