@@ -57,8 +57,7 @@ namespace Amarok
             QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
-            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar = false );
-            void paintCustomSliderNG( QPainter *p, bool paintMoodbar = false );
+            void paintCustomSlider( QPainter *p, bool paintMoodbar = false );
 
             bool m_sliding;
             bool m_usingCustomStyle;

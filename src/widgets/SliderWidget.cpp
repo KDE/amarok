@@ -198,83 +198,7 @@ Amarok::Slider::setValue( int newValue )
         m_prevValue = newValue;
 }
 
-
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar )
-{
-    const QString prefix = "slider_bg_";
-
-    const QString topleft = prefix + "topleft";
-    const QString top = prefix + "top";
-    const QString topright = prefix + "topright";
-    const QString right = prefix + "right";
-    const QString bottomright = prefix + "bottomright";
-    const QString bottom = prefix + "bottom";
-    const QString bottomleft = prefix + "bottomleft";
-    const QString left = prefix + "left";
-
-    if( m_needsResize )
-    {
-        m_topLeft = The::svgHandler()->renderSvg( topleft, s_borderWidth, s_borderHeight, topleft );
-        m_top = The::svgHandler()->renderSvg( top, width - ( 2 * s_borderWidth ), s_borderHeight, top );
-        m_topRight = The::svgHandler()->renderSvg( topright, s_borderWidth, s_borderHeight, topright );
-        m_right = The::svgHandler()->renderSvg( right, s_borderWidth, height - ( 2 * s_borderHeight ), right );
-        m_bottomRight = The::svgHandler()->renderSvg( bottomright, s_borderWidth, s_borderHeight, bottomright );
-        m_bottom = The::svgHandler()->renderSvg( bottom, width - 2 * s_borderWidth, s_borderHeight, bottom );
-        m_bottomLeft = The::svgHandler()->renderSvg( bottomleft, s_borderWidth, s_borderHeight, bottomleft );
-        m_left = The::svgHandler()->renderSvg( left, s_borderWidth, height - 2 * s_borderHeight, left );
-        m_needsResize = false;
-    }
-
-
-    //HACK: just for testing/fun
-    if( drawMoodbar )
-    {
-
-        int moodWidth = width - ( 2 * s_borderWidth );
-        int moodHeight = height - 8;
-
-        if ( m_currentMoodBar.width() != moodWidth )
-            {
-            Meta::TrackPtr track = The::engineController()->currentTrack();
-            if ( track && m_moodbarManager->hasMoodbar( track ) )
-            {
-                m_currentMoodBar = m_moodbarManager->getMoodbar( track, moodWidth, moodHeight );
-            }
-        }
-
-        if ( !m_currentMoodBar.isNull() )
-            p->drawPixmap( x + s_borderWidth, y + 4, m_currentMoodBar );
-    }
-
-    p->drawPixmap( x, y, m_topLeft );
-    p->drawPixmap( x + s_borderWidth, y, m_top );
-    p->drawPixmap( x + ( width - s_borderWidth ), y, m_topRight );
-    p->drawPixmap( x + ( width - s_borderWidth ), y + s_borderHeight, m_right );
-    p->drawPixmap( x + ( width - s_borderWidth ), y + ( height - s_borderHeight ), m_bottomRight );
-    p->drawPixmap( x + s_borderWidth, y + ( height - s_borderHeight ), m_bottom );
-    p->drawPixmap( x, y + ( height - s_borderHeight ) , m_bottomLeft );
-    p->drawPixmap( x, y + s_borderHeight, m_left );
-
-    if( value() != minimum() )
-    {
-        const int sliderHeight = height - ( s_sliderInsertY * 2 );
-        const int sliderLeftWidth = sliderHeight / 3;
-        const int sliderRightWidth = sliderLeftWidth;
-
-        
-        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + s_sliderInsertX * 2) );
-
-        const QString barLeft = "slider_bar_left";
-        const QString barCenter = "slider_bar_center";
-        const QString barRight = "slider_bar_right";
-
-        p->drawPixmap( x + s_sliderInsertX, y + s_sliderInsertY, The::svgHandler()->renderSvg( barLeft, sliderLeftWidth , sliderHeight, barLeft ) );
-        p->drawPixmap( x + s_sliderInsertX + sliderLeftWidth, y + s_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
-        p->drawPixmap( x + s_sliderInsertX + knobX + sliderLeftWidth, y + s_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
-    }
-}
-
-void Amarok::Slider::paintCustomSliderNG( QPainter *p, bool paintMoodbar )
+void Amarok::Slider::paintCustomSlider( QPainter *p, bool paintMoodbar )
 {
     qreal percent = 0.0;
     if ( maximum() > minimum() )
@@ -358,7 +282,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent *event )
     if( m_usingCustomStyle )
     {
         QPainter p( this );
-        paintCustomSliderNG( &p );
+        paintCustomSlider( &p );
         p.end();
         return;
     }
@@ -392,10 +316,8 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
 {
     QPainter p( this );
-    //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
-
     p.setClipRegion( pe->region() );
-    paintCustomSliderNG( &p, AmarokConfig::showMoodbarInSlider() );
+    paintCustomSlider( &p, AmarokConfig::showMoodbarInSlider() );
     p.end();
 
 }
