@@ -20,6 +20,8 @@
 #include "BrowserCategoryList.h"
 #include "core/support/Debug.h"
 
+#include <KIcon>
+
 #include <QDir>
 #include <QMenu>
 

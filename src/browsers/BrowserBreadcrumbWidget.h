@@ -17,9 +17,6 @@
 #ifndef BROWSERBREADCRUMBWIDGET_H
 #define BROWSERBREADCRUMBWIDGET_H
 
-#include "BrowserBreadcrumbItem.h"
-#include "BrowserCategoryList.h"
-
 #include <KHBox>
 #include <KLineEdit>
 
@@ -28,6 +25,9 @@
 #include <QStackedWidget>
 #include <QStringList>
 
+class BreadcrumbItemMenuButton;
+class BrowserBreadcrumbItem;
+class BrowserCategoryList;
 
 /**
  *  A widget for displaying the current state of and navigating the category dig down interface.

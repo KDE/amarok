@@ -17,8 +17,6 @@
 #ifndef BROWSERBREADCRUMBITEM_H
 #define BROWSERBREADCRUMBITEM_H
 
-#include "widgets/ElidingButton.h"
-
 #include <KHBox>
 
 class BrowserCategory;

@@ -20,13 +20,17 @@
 #define VOLUMEWIDGET_H
 
 #include "core/engine/EngineObserver.h"
-#include "SliderWidget.h"
 #include "ToolBar.h"
 
 #include <KAction>
 
 #include <QPointer>
 #include <QStringList>
+
+namespace Amarok
+{
+    class VolumeSlider;
+}
 
 /**
 * A custom widget that serves as our volume slider within Amarok.

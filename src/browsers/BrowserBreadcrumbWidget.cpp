@@ -19,6 +19,8 @@
 #include "BrowserBreadcrumbWidget.h"
 
 #include "amarokurls/AmarokUrl.h"
+#include "BrowserBreadcrumbItem.h"
+#include "BrowserCategoryList.h"
 #include "core/support/Debug.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "MainWindow.h"
@@ -27,6 +29,7 @@
 #include <KLocale>
 
 #include <QDir>
+#include <QMenu>
 #include <QResizeEvent>
 
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )

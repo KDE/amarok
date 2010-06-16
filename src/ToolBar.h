@@ -19,15 +19,12 @@
 #ifndef AMAROKTOOLBAR_H
 #define AMAROKTOOLBAR_H
 
-#include "ActionClasses.h"
-#include "EngineController.h"
 #include "PaletteHandler.h"
 
-#include <ktoolbar.h>
+#include <KToolBar>
 
 #include <QPainter>
 #include <QPaintEvent>
-#include <QPalette>
 
 namespace Amarok {
 

@@ -20,7 +20,6 @@
 #define AMAROK_ACTIONCLASSES_H
 
 #include "core/engine/EngineObserver.h"
-#include "widgets/SliderWidget.h"
 
 #include <KAction>
 #include <KMenu>

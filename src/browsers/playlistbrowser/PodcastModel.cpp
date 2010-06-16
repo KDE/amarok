@@ -29,10 +29,11 @@
 
 #include <ThreadWeaver/Weaver>
 
-#include <QInputDialog>
 #include <KIcon>
+
+#include <QAction>
+#include <QInputDialog>
 #include <QListIterator>
-#include <QtAlgorithms>
 #include <typeinfo>
 
 using namespace Podcasts;

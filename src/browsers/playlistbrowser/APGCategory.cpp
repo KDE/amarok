@@ -30,6 +30,7 @@
 
 #include <KIcon>
 
+#include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QModelIndex>
