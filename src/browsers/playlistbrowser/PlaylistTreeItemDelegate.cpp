@@ -22,6 +22,7 @@
 #include "MetaPlaylistModel.h"
 
 #include "App.h"
+#include "PaletteHandler.h"
 #include "core/support/Debug.h"
 
 #include <QAction>
@@ -74,10 +75,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
-    if ( option.state & QStyle::State_Selected )
-        painter->setPen( App::instance()->palette().highlightedText().color() );
-    else
-        painter->setPen( App::instance()->palette().text().color() );
+    painter->setPen( The::paletteHandler()->foregroundColor( painter, option.state & QStyle::State_Selected ) );
 
     painter->setRenderHint( QPainter::Antialiasing );
 

@@ -27,6 +27,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "InlineEditorWidget.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "core/meta/Meta.h"
@@ -110,10 +111,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 
     painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int )option.rect.width(), ( int )option.rect.height(), "track" ) );
 
-    if ( option.state & QStyle::State_Selected )
-        painter->setPen( App::instance()->palette().highlightedText().color() );
-    else
-        painter->setPen( App::instance()->palette().text().color() );
+    painter->setPen( The::paletteHandler()->foregroundColor( painter, option.state & QStyle::State_Selected ) );
 
     // call paint method based on type
     const int groupMode = getGroupMode(index);
