@@ -59,7 +59,6 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
         setInvertedAppearance( true );
         setInvertedControls( true );
     }
-    m_moodbarManager = The::moodbarManager();
 }
 
 QRect

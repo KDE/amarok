@@ -83,9 +83,6 @@ namespace Amarok
             QPixmap m_bottom;
             QPixmap m_left;
 
-            MoodbarManager * m_moodbarManager;
-            QPixmap m_currentMoodBar;
-
             Q_DISABLE_COPY( Slider )
     };
 
@@ -136,7 +133,6 @@ namespace Amarok
         private:
             Q_DISABLE_COPY( TimeSlider )
 
-            QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
             int m_knobX; // The position of the current indicator.
             bool m_oldShowMoodbar;
