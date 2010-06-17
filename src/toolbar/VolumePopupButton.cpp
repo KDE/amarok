@@ -66,7 +66,7 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
     muteBar->setIconSize( QSize( 16, 16 ) );
-    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
+    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), muteBar );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 
