@@ -100,7 +100,6 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
             DeviceInfo info = reply.value();
             udn.replace("uuid:", "");
             m_devices[udn] = new UpnpCollection( udn, info.friendlyName() );
-            // we should get the friendly name
             emit newCollection( m_devices[udn] );
         }
     }

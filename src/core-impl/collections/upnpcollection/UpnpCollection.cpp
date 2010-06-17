@@ -116,7 +116,7 @@ UpnpCollection::startFullScan()
 /// ignored for full scans.
 // right now its good to have the full scan finish quickly for
 // development purposes
-    startIncrementalScan( "/PC Directory/shared/music" );
+    startIncrementalScan( "/" );
     m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
     Q_ASSERT(
