@@ -130,16 +130,18 @@ KSvgRenderer * SvgHandler::getRenderer()
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
-    QPixmap pixmap;
-
-    const QString key = QString("%1:%2x%3")
+    QString key;
+    if( !skipCache )
+    {
+        key = QString("%1:%2x%3")
             .arg( keyname )
             .arg( width )
             .arg( height );
+    }
 
-    if ( !m_cache->find( key, pixmap ) ) {
-//         debug() << QString("svg %1 not in cache...").arg( key );
-
+    QPixmap pixmap;
+    if( skipCache || !m_cache->find( key, pixmap ) )
+    {
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
 
@@ -160,7 +162,8 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
         else
             m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
-        m_cache->insert( key, pixmap );
+        if( !skipCache )
+            m_cache->insert( key, pixmap );
     }
 
     return pixmap;
@@ -173,15 +176,12 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
-
-    QPixmap pixmap;
-
     const QString key = QString("%1:%2x%3-div")
             .arg( keyname )
             .arg( width )
             .arg( height );
 
-
+    QPixmap pixmap;
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
@@ -261,14 +261,17 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
 
-    QPixmap pixmap;
-    
-    const QString key = QString("%1:%2x%3b%4")
+    QString key;
+    if( !skipCache )
+    {
+        key = QString("%1:%2x%3b%4")
             .arg( name )
             .arg( newWidth )
             .arg( newHeight )
             .arg( borderWidth );
+    }
 
+    QPixmap pixmap;
     if( skipCache || !m_cache->find( key, pixmap ) )
     {
         // Cache miss! We need to create the pixmap
@@ -301,7 +304,8 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
         m_renderers[m_themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
         m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
-        m_cache->insert( key, pixmap );
+        if( !skipCache )
+            m_cache->insert( key, pixmap );
     }
 
     return pixmap;
