@@ -24,7 +24,10 @@
 
 ConstraintNode::ConstraintNode( ConstraintNode* p ) : QObject( p ) { }
 
-ConstraintNode::~ConstraintNode() { }
+ConstraintNode::~ConstraintNode()
+{
+    qDeleteAll( m_children );
+}
 
 int ConstraintNode::row() const
 {
