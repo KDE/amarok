@@ -188,11 +188,10 @@ DEBUG_BLOCK
     Artist->addAlbum( Album );
 
     UpnpTrackPtr t( new UpnpTrack(this) ); 
-    // in a recursive listing, the UDS_NAME is the relative path from
-    // the base directory, so extract the filename
-    QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
-    QFileInfo info(name);
-    t->setTitle( info.fileName() );
+    // UDS_NAME is the plain ASCII, relative path prefixed name
+    // but UDS_DISPLAY_NAME is the unicode, 'file' name.
+    QString name = entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
+    t->setTitle( name );
 
     t->setArtist( Artist );
     t->setAlbum( Album );
