@@ -278,7 +278,7 @@ UpnpCollection::startIncrementalScan( const QString &directory )
     url.setScheme( "upnp-ms" );
     url.setHost( m_udn );
     url.setPath( directory );
-    KIO::ListJob *listJob = KIO::listRecursive( url );
+    KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
     Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)), 
@@ -298,14 +298,12 @@ UpnpCollection::queryMaker()
 QString
 UpnpCollection::collectionId() const
 {
-// TODO
     return QString("upnp-ms://") + m_udn;
 }
 
 QString
 UpnpCollection::prettyName() const
 {
-// TODO
     return m_name;
 }
 

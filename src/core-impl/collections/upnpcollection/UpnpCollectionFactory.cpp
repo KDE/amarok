@@ -89,7 +89,6 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
 {
     foreach( QString udn, map.keys() ) {
         QString type = map[udn];
-        // TODO special case prefix for stuff like ushare
         if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") ) {
             QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
             if( !reply.isValid() ) {
