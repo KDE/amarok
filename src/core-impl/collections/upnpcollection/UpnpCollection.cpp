@@ -135,7 +135,7 @@ UpnpCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
     KIO::SimpleJob *sj = static_cast<KIO::SimpleJob *>( job );
     foreach( KIO::UDSEntry entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
-            && entry.stringValue( KIO::UPNP_CLASS ) == "object.item.audioItem.musicTrack" ) {
+            && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
             createTrack( entry, sj->url().prettyUrl() );
         }
     }
