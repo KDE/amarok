@@ -44,8 +44,6 @@ QStringList LyricsEngine::sources() const
 
 bool LyricsEngine::sourceRequestEvent( const QString& name )
 {
-    Q_UNUSED( name )
-
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     if( name.contains( "previous lyrics" ) )
     {
