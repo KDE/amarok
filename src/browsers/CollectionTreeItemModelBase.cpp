@@ -379,11 +379,11 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         if( d->m_runningQueries.contains( parent ) )
             return;
 
-        if ( level > m_levelType.count() )
+        if( level > m_levelType.count() || parent->isVariousArtistItem() || parent->isNoLabelItem() )
+        {
+            qm->deleteLater();
             return;
-
-        if( parent->isVariousArtistItem() || parent->isNoLabelItem() )
-            return;
+        }
 
         if ( level == m_levelType.count() )
             qm->setQueryType( Collections::QueryMaker::Track );
@@ -781,6 +781,8 @@ CollectionTreeItemModelBase::queryDone()
     //stop timer if there are no more animations active
     if( d->m_runningQueries.count() == 0 )
         m_timeLine->stop();
+    }
+    qm->deleteLater();
 }
 
 void
