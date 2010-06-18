@@ -81,7 +81,7 @@ private:
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
-    QHash< const KUrl, CoverFetchUnit::Ptr > m_urls;
+    QHash< QNetworkReply*, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;

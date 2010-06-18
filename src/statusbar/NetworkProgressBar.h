@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,36 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_MOCKLOGGER_H
-#define AMAROK_MOCKLOGGER_H
+#ifndef AMAROK_NETWORK_PROGRESS_BAR_H
+#define AMAROK_NETWORK_PROGRESS_BAR_H
 
-#include <gmock/gmock.h>
+#include "statusbar/ProgressBar.h"
 
-#include "core/interfaces/Logger.h"
+#include <QNetworkReply>
 
-using ::testing::Return;
-using ::testing::An;
-using ::testing::_;
-
-namespace Amarok
+/**
+ * A specialized progress bar that takes a QNetworkReply in the constructor and keeps itself updated
+ */
+class NetworkProgressBar : public ProgressBar
 {
-    class MockLogger : public Amarok::Logger
-    {
-    public:
-        MockLogger() : Amarok::Logger()
-        {
-            ON_CALL( *this, shortMessage( _ ) ).WillByDefault( Return() );
-            ON_CALL( *this, longMessage( _, _ ) ).WillByDefault( Return() );
-            ON_CALL( *this, newProgressOperation( An<KJob*>(), _, _, _, _ ) ).WillByDefault( Return() );
-            ON_CALL( *this, newProgressOperation( An<QNetworkReply*>(), _, _, _, _ ) ).WillByDefault( Return() );
-        }
+    Q_OBJECT
 
-        MOCK_METHOD1( shortMessage, void( const QString& ) );
-        MOCK_METHOD2( longMessage, void( const QString&, Amarok::Logger::MessageType ) );
-        MOCK_METHOD5( newProgressOperation, void( KJob*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
-        MOCK_METHOD5( newProgressOperation, void( QNetworkReply*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
-    };
-}
+    public:
+        NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
+        ~NetworkProgressBar();
+
+    private slots:
+        void progressChanged( qint64 bytesChanged, qint64 bytesTotal );
+        void infoMessage( QNetworkReply::NetworkError code );
+        void finished();
+};
 
 #endif
-

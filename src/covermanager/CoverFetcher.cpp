@@ -161,18 +161,15 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
             continue;
 
         QNetworkRequest req( url );
-        The::networkAccessManager()->get( req );
-        m_urls.insert( url, unit );
+        QNetworkReply *reply = The::networkAccessManager()->get( req );
+        m_urls.insert( reply, unit );
 
-        if( unit->isInteractive() )
+        if( payload->type() == CoverFetchPayload::Art )
         {
-            // FIXME: switching to using a QNAM means we can't monitor fetches using a KJob anymore
-            // Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
-        }
-        else if( payload->type() == CoverFetchPayload::Art )
-        {
-            // only one is needed when the fetch is non-interactive
-            return;
+            if( unit->isInteractive() )
+                Amarok::Components::logger()->newProgressOperation( reply, i18n( "Fetching Cover" ) );
+            else
+                return; // only one is needed when the fetch is non-interactive
         }
     }
 }
@@ -180,11 +177,11 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 void
 CoverFetcher::slotResult( QNetworkReply *reply )
 {
-    const KUrl url = reply->request().url();
-    if( !m_urls.contains( url ) )
+    if( !m_urls.contains( reply ) )
         return;
 
-    const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
+    const KUrl url = reply->request().url();
+    const CoverFetchUnit::Ptr unit( m_urls.take( reply ) );
     if( !unit )
     {
         reply->deleteLater();
@@ -312,7 +309,13 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     m_queue->remove( album );
     m_queueLater.removeAll( album );
     m_selectedPixmaps.remove( unit );
-    m_urls.remove( m_urls.key( unit ) );
+    QList<QNetworkReply*> replies = m_urls.keys( unit );
+    foreach( QNetworkReply *reply, replies )
+    {
+        reply->abort();
+        reply->deleteLater();
+        m_urls.remove( reply );
+    }
 }
 
 void

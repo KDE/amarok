@@ -257,6 +257,7 @@ set(libstatusbar_SRCS
     statusbar/StatusBar.cpp
     statusbar/ProgressBar.cpp
     statusbar/KJobProgressBar.cpp
+    statusbar/NetworkProgressBar.cpp
     statusbar/CompoundProgressBar.cpp
     statusbar/PopupWidget.cpp
     statusbar/LongMessageWidget.cpp
