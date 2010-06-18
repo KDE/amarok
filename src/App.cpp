@@ -36,6 +36,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
@@ -268,6 +269,7 @@ App::~App()
     Playlist::Actions::destroy();
     PlaylistManager::destroy();
     CoverFetcher::destroy();
+    NetworkAccessManagerProxy::destroy();
 
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();

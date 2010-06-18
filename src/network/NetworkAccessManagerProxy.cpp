@@ -36,6 +36,15 @@ NetworkAccessManagerProxy *NetworkAccessManagerProxy::instance()
     return s_instance;
 }
 
+void NetworkAccessManagerProxy::destroy()
+{
+    if( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
