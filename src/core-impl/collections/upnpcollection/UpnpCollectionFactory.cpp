@@ -25,6 +25,7 @@
 
 #include "core/support/Debug.h"
 #include "UpnpBrowseCollection.h"
+#include "UpnpSearchCollection.h"
 #include "deviceinfo.h"
 #include "dbuscodec.h"
 
@@ -128,6 +129,7 @@ void UpnpCollectionFactory::createCollection( QString udn )
            && m_searchOptions.contains( "upnp:artist" )
            && m_searchOptions.contains( "upnp:album" ) ) {
            kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
+           m_devices[udn] = new UpnpSearchCollection( udn, info.friendlyName() );
        }
        else {
            kDebug() << "Supported Search() meta-data" << m_searchOptions << "not enough. Using UpnpBrowseCollection";

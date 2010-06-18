@@ -23,14 +23,22 @@
 #include <QStringList>
 #include <QtGlobal>
 
+namespace KIO {
+  class UDSEntry;
+  typedef QList<UDSEntry> UDSEntryList;
+  class Job;
+}
+
 namespace Collections {
+
+class UpnpSearchCollection;
 
 class UpnpQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        UpnpQueryMaker();
+        UpnpQueryMaker( UpnpSearchCollection * );
         ~UpnpQueryMaker();
 
         QueryMaker* reset();
@@ -90,9 +98,24 @@ class UpnpQueryMaker : public QueryMaker
         void newResultReady( QString collectionId, Meta::LabelList );
 
         void queryDone();
+
+    private slots:
+        void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
+    private:
+        // TODO
+        // this is all silly and crude and engineered
+        // on an experimental purpose for the first queries
+        // just to understand how it works.
+
+        UpnpSearchCollection *m_collection;
+
+        QueryType m_queryType;
+        AlbumQueryMode m_albumMode;
+
+        bool m_asDataPtrs;
 };
 
 } //namespace Collections
 
-#endif /* AMAROK_COLLECTION_QUERYMAKER_H */
+#endif
 
