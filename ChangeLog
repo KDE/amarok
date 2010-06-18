@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * Testing
     * Organize Dialog: added a way to save multiple file formats as presets. (BR 122672)
     * Filtering: added default presets to the drop down menu of the collection
       search widget.
