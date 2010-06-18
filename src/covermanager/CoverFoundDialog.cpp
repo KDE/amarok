@@ -853,33 +853,12 @@ void CoverFoundSideBar::updateMetaTable()
 void CoverFoundSideBar::clearMetaTable()
 {
     QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
-    for( int i = 0, rowCount = layout->rowCount(); i < rowCount; ++i )
+    QLayoutItem *child;
+    while( (child = layout->takeAt(0)) != 0 )
     {
-        QLayoutItem *labelItem = layout->itemAt( i, QFormLayout::LabelRole );
-        if( labelItem )
-        {
-            QWidget *widget = labelItem->widget();
-            layout->removeItem( labelItem );
-            if( widget )
-            {
-                layout->removeWidget( widget );
-                delete widget;
-            }
-        }
-
-        QLayoutItem *fieldItem = layout->itemAt( i, QFormLayout::FieldRole );
-        if( fieldItem )
-        {
-            QWidget *widget = fieldItem->widget();
-            layout->removeItem( fieldItem );
-            if( widget )
-            {
-                layout->removeWidget( widget );
-                delete widget;
-            }
-        }
+        delete child->widget();
+        delete child;
     }
-
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap cover,
