@@ -25,6 +25,7 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
     : QAbstractProxyModel()
     , m_model( model )
     , m_rootNode( rootNode )
+    , m_groupedColumn( 0 )
 {
     // signal proxies
     connect( m_model,
