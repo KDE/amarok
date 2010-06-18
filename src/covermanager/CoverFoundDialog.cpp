@@ -210,11 +210,23 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(handleFetchResult(QNetworkReply*)) );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
 {
     m_album->setSuppressImageAutoFetch( false );
+
+    const QList<QListWidgetItem*> &viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
+    foreach( QListWidgetItem *item, viewItems )
+    {
+        CoverFoundItem* cfi = dynamic_cast<CoverFoundItem*>( item );
+        if( cfi )
+            delete cfi;
+    }
+    delete m_dialog;
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
@@ -232,11 +244,10 @@ void CoverFoundDialog::add( const QPixmap cover,
         return;
 
     CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
-    if( !contains(item) )
-    {
-        connect( item, SIGNAL(pixmapChanged(const QPixmap)), m_sideBar, SLOT(setPixmap(const QPixmap)) );
+    if( !contains( item ) )
         addToView( item );
-    }
+    else
+        delete item;
 }
 
 void CoverFoundDialog::addToView( CoverFoundItem *const item )
@@ -334,7 +345,6 @@ void CoverFoundDialog::itemSelected()
     }
 }
 
-
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     Q_UNUSED( item )
@@ -354,7 +364,7 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 
     QMenu menu( this );
     QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
-    connect( display, SIGNAL(triggered()), item, SLOT(display()) );
+    connect( display, SIGNAL(triggered()), this, SLOT(display()) );
 
     QAction *save = new QAction( KIcon("document-save"), i18n("Save As"), &menu );
     connect( save, SIGNAL(triggered()), this, SLOT(saveAs()) );
@@ -367,8 +377,60 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 void CoverFoundDialog::saveAs()
 {
     CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( item )
-        item->saveAs( m_album );
+    if( !item )
+        return;
+
+    if( !item->hasBigPix() && !fetchBigPix() )
+        return;
+
+    KFileDialog dlg( m_album->tracks().first()->playableUrl().directory(), QString(), this );
+    dlg.setCaption( i18n("Cover Image Save Location") );
+    dlg.setMode( KFile::File | KFile::LocalOnly );
+    dlg.setOperationMode( KFileDialog::Saving );
+    dlg.setConfirmOverwrite( true );
+    dlg.setSelection( "cover.jpg" );
+
+    QStringList supportedMimeTypes;
+    supportedMimeTypes << "image/jpeg";
+    supportedMimeTypes << "image/png";
+    dlg.setMimeFilter( supportedMimeTypes );
+
+    KUrl saveUrl;
+    int res = dlg.exec();
+    switch( res )
+    {
+    case QDialog::Accepted:
+        saveUrl = dlg.selectedUrl();
+        break;
+    case QDialog::Rejected:
+        return;
+    }
+
+    KSaveFile saveFile( saveUrl.path() );
+    if( !saveFile.open() )
+    {
+        KMessageBox::detailedError( this,
+                                    i18n("Sorry, the cover could not be saved."),
+                                    saveFile.errorString() );
+        return;
+    }
+
+    QPixmap pixmap = item->bigPix();
+    const QString ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
+    if( ext == "jpg" || ext == "jpeg" )
+        pixmap.save( &saveFile, "JPG" );
+    else if( ext == "png" )
+        pixmap.save( &saveFile, "PNG" );
+    else
+        pixmap.save( &saveFile );
+
+    if( (saveFile.size() == 0) || !saveFile.finalize() )
+    {
+        KMessageBox::detailedError( this,
+                                    i18n("Sorry, the cover could not be saved."),
+                                    saveFile.errorString() );
+        saveFile.remove();
+    }
 }
 
 void CoverFoundDialog::slotButtonClicked( int button )
@@ -381,7 +443,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 
         bool gotBigPix( true );
         if( !item->hasBigPix() )
-            gotBigPix = item->fetchBigPix();
+            gotBigPix = fetchBigPix();
 
         if( gotBigPix )
         {
@@ -398,6 +460,100 @@ void CoverFoundDialog::slotButtonClicked( int button )
     {
         KDialog::slotButtonClicked( button );
     }
+}
+
+void CoverFoundDialog::handleFetchResult( QNetworkReply *reply )
+{
+    const KUrl url = reply->request().url();
+    if( !m_urls.contains( url ) )
+        return;
+
+    QNetworkReply::NetworkError error = reply->error();
+    bool hasNoError = ( error == QNetworkReply::NoError );
+
+    CoverFoundItem *item = m_urls.take( url );
+    QPixmap pixmap;
+    if( hasNoError && pixmap.loadFromData( reply->readAll() ) )
+    {
+        item->setBigPix( pixmap );
+        m_sideBar->setPixmap( pixmap );
+        m_dialog->accept();
+    }
+    else
+    {
+        const QString error = pixmap.isNull()
+                            ? i18n("Sorry, the cover image could not be retrieved.")
+                            : reply->errorString();
+        KMessageBox::error( this, error );
+        m_dialog->reject();
+    }
+}
+
+bool CoverFoundDialog::fetchBigPix()
+{
+    DEBUG_BLOCK
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( !item )
+        return false;
+
+    const KUrl url( item->metadata().value( "normalarturl" ) );
+    if( !url.isValid() )
+        return false;
+
+    QNetworkRequest req( url );
+    QNetworkReply *reply = The::networkAccessManager()->get( req );
+    m_urls.insert( url, item );
+
+    if( !m_dialog )
+    {
+        m_dialog = new KProgressDialog( this );
+        m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
+        m_dialog->setLabelText( i18n( "Download Progress" ) );
+        m_dialog->setModal( true );
+        m_dialog->setAllowCancel( true );
+        m_dialog->setAutoClose( false );
+        m_dialog->setAutoReset( true );
+        m_dialog->progressBar()->setMinimum( 0 );
+        m_dialog->setMinimumWidth( 300 );
+        connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
+                        SLOT(downloadProgressed(qint64,qint64)) );
+    }
+    int result = m_dialog->exec();
+    bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
+    if( !success )
+    {
+        if( reply && reply->isRunning() )
+            reply->abort();
+    }
+    m_dialog->deleteLater();
+    reply->deleteLater();
+    return success;
+}
+
+void CoverFoundDialog::downloadProgressed( qint64 bytesReceived, qint64 bytesTotal )
+{
+    if( m_dialog )
+    {
+        m_dialog->progressBar()->setMaximum( bytesTotal );
+        m_dialog->progressBar()->setValue( bytesReceived );
+    }
+}
+
+void CoverFoundDialog::display()
+{
+    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+    if( !item )
+        return;
+
+    const bool success = item->hasBigPix() ? true : fetchBigPix();
+    if( !success )
+        return;
+
+    const QPixmap pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
+    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
+    dlg->show();
+    dlg->raise();
+    dlg->activateWindow();
 }
 
 void CoverFoundDialog::processQuery()
@@ -732,7 +888,6 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
                                 QListWidget *parent )
     : QListWidgetItem( parent )
     , m_metadata( data )
-    , m_dialog( 0 )
 {
     switch( imageSize )
     {
@@ -752,14 +907,10 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
     setCaption();
     setFont( KGlobalSettings::smallestReadableFont() );
     setTextAlignment( Qt::AlignHCenter | Qt::AlignTop );
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(slotFetchResult(QNetworkReply*)) );
 }
 
 CoverFoundItem::~CoverFoundItem()
 {
-    delete m_dialog;
 }
 
 bool CoverFoundItem::operator==( const CoverFoundItem &other ) const
@@ -770,145 +921,6 @@ bool CoverFoundItem::operator==( const CoverFoundItem &other ) const
 bool CoverFoundItem::operator!=( const CoverFoundItem &other ) const
 {
     return !( *this == other );
-}
-
-bool CoverFoundItem::fetchBigPix()
-{
-    DEBUG_BLOCK
-
-    const KUrl url( m_metadata.value( "normalarturl" ) );
-    if( !url.isValid() )
-        return false;
-
-    QNetworkRequest req( url );
-    QNetworkReply *reply = The::networkAccessManager()->get( req );
-
-    if( !m_dialog )
-    {
-        m_dialog = new KProgressDialog( listWidget() );
-        m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
-        m_dialog->setLabelText( i18n( "Download Progress" ) );
-        m_dialog->setModal( true );
-        m_dialog->setAllowCancel( true );
-        m_dialog->setAutoClose( false );
-        m_dialog->setAutoReset( true );
-        m_dialog->progressBar()->setMinimum( 0 );
-        m_dialog->setMinimumWidth( 300 );
-        connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
-                        SLOT(downloadProgressed(qint64,qint64)) );
-    }
-    int result = m_dialog->exec();
-    bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
-    if( !success )
-    {
-        if( reply && reply->isRunning() )
-            reply->abort();
-    }
-    m_dialog->deleteLater();
-    reply->deleteLater();
-    return success;
-}
-
-void CoverFoundItem::downloadProgressed( qint64 bytesReceived, qint64 bytesTotal )
-{
-    if( m_dialog )
-    {
-        m_dialog->progressBar()->setMaximum( bytesTotal );
-        m_dialog->progressBar()->setValue( bytesReceived );
-    }
-}
-
-void CoverFoundItem::display()
-{
-    const bool success = hasBigPix() ? true : fetchBigPix();
-    if( !success )
-        return;
-
-    debug() << "Success!";
-    const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
-    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, listWidget() );
-    dlg->show();
-    dlg->raise();
-    dlg->activateWindow();
-}
-
-void CoverFoundItem::saveAs( Meta::AlbumPtr album )
-{
-    if( !hasBigPix() && !fetchBigPix() )
-        return;
-
-    KFileDialog dlg( album->tracks().first()->playableUrl().directory(), QString(), listWidget() );
-    dlg.setCaption( i18n("Cover Image Save Location") );
-    dlg.setMode( KFile::File | KFile::LocalOnly );
-    dlg.setOperationMode( KFileDialog::Saving );
-    dlg.setConfirmOverwrite( true );
-    dlg.setSelection( "cover.jpg" );
-
-    QStringList supportedMimeTypes;
-    supportedMimeTypes << "image/jpeg";
-    supportedMimeTypes << "image/png";
-    dlg.setMimeFilter( supportedMimeTypes );
-
-    KUrl saveUrl;
-    int res = dlg.exec();
-    switch( res )
-    {
-    case QDialog::Accepted:
-        saveUrl = dlg.selectedUrl();
-        break;
-    case QDialog::Rejected:
-        return;
-    }
-
-    KSaveFile saveFile( saveUrl.path() );
-    if( !saveFile.open() )
-    {
-        KMessageBox::detailedError( listWidget(),
-                                    i18n("Sorry, the cover could not be saved."),
-                                    saveFile.errorString() );
-        return;
-    }
-
-    const QString ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
-    if( ext == "jpg" || ext == "jpeg" )
-        m_bigPix.save( &saveFile, "JPG" );
-    else if( ext == "png" )
-        m_bigPix.save( &saveFile, "PNG" );
-    else
-        m_bigPix.save( &saveFile );
-
-    if( (saveFile.size() == 0) || !saveFile.finalize() )
-    {
-        KMessageBox::detailedError( listWidget(),
-                                    i18n("Sorry, the cover could not be saved."),
-                                    saveFile.errorString() );
-        saveFile.remove();
-    }
-}
-
-void CoverFoundItem::slotFetchResult( QNetworkReply *reply )
-{
-    const KUrl url = reply->request().url();
-    if( url != m_metadata.value( "normalarturl" ) )
-        return;
-
-    QPixmap pixmap;
-    QNetworkReply::NetworkError error = reply->error();
-    bool hasNoError = ( error == QNetworkReply::NoError );
-    if( hasNoError && pixmap.loadFromData( reply->readAll() ) )
-    {
-        m_bigPix = pixmap;
-        emit pixmapChanged( m_bigPix );
-        m_dialog->accept();
-    }
-    else
-    {
-        const QString error = pixmap.isNull()
-                            ? i18n("Sorry, the cover image could not be retrieved.")
-                            : reply->errorString();
-        KMessageBox::error( listWidget(), error );
-        m_dialog->reject();
-    }
 }
 
 void CoverFoundItem::setCaption()

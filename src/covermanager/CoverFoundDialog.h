@@ -83,11 +83,14 @@ private slots:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
+    void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
+    void handleFetchResult( QNetworkReply *reply );
     void insertComboText( const QString &text );
     void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void processQuery();
+    void display(); ///< Opens a pixmap viewer
     void processQuery( const QString &query );
     void saveAs();
     void selectDiscogs();
@@ -100,6 +103,7 @@ private slots:
 private:
     void addToView( CoverFoundItem *const item );
     bool contains( CoverFoundItem *const item ) const;
+    bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
     void sortCoversBySize();
     void updateGui();
     void updateTitle();
@@ -118,6 +122,8 @@ private:
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
+    QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
+    QPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };
@@ -151,18 +157,14 @@ private:
     Q_DISABLE_COPY( CoverFoundSideBar )
 };
 
-class CoverFoundItem : public QObject, public QListWidgetItem
+class CoverFoundItem : public QListWidgetItem
 {
-    Q_OBJECT
-
 public:
     explicit CoverFoundItem( const QPixmap cover,
                              const CoverFetch::Metadata data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = 0 );
     ~CoverFoundItem();
-
-    bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
     const QPixmap bigPix() const { return m_bigPix; }
@@ -175,33 +177,12 @@ public:
     bool operator==( const CoverFoundItem &other ) const;
     bool operator!=( const CoverFoundItem &other ) const;
 
-signals:
-    void pixmapChanged( const QPixmap pixmap );
-
-public slots:
-    /**
-     * Opens a pixmap viewer
-     */
-    void display();
-
-    /**
-     * saveAs opens a dialog for choosing where to save the pixmap
-     * @param album used for dialog's start url
-     */
-    void saveAs( Meta::AlbumPtr album );
-
-    void slotFetchResult( QNetworkReply *reply );
-
-private slots:
-    void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
-
 private:
     void setCaption();
 
     CoverFetch::Metadata m_metadata;
     QPixmap m_thumb;
     QPixmap m_bigPix;
-    QPointer<KProgressDialog> m_dialog;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */
