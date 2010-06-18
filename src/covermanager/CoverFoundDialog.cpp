@@ -808,7 +808,7 @@ void CoverFoundSideBar::updateMetaTable()
         if( tags.contains( tag ) )
         {
             const QString &value = mit.value();
-            QLabel *label = new QLabel( value );
+            QLabel *label = new QLabel( value, this );
             label->setToolTip( value );
             layout->addRow( i18n( "<b>%1:</b>", tag ), label );
         }
@@ -842,7 +842,7 @@ void CoverFoundSideBar::updateMetaTable()
         const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
         const QString &url     = i18n( "<a href=\"%1\">link</a>", decoded );
 
-        QLabel *label = new QLabel( url );
+        QLabel *label = new QLabel( url, this );
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );
