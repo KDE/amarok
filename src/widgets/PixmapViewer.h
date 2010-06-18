@@ -32,7 +32,7 @@ class PixmapViewer : public QWidget
     Q_OBJECT
 
 public:
-    PixmapViewer( QWidget *widget, const QPixmap pixmap, int screenNumber );
+    PixmapViewer( QWidget *parent, const QPixmap pixmap, int screenNumber );
 
 public slots:
     void setZoomFactor( float f );
@@ -45,7 +45,7 @@ protected:
     void wheelEvent( QWheelEvent *event );
 
 private:
-    QPixmap *m_pixmap;
+    QPixmap m_pixmap;
     float m_zoomFactor;
 };
 
