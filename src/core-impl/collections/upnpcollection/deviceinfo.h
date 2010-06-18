@@ -44,11 +44,11 @@ public:
     const QString& presentationUrl() const;
 
     const QString& host() const;
-    const int port() const;
+    int port() const;
 
     const QString& parentDeviceUdn() const;
 
-    const bool isValid() const;
+    bool isValid() const;
 
 private:
     QString m_type;
@@ -68,7 +68,7 @@ private:
 
 };
 
-inline const bool DeviceInfo::isValid() const
+inline bool DeviceInfo::isValid() const
 {
   return !m_type.isNull();
 }
@@ -123,7 +123,7 @@ inline const QString& DeviceInfo::host() const
     return m_host;
 }
 
-inline const int DeviceInfo::port() const
+inline int DeviceInfo::port() const
 {
     return m_port;
 }
