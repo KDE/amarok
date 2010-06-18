@@ -17,7 +17,7 @@
 #ifndef UPNPBROWSECOLLECTION_H
 #define UPNPBROWSECOLLECTION_H
 
-#include "core/collections/Collection.h"
+#include "UpnpCollectionBase.h"
 #include "MemoryCollection.h"
 
 #include <QMap>
@@ -42,7 +42,7 @@ namespace Collections {
 
 class UpnpMemoryQueryMaker;
 
-class UpnpBrowseCollection : public Collections::Collection
+class UpnpBrowseCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
@@ -63,7 +63,6 @@ class UpnpBrowseCollection : public Collections::Collection
 
   public slots:
     virtual void startFullScan();
-    void removeCollection() { emit remove(); }
 
   private slots:
     void entries( KIO::Job *, const KIO::UDSEntryList& );

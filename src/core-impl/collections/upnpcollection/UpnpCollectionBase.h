@@ -14,44 +14,49 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UPNPCOLLECTIONFACTORY_H
-#define UPNPCOLLECTIONFACTORY_H
+#ifndef UPNPCOLLECTIONBASE_H
+#define UPNPCOLLECTIONBASE_H
 
 #include "core/collections/Collection.h"
 
-typedef QHash<QString, QString> DeviceTypeMap;
-Q_DECLARE_METATYPE(DeviceTypeMap);
+#include <QMap>
+#include <QHash>
+#include <QHostInfo>
+#include <QPointer>
+#include <QtGlobal>
+#include <QSharedPointer>
 
-class QDBusInterface;
+#include <KIcon>
+#include <KDirNotify>
+
+namespace KIO {
+  class Job;
+  class ListJob;
+}
+class KJob;
+
+class QTimer;
 
 namespace Collections {
 
-class UpnpCollectionBase;
+class UpnpMemoryQueryMaker;
 
-class UpnpCollectionFactory : public Collections::CollectionFactory
+/**
+ * UPnP Collections are of two types.
+ * If a MediaServer only supports the Browse() action
+ * a directory walking, recursive listing UpnpBrowseCollection
+ * is used.
+ * If a server also supports Search(), a more efficient,
+ * UpnpSearchCollection is used.
+ * Certain things are common to both, removal,
+ * track creation from the UDSEntry, collection identification,
+ */
+class UpnpCollectionBase : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollectionFactory( QObject *parent, const QVariantList &args );
-    virtual ~UpnpCollectionFactory();
-
-    void init();
-
-  private:
-
-  private slots:
-    void slotDevicesAdded( const DeviceTypeMap &map );
-    void slotDevicesRemoved( const DeviceTypeMap &map );
-    void createCollection( QString udn );
-
-    void slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list );
-
-  private:
-    QHash<QString, UpnpCollectionBase*> m_devices;
-    QDBusInterface *m_iface;
-
-    // reset for every device, only global for signals and slots
-    QStringList m_searchOptions;
+    UpnpCollectionBase();
+    void removeCollection() { emit remove(); }
 };
 
 } //namespace Collections

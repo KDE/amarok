@@ -10,6 +10,7 @@ include_directories( ../..
 ########### next target ###############
 
 set(amarok_collection-upnpcollection_PART_SRCS
+    UpnpCollectionBase.cpp
     UpnpBrowseCollection.cpp
     UpnpCollectionFactory.cpp
     UpnpMemoryQueryMaker.cpp

@@ -43,7 +43,7 @@ namespace Collections {
 
 // TODO register for the device bye bye and emit remove()
 UpnpBrowseCollection::UpnpBrowseCollection( const QString &udn, const QString &name )
-    : Collection()
+    : UpnpCollectionBase()
     , m_udn( udn )
     , m_name( name )
     , m_mc( new MemoryCollection() )

@@ -14,46 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UPNPCOLLECTIONFACTORY_H
-#define UPNPCOLLECTIONFACTORY_H
+#define DEBUG_PREFIX "UpnpCollectionBase"
 
-#include "core/collections/Collection.h"
+#include "UpnpCollectionBase.h"
 
-typedef QHash<QString, QString> DeviceTypeMap;
-Q_DECLARE_METATYPE(DeviceTypeMap);
+#include <kio/upnptypes.h>
+#include <kio/scheduler.h>
+#include <kio/jobclasses.h>
 
-class QDBusInterface;
+namespace KIO {
+  class Job;
+  class ListJob;
+}
+class KJob;
 
 namespace Collections {
 
-class UpnpCollectionBase;
-
-class UpnpCollectionFactory : public Collections::CollectionFactory
+UpnpCollectionBase::UpnpCollectionBase()
+    : Collection()
 {
-  Q_OBJECT
-  public:
-    UpnpCollectionFactory( QObject *parent, const QVariantList &args );
-    virtual ~UpnpCollectionFactory();
-
-    void init();
-
-  private:
-
-  private slots:
-    void slotDevicesAdded( const DeviceTypeMap &map );
-    void slotDevicesRemoved( const DeviceTypeMap &map );
-    void createCollection( QString udn );
-
-    void slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list );
-
-  private:
-    QHash<QString, UpnpCollectionBase*> m_devices;
-    QDBusInterface *m_iface;
-
-    // reset for every device, only global for signals and slots
-    QStringList m_searchOptions;
-};
+}
 
 } //namespace Collections
-
-#endif

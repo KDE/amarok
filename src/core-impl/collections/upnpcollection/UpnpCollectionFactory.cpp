@@ -90,16 +90,7 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
     foreach( QString udn, map.keys() ) {
         QString type = map[udn];
         if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") ) {
-            QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
-            if( !reply.isValid() ) {
-                debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
-                debug() << "Error" << reply.error().message();
-                continue;
-            }
-            DeviceInfo info = reply.value();
-            udn.replace("uuid:", "");
-            m_devices[udn] = new UpnpBrowseCollection( udn, info.friendlyName() );
-            emit newCollection( m_devices[udn] );
+            createCollection( udn );
         }
     }
 }
@@ -115,8 +106,44 @@ void UpnpCollectionFactory::slotDevicesRemoved( const DeviceTypeMap &map )
     }
 }
 
-void UpnpCollectionFactory::createCollection( const QString &udn )
+void UpnpCollectionFactory::createCollection( QString udn )
 {
+    QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
+   if( !reply.isValid() ) {
+       debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
+       debug() << "Error" << reply.error().message();
+       return;
+   }
+   DeviceInfo info = reply.value();
+   udn.replace("uuid:", "");
+
+   KIO::ListJob *job = KIO::listDir( "upnp-ms://" + udn + "/?searchcapabilities=1" );
+   connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
+            this, SLOT( slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
+
+   m_searchOptions.clear();
+   if( job->exec() ) {
+       if( m_searchOptions.contains( "upnp:class" )
+           && m_searchOptions.contains( "dc:title" )
+           && m_searchOptions.contains( "upnp:artist" )
+           && m_searchOptions.contains( "upnp:album" ) ) {
+           kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
+       }
+       else {
+           kDebug() << "Supported Search() meta-data" << m_searchOptions << "not enough. Using UpnpBrowseCollection";
+           m_devices[udn] = new UpnpBrowseCollection( udn, info.friendlyName() );
+       }
+
+       emit newCollection( m_devices[udn] );
+   }
+}
+
+void UpnpCollectionFactory::slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list )
+{
+    Q_UNUSED( job );
+    foreach( KIO::UDSEntry entry, list ) {
+        m_searchOptions << entry.stringValue( KIO::UDSEntry::UDS_NAME );
+    }
 }
 
 }
