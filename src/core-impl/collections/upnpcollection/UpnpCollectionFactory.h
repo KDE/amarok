@@ -26,7 +26,7 @@ class QDBusInterface;
 
 namespace Collections {
 
-class UpnpCollection;
+class UpnpBrowseCollection;
 
 class UpnpCollectionFactory : public Collections::CollectionFactory
 {
@@ -46,7 +46,7 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
     void createCollection( const QString &udn );
 
   private:
-    QHash<QString, UpnpCollection*> m_devices;
+    QHash<QString, UpnpBrowseCollection*> m_devices;
     QDBusInterface *m_iface;
 };
 

@@ -21,7 +21,7 @@
 #include <QWeakPointer>
 
 #include "core/support/Debug.h"
-#include "UpnpCollection.h"
+#include "UpnpBrowseCollection.h"
 
 namespace Collections {
 

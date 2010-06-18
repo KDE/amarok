@@ -24,7 +24,7 @@
 #include <kurl.h>
 
 #include "core/support/Debug.h"
-#include "UpnpCollection.h"
+#include "UpnpBrowseCollection.h"
 #include "deviceinfo.h"
 #include "dbuscodec.h"
 
@@ -98,7 +98,7 @@ void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
             }
             DeviceInfo info = reply.value();
             udn.replace("uuid:", "");
-            m_devices[udn] = new UpnpCollection( udn, info.friendlyName() );
+            m_devices[udn] = new UpnpBrowseCollection( udn, info.friendlyName() );
             emit newCollection( m_devices[udn] );
         }
     }

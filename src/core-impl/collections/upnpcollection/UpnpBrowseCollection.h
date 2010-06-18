@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UPNPCOLLECTION_H
-#define UPNPCOLLECTION_H
+#ifndef UPNPBROWSECOLLECTION_H
+#define UPNPBROWSECOLLECTION_H
 
 #include "core/collections/Collection.h"
 #include "MemoryCollection.h"
@@ -42,12 +42,12 @@ namespace Collections {
 
 class UpnpMemoryQueryMaker;
 
-class UpnpCollection : public Collections::Collection
+class UpnpBrowseCollection : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollection( const QString &udn, const QString &name );
-    virtual ~UpnpCollection();
+    UpnpBrowseCollection( const QString &udn, const QString &name );
+    virtual ~UpnpBrowseCollection();
 
     virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();

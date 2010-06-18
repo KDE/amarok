@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "UpnpCollection"
+#define DEBUG_PREFIX "UpnpBrowseCollection"
 
-#include "UpnpCollection.h"
+#include "UpnpBrowseCollection.h"
 
 #include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
@@ -39,10 +39,10 @@ using namespace Meta;
 
 namespace Collections {
 
-//UpnpCollection
+//UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
+UpnpBrowseCollection::UpnpBrowseCollection( const QString &udn, const QString &name )
     : Collection()
     , m_udn( udn )
     , m_name( name )
@@ -57,11 +57,11 @@ UpnpCollection::UpnpCollection( const QString &udn, const QString &name )
                       this, SLOT( slotFilesChanged(const QStringList &) ) ));
 }
 
-UpnpCollection::~UpnpCollection()
+UpnpBrowseCollection::~UpnpBrowseCollection()
 {
 }
 
-void UpnpCollection::slotFilesChanged(const QStringList &list )
+void UpnpBrowseCollection::slotFilesChanged(const QStringList &list )
 {
     if( m_fullScanInProgress )
         return;
@@ -71,7 +71,7 @@ void UpnpCollection::slotFilesChanged(const QStringList &list )
     debug() << "Files changed" << list;
 }
 
-void UpnpCollection::processUpdates()
+void UpnpBrowseCollection::processUpdates()
 {
     if( m_updateQueue.isEmpty() )
         return;
@@ -86,7 +86,7 @@ void UpnpCollection::processUpdates()
     startIncrementalScan( url.path() );
 }
 
-void UpnpCollection::invalidateTracksIn( const QString &dir )
+void UpnpBrowseCollection::invalidateTracksIn( const QString &dir )
 {
     debug() << "INVALIDATING" << m_tracksInContainer[dir].length();
 
@@ -108,7 +108,7 @@ void UpnpCollection::invalidateTracksIn( const QString &dir )
 }
 
 void
-UpnpCollection::startFullScan()
+UpnpBrowseCollection::startFullScan()
 {
     DEBUG_BLOCK;
 
@@ -129,7 +129,7 @@ UpnpCollection::startFullScan()
 }
 
 void
-UpnpCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
+UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
     DEBUG_BLOCK;
     KIO::SimpleJob *sj = static_cast<KIO::SimpleJob *>( job );
@@ -142,7 +142,7 @@ UpnpCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
 }
 
 void
-UpnpCollection::updateMemoryCollection()
+UpnpBrowseCollection::updateMemoryCollection()
 {
     memoryCollection()->setTrackMap( m_TrackMap );
     memoryCollection()->setArtistMap( m_ArtistMap );
@@ -154,7 +154,7 @@ UpnpCollection::updateMemoryCollection()
 }
 
 void
-UpnpCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
+UpnpBrowseCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
 {
 DEBUG_BLOCK
 // TODO check for meta data updates instead of just returning
@@ -223,13 +223,14 @@ DEBUG_BLOCK
 
     m_TrackMap[t->uidUrl()] = TrackPtr::dynamicCast( t );
 
+    QFileInfo info( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
     QString container = QDir(baseUrl).filePath( info.dir().path() );
     debug() << "CONTAINER" << container;
     m_tracksInContainer[container] << TrackPtr::dynamicCast( t );
 }
 
 void
-UpnpCollection::removeTrack( TrackPtr t )
+UpnpBrowseCollection::removeTrack( TrackPtr t )
 {
 #define DOWNCAST( type, var ) Upnp##type##Ptr::dynamicCast( var )
 
@@ -244,7 +245,7 @@ UpnpCollection::removeTrack( TrackPtr t )
 }
 
 void
-UpnpCollection::done( KJob *job )
+UpnpBrowseCollection::done( KJob *job )
 {
 DEBUG_BLOCK
     if( job->error() ) {
@@ -266,7 +267,7 @@ DEBUG_BLOCK
 }
 
 void
-UpnpCollection::startIncrementalScan( const QString &directory )
+UpnpBrowseCollection::startIncrementalScan( const QString &directory )
 {
     DEBUG_BLOCK;
     if( m_fullScanInProgress ) {
@@ -287,7 +288,7 @@ UpnpCollection::startIncrementalScan( const QString &directory )
 }
 
 QueryMaker*
-UpnpCollection::queryMaker()
+UpnpBrowseCollection::queryMaker()
 {
     DEBUG_BLOCK;
     UpnpMemoryQueryMaker *umqm = new UpnpMemoryQueryMaker(m_mc.toWeakRef(), collectionId() );
@@ -296,24 +297,24 @@ UpnpCollection::queryMaker()
 }
 
 QString
-UpnpCollection::collectionId() const
+UpnpBrowseCollection::collectionId() const
 {
     return QString("upnp-ms://") + m_udn;
 }
 
 QString
-UpnpCollection::prettyName() const
+UpnpBrowseCollection::prettyName() const
 {
     return m_name;
 }
 
 bool
-UpnpCollection::possiblyContainsTrack( const KUrl &url ) const
+UpnpBrowseCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     debug() << "Requested track " << url;
     return false;
 }
 
 } //~ namespace
-#include "UpnpCollection.moc"
+#include "UpnpBrowseCollection.moc"
 
