@@ -45,8 +45,6 @@ class UpnpQueryMaker : public QueryMaker
         void run() ;
         void abortQuery() ;
 
-        int resultCount() const;
-
         QueryMaker* setQueryType( QueryType type ) ;
         QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) ;
         QueryMaker* addReturnValue( qint64 value ) ;
