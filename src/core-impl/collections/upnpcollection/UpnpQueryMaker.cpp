@@ -84,13 +84,6 @@ void UpnpQueryMaker::abortQuery()
 DEBUG_BLOCK
 }
 
-int UpnpQueryMaker::resultCount() const
-{
-DEBUG_BLOCK
-// TODO: how do you say many many times?
-    return 10000;
-}
-
 QueryMaker* UpnpQueryMaker::setQueryType( QueryType type )
 {
 DEBUG_BLOCK
