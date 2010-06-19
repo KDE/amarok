@@ -27,7 +27,6 @@
 #include "SvgHandler.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "covermanager/CoverFetcher.h"
 #include "core/collections/QueryMaker.h"
 
 #include <KLocale>
