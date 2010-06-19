@@ -88,7 +88,7 @@ Optional
     * MySQL 5.0 (or newer) Server (external database support)
 
 
-Please note, if compiling from source you may also need to install -devel versions
+Please note that if compiling from source you may also need to install -devel versions
 of these packages, depending on your distribution.
 --------------------------------------------------------------------------------
 
