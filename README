@@ -26,8 +26,8 @@ interface that really makes playlist handling easy.
     * iPod support, as well as other media players
     * Powerful scripting interface
     * KDE integration
-    * Integration with multiple web sources, Magnatune, Jamendo, Ampache and Mp3tunes 
-      among others.
+    * Integration with multiple web sources including Magnatune, Jamendo,
+      Ampache, MP3tunes, and others.
 --------------------------------------------------------------------------------
 
 
