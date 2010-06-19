@@ -55,41 +55,6 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *payload )
 {
 }
 
-CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
-    : QSharedData( cpy )
-{
-    m_album = cpy.m_album;
-    m_options = cpy.m_options;
-
-    switch( cpy.m_payload->type() )
-    {
-        case CoverFetchPayload::Info:
-        {
-            m_payload = new CoverFetchInfoPayload( cpy.m_album, cpy.m_payload->source() );
-            break;
-        }
-        case CoverFetchPayload::Search:
-        {
-            typedef CoverFetchSearchPayload CFSP;
-            const CFSP *payload = dynamic_cast< const CFSP* >( cpy.payload() );
-            m_payload = new CoverFetchSearchPayload( payload->query() );
-            break;
-        }
-        case CoverFetchPayload::Art:
-        {
-            typedef CoverFetchArtPayload CFAP;
-            const CFAP *payload = dynamic_cast< const CFAP* >( cpy.payload() );
-            m_payload = new CoverFetchArtPayload( cpy.m_album,
-                                                  payload->imageSize(),
-                                                  payload->source(),
-                                                  payload->isWild() );
-            break;
-        }
-        default:
-            m_payload = 0;
-    }
-}
-
 CoverFetchUnit::~CoverFetchUnit()
 {
     delete m_payload;
@@ -143,47 +108,9 @@ CoverFetchUnit::addError( const T &error )
     m_errors << error;
 }
 
-CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
-{
-    if( this == &rhs )
-        return *this;
-
-    switch( rhs.m_payload->type() )
-    {
-        case CoverFetchPayload::Info:
-        {
-            m_payload = new CoverFetchInfoPayload( rhs.m_album, rhs.payload()->source() );
-            break;
-        }
-        case CoverFetchPayload::Search:
-        {
-            typedef CoverFetchSearchPayload CFSP;
-            const CFSP *payload = dynamic_cast< const CFSP* >( rhs.payload() );
-            m_payload = new CoverFetchSearchPayload( payload->query() );
-            break;
-        }
-        case CoverFetchPayload::Art:
-        {
-            typedef CoverFetchArtPayload CFAP;
-            const CFAP *payload = dynamic_cast< const CFAP* >( rhs.payload() );
-            m_payload = new CoverFetchArtPayload( rhs.m_album,
-                                                  payload->imageSize(),
-                                                  payload->source(),
-                                                  payload->isWild() );
-            break;
-        }
-        default:
-            m_payload = 0;
-    }
-
-    m_album = rhs.m_album;
-    m_options = rhs.m_options;
-    return *this;
-}
-
 bool CoverFetchUnit::operator==( const CoverFetchUnit &other ) const
 {
-    return m_album == other.m_album;
+    return (m_album == other.m_album) && (m_options == other.m_options) && (m_payload == other.m_payload);
 }
 
 bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const

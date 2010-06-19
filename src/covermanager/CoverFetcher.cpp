@@ -184,6 +184,7 @@ CoverFetcher::slotResult( QNetworkReply *reply )
     const CoverFetchUnit::Ptr unit( m_urls.take( reply ) );
     if( !unit )
     {
+        finish( unit, Error );
         reply->deleteLater();
         return;
     }
@@ -218,6 +219,7 @@ CoverFetcher::slotResult( QNetworkReply *reply )
             {
                 const CoverFetch::Metadata metadata = payload->urls().value( url );
                 showCover( unit, pixmap, metadata );
+                m_queue->remove( unit );
             }
             else
             {
@@ -305,9 +307,8 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 void
 CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 {
-    Meta::AlbumPtr album = unit->album();
-    m_queue->remove( album );
-    m_queueLater.removeAll( album );
+    m_queue->remove( unit );
+    m_queueLater.removeAll( unit->album() );
     m_selectedPixmaps.remove( unit );
     QList<QNetworkReply*> replies = m_urls.keys( unit );
     foreach( QNetworkReply *reply, replies )

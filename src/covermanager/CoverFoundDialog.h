@@ -101,8 +101,8 @@ private slots:
     void updateSearchButton( const QString &text );
 
 private:
-    void addToView( CoverFoundItem *const item );
-    bool contains( CoverFoundItem *const item ) const;
+    void addToView( CoverFoundItem *item );
+    bool contains( const CoverFoundItem *item ) const;
     bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
     void sortCoversBySize();
     void updateGui();

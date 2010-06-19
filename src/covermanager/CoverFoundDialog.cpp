@@ -250,9 +250,9 @@ void CoverFoundDialog::add( const QPixmap cover,
         delete item;
 }
 
-void CoverFoundDialog::addToView( CoverFoundItem *const item )
+void CoverFoundDialog::addToView( CoverFoundItem *item )
 {
-    const CoverFetch::Metadata metadata = item->metadata();
+    const CoverFetch::Metadata &metadata = item->metadata();
 
     if( m_sortEnabled && metadata.contains( "width" ) && metadata.contains( "height" ) )
     {
@@ -277,12 +277,12 @@ void CoverFoundDialog::addToView( CoverFoundItem *const item )
     updateGui();
 }
 
-bool CoverFoundDialog::contains( CoverFoundItem *const item ) const
+bool CoverFoundDialog::contains( const CoverFoundItem *item ) const
 {
     bool hasItem( false );
     for( int i = 0, count = m_view->count(); i < count; ++i )
     {
-        CoverFoundItem *const vItem = static_cast<CoverFoundItem *const>( m_view->item(i) );
+        CoverFoundItem *vItem = dynamic_cast<CoverFoundItem*>( m_view->item(i) );
         if( vItem )
             hasItem = (*vItem == *item);
         if( hasItem )
