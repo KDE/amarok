@@ -792,10 +792,6 @@ void CoverFoundSideBar::updateNotes()
 
 void CoverFoundSideBar::updateMetaTable()
 {
-    QStringList tags;
-    tags << "artist" << "country"  << "date" << "format" << "height" << "name"
-         << "type"   << "released" << "size" << "source" << "title"  << "width";
-
     clearMetaTable();
 
     QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
@@ -804,13 +800,33 @@ void CoverFoundSideBar::updateMetaTable()
     CoverFetch::Metadata::const_iterator mit = m_metadata.constBegin();
     while( mit != m_metadata.constEnd() )
     {
-        const QString tag = mit.key();
-        if( tags.contains( tag ) )
+        const QString &value = mit.value();
+        if( !value.isEmpty() )
         {
-            const QString &value = mit.value();
-            QLabel *label = new QLabel( value, this );
-            label->setToolTip( value );
-            layout->addRow( i18n( "<b>%1:</b>", tag ), label );
+            const QString &tag = mit.key();
+            QString name;
+
+            #define TAGHAS(s) (tag.compare(QLatin1String(s)) == 0)
+            if( TAGHAS("artist") )        name = i18nc( "@item::intable", "Artist" );
+            else if( TAGHAS("country") )  name = i18nc( "@item::intable", "Country" );
+            else if( TAGHAS("date") )     name = i18nc( "@item::intable", "Date" );
+            else if( TAGHAS("format") )   name = i18nc( "@item::intable File Format", "Format" );
+            else if( TAGHAS("height") )   name = i18nc( "@item::intable Image Height", "Height" );
+            else if( TAGHAS("name") )     name = i18nc( "@item::intable Album Title", "Title" );
+            else if( TAGHAS("type") )     name = i18nc( "@item::intable Release Type", "Type" );
+            else if( TAGHAS("released") ) name = i18nc( "@item::intable Release Date", "Released" );
+            else if( TAGHAS("size") )     name = i18nc( "@item::intable File Size", "Size" );
+            else if( TAGHAS("source") )   name = i18nc( "@item::intable Cover Provider", "Source" );
+            else if( TAGHAS("title") )    name = i18nc( "@item::intable Album Title", "Title" );
+            else if( TAGHAS("width") )    name = i18nc( "@item::intable Image Width", "Width" );
+            #undef TAGHAS
+
+            if( !name.isEmpty() )
+            {
+                QLabel *label = new QLabel( value, this );
+                label->setToolTip( value );
+                layout->addRow( QString("<b>%1:</b>").arg(name), label );
+            }
         }
         ++mit;
     }
@@ -840,13 +856,15 @@ void CoverFoundSideBar::updateMetaTable()
         const QString &toolUrl = refShowUrl.isEmpty() ? refUrl : refShowUrl;
         const QString &tooltip = qfm.elidedText( toolUrl, Qt::ElideMiddle, 350 );
         const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
-        const QString &url     = i18n( "<a href=\"%1\">link</a>", decoded );
+        const QString &url     = QString( "<a href=\"%1\">%2</a>" )
+                                    .arg( decoded )
+                                    .arg( i18nc("@item::intable URL", "link") );
 
         QLabel *label = new QLabel( url, this );
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );
-        layout->addRow( i18n( "<b>URL:</b>" ), label );
+        layout->addRow( QString( "<b>%1:</b>" ).arg( i18nc("@item::intable", "URL") ), label );
     }
 }
 
