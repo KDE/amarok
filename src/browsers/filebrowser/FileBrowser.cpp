@@ -159,6 +159,8 @@ FileBrowser::itemActivated( const QModelIndex &index )
         {
             m_fileView->setModel( m_mimeFilterProxyModel );
             m_fileView->header()->setVisible( true );
+            readConfig();
+            m_showingPlaces = false;
 
             //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
             //as that will break remote, trash, ...
@@ -166,12 +168,9 @@ FileBrowser::itemActivated( const QModelIndex &index )
                 placesUrl = placesUrl.replace( "file://", QString() );
             
             setDir( placesUrl );
-            m_showingPlaces = false;
         }
         else
         {
-
-
             //check if this url needs setup/mounting
             if( index.data( KFilePlacesModel::SetupNeededRole ).value<bool>() )
             {
@@ -181,9 +180,10 @@ FileBrowser::itemActivated( const QModelIndex &index )
             {
                 m_fileView->setModel( m_mimeFilterProxyModel );
                 m_fileView->header()->setVisible( true );
+                readConfig();
+                m_showingPlaces = false;
             }
         }
-
     }
     else
     {
@@ -393,6 +393,7 @@ FileBrowser::setDir( const QString &dir )
            m_fileView->setModel( m_mimeFilterProxyModel );
            m_fileView->header()->setVisible( true );
            m_showingPlaces = false;
+           readConfig(); // read config so the header state is restored
        }
            
        addItemActivated( dir );  //This function just happens to do exactly what we need
@@ -460,6 +461,8 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
         {
             m_fileView->setModel( m_mimeFilterProxyModel );
             m_fileView->header()->setVisible( true );
+            readConfig();
+            m_showingPlaces = false;
 
             //needed to make folder urls look nice. We cannot just strip all protocol headers
             //as that will break remote, trash, ...
@@ -467,7 +470,6 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
                 placesUrl = placesUrl.replace( "file://", QString() );
 
             setDir( placesUrl );
-            m_showingPlaces = false;
         }
     }
 }
