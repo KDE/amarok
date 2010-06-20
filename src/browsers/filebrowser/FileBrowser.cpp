@@ -19,114 +19,184 @@
 #define DEBUG_PREFIX "FileBrowser"
 
 #include "FileBrowser.h"
+#include "FileBrowser_p.h"
+#include "FileBrowser_p.moc"
 
+#include "core/support/Debug.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"
 #include "playlist/PlaylistModelStack.h"
+#include "widgets/SearchWidget.h"
 
+#include <KAction>
 #include <KComboBox>
 #include <KDirLister>
+#include <KFilePlacesModel>
 #include <KSaveFile>
+#include <KStandardAction>
 #include <KStandardDirs>
 #include <KToolBar>
 
 #include <QHeaderView>
-#include <QDir>
 
-FileBrowser::FileBrowser( const char * name, QWidget *parent )
-    : BrowserCategory( name, parent )
-    , m_placesModel( 0 )
-    , m_showingPlaces( false )
+FileBrowser::Private::Private( FileBrowser *parent )
+    : placesModel( 0 )
+    , showingPlaces( false )
+    , q( parent )
 {
-    DEBUG_BLOCK;
-    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
+    KHBox *topHBox = new KHBox( q );
 
-    KHBox * topHBox = new KHBox( this );
-
-    KToolBar * navigationToolbar = new KToolBar( topHBox );
+    KToolBar *navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     navigationToolbar->setIconDimensions( 16 );
 
-    //add navigation actions
-    m_upAction = new QAction( KIcon( "go-up" ), i18nc( "Go one level up in the directory hierarchy", "Up one level" ), this );
-    navigationToolbar->addAction( m_upAction );
-    connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
-    m_upAction->setShortcut(Qt::ALT + Qt::Key_Up );
+    upAction = KStandardAction::up( q, SLOT(up()), topHBox );
+    homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
+    placesAction = new KAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), topHBox );
 
-    m_homeAction = new QAction( KIcon( "user-home" ), i18nc( "Go to the home directory",  "Home" ), this );
-    navigationToolbar->addAction( m_homeAction );
-    connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
+    navigationToolbar->addAction( upAction );
+    navigationToolbar->addAction( homeAction );
+    navigationToolbar->addAction( placesAction );
 
-    m_placesAction = new QAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), this );
-    navigationToolbar->addAction( m_placesAction );
-    connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
+    SearchWidget *searchWidget = new SearchWidget( topHBox, q, false );
+    searchWidget->setClickMessage( i18n( "Filter Files" ) );
 
-    m_searchWidget = new SearchWidget( topHBox, this, false );
-    m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
+    filterTimer.setSingleShot( true );
+    fileView = new FileView( q );
+}
 
-    m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+FileBrowser::Private::~Private()
+{
+    writeConfig();
+}
 
-    m_fileView = new FileView( this );
+void
+FileBrowser::Private::readConfig()
+{
+    const QString homePath = QDir::homePath();
+    debug() << "home path: " <<  homePath;
+    QDir currentDirectory = Amarok::config( "File Browser" ).readEntry( "Current Directory", homePath );
+
+    // fall back to $HOME if config dir has since disappeared
+    if( !currentDirectory.exists() )
+        currentDirectory = homePath;
+    kdirModel->dirLister()->openUrl( KUrl( currentDirectory.path() ) );
+    currentPath = currentDirectory.path();
+
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if( file.open( QIODevice::ReadOnly ) )
+    {
+        fileView->header()->restoreState( file.readAll() );
+        file.close();
+    }
+    else
+    {
+        // default layout
+        fileView->hideColumn( 3 );
+        fileView->hideColumn( 4 );
+        fileView->hideColumn( 5 );
+        fileView->hideColumn( 6 );
+        fileView->sortByColumn( 0, Qt::AscendingOrder );
+    }
+}
+
+void
+FileBrowser::Private::writeConfig()
+{
+    QString localFile = kdirModel->dirLister()->url().toLocalFile();
+    Amarok::config( "File Browser" ).writeEntry( "Current Directory", localFile );
+
+    //save the state of the header (column size and order). Yay, another QByteArray thingie...
+    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if( file.open() )
+        file.write( fileView->header()->saveState() );
+    else
+        debug() << "unable to save header state";
+
+    file.finalize();
+}
+
+QStringList
+FileBrowser::Private::siblingsForDir( const QString &path )
+{
+    // includes the dir itself
+    debug() << "path: " << path;
+    QStringList siblings;
+    QDir dir( path );
+    if( !dir.isRoot() )
+    {
+        dir.cdUp();
+        siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    }
+    return siblings;
+}
+
+FileBrowser::FileBrowser( const char * name, QWidget *parent )
+    : BrowserCategory( name, parent )
+    , d( new FileBrowser::Private( this ) )
+{
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
     QTimer::singleShot( 0, this, SLOT(initView()) );
 }
 
 void
 FileBrowser::initView()
 {
-    m_kdirModel = new DirBrowserModel( this );
+    d->kdirModel = new DirBrowserModel( this );
 
-    m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
-    m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
-    m_mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    m_mimeFilterProxyModel->setDynamicSortFilter( true );
+    d->mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
+    d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
+    d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    d->mimeFilterProxyModel->setDynamicSortFilter( true );
 
-    m_fileView->setModel( m_mimeFilterProxyModel );
-    readConfig();
+    d->fileView->setModel( d->mimeFilterProxyModel );
+    d->readConfig();
 
-    m_fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
-    m_fileView->header()->setVisible( true );
-    m_fileView->setDragEnabled( true );
-    m_fileView->setSortingEnabled( true );
-    m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
+    d->fileView->header()->setVisible( true );
+    d->fileView->setDragEnabled( true );
+    d->fileView->setSortingEnabled( true );
+    d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-    for( int i = 0, columns = m_fileView->model()->columnCount(); i < columns ; ++i )
+    for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
-        QAction *action = new QAction( m_fileView->model()->headerData( i, Qt::Horizontal ).toString(), m_fileView->header() );
-        m_fileView->header()->addAction( action );
-        m_columnActions.append( action );
+        QAction *action = new QAction( d->fileView->model()->headerData( i, Qt::Horizontal ).toString(), d->fileView->header() );
+        d->fileView->header()->addAction( action );
+        d->columnActions.append( action );
         action->setCheckable( true );
-        if( !m_fileView->isColumnHidden( i ) )
+        if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
         connect( action, SIGNAL( toggled(bool) ), this, SLOT(toggleColumn(bool) ) );
     }
 
-    connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    connect( d->fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
     if( !KGlobalSettings::singleClick() )
-        connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+        connect( d->fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+
+    connect( d->placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
+    connect( &d->filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 }
 
 FileBrowser::~FileBrowser()
 {
-    writeConfig();
+    delete d;
 }
 
 void
 FileBrowser::toggleColumn( bool toggled )
 {
-    int index = m_columnActions.indexOf( qobject_cast< QAction* >( sender() ) );
+    int index = d->columnActions.indexOf( qobject_cast< QAction* >( sender() ) );
     if( index != -1 )
     {
         if( toggled )
-            m_fileView->showColumn( index );
+            d->fileView->showColumn( index );
         else
-            m_fileView->hideColumn( index );
+            d->fileView->hideColumn( index );
     }
 }
 
@@ -140,10 +210,10 @@ FileBrowser::polish()
 QString
 FileBrowser::currentDir()
 {
-    if( m_showingPlaces )
+    if( d->showingPlaces )
         return "places:";
     else
-        return m_currentPath;
+        return d->currentPath;
 }
 
 void
@@ -151,23 +221,23 @@ FileBrowser::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
 
-    if( m_showingPlaces )
+    if( d->showingPlaces )
     {
         debug() << "place activated!";
         QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
 
         if( !placesUrl.isEmpty() )
         {
-            m_fileView->setModel( m_mimeFilterProxyModel );
-            m_fileView->header()->setVisible( true );
-            readConfig();
-            m_showingPlaces = false;
+            d->fileView->setModel( d->mimeFilterProxyModel );
+            d->fileView->header()->setVisible( true );
+            d->readConfig();
+            d->showingPlaces = false;
 
             //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
             //as that will break remote, trash, ...
             if( placesUrl.startsWith( "file://" ) )
                 placesUrl = placesUrl.replace( "file://", QString() );
-            
+
             setDir( placesUrl );
         }
         else
@@ -175,14 +245,14 @@ FileBrowser::itemActivated( const QModelIndex &index )
             //check if this url needs setup/mounting
             if( index.data( KFilePlacesModel::SetupNeededRole ).value<bool>() )
             {
-                m_placesModel->requestSetup( index );
+                d->placesModel->requestSetup( index );
             }
             else
             {
-                m_fileView->setModel( m_mimeFilterProxyModel );
-                m_fileView->header()->setVisible( true );
-                readConfig();
-                m_showingPlaces = false;
+                d->fileView->setModel( d->mimeFilterProxyModel );
+                d->fileView->header()->setVisible( true );
+                d->readConfig();
+                d->showingPlaces = false;
             }
         }
     }
@@ -190,7 +260,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl filePath = file.url();
-        m_currentPath = filePath.path();
+        d->currentPath = filePath.path();
 
         debug() << "activated url: " << filePath.url();
         debug() << "filename: " << filePath.fileName();
@@ -217,78 +287,30 @@ FileBrowser::slotSetFilterTimeout()
     KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
     if( comboBox )
     {
-        m_currentFilter = comboBox->currentText();
-        m_filterTimer.stop();
-        m_filterTimer.start( 500 );
+        d->currentFilter = comboBox->currentText();
+        d->filterTimer.stop();
+        d->filterTimer.start( 500 );
     }
 }
 
 void
 FileBrowser::slotFilterNow()
 {
-    m_mimeFilterProxyModel->setFilterFixedString( m_currentFilter );
+    d->mimeFilterProxyModel->setFilterFixedString( d->currentFilter );
 
     QStringList filters;
-    filters << m_currentFilter;
+    filters << d->currentFilter;
 }
-
-void
-FileBrowser::readConfig()
-{
-    DEBUG_BLOCK
-
-    debug() << "home path: " <<  QDir::homePath();
-    QDir currentDirectory = Amarok::config( "File Browser" ).readEntry( "Current Directory",
-                                                                        QDir::homePath() );
-    // fall back to $HOME if config dir has since disappeared
-    if( !currentDirectory.exists()  )
-        currentDirectory = QDir::homePath();
-    m_kdirModel->dirLister()->openUrl( KUrl( currentDirectory.path() ) );
-    m_currentPath = currentDirectory.path();
-
-    QFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if( file.open( QIODevice::ReadOnly ) )
-    {
-        m_fileView->header()->restoreState( file.readAll() );
-        file.close();
-    }
-    else
-    {
-        // default layout
-        m_fileView->hideColumn( 3 );
-        m_fileView->hideColumn( 4 );
-        m_fileView->hideColumn( 5 );
-        m_fileView->hideColumn( 6 );
-        m_fileView->sortByColumn( 0, Qt::AscendingOrder );
-    }
-}
-
-void FileBrowser::writeConfig()
-{
-    DEBUG_BLOCK
-    KConfigGroup config = Amarok::config( "File Browser" );
-    config.writeEntry( "Current Directory", m_kdirModel->dirLister()->url().toLocalFile() );
-
-    //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if( file.open() )
-        file.write( m_fileView->header()->saveState() );
-    else
-        debug() << "unable to save header state";
-
-    file.finalize();
-}
-
 
 void
 FileBrowser::addItemActivated( const QString &callbackString )
 {
     DEBUG_BLOCK
-    
+
     debug() << "callback: " << callbackString;
-    
-    m_kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
-    m_currentPath = callbackString;
+
+    d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
+    d->currentPath = callbackString;
     setupAddItems();
     activate();
 }
@@ -298,20 +320,20 @@ FileBrowser::setupAddItems()
 {
     DEBUG_BLOCK
     clearAdditionalItems();
-    
-    QStringList parts = m_currentPath.split( QDir::separator() );
+
+    QStringList parts = d->currentPath.split( QDir::separator() );
     QString partialPath;
-    debug() << "current path" << m_currentPath;
+    debug() << "current path" << d->currentPath;
 
 
     /*
      * A URL like /home/user/Music/Prince is shown as [Home] > [Music] > [Prince]
      */
-    if( m_currentPath.startsWith( QDir::homePath() ) )
+    if( d->currentPath.startsWith( QDir::homePath() ) )
     {
-        int idx = m_currentPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
+        int idx = d->currentPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
         // everything after the homedir e.g., Music/Prince
-        QString everything_else = m_currentPath.mid( idx );
+        QString everything_else = d->currentPath.mid( idx );
         debug() << "everything else" << everything_else;
         // replace parts with everything else
         parts = everything_else.split( QDir::separator() ) ;
@@ -319,7 +341,7 @@ FileBrowser::setupAddItems()
         partialPath = QDir::homePath();
 
         // Add the [Home]
-        QStringList siblings = siblingsForDir( QDir::homePath() );
+        QStringList siblings = d->siblingsForDir( QDir::homePath() );
         addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
     }
 
@@ -328,38 +350,20 @@ FileBrowser::setupAddItems()
         if( !part.isEmpty() )
         {
             partialPath += '/' + part;
-            QStringList siblings = siblingsForDir( partialPath );
+            QStringList siblings = d->siblingsForDir( partialPath );
             addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
         }
     }
-}
-
-QStringList
-FileBrowser::siblingsForDir( const QString &path )
-{
-    // includes the dir itself
-    DEBUG_BLOCK
-    debug() << "path: " << path;
-    QStringList siblings;
-
-    QDir dir( path );
-    QString currentName = dir.dirName();
-    if( !dir.isRoot() )
-    {
-        dir.cdUp();
-        siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
-    }
-    return siblings;
 }
 
 void
 FileBrowser::reActivate()
 {
     DEBUG_BLOCK
-    
+
     //go to root:
-    m_kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
-    m_currentPath = QDir::rootPath();
+    d->kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
+    d->currentPath = QDir::rootPath();
     setupAddItems();
     activate();
 }
@@ -381,17 +385,17 @@ FileBrowser::setDir( const QString &dir )
         showPlaces();
     else
     {
-        
+
        //if we are currently showing "places" we need to remember to change the model
        //back to the regular file model
-       if( m_showingPlaces )
+       if( d->showingPlaces )
        {
-           m_fileView->setModel( m_mimeFilterProxyModel );
-           m_fileView->header()->setVisible( true );
-           m_showingPlaces = false;
-           readConfig(); // read config so the header state is restored
+           d->fileView->setModel( d->mimeFilterProxyModel );
+           d->fileView->header()->setVisible( true );
+           d->showingPlaces = false;
+           d->readConfig(); // read config so the header state is restored
        }
-           
+
        addItemActivated( dir );  //This function just happens to do exactly what we need
 
     }
@@ -401,11 +405,11 @@ void
 FileBrowser::up()
 {
     DEBUG_BLOCK
-    debug() << "current dir: " << m_currentPath;
+    debug() << "current dir: " << d->currentPath;
 
-    QDir dir( m_currentPath );
-    
-    if( !dir.exists( m_currentPath ) )
+    QDir dir( d->currentPath );
+
+    if( !dir.exists( d->currentPath ) )
     {
         //assume that we are browsing "places" where "up" does not really work
         //so just bounce back to the places root
@@ -415,7 +419,7 @@ FileBrowser::up()
     }
     else
     {
-        KUrl url( m_currentPath);
+        KUrl url( d->currentPath);
         setDir( url.upUrl().path() );
     }
 }
@@ -429,20 +433,20 @@ FileBrowser::home()
 void
 FileBrowser::showPlaces()
 {
-    if( !m_placesModel )
+    if( !d->placesModel )
     {
-        m_placesModel = new KFilePlacesModel( this );
-        m_placesModel->setObjectName( "PLACESMODEL");
-        connect( m_placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
+        d->placesModel = new KFilePlacesModel( this );
+        d->placesModel->setObjectName( "PLACESMODEL");
+        connect( d->placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
     }
 
     clearAdditionalItems();
 
     QStringList siblings;
     addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
-    m_fileView->setModel( m_placesModel );
-    m_fileView->header()->setVisible( false );
-    m_showingPlaces = true;
+    d->fileView->setModel( d->placesModel );
+    d->fileView->header()->setVisible( false );
+    d->showingPlaces = true;
 }
 
 void
@@ -455,10 +459,10 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
 
         if( !placesUrl.isEmpty() )
         {
-            m_fileView->setModel( m_mimeFilterProxyModel );
-            m_fileView->header()->setVisible( true );
-            readConfig();
-            m_showingPlaces = false;
+            d->fileView->setModel( d->mimeFilterProxyModel );
+            d->fileView->header()->setVisible( true );
+            d->readConfig();
+            d->showingPlaces = false;
 
             //needed to make folder urls look nice. We cannot just strip all protocol headers
             //as that will break remote, trash, ...
