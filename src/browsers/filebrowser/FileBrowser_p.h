@@ -44,6 +44,8 @@ public:
     void writeConfig();
     QStringList siblingsForDir( const QString &path );
 
+    void slotSaveHeaderState();
+
     QList< QAction * > columnActions; //!< Maintains the mapping action<->column
 
     DirBrowserModel *kdirModel;

@@ -108,15 +108,6 @@ FileBrowser::Private::writeConfig()
 {
     QString localFile = kdirModel->dirLister()->url().toLocalFile();
     Amarok::config( "File Browser" ).writeEntry( "Current Directory", localFile );
-
-    //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if( file.open() )
-        file.write( fileView->header()->saveState() );
-    else
-        debug() << "unable to save header state";
-
-    file.finalize();
 }
 
 QStringList
@@ -132,6 +123,22 @@ FileBrowser::Private::siblingsForDir( const QString &path )
         siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
     }
     return siblings;
+}
+
+void
+FileBrowser::Private::slotSaveHeaderState()
+{
+    if( !showingPlaces )
+    {
+        //save the state of the header (column size and order). Yay, another QByteArray thingie...
+        KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+        if( file.open() )
+            file.write( fileView->header()->saveState() );
+        else
+            debug() << "unable to save header state";
+
+        file.finalize();
+    }
 }
 
 FileBrowser::FileBrowser( const char * name, QWidget *parent )
@@ -155,13 +162,12 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
-    d->readConfig();
-
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
     d->fileView->header()->setVisible( true );
     d->fileView->setDragEnabled( true );
     d->fileView->setSortingEnabled( true );
     d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    d->readConfig();
 
     for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
@@ -174,6 +180,7 @@ FileBrowser::initView()
         connect( action, SIGNAL( toggled(bool) ), this, SLOT(toggleColumn(bool) ) );
     }
 
+    connect( d->fileView->header(), SIGNAL(geometriesChanged()), this, SLOT(slotSaveHeaderState()) );
     connect( d->fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
     if( !KGlobalSettings::singleClick() )
         connect( d->fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
@@ -385,19 +392,17 @@ FileBrowser::setDir( const QString &dir )
         showPlaces();
     else
     {
-
        //if we are currently showing "places" we need to remember to change the model
        //back to the regular file model
        if( d->showingPlaces )
        {
            d->fileView->setModel( d->mimeFilterProxyModel );
            d->fileView->header()->setVisible( true );
-           d->showingPlaces = false;
            d->readConfig(); // read config so the header state is restored
+           d->showingPlaces = false;
        }
 
        addItemActivated( dir );  //This function just happens to do exactly what we need
-
     }
 }
 
@@ -444,9 +449,9 @@ FileBrowser::showPlaces()
 
     QStringList siblings;
     addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
+    d->showingPlaces = true;
     d->fileView->setModel( d->placesModel );
     d->fileView->header()->setVisible( false );
-    d->showingPlaces = true;
 }
 
 void
