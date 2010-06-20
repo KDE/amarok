@@ -30,6 +30,7 @@
 
 #include <KComboBox>
 #include <KDirLister>
+#include <KSaveFile>
 #include <KStandardDirs>
 #include <KToolBar>
 
@@ -267,20 +268,15 @@ void FileBrowser::writeConfig()
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config( "File Browser" );
     config.writeEntry( "Current Directory", m_kdirModel->dirLister()->url().toLocalFile() );
-    config.sync();
 
     //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    QFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-    {
+    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if( file.open() )
         file.write( m_fileView->header()->saveState() );
+    else
+        debug() << "unable to save header state";
 
-        #ifdef Q_OS_UNIX  // fsync() only exists on Posix
-        fsync( file.handle() );
-        #endif
-
-        file.close();
-    }
+    file.finalize();
 }
 
 
