@@ -23,6 +23,7 @@
 #include "FileBrowser.h"
 
 #include <KDirModel>
+#include <KFilePlacesModel>
 #include <KGlobalSettings>
 
 #include <QFontMetrics>
@@ -87,6 +88,38 @@ public:
             return QSize( 1, rowHeight );
         else
             return KDirModel::data( index, role );
+    }
+
+private slots:
+    void updateRowHeight()
+    {
+        QFont font;
+        rowHeight = QFontMetrics( font ).height() + 4;
+    }
+
+private:
+    int rowHeight;
+};
+
+class FilePlacesModel : public KFilePlacesModel
+{
+    Q_OBJECT
+
+public:
+    FilePlacesModel( QObject *parent = 0 ) : KFilePlacesModel( parent )
+    {
+        updateRowHeight();
+        connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(updateRowHeight()) );
+    }
+
+    virtual ~FilePlacesModel() {}
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    {
+        if( role == Qt::SizeHintRole )
+            return QSize( 1, rowHeight );
+        else
+            return KFilePlacesModel::data( index, role );
     }
 
 private slots:

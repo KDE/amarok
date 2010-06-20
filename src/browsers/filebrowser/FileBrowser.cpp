@@ -34,7 +34,6 @@
 #include <KAction>
 #include <KComboBox>
 #include <KDirLister>
-#include <KFilePlacesModel>
 #include <KSaveFile>
 #include <KStandardAction>
 #include <KStandardDirs>
@@ -440,7 +439,7 @@ FileBrowser::showPlaces()
 {
     if( !d->placesModel )
     {
-        d->placesModel = new KFilePlacesModel( this );
+        d->placesModel = new FilePlacesModel( this );
         d->placesModel->setObjectName( "PLACESMODEL");
         connect( d->placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
     }
