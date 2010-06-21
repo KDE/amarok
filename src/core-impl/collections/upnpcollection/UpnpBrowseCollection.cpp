@@ -172,7 +172,7 @@ DEBUG_BLOCK
 
     // TODO check if Meta data is actually available
 
-    INSERT_METADATA( Artist, entry.stringValue( KIO::UPNP_CREATOR ) );
+    INSERT_METADATA( Artist, entry.stringValue( KIO::UPNP_ARTIST ) );
     INSERT_METADATA( Album, entry.stringValue( KIO::UPNP_ALBUM ) );
     INSERT_METADATA( Genre, entry.stringValue( KIO::UPNP_GENRE ) );
 
