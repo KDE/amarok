@@ -18,18 +18,6 @@
 #define FILEBROWSERMKII_H
 
 #include "BrowserCategory.h"
-#include "FileView.h"
-#include "MimeTypeFilterProxyModel.h"
-
-#include "widgets/SearchWidget.h"
-
-#include <KDirModel>
-#include <KFilePlacesModel>
-
-#include <QFontMetrics>
-#include <QTimer>
-
-class DirBrowserModel;
 
 class FileBrowser : public BrowserCategory
 {
@@ -97,51 +85,10 @@ private slots:
     void initView();
 
 private:
-    void readConfig();
-    void writeConfig();
+    class Private;
+    Private *const d;
 
-    QList< QAction * >       m_columnActions; //!< Maintains the mapping action<->column
-
-    QStringList siblingsForDir( const QString &path );
-    
-    SearchWidget             *m_searchWidget;
-    DirBrowserModel          *m_kdirModel;
-    KFilePlacesModel         *m_placesModel;
-    
-    MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
-
-    QTimer                    m_filterTimer;
-    QString                   m_currentFilter;
-    QString                   m_currentPath;
-    FileView                 *m_fileView;
-
-    QAction                  *m_upAction;
-    QAction                  *m_homeAction;
-    QAction                  *m_placesAction;
-
-    bool                      m_showingPlaces;
-};
-
-class DirBrowserModel : public KDirModel
-{
-    Q_OBJECT
-
-public:
-    DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent ) {}
-    virtual ~DirBrowserModel() {}
-
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
-    {
-        if( role == Qt::SizeHintRole )
-        {
-            QFont font;
-            return QSize( 1, QFontMetrics( font ).height() + 4 );
-        }
-        else
-        {
-            return KDirModel::data( index, role );
-        }
-    }
+    Q_PRIVATE_SLOT( d, void slotSaveHeaderState() )
 };
 
 #endif // FILEBROWSERMKII_H
