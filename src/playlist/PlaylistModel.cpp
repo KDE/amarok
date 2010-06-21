@@ -68,6 +68,8 @@ Playlist::Model::~Model()
 
     // Save current playlist
     exportPlaylist( defaultPlaylistPath() );
+
+    qDeleteAll( m_items );
 }
 
 QVariant

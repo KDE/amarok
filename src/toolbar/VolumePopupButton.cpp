@@ -38,9 +38,9 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     , Engine::EngineObserver( The::engineController() )
 {
     //create the volume popup
-    m_volumeMenu = new QMenu( 0 );
+    m_volumeMenu = new QMenu( this );
 
-    KVBox * mainBox = new KVBox( 0 );
+    KVBox * mainBox = new KVBox( this );
 
     m_volumeLabel= new QLabel( mainBox );
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
@@ -66,7 +66,7 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
     muteBar->setIconSize( QSize( 16, 16 ) );
-    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
+    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), muteBar );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 

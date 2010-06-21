@@ -65,6 +65,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 CurrentTrack::~CurrentTrack()
 {
     dataEngine( "amarok-current" )->disconnectSource( "current", this );
+    delete m_tabBar;
 }
 
 void

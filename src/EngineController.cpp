@@ -138,7 +138,7 @@ EngineController::initializePhonon()
     QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
     foreach ( const Phonon::EffectDescription &mDescr, mEffectDescriptions ) {
         if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
-            m_equalizer = new Phonon::Effect( mDescr );
+            m_equalizer = new Phonon::Effect( mDescr, this );
             eqUpdate();
             }
     }

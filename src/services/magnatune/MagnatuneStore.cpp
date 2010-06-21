@@ -139,7 +139,8 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 MagnatuneStore::~MagnatuneStore()
 {
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
-    //hm, memory handling?
+    delete m_registry;
+    delete m_collection;
 }
 
 

@@ -64,6 +64,7 @@ Context::Applet::~Applet( )
         Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
     if ( m_animationIdOff != 0 )
         Plasma::Animator::self()->stopCustomAnimation( m_animationIdOff );
+    delete m_textBackground;
 }
 
 

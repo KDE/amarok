@@ -378,11 +378,11 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         if( d->runningQueries.contains( parent ) )
             return;
 
-        if ( level > m_levelType.count() )
+        if( level > m_levelType.count() || parent->isVariousArtistItem() || parent->isNoLabelItem() )
+        {
+            qm->deleteLater();
             return;
-
-        if( parent->isVariousArtistItem() || parent->isNoLabelItem() )
-            return;
+        }
 
         if ( level == m_levelType.count() )
             qm->setQueryType( Collections::QueryMaker::Track );
@@ -788,6 +788,7 @@ CollectionTreeItemModelBase::queryDone()
         emit allQueriesFinished();
         m_timeLine->stop();
     }
+    qm->deleteLater();
 }
 
 void
