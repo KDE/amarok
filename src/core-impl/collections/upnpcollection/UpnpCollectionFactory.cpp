@@ -124,6 +124,8 @@ void UpnpCollectionFactory::createCollection( QString udn )
 
    m_searchOptions.clear();
    if( job->exec() ) {
+       if( job->error() && job->error() == KIO::ERR_COULD_NOT_MOUNT )
+           return;
        if( m_searchOptions.contains( "upnp:class" )
            && m_searchOptions.contains( "dc:title" )
            && m_searchOptions.contains( "upnp:artist" )
