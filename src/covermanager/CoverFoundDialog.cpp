@@ -23,6 +23,7 @@
 #include "AlbumBreadcrumbWidget.h"
 #include "core/support/Amarok.h"
 #include "CoverViewDialog.h"
+#include "NetworkAccessManagerProxy.h"
 #include "PixmapViewer.h"
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
@@ -30,7 +31,6 @@
 #include <KComboBox>
 #include <KConfigGroup>
 #include <KFileDialog>
-#include <KIO/Job>
 #include <KLineEdit>
 #include <KListWidget>
 #include <KMessageBox>
@@ -45,6 +45,8 @@
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QMenu>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QScrollArea>
 #include <QSplitter>
 #include <QTabWidget>
@@ -731,7 +733,6 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
     : QListWidgetItem( parent )
     , m_metadata( data )
     , m_dialog( 0 )
-    , m_progress( 0 )
 {
     switch( imageSize )
     {
@@ -751,14 +752,14 @@ CoverFoundItem::CoverFoundItem( const QPixmap cover,
     setCaption();
     setFont( KGlobalSettings::smallestReadableFont() );
     setTextAlignment( Qt::AlignHCenter | Qt::AlignTop );
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(slotFetchResult(QNetworkReply*)) );
 }
 
 CoverFoundItem::~CoverFoundItem()
 {
-    delete m_progress;
-    m_progress = 0;
     delete m_dialog;
-    m_dialog = 0;
 }
 
 bool CoverFoundItem::operator==( const CoverFoundItem &other ) const
@@ -776,41 +777,54 @@ bool CoverFoundItem::fetchBigPix()
     DEBUG_BLOCK
 
     const KUrl url( m_metadata.value( "normalarturl" ) );
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result(KJob*)), SLOT(slotFetchResult(KJob*)) );
-
-    if( !url.isValid() || !job )
+    if( !url.isValid() )
         return false;
 
+    QNetworkRequest req( url );
+    QNetworkReply *reply = The::networkAccessManager()->get( req );
+
     if( !m_dialog )
-        m_dialog = new KDialog( listWidget() );
-    m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
-    m_dialog->setButtons( KDialog::Cancel );
-    m_dialog->setDefaultButton( KDialog::Cancel );
-    m_dialog->setWindowModality( Qt::WindowModal );
+    {
+        m_dialog = new KProgressDialog( listWidget() );
+        m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
+        m_dialog->setLabelText( i18n( "Download Progress" ) );
+        m_dialog->setModal( true );
+        m_dialog->setAllowCancel( true );
+        m_dialog->setAutoClose( false );
+        m_dialog->setAutoReset( true );
+        m_dialog->progressBar()->setMinimum( 0 );
+        m_dialog->setMinimumWidth( 300 );
+        connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
+                        SLOT(downloadProgressed(qint64,qint64)) );
+    }
+    int result = m_dialog->exec();
+    bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
+    if( !success )
+    {
+        if( reply && reply->isRunning() )
+            reply->abort();
+    }
+    m_dialog->deleteLater();
+    reply->deleteLater();
+    return success;
+}
 
-    if( !m_progress )
-        m_progress = new KJobProgressBar( m_dialog, job );
-    m_progress->cancelButton()->hide();
-    m_progress->descriptionLabel()->hide();
-    connect( m_dialog, SIGNAL(cancelClicked()), m_progress, SLOT(cancel()) );
-    connect( m_dialog, SIGNAL(cancelClicked()), job, SLOT(kill()) );
-
-    m_dialog->setMainWidget( m_progress );
-    return ( m_dialog->exec() == QDialog::Accepted ) ? true : false;
+void CoverFoundItem::downloadProgressed( qint64 bytesReceived, qint64 bytesTotal )
+{
+    if( m_dialog )
+    {
+        m_dialog->progressBar()->setMaximum( bytesTotal );
+        m_dialog->progressBar()->setValue( bytesReceived );
+    }
 }
 
 void CoverFoundItem::display()
 {
-    bool success( false );
-    if( !hasBigPix() )
-        success = fetchBigPix();
-    else
-        success = true;
-
+    const bool success = hasBigPix() ? true : fetchBigPix();
     if( !success )
         return;
 
+    debug() << "Success!";
     const QPixmap pixmap = hasBigPix() ? m_bigPix : m_thumb;
     QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, listWidget() );
     dlg->show();
@@ -872,32 +886,29 @@ void CoverFoundItem::saveAs( Meta::AlbumPtr album )
     }
 }
 
-void CoverFoundItem::slotFetchResult( KJob *job )
+void CoverFoundItem::slotFetchResult( QNetworkReply *reply )
 {
+    const KUrl url = reply->request().url();
+    if( url != m_metadata.value( "normalarturl" ) )
+        return;
+
     QPixmap pixmap;
-    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    bool dataIsGood = pixmap.loadFromData( storedJob->data() );
-    if( dataIsGood )
+    QNetworkReply::NetworkError error = reply->error();
+    bool hasNoError = ( error == QNetworkReply::NoError );
+    if( hasNoError && pixmap.loadFromData( reply->readAll() ) )
     {
         m_bigPix = pixmap;
         emit pixmapChanged( m_bigPix );
+        m_dialog->accept();
     }
     else
     {
-        KMessageBox::error( listWidget(), i18n("Sorry, the cover image could not be retrieved.") );
+        const QString error = pixmap.isNull()
+                            ? i18n("Sorry, the cover image could not be retrieved.")
+                            : reply->errorString();
+        KMessageBox::error( listWidget(), error );
+        m_dialog->reject();
     }
-
-    if( m_dialog )
-    {
-        if( dataIsGood )
-            m_dialog->accept();
-        else
-            m_dialog->reject();
-
-        m_progress->deleteLater();
-        m_dialog->deleteLater();
-    }
-    storedJob->deleteLater();
 }
 
 void CoverFoundItem::setCaption()

@@ -19,6 +19,8 @@
 
 #include "amarok_export.h"
 
+#include <KUrl>
+
 #include <QGraphicsPixmapItem>
 
 //forward
@@ -40,7 +42,7 @@ class DragPixmapItem : public QObject, public QGraphicsPixmapItem
     public:
         DragPixmapItem( QGraphicsItem* parent = 0 );
 
-        void SetClickableUrl( QString );
+        void SetClickableUrl( const KUrl &url );
         
     protected slots:
         /**
@@ -52,7 +54,7 @@ class DragPixmapItem : public QObject, public QGraphicsPixmapItem
 
     private:
         QPoint    m_dragPos;
-        QString   m_url;
+        KUrl      m_url;
 };
 
 #endif // DROPPIXMAPITEM_H

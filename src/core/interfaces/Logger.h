@@ -23,6 +23,7 @@
 #include <QObject>
 
 class KJob;
+class QNetworkReply;
 
 namespace Amarok
 {
@@ -58,6 +59,19 @@ namespace Amarok
           * @param type The Qt connection type to use for the connection to the receiving slot. Defaults to Qt::AutoConnection
           */
         virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection ) = 0;
+
+        /**
+          * Informs the user about the progress of a network request.
+          * At the very least, the user is notified about the start and end of the request.
+          *
+          * @param reply The network reply object whose progress should be monitored
+          * @param text An additional text that will be part of the notification
+          * @param obj The object that will be called if the user cancels the network request. If not set, the progress will not be cancellable
+          * @param slot The slot on the given object that will be called if the user cancels the network request. No slot will be called if not set.
+          * The signal will be emitted from the GUI thread. The receiver may not make assumptions about the sender
+          * @param type The Qt connection type to use for the connection to the receiving slot. Defaults to Qt::AutoConnection
+          */
+        virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection ) = 0;
 
         /**
           * Sends a notification to the user.

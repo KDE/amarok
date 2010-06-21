@@ -19,8 +19,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ui_LastFmConfigWidget.h"
-
-#include "kdenetwork/knetworkaccessmanager.h"
+#include <kio/accessmanager.h>
 
 #include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/ws.h>
@@ -104,7 +103,7 @@ LastFmServiceSettings::testLogin()
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
-    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+    QNetworkAccessManager* qnam = new KIO::Integration::AccessManager( this );
     lastfm::setNetworkAccessManager( qnam );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );

@@ -18,6 +18,7 @@
 
 #include <QCoreApplication>
 #include <QMutexLocker>
+#include <QNetworkReply>
 
 ProxyLogger::ProxyLogger()
         : Amarok::Logger()
@@ -125,6 +126,20 @@ ProxyLogger::newProgressOperation( KJob *job, const QString &text, QObject *obj,
 }
 
 void
+ProxyLogger::newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+{
+    QMutexLocker locker( &m_lock );
+    ProgressData data;
+    data.reply = reply;
+    data.text = text;
+    data.object = obj;
+    data.slot = slot;
+    data.type = type;
+    m_progressQueue.enqueue( data );
+    startTimer();
+}
+
+void
 ProxyLogger::forwardNotifications()
 {
     QMutexLocker locker( &m_lock );
@@ -145,6 +160,10 @@ ProxyLogger::forwardNotifications()
             if( d.job )
             {
                 m_logger->newProgressOperation( d.job, d.text, d.object, d.object ? d.slot : 0 , d.type );
+            }
+            else if( d.reply )
+            {
+                m_logger->newProgressOperation( d.reply, d.text, d.object, d.object ? d.slot : 0 , d.type );
             }
         }
     }

@@ -17,9 +17,12 @@
 #include "AmpacheServiceCollection.h"
 
 #include "AmpacheServiceQueryMaker.h"
+#include "NetworkAccessManagerProxy.h"
 
 #include <KLocale>
 #include <threadweaver/ThreadWeaver.h>
+
+#include <QNetworkReply>
 
 using namespace Collections;
 
@@ -146,7 +149,7 @@ AmpacheTrackForUrlWorker::~AmpacheTrackForUrlWorker()
 void
 AmpacheTrackForUrlWorker::run()
 {
-    //     DEBUG_BLOCK;
+    // DEBUG_BLOCK;
 
     m_urlTrack = 0;
     m_urlAlbum = 0;
@@ -162,24 +165,19 @@ AmpacheTrackForUrlWorker::run()
     . arg(  m_server,  m_sessionId,  QUrl::toPercentEncoding( mUrl.url() ) );
     //     debug() << "request url: " << requestUrl;
 
-    m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
-    if ( !m_storedTransferJob->exec() )
+    QNetworkRequest req( requestUrl );
+    QNetworkReply *reply = The::networkAccessManager()->get( req );
+
+    if( reply->waitForReadyRead(-1) )
     {
-        if( m_storedTransferJob->error() == 401 ) {
+        if( reply->error() == QNetworkReply::ContentAccessDenied )
+        {
             debug() << "Trying to re-authenticate Ampache..";
             emit authenticationNeeded();
-
-            m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo ); //Second try..
-//             if( !m_storedTransferJob->exec() )
-//                 return TrackPtr();
         }
-//         else
-//             return TrackPtr();
     }
-
-    parseTrack( m_storedTransferJob->data() );
-    m_storedTransferJob->deleteLater();
-
+    parseTrack( reply->readAll() );
     mTrack = Meta::TrackPtr( m_urlTrack );
     mProxy->updateTrack( mTrack );
+    reply->deleteLater();
 }

@@ -22,7 +22,6 @@
 
 //Kde
 #include<KUrl>
-#include <KIO/Job>
 #include <ksqueezedtextlabel.h>
 
 //Qt
@@ -33,6 +32,7 @@
 class QLabel;
 class QGraphicsScene;
 class QGridLayout;
+class QNetworkReply;
 class QPushButton;
 
 namespace Collections {
@@ -122,7 +122,6 @@ private:
      */
     QLabel *m_image;
 
-
     /**
      * Name of the artist
      */
@@ -164,16 +163,16 @@ private:
     QString m_descString;
 
     /**
-     * Job of the image from the web
+     * URL of the image from the web
      */
-    KJob *m_imageJob;
+    KUrl m_url;
 
 private slots:
     /**
      * Put the image of the artist in the QPixMap
-     * @param job, pointer to the job which get the pixmap from the web
+     * @param reply, reply from the network request
      */
-    void setImageFromInternet( KJob *job );
+    void setImageFromInternet( QNetworkReply *reply );
 
     /**
      * Open an URL

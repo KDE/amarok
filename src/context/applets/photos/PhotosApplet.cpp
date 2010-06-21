@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PhotosApplet"
+
 #include "PhotosApplet.h"
 #include "PhotosScrollWidget.h"
 
@@ -38,9 +40,6 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
 #include <QGraphicsWidget>
-
-#define DEBUG_PREFIX "PotosApplet"
-
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

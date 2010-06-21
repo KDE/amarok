@@ -34,6 +34,7 @@
 #define SHORT_MESSAGE_DURATION 5000
 #define POPUP_MESSAGE_DURATION 5000
 
+class QNetworkReply;
 class StatusBar;
 
 namespace The
@@ -85,8 +86,12 @@ public slots:
     /**
      * Monitor progress for a KIO::Job, very handy.
      */
-    ProgressBar *newProgressOperation( KJob* job, const QString & description );
+    ProgressBar *newProgressOperation( KJob *job, const QString &description );
 
+    /**
+     * Monitor progress for a QNetworkReply, somewhat handy.
+     */
+    ProgressBar *newProgressOperation( QNetworkReply *reply, const QString &description );
 
     //this stuff we just forward to the compound progress bar:
 

@@ -23,8 +23,6 @@
 #include "context/LyricsManager.h"
 #include "core/meta/Meta.h"
 
-#include <kio/job.h>
-
 /**
     This class provides Lyrics data for use in Context applets. 
 

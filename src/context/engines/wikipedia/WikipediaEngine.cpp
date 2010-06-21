@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "WikipediaEngine"
+
 #include "WikipediaEngine.h"
 
 #include "core/support/Amarok.h"
@@ -23,32 +25,28 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include "NetworkAccessManagerProxy.h"
+
+#include <QNetworkReply>
 
 using namespace Context;
 
 WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , m_wikiJob( 0 )
     , m_currentSelection( "artist" )
     , m_requested( true )
     , m_sources( "current" )
     , m_wikiWideLang( "aut" )
     , m_triedRefinedSearch( 0 )
 {
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(wikiResult(QNetworkReply*)) );
     update();
 }
 
 WikipediaEngine::~WikipediaEngine()
 {
-    DEBUG_BLOCK
-
-    // Ensure that no KIO job keeps running
-    if( m_wikiJob )
-    {
-        m_wikiJob->kill();
-        delete m_wikiJob;
-    }
 }
 
 QStringList WikipediaEngine::sources() const
@@ -82,8 +80,14 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
         
             removeSource( "wikipedia" );
             setData( "wikipedia", "busy", "busy" );
-            m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
-            connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
+            if( !m_wikiCurrentUrl.hasQueryItem( "useskin" ) )
+            {
+                // m_wikiCurrentUrl.removeQueryItem( "useskin" );
+                m_wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
+            }
+            m_urls << m_wikiCurrentUrl;
+            QNetworkRequest req( m_wikiCurrentUrl );
+            The::networkAccessManager()->get( req );
             return true;
         }
     }
@@ -100,6 +104,7 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
+    scheduleSourcesUpdated();
     setData( name, QVariant());
     update();
 
@@ -147,6 +152,7 @@ void WikipediaEngine::update()
             {
                 debug() << "Requesting an empty string, skipping !";
                 removeAllData( "wikipedia" );
+                scheduleSourcesUpdated();
                 setData( "wikipedia", "message", i18n( "No information found..." ) );
                 return;
             }
@@ -166,6 +172,7 @@ void WikipediaEngine::update()
             {
                 debug() << "Requesting an empty string, skipping !";
                 removeAllData( "wikipedia" );
+                scheduleSourcesUpdated();
                 setData( "wikipedia", "message", i18n( "No information found..." ) );
                 return;
             }
@@ -182,6 +189,7 @@ void WikipediaEngine::update()
         {
             debug() << "Requesting an empty string, skipping !";
             removeAllData( "wikipedia" );
+            scheduleSourcesUpdated();
             setData( "wikipedia", "message", i18n( "No information found..." ) );
             return;
         }
@@ -204,6 +212,7 @@ void WikipediaEngine::update()
     }
     
     removeAllData( "wikipedia" );
+    scheduleSourcesUpdated();
 
     // FIXME: what's that supposed to do? nothing?
     DataEngine::Data data;
@@ -221,48 +230,44 @@ void WikipediaEngine::update()
 
     // Inform the applet that we are fetching info, set the busy thing
     setData( "wikipedia", "busy", "busy" );
-    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
+
+    m_urls << m_wikiCurrentUrl;
+    QNetworkRequest req( m_wikiCurrentUrl );
+    The::networkAccessManager()->get( req );
 
 }
 
 void
-WikipediaEngine::wikiResult( KJob* job )
+WikipediaEngine::wikiResult( QNetworkReply *reply )
 {
-    DEBUG_BLOCK
-    
-    if( !m_wikiJob ) return; //track changed while we were fetching
+    const QUrl url = reply->request().url();
+    if( !m_urls.contains( url ) )
+        return;
 
-    // It's the correct job but it errored out
-    if( job->error() != KJob::NoError && job == m_wikiJob )
+    m_urls.remove( url );
+    if( reply->error() != QNetworkReply::NoError )
     {
-        setData( "wikipedia", "message", i18n( "Unable to retrieve Wikipedia information: %1", job->errorString() ) );
-        m_wikiJob = 0; // clear job
+        setData( "wikipedia", "message", i18n( "Unable to retrieve Wikipedia information: %1", reply->errorString() ) );
+        reply->deleteLater();
         return;
     }
-    // not the right job, so let's ignore it
-    if( job != m_wikiJob )
-        return;
 
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    m_wiki = storedJob->data();
-
-    // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
-    if ( m_wiki.contains( "charset=utf-8"  ) )
-        m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-
+    debug() << "Received page from wikipedia:" << url;
+    m_wiki = reply->readAll();
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
-    if( m_wiki.contains( "wgArticleId=0" ) && m_wiki.contains( "wgNamespaceNumber=0" ) ) // The article does not exist
+    if( m_wiki.contains("wgArticleId=0") &&
+        (m_wiki.contains("wgNamespaceNumber=0") ||
+         m_wiki.contains("wgPageName=\"Special:Badtitle\"") ) ) // The article does not exist
     {
         // Refined search is done here 
         if ( m_triedRefinedSearch == -1 )
         {
             debug() << "We already tried some refined search. Lets end this madness...";
             removeAllData( "wikipedia" );
+            scheduleSourcesUpdated();
             setData( "wikipedia", "message", i18n( "No information found..." ) );
-            m_wikiJob = 0;
             return;
         }
         m_triedRefinedSearch++;
@@ -287,6 +292,7 @@ WikipediaEngine::wikiResult( KJob* job )
 
     // We've find a page
     removeAllData( "wikipedia" );
+    scheduleSourcesUpdated();
 
     Data data;
     data["page"] = wikiParse();
@@ -319,8 +325,7 @@ WikipediaEngine::wikiResult( KJob* job )
     }
 
     setData( "wikipedia", data );
-
-    m_wikiJob = 0;
+    reply->deleteLater();
 }
 
 QString
@@ -439,11 +444,11 @@ WikipediaEngine::wikiArtistPostfix()
         switch ( m_triedRefinedSearch )
         {
             case 0:
-                return " (band)";
+                return "_(band)";
             case 1:
-                return " (musician)";
+                return "_(musician)";
             case 2:
-                return " (singer)";
+                return "_(singer)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -454,9 +459,9 @@ WikipediaEngine::wikiArtistPostfix()
         switch ( m_triedRefinedSearch )
         {
             case 0:
-                return " (Band)";
+                return "_(Band)";
             case 1:
-                return " (Musiker)";
+                return "_(Musiker)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -467,7 +472,7 @@ WikipediaEngine::wikiArtistPostfix()
         switch ( m_triedRefinedSearch )
         {
             case 0:
-                return " (grupa muzyczna)";
+                return "_(grupa muzyczna)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -478,13 +483,13 @@ WikipediaEngine::wikiArtistPostfix()
         switch ( m_triedRefinedSearch )
         {
             case 0:
-                return " (groupe)";
+                return "_(groupe)";
             case 1:
-                return " (musicien)";
+                return "_(musicien)";
             case 2:
-                return " (chanteur)";
+                return "_(chanteur)";
             case 3:
-                return " (chanteuse)";
+                return "_(chanteuse)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -507,9 +512,9 @@ WikipediaEngine::wikiAlbumPostfix()
             case 0:
                 return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
-                return " (album)";
+                return "_(album)";
             case 2:
-                return " (score)";
+                return "_(score)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -522,9 +527,9 @@ WikipediaEngine::wikiAlbumPostfix()
             case 0:
                 return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
-                return " (album)";
+                return "_(album)";
             case 2:
-                return " (BO)";
+                return "_(BO)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -537,7 +542,7 @@ WikipediaEngine::wikiAlbumPostfix()
             case 0:
                 return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
-                return " (album)";
+                return "_(album)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -555,7 +560,7 @@ WikipediaEngine::wikiTrackPostfix()
             case 0:
                 return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" song)");
             case 1:
-                return " (song)";
+                return "_(song)";
             default:
                 m_triedRefinedSearch = -1;
                 return "";
@@ -568,19 +573,22 @@ WikipediaEngine::wikiTrackPostfix()
     }
 }
 
-inline QString
+inline QUrl
 WikipediaEngine::wikiUrl( const QString &item ) const
 {
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
     // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
-    return QString( "http://%1.wikipedia.org/w/index.php?title=" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" ) + QString( "&useskin=monobook" );
-}
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( wikiLocale() + ".wikipedia.org" );
+    url.setPath( "/w/index.php" );
+    url.addQueryItem( "useskin", "monobook" );
 
-inline QString
-WikipediaEngine::wikiSiteUrl()
-{
-    return QString( "http://%1.wikipedia.org/" ).arg( wikiLocale() );
+    QString text = item;
+    text.replace( QChar(' '), QChar('_') );
+    url.addQueryItem( "title", text  );
+    return url;
 }
 
 void
@@ -590,8 +598,10 @@ WikipediaEngine::reloadWikipedia()
         
     debug() << "wiki url: " << m_wikiCurrentUrl;
     removeSource( "wikipedia" );
-    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
+
+    m_urls << m_wikiCurrentUrl;
+    QNetworkRequest req( m_wikiCurrentUrl );
+    The::networkAccessManager()->get( req );
 }
 
 #include "WikipediaEngine.moc"

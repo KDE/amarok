@@ -15,11 +15,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AmarokNetworkScript.h"
+#define DEBUG_PREFIX "AmarokNetworkScript"
 
+#include "AmarokNetworkScript.h"
 #include "App.h"
+#include "NetworkAccessManagerProxy.h"
 #include "core/support/Debug.h"
 
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QtScript>
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
@@ -47,8 +51,6 @@ Downloader::Downloader( QScriptEngine* engine )
     engine->globalObject().setProperty( "StringDownloader", stringCtor ); //added for clarity
     const QScriptValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
     engine->globalObject().setProperty( "DataDownloader", dataCtor );
-
-    
 }
 
 Downloader::~Downloader()
@@ -107,16 +109,15 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 
     // start download, and connect to it
     //FIXME: url is not working directly.
-    KIO::Job* job = KIO::storedGet( tmpUrl, KIO::NoReload, KIO::HideProgressInfo );
     if( stringResult )
     {
         QString encoding = "UTF-8";
         if(context->argumentCount() == 3 ) // encoding specified
             encoding = context->argument( 2 ).toString();
-        AmarokDownloadHelper::instance()->newStringDownload( job, engine, context->argument( 1 ), encoding );
+        AmarokDownloadHelper::instance()->newStringDownload( tmpUrl, engine, context->argument( 1 ), encoding );
     }
     else
-        AmarokDownloadHelper::instance()->newDataDownload( job, engine, context->argument( 1 ) );
+        AmarokDownloadHelper::instance()->newDataDownload( tmpUrl, engine, context->argument( 1 ) );
     // connect to a local slot to extract the qstring
     //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
     return object;
@@ -129,87 +130,124 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
+
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultData(QNetworkReply*)) );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultString(QNetworkReply*)) );
 }
 
 void
-AmarokDownloadHelper::newStringDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding )
+AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
-    m_jobs[ download ] = obj ;
-    m_engines[ download ] = engine;
-    m_encodings[ download ] = encoding;
-    connect( download, SIGNAL( result( KJob* ) ), this, SLOT( resultString( KJob* ) ) );
+    m_values[ url ] = obj ;
+    m_engines[ url ] = engine;
+    m_encodings[ url ] = encoding;
+    QNetworkRequest req( url );
+    The::networkAccessManager()->get( req );
 }
 
 void
-AmarokDownloadHelper::newDataDownload( KJob* download, QScriptEngine* engine, QScriptValue obj )
+AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    m_jobs[ download ] = obj ;
-    m_engines[ download ] = engine;
-    connect( download, SIGNAL( result( KJob* ) ), this, SLOT( resultData( KJob* ) ) );
+    m_values[ url ] = obj ;
+    m_engines[ url ] = engine;
+    QNetworkRequest req( url );
+    The::networkAccessManager()->get( req );
 }
 
 void
-AmarokDownloadHelper::resultData( KJob* job )
+AmarokDownloadHelper::resultData( QNetworkReply* reply )
 {
     DEBUG_BLOCK
 
-    QScriptValue obj = m_jobs[ job ];
-    QScriptEngine* engine = m_engines[ job ];
+    const KUrl url = reply->request().url();
+    if( !m_values.contains( url ) )
+        return;
+
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        cleanUp( url );
+        reply->deleteLater();
+        return;
+    }
+
+    QScriptValue obj = m_values[ url ];
+    QScriptEngine* engine = m_engines[ url ];
     
     // now send the data to the associated script object
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
+        cleanUp( url );
+        reply->deleteLater();
         return;
     }
 
     if( !engine )
     {
         debug() << "stored script engine is not valid!";
+        cleanUp( url );
+        reply->deleteLater();
         return;
     }
 
+    QByteArray data = reply->readAll();
+
     QScriptValueList args;
-    args <<  engine->toScriptValue( static_cast< KIO::StoredTransferJob* >( job )->data() );
+    args <<  engine->toScriptValue( data );
     obj.call( obj, args );
 
-    m_jobs.remove( job );
-    m_engines.remove( job );
+    cleanUp( url );
+    reply->deleteLater();
 }
 
 
 void
-AmarokDownloadHelper::resultString( KJob* job )
+AmarokDownloadHelper::resultString( QNetworkReply* reply )
 {
     DEBUG_BLOCK
 
-    KIO::StoredTransferJob* const storedJob = static_cast< KIO::StoredTransferJob* >( job );
-    QScriptValue obj = m_jobs[ job ];
-    QScriptEngine* engine = m_engines[ job ];
-    QString encoding = m_encodings[ job ];
+    const KUrl url = reply->request().url();
+    if( !m_values.contains( url ) )
+        return;
 
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        cleanUp( url );
+        reply->deleteLater();
+        return;
+    }
+
+    QScriptValue obj = m_values[ url ];
+    QScriptEngine* engine = m_engines[ url ];
+    QString encoding = m_encodings[ url ];
+
+    QByteArray bytes = reply->readAll();
     QString data;
     
     if( encoding.isEmpty() )
-        data = QString( storedJob->data() );
+        data = QString( bytes );
     else
     {
         QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
         QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
         QTextCodec::setCodecForCStrings( utf8codec );
-        data = codec->toUnicode( storedJob->data() );
+        data = codec->toUnicode( bytes );
     }
     
     // now send the data to the associated script object
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
+        cleanUp( url );
+        reply->deleteLater();
         return;
     }
    
     if( !engine )
     {
         debug() << "stored script engine is not valid!";
+        cleanUp( url );
+        reply->deleteLater();
         return;
     }
 
@@ -217,9 +255,16 @@ AmarokDownloadHelper::resultString( KJob* job )
     args <<  QScriptValue( engine, data );
     obj.call( obj, args );
 
-    m_jobs.remove( job );
-    m_engines.remove( job );
-    m_encodings.remove( job );
+    cleanUp( url );
+    reply->deleteLater();
+}
+
+void
+AmarokDownloadHelper::cleanUp( const KUrl &url )
+{
+    m_values.remove( url );
+    m_engines.remove( url );
+    m_encodings.remove( url );
 }
 
 AmarokDownloadHelper*

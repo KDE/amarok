@@ -22,12 +22,7 @@
 #include "AmpacheServiceCollection.h"
 #include "AmpacheService.h"
 
-#include <kio/jobclasses.h>
-
-namespace ThreadWeaver
-{
-    class Job;
-}
+#include <QNetworkReply>
 
 namespace Collections {
 
@@ -69,7 +64,6 @@ public:
 
 protected:
     AmpacheServiceCollection * m_collection;
-    KIO::StoredTransferJob * m_storedTransferJob;
 
     struct Private;
     Private * const d;
@@ -85,9 +79,9 @@ protected:
     QString m_lastArtistFilter;
 
 public slots:
-    void artistDownloadComplete(KJob *job );
-    void albumDownloadComplete(KJob *job );
-    void trackDownloadComplete(KJob *job );
+    void artistDownloadComplete( QNetworkReply *reply );
+    void albumDownloadComplete( QNetworkReply *reply );
+    void trackDownloadComplete( QNetworkReply *reply );
 
 private:
     // Disable copy constructor and assignment

@@ -22,6 +22,7 @@
 #include "core/interfaces/Logger.h"
 
 using ::testing::Return;
+using ::testing::An;
 using ::testing::_;
 
 namespace Amarok
@@ -33,12 +34,14 @@ namespace Amarok
         {
             ON_CALL( *this, shortMessage( _ ) ).WillByDefault( Return() );
             ON_CALL( *this, longMessage( _, _ ) ).WillByDefault( Return() );
-            ON_CALL( *this, newProgressOperation( _, _, _, _, _ ) ).WillByDefault( Return() );
+            ON_CALL( *this, newProgressOperation( An<KJob*>(), _, _, _, _ ) ).WillByDefault( Return() );
+            ON_CALL( *this, newProgressOperation( An<QNetworkReply*>(), _, _, _, _ ) ).WillByDefault( Return() );
         }
 
         MOCK_METHOD1( shortMessage, void( const QString& ) );
         MOCK_METHOD2( longMessage, void( const QString&, Amarok::Logger::MessageType ) );
         MOCK_METHOD5( newProgressOperation, void( KJob*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
+        MOCK_METHOD5( newProgressOperation, void( QNetworkReply*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
     };
 }
 

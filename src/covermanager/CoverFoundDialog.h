@@ -23,7 +23,7 @@
 #include "CoverFetchUnit.h"
 #include "core/meta/Meta.h"
 
-#include <KDialog>
+#include <KProgressDialog>
 #include <KVBox>
 
 #include <QLabel>
@@ -43,6 +43,7 @@ class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
+class QNetworkReply;
 class QTabWidget;
 
 class CoverFoundDialog : public KDialog
@@ -189,7 +190,10 @@ public slots:
      */
     void saveAs( Meta::AlbumPtr album );
 
-    void slotFetchResult( KJob *job );
+    void slotFetchResult( QNetworkReply *reply );
+
+private slots:
+    void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
 
 private:
     void setCaption();
@@ -197,8 +201,7 @@ private:
     CoverFetch::Metadata m_metadata;
     QPixmap m_thumb;
     QPixmap m_bigPix;
-    QPointer<KDialog> m_dialog;
-    QPointer<KJobProgressBar> m_progress;
+    QPointer<KProgressDialog> m_dialog;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

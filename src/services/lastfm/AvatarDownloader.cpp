@@ -15,78 +15,57 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AvatarDownloader"
+
 #include "AvatarDownloader.h"
-
 #include "core/support/Debug.h"
-#include <QDir>
-#include <QPixmap>
+#include "NetworkAccessManagerProxy.h"
 
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 AvatarDownloader::AvatarDownloader()
-: m_url( 0 )
-, m_downloadPath()
-, m_downloadJob( 0 )
-, m_userName()
 {
-    m_tempDir = new KTempDir();
-    m_tempDir->setAutoRemove( false );
+    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
+                                          SLOT(downloaded(QNetworkReply*)) );
 }
 
 AvatarDownloader::~AvatarDownloader()
 {
-    m_tempDir->unlink();
-    delete m_tempDir;
-}
-QString
-AvatarDownloader::username() const
-{
-    return m_userName;
 }
 
 void
-AvatarDownloader::downloadAvatar(  const QString& username, const KUrl& url )
+AvatarDownloader::downloadAvatar( const QString& username, const KUrl& url )
 {
-    m_userName = username;
-    m_downloadPath = m_tempDir->name() + url.fileName();
-
-//     debug() << "Download Avatar : " << url.url() << " to: " << m_downloadPath;
-
-    m_downloadJob = KIO::file_copy( url, KUrl( m_downloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
-
-    connect( m_downloadJob, SIGNAL( result( KJob* ) ), SLOT( downloadComplete( KJob* ) ) );
-    connect( m_downloadJob, SIGNAL( canceled( KJob* ) ), SLOT( downloadCanceled( KJob * ) ) );
-}
-
-void
-AvatarDownloader::downloadComplete( KJob * downloadJob )
-{
-    if( !downloadJob || !downloadJob->error() == 0 )
-    {
-        debug() << "Download Job failed!";
+    if( !url.isValid() )
         return;
-    }
-    if ( downloadJob != m_downloadJob )
-        return; //not the right job, so let's ignore it
 
-    const QPixmap avatar = QPixmap( m_downloadPath );
-    if ( avatar.isNull() )
-    {
-        debug() << "file not a valid image";
-        return;
-    }
-
-    emit signalAvatarDownloaded( m_userName,  avatar );
-
-    downloadJob->deleteLater();
+    m_userAvatarUrls.insert( url, username );
+    QNetworkRequest req( url );
+    The::networkAccessManager()->get( req );
 }
 
 void
-AvatarDownloader::downloadCanceled( KJob *downloadJob )
+AvatarDownloader::downloaded( QNetworkReply *reply )
 {
-    Q_UNUSED( downloadJob );
+    const KUrl url = reply->request().url();
+    if( !m_userAvatarUrls.contains( url ) )
+        return;
 
-    debug() << "Avatar download cancelled";
+    const QString username = m_userAvatarUrls.value( url );
+    m_userAvatarUrls.remove( url );
+    if( reply->error() == QNetworkReply::NoError )
+    {
+        QPixmap avatar;
+        if( avatar.loadFromData( reply->readAll() ) )
+        {
+            reply->close();
+            emit avatarDownloaded( username, avatar );
+        }
+    }
+    else
+        debug() << "Error:" << reply->errorString();
+    reply->deleteLater();
 }
 
 #include "AvatarDownloader.moc"
-

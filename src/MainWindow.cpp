@@ -23,8 +23,6 @@
 
 #include "MainWindow.h"
 
-#include <config-amarok.h>    //HAVE_LIBVISUAL definition
-
 #include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
 #include "core/support/Amarok.h"
@@ -50,6 +48,10 @@
 #include "dialogs/EqualizerDialog.h"
 #include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
+#include "network/NetworkAccessManagerProxy.h"
+#ifdef DEBUG_BUILD_TYPE
+#include "network/NetworkAccessViewer.h"
+#endif // DEBUG_BUILD_TYPE
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -207,6 +209,9 @@ MainWindow::~MainWindow()
     delete m_contextView;
     delete m_corona;
     //delete m_splitter;
+#ifdef DEBUG_BUILD_TYPE
+    delete m_networkViewer;
+#endif // DEBUG_BUILD_TYPE
     delete The::statusBar();
     delete The::svgHandler();
     delete The::paletteHandler();
@@ -657,6 +662,20 @@ MainWindow::showScriptSelector() //SLOT
     ScriptManager::instance()->raise();
 }
 
+#ifdef DEBUG_BUILD_TYPE
+void
+MainWindow::showNetworkRequestViewer() //SLOT
+{
+    if( !m_networkViewer )
+    {
+        m_networkViewer = new NetworkAccessViewer( this );
+        The::networkAccessManager()->setNetworkAccessViewer( m_networkViewer );
+
+    }
+    The::networkAccessManager()->networkAccessViewer()->show();
+}
+#endif // DEBUG_BUILD_TYPE
+
 /**
  * "Toggle Main Window" global shortcut connects to this slot
  */
@@ -937,6 +956,13 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
+#ifdef DEBUG_BUILD_TYPE
+    action = new KAction( i18n( "Network Request Viewer" ), this );
+    ac->addAction( "network_request_viewer", action );
+    action->setIcon( KIcon( "utilities-system-monitor" ) );
+    connect( action, SIGNAL( triggered() ), SLOT( showNetworkRequestViewer() ) );
+#endif // DEBUG_BUILD_TYPE
+
     action = KStandardAction::redo(pc, SLOT(redo()), this);
     ac->addAction( "playlist_redo", action );
     action->setEnabled(false);
@@ -1058,6 +1084,9 @@ MainWindow::createMenus()
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
+#ifdef DEBUG_BUILD_TYPE
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("network_request_viewer") );
+#endif // DEBUG_BUILD_TYPE
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
     //END Tools menu

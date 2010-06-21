@@ -1,7 +1,10 @@
 # project(context-similarartists)
 
-include_directories( ../..
-../../.. )
+include_directories(
+    ../..
+    ../../..
+    ${CMAKE_SOURCE_DIR}/src
+    )
 
 set( similarArtists_SRCS SimilarArtist.cpp ArtistWidget.cpp SimilarArtistsApplet.cpp)
 kde4_add_ui_files( similarArtists_SRCS similarArtistsSettings.ui)

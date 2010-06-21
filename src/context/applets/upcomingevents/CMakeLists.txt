@@ -1,7 +1,10 @@
 project(context-upcomingevents)
 
-include_directories( ../..
-../../.. )
+include_directories(
+    ../..
+    ../../..
+    ${Amarok_SOURCE_DIR}/src/network
+    )
 
 set( upcomingEvents_SRCS UpcomingEventsApplet.cpp LastFmEvent.cpp UpcomingEventsWidget.cpp )
 

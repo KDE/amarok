@@ -18,12 +18,12 @@
 #define AVATAR_DOWNLOADER_H
 
 #include <KUrl>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <KTempDir>
 
+#include <QHash>
 #include <QObject>
 #include <QPixmap>
+
+class QNetworkReply;
 
 class AvatarDownloader : public QObject
 {
@@ -42,35 +42,22 @@ class AvatarDownloader : public QObject
         ~AvatarDownloader();
 
         /**
-         * Get the username associated with this avatar
-         */
-        QString username() const;
-        /**
         * Start the download
         * @param url The url that should be downloaded.
         */
         void downloadAvatar( const QString& username, const KUrl& url );
+
     signals:
-        void signalAvatarDownloaded( const QString& username, QPixmap avatar );
+        void avatarDownloaded( const QString &username, QPixmap avatar );
+
     private slots:
-
         /**
-        * Slot called when the download job is complete.
-        * @param downloadJob The job responsible for the cover download.
-        */
-        void downloadComplete( KJob * downloadJob );
-
-        /**
-        * Slot called if the download job is cancelled.
-        * @param downloadJob The job responsible for the cover download.
-        */
-        void downloadCanceled( KJob * downloadJob );
+         * Slot called when the network access manager finished a request
+         * @param reply The reply from the service request
+         */
+        void downloaded( QNetworkReply *reply );
 
     private:
-        KUrl * m_url;
-        QString m_downloadPath;
-        KIO::FileCopyJob * m_downloadJob;
-        KTempDir * m_tempDir;
-        QString m_userName;
+        QHash<KUrl, QString> m_userAvatarUrls;
 };
 #endif

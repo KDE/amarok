@@ -146,8 +146,6 @@ void
 LastFmTreeModel::slotAddTopArtists ()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
-    QMap<QString, QString> avatarlist;
     WeightedStringList list;
     try
     {
@@ -286,8 +284,8 @@ LastFmTreeModel::downloadAvatar ( const QString& user, const KUrl& url )
     //     debug() << "downloading " << user << "'s avatar @ "  << url;
     AvatarDownloader* downloader = new AvatarDownloader();
     downloader->downloadAvatar( user, url );
-    connect( downloader, SIGNAL( signalAvatarDownloaded( const QString&, QPixmap ) ),
-                         SLOT( onAvatarDownloaded( const QString&, QPixmap ) ) );
+    connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
+                         SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
 }
 
 void

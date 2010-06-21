@@ -1,9 +1,10 @@
         include_directories(
             ../
-            ../../
-            ../../core-impl/collections
-            ../../servicebrowser
-            ../../statusbar
+            ${Amarok_SOURCE_DIR}/src/
+            ${Amarok_SOURCE_DIR}/src/core-impl/collections
+            ${Amarok_SOURCE_DIR}/src/network
+            ${Amarok_SOURCE_DIR}/src/servicebrowser
+            ${Amarok_SOURCE_DIR}/src/statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}

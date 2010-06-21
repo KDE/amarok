@@ -22,12 +22,11 @@
 #include "core/meta/Meta.h"
 #include "VideoclipInfo.h"
 
-#include <KIO/Job>
+#include <KUrl>
 
 #include <QVariant>
 
-#include <iostream>
-#include <sstream>
+class QNetworkReply;
 
 using namespace Context;
 
@@ -60,7 +59,7 @@ private slots:
    *   http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
    *   see here for details: http://code.google.com/intl/fr/apis/youtube/2.0/reference.html
    */
-    void resultYoutube( KJob* );
+    void resultYoutube( QNetworkReply *reply );
 
  /**
    *   This method will fetch the required key for the video downloading.For this we retrieve
@@ -71,7 +70,7 @@ private slots:
    *
    *   \warning : Not legal, and this will probably change like every 6 month with every new youtube api :/
    */
-    void resultYoutubeGetLink( KJob* );
+    void resultYoutubeGetLink( QNetworkReply *reply );
 
   /**
    *   This slots will handle Dailymotion result for this query :
@@ -79,7 +78,7 @@ private slots:
    *   see here for details: No dailymotion API for now :/
    *   But we get every info from one single page which is great.
    */
-    void resultDailymotion( KJob* );
+    void resultDailymotion( QNetworkReply *reply );
 
  /**
    *   This method will fetch the required key for the video downloading.For this we retrieve
@@ -88,23 +87,23 @@ private slots:
    *   The finals url will look like :
    *   http://www.dailymotion.com/cdn/FLV-320x240/video/x3s8t7?auth=1259934815-259cd35baca824ed5962e9601dd4eabd@@spark // for 320x240 flv file
    *   http://www.dailymotion.com/cdn/H264-512x384/video/x3s8t7?auth=1259934815-f414eda6498a9d1597bc8c85148658be@@h264  // for mp4 HQ file
-   *   
+   *
    *   \warning : Not legal, and this will probably change like every 6 month whenever dailymotion decides this :/
    */
-    void resultDailymotionGetLink( KJob* );
-    
+    void resultDailymotionGetLink( QNetworkReply *reply );
+
     //TODO Fix the vimeo query
   /**
-   *   Vimeo is not fun, we need 3 jobs for one complete Video item :/
+   *   Vimeo is not fun, we need 3 fetches for one complete Video item :/
    *   http://vimeo.com/videos/search:ARTIST TITLE
    */
-    void resultVimeo( KJob* );
+    void resultVimeo( QNetworkReply *reply );
 
   /**
    *   Query result for one video item like this :
    *   http://vimeo.com/api/clip/1774707.xml
    */
-    void resultVimeoBis( KJob* );
+    void resultVimeoBis( QNetworkReply *reply );
 
   /**
    *   We also need to query http://vimeo.com/api/clip/1774707.xml
@@ -112,15 +111,15 @@ private slots:
    *   final ddl looks like this
    *   http://vimeo.com/moogaloop/play/clip:ID/REQUEST_SIGNATURE/REQUEST_SIGNATURE_EXPIRES/?q=hd
    */
-    void resultVimeoGetLink( KJob* );
+    void resultVimeoGetLink( QNetworkReply *reply );
 
   /**
    *   An image fetcher, will store the QPixmap in the corresponding videoInfo
    */
-    void resultImageFetcher( KJob * );
+    void resultImageFetcher( QNetworkReply *reply );
 
   /**
-   *   This method will send the info to the applet and order them if every jobs are finished
+   *   This method will send the info to the applet and order them if every fetch are finished
    */
     void resultFinalize();
 
@@ -136,23 +135,28 @@ private:
     void reloadVid();
 
   /**
-   *   We don't want some jobs if it's useless
+   *   We don't want some fetches if it's useless
    *   So if the video title doesn't contain ARTIST or TITLE
    *   and the description doesn't contain ARTIST either, we remove this item
    *   \return true if the video Info is OK, else false
    */
     bool isVideoInfoValid( VideoInfo * );
 
-    KJob* m_jobYoutube;
-    KJob* m_jobDailymotion;
-    KJob* m_jobVimeo;
+    enum Source { Youtube, Dailymotion, Vimeo };
+
+    KUrl m_youtubeUrl;
+    KUrl m_dailyUrl;
+    KUrl m_vimeoUrl;
+    KUrl m_vimeoBisUrl;
+    QSet<KUrl> m_infoUrls;
+    QSet<KUrl> m_imageUrls;
+    QHash< KUrl, Source > m_videoUrls;
 
     int m_nbYoutube;
     int m_nbDailymotion;
     int m_nbVimeo;
 
-    QList < QString > m_listJob;
-    int m_nbVidsPerService;
+    const int m_nbVidsPerService;
 
     QStringList m_sources;
 

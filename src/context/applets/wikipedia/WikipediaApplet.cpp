@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "WikipediaApplet"
+
 #include "WikipediaApplet.h"
 
 #include "core/support/Amarok.h"
@@ -371,7 +373,7 @@ WikipediaApplet::gotoTrack()
 void
 WikipediaApplet::linkClicked( const QUrl &url )
 {
-    DEBUG_BLOCK
+    debug() << "linkClicked" << url;
     if ( url.toString().contains( "wikipedia.org/" ) )
     {
         dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:get:AMAROK_TOKEN:" ) + url.toString() );

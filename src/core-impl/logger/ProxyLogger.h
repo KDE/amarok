@@ -28,11 +28,14 @@
 
 #include <KJob>
 
+class QNetworkReply;
+
 typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
 
 struct ProgressData
 {
     QPointer<KJob> job;
+    QPointer<QNetworkReply> reply;
     QString text;
     QPointer<QObject> object;
     const char *slot;
@@ -67,6 +70,7 @@ public slots:
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
     virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
+    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
 
     /**
       * Set the real logger.

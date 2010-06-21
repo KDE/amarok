@@ -95,7 +95,7 @@ private slots:
 
     void onAuthenticated();
     void onGetUserInfo();
-    void onAvatarDownloaded( QPixmap );
+    void onAvatarDownloaded( const QString& username, QPixmap avatar );
 
 private:
     void init();

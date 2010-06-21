@@ -6,6 +6,7 @@ include_directories(
         ../../statusbar
         ../../widgets
         ../../context
+        ../../network
         ../../dynamic # for CustomBias.h
         ../../browsers/playlistbrowser # for DynamicBiasWidgets
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
@@ -36,17 +37,15 @@ include_directories(
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
 
-	        biases/LastFmBias.cpp
-	        biases/WeeklyTopBias.cpp
+            biases/LastFmBias.cpp
+            biases/WeeklyTopBias.cpp
 
-            kdenetwork/knetworkreply.cpp
-            kdenetwork/knetworkaccessmanager.cpp
             SimilarArtistsAction.cpp
             LoveTrackAction.cpp
         )
 
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
-	remove_definitions(-DQT_NO_HTTP)
+    remove_definitions(-DQT_NO_HTTP)
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm
@@ -73,9 +72,6 @@ include_directories(
         set(kcm_amarok_service_lastfm_PART_SRCS
             LastFmServiceSettings.cpp
             LastFmServiceConfig.cpp
-			# sad that these are necessary :-/
-			kdenetwork/knetworkreply.cpp
-		    kdenetwork/knetworkaccessmanager.cpp
         )
 
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
@@ -92,7 +88,7 @@ include_directories(
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KUTILS_LIBS}
             ${KDE4_KIO_LIBS}
-		    ${QT_QTNETWORK_LIBRARY} )
+            ${QT_QTNETWORK_LIBRARY} )
 
         install(TARGETS kcm_amarok_service_lastfm  DESTINATION ${PLUGIN_INSTALL_DIR})
 
@@ -100,5 +96,5 @@ include_directories(
 
         install( FILES amarok_service_lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
         install( FILES amarok_service_lastfm_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-	    install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+        install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 

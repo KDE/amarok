@@ -33,7 +33,6 @@ class QGraphicsLayoutItem;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
 class QVBoxLayout;
-class DropPixmapItem;
 class QLabel;
 
 // KDE

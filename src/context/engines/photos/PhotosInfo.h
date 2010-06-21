@@ -18,26 +18,21 @@
 #define AMAROK_PHOTOS_INFO
 
 #include "context/DataEngine.h"
-#include "core/support/Debug.h"
+
+#include <KUrl>
 
 //!  Struct PhotosInfo, contain all the info vor a photos
 class PhotosInfo {
 
 public:
 
-    PhotosInfo()
-    : photo( 0 )
-    {}
-
-    ~PhotosInfo()
-    {
-        delete photo;
-    }
+    PhotosInfo() {}
+    ~PhotosInfo() {}
     
     QString title;      // Name of the phtos
-    QString urlphoto;   // url of the photos, for the download
-    QString urlpage;    // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
-    QPixmap *photo;     // Image data
+    KUrl urlphoto;      // url of the photos, for the download
+    KUrl urlpage;       // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
+    QPixmap photo;      // Image data
 };
 
 #endif

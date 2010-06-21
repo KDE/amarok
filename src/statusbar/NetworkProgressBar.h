@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Urs Wolfer <uwolfer@kde.org>                                      *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,30 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef KNETWORKACCESSMANAGER_H
-#define KNETWORKACCESSMANAGER_H
+#ifndef AMAROK_NETWORK_PROGRESS_BAR_H
+#define AMAROK_NETWORK_PROGRESS_BAR_H
 
-#include <kdemacros.h>
+#include "statusbar/ProgressBar.h"
 
-#include <KDE/KIO/MetaData>
+#include <QNetworkReply>
 
-#include <QNetworkAccessManager>
-
-class KDE_EXPORT KNetworkAccessManager : public QNetworkAccessManager
+/**
+ * A specialized progress bar that takes a QNetworkReply in the constructor and keeps itself updated
+ */
+class NetworkProgressBar : public ProgressBar
 {
     Q_OBJECT
-public:
-    KNetworkAccessManager(QObject *parent);
-    virtual ~KNetworkAccessManager();
 
-    static KIO::MetaData metaDataForRequest(QNetworkRequest request);
+    public:
+        NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
+        ~NetworkProgressBar();
 
-protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
-
-private:
-    class KNetworkAccessManagerPrivate;
-    KNetworkAccessManagerPrivate* const d;
+    private slots:
+        void progressChanged( qint64 bytesChanged, qint64 bytesTotal );
+        void infoMessage( QNetworkReply::NetworkError code );
+        void finished();
 };
 
-#endif // KNETWORKACCESSMANAGER_H
+#endif

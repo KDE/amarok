@@ -24,9 +24,9 @@
 #include "core/meta/Meta.h"
 #include "src/context/applets/similarartists/SimilarArtist.h"
 
-#include <KIO/Job>
-
 #include <QLocale>
+
+class QNetworkReply;
 
 using namespace Context;
 
@@ -131,17 +131,17 @@ private:
     /**
      * The job for download the data from the lastFm API
      */
-    KJob *m_similarArtistsJob;
+    KUrl m_similarArtistsUrl;
 
     /**
      * The list of jobs that fetch the artists description on the lastFM API
      */
-    QList<KJob*> m_artistDescriptionJobs;
+    QSet<KUrl> m_artistDescriptionUrls;
 
     /**
      * The list of jobs that fetch the most known artists tracks on the lastFM API
      */
-    QList<KJob*> m_artistTopTrackJobs;
+    QSet<KUrl> m_artistTopTrackUrls;
 
     /**
      * The current track played on amarok
@@ -173,23 +173,23 @@ private slots:
     /**
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
-     * @param job The job, which have downloaded the data.
+     * @param reply reply from the network request.
      */
-    void parseSimilarArtists( KJob *job);
+    void parseSimilarArtists( QNetworkReply *reply );
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist description
      * Launched when the download of the data are finished and for each similarArtists.
-     * @param job The job, which have downloaded the data.
+     * @param reply reply from the network request.
      */
-    void parseArtistDescription( KJob *job);
+    void parseArtistDescription( QNetworkReply *reply );
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist most known track
      * Launched when the download of the data are finished and for each similarArtists.
-     * @param job The job, which have downloaded the data.
+     * @param reply reply from the network request.
      */
-    void parseArtistTopTrack( KJob *job);
+    void parseArtistTopTrack( QNetworkReply *reply );
 
 };
 
