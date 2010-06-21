@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * File browser: added forward and back buttons for accessing navigate history.
     * Organize Dialog: added a way to save multiple file formats as presets. (BR 122672)
     * Filtering: added default presets to the drop down menu of the collection
       search widget.

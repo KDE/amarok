@@ -52,10 +52,17 @@ FileBrowser::Private::Private( FileBrowser *parent )
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     navigationToolbar->setIconDimensions( 16 );
 
+    backAction = KStandardAction::back( q, SLOT(back()), topHBox );
+    forwardAction = KStandardAction::forward( q, SLOT(forward()), topHBox );
+    backAction->setEnabled( false );
+    forwardAction->setEnabled( false );
+
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
     placesAction = new KAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), topHBox );
 
+    navigationToolbar->addAction( backAction );
+    navigationToolbar->addAction( forwardAction );
     navigationToolbar->addAction( upAction );
     navigationToolbar->addAction( homeAction );
     navigationToolbar->addAction( placesAction );
@@ -103,6 +110,14 @@ FileBrowser::Private::siblingsForDir( const QString &path )
         siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
     }
     return siblings;
+}
+
+void
+FileBrowser::Private::updateNavigateActions()
+{
+    backAction->setEnabled( !backStack.isEmpty() );
+    forwardAction->setEnabled( !forwardStack.isEmpty() );
+    upAction->setEnabled( !QDir(currentPath).isRoot() );
 }
 
 void
@@ -250,7 +265,8 @@ FileBrowser::itemActivated( const QModelIndex &index )
             if( placesUrl.startsWith( "file://" ) )
                 placesUrl = placesUrl.replace( "file://", QString() );
 
-            setDir( placesUrl );
+            d->backStack.push( KUrl( d->currentPath ) );
+            setDir( KUrl( placesUrl ) );
         }
         else
         {
@@ -274,14 +290,15 @@ FileBrowser::itemActivated( const QModelIndex &index )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl filePath = file.url();
-        d->currentPath = filePath.path();
 
         debug() << "activated url: " << filePath.url();
         debug() << "filename: " << filePath.fileName();
 
-        if( file.isDir() ) {
+        if( file.isDir() )
+        {
             debug() << "setting root path to: " << filePath.path();
-	    setDir(filePath.path());
+            d->backStack.push( d->currentPath );
+            setDir( filePath );
         }
         else
         {
@@ -324,7 +341,9 @@ FileBrowser::addItemActivated( const QString &callbackString )
     debug() << "callback: " << callbackString;
 
     d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
+    d->backStack.push( d->currentPath );
     d->currentPath = callbackString;
+    d->updateNavigateActions();
     setupAddItems();
     activate();
 }
@@ -392,7 +411,7 @@ FileBrowser::prettyName() const
 }
 
 void
-FileBrowser::setDir( const QString &dir )
+FileBrowser::setDir( const KUrl &dir )
 {
 
     if( dir == "places:" )
@@ -411,8 +430,32 @@ FileBrowser::setDir( const QString &dir )
            d->showingPlaces = false;
        }
 
-       addItemActivated( dir );  //This function just happens to do exactly what we need
+       d->kdirModel->dirLister()->openUrl( dir );
+       d->currentPath = dir.path();
+       d->updateNavigateActions();
+       setupAddItems();
+       activate();
     }
+}
+
+void
+FileBrowser::back()
+{
+    if( d->backStack.isEmpty() )
+        return;
+
+    d->forwardStack.push( KUrl( d->currentPath ) );
+    setDir( d->backStack.pop() );
+}
+
+void
+FileBrowser::forward()
+{
+    if( d->forwardStack.isEmpty() )
+        return;
+
+    d->backStack.push( KUrl( d->currentPath ) );
+    setDir( d->forwardStack.pop() );
 }
 
 void
@@ -433,15 +476,16 @@ FileBrowser::up()
     }
     else
     {
-        KUrl url( d->currentPath);
-        setDir( url.upUrl().path() );
+        KUrl url( d->currentPath );
+        d->backStack.push( url );
+        setDir( url.upUrl() );
     }
 }
 
 void
 FileBrowser::home()
 {
-    setDir( QDir::homePath() );
+    setDir( KUrl( QDir::homePath() ) );
 }
 
 void
