@@ -80,26 +80,7 @@ FileBrowser::Private::readConfig()
     QDir currentDirectory = Amarok::config( "File Browser" ).readEntry( "Current Directory", homePath );
 
     // fall back to $HOME if config dir has since disappeared
-    if( !currentDirectory.exists() )
-        currentDirectory = homePath;
-    kdirModel->dirLister()->openUrl( KUrl( currentDirectory.path() ) );
-    currentPath = currentDirectory.path();
-
-    QFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if( file.open( QIODevice::ReadOnly ) )
-    {
-        fileView->header()->restoreState( file.readAll() );
-        file.close();
-    }
-    else
-    {
-        // default layout
-        fileView->hideColumn( 3 );
-        fileView->hideColumn( 4 );
-        fileView->hideColumn( 5 );
-        fileView->hideColumn( 6 );
-        fileView->sortByColumn( 0, Qt::AscendingOrder );
-    }
+    currentPath = currentDirectory.exists() ? currentDirectory.path() : homePath;
 }
 
 void
@@ -122,6 +103,26 @@ FileBrowser::Private::siblingsForDir( const QString &path )
         siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
     }
     return siblings;
+}
+
+void
+FileBrowser::Private::restoreHeaderState()
+{
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if( file.open( QIODevice::ReadOnly ) )
+    {
+        fileView->header()->restoreState( file.readAll() );
+        file.close();
+    }
+    else
+    {
+        // default layout
+        fileView->hideColumn( 3 );
+        fileView->hideColumn( 4 );
+        fileView->hideColumn( 5 );
+        fileView->hideColumn( 6 );
+        fileView->sortByColumn( 0, Qt::AscendingOrder );
+    }
 }
 
 void
@@ -167,6 +168,9 @@ FileBrowser::initView()
     d->fileView->setSortingEnabled( true );
     d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     d->readConfig();
+    d->restoreHeaderState();
+
+    d->kdirModel->dirLister()->openUrl( KUrl( d->currentPath ) );
 
     for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
@@ -236,7 +240,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
         {
             d->fileView->setModel( d->mimeFilterProxyModel );
             d->fileView->header()->setVisible( true );
-            d->readConfig();
+            d->restoreHeaderState();
             d->showingPlaces = false;
 
             //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
@@ -257,7 +261,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
             {
                 d->fileView->setModel( d->mimeFilterProxyModel );
                 d->fileView->header()->setVisible( true );
-                d->readConfig();
+                d->restoreHeaderState();
                 d->showingPlaces = false;
             }
         }
@@ -397,7 +401,7 @@ FileBrowser::setDir( const QString &dir )
        {
            d->fileView->setModel( d->mimeFilterProxyModel );
            d->fileView->header()->setVisible( true );
-           d->readConfig(); // read config so the header state is restored
+           d->restoreHeaderState(); // read config so the header state is restored
            d->showingPlaces = false;
        }
 
@@ -465,7 +469,7 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
         {
             d->fileView->setModel( d->mimeFilterProxyModel );
             d->fileView->header()->setVisible( true );
-            d->readConfig();
+            d->restoreHeaderState();
             d->showingPlaces = false;
 
             //needed to make folder urls look nice. We cannot just strip all protocol headers

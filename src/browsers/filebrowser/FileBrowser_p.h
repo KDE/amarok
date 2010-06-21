@@ -43,6 +43,7 @@ public:
 
     void readConfig();
     void writeConfig();
+    void restoreHeaderState();
     QStringList siblingsForDir( const QString &path );
 
     void slotSaveHeaderState();
