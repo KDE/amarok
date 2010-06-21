@@ -239,6 +239,8 @@ FileBrowser::itemActivated( const QModelIndex &index )
         if( !placesUrl.isEmpty() )
         {
             d->fileView->setModel( d->mimeFilterProxyModel );
+            d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+            d->fileView->setDragEnabled( true );
             d->fileView->header()->setVisible( true );
             d->restoreHeaderState();
             d->showingPlaces = false;
@@ -260,7 +262,9 @@ FileBrowser::itemActivated( const QModelIndex &index )
             else
             {
                 d->fileView->setModel( d->mimeFilterProxyModel );
+                d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
                 d->fileView->header()->setVisible( true );
+                d->fileView->setDragEnabled( true );
                 d->restoreHeaderState();
                 d->showingPlaces = false;
             }
@@ -400,6 +404,8 @@ FileBrowser::setDir( const QString &dir )
        if( d->showingPlaces )
        {
            d->fileView->setModel( d->mimeFilterProxyModel );
+           d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+           d->fileView->setDragEnabled( true );
            d->fileView->header()->setVisible( true );
            d->restoreHeaderState(); // read config so the header state is restored
            d->showingPlaces = false;
@@ -454,7 +460,9 @@ FileBrowser::showPlaces()
     addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
     d->showingPlaces = true;
     d->fileView->setModel( d->placesModel );
+    d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
     d->fileView->header()->setVisible( false );
+    d->fileView->setDragEnabled( false );
 }
 
 void
@@ -468,7 +476,9 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
         if( !placesUrl.isEmpty() )
         {
             d->fileView->setModel( d->mimeFilterProxyModel );
+            d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
             d->fileView->header()->setVisible( true );
+            d->fileView->setDragEnabled( true );
             d->restoreHeaderState();
             d->showingPlaces = false;
 
