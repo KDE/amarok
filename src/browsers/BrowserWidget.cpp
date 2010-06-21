@@ -21,7 +21,8 @@
 #include "core/support/Debug.h"
 #include "widgets/HorizontalDivider.h"
 
-#include "KIcon"
+#include <KAction>
+#include <KIcon>
 
 BrowserWidget::BrowserWidget( QWidget * parent )
     : KVBox( parent )

@@ -128,7 +128,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     public slots:
         void showHide();
         void slotFullScreen();
-        void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
+        void slotLoveTrack();
         void showNotificationPopup();
         void hideContextView( bool hide );
 

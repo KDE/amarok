@@ -32,6 +32,7 @@
 #include <KLocale>
 #include <KUrl>
 
+#include <QAction>
 #include <QLabel>
 #include <QString>
 

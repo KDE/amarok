@@ -729,6 +729,12 @@ MainWindow::slotFullScreen() // slot
 }
 
 void
+MainWindow::slotLoveTrack()
+{
+    emit loveTrack( The::engineController()->currentTrack() );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11

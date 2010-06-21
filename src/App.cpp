@@ -574,6 +574,9 @@ void App::applySettings( bool firstTime )
             PERF_LOG( "after showing mainWindow" )
         }
     }
+
+    if( !firstTime )
+        emit settingsChanged();
 }
 
 #ifdef DEBUG

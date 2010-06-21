@@ -59,7 +59,6 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
         setInvertedAppearance( true );
         setInvertedControls( true );
     }
-    m_moodbarManager = The::moodbarManager();
 }
 
 QRect
@@ -198,83 +197,7 @@ Amarok::Slider::setValue( int newValue )
         m_prevValue = newValue;
 }
 
-
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar )
-{
-    const QString prefix = "slider_bg_";
-
-    const QString topleft = prefix + "topleft";
-    const QString top = prefix + "top";
-    const QString topright = prefix + "topright";
-    const QString right = prefix + "right";
-    const QString bottomright = prefix + "bottomright";
-    const QString bottom = prefix + "bottom";
-    const QString bottomleft = prefix + "bottomleft";
-    const QString left = prefix + "left";
-
-    if( m_needsResize )
-    {
-        m_topLeft = The::svgHandler()->renderSvg( topleft, m_borderWidth, m_borderHeight, topleft );
-        m_top = The::svgHandler()->renderSvg( top, width - ( 2 * m_borderWidth ), m_borderHeight, top );
-        m_topRight = The::svgHandler()->renderSvg( topright, m_borderWidth, m_borderHeight, topright );
-        m_right = The::svgHandler()->renderSvg( right, m_borderWidth, height - ( 2 * m_borderHeight ), right );
-        m_bottomRight = The::svgHandler()->renderSvg( bottomright, m_borderWidth, m_borderHeight, bottomright );
-        m_bottom = The::svgHandler()->renderSvg( bottom, width - 2 * m_borderWidth, m_borderHeight, bottom );
-        m_bottomLeft = The::svgHandler()->renderSvg( bottomleft, m_borderWidth, m_borderHeight, bottomleft );
-        m_left = The::svgHandler()->renderSvg( left, m_borderWidth, height - 2 * m_borderHeight, left );
-        m_needsResize = false;
-    }
-
-
-    //HACK: just for testing/fun
-    if( drawMoodbar )
-    {
-
-        int moodWidth = width - ( 2 * m_borderWidth );
-        int moodHeight = height - 8;
-
-        if ( m_currentMoodBar.width() != moodWidth )
-            {
-            Meta::TrackPtr track = The::engineController()->currentTrack();
-            if ( track && m_moodbarManager->hasMoodbar( track ) )
-            {
-                m_currentMoodBar = m_moodbarManager->getMoodbar( track, moodWidth, moodHeight );
-            }
-        }
-
-        if ( !m_currentMoodBar.isNull() )
-            p->drawPixmap( x + m_borderWidth, y + 4, m_currentMoodBar );
-    }
-
-    p->drawPixmap( x, y, m_topLeft );
-    p->drawPixmap( x + m_borderWidth, y, m_top );
-    p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
-    p->drawPixmap( x + ( width - m_borderWidth ), y + m_borderHeight, m_right );
-    p->drawPixmap( x + ( width - m_borderWidth ), y + ( height - m_borderHeight ), m_bottomRight );
-    p->drawPixmap( x + m_borderWidth, y + ( height - m_borderHeight ), m_bottom );
-    p->drawPixmap( x, y + ( height - m_borderHeight ) , m_bottomLeft );
-    p->drawPixmap( x, y + m_borderHeight, m_left );
-
-    if( value() != minimum() )
-    {
-        const int sliderHeight = height - ( m_sliderInsertY * 2 );
-        const int sliderLeftWidth = sliderHeight / 3;
-        const int sliderRightWidth = sliderLeftWidth;
-
-        
-        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
-
-        const QString barLeft = "slider_bar_left";
-        const QString barCenter = "slider_bar_center";
-        const QString barRight = "slider_bar_right";
-
-        p->drawPixmap( x + m_sliderInsertX, y + m_sliderInsertY, The::svgHandler()->renderSvg( barLeft, sliderLeftWidth , sliderHeight, barLeft ) );
-        p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
-        p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
-    }
-}
-
-void Amarok::Slider::paintCustomSliderNG( QPainter *p, bool paintMoodbar )
+void Amarok::Slider::paintCustomSlider( QPainter *p, bool paintMoodbar )
 {
     qreal percent = 0.0;
     if ( maximum() > minimum() )
@@ -358,7 +281,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent *event )
     if( m_usingCustomStyle )
     {
         QPainter p( this );
-        paintCustomSliderNG( &p );
+        paintCustomSlider( &p );
         p.end();
         return;
     }
@@ -375,11 +298,9 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, 0, parent )
     , m_triangles()
     , m_knobX( 0.0 )
-    , m_oldShowMoodbar( false )
 {
     m_usingCustomStyle = true;
     setFocusPolicy( Qt::NoFocus );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( update() ) );
 }
 
 void
@@ -392,10 +313,8 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
 {
     QPainter p( this );
-    //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
-
     p.setClipRegion( pe->region() );
-    paintCustomSliderNG( &p, AmarokConfig::showMoodbarInSlider() );
+    paintCustomSlider( &p, AmarokConfig::showMoodbarInSlider() );
     p.end();
 
 }
@@ -410,17 +329,6 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
 {
     if ( change == SliderValueChange || change == SliderRangeChange )
     {
-        bool showMoodbar = AmarokConfig::showMoodbarInSlider();
-
-        // If the setting has changed, request a full repaint.
-        if ( showMoodbar != m_oldShowMoodbar )
-        {
-            m_oldShowMoodbar = showMoodbar;
-            emit moodbarUsageChanged( showMoodbar );
-            update();
-            return;
-        }
-
         int oldKnobX = m_knobX;
         qreal percent = 0.0;
         if ( maximum() > minimum() )
@@ -440,11 +348,11 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
 void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bool showPopup )
 {
     DEBUG_BLOCK
-    int sliderHeight = height() - ( m_sliderInsertY * 2 );
+    int sliderHeight = height() - ( s_sliderInsertY * 2 );
     int sliderLeftWidth = sliderHeight / 3;
 
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
-    int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
+    int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + s_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, showPopup );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );

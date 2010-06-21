@@ -44,9 +44,9 @@
 #include <KUrl>
 #include <threadweaver/ThreadWeaver.h>
 
-#include <QAction>
 #include <QDateTime>
 #include <QMenu>
+#include <QToolButton>
 
 #include <typeinfo>
 

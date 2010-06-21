@@ -30,12 +30,13 @@
 #include <KPushButton>
 #include <KVBox>
 
+#include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
-
+#include <QMenu>
 
 CollectionSetupTreeView::CollectionSetupTreeView( QWidget *parent )
         : QTreeView( parent )

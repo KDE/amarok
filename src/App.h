@@ -79,6 +79,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     signals:
         void prepareToQuit();
+        void settingsChanged();
 
     private slots:
         void continueInit();

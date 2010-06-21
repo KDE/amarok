@@ -19,8 +19,6 @@
 #ifndef SLIDERWIDGET_H
 #define SLIDERWIDGET_H
 
-#include "moodbar/MoodbarManager.h"
-
 #include <QList>
 #include <QPixmap>
 #include <QSlider>
@@ -57,17 +55,16 @@ namespace Amarok
             QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
-            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar = false );
-            void paintCustomSliderNG( QPainter *p, bool paintMoodbar = false );
+            void paintCustomSlider( QPainter *p, bool paintMoodbar = false );
 
             bool m_sliding;
             bool m_usingCustomStyle;
 
-            static const int m_borderWidth = 6;
-            static const int m_borderHeight = 6;
+            static const int s_borderWidth = 6;
+            static const int s_borderHeight = 6;
 
-            static const int m_sliderInsertX = 5;
-            static const int m_sliderInsertY = 5;
+            static const int s_sliderInsertX = 5;
+            static const int s_sliderInsertY = 5;
 
         private:
 
@@ -83,9 +80,6 @@ namespace Amarok
             QPixmap m_bottomLeft;
             QPixmap m_bottom;
             QPixmap m_left;
-
-            MoodbarManager * m_moodbarManager;
-            QPixmap m_currentMoodBar;
 
             Q_DISABLE_COPY( Slider )
     };
@@ -120,27 +114,22 @@ namespace Amarok
             void drawTriangle( const QString &name, int milliSeconds, bool showPopup = false);
             void clearTriangles();
 
-        public slots:
-            void slotTriangleClicked( int );
-            void slotTriangleFocused( int );
-
-        signals:
-            void moodbarUsageChanged( bool );
-
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * event );
             virtual void sliderChange( SliderChange change );
-            virtual bool event ( QEvent * event );
+            virtual bool event( QEvent * event );
+
+        private slots:
+            void slotTriangleClicked( int );
+            void slotTriangleFocused( int );
 
         private:
             Q_DISABLE_COPY( TimeSlider )
 
-            QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
             int m_knobX; // The position of the current indicator.
-            bool m_oldShowMoodbar;
     };
 }
 
