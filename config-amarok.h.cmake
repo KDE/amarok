@@ -41,3 +41,6 @@
 
 /* If we can use KStatusNotifierItem class (KDE 4.4) */
 #cmakedefine HAVE_KSTATUSNOTIFIERITEM 1
+
+/* Whether cmake build type is debug */
+#cmakedefine DEBUG_BUILD_TYPE

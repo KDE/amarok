@@ -18,6 +18,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <config-amarok.h>
+
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/engine/EngineObserver.h"
@@ -33,7 +35,9 @@ class ContextWidget;
 class SlimToolbar;
 class MainToolbar;
 class MainWindow;
+#ifdef DEBUG_BUILD_TYPE
 class NetworkAccessViewer;
+#endif // DEBUG_BUILD_TYPE
 class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
@@ -153,7 +157,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
+#ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
+#endif // DEBUG_BUILD_TYPE
 
         /**
          * Save state and position of dock widgets.
@@ -198,7 +204,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
+#ifdef DEBUG_BUILD_TYPE
         QPointer<NetworkAccessViewer> m_networkViewer;
+#endif // DEBUG_BUILD_TYPE
 
         QByteArray                 m_splitterState;
 

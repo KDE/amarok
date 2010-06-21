@@ -17,12 +17,16 @@
 #ifndef AMAROK_NETWORKACCESSMANAGERPROXY
 #define AMAROK_NETWORKACCESSMANAGERPROXY
 
+#include <config-amarok.h>
+
 #include "amarok_export.h"
 
 #include <kio/accessmanager.h>
 
 class NetworkAccessManagerProxy;
+#ifdef DEBUG_BUILD_TYPE
 class NetworkAccessViewer;
+#endif // DEBUG_BUILD_TYPE
 
 namespace The
 {
@@ -38,8 +42,10 @@ public:
     static void destroy();
     virtual ~NetworkAccessManagerProxy();
 
+#ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();
     void setNetworkAccessViewer( NetworkAccessViewer *viewer );
+#endif // DEBUG_BUILD_TYPE
 
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);

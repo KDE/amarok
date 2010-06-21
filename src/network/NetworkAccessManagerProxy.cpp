@@ -19,7 +19,9 @@
 
 #include "core/support/Debug.h"
 #include "NetworkAccessManagerProxy.h"
+#ifdef DEBUG_BUILD_TYPE
 #include "NetworkAccessViewer.h"
+#endif // DEBUG_BUILD_TYPE
 
 #include <KProtocolManager>
 
@@ -48,7 +50,11 @@ void NetworkAccessManagerProxy::destroy()
 class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
+#ifdef DEBUG_BUILD_TYPE
     NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) : viewer( 0 ), q( parent ) {}
+#else
+    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) : q( parent ) {}
+#endif // DEBUG_BUILD_TYPE
 
     ~NetworkAccessManagerProxyPrivate()
     {
@@ -90,7 +96,9 @@ public:
         }
     }
 
+#ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
+#endif // DEBUG_BUILD_TYPE
     QHash<int, QPointer<QNetworkReply> > replyTimer;
     QHash<int, QBasicTimer*> timerIds;
     QString userAgent;
@@ -112,6 +120,7 @@ NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
     s_instance = 0;
 }
 
+#ifdef DEBUG_BUILD_TYPE
 NetworkAccessViewer *
 NetworkAccessManagerProxy::networkAccessViewer()
 {
@@ -128,6 +137,7 @@ NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
         d->viewer = viewer;
     }
 }
+#endif // DEBUG_BUILD_TYPE
 
 QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
@@ -179,8 +189,10 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
         break;
     }
 
+#ifdef DEBUG_BUILD_TYPE
     if( d->viewer )
         d->viewer->addRequest( op, request, outgoingData, reply );
+#endif // DEBUG_BUILD_TYPE
     return reply;
 }
 

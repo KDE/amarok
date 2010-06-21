@@ -11,7 +11,6 @@ if(APPLE)
 endif(APPLE)
 
 add_subdirectory( core )
-# add_subdirectory( playlistmanager )
 add_subdirectory( core-impl/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
@@ -550,12 +549,18 @@ kde4_add_ui_files(apg_SRCS
 #####################################################################
 set(network_access_SRCS
     network/NetworkAccessManagerProxy.cpp
-    network/NetworkAccessViewer.cpp
 )
 
-kde4_add_ui_files(network_access_SRCS
-    network/NetworkRequests.ui
-)
+if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+    set(network_access_SRCS
+        ${network_access_SRCS}
+        network/NetworkAccessViewer.cpp
+        )
+
+    kde4_add_ui_files(network_access_SRCS
+        network/NetworkRequests.ui
+        )
+endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
 # RESOLVERS
