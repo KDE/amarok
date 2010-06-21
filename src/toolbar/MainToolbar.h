@@ -61,7 +61,6 @@ private slots:
     void addBookmark( const QString &name, int milliSeconds );
     void checkEngineState();
     void filter( const QString &string );
-    void init();
     void layoutProgressBar();
     void layoutTrackBar();
     void setLabelTime( int ms );

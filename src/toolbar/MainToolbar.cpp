@@ -81,12 +81,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     , m_lastTime( -1 )
 {
     setObjectName( "MainToolbar" );
-    QTimer::singleShot( 0, this, SLOT(init()) );
-}
 
-void
-MainToolbar::init()
-{
     // control padding between buttons and labels, it's style controlled by default
     layout()->setSpacing( 0 );
 
