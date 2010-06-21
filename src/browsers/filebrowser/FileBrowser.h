@@ -19,6 +19,8 @@
 
 #include "BrowserCategory.h"
 
+#include <KUrl>
+
 class FileBrowser : public BrowserCategory
 {
     Q_OBJECT
@@ -34,7 +36,7 @@ public:
     /**
     * Navigate to a specific directory
     */
-    void setDir( const QString &dir );
+    void setDir( const KUrl &dir );
 
     /**
      * Return the path of the currently shown dir.
@@ -57,6 +59,16 @@ protected slots:
      * @param toggled the visibility state of a column in the context menu.
      */
     void toggleColumn( bool toggled);
+
+    /**
+     * Go backward in history
+     */
+    void back();
+
+    /**
+     * Go forward in history
+     */
+    void forward();
 
     /**
      * Navigates up one level in the path shown

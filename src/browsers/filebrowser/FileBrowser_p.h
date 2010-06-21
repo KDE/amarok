@@ -27,6 +27,7 @@
 #include <KGlobalSettings>
 
 #include <QFontMetrics>
+#include <QStack>
 #include <QTimer>
 
 class DirBrowserModel;
@@ -44,6 +45,7 @@ public:
     void readConfig();
     void writeConfig();
     void restoreHeaderState();
+    void updateNavigateActions();
     QStringList siblingsForDir( const QString &path );
 
     void slotSaveHeaderState();
@@ -63,6 +65,12 @@ public:
     KAction *upAction;
     KAction *homeAction;
     KAction *placesAction;
+
+    KAction *backAction;
+    KAction *forwardAction;
+
+    QStack<KUrl> backStack;
+    QStack<KUrl> forwardStack;
 
     bool showingPlaces;
 
