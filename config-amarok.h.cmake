@@ -34,7 +34,7 @@
 #cmakedefine COMPLEX_TAGLIB_FILENAME 1
 
 /* The Git version being compiled, if any. undef means not running from Git. */
-#cmakedefine CURRENT_GIT_VERSION ${CURRENT_GIT_VERSION}
+#cmakedefine CURRENT_GIT_VERSION "${CURRENT_GIT_VERSION}"
 
 /* If liblastfm is found */
 #cmakedefine HAVE_LIBLASTFM 1
