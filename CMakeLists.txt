@@ -44,7 +44,7 @@ include(CheckTagLibFileName)
 check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 # Figure out problems inside KAboutData before re-enabling
-execute_process( COMMAND "git" "describe"
+execute_process( COMMAND "git" "describe" "--dirty"
                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                  RESULT_VARIABLE GIT_OUTPUT_VALUE
                  OUTPUT_VARIABLE CURRENT_GIT_VERSION
