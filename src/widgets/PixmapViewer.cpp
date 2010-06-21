@@ -30,28 +30,21 @@
 #include <QWheelEvent>
 
 
-PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap pix, int screenNumber)
-        : QWidget( widget )
+PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap pix, int screenNumber)
+    : QWidget( parent )
+    , m_pixmap( pix )
 {
-
-    m_pixmap = new QPixmap( pix );
     m_zoomFactor = 1.0; // initial zoom
 
-    if ( KApplication::desktop()->availableGeometry( screenNumber ).width() < m_pixmap->width() ||
-            KApplication::desktop()->availableGeometry( screenNumber ).height() < m_pixmap->height() )
+    int screenWidth = KApplication::desktop()->availableGeometry( screenNumber ).width();
+    int screenHeight = KApplication::desktop()->availableGeometry( screenNumber ).height();
+    if( screenWidth < m_pixmap.width() || screenHeight < m_pixmap.height() )
     {
-        float zoomFactorX =
-            ( (float) KApplication::desktop()->availableGeometry( screenNumber ).width() /
-             (float) m_pixmap->width() );
-        float zoomFactorY =
-            ( (float) KApplication::desktop()->availableGeometry( screenNumber ).height() /
-             (float) m_pixmap->height() );
-
-        m_zoomFactor = std::min( zoomFactorX, zoomFactorY ) * 0.8;
+        float zoomFactorX = float(screenWidth) / m_pixmap.width();
+        float zoomFactorY = float(screenHeight) / m_pixmap.height();
+        m_zoomFactor = qMin( zoomFactorX, zoomFactorY ) * 0.8;
     }
-
-    setMinimumSize( m_pixmap->width() * m_zoomFactor, m_pixmap->height() * m_zoomFactor );
-
+    setMinimumSize( m_pixmap.width() * m_zoomFactor, m_pixmap.height() * m_zoomFactor );
 }
 
 void
@@ -59,41 +52,38 @@ PixmapViewer::setZoomFactor( float f )
 {
     int w, h;
 
-    if ( f == m_zoomFactor )
+    if( f == m_zoomFactor )
         return;
 
     m_zoomFactor = f;
     emit( zoomFactorChanged( m_zoomFactor ) );
 
-    w = m_pixmap->width() * m_zoomFactor;
-    h = m_pixmap->height() * m_zoomFactor;
+    w = m_pixmap.width() * m_zoomFactor;
+    h = m_pixmap.height() * m_zoomFactor;
     setMinimumSize( w, h );
 
     QWidget *p = dynamic_cast<QWidget*>( parent() );
-    if ( p )
+    if( p )
         resize( p->width(), p->height() );
-
 }
 
 void
 PixmapViewer::paintEvent( QPaintEvent *event )
 {
-    Q_UNUSED(event);
-
     int xoffset, yoffset;
 
-    if ( width() > m_pixmap->width() * m_zoomFactor )
+    if( width() > m_pixmap.width() * m_zoomFactor )
     {
-        xoffset = ( width() - m_pixmap->width() * m_zoomFactor ) / 2;
+        xoffset = ( width() - m_pixmap.width() * m_zoomFactor ) / 2;
     }
     else
     {
         xoffset = 0;
     }
 
-    if ( height() > m_pixmap->height()*m_zoomFactor )
+    if( height() > m_pixmap.height() * m_zoomFactor )
     {
-        yoffset = ( height() - m_pixmap->height() * m_zoomFactor ) / 2;
+        yoffset = ( height() - m_pixmap.height() * m_zoomFactor ) / 2;
     }
     else
     {
@@ -104,20 +94,21 @@ PixmapViewer::paintEvent( QPaintEvent *event )
     p.save();
     p.translate( xoffset, yoffset );
     p.scale( m_zoomFactor, m_zoomFactor );
-    p.drawPixmap( 0, 0, *m_pixmap );
+    p.drawPixmap( 0, 0, m_pixmap );
     p.restore();
+
+    event->accept();
 }
 
 void
 PixmapViewer::wheelEvent( QWheelEvent *event )
 {
-    float f;
-
-    f = m_zoomFactor + 0.001 * event->delta();
-    if ( f < 32.0 / m_pixmap->width() )
-        f = 32.0 / m_pixmap->width();
-
+    float f = m_zoomFactor + 0.001 * event->delta();
+    float ratio = 32.0 / m_pixmap.width();
+    if( f < ratio )
+        f = ratio;
     setZoomFactor( f );
+    event->accept();
 }
 
 #include "PixmapViewer.moc"

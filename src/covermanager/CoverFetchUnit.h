@@ -66,8 +66,6 @@ public:
                     CoverFetch::Option opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
     CoverFetchUnit( const CoverFetchSearchPayload *payload );
-    CoverFetchUnit( const CoverFetchUnit &cpy );
-    explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
 
     Meta::AlbumPtr album() const;
@@ -80,7 +78,6 @@ public:
     template< typename T >
         void addError( const T &error );
 
-    CoverFetchUnit &operator=( const CoverFetchUnit &rhs );
     bool operator==( const CoverFetchUnit &other ) const;
     bool operator!=( const CoverFetchUnit &other ) const;
 
@@ -89,6 +86,8 @@ private:
     QStringList m_errors;
     CoverFetch::Option m_options;
     const CoverFetchPayload *m_payload;
+
+    Q_DISABLE_COPY( CoverFetchUnit )
 };
 
 /**
