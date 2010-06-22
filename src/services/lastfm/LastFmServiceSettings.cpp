@@ -141,6 +141,7 @@ LastFmServiceSettings::onAuthenticated()
              {
                  m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
                  m_configDialog->testLogin->setEnabled( false );
+                 m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
              }
              break;
 
