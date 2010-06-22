@@ -39,6 +39,38 @@ using namespace Meta;
 
 namespace Collections {
 
+// TODO : move this to CollectionBase
+static qint64 duration( QString duration ) {
+    QStringList parts = duration.split(":");
+    int hours = parts.takeFirst().toInt();
+    int minutes = parts.takeFirst().toInt();
+    QString rest = parts.takeFirst();
+    int seconds = 0;
+    int mseconds = 0;
+    if( rest.contains(".") ) {
+        int dotIndex = rest.indexOf(".");
+        seconds = rest.left( dotIndex ).toInt();
+        QString frac = rest.mid( dotIndex + 1 );
+        if( frac.contains( "/" ) ) {
+            int slashIndex = frac.indexOf("/");
+            int num = frac.left( frac.indexOf("/") ).toInt();
+            int den = frac.mid( slashIndex + 1 ).toInt();
+            mseconds = num * 1000 / den;
+        }
+        else {
+            mseconds = ("." + frac).toFloat() * 1000;
+        }
+    }
+    else {
+        seconds = rest.toInt();
+    }
+
+    return hours * 60 * 60 * 1000
+        + minutes * 60 * 1000
+        + seconds * 1000
+        + mseconds;
+}
+
 //UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
@@ -203,15 +235,8 @@ DEBUG_BLOCK
 // TODO validate and then convert to kbps
     t->setBitrate( entry.stringValue( KIO::UPNP_BITRATE ).toInt() / 1024 );
 
-    QTime lengthTime = QTime::fromString( entry.stringValue( KIO::UPNP_DURATION ), Qt::ISODate );
-    if( lengthTime.isValid() ) {
-        qint64 msecs = lengthTime.hour() * 60 * 60 * 1000
-            + lengthTime.minute() * 60 * 1000
-            + lengthTime.second() * 1000
-            + lengthTime.msec();
-        t->setLength( msecs );
-    }
-
+    t->setLength( duration( entry.stringValue( KIO::UPNP_DURATION ) ) );
+    debug() << "DURATION DURATION" << duration( "0:03:44.530" );
     Artist->addTrack( t );
     Album->addTrack( t );
     Genre->addTrack( t );
@@ -314,7 +339,6 @@ UpnpBrowseCollection::possiblyContainsTrack( const KUrl &url ) const
     debug() << "Requested track " << url;
     return false;
 }
-
 } //~ namespace
 #include "UpnpBrowseCollection.moc"
 
