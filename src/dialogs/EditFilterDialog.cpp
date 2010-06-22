@@ -33,7 +33,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     , m_filterText( text )
 {
     setCaption( i18n( "Edit Filter" ) );
-    setModal( true );
     setButtons( User1|User2|Default|Ok|Cancel );
     setDefaultButton( Cancel );
     showButtonSeparator( true );
@@ -132,7 +131,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
 EditFilterDialog::~EditFilterDialog()
 {
-    delete m_ui.editKeywordBox;
 }
 
 QString EditFilterDialog::filter() const

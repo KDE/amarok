@@ -56,6 +56,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void addCompletion( const QString &text );
         void onComboItemActivated( int index );
         void slotShowFilterEditor();
+        void slotFilterEditorFinished( int result );
 
     private:
         void init( QWidget *parent, bool advanced );

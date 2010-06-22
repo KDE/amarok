@@ -129,10 +129,20 @@ void
 SearchWidget::slotShowFilterEditor()
 {
     EditFilterDialog *fd = new EditFilterDialog( this, m_sw->currentText() );
+    fd->setAttribute( Qt::WA_DeleteOnClose );
+    m_filterAction->setEnabled( false );
 
     connect( fd, SIGNAL(filterChanged(const QString&) ), m_sw, SLOT(setEditText(const QString&)) );
+    connect( fd, SIGNAL(finished(int)), this, SLOT(slotFilterEditorFinished(int)) );
 
-    fd->exec();
+    fd->show();
+}
+
+void
+SearchWidget::slotFilterEditorFinished( int result )
+{
+    Q_UNUSED( result )
+    m_filterAction->setEnabled( true );
 }
 
 QToolBar * SearchWidget::toolBar()
