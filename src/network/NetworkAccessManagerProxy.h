@@ -63,7 +63,7 @@ private:
     NetworkAccessManagerProxyPrivate* const d;
     friend class NetworkAccessManagerProxyPrivate;
 
-    Q_DISABLE_COPY( NetworkAccessManagerProxy );
+    Q_DISABLE_COPY( NetworkAccessManagerProxy )
 };
 
 #endif // AMAROK_NETWORKACCESSMANAGERPROXY
