@@ -157,12 +157,11 @@ AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, Q
 void
 AmarokDownloadHelper::resultData( QNetworkReply* reply )
 {
-    DEBUG_BLOCK
-
     const KUrl url = reply->request().url();
     if( !m_values.contains( url ) )
         return;
 
+    DEBUG_BLOCK
     if( reply->error() != QNetworkReply::NoError )
     {
         cleanUp( url );
@@ -204,12 +203,11 @@ AmarokDownloadHelper::resultData( QNetworkReply* reply )
 void
 AmarokDownloadHelper::resultString( QNetworkReply* reply )
 {
-    DEBUG_BLOCK
-
     const KUrl url = reply->request().url();
     if( !m_values.contains( url ) )
         return;
 
+    DEBUG_BLOCK
     if( reply->error() != QNetworkReply::NoError )
     {
         cleanUp( url );
