@@ -23,6 +23,8 @@
 
 #include <kio/accessmanager.h>
 
+#include <QNetworkReply>
+
 class NetworkAccessManagerProxy;
 #ifdef DEBUG_BUILD_TYPE
 class NetworkAccessViewer;
@@ -42,13 +44,34 @@ public:
     static void destroy();
     virtual ~NetworkAccessManagerProxy();
 
+    struct Error
+    {
+        QNetworkReply::NetworkError code;
+        QString description;
+    };
+
+    /**
+     * Gets the contents of the target @p url. It is a convenience wrapper
+     * around QNetworkAccessManager::get() where the user supplies a
+     * slot @p method to be called when the content is retrieved.
+     *
+     * @param url the url to get the content from.
+     * @param receiver the receiver object to call @p method on.
+     * @param method the method to call when content is retrieved.
+     * @param type the #Qt::ConnectionType used for calling the @p method.
+     * @return a QNetworkReply object for custom monitoring.
+     */
+    QNetworkReply *getData( const KUrl &url, QObject *receiver, const char *method,
+                            Qt::ConnectionType type = Qt::AutoConnection );
+
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();
     void setNetworkAccessViewer( NetworkAccessViewer *viewer );
 #endif // DEBUG_BUILD_TYPE
 
 protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req,
+                                         QIODevice *outgoingData = 0);
 
 private:
     NetworkAccessManagerProxy( QObject *parent = 0 );
@@ -56,8 +79,10 @@ private:
 
     class NetworkAccessManagerProxyPrivate;
     NetworkAccessManagerProxyPrivate* const d;
+    friend class NetworkAccessManagerProxyPrivate;
 
     Q_DISABLE_COPY( NetworkAccessManagerProxy )
+    Q_PRIVATE_SLOT( d, void _replyFinished() )
 };
 
 #endif // AMAROK_NETWORKACCESSMANAGERPROXY
