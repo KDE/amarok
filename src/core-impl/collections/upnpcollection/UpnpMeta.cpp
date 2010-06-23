@@ -65,7 +65,7 @@ UpnpTrack::playableUrl() const
 QString
 UpnpTrack::uidUrl() const
 {
-    return m_playableUrl;
+    return m_uidUrl;
 }
 
 QString
@@ -149,7 +149,7 @@ UpnpTrack::setYear( const QString &newYear )
 void
 UpnpTrack::setUidUrl( const QString &url )
 {
-    m_playableUrl = url;
+    m_uidUrl = url;
 }
 
 void

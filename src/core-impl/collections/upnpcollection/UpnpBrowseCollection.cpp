@@ -189,8 +189,12 @@ void
 UpnpBrowseCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
 {
 DEBUG_BLOCK
+    debug() << "RefID " << entry.stringValue( KIO::UPNP_REF_ID ) << "for" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
 // TODO check for meta data updates instead of just returning
-    if( m_TrackMap.contains( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) ) ) {
+    if( entry.contains( KIO::UPNP_REF_ID )
+        && m_TrackMap.contains( entry.stringValue( KIO::UPNP_REF_ID ) ) )
+        return;
+    if( m_TrackMap.contains( entry.stringValue(KIO::UPNP_ID) ) ) {
         return;
     }
 
@@ -231,6 +235,7 @@ DEBUG_BLOCK
     t->setYear( Year );
 
     t->setPlayableUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
+    t->setUidUrl( entry.stringValue( KIO::UPNP_ID ) );
     t->setTrackNumber( entry.stringValue(KIO::UPNP_TRACK_NUMBER).toInt() );
 // TODO validate and then convert to kbps
     t->setBitrate( entry.stringValue( KIO::UPNP_BITRATE ).toInt() / 1024 );

@@ -137,6 +137,7 @@ class UpnpTrack : public Meta::Track
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;
+        QString m_uidUrl;
 };
 
 class UpnpArtist : public Meta::Artist
