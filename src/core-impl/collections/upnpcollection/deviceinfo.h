@@ -41,6 +41,7 @@ public:
     const QString& modelNumber() const;
     const QString& serialNumber() const;
     const QString& udn() const;
+    QString uuid() const;
     const QString& presentationUrl() const;
 
     const QString& host() const;
@@ -131,6 +132,11 @@ inline int DeviceInfo::port() const
 inline const QString& DeviceInfo::parentDeviceUdn() const
 {
     return m_parentDeviceUdn;
+}
+
+inline QString DeviceInfo::uuid() const
+{
+  return QString(udn()).replace("uuid:", "");
 }
 
 #endif
