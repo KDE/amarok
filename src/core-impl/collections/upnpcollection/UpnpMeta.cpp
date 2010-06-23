@@ -149,7 +149,11 @@ UpnpTrack::setYear( const QString &newYear )
 void
 UpnpTrack::setUidUrl( const QString &url )
 {
+// TODO should we include uuid() also in the url?
     m_uidUrl = url;
+    if( !url.startsWith( "upnptrack://" ) )
+        m_uidUrl = "upnptrack://" + m_uidUrl;
+    debug() << "UID FOR " << name() << m_uidUrl;
 }
 
 void
