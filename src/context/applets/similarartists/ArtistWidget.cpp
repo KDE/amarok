@@ -376,7 +376,6 @@ ArtistWidget::addLastfmArtistStation()
 void
 ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId )
     if( artists.length() > 0 )
         m_navigateButton->show();
