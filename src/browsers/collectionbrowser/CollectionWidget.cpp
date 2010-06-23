@@ -398,17 +398,16 @@ CollectionWidget::init()
 
     d->searchWidget->toolBar()->addSeparator();
 
-    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
-    searchMenuAction->setMenu( filterMenu );
-
-    d->searchWidget->toolBar()->addAction( searchMenuAction );
-
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
     d->searchWidget->toolBar()->addAction( toggleAction );
+
+    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
+    searchMenuAction->setMenu( filterMenu );
+    d->searchWidget->toolBar()->addAction( searchMenuAction );
 
     QToolButton *tbutton = qobject_cast<QToolButton*>( d->searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
