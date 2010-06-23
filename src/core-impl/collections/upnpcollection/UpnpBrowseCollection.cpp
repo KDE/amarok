@@ -322,23 +322,15 @@ UpnpBrowseCollection::queryMaker()
     return umqm;
 }
 
-QString
-UpnpBrowseCollection::collectionId() const
+Meta::TrackPtr
+UpnpBrowseCollection::trackForUrl( const KUrl &url )
 {
-    return QString("upnp-ms://") + m_udn;
-}
-
-QString
-UpnpBrowseCollection::prettyName() const
-{
-    return m_name;
-}
-
-bool
-UpnpBrowseCollection::possiblyContainsTrack( const KUrl &url ) const
-{
-    debug() << "Requested track " << url;
-    return false;
+    debug() << "TRACK FOR URL " << url;
+    if( url.scheme() == "upnptrack"
+        && m_TrackMap.contains( url.url() ) )
+        return m_TrackMap[ url.url() ];
+    debug() << "NONE FOUND";
+    return Collection::trackForUrl( url );
 }
 } //~ namespace
 #include "UpnpBrowseCollection.moc"

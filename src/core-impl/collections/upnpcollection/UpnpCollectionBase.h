@@ -62,6 +62,7 @@ class UpnpCollectionBase : public Collections::Collection
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+    bool possiblyContainsTrack( const KUrl &url ) const;
   protected:
     const DeviceInfo m_deviceInfo;
 };

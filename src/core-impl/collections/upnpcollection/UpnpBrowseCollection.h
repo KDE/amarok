@@ -52,11 +52,11 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
 
+    Meta::TrackPtr trackForUrl( const KUrl &url );
     virtual KIcon icon() const { return KIcon("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    bool possiblyContainsTrack( const KUrl &url ) const;
   signals:
 
   public slots:

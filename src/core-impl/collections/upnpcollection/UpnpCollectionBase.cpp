@@ -48,4 +48,13 @@ UpnpCollectionBase::prettyName() const
     return m_deviceInfo.friendlyName();
 }
 
+bool
+UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
+{
+    if( url.scheme() == "upnp-ms"
+        && url.host() == m_deviceInfo.host()
+        && url.port() == m_deviceInfo.port() )
+        return true;
+    return false;
+}
 } //namespace Collections

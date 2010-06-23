@@ -53,7 +53,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 
     virtual KIcon icon() const { return KIcon("network-server"); }
 
-    bool possiblyContainsTrack( const KUrl &url ) const;
+    Meta::TrackPtr trackForUrl( const KUrl &url );
   signals:
 
   public slots:

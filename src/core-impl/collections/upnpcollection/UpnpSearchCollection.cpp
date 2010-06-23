@@ -101,11 +101,13 @@ UpnpSearchCollection::queryMaker()
     return new UpnpQueryMaker( this );
 }
 
-bool
-UpnpSearchCollection::possiblyContainsTrack( const KUrl &url ) const
+Meta::TrackPtr
+UpnpSearchCollection::trackForUrl( const KUrl &url )
 {
+    #warning Implement track for url
+    // TODO FIXME how to do this?
     debug() << "Requested track " << url;
-    return false;
+    return Collection::trackForUrl( url );
 }
 
 } //~ namespace
