@@ -25,6 +25,8 @@
 #include <QList>
 
 class QWidget;
+class QSpinBox;
+class QDateEdit;
 
 class EditFilterDialog : public KDialog
 {
@@ -41,7 +43,7 @@ class EditFilterDialog : public KDialog
 
     private:
         Ui::EditFilterDialog m_ui;
-        
+
         bool m_appended;               // true if a filter appended
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
@@ -53,7 +55,7 @@ class EditFilterDialog : public KDialog
         QStringList m_genres;
         QStringList m_labels;
 
-    private:
+        QString keywordConditionDate(const QString& keyword) const;
         QString keywordConditionNumeric(const QString& keyword) const;
         QString keywordConditionText(const QString& keyword) const;
 
@@ -63,6 +65,7 @@ class EditFilterDialog : public KDialog
         void minSpinChanged(int value);
         void maxSpinChanged(int value);
 
+        void dateWanted();
         void textWanted( const KIcon &icon = KIcon() );
         void textWanted( const QStringList &completions, const KIcon &icon = KIcon() );
         void valueWanted();
