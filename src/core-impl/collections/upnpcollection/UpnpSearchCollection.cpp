@@ -40,10 +40,8 @@ namespace Collections {
 //UpnpSearchCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpSearchCollection::UpnpSearchCollection( const QString &udn, const QString &name )
-    : UpnpCollectionBase()
-    , m_udn( udn )
-    , m_name( name )
+UpnpSearchCollection::UpnpSearchCollection( const DeviceInfo &info )
+    : UpnpCollectionBase( info )
     , m_fullScanInProgress( false )
 {
     DEBUG_BLOCK
@@ -92,7 +90,7 @@ UpnpSearchCollection::startIncrementalScan( const QString &directory )
     debug() << "Scanning directory" << directory;
     KUrl url;
     url.setScheme( "upnp-ms" );
-    url.setHost( m_udn );
+    url.setHost( m_deviceInfo.uuid() );
     url.setPath( directory );
 }
 
@@ -101,18 +99,6 @@ UpnpSearchCollection::queryMaker()
 {
     DEBUG_BLOCK;
     return new UpnpQueryMaker( this );
-}
-
-QString
-UpnpSearchCollection::collectionId() const
-{
-    return QString("upnp-ms://") + m_udn;
-}
-
-QString
-UpnpSearchCollection::prettyName() const
-{
-    return m_name;
 }
 
 bool

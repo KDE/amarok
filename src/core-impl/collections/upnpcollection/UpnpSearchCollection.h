@@ -45,14 +45,12 @@ class UpnpSearchCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpSearchCollection( const QString &udn, const QString &name );
+    UpnpSearchCollection( const DeviceInfo &info );
     virtual ~UpnpSearchCollection();
 
     virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
     virtual KIcon icon() const { return KIcon("network-server"); }
 
     bool possiblyContainsTrack( const KUrl &url ) const;
@@ -65,9 +63,6 @@ class UpnpSearchCollection : public UpnpCollectionBase
     void slotFilesChanged(const QStringList &);
 
   private:
-    QString m_udn;
-    QString m_name;
-
     QTimer *m_fullScanTimer;
     bool m_fullScanInProgress;
 

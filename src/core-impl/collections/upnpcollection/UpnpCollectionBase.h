@@ -29,6 +29,8 @@
 #include <KIcon>
 #include <KDirNotify>
 
+#include <deviceinfo.h>
+
 namespace KIO {
   class Job;
   class ListJob;
@@ -55,8 +57,13 @@ class UpnpCollectionBase : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollectionBase();
+    UpnpCollectionBase( const DeviceInfo &info );
     void removeCollection() { emit remove(); }
+
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
+  protected:
+    const DeviceInfo m_deviceInfo;
 };
 
 } //namespace Collections

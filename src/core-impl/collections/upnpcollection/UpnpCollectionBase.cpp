@@ -30,9 +30,22 @@ class KJob;
 
 namespace Collections {
 
-UpnpCollectionBase::UpnpCollectionBase()
+UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo &info )
     : Collection()
+    , m_deviceInfo( info )
 {
+}
+
+QString
+UpnpCollectionBase::collectionId() const
+{
+    return QString("upnp-ms://") + m_deviceInfo.uuid();
+}
+
+QString
+UpnpCollectionBase::prettyName() const
+{
+    return m_deviceInfo.friendlyName();
 }
 
 } //namespace Collections

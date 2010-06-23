@@ -153,7 +153,6 @@ UpnpTrack::setUidUrl( const QString &url )
     m_uidUrl = url;
     if( !url.startsWith( "upnptrack://" ) )
         m_uidUrl = "upnptrack://" + m_uidUrl;
-    debug() << "UID FOR " << name() << m_uidUrl;
 }
 
 void

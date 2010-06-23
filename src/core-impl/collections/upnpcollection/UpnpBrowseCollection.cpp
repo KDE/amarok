@@ -74,10 +74,8 @@ static qint64 duration( QString duration ) {
 //UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpBrowseCollection::UpnpBrowseCollection( const QString &udn, const QString &name )
-    : UpnpCollectionBase()
-    , m_udn( udn )
-    , m_name( name )
+UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo &info )
+    : UpnpCollectionBase( info )
     , m_mc( new MemoryCollection() )
     , m_fullScanInProgress( false )
 {
@@ -112,7 +110,7 @@ void UpnpBrowseCollection::processUpdates()
     debug() << "Update URL is" << urlString;
     invalidateTracksIn( urlString );
     KUrl url( urlString );
-    if( url.scheme() != "upnp-ms" || url.host() != m_udn )
+    if( url.scheme() != "upnp-ms" || url.host() != m_deviceInfo.uuid() )
         return;
     debug() << "Now incremental scanning" << url;
     startIncrementalScan( url.path() );
@@ -189,7 +187,6 @@ void
 UpnpBrowseCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
 {
 DEBUG_BLOCK
-    debug() << "RefID " << entry.stringValue( KIO::UPNP_REF_ID ) << "for" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
 // TODO check for meta data updates instead of just returning
     if( entry.contains( KIO::UPNP_REF_ID )
         && m_TrackMap.contains( entry.stringValue( KIO::UPNP_REF_ID ) ) )
@@ -241,7 +238,6 @@ DEBUG_BLOCK
     t->setBitrate( entry.stringValue( KIO::UPNP_BITRATE ).toInt() / 1024 );
 
     t->setLength( duration( entry.stringValue( KIO::UPNP_DURATION ) ) );
-    debug() << "DURATION DURATION" << duration( "0:03:44.530" );
     Artist->addTrack( t );
     Album->addTrack( t );
     Genre->addTrack( t );
@@ -307,7 +303,7 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     debug() << "Scanning directory" << directory;
     KUrl url;
     url.setScheme( "upnp-ms" );
-    url.setHost( m_udn );
+    url.setHost( m_deviceInfo.uuid() );
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 

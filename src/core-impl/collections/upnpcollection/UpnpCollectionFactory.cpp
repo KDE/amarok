@@ -131,11 +131,11 @@ void UpnpCollectionFactory::createCollection( QString udn )
            && m_searchOptions.contains( "upnp:artist" )
            && m_searchOptions.contains( "upnp:album" ) ) {
            kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
-           m_devices[udn] = new UpnpSearchCollection( udn, info.friendlyName() );
+           m_devices[udn] = new UpnpSearchCollection( info );
        }
        else {
            kDebug() << "Supported Search() meta-data" << m_searchOptions << "not enough. Using UpnpBrowseCollection";
-           m_devices[udn] = new UpnpBrowseCollection( udn, info.friendlyName() );
+           m_devices[udn] = new UpnpBrowseCollection( info );
        }
 
        emit newCollection( m_devices[udn] );

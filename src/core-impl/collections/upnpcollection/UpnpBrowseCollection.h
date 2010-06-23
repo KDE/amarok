@@ -46,14 +46,12 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpBrowseCollection( const QString &udn, const QString &name );
+    UpnpBrowseCollection( const DeviceInfo &info );
     virtual ~UpnpBrowseCollection();
 
     virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
     virtual KIcon icon() const { return KIcon("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
@@ -75,8 +73,6 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     void processUpdates();
 
   private:
-    QString m_udn;
-    QString m_name;
     QSharedPointer<MemoryCollection> m_mc;
     UpnpMemoryQueryMaker *m_umqm;
 
