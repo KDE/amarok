@@ -17,13 +17,11 @@
 #ifndef AVATAR_DOWNLOADER_H
 #define AVATAR_DOWNLOADER_H
 
-#include <KUrl>
+#include "NetworkAccessManagerProxy.h"
 
 #include <QHash>
 #include <QObject>
 #include <QPixmap>
-
-class QNetworkReply;
 
 class AvatarDownloader : public QObject
 {
@@ -53,9 +51,8 @@ class AvatarDownloader : public QObject
     private slots:
         /**
          * Slot called when the network access manager finished a request
-         * @param reply The reply from the service request
          */
-        void downloaded( QNetworkReply *reply );
+        void downloaded( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     private:
         QHash<KUrl, QString> m_userAvatarUrls;

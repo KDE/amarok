@@ -23,7 +23,6 @@
 #include "AlbumBreadcrumbWidget.h"
 #include "core/support/Amarok.h"
 #include "CoverViewDialog.h"
-#include "NetworkAccessManagerProxy.h"
 #include "PixmapViewer.h"
 #include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
@@ -45,8 +44,6 @@
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QMenu>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QScrollArea>
 #include <QSplitter>
 #include <QTabWidget>
@@ -210,9 +207,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(handleFetchResult(QNetworkReply*)) );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
@@ -462,18 +456,12 @@ void CoverFoundDialog::slotButtonClicked( int button )
     }
 }
 
-void CoverFoundDialog::handleFetchResult( QNetworkReply *reply )
+void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
+                                          NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
-    if( !m_urls.contains( url ) )
-        return;
-
-    QNetworkReply::NetworkError error = reply->error();
-    bool hasNoError = ( error == QNetworkReply::NoError );
-
     CoverFoundItem *item = m_urls.take( url );
     QPixmap pixmap;
-    if( hasNoError && pixmap.loadFromData( reply->readAll() ) )
+    if( e.code == QNetworkReply::NoError && pixmap.loadFromData( data ) )
     {
         item->setBigPix( pixmap );
         m_sideBar->setPixmap( pixmap );
@@ -481,10 +469,9 @@ void CoverFoundDialog::handleFetchResult( QNetworkReply *reply )
     }
     else
     {
-        const QString error = pixmap.isNull()
-                            ? i18n("Sorry, the cover image could not be retrieved.")
-                            : reply->errorString();
-        KMessageBox::error( this, error );
+        QStringList errors;
+        errors << e.description;
+        KMessageBox::errorList( this, i18n("Sorry, the cover image could not be retrieved."), errors );
         m_dialog->reject();
     }
 }
@@ -500,8 +487,8 @@ bool CoverFoundDialog::fetchBigPix()
     if( !url.isValid() )
         return false;
 
-    QNetworkRequest req( url );
-    QNetworkReply *reply = The::networkAccessManager()->get( req );
+    QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
+                           SLOT(handleFetchResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     m_urls.insert( url, item );
 
     if( !m_dialog )

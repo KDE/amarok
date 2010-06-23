@@ -23,7 +23,6 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-#include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 
@@ -129,9 +128,6 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     // open the url of the similar artist when his name is clicked
     connect( m_nameLabel, SIGNAL( linkActivated( const QString & ) ), this
              , SLOT( openUrl( const QString  & ) ) );
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(setImageFromInternet(QNetworkReply*)) );
 }
 
 
@@ -171,8 +167,8 @@ ArtistWidget::setPhoto( const KUrl& urlPhoto )
     m_image->setText( i18n( "Loading the picture..." ) );
 
     m_url = urlPhoto;
-    QNetworkRequest req( urlPhoto );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( urlPhoto, this,
+         SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 /**
@@ -180,31 +176,28 @@ ArtistWidget::setPhoto( const KUrl& urlPhoto )
  * @param reply, reply from the network request
  */
 void
-ArtistWidget::setImageFromInternet( QNetworkReply *reply )
+ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
-    if( !url.isValid() || m_url != url )
+    if( m_url != url )
         return;
 
     m_url.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         m_image->clear();
-        m_image->setText( i18n( "Unable to fetch the picture" ) );
-        reply->deleteLater();
+        m_image->setText( i18n( "Unable to fetch the picture: %1", e.description ) );
         return;
     }
 
-    QByteArray data = reply->readAll();
     QPixmap image;
     image.loadFromData( data );
 
-    if ( image.width() > 100 )
+    if( image.width() > 100 )
     {
         image = image.scaledToWidth( 100, Qt::SmoothTransformation );
     }
 
-    if ( image.height() > 100 )
+    if( image.height() > 100 )
     {
         image = image.scaledToHeight( 100, Qt::SmoothTransformation );
     }
@@ -212,8 +205,6 @@ ArtistWidget::setImageFromInternet( QNetworkReply *reply )
     m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
     //the height of the widget depends on the height of the artist picture
     //setMaximumHeight(image.height());
-
-    reply->deleteLater();
 }
 
  /**

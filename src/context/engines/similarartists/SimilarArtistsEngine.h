@@ -22,11 +22,10 @@
 #include "src/context/ContextObserver.h"
 #include "src/context/DataEngine.h"
 #include "core/meta/Meta.h"
+#include "NetworkAccessManagerProxy.h"
 #include "src/context/applets/similarartists/SimilarArtist.h"
 
 #include <QLocale>
-
-class QNetworkReply;
 
 using namespace Context;
 
@@ -173,23 +172,20 @@ private slots:
     /**
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
-     * @param reply reply from the network request.
      */
-    void parseSimilarArtists( QNetworkReply *reply );
+    void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
-     * Parse the xml fetched on the lastFM API for the similarArtist description
+     * Parse the xml fetched on the lastFM API for the similarArtist description.
      * Launched when the download of the data are finished and for each similarArtists.
-     * @param reply reply from the network request.
      */
-    void parseArtistDescription( QNetworkReply *reply );
+    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
-     * Parse the xml fetched on the lastFM API for the similarArtist most known track
+     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
      * Launched when the download of the data are finished and for each similarArtists.
-     * @param reply reply from the network request.
      */
-    void parseArtistTopTrack( QNetworkReply *reply );
+    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
 };
 

@@ -19,6 +19,7 @@
 #define ARTIST_WIDGET_H
 
 #include "core/meta/Meta.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 //Kde
 #include<KUrl>
@@ -32,7 +33,6 @@
 class QLabel;
 class QGraphicsScene;
 class QGridLayout;
-class QNetworkReply;
 class QPushButton;
 
 namespace Collections {
@@ -172,7 +172,7 @@ private slots:
      * Put the image of the artist in the QPixMap
      * @param reply, reply from the network request
      */
-    void setImageFromInternet( QNetworkReply *reply );
+    void setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL

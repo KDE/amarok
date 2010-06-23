@@ -22,6 +22,7 @@
 
 #include "core/meta/Meta.h"
 #include "CoverFetchUnit.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QHash>
 #include <QObject>      //baseclass
@@ -30,7 +31,6 @@
 
 class CoverFetchQueue;
 class CoverFoundDialog;
-class QNetworkReply;
 
 namespace KIO { class Job; }
 
@@ -62,7 +62,7 @@ private slots:
     void slotFetch( const CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( QNetworkReply *reply );
+    void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -81,7 +81,7 @@ private:
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
-    QHash< QNetworkReply*, CoverFetchUnit::Ptr > m_urls;
+    QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;

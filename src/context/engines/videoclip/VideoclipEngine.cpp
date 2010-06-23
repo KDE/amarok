@@ -24,11 +24,9 @@
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
-#include "NetworkAccessManagerProxy.h"
 
 // Qt
 #include <QDomDocument>
-#include <QNetworkReply>
 
 using namespace Context;
 
@@ -43,14 +41,6 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
         , m_requested( true )
 {
     m_sources << "youtube" << "dailymotion" << "vimeo" ;
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultYoutube(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultYoutubeGetLink(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultDailymotion(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultDailymotionGetLink(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeo(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeoBis(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultVimeoGetLink(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultImageFetcher(QNetworkReply*)) );
     update();
 }
 
@@ -149,20 +139,23 @@ void VideoclipEngine::update()
         // Youtube : http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
         KUrl youtubeUrl( QString("http://gdata.youtube.com/feeds/videos?q=%1 %2").arg(m_artist).arg(m_title) + QString( "&orderby=relevance&max-results=")+ QString().setNum( m_nbVidsPerService ) );
         m_youtubeUrl = youtubeUrl;
-        The::networkAccessManager()->get( QNetworkRequest( youtubeUrl ) );
+        The::networkAccessManager()->getData( youtubeUrl, this,
+             SLOT(resultYoutube(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
         // Query dailymotion, order by rating
         // Dailymotion : http://www.dailymotion.com/rss/rated/search/ARTIST TITLE
         KUrl dailyUrl( QString("http://www.dailymotion.com/rss/rated/search/%1 %2").arg(m_artist).arg(m_title) );
         m_dailyUrl = dailyUrl;
-        The::networkAccessManager()->get( QNetworkRequest( dailyUrl ) );
+        The::networkAccessManager()->getData( dailyUrl, this,
+             SLOT(resultDailymotion(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
         // Query vimeo
         // Vimeo : http://vimeo.com/videos/search:ARTIST TITLE
         KUrl vimeoUrl( QString("http://vimeo.com/videos/search:%1 %2").arg(m_artist).arg(m_title) );
         m_vimeoUrl = vimeoUrl;
         debug() << "Vimeo query url:" << vimeoUrl;
-        The::networkAccessManager()->get( QNetworkRequest( vimeoUrl ) );
+        The::networkAccessManager()->getData( vimeoUrl, this,
+             SLOT(resultVimeo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
@@ -202,25 +195,23 @@ bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
         return true;
 }
 
-void VideoclipEngine::resultYoutube( QNetworkReply *reply )
+void VideoclipEngine::resultYoutube( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_youtubeUrl != url )
         return;
 
     m_youtubeUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", reply->errorString() ) );
-        debug() << "Unable to retrieve Youtube information:" << reply->errorString();
+        setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", e.description ) );
+        debug() << "Unable to retrieve Youtube information:" << e.description;
         m_nbYoutube = 0; //say that we didn't fetch any youtube songs (which is true !)
-        reply->deleteLater();
         resultFinalize();
         return;
     }
     // Get the result
     QDomDocument xmlDoc;
-    xmlDoc.setContent( reply->readAll() );
+    xmlDoc.setContent( data );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "entry" );
 
     QTime tim, time( 0, 0 );
@@ -250,11 +241,13 @@ void VideoclipEngine::resultYoutube( QNetworkReply *reply )
             // Send a job to get the downloadable link
             const KUrl videoUrl( item->url );
             m_videoUrls[videoUrl] = Youtube;
-            The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
+            The::networkAccessManager()->getData( videoUrl, this,
+                 SLOT(resultYoutubeGetLink(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
             const KUrl coverUrl( item->coverurl );
             m_imageUrls << coverUrl;
-            The::networkAccessManager()->get( QNetworkRequest( coverUrl ) );
+            The::networkAccessManager()->getData( coverUrl, this,
+                 SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         else
         {
@@ -265,23 +258,19 @@ void VideoclipEngine::resultYoutube( QNetworkReply *reply )
     m_nbYoutube += xmlNodeList.length();
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     //debug() << "Youtube fetch : " << m_nbYoutube << " songs ";
-
-    reply->deleteLater();
     resultFinalize();
 }
 
-void VideoclipEngine::resultYoutubeGetLink( QNetworkReply *reply )
+void VideoclipEngine::resultYoutubeGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
 //    DEBUG_BLOCK
-    const KUrl url = reply->request().url();
     if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Youtube) )
         return;
 
     m_videoUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Unable to retrieve Youtube direct videolink" ;
-        reply->deleteLater();
+        debug() << "Unable to retrieve Youtube direct videolink:" << e.description;
         resultFinalize();
         return;
     }
@@ -290,7 +279,7 @@ void VideoclipEngine::resultYoutubeGetLink( QNetworkReply *reply )
     jobUrl.replace( "watch?v", "get_video?video_id" );
 
     QString vidlink = "bad_link" ;
-    QString page = reply->readAll();
+    QString page( data );
     bool isHQ18 = false;
     bool isHQ22 = false;
 
@@ -351,29 +340,26 @@ void VideoclipEngine::resultYoutubeGetLink( QNetworkReply *reply )
         }
     }
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultDailymotion( QNetworkReply *reply )
+void VideoclipEngine::resultDailymotion( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_dailyUrl != url )
         return;
 
     m_dailyUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", reply->errorString() ) );
-        debug() << "Unable to retrieve Dailymotion information:" << reply->errorString();
+        setData( "videoclip", "message", i18n("Unable to retrieve Dailymotion information: %1", e.description) );
+        debug() << "Unable to retrieve Dailymotion information:" << e.description;
         m_nbDailymotion = 0; //say that we didn't fetch any youtube songs (which is true !)
-        reply->deleteLater();
         resultFinalize();
         return;
     }
 
     // Get the result
     QDomDocument xmlDoc;
-    xmlDoc.setContent( reply->readAll() );
+    xmlDoc.setContent( data );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "item" );
 
     int tmp = m_nbVidsPerService < (int)xmlNodeList.length() ? m_nbVidsPerService : (int)xmlNodeList.length();
@@ -404,12 +390,14 @@ void VideoclipEngine::resultDailymotion( QNetworkReply *reply )
             // Send a job to get the downloadable link
             const KUrl videoUrl( item->url );
             m_videoUrls[videoUrl] = Dailymotion;
-            The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
+            The::networkAccessManager()->getData( videoUrl, this,
+                 SLOT(resultDailymotionGetLink(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
             // Send a job to get the pixmap
             const KUrl coverUrl( item->coverurl );
             m_imageUrls << coverUrl;
-            The::networkAccessManager()->get( QNetworkRequest( coverUrl ) );
+            The::networkAccessManager()->getData( coverUrl, this,
+                 SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         else
         {
@@ -420,27 +408,23 @@ void VideoclipEngine::resultDailymotion( QNetworkReply *reply )
 
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     //debug() << "Dailymotion fetch : " << m_nbDailymotion << " songs ";
-
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultDailymotionGetLink( QNetworkReply *reply )
+void VideoclipEngine::resultDailymotionGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Dailymotion) )
         return;
 
     m_videoUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Unable to retrieve DailyMotion direct videolink" ;
-        reply->deleteLater();
+        debug() << "Unable to retrieve DailyMotion direct videolink:" << e.description;
         resultFinalize();
         return;
     }
     // DEBUG_BLOCK
-    QString page = reply->readAll();
+    QString page( data );
     QStringList vidlink;
     QString vidFLV;
     QString vidH264;
@@ -498,32 +482,28 @@ void VideoclipEngine::resultDailymotionGetLink( QNetworkReply *reply )
         }
     }
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultVimeo( QNetworkReply *reply )
+void VideoclipEngine::resultVimeo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_vimeoUrl != url )
         return;
 
     m_vimeoUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo information: %1", reply->errorString() ) );
-        debug() << "Unable to retrieve Vimeo information:" << reply->errorString();
+        setData( "videoclip", "message", i18n("Unable to retrieve Vimeo information: %1", e.description) );
+        debug() << "Unable to retrieve Vimeo information:" << e.description;
         m_nbVimeo = 0; // say that we didn't fetch any vimeo songs (which is true !)
-        reply->deleteLater();
         resultFinalize();
         return;
     }
     // DEBUG_BLOCK
     // Get the result
-    QString page = reply->readAll();
+    QString page( data );
     if( page.isNull() )
     {
         debug() << "Vimeo info is null";
-        reply->deleteLater();
         return;
     }
 
@@ -541,27 +521,25 @@ void VideoclipEngine::resultVimeo( QNetworkReply *reply )
         QString vimeoBis = QString( "http://vimeo.com/api/v2/video/" ) + id + QString( ".xml" );
         debug() << "Vimeo info url" << vimeoBis;
         m_vimeoBisUrl = KUrl( vimeoBis );
-        The::networkAccessManager()->get( QNetworkRequest( m_vimeoBisUrl ) );
+        The::networkAccessManager()->getData( m_vimeoBisUrl, this,
+             SLOT(resultVimeoBis(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
         pos += regex.matchedLength();
     }
     //debug() << "Vimeo fetch : " << m_nbVimeo << " songs ";
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultVimeoBis( QNetworkReply *reply )
+void VideoclipEngine::resultVimeoBis( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_vimeoBisUrl != url )
         return;
 
     m_vimeoBisUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo Bis information: %1", reply->errorString() ) );
-        debug() << "Unable to retrieve Vimeo Bis information:" << reply->errorString();
-        reply->deleteLater();
+        setData( "videoclip", "message", i18n("Unable to retrieve Vimeo Bis information: %1", e.description) );
+        debug() << "Unable to retrieve Vimeo Bis information:" << e.description;
         resultFinalize();
         return;
     }
@@ -569,7 +547,7 @@ void VideoclipEngine::resultVimeoBis( QNetworkReply *reply )
 
     // Get the result
     QDomDocument xmlDoc;
-    xmlDoc.setContent( reply->readAll() );
+    xmlDoc.setContent( data );
 
     QTime tim, time( 0, 0 );
     QDomNode xmlNode = xmlDoc.elementsByTagName( "video" ).at( 0 );
@@ -596,38 +574,37 @@ void VideoclipEngine::resultVimeoBis( QNetworkReply *reply )
         const KUrl videoUrl( getLink );
         // m_videoUrls << videoUrl;
         m_videoUrls[videoUrl] = Vimeo;
-        The::networkAccessManager()->get( QNetworkRequest( videoUrl ) );
+        The::networkAccessManager()->getData( videoUrl, this,
+             SLOT(resultVimeoGetLink(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
         // Send a job to get every pixmap
         const KUrl imageUrl( item->coverurl );
         m_imageUrls << imageUrl;
-        The::networkAccessManager()->get( QNetworkRequest( imageUrl ) );
+        The::networkAccessManager()->getData( imageUrl, this,
+             SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     else
         delete item;
 
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultVimeoGetLink( QNetworkReply *reply )
+void VideoclipEngine::resultVimeoGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_videoUrls.contains( url ) || (m_videoUrls.value( url ) != Vimeo) )
         return;
 
     m_videoUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Unable to retrieve Vimeo direct videolink:" << reply->errorString();
-        reply->deleteLater();
+        debug() << "Unable to retrieve Vimeo direct videolink:" << e.description;
         resultFinalize();
         return;
     }
     //    DEBUG_BLOCK
     // Get the result
     QDomDocument xmlDoc;
-    xmlDoc.setContent( reply->readAll() );
+    xmlDoc.setContent( data );
 
     QDomNode xmlNode = xmlDoc.elementsByTagName( "xml" ).at( 0 );
     QString id( xmlNode.firstChildElement( "video" ).firstChildElement( "nodeId" ).text() );
@@ -647,26 +624,23 @@ void VideoclipEngine::resultVimeoGetLink( QNetworkReply *reply )
         }
     }
     resultFinalize();
-    reply->deleteLater();
 }
 
-void VideoclipEngine::resultImageFetcher( QNetworkReply *reply )
+void VideoclipEngine::resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_imageUrls.contains( url ) )
         return;
 
     m_imageUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Unable to retrieve an image:" << reply->errorString();
-        reply->deleteLater();
+        debug() << "Unable to retrieve an image:" << e.description;
         resultFinalize();
         return;
     }
     //    DEBUG_BLOCK
     QPixmap pix;
-    if( !pix.loadFromData( reply->readAll() ) )
+    if( !pix.loadFromData( data ) )
     {
         debug() << "Error loading image data";
     }
@@ -675,15 +649,11 @@ void VideoclipEngine::resultImageFetcher( QNetworkReply *reply )
         foreach( VideoInfo *item, m_video )
         {
             if( item->coverurl == url.url() )
-            {
                 item->cover = pix;
-            }
         }
     }
     resultFinalize();
-    reply->deleteLater();
 }
-
 
 void VideoclipEngine::resultFinalize()
 {

@@ -24,14 +24,11 @@
 #include "core/support/Debug.h"
 #include "ContextView.h"
 #include "EngineController.h"
-#include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Artist>
 
 #include <KConfigGroup>
 
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QXmlStreamReader>
 
 K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
@@ -51,12 +48,6 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVarian
     m_requested=true;
     m_sources.append("current");
     m_triedRefinedSearch=0;
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(parseSimilarArtists(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(parseArtistDescription(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(parseArtistTopTrack(QNetworkReply*)) );
     update();
 }
 
@@ -222,8 +213,8 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
     url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
 
     m_similarArtistsUrl = url;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( m_similarArtistsUrl, this,
+         SLOT(parseSimilarArtists(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 
@@ -245,8 +236,8 @@ SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
     url.addQueryItem( "lang", descriptionLocale() );
 
     m_artistDescriptionUrls << url;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 
@@ -267,36 +258,32 @@ SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
     url.addQueryItem( "artist",  artistName.toLocal8Bit() );
 
     m_artistTopTrackUrls << url;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 
 /**
  * Parse the xml fetched on the lastFM API.
  * Launched when the download of the data are finished.
- * @param reply reply from the network request.
  */
 void
-SimilarArtistsEngine::parseSimilarArtists( QNetworkReply *reply ) // SLOT
+SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e ) // SLOT
 {
-    const KUrl url = reply->request().url();
     if( !url.isValid() || m_similarArtistsUrl != url )
         return;
 
     m_similarArtistsUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         // probably we haven't access to internet sent a empty list
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
         m_similarArtistsUrl.clear();
         setData( "similarArtists", "SimilarArtists", variant );
-        reply->deleteLater();
         return;
     }
 
     // The reader on the xml document which contains the information of the lastFM API.
-    QByteArray data = reply->readAll();
     QXmlStreamReader xmlReader;
 
     if( !data.isEmpty() )
@@ -307,7 +294,6 @@ SimilarArtistsEngine::parseSimilarArtists( QNetworkReply *reply ) // SLOT
     else
     {
         m_similarArtistsUrl.clear();
-        reply->deleteLater();
         return;
     }
 
@@ -404,32 +390,25 @@ SimilarArtistsEngine::parseSimilarArtists( QNetworkReply *reply ) // SLOT
         xmlReader.readNext();
     }
     debug() << QString( "Found %1 similar artists of '%2'" ).arg( m_similarArtists.size() ).arg( m_artist );
-    reply->deleteLater();
 }
 
 /**
  * Parse the xml fetched on the lastFM API for the similarArtist description
  * Launched when the download of the data are finished and for each similarArtists.
- * @param reply reply from the network request.
  */
 void
-SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
+SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !url.isValid() || !m_artistDescriptionUrls.contains( url ) )
         return;
 
     m_artistDescriptionUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
-    {
-        reply->deleteLater();
+    if( e.code != QNetworkReply::NoError )
         return;
-    }
 
     m_descriptionArtists++;
 
     // The reader on the xml document which contains the information of the lastFM API.
-    QByteArray data = reply->readAll();
     QXmlStreamReader xmlReader;
 
     if( !data.isEmpty() )
@@ -439,7 +418,6 @@ SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
     }
     else
     {
-        reply->deleteLater();
         return;
     }
 
@@ -457,7 +435,6 @@ SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
     }
     else   // error when parsing the xml
     {
-        reply->deleteLater();
         return;
     }
 
@@ -475,7 +452,6 @@ SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
     }
     else
     {
-        reply->deleteLater();
         return;
     }
 
@@ -499,33 +475,25 @@ SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ) , &m_similarArtists );
         setData( "similarArtists", "SimilarArtists", variant );
     }
-
-    reply->deleteLater();
 }
 
 /**
  * Parse the xml fetched on the lastFM API for the similarArtist most known track
  * Launched when the download of the data are finished and for each similarArtists.
- * @param reply reply from the network request.
  */
 void
-SimilarArtistsEngine::parseArtistTopTrack( QNetworkReply *reply )
+SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_artistTopTrackUrls.contains( url ) )
         return;
 
     m_artistTopTrackUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
-    {
-        reply->deleteLater();
+    if( e.code != QNetworkReply::NoError )
         return;
-    }
 
     m_topTrackArtists++;
 
     // The reader on the xml document which contains the information of the lastFM API.
-    QByteArray data = reply->readAll();
     QXmlStreamReader xmlReader;
 
     if( !data.isEmpty() )
@@ -535,7 +503,6 @@ SimilarArtistsEngine::parseArtistTopTrack( QNetworkReply *reply )
     }
     else
     {
-        reply->deleteLater();
         return;
     }
 
@@ -553,7 +520,6 @@ SimilarArtistsEngine::parseArtistTopTrack( QNetworkReply *reply )
     }
     else
     {
-        reply->deleteLater();
         return;
     }
 
@@ -571,7 +537,6 @@ SimilarArtistsEngine::parseArtistTopTrack( QNetworkReply *reply )
     }
     else   // error when parsing the xml
     {
-        reply->deleteLater();
         return;
     }
 
@@ -595,8 +560,6 @@ SimilarArtistsEngine::parseArtistTopTrack( QNetworkReply *reply )
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
         setData( "similarArtists", "SimilarArtists", variant );
     }
-
-    reply->deleteLater();
 }
 
 inline QString

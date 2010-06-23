@@ -25,9 +25,6 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
-#include "NetworkAccessManagerProxy.h"
-
-#include <QNetworkReply>
 
 using namespace Context;
 
@@ -40,8 +37,6 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , m_wikiWideLang( "aut" )
     , m_triedRefinedSearch( 0 )
 {
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(wikiResult(QNetworkReply*)) );
     update();
 }
 
@@ -86,8 +81,8 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
                 m_wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
             }
             m_urls << m_wikiCurrentUrl;
-            QNetworkRequest req( m_wikiCurrentUrl );
-            The::networkAccessManager()->get( req );
+            The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
+                 SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
             return true;
         }
     }
@@ -232,28 +227,26 @@ void WikipediaEngine::update()
     setData( "wikipedia", "busy", "busy" );
 
     m_urls << m_wikiCurrentUrl;
-    QNetworkRequest req( m_wikiCurrentUrl );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
+         SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
 }
 
 void
-WikipediaEngine::wikiResult( QNetworkReply *reply )
+WikipediaEngine::wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
 {
-    const QUrl url = reply->request().url();
     if( !m_urls.contains( url ) )
         return;
 
     m_urls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "wikipedia", "message", i18n( "Unable to retrieve Wikipedia information: %1", reply->errorString() ) );
-        reply->deleteLater();
+        setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
         return;
     }
 
     debug() << "Received page from wikipedia:" << url;
-    m_wiki = reply->readAll();
+    m_wiki = result;
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
@@ -325,7 +318,6 @@ WikipediaEngine::wikiResult( QNetworkReply *reply )
     }
 
     setData( "wikipedia", data );
-    reply->deleteLater();
 }
 
 QString
@@ -600,8 +592,8 @@ WikipediaEngine::reloadWikipedia()
     removeSource( "wikipedia" );
 
     m_urls << m_wikiCurrentUrl;
-    QNetworkRequest req( m_wikiCurrentUrl );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
+         SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 #include "WikipediaEngine.moc"

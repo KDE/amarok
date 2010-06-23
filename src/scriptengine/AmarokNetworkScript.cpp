@@ -19,11 +19,8 @@
 
 #include "AmarokNetworkScript.h"
 #include "App.h"
-#include "NetworkAccessManagerProxy.h"
 #include "core/support/Debug.h"
 
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QtScript>
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
@@ -130,9 +127,6 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultData(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(resultString(QNetworkReply*)) );
 }
 
 void
@@ -141,8 +135,8 @@ AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine,
     m_values[ url ] = obj ;
     m_engines[ url ] = engine;
     m_encodings[ url ] = encoding;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(resultString(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -150,22 +144,20 @@ AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, Q
 {
     m_values[ url ] = obj ;
     m_engines[ url ] = engine;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(resultData(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-AmarokDownloadHelper::resultData( QNetworkReply* reply )
+AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_values.contains( url ) )
         return;
 
     DEBUG_BLOCK
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
 
@@ -177,7 +169,6 @@ AmarokDownloadHelper::resultData( QNetworkReply* reply )
     {
         debug() << "script object is valid but not a function!!";
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
 
@@ -185,33 +176,26 @@ AmarokDownloadHelper::resultData( QNetworkReply* reply )
     {
         debug() << "stored script engine is not valid!";
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
-
-    QByteArray data = reply->readAll();
 
     QScriptValueList args;
     args <<  engine->toScriptValue( data );
     obj.call( obj, args );
-
     cleanUp( url );
-    reply->deleteLater();
 }
 
 
 void
-AmarokDownloadHelper::resultString( QNetworkReply* reply )
+AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_values.contains( url ) )
         return;
 
     DEBUG_BLOCK
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
 
@@ -219,17 +203,17 @@ AmarokDownloadHelper::resultString( QNetworkReply* reply )
     QScriptEngine* engine = m_engines[ url ];
     QString encoding = m_encodings[ url ];
 
-    QByteArray bytes = reply->readAll();
-    QString data;
-    
+    QString str;
     if( encoding.isEmpty() )
-        data = QString( bytes );
+    {
+        str = QString( data );
+    }
     else
     {
         QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
         QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
         QTextCodec::setCodecForCStrings( utf8codec );
-        data = codec->toUnicode( bytes );
+        str = codec->toUnicode( data );
     }
     
     // now send the data to the associated script object
@@ -237,7 +221,6 @@ AmarokDownloadHelper::resultString( QNetworkReply* reply )
     {
         debug() << "script object is valid but not a function!!";
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
    
@@ -245,16 +228,13 @@ AmarokDownloadHelper::resultString( QNetworkReply* reply )
     {
         debug() << "stored script engine is not valid!";
         cleanUp( url );
-        reply->deleteLater();
         return;
     }
 
     QScriptValueList args;
-    args <<  QScriptValue( engine, data );
+    args <<  QScriptValue( engine, str );
     obj.call( obj, args );
-
     cleanUp( url );
-    reply->deleteLater();
 }
 
 void

@@ -19,15 +19,9 @@
 
 #include "AvatarDownloader.h"
 #include "core/support/Debug.h"
-#include "NetworkAccessManagerProxy.h"
-
-#include <QNetworkRequest>
-#include <QNetworkReply>
 
 AvatarDownloader::AvatarDownloader()
 {
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(downloaded(QNetworkReply*)) );
 }
 
 AvatarDownloader::~AvatarDownloader()
@@ -41,31 +35,25 @@ AvatarDownloader::downloadAvatar( const QString& username, const KUrl& url )
         return;
 
     m_userAvatarUrls.insert( url, username );
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(downloaded(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-AvatarDownloader::downloaded( QNetworkReply *reply )
+AvatarDownloader::downloaded( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_userAvatarUrls.contains( url ) )
         return;
 
-    const QString username = m_userAvatarUrls.value( url );
-    m_userAvatarUrls.remove( url );
-    if( reply->error() == QNetworkReply::NoError )
+    const QString username = m_userAvatarUrls.take( url );
+    if( e.code == QNetworkReply::NoError )
     {
         QPixmap avatar;
-        if( avatar.loadFromData( reply->readAll() ) )
-        {
-            reply->close();
+        if( avatar.loadFromData( data ) )
             emit avatarDownloaded( username, avatar );
-        }
     }
     else
-        debug() << "Error:" << reply->errorString();
-    reply->deleteLater();
+        debug() << QString("Error: failed to download %1'savatar: %1").arg(username).arg(e.description);
 }
 
 #include "AvatarDownloader.moc"

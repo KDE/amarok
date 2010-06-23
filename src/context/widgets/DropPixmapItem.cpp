@@ -19,19 +19,14 @@
 #include "DropPixmapItem.h"
 
 #include "core/support/Debug.h"
-#include "NetworkAccessManagerProxy.h"
 
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 
 DropPixmapItem::DropPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
 {
     setAcceptDrops( true );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(imageDownloadResult(QNetworkReply*)) );
 }
 
 void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
@@ -45,8 +40,8 @@ void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
         if ( file.contains( "http://" ) || file.contains( "https://" ) )
         {           
             m_url = KUrl( file );
-            QNetworkRequest req( m_url );
-            The::networkAccessManager()->get( req );
+            The::networkAccessManager()->getData( m_url, this,
+                 SLOT(imageDownloadResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         
         else if ( file.contains( "file://" ) )
@@ -72,30 +67,23 @@ void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
     }
 }
 
-void DropPixmapItem::imageDownloadResult( QNetworkReply *reply )
+void DropPixmapItem::imageDownloadResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !url.isValid() || m_url != url )
         return;
 
     m_url.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "unable to download the image:" << reply->errorString();
-        reply->deleteLater();
+        debug() << "unable to download the image:" << e.description;
         return;
     }
     
     QPixmap cover;
-    if( cover.loadFromData( reply->readAll() ) )
-    {
+    if( cover.loadFromData( data ) )
         emit imageDropped( cover );
-    }
     else
-    {
         debug() << "not an image";
-    }
-    reply->deleteLater();
 }
 
 #include "DropPixmapItem.moc"

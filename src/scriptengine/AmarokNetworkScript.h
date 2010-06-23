@@ -18,13 +18,12 @@
 #ifndef AMAROK_NETWORK_SCRIPT_H
 #define AMAROK_NETWORK_SCRIPT_H
 
-#include <KUrl>
+#include "NetworkAccessManagerProxy.h"
 
 #include <QObject>
 #include <QtScript>
 
 class AmarokDownloadHelper;
-class QNetworkReply;
 
 class AmarokNetworkScript : public QObject
 {
@@ -72,8 +71,8 @@ public:
     void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
 
 private slots:
-    void resultString( QNetworkReply* reply );
-    void resultData( QNetworkReply* reply );
+    void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     
 private:
     QHash< KUrl, QScriptEngine* > m_engines;
