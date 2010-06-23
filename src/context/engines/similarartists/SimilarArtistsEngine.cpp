@@ -281,7 +281,7 @@ void
 SimilarArtistsEngine::parseSimilarArtists( QNetworkReply *reply ) // SLOT
 {
     const KUrl url = reply->request().url();
-    if( m_similarArtistsUrl != url )
+    if( !url.isValid() || m_similarArtistsUrl != url )
         return;
 
     m_similarArtistsUrl.clear();
@@ -416,7 +416,7 @@ void
 SimilarArtistsEngine::parseArtistDescription( QNetworkReply *reply )
 {
     const KUrl url = reply->request().url();
-    if( !m_artistDescriptionUrls.contains( url ) )
+    if( !url.isValid() || !m_artistDescriptionUrls.contains( url ) )
         return;
 
     m_artistDescriptionUrls.remove( url );

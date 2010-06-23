@@ -183,7 +183,7 @@ void
 ArtistWidget::setImageFromInternet( QNetworkReply *reply )
 {
     const KUrl url = reply->request().url();
-    if( m_url != url )
+    if( !url.isValid() || m_url != url )
         return;
 
     m_url.clear();

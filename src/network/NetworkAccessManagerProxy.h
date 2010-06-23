@@ -49,11 +49,6 @@ public:
 
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
-    virtual void timerEvent( QTimerEvent *event );
-
-private slots:
-    void replyFinished();
-    void updateProgress( qint64 bytes, qint64 total );
 
 private:
     NetworkAccessManagerProxy( QObject *parent = 0 );
@@ -61,7 +56,6 @@ private:
 
     class NetworkAccessManagerProxyPrivate;
     NetworkAccessManagerProxyPrivate* const d;
-    friend class NetworkAccessManagerProxyPrivate;
 
     Q_DISABLE_COPY( NetworkAccessManagerProxy )
 };

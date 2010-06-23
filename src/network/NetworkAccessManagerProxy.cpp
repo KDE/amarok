@@ -15,9 +15,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "NetworkAccessManagerProxy"
-
-#include "core/support/Debug.h"
 #include "NetworkAccessManagerProxy.h"
 #ifdef DEBUG_BUILD_TYPE
 #include "NetworkAccessViewer.h"
@@ -25,9 +22,7 @@
 
 #include <KProtocolManager>
 
-#include <QBasicTimer>
 #include <QNetworkReply>
-#include <QPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -51,64 +46,20 @@ class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
 #ifdef DEBUG_BUILD_TYPE
-    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) : viewer( 0 ), q( parent ) {}
-#else
-    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) : q( parent ) {}
-#endif // DEBUG_BUILD_TYPE
-
-    ~NetworkAccessManagerProxyPrivate()
-    {
-        qDeleteAll( replyTimer.values() );
-        qDeleteAll( timerIds.values() );
-    }
-
-    void addReplyTimeout( QPointer<QNetworkReply> reply )
-    {
-        QBasicTimer *timer = new QBasicTimer();
-        timer->start( 15000, q );
-        int id = timer->timerId();
-        replyTimer.insert( id, reply );
-        timerIds.insert( id, timer );
-    }
-
-    void restartTimeout( QPointer<QNetworkReply> reply )
-    {
-        const int timerId  = replyTimer.key( reply );
-        QBasicTimer *timer = timerIds.value( timerId );
-        timer->stop();
-        timer->start( 15000, q );
-    }
-
-    void removeReply( QPointer<QNetworkReply> reply )
-    {
-        const int timerId = replyTimer.key( reply );
-        replyTimer.remove( timerId );
-        QBasicTimer *timer = timerIds.take( timerId );
-        delete timer;
-    }
-
-    void pruneReplies()
-    {
-        foreach( const QPointer<QNetworkReply> &reply, replyTimer )
-        {
-            if( reply.isNull() )
-                removeReply( reply );
-        }
-    }
-
-#ifdef DEBUG_BUILD_TYPE
+    NetworkAccessManagerProxyPrivate() : viewer( 0 ) {}
     NetworkAccessViewer *viewer;
+#else
+    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) {}
 #endif // DEBUG_BUILD_TYPE
-    QHash<int, QPointer<QNetworkReply> > replyTimer;
-    QHash<int, QBasicTimer*> timerIds;
-    QString userAgent;
 
-    NetworkAccessManagerProxy *const q;
+    ~NetworkAccessManagerProxyPrivate() {}
+
+    QString userAgent;
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     : KIO::Integration::AccessManager( parent )
-    , d( new NetworkAccessManagerProxyPrivate( this ) )
+    , d( new NetworkAccessManagerProxyPrivate() )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
     d->userAgent = KProtocolManager::defaultUserAgent();
@@ -169,68 +120,12 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
     }
 
     QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
-    connect( reply, SIGNAL(finished()), SLOT(replyFinished()) );
-
-    switch( reply->operation() )
-    {
-    case QNetworkAccessManager::GetOperation:
-    case QNetworkAccessManager::HeadOperation:
-        connect( reply, SIGNAL(downloadProgress(qint64,qint64)), SLOT(updateProgress(qint64,qint64)) );
-        d->addReplyTimeout( reply );
-        break;
-
-    case QNetworkAccessManager::PutOperation:
-    case QNetworkAccessManager::PostOperation:
-        connect( reply, SIGNAL(uploadProgress(qint64,qint64)), SLOT(updateProgress(qint64,qint64)) );
-        d->addReplyTimeout( reply );
-        break;
-
-    default:
-        break;
-    }
 
 #ifdef DEBUG_BUILD_TYPE
     if( d->viewer )
         d->viewer->addRequest( op, request, outgoingData, reply );
 #endif // DEBUG_BUILD_TYPE
     return reply;
-}
-
-void
-NetworkAccessManagerProxy::timerEvent( QTimerEvent *event )
-{
-    const int tid = event->timerId();
-    if( d->timerIds.contains( tid ) )
-    {
-        // timeout reached
-        QBasicTimer *timer   = d->timerIds.take( tid );
-        QPointer<QNetworkReply> reply = d->replyTimer.take( tid );
-        if( reply )
-            reply->abort();
-        delete timer;
-    }
-    else
-    {
-        KIO::Integration::AccessManager::timerEvent( event );
-    }
-}
-
-void
-NetworkAccessManagerProxy::replyFinished()
-{
-    d->removeReply( qobject_cast<QNetworkReply*>(sender()) );
-    d->pruneReplies();
-}
-
-void
-NetworkAccessManagerProxy::updateProgress( qint64 bytes, qint64 total )
-{
-    Q_UNUSED( bytes )
-    Q_UNUSED( total )
-
-    QPointer<QNetworkReply> reply = qobject_cast<QNetworkReply*>( sender() );
-    if( reply )
-        d->restartTimeout( reply );
 }
 
 namespace The
