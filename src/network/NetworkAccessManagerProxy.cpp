@@ -28,6 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
+#include <QTimer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -139,7 +140,7 @@ NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
 
 QNetworkReply *
 NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const char *method,
-                                    Qt::ConnectionType type )
+                                    Qt::ConnectionType type, int timeout )
 {
     if( !url.isValid() )
     {
@@ -151,6 +152,7 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
     d->replyMap[ reply ].receiver = receiver;
     d->replyMap[ reply ].method = method;
     d->replyMap[ reply ].type = type;
+    QTimer::singleShot( timeout, reply, SLOT(abort()) );
     connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
     return reply;
 }
