@@ -41,7 +41,6 @@ Downloader::Downloader( QScriptEngine* engine )
     : QObject( kapp ),
     m_scriptEngine( engine )
 {
-    DEBUG_BLOCK
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
     const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
     engine->globalObject().setProperty( "Downloader", stringCtor ); //kept for compat
@@ -154,7 +153,6 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
     if( !m_values.contains( url ) )
         return;
 
-    DEBUG_BLOCK
     if( e.code != QNetworkReply::NoError )
     {
         cleanUp( url );
@@ -192,7 +190,6 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
     if( !m_values.contains( url ) )
         return;
 
-    DEBUG_BLOCK
     if( e.code != QNetworkReply::NoError )
     {
         cleanUp( url );
