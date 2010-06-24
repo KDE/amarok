@@ -17,13 +17,13 @@
 #ifndef AMAROK_VERSION_H
 #define AMAROK_VERSION_H
 
-#include "config-amarok.h"
 
 /// Update this when necessary
-#ifdef CURRENT_GIT_VERSION
-# define AMAROK_VERSION CURRENT_GIT_VERSION
-#else
-# define AMAROK_VERSION "2.3-GIT"
-#endif
+//#ifdef CURRENT_GIT_VERSION
+//#define AMAROK_VERSION #CURRENT_GIT_VERSION
+//#else
+#define AMAROK_VERSION "2.3-GIT"
+//#endif
+
 
 #endif  // End include guard
