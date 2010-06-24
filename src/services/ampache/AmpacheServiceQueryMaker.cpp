@@ -20,13 +20,10 @@
 
 #include "AmpacheServiceQueryMaker.h"
 
+#include "AmpacheMeta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "AmpacheMeta.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
-#include "NetworkAccessManagerProxy.h"
-
-#include <KUrl>
 
 #include <QDomDocument>
 
@@ -52,9 +49,6 @@ AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * c
     // DEBUG_BLOCK
     m_collection = collection;
     reset();
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(artistDownloadComplete(QNetworkReply*)));
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(albumDownloadComplete(QNetworkReply*)));
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(trackDownloadComplete(QNetworkReply*)));
 }
 
 AmpacheServiceQueryMaker::~AmpacheServiceQueryMaker()
@@ -281,8 +275,8 @@ AmpacheServiceQueryMaker::fetchArtists()
         debug() << "Artist url: " << request.url();
 
         d->urls[QLatin1String("artists")] = request;
-        QNetworkRequest req( d->urls.value(QLatin1String("artists")) );
-        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( request, this,
+             SLOT(artistDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     //}
 
     m_lastArtistFilter = m_artistFilter;
@@ -325,8 +319,8 @@ AmpacheServiceQueryMaker::fetchAlbums()
         debug() << "request url: " << request.url();
 
         d->urls[QLatin1String("albums")] = request;
-        QNetworkRequest req( d->urls.value(QLatin1String("albums")) );
-        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( request, this,
+             SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
@@ -383,23 +377,21 @@ AmpacheServiceQueryMaker::fetchTracks()
         request.addQueryItem( "limit", QString::number( d->maxsize ) );// set to 0 in reset() so fine to use uncondiationally
 
         d->urls[QLatin1String("tracks")] = request;
-        QNetworkRequest req( d->urls.value(QLatin1String("tracks")) );
-        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( request, this,
+             SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
 void
-AmpacheServiceQueryMaker::artistDownloadComplete( QNetworkReply *reply )
+AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( d->urls.value(QLatin1String("artists")) != url )
         return;
 
     d->urls.remove( QLatin1String("artists") );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Artist download error" << reply->error();
-        reply->deleteLater();
+        debug() << "Artist download error:" << e.description;
         return;
     }
 
@@ -409,24 +401,20 @@ AmpacheServiceQueryMaker::artistDownloadComplete( QNetworkReply *reply )
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( reply->readAll() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if ( !domError.isNull() )
     {
-        debug () << "Error getting Artist List" << error.text();
+        debug () << "Error getting Artist List" << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -456,24 +444,20 @@ AmpacheServiceQueryMaker::artistDownloadComplete( QNetworkReply *reply )
         n = n.nextSibling();
     }
 
-   reply->deleteLater();
-
-   handleResult( artists );
-   emit queryDone();
+    handleResult( artists );
+    emit queryDone();
 }
 
 void
-AmpacheServiceQueryMaker::albumDownloadComplete( QNetworkReply *reply )
+AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( d->urls.value(QLatin1String("albums")) != url )
         return;
 
     d->urls.remove( QLatin1String("albums") );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Album download error" << reply->error();
-        reply->deleteLater();
+        debug() << "Album download error:" << e.description;
         return;
     }
 
@@ -483,24 +467,20 @@ AmpacheServiceQueryMaker::albumDownloadComplete( QNetworkReply *reply )
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( reply->readAll() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if( !domError.isNull() )
     {
-        debug () << "Error getting Album List" << error.text();
+        debug () << "Error getting Album List" << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -552,24 +532,20 @@ AmpacheServiceQueryMaker::albumDownloadComplete( QNetworkReply *reply )
         n = n.nextSibling();
     }
 
-   reply->deleteLater();
-
-   handleResult( albums );
-   emit queryDone();
+    handleResult( albums );
+    emit queryDone();
 }
 
 void
-AmpacheServiceQueryMaker::trackDownloadComplete( QNetworkReply *reply )
+AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( d->urls.value(QLatin1String("tracks")) != url )
         return;
 
     d->urls.remove( QLatin1String("tracks") );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Track download error" << reply->error();
-        reply->deleteLater();
+        debug() << "Track download error:" << e.description;
         return;
     }
 
@@ -579,24 +555,20 @@ AmpacheServiceQueryMaker::trackDownloadComplete( QNetworkReply *reply )
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( reply->readAll() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if( !domError.isNull() )
     {
-        debug () << "Error getting Track Download " << error.text();
+        debug () << "Error getting Track Download " << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -641,28 +613,27 @@ AmpacheServiceQueryMaker::trackDownloadComplete( QNetworkReply *reply )
         if ( artistPtr.data() != 0 )
         {
             //debug() << "Found parent artist " << artistPtr->name();
-           Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
-           track->setArtist( artistPtr );
-           artist->addTrack( trackPtr );
+            Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
+            track->setArtist( artistPtr );
+            artist->addTrack( trackPtr );
         }
 
         Meta::AlbumPtr albumPtr = m_collection->albumById( albumId );
         if ( albumPtr.data() != 0 )
         {
-           //debug() << "Found parent album " << albumPtr->name() ;
-           Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
-           track->setAlbumPtr( albumPtr );
-           album->addTrack( trackPtr );
+            //debug() << "Found parent album " << albumPtr->name() ;
+            Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
+            track->setAlbumPtr( albumPtr );
+            album->addTrack( trackPtr );
         }
 
         tracks.push_back( trackPtr );
 
         n = n.nextSibling();
-   }
-   reply->deleteLater();
+    }
 
-   handleResult( tracks );
-   emit queryDone();
+    handleResult( tracks );
+    emit queryDone();
 }
 
 QueryMaker *
@@ -695,7 +666,6 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
     }
     return this;
 }
-
 
 int
 AmpacheServiceQueryMaker::validFilterMask()

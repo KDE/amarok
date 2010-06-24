@@ -27,14 +27,12 @@
 #include <config-amarok.h>
 #include "core/support/Debug.h"
 #include "sha256/sha256.h"
-#include "NetworkAccessManagerProxy.h"
 
 #include <KMessageBox>
 #include <kpassworddialog.h>
 #include <KMD5>
 
 #include <QDomDocument>
-#include <QNetworkReply>
 
 #ifdef HAVE_LIBLASTFM
   #include "LastfmInfoParser.h"
@@ -160,12 +158,9 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     m_username = username;
     m_password = password;
 
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(authenticate(QNetworkReply*)));
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(authenticationComplete(QNetworkReply*)));
-
     m_xmlVersionUrl = KUrl( versionString );
-    QNetworkRequest req( m_xmlVersionUrl );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
+         SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 #if HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif
@@ -202,27 +197,25 @@ AmpacheService::reauthenticate()
     debug() << "Verifying Ampache Version Using: " << versionString;
 
     m_xmlVersionUrl = KUrl( versionString );
-    QNetworkRequest req( m_xmlVersionUrl );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
+         SLOT(authenticate(KUrl,QByteArray,QNetworkReply::NetworkError)) );
 }
 
 void
-AmpacheService::authenticate( QNetworkReply *reply )
+AmpacheService::authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_xmlVersionUrl != url )
         return;
 
     m_xmlVersionUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "authenticate Error" << reply->error();
-        reply->deleteLater();
+        debug() << "authenticate Error:" << e.description;
         return;
     }
 
     DEBUG_BLOCK
-    versionVerify( reply );
+    versionVerify( data );
 
     //lets keep this around for now if we want to allow people to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
@@ -251,7 +244,6 @@ AmpacheService::authenticate( QNetworkReply *reply )
     }
 
     QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
-
     QString rawHandshake;
     QString authenticationString;
     QString passPhrase;
@@ -289,26 +281,23 @@ AmpacheService::authenticate( QNetworkReply *reply )
 
     // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
     m_xmlDownloadUrl = KUrl( authenticationString );
-    QNetworkRequest req( m_xmlDownloadUrl );
-    The::networkAccessManager()->get( req );
-    reply->deleteLater();
+    The::networkAccessManager()->getData( m_xmlDownloadUrl, this,
+         SLOT(authenticationComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-void AmpacheService::authenticationComplete( QNetworkReply *reply )
+void AmpacheService::authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_xmlDownloadUrl != url )
         return;
 
     m_xmlDownloadUrl.clear();
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Authentication Error" << reply->error();
-        reply->deleteLater();
+        debug() << "Authentication Error:" << e.description;
         return;
     }
 
-    QByteArray xmlReply = reply->readAll();
+    QByteArray xmlReply( data );
     debug() << "Authentication reply: " << xmlReply;
 
     //so lets figure out what we got here:
@@ -319,11 +308,11 @@ void AmpacheService::authenticationComplete( QNetworkReply *reply )
 
     //is this an error?
 
-    QDomElement error = root.firstChildElement("error");
+    QDomElement domError = root.firstChildElement("error");
 
-    if ( !error.isNull() )
+    if ( !domError.isNull() )
     {
-        KMessageBox::error ( this, error.text(), i18n( "Authentication Error" ) );
+        KMessageBox::error( this, domError.text(), i18n( "Authentication Error" ) );
     }
     else
     {
@@ -344,13 +333,12 @@ void AmpacheService::authenticationComplete( QNetworkReply *reply )
         m_serviceready = true;
         emit( ready() );
     }
-    reply->deleteLater();
 }
 
-void AmpacheService::versionVerify( QNetworkReply *reply )
+void AmpacheService::versionVerify( QByteArray data)
 {
     DEBUG_BLOCK
-    QByteArray xmlReply = reply->readAll();
+    QByteArray xmlReply = data;
     debug() << "Version Verify reply: " << xmlReply;
 
     //so lets figure out what we got here:
@@ -378,7 +366,6 @@ void AmpacheService::versionVerify( QNetworkReply *reply )
 
         debug() << "versionVerify Returned: " << m_version;
     }
-    reply->deleteLater();
 }
 
 #include "AmpacheService.moc"

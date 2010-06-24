@@ -21,12 +21,10 @@
 
 #include "ContextObserver.h"
 #include "core/meta/Meta.h"
-
 #include "context/DataEngine.h"
+#include "NetworkAccessManagerProxy.h"
 
 #include <QLocale>
-
-class QNetworkReply;
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -63,7 +61,7 @@ protected:
     bool sourceRequestEvent( const QString& name );
     
 private slots:
-    void wikiResult( QNetworkReply* );
+    void wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
     
 private:
     void update();

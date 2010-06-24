@@ -19,13 +19,11 @@
 #ifndef AMAROK_UPCOMINGEVENTS_ENGINE
 #define AMAROK_UPCOMINGEVENTS_ENGINE
 
-#include "src/context/ContextObserver.h"
-#include <context/DataEngine.h>
-#include "src/context/applets/upcomingevents/LastFmEvent.h"
+#include "context/applets/upcomingevents/LastFmEvent.h"
+#include "context/ContextObserver.h"
+#include "context/DataEngine.h"
 #include "core/meta/Meta.h"
-
-// KDE
-#include <KUrl>
+#include "network/NetworkAccessManagerProxy.h"
 
 // Qt
 #include <QDomDocument>
@@ -191,7 +189,7 @@ private slots:
     /**
      * Receive a network reply and parse the XML file
      */
-    void upcomingEventsResultFetched( QNetworkReply *reply );
+    void upcomingEventsResultFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

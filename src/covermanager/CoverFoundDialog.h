@@ -22,6 +22,7 @@
 
 #include "CoverFetchUnit.h"
 #include "core/meta/Meta.h"
+#include "NetworkAccessManagerProxy.h"
 
 #include <KProgressDialog>
 #include <KVBox>
@@ -43,7 +44,6 @@ class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
-class QNetworkReply;
 class QTabWidget;
 
 class CoverFoundDialog : public KDialog
@@ -84,7 +84,7 @@ private slots:
     void clearQueryButtonClicked();
     void clearView();
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
-    void handleFetchResult( QNetworkReply *reply );
+    void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
     void itemSelected();
     void itemDoubleClicked( QListWidgetItem *item );

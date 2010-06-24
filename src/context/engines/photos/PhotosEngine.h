@@ -20,10 +20,8 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
+#include "NetworkAccessManagerProxy.h"
 #include "PhotosInfo.h"
-
-// forward
-class QNetworkReply;
 
 using namespace Context;
 
@@ -58,12 +56,12 @@ private slots:
    *   http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=My+Bloody+Valentine
    *   see here for details: http://www.flickr.com/services/api/
    */
-    void resultFlickr( QNetworkReply *reply );
+    void resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   An image fetcher, will store the QPixmap in the corresponding videoInfo
    */
-    void resultImageFetcher( QNetworkReply *reply );
+    void resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   This method will send the info to the applet and order them if every job are finished

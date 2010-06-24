@@ -26,12 +26,9 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
-#include "NetworkAccessManagerProxy.h"
 
 #include <KLocale>
 #include <KUrl>
-
-#include <QNetworkReply>
 
 #define DEBUG_PREFIX "CoverFetcher"
 #include "core/support/Debug.h"
@@ -63,9 +60,6 @@ CoverFetcher::CoverFetcher()
     m_queue = new CoverFetchQueue( this );
     connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
                       SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(slotResult(QNetworkReply*)) );
     s_instance = this;
 }
 
@@ -160,9 +154,9 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         if( !url.isValid() )
             continue;
 
-        QNetworkRequest req( url );
-        QNetworkReply *reply = The::networkAccessManager()->get( req );
-        m_urls.insert( reply, unit );
+        QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
+                               SLOT(slotResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        m_urls.insert( url, unit );
 
         if( payload->type() == CoverFetchPayload::Art )
         {
@@ -175,30 +169,25 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( QNetworkReply *reply )
+CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( !m_urls.contains( reply ) )
+    if( !m_urls.contains( url ) )
         return;
 
-    const KUrl url = reply->request().url();
-    const CoverFetchUnit::Ptr unit( m_urls.take( reply ) );
+    const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
     if( !unit )
     {
-        finish( unit, Error );
-        reply->deleteLater();
+        m_queue->remove( unit );
         return;
     }
 
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
-        reply->deleteLater();
+        finish( unit, Error, i18n("There was an error communicating with cover provider: %1", e.description) );
         return;
     }
 
-    const QByteArray data = reply->readAll();
     const CoverFetchPayload *payload = unit->payload();
-
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
@@ -229,7 +218,6 @@ CoverFetcher::slotResult( QNetworkReply *reply )
         }
         break;
     }
-    reply->deleteLater();
 }
 
 void
@@ -310,13 +298,9 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     m_queue->remove( unit );
     m_queueLater.removeAll( unit->album() );
     m_selectedPixmaps.remove( unit );
-    QList<QNetworkReply*> replies = m_urls.keys( unit );
-    foreach( QNetworkReply *reply, replies )
-    {
-        reply->abort();
-        reply->deleteLater();
-        m_urls.remove( reply );
-    }
+    KUrl::List urls = m_urls.keys( unit );
+    foreach( const KUrl &url, urls )
+        m_urls.remove( url );
 }
 
 void

@@ -15,14 +15,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "NetworkAccessManagerProxy"
+
 #include "NetworkAccessManagerProxy.h"
 #ifdef DEBUG_BUILD_TYPE
 #include "NetworkAccessViewer.h"
 #endif // DEBUG_BUILD_TYPE
 
+#include "core/support/Debug.h"
+
 #include <KProtocolManager>
 
+#include <QMetaMethod>
 #include <QNetworkReply>
+#include <QTimer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -45,24 +51,66 @@ void NetworkAccessManagerProxy::destroy()
 class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
+    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent )
+        : userAgent( KProtocolManager::defaultUserAgent() )
 #ifdef DEBUG_BUILD_TYPE
-    NetworkAccessManagerProxyPrivate() : viewer( 0 ) {}
-    NetworkAccessViewer *viewer;
-#else
-    NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent ) {}
+        , viewer( 0 )
 #endif // DEBUG_BUILD_TYPE
+        , q_ptr( parent )
+    {}
 
     ~NetworkAccessManagerProxyPrivate() {}
 
+    void _replyFinished()
+    {
+        Q_Q( NetworkAccessManagerProxy );
+        QNetworkReply *reply = qobject_cast<QNetworkReply*>( q->sender() );
+        CallBackData callback = replyMap.take( reply );
+        QByteArray sig = QMetaObject::normalizedSignature( callback.method );
+        sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
+                            // and let Qt's meta object system handle the rest.
+        bool success( false );
+        const QMetaObject *mo = callback.receiver->metaObject();
+        int methodIndex = mo->indexOfSlot( sig );
+        if( methodIndex != -1 )
+        {
+            Error err = { reply->error(), reply->errorString() };
+            QMetaMethod method = mo->method( methodIndex );
+            success = method.invoke( callback.receiver,
+                                     callback.type,
+                                     Q_ARG( KUrl, reply->request().url() ),
+                                     Q_ARG( QByteArray, reply->readAll() ),
+                                     Q_ARG( Error, err ) );
+        }
+        reply->deleteLater();
+
+        if( !success )
+            debug() << QString( "Failed to invoke method %1 of %2" ).arg( QString(sig) ).arg( mo->className() );
+    }
+
+    struct CallBackData
+    {
+        QObject *receiver;
+        const char *method;
+        Qt::ConnectionType type;
+    };
+
+    QHash<QNetworkReply*, CallBackData> replyMap;
     QString userAgent;
+#ifdef DEBUG_BUILD_TYPE
+    NetworkAccessViewer *viewer;
+#endif // DEBUG_BUILD_TYPE
+
+private:
+    NetworkAccessManagerProxy *const q_ptr;
+    Q_DECLARE_PUBLIC( NetworkAccessManagerProxy )
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     : KIO::Integration::AccessManager( parent )
-    , d( new NetworkAccessManagerProxyPrivate() )
+    , d( new NetworkAccessManagerProxyPrivate( this ) )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
-    d->userAgent = KProtocolManager::defaultUserAgent();
 }
 
 NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
@@ -89,6 +137,25 @@ NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
     }
 }
 #endif // DEBUG_BUILD_TYPE
+
+QNetworkReply *
+NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const char *method,
+                                    Qt::ConnectionType type, int timeout )
+{
+    if( !url.isValid() )
+    {
+        const QMetaObject *mo = receiver->metaObject();
+        debug() << QString( "Error: URL %1 is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
+        return 0;
+    }
+    QNetworkReply *reply = get( QNetworkRequest(url) );
+    d->replyMap[ reply ].receiver = receiver;
+    d->replyMap[ reply ].method = method;
+    d->replyMap[ reply ].type = type;
+    QTimer::singleShot( timeout, reply, SLOT(abort()) );
+    connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
+    return reply;
+}
 
 QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )

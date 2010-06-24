@@ -21,8 +21,7 @@
 
 #include "AmpacheServiceCollection.h"
 #include "AmpacheService.h"
-
-#include <QNetworkReply>
+#include "NetworkAccessManagerProxy.h"
 
 namespace Collections {
 
@@ -79,9 +78,9 @@ protected:
     QString m_lastArtistFilter;
 
 public slots:
-    void artistDownloadComplete( QNetworkReply *reply );
-    void albumDownloadComplete( QNetworkReply *reply );
-    void trackDownloadComplete( QNetworkReply *reply );
+    void artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
 private:
     // Disable copy constructor and assignment

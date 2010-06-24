@@ -18,8 +18,10 @@
 #ifndef UPCOMING_EVENTS_WIDGET_H
 #define UPCOMING_EVENTS_WIDGET_H
 
+#include "NetworkAccessManagerProxy.h"
+
 // Kde include
-#include<KUrl>
+#include <KUrl>
 
 // Qt include
 #include <QWidget>
@@ -28,11 +30,8 @@
 #include <QScrollArea>
 
 class KDateTime;
-class KUrl;
-
 class QLabel;
 class QGridLayout;
-class QNetworkReply;
 
 class UpcomingEventsWidget : public QWidget
 {
@@ -120,9 +119,8 @@ class UpcomingEventsWidget : public QWidget
         /**
          *SLOTS
          *Get pixmap from the internet and set it into image's QLabel
-         *@param reply*, reply to the network request
          */
-        void    loadImage( QNetworkReply *reply );
+        void loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */

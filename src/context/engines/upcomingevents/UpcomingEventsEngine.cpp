@@ -23,7 +23,6 @@
 #include "core/support/Debug.h"
 #include "ContextView.h"
 #include "EngineController.h"
-#include "network/NetworkAccessManagerProxy.h"
 
 // LastFm
 #include <lastfm/XmlQuery>
@@ -50,9 +49,6 @@ UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVarian
         , m_sources( "current" )
 {
     update();
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(upcomingEventsResultFetched(QNetworkReply*)) );
 }
 
 /**
@@ -228,29 +224,32 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 
     QNetworkRequest req( url );
     The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(upcomingEventsResultFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 /**
  * Receive a network reply and parse the XML file
  */
 void
-UpcomingEventsEngine::upcomingEventsResultFetched( QNetworkReply *reply ) // SLOT
+UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray data,
+                                                   NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_url != url )
         return;
 
     m_url.clear();
     m_upcomingEvents.clear();
 
-    QByteArray buffer = reply->readAll();
-    if( !buffer.isNull() )
+    if( e.code != QNetworkReply::NoError )
+        return;
+
+    if( !data.isNull() )
     {
-        m_xml = QString::fromUtf8( buffer, buffer.size() );
+        m_xml = QString::fromUtf8( data, data.size() );
     }
     else
     {
-        reply->deleteLater();
         return;
     }
 
@@ -259,7 +258,6 @@ UpcomingEventsEngine::upcomingEventsResultFetched( QNetworkReply *reply ) // SLO
     xmlReader.addData( m_xml );
     doc.setContent( m_xml );
     upcomingEventsParseResult( xmlReader );
-    reply->deleteLater();
 }
 
 /**

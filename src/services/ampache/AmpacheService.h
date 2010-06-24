@@ -18,11 +18,8 @@
 #define AMPACHESERVICE_H
 
 #include "AmpacheServiceCollection.h"
+#include "NetworkAccessManagerProxy.h"
 #include "ServiceBase.h"
-
-#include <KUrl>
-
-class QNetworkReply;
 
 class AmpacheServiceFactory: public ServiceFactory
 {
@@ -63,9 +60,9 @@ public:
     virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
-    void authenticate( QNetworkReply *reply );
-    void authenticationComplete( QNetworkReply *reply );
-    void versionVerify( QNetworkReply *reply );
+    void authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void versionVerify( QByteArray data );
 
 private:
     KUrl m_xmlDownloadUrl;

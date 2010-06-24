@@ -20,13 +20,12 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
+#include "NetworkAccessManagerProxy.h"
 #include "VideoclipInfo.h"
 
 #include <KUrl>
 
 #include <QVariant>
-
-class QNetworkReply;
 
 using namespace Context;
 
@@ -59,7 +58,7 @@ private slots:
    *   http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
    *   see here for details: http://code.google.com/intl/fr/apis/youtube/2.0/reference.html
    */
-    void resultYoutube( QNetworkReply *reply );
+    void resultYoutube( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
  /**
    *   This method will fetch the required key for the video downloading.For this we retrieve
@@ -70,7 +69,7 @@ private slots:
    *
    *   \warning : Not legal, and this will probably change like every 6 month with every new youtube api :/
    */
-    void resultYoutubeGetLink( QNetworkReply *reply );
+    void resultYoutubeGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   This slots will handle Dailymotion result for this query :
@@ -78,7 +77,7 @@ private slots:
    *   see here for details: No dailymotion API for now :/
    *   But we get every info from one single page which is great.
    */
-    void resultDailymotion( QNetworkReply *reply );
+    void resultDailymotion( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
  /**
    *   This method will fetch the required key for the video downloading.For this we retrieve
@@ -90,20 +89,20 @@ private slots:
    *
    *   \warning : Not legal, and this will probably change like every 6 month whenever dailymotion decides this :/
    */
-    void resultDailymotionGetLink( QNetworkReply *reply );
+    void resultDailymotionGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     //TODO Fix the vimeo query
   /**
    *   Vimeo is not fun, we need 3 fetches for one complete Video item :/
    *   http://vimeo.com/videos/search:ARTIST TITLE
    */
-    void resultVimeo( QNetworkReply *reply );
+    void resultVimeo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   Query result for one video item like this :
    *   http://vimeo.com/api/clip/1774707.xml
    */
-    void resultVimeoBis( QNetworkReply *reply );
+    void resultVimeoBis( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   We also need to query http://vimeo.com/api/clip/1774707.xml
@@ -111,12 +110,12 @@ private slots:
    *   final ddl looks like this
    *   http://vimeo.com/moogaloop/play/clip:ID/REQUEST_SIGNATURE/REQUEST_SIGNATURE_EXPIRES/?q=hd
    */
-    void resultVimeoGetLink( QNetworkReply *reply );
+    void resultVimeoGetLink( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   An image fetcher, will store the QPixmap in the corresponding videoInfo
    */
-    void resultImageFetcher( QNetworkReply *reply );
+    void resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
   /**
    *   This method will send the info to the applet and order them if every fetch are finished

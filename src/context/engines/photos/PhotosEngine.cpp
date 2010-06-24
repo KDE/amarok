@@ -24,12 +24,9 @@
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
-#include "NetworkAccessManagerProxy.h"
 
 // Qt
 #include <QDomDocument>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QPixmap>
 
 using namespace Context;
@@ -44,10 +41,6 @@ PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_reload( false )
 {
     m_sources << "flickr" ;
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(resultFlickr(QNetworkReply*)) );
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(resultImageFetcher(QNetworkReply*)) );
     update();
 }
 
@@ -173,40 +166,36 @@ void PhotosEngine::update()
         debug()<< "Flickr : " << flickrUrl.toMimeDataString() ;
 
         m_flickrUrls << flickrUrl;
-        QNetworkRequest req( flickrUrl );
-        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( flickrUrl, this,
+             SLOT(resultFlickr(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
     }
 }
 
-void PhotosEngine::resultFlickr( QNetworkReply *reply )
+void PhotosEngine::resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_flickrUrls.contains( url ) )
         return;
 
     m_flickrUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         m_nbFlickr = 0; //say that we didn't fetch any images (which is true !)
-        setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com ") );
-        debug() << "Unable to retrieve Flickr information: " << reply->errorString();
-        reply->deleteLater();
+        setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com: %1", e.description ) );
+        debug() << "Unable to retrieve Flickr information:" << e.description; 
         resultFinalize();
         return;
     }
 
     DEBUG_BLOCK
-    QByteArray buffer = reply->readAll();
-    if( buffer.isNull() )
+    if( data.isNull() )
     {
         debug() << "Got bad xml!";
-        reply->deleteLater();
         resultFinalize();
         return;
     }
     QDomDocument xmlDoc;
-    xmlDoc.setContent( buffer );
+    xmlDoc.setContent( data );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "photo" );
 
     QTime tim, time( 0, 0 );
@@ -226,35 +215,30 @@ void PhotosEngine::resultFlickr( QNetworkReply *reply )
         // Insert the item in the list
         m_imageUrls << url;
         m_photosInit << item;
-            
-        QNetworkRequest req( url );
-        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( url, this,
+             SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     m_nbFlickr += xmlNodeList.length();
     // Check how many clip we've find and send message if all the jobs are finished but no clip were find
     debug() << "Flickr fetch : " << m_nbFlickr << " photos ";
-    
-    reply->deleteLater();
     resultFinalize();
 }
 
-void PhotosEngine::resultImageFetcher( QNetworkReply *reply )
+void PhotosEngine::resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( !m_imageUrls.contains( url ) )
         return;
 
     m_imageUrls.remove( url );
-    if( reply->error() != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "PhotosEngine | Unable to retrieve an image: " << reply->errorString();
-        reply->deleteLater();
+        debug() << "PhotosEngine | Unable to retrieve an image:" << e.description;
         resultFinalize();
         return;
     }
 
     QPixmap pixmap;
-    pixmap.loadFromData( reply->readAll() );
+    pixmap.loadFromData( data );
     foreach( PhotosInfo *item, m_photosInit )
     {
         if( item->urlphoto == url )
@@ -266,11 +250,8 @@ void PhotosEngine::resultImageFetcher( QNetworkReply *reply )
             m_photosInit.removeAll( item );
         }
     }
-
     resultFinalize();
-    reply->deleteLater();
 }
-
 
 void PhotosEngine::resultFinalize()
 {

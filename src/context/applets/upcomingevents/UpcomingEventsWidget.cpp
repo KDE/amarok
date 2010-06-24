@@ -16,7 +16,6 @@
  ****************************************************************************************/
 
 #include "UpcomingEventsWidget.h"
-#include "NetworkAccessManagerProxy.h"
 #include "SvgHandler.h"
 
 // Kde include
@@ -24,7 +23,6 @@
 #include <KIcon>
 #include <KLocale>
 #include <KLocalizedString>
-#include <KUrl>
 
 // Qt include
 #include <QLabel>
@@ -33,8 +31,6 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QDesktopServices>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 
 #define NBR_MAX_PARTICIPANT 5
 
@@ -71,9 +67,6 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
 
     m_url->setOpenExternalLinks( true );
     m_url->setTextInteractionFlags( Qt::TextBrowserInteraction );
-
-    connect( The::networkAccessManager(), SIGNAL(finished(QNetworkReply*)),
-                                          SLOT(loadImage(QNetworkReply*)) );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -134,26 +127,23 @@ UpcomingEventsWidget::setImage( const KUrl &url )
 
     m_image->setText( i18n("Loading picture...") );
     m_imageUrl = url;
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(loadImage(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-UpcomingEventsWidget::loadImage( QNetworkReply *reply ) // SLOT
+UpcomingEventsWidget::loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const KUrl url = reply->request().url();
     if( m_imageUrl != url )
         return;
 
     m_imageUrl.clear();
-    QByteArray buffer = reply->readAll();
+    if( e.code != QNetworkReply::NoError )
+        return;
+
     QPixmap image;
-    image.loadFromData( buffer );
-
-    if( !image.isNull() )
+    if( image.loadFromData( data ) )
         m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-
-    reply->deleteLater();
 }
 
 void
