@@ -94,7 +94,7 @@ void LyricsApplet::init()
     editAction->setText( i18n( "Edit Lyrics" ) );
     m_editIcon = addAction( editAction );
 
-    connect( m_editIcon, SIGNAL( clicked() ), this, SLOT( editLyrics() ) );
+    connect( m_editIcon, SIGNAL(clicked()), this, SLOT(editLyrics()) );
 
     QAction* closeAction = new QAction( this );
     closeAction->setIcon( KIcon( "document-close" ) );
@@ -103,7 +103,7 @@ void LyricsApplet::init()
     closeAction->setText( i18n( "Close" ) );
     m_closeIcon = addAction( closeAction );
 
-    connect( m_closeIcon, SIGNAL( clicked() ), this, SLOT( closeLyrics() ) );
+    connect( m_closeIcon, SIGNAL(clicked()), this, SLOT(closeLyrics()) );
 
     QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
@@ -112,7 +112,7 @@ void LyricsApplet::init()
     saveAction->setText( i18n( "Save Lyrics" ) );
     m_saveIcon = addAction( saveAction );
 
-    connect( m_saveIcon, SIGNAL( clicked() ), this, SLOT( saveLyrics() ) );
+    connect( m_saveIcon, SIGNAL(clicked()), this, SLOT(saveLyrics()) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -121,7 +121,7 @@ void LyricsApplet::init()
     reloadAction->setText( i18n( "Reload Lyrics" ) );
     m_reloadIcon = addAction( reloadAction );
 
-    connect( m_reloadIcon, SIGNAL( clicked() ), this, SLOT( refreshLyrics() ) );
+    connect( m_reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -130,7 +130,7 @@ void LyricsApplet::init()
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( settingsAction );
 
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+    connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     m_proxy = new QGraphicsProxyWidget( this );
     m_proxy->setAttribute( Qt::WA_NoSystemBackground );
@@ -159,9 +159,9 @@ void LyricsApplet::init()
     if( fontGood )
         m_lyrics->setFont( font );
 
-    connect( m_suggested, SIGNAL( anchorClicked( const QUrl& ) ), this, SLOT( suggestionChosen( const QUrl& ) ) );
-    connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    connect( m_suggested, SIGNAL(anchorClicked(QUrl)), this, SLOT(suggestionChosen(QUrl)) );
+    connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 
     constraintsEvent();
     updateConstraints();
@@ -424,7 +424,7 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system");
 
-    connect( parent, SIGNAL( accepted() ), this, SLOT( changeLyricsFont() ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(changeLyricsFont()) );
 }
 
 void
