@@ -230,7 +230,7 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
-void CoverFoundDialog::add( const QPixmap cover,
+void CoverFoundDialog::add( const QPixmap &cover,
                             const CoverFetch::Metadata metadata,
                             const CoverFetch::ImageSize imageSize )
 {
@@ -409,8 +409,8 @@ void CoverFoundDialog::saveAs()
         return;
     }
 
-    QPixmap pixmap = item->bigPix();
-    const QString ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
+    const QPixmap &pixmap = item->bigPix();
+    const QString &ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
     if( ext == "jpg" || ext == "jpeg" )
         pixmap.save( &saveFile, "JPG" );
     else if( ext == "png" )
@@ -536,7 +536,7 @@ void CoverFoundDialog::display()
     if( !success )
         return;
 
-    const QPixmap pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
+    const QPixmap &pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
     QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
     dlg->show();
     dlg->raise();
@@ -739,14 +739,14 @@ void CoverFoundSideBar::clear()
     m_metadata.clear();
 }
 
-void CoverFoundSideBar::setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata )
+void CoverFoundSideBar::setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata )
 {
     m_metadata = metadata;
     updateNotes();
     setPixmap( pixmap );
 }
 
-void CoverFoundSideBar::setPixmap( const QPixmap pixmap )
+void CoverFoundSideBar::setPixmap( const QPixmap &pixmap )
 {
     m_pixmap = pixmap;
     QPixmap scaledPix = pixmap.scaled( QSize( 190, 190 ), Qt::KeepAspectRatio );
@@ -866,7 +866,7 @@ void CoverFoundSideBar::clearMetaTable()
     }
 }
 
-CoverFoundItem::CoverFoundItem( const QPixmap cover,
+CoverFoundItem::CoverFoundItem( const QPixmap &cover,
                                 const CoverFetch::Metadata data,
                                 const CoverFetch::ImageSize imageSize,
                                 QListWidget *parent )

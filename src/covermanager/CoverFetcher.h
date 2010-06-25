@@ -95,7 +95,7 @@ private:
 
     /// Show the cover that has been found
     void showCover( CoverFetchUnit::Ptr unit,
-                    const QPixmap cover = QPixmap(),
+                    const QPixmap &cover = QPixmap(),
                     CoverFetch::Metadata data = CoverFetch::Metadata() );
 
     CoverFetch::Source fetchSource() const;

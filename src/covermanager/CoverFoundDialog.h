@@ -69,7 +69,7 @@ signals:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
-    void add( const QPixmap cover,
+    void add( const QPixmap &cover,
               const CoverFetch::Metadata metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
@@ -138,8 +138,8 @@ public:
 
 public slots:
     void clear();
-    void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
-    void setPixmap( const QPixmap pixmap );
+    void setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap &pixmap );
 
 private:
     Meta::AlbumPtr        m_album;
@@ -160,7 +160,7 @@ private:
 class CoverFoundItem : public QListWidgetItem
 {
 public:
-    explicit CoverFoundItem( const QPixmap cover,
+    explicit CoverFoundItem( const QPixmap &cover,
                              const CoverFetch::Metadata data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = 0 );
