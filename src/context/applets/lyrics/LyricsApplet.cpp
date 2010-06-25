@@ -148,7 +148,7 @@ void LyricsApplet::init()
 
     m_suggested = new QTextBrowser;
     m_suggested->setAttribute( Qt::WA_NoSystemBackground );
-    m_suggested->setOpenExternalLinks( true );
+    m_suggested->setOpenExternalLinks( false );
     m_suggested->setAutoFillBackground( false );
     m_suggested->setWordWrapMode( QTextOption::WordWrap );
     m_suggested->viewport()->setAttribute( Qt::WA_NoSystemBackground );
@@ -268,10 +268,11 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         QString html;
         foreach( const QVariant &suggestion, suggested )
         {
-            const QString sug = suggestion.toString();
-            const QStringList pieces = sug.split( " - " );
-            const QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
-            html += link;
+            const QStringList &s  = suggestion.toStringList();
+            const QString &title  = s.at( 0 );
+            const QString &artist = s.at( 1 );
+            const QString &url    = s.at( 2 );
+            html += QString( "<a href=\"%1|%2|%3\">%2 - %3</a><br>" ).arg( url ).arg( artist ).arg( title );
         }
 
         // remove the last <br> to save space
@@ -379,7 +380,7 @@ void
 LyricsApplet::suggestionChosen( const QUrl& link )
 {
     QStringList pieces = link.toString().split( '|' );
-    ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 0 ], pieces[ 2 ] );
+    ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 2 ], pieces[ 0 ] );
 }
 
 void

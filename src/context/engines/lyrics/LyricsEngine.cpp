@@ -193,7 +193,7 @@ void LyricsEngine::newLyricsHtml( QString& lyrics )
     m_currentLyrics = lyrics;
 }
 
-void LyricsEngine::newSuggestions( QStringList& suggested )
+void LyricsEngine::newSuggestions( const QVariantList &suggested )
 {
     DEBUG_BLOCK
     // each string is in "title - artist <url>" form

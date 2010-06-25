@@ -44,7 +44,7 @@ class AMAROK_EXPORT LyricsObserver
         /**
          *  A lyrics script has returned a list of suggested URLs for correct lyrics.
          */
-        virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
+        virtual void newSuggestions( const QVariantList &suggestions ) { Q_UNUSED( suggestions ); }
         /**
          *  A lyrics script has returned some generic message that they want to be displayed.
          */
@@ -66,7 +66,7 @@ class LyricsSubject
     
         void sendNewLyrics( QStringList lyrics );
         void sendNewLyricsHtml( QString lyrics );
-        void sendNewSuggestions( QStringList suggestions );
+        void sendNewSuggestions( const QVariantList &suggestions );
         void sendLyricsMessage( QString key, QString val );
     
     private:
