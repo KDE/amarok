@@ -24,14 +24,7 @@
 
 #include <ui_lyricsSettings.h>
 
-class TextScrollingWidget;
-
-namespace Plasma
-{
-    class IconWidget;
-    class TextBrowser;
-    class TreeView;
-}
+class LyricsAppletPrivate;
 
 class LyricsApplet : public Context::Applet
 {
@@ -54,41 +47,21 @@ public slots:
     void refreshLyrics();
     
 private slots:
-    void paletteChanged( const QPalette & palette );
-    void editLyrics();
-    void changeLyricsFont();
-    void closeLyrics();
-    void saveLyrics();
-    void suggestionChosen( const QModelIndex &index );
+    void paletteChanged( const QPalette &palette );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *e );
 
 private:
-    void setEditing( const bool isEditing );
-    void collapseToMin();
-    void determineActionIconsState();
-    void showLyrics();
-    void showSuggested( const QVariantList &suggestions );
+    LyricsAppletPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE( LyricsApplet )
 
-    QString m_titleText;
-    TextScrollingWidget* m_titleLabel;
-
-    Plasma::IconWidget*  m_saveIcon;
-    Plasma::IconWidget*  m_editIcon;
-    Plasma::IconWidget*  m_reloadIcon;
-    Plasma::IconWidget*  m_closeIcon;
-    Plasma::IconWidget*  m_settingsIcon;
-
-    // holds main body
-    Plasma::TextBrowser *m_browser;
-    Plasma::TreeView    *m_suggestView;
-
-    Ui::lyricsSettings    ui_Settings;
-
-    bool m_hasLyrics;
-    bool m_isRichText;
+    Q_PRIVATE_SLOT( d_ptr, void _editLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _changeLyricsFont() )
+    Q_PRIVATE_SLOT( d_ptr, void _closeLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
