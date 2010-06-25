@@ -60,25 +60,8 @@ Dynamic::Bias::fromXml( QDomElement e )
 
     if( type == "global" )
     {
-        double weight = 0.0;
-        Dynamic::GlobalBias::Filter filter;
-
-
-        QDomElement queryElement = e.firstChildElement( "query" );
-        if( !queryElement.isNull() )
-        {
-            QDomElement filtersElement = queryElement.firstChildElement( "filters" );
-            if( !filtersElement.isNull() )
-            {
-                QDomElement includeElement = filtersElement.firstChildElement( "include" );
-                if( !includeElement.isNull() )
-                {
-                    QString rawXml;
-                    QTextStream rawXmlStream( &rawXml );
-                    includeElement.save( rawXmlStream, 0 );
-                    QXmlStreamReader reader(rawXml);
+        return Dynamic::GlobalBias::fromXml( e );
 #if QT_VERSION >= 0x040600
-                    reader.readNextStartElement();
 #else
                     // QXmlStreamReader::readNextStartElement doesn't exist in Qt-4.5
                     // this is the inlined method body, adapted from lines 656 - 665 of
@@ -88,47 +71,6 @@ Dynamic::Bias::fromXml( QDomElement e )
                             break;
                     }
 #endif
-
-                    XmlQueryReader::Filter xmlFilter = XmlQueryReader::readFilter(&reader);
-
-                    filter.field = xmlFilter.field;
-                    if( xmlFilter.compare == -1 )
-                    {
-                        filter.value = xmlFilter.value;
-                        filter.condition = Dynamic::GlobalBias::Contains;
-                    }
-                    else
-                    {
-                        filter.numValue = xmlFilter.value.toLongLong();
-                        if( xmlFilter.compare == 0 )
-                            filter.condition = Dynamic::GlobalBias::Equals;
-                        else if( xmlFilter.compare == 1 )
-                            filter.condition = Dynamic::GlobalBias::GreaterThan;
-                        else if( xmlFilter.compare == 2 )
-                            filter.condition = Dynamic::GlobalBias::LessThan;
-                    }
-
-                    // handle special compare and value2 attributes:
-                    // TODO: don't use XmlQueryReader any longer
-                    QString compareStr = includeElement.attribute( "compare", QString() );
-                    if( compareStr == "olderThan" )
-                        filter.condition = Dynamic::GlobalBias::OlderThan;
-                    else if( compareStr == "between" )
-                        filter.condition = Dynamic::GlobalBias::Between;
-
-                    filter.numValue2 = includeElement.attribute( "value2", 0 ).toLongLong();
-
-                }
-            }
-        }
-
-        QDomElement weightElement = e.firstChildElement( "weight" );
-        if( !weightElement.isNull() )
-        {
-            weight = weightElement.attribute("value").toDouble();
-        }
-
-        return new Dynamic::GlobalBias( weight, filter );
     }
     else if( type == "custom" )
     {
@@ -259,6 +201,68 @@ Dynamic::GlobalBias::~GlobalBias()
     delete m_qm;
 }
 
+QString
+Dynamic::GlobalBias::filterConditionToString( Dynamic::GlobalBias::FilterCondition cond )
+{
+    switch( cond )
+    {
+        case Equals:
+            return "equals";
+        case GreaterThan:
+            return "greater";
+        case LessThan:
+            return "less";
+        case Between:
+            return "between";
+        case OlderThan:
+            return "older";
+        case Contains:
+            return "contains";
+    }
+    return QString();
+}
+
+Dynamic::GlobalBias*
+Dynamic::GlobalBias::fromXml( QDomElement e )
+{
+    double weight = 0.0;
+    Dynamic::GlobalBias::Filter filter;
+
+    QDomElement queryElement = e.firstChildElement( "query" );
+    if( !queryElement.isNull() )
+    {
+        QDomElement filtersElement = queryElement.firstChildElement( "filters" );
+        if( !filtersElement.isNull() )
+        {
+            QDomElement includeElement = filtersElement.firstChildElement( "include" );
+            if( !includeElement.isNull() )
+            {
+                QString field = includeElement.attribute("field");
+                filter.field = XmlQueryReader::fieldVal( QStringRef(&field) );
+                filter.value = includeElement.attribute( "value", "" );
+                filter.numValue = filter.value.toLongLong();
+                filter.numValue2 = includeElement.attribute( "value2", 0 ).toLongLong();
+
+                QString condition = includeElement.attribute( "compare", "" );
+                filter.condition = Contains;
+                for( int i=0; i<5; i++ )
+                {
+                    if( condition == filterConditionToString( (FilterCondition)i ) )
+                        filter.condition = (FilterCondition)i;
+                }
+            }
+        }
+    }
+
+    QDomElement weightElement = e.firstChildElement( "weight" );
+    if( !weightElement.isNull() )
+    {
+        weight = weightElement.attribute("value").toDouble();
+    }
+
+    return new Dynamic::GlobalBias( weight, filter );
+}
+
 QDomElement
 Dynamic::GlobalBias::xml() const
 {
@@ -270,25 +274,20 @@ Dynamic::GlobalBias::xml() const
 
     QDomElement weight = doc.createElement( "weight" );
     weight.setAttribute( "value", QString::number( m_weight ) );
-
     e.appendChild( weight );
 
     QDomElement queryElement = doc.createElement( "query" );
     QDomElement filtersElement = doc.createElement( "filters" );
-    QDomElement filterElement;
+    QDomElement includeElement = doc.createElement( "include" );
+    includeElement.setAttribute( "field", Collections::XmlQueryWriter::fieldName( m_filter.field ) );
     if( m_filter.condition == Contains )
-         filterElement = Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.value );
+        includeElement.setAttribute( "value", m_filter.value );
     else
-        filterElement = Collections::XmlQueryWriter::xmlForFilter(doc, false, m_filter.field, m_filter.numValue, (Collections::QueryMaker::NumberComparison)m_filter.condition );
-    // handle special compare and value2 attributes:
-    // TODO: don't use XmlQueryWriter any longer
-    if( m_filter.condition == Dynamic::GlobalBias::OlderThan )
-        filterElement.setAttribute( "compare", "olderThan" );
-    else if( m_filter.condition == Dynamic::GlobalBias::Between )
-        filterElement.setAttribute( "compare", "between" );
-    filterElement.setAttribute( "value2", m_filter.numValue2 );
+        includeElement.setAttribute( "value", QString::number( m_filter.numValue ) );
+    includeElement.setAttribute( "value2", QString::number( m_filter.numValue2 ) );
+    includeElement.setAttribute( "compare", filterConditionToString( m_filter.condition ) );
 
-    filtersElement.appendChild( filterElement );
+    filtersElement.appendChild( includeElement );
     queryElement.appendChild( filtersElement );
     e.appendChild( queryElement );
 

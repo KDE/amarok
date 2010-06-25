@@ -225,7 +225,10 @@ namespace Dynamic
             Filter filter() const;
             void setFilter( const Filter &filter);
 
+            static QString filterConditionToString( FilterCondition cond );
+
             QDomElement xml() const;
+            static GlobalBias* fromXml( QDomElement e );
 
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
 
