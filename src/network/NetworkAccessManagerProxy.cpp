@@ -144,7 +144,7 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
     if( !url.isValid() )
     {
         const QMetaObject *mo = receiver->metaObject();
-        debug() << QString( "Error: URL %1 is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
+        debug() << QString( "Error: URL '%1' is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
         return 0;
     }
     QNetworkReply *reply = get( QNetworkRequest(url) );
