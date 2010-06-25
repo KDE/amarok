@@ -385,6 +385,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 {
     DEBUG_BLOCK
 
+    qDebug() << "PlaylistBrowser::..::saveActive" << newTitle << "unsaved" << m_activeUnsaved << "contains" << m_playlistHash.contains( newTitle );
     // user has made modifications
     if( m_activeUnsaved )
     {
@@ -393,7 +394,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
         // replace or add new playlist
         if( m_playlistHash.contains( newTitle ) )
         {
-            m_savedPlaylistsRoot.replaceChild( m_playlistHash[ newTitle ],e );
+            m_savedPlaylistsRoot.replaceChild( e, m_playlistHash[ newTitle ] );
             m_playlistHash[ newTitle ] = e;
 
             m_playlistElements[ m_activePlaylist ] = e;
