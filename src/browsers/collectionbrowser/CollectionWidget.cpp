@@ -156,6 +156,7 @@ CollectionWidget::~CollectionWidget()
 void
 CollectionWidget::init()
 {
+    DEBUG_BLOCK
     d->levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( d->levels.isEmpty() )
         d->levels << CategoryId::Artist << CategoryId::Album;
@@ -395,6 +396,7 @@ CollectionWidget::init()
     d->selectedActionLevel[0] = firstGroup->checkedAction();
     d->selectedActionLevel[1] = secondGroup->checkedAction();
     d->selectedActionLevel[2] = thirdGroup->checkedAction();
+    debug() << "Sort levels:" << d->levels;
 
     d->searchWidget->toolBar()->addSeparator();
 
@@ -522,6 +524,7 @@ void CollectionWidget::setLevels( const QList<int> &levels )
 {
     d->levels = levels;
     d->view( d->viewMode )->setLevels( levels );
+    debug() << "Sort levels:" << d->levels;
 }
 
 void CollectionWidget::toggleView( bool merged )
