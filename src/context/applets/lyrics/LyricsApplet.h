@@ -25,13 +25,12 @@
 #include <ui_lyricsSettings.h>
 
 class TextScrollingWidget;
-class QGraphicsProxyWidget;
-class QTextBrowser;
 
 namespace Plasma
 {
-    class FrameSvg;
     class IconWidget;
+    class TextBrowser;
+    class TreeView;
 }
 
 class LyricsApplet : public Context::Applet
@@ -52,15 +51,15 @@ public slots:
     virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void suggestionChosen( const QUrl& link );
     void refreshLyrics();
     
 private slots:
     void paletteChanged( const QPalette & palette );
     void editLyrics();
+    void changeLyricsFont();
     void closeLyrics();
     void saveLyrics();
-    void changeLyricsFont();
+    void suggestionChosen( const QModelIndex &index );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
@@ -71,7 +70,7 @@ private:
     void collapseToMin();
     void determineActionIconsState();
     void showLyrics();
-    void showSuggested();
+    void showSuggested( const QVariantList &suggestions );
 
     QString m_titleText;
     TextScrollingWidget* m_titleLabel;
@@ -83,9 +82,8 @@ private:
     Plasma::IconWidget*  m_settingsIcon;
 
     // holds main body
-    QGraphicsProxyWidget *m_proxy;
-    QTextBrowser         *m_lyrics;
-    QTextBrowser         *m_suggested;
+    Plasma::TextBrowser *m_browser;
+    Plasma::TreeView    *m_suggestView;
 
     Ui::lyricsSettings    ui_Settings;
 
