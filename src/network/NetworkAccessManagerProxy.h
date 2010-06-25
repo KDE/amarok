@@ -59,11 +59,10 @@ public:
      * @param receiver the receiver object to call @p method on.
      * @param method the method to call when content is retrieved.
      * @param type the #Qt::ConnectionType used for calling the @p method.
-     * @param timeout the timeout duration in milliseconds.
      * @return a QNetworkReply object for custom monitoring.
      */
     QNetworkReply *getData( const KUrl &url, QObject *receiver, const char *method,
-                            Qt::ConnectionType type = Qt::AutoConnection, int timeout = 15000 );
+                            Qt::ConnectionType type = Qt::AutoConnection );
 
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();
