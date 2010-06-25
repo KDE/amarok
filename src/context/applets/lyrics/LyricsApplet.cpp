@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsApplet"
+
 #include "LyricsApplet.h"
 
 #include "core/support/Amarok.h"
