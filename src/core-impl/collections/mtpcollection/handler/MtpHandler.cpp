@@ -620,8 +620,8 @@ MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
         connect( this, SIGNAL( setProgress( int ) ),
                  The::statusBar(), SLOT( setProgress( int ) ) );
 
-        connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-                 The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+        connect( this, SIGNAL(endProgressOperation(QObject*)),
+                 The::statusBar(), SLOT(endProgressOperation(QObject*)) );
                 */
 
     return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );

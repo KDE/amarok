@@ -191,6 +191,7 @@ ProgressBar * StatusBar::newProgressOperation( QObject * owner, const QString & 
     m_nowPlayingWidget->hide();
     ProgressBar * newBar = new ProgressBar( 0 );
     newBar->setDescription( description );
+    connect( owner, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, owner );
     m_progressBar->show();
     m_busy = true;
@@ -208,6 +209,7 @@ ProgressBar * StatusBar::newProgressOperation( KJob * job, const QString & descr
     m_nowPlayingWidget->hide();
     KJobProgressBar * newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( description );
+    connect( job, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, job );
     m_progressBar->show();
     m_busy = true;
@@ -225,6 +227,7 @@ ProgressBar *StatusBar::newProgressOperation( QNetworkReply* reply, const QStrin
     m_nowPlayingWidget->hide();
     NetworkProgressBar * newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( description );
+    connect( reply, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
     m_busy = true;

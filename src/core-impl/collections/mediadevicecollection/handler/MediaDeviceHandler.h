@@ -206,7 +206,7 @@ signals:
 
     void deleteTracksDone();
     void incrementProgress();
-    void endProgressOperation( const QObject *owner );
+    void endProgressOperation( QObject *owner );
 
     void copyTracksDone( bool success );
     void removeTracksDone();
