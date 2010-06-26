@@ -74,6 +74,7 @@ public:
     void _closeLyrics();
     void _saveLyrics();
     void _suggestionChosen( const QModelIndex &index );
+    void _unsetCursor();
 
     // data / widgets
     QString titleText;
@@ -293,6 +294,7 @@ LyricsAppletPrivate::_saveLyrics()
 void
 LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
 {
+    Q_Q( LyricsApplet );
     if( !index.isValid() )
         return;
 
@@ -302,8 +304,19 @@ LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
     const QString &artist = model->item( row, 1 )->text();
     const QString &url    = model->item( row, 0 )->data().toString();
     if( !url.isEmpty() )
+    {
         ScriptManager::instance()->notifyFetchLyricsByUrl( artist, title, url );
+        suggestView->setCursor( Qt::BusyCursor );
+        QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
+    }
     suggestView->hide();
+}
+
+void
+LyricsAppletPrivate::_unsetCursor()
+{
+    if( suggestView->hasCursor() )
+        suggestView->unsetCursor();
 }
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
@@ -522,6 +535,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     Q_UNUSED( name )
     Q_D( LyricsApplet );
 
+    unsetCursor();
     d->hasLyrics = false;
     d->suggestView->hide();
     d->browser->hide();

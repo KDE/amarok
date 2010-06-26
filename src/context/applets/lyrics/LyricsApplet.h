@@ -61,6 +61,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _closeLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
+    Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
