@@ -103,7 +103,11 @@ LastFmServiceSettings::testLogin()
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
+#if KDE_IS_VERSION(4, 4, 0)
     QNetworkAccessManager* qnam = new KIO::Integration::AccessManager( this );
+#else
+    QNetworkAccessManager* qnam = new KIO::AccessManager( this );
+#endif
     lastfm::setNetworkAccessManager( qnam );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
