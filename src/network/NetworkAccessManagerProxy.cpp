@@ -28,6 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
+#include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -68,28 +69,34 @@ public:
         QByteArray sig = QMetaObject::normalizedSignature( callback.method );
         sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
                             // and let Qt's meta object system handle the rest.
-        bool success( false );
-        const QMetaObject *mo = callback.receiver->metaObject();
-        int methodIndex = mo->indexOfSlot( sig );
-        if( methodIndex != -1 )
+        if( callback.receiver.data() )
         {
-            Error err = { reply->error(), reply->errorString() };
-            QMetaMethod method = mo->method( methodIndex );
-            success = method.invoke( callback.receiver,
-                                     callback.type,
-                                     Q_ARG( KUrl, reply->request().url() ),
-                                     Q_ARG( QByteArray, reply->readAll() ),
-                                     Q_ARG( Error, err ) );
+            bool success( false );
+            const QMetaObject *mo = callback.receiver.data()->metaObject();
+            int methodIndex = mo->indexOfSlot( sig );
+            if( methodIndex != -1 )
+            {
+                Error err = { reply->error(), reply->errorString() };
+                QMetaMethod method = mo->method( methodIndex );
+                success = method.invoke( callback.receiver.data(),
+                                         callback.type,
+                                         Q_ARG( KUrl, reply->request().url() ),
+                                         Q_ARG( QByteArray, reply->readAll() ),
+                                         Q_ARG( Error, err ) );
+            }
+
+            if( !success )
+            {
+                debug() << QString( "Failed to invoke method %1 of %2" )
+                             .arg( QString(sig) ).arg( mo->className() );
+            }
         }
         reply->deleteLater();
-
-        if( !success )
-            debug() << QString( "Failed to invoke method %1 of %2" ).arg( QString(sig) ).arg( mo->className() );
     }
 
     struct CallBackData
     {
-        QObject *receiver;
+        QWeakPointer<QObject> receiver;
         const char *method;
         Qt::ConnectionType type;
     };
