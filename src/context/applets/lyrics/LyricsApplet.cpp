@@ -455,24 +455,28 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     const qreal iconWidth = d->settingsIcon->size().width();
     const qreal padding = standardPadding();
 
+    // Y offsets for title label and icons so their centers line up
+    const qreal titleY = padding + 3;
+    const qreal iconY = titleY + (d->titleLabel->boundingRect().height() - iconWidth) / 2;
+
     // label position
     d->titleLabel->setScrollingText( d->titleText );
-    d->titleLabel->setPos( ( size().width() - d->titleLabel->boundingRect().width() ) / 2 , padding + 3 );
+    d->titleLabel->setPos( ( size().width() - d->titleLabel->boundingRect().width() ) / 2 , titleY );
 
     // settings icon position
-    d->settingsIcon->setPos( size().width() - iconWidth - padding, padding );
+    d->settingsIcon->setPos( size().width() - iconWidth - padding, iconY );
 
     // reload icon position
-    d->reloadIcon->setPos( d->settingsIcon->pos().x() - padding - iconWidth, padding );
+    d->reloadIcon->setPos( d->settingsIcon->pos().x() - padding - iconWidth, iconY );
     d->reloadIcon->show();
 
     // edit and close icon positions
-    QPoint editIconPos( d->reloadIcon->pos().x() - padding - iconWidth, padding );
+    QPoint editIconPos( d->reloadIcon->pos().x() - padding - iconWidth, iconY );
     d->editIcon->setPos( editIconPos );
     d->closeIcon->setPos( editIconPos );
 
     // save icon position
-    d->saveIcon->setPos( d->editIcon->pos().x() - padding - iconWidth, padding );
+    d->saveIcon->setPos( d->editIcon->pos().x() - padding - iconWidth, iconY );
 
     // proxy position and height depending on whether suggestions are showing
     qreal proxyY = d->titleLabel->pos().y() + d->titleLabel->boundingRect().height() + padding;
