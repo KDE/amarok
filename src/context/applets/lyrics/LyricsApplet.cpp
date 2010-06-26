@@ -707,26 +707,33 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
     Q_D( LyricsApplet );
     if( d->browser->nativeWidget()->isVisible() )
     {
+        bool propagate( true );
         switch( e->key() )
         {
         case Qt::Key_Escape :
             d->_closeLyrics();
+            propagate = false;
             break;
 
         case Qt::Key_F2 :
             d->_editLyrics();
+            propagate = false;
             break;
         }
 
         if( e->matches( QKeySequence::Save ) )
+        {
             d->_saveLyrics();
+            propagate = false;
+        }
 
-        e->accept();
+        if( !propagate )
+        {
+            e->accept();
+            return;
+        }
     }
-    else
-    {
-        Context::Applet::keyPressEvent( e );
-    }
+    Context::Applet::keyPressEvent( e );
 }
 
 #include "LyricsApplet.moc"
