@@ -38,11 +38,13 @@
 
 #include <Plasma/IconWidget>
 #include <Plasma/Containment>
+#include <Plasma/Label>
 #include <Plasma/TextBrowser>
 #include <Plasma/TreeView>
 
 #include <QAction>
-#include <QLinearGradient>
+#include <QLabel>
+#include <QGraphicsLinearLayout>
 #include <QPainter>
 #include <QPoint>
 #include <QScrollBar>
@@ -89,6 +91,8 @@ public:
 
     Plasma::TextBrowser *browser;
     Plasma::TreeView    *suggestView;
+
+    Plasma::Label *infoLabel;
 
     Ui::lyricsSettings ui_settings;
 
@@ -409,6 +413,11 @@ LyricsApplet::init()
     suggestTree->setUniformRowHeights( true );
     d->suggestView->hide();
 
+    d->infoLabel = new Plasma::Label( this );
+    d->infoLabel->setAlignment( Qt::AlignCenter );
+    d->infoLabel->nativeWidget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    d->infoLabel->hide();
+
     // Read config
     QFont font;
     if( font.fromString( Amarok::config("Lyrics Applet").readEntry("Font", QString()) ) )
@@ -488,13 +497,22 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
         proxyH = boundingRect().height() - proxyY - padding;
     }
 
+    if( d->infoLabel->isVisible() )
+    {
+        // info label position
+        QSizeF infoSize( (boundingRect().width() / 3), (proxyH / 3) );
+        QPointF infoPos( (boundingRect().width() - infoSize.width()) / 2, (proxyH - infoSize.height()) / 2 );
+        d->infoLabel->setPos( infoPos );
+        d->infoLabel->setMinimumSize( infoSize );
+        d->infoLabel->setMaximumSize( infoSize );
+    }
+
     // browser position
     QPointF textBrowserPos( padding, proxyY );
     QSizeF textBrowserSize( size().width() - 2 * padding, proxyH );
     d->browser->setPos( textBrowserPos );
     d->browser->setMinimumSize( textBrowserSize );
     d->browser->setMaximumSize( textBrowserSize );
-
     update();
 }
 
@@ -507,6 +525,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     d->hasLyrics = false;
     d->suggestView->hide();
     d->browser->hide();
+    d->infoLabel->hide();
     setBusy( false );
 
     if( data.contains( "noscriptrunning" ) )
@@ -522,10 +541,17 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         if( canAnimate() )
             setBusy( true );
         d->titleText = i18n( "Lyrics: Fetching ..." );
+        d->infoLabel->setText( i18n( "Lyrics are being fetched" ) );
+        d->infoLabel->show();
     }
     else if( data.contains( "error" ) )
     {
         d->titleText = i18n( "Lyrics: Fetch error" );
+        d->infoLabel->setText( i18n( "Could not download lyrics.\n"
+                                     "Please check your Internet connection.\n"
+                                     "Error message:\n"
+                                     "%1", data["error"].toString() ) );
+        d->infoLabel->show();
     }
     else if( data.contains( "suggested" ) )
     {
@@ -562,6 +588,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else if( data.contains( "notfound" ) )
     {
         d->titleText = i18n( "Lyrics: Not found" );
+        d->infoLabel->setText( i18n( "There were no lyrics found for this track" ) );
+        d->infoLabel->show();
     }
 
     d->determineActionIconsState();
