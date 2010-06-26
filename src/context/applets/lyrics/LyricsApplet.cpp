@@ -67,7 +67,7 @@ public:
     void setEditing( const bool isEditing );
     void collaspeToMin();
     void determineActionIconsState();
-    void showLyrics();
+    void showLyrics( const QString &text, bool isRichText );
     void showSuggested( const QVariantList &suggestions );
 
     // private slots
@@ -147,26 +147,31 @@ LyricsAppletPrivate::collaspeToMin()
 void
 LyricsAppletPrivate::determineActionIconsState()
 {
-    const bool isEditing = !browser->nativeWidget()->isReadOnly();
+    bool isVisible = browser->nativeWidget()->isVisible();
+    bool isEditing = !browser->nativeWidget()->isReadOnly();
 
-    // If we're editing, hide and disable the edit icon
-    editIcon->action()->setEnabled( !isEditing );
-    editIcon->action()->setVisible( !isEditing );
+    editIcon->action()->setEnabled( isVisible & !isEditing );
 
-    // If we're editing, show and enable the close icon
-    closeIcon->action()->setEnabled( isEditing );
-    closeIcon->action()->setVisible( isEditing );
+    closeIcon->action()->setEnabled( isVisible & isEditing );
+    closeIcon->action()->setVisible( isVisible & isEditing );
 
-    // If we're editing, show and enable the save icon
-    saveIcon->action()->setEnabled( isEditing );
-    saveIcon->action()->setVisible( isEditing );
+    saveIcon->action()->setEnabled( isVisible & isEditing );
+    saveIcon->action()->setVisible( isVisible & isEditing );
+
+    reloadIcon->action()->setEnabled( isVisible & !isEditing );
 }
 
 void
-LyricsAppletPrivate::showLyrics()
+LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
 {
+    browser->nativeWidget()->clear();
+    if( isRichText )
+        browser->nativeWidget()->setHtml( text );
+    else
+        browser->nativeWidget()->setPlainText( text );
     determineActionIconsState();
     suggestView->hide();
+    browser->show();
 }
 
 void
@@ -244,7 +249,9 @@ LyricsAppletPrivate::_closeLyrics()
         vbar->setSliderPosition( savedPosition );
         q->setCollapseOff();
 
-        showLyrics();
+        determineActionIconsState();
+        suggestView->hide();
+        browser->show();
         // emit sizeHintChanged(Qt::MaximumSize);
     }
     else
@@ -384,6 +391,7 @@ LyricsApplet::init()
     browserWidget->setWordWrapMode( QTextOption::WordWrap );
     browserWidget->viewport()->setAttribute( Qt::WA_NoSystemBackground );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
+    d->browser->hide();
 
     d->suggestView = new Plasma::TreeView( this );
     d->suggestView->setModel( new QStandardItemModel( this ) );
@@ -410,9 +418,9 @@ LyricsApplet::init()
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 
-    connectSource( "lyrics" );
     d->setEditing( false );
-    d->showLyrics();
+    d->determineActionIconsState();
+    connectSource( "lyrics" );
 }
 
 void
@@ -498,46 +506,31 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     d->hasLyrics = false;
     d->suggestView->hide();
-
-    if( data.size() == 0 ) return;
-
-    //debug() << "got lyrics data: " << data;
-
-    d->titleText = i18n( "Lyrics" );
-    d->titleLabel->show();
-
+    d->browser->hide();
     setBusy( false );
 
     if( data.contains( "noscriptrunning" ) )
     {
-        d->browser->nativeWidget()->setPlainText( i18n( "No lyrics script is running." ) );
-        d->showLyrics();
+        d->titleText = i18n( "Lyrics: No script is running" );
     }
     else if( data.contains( "stopped" ) )
     {
-        d->browser->nativeWidget()->clear();
-        d->showLyrics();
+        d->titleText = i18n( "Lyrics" );
     }
     else if( data.contains( "fetching" ) )
     {
-
         if( canAnimate() )
             setBusy( true );
-
-        d->titleText = i18n( "Lyrics : Fetching ..." );
-        d->browser->nativeWidget()->setPlainText( i18n( "Lyrics are being fetched." ) );
-
-        d->showLyrics();
+        d->titleText = i18n( "Lyrics: Fetching ..." );
     }
     else if( data.contains( "error" ) )
     {
-        d->browser->nativeWidget()->setPlainText( i18n( "Could not download lyrics.\nPlease check your Internet connection.\nError message:\n%1", data["error"].toString() ) );
-        d->showLyrics();
+        d->titleText = i18n( "Lyrics: Fetch error" );
     }
     else if( data.contains( "suggested" ) )
     {
         QVariantList suggested = data[ "suggested" ].toList();
-        d->titleText = QString( "Suggested Lyrics URLs" );
+        d->titleText = i18n( "Lyrics: Suggested URLs" );
         d->showSuggested( suggested );
     }
     else if( data.contains( "html" ) )
@@ -545,10 +538,10 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->hasLyrics = true;
         d->isRichText = true;
         // show pure html in the text area
-        d->browser->nativeWidget()->setHtml( data[ "html" ].toString() );
-        d->titleText = QString( "%1 : %2" ).arg( i18n( "Lyrics" ) ).arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
-
-        d->showLyrics();
+        d->titleText = QString( "%1: %2" )
+            .arg( i18n( "Lyrics" ) )
+            .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
+        d->showLyrics( data["html"].toString(), true );
         emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "lyrics" ) )
@@ -557,10 +550,10 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->isRichText = false;
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
-        d->titleText = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
-        //  need padding for title
-        d->browser->nativeWidget()->setPlainText( lyrics[ 3 ].toString().trimmed() );
-        d->showLyrics();
+        d->titleText = QString( "%1: %2 - %3" )
+            .arg( i18n( "Lyrics" ) )
+            .arg( lyrics[0].toString() ).arg( lyrics[1].toString() );
+        d->showLyrics( lyrics[3].toString().trimmed(), false );
 
         // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
         // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
@@ -568,13 +561,12 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if( data.contains( "notfound" ) )
     {
-        d->browser->nativeWidget()->setPlainText( i18n( "There were no lyrics found for this track" ) );
-        d->showLyrics();
+        d->titleText = i18n( "Lyrics: Not found" );
     }
 
-    update();
-    // collapseToMin();
+    d->determineActionIconsState();
     constraintsEvent();
+    update();
 }
 
 bool
@@ -598,6 +590,9 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     // draw rounded rect around title (only if not animating )
     if ( !d->titleLabel->isAnimating() )
         drawRoundedRectAroundText( p, d->titleLabel );
+
+    if( !d->browser->isVisible() )
+        return;
 
     QColor background;
     if( d->browser->nativeWidget()->isReadOnly() )
