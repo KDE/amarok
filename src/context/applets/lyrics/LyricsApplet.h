@@ -20,7 +20,6 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/Svg.h"
 
 #include <ui_lyricsSettings.h>
 

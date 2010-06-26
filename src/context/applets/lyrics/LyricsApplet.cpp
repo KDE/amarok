@@ -19,25 +19,21 @@
 
 #include "LyricsApplet.h"
 
-#include "core/support/Amarok.h"
-#include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "context/widgets/TextScrollingWidget.h"
-#include "dialogs/ScriptManager.h"
-#include "core/meta/Meta.h"
 #include "PaletteHandler.h"
-#include "Theme.h"
+#include "context/widgets/TextScrollingWidget.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "dialogs/ScriptManager.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
-#include <KStandardDirs>
 #include <KMessageBox>
-#include <KTabWidget>
 #include <KTextBrowser>
 
-#include <Plasma/IconWidget>
 #include <Plasma/Containment>
+#include <Plasma/IconWidget>
 #include <Plasma/Label>
 #include <Plasma/TextBrowser>
 #include <Plasma/TreeView>
