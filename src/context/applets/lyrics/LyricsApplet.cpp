@@ -106,6 +106,9 @@ LyricsAppletPrivate::setEditing( const bool isEditing )
 {
     Q_Q( LyricsApplet );
     browser->nativeWidget()->setReadOnly( !isEditing );
+    KTextBrowser *textBrowser = browser->nativeWidget();
+    QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
+    textBrowser->viewport()->setBackgroundRole( bg );
     q->update();
     // d->collaspeToMin();
 }
@@ -402,7 +405,7 @@ LyricsApplet::init()
     browserWidget->setUndoRedoEnabled( true );
     browserWidget->setAutoFillBackground( false );
     browserWidget->setWordWrapMode( QTextOption::WordWrap );
-    browserWidget->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+    browserWidget->viewport()->setAutoFillBackground( true );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     d->browser->hide();
 
@@ -632,37 +635,16 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     // draw rounded rect around title (only if not animating )
     if ( !d->titleLabel->isAnimating() )
         drawRoundedRectAroundText( p, d->titleLabel );
-
-    if( !d->browser->isVisible() )
-        return;
-
-    QColor background;
-    if( d->browser->nativeWidget()->isReadOnly() )
-        background = The::paletteHandler()->backgroundColor();
-    else // different background color when we're in edit mode
-        background = The::paletteHandler()->alternateBackgroundColor();
-
-    p->save();
-    const QScrollBar *hScrollBar = d->browser->nativeWidget()->horizontalScrollBar();
-    const QScrollBar *vScrollBar = d->browser->nativeWidget()->verticalScrollBar();
-    qreal hScrollBarHeight = hScrollBar->isVisible() ? hScrollBar->height() : 0;
-    qreal vScrollBarWidth  = vScrollBar->isVisible() ? vScrollBar->width()  : 0;
-    int frameWidth = d->browser->nativeWidget()->frameWidth();
-    QPointF proxyPos( d->browser->pos().x() + frameWidth, d->browser->pos().y() + frameWidth );
-    QSizeF proxySize( d->browser->size().width()  - vScrollBarWidth  - frameWidth * 2,
-                      d->browser->size().height() - hScrollBarHeight - frameWidth * 2 );
-    QRectF proxyRect( proxyPos, proxySize );
-
-    QPainterPath path;
-    path.addRoundedRect( proxyRect, 2, 2 );
-    p->fillPath( path, background );
-    p->restore();
 }
 
 void
-LyricsApplet::paletteChanged( const QPalette & palette )
+LyricsApplet::paletteChanged( const QPalette &palette )
 {
     Q_UNUSED( palette )
+    Q_D( LyricsApplet );
+    KTextBrowser *textBrowser = d->browser->nativeWidget();
+    QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
+    textBrowser->viewport()->setBackgroundRole( bg );
 }
 
 void
