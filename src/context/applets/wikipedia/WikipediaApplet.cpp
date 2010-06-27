@@ -323,6 +323,7 @@ WikipediaApplet::init()
 
     d->webView = new Plasma::WebView( this );
     d->webView->setAttribute( Qt::WA_NoSystemBackground );
+    d->webView->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
 
     // ask for all the CV height
     resize( 500, -1 );
