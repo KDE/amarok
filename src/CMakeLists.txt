@@ -579,7 +579,6 @@ set(taglib_filetype_resolver_SRCS
 set(transcoding_SRCS
     transcoding/TranscodeDialog.cpp
     transcoding/TranscodeJob.cpp
-    transcoding/TranscodeFormat.cpp
 )
 
 kde4_add_ui_files(transcoding_SRCS

@@ -17,7 +17,7 @@
 #ifndef TRANSCODEJOB_H
 #define TRANSCODEJOB_H
 
-#include "TranscodeFormat.h"
+#include "core/transcoding/TranscodeFormat.h"
 
 #include <KJob>
 #include <KUrl>

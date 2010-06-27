@@ -77,6 +77,10 @@ set(libcore_support_SRCS
     support/Debug.cpp
 )
 
+set(libcore_transcoding_SRCS
+    transcoding/TranscodeFormat.cpp
+)
+
 #####################################################################
 # LIBCORE
 #####################################################################
@@ -90,6 +94,7 @@ set(libcore_LIB_SRCS
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}
     ${libcore_support_SRCS}
+    ${libcore_transcoding_SRCS}
 )
 
 kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})

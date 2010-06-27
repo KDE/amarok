@@ -38,6 +38,7 @@ CollectionLocation::CollectionLocation()
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
+    , m_transcodeFormat( TranscodeFormat::Null() )
 {
     //nothing to do
 }
@@ -51,6 +52,7 @@ CollectionLocation::CollectionLocation( const Collections::Collection* parentCol
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
+    , m_transcodeFormat( TranscodeFormat::Null() )
 {
     //nothing to do
 }
@@ -91,16 +93,16 @@ CollectionLocation::isOrganizable() const
 }
 
 void
-CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination )
+CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination, TranscodeFormat format )
 {
     Meta::TrackList list;
     list.append( track );
-    prepareCopy( list, destination );
+    prepareCopy( list, destination, format );
 }
 
 
 void
-CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination )
+CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination, TranscodeFormat format )
 {
     if( !destination->isWritable() )
     {
@@ -111,12 +113,13 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
+    m_transcodeFormat = format;
     m_destination->setSource( this );
     startWorkflow( tracks, false );
 }
 
 void
-CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination )
+CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination, TranscodeFormat format )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -129,6 +132,7 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
         return;
     }
     m_destination = destination;
+    m_transcodeFormat = format;
     m_removeSources = false;
     m_isRemoveAction = false;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
@@ -463,7 +467,7 @@ CollectionLocation::queryDone()
     else
     {
         debug() << "we were about to copy something, lets proceed";
-        prepareCopy( m_sourceTracks, m_destination );
+        prepareCopy( m_sourceTracks, m_destination, m_transcodeFormat );
     }
 }
 

@@ -249,7 +249,7 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<" SRC URL IS " << list.urlList().first();
     debug()<<" SRC URL IS " << list.urlList().first();
 
-    TranscodeDialog *d = new TranscodeDialog( list.urlList(), The::mainWindow() );
+    TranscodeDialog *d = new TranscodeDialog( /*list.urlList(),*/ The::mainWindow() );
     debug() << "About to show TranscodeDialog";
     d->show();
     debug() << "TranscodeDialog shown.";

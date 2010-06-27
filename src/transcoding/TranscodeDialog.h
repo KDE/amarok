@@ -18,7 +18,7 @@
 #define TRANSCODEDIALOG_H
 
 #include "ui_TranscodeDialog.h"
-#include "TranscodeFormat.h"
+#include "core/transcoding/TranscodeFormat.h"
 #include "core/support/Debug.h"
 
 #include <KDialog>
@@ -31,11 +31,14 @@ class TranscodeDialog : public KDialog
 {
     Q_OBJECT
 public:
-    TranscodeDialog( const KUrl::List &urlList, QWidget *parent );
+    TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent );
+
+    TranscodeFormat transcodeFormat() const;
 
 private:
+    TranscodeFormat m_format;
     Ui::TranscodeDialog ui;
-    KUrl::List m_urlList;
+    //KUrl::List m_urlList;
 private slots:
     void onTranscodeClicked();
 };

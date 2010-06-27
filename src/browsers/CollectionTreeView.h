@@ -20,6 +20,7 @@
 #include "CollectionSortFilterProxyModel.h"
 #include "playlist/PlaylistController.h"
 #include "core/meta/Meta.h"
+#include "core/transcoding/TranscodeFormat.h"
 #include "widgets/PrettyTreeView.h"
 
 
@@ -103,7 +104,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode );
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
-        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const;
+        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
+                         bool removeSources, TranscodeFormat format = TranscodeFormat::Null() ) const;
         void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
 
         // creates different actions from the different objects.

@@ -21,6 +21,7 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
+#include "core/transcoding/TranscodeFormat.h"
 
 #include <QList>
 #include <QObject>
@@ -153,9 +154,9 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            convenience method for copying a single track,
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
-        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
+        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
 
         /**
            convenience method for moving a single track,
@@ -335,6 +336,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }
         bool m_removeSources;
         bool m_isRemoveAction;
+        TranscodeFormat m_transcodeFormat;  //only used when copying
         bool m_noRemoveConfirmation;
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move

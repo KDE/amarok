@@ -20,9 +20,10 @@
 #include <KIcon>
 #include <KPushButton>
 
-TranscodeDialog::TranscodeDialog( const KUrl::List &urlList, QWidget *parent )
+TranscodeDialog::TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent )
     : KDialog( parent, Qt::Dialog )
-    , m_urlList( urlList )
+    //, m_urlList( urlList )
+    , m_format( TranscodeFormat::Null() )
 {
     DEBUG_BLOCK
     QWidget *uiBase = new QWidget( this );
@@ -56,6 +57,12 @@ TranscodeDialog::onTranscodeClicked() //SLOT
     doTranscode->start();*/
 
     KDialog::done( KDialog::Accepted );
+}
+
+TranscodeFormat
+TranscodeDialog::transcodeFormat() const
+{
+    return m_format;
 }
 
 #include "TranscodeDialog.moc"

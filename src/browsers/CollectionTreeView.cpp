@@ -43,6 +43,7 @@
 #include "core/collections/QueryMaker.h"
 #include "SvgHandler.h"
 #include "TagDialog.h"
+#include "transcoding/TranscodeDialog.h"
 
 #include <QContextMenuEvent>
 #include <QHash>
@@ -720,7 +721,8 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 }
 
 void
-CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const
+CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
+                                bool removeSources, TranscodeFormat format ) const
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -768,7 +770,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     else
     {
         debug() << "starting source->prepareCopy";
-        source->prepareCopy( qm, dest );
+        source->prepareCopy( qm, dest, format );
     }
 }
 
@@ -1144,7 +1146,14 @@ void CollectionTreeView::slotCopyTracks()
     if( sender() )
     {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
-            copyTracks( m_currentItems, m_currentCopyDestination[ action ], false );
+        {
+            TranscodeDialog *dialog = new TranscodeDialog( this );
+            TranscodeFormat format = TranscodeFormat::Null();
+            if( dialog->exec() )
+                format = dialog->transcodeFormat();
+            delete dialog;
+            copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, format );
+        }
     }
 }
 
