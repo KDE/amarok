@@ -2,8 +2,10 @@ project(context-currenttrack)
 
 set( wiki_SRCS WikipediaApplet.cpp )
 
-include_directories( ../..
-                    ../../.. )
+include_directories(${Amarok_SOURCE_DIR}/src
+                    ${Amarok_SOURCE_DIR}/src/context
+                    ${Amarok_SOURCE_DIR}/src/network
+                    )
 
 kde4_add_ui_files( wiki_SRCS wikipediaSettings.ui )
 

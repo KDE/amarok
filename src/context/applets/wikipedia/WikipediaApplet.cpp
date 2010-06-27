@@ -25,6 +25,7 @@
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "EngineController.h"
+#include "NetworkAccessManagerProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/TextScrollingWidget.h"
 
@@ -324,6 +325,7 @@ WikipediaApplet::init()
     d->webView = new Plasma::WebView( this );
     d->webView->setAttribute( Qt::WA_NoSystemBackground );
     d->webView->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
 
     // ask for all the CV height
     resize( 500, -1 );
