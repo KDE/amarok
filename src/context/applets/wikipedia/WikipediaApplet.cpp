@@ -396,7 +396,7 @@ WikipediaApplet::init()
     d->_connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL(sourceAdded(QString)), SLOT(_connectSource(QString)) );
 
-    constraintsEvent();
+    updateConstraints();
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Wikipedia Applet");
@@ -434,6 +434,7 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     d->reloadIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
     d->settingsIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+    update();
 }
 
 bool
@@ -531,16 +532,10 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     drawRoundedRectAroundText( p, d->wikipediaLabel );
 
     //draw background of wiki text
+    QSizeF wikiSize( d->webView->page()->viewportSize() );
+    QRectF wikiRect( d->webView->pos(), wikiSize );
+
     p->save();
-
-    // HACK
-    // sometimes paint is done before the updateconstraints call
-    // so d->webView bounding rect is not yet correct
-    QRectF wikiRect(
-    QPointF( standardPadding(), d->wikipediaLabel->pos().y() + d->wikipediaLabel->boundingRect().height() + standardPadding() ),
-                    QSizeF( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - d->webView->pos().y() - standardPadding() ) );
-
-    wikiRect.moveTopLeft( d->webView->pos() );
     QPainterPath round;
     round.addRoundedRect( wikiRect, 5, 5 );
     p->fillPath( round , The::paletteHandler()->backgroundColor() );
