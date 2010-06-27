@@ -28,127 +28,177 @@
 
 using namespace Context;
 
-WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
-    : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
-    , m_currentSelection( "artist" )
-    , m_requested( true )
-    , m_sources( "current" )
-    , m_wikiWideLang( "aut" )
-    , m_triedRefinedSearch( 0 )
+class WikipediaEnginePrivate
 {
-    update();
-}
+private:
+    WikipediaEngine *const q_ptr;
+    Q_DECLARE_PUBLIC( WikipediaEngine )
 
-WikipediaEngine::~WikipediaEngine()
+public:
+    WikipediaEnginePrivate( WikipediaEngine *parent )
+        : q_ptr( parent )
+        , currentSelection( "artist" )
+        , requested( true )
+        , sources( "current" )
+        , wikiWideLang( "aut" )
+        , triedRefinedSearch( 0 )
+    {}
+    ~WikipediaEnginePrivate() {}
+
+    // private slots
+    void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
+
+    // functions
+    void updateEngine();
+
+    QString wikiArtistPostfix();
+    QString wikiAlbumPostfix();
+    QString wikiTrackPostfix();
+    QUrl wikiUrl( const QString& item ) const;
+    QString wikiLocale() const;
+
+    QString wikiParse();
+
+    void reloadWikipedia();
+
+    // data members
+    Meta::TrackPtr currentTrack;
+
+    QString currentSelection;
+    bool requested;
+    QStringList sources;
+    QString wiki;
+    QString wikiCurrentEntry;
+    QString wikiCurrentLastEntry;
+    QUrl wikiCurrentUrl;
+    QString wikiLanguages;
+    QLocale wikiLang;
+    QString wikiWideLang;
+    short triedRefinedSearch;
+
+    QSet< QUrl > urls;
+
+};
+
+void
+WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
 {
-}
+    Q_Q( WikipediaEngine );
+    if( !urls.contains( url ) )
+        return;
 
-QStringList WikipediaEngine::sources() const
-{
-    return m_sources;
-}
-
-bool WikipediaEngine::sourceRequestEvent( const QString& name )
-{
-    DEBUG_BLOCK
-
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ":AMAROK_TOKEN:" );
-
-    // User has requested a reload
-    if( tokens.contains( "reload" ) && tokens.size() > 1 )
+    urls.remove( url );
+    if( e.code != QNetworkReply::NoError )
     {
-        if ( tokens.at( 1 ) == QString( "reload" ) )
-        {
-            reloadWikipedia();
-            return true;
-        }
+        q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
+        return;
     }
 
-    // User has clicked on a link, let's fetch the page
-    if( tokens.contains( "get" ) && tokens.size() > 1 )
+    debug() << "Received page from wikipedia:" << url;
+    wiki = result;
+
+    // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
+    // This is bad
+    if( wiki.contains("wgArticleId=0") &&
+        (wiki.contains("wgNamespaceNumber=0") ||
+         wiki.contains("wgPageName=\"Special:Badtitle\"") ) ) // The article does not exist
     {
-        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 2 ) )
+        // Refined search is done here
+        if( triedRefinedSearch == -1 )
         {
-            m_wikiCurrentUrl = tokens.at( 2 ) ;
-        
-            removeSource( "wikipedia" );
-            setData( "wikipedia", "busy", "busy" );
-            if( !m_wikiCurrentUrl.hasQueryItem( "useskin" ) )
+            debug() << "We already tried some refined search. Lets end this madness...";
+            q->removeAllData( "wikipedia" );
+            q->scheduleSourcesUpdated();
+            q->setData( "wikipedia", "message", i18n( "No information found..." ) );
+            return;
+        }
+        triedRefinedSearch++;
+        QString entry;
+        debug() << "Article not found. Retrying with refinements.";
+
+
+        if( wikiCurrentEntry.lastIndexOf( "(" ) != -1)
+            wikiCurrentEntry.remove( wikiCurrentEntry.lastIndexOf( "(" )-1, wikiCurrentEntry.size() );
+
+        if( q->selection() == "artist" )
+            entry = wikiCurrentEntry+= wikiArtistPostfix() ;
+        else if ( q->selection() == "album" )
+            entry = wikiCurrentEntry+= wikiAlbumPostfix() ;
+        else if ( q->selection() == "track" )
+            entry = wikiCurrentEntry+= wikiTrackPostfix() ;
+
+        wikiCurrentUrl = wikiUrl( entry );
+        reloadWikipedia();
+        return;
+    }
+
+    // We've find a page
+    q->removeAllData( "wikipedia" );
+    q->scheduleSourcesUpdated();
+
+    DataEngine::Data data;
+    data["page"] = wikiParse();
+    data["url"] = wikiCurrentUrl;
+
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( currentTrack )
+    {
+        if( q->selection() == "artist" ) // default, or applet told us to fetch artist
+        {
+            if( currentTrack->artist() )
             {
-                // m_wikiCurrentUrl.removeQueryItem( "useskin" );
-                m_wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
+                data["label"] =  "Artist";
+                data["title"] = currentTrack->artist()->prettyName();
             }
-            m_urls << m_wikiCurrentUrl;
-            The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
-                 SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-            return true;
+        }
+        else if( q->selection() == "track" )
+        {
+            data["label"] = "Title";
+            data["title"] = currentTrack->prettyName();
+        }
+        else if( q->selection() == "album" )
+        {
+            if( currentTrack->album() )
+            {
+                data["label"] = "Album";
+                data["title"] = currentTrack->album()->prettyName();
+            }
         }
     }
-
-    // user has selected is favorite language.
-    if ( tokens.contains( "lang" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
-            m_wikiWideLang = tokens.at( 2 );
-
-    // User want to switch from artist to album, track etc ...
-    if( tokens.contains( "goto" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "goto" ) ) && ( tokens.size() > 2 ) )
-            setSelection( tokens.at ( 2 ) );
-    
-    // otherwise, it comes from the engine, a new track is playing.
-    removeAllData( name );
-    scheduleSourcesUpdated();
-    setData( name, QVariant());
-    update();
-
-    return true;
+    q->setData( "wikipedia", data );
 }
 
-void WikipediaEngine::message( const ContextState& state )
-{
-    if( state == Current && m_requested )
-        update();
-}
-
-void WikipediaEngine::metadataChanged( Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-    DEBUG_BLOCK
-    
-    update();
-}
-
-void WikipediaEngine::update()
+void
+WikipediaEnginePrivate::updateEngine()
 {
     DEBUG_BLOCK
+    Q_Q( WikipediaEngine );
 
     // We've got a new track, great, let's fetch some info from Wikipedia !
-    m_triedRefinedSearch = 0;
+    triedRefinedSearch = 0;
     QString tmpWikiStr;
-    
+
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
+    q->unsubscribeFrom( currentTrack );
+    currentTrack = currentTrack;
+    q->subscribeTo( currentTrack );
 
-    if ( !currentTrack )
+    if( !currentTrack )
         return;
-    
+
     // default, or applet told us to fetch artist
-    if( selection() == "artist" ) 
+    if( q->selection() == "artist" )
     {
         if( currentTrack->artist() )
         {
             if ( currentTrack->artist()->prettyName().isEmpty() )
             {
                 debug() << "Requesting an empty string, skipping !";
-                removeAllData( "wikipedia" );
-                scheduleSourcesUpdated();
-                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                q->removeAllData( "wikipedia" );
+                q->scheduleSourcesUpdated();
+                q->setData( "wikipedia", "message", i18n( "No information found..." ) );
                 return;
             }
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
@@ -159,281 +209,192 @@ void WikipediaEngine::update()
                 tmpWikiStr = currentTrack->artist()->prettyName() + wikiArtistPostfix();
         }
     }
-    else if( selection() == "album" )
+    else if( q->selection() == "album" )
     {
-        if ( currentTrack->album() )
+        if( currentTrack->album() )
         {
-            if ( currentTrack->album()->prettyName().isEmpty() )
+            if( currentTrack->album()->prettyName().isEmpty() )
             {
                 debug() << "Requesting an empty string, skipping !";
-                removeAllData( "wikipedia" );
-                scheduleSourcesUpdated();
-                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                q->removeAllData( "wikipedia" );
+                q->scheduleSourcesUpdated();
+                q->setData( "wikipedia", "message", i18n( "No information found..." ) );
                 return;
             }
-            if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
+            if( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
                 tmpWikiStr = currentTrack->album()->name() + wikiAlbumPostfix();
 
         }
     }
-    else if ( selection() == "track" )
+    else if( q->selection() == "track" )
     {
-        if ( currentTrack->prettyName().isEmpty() )
+        if( currentTrack->prettyName().isEmpty() )
         {
             debug() << "Requesting an empty string, skipping !";
-            removeAllData( "wikipedia" );
-            scheduleSourcesUpdated();
-            setData( "wikipedia", "message", i18n( "No information found..." ) );
+            q->removeAllData( "wikipedia" );
+            q->scheduleSourcesUpdated();
+            q->setData( "wikipedia", "message", i18n( "No information found..." ) );
             return;
         }
         tmpWikiStr = currentTrack->prettyName() + wikiTrackPostfix();
     }
     //Hack to make wiki searches work with magnatune preview tracks
-    if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) )
+    if( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) )
     {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
-        
+
         int index = tmpWikiStr.indexOf( '-' );
-        if ( index != -1 )
+        if( index != -1 )
             tmpWikiStr = tmpWikiStr.left (index - 1);
     }
 
-    if( m_wikiCurrentLastEntry == tmpWikiStr )
-    {        
+    if( wikiCurrentLastEntry == tmpWikiStr )
+    {
         debug() << "Same entry requested again. Ignoring.";
         return;
     }
-    
-    removeAllData( "wikipedia" );
-    scheduleSourcesUpdated();
+
+    q->removeAllData( "wikipedia" );
+    q->scheduleSourcesUpdated();
 
     // FIXME: what's that supposed to do? nothing?
     DataEngine::Data data;
     foreach( const QString &key, data.keys() )
     {
-        setData( key, data[key] );
+        q->setData( key, data[key] );
     }
 
-    m_wikiCurrentLastEntry = tmpWikiStr;
-    m_wikiCurrentEntry = tmpWikiStr;
-    m_wikiCurrentUrl = wikiUrl( tmpWikiStr );
+    wikiCurrentLastEntry = tmpWikiStr;
+    wikiCurrentEntry = tmpWikiStr;
+    wikiCurrentUrl = wikiUrl( tmpWikiStr );
 
 
-    debug() << "wiki url: " << m_wikiCurrentUrl;
+    debug() << "wiki url: " << wikiCurrentUrl;
 
     // Inform the applet that we are fetching info, set the busy thing
-    setData( "wikipedia", "busy", "busy" );
+    q->setData( "wikipedia", "busy", "busy" );
 
-    m_urls << m_wikiCurrentUrl;
-    The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
-         SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-
-}
-
-void
-WikipediaEngine::wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
-{
-    if( !m_urls.contains( url ) )
-        return;
-
-    m_urls.remove( url );
-    if( e.code != QNetworkReply::NoError )
-    {
-        setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
-        return;
-    }
-
-    debug() << "Received page from wikipedia:" << url;
-    m_wiki = result;
-
-    // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
-    // This is bad
-    if( m_wiki.contains("wgArticleId=0") &&
-        (m_wiki.contains("wgNamespaceNumber=0") ||
-         m_wiki.contains("wgPageName=\"Special:Badtitle\"") ) ) // The article does not exist
-    {
-        // Refined search is done here 
-        if ( m_triedRefinedSearch == -1 )
-        {
-            debug() << "We already tried some refined search. Lets end this madness...";
-            removeAllData( "wikipedia" );
-            scheduleSourcesUpdated();
-            setData( "wikipedia", "message", i18n( "No information found..." ) );
-            return;
-        }
-        m_triedRefinedSearch++;
-        QString entry;
-        debug() << "Article not found. Retrying with refinements.";
-
-
-        if ( m_wikiCurrentEntry.lastIndexOf( "(" ) != -1)
-            m_wikiCurrentEntry.remove( m_wikiCurrentEntry.lastIndexOf( "(" )-1, m_wikiCurrentEntry.size() );
-
-        if ( selection() == "artist" )
-            entry = m_wikiCurrentEntry+= wikiArtistPostfix() ;
-        else if ( selection() == "album" )
-            entry = m_wikiCurrentEntry+= wikiAlbumPostfix() ;
-        else if ( selection() == "track" )
-            entry = m_wikiCurrentEntry+= wikiTrackPostfix() ;
-
-        m_wikiCurrentUrl = wikiUrl( entry );
-        reloadWikipedia();
-        return;
-    }
-
-    // We've find a page
-    removeAllData( "wikipedia" );
-    scheduleSourcesUpdated();
-
-    Data data;
-    data["page"] = wikiParse();
-    data["url"] = m_wikiCurrentUrl;
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack )
-    {
-        if( selection() == "artist" ) // default, or applet told us to fetch artist
-        {
-            if( currentTrack->artist() )
-            {
-                data["label"] =  "Artist";
-                data["title"] = currentTrack->artist()->prettyName();
-            }
-        }
-        else if( selection() == "track" )
-        {
-            data["label"] = "Title";
-            data["title"] = currentTrack->prettyName();
-        }
-        else if( selection() == "album" )
-        {
-            if( currentTrack->album() )
-            {
-                data["label"] = "Album";
-                data["title"] = currentTrack->album()->prettyName();
-            }
-        }
-    }
-
-    setData( "wikipedia", data );
+    urls << wikiCurrentUrl;
+    The::networkAccessManager()->getData( wikiCurrentUrl, q,
+         SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 QString
-WikipediaEngine::wikiParse()
+WikipediaEnginePrivate::wikiParse()
 {
     //remove the new-lines and tabs(replace with spaces IS needed).
-    m_wiki.replace( '\n', ' ' );
-    m_wiki.replace( '\t', ' ' );
-    
-    m_wikiLanguages.clear();
+    wiki.replace( '\n', ' ' );
+    wiki.replace( '\t', ' ' );
+
+    wikiLanguages.clear();
     // Get the available language list
-    if ( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
+    if ( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
-        m_wikiLanguages = m_wiki.mid( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") );
-        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.indexOf("<ul>") );
-        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.indexOf( "</div>" ) );
+        wikiLanguages = wiki.mid( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") );
+        wikiLanguages = wikiLanguages.mid( wikiLanguages.indexOf("<ul>") );
+        wikiLanguages = wikiLanguages.mid( 0, wikiLanguages.indexOf( "</div>" ) );
     }
-    
+
     QString copyright;
     QString copyrightMark = "<li id=\"f-copyright\">";
-    if ( m_wiki.indexOf( copyrightMark ) != -1 )
+    if ( wiki.indexOf( copyrightMark ) != -1 )
     {
-        copyright = m_wiki.mid( m_wiki.indexOf(copyrightMark) + copyrightMark.length() );
+        copyright = wiki.mid( wiki.indexOf(copyrightMark) + copyrightMark.length() );
         copyright = copyright.mid( 0, copyright.indexOf( "</li>" ) );
         copyright.remove( "<br />" );
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
-    
+
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.indexOf( "<!-- start content -->" ) );
-    m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
-    
+    wiki = wiki.mid( wiki.indexOf( "<!-- start content -->" ) );
+    wiki = wiki.mid( 0, wiki.indexOf( "<div class=\"printfooter\">" ) );
+
     // lets remove the warning box
     QString mbox = "<table class=\"metadata plainlinks ambox";
     QString mboxend = "</table>";
-    while ( m_wiki.indexOf( mbox ) != -1 )
-        m_wiki.remove( m_wiki.indexOf( mbox ), m_wiki.mid( m_wiki.indexOf( mbox ) ).indexOf( mboxend ) + mboxend.size() );
-    
+    while ( wiki.indexOf( mbox ) != -1 )
+        wiki.remove( wiki.indexOf( mbox ), wiki.mid( wiki.indexOf( mbox ) ).indexOf( mboxend ) + mboxend.size() );
+
     QString protec = "<div><a href=\"/wiki/Wikipedia:Protection_policy" ;
     QString protecend = "</a></div>" ;
-    while ( m_wiki.indexOf( protec ) != -1 )
-        m_wiki.remove( m_wiki.indexOf( protec ), m_wiki.mid( m_wiki.indexOf( protec ) ).indexOf( protecend ) + protecend.size() );
+    while ( wiki.indexOf( protec ) != -1 )
+        wiki.remove( wiki.indexOf( protec ), wiki.mid( wiki.indexOf( protec ) ).indexOf( protecend ) + protecend.size() );
 
     // lets also remove the "lock" image
     QString topicon = "<div class=\"metadata topicon\" " ;
     QString topiconend = "</a></div>";
-     while ( m_wiki.indexOf( topicon ) != -1 )
-        m_wiki.remove( m_wiki.indexOf( topicon ), m_wiki.mid( m_wiki.indexOf( topicon ) ).indexOf( topiconend ) + topiconend.size() );
-    
-    
+     while ( wiki.indexOf( topicon ) != -1 )
+        wiki.remove( wiki.indexOf( topicon ), wiki.mid( wiki.indexOf( topicon ) ).indexOf( topiconend ) + topiconend.size() );
+
+
     // Adding back style and license information
-    m_wiki = "<div id=\"bodyContent\"" + m_wiki;
-    m_wiki += copyright;
-    m_wiki.append( "</div>" );
-    m_wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
-    
-    m_wiki.remove( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ) );
-    
-    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
-    
+    wiki = "<div id=\"bodyContent\"" + wiki;
+    wiki += copyright;
+    wiki.append( "</div>" );
+    wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
+
+    wiki.remove( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ) );
+
+    wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
+
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    m_wiki.remove( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ) );
-    
+    wiki.remove( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ) );
+
     // Remove hidden table rows as well
     QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", Qt::CaseInsensitive );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
-    m_wiki.remove( hidden );
-    
+    wiki.remove( hidden );
+
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
-    m_wiki.remove( QRegExp( "style= *\"[^\"]*\"" ) );
+    wiki.remove( QRegExp( "style= *\"[^\"]*\"" ) );
     // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane maner
-    //m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
+    //wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
-    m_wiki.remove( QRegExp( "<input[^>]*>" ) );
-    m_wiki.remove( QRegExp( "<select[^>]*>" ) );
-    m_wiki.remove( "</select>\n"  );
-    m_wiki.remove( QRegExp( "<option[^>]*>" ) );
-    m_wiki.remove( "</option>\n"  );
-    m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
-    m_wiki.remove( "</textarea>" );
-    
+    wiki.remove( QRegExp( "<input[^>]*>" ) );
+    wiki.remove( QRegExp( "<select[^>]*>" ) );
+    wiki.remove( "</select>\n"  );
+    wiki.remove( QRegExp( "<option[^>]*>" ) );
+    wiki.remove( "</option>\n"  );
+    wiki.remove( QRegExp( "<textarea[^>]*>" ) );
+    wiki.remove( "</textarea>" );
+
     QString m_wikiHTMLSource = "<html><body>\n";
-    m_wikiHTMLSource.append( m_wiki );
-    if ( !m_wikiLanguages.isEmpty() )
+    m_wikiHTMLSource.append( wiki );
+    if ( !wikiLanguages.isEmpty() )
     {
-        m_wikiHTMLSource.append( "<br/><div id=\"wiki_otherlangs\" >" + i18n( "Wikipedia Other Languages: <br/>" )+ m_wikiLanguages + " </div>" );
+        m_wikiHTMLSource.append( "<br/><div id=\"wiki_otherlangs\" >" + i18n( "Wikipedia Other Languages: <br/>" )+ wikiLanguages + " </div>" );
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
-    
+
     return m_wikiHTMLSource;
 }
 
 inline QString
-WikipediaEngine::wikiLocale() const
+WikipediaEnginePrivate::wikiLocale() const
 {
     // if there is no language set (QLocale::C) then return english as default
-    if ( m_wikiWideLang == "aut" )
+    if( wikiWideLang == "aut" )
     {
-        if( m_wikiLang.language() == QLocale::C )
+        if( wikiLang.language() == QLocale::C )
             return "en";
         else
-            return m_wikiLang.name().split( '_' )[0];
+            return wikiLang.name().split( '_' )[0];
     }
     else
-        return m_wikiWideLang;
+        return wikiWideLang;
 }
 
 inline QString
-WikipediaEngine::wikiArtistPostfix()
+WikipediaEnginePrivate::wikiArtistPostfix()
 {
-    // prepare every case in each langage, if it's the last option, set m_triedRefinedSearch to -1
+    // prepare every case in each langage, if it's the last option, set triedRefinedSearch to -1
 
     if( wikiLocale() == "en" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
                 return "_(band)";
@@ -442,37 +403,37 @@ WikipediaEngine::wikiArtistPostfix()
             case 2:
                 return "_(singer)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else if( wikiLocale() == "de" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
                 return "_(Band)";
             case 1:
                 return "_(Musiker)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else if( wikiLocale() == "pl" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
                 return "_(grupa muzyczna)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else if( wikiLocale() == "fr" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
                 return "_(groupe)";
@@ -483,90 +444,90 @@ WikipediaEngine::wikiArtistPostfix()
             case 3:
                 return "_(chanteuse)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else // for every other country
     {
-        m_triedRefinedSearch = -1;
+        triedRefinedSearch = -1;
         return "";
     }
 }
 
 inline QString
-WikipediaEngine::wikiAlbumPostfix()
+WikipediaEnginePrivate::wikiAlbumPostfix()
 {
     if( wikiLocale() == "en" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
                 return "_(album)";
             case 2:
                 return "_(score)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else if( wikiLocale() == "fr" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
                 return "_(album)";
             case 2:
                 return "_(BO)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
             case 1:
                 return "_(album)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
 }
 
 inline QString
-WikipediaEngine::wikiTrackPostfix()
+WikipediaEnginePrivate::wikiTrackPostfix()
 {
     if( wikiLocale() == "en" )
     {
-        switch ( m_triedRefinedSearch )
+        switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+m_currentTrack->artist()->prettyName()+QString(" song)");
+                return QString(" (")+currentTrack->artist()->prettyName()+QString(" song)");
             case 1:
                 return "_(song)";
             default:
-                m_triedRefinedSearch = -1;
+                triedRefinedSearch = -1;
                 return "";
         }
     }
     else
     {
-        m_triedRefinedSearch = -1;
+        triedRefinedSearch = -1;
         return "";
     }
 }
 
 inline QUrl
-WikipediaEngine::wikiUrl( const QString &item ) const
+WikipediaEnginePrivate::wikiUrl( const QString &item ) const
 {
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
@@ -584,16 +545,129 @@ WikipediaEngine::wikiUrl( const QString &item ) const
 }
 
 void
-WikipediaEngine::reloadWikipedia()
+WikipediaEnginePrivate::reloadWikipedia()
 {
     DEBUG_BLOCK
-        
-    debug() << "wiki url: " << m_wikiCurrentUrl;
-    removeSource( "wikipedia" );
+    Q_Q( WikipediaEngine );
 
-    m_urls << m_wikiCurrentUrl;
-    The::networkAccessManager()->getData( m_wikiCurrentUrl, this,
-         SLOT(wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    debug() << "wiki url: " << wikiCurrentUrl;
+    q->removeSource( "wikipedia" );
+
+    urls << wikiCurrentUrl;
+    The::networkAccessManager()->getData( wikiCurrentUrl, q,
+         SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
+    : DataEngine( parent )
+    , ContextObserver( ContextView::self() )
+    , d_ptr( new WikipediaEnginePrivate( this ) )
+{
+    Q_D( WikipediaEngine );
+    d->updateEngine();
+}
+
+WikipediaEngine::~WikipediaEngine()
+{
+    delete d_ptr;
+}
+
+QStringList
+WikipediaEngine::sources() const
+{
+    Q_D( const WikipediaEngine );
+    return d->sources;
+}
+
+bool
+WikipediaEngine::sourceRequestEvent( const QString& name )
+{
+    DEBUG_BLOCK
+    Q_D( WikipediaEngine );
+
+    d->requested = true; // someone is asking for data, so we turn ourselves on :)
+    QStringList tokens = name.split( ":AMAROK_TOKEN:" );
+
+    // User has requested a reload
+    if( tokens.contains( "reload" ) && tokens.size() > 1 )
+    {
+        if ( tokens.at( 1 ) == QString( "reload" ) )
+        {
+            d->reloadWikipedia();
+            return true;
+        }
+    }
+
+    // User has clicked on a link, let's fetch the page
+    if( tokens.contains( "get" ) && tokens.size() > 1 )
+    {
+        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 2 ) )
+        {
+            d->wikiCurrentUrl = tokens.at( 2 ) ;
+
+            removeSource( "wikipedia" );
+            setData( "wikipedia", "busy", "busy" );
+            if( !d->wikiCurrentUrl.hasQueryItem( "useskin" ) )
+            {
+                // d->wikiCurrentUrl.removeQueryItem( "useskin" );
+                d->wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
+            }
+            d->urls << d->wikiCurrentUrl;
+            The::networkAccessManager()->getData( d->wikiCurrentUrl, this,
+                 SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            return true;
+        }
+    }
+
+    // user has selected is favorite language.
+    if ( tokens.contains( "lang" ) && tokens.size() > 1 )
+        if ( ( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
+            d->wikiWideLang = tokens.at( 2 );
+
+    // User want to switch from artist to album, track etc ...
+    if( tokens.contains( "goto" ) && tokens.size() > 1 )
+        if ( ( tokens.at( 1 ) == QString( "goto" ) ) && ( tokens.size() > 2 ) )
+            setSelection( tokens.at ( 2 ) );
+
+    // otherwise, it comes from the engine, a new track is playing.
+    removeAllData( name );
+    scheduleSourcesUpdated();
+    setData( name, QVariant());
+    d->updateEngine();
+
+    return true;
+}
+
+void
+WikipediaEngine::message( const ContextState& state )
+{
+    Q_D( WikipediaEngine );
+    if( state == Current && d->requested )
+        d->updateEngine();
+}
+
+void
+WikipediaEngine::metadataChanged( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( track )
+    Q_D( WikipediaEngine );
+
+    d->updateEngine();
+}
+
+QString
+WikipediaEngine::selection() const
+{
+    Q_D( const WikipediaEngine );
+    return d->currentSelection;
+}
+
+void
+WikipediaEngine::setSelection( const QString &selection )
+{
+    Q_D( WikipediaEngine );
+    d->currentSelection = selection;
 }
 
 #include "WikipediaEngine.moc"
