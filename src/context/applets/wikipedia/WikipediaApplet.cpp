@@ -79,6 +79,7 @@ public:
     // private slots
     void _connectSource( const QString &source );
     void _linkClicked( const QUrl &url );
+    void _loadSettings();
 
     void _goBackward();
     void _goForward();
@@ -104,6 +105,13 @@ public:
         QString page;
     };
 
+    enum WikiLangRoles
+    {
+        PrefixRole = Qt::UserRole + 1,
+        UrlPrefixRole = Qt::UserRole + 2,
+        LanguageStringRole = Qt::UserRole + 3
+    };
+
     KTemporaryFile *css;
     Plasma::IconWidget *albumIcon;
     Plasma::IconWidget *artistIcon;
@@ -116,7 +124,7 @@ public:
     QList<HistoryItem> historyBack;
     QList<HistoryItem> historyForward;
     HistoryItem current;
-    QString preferredLang;
+    QStringList langList;
     TextScrollingWidget *wikipediaLabel;
     Ui::wikipediaSettings ui;
     bool gotMessage;
@@ -229,6 +237,23 @@ WikipediaAppletPrivate::_linkClicked( const QUrl &url )
 }
 
 void
+WikipediaAppletPrivate::_loadSettings()
+{
+    QStringList list;
+    QListWidget *listWidget = ui.langSelector->selectedListWidget();
+    for( int i = 0, count = listWidget->count(); i < count; ++i )
+    {
+        QListWidgetItem *item = listWidget->item( i );
+        const QString &prefix = item->data( PrefixRole ).toString();
+        const QString &urlPrefix = item->data( UrlPrefixRole ).toString();
+        QString concat = QString("%1:%2").arg( prefix ).arg( urlPrefix );
+        list << (prefix == urlPrefix ? prefix : concat);
+    }
+    langList = list;
+    Amarok::config("Wikipedia Applet").writeEntry( "PreferredLang", list );
+}
+
+void
 WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
 {
     // read css, replace color placeholders, write to file, load into page
@@ -271,31 +296,6 @@ WikipediaAppletPrivate::_reloadWikipedia()
 }
 
 void
-WikipediaAppletPrivate::_switchToLang( const QString &lang )
-{
-    DEBUG_BLOCK
-    Q_Q( WikipediaApplet );
-    // TODO change this b/c it's BAAADDD !!!
-    if (lang == i18nc("automatic language selection", "Automatic") )
-        preferredLang = "aut";
-
-    else if (lang == i18n("English") )
-        preferredLang = "en";
-
-    else if (lang == i18n("French") )
-        preferredLang = "fr";
-
-    else if (lang == i18n("German") )
-        preferredLang = "de";
-
-    q->dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + preferredLang );
-
-    KConfigGroup config = Amarok::config("Wikipedia Applet");
-    config.writeEntry( "PreferredLang", preferredLang );
-    q->dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + preferredLang );
-}
-
-void
 WikipediaAppletPrivate::_getLangMapProgress( qint64 received, qint64 total )
 {
     ui.progressBar->setValue( 100.0 * qreal(received) / total );
@@ -316,8 +316,6 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
     }
 
     ui.langSelector->availableListWidget()->clear();
-    ui.langSelector->selectedListWidget()->clear();
-
     QXmlStreamReader xml( data );
     while( !xml.atEnd() )
     {
@@ -327,15 +325,18 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
             QXmlStreamAttributes a = xml.attributes();
             if( a.hasAttribute("prefix") && a.hasAttribute("language") && a.hasAttribute("url") )
             {
-                QString lang = QString( "[%1] %2" ).arg( a.value("prefix").toString() )
-                                                   .arg( a.value("language").toString() );
+                QString prefix = a.value("prefix").toString();
+                QString language = a.value("language").toString();
+                QString display = QString( "[%1] %2" ).arg( prefix ).arg( language );
 
-                QListWidgetItem *item = new QListWidgetItem( lang, 0 );
+                QListWidgetItem *item = new QListWidgetItem( display, 0 );
                 // The urlPrefix is the lang code infront of the wikipedia host
                 // url. It is mostly the same as the "prefix" attribute but in
                 // some weird cases they differ, so we can't just use "prefix".
                 QString urlPrefix = QUrl( a.value("url").toString() ).host().remove(".wikipedia.org");
-                item->setData( Qt::UserRole, urlPrefix );
+                item->setData( PrefixRole, prefix );
+                item->setData( UrlPrefixRole, urlPrefix );
+                item->setData( LanguageStringRole, language );
                 ui.langSelector->availableListWidget()->addItem( item );
             }
         }
@@ -478,9 +479,8 @@ WikipediaApplet::init()
     updateConstraints();
 
     // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("Wikipedia Applet");
-    d->preferredLang = config.readEntry( "PreferredLang", "aut" );
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + d->preferredLang );
+    d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
+    // dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + d->preferredLang );
 }
 
 void
@@ -643,7 +643,19 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     connect( d->ui.langSelector, SIGNAL(removed(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
     connect( d->ui.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
     connect( d->ui.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( parent, SIGNAL(applyClicked()), this, SLOT(_loadSettings()) );
+    connect( parent, SIGNAL(okClicked()), this, SLOT(_loadSettings()) );
 
+    for( int i = 0, count = d->langList.count(); i < count; ++i )
+    {
+        const QStringList &split = d->langList.at( i ).split( QChar(':') );
+        const QString &prefix    = split.first();
+        const QString &urlPrefix = (split.count() == 1) ? prefix : split.at( 1 );
+        QListWidgetItem *item = new QListWidgetItem( prefix, 0 );
+        item->setData( WikipediaAppletPrivate::PrefixRole, prefix );
+        item->setData( WikipediaAppletPrivate::UrlPrefixRole, urlPrefix );
+        d->ui.langSelector->selectedListWidget()->addItem( item );
+    }
     parent->addPage( settings, i18n( "Wikipedia Language Settings" ), "applications-education-language");
 }
 

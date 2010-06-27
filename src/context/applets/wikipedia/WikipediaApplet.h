@@ -76,9 +76,9 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _gotoArtist() )
     Q_PRIVATE_SLOT( d_ptr, void _gotoTrack() )
     Q_PRIVATE_SLOT( d_ptr, void _linkClicked(const QUrl&) )
+    Q_PRIVATE_SLOT( d_ptr, void _loadSettings() )
     Q_PRIVATE_SLOT( d_ptr, void _paletteChanged(const QPalette&) )
     Q_PRIVATE_SLOT( d_ptr, void _reloadWikipedia() )
-    Q_PRIVATE_SLOT( d_ptr, void _switchToLang(const QString&) )
 
     Q_PRIVATE_SLOT( d_ptr, void _getLangMapProgress(qint64,qint64) )
     Q_PRIVATE_SLOT( d_ptr, void _getLangMapFinished(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
