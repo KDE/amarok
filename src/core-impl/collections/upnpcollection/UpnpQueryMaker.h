@@ -27,7 +27,10 @@ namespace KIO {
   class UDSEntry;
   typedef QList<UDSEntry> UDSEntryList;
   class Job;
+  class ListJob;
 }
+
+class KJob;
 
 namespace Collections {
 
@@ -99,6 +102,7 @@ class UpnpQueryMaker : public QueryMaker
 
     private slots:
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
+        void slotDone( KJob * );
     private:
         // TODO
         // this is all silly and crude and engineered
@@ -110,7 +114,16 @@ class UpnpQueryMaker : public QueryMaker
         QueryType m_queryType;
         AlbumQueryMode m_albumMode;
 
+        QString m_queryString;
+
         bool m_asDataPtrs;
+
+        static bool m_runningJob;
+        static int m_count;
+        // TODO split this off into a class
+        static QHash<QString, KIO::ListJob*> m_queries;
+
+        bool m_noResults;
 };
 
 } //namespace Collections
