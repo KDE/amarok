@@ -75,7 +75,6 @@ void UpnpCollectionFactory::init()
                                                "org.kde.Cagibi",
                                                bus,
                                                this );
-    Q_ASSERT(m_iface->isValid());
     QDBusReply<DeviceTypeMap> reply = m_iface->call( "allDevices" );
     if( !reply.isValid() ) {
         debug() << "ERROR" << reply.error().message();
