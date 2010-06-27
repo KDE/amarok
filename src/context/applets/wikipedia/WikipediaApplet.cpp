@@ -118,7 +118,7 @@ public:
     HistoryItem current;
     QString preferredLang;
     TextScrollingWidget *wikipediaLabel;
-    Ui::wikipediaSettings ui_Settings;
+    Ui::wikipediaSettings ui;
     bool gotMessage;
     qreal aspectRatio;
 };
@@ -298,7 +298,7 @@ WikipediaAppletPrivate::_switchToLang( const QString &lang )
 void
 WikipediaAppletPrivate::_getLangMapProgress( qint64 received, qint64 total )
 {
-    ui_Settings.progressBar->setValue( 100.0 * qreal(received) / total );
+    ui.progressBar->setValue( 100.0 * qreal(received) / total );
 }
 
 void
@@ -306,8 +306,8 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
                                              NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
-    ui_Settings.downloadButton->setEnabled( true );
-    ui_Settings.progressBar->setEnabled( false );
+    ui.downloadButton->setEnabled( true );
+    ui.progressBar->setEnabled( false );
 
     if( e.code != QNetworkReply::NoError )
     {
@@ -315,8 +315,8 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
         return;
     }
 
-    ui_Settings.langSelector->availableListWidget()->clear();
-    ui_Settings.langSelector->selectedListWidget()->clear();
+    ui.langSelector->availableListWidget()->clear();
+    ui.langSelector->selectedListWidget()->clear();
 
     QXmlStreamReader xml( data );
     while( !xml.atEnd() )
@@ -336,21 +336,21 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
                 // some weird cases they differ, so we can't just use "prefix".
                 QString urlPrefix = QUrl( a.value("url").toString() ).host().remove(".wikipedia.org");
                 item->setData( Qt::UserRole, urlPrefix );
-                ui_Settings.langSelector->availableListWidget()->addItem( item );
+                ui.langSelector->availableListWidget()->addItem( item );
             }
         }
     }
-    ui_Settings.langSelector->setButtonsEnabled();
+    ui.langSelector->setButtonsEnabled();
 }
 
 void
 WikipediaAppletPrivate::_getLangMap()
 {
     Q_Q( WikipediaApplet );
-    ui_Settings.downloadButton->setEnabled( false );
-    ui_Settings.progressBar->setEnabled( true );
-    ui_Settings.progressBar->setMaximum( 100 );
-    ui_Settings.progressBar->setValue( 0 );
+    ui.downloadButton->setEnabled( false );
+    ui.progressBar->setEnabled( true );
+    ui.progressBar->setMaximum( 100 );
+    ui.progressBar->setValue( 0 );
 
     KUrl url;
     url.setScheme( "http" );
@@ -370,7 +370,7 @@ void
 WikipediaAppletPrivate::_langSelectorItemChanged( QListWidgetItem *item )
 {
     Q_UNUSED( item )
-    ui_Settings.langSelector->setButtonsEnabled();
+    ui.langSelector->setButtonsEnabled();
 }
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
@@ -627,22 +627,22 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     Q_D( WikipediaApplet );
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
-    d->ui_Settings.setupUi( settings );
-    d->ui_Settings.downloadButton->setGuiItem( KStandardGuiItem::find() );
-    d->ui_Settings.downloadButton->setText( i18n("Get Supported Languages") );
-    d->ui_Settings.langSelector->availableListWidget()->setAlternatingRowColors( true );
-    d->ui_Settings.langSelector->selectedListWidget()->setAlternatingRowColors( true );
-    d->ui_Settings.langSelector->availableListWidget()->setUniformItemSizes( true );
-    d->ui_Settings.langSelector->selectedListWidget()->setUniformItemSizes( true );
-    d->ui_Settings.progressBar->setEnabled( false );
+    d->ui.setupUi( settings );
+    d->ui.downloadButton->setGuiItem( KStandardGuiItem::find() );
+    d->ui.downloadButton->setText( i18n("Get Supported Languages") );
+    d->ui.langSelector->availableListWidget()->setAlternatingRowColors( true );
+    d->ui.langSelector->selectedListWidget()->setAlternatingRowColors( true );
+    d->ui.langSelector->availableListWidget()->setUniformItemSizes( true );
+    d->ui.langSelector->selectedListWidget()->setUniformItemSizes( true );
+    d->ui.progressBar->setEnabled( false );
 
-    connect( d->ui_Settings.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
-    connect( d->ui_Settings.langSelector, SIGNAL(added(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    connect( d->ui_Settings.langSelector, SIGNAL(movedDown(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    connect( d->ui_Settings.langSelector, SIGNAL(movedUp(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    connect( d->ui_Settings.langSelector, SIGNAL(removed(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    connect( d->ui_Settings.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    connect( d->ui_Settings.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
+    connect( d->ui.langSelector, SIGNAL(added(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.langSelector, SIGNAL(movedDown(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.langSelector, SIGNAL(movedUp(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.langSelector, SIGNAL(removed(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
 
     parent->addPage( settings, i18n( "Wikipedia Language Settings" ), "applications-education-language");
 }
