@@ -16,7 +16,7 @@
 
 #include "UpnpMeta.h"
 
-#include "UpnpBrowseCollection.h"
+#include "UpnpCollectionBase.h"
 #include "core/support/Debug.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "core/capabilities/CustomActionsCapability.h"
@@ -27,7 +27,7 @@
 
 using namespace Meta;
 
-UpnpTrack::UpnpTrack( Collections::UpnpBrowseCollection *collection )
+UpnpTrack::UpnpTrack( Collections::UpnpCollectionBase *collection )
     : Meta::Track()
     , m_collection( collection )
     , m_album( 0 )

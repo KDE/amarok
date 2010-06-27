@@ -20,7 +20,7 @@
 #include "core/meta/Meta.h"
 
 namespace Collections {
-    class UpnpBrowseCollection;
+    class UpnpCollectionBase;
 }
 
 namespace Meta
@@ -43,7 +43,7 @@ typedef KSharedPtr<UpnpYear> UpnpYearPtr;
 class UpnpTrack : public Meta::Track
 {
     public:
-        UpnpTrack( Collections::UpnpBrowseCollection *collection );
+        UpnpTrack( Collections::UpnpCollectionBase *collection );
         virtual ~UpnpTrack();
 
         virtual QString name() const;
@@ -122,7 +122,7 @@ class UpnpTrack : public Meta::Track
         void setBitrate( int rate );
 
     private:
-        Collections::UpnpBrowseCollection *m_collection;
+        Collections::UpnpCollectionBase *m_collection;
 
         UpnpArtistPtr m_artist;
         UpnpAlbumPtr m_album;
