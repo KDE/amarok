@@ -25,7 +25,6 @@
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "EngineController.h"
-#include "NetworkAccessManagerProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/TextScrollingWidget.h"
 
@@ -42,8 +41,10 @@
 
 #include <QAction>
 #include <QDesktopServices>
+#include <QListWidget>
 #include <QPainter>
 #include <QMenu>
+#include <QXmlStreamReader>
 #include <QWebHistory>
 #include <QWebPage>
 #include <QWebFrame>
@@ -85,11 +86,16 @@ public:
     void _gotoAlbum();
     void _gotoTrack();
 
-    void _switchLang();
     void _switchToLang( const QString &lang );
     void _reloadWikipedia();
 
     void _paletteChanged( const QPalette &palette );
+
+    void _getLangMapProgress( qint64 received, qint64 total );
+    void _getLangMapFinished( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void _getLangMap();
+
+    void _langSelectorItemChanged( QListWidgetItem *item );
 
     // data members
     struct HistoryItem
@@ -265,14 +271,6 @@ WikipediaAppletPrivate::_reloadWikipedia()
 }
 
 void
-WikipediaAppletPrivate::_switchLang()
-{
-    DEBUG_BLOCK
-    Q_Q( WikipediaApplet );
-    q->showConfigurationInterface();
-}
-
-void
 WikipediaAppletPrivate::_switchToLang( const QString &lang )
 {
     DEBUG_BLOCK
@@ -295,6 +293,84 @@ WikipediaAppletPrivate::_switchToLang( const QString &lang )
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     config.writeEntry( "PreferredLang", preferredLang );
     q->dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + preferredLang );
+}
+
+void
+WikipediaAppletPrivate::_getLangMapProgress( qint64 received, qint64 total )
+{
+    ui_Settings.progressBar->setValue( 100.0 * qreal(received) / total );
+}
+
+void
+WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
+                                             NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    ui_Settings.downloadButton->setEnabled( true );
+    ui_Settings.progressBar->setEnabled( false );
+
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Downloading Wikipedia supported languages failed:" << e.description;
+        return;
+    }
+
+    ui_Settings.langSelector->availableListWidget()->clear();
+    ui_Settings.langSelector->selectedListWidget()->clear();
+
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "iw" )
+        {
+            QXmlStreamAttributes a = xml.attributes();
+            if( a.hasAttribute("prefix") && a.hasAttribute("language") && a.hasAttribute("url") )
+            {
+                QString lang = QString( "[%1] %2" ).arg( a.value("prefix").toString() )
+                                                   .arg( a.value("language").toString() );
+
+                QListWidgetItem *item = new QListWidgetItem( lang, 0 );
+                // The urlPrefix is the lang code infront of the wikipedia host
+                // url. It is mostly the same as the "prefix" attribute but in
+                // some weird cases they differ, so we can't just use "prefix".
+                QString urlPrefix = QUrl( a.value("url").toString() ).host().remove(".wikipedia.org");
+                item->setData( Qt::UserRole, urlPrefix );
+                ui_Settings.langSelector->availableListWidget()->addItem( item );
+            }
+        }
+    }
+    ui_Settings.langSelector->setButtonsEnabled();
+}
+
+void
+WikipediaAppletPrivate::_getLangMap()
+{
+    Q_Q( WikipediaApplet );
+    ui_Settings.downloadButton->setEnabled( false );
+    ui_Settings.progressBar->setEnabled( true );
+    ui_Settings.progressBar->setMaximum( 100 );
+    ui_Settings.progressBar->setValue( 0 );
+
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "en.wikipedia.org" );
+    url.setPath( "/w/api.php" );
+    url.addQueryItem( "action", "query" );
+    url.addQueryItem( "meta", "siteinfo" );
+    url.addQueryItem( "siprop", "interwikimap" );
+    url.addQueryItem( "sifilteriw", "local" );
+    url.addQueryItem( "format", "xml" );
+    QNetworkReply *reply = The::networkAccessManager()->getData( url, q,
+                           SLOT(_getLangMapFinished(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    q->connect( reply, SIGNAL(downloadProgress(qint64,qint64)), q, SLOT(_getLangMapProgress(qint64,qint64)) );
+}
+
+void
+WikipediaAppletPrivate::_langSelectorItemChanged( QListWidgetItem *item )
+{
+    Q_UNUSED( item )
+    ui_Settings.langSelector->setButtonsEnabled();
 }
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
@@ -387,7 +463,7 @@ WikipediaApplet::init()
     langAction->setEnabled( true );
     langAction->setText( i18n( "Settings" ) );
     d->settingsIcon = addAction( langAction );
-    connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(_switchLang()) );
+    connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -552,19 +628,23 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     d->ui_Settings.setupUi( settings );
+    d->ui_Settings.downloadButton->setGuiItem( KStandardGuiItem::find() );
+    d->ui_Settings.downloadButton->setText( i18n("Get Supported Languages") );
+    d->ui_Settings.langSelector->availableListWidget()->setAlternatingRowColors( true );
+    d->ui_Settings.langSelector->selectedListWidget()->setAlternatingRowColors( true );
+    d->ui_Settings.langSelector->availableListWidget()->setUniformItemSizes( true );
+    d->ui_Settings.langSelector->selectedListWidget()->setUniformItemSizes( true );
+    d->ui_Settings.progressBar->setEnabled( false );
 
-    // TODO bad, it's done manually ...
-    if ( d->preferredLang == "aut" )
-        d->ui_Settings.comboBox->setCurrentIndex( 0 );
-    else if ( d->preferredLang == "en" )
-        d->ui_Settings.comboBox->setCurrentIndex( 1 );
-    else if ( d->preferredLang == "fr" )
-        d->ui_Settings.comboBox->setCurrentIndex( 2 );
-    else if ( d->preferredLang == "de" )
-        d->ui_Settings.comboBox->setCurrentIndex( 3 );
+    connect( d->ui_Settings.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
+    connect( d->ui_Settings.langSelector, SIGNAL(added(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui_Settings.langSelector, SIGNAL(movedDown(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui_Settings.langSelector, SIGNAL(movedUp(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui_Settings.langSelector, SIGNAL(removed(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui_Settings.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    connect( d->ui_Settings.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
 
-    parent->addPage( settings, i18n( "Wikipedia Settings" ), "preferences-system");
-    connect( d->ui_Settings.comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(_switchToLang(QString)) );
+    parent->addPage( settings, i18n( "Wikipedia Language Settings" ), "applications-education-language");
 }
 
 #include "WikipediaApplet.moc"
