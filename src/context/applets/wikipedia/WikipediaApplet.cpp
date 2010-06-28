@@ -484,7 +484,8 @@ WikipediaApplet::init()
 
     // Read config and inform the engine.
     d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
-    // dataEngine( "amarok-wikipedia" )->query( QString( "lang:" ) + d->preferredLang );
+    d->dataContainer->setData( "lang", d->langList );
+    d->scheduleEngineUpdate();
 }
 
 void
