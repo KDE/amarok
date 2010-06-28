@@ -27,7 +27,7 @@
 #include <QLocale>
 
 /**
-    This class provide Wikipedia data for use in Context applets. 
+    This class provide Wikipedia data for use in Context applets.
 
 NOTE: The QVariant data is structured like this:
            * the key name is the artist
@@ -35,19 +35,25 @@ NOTE: The QVariant data is structured like this:
 */
 
 using namespace Context;
+namespace Plasma
+{
+    class DataContainer;
+}
 class WikipediaEnginePrivate;
 
 class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
-        
+
 public:
     WikipediaEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~WikipediaEngine();
-    
+
+    virtual void init();
+
     QStringList sources() const;
-    
+
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
 
@@ -57,14 +63,15 @@ public:
 
     void setSelection( const QString& selection );
     QString selection() const;
-    
+
 protected:
-    bool sourceRequestEvent( const QString& name );
-    
+    bool sourceRequestEvent( const QString &source );
+
 private:
     WikipediaEnginePrivate *const d_ptr;
     Q_DECLARE_PRIVATE( WikipediaEngine )
 
+    Q_PRIVATE_SLOT( d_ptr, void _dataContainerUpdated(const QString&,const Plasma::DataEngine::Data&) )
     Q_PRIVATE_SLOT( d_ptr, void _wikiResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
 };
 

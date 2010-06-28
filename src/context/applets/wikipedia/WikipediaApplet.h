@@ -69,7 +69,6 @@ private:
     WikipediaAppletPrivate *const d_ptr;
     Q_DECLARE_PRIVATE( WikipediaApplet )
 
-    Q_PRIVATE_SLOT( d_ptr, void _connectSource(const QString&) )
     Q_PRIVATE_SLOT( d_ptr, void _goBackward() )
     Q_PRIVATE_SLOT( d_ptr, void _goForward() )
     Q_PRIVATE_SLOT( d_ptr, void _gotoAlbum() )

@@ -28,10 +28,11 @@
 #include "PaletteHandler.h"
 #include "widgets/TextScrollingWidget.h"
 
+#include <Plasma/DataContainer>
+#include <Plasma/IconWidget>
+#include <Plasma/PushButton>
 #include <Plasma/Theme>
-#include <plasma/widgets/webview.h>
-#include <plasma/widgets/iconwidget.h>
-#include <plasma/widgets/pushbutton.h>
+#include <Plasma/WebView>
 
 #include <KIcon>
 #include <KGlobalSettings>
@@ -59,6 +60,7 @@ public:
     WikipediaAppletPrivate( WikipediaApplet *parent )
         : q_ptr( parent )
         , css( 0 )
+        , dataContainer( 0 )
         , albumIcon( 0 )
         , artistIcon( 0 )
         , backwardIcon( 0 )
@@ -75,9 +77,9 @@ public:
 
     // functions
     qint64 writeStyleSheet( const QByteArray &css );
+    void scheduleEngineUpdate();
 
     // private slots
-    void _connectSource( const QString &source );
     void _linkClicked( const QUrl &url );
     void _loadSettings();
 
@@ -113,6 +115,7 @@ public:
     };
 
     KTemporaryFile *css;
+    Plasma::DataContainer *dataContainer;
     Plasma::IconWidget *albumIcon;
     Plasma::IconWidget *artistIcon;
     Plasma::IconWidget *backwardIcon;
@@ -151,11 +154,10 @@ WikipediaAppletPrivate::writeStyleSheet( const QByteArray &data )
 }
 
 void
-WikipediaAppletPrivate::_connectSource( const QString &source )
+WikipediaAppletPrivate::scheduleEngineUpdate()
 {
     Q_Q( WikipediaApplet );
-    if( source == "wikipedia" )
-        q->dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", q );
+    q->dataEngine( "amarok-wikipedia" )->query( "update" );
 }
 
 void
@@ -199,32 +201,34 @@ WikipediaAppletPrivate::_goForward()
 void
 WikipediaAppletPrivate::_gotoAlbum()
 {
-    Q_Q( WikipediaApplet );
-    q->dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:album" );
+    dataContainer->setData( "goto", "album" );
+    scheduleEngineUpdate();
 }
 
 void
 WikipediaAppletPrivate::_gotoArtist()
 {
-    Q_Q( WikipediaApplet );
-    q->dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:artist" );
+    dataContainer->setData( "goto", "artist" );
+    scheduleEngineUpdate();
 }
 
 void
 WikipediaAppletPrivate::_gotoTrack()
 {
-    Q_Q( WikipediaApplet );
-    q->dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:track" );
+    dataContainer->setData( "goto", "track" );
+    scheduleEngineUpdate();
 }
 
 void
 WikipediaAppletPrivate::_linkClicked( const QUrl &url )
 {
-    Q_Q( WikipediaApplet );
+    // Q_Q( WikipediaApplet );
     debug() << "linkClicked" << url;
-    if( url.toString().contains( "wikipedia.org/" ) )
+    if( url.host().contains( "wikipedia.org" ) )
     {
-        q->dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:get:AMAROK_TOKEN:" ) + url.toString() );
+        // q->dataEngine( "amarok-wikipedia" )->query( url.toString() );
+        dataContainer->setData( "clickUrl", url );
+        scheduleEngineUpdate();
         if( backwardIcon->action() && !backwardIcon->action()->isEnabled() )
             backwardIcon->action()->setEnabled( true );
 
@@ -291,8 +295,8 @@ void
 WikipediaAppletPrivate::_reloadWikipedia()
 {
     DEBUG_BLOCK
-    Q_Q( WikipediaApplet );
-    q->dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:reload" );
+    dataContainer->setData( "reload", true );
+    scheduleEngineUpdate();
 }
 
 void
@@ -473,14 +477,14 @@ WikipediaApplet::init()
     d->reloadIcon = addAction( reloadAction );
     connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
 
-    d->_connectSource( "wikipedia" );
-    connect( dataEngine( "amarok-wikipedia" ), SIGNAL(sourceAdded(QString)), SLOT(_connectSource(QString)) );
+    dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
+    d->dataContainer = dataEngine( "amarok-wikipedia" )->containerForSource( "wikipedia" );
 
     updateConstraints();
 
     // Read config and inform the engine.
     d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
-    // dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + d->preferredLang );
+    // dataEngine( "amarok-wikipedia" )->query( QString( "lang:" ) + d->preferredLang );
 }
 
 void
@@ -530,12 +534,12 @@ WikipediaApplet::heightForWidth( qreal width ) const
 }
 
 void
-WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( name )
+    Q_UNUSED( source )
     Q_D( WikipediaApplet );
 
-    if( data.size() == 0 )
+    if( data.isEmpty() )
         return;
 
     if( data.contains("busy") )

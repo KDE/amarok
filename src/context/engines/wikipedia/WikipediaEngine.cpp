@@ -26,6 +26,8 @@
 #include "ContextView.h"
 #include "EngineController.h"
 
+#include <Plasma/DataContainer>
+
 using namespace Context;
 
 class WikipediaEnginePrivate
@@ -42,11 +44,9 @@ public:
         , sources( "current" )
         , wikiWideLang( "aut" )
         , triedRefinedSearch( 0 )
+        , dataContainer( 0 )
     {}
     ~WikipediaEnginePrivate() {}
-
-    // private slots
-    void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
 
     // functions
     void updateEngine();
@@ -62,8 +62,6 @@ public:
     void reloadWikipedia();
 
     // data members
-    Meta::TrackPtr currentTrack;
-
     QString currentSelection;
     bool requested;
     QStringList sources;
@@ -76,9 +74,56 @@ public:
     QString wikiWideLang;
     short triedRefinedSearch;
 
+    Plasma::DataContainer *dataContainer;
+
     QSet< QUrl > urls;
 
+    // private slots
+    void _dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data );
+    void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
 };
+
+void
+WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data )
+{
+    Q_Q( WikipediaEngine );
+
+    if( source != "wikipedia" )
+        return;
+
+    if( data.value( "reload" ).toBool() )
+    {
+        debug() << "reloading";
+        dataContainer->setData( "reload", false );
+        reloadWikipedia();
+        return;
+    }
+
+    QString gotoType = data.value( "goto" ).toString();
+    if( !gotoType.isEmpty() )
+    {
+        debug() << "goto:" << gotoType;
+        q->setSelection( gotoType );
+        updateEngine();
+        return;
+    }
+
+    QUrl clickUrl = data.value( "clickUrl" ).toUrl();
+    if( clickUrl.isValid() )
+    {
+        debug() << "clickUrl:" << clickUrl;
+        wikiCurrentUrl = clickUrl;
+        if( !wikiCurrentUrl.hasQueryItem( "useskin" ) )
+            wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
+        urls << wikiCurrentUrl;
+        q->setData( source, "busy", "busy" );
+        The::networkAccessManager()->getData( wikiCurrentUrl, q,
+             SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        return;
+    }
+
+    // TODO: QString lang = data.value( "lang" ).toString();
+}
 
 void
 WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
@@ -180,11 +225,6 @@ WikipediaEnginePrivate::updateEngine()
 
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
-    q->unsubscribeFrom( currentTrack );
-    currentTrack = currentTrack;
-    q->subscribeTo( currentTrack );
-
     if( !currentTrack )
         return;
 
@@ -259,26 +299,18 @@ WikipediaEnginePrivate::updateEngine()
     q->removeAllData( "wikipedia" );
     q->scheduleSourcesUpdated();
 
-    // FIXME: what's that supposed to do? nothing?
-    DataEngine::Data data;
-    foreach( const QString &key, data.keys() )
-    {
-        q->setData( key, data[key] );
-    }
-
     wikiCurrentLastEntry = tmpWikiStr;
     wikiCurrentEntry = tmpWikiStr;
     wikiCurrentUrl = wikiUrl( tmpWikiStr );
 
-
     debug() << "wiki url: " << wikiCurrentUrl;
 
-    // Inform the applet that we are fetching info, set the busy thing
-    q->setData( "wikipedia", "busy", "busy" );
-
-    urls << wikiCurrentUrl;
-    The::networkAccessManager()->getData( wikiCurrentUrl, q,
-         SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    if( wikiCurrentUrl.isValid() )
+    {
+        urls << wikiCurrentUrl;
+        The::networkAccessManager()->getData( wikiCurrentUrl, q,
+             SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    }
 }
 
 QString
@@ -458,12 +490,15 @@ WikipediaEnginePrivate::wikiArtistPostfix()
 inline QString
 WikipediaEnginePrivate::wikiAlbumPostfix()
 {
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    QString artist = currentTrack ? currentTrack->artist()->prettyName() : QString();
+
     if( wikiLocale() == "en" )
     {
         switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (") + artist + QString(" album)");
             case 1:
                 return "_(album)";
             case 2:
@@ -478,7 +513,7 @@ WikipediaEnginePrivate::wikiAlbumPostfix()
         switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (") + artist + QString(" album)");
             case 1:
                 return "_(album)";
             case 2:
@@ -493,7 +528,7 @@ WikipediaEnginePrivate::wikiAlbumPostfix()
         switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+currentTrack->artist()->prettyName()+QString(" album)");
+                return QString(" (") + artist + QString(" album)");
             case 1:
                 return "_(album)";
             default:
@@ -508,10 +543,12 @@ WikipediaEnginePrivate::wikiTrackPostfix()
 {
     if( wikiLocale() == "en" )
     {
+        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+        QString artist = currentTrack ? currentTrack->artist()->prettyName() : QString();
         switch ( triedRefinedSearch )
         {
             case 0:
-                return QString(" (")+currentTrack->artist()->prettyName()+QString(" song)");
+                return QString(" (") + artist + QString(" song)");
             case 1:
                 return "_(song)";
             default:
@@ -551,7 +588,6 @@ WikipediaEnginePrivate::reloadWikipedia()
     Q_Q( WikipediaEngine );
 
     debug() << "wiki url: " << wikiCurrentUrl;
-    q->removeSource( "wikipedia" );
 
     urls << wikiCurrentUrl;
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
@@ -563,13 +599,23 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , ContextObserver( ContextView::self() )
     , d_ptr( new WikipediaEnginePrivate( this ) )
 {
-    Q_D( WikipediaEngine );
-    d->updateEngine();
 }
 
 WikipediaEngine::~WikipediaEngine()
 {
     delete d_ptr;
+}
+
+void
+WikipediaEngine::init()
+{
+    Q_D( WikipediaEngine );
+    d->dataContainer = new Plasma::DataContainer( this );
+    d->dataContainer->setObjectName( "wikipedia" );
+    addSource( d->dataContainer );
+    connect( d->dataContainer, SIGNAL(dataUpdated(QString,Plasma::DataEngine::Data)),
+             this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
+    d->updateEngine();
 }
 
 QStringList
@@ -580,62 +626,33 @@ WikipediaEngine::sources() const
 }
 
 bool
-WikipediaEngine::sourceRequestEvent( const QString& name )
+WikipediaEngine::sourceRequestEvent( const QString &source )
 {
     DEBUG_BLOCK
     Q_D( WikipediaEngine );
 
     d->requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ":AMAROK_TOKEN:" );
+    QUrl url;
 
-    // User has requested a reload
-    if( tokens.contains( "reload" ) && tokens.size() > 1 )
+    if( source == "update" )
     {
-        if ( tokens.at( 1 ) == QString( "reload" ) )
-        {
-            d->reloadWikipedia();
-            return true;
-        }
+        debug() << "scheduleSourcesUpdated";
+        scheduleSourcesUpdated();
     }
-
-    // User has clicked on a link, let's fetch the page
-    if( tokens.contains( "get" ) && tokens.size() > 1 )
+    else if( source.startsWith( "lang:" ) )
     {
-        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 2 ) )
-        {
-            d->wikiCurrentUrl = tokens.at( 2 ) ;
-
-            removeSource( "wikipedia" );
-            setData( "wikipedia", "busy", "busy" );
-            if( !d->wikiCurrentUrl.hasQueryItem( "useskin" ) )
-            {
-                // d->wikiCurrentUrl.removeQueryItem( "useskin" );
-                d->wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
-            }
-            d->urls << d->wikiCurrentUrl;
-            The::networkAccessManager()->getData( d->wikiCurrentUrl, this,
-                 SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-            return true;
-        }
+        // user has selected is favorite language.
+        d->wikiWideLang = source.mid( 5 );
     }
-
-    // user has selected is favorite language.
-    if ( tokens.contains( "lang" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
-            d->wikiWideLang = tokens.at( 2 );
-
-    // User want to switch from artist to album, track etc ...
-    if( tokens.contains( "goto" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "goto" ) ) && ( tokens.size() > 2 ) )
-            setSelection( tokens.at ( 2 ) );
-
-    // otherwise, it comes from the engine, a new track is playing.
-    removeAllData( name );
-    scheduleSourcesUpdated();
-    setData( name, QVariant());
-    d->updateEngine();
-
-    return true;
+    else
+    {
+        // otherwise, it comes from the engine, a new track is playing.
+        removeAllData( source );
+        scheduleSourcesUpdated();
+        setData( source, Plasma::DataEngine::Data() );
+        d->updateEngine();
+    }
+    return false;
 }
 
 void
