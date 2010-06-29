@@ -44,7 +44,6 @@ class WikipediaEnginePrivate;
 class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
-    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
 
 public:
     WikipediaEngine( QObject* parent, const QList<QVariant>& args );
@@ -52,17 +51,12 @@ public:
 
     virtual void init();
 
-    QStringList sources() const;
-
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
-
-    void setSelection( const QString& selection );
-    QString selection() const;
 
 protected:
     bool sourceRequestEvent( const QString &source );

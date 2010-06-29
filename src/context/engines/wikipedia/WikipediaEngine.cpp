@@ -42,26 +42,32 @@ private:
 public:
     WikipediaEnginePrivate( WikipediaEngine *parent )
         : q_ptr( parent )
-        , currentSelection( "artist" )
+        , currentSelection( Artist )
         , requested( true )
-        , sources( "current" )
         , dataContainer( 0 )
     {}
     ~WikipediaEnginePrivate() {}
+
+    enum SelectionType
+    {
+        Artist,
+        Album,
+        Track
+    };
 
     // functions
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
     void fetchLangLinks( const QString &title, const QString &llcontinue = QString() );
     void reloadWikipedia();
+    void setSelection( SelectionType type );
+    void setSelection( const QString &type );
+    SelectionType selection() const;
     void updateEngine();
-
-    QUrl wikiUrl( const QString& item ) const;
     QString wikiParse();
 
     // data members
-    QString currentSelection;
+    SelectionType currentSelection;
     bool requested;
-    QStringList sources;
     QString wiki;
     QUrl wikiCurrentUrl;
     QString wikiLanguagesSection;
@@ -99,7 +105,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
     if( !gotoType.isEmpty() )
     {
         debug() << "goto:" << gotoType;
-        q->setSelection( gotoType );
+        setSelection( gotoType );
         q->setData( source, "busy", "busy" );
         updateEngine();
         return;
@@ -168,7 +174,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack )
     {
-        if( q->selection() == "artist" ) // default, or applet told us to fetch artist
+        if( currentSelection == Artist ) // default, or applet told us to fetch artist
         {
             if( currentTrack->artist() )
             {
@@ -176,12 +182,12 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
                 data["title"] = currentTrack->artist()->prettyName();
             }
         }
-        else if( q->selection() == "track" )
+        else if( currentSelection == Track )
         {
             data["label"] = "Title";
             data["title"] = currentTrack->prettyName();
         }
-        else if( q->selection() == "album" )
+        else if( currentSelection == Album )
         {
             if( currentTrack->album() )
             {
@@ -286,6 +292,9 @@ void
 WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 {
     Q_Q( WikipediaEngine );
+    // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
+    // instead of:  http://en.wikipedia.org/wiki/The_Beatles
+    // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
     currentWikiLang = urlPrefix;
     KUrl pageUrl;
     pageUrl.setScheme( "http" );
@@ -337,7 +346,7 @@ WikipediaEnginePrivate::updateEngine()
         return;
 
     // default, or applet told us to fetch artist
-    if( q->selection() == "artist" )
+    if( currentSelection == Artist )
     {
         if( currentTrack->artist() )
         {
@@ -357,7 +366,7 @@ WikipediaEnginePrivate::updateEngine()
                 tmpWikiStr = currentTrack->artist()->prettyName();
         }
     }
-    else if( q->selection() == "album" )
+    else if( currentSelection == Album )
     {
         if( currentTrack->album() )
         {
@@ -376,7 +385,7 @@ WikipediaEnginePrivate::updateEngine()
 
         }
     }
-    else if( q->selection() == "track" )
+    else if( currentSelection == Track )
     {
         if( currentTrack->prettyName().isEmpty() )
         {
@@ -492,34 +501,16 @@ WikipediaEnginePrivate::wikiParse()
     wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     wiki.remove( "</textarea>" );
 
-    QString m_wikiHTMLSource = "<html><body>\n";
-    m_wikiHTMLSource.append( wiki );
-    if ( !wikiLanguagesSection.isEmpty() )
+    QString html = "<html><body>\n";
+    html.append( wiki );
+    if( !wikiLanguagesSection.isEmpty() )
     {
-        m_wikiHTMLSource.append( "<br/><div id=\"wiki_otherlangs\" >" + i18n( "Wikipedia Other Languages: <br/>" )+ wikiLanguagesSection + " </div>" );
+        html.append( "<br/><div id=\"wiki_otherlangs\" >"
+                     + i18nc( "@item:intext Wikipedia webview", "This article in other languages:") + "<br/>"
+                     + wikiLanguagesSection + "</div>" );
     }
-    m_wikiHTMLSource.append( "</body></html>\n" );
-
-    return m_wikiHTMLSource;
-}
-
-inline QUrl
-WikipediaEnginePrivate::wikiUrl( const QString &item ) const
-{
-    // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
-    // instead of:  http://en.wikipedia.org/wiki/The_Beatles
-    // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
-    QUrl url;
-    url.setScheme( "http" );
-    url.setHost( currentWikiLang + ".wikipedia.org" );
-    url.setPath( "/w/index.php" );
-
-    url.addQueryItem( "useskin", "monobook" );
-
-    QString text = item;
-    text.replace( QChar(' '), QChar('_') );
-    url.addQueryItem( "title", text  );
-    return url;
+    html.append( "</body></html>\n" );
+    return html;
 }
 
 void
@@ -532,6 +523,29 @@ WikipediaEnginePrivate::reloadWikipedia()
     q->setData( "wikipedia", "busy", "busy" );
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+WikipediaEnginePrivate::SelectionType
+WikipediaEnginePrivate::selection() const
+{
+    return currentSelection;
+}
+
+void
+WikipediaEnginePrivate::setSelection( SelectionType type )
+{
+    currentSelection = type;
+}
+
+void
+WikipediaEnginePrivate::setSelection( const QString &type )
+{
+    if( type == "artist" )
+        setSelection( Artist );
+    else if( type == "album" )
+        setSelection( Album );
+    else if( type == "track" )
+        setSelection( Track );
 }
 
 WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
@@ -556,13 +570,6 @@ WikipediaEngine::init()
     connect( d->dataContainer, SIGNAL(dataUpdated(QString,Plasma::DataEngine::Data)),
              this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
     d->updateEngine();
-}
-
-QStringList
-WikipediaEngine::sources() const
-{
-    Q_D( const WikipediaEngine );
-    return d->sources;
 }
 
 bool
@@ -606,20 +613,6 @@ WikipediaEngine::metadataChanged( Meta::TrackPtr track )
     Q_D( WikipediaEngine );
 
     d->updateEngine();
-}
-
-QString
-WikipediaEngine::selection() const
-{
-    Q_D( const WikipediaEngine );
-    return d->currentSelection;
-}
-
-void
-WikipediaEngine::setSelection( const QString &selection )
-{
-    Q_D( WikipediaEngine );
-    d->currentSelection = selection;
 }
 
 #include "WikipediaEngine.moc"
