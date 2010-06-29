@@ -108,7 +108,7 @@ public:
     struct HistoryItem
     {
         KUrl url;
-        QString page;
+        QByteArray page;
     };
 
     enum WikiLangRoles
@@ -202,7 +202,7 @@ WikipediaAppletPrivate::_goBackward()
         historyForward.push_front( current );
         current =  historyBack.front();
         historyBack.pop_front();
-        webView->setHtml( current.page, current.url );
+        webView->setHtml( QString(current.page), current.url );
 
         if( forwardIcon->action() && !forwardIcon->action()->isEnabled() )
             forwardIcon->action()->setEnabled( true );
@@ -221,7 +221,7 @@ WikipediaAppletPrivate::_goForward()
         historyBack.push_front( current );
         current = historyForward.front();
         historyForward.pop_front();
-        webView->setHtml( current.page , current.url );
+        webView->setHtml( QString(current.page), current.url );
 
         if( backwardIcon->action() && !backwardIcon->action()->isEnabled() )
             backwardIcon->action()->setEnabled( true );
@@ -654,33 +654,34 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
 
     if( data.contains( "page" ) )
     {
-        if ( d->current.page == data[ "page" ].toString() && !d->gotMessage)
+        QByteArray pageBytes = data[ "page" ].toByteArray();
+        if( d->current.page == pageBytes && !d->gotMessage)
             return;
 
         // save last page, useful when you are reading but the song changes
-        if ( !d->current.page.isEmpty() )
+        if( !d->current.page.isEmpty() )
         {
             d->historyBack.push_front( d->current );
-            while ( d->historyBack.size() > 20 )
+            while( d->historyBack.size() > 20 )
                 d->historyBack.pop_back();
 
-            if ( d->backwardIcon->action() && !d->backwardIcon->action()->isEnabled() )
+            if( d->backwardIcon->action() && !d->backwardIcon->action()->isEnabled() )
                 d->backwardIcon->action()->setEnabled( true );
 
         }
-        d->current.page = data[ "page" ].toString();
-        d->current.url = KUrl( data[ "url" ].toString() );
-        d->webView->setHtml( d->current.page, d->current.url );
+        d->current.page = pageBytes;
+        d->current.url = data[ "url" ].toUrl();
+        d->webView->setHtml( QString(d->current.page), d->current.url );
         d->gotMessage = false;
         d->historyForward.clear();
 
-        if ( d->forwardIcon->action() && d->forwardIcon->action()->isEnabled() )
+        if( d->forwardIcon->action() && d->forwardIcon->action()->isEnabled() )
             d->forwardIcon->action()->setEnabled( false );
     }
 
     if( data.contains( "message" ) )
     {
-        d->webView->setHtml( data[ "message" ].toString(), KUrl( QString() ) ); // set data
+        d->webView->setHtml( data[ "message" ].toString(), KUrl() ); // set data
         d->gotMessage = true; // we have a message and don't want to save it in history
     }
 
