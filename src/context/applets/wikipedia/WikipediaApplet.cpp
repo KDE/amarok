@@ -45,6 +45,7 @@
 #include <QDesktopServices>
 #include <QListWidget>
 #include <QPainter>
+#include <QProgressBar>
 #include <QMenu>
 #include <QTextStream>
 #include <QXmlStreamReader>
@@ -71,6 +72,7 @@ public:
         , settingsIcon( 0 )
         , trackIcon( 0 )
         , webView( 0 )
+        , progressProxy( 0 )
         , wikipediaLabel( 0 )
         , gotMessage( 0 )
         , aspectRatio( 0 )
@@ -104,6 +106,10 @@ public:
     void _configureLangSelector();
     void _langSelectorItemChanged( QListWidgetItem *item );
 
+    void _pageLoadStarted();
+    void _pageLoadProgress( int progress );
+    void _pageLoadFinished( bool ok );
+
     // data members
     struct HistoryItem
     {
@@ -128,6 +134,7 @@ public:
     Plasma::IconWidget *settingsIcon;
     Plasma::IconWidget *trackIcon;
     Plasma::WebView *webView;
+    QGraphicsProxyWidget *progressProxy;
     QList<HistoryItem> historyBack;
     QList<HistoryItem> historyForward;
     HistoryItem current;
@@ -467,6 +474,34 @@ WikipediaAppletPrivate::_configureLangSelector()
 }
 
 void
+WikipediaAppletPrivate::_pageLoadStarted()
+{
+    Q_Q( WikipediaApplet );
+    progressProxy->show();
+    QProgressBar *pbar = qobject_cast<QProgressBar*>( progressProxy->widget() );
+    pbar->reset();
+    q->updateConstraints();
+}
+
+void
+WikipediaAppletPrivate::_pageLoadProgress( int progress )
+{
+    QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
+    QProgressBar *pbar = qobject_cast<QProgressBar*>( progressProxy->widget() );
+    pbar->setFormat( QString( "%1kB : %p%" ).arg( kbytes ) );
+    pbar->setValue( progress );
+}
+
+void
+WikipediaAppletPrivate::_pageLoadFinished( bool ok )
+{
+    Q_UNUSED( ok )
+    Q_Q( WikipediaApplet );
+    progressProxy->hide();
+    q->updateConstraints();
+}
+
+void
 WikipediaAppletPrivate::_langSelectorItemChanged( QListWidgetItem *item )
 {
     Q_UNUSED( item )
@@ -510,12 +545,20 @@ WikipediaApplet::init()
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(_paletteChanged(QPalette)) );
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( d->webView->page(), SIGNAL(linkClicked(QUrl)), SLOT(_linkClicked(QUrl)) );
+    connect( d->webView->page(), SIGNAL(loadStarted()), SLOT(_pageLoadStarted()) );
+    connect( d->webView->page(), SIGNAL(loadProgress(int)), SLOT(_pageLoadProgress(int)) );
+    connect( d->webView->page(), SIGNAL(loadFinished(bool)), SLOT(_pageLoadFinished(bool)) );
 
     // make transparent so we can use qpainter translucency to draw the  background
     QPalette palette = d->webView->palette();
     palette.setBrush(QPalette::Base, Qt::transparent);
     d->webView->page()->setPalette(palette);
     d->webView->setAttribute(Qt::WA_OpaquePaintEvent, false);
+
+    d->progressProxy = new QGraphicsProxyWidget( this );
+    d->progressProxy->setWidget( new QProgressBar );
+    d->progressProxy->setAttribute( Qt::WA_NoSystemBackground );
+    d->progressProxy->hide();
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -601,11 +644,9 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     const qreal iconY = titleY + (d->wikipediaLabel->boundingRect().height() - iconWidth) / 2;
 
     prepareGeometryChange();
+    // title label positioning
     d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     d->wikipediaLabel->setPos( offsetX, titleY );
-
-    d->webView->setPos( padding, d->wikipediaLabel->pos().y() + d->wikipediaLabel->boundingRect().height() + padding );
-    d->webView->resize( boundingRect().width() - 2 * padding, boundingRect().height() - d->webView->pos().y() - padding );
 
     // Icon positionning
     d->backwardIcon->setPos( size().width() - 7 * iconWidth - 6 * padding, iconY );
@@ -617,6 +658,21 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     d->reloadIcon->setPos( size().width() - 2 * iconWidth - 2 * padding, iconY );
     d->settingsIcon->setPos( size().width() - iconWidth - padding, iconY );
+
+    // webview positioning
+    qreal webviewY  = d->wikipediaLabel->pos().y() + d->wikipediaLabel->boundingRect().height();
+    qreal webviewH  = boundingRect().height() - d->webView->pos().y();
+    qreal progressH = d->progressProxy->widget()->height();
+    d->webView->setPos( padding, webviewY + padding );
+
+    // loading progress bar positioning
+    if( d->progressProxy->isVisible() )
+    {
+        d->progressProxy->setPos( padding, webviewY + webviewH - progressH );
+        d->progressProxy->resize( boundingRect().width() - 2 * padding, progressH );
+        webviewH -= progressH + padding;
+    }
+    d->webView->resize( boundingRect().width() - 2 * padding, webviewH - padding );
     update();
 }
 

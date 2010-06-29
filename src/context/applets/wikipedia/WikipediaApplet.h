@@ -84,6 +84,10 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _getLangMap() )
     Q_PRIVATE_SLOT( d_ptr, void _configureLangSelector() )
     Q_PRIVATE_SLOT( d_ptr, void _langSelectorItemChanged(QListWidgetItem*) )
+
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadStarted() )
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadProgress(int) )
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadFinished(bool) )
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )
