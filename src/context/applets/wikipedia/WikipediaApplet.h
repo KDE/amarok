@@ -20,16 +20,7 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/Svg.h"
 #include "NetworkAccessManagerProxy.h"
-
-#include <ktemporaryfile.h>
-#include <plasma/framesvg.h>
-
-#include <QGraphicsProxyWidget>
-#include <qwebview.h>
-
-#include <ui_wikipediaSettings.h>
 
 class QAction;
 class KDialog;
@@ -88,6 +79,8 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _pageLoadStarted() )
     Q_PRIVATE_SLOT( d_ptr, void _pageLoadProgress(int) )
     Q_PRIVATE_SLOT( d_ptr, void _pageLoadFinished(bool) )
+    Q_PRIVATE_SLOT( d_ptr, void _searchLineEditTextEdited(const QString&) )
+    Q_PRIVATE_SLOT( d_ptr, void _searchLineEditReturnPressed() )
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

@@ -18,132 +18,33 @@
 #define DEBUG_PREFIX "WikipediaApplet"
 
 #include "WikipediaApplet.h"
+#include "WikipediaApplet_p.h"
+#include "WikipediaApplet_p.moc"
 
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
-#include "context/Svg.h"
-#include "context/ContextView.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "widgets/TextScrollingWidget.h"
 
-#include <Plasma/DataContainer>
-#include <Plasma/IconWidget>
-#include <Plasma/PushButton>
-#include <Plasma/Theme>
-#include <Plasma/WebView>
-
-#include <KIcon>
-#include <KGlobalSettings>
 #include <KConfigDialog>
-#include <KPushButton>
 #include <KSaveFile>
 #include <KStandardDirs>
+#include <KTemporaryFile>
+
+#include <Plasma/DataContainer>
+#include <Plasma/IconWidget>
+#include <Plasma/Theme>
 
 #include <QAction>
 #include <QDesktopServices>
 #include <QListWidget>
 #include <QPainter>
 #include <QProgressBar>
-#include <QMenu>
 #include <QTextStream>
-#include <QXmlStreamReader>
-#include <QWebHistory>
 #include <QWebPage>
-#include <QWebFrame>
-
-class WikipediaAppletPrivate
-{
-private:
-    WikipediaApplet *const q_ptr;
-    Q_DECLARE_PUBLIC( WikipediaApplet )
-
-public:
-    WikipediaAppletPrivate( WikipediaApplet *parent )
-        : q_ptr( parent )
-        , css( 0 )
-        , dataContainer( 0 )
-        , albumIcon( 0 )
-        , artistIcon( 0 )
-        , backwardIcon( 0 )
-        , forwardIcon( 0 )
-        , reloadIcon( 0 )
-        , settingsIcon( 0 )
-        , trackIcon( 0 )
-        , webView( 0 )
-        , progressProxy( 0 )
-        , wikipediaLabel( 0 )
-        , gotMessage( 0 )
-        , aspectRatio( 0 )
-    {}
-    ~WikipediaAppletPrivate() {}
-
-    // functions
-    void parseWikiLangXml( const QByteArray &xml );
-    qint64 writeStyleSheet( const QByteArray &css );
-    void scheduleEngineUpdate();
-
-    // private slots
-    void _linkClicked( const QUrl &url );
-    void _loadSettings();
-
-    void _goBackward();
-    void _goForward();
-    void _gotoArtist();
-    void _gotoAlbum();
-    void _gotoTrack();
-
-    void _switchToLang( const QString &lang );
-    void _reloadWikipedia();
-
-    void _paletteChanged( const QPalette &palette );
-
-    void _getLangMapProgress( qint64 received, qint64 total );
-    void _getLangMapFinished( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void _getLangMap();
-
-    void _configureLangSelector();
-    void _langSelectorItemChanged( QListWidgetItem *item );
-
-    void _pageLoadStarted();
-    void _pageLoadProgress( int progress );
-    void _pageLoadFinished( bool ok );
-
-    // data members
-    struct HistoryItem
-    {
-        KUrl url;
-        QByteArray page;
-    };
-
-    enum WikiLangRoles
-    {
-        PrefixRole = Qt::UserRole + 1,
-        UrlPrefixRole = Qt::UserRole + 2,
-        LanguageStringRole = Qt::UserRole + 3
-    };
-
-    KTemporaryFile *css;
-    Plasma::DataContainer *dataContainer;
-    Plasma::IconWidget *albumIcon;
-    Plasma::IconWidget *artistIcon;
-    Plasma::IconWidget *backwardIcon;
-    Plasma::IconWidget *forwardIcon;
-    Plasma::IconWidget *reloadIcon;
-    Plasma::IconWidget *settingsIcon;
-    Plasma::IconWidget *trackIcon;
-    Plasma::WebView *webView;
-    QGraphicsProxyWidget *progressProxy;
-    QList<HistoryItem> historyBack;
-    QList<HistoryItem> historyForward;
-    HistoryItem current;
-    QStringList langList;
-    TextScrollingWidget *wikipediaLabel;
-    Ui::wikipediaSettings ui;
-    bool gotMessage;
-    qreal aspectRatio;
-};
+#include <QXmlStreamReader>
 
 void
 WikipediaAppletPrivate::parseWikiLangXml( const QByteArray &data )
@@ -502,6 +403,20 @@ WikipediaAppletPrivate::_pageLoadFinished( bool ok )
 }
 
 void
+WikipediaAppletPrivate::_searchLineEditTextEdited( const QString &text )
+{
+    webView->page()->findText( QString(), QWebPage::HighlightAllOccurrences ); // clears preivous highlights
+    webView->page()->findText( text, QWebPage::FindWrapsAroundDocument | QWebPage::HighlightAllOccurrences );
+}
+
+void
+WikipediaAppletPrivate::_searchLineEditReturnPressed()
+{
+    const QString &text = webView->lineEdit()->text();
+    webView->page()->findText( text, QWebPage::FindWrapsAroundDocument );
+}
+
+void
 WikipediaAppletPrivate::_langSelectorItemChanged( QListWidgetItem *item )
 {
     Q_UNUSED( item )
@@ -533,7 +448,7 @@ WikipediaApplet::init()
     Q_D( WikipediaApplet );
     d->wikipediaLabel = new TextScrollingWidget( this );
 
-    d->webView = new Plasma::WebView( this );
+    d->webView = new WikipediaWebView( this );
     d->webView->setAttribute( Qt::WA_NoSystemBackground );
     d->webView->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
@@ -548,6 +463,8 @@ WikipediaApplet::init()
     connect( d->webView->page(), SIGNAL(loadStarted()), SLOT(_pageLoadStarted()) );
     connect( d->webView->page(), SIGNAL(loadProgress(int)), SLOT(_pageLoadProgress(int)) );
     connect( d->webView->page(), SIGNAL(loadFinished(bool)), SLOT(_pageLoadFinished(bool)) );
+    connect( d->webView->lineEdit(), SIGNAL(textChanged(QString)), SLOT(_searchLineEditTextEdited(QString)) );
+    connect( d->webView->lineEdit(), SIGNAL(returnPressed()), SLOT(_searchLineEditReturnPressed()) );
 
     // make transparent so we can use qpainter translucency to draw the  background
     QPalette palette = d->webView->palette();
