@@ -590,30 +590,34 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     Q_D( WikipediaApplet );
 
-    prepareGeometryChange();
+    const int padding = standardPadding();
+    const float iconWidth = d->backwardIcon->size().width();
     const float textWidth = d->wikipediaLabel->boundingRect().width();
     const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
-    const qreal widmax = boundingRect().width() - 4 * standardPadding();
+    const qreal widmax = boundingRect().width() - 4 * padding;
     const QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
-    d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
-    d->wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
+    const qreal titleY = padding + 2;
+    const qreal iconY = titleY + (d->wikipediaLabel->boundingRect().height() - iconWidth) / 2;
 
-    d->webView->setPos( standardPadding(), d->wikipediaLabel->pos().y() + d->wikipediaLabel->boundingRect().height() + standardPadding() );
-    d->webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - d->webView->pos().y() - standardPadding() );
+    prepareGeometryChange();
+    d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+    d->wikipediaLabel->setPos( offsetX, titleY );
+
+    d->webView->setPos( padding, d->wikipediaLabel->pos().y() + d->wikipediaLabel->boundingRect().height() + padding );
+    d->webView->resize( boundingRect().width() - 2 * padding, boundingRect().height() - d->webView->pos().y() - padding );
 
     // Icon positionning
-    float iconWidth = d->backwardIcon->size().width();
-    d->backwardIcon->setPos( size().width() - 7 * iconWidth - 6 * standardPadding(), standardPadding() );
-    d->forwardIcon->setPos( size().width() - 6 * iconWidth - 6 * standardPadding(), standardPadding() );
+    d->backwardIcon->setPos( size().width() - 7 * iconWidth - 6 * padding, iconY );
+    d->forwardIcon->setPos( size().width() - 6 * iconWidth - 6 * padding, iconY );
 
-    d->artistIcon->setPos( size().width() - 5 * iconWidth - 4 * standardPadding(), standardPadding() );
-    d->albumIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
-    d->trackIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
+    d->artistIcon->setPos( size().width() - 5 * iconWidth - 4 * padding, iconY );
+    d->albumIcon->setPos( size().width() - 4 * iconWidth - 4 * padding, iconY );
+    d->trackIcon->setPos( size().width() - 3 * iconWidth - 4 * padding, iconY );
 
-    d->reloadIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
-    d->settingsIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+    d->reloadIcon->setPos( size().width() - 2 * iconWidth - 2 * padding, iconY );
+    d->settingsIcon->setPos( size().width() - iconWidth - padding, iconY );
     update();
 }
 
