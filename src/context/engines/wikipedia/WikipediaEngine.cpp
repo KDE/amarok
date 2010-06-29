@@ -90,6 +90,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
     {
         debug() << "reloading";
         dataContainer->setData( "reload", false );
+        q->setData( source, "busy", "busy" );
         reloadWikipedia();
         return;
     }
@@ -99,6 +100,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
     {
         debug() << "goto:" << gotoType;
         q->setSelection( gotoType );
+        q->setData( source, "busy", "busy" );
         updateEngine();
         return;
     }
@@ -293,6 +295,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     pageUrl.addQueryItem( "title", title );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
+    q->setData( "wikipedia", "busy", "busy" );
     The::networkAccessManager()->getData( pageUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -314,6 +317,7 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title, const QString &llc
     if( !llcontinue.isEmpty() )
         url.addQueryItem( "llcontinue", llcontinue );
 
+    q->setData( "wikipedia", "busy", "busy" );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -523,10 +527,9 @@ WikipediaEnginePrivate::reloadWikipedia()
 {
     DEBUG_BLOCK
     Q_Q( WikipediaEngine );
-
     debug() << "wiki url: " << wikiCurrentUrl;
-
     urls << wikiCurrentUrl;
+    q->setData( "wikipedia", "busy", "busy" );
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }

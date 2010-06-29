@@ -255,11 +255,10 @@ WikipediaAppletPrivate::_gotoTrack()
 void
 WikipediaAppletPrivate::_linkClicked( const QUrl &url )
 {
-    // Q_Q( WikipediaApplet );
-    debug() << "linkClicked" << url;
+    Q_Q( WikipediaApplet );
     if( url.host().contains( "wikipedia.org" ) )
     {
-        // q->dataEngine( "amarok-wikipedia" )->query( url.toString() );
+        q->setBusy( true );
         dataContainer->setData( "clickUrl", url );
         scheduleEngineUpdate();
         if( backwardIcon->action() && !backwardIcon->action()->isEnabled() )
