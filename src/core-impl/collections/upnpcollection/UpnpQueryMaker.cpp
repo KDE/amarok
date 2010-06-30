@@ -38,6 +38,20 @@
 
 namespace Collections {
 
+#define emitProperResult( PointerType, list ) \
+    do { \
+            if ( m_asDataPtrs ) { \
+                Meta::DataList data; \
+                foreach( PointerType p, list ) { \
+                    data << Meta::DataPtr::staticCast( p ); \
+                } \
+                emit newResultReady( m_collection->collectionId(), data ); \
+            } \
+            else { \
+                emit newResultReady( m_collection->collectionId(), list ); \
+            } \
+    } while ( 0 )
+
 bool UpnpQueryMaker::m_runningJob = false;
 int UpnpQueryMaker::m_count = 0;
 QHash<QString, KIO::ListJob *> UpnpQueryMaker::m_queries = QHash<QString, KIO::ListJob*>();
@@ -128,12 +142,15 @@ DEBUG_BLOCK
             break;
         case Track:
             debug() << this << "Query type Track";
+            m_queryString = "( upnp:class derivedfrom \"object.item.audioItem\" ) ";
             break;
         case Genre:
             debug() << this << "Query type Genre";
+            m_queryString = "( upnp:class derivedfrom \"object.container.genre.musicGenre\" ) ";
             break;
         case Custom:
             debug() << this << "Query type Custom";
+// TODO
             break;
         default:
             debug() << this << "Default case: Query type" << type;
@@ -195,6 +212,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
 DEBUG_BLOCK
     debug() << this << "Adding track match" << track->name();
+// TODO
     return this;
 }
 
@@ -210,6 +228,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
 DEBUG_BLOCK
     debug() << this << "Adding album match" << album->name();
+    m_queryString += " and ( upnp:album = \"" + album->name() + "\" )";
     return this;
 }
 
@@ -217,6 +236,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
 DEBUG_BLOCK
     debug() << this << "Adding composer match" << composer->name();
+// NOTE unsupported
     return this;
 }
 
@@ -224,6 +244,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
 DEBUG_BLOCK
     debug() << this << "Adding genre match" << genre->name();
+    m_queryString += " and ( upnp:genre = \"" + genre->name() + "\" )";
     return this;
 }
 
@@ -231,6 +252,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::YearPtr &year )
 {
 DEBUG_BLOCK
     debug() << this << "Adding year match" << year->name();
+// TODO 
     return this;
 }
 
@@ -246,6 +268,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
 DEBUG_BLOCK
     debug() << this << "Adding label match" << label->name();
+// NOTE how?
     return this;
 }
 
@@ -341,40 +364,71 @@ void UpnpQueryMaker::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )
         return;
     }
     debug() << this << "SLOT ENTRIES" << list.length() << m_queryType;
-    if( m_queryType != Artist ) {
-        emit queryDone();
-        return;
+
+    switch( m_queryType ) {
+        case Artist:
+            handleArtists( list );
+            break;
+        case Album:
+            handleAlbums( list );
+            break;
+        case Track:
+            handleTracks( list );
+            break;
+        default:
+            break;
+    // TODO handle remaining cases
     }
 
     if( !list.empty() )
         m_noResults = false;
-    // for now just assume artists
-    if( m_asDataPtrs ) {
-        Meta::DataList ret;
-        foreach( KIO::UDSEntry entry, list ) {
-            debug() << this << "ENTRY" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-            Meta::UpnpArtist *artist = new Meta::UpnpArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-            Meta::DataPtr ptr( artist );
-            ret << ptr;
-        }
-        debug() << "EMITTING";
-        emit newResultReady( m_collection->collectionId(), ret );
-    }
-    else {
-        Meta::ArtistList ret;
-        foreach( KIO::UDSEntry entry, list ) {
-            debug() << this << "ENTRY" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-            Meta::UpnpArtist *artist = new Meta::UpnpArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-            Meta::ArtistPtr ptr( artist );
-            ret << ptr;
-        }
-        emit newResultReady( m_collection->collectionId(), ret );
-    }
 
 }
 
-void
-UpnpQueryMaker::slotDone( KJob *job )
+void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
+{
+    Meta::ArtistList ret;
+    foreach( KIO::UDSEntry entry, list ) {
+        debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
+        Meta::UpnpArtist *artist = new Meta::UpnpArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
+        Meta::ArtistPtr ptr( artist );
+        ret << ptr;
+    }
+    emitProperResult( Meta::ArtistPtr, ret );
+}
+
+void UpnpQueryMaker::handleAlbums( const KIO::UDSEntryList &list )
+{
+DEBUG_BLOCK
+    debug() << "HANDLING ALBUMS" << list.length();
+    Meta::AlbumList ret;
+    foreach( KIO::UDSEntry entry, list ) {
+        debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
+        Meta::UpnpAlbum *album = new Meta::UpnpAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
+        Meta::AlbumPtr ptr( album );
+        ret << ptr;
+    }
+    emitProperResult( Meta::AlbumPtr, ret );
+}
+
+void UpnpQueryMaker::handleTracks( const KIO::UDSEntryList &list )
+{
+DEBUG_BLOCK
+    debug() << "HANDLING TRACKS" << list.length();
+    Meta::TrackList ret;
+    foreach( KIO::UDSEntry entry, list ) {
+        debug() << this << "TRACK" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
+// TODO actually share meta-data setting with UpnpBrowseCollection
+        Meta::UpnpTrack *track = new Meta::UpnpTrack( m_collection );
+        track->setTitle( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
+        track->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
+        Meta::TrackPtr ptr( track );
+        ret << ptr;
+    }
+    emitProperResult( Meta::TrackPtr, ret );
+}
+
+void UpnpQueryMaker::slotDone( KJob *job )
 {
 DEBUG_BLOCK
     m_runningJob = false;
@@ -390,6 +444,8 @@ DEBUG_BLOCK
         // TODO proper data types not just DataPtr
         Meta::DataList ret;
         Meta::UpnpTrack *fake = new Meta::UpnpTrack( m_collection );
+        fake->setTitle( "No results" );
+        fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
         Meta::DataPtr ptr( fake );
         ret << ptr;
         emit newResultReady( m_collection->collectionId(), ret );

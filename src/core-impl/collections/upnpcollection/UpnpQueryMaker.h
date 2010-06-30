@@ -104,6 +104,9 @@ class UpnpQueryMaker : public QueryMaker
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
         void slotDone( KJob * );
     private:
+        void handleArtists( const KIO::UDSEntryList &list );
+        void handleAlbums( const KIO::UDSEntryList &list );
+        void handleTracks( const KIO::UDSEntryList &list );
         // TODO
         // this is all silly and crude and engineered
         // on an experimental purpose for the first queries
