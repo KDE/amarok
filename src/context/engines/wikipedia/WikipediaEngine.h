@@ -19,12 +19,10 @@
 #ifndef AMAROK_WIKIPEDIA_ENGINE
 #define AMAROK_WIKIPEDIA_ENGINE
 
-#include "ContextObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 #include "context/DataEngine.h"
 #include "NetworkAccessManagerProxy.h"
-
-#include <QLocale>
 
 /**
     This class provide Wikipedia data for use in Context applets.
@@ -41,7 +39,7 @@ namespace Plasma
 }
 class WikipediaEnginePrivate;
 
-class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
+class WikipediaEngine : public DataEngine, Meta::Observer, Engine::EngineObserver
 {
     Q_OBJECT
 
@@ -51,8 +49,8 @@ public:
 
     virtual void init();
 
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
+    // reimplemented from EngineObserver
+    virtual void engineTrackChanged( Meta::TrackPtr track );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;

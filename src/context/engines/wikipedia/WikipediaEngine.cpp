@@ -22,8 +22,6 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "ContextObserver.h"
-#include "ContextView.h"
 #include "EngineController.h"
 
 #include <Plasma/DataContainer>
@@ -43,7 +41,6 @@ public:
     WikipediaEnginePrivate( WikipediaEngine *parent )
         : q_ptr( parent )
         , currentSelection( Artist )
-        , requested( true )
         , dataContainer( 0 )
     {}
     ~WikipediaEnginePrivate() {}
@@ -56,23 +53,24 @@ public:
     };
 
     // functions
+    void checkRequireUpdate( Meta::TrackPtr track );
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
     void fetchLangLinks( const QString &title, const QString &llcontinue = QString() );
     void reloadWikipedia();
-    void setSelection( SelectionType type );
-    void setSelection( const QString &type );
+    bool setSelection( SelectionType type ); // returns true if selection is changed
+    bool setSelection( const QString &type );
     SelectionType selection() const;
     void updateEngine();
     QString wikiParse();
 
     // data members
     SelectionType currentSelection;
-    bool requested;
     QString wiki;
     QUrl wikiCurrentUrl;
     QString wikiLanguagesSection;
     QStringList preferredLangs;
     QString currentWikiLang;
+    Meta::TrackPtr currentTrack;
 
     Plasma::DataContainer *dataContainer;
 
@@ -92,44 +90,53 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
     if( source != "wikipedia" )
         return;
 
-    if( data.value( "reload" ).toBool() )
+    if( data.contains( "reload" ) )
     {
         debug() << "reloading";
-        dataContainer->setData( "reload", false );
-        q->setData( source, "busy", "busy" );
-        reloadWikipedia();
-        return;
+        if( data.value( "reload" ).toBool() )
+            reloadWikipedia();
+        q->removeData( source, "reload" );
     }
 
-    QString gotoType = data.value( "goto" ).toString();
-    if( !gotoType.isEmpty() )
+    if( data.contains( "goto" ) )
     {
+        QString gotoType = data.value( "goto" ).toString();
         debug() << "goto:" << gotoType;
-        setSelection( gotoType );
-        q->setData( source, "busy", "busy" );
-        updateEngine();
-        return;
+        if( !gotoType.isEmpty() )
+        {
+            setSelection( gotoType );
+            q->setData( source, "busy", "busy" );
+            updateEngine();
+        }
+        q->removeData( source, "goto" );
     }
 
-    QUrl clickUrl = data.value( "clickUrl" ).toUrl();
-    if( clickUrl.isValid() )
+    if( data.contains( "clickUrl" ) )
     {
+        QUrl clickUrl = data.value( "clickUrl" ).toUrl();
         debug() << "clickUrl:" << clickUrl;
-        wikiCurrentUrl = clickUrl;
-        if( !wikiCurrentUrl.hasQueryItem( "useskin" ) )
-            wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
-        urls << wikiCurrentUrl;
-        q->setData( source, "busy", "busy" );
-        The::networkAccessManager()->getData( wikiCurrentUrl, q,
-             SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-        return;
+        if( clickUrl.isValid() )
+        {
+            wikiCurrentUrl = clickUrl;
+            if( !wikiCurrentUrl.hasQueryItem( "useskin" ) )
+                wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
+            urls << wikiCurrentUrl;
+            q->setData( source, "busy", "busy" );
+            The::networkAccessManager()->getData( wikiCurrentUrl, q,
+                 SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        }
+        q->removeData( source, "clickUrl" );
     }
 
-    QStringList langList = data.value( "lang" ).toStringList();
-    if( !langList.isEmpty() )
+    if( data.contains( "lang" ) )
     {
-        preferredLangs = langList;
-        debug() << "updated preferred wikipedia languages:" << preferredLangs;
+        QStringList langList = data.value( "lang" ).toStringList();
+        if( !langList.isEmpty() && (preferredLangs != langList) )
+        {
+            preferredLangs = langList;
+            debug() << "updated preferred wikipedia languages:" << preferredLangs;
+        }
+        q->removeData( source, "lang" );
     }
 }
 
@@ -143,6 +150,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     urls.remove( url );
     if( e.code != QNetworkReply::NoError )
     {
+        q->removeData( "wikipedia", "busy" );
         q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
         return;
     }
@@ -163,40 +171,35 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
         return;
     }
 
-    // We've find a page
-    q->removeAllData( "wikipedia" );
-    q->scheduleSourcesUpdated();
-
+    // We've found a page
     DataEngine::Data data;
     data["page"] = wikiParse();
-    data["url"] = wikiCurrentUrl;
+    data["url"] = QUrl(url);
 
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack )
+    if( currentSelection == Artist ) // default, or applet told us to fetch artist
     {
-        if( currentSelection == Artist ) // default, or applet told us to fetch artist
+        if( currentTrack->artist() )
         {
-            if( currentTrack->artist() )
-            {
-                data["label"] =  "Artist";
-                data["title"] = currentTrack->artist()->prettyName();
-            }
-        }
-        else if( currentSelection == Track )
-        {
-            data["label"] = "Title";
-            data["title"] = currentTrack->prettyName();
-        }
-        else if( currentSelection == Album )
-        {
-            if( currentTrack->album() )
-            {
-                data["label"] = "Album";
-                data["title"] = currentTrack->album()->prettyName();
-            }
+            data["label"] =  "Artist";
+            data["title"] = currentTrack->artist()->prettyName();
         }
     }
+    else if( currentSelection == Track )
+    {
+        data["label"] = "Title";
+        data["title"] = currentTrack->prettyName();
+    }
+    else if( currentSelection == Album )
+    {
+        if( currentTrack->album() )
+        {
+            data["label"] = "Album";
+            data["title"] = currentTrack->album()->prettyName();
+        }
+    }
+    q->removeData( "wikipedia", "busy" );
     q->setData( "wikipedia", data );
+    q->scheduleSourcesUpdated();
 }
 
 void
@@ -204,6 +207,7 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
                                                NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url );
+    Q_Q( WikipediaEngine );
 
     if( data.isEmpty() )
     {
@@ -214,6 +218,7 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
     if( e.code != QNetworkReply::NoError )
     {
         debug() << "Parsing langlinks result failed" << e.description;
+        q->removeData( "wikipedia", "busy" );
         return;
     }
 
@@ -260,6 +265,7 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         }
     }
 
+    q->removeData( "wikipedia", "busy" );
     /* Since we query langlinks using the English Wikipedia host, interwiki
      * langlinks results will not contain English pages. So we need to manually
      * add it here. */
@@ -285,6 +291,43 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         const QString &title = url.queryItemValue( "titles" );
         fetchLangLinks( title, llcontinue );
         return;
+    }
+}
+
+void
+WikipediaEnginePrivate::checkRequireUpdate( Meta::TrackPtr track )
+{
+    if( !track )
+        return;
+
+    bool needUpdate( false );
+    if( !currentTrack )
+    {
+        currentTrack = track;
+        needUpdate = true;
+    }
+    else
+    {
+        switch( currentSelection )
+        {
+        case WikipediaEnginePrivate::Artist:
+            needUpdate = track->artist()->name() != currentTrack->artist()->name();
+            break;
+
+        case WikipediaEnginePrivate::Album:
+            needUpdate = track->album()->name() != currentTrack->album()->name();
+            break;
+
+        case WikipediaEnginePrivate::Track:
+            needUpdate = track->name() != currentTrack->name();
+            break;
+        }
+    }
+
+    if( needUpdate )
+    {
+        currentTrack = track;
+        updateEngine();
     }
 }
 
@@ -334,23 +377,18 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title, const QString &llc
 void
 WikipediaEnginePrivate::updateEngine()
 {
-    DEBUG_BLOCK
     Q_Q( WikipediaEngine );
 
-    // We've got a new track, great, let's fetch some info from Wikipedia !
-    QString tmpWikiStr;
-
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack )
         return;
 
-    // default, or applet told us to fetch artist
-    if( currentSelection == Artist )
+    QString tmpWikiStr;
+    switch( currentSelection )
     {
+    case Artist:
         if( currentTrack->artist() )
         {
-            if ( currentTrack->artist()->prettyName().isEmpty() )
+            if( currentTrack->artist()->name().isEmpty() )
             {
                 debug() << "Requesting an empty string, skipping !";
                 q->removeAllData( "wikipedia" );
@@ -358,19 +396,19 @@ WikipediaEnginePrivate::updateEngine()
                 q->setData( "wikipedia", "message", i18n( "No information found..." ) );
                 return;
             }
-            if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
+            if( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
                 tmpWikiStr = currentTrack->artist()->name();
             else
                 tmpWikiStr = currentTrack->artist()->prettyName();
         }
-    }
-    else if( currentSelection == Album )
-    {
+        break;
+
+    case Album:
         if( currentTrack->album() )
         {
-            if( currentTrack->album()->prettyName().isEmpty() )
+            if( currentTrack->album()->name().isEmpty() )
             {
                 debug() << "Requesting an empty string, skipping !";
                 q->removeAllData( "wikipedia" );
@@ -384,10 +422,10 @@ WikipediaEnginePrivate::updateEngine()
                 tmpWikiStr = currentTrack->album()->name();
 
         }
-    }
-    else if( currentSelection == Track )
-    {
-        if( currentTrack->prettyName().isEmpty() )
+        break;
+
+    case Track:
+        if( currentTrack->name().isEmpty() )
         {
             debug() << "Requesting an empty string, skipping !";
             q->removeAllData( "wikipedia" );
@@ -396,19 +434,18 @@ WikipediaEnginePrivate::updateEngine()
             return;
         }
         tmpWikiStr = currentTrack->prettyName();
+        break;
     }
+
     //Hack to make wiki searches work with magnatune preview tracks
     if( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) )
     {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
-
         int index = tmpWikiStr.indexOf( '-' );
         if( index != -1 )
             tmpWikiStr = tmpWikiStr.left (index - 1);
     }
 
-    q->removeAllData( "wikipedia" );
-    q->scheduleSourcesUpdated();
     if( preferredLangs.count() > 1 )
     {
         fetchLangLinks( tmpWikiStr );
@@ -521,6 +558,7 @@ WikipediaEnginePrivate::reloadWikipedia()
     debug() << "wiki url: " << wikiCurrentUrl;
     urls << wikiCurrentUrl;
     q->setData( "wikipedia", "busy", "busy" );
+    q->scheduleSourcesUpdated();
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -531,26 +569,33 @@ WikipediaEnginePrivate::selection() const
     return currentSelection;
 }
 
-void
+bool
 WikipediaEnginePrivate::setSelection( SelectionType type )
 {
-    currentSelection = type;
+    if( currentSelection != type )
+    {
+        currentSelection = type;
+        return true;
+    }
+    return false;
 }
 
-void
+bool
 WikipediaEnginePrivate::setSelection( const QString &type )
 {
+    bool changed( false );
     if( type == "artist" )
-        setSelection( Artist );
+        changed = setSelection( Artist );
     else if( type == "album" )
-        setSelection( Album );
+        changed = setSelection( Album );
     else if( type == "track" )
-        setSelection( Track );
+        changed = setSelection( Track );
+    return changed;
 }
 
 WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
+    , Engine::EngineObserver( The::engineController() )
     , d_ptr( new WikipediaEnginePrivate( this ) )
 {
 }
@@ -569,50 +614,38 @@ WikipediaEngine::init()
     addSource( d->dataContainer );
     connect( d->dataContainer, SIGNAL(dataUpdated(QString,Plasma::DataEngine::Data)),
              this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
+    d->currentTrack = The::engineController()->currentTrack();
     d->updateEngine();
 }
 
 bool
 WikipediaEngine::sourceRequestEvent( const QString &source )
 {
-    DEBUG_BLOCK
-    Q_D( WikipediaEngine );
-
-    d->requested = true; // someone is asking for data, so we turn ourselves on :)
-    QUrl url;
-
     if( source == "update" )
     {
-        debug() << "scheduleSourcesUpdated";
         scheduleSourcesUpdated();
     }
-    else
+    else if( source == "wikipedia" )
     {
-        // otherwise, it comes from the engine, a new track is playing.
-        removeAllData( source );
-        scheduleSourcesUpdated();
-        setData( source, Plasma::DataEngine::Data() );
+        Q_D( WikipediaEngine );
         d->updateEngine();
+        return true;
     }
     return false;
 }
 
 void
-WikipediaEngine::message( const ContextState& state )
+WikipediaEngine::engineTrackChanged( Meta::TrackPtr track )
 {
     Q_D( WikipediaEngine );
-    if( state == Current && d->requested )
-        d->updateEngine();
+    d->checkRequireUpdate( track );
 }
 
 void
 WikipediaEngine::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( track )
     Q_D( WikipediaEngine );
-
-    d->updateEngine();
+    d->checkRequireUpdate( track );
 }
 
 #include "WikipediaEngine.moc"
