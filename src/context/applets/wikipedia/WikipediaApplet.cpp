@@ -191,6 +191,8 @@ WikipediaAppletPrivate::_loadSettings()
     }
     langList = list;
     Amarok::config("Wikipedia Applet").writeEntry( "PreferredLang", list );
+    dataContainer->setData( "lang", langList );
+    scheduleEngineUpdate();
 }
 
 void
