@@ -102,21 +102,25 @@ WikipediaAppletPrivate::scheduleEngineUpdate()
 }
 
 void
+WikipediaAppletPrivate::updateNavigationIcons()
+{
+    forwardIcon->action()->setEnabled( !historyForward.isEmpty() );
+    backwardIcon->action()->setEnabled( !historyBack.isEmpty() );
+}
+
+void
 WikipediaAppletPrivate::_goBackward()
 {
     DEBUG_BLOCK
     if( !historyBack.empty() )
     {
-        historyForward.push_front( current );
-        current =  historyBack.front();
-        historyBack.pop_front();
-        webView->setHtml( QString(current.page), current.url );
-
-        if( forwardIcon->action() && !forwardIcon->action()->isEnabled() )
-            forwardIcon->action()->setEnabled( true );
-
-        if( historyBack.empty() && backwardIcon->action()->isEnabled() )
-            backwardIcon->action()->setEnabled( false );
+        historyForward.push( currentUrl );
+        currentUrl = historyBack.pop();
+        isBackwardHistory = true;
+        dataContainer->removeAllData();
+        dataContainer->setData( "clickUrl", currentUrl );
+        scheduleEngineUpdate();
+        updateNavigationIcons();
     }
 }
 
@@ -126,16 +130,13 @@ WikipediaAppletPrivate::_goForward()
     DEBUG_BLOCK
     if( !historyForward.empty() )
     {
-        historyBack.push_front( current );
-        current = historyForward.front();
-        historyForward.pop_front();
-        webView->setHtml( QString(current.page), current.url );
-
-        if( backwardIcon->action() && !backwardIcon->action()->isEnabled() )
-            backwardIcon->action()->setEnabled( true );
-
-        if( historyForward.empty() && forwardIcon->action()->isEnabled() )
-            forwardIcon->action()->setEnabled( false );
+        historyBack.push( currentUrl );
+        currentUrl = historyForward.pop();
+        isForwardHistory = true;
+        dataContainer->removeAllData();
+        dataContainer->setData( "clickUrl", currentUrl );
+        scheduleEngineUpdate();
+        updateNavigationIcons();
     }
 }
 
@@ -169,12 +170,7 @@ WikipediaAppletPrivate::_linkClicked( const QUrl &url )
         q->setBusy( true );
         dataContainer->setData( "clickUrl", url );
         scheduleEngineUpdate();
-        if( backwardIcon->action() && !backwardIcon->action()->isEnabled() )
-            backwardIcon->action()->setEnabled( true );
-
-        historyForward.clear();
-        if( forwardIcon->action() && forwardIcon->action()->isEnabled() )
-            forwardIcon->action()->setEnabled( false );
+        updateNavigationIcons();
     }
     else
         QDesktopServices::openUrl( url.toString() );
@@ -615,7 +611,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
     if( data.isEmpty() )
         return;
 
-    if( data.contains("busy") )
+    if( data.contains( "busy" ) )
     {
         d->webView->hide();
         if( canAnimate() )
@@ -628,37 +624,34 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
         setBusy( false );
     }
 
-    if( data.contains( "page" ) )
-    {
-        QByteArray pageBytes = data[ "page" ].toByteArray();
-        if( d->current.page == pageBytes && !d->gotMessage)
-            return;
-
-        // save last page, useful when you are reading but the song changes
-        if( !d->current.page.isEmpty() )
-        {
-            d->historyBack.push_front( d->current );
-            while( d->historyBack.size() > 20 )
-                d->historyBack.pop_back();
-
-            if( d->backwardIcon->action() && !d->backwardIcon->action()->isEnabled() )
-                d->backwardIcon->action()->setEnabled( true );
-
-        }
-        d->current.page = pageBytes;
-        d->current.url = data[ "url" ].toUrl();
-        d->webView->setHtml( QString(d->current.page), d->current.url );
-        d->gotMessage = false;
-        d->historyForward.clear();
-
-        if( d->forwardIcon->action() && d->forwardIcon->action()->isEnabled() )
-            d->forwardIcon->action()->setEnabled( false );
-    }
-
     if( data.contains( "message" ) )
     {
-        d->webView->setHtml( data[ "message" ].toString(), KUrl() ); // set data
-        d->gotMessage = true; // we have a message and don't want to save it in history
+        // messages have higher priority than pages
+        const QString &message = data.value( "message" ).toString();
+        if( !message.isEmpty() )
+        {
+            d->webView->setHtml( data[ "message" ].toString(), QUrl() ); // set data
+            d->dataContainer->removeAllData();
+        }
+    }
+    else if( data.contains( "page" ) )
+    {
+        if( data.contains( "url" ) && !data.value( "url" ).toUrl().isEmpty() )
+        {
+            const QUrl &url = data.value( "url" ).toUrl();
+            if( !d->isForwardHistory && !d->isBackwardHistory && !d->currentUrl.isEmpty() )
+            {
+                // save last page, useful when you are reading but the song changes
+                d->historyBack.push( d->currentUrl );
+                d->historyForward.clear();
+            }
+            d->currentUrl = url;
+            d->webView->setHtml( data[ "page" ].toString(), url );
+            d->updateNavigationIcons();
+            d->isBackwardHistory = false;
+            d->isForwardHistory = false;
+            d->dataContainer->removeAllData();
+        }
     }
 
     if( d->reloadIcon->action() && !d->reloadIcon->action()->isEnabled() )

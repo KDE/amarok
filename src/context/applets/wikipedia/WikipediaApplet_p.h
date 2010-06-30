@@ -28,6 +28,7 @@
 #include <Plasma/LineEdit>
 #include <Plasma/WebView>
 
+#include <QStack>
 #include <QWebFrame>
 #include <QWebPage>
 
@@ -60,8 +61,9 @@ public:
         , webView( 0 )
         , progressProxy( 0 )
         , wikipediaLabel( 0 )
-        , gotMessage( 0 )
         , aspectRatio( 0 )
+        , isForwardHistory( false )
+        , isBackwardHistory( false )
     {}
     ~WikipediaAppletPrivate() {}
 
@@ -69,6 +71,7 @@ public:
     void parseWikiLangXml( const QByteArray &xml );
     qint64 writeStyleSheet( const QByteArray &css );
     void scheduleEngineUpdate();
+    void updateNavigationIcons();
 
     // private slots
     void _linkClicked( const QUrl &url );
@@ -99,12 +102,6 @@ public:
     void _searchLineEditReturnPressed();
 
     // data members
-    struct HistoryItem
-    {
-        KUrl url;
-        QByteArray page;
-    };
-
     enum WikiLangRoles
     {
         PrefixRole = Qt::UserRole + 1,
@@ -123,14 +120,15 @@ public:
     Plasma::IconWidget *trackIcon;
     WikipediaWebView *webView;
     QGraphicsProxyWidget *progressProxy;
-    QList<HistoryItem> historyBack;
-    QList<HistoryItem> historyForward;
-    HistoryItem current;
+    QStack<QUrl> historyBack;
+    QStack<QUrl> historyForward;
+    QUrl currentUrl;
     QStringList langList;
     TextScrollingWidget *wikipediaLabel;
     Ui::wikipediaSettings ui;
-    bool gotMessage;
     qreal aspectRatio;
+    bool isForwardHistory;
+    bool isBackwardHistory;
 };
 
 class WikipediaSearchLineEdit : public Plasma::LineEdit
