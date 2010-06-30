@@ -367,7 +367,7 @@ UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
         xmlReader.readNext();
     }
 
-    QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
+    QVariant variant ( QMetaType::type( "LastFmEvent::List" ), &m_upcomingEvents );
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );
 }

@@ -18,99 +18,86 @@
 #include "UpcomingEventsWidget.h"
 #include "SvgHandler.h"
 
-// Kde include
 #include <KDateTime>
 #include <KIcon>
 #include <KLocale>
-#include <KLocalizedString>
 
-// Qt include
+#include <Plasma/Label>
+
 #include <QLabel>
-#include <QString>
-#include <QGridLayout>
+#include <QPixmap>
+#include <QGraphicsGridLayout>
 #include <QGraphicsProxyWidget>
-#include <QGraphicsScene>
-#include <QDesktopServices>
 
 #define NBR_MAX_PARTICIPANT 5
 
-UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
+UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFlags wFlags )
+    : QGraphicsWidget( parent, wFlags )
 {
-    m_image = new QLabel( this );
-    m_participants = new QLabel( this );
-    m_date = new QLabel( this );
-    m_name = new QLabel( this );
-    m_url = new QLabel( this );
-    m_location = new QLabel( this );
-    m_frame = new QFrame( this );
+    m_image = new QLabel;
+    m_image->setAttribute( Qt::WA_NoSystemBackground );
+    m_image->setAlignment( Qt::AlignCenter );
+    m_image->setFixedSize( 128, 128 );
 
-    m_frame->setFrameStyle( QFrame::HLine );
-    m_frame->setAutoFillBackground( false );
-    m_frame->setMaximumWidth( size().width() );
+    QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget;
+    imageProxy->setWidget( m_image );
+    m_participants = new Plasma::Label( this );
+    m_date = new Plasma::Label( this );
+    m_name = new Plasma::Label( this );
+    m_url = new Plasma::Label( this );
+    m_location = new Plasma::Label( this );
+    m_participants->nativeWidget()->setWordWrap( true );
+    m_name->nativeWidget()->setWordWrap( true );
 
-    m_participants->setWordWrap( true );
-    m_name->setWordWrap( true );
+    QGraphicsGridLayout *layout = new QGraphicsGridLayout;
+    layout->addItem( imageProxy, 0, 0, 5, 1, Qt::AlignCenter );
+    layout->addItem( m_name, 0, 1, 1, 1 );
+    layout->addItem( m_participants, 1, 1, 1, 1 );
+    layout->addItem( m_location, 2, 1, 1, 1 );
+    layout->addItem( m_date, 3, 1, 1, 1 );
+    layout->addItem( m_url, 4, 1, 1, 1 );
+    layout->setColumnMinimumWidth( 0, 140 );
+    setLayout( layout );
 
-    m_layout = new QGridLayout;
-    m_layout->addWidget( m_image, 0, 0, 5, 1, Qt::AlignCenter );
-    m_layout->addWidget( m_name, 0, 1, 1, 1 );
-    m_layout->addWidget( m_participants, 1, 1, 1, 1 );
-    m_layout->addWidget( m_location, 2, 1, 1, 1 );
-    m_layout->addWidget( m_date, 3, 1, 1, 1 );
-    m_layout->addWidget( m_url, 4, 1, 1, 1 );
-    m_layout->addWidget( m_frame, 6, 0, 1, 2 );
-    m_layout->setColumnMinimumWidth( 0, 140 );
-    m_layout->setHorizontalSpacing( 5 );
-    m_layout->setAlignment( Qt::AlignLeft );
-    m_layout->setSizeConstraint( QLayout::SetMinimumSize );
-    setLayout( m_layout );
-
-    m_url->setOpenExternalLinks( true );
-    m_url->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_url->nativeWidget()->setOpenExternalLinks( true );
+    m_url->nativeWidget()->setTextInteractionFlags( Qt::TextBrowserInteraction );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
 {
-    delete m_layout;
-    delete m_frame;
-    delete m_image;
-    delete m_participants;
-    delete m_date;
-    delete m_name;
-    delete m_url;
 }
 
-QLabel *
+Plasma::Label *
 UpcomingEventsWidget::date() const
 {
     return m_date;
 }
 
-QLabel *
+const QPixmap *
 UpcomingEventsWidget::image() const
 {
-    return m_image;
+    return m_image->pixmap();
 }
 
-QLabel *
+Plasma::Label *
 UpcomingEventsWidget::name() const
 {
     return m_name;
 }
 
-QLabel *
+Plasma::Label *
 UpcomingEventsWidget::location() const
 {
     return m_location;
 }
 
-QLabel *
+Plasma::Label *
 UpcomingEventsWidget::participants() const
 {
     return m_participants;
 }
 
-QLabel *
+Plasma::Label *
 UpcomingEventsWidget::url() const
 {
     return m_url;
@@ -121,7 +108,7 @@ UpcomingEventsWidget::setImage( const KUrl &url )
 {
     if( !url.isValid() )
     {
-        m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
+        m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 120 ) );
         return;
     }
 
@@ -143,7 +130,10 @@ UpcomingEventsWidget::loadImage( const KUrl &url, QByteArray data, NetworkAccess
 
     QPixmap image;
     if( image.loadFromData( data ) )
-        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
+    {
+        image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 6, QString(), true ) );
+    }
 }
 
 void

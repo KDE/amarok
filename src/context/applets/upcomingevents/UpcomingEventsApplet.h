@@ -23,26 +23,16 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "UpcomingEventsWidget.h"
-#include <ui_upcomingEventsSettings.h>
+#include "ui_upcomingEventsSettings.h"
 
-class TextScrollingWidget;
-
-// Qt
-class QAction;
-class QGraphicsLayoutItem;
-class QGraphicsSimpleTextItem;
-class QGraphicsTextItem;
-class QVBoxLayout;
-class QLabel;
-
-// KDE
 class KConfigDialog;
+class TextScrollingWidget;
 
 namespace Plasma
 {
     class IconWidget;
+    class ScrollWidget;
 }
-
 
  /**
   * \class UpcomingEventsApplet UpcomingEventsApplet.h UpcomingEventsApplet.cpp
@@ -154,24 +144,9 @@ private:
     bool m_temp_enabledLinks;
 
     /**
-     * All the widgets added in the applet
-     */
-    QList< UpcomingEventsWidget * > m_widgets;
-
-    /**
-     * The layout used to organize the widgets
-     */
-    QVBoxLayout * m_mainLayout;
-
-    /**
      * The scroll area is used as an embedded widget to be added in the applet
      */
-    QGraphicsProxyWidget * m_scrollProxy;
-
-    /**
-     * A scroll area in order to add scroll bars
-     */
-    QScrollArea * m_scroll;
+    Plasma::ScrollWidget *m_scrollWidget;
     
 private slots:
     /**

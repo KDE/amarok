@@ -40,7 +40,7 @@ private:
 
 public:
 
-    typedef QList< LastFmEvent > LastFmEventList;
+    typedef QList< LastFmEvent > List;
 
     /**
      * Creates an empty LastFmEvent
@@ -135,4 +135,4 @@ public:
 #endif // LASTFMEVENT_H
 
 Q_DECLARE_METATYPE(LastFmEvent)
-Q_DECLARE_METATYPE(LastFmEvent::LastFmEventList)
+Q_DECLARE_METATYPE(LastFmEvent::List)

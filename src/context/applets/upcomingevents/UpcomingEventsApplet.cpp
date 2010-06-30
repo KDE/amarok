@@ -19,32 +19,25 @@
 
 #include "UpcomingEventsApplet.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "context/ContextView.h"
-#include "core/support/Debug.h"
-#include "context/applets/upcomingevents/LastFmEvent.h"
-#include "PaletteHandler.h"
 #include "context/Svg.h"
+#include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/widgets/TextScrollingWidget.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
-// Qt
-#include <QDesktopServices>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsGridLayout>
-#include <QGraphicsLayoutItem>
-#include <QGraphicsProxyWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QScrollBar>
-
-// KDE
-#include <plasma/widgets/iconwidget.h>
 #include <KConfigDialog>
 #include <KDateTime>
 #include <KStandardDirs>
+#include <Plasma/IconWidget>
+#include <Plasma/ScrollWidget>
 #include <Plasma/Theme>
+
+#include <QDesktopServices>
+#include <QGraphicsLayoutItem>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
+#include <QScrollBar>
 
 /**
  * \brief Constructor
@@ -74,37 +67,24 @@ UpcomingEventsApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    // The widgets are displayed line by line with only one column
-    m_mainLayout = new QVBoxLayout;
-    m_mainLayout->setSizeConstraint( QLayout::SetFixedSize);
-    m_mainLayout->setAlignment( Qt::AlignJustify );
-    m_headerLabel = new TextScrollingWidget( this );
-    
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     // Use the same font as the other applets
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerLabel = new TextScrollingWidget( this );
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
 
+    // The widgets are displayed line by line with only one column
+    QGraphicsLinearLayout *mainLayout = new QGraphicsLinearLayout( Qt::Vertical );
+    QGraphicsWidget *content = new QGraphicsWidget( this );
+    content->setLayout( mainLayout );
+
     // Use an embedded widget for the applet
-    m_scrollProxy = new QGraphicsProxyWidget( this );
-    m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
-
-    QWidget * scrollContent = new QWidget;
-    scrollContent->setAttribute( Qt::WA_NoSystemBackground );
-    scrollContent->setLayout( m_mainLayout );
-    scrollContent->show();
-
-    m_scroll = new QScrollArea;
-    m_scroll->setWidget( scrollContent );
-    m_scroll->setFrameShape( QFrame::NoFrame );
-    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
-    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
-
-    m_scrollProxy->setWidget( m_scroll );
+    m_scrollWidget = new Plasma::ScrollWidget( this );
+    m_scrollWidget->setWidget( content );
 
     // ask for all the CV height
     resize( 500, -1 );
@@ -119,12 +99,13 @@ UpcomingEventsApplet::init()
     connectSource( "upcomingEvents" );
     connect( dataEngine( "amarok-upcomingEvents" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
 
-    constraintsEvent();
-
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("UpcomingEvents Applet");
     m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
     m_enabledLinks = config.readEntry( "enabledLinks", 0 );
+
+    updateConstraints();
+    update();
 }
 
 /**
@@ -164,23 +145,15 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
     m_headerLabel->setPos( ( size().width() - m_headerLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
-    m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
-    QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
-    
-    m_scrollProxy->setMinimumSize( artistsSize );
-    m_scrollProxy->setMaximumSize( artistsSize );
-    
-    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
-    m_scroll->widget()->setMinimumSize( artistSize );
-    m_scroll->widget()->setMaximumSize( artistSize );
+    m_scrollWidget->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
+    QSize artistsSize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_scrollWidget->pos().y() - standardPadding() );
+
+    m_scrollWidget->setMinimumSize( artistsSize );
+    m_scrollWidget->setMaximumSize( artistsSize );
+    m_scrollWidget->widget()->resize( QSizeF(artistsSize.width(), -1) );
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-
-    for( int i = 0; i < m_widgets.size(); i++ )
-    {
-        m_mainLayout->addWidget( m_widgets.at( i ) );
-    }
 }
 
 /**
@@ -200,12 +173,17 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     else
         m_headerLabel->setText( i18n( "Upcoming events" ) );
 
-    LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
+    LastFmEvent::List events = data[ "LastFmEvent" ].value< LastFmEvent::List >();
 
-    qDeleteAll( m_widgets );
-    m_widgets.clear();
+    QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout*>( m_scrollWidget->widget()->layout() );
+    QGraphicsLayoutItem *child;
+    while( (child = layout->itemAt( 0 )) != 0 )
+    {
+        layout->removeItem( child );
+        delete child;
+    }
 
-    for( int i = 0; i < events.size(); i++ )
+    for( int i = 0, count = events.size(); i < count; ++i )
     {
         const QString artistList = events.at( i ).artists().join( " - " );
         KDateTime limite(KDateTime::currentLocalDateTime());
@@ -220,20 +198,30 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         else
             timeSpanDisabled = true;
 
-        if ( timeSpanDisabled || events.at( i ).date() < limite.dateTime() )
+        if( timeSpanDisabled || events.at( i ).date() < limite.dateTime() )
         {
-            UpcomingEventsWidget * widget = new UpcomingEventsWidget;
+            UpcomingEventsWidget *widget = new UpcomingEventsWidget;
             widget->setName( events.at( i ).name() );
             widget->setDate( KDateTime( events.at( i ).date() ) );
             widget->setLocation( events.at( i ).location() );
             widget->setParticipants( artistList );
             widget->setUrl( events.at( i ).url() );
             widget->setImage( events.at( i ).smallImageUrl() );
-            m_widgets.insert( i, widget );
+            widget->setMaximumWidth( m_scrollWidget->rect().width() );
+            widget->setAttribute( Qt::WA_NoSystemBackground );
+            layout->addItem( widget );
+
+            // can also use Plasma::Separator here but that's in kde 4.4
+            QFrame *separator = new QFrame;
+            separator->setFrameStyle( QFrame::HLine );
+            separator->setAutoFillBackground( false );
+            QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget( m_scrollWidget );
+            separatorProxy->setWidget( separator );
+            layout->addItem( separatorProxy );
         }
     }
 
-    if(  0 == m_widgets.size() && artistName.compare( "" ) != 0 )
+    if( 0 == layout->count() && !artistName.isEmpty() )
     {
         m_headerLabel->setText( i18n( "No upcoming events for %1", artistName ) );
     }
