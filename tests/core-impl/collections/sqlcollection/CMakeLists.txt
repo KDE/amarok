@@ -36,6 +36,7 @@ include_directories(
   ${AMAROK_TEST_TREE}
   ${AMAROK_SOURCE_TREE}
   ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection
+  ${AMAROK_SOURCE_TREE}/core-impl/logger
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
@@ -232,6 +233,7 @@ set( testsqlcollectionlocation_SRCS
         ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
@@ -242,16 +244,18 @@ add_dependencies( testsqlcollectionlocation amarokcore )
 add_dependencies( testsqlcollectionlocation amaroklib)
 add_dependencies( testsqlcollectionlocation amarok-sqlcollection)
 
+
+# order matters when linking to libmyslqd.a, so beware of reordering
 target_link_libraries( testsqlcollectionlocation
         amarokcore
         amaroklib
         amarok-sqlcollection
         ${KDE4_KDECORE_LIBS}
-        ${KDE4_KDEUI_LIBS}
         ${QT_QTTEST_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        ${OPENSSL_LIBRARIES}
         ${MYSQL_EMBEDDED_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
+        crypt
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
