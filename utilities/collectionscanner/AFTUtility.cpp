@@ -39,6 +39,7 @@
 #include <xiphcomment.h>
 
 #include <QFile>
+#include <QRegExp>
 #include <QTime>
 
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
@@ -103,6 +104,9 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     QString mbId = QString( "http://musicbrainz.org" );
     QString storedMBId;
     QString mbDefaultUUID = QString( "[mb track uuid]" );
+    QRegExp aftPattern( "[a-f0-9]+", Qt::CaseInsensitive );
+    QRegExp mbIdPattern( "[-a-f0-9]+", Qt::CaseInsensitive );
+
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if( !file->ID3v2Tag( false ) )
@@ -118,12 +122,19 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             {
                 QString owner = TStringToQString( currFrame->owner() );
                 if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
-                    return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                {
+                    QString identifier = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                    if( aftPattern.exactMatch( identifier ) )
+                        return identifier;
+                    else
+                        return QString();
+                }
                 else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
                     storedMBId = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
             }
         }
-        if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) )
+        if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) &&
+            mbIdPattern.exactMatch( storedMBId ) )
             return QString( "mb-" ) + storedMBId;
     }
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
@@ -148,12 +159,16 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
-        return identifier;
+        if( aftPattern.exactMatch( identifier ) )
+            return identifier;
+        else
+            return QString();
     }
     else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
-        if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) )
+        if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) &&
+            mbIdPattern.exactMatch( storedMBId ) )
             return QString( "mb-" ) + identifier;
     }
 
