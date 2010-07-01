@@ -166,26 +166,38 @@ ConstraintTypes::Checkpoint::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::Checkpoint::getName() const
 {
-    QString name( "Checkpoint: %1" );
+    QString name( i18n("Checkpoint: %1") );
     Meta::TrackPtr t;
     Meta::AlbumPtr l;
     Meta::ArtistPtr r;
     switch ( m_checkpointType ) {
         case CheckpointTrack:
             t = Meta::TrackPtr::dynamicCast( m_checkpointObject );
-            name = name.arg( "\"%1\" (track) by %2" ).arg( t->prettyName() ).arg( t->artist()->prettyName() );
+            if ( t == Meta::TrackPtr() ) {
+                name = name.arg( i18n("unassigned") );
+            } else {
+                name = name.arg( i18n("\"%1\" (track) by %2") ).arg( t->prettyName() ).arg( t->artist()->prettyName() );
+            }
             break;
         case CheckpointAlbum:
             l = Meta::AlbumPtr::dynamicCast( m_checkpointObject );
-            if ( l->hasAlbumArtist() ) {
-                name = name.arg( "\"%1\" (album) by %2" ).arg( l->prettyName() ).arg( l->albumArtist()->prettyName() );
+            if ( l == Meta::AlbumPtr() ) {
+                name = name.arg( i18n("unassigned") );
             } else {
-                name = name.arg( "\"%1\" (album)" ).arg( l->prettyName() );
+                if ( l->hasAlbumArtist() ) {
+                    name = name.arg( i18n("\"%1\" (album) by %2") ).arg( l->prettyName() ).arg( l->albumArtist()->prettyName() );
+                } else {
+                    name = name.arg( i18n("\"%1\" (album)") ).arg( l->prettyName() );
+                }
             }
             break;
         case CheckpointArtist:
             r = Meta::ArtistPtr::dynamicCast( m_checkpointObject );
-            name = name.arg("\"%1\" (artist)").arg( r->prettyName() );
+            if ( r == Meta::ArtistPtr() ) {
+                name = name.arg( i18n("unassigned") );
+            } else {
+                name = name.arg( i18n("\"%1\" (artist)") ).arg( r->prettyName() );
+            }
             break;
     }
 
