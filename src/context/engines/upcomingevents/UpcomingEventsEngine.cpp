@@ -35,11 +35,6 @@ K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
 
 using namespace Context;
 
-/**
- * \brief Constructor
- *
- * Creates a new instance of UpcomingEventsEngine
- */
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
@@ -51,45 +46,17 @@ UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVarian
     update();
 }
 
-/**
- * \brief Destructor
- *
- * Destroys an UpcomingEventsEngine instance
- */
 UpcomingEventsEngine::~UpcomingEventsEngine()
 {
     DEBUG_BLOCK
 }
 
-/**
- * Returns the sources
- */
 QStringList
 UpcomingEventsEngine::sources() const
 {
     return m_sources;
 }
 
-/**
- * When a source that does not currently exist is requested by the
- * consumer, this method is called to give the DataEngine the
- * opportunity to create one.
- *
- * The name of the data source (e.g. the source parameter passed into
- * setData) must be the same as the name passed to sourceRequestEvent
- * otherwise the requesting visualization may not receive notice of a
- * data update.
- *
- * If the source can not be populated with data immediately (e.g. due to
- * an asynchronous data acquisition method such as an HTTP request)
- * the source must still be created, even if it is empty. This can
- * be accomplished in these cases with the follow line:
- *
- *      setData(name, DataEngine::Data());
- *
- * \param source : the name of the source that has been requested
- * \return true if a DataContainer was set up, false otherwise
- */
 bool
 UpcomingEventsEngine::sourceRequestEvent( const QString& name )
 {
@@ -118,9 +85,6 @@ UpcomingEventsEngine::sourceRequestEvent( const QString& name )
     return true;
 }
 
-/**
- * Overriden from Context::Observer
- */
 void
 UpcomingEventsEngine::message( const ContextState& state )
 {
@@ -128,10 +92,6 @@ UpcomingEventsEngine::message( const ContextState& state )
         update();
 }
 
-/**
- * This method is called when the metadata of a track has changed.
- * The called class may not cache the pointer
- */
 void
 UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
 {
@@ -141,9 +101,6 @@ UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
         update();
 }
 
-/**
- * Sends the data to the observers (e.g UpcomingEventsApplet)
- */
 void
 UpcomingEventsEngine::update()
 {
@@ -194,21 +151,12 @@ UpcomingEventsEngine::update()
     }
 }
 
-/**
- * Returns all the upcoming events
- */
 QList< LastFmEvent >
 UpcomingEventsEngine::upcomingEvents()
 {
     return m_upcomingEvents;
 }
 
-/**
- * Fetches the upcoming events for an artist thanks to the LastFm WebService
- *
- * \param artist_name the name of the artist
- * \return a list of events
- */
 void
 UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 {
@@ -228,9 +176,6 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
          SLOT(upcomingEventsResultFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-/**
- * Receive a network reply and parse the XML file
- */
 void
 UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray data,
                                                    NetworkAccessManagerProxy::Error e )
@@ -260,9 +205,6 @@ UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray d
     upcomingEventsParseResult( xmlReader );
 }
 
-/**
- * Parses the upcoming events request result
- */
 void
 UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
 {
@@ -372,20 +314,12 @@ UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
     setData ( "upcomingEvents", "LastFmEvent", variant );
 }
 
-/**
- * Sets the selection
- *
- * \param selection : the current selection
- */
 void
 UpcomingEventsEngine::setSelection( const QString& selection )
 {
     m_currentSelection = selection;
 }
 
-/**
- * Returns the current selection
- */
 QString
 UpcomingEventsEngine::selection()
 {

@@ -41,14 +41,6 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 
-/**
- * \brief Constructor
- *
- * UpcomingEventsApplet constructor
- *
- * \param parent : the UpcomingEventsApplet parent (used by Context::Applet)
- * \param args : (used by Context::Applet)
- */
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
@@ -58,11 +50,6 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
     setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
-/**
- * \brief Initialization
- *
- * Initializes the UpcomingEventsApplet with default parameters
- */
 void
 UpcomingEventsApplet::init()
 {
@@ -127,10 +114,6 @@ UpcomingEventsApplet::init()
     update();
 }
 
-/**
- * Connects the source to the Upcoming Events engine
- * and calls the dataUpdated function
- */
 void
 UpcomingEventsApplet::connectSource( const QString &source )
 {
@@ -141,17 +124,6 @@ UpcomingEventsApplet::connectSource( const QString &source )
     }
 }
 
-/**
- * Called when any of the geometry constraints have been updated.
- *
- * This is always called prior to painting and should be used as an
- * opportunity to layout the widget, calculate sizings, etc.
- *
- * Do not call update() from this method; an update() will be triggered
- * at the appropriate time for the applet.
- *
- * \param constraints : the type of constraints that were updated
- */
 void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -173,12 +145,6 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_scrollWidget->setMaximumWidth( scrollAreaSize.width() );
 }
 
-/**
- * Updates the data from the Upcoming Events engine
- *
- * \param name : the name
- * \param data : the engine from where the data are received
- */
 void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
@@ -254,16 +220,6 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     update();
 }
 
-/**
- * \brief Paints the interface
- *
- * This method is called when the interface should be painted
- *
- * \param painter : the QPainter to use to do the paintiner
- * \param option : the style options object
- * \param contentsRect : the rect to paint within; automatically adjusted for
- *                     the background, if any
- */
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
@@ -285,9 +241,6 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     p->restore();
 }
 
-/**
- * Show the settings windows
- */
 void
 UpcomingEventsApplet::configure()
 {
@@ -295,14 +248,6 @@ UpcomingEventsApplet::configure()
     showConfigurationInterface();
 }
 
-/**
- * Reimplement this method so provide a configuration interface,
- * parented to the supplied widget. Ownership of the widgets is passed
- * to the parent widget.
- *
- * \param parent : the dialog which is the parent of the configuration
- *               widgets
- */
 void
 UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
@@ -332,9 +277,6 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );
 }
 
-/**
- * Replace the former time span by the new one
- */
 void
 UpcomingEventsApplet::changeTimeSpan(QString span)
 {
@@ -357,9 +299,6 @@ UpcomingEventsApplet::changeTimeSpan(QString span)
         m_temp_timeSpan = "AllEvents";
 }
 
-/**
- * Save the time span choosen by the user
- */
 void
 UpcomingEventsApplet::saveTimeSpan()
 {
@@ -373,9 +312,6 @@ UpcomingEventsApplet::saveTimeSpan()
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
 }
 
-/**
- * Sets the upcoming events as links
- */
 void
 UpcomingEventsApplet::setAddressAsLink(int state)
 {
@@ -384,9 +320,6 @@ UpcomingEventsApplet::setAddressAsLink(int state)
     m_temp_enabledLinks = (state == Qt::Checked);
 }
 
-/**
- * Displays all the upcoming events addresses as links
- */
 void
 UpcomingEventsApplet::saveAddressAsLink()
 {
@@ -402,9 +335,6 @@ UpcomingEventsApplet::saveAddressAsLink()
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
 }
 
-/**
- * Save all the upcoming events settings
- */
 void
 UpcomingEventsApplet::saveSettings()
 {
