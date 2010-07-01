@@ -255,7 +255,11 @@ target_link_libraries( testsqlcollectionlocation
         ${QT_QTCORE_LIBRARY}
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${OPENSSL_LIBRARIES}
-        crypt
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
+
+if(NOT WIN32 AND NOT APPLE)
+    target_link_libraries( testsqlcollectionlocation crypt )
+endif(NOT WIN32 AND NOT APPLE)
+
