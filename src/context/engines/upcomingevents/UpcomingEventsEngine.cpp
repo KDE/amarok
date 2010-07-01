@@ -218,7 +218,7 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getEvents" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
     m_url = url;
 
