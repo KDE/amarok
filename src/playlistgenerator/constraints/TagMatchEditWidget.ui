@@ -21,7 +21,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Tag Match Constraint Settings</string>
+      <string>Match Tag Constraint Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="0">
@@ -309,8 +309,7 @@ p, li { white-space: pre-wrap; }
                      <widget class="KIntSpinBox" name="spinBox_ValueDateValue"/>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="comboBox_ValueDateUnit">
-                     </widget>
+                     <widget class="QComboBox" name="comboBox_ValueDateUnit"/>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_2">
@@ -721,14 +720,14 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>KIntSpinBox</class>
    <extends>QSpinBox</extends>
    <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KDateWidget</class>
+   <extends>QWidget</extends>
+   <header>kdatewidget.h</header>
   </customwidget>
   <customwidget>
    <class>KRatingWidget</class>

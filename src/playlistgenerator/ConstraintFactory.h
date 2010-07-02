@@ -27,13 +27,18 @@ class Constraint;
 class ConstraintNode;
 
 class ConstraintFactoryEntry {
-	public:
+    public:
         friend class ConstraintFactory;
-		ConstraintFactoryEntry(const QString&, const QString&, Constraint* (*xmlf)(QDomElement&, ConstraintNode*), Constraint* (*nf)(ConstraintNode*));
+        ConstraintFactoryEntry(const QString&,
+                               const QString&,
+                               const QString&,
+                               Constraint* (*xmlf)(QDomElement&, ConstraintNode*),
+                               Constraint* (*nf)(ConstraintNode*));
 
-	private:
-		const QString m_name;
-		const QString m_description;
+    private:
+        const QString m_name;
+        const QString m_i18nName;
+        const QString m_description;
         Constraint* (*m_createFromXmlFunc)(QDomElement&, ConstraintNode*);
         Constraint* (*m_createNewFunc)(ConstraintNode*);
 };
@@ -53,8 +58,9 @@ class ConstraintFactory {
         ConstraintNode* createGroup(ConstraintNode*, int row=INT_MAX) const;
 
         const QStringList names() const;
+        const QStringList i18nNames() const;
         QList< QPair<int, QString> > registeredConstraints() const;
-        int getTypeId(const QString&) const;
+        const QString untranslateName( const QString& ) const;
 
     private:
         ConstraintFactory();
@@ -62,6 +68,7 @@ class ConstraintFactory {
         static ConstraintFactory* s_self;
         QHash<int, ConstraintFactoryEntry*> m_registryIds;
         QHash<QString, ConstraintFactoryEntry*> m_registryNames;
+        QHash<QString, QString> m_registryUntranslateNames;
 };
 
 #endif // APG_CONSTRAINT_FACTORY

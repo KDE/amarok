@@ -53,9 +53,10 @@ ConstraintTypes::PlaylistLength::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PlaylistLength::registerMe()
 {
-    return new ConstraintFactoryEntry( i18n("PlaylistLength"),
-                                i18n("Sets the preferred duration of the playlist"),
-                                &PlaylistLength::createFromXml, &PlaylistLength::createNew );
+    return new ConstraintFactoryEntry( "PlaylistLength",
+                                       i18n("Playlist Duration"),
+                                       i18n("Sets the preferred duration of the playlist"),
+                                       &PlaylistLength::createFromXml, &PlaylistLength::createNew );
 }
 
 ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, ConstraintNode* p )
@@ -108,7 +109,7 @@ ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) c
 QString
 ConstraintTypes::PlaylistLength::getName() const
 {
-    QString v( i18n("Playlist length %1 %2") );
+    QString v( i18n("Playlist duration %1 %2") );
     return v.arg( comparisonToString() ).arg( QTime().addMSecs( m_length ).toString( "H:mm:ss" ) );
 }
 

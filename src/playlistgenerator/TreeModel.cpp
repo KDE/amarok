@@ -178,7 +178,7 @@ APG::TreeModel::insertGroup( const QModelIndex& thisIdx )
 }
 
 QModelIndex
-APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& constraintType )
+APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& constraintName )
 {
     int row = thisIdx.row();
     if ( thisIdx.isValid() ) {
@@ -186,6 +186,7 @@ APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& con
         ConstraintNode* n = 0;
         if ( p->getNodeType() == Constraint::ConstraintGroupType ) {
             beginInsertRows( thisIdx, 0, 0 );
+            QString constraintType = ConstraintFactory::instance()->untranslateName( constraintName );
             n = ConstraintFactory::instance()->createConstraint( constraintType, p, 0 );
             endInsertRows();
             if ( n != 0 ) {
@@ -196,6 +197,7 @@ APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& con
             p = p->parent();
             QModelIndex parentIdx = parent( thisIdx );
             beginInsertRows( parentIdx, row + 1, row + 1 );
+            QString constraintType = ConstraintFactory::instance()->untranslateName( constraintName );
             n = ConstraintFactory::instance()->createConstraint( constraintType, p, row + 1 );
             endInsertRows();
             if ( n != 0 ) {

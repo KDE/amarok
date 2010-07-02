@@ -49,9 +49,10 @@ ConstraintTypes::PreventDuplicates::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PreventDuplicates::registerMe()
 {
-    return new ConstraintFactoryEntry( i18n("PreventDuplicates"),
-                                i18n("Prevents duplicate tracks, albums, or artists from appearing in the playlist"),
-                                &PreventDuplicates::createFromXml, &PreventDuplicates::createNew );
+    return new ConstraintFactoryEntry( "PreventDuplicates",
+                                       i18n("Prevent Duplicates"),
+                                       i18n("Prevents duplicate tracks, albums, or artists from appearing in the playlist"),
+                                       &PreventDuplicates::createFromXml, &PreventDuplicates::createNew );
 }
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, ConstraintNode* p )

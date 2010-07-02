@@ -61,10 +61,10 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
 
     QAction* a;
     QMenu* m = new QMenu( i18n("Add new"), this );
-    a = m->addAction( QString( i18n("ConstraintGroup") ) );
+    a = m->addAction( QString( i18n("Constraint Group") ) );
     connect( a, SIGNAL( triggered( bool ) ), adderMapper, SLOT( map() ) );
-    adderMapper->setMapping( a, i18n("ConstraintGroup") );
-    foreach( const QString& name, ConstraintFactory::instance()->names() ) {
+    adderMapper->setMapping( a, i18n("Constraint Group") );
+    foreach( const QString& name, ConstraintFactory::instance()->i18nNames() ) {
         a = m->addAction( name );
         connect( a, SIGNAL( triggered( bool ) ), adderMapper, SLOT( map() ) );
         adderMapper->setMapping( a, name );
@@ -91,7 +91,7 @@ void
 APG::PresetEditDialog::addNode( const QString& name )
 {
     debug() << "Adding new" << name;
-    if ( name == i18n("ConstraintGroup") ) {
+    if ( name == i18n("Constraint Group") ) {
         m_controller->addGroup();
     } else {
         m_controller->addConstraint( name );

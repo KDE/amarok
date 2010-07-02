@@ -56,9 +56,10 @@ ConstraintTypes::Checkpoint::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::Checkpoint::registerMe()
 {
-    return new ConstraintFactoryEntry( i18n("Checkpoint"),
-                                i18n("Fixes a track, album, or artist to a certain position in the playlist"),
-                                &Checkpoint::createFromXml, &Checkpoint::createNew );
+    return new ConstraintFactoryEntry( "Checkpoint",
+                                       i18n("Checkpoint"),
+                                       i18n("Fixes a track, album, or artist to a certain position in the playlist"),
+                                       &Checkpoint::createFromXml, &Checkpoint::createNew );
 }
 
 ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p )

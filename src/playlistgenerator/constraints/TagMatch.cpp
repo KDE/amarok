@@ -52,9 +52,10 @@ ConstraintTypes::TagMatch::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::TagMatch::registerMe()
 {
-    return new ConstraintFactoryEntry( i18n("TagMatch"),
-                    i18n("Make all tracks in the playlist match the specified characteristic"),
-                    &TagMatch::createFromXml, &TagMatch::createNew );
+    return new ConstraintFactoryEntry( "TagMatch",
+                                       i18n("Match Tags"),
+                                       i18n("Make all tracks in the playlist match the specified characteristic"),
+                                       &TagMatch::createFromXml, &TagMatch::createNew );
 }
 
 ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
@@ -167,7 +168,7 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18n("Tag Match:%1 %2 %3 %4") );
+    QString v( i18n("Match tag:%1 %2 %3 %4") );
     v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
@@ -532,7 +533,7 @@ ConstraintTypes::TagMatch::comparisonToString() const
 QString
 ConstraintTypes::TagMatch::valueToString() const
 {
-    if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate )
+    if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
         if ( m_comparison != Constraint::CompareDateWithin ) {
             return m_value.toDate().toString( Qt::ISODate );
         } else {
@@ -552,8 +553,11 @@ ConstraintTypes::TagMatch::valueToString() const
             }
             return QString("%1 %2").arg( m_value.value<DateRange>().first ).arg( unit );
         }
-    else
+    } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
+        return QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( m_value.toString() );
+    } else {
         return m_value.toString();
+    }
 }
 
 bool
