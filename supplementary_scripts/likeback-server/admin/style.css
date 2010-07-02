@@ -1,0 +1,53 @@
+body      { background: white; color: black; margin: 0; }
+th        { text-align: left; border-bottom: 1px solid navy; }
+img       { padding: 1px; border: none; vertical-align: middle; }
+
+.Like     { background-color: #DFFFDF; }
+.Dislike  { background-color: #FFDFDF; }
+.Bug      { background-color: #C0C0C0; }
+.Feature  { background-color: #FFFFDF; }
+
+.Options  { background-color: #DFDFFF; }
+
+.New      { font-weight: bold; }
+.Progress { color: navy; }
+.Solved   { text-decoration: line-through; color: #444; }
+.Invalid  { text-decoration: line-through; color: #900; }
+
+.found    { background-color: #FFFF7F; }
+
+.noRemark          { visibility: hidden;  }
+tr:hover .noRemark { visibility: visible; }
+
+/*tr:hover td { background-color: navy; color: white; }*/
+
+.subBar         { padding: 3px; background-image: url('subBar.png'); height: 34px; line-height: 34px; vertical-align: middle; }
+.subBar.Like    { border-bottom: 1px solid #DFFFDF; }
+.subBar.Dislike { border-bottom: 1px solid #FFDFDF; }
+.subBar.Bug     { border-bottom: 1px solid #C0C0C0; }
+.subBar.Feature { border-bottom: 1px solid #FFFFDF; }
+
+.subBar.Options { border-bottom: 1px solid #DFDFFF; }
+
+.pre      { white-space: pre; }
+
+.header   { text-align: center; background: #1C1C58 url('header.png') 0 50%; color: white; padding: 5px; border-bottom: 1px solid #121239; margin: 0; line-height: 26px; height: 80px; text-shadow: black 0 0 3px; }
+.content  { padding: 10px; }
+.header strong { color: #FFFFCD; }
+.header label:hover { text-decoration: underline; cursor: default; }
+.header a { color: white; }
+.header a.link { display: block; position: absolute; margin: 0; left: 5px; top: 5px; height: 80px; line-height: 80px; vertical-align: middle; }
+a         { text-decoration: underline; }
+a:hover   { text-decoration: none; }
+
+#statusMenu { position: absolute; display: none; border: 1px solid navy; background-color: #eeeee6; padding: 1px; }
+#statusMenu a { display: block; padding: 1px 3px; border: 1px solid #eeeee6; }
+#statusMenu a:hover { background-color: #2f65d9; color: white; background: #121239 url('header.png') 0 50%; border: 1px solid #121239; }
+#statusMenu strong { display: block; margin: 2px; }
+
+form, .form { padding: 0; margin: 0; }
+.remark { margin: 5px; padding: 3px; }
+.remark * { margin: 2px; padding: 0; }
+
+.summary { margin-bottom: 10px; }
+.summary th { text-align: right; vertical-align: top; border: none; }

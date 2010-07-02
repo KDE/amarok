@@ -1,0 +1,19 @@
+ Likeback - a simple, context-sensitive, integrated feedback system for KDE
+============================================================================
+
+This directory contains the server portion of the Likeback client-server system.
+
+ Amarok specific information
+=============================
+
+The working instance of the Likeback server for Amarok lives on
+likeback.kollide.net. Feel free to push your fixes here, but also remember to
+update (or request an update of) the instance on Kollide. To do this, either
+contact Teo Mrnjavac (teo@kde.org, Teo` on #amarok) or, if you're an Amarok
+developer, request admin access to the Likeback instance from Paleo, the Kollide
+sysadmin.
+The only two files present in the working instance and missing from this
+directory (for obvious reasons) are db.conf.php and a dummy index.html.
+
+For general information about the Likeback system see
+http://kmess.org/projects/likeback/
