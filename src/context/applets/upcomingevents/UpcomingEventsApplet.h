@@ -157,7 +157,7 @@ private slots:
      * Connects the source to the Upcoming Events engine
      * and calls the dataUpdated function
      */
-    void connectSource( const QString &source );
+    void engineSourceAdded( const QString &source );
 
     /**
      * Show the settings windows

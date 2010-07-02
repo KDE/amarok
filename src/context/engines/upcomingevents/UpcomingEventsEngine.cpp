@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "UpcomingEventsEngine"
+
 // Includes
 #include "UpcomingEventsEngine.h"
 #include "core/support/Amarok.h"
@@ -37,113 +39,89 @@ using namespace Context;
 
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
-        , ContextObserver( ContextView::self() )
+        , Engine::EngineObserver( The::engineController() )
         , m_timeSpan( "AllEvents" )
-        , m_currentSelection( "artist" )
-        , m_requested( true )
-        , m_sources( "current" )
 {
-    update();
 }
 
 UpcomingEventsEngine::~UpcomingEventsEngine()
 {
-    DEBUG_BLOCK
-}
-
-QStringList
-UpcomingEventsEngine::sources() const
-{
-    return m_sources;
 }
 
 bool
-UpcomingEventsEngine::sourceRequestEvent( const QString& name )
+UpcomingEventsEngine::sourceRequestEvent( const QString &source )
 {
-    DEBUG_BLOCK
-
-    // someone is asking for data
-    m_requested = true;
-
-    QStringList tokens = name.split( ':' );
-
-    // user has changed the timespan.
-    if ( tokens.contains( "timeSpan" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "timeSpan" ) )  && ( tokens.size() > 2 ) )
-            m_timeSpan = tokens.at( 2 );
-
-    // otherwise, it comes from the engine, a new track is playing.
-    removeAllData( name );
-    setData( name, QVariant());
-    update();
-
-    return true;
-}
-
-void
-UpcomingEventsEngine::message( const ContextState& state )
-{
-    if ( state == Current && m_requested )
-        update();
+    if( source == "artistevents" )
+    {
+        updateDataForArtist();
+        return false; // data is not ready yet, but will be soon
+    }
+    else if( source == "venue" )
+    {
+        // TODO: handle venue source requests
+    }
+    else if( source.startsWith( "timespan" ) )
+    {
+        // user has changed the timespan.
+        QStringList tokens = source.split( ':' );
+        if( tokens.size() > 1 )
+            m_timeSpan = tokens.at( 1 );
+        removeAllData( source );
+        updateDataForArtist();
+        return true;
+    }
+    return false;
 }
 
 void
 UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     if( m_currentTrack->artist() != track->artist() )
-        update();
+        updateDataForArtist();
 }
 
 void
-UpcomingEventsEngine::update()
+UpcomingEventsEngine::engineNewTrackPlaying()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !m_currentTrack )
+    {
+        subscribeTo( track );
+        m_currentTrack = track;
+        updateDataForArtist();
+    }
+
+    if( m_currentTrack != track )
+    {
+        if( m_currentTrack && m_currentTrack->artist() != track->artist() )
+            updateDataForArtist();
+        unsubscribeFrom( m_currentTrack );
+        subscribeTo( track );
+        m_currentTrack = track;
+    }
+}
+
+void
+UpcomingEventsEngine::updateDataForArtist()
 {
     DEBUG_BLOCK
-
-    static QString s_lastArtistName;
-    m_artistName = "";
-
-    // Gets the current track
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
-
-    if ( !currentTrack )
+    if( !m_currentTrack )
         return;
 
-    DataEngine::Data data;
+    const QString &artistName = m_currentTrack->artist()->name();
+    if( artistName.isEmpty() )
+        return;
 
-    // default, or applet told us to fetch artist
-    if ( selection() == "artist" )
-    {
-        if ( currentTrack->artist() )
-        {
-            if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
-                    ( currentTrack->playableUrl().protocol() == "daap" ) ||
-                    !The::engineController()->isStream() )
-                m_artistName = currentTrack->artist()->name();
-            else
-                m_artistName = currentTrack->artist()->prettyName();
-        }
-
-        // Sends the artist name if exists, "Unkown artist" if not
-        if ( m_artistName.compare( "" ) == 0 )
-            setData( "upcomingEvents", "artist", "Unknown artist" );
-        else
-            setData( "upcomingEvents", "artist", m_artistName );
-    }
-
-    // Resizes the cover to better visibility
-    QPixmap cover = m_currentTrack->album()->image( 156 );
-
-    // Stored the last artist name to not send the same data twice
-    if( m_artistName != s_lastArtistName )
-    {
-        upcomingEventsRequest( m_artistName );
-        s_lastArtistName = m_artistName;
-    }
+    // Prepares the url for LastFm request
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "artist.getEvents" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist", artistName );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(upcomingEventsResultFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 QList< LastFmEvent >
@@ -153,32 +131,10 @@ UpcomingEventsEngine::upcomingEvents()
 }
 
 void
-UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
-{
-    // Prepares the url for LastFm request
-    KUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "artist.getEvents" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "artist", artist_name.toLocal8Bit() );
-    m_url = url;
-
-    QNetworkRequest req( url );
-    The::networkAccessManager()->get( req );
-    The::networkAccessManager()->getData( url, this,
-         SLOT(upcomingEventsResultFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
-
-void
 UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray data,
                                                    NetworkAccessManagerProxy::Error e )
 {
-    if( m_url != url )
-        return;
-
-    m_url.clear();
+    Q_UNUSED( url )
     m_upcomingEvents.clear();
 
     if( e.code != QNetworkReply::NoError )
@@ -203,7 +159,7 @@ UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray d
 void
 UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
 {
-
+    DEBUG_BLOCK
     while(!xmlReader.atEnd() && !xmlReader.hasError())
     {
         QLocale::setDefault(QLocale::English);
@@ -227,7 +183,8 @@ UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
                 while( xmlReader.name() == "artist" )
                 {
                     QString artist = xmlReader.readElementText();
-                    if( artist !=  m_artistName)
+                    QString currentArtist = m_currentTrack->artist()->name();
+                    if( artist != currentArtist )
                         artists.append( artist );
                     while( !xmlReader.isStartElement() ) xmlReader.readNext();
                 }
@@ -304,21 +261,10 @@ UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
         xmlReader.readNext();
     }
 
-    QVariant variant ( QMetaType::type( "LastFmEvent::List" ), &m_upcomingEvents );
-    removeData("upcomingEvents", "LastFmEvent");
-    setData ( "upcomingEvents", "LastFmEvent", variant );
-}
-
-void
-UpcomingEventsEngine::setSelection( const QString& selection )
-{
-    m_currentSelection = selection;
-}
-
-QString
-UpcomingEventsEngine::selection()
-{
-     return m_currentSelection;
+    Plasma::DataEngine::Data data;
+    data[ "artist" ] =  m_currentTrack->artist()->name();
+    data[ "LastFmEvent" ] = qVariantFromValue( m_upcomingEvents );
+    setData( "artistevents", data );
 }
 
 #include "UpcomingEventsEngine.moc"

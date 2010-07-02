@@ -104,8 +104,8 @@ UpcomingEventsApplet::init()
     // ask for all the CV height
     resize( 500, -1 );
 
-    connectSource( "upcomingEvents" );
-    connect( dataEngine( "amarok-upcomingEvents" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
+    Plasma::DataEngine *engine = dataEngine( "amarok-upcomingEvents" );
+    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(engineSourceAdded(QString)) );
 
     // Read config and inform the engine.
     m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
@@ -117,13 +117,10 @@ UpcomingEventsApplet::init()
 }
 
 void
-UpcomingEventsApplet::connectSource( const QString &source )
+UpcomingEventsApplet::engineSourceAdded( const QString &source )
 {
-    if( source == "upcomingEvents" )
-    {
-        dataEngine( "amarok-upcomingEvents" )->connectSource( "upcomingEvents", this );
-        dataUpdated( source, dataEngine( "amarok-upcomingEvents" )->query( "upcomingEvents" ) );
-    }
+    if( source == "artistevents" )
+        dataEngine( "amarok-upcomingEvents" )->connectSource( "artistevents", this );
 }
 
 void
@@ -148,10 +145,9 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
-UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( name )
+    Q_UNUSED( source )
     const QString &artistName = data[ "artist" ].toString();
     const LastFmEvent::List &events = data[ "LastFmEvent" ].value< LastFmEvent::List >();
 
@@ -541,10 +537,10 @@ UpcomingEventsApplet::saveTimeSpan()
     DEBUG_BLOCK
 
     m_timeSpan = m_temp_timeSpan;
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:" ) + m_timeSpan );
 
     Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", m_timeSpan );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:" ) + m_timeSpan );
 }
 
 void
