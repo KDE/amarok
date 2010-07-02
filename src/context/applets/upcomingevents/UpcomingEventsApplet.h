@@ -22,11 +22,15 @@
 // Includes
 #include "context/Applet.h"
 #include "context/DataEngine.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "UpcomingEventsWidget.h"
-#include "ui_upcomingEventsSettings.h"
+#include "ui_upcomingEventsGeneralSettings.h"
+#include "ui_upcomingEventsVenueSettings.h"
 
 class KConfigDialog;
 class QGraphicsLinearLayout;
+class QListWidgetItem;
+class QXmlStreamReader;
 class TextScrollingWidget;
 
 namespace Plasma
@@ -37,7 +41,7 @@ namespace Plasma
  /**
   * \class UpcomingEventsApplet UpcomingEventsApplet.h UpcomingEventsApplet.cpp
   * \brief The base class of the Upcoming Events applet.
-  * 
+  *
   * UpcomingEventsApplet displays the upcoming events of the current artist from LastFm.
   */
 class UpcomingEventsApplet : public Context::Applet
@@ -119,9 +123,14 @@ private:
     Plasma::IconWidget *m_settingsIcon;
 
     /**
-     * The GUI of the settings window
+     * The UI of the general settings page
      */
-    Ui::upcomingEventsSettings ui_Settings;
+    Ui::upcomingEventsGeneralSettings ui_GeneralSettings;
+
+    /**
+     * The UI of the sticky venue settings page
+     */
+    Ui::upcomingEventsVenueSettings ui_VenueSettings;
 
     /**
      * The possible values are "ThisWeek", "ThisMonth", "ThisYear" or "AllEvents"
@@ -152,7 +161,7 @@ private:
      * The vertical layout for presenting the list of events
      */
     QGraphicsLinearLayout *m_layout;
-    
+
 private slots:
     /**
      * Connects the source to the Upcoming Events engine
@@ -168,12 +177,12 @@ private slots:
     /**
      * Replace the former time span by the new one
      */
-    void changeTimeSpan(QString span);
+    void changeTimeSpan( const QString &span );
 
     /**
      * Sets the upcoming events as links
      */
-    void setAddressAsLink(int state);
+    void setAddressAsLink( int state );
 
     /**
      * Save the time span choosen by the user
@@ -189,6 +198,39 @@ private slots:
      * Save all the upcoming events settings
      */
     void saveSettings();
+
+private:
+    enum VenueItemRoles
+    {
+        VenueIdRole = Qt::UserRole,
+        VenueNameRole,
+        VenueCityRole,
+        VenueCountryRole,
+        VenueStreetRole,
+        VenuePhotoUrlRole,
+        VenueUrlRole,
+        VenueWebsiteRole
+    };
+
+    struct VenueData
+    {
+        int id;
+        QString name;
+        QString city;
+    };
+
+    void readVenueLocation( QXmlStreamReader &xml, QListWidgetItem *item );
+    QList<VenueData> venueStringToDataList( const QStringList &list );
+    QList<VenueData> m_favoriteVenues;
+
+private slots:
+    void searchVenue( const QString &text );
+    void venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void showVenueInfo( QListWidgetItem *item );
+    void venueResultDoubleClicked( QListWidgetItem *item );
+    void selectedVenueDoubleClicked( QListWidgetItem *item );
+    void openUrl( const QString &url );
 };
 
 K_EXPORT_AMAROK_APPLET( upcomingEvents, UpcomingEventsApplet )

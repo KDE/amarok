@@ -22,14 +22,15 @@
 #include "UpcomingEventsApplet.h"
 
 #include "App.h"
-#include "context/Svg.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "SvgHandler.h"
 
 #include <KConfigDialog>
 #include <KDateTime>
+#include <KGlobalSettings>
 #include <Plasma/Extender>
 #include <Plasma/ExtenderItem>
 #include <Plasma/IconWidget>
@@ -40,6 +41,7 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <QXmlStreamReader>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -106,9 +108,10 @@ UpcomingEventsApplet::init()
     connect( dataEngine( "amarok-upcomingEvents" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
 
     // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
-    m_enabledLinks = config.readEntry( "enabledLinks", 0 );
+    m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
+    m_enabledLinks = Amarok::config("UpcomingEvents Applet").readEntry( "enabledLinks", 0 );
+    QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
+    m_favoriteVenues = venueStringToDataList( venueData );
 
     updateConstraints();
     update();
@@ -251,34 +254,273 @@ UpcomingEventsApplet::configure()
 void
 UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    QWidget *settings = new QWidget();
-    ui_Settings.setupUi( settings );
+    QWidget *generalSettings = new QWidget;
+    QWidget *venueSettings = new QWidget;
+    ui_GeneralSettings.setupUi( generalSettings );
+    ui_VenueSettings.setupUi( venueSettings );
 
     m_temp_timeSpan = m_timeSpan;
     m_temp_enabledLinks = m_enabledLinks;
 
     // TODO bad, it's done manually ...
     if( m_timeSpan == "AllEvents" )
-        ui_Settings.comboBox->setCurrentIndex( 0 );
+        ui_GeneralSettings.comboBox->setCurrentIndex( 0 );
     else if( m_timeSpan == "ThisWeek" )
-        ui_Settings.comboBox->setCurrentIndex( 1 );
+        ui_GeneralSettings.comboBox->setCurrentIndex( 1 );
     else if( m_timeSpan == "ThisMonth" )
-        ui_Settings.comboBox->setCurrentIndex( 2 );
+        ui_GeneralSettings.comboBox->setCurrentIndex( 2 );
     else if( m_timeSpan == "ThisYear" )
-        ui_Settings.comboBox->setCurrentIndex( 3 );
+        ui_GeneralSettings.comboBox->setCurrentIndex( 3 );
 
     if( m_enabledLinks )
-        ui_Settings.checkBox->setCheckState ( Qt::Checked );
+        ui_GeneralSettings.checkBox->setCheckState ( Qt::Checked );
 
-    parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
-    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
-    connect( ui_Settings.checkBox, SIGNAL( stateChanged( int ) ), this, SLOT( setAddressAsLink( int ) ) );
-    connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );
+    connect( ui_GeneralSettings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(changeTimeSpan(QString)) );
+    connect( ui_GeneralSettings.checkBox, SIGNAL(stateChanged(int)), SLOT(setAddressAsLink(int)) );
+    connect( ui_VenueSettings.searchLineEdit, SIGNAL(returnPressed(QString)), SLOT(searchVenue(QString)) );
+    connect( ui_VenueSettings.searchResultsList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
+    connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
+    connect( ui_VenueSettings.searchResultsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(venueResultDoubleClicked(QListWidgetItem*)) );
+    connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(selectedVenueDoubleClicked(QListWidgetItem*)) );
+    connect( ui_VenueSettings.urlValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.urlValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.websiteValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.websiteValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+
+    ui_VenueSettings.photoLabel->hide();
+    ui_VenueSettings.infoGroupBox->setFont( KGlobalSettings::smallestReadableFont() );
+
+    ui_VenueSettings.countryCombo->insertSeparator( 1 );
+    const QStringList &countryCodes = KGlobal::locale()->allCountriesList();
+    foreach( const QString &code, countryCodes )
+        ui_VenueSettings.countryCombo->addItem( KGlobal::locale()->countryCodeToName(code), code );
+
+    foreach( const VenueData &data, m_favoriteVenues )
+    {
+        QListWidgetItem *item = new QListWidgetItem;
+        item->setData( VenueIdRole, data.id );
+        item->setData( VenueCityRole, data.city );
+        item->setData( VenueNameRole, data.name );
+        item->setText( QString( "%1, %2" )
+                       .arg( item->data( VenueNameRole ).toString() )
+                       .arg( item->data( VenueCityRole ).toString() ) );
+        ui_VenueSettings.selectedVenuesList->addItem( item );
+    }
+
+    parent->addPage( generalSettings, i18n( "Upcoming Events Settings" ), "preferences-system");
+    parent->addPage( venueSettings, i18n( "Favorite Venues" ), "favorites" );
 }
 
 void
-UpcomingEventsApplet::changeTimeSpan(QString span)
+UpcomingEventsApplet::venueResultDoubleClicked( QListWidgetItem *item )
+{
+    if( !item )
+        return;
+
+    int row = ui_VenueSettings.searchResultsList->row( item );
+    QListWidgetItem *moveItem = ui_VenueSettings.searchResultsList->takeItem( row );
+    ui_VenueSettings.searchResultsList->clearSelection();
+    ui_VenueSettings.selectedVenuesList->addItem( moveItem );
+    ui_VenueSettings.selectedVenuesList->setCurrentItem( moveItem );
+}
+
+void
+UpcomingEventsApplet::selectedVenueDoubleClicked( QListWidgetItem *item )
+{
+    if( !item )
+        return;
+
+    int row = ui_VenueSettings.selectedVenuesList->row( item );
+    QListWidgetItem *moveItem = ui_VenueSettings.selectedVenuesList->takeItem( row );
+    ui_VenueSettings.selectedVenuesList->clearSelection();
+    ui_VenueSettings.searchResultsList->addItem( moveItem );
+    ui_VenueSettings.searchResultsList->setCurrentItem( moveItem );
+}
+
+void
+UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
+{
+    if( !item )
+        return;
+
+    const QString &name    = item->data( VenueNameRole ).toString();
+    const QString &city    = item->data( VenueCityRole ).toString();
+    const QString &country = item->data( VenueCountryRole ).toString();
+    const QString &street  = item->data( VenueStreetRole ).toString();
+    const QUrl &url        = item->data( VenueUrlRole ).toUrl();
+    const QUrl &website    = item->data( VenueWebsiteRole ).toUrl();
+    const QUrl &photoUrl   = item->data( VenuePhotoUrlRole ).toUrl();
+
+    ui_VenueSettings.nameValue->setText( name );
+    ui_VenueSettings.cityValue->setText( city );
+    ui_VenueSettings.countryValue->setText( country );
+    ui_VenueSettings.streetValue->setText( street );
+
+    if( url.isValid() )
+    {
+        ui_VenueSettings.urlValue->setText( i18n("link") );
+        ui_VenueSettings.urlValue->setUrl( url.toString() );
+    }
+    else
+        ui_VenueSettings.urlValue->clear();
+
+    if( website.isValid() )
+    {
+        ui_VenueSettings.websiteValue->setText( i18n("link") );
+        ui_VenueSettings.websiteValue->setUrl( website.toString() );
+    }
+    else
+        ui_VenueSettings.websiteValue->clear();
+
+    if( photoUrl.isValid() )
+    {
+        The::networkAccessManager()->getData( photoUrl, this,
+             SLOT(venuePhotoResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    }
+    else
+    {
+        ui_VenueSettings.photoLabel->hide();
+        ui_VenueSettings.photoLabel->clear();
+    }
+
+}
+
+void
+UpcomingEventsApplet::searchVenue( const QString &text )
+{
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "venue.search" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "venue", text );
+    int currentCountryIndex = ui_VenueSettings.countryCombo->currentIndex();
+    const QString &countryCode = ui_VenueSettings.countryCombo->itemData( currentCountryIndex ).toString();
+    if( !countryCode.isEmpty() )
+        url.addQueryItem( "country", countryCode );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(venueResults(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+void
+UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Failed to get venue results:" << e.description;
+        return;
+    }
+
+    ui_VenueSettings.searchResultsList->clear();
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "venue" )
+        {
+            QListWidgetItem *item = new QListWidgetItem;
+            while( !xml.atEnd() )
+            {
+                xml.readNext();
+                const QStringRef &n = xml.name();
+                if( xml.isEndElement() && n == "venue" )
+                    break;
+
+                if( xml.isStartElement() )
+                {
+                    const QXmlStreamAttributes &a = xml.attributes();
+                    if( n == "id" )
+                        item->setData( VenueIdRole, xml.readElementText().toInt() );
+                    else if( n == "name" )
+                        item->setData( VenueNameRole, xml.readElementText() );
+                    else if( n == "location" )
+                        readVenueLocation( xml, item );
+                    else if( n == "url" )
+                        item->setData( VenueUrlRole, QUrl(xml.readElementText()) );
+                    else if( n == "website" )
+                        item->setData( VenueWebsiteRole, QUrl(xml.readElementText()) );
+                    else if( n == "image" && a.hasAttribute("size") && a.value("size") == "large" )
+                        item->setData( VenuePhotoUrlRole, QUrl(xml.readElementText()) );
+                    else
+                        xml.skipCurrentElement();
+                }
+            }
+            item->setText( QString( "%1, %2" )
+                           .arg( item->data( VenueNameRole ).toString() )
+                           .arg( item->data( VenueCityRole ).toString() ) );
+            ui_VenueSettings.searchResultsList->addItem( item );
+        }
+    }
+}
+
+void
+UpcomingEventsApplet::venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Failed to get venue photo:" << e.description;
+        return;
+    }
+
+    QPixmap photo;
+    if( photo.loadFromData( data ) )
+    {
+        photo = photo.scaled( 140, 140, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        photo = The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true );
+        ui_VenueSettings.photoLabel->setPixmap( photo );
+        ui_VenueSettings.photoLabel->show();
+    }
+}
+
+void
+UpcomingEventsApplet::readVenueLocation( QXmlStreamReader &xml, QListWidgetItem *item )
+{
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        if( xml.isEndElement() && xml.name() == "location" )
+            break;
+
+        if( xml.isStartElement() )
+        {
+            if( xml.name() == "city" )
+                item->setData( VenueCityRole, xml.readElementText() );
+            else if( xml.name() == "country" )
+                item->setData( VenueCountryRole, xml.readElementText() );
+            else if( xml.name() == "street" )
+                item->setData( VenueStreetRole, xml.readElementText() );
+            else
+                xml.skipCurrentElement();
+        }
+    }
+}
+
+QList<UpcomingEventsApplet::VenueData>
+UpcomingEventsApplet::venueStringToDataList( const QStringList &list )
+{
+    // config qstringlist is stored as format: QString(id;name;city), QString(id;name;city), ...
+    QList<VenueData> dataList;
+    foreach( const QString &item, list )
+    {
+        const QStringList &frag = item.split( QChar(';') );
+        VenueData data = { frag.at( 0 ).toInt(), frag.at( 1 ), frag.at( 2 ) };
+        dataList << data;
+    }
+    return dataList;
+}
+
+void
+UpcomingEventsApplet::openUrl( const QString &url )
+{
+    QDesktopServices::openUrl( QUrl(url) );
+}
+
+void
+UpcomingEventsApplet::changeTimeSpan( const QString &span )
 {
     DEBUG_BLOCK
     // TODO change this b/c it's BAAADDD !!!
@@ -307,8 +549,7 @@ UpcomingEventsApplet::saveTimeSpan()
     m_timeSpan = m_temp_timeSpan;
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
 
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    config.writeEntry( "timeSpan", m_timeSpan );
+    Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", m_timeSpan );
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
 }
 
@@ -340,6 +581,19 @@ UpcomingEventsApplet::saveSettings()
 {
     saveTimeSpan();
     saveAddressAsLink();
+
+    QStringList venueConfig;
+    m_favoriteVenues.clear();
+    for( int i = 0, count = ui_VenueSettings.selectedVenuesList->count() ; i < count; ++i )
+    {
+        int itemId = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueIdRole ).toString().toInt();
+        QString itemCity = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueCityRole ).toString();
+        QString itemName = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueNameRole ).toString();
+        VenueData data = { itemId, itemName, itemCity };
+        m_favoriteVenues << data;
+        venueConfig << (QStringList() << QString::number(itemId) << itemName << itemCity).join( QChar(';') );
+    }
+    Amarok::config("UpcomingEvents Applet").writeEntry( "favVenues", venueConfig );
 }
 
 #include "UpcomingEventsApplet.moc"

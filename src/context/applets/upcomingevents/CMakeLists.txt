@@ -8,7 +8,10 @@ include_directories(
 
 set( upcomingEvents_SRCS UpcomingEventsApplet.cpp LastFmEvent.cpp UpcomingEventsWidget.cpp )
 
-kde4_add_ui_files( upcomingEvents_SRCS upcomingEventsSettings.ui )
+kde4_add_ui_files( upcomingEvents_SRCS
+                   upcomingEventsGeneralSettings.ui
+                   upcomingEventsVenueSettings.ui
+                   )
 kde4_add_plugin(amarok_context_applet_upcomingEvents ${upcomingEvents_SRCS})
 
 if(APPLE)
