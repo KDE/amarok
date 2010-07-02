@@ -141,11 +141,6 @@ private:
     QString m_timeSpan;
 
     /**
-     * The upcoming events are displayed as web links
-     */
-    bool m_enabledLinks;
-
-    /**
      * The current track playing
      */
     Meta::TrackPtr m_currentTrack;

@@ -6,46 +6,40 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>163</width>
-    <height>68</height>
+    <width>180</width>
+    <height>35</height>
    </rect>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="labelAlignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>4</y>
+     <width>171</width>
+     <height>25</height>
+    </rect>
    </property>
-   <item row="0" column="0">
-    <widget class="QComboBox" name="comboBox">
-     <item>
-      <property name="text">
-       <string>All events</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>This week</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>This month</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>This year</string>
-      </property>
-     </item>
-    </widget>
+   <item>
+    <property name="text">
+     <string>All events</string>
+    </property>
    </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>Show places as links</string>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>This week</string>
+    </property>
    </item>
-  </layout>
+   <item>
+    <property name="text">
+     <string>This month</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>This year</string>
+    </property>
+   </item>
+  </widget>
  </widget>
  <resources/>
  <connections/>

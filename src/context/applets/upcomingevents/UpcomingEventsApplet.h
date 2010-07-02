@@ -138,19 +138,9 @@ private:
     QString m_timeSpan;
 
     /**
-     * Enables the link to the event home page if true, disables else
-     */
-    bool m_enabledLinks;
-
-    /**
      * The temporary m_timeSpan value, used to store or not the user choice
      */
     QString m_temp_timeSpan;
-
-    /**
-     * The temporary m_enabledLinks value, used to store or not the user choice
-     */
-    bool m_temp_enabledLinks;
 
     /**
      * The scroll area is used as an embedded widget to be added in the applet
@@ -180,19 +170,9 @@ private slots:
     void changeTimeSpan( const QString &span );
 
     /**
-     * Sets the upcoming events as links
-     */
-    void setAddressAsLink( int state );
-
-    /**
      * Save the time span choosen by the user
      */
     void saveTimeSpan();
-
-    /**
-     * Displays all the upcoming events addresses as links
-     */
-    void saveAddressAsLink();
 
     /**
      * Save all the upcoming events settings

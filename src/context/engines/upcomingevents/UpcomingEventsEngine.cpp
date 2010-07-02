@@ -72,11 +72,6 @@ UpcomingEventsEngine::sourceRequestEvent( const QString& name )
         if ( ( tokens.at( 1 ) == QString( "timeSpan" ) )  && ( tokens.size() > 2 ) )
             m_timeSpan = tokens.at( 2 );
 
-    // user has enabled or disabled showing addresses as links
-    if ( tokens.contains( "enabledLinks" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "enabledLinks" ) )  && ( tokens.size() > 2 ) )
-            m_enabledLinks = (tokens.at( 2 ) == QString(Qt::Checked));
-
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
     setData( name, QVariant());

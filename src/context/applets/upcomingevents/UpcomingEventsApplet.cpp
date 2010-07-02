@@ -109,7 +109,6 @@ UpcomingEventsApplet::init()
 
     // Read config and inform the engine.
     m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
-    m_enabledLinks = Amarok::config("UpcomingEvents Applet").readEntry( "enabledLinks", 0 );
     QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
     m_favoriteVenues = venueStringToDataList( venueData );
 
@@ -260,7 +259,6 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     ui_VenueSettings.setupUi( venueSettings );
 
     m_temp_timeSpan = m_timeSpan;
-    m_temp_enabledLinks = m_enabledLinks;
 
     // TODO bad, it's done manually ...
     if( m_timeSpan == "AllEvents" )
@@ -272,11 +270,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     else if( m_timeSpan == "ThisYear" )
         ui_GeneralSettings.comboBox->setCurrentIndex( 3 );
 
-    if( m_enabledLinks )
-        ui_GeneralSettings.checkBox->setCheckState ( Qt::Checked );
-
     connect( ui_GeneralSettings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(changeTimeSpan(QString)) );
-    connect( ui_GeneralSettings.checkBox, SIGNAL(stateChanged(int)), SLOT(setAddressAsLink(int)) );
     connect( ui_VenueSettings.searchLineEdit, SIGNAL(returnPressed(QString)), SLOT(searchVenue(QString)) );
     connect( ui_VenueSettings.searchResultsList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
     connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
@@ -554,33 +548,9 @@ UpcomingEventsApplet::saveTimeSpan()
 }
 
 void
-UpcomingEventsApplet::setAddressAsLink(int state)
-{
-    DEBUG_BLOCK
-
-    m_temp_enabledLinks = (state == Qt::Checked);
-}
-
-void
-UpcomingEventsApplet::saveAddressAsLink()
-{
-    DEBUG_BLOCK
-
-    m_enabledLinks = m_temp_enabledLinks;
-    const QString enabledLinks = m_enabledLinks ? "true" : "false";
-
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
-
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    config.writeEntry( "enabledLinks", m_enabledLinks );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
-}
-
-void
 UpcomingEventsApplet::saveSettings()
 {
     saveTimeSpan();
-    saveAddressAsLink();
 
     QStringList venueConfig;
     m_favoriteVenues.clear();
