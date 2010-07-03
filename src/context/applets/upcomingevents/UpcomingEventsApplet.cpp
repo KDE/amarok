@@ -177,7 +177,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         else
             timeSpanDisabled = true;
 
-        if( timeSpanDisabled || events.at( i ).date() < limite.dateTime() )
+        if( timeSpanDisabled || events.at( i ).date() < limite )
         {
             UpcomingEventsWidget *widget = new UpcomingEventsWidget;
             widget->setName( events.at( i ).name() );
@@ -217,6 +217,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     updateConstraints();
     update();
 }
+
 
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

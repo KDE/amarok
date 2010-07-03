@@ -18,10 +18,11 @@
 #ifndef LASTFMEVENT_H
 #define LASTFMEVENT_H
 
-#include <QString>
-#include <QDateTime>
-#include <QStringList>
+#include <KDateTime>
 #include <KUrl>
+
+#include <QString>
+#include <QStringList>
 
 /**
  * A class to store an event fetched from the last.fm API
@@ -34,7 +35,7 @@ private:
     QStringList m_artists;      //The list of the participants of the event
     QString m_name;             //The event's name
     QString m_location;         //The location where the event will take place
-    QDateTime m_date;           //The event's date
+    KDateTime m_date;           //The event's date
     KUrl m_smallImageUrl;       //The URL to the event's image
     KUrl m_url;                 //The URL to the event's page
 
@@ -74,7 +75,7 @@ public:
      * A getter for the event's date
      * @return the event's date
      */
-    QDateTime date() const;
+    KDateTime date() const;
 
     /**
      * A getter for the event's location
@@ -110,7 +111,7 @@ public:
      * Sets the event's date
      * @param date the event's date
      */
-    void setDate( const QDateTime &date );
+    void setDate( const KDateTime &date );
 
     /**
      * Sets the event's location

@@ -48,7 +48,7 @@ QStringList LastFmEvent::artists() const
     return m_artists;
 }
 
-QDateTime LastFmEvent::date() const
+KDateTime LastFmEvent::date() const
 {
     return m_date;
 }
@@ -78,7 +78,7 @@ void LastFmEvent::setArtists( const QStringList &artists )
     m_artists = artists;
 }
 
-void LastFmEvent::setDate( const QDateTime &date )
+void LastFmEvent::setDate( const KDateTime &date )
 {
     m_date = date;
 }

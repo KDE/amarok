@@ -70,16 +70,6 @@ public:
      */
     void engineNewTrackPlaying();
 
-    /**
-     * Returns all the upcoming events
-     */
-    LastFmEvent::List upcomingEvents();
-
-    /**
-     * Parses the upcoming events request result
-     */
-    void upcomingEventsParseResult( QXmlStreamReader &xml );
-
 protected:
     /**
      * Reimplemented from Plasma::DataEngine
@@ -103,14 +93,12 @@ private:
     Meta::TrackPtr m_currentTrack;
 
     /**
-     * The list of all upcoming events
-     */
-    LastFmEvent::List m_upcomingEvents;
-
-    /**
      * The XML text, result of LastFm request
      */
     QString m_xml;
+
+    QMultiHash<QString, QString> readEventArtists( QXmlStreamReader &xml );
+    QHash<QString, QString> readVenueLocation( QXmlStreamReader &xml );
 
 private slots:
     /**

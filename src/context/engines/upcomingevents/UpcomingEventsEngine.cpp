@@ -30,6 +30,9 @@
 #include <lastfm/XmlQuery>
 #include <lastfm/ws.h>
 
+// KDE
+#include <KDateTime>
+
 // Qt
 #include <QXmlStreamReader>
 
@@ -90,8 +93,7 @@ UpcomingEventsEngine::engineNewTrackPlaying()
         m_currentTrack = track;
         updateDataForArtist();
     }
-
-    if( m_currentTrack != track )
+    else if( m_currentTrack != track )
     {
         if( m_currentTrack && m_currentTrack->artist() != track->artist() )
             updateDataForArtist();
@@ -124,147 +126,154 @@ UpcomingEventsEngine::updateDataForArtist()
          SLOT(upcomingEventsResultFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-QList< LastFmEvent >
-UpcomingEventsEngine::upcomingEvents()
-{
-    return m_upcomingEvents;
-}
-
 void
-UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &url, QByteArray data,
+UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &/*url*/, QByteArray data,
                                                    NetworkAccessManagerProxy::Error e )
 {
-    Q_UNUSED( url )
-    m_upcomingEvents.clear();
-
     if( e.code != QNetworkReply::NoError )
-        return;
-
-    if( !data.isNull() )
     {
-        m_xml = QString::fromUtf8( data, data.size() );
-    }
-    else
-    {
+        debug() << "Error received getting upcoming events" << e.description;
         return;
     }
 
-    QDomDocument doc;
-    QXmlStreamReader xmlReader;
-    xmlReader.addData( m_xml );
-    doc.setContent( m_xml );
-    upcomingEventsParseResult( xmlReader );
-}
-
-void
-UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
-{
-    DEBUG_BLOCK
-    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    LastFmEvent::List artistEvents;
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        QLocale::setDefault(QLocale::English);
-        QStringList artists;
-        QString title = "";
-        QString location = "";
-        QDateTime startDate;
-        KUrl url;
-        KUrl imageUrl;
-
-        if(xmlReader.name() == "event")
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "event" )
         {
-            //Read title
-            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "title") xmlReader.readNext();
-            if(!xmlReader.atEnd() && !xmlReader.hasError()) title = xmlReader.readElementText();
+            QMultiHash<QString, QString> artists;
+            QHash<QString, QString> location;
+            QString title;
+            KDateTime startDate;
+            KUrl url;
+            KUrl imageUrl;
+            int attendance( 0 );
+            bool cancelled( false );
 
-            //Read artists
-            while( !xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "artist" ) xmlReader.readNext();
-            if( !xmlReader.atEnd() && !xmlReader.hasError() )
+            while( !xml.atEnd() )
             {
-                while( xmlReader.name() == "artist" )
+                xml.readNext();
+                const QStringRef &n = xml.name();
+                if( xml.isEndElement() && n == "event" )
+                    break;
+
+                if( xml.isStartElement() )
                 {
-                    QString artist = xmlReader.readElementText();
-                    QString currentArtist = m_currentTrack->artist()->name();
-                    if( artist != currentArtist )
-                        artists.append( artist );
-                    while( !xmlReader.isStartElement() ) xmlReader.readNext();
+                    const QXmlStreamAttributes &a = xml.attributes();
+                    if( n == "title" )
+                        title = xml.readElementText();
+                    else if( n == "artists" )
+                        artists = readEventArtists( xml );
+                    else if( n == "venue" )
+                        location = readVenueLocation( xml );
+                    else if( n == "startDate" )
+                        startDate = KDateTime::fromString( xml.readElementText(), "%a, %d %b %Y %H:%M:%S" );
+                    else if( n == "image" && a.hasAttribute("size") && a.value("size") == "large" )
+                        imageUrl = KUrl( xml.readElementText() );
+                    else if( n == "url" )
+                        url = KUrl( xml.readElementText() );
+                    else if( n == "attendance" )
+                        attendance = xml.readElementText().toInt();
+                    else if( n == "cancelled" )
+                        cancelled = bool( xml.readElementText().toInt() );
+                    else
+                        xml.skipCurrentElement();
                 }
             }
-
-            //Read Location
-            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "city") xmlReader.readNext();
-            if(!xmlReader.atEnd() && !xmlReader.hasError())
-            {
-                location.append(xmlReader.readElementText());
-                location.append(", ");
-            }
-
-            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "country") xmlReader.readNext();
-            if(!xmlReader.atEnd() && !xmlReader.hasError())
-            {
-                location.append(xmlReader.readElementText());
-            }
-
-            //Read URL
-            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "url") xmlReader.readNext();
-            if(!xmlReader.atEnd() && !xmlReader.hasError())
-            {
-                url = KUrl(xmlReader.readElementText());
-            }
-
-            //Read Image
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "image")
-            {
-                xmlReader.readNext ();
-            }
-
-            //we search the large image, in the panel of the image proposed by lastFM
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.attributes().value("size")!="large")
-            {
-                xmlReader.readNext ();
-            }
-
-            if (!xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                imageUrl = KUrl( xmlReader.readElementText() );
-            }
-
-            //Read startDate
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "startDate")
-            {
-                xmlReader.readNext ();
-            }
-            if( !xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                QString startDateString = xmlReader.readElementText();
-                startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
-            }
-
-            // LastFm event creation
-            if( !xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                LastFmEvent event;
-                event.setArtists( artists );
-                event.setName( title );
-                event.setLocation( location );
-                event.setDate( startDate );
-                event.setUrl( url );
-                event.setSmallImageUrl( imageUrl );
-                m_upcomingEvents.append( event );
-            }
+            QString locationString = QString("%1, %2")
+                .arg( location.value("city") )
+                .arg( location.value("country") );
+            LastFmEvent event;
+            event.setArtists( artists.values("artist") );
+            event.setName( title );
+            event.setLocation( locationString );
+            event.setDate( startDate );
+            event.setUrl( url );
+            event.setSmallImageUrl( imageUrl );
+            artistEvents.append( event );
         }
-        xmlReader.readNext();
     }
+    Plasma::DataEngine::Data EngineData;
+    EngineData[ "artist" ] =  m_currentTrack->artist()->name();
+    EngineData[ "LastFmEvent" ] = qVariantFromValue( artistEvents );
+    setData( "artistevents", EngineData );
+}
 
-    Plasma::DataEngine::Data data;
-    data[ "artist" ] =  m_currentTrack->artist()->name();
-    data[ "LastFmEvent" ] = qVariantFromValue( m_upcomingEvents );
-    setData( "artistevents", data );
+QMultiHash<QString, QString>
+UpcomingEventsEngine::readEventArtists( QXmlStreamReader &xml )
+{
+    QMultiHash<QString, QString> artists;
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        if( xml.isEndElement() && xml.name() == "artists" )
+            break;
+
+        if( xml.isStartElement() )
+        {
+            if( xml.name() == "artist" )
+            {
+                QString artist = xml.readElementText();
+                if( artist != m_currentTrack->artist()->name() )
+                    artists.insert( "artist", artist );
+            }
+            else if( xml.name() == "headliner" )
+                artists.insert( "headliner", xml.readElementText() );
+            else
+                xml.skipCurrentElement();
+        }
+    }
+    return artists;
+}
+
+QHash<QString, QString>
+UpcomingEventsEngine::readVenueLocation( QXmlStreamReader &xml )
+{
+    QHash<QString, QString> location;
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        const QStringRef &n = xml.name();
+        if( xml.isEndElement() && n == "venue" )
+            break;
+
+        if( xml.isStartElement() )
+        {
+            if( n == "name" )
+                location[ "name" ] = xml.readElementText();
+            else if( n == "website" )
+                location[ "website" ] = xml.readElementText();
+            else if( n == "url" )
+                location[ "url" ] = xml.readElementText();
+            else if( n == "location" )
+            {
+                while( !xml.atEnd() )
+                {
+                    xml.readNext();
+                    const QStringRef &n = xml.name();
+                    if( xml.isEndElement() && n == "location" )
+                        break;
+
+                    if( xml.isStartElement() )
+                    {
+                        if( n == "city" )
+                            location[ "city" ] = xml.readElementText();
+                        else if( n == "country" )
+                            location[ "country" ] = xml.readElementText();
+                        else if( n == "street" )
+                            location[ "street" ] = xml.readElementText();
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+            }
+            else
+                xml.skipCurrentElement();
+        }
+    }
+    return location;
 }
 
 #include "UpcomingEventsEngine.moc"

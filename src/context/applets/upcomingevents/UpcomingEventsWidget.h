@@ -47,7 +47,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
         /**
          *@return the image
          */
-        const QPixmap *image() const;
+        QPixmap image() const;
         /**
          *@return the participants Plasma::Label pointer
          */
@@ -74,7 +74,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
          *Set the event's image in Plasma::Label from an url
          *@param KUrl, image's url to be displayed
          */
-        void    setImage( const KUrl &urlImage );
+        void setImage( const KUrl &url );
         /**
          *Set the event's participants text in Plasma::Label from a QString
          *@param QString, participant's text to be displayed
@@ -115,7 +115,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
          *SLOTS
          *Get pixmap from the internet and set it into image's Plasma::Label
          */
-        void loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void loadImage();
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */

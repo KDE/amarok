@@ -15,7 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "UpcomingEventsWidget"
+
 #include "UpcomingEventsWidget.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 
 #include <KDateTime>
@@ -33,19 +36,18 @@
 
 UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFlags wFlags )
     : QGraphicsWidget( parent, wFlags )
+    , m_image( new QLabel )
+    , m_participants( new Plasma::Label( this ) )
+    , m_date( new Plasma::Label( this ) )
+    , m_location( new Plasma::Label( this ) )
+    , m_name( new Plasma::Label( this ) )
+    , m_url( new Plasma::Label( this ) )
 {
-    m_image = new QLabel;
     m_image->setAttribute( Qt::WA_NoSystemBackground );
     m_image->setAlignment( Qt::AlignCenter );
     m_image->setFixedSize( 128, 128 );
-
     QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget;
     imageProxy->setWidget( m_image );
-    m_participants = new Plasma::Label( this );
-    m_date = new Plasma::Label( this );
-    m_name = new Plasma::Label( this );
-    m_url = new Plasma::Label( this );
-    m_location = new Plasma::Label( this );
     m_participants->nativeWidget()->setWordWrap( true );
     m_name->nativeWidget()->setWordWrap( true );
 
@@ -60,6 +62,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFla
 
     m_url->nativeWidget()->setOpenExternalLinks( true );
     m_url->nativeWidget()->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_image->setText( i18n("Loading picture...") );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -72,10 +75,12 @@ UpcomingEventsWidget::date() const
     return m_date;
 }
 
-const QPixmap *
+QPixmap
 UpcomingEventsWidget::image() const
 {
-    return m_image->pixmap();
+    QPixmap image( *m_image->pixmap() );
+    image.detach();
+    return image;
 }
 
 Plasma::Label *
@@ -110,29 +115,30 @@ UpcomingEventsWidget::setImage( const KUrl &url )
         m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 120 ) );
         return;
     }
-
-    m_image->setText( i18n("Loading picture...") );
     m_imageUrl = url;
-    The::networkAccessManager()->getData( url, this,
-         SLOT(loadImage(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    QNetworkReply *reply = The::networkAccessManager()->get( QNetworkRequest(url) );
+    connect( reply, SIGNAL(finished()), SLOT(loadImage()), Qt::QueuedConnection );
 }
 
 void
-UpcomingEventsWidget::loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+UpcomingEventsWidget::loadImage()
 {
+    QNetworkReply *reply = static_cast<QNetworkReply*>( sender() );
+    const KUrl &url = reply->request().url();
     if( m_imageUrl != url )
         return;
 
     m_imageUrl.clear();
-    if( e.code != QNetworkReply::NoError )
+    if( reply->error() != QNetworkReply::NoError )
         return;
 
     QPixmap image;
-    if( image.loadFromData( data ) )
+    if( image.loadFromData( reply->readAll() ) )
     {
         image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 6, QString(), true ) );
     }
+    reply->deleteLater();
 }
 
 void
