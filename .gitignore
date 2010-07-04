@@ -10,3 +10,6 @@ CMakeFiles
 cmake_install.cmake
 CMakeLists.txt.user
 CMakeLists.txt.user.*
+
+#QtCreator
+qtcreator-build
