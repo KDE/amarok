@@ -619,6 +619,7 @@ MetaPlaylistModel::providerForIndex( const QModelIndex &idx ) const
 QActionList
 MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
 {
+    DEBUG_BLOCK
     //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
     QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
 
@@ -632,13 +633,17 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
 
     if( !IS_TRACK(idx) )
     {
+        debug() << "is NOT a track";
         Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
         actions << playlist->actions();
     }
     else
     {
+        debug() << "is a track";
         Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
-        actions << playlist->actions();
+        Meta::TrackPtr track = trackFromIndex( idx );
+        int trackIndex = playlist->tracks().indexOf( track );
+        actions << playlist->trackActions( trackIndex );
     }
 
     return actions;
