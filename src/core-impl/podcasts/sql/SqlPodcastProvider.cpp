@@ -359,7 +359,6 @@ SqlPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
 QList<QAction *>
 SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
 {
-    DEBUG_BLOCK
     QList<QAction *> actions;
     Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannel::fromPlaylistPtr( playlist );
     if( sqlChannel.isNull() )
