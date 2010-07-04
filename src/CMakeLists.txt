@@ -24,6 +24,7 @@ add_subdirectory( services )
 add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
+add_subdirectory( transcoding )
 
 # if( STRIGI_FOUND )
     # add_subdirectory( strigi )
@@ -574,18 +575,6 @@ set(taglib_filetype_resolver_SRCS
 )
 
 #####################################################################
-# TRANSCODING
-#####################################################################
-set(transcoding_SRCS
-    transcoding/TranscodeDialog.cpp
-    transcoding/TranscodeJob.cpp
-)
-
-kde4_add_ui_files(transcoding_SRCS
-    transcoding/TranscodeDialog.ui
-)
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -619,7 +608,6 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
-    ${transcoding_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -921,6 +909,7 @@ target_link_libraries(amaroklib
     amarokpud
     amarokcore
     amarokocsclient
+    amarok-transcoding
 )
 
 if(KDE4_BUILD_TESTS)

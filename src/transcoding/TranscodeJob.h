@@ -29,7 +29,7 @@
  * codec and container format.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class TranscodeJob : public KJob
+class AMAROK_EXPORT TranscodeJob : public KJob
 {
     Q_OBJECT
 public:

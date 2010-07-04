@@ -46,7 +46,7 @@ class TransferJob : public KCompositeJob
 {
     Q_OBJECT
     public:
-        TransferJob( SqlCollectionLocation * location );
+        TransferJob( SqlCollectionLocation * location, const TranscodeFormat & format );
 
         void start();
     virtual bool addSubjob( KJob* job );
@@ -64,6 +64,7 @@ class TransferJob : public KCompositeJob
     private:
         SqlCollectionLocation* m_location;
         bool m_killed;
+        TranscodeFormat m_transcodeFormat;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public CollectionLocation
@@ -94,7 +95,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
 
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                           const TranscodeFormat & format = TranscodeFormat::Null() );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
@@ -106,7 +108,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         void slotTransferJobAborted();
 
     private:
-        bool startNextJob();
+        bool startNextJob( const TranscodeFormat format );
         bool startNextRemoveJob();
 
         Collections::SqlCollection *m_collection;

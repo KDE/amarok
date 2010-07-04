@@ -45,6 +45,7 @@ CollectionLocation::CollectionLocation()
 
 CollectionLocation::CollectionLocation( const Collections::Collection* parentCollection)
     :QObject()
+    , m_transcodeFormat( TranscodeFormat::Null() )
     , m_destination( 0 )
     , m_source( 0 )
     , m_sourceTracks()
@@ -52,7 +53,6 @@ CollectionLocation::CollectionLocation( const Collections::Collection* parentCol
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
-    , m_transcodeFormat( TranscodeFormat::Null() )
 {
     //nothing to do
 }
@@ -93,7 +93,8 @@ CollectionLocation::isOrganizable() const
 }
 
 void
-CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination, TranscodeFormat format )
+CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
+                                 const TranscodeFormat &format )
 {
     Meta::TrackList list;
     list.append( track );
@@ -102,7 +103,8 @@ CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *desti
 
 
 void
-CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination, TranscodeFormat format )
+CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
+                                 const TranscodeFormat &format )
 {
     if( !destination->isWritable() )
     {
@@ -119,7 +121,8 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 }
 
 void
-CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination, TranscodeFormat format )
+CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
+                                 const TranscodeFormat &format )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -259,13 +262,16 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
             debug() << "adding url " << track->playableUrl();
         }
     }
+    debug() << "Format is " << m_transcodeFormat.encoder();
 
     slotGetKIOCopyableUrlsDone( urls );
 }
 
 void
-CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                          const TranscodeFormat &format )
 {
+    DEBUG_BLOCK
     //reimplement in implementations which are writeable
     Q_UNUSED( sources )
     slotCopyOperationFinished();
@@ -318,7 +324,7 @@ CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 void
 CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    emit startCopy( sources );
+    emit startCopy( sources, m_transcodeFormat );
 }
 
 void
@@ -367,9 +373,11 @@ CollectionLocation::slotOperationPrepared()
 }
 
 void
-CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
+CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                   const TranscodeFormat &format )
 {
-    copyUrlsToCollection( sources );
+    DEBUG_BLOCK
+    copyUrlsToCollection( sources, format );
 }
 
 void
@@ -477,8 +485,8 @@ CollectionLocation::setupConnections()
     connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
              m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
     connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl> ) ),
-             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl> ) ) );
+    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, const TranscodeFormat & ) ),
+             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, const TranscodeFormat & ) ) );
     connect( m_destination, SIGNAL( finishCopy() ),
              this, SLOT( slotFinishCopy() ) );
     connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );

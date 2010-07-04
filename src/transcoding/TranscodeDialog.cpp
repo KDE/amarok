@@ -33,7 +33,6 @@ TranscodeDialog::TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent
     setWindowTitle( i18n( "Transcode Tracks" ) );
 
     setButtons( None );
-    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeClicked() ) );
 
     ui.explanatoryTextLabel->setText( i18n( "You are about to copy one or more tracks.\nWhile copying, you can also choose to transcode your music files into another format with an encoder (codec). This can be done to save space or to make your files readable by a portable music player or a particular software program." ) );
 
@@ -41,12 +40,25 @@ TranscodeDialog::TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent
     ui.transcodeWithDefaultsButton->setIcon( KIcon( "audio-x-generic" ) );
     ui.transcodeWithOptionsButton->setIcon( KIcon( "tools-rip-audio-cd" ) );
 
+    connect( ui.justCopyButton, SIGNAL( clicked() ), this, SLOT( onJustCopyClicked() ) );
+    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeWithDefaultsClicked() ) );
+    connect( ui.transcodeWithOptionsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeWithOptionsClicked() ) );
+
+
     connect( ui.buttonBox->button( KDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
 void
-TranscodeDialog::onTranscodeClicked() //SLOT
+TranscodeDialog::onJustCopyClicked() //SLOT
 {
+    DEBUG_BLOCK
+    KDialog::done( KDialog::Accepted );
+}
+
+void
+TranscodeDialog::onTranscodeWithDefaultsClicked() //SLOT
+{
+    DEBUG_BLOCK
     /*TranscodeFormat format = TranscodeFormat::Vorbis( ui.spinBox->value() );
     debug() << "\nFormat encoder is: " << format.encoder();
     debug() << "\nabout to fetch ffmpeg parameters";
@@ -55,7 +67,16 @@ TranscodeDialog::onTranscodeClicked() //SLOT
     KUrl url = m_urlList.first();
     KJob *doTranscode = new TranscodeJob( url, format,this );
     doTranscode->start();*/
+    m_format = TranscodeFormat::Vorbis();
+    KDialog::done( KDialog::Accepted );
+}
 
+void
+TranscodeDialog::onTranscodeWithOptionsClicked() //SLOT
+{
+    DEBUG_BLOCK
+    //temporary
+    m_format = TranscodeFormat::Flac();
     KDialog::done( KDialog::Accepted );
 }
 

@@ -154,9 +154,12 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            convenience method for copying a single track,
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
-        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination, TranscodeFormat format = TranscodeFormat::Null() );
+        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
+                          const TranscodeFormat &format = TranscodeFormat::Null() );
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
+                          const TranscodeFormat &format = TranscodeFormat::Null() );
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
+                          const TranscodeFormat &format = TranscodeFormat::Null() );
 
         /**
            convenience method for moving a single track,
@@ -202,7 +205,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
     signals:
-        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources, const TranscodeFormat & );
         void finishCopy();
         void startRemove();
         void finishRemove();
@@ -242,7 +245,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
         */
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                           const TranscodeFormat &format = TranscodeFormat::Null() );
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
@@ -304,7 +308,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void slotOperationPrepared();
-        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, const TranscodeFormat &format );
         void slotFinishCopy();
         void slotStartRemove();
         void slotFinishRemove();

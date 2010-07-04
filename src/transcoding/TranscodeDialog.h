@@ -27,7 +27,7 @@
  * A KDialog for initiating a transcode operation.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class TranscodeDialog : public KDialog
+class AMAROK_EXPORT TranscodeDialog : public KDialog
 {
     Q_OBJECT
 public:
@@ -40,7 +40,9 @@ private:
     Ui::TranscodeDialog ui;
     //KUrl::List m_urlList;
 private slots:
-    void onTranscodeClicked();
+    void onJustCopyClicked();
+    void onTranscodeWithDefaultsClicked();
+    void onTranscodeWithOptionsClicked();
 };
 
 #endif // TRANSCODEDIALOG_H

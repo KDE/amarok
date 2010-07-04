@@ -324,7 +324,12 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
             source = new Collections::FileCollectionLocation();
         }
         Collections::CollectionLocation *destination = m_copyAction->collection()->location();
-        source->prepareCopy( tracks, destination );
+        TranscodeDialog *dialog = new TranscodeDialog( this );
+        TranscodeFormat format = TranscodeFormat::Null();
+        if( dialog->exec() )
+            format = dialog->transcodeFormat();
+        delete dialog;
+        source->prepareCopy( tracks, destination, format );
     }
     else
     {

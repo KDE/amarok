@@ -31,6 +31,7 @@
 #include "core-impl/collections/db/sql/MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
+#include "transcoding/TranscodeJob.h"
 
 #include <QDir>
 #include <QFile>
@@ -448,8 +449,10 @@ void SqlCollectionLocation::slotTransferJobAborted()
 
 
 void
-SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                             const TranscodeFormat &format )
 {
+    DEBUG_BLOCK
     m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are coyping stuff
 
     m_sources = sources;
@@ -461,9 +464,14 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     else if ( isGoingToRemoveSources() )
         statusBarTxt = i18n( "Moving tracks" );
     else
-        statusBarTxt = i18n( "Copying tracks" );
+    {
+        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+            statusBarTxt = i18n( "Copying tracks" );
+        else
+            statusBarTxt = i18n( "Transcoding tracks" );
+    }
 
-    m_transferjob = new TransferJob( this );
+    m_transferjob = new TransferJob( this, format );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this, SLOT( slotTransferJobAborted() ) );
     connect( m_transferjob, SIGNAL( result( KJob * ) ), this, SLOT( slotTransferJobFinished( KJob * ) ) );
     m_transferjob->start();
@@ -491,7 +499,7 @@ SqlCollectionLocation::setOrganizeCollectionDelegateFactory( OrganizeCollectionD
     m_delegateFactory = fac;
 }
 
-bool SqlCollectionLocation::startNextJob()
+bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
 {
     DEBUG_BLOCK
     if( !m_sources.isEmpty() )
@@ -499,17 +507,15 @@ bool SqlCollectionLocation::startNextJob()
         Meta::TrackPtr track = m_sources.keys().first();
         KUrl src = m_sources.take( track );
 
-        KIO::FileCopyJob *job = 0;
         KUrl dest = m_destinations[ track ];
         dest.cleanPath();
 
         src.cleanPath();
-        debug() << "copying from " << src << " to " << dest;
-        KIO::JobFlags flags = KIO::HideProgressInfo;
-        if( m_overwriteFiles )
-        {
-            flags |= KIO::Overwrite;
-        }
+        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+            debug() << "copying from " << src << " to " << dest;
+        else
+            debug() << "transcoding from " << src << " to " << dest;
+
         QFileInfo info( dest.pathOrUrl() );
         QDir dir = info.dir();
         if( !dir.exists() )
@@ -521,6 +527,19 @@ bool SqlCollectionLocation::startNextJob()
                 return true; // Attempt to copy/move the next item in m_sources
             }
         }
+
+        KIO::JobFlags flags;
+        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+        {
+            flags = KIO::HideProgressInfo;
+            if( m_overwriteFiles )
+            {
+                flags |= KIO::Overwrite;
+            }
+        }
+
+        KJob *job = 0;
+
         if( src.equals( dest ) )
         {
             debug() << "move to itself found";
@@ -538,7 +557,17 @@ bool SqlCollectionLocation::startNextJob()
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            job = KIO::file_copy( src, dest, -1, flags );
+            if( format.encoder() == TranscodeFormat::NULL_CODEC )
+                job = KIO::file_copy( src, dest, -1, flags );
+            else
+            {
+                QString destPath = dest.path();
+                destPath.truncate( dest.path().lastIndexOf( '.' ) + 1 );
+                destPath.append( format.fileExtension() );
+                dest.setPath( destPath );
+                job = new TranscodeJob( src, dest, format, this );
+                job->start();
+            }
         }
         if( job )   //just to be safe
         {
@@ -549,7 +578,10 @@ bool SqlCollectionLocation::startNextJob()
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
+            if( format.encoder() == TranscodeFormat::NULL_CODEC )
+                m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
+            else
+                m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );
             m_jobs.insert( job, track );
             return true;
         }
@@ -599,18 +631,19 @@ bool SqlCollectionLocation::startNextRemoveJob()
 }
 
 
-TransferJob::TransferJob( SqlCollectionLocation * location )
+TransferJob::TransferJob( SqlCollectionLocation * location, const TranscodeFormat & format )
     : KCompositeJob( 0 )
     , m_location( location )
     , m_killed( false )
+    , m_transcodeFormat( format )
 {
     setCapabilities( KJob::Killable );
     debug() << "TransferJob::TransferJob";
 }
 
-bool TransferJob::addSubjob(KJob* job)
+bool TransferJob::addSubjob( KJob* job )
 {
-    return KCompositeJob::addSubjob(job);
+    return KCompositeJob::addSubjob( job );
 }
 
 void TransferJob::emitInfo(const QString& message)
@@ -637,7 +670,7 @@ void TransferJob::doWork()
     DEBUG_BLOCK
     setTotalAmount(  KJob::Files, m_location->m_sources.size() );
     setProcessedAmount( KJob::Files, 0 );
-    if( !m_location->startNextJob() )
+    if( !m_location->startNextJob( m_transcodeFormat ) )
     {
         if( !hasSubjobs() )
             emitResult();
@@ -657,7 +690,7 @@ void TransferJob::slotJobFinished( KJob* job )
     setProcessedAmount( KJob::Files, processedAmount( KJob::Files ) + 1 );
     emitPercent( processedAmount( KJob::Files ), totalAmount( KJob::Files ) );
     debug() << "processed" << processedAmount( KJob::Files ) << " totalAmount" << totalAmount( KJob::Files );
-    if( !m_location->startNextJob() )
+    if( !m_location->startNextJob( m_transcodeFormat ) )
     {
         debug() << "sources empty";
         // don't quit if there are still subjobs

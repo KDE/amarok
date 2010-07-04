@@ -1,6 +1,7 @@
 
 include_directories(
     .
+    ${Amarok_SOURCE_DIR}/transcoding
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
@@ -60,6 +61,7 @@ target_link_libraries(amarok-sqlcollection
     ${CMAKE_THREAD_LIBS_INIT}
     amarokcore
     amaroklib
+    amarok-transcoding
 )
 
 if(APPLE)
