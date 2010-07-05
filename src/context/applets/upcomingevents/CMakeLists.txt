@@ -6,7 +6,12 @@ include_directories(
     ${Amarok_SOURCE_DIR}/src/network
     )
 
-set( upcomingEvents_SRCS UpcomingEventsApplet.cpp LastFmEvent.cpp UpcomingEventsWidget.cpp )
+set( upcomingEvents_SRCS
+     LastFmEvent.cpp
+     LastFmEventXmlParser.cpp
+     UpcomingEventsApplet.cpp
+     UpcomingEventsWidget.cpp
+     )
 
 kde4_add_ui_files( upcomingEvents_SRCS
                    upcomingEventsGeneralSettings.ui

@@ -27,6 +27,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
+#include "LastFmEventXmlParser.h"
 
 #include <KConfigDialog>
 #include <KDateTime>
@@ -164,7 +165,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     int eventsAdded( 0 );
     for( int i = 0, count = events.count(); i < count; ++i )
     {
-        const QString &artistList = events.at( i ).participants().join( " - " );
+        const QString &artistList = events.at( i )->participants().join( " - " );
         KDateTime limite(KDateTime::currentLocalDateTime());
         bool timeSpanDisabled = false;
 
@@ -177,16 +178,16 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         else
             timeSpanDisabled = true;
 
-        if( timeSpanDisabled || events.at( i ).date() < limite )
+        if( timeSpanDisabled || events.at( i )->date() < limite )
         {
             UpcomingEventsWidget *widget = new UpcomingEventsWidget;
-            widget->setName( events.at( i ).name() );
-            widget->setDate( KDateTime( events.at( i ).date() ) );
-            LastFmLocationPtr location = events.at( i ).venue()->location;
+            widget->setName( events.at( i )->name() );
+            widget->setDate( KDateTime( events.at( i )->date() ) );
+            LastFmLocationPtr location = events.at( i )->venue()->location;
             widget->setLocation( location->city + ", " + location->country );
             widget->setParticipants( artistList );
-            widget->setUrl( events.at( i ).url() );
-            widget->setImage( events.at( i ).imageUrl(LastFmEvent::Large) );
+            widget->setUrl( events.at( i )->url() );
+            widget->setImage( events.at( i )->imageUrl(LastFmEvent::Large) );
             widget->setAttribute( Qt::WA_NoSystemBackground );
             m_layout->addItem( widget );
 
@@ -340,9 +341,9 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     const QString &city    = item->data( VenueCityRole ).toString();
     const QString &country = item->data( VenueCountryRole ).toString();
     const QString &street  = item->data( VenueStreetRole ).toString();
-    const QUrl &url        = item->data( VenueUrlRole ).toUrl();
-    const QUrl &website    = item->data( VenueWebsiteRole ).toUrl();
-    const QUrl &photoUrl   = item->data( VenuePhotoUrlRole ).toUrl();
+    const KUrl &url        = item->data( VenueUrlRole ).value<KUrl>();
+    const KUrl &website    = item->data( VenueWebsiteRole ).value<KUrl>();
+    const KUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<KUrl>();
 
     ui_VenueSettings.nameValue->setText( name );
     ui_VenueSettings.cityValue->setText( city );
@@ -352,7 +353,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     if( url.isValid() )
     {
         ui_VenueSettings.urlValue->setText( i18n("link") );
-        ui_VenueSettings.urlValue->setUrl( url.toString() );
+        ui_VenueSettings.urlValue->setUrl( url.url() );
     }
     else
         ui_VenueSettings.urlValue->clear();
@@ -360,7 +361,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     if( website.isValid() )
     {
         ui_VenueSettings.websiteValue->setText( i18n("link") );
-        ui_VenueSettings.websiteValue->setUrl( website.toString() );
+        ui_VenueSettings.websiteValue->setUrl( website.url() );
     }
     else
         ui_VenueSettings.websiteValue->clear();
@@ -375,7 +376,6 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
         ui_VenueSettings.photoLabel->hide();
         ui_VenueSettings.photoLabel->clear();
     }
-
 }
 
 void
@@ -413,37 +413,28 @@ UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAcc
         xml.readNext();
         if( xml.isStartElement() && xml.name() == "venue" )
         {
-            QListWidgetItem *item = new QListWidgetItem;
-            while( !xml.atEnd() )
+            LastFmVenueXmlParser venueParser( xml );
+            if( venueParser.read() )
             {
-                xml.readNext();
-                const QStringRef &n = xml.name();
-                if( xml.isEndElement() && n == "venue" )
-                    break;
+                QListWidgetItem *item = new QListWidgetItem;
 
-                if( xml.isStartElement() )
-                {
-                    const QXmlStreamAttributes &a = xml.attributes();
-                    if( n == "id" )
-                        item->setData( VenueIdRole, xml.readElementText().toInt() );
-                    else if( n == "name" )
-                        item->setData( VenueNameRole, xml.readElementText() );
-                    else if( n == "location" )
-                        readVenueLocation( xml, item );
-                    else if( n == "url" )
-                        item->setData( VenueUrlRole, QUrl(xml.readElementText()) );
-                    else if( n == "website" )
-                        item->setData( VenueWebsiteRole, QUrl(xml.readElementText()) );
-                    else if( n == "image" && a.hasAttribute("size") && a.value("size") == "large" )
-                        item->setData( VenuePhotoUrlRole, QUrl(xml.readElementText()) );
-                    else
-                        xml.skipCurrentElement();
-                }
+                LastFmVenuePtr venue = venueParser.venue();
+                item->setData( VenueIdRole, venue->id );
+                item->setData( VenueNameRole, venue->name );
+                item->setData( VenuePhotoUrlRole, venue->imageUrls[LastFmEvent::Large] );
+                item->setData( VenueUrlRole, venue->url );
+                item->setData( VenueWebsiteRole, venue->website );
+
+                LastFmLocationPtr location = venue->location;
+                item->setData( VenueCityRole, location->city );
+                item->setData( VenueCountryRole, location->country );
+                item->setData( VenueStreetRole, location->street );
+
+                item->setText( QString( "%1, %2" )
+                               .arg( item->data( VenueNameRole ).toString() )
+                               .arg( item->data( VenueCityRole ).toString() ) );
+                ui_VenueSettings.searchResultsList->addItem( item );
             }
-            item->setText( QString( "%1, %2" )
-                           .arg( item->data( VenueNameRole ).toString() )
-                           .arg( item->data( VenueCityRole ).toString() ) );
-            ui_VenueSettings.searchResultsList->addItem( item );
         }
     }
 }
@@ -465,29 +456,6 @@ UpcomingEventsApplet::venuePhotoResult( const KUrl &url, QByteArray data, Networ
         photo = The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true );
         ui_VenueSettings.photoLabel->setPixmap( photo );
         ui_VenueSettings.photoLabel->show();
-    }
-}
-
-void
-UpcomingEventsApplet::readVenueLocation( QXmlStreamReader &xml, QListWidgetItem *item )
-{
-    while( !xml.atEnd() )
-    {
-        xml.readNext();
-        if( xml.isEndElement() && xml.name() == "location" )
-            break;
-
-        if( xml.isStartElement() )
-        {
-            if( xml.name() == "city" )
-                item->setData( VenueCityRole, xml.readElementText() );
-            else if( xml.name() == "country" )
-                item->setData( VenueCountryRole, xml.readElementText() );
-            else if( xml.name() == "street" )
-                item->setData( VenueStreetRole, xml.readElementText() );
-            else
-                xml.skipCurrentElement();
-        }
     }
 }
 

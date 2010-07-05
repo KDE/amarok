@@ -92,15 +92,6 @@ private:
      */
     Meta::TrackPtr m_currentTrack;
 
-    /**
-     * The XML text, result of LastFm request
-     */
-    QString m_xml;
-
-    QHash<QString, QString> readEventArtists( QXmlStreamReader &xml );
-    QStringList readEventTags( QXmlStreamReader &xml );
-    LastFmVenuePtr readVenue( QXmlStreamReader &xml );
-
 private slots:
     /**
      * Receive a network reply and parse the XML file

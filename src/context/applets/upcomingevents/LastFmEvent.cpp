@@ -122,7 +122,7 @@ LastFmLocation::LastFmLocation( const LastFmLocation &cpy )
     , country( cpy.country )
     , street( cpy.street )
     , postalCode( cpy.postalCode )
-    , lattitude( cpy.lattitude )
+    , latitude( cpy.latitude )
     , longitude( cpy.longitude )
 {}
 

@@ -25,6 +25,7 @@
 #include "core/support/Debug.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include "LastFmEventXmlParser.h"
 
 // LastFm
 #include <lastfm/XmlQuery>
@@ -138,180 +139,15 @@ UpcomingEventsEngine::upcomingEventsResultFetched( const KUrl &/*url*/, QByteArr
 
     LastFmEvent::List artistEvents;
     QXmlStreamReader xml( data );
-    while( !xml.atEnd() && !xml.hasError() )
+    LastFmEventXmlParser eventsParser( xml );
+    if( eventsParser.read() )
     {
-        xml.readNext();
-        if( xml.isStartElement() && xml.name() == "event" )
-        {
-            QHash<QString, QString> artists;
-            LastFmEvent event;
-            while( !xml.atEnd() )
-            {
-                xml.readNext();
-                const QStringRef &n = xml.name();
-                if( xml.isEndElement() && n == "event" )
-                    break;
-
-                if( xml.isStartElement() )
-                {
-                    const QXmlStreamAttributes &a = xml.attributes();
-                    if( n == "title" )
-                        event.setName(  xml.readElementText() );
-                    else if( n == "artists" )
-                        artists = readEventArtists( xml );
-                    else if( n == "venue" )
-                        event.setVenue( readVenue( xml ) );
-                    else if( n == "startDate" )
-                        event.setDate( KDateTime::fromString( xml.readElementText(), "%a, %d %b %Y %H:%M:%S" ) );
-                    else if( n == "image" && a.hasAttribute("size") )
-                        event.setImageUrl( LastFmEvent::stringToImageSize(a.value("size").toString()), KUrl( xml.readElementText() ) );
-                    else if( n == "url" )
-                        event.setUrl( KUrl( xml.readElementText() ) );
-                    else if( n == "attendance" )
-                        event.setAttendance( xml.readElementText().toInt() );
-                    else if( n == "cancelled" )
-                        event.setCancelled( bool( xml.readElementText().toInt() ) );
-                    else if( n == "tags" )
-                        event.setTags( readEventTags( xml ) );
-                    else
-                        xml.skipCurrentElement();
-                }
-            }
-            event.setHeadliner( artists.value("headliner") );
-            event.setParticipants( artists.values("artist") );
-            artistEvents.append( event );
-        }
+        LastFmEvent::List artistEvents = eventsParser.events();
+        Plasma::DataEngine::Data EngineData;
+        EngineData[ "artist" ] =  m_currentTrack->artist()->name();
+        EngineData[ "LastFmEvent" ] = qVariantFromValue( artistEvents );
+        setData( "artistevents", EngineData );
     }
-    Plasma::DataEngine::Data EngineData;
-    EngineData[ "artist" ] =  m_currentTrack->artist()->name();
-    EngineData[ "LastFmEvent" ] = qVariantFromValue( artistEvents );
-    setData( "artistevents", EngineData );
-}
-
-QStringList
-UpcomingEventsEngine::readEventTags( QXmlStreamReader &xml )
-{
-    QStringList tags;
-    while( !xml.atEnd() )
-    {
-        xml.readNext();
-        if( xml.isEndElement() && xml.name() == "tags" )
-            break;
-
-        if( xml.isStartElement() )
-        {
-            if( xml.name() == "tag" )
-                tags << xml.readElementText();
-            else
-                xml.skipCurrentElement();
-        }
-    }
-    return tags;
-}
-
-QHash<QString, QString>
-UpcomingEventsEngine::readEventArtists( QXmlStreamReader &xml )
-{
-    QHash<QString, QString> artists;
-    while( !xml.atEnd() )
-    {
-        xml.readNext();
-        if( xml.isEndElement() && xml.name() == "artists" )
-            break;
-
-        if( xml.isStartElement() )
-        {
-            if( xml.name() == "artist" )
-            {
-                QString artist = xml.readElementText();
-                if( artist != m_currentTrack->artist()->name() )
-                    artists.insertMulti( "artist", artist );
-            }
-            else if( xml.name() == "headliner" )
-                artists.insert( "headliner", xml.readElementText() );
-            else
-                xml.skipCurrentElement();
-        }
-    }
-    return artists;
-}
-
-LastFmVenuePtr
-UpcomingEventsEngine::readVenue( QXmlStreamReader &xml )
-{
-    LastFmVenuePtr venue( new LastFmVenue );
-    while( !xml.atEnd() )
-    {
-        xml.readNext();
-        const QStringRef &n = xml.name();
-        if( xml.isEndElement() && n == "venue" )
-            break;
-
-        if( xml.isStartElement() )
-        {
-            const QXmlStreamAttributes &a = xml.attributes();
-            if( n == "id" )
-                venue->id = xml.readElementText().toInt();
-            else if( n == "name" )
-                venue->name = xml.readElementText();
-            else if( n == "website" )
-                venue->website = xml.readElementText();
-            else if( n == "url" )
-                venue->url = xml.readElementText();
-            else if( n == "phonenumber" )
-                venue->phoneNumber = xml.readElementText();
-            else if( n == "image" && a.hasAttribute("size") )
-                venue->imageUrls[ LastFmEvent::stringToImageSize(a.value("size").toString()) ] = KUrl( xml.readElementText() );
-            else if( n == "location" )
-            {
-                LastFmLocationPtr location( new LastFmLocation );
-                while( !xml.atEnd() )
-                {
-                    xml.readNext();
-                    const QStringRef &n = xml.name();
-                    if( xml.isEndElement() && n == "location" )
-                        break;
-
-                    if( xml.isStartElement() )
-                    {
-                        if( n == "city" )
-                            location->city = xml.readElementText();
-                        else if( n == "country" )
-                            location->country = xml.readElementText();
-                        else if( n == "street" )
-                            location->street = xml.readElementText();
-                        else if( n == "postalcode" )
-                            location->postalCode = xml.readElementText();
-                        else if( n == "geo:point" )
-                        {
-                            while( !xml.atEnd() )
-                            {
-                                xml.readNext();
-                                if( xml.isEndElement() && xml.name() == "geo:point" )
-                                    break;
-
-                                if( xml.isStartElement() )
-                                {
-                                    if( xml.name() == "geo:lat" )
-                                        location->lattitude = xml.readElementText();
-                                    else if( xml.name() == "geo:long" )
-                                        location->longitude = xml.readElementText();
-                                    else
-                                        xml.skipCurrentElement();
-                                }
-                            }
-                        }
-                        else
-                            xml.skipCurrentElement();
-                    }
-                }
-                venue->location = location;
-            }
-            else
-                xml.skipCurrentElement();
-        }
-    }
-    return venue;
 }
 
 #include "UpcomingEventsEngine.moc"

@@ -49,7 +49,7 @@ public:
         Mega       = 4
     };
 
-    typedef QList< LastFmEvent > List;
+    typedef QList< LastFmEventPtr > List;
     typedef QHash<ImageSize, KUrl> ImageUrls;
 
     /**
@@ -259,8 +259,8 @@ public:
     QString country;
     QString street;
     QString postalCode;
-    QString lattitude;
-    QString longitude;
+    double latitude;
+    double longitude;
 };
 
 class LastFmVenue : public QSharedData
@@ -280,6 +280,7 @@ public:
 };
 
 Q_DECLARE_METATYPE(LastFmEvent)
+Q_DECLARE_METATYPE(LastFmEventPtr)
 Q_DECLARE_METATYPE(LastFmEvent::List)
 
 #endif // LASTFMEVENT_H

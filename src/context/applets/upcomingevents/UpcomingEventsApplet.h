@@ -199,7 +199,6 @@ private:
         QString city;
     };
 
-    void readVenueLocation( QXmlStreamReader &xml, QListWidgetItem *item );
     QList<VenueData> venueStringToDataList( const QStringList &list );
     QList<VenueData> m_favoriteVenues;
 
