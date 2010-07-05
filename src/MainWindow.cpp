@@ -256,14 +256,7 @@ MainWindow::init()
     PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
-    m_playlistWidget = new Playlist::Widget( 0 );
-    m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
-    m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
-
-    m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
-    m_playlistDock->setObjectName( "Playlist dock" );
-    m_playlistDock->setWidget( m_playlistWidget );
-    m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    m_playlistDock = new Playlist::Widget( 0 );
     m_playlistDock->installEventFilter( this );
     PERF_LOG( "Playlist created" )
 

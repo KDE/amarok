@@ -21,6 +21,7 @@
 
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
+#include "widgets/AmarokDockWidget.h"
 
 #include <KVBox>
 
@@ -42,7 +43,7 @@ namespace Playlist
 
 class ProgressiveSearchWidget;
 
-class Widget : public KVBox
+class Widget : public AmarokDockWidget
 {
     Q_OBJECT
 
@@ -52,7 +53,9 @@ public:
 
     SortWidget * sortWidget() { return m_sortWidget; }
     ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
-    void showActiveTrack() const;
+    void showActiveTrack();
+
+    void polish();
 
 public slots:
     void showDynamicHint( bool enabled );
@@ -75,6 +78,8 @@ private:
     ProgressiveSearchWidget * m_searchWidget;
     SortWidget * m_sortWidget;
     QLabel* m_dynamicHintWidget;
+
+    KVBox * m_mainWidget;
 
 };
 }

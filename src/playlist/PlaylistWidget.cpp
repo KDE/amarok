@@ -42,19 +42,33 @@
 #include <QHBoxLayout>
 
 Playlist::Widget::Widget( QWidget* parent )
-        : KVBox( parent )
+    : AmarokDockWidget( i18n( "Playlist" ), parent )
 {
     DEBUG_BLOCK
-    setContentsMargins( 0, 0, 0, 0 );
 
-    m_sortWidget = new Playlist::SortWidget( this );
-    new HorizontalDivider( this );
+    setObjectName( "Playlist dock" );
+    setAllowedAreas( Qt::AllDockWidgetAreas );
 
-    m_searchWidget = new Playlist::ProgressiveSearchWidget( this );
+}
+
+void
+Playlist::Widget::polish()
+{
+    m_mainWidget = new KVBox( this );
+    m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
+    m_mainWidget->setFrameShape( QFrame::NoFrame );
+
+    m_mainWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_mainWidget->setFocus( Qt::ActiveWindowFocusReason );
+
+    m_sortWidget = new Playlist::SortWidget( m_mainWidget );
+    new HorizontalDivider( m_mainWidget );
+
+    m_searchWidget = new Playlist::ProgressiveSearchWidget( m_mainWidget );
 
     // show visual indication of dynamic playlists  being enabled
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
-    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
+    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
                                                  .arg( PaletteHandler::highlightColor().name() )
@@ -68,12 +82,12 @@ Playlist::Widget::Widget( QWidget* parent )
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
-    QWidget * layoutHolder = new QWidget( this );
+    QWidget * layoutHolder = new QWidget( m_mainWidget );
 
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
-    m_playlistView = new PrettyListView( this );
+    m_playlistView = new PrettyListView( m_mainWidget );
     m_playlistView->show();
 
     connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int, bool ) ), m_playlistView, SLOT( find( const QString &, int, bool ) ) );
@@ -111,14 +125,14 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
-        plBar->addAction( new KToolBarSpacerAction( this ) );
+        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
         plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
-        m_saveActions = new KActionCollection( this );
+        m_saveActions = new KActionCollection( m_mainWidget );
         connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
                  SLOT( slotSaveCurrentPlaylist() ) );
         foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
@@ -146,19 +160,20 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
         plBar->addSeparator();
 
-        NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
+        NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
-        plBar->addAction( new KToolBarSpacerAction( this ) );
+        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
         QToolButton *toolButton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
     } // END Playlist Toolbar
 
-    setFrameShape( QFrame::NoFrame );
-
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
     connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
+
+    m_polished = true;
+
 }
 
 QSize
@@ -223,8 +238,10 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 }
 
 void
-Playlist::Widget::showActiveTrack() const
+Playlist::Widget::showActiveTrack()
 {
+    if( !m_polished )
+        polish();
     m_playlistView->scrollToActiveTrack();
 }
 
