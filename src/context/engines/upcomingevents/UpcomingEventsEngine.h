@@ -83,6 +83,12 @@ private:
     void updateDataForArtist();
 
     /**
+     * Get events for specific venues
+     * @param ids LastFm's venue ids
+     */
+    void updateDataForVenues( QList<int> ids );
+
+    /**
      * The value can be "AllEvents", "ThisWeek", "ThisMonth" or "ThisYear"
      */
     QString m_timeSpan;
@@ -92,11 +98,14 @@ private:
      */
     Meta::TrackPtr m_currentTrack;
 
-private slots:
     /**
-     * Receive a network reply and parse the XML file
+     * Current URLs of events being fetched
      */
-    void upcomingEventsResultFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    QSet<KUrl> m_urls;
+
+private slots:
+    void artistEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venueEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

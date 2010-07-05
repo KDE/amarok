@@ -143,9 +143,9 @@ private:
     QString m_temp_timeSpan;
 
     /**
-     * The scroll area is used as an embedded widget to be added in the applet
+     * The plasma extender item for the upcoming events for the current playing artist
      */
-    Plasma::ExtenderItem *m_scrollWidget;
+    Plasma::ExtenderItem *m_artistExtenderItem;
 
     /**
      * The list widget presenting upcoming events
@@ -179,6 +179,11 @@ private slots:
      */
     void saveSettings();
 
+    /**
+     * Update constraints when extender items are collapsed/expanded
+     */
+    void updateConstraintsSlot();
+
 private:
     enum VenueItemRoles
     {
@@ -199,8 +204,15 @@ private:
         QString city;
     };
 
+    void addToExtenderItem( Plasma::ExtenderItem *item,
+                            const LastFmEvent::List &events,
+                            const QString &name );
+    LastFmEvent::List filterEvents( const LastFmEvent::List &events ) const;
     QList<VenueData> venueStringToDataList( const QStringList &list );
     QList<VenueData> m_favoriteVenues;
+
+    void updateToolBoxIconSize();
+    qreal m_toolBoxIconSize;
 
 private slots:
     void searchVenue( const QString &text );
@@ -210,6 +222,7 @@ private slots:
     void venueResultDoubleClicked( QListWidgetItem *item );
     void selectedVenueDoubleClicked( QListWidgetItem *item );
     void openUrl( const QString &url );
+    void themeChanged();
 };
 
 K_EXPORT_AMAROK_APPLET( upcomingEvents, UpcomingEventsApplet )

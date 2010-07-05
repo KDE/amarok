@@ -130,6 +130,7 @@ public:
     ~UpcomingEventsListWidget();
 
     int count() const;
+    bool isEmpty() const;
 
     void addItem( UpcomingEventsWidget *widget );
     void addEvent( const LastFmEventPtr &event );

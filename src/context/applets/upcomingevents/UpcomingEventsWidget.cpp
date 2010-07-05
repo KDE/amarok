@@ -293,6 +293,12 @@ UpcomingEventsListWidget::clear()
     m_separatorCount = 0;
 }
 
+bool
+UpcomingEventsListWidget::isEmpty() const
+{
+    return count() == 0;
+}
+
 QSizeF
 UpcomingEventsListWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {

@@ -47,9 +47,12 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
     , m_settingsIcon( 0 )
+    , m_toolBoxIconSize( 0.0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+    updateToolBoxIconSize();
+    connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(themeChanged()));
 }
 
 void
@@ -82,20 +85,25 @@ UpcomingEventsApplet::init()
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     m_artistEventsList = new UpcomingEventsListWidget( this );
-    m_scrollWidget = new Plasma::ExtenderItem( extender() );
-    m_scrollWidget->setName( "currentartistevents" );
-    m_scrollWidget->setWidget( m_artistEventsList );
+    m_artistExtenderItem = new Plasma::ExtenderItem( extender() );
+    m_artistExtenderItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
+    m_artistExtenderItem->setName( "currentartistevents" );
+    m_artistExtenderItem->setWidget( m_artistEventsList );
+    m_artistExtenderItem->setCollapsed( true );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
     layout->addItem( extender() );
     setLayout( layout );
+    connect( extender(), SIGNAL(geometryChanged()), SLOT(updateConstraintsSlot()) );
 
     // ask for all the CV height
     resize( 500, -1 );
 
     Plasma::DataEngine *engine = dataEngine( "amarok-upcomingEvents" );
     connect( engine, SIGNAL(sourceAdded(QString)), SLOT(engineSourceAdded(QString)) );
+    engine->query( "venueevents" );
+    engine->query( "artistevents" );
 
     // Read config and inform the engine.
     m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
@@ -109,8 +117,15 @@ UpcomingEventsApplet::init()
 void
 UpcomingEventsApplet::engineSourceAdded( const QString &source )
 {
-    if( source == "artistevents" )
-        dataEngine( "amarok-upcomingEvents" )->connectSource( "artistevents", this );
+    if( source == "artistevents" || source == "venueevents" )
+        dataEngine( "amarok-upcomingEvents" )->connectSource( source, this );
+}
+
+void
+UpcomingEventsApplet::updateConstraintsSlot()
+{
+    updateConstraints();
+    update();
 }
 
 void
@@ -119,63 +134,119 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
     qreal padding = standardPadding();
-    qreal iconWidth = m_settingsIcon->size().width();
-    qreal widmax = size().width() - 2 * iconWidth - 6 * padding;
-    QRectF rect( ( size().width() - widmax ) / 2, 0 , widmax, 15 );
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
 
-    qreal scrollAreaW = size().width();
-    qreal scrollAreaH = size().height() - m_headerLabel->boundingRect().height() - extender()->pos().y();
-    QSizeF scrollAreaSize( scrollAreaW - 2 * padding, scrollAreaH - 2 * padding );
-    UpcomingEventsListWidget *scrollArea = static_cast<UpcomingEventsListWidget*>( m_scrollWidget->widget() );
-    scrollArea->setMinimumHeight( scrollAreaSize.height() );
-    scrollArea->setMaximumHeight( scrollAreaSize.height() );
-    m_scrollWidget->setMaximumWidth( scrollAreaSize.width() );
+    qreal scrollAreaW = size().width() - padding;
+    m_artistExtenderItem->setMaximumWidth( scrollAreaW );
+    m_artistEventsList->setMaximumWidth( scrollAreaW );
+    extender()->setMaximumWidth( scrollAreaW );
+
+    // how many extender items are expanded
+    int expandedCount( 0 );
+    QList<Plasma::ExtenderItem*> existingItems = extender()->items();
+    foreach( Plasma::ExtenderItem *item, existingItems )
+    {
+        if( !item->isCollapsed() )
+            ++expandedCount;
+    }
+
+    // set the dimensions correctly for all extender items depending
+    // on whether they are collapsed or not.
+    int itemsCount = extender()->items().count();
+    qreal verticalMargins = 8;
+    qreal scrollAreaH = size().height() - extender()->pos().y();
+    qreal itemHeight = scrollAreaH - itemsCount * (m_toolBoxIconSize + verticalMargins + padding + 2);
+    if( expandedCount > 0 )
+        itemHeight /= expandedCount;
+    foreach( Plasma::ExtenderItem *item, existingItems )
+    {
+        UpcomingEventsListWidget *widget = static_cast<UpcomingEventsListWidget*>(item->widget());
+        widget->setMaximumWidth( scrollAreaW );
+        item->setMaximumWidth( scrollAreaW );
+        if( expandedCount > 0 && !item->isCollapsed() )
+        {
+            widget->setMinimumHeight( itemHeight );
+            widget->setMaximumHeight( itemHeight );
+        }
+    }
 }
 
 void
 UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    const LastFmEvent::List &events = data[ "LastFmEvent" ].value< LastFmEvent::List >();
+    const LastFmEvent::List &events = data[ "events" ].value< LastFmEvent::List >();
     if( source == "artistevents" )
     {
         m_artistEventsList->clear();
-        for( int i = 0, count = events.count(); i < count; ++i )
-        {
-            KDateTime limite(KDateTime::currentLocalDateTime());
-            bool timeSpanDisabled = false;
-
-            if ( this->m_timeSpan == "ThisWeek")
-                limite = limite.addDays( 7 );
-            else if( this->m_timeSpan == "ThisMonth" )
-                limite = limite.addMonths( 1 );
-            else if( this->m_timeSpan == "ThisYear" )
-                limite = limite.addYears( 1 );
-            else
-                timeSpanDisabled = true;
-
-            if( timeSpanDisabled || events.at( i )->date() < limite )
-                m_artistEventsList->addEvent( events.at( i ) );
-        }
-
-        int eventsAdded = m_artistEventsList->count();
         QString artistName = data[ "artist" ].toString();
-        if( 0 == eventsAdded && !artistName.isEmpty() )
+        LastFmEvent::List newEvents = filterEvents( events );
+        addToExtenderItem( m_artistExtenderItem, newEvents, artistName );
+    }
+    else if( source == "venueevents" )
+    {
+        LastFmEvent::List newEvents = filterEvents( events );
+        if( !newEvents.isEmpty() )
         {
-            QString title = i18n( "No upcoming events for %1", artistName );
-            m_scrollWidget->setTitle( title );
-        }
-        else
-        {
-            QString title = artistName.isEmpty()
-                ? i18ncp( "@title:group Number of upcoming events", "1 event", "%1 events", eventsAdded )
-                : i18ncp( "@title:group Number of upcoming events for an artist",
-                          "%1: 1 event", "%1: %2 events", artistName, eventsAdded );
-            m_scrollWidget->setTitle( title );
+            LastFmVenuePtr venue = data[ "venue" ].value<LastFmVenuePtr>();
+            if( extender()->hasItem( venue->name ) )
+                extender()->item( venue->name )->destroy();
+
+            Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
+            UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
+            extenderItem->setName( venue->name );
+            extenderItem->setWidget( listWidget );
+            extenderItem->setCollapsed( true );
+            extenderItem->showCloseButton();
+            addToExtenderItem( extenderItem, newEvents, venue->name );
         }
     }
-    updateConstraints();
-    update();
+}
+
+void
+UpcomingEventsApplet::addToExtenderItem( Plasma::ExtenderItem *item,
+                                         const LastFmEvent::List &events,
+                                         const QString &name )
+{
+    UpcomingEventsListWidget *listWidget = static_cast<UpcomingEventsListWidget*>( item->widget() );
+    listWidget->addEvents( events );
+
+    QString title;
+    int added = listWidget->count();
+    if( added == 0 )
+    {
+        title = name.isEmpty() ? i18n( "No upcoming events" ) : i18n( "%1: No upcoming events", name );
+    }
+    else
+    {
+        title = name.isEmpty()
+            ? i18ncp( "@title:group Number of upcoming events", "1 event", "%1 events", added )
+            : i18ncp( "@title:group Number of upcoming events", "%1: 1 event", "%1: %2 events", name, added );
+    }
+    item->setTitle( title );
+}
+
+LastFmEvent::List
+UpcomingEventsApplet::filterEvents( const LastFmEvent::List &events ) const
+{
+    KDateTime limite( KDateTime::currentLocalDateTime() );
+    bool timeSpanDisabled = false;
+
+    if( m_timeSpan == "ThisWeek")
+        limite = limite.addDays( 7 );
+    else if( m_timeSpan == "ThisMonth" )
+        limite = limite.addMonths( 1 );
+    else if( m_timeSpan == "ThisYear" )
+        limite = limite.addYears( 1 );
+    else
+        timeSpanDisabled = true;
+
+    LastFmEvent::List newEvents;
+    foreach( const LastFmEventPtr &event, events )
+    {
+        if( timeSpanDisabled || event->date() < limite )
+            newEvents << event;
+    }
+    return newEvents;
 }
 
 void
@@ -437,6 +508,26 @@ UpcomingEventsApplet::openUrl( const QString &url )
 }
 
 void
+UpcomingEventsApplet::updateToolBoxIconSize()
+{
+    Plasma::FrameSvg *background = new Plasma::FrameSvg(this);
+    background->setImagePath("widgets/extender-dragger");
+    background->resize();
+    QSizeF size = background->elementSize("hint-preferred-icon-size");
+    size = size.expandedTo(QSizeF(KIconLoader::SizeSmall,KIconLoader::SizeSmall));
+    Plasma::Theme *theme = Plasma::Theme::defaultTheme();
+    QFont font = theme->font(Plasma::Theme::DefaultFont);
+    QFontMetrics fm(font);
+    m_toolBoxIconSize = qMax(size.height(), (qreal) fm.height());
+}
+
+void
+UpcomingEventsApplet::themeChanged()
+{
+    updateToolBoxIconSize();
+}
+
+void
 UpcomingEventsApplet::changeTimeSpan( const QString &span )
 {
     DEBUG_BLOCK
@@ -487,6 +578,9 @@ UpcomingEventsApplet::saveSettings()
         venueConfig << (QStringList() << QString::number(itemId) << itemName << itemCity).join( QChar(';') );
     }
     Amarok::config("UpcomingEvents Applet").writeEntry( "favVenues", venueConfig );
+
+    if( !m_favoriteVenues.isEmpty() )
+        dataEngine( "amarok-upcomingEvents" )->query( "venueevents:update" );
 }
 
 #include "UpcomingEventsApplet.moc"
