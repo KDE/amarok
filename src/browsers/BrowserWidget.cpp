@@ -25,33 +25,45 @@
 #include <KIcon>
 
 BrowserWidget::BrowserWidget( QWidget * parent )
-    : KVBox( parent )
+    : AmarokDockWidget(  i18n( "Context" ), parent )
 {
     DEBUG_BLOCK
-    m_breadcrumbWidget = new BrowserBreadcrumbWidget( this );
-    new HorizontalDivider( this );
-    
-    m_categoryList = new BrowserCategoryList( this, "root list" );
-    m_categoryList->setIcon( KIcon( "user-home" ) );
 
+    setObjectName( "Context dock" );
+    setAllowedAreas( Qt::AllDockWidgetAreas );
+
+    //we have to create this here as it is used when setting up the
+    //categories (unless of couse we move that to polish as well...)
+    m_mainWidget = new KVBox( this );
+    m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
+    new HorizontalDivider( m_mainWidget );
+    m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList );
-
-    m_categoryList->setMinimumSize( 100, 300 );
-
-    connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
-
-    setFrameShape( QFrame::NoFrame );
-
-    // Keyboard shortcut for going back one level
-    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), this );
-    Amarok::actionCollection()->addAction( "browser_previous", action );
-    connect( action, SIGNAL( triggered( bool ) ), m_categoryList, SLOT( back() ) );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 }
 
 
 BrowserWidget::~BrowserWidget()
 {}
+
+void BrowserWidget::polish()
+{
+    DEBUG_BLOCK
+    setWidget( m_mainWidget );
+
+    m_categoryList->setIcon( KIcon( "user-home" ) );
+
+    m_categoryList->setMinimumSize( 100, 300 );
+
+    connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
+
+    m_mainWidget->setFrameShape( QFrame::NoFrame );
+
+    // Keyboard shortcut for going back one level
+    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), m_mainWidget );
+    Amarok::actionCollection()->addAction( "browser_previous", action );
+    connect( action, SIGNAL( triggered( bool ) ), m_categoryList, SLOT( back() ) );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
+}
 
 BrowserCategoryList * BrowserWidget::list() const
 {

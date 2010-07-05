@@ -20,6 +20,7 @@
 
 #include "BrowserBreadcrumbWidget.h"
 #include "BrowserCategoryList.h"
+#include "widgets/AmarokDockWidget.h"
 
 #include <KVBox>
 
@@ -28,7 +29,7 @@
 /**
 The base widget that contains all other browsers, organized in a dig down interface
 */
-class BrowserWidget : public KVBox
+class BrowserWidget : public AmarokDockWidget
 {
     Q_OBJECT
 
@@ -39,6 +40,7 @@ public:
 
     BrowserCategoryList *list() const;
     void navigate( const QString &target );
+    void polish();
 
 private slots:
     void home();
@@ -46,6 +48,7 @@ private slots:
 private:
     BrowserBreadcrumbWidget * m_breadcrumbWidget;
     QPointer<BrowserCategoryList> m_categoryList;
+    KVBox * m_mainWidget;
 };
 
 #endif

@@ -16,10 +16,13 @@
 
 
 #include "AmarokDockWidget.h"
+#include "core/support/Debug.h"
 
 AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
+    , m_polished( false )
 {
+    connect( this, SIGNAL( visibilityChanged( bool ) ), SLOT( slotVisibilityChanged( bool ) ) );
 }
 
 void AmarokDockWidget::closeEvent( QCloseEvent* event )
@@ -45,5 +48,16 @@ void AmarokDockWidget::hideEvent( QHideEvent* event )
     QWidget::hideEvent( event );
     emit( layoutChanged() );
 }
+
+void AmarokDockWidget::slotVisibilityChanged( bool visible )
+{
+    DEBUG_BLOCK
+    if( !m_polished && visible )
+    {
+       polish();
+       m_polished = true;
+    }
+}
+
 
 #include "AmarokDockWidget.moc"

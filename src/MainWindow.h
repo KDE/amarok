@@ -88,7 +88,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         void activate();
 
-        BrowserWidget *browserWidget() const { return m_browsers; }
+        BrowserWidget *browserWidget() const { return m_browsersDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
         QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
@@ -196,7 +196,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
-        QPointer<BrowserWidget>   m_browsers;
+        QPointer<BrowserWidget>  m_browsersDock;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
         //QPointer<KVBox>     m_statusbarArea;
@@ -217,7 +217,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         Meta::TrackPtr m_currentTrack;
 
-        QDockWidget * m_browsersDock;
         QDockWidget * m_contextDock;
         QDockWidget * m_playlistDock;
 

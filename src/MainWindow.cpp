@@ -181,7 +181,7 @@ MainWindow::MainWindow()
     //restore active category ( as well as filters and levels and whatnot.. )
     const QString path = Amarok::config().readEntry( "Browser Path", QString() );
     if( !path.isEmpty() )
-        m_browsers->list()->navigate( path );
+        m_browsersDock->list()->navigate( path );
 
     setAutoSaveSettings();
 }
@@ -191,7 +191,7 @@ MainWindow::~MainWindow()
     DEBUG_BLOCK
 
     //save currently active category
-    Amarok::config().writeEntry( "Browser Path", m_browsers->list()->path() );
+    Amarok::config().writeEntry( "Browser Path", m_browsersDock->list()->path() );
 
     QList<int> sPanels;
 
@@ -247,17 +247,15 @@ MainWindow::init()
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
-    m_browsers = new BrowserWidget( this );
-    m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_browsersDock = new BrowserWidget( this );
+    m_browsersDock->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
+    //empty title bar widgets for the docks so we can save some space when the layout is locked
+    //TODO move handling of this into AmarokDockWidget
     m_browserDummyTitleBarWidget = new QWidget();
     m_contextDummyTitleBarWidget = new QWidget();
     m_playlistDummyTitleBarWidget = new QWidget();
 
-    m_browsersDock = new QDockWidget( i18n( "Media Sources" ), this );
-    m_browsersDock->setObjectName( "Media Sources dock" );
-    m_browsersDock->setWidget( m_browsers );
-    m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     m_browsersDock->installEventFilter( this );
     PERF_LOG( "Sidebar created" )
 
@@ -318,7 +316,7 @@ MainWindow::init()
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
-        m_browsers->list()->addCategory( m_collectionBrowser );
+        m_browsersDock->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
 
@@ -328,7 +326,7 @@ MainWindow::init()
         internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
         internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
         internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
-        m_browsers->list()->addCategory( internetContentServiceBrowser );
+        m_browsersDock->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
@@ -336,7 +334,7 @@ MainWindow::init()
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Various types of playlists" ) );
-        m_browsers->list()->addCategory( m_playlistBrowser );
+        m_browsersDock->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
 
@@ -345,7 +343,7 @@ MainWindow::init()
         fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browsers->list()->addCategory( fileBrowserMkII );
+        m_browsersDock->list()->addCategory( fileBrowserMkII );
 
 
         PERF_LOG( "Created FileBrowser" )
@@ -358,7 +356,7 @@ MainWindow::init()
         PERF_LOG( "ScriptableServiceManager done" )
 
         PERF_LOG( "Creating Podcast Category" )
-        m_browsers->list()->addCategory( The::podcastCategory() );
+        m_browsersDock->list()->addCategory( The::podcastCategory() );
         PERF_LOG( "Created Podcast Category" )
 
         PERF_LOG( "finished MainWindow::init" )
@@ -470,8 +468,8 @@ void
 MainWindow::showBrowser( const int index )
 {
     Q_UNUSED( index )
-    //if( index >= 0 && index != m_browsers->currentIndex() )
-    //    m_browsers->showWidget( index );
+    //if( index >= 0 && index != m_browsersDock->currentIndex() )
+    //    m_browsersDock->showWidget( index );
 }
 
 void
@@ -511,8 +509,8 @@ MainWindow::keyPressEvent( QKeyEvent *e )
         default:
             return KMainWindow::keyPressEvent( e );
     }
-    if( n == 0 && m_browsers->currentIndex() >= 0 )
-        m_browsers->showWidget( m_browsers->currentIndex() );
+    if( n == 0 && m_browsersDock->currentIndex() >= 0 )
+        m_browsersDock->showWidget( m_browsersDock->currentIndex() );
     else if( n > 0 )
         showBrowser( n - 1 ); // map from human to computer counting*/
 }
@@ -1353,9 +1351,9 @@ MainWindow::resizeEvent( QResizeEvent * event )
     }
 
     int splitterSize = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
-    const QSize dContextSz = DESIRED_SIZE(m_context);
-    const QSize dBrowsersSz = DESIRED_SIZE(m_browsers);
-    const QSize dPlaylistSz = DESIRED_SIZE(m_playlist);
+    const QSize dContextSz = DESIRED_SIZE( m_context );
+    const QSize dBrowsersSz = DESIRED_SIZE( m_browsers );
+    const QSize dPlaylistSz = DESIRED_SIZE( m_playlist );
 
     // good god: prevent recursive resizes ;-)
     setFixedSize(size());
@@ -1549,8 +1547,8 @@ MainWindow::collectionBrowser()
 QString
 MainWindow::activeBrowserName()
 {
-    if( m_browsers->list()->activeCategory() )
-        return m_browsers->list()->activeCategory()->name();
+    if( m_browsersDock->list()->activeCategory() )
+        return m_browsersDock->list()->activeCategory()->name();
     else
         return QString();
 }
@@ -1647,7 +1645,7 @@ MainWindow::restoreLayout()
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
 
-        //int totalWidgetWidth = m_browsers->width() + m_contextView->width() + m_playlistWidget->width();
+        //int totalWidgetWidth = m_browsersDock->width() + m_contextView->width() + m_playlistWidget->width();
         int totalWidgetWidth = contentsRect().width();
 
         //get the width of the splitter handles, we need to subtract these...
