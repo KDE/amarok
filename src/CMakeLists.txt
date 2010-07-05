@@ -316,6 +316,7 @@ set( libcontextview_SRCS
     context/Containment.cpp
     context/ContextObserver.cpp
     context/ContextScene.cpp
+    context/ContextDock.cpp
     context/ContextView.cpp
     context/LyricsManager.cpp
     context/ToolbarView.cpp

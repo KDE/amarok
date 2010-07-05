@@ -40,10 +40,8 @@
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
+#include "context/ContextDock.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "context/ContextScene.h"
-#include "context/ContextView.h"
-#include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/EqualizerDialog.h"
 #include "likeback/LikeBack.h"
@@ -206,8 +204,6 @@ MainWindow::~MainWindow()
     delete m_contextDummyTitleBarWidget;
     delete m_playlistDummyTitleBarWidget;
 
-    delete m_contextView;
-    delete m_corona;
     //delete m_splitter;
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer;
@@ -272,31 +268,16 @@ MainWindow::init()
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
-    m_contextWidget = new ContextWidget( this );
-    m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_contextWidget->setSpacing( 0 );
-    m_contextWidget->setFrameShape( QFrame::NoFrame );
-    m_contextWidget->setFrameShadow( QFrame::Sunken );
-    m_contextWidget->setMinimumSize( 100, 100 );
-    PERF_LOG( "ContextWidget created" )
-
-    PERF_LOG( "Creating ContexScene" )
-    m_corona = new Context::ContextScene( this );
-    connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
-
-    m_contextDock = new QDockWidget( i18n( "Context" ), this );
-    m_contextDock->setObjectName( "Context dock" );
-    m_contextDock->setWidget( m_contextWidget );
-    m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    m_contextDock = new ContextDock( this );
     m_contextDock->installEventFilter( this );
+
     PERF_LOG( "ContextScene created" )
     //END Creating Widgets
 
     createMenus();
 
     PERF_LOG( "Loading default contextScene" )
-    m_corona->loadDefaultSetup(); // this method adds our containment to the scene
+
     PERF_LOG( "Loaded default contextScene" )
 
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
@@ -390,26 +371,6 @@ MainWindow::init()
     QTimer::singleShot( 0, this, SLOT( initLayoutHack() ) );
 }
 
-void
-MainWindow::createContextView( Plasma::Containment *containment )
-{
-    DEBUG_BLOCK
-    disconnect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
-    PERF_LOG( "Creating ContexView" )
-    m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
-    m_contextView->setFrameShape( QFrame::NoFrame );
-    m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
-    m_contextToolbarView->setFrameShape( QFrame::NoFrame );
-
-    connect( m_contextToolbarView, SIGNAL( hideAppletExplorer() ), m_contextView, SLOT( hideAppletExplorer() ) );
-    connect( m_contextToolbarView, SIGNAL( showAppletExplorer() ), m_contextView, SLOT( showAppletExplorer() ) );
-    m_contextView->showHome();
-    PERF_LOG( "ContexView created" )
-
-    bool hide = AmarokConfig::hideContextView();
-    hideContextView( hide );
-}
 
 QMenu*
 MainWindow::createPopupMenu()
@@ -1490,8 +1451,9 @@ QRect
 MainWindow::contextRectGlobal()
 {
     //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
-    QPoint contextPos = mapToGlobal( m_contextWidget->pos() );
-    return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
+    //FIXME
+    QPoint contextPos = mapToGlobal( m_contextDock->pos() );
+    return QRect( contextPos.x(), contextPos.y(), m_contextDock->width(), m_contextDock->height() );
 }
 
 void
@@ -1557,17 +1519,6 @@ PlaylistBrowserNS::PlaylistBrowser *
 MainWindow::playlistBrowser()
 {
     return m_playlistBrowser;
-}
-
-void
-MainWindow::hideContextView( bool hide )
-{
-    DEBUG_BLOCK
-
-    if( hide )
-        m_contextWidget->hide();
-    else
-        m_contextWidget->show();
 }
 
 void MainWindow::setLayoutLocked( bool locked )

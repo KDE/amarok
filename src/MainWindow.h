@@ -31,7 +31,6 @@
 #include <QPointer>
 
 class CollectionWidget;
-class ContextWidget;
 class SlimToolbar;
 class MainToolbar;
 class MainWindow;
@@ -41,15 +40,8 @@ class NetworkAccessViewer;
 class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
-
-namespace Plasma { class Containment; }
 namespace Playlist { class Widget; }
 
-namespace Context {
-    class ContextScene;
-    class ContextView;
-    class ToolbarView;
-}
 
 class KMenu;
 class QMenuBar;
@@ -130,7 +122,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotFullScreen();
         void slotLoveTrack();
         void showNotificationPopup();
-        void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );
 
@@ -210,11 +201,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         QByteArray                 m_splitterState;
 
-        QPointer<ContextWidget>         m_contextWidget;
-        QPointer<Context::ContextScene> m_corona;
-        QPointer<Context::ContextView>  m_contextView;
-        QPointer<Context::ToolbarView>  m_contextToolbarView;
-
         Meta::TrackPtr m_currentTrack;
 
         QDockWidget * m_contextDock;
@@ -263,7 +249,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void updateDockRatio(QDockWidget*);
         void initLayoutHack();
         // ------------------------------
-        void createContextView( Plasma::Containment *c );
 };
 
 

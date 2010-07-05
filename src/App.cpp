@@ -563,8 +563,6 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     if( m_mainWindow )
     {
-        // show or hide CV
-        m_mainWindow->hideContextView( AmarokConfig::hideContextView() );
 
         if( ( firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) )
             || !AmarokConfig::showTrayIcon() )
