@@ -97,8 +97,9 @@ private:
      */
     QString m_xml;
 
-    QMultiHash<QString, QString> readEventArtists( QXmlStreamReader &xml );
-    QHash<QString, QString> readVenueLocation( QXmlStreamReader &xml );
+    QHash<QString, QString> readEventArtists( QXmlStreamReader &xml );
+    QStringList readEventTags( QXmlStreamReader &xml );
+    LastFmVenuePtr readVenue( QXmlStreamReader &xml );
 
 private slots:
     /**

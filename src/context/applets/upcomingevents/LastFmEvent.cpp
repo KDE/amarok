@@ -29,23 +29,25 @@ LastFmEvent::LastFmEvent()
 }
 
 LastFmEvent::LastFmEvent( const LastFmEvent& event)
-{
-    foreach( QString currentArtist, event.m_artists )
-    {
-        m_artists.append(currentArtist);    
-    }
-    m_name = event.m_name;
-    m_date = event.m_date;
-    m_smallImageUrl = event.m_smallImageUrl;
-    m_url = event.m_url;
-    m_location = event.m_location;
-}
+    : QSharedData( event )
+    , m_attendance( event.m_attendance )
+    , m_cancelled( event.m_cancelled )
+    , m_date( event.m_date )
+    , m_url( event.m_url )
+    , m_imageUrls( event.m_imageUrls )
+    , m_description( event.m_description )
+    , m_name( event.m_name )
+    , m_headliner( event.m_headliner )
+    , m_participants( event.m_participants )
+    , m_tags( event.m_tags )
+    , m_venue( event.m_venue )
+{}
 
 LastFmEvent::~LastFmEvent() {}
 
 QStringList LastFmEvent::artists() const
 {
-    return m_artists;
+    return QStringList() << m_headliner << m_participants;
 }
 
 KDateTime LastFmEvent::date() const
@@ -58,24 +60,9 @@ QString LastFmEvent::name() const
     return m_name;
 }
 
-QString LastFmEvent::location() const
-{
-    return m_location;
-}
-
-KUrl LastFmEvent::smallImageUrl() const
-{
-    return m_smallImageUrl;
-}
-
 KUrl LastFmEvent::url() const
 {
     return m_url;
-}
-
-void LastFmEvent::setArtists( const QStringList &artists )
-{
-    m_artists = artists;
 }
 
 void LastFmEvent::setDate( const KDateTime &date )
@@ -88,17 +75,70 @@ void LastFmEvent::setName( const QString &name )
     m_name = name;
 }
 
-void LastFmEvent::setLocation( const QString &location )
-{
-    m_location = location;
-}
-
-void LastFmEvent::setSmallImageUrl( const KUrl &smallImageUrl )
-{
-    m_smallImageUrl = smallImageUrl;
-}
-
 void LastFmEvent::setUrl( const KUrl &url )
 {
     m_url = url;
 }
+
+QString
+LastFmEvent::imageSizeToString( ImageSize size )
+{
+    switch( size )
+    {
+    default:
+    case Small:      return QString("small");
+    case Medium:     return QString("medium");
+    case Large:      return QString("large");
+    case ExtraLarge: return QString("extralarge");
+    case Mega:       return QString("maga");
+    }
+}
+
+LastFmEvent::ImageSize
+LastFmEvent::stringToImageSize( const QString &string )
+{
+    if( string == "small" )
+        return Small;
+    if( string == "medium" )
+        return Medium;
+    if( string == "large" )
+        return Large;
+    if( string == "extralarge" )
+        return ExtraLarge;
+    if( string == "mega" )
+        return Mega;
+    return Small;
+}
+
+LastFmLocation::LastFmLocation()
+{}
+
+LastFmLocation::~LastFmLocation()
+{}
+
+LastFmLocation::LastFmLocation( const LastFmLocation &cpy )
+    : QSharedData( cpy )
+    , city( cpy.city )
+    , country( cpy.country )
+    , street( cpy.street )
+    , postalCode( cpy.postalCode )
+    , lattitude( cpy.lattitude )
+    , longitude( cpy.longitude )
+{}
+
+LastFmVenue::LastFmVenue()
+{}
+
+LastFmVenue::~LastFmVenue()
+{}
+
+LastFmVenue::LastFmVenue( const LastFmVenue &cpy )
+    : QSharedData( cpy )
+    , id( cpy.id )
+    , name( cpy.name )
+    , url( cpy.url )
+    , website( cpy.website )
+    , phoneNumber( cpy.phoneNumber )
+    , imageUrls( cpy.imageUrls )
+    , location( cpy.location )
+{}

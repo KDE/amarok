@@ -164,7 +164,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     int eventsAdded( 0 );
     for( int i = 0, count = events.count(); i < count; ++i )
     {
-        const QString artistList = events.at( i ).artists().join( " - " );
+        const QString &artistList = events.at( i ).participants().join( " - " );
         KDateTime limite(KDateTime::currentLocalDateTime());
         bool timeSpanDisabled = false;
 
@@ -182,10 +182,11 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
             UpcomingEventsWidget *widget = new UpcomingEventsWidget;
             widget->setName( events.at( i ).name() );
             widget->setDate( KDateTime( events.at( i ).date() ) );
-            widget->setLocation( events.at( i ).location() );
+            LastFmLocationPtr location = events.at( i ).venue()->location;
+            widget->setLocation( location->city + ", " + location->country );
             widget->setParticipants( artistList );
             widget->setUrl( events.at( i ).url() );
-            widget->setImage( events.at( i ).smallImageUrl() );
+            widget->setImage( events.at( i ).imageUrl(LastFmEvent::Large) );
             widget->setAttribute( Qt::WA_NoSystemBackground );
             m_layout->addItem( widget );
 

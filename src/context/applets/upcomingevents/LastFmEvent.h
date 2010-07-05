@@ -19,29 +19,38 @@
 #define LASTFMEVENT_H
 
 #include <KDateTime>
+#include <KSharedPtr>
 #include <KUrl>
 
-#include <QString>
+#include <QSharedData>
 #include <QStringList>
+
+class LastFmEvent;
+class LastFmLocation;
+class LastFmVenue;
+
+typedef KSharedPtr<LastFmEvent> LastFmEventPtr;
+typedef KSharedPtr<LastFmVenue> LastFmVenuePtr;
+typedef KSharedPtr<LastFmLocation> LastFmLocationPtr;
 
 /**
  * A class to store an event fetched from the last.fm API
  * by the request artist.getEvents
  */
-class LastFmEvent
+class LastFmEvent : public QSharedData
 {
-
-private:
-    QStringList m_artists;      //The list of the participants of the event
-    QString m_name;             //The event's name
-    QString m_location;         //The location where the event will take place
-    KDateTime m_date;           //The event's date
-    KUrl m_smallImageUrl;       //The URL to the event's image
-    KUrl m_url;                 //The URL to the event's page
-
 public:
+    enum ImageSize
+    {
+        Small      = 0,
+        Medium     = 1,
+        Large      = 2,
+        ExtraLarge = 3,
+        Mega       = 4
+    };
 
     typedef QList< LastFmEvent > List;
+    typedef QHash<ImageSize, KUrl> ImageUrls;
 
     /**
      * Creates an empty LastFmEvent
@@ -60,16 +69,18 @@ public:
     ~LastFmEvent();
 
     /**
-     * A getter for the artists list
-     * @return the list of the participants of the event
+     * A getter for the artists list.
+     * It consists of the headliner + participants.
+     * @return the list of all artists participating the event
      */
     QStringList artists() const;
 
     /**
-     * A getter for the event's name
-     * @return the event's name
+     * The number of people attending the event
+     * @return number of people attending the event
      */
-    QString name() const;
+    int attendance() const
+    { return m_attendance; }
 
     /**
      * A getter for the event's date
@@ -78,16 +89,53 @@ public:
     KDateTime date() const;
 
     /**
-     * A getter for the event's location
-     * @return the event's location
+     * The event's description
+     * @return event's description
      */
-    QString location() const;
+    QString description() const
+    { return m_description; }
 
     /**
-     * A getter for the event's image
-     * @return the URL to the event's image
+     * The event's headlining artist
+     * @return event's headlining artist
      */
-    KUrl smallImageUrl() const;
+    QString headliner() const
+    { return m_headliner; }
+
+    /**
+     * Gets the URL for the event's event at \p size;
+     * @param size size of the image
+     * @return image URL
+     */
+    KUrl imageUrl( ImageSize size ) const
+    { return m_imageUrls.value(size); }
+
+    /**
+     * Whether the event is cancelled
+     * @return true if the event is cancelled
+     */
+    bool isCancelled() const
+    { return m_cancelled; }
+
+    /**
+     * A getter for the event's name
+     * @return the event's name
+     */
+    QString name() const;
+
+    /**
+     * The list of participating artists (excluding the headliner)
+     * @return list of participating artists (excluding the headliner)
+     */
+    QStringList participants() const
+    { return m_participants; }
+
+    /**
+     * The List of Last.fm tags
+     * @return list of Last.fm tags
+     */
+    QStringList tags() const
+    { return m_tags; }
 
     /**
      * A getter for the event's page
@@ -96,16 +144,25 @@ public:
     KUrl url() const;
 
     /**
-     * Sets the event's artists
-     * @param artists the list of the participants of the event
+     * Get the venue associated with this event
+     * @return the venue
      */
-    void setArtists( const QStringList &artists );
+    LastFmVenuePtr venue() const
+    { return m_venue; }
 
     /**
-     * Sets the event's name
-     * @param name the event's name
+     * Set the number of attendance
+     * @param number the number of attendance
      */
-    void setName( const QString &name );
+    void setAttendance( int number )
+    { m_attendance = number; }
+
+    /**
+     * Set whether the event has been cancelled
+     * @param isCancelled whether the event has been cancelled
+     */
+    void setCancelled( bool isCancelled )
+    { m_cancelled = isCancelled; }
 
     /**
      * Sets the event's date
@@ -114,26 +171,115 @@ public:
     void setDate( const KDateTime &date );
 
     /**
-     * Sets the event's location
-     * @param location the event's location
+     * Sets the event's description
+     * @param text the event's description
      */
-    void setLocation( const QString &location );
+    void setDescription( const QString &text )
+    { m_description = text; }
 
     /**
-     * Sets the event's image
-     * @param smallImageUrl the URL to the event's image
+     * Sets the headlining artist for this event
+     * @param headliner the headlining artist for this event
      */
-    void setSmallImageUrl( const KUrl &smallImageUrl );
+    void setHeadliner( const QString &headliner )
+    { m_headliner = headliner; }
+
+    /**
+     * Sets the \p url for the event's image at \p size
+     * @param size size of the image
+     * @param url url of the image
+     */
+    void setImageUrl( ImageSize size, const KUrl &url )
+    { m_imageUrls[size] = url; }
+
+    /**
+     * Sets the event's name
+     * @param name the event's name
+     */
+    void setName( const QString &name );
+
+    /**
+     * Sets the participating artists (excluding headliner) at this event
+     * @param participants artists participating at this event
+     */
+    void setParticipants( const QStringList &participants )
+    { m_participants = participants; }
+
+    /**
+     * Sets the tags for this event
+     * @param tags the tags for this event
+     */
+    void setTags( const QStringList &tags )
+    { m_tags = tags; }
 
     /**
      * Sets the event's page
      * @param url the URL to the event's page
      */
     void setUrl( const KUrl &url );
-    
+
+    /**
+     * Sets the venue of this event
+     * @param venue the venue of this event
+     */
+    void setVenue( LastFmVenuePtr venue ) { m_venue = venue; }
+
+    /**
+     * Convert an ImageSize to a QString
+     */
+    static QString imageSizeToString( ImageSize size );
+
+    /**
+     * Convert a QString to an ImageSize
+     */
+    static ImageSize stringToImageSize( const QString &string );
+
+private:
+    int m_attendance;            //!< Number of the event's attendance
+    bool m_cancelled;            //!< Whether the event has been cancelled
+    KDateTime m_date;            //!< The event's start date
+    KUrl m_url;                  //!< The URL to the event's page
+    ImageUrls m_imageUrls;       //!< URLs to the event's image
+    QString m_description;       //!< Description of the event
+    QString m_name;              //!< The event's name
+    QString m_headliner;         //!< The headline artist of this event
+    QStringList m_participants;  //!< Other artists participating in the event
+    QStringList m_tags;          //!< Contextual tags
+    LastFmVenuePtr m_venue;      //!< Venue info
 };
 
-#endif // LASTFMEVENT_H
+class LastFmLocation : public QSharedData
+{
+public:
+    LastFmLocation();
+    ~LastFmLocation();
+    LastFmLocation( const LastFmLocation &cpy );
+
+    QString city;
+    QString country;
+    QString street;
+    QString postalCode;
+    QString lattitude;
+    QString longitude;
+};
+
+class LastFmVenue : public QSharedData
+{
+public:
+    LastFmVenue();
+    ~LastFmVenue();
+    LastFmVenue( const LastFmVenue &cpy );
+
+    int id;
+    QString name;
+    KUrl url;
+    KUrl website;
+    QString phoneNumber;
+    QHash<LastFmEvent::ImageSize, KUrl> imageUrls;
+    LastFmLocationPtr location;
+};
 
 Q_DECLARE_METATYPE(LastFmEvent)
 Q_DECLARE_METATYPE(LastFmEvent::List)
+
+#endif // LASTFMEVENT_H
