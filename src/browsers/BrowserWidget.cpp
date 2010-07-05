@@ -25,11 +25,11 @@
 #include <KIcon>
 
 BrowserWidget::BrowserWidget( QWidget * parent )
-    : AmarokDockWidget(  i18n( "Context" ), parent )
+    : AmarokDockWidget( i18n( "Media Sources" ), parent )
 {
     DEBUG_BLOCK
 
-    setObjectName( "Context dock" );
+    setObjectName( "Media Sources dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 
     //we have to create this here as it is used when setting up the
