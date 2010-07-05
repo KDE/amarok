@@ -23,7 +23,7 @@
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/engine/EngineObserver.h"
-#include "browsers/BrowserWidget.h"
+#include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
 #include <KVBox>
@@ -80,7 +80,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         void activate();
 
-        BrowserWidget *browserWidget() const { return m_browsersDock; }
+        BrowserDock *browserDock() const { return m_browserDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
         QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
@@ -187,7 +187,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
-        QPointer<BrowserWidget>  m_browsersDock;
+        QPointer<BrowserDock>  m_browserDock;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
         //QPointer<KVBox>     m_statusbarArea;
@@ -229,7 +229,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         typedef struct Ratio {
             float x,y;
         } Ratio;
-        Ratio m_browsersRatio;
+        Ratio m_browserRatio;
         Ratio m_contextRatio;
         Ratio m_playlistRatio;
         QRect m_dockingRect;

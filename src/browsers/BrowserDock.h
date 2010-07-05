@@ -29,14 +29,14 @@
 /**
 The base widget that contains all other browsers, organized in a dig down interface
 */
-class BrowserWidget : public AmarokDockWidget
+class BrowserDock : public AmarokDockWidget
 {
     Q_OBJECT
 
 public:
-    BrowserWidget( QWidget * parent );
+    BrowserDock( QWidget * parent );
 
-    ~BrowserWidget();
+    ~BrowserDock();
 
     BrowserCategoryList *list() const;
     void navigate( const QString &target );

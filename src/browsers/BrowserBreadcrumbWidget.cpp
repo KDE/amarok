@@ -274,11 +274,11 @@ BrowserBreadcrumbWidget::mousePressEvent( QMouseEvent * event )
     //set the string in the edit widgets. Just use the current "amarok path", except for the case of the
     //file browser where we want to show the current "real" path
 
-    QString amarokPath = The::mainWindow()->browserWidget()->list()->path();
+    QString amarokPath = The::mainWindow()->browserDock()->list()->path();
 
     if( amarokPath.endsWith( "files" ) )
     {
-        FileBrowser * fileBrowser = qobject_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        FileBrowser * fileBrowser = qobject_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
             m_pathEdit->setText( fileBrowser->currentDir() );

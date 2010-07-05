@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "BrowserWidget.h"
+#include "BrowserDock.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -24,7 +24,7 @@
 #include <KAction>
 #include <KIcon>
 
-BrowserWidget::BrowserWidget( QWidget * parent )
+BrowserDock::BrowserDock( QWidget * parent )
     : AmarokDockWidget( i18n( "Media Sources" ), parent )
 {
     DEBUG_BLOCK
@@ -42,10 +42,10 @@ BrowserWidget::BrowserWidget( QWidget * parent )
 }
 
 
-BrowserWidget::~BrowserWidget()
+BrowserDock::~BrowserDock()
 {}
 
-void BrowserWidget::polish()
+void BrowserDock::polish()
 {
     DEBUG_BLOCK
     setWidget( m_mainWidget );
@@ -65,22 +65,22 @@ void BrowserWidget::polish()
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 }
 
-BrowserCategoryList * BrowserWidget::list() const
+BrowserCategoryList * BrowserDock::list() const
 {
     return m_categoryList;
 }
 
 void
-BrowserWidget::navigate( const QString & target )
+BrowserDock::navigate( const QString & target )
 {
     m_categoryList->navigate( target );
 }
 
 void
-BrowserWidget::home()
+BrowserDock::home()
 {
     DEBUG_BLOCK
     m_categoryList->home();
 }
 
-#include "BrowserWidget.moc"
+#include "BrowserDock.moc"

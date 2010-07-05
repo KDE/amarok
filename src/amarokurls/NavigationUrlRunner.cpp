@@ -47,9 +47,9 @@ NavigationUrlRunner::run( AmarokUrl url )
 
     //get to the correct category
     debug() << "Navigate to path: " << url.path();
-    The::mainWindow()->browserWidget()->list()->navigate( url.path() );
+    The::mainWindow()->browserDock()->list()->navigate( url.path() );
 
-    BrowserCategory * active =  The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
+    BrowserCategory * active =  The::mainWindow()->browserDock()->list()->activeCategoryRecursive();
 
     QMap<QString, QString> args = url.args();
 
@@ -102,7 +102,7 @@ NavigationUrlRunner::run( AmarokUrl url )
     //also set the correct path if we are navigating to the file browser
     if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
     {
-        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
             if( args.keys().contains( "path" ) )

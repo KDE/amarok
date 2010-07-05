@@ -56,7 +56,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     url.setCommand( "navigate" );
 
     //get the path
-    QString path = The::mainWindow()->browserWidget()->list()->path();
+    QString path = The::mainWindow()->browserDock()->list()->path();
 
     QStringList pathParts = path.split( '/' );
 
@@ -67,12 +67,12 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     url.setPath( pathParts.join( "/" ) );
 
 
-    QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
+    QString filter = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->filter();
 
     if ( !filter.isEmpty() )
         url.appendArg( "filter", filter );
 
-    QList<int> levels = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->levels();
+    QList<int> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
 
     foreach( int level, levels ) {
@@ -122,7 +122,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     }
 
     //come up with a default name for this url..
-    QString name = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->prettyName();
+    QString name = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->prettyName();
 
     //if in the file browser, also store the file path
     if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
@@ -131,7 +131,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         //Give a proper name since it will return "/" as that is what is used in the breadcrumb.
         name = i18n( "Files" );
 
-        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
             url.appendArg( "path", fileBrowser->currentDir() );

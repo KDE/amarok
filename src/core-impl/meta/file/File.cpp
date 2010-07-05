@@ -160,7 +160,7 @@ public:
         url.run();
 
         //then navigate to the correct directory
-        BrowserCategory * fileCategory = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
+        BrowserCategory * fileCategory = The::mainWindow()->browserDock()->list()->activeCategoryRecursive();
         if( fileCategory )
         {
             FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( fileCategory );

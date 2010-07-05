@@ -203,7 +203,7 @@ set(libbrowserframework_SRCS
     browsers/BrowserCategoryListDelegate.cpp
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
-    browsers/BrowserWidget.cpp
+    browsers/BrowserDock.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
