@@ -177,7 +177,7 @@ CollectionWidget::init()
     combo->addItem( icon, i18n("Added This Month"), i18n("added") + QString(":<1m") );
     combo->insertSeparator( combo->count() );
 
-    QMenu *filterMenu = new QMenu( this );
+    QMenu *filterMenu = new QMenu( 0 );
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
