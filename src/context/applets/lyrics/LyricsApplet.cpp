@@ -80,6 +80,7 @@ public:
     QString titleText;
     TextScrollingWidget *titleLabel;
 
+    QGraphicsLinearLayout *headerLayout;
     Plasma::IconWidget *saveIcon;
     Plasma::IconWidget *editIcon;
     Plasma::IconWidget *reloadIcon;
@@ -155,6 +156,7 @@ LyricsAppletPrivate::determineActionIconsState()
     bool isEditing = !browser->nativeWidget()->isReadOnly();
 
     editIcon->action()->setEnabled( isVisible & !isEditing );
+    editIcon->action()->setVisible( isVisible & !isEditing );
 
     closeIcon->action()->setEnabled( isVisible & isEditing );
     closeIcon->action()->setVisible( isVisible & isEditing );
@@ -163,6 +165,26 @@ LyricsAppletPrivate::determineActionIconsState()
     saveIcon->action()->setVisible( isVisible & isEditing );
 
     reloadIcon->action()->setEnabled( isVisible & !isEditing );
+    reloadIcon->action()->setVisible( isVisible & !isEditing );
+
+    // remove all header widgets and add back below
+    int count = headerLayout->count();
+    while( --count >= 0 )
+    {
+        QGraphicsLayoutItem *child = headerLayout->itemAt( 0 );
+        headerLayout->removeItem( child );
+    }
+
+    QList<QGraphicsWidget*> widgets; // preserve widget order
+    widgets << titleLabel;
+    if( saveIcon->action()->isVisible() )   widgets << saveIcon;
+    if( editIcon->action()->isVisible() )   widgets << editIcon;
+    if( reloadIcon->action()->isVisible() ) widgets << reloadIcon;
+    if( closeIcon->action()->isVisible() )  widgets << closeIcon;
+    widgets << settingsIcon;
+    QList<QGraphicsWidget*>::const_iterator it, itEnd;
+    for( it = widgets.constBegin(), itEnd = widgets.constEnd(); it != itEnd; ++it  )
+        headerLayout->addItem( *it );
 }
 
 void
@@ -174,6 +196,7 @@ LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
     else
         browser->nativeWidget()->setPlainText( text );
     determineActionIconsState();
+    infoLabel->hide();
     suggestView->hide();
     browser->show();
 }
@@ -312,7 +335,6 @@ LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
         suggestView->setCursor( Qt::BusyCursor );
         QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
     }
-    suggestView->hide();
 }
 
 void
@@ -351,6 +373,7 @@ LyricsApplet::init()
     bigger.setPointSize( bigger.pointSize() + 2 );
     d->titleLabel->setFont( bigger );
     d->titleLabel->setText( i18n( "Lyrics" ) );
+    d->titleLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
@@ -397,6 +420,16 @@ LyricsApplet::init()
 
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
+    d->headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    d->headerLayout->addItem( d->titleLabel );
+    d->headerLayout->addItem( d->saveIcon );
+    d->headerLayout->addItem( d->editIcon );
+    d->headerLayout->addItem( d->reloadIcon );
+    d->headerLayout->addItem( d->closeIcon );
+    d->headerLayout->addItem( d->settingsIcon );
+    d->headerLayout->setContentsMargins( 0, 4, 0, 2 );
+    d->headerLayout->setMinimumWidth( 0 );
+
     d->browser = new Plasma::TextBrowser( this );
     KTextBrowser *browserWidget = d->browser->nativeWidget();
     browserWidget->setFrameShape( QFrame::StyledPanel );
@@ -429,6 +462,11 @@ LyricsApplet::init()
     d->infoLabel->setAlignment( Qt::AlignCenter );
     d->infoLabel->nativeWidget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->infoLabel->hide();
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
+    layout->addItem( d->headerLayout );
+    layout->addItem( d->browser );
+    setLayout( layout );
 
     // Read config
     QFont font;
@@ -466,70 +504,12 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_D( LyricsApplet );
 
     prepareGeometryChange();
-
-    // Assumes all icons are of equal width
-    const qreal iconWidth = d->settingsIcon->size().width();
-    const qreal padding = standardPadding();
-
-    // Y offsets for title label and icons so their centers line up
-    const qreal titleY = padding + 3;
-    const qreal iconY = titleY + (d->titleLabel->boundingRect().height() - iconWidth) / 2;
-
-    // label position
     d->titleLabel->setScrollingText( d->titleText );
-    d->titleLabel->setPos( ( size().width() - d->titleLabel->boundingRect().width() ) / 2 , titleY );
 
-    // settings icon position
-    d->settingsIcon->setPos( size().width() - iconWidth - padding, iconY );
-
-    // reload icon position
-    d->reloadIcon->setPos( d->settingsIcon->pos().x() - padding - iconWidth, iconY );
-    d->reloadIcon->show();
-
-    // edit and close icon positions
-    QPoint editIconPos( d->reloadIcon->pos().x() - padding - iconWidth, iconY );
-    d->editIcon->setPos( editIconPos );
-    d->closeIcon->setPos( editIconPos );
-
-    // save icon position
-    d->saveIcon->setPos( d->editIcon->pos().x() - padding - iconWidth, iconY );
-
-    // proxy position and height depending on whether suggestions are showing
-    qreal proxyY = d->titleLabel->pos().y() + d->titleLabel->boundingRect().height() + padding;
-    qreal proxyH = boundingRect().height() - proxyY - padding;
-
-    if( d->suggestView->isVisible() )
-    {
-        // suggest view position
-        QPointF suggestViewPos( padding, proxyY );
-        proxyH = proxyH / 3.0 - proxyY;
-        qreal suggestViewRatio = d->browser->isVisible() ? 3.0 : 1.0;
-        qreal suggestViewHeight( boundingRect().height() / suggestViewRatio - proxyY - padding );
-        QSizeF suggestViewSize( size().width() - 2 * padding, suggestViewHeight );
-        d->suggestView->setPos( suggestViewPos );
-        d->suggestView->setMinimumSize( suggestViewSize );
-        d->suggestView->setMaximumSize( suggestViewSize );
-        proxyY = suggestViewPos.y() + suggestViewSize.height() + padding;
-        proxyH = boundingRect().height() - proxyY - padding;
-    }
-
-    if( d->infoLabel->isVisible() )
-    {
-        // info label position
-        QSizeF infoSize( (boundingRect().width() / 3), (proxyH / 3) );
-        QPointF infoPos( (boundingRect().width() - infoSize.width()) / 2, (proxyH - infoSize.height()) / 2 );
-        d->infoLabel->setPos( infoPos );
-        d->infoLabel->setMinimumSize( infoSize );
-        d->infoLabel->setMaximumSize( infoSize );
-    }
-
-    // browser position
-    QPointF textBrowserPos( padding, proxyY );
-    QSizeF textBrowserSize( size().width() - 2 * padding, proxyH );
-    d->browser->setPos( textBrowserPos );
-    d->browser->setMinimumSize( textBrowserSize );
-    d->browser->setMaximumSize( textBrowserSize );
-    update();
+    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
+    d->suggestView->isVisible() ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
+    d->infoLabel->isVisible() ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
+    d->browser->isVisible() ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
 }
 
 void
@@ -541,7 +521,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     unsetCursor();
     d->hasLyrics = false;
     d->suggestView->hide();
-    d->browser->hide();
     d->infoLabel->hide();
     setBusy( false );
 
@@ -560,6 +539,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->titleText = i18n( "Lyrics: Fetching ..." );
         d->infoLabel->setText( i18n( "Lyrics are being fetched" ) );
         d->infoLabel->show();
+        d->suggestView->hide();
+        d->browser->hide();
     }
     else if( data.contains( "error" ) )
     {
@@ -569,6 +550,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                                      "Error message:\n"
                                      "%1", data["error"].toString() ) );
         d->infoLabel->show();
+        d->suggestView->hide();
+        d->browser->hide();
     }
     else if( data.contains( "suggested" ) )
     {
@@ -607,6 +590,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->titleText = i18n( "Lyrics: Not found" );
         d->infoLabel->setText( i18n( "There were no lyrics found for this track" ) );
         d->infoLabel->show();
+        d->suggestView->hide();
+        d->browser->hide();
     }
 
     d->determineActionIconsState();
