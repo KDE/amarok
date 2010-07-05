@@ -148,9 +148,9 @@ private:
     Plasma::ExtenderItem *m_scrollWidget;
 
     /**
-     * The vertical layout for presenting the list of events
+     * The list widget presenting upcoming events
      */
-    QGraphicsLinearLayout *m_layout;
+    UpcomingEventsListWidget *m_artistEventsList;
 
 private slots:
     /**

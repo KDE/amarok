@@ -41,7 +41,6 @@
 #include <QDesktopServices>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsLinearLayout>
-#include <QGraphicsProxyWidget>
 #include <QXmlStreamReader>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
@@ -82,20 +81,10 @@ UpcomingEventsApplet::init()
     headerLayout->addItem( m_settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
-    // The widgets are displayed line by line with only one column
-    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
-    QGraphicsWidget *content = new QGraphicsWidget( this );
-    content->setLayout( m_layout );
-
-    // Use an embedded widget for the applet
-    Plasma::ScrollWidget *scrollArea = new Plasma::ScrollWidget( this );
-    scrollArea->setWidget( content );
-
+    m_artistEventsList = new UpcomingEventsListWidget( this );
     m_scrollWidget = new Plasma::ExtenderItem( extender() );
     m_scrollWidget->setName( "currentartistevents" );
-    m_scrollWidget->setWidget( scrollArea );
-    m_scrollWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-    extender()->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    m_scrollWidget->setWidget( m_artistEventsList );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
@@ -138,88 +127,56 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     qreal scrollAreaW = size().width();
     qreal scrollAreaH = size().height() - m_headerLabel->boundingRect().height() - extender()->pos().y();
     QSizeF scrollAreaSize( scrollAreaW - 2 * padding, scrollAreaH - 2 * padding );
-    Plasma::ScrollWidget *scrollArea = static_cast<Plasma::ScrollWidget*>( m_scrollWidget->widget() );
-    scrollArea->setMinimumSize( scrollAreaSize );
-    scrollArea->setMaximumSize( scrollAreaSize );
-    scrollArea->widget()->resize(0,0);
+    UpcomingEventsListWidget *scrollArea = static_cast<UpcomingEventsListWidget*>( m_scrollWidget->widget() );
+    scrollArea->setMinimumHeight( scrollAreaSize.height() );
+    scrollArea->setMaximumHeight( scrollAreaSize.height() );
     m_scrollWidget->setMaximumWidth( scrollAreaSize.width() );
 }
 
 void
 UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( source )
-    const QString &artistName = data[ "artist" ].toString();
     const LastFmEvent::List &events = data[ "LastFmEvent" ].value< LastFmEvent::List >();
-
-    QGraphicsLayoutItem *child;
-    if( m_layout->count() > 0 )
+    if( source == "artistevents" )
     {
-        while( (child = m_layout->itemAt( 0 )) != 0 )
+        m_artistEventsList->clear();
+        for( int i = 0, count = events.count(); i < count; ++i )
         {
-            m_layout->removeItem( child );
-            delete child;
+            KDateTime limite(KDateTime::currentLocalDateTime());
+            bool timeSpanDisabled = false;
+
+            if ( this->m_timeSpan == "ThisWeek")
+                limite = limite.addDays( 7 );
+            else if( this->m_timeSpan == "ThisMonth" )
+                limite = limite.addMonths( 1 );
+            else if( this->m_timeSpan == "ThisYear" )
+                limite = limite.addYears( 1 );
+            else
+                timeSpanDisabled = true;
+
+            if( timeSpanDisabled || events.at( i )->date() < limite )
+                m_artistEventsList->addEvent( events.at( i ) );
         }
-    }
 
-    int eventsAdded( 0 );
-    for( int i = 0, count = events.count(); i < count; ++i )
-    {
-        const QString &artistList = events.at( i )->participants().join( " - " );
-        KDateTime limite(KDateTime::currentLocalDateTime());
-        bool timeSpanDisabled = false;
-
-        if ( this->m_timeSpan == "ThisWeek")
-            limite = limite.addDays( 7 );
-        else if( this->m_timeSpan == "ThisMonth" )
-            limite = limite.addMonths( 1 );
-        else if( this->m_timeSpan == "ThisYear" )
-            limite = limite.addYears( 1 );
+        int eventsAdded = m_artistEventsList->count();
+        QString artistName = data[ "artist" ].toString();
+        if( 0 == eventsAdded && !artistName.isEmpty() )
+        {
+            QString title = i18n( "No upcoming events for %1", artistName );
+            m_scrollWidget->setTitle( title );
+        }
         else
-            timeSpanDisabled = true;
-
-        if( timeSpanDisabled || events.at( i )->date() < limite )
         {
-            UpcomingEventsWidget *widget = new UpcomingEventsWidget;
-            widget->setName( events.at( i )->name() );
-            widget->setDate( KDateTime( events.at( i )->date() ) );
-            LastFmLocationPtr location = events.at( i )->venue()->location;
-            widget->setLocation( location->city + ", " + location->country );
-            widget->setParticipants( artistList );
-            widget->setUrl( events.at( i )->url() );
-            widget->setImage( events.at( i )->imageUrl(LastFmEvent::Large) );
-            widget->setAttribute( Qt::WA_NoSystemBackground );
-            m_layout->addItem( widget );
-
-            // can also use Plasma::Separator here but that's in kde 4.4
-            QFrame *separator = new QFrame;
-            separator->setFrameStyle( QFrame::HLine );
-            separator->setAutoFillBackground( false );
-            QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget( m_scrollWidget );
-            separatorProxy->setWidget( separator );
-            m_layout->addItem( separatorProxy );
-            ++eventsAdded;
+            QString title = artistName.isEmpty()
+                ? i18ncp( "@title:group Number of upcoming events", "1 event", "%1 events", eventsAdded )
+                : i18ncp( "@title:group Number of upcoming events for an artist",
+                          "%1: 1 event", "%1: %2 events", artistName, eventsAdded );
+            m_scrollWidget->setTitle( title );
         }
     }
-
-    QString title;
-    if( 0 == eventsAdded && !artistName.isEmpty() )
-    {
-        title = i18n( "No upcoming events for %1", artistName );
-    }
-    else
-    {
-        title = artistName.isEmpty() ? i18ncp( "@title:group Number of upcoming events",
-                                               "1 event", "%1 events", eventsAdded )
-                                     : i18ncp( "@title:group Number of upcoming events for an artist",
-                                               "%1: 1 event", "%1: %2 events", artistName, eventsAdded );
-    }
-    m_scrollWidget->setTitle( title );
-
     updateConstraints();
     update();
 }
-
 
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

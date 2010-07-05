@@ -19,13 +19,16 @@
 #define UPCOMING_EVENTS_WIDGET_H
 
 #include "NetworkAccessManagerProxy.h"
+#include "LastFmEvent.h"
 
 #include <KUrl>
+#include <Plasma/ScrollWidget>
 
 #include <QGraphicsWidget>
 
 class KDateTime;
 class QLabel;
+class QGraphicsLinearLayout;
 class QPixmap;
 namespace Plasma {
     class Label;
@@ -34,7 +37,7 @@ namespace Plasma {
 class UpcomingEventsWidget : public QGraphicsWidget
 {
     Q_OBJECT
-    
+
     public:
         /**
          * UpcomingEventsWidget constructor
@@ -116,6 +119,32 @@ class UpcomingEventsWidget : public QGraphicsWidget
          *Get pixmap from the internet and set it into image's Plasma::Label
          */
         void loadImage();
+};
+
+class UpcomingEventsListWidget : public Plasma::ScrollWidget
+{
+    Q_OBJECT
+
+public:
+    explicit UpcomingEventsListWidget( QGraphicsWidget *parent = 0 );
+    ~UpcomingEventsListWidget();
+
+    int count() const;
+
+    void addItem( UpcomingEventsWidget *widget );
+    void addEvent( const LastFmEventPtr &event );
+    void addEvents( const LastFmEvent::List &events );
+
+    void clear();
+
+protected:
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
+private:
+    void addSeparator();
+    int m_separatorCount;
+    QGraphicsLinearLayout *m_layout;
+    Q_DISABLE_COPY( UpcomingEventsListWidget )
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */

@@ -30,6 +30,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QGraphicsGridLayout>
+#include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 
 #define NBR_MAX_PARTICIPANT 5
@@ -183,21 +184,18 @@ UpcomingEventsWidget::setParticipants( const QString &participants )
         font.setItalic( false );
         m_participants->setFont( font );
     }
-    m_participants->setAttribute( Qt::WA_TranslucentBackground );
 }
 
 void
 UpcomingEventsWidget::setDate( const KDateTime &date )
 {
     m_date->setText( KGlobal::locale()->formatDateTime( date.toClockTime(), KLocale::FancyLongDate ) );
-    m_date->setAttribute( Qt::WA_TranslucentBackground );
 }
 
 void
 UpcomingEventsWidget::setLocation( const QString &location )
 {
     m_location->setText( location );
-    m_location->setAttribute( Qt::WA_TranslucentBackground );
 }
 
 void
@@ -208,14 +206,99 @@ UpcomingEventsWidget::setName( const QString &name )
     nameFont.setPointSize( m_name->font().pointSize() + 2 );
     m_name->setFont( nameFont );
     m_name->setText( name );
-    m_name->setAttribute( Qt::WA_TranslucentBackground );
 }
 
 void
 UpcomingEventsWidget::setUrl( const KUrl &url )
 {
     m_url->setText( "<html><body><a href=\"" + url.prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
-    m_url->setAttribute( Qt::WA_TranslucentBackground );
+}
+
+UpcomingEventsListWidget::UpcomingEventsListWidget( QGraphicsWidget *parent )
+    : Plasma::ScrollWidget( parent )
+    , m_separatorCount( 0 )
+{
+    // The widgets are displayed line by line with only one column
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
+    QGraphicsWidget *content = new QGraphicsWidget( this );
+    content->setLayout( m_layout );
+    setWidget( content );
+}
+
+UpcomingEventsListWidget::~UpcomingEventsListWidget()
+{
+    clear();
+}
+
+int
+UpcomingEventsListWidget::count() const
+{
+    return m_layout->count() - m_separatorCount;
+}
+
+void
+UpcomingEventsListWidget::addItem( UpcomingEventsWidget *widget )
+{
+    m_layout->addItem( widget );
+    addSeparator();
+}
+
+void
+UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
+{
+    UpcomingEventsWidget *widget = new UpcomingEventsWidget;
+    widget->setName( event->name() );
+    widget->setDate( KDateTime( event->date() ) );
+    LastFmLocationPtr location = event->venue()->location;
+    widget->setLocation( location->city + ", " + location->country );
+    const QString &artistList = event->participants().join( " - " );
+    widget->setParticipants( artistList );
+    widget->setUrl( event->url() );
+    widget->setImage( event->imageUrl(LastFmEvent::Large) );
+    m_layout->addItem( widget );
+    addSeparator();
+}
+
+void
+UpcomingEventsListWidget::addEvents( const LastFmEvent::List &events )
+{
+    foreach( const LastFmEventPtr &event, events )
+        addEvent( event );
+}
+
+void
+UpcomingEventsListWidget::addSeparator()
+{
+    // can also use Plasma::Separator here but that's in kde 4.4
+    QFrame *separator = new QFrame;
+    separator->setFrameStyle( QFrame::HLine );
+    separator->setAutoFillBackground( false );
+    QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget;
+    separatorProxy->setWidget( separator );
+    m_layout->addItem( separatorProxy );
+    ++m_separatorCount;
+}
+
+void
+UpcomingEventsListWidget::clear()
+{
+    int count = m_layout->count();
+    while( --count >= 0 )
+    {
+        QGraphicsLayoutItem *child = m_layout->itemAt( 0 );
+        m_layout->removeItem( child );
+        delete child;
+    }
+    widget()->resize( size().width(), 0 );
+    m_separatorCount = 0;
+}
+
+QSizeF
+UpcomingEventsListWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    Q_UNUSED( which )
+    Q_UNUSED( constraint )
+    return QSizeF( 0.0 , size().height() );
 }
 
 #include "UpcomingEventsWidget.moc"
