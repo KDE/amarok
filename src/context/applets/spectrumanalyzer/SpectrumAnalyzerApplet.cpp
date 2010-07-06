@@ -39,7 +39,7 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
     
     if( !m_glFormat.hasOpenGL() )
     {
-        m_glErrorText = i18n( "Your system has OpenGL support" );
+        m_glErrorText = i18n( "Your system has no OpenGL support" );
     }
     else
     {
@@ -49,12 +49,15 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
         m_glFormat.setAccum( true );
         m_glFormat.setDirectRendering( true );
 
-        QGLContext *context = new QGLContext( m_glFormat );
-        /*if ( !*/context->create(); /*)
+        m_glWidget = new AnalyzerGlWidget( m_glFormat ,PaletteHandler::highlightColor( 0.4, 1.05 ) );
+
+        const QGLContext *context = m_glWidget->context();
+
+        if( !context->isValid() )
         {
-            m_glErrorText = i18n( "Could not generate an OpenGL redering context." );
+            m_glErrorText = i18n( "Could not create an OpenGL redering context." );
         }
-        else*/ if( !context->format().sampleBuffers() )
+        else if( !context->format().sampleBuffers() )
         {
             m_glErrorText = i18n( "Your system has no sample buffer support." );
         }
@@ -76,10 +79,9 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
         }
         else
         {
-            m_glWidget = new AnalyzerGlWidget( context, PaletteHandler::highlightColor( 0.4, 1.05 ) );
-            m_glBuffer = new QGLPixelBuffer( 0, 0, m_glFormat );
-            m_glError = false;
             m_glErrorText = "";
+            m_glError = false;
+            m_glBuffer = new QGLPixelBuffer( 0, 0, m_glFormat );
         }
     }
 
@@ -118,43 +120,53 @@ SpectrumAnalyzerApplet::init()
     m_errorText->setPlainText( m_glErrorText );
 
     // Set the collapse size
-    setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
-    
-    // Config Icon
-    QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
-    settingsAction->setVisible( true );
-    settingsAction->setEnabled( true );
-    settingsAction->setText( i18n( "Settings" ) );
-    m_settingsIcon = addAction( settingsAction );
-    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
+    if( !m_glError )
+    {
+        setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
+    }
+    else
+    {
+        setCollapseHeight( m_headerText->boundingRect().height() + 5 * standardPadding() + m_errorText->boundingRect().height() );
+    }
 
-    // Detach Icon
-    QAction* detachAction = new QAction( this );
-    detachAction->setIcon( KIcon( "go-up" ) );
-    detachAction->setVisible( true );
-    detachAction->setEnabled( true );
-    detachAction->setText( i18n( "Detach" ) );
-    m_detachIcon = addAction( detachAction );
-    connect( m_detachIcon, SIGNAL( activated() ), this, SLOT( toggleDetach() ) );
+    if ( !m_glError )
+    {
+        // Config Icon
+        QAction* settingsAction = new QAction( this );
+        settingsAction->setIcon( KIcon( "preferences-system" ) );
+        settingsAction->setVisible( true );
+        settingsAction->setEnabled( true );
+        settingsAction->setText( i18n( "Settings" ) );
+        m_settingsIcon = addAction( settingsAction );
+        connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
-    // Fullscreen Icon
-    QAction* fullscreenAction = new QAction( this );
-    fullscreenAction->setIcon( KIcon( "transform-move" ) );
-    fullscreenAction->setVisible( true );
-    fullscreenAction->setEnabled( true );
-    fullscreenAction->setText( i18n( "Fullscreen" ) );
-    m_fullscreenIcon = addAction( fullscreenAction );
-    connect( m_fullscreenIcon, SIGNAL( activated() ), this, SLOT( toggleFullscreen() ) );
+        // Detach Icon
+        QAction* detachAction = new QAction( this );
+        detachAction->setIcon( KIcon( "go-up" ) );
+        detachAction->setVisible( true );
+        detachAction->setEnabled( true );
+        detachAction->setText( i18n( "Detach" ) );
+        m_detachIcon = addAction( detachAction );
+        connect( m_detachIcon, SIGNAL( activated() ), this, SLOT( toggleDetach() ) );
 
-    // Power Icon
-    QAction* stopAction = new QAction( this );
-    stopAction->setIcon( KIcon( "system-shutdown" ) );
-    stopAction->setVisible( true );
-    stopAction->setEnabled( true );
-    stopAction->setText( i18n( "Power" ) );
-    m_powerIcon = addAction( stopAction );
-    connect( m_powerIcon, SIGNAL( activated() ), this, SLOT( togglePower() ) );
+        // Fullscreen Icon
+        QAction* fullscreenAction = new QAction( this );
+        fullscreenAction->setIcon( KIcon( "transform-move" ) );
+        fullscreenAction->setVisible( true );
+        fullscreenAction->setEnabled( true );
+        fullscreenAction->setText( i18n( "Fullscreen" ) );
+        m_fullscreenIcon = addAction( fullscreenAction );
+        connect( m_fullscreenIcon, SIGNAL( activated() ), this, SLOT( toggleFullscreen() ) );
+
+        // Power Icon
+        QAction* stopAction = new QAction( this );
+        stopAction->setIcon( KIcon( "system-shutdown" ) );
+        stopAction->setVisible( true );
+        stopAction->setEnabled( true );
+        stopAction->setText( i18n( "Power" ) );
+        m_powerIcon = addAction( stopAction );
+        connect( m_powerIcon, SIGNAL( activated() ), this, SLOT( togglePower() ) );
+    }
 
     KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
 /*    m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
@@ -225,14 +237,18 @@ void SpectrumAnalyzerApplet::togglePower()
     {
         m_powerIcon->action()->setIcon(  KIcon( "system-shutdown" ) );
         m_power = true;
-        if( ( m_running ) && ( !m_detached ) )
+
+        if( ( m_running ) && ( !m_glError ) )
         {
-            m_glLabel->show();
-            setCollapseOff();
-        }
-        else if ( m_running )
-        {
-            m_glWidget->show();
+            if( !m_detached )
+            {
+                m_glLabel->show();
+                setCollapseOff();
+            }
+            else
+            {
+                m_glWidget->show();
+            }
         }
     }
 }
@@ -249,34 +265,46 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
     
-    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 2 * m_powerIcon->size().width() - 2 * m_detachIcon->size().width() - 2 * m_fullscreenIcon->size().width() - 6 * standardPadding();
+    qreal widmax = boundingRect().width();
+
+    if ( !m_glError )
+    {
+        widmax -= 2 * m_settingsIcon->size().width() + 2 * m_powerIcon->size().width() + 2 * m_detachIcon->size().width() + 2 * m_fullscreenIcon->size().width() + 6 * standardPadding();
+    }
+    
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
     m_headerText->setScrollingText( m_headerText->text(), rect );
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
-    if ( m_glError )
+    if ( ( !m_detached ) && ( m_power ) )
     {
-        m_errorText->setPos( ( size().width() - m_errorText->boundingRect().width() ) / 2 , standardPadding() + ( size().height() / 2 ) );
+        if ( m_glError )
+        {
+            m_errorText->setPos( ( size().width() - m_errorText->boundingRect().width() ) / 2 , standardPadding() + ( size().height() / 2 ) );
+        }
+        else
+        {
+            QGLPixelBuffer *oldBuffer = m_glBuffer;
+            m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20, m_glFormat );
+            if ( oldBuffer )
+                delete( oldBuffer );
+
+            m_glBuffer->makeCurrent();
+            m_glWidget->initializeGLScene();
+            m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20 );
+            m_glBuffer->doneCurrent();
+            m_glLabel->setPos( standardPadding(), 20 + rect.bottom() + standardPadding() );
+        }
     }
-    else if ( !m_detached )
+
+    if ( !m_glError )
     {
-        QGLPixelBuffer *oldBuffer = m_glBuffer;
-        m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20, m_glFormat );
-        if ( oldBuffer )
-            delete( oldBuffer );
-
-        m_glBuffer->makeCurrent();
-        m_glWidget->initializeGLScene();
-        m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20 );
-        m_glBuffer->doneCurrent();
-        m_glLabel->setPos( standardPadding(), 20 + rect.bottom() + standardPadding() );
+        m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+        m_detachIcon->setPos( size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+        m_fullscreenIcon->setPos( size().width() - m_fullscreenIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+        m_powerIcon->setPos( size().width() - m_powerIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - m_fullscreenIcon->size().width() - standardPadding(), standardPadding() );
     }
-
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-    m_detachIcon->setPos( size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-    m_fullscreenIcon->setPos( size().width() - m_fullscreenIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-    m_powerIcon->setPos( size().width() - m_powerIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - m_fullscreenIcon->size().width() - standardPadding(), standardPadding() );
 }
 
 void
@@ -289,7 +317,7 @@ SpectrumAnalyzerApplet::dataUpdated( const QString& name, const Plasma::DataEngi
     if( data.isEmpty() )
         return;
 
-    if(  ( m_running ) && ( m_power ) )
+    if(  ( m_running ) && ( m_power ) && ( !m_glError ) )
     {
         if ( data.contains( "message" ) && data["message"].toString().contains("clear") )
         {
@@ -355,7 +383,7 @@ SpectrumAnalyzerApplet::dataUpdated( const QString& name, const Plasma::DataEngi
 void
 SpectrumAnalyzerApplet::attach()
 {
-    if( ( !m_glError ) && ( m_power ) )
+    if( ( !m_glError ) && ( m_power ) && ( !m_glError ) )
     {
         m_glLabel->show();
         m_glWidget->hide();
@@ -430,16 +458,19 @@ SpectrumAnalyzerApplet::engineNewTrackPlaying( )
 {
     m_running = true;
     dataEngine( "amarok-spectrum-analyzer" )->query( QString( "data" ) );
-    if( ( !m_detached ) && ( m_power ) )
+
+    if( ( m_power ) && ( !m_glError ) )
     {
-        setCollapseOff();
-        m_glLabel->show();
+        if( !m_detached )
+        {
+            setCollapseOff();
+            m_glLabel->show();
+        }
+        else
+        {
+            m_glWidget->show();
+        }
     }
-    else if ( m_power )
-    {
-        m_glWidget->show();
-    }
-    
 }
 
 void

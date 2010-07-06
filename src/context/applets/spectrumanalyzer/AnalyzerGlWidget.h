@@ -38,7 +38,7 @@ class AnalyzerGlWidget: public QGLWidget
         /**
         *   Widget to display OpenGL VSXu window
         */
-        AnalyzerGlWidget( QGLContext *glContext, QColor fillColor );
+        AnalyzerGlWidget( QGLFormat format, QColor fillColor );
 
         /**
         *   Destructor

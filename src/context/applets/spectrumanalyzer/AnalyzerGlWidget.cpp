@@ -17,14 +17,14 @@
 #include "AnalyzerGlWidget.h"
 #include "SplineInterpolation.h"
 
-AnalyzerGlWidget::AnalyzerGlWidget( QGLContext *glContext, QColor fillColor )
-    :QGLWidget( glContext )
+AnalyzerGlWidget::AnalyzerGlWidget( QGLFormat format, QColor fillColor )
+    :QGLWidget( format )
     ,m_fillColor( fillColor )
     ,m_mode( Bars )
     ,m_showPeaks( false )
     ,m_showWave( false )
     ,m_peakSinkRate( 1.0f )    
-    ,m_barsPerDot( 15 )
+    ,m_barsPerDot( 2 )
 {
     changecount = 100;
 }
