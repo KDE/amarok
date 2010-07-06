@@ -58,6 +58,9 @@ public:
         , closeIcon( 0 )
         , hasLyrics( false )
         , isRichText( true )
+        , showBrowser( false )
+        , showInfoLabel( false )
+        , showSuggestions( false )
         , q_ptr( parent ) {}
     ~LyricsAppletPrivate() {}
 
@@ -96,6 +99,9 @@ public:
 
     bool hasLyrics;
     bool isRichText;
+    bool showBrowser;
+    bool showInfoLabel;
+    bool showSuggestions;
 
 private:
     LyricsApplet *const q_ptr;
@@ -152,20 +158,19 @@ LyricsAppletPrivate::collaspeToMin()
 void
 LyricsAppletPrivate::determineActionIconsState()
 {
-    bool isVisible = browser->nativeWidget()->isVisible();
     bool isEditing = !browser->nativeWidget()->isReadOnly();
 
-    editIcon->action()->setEnabled( isVisible & !isEditing );
-    editIcon->action()->setVisible( isVisible & !isEditing );
+    editIcon->action()->setEnabled( showBrowser & !isEditing );
+    editIcon->action()->setVisible( showBrowser & !isEditing );
 
-    closeIcon->action()->setEnabled( isVisible & isEditing );
-    closeIcon->action()->setVisible( isVisible & isEditing );
+    closeIcon->action()->setEnabled( showBrowser & isEditing );
+    closeIcon->action()->setVisible( showBrowser & isEditing );
 
-    saveIcon->action()->setEnabled( isVisible & isEditing );
-    saveIcon->action()->setVisible( isVisible & isEditing );
+    saveIcon->action()->setEnabled( showBrowser & isEditing );
+    saveIcon->action()->setVisible( showBrowser & isEditing );
 
-    reloadIcon->action()->setEnabled( isVisible & !isEditing );
-    reloadIcon->action()->setVisible( isVisible & !isEditing );
+    reloadIcon->action()->setEnabled( showBrowser & !isEditing );
+    reloadIcon->action()->setVisible( showBrowser & !isEditing );
 
     // remove all header widgets and add back below
     int count = headerLayout->count();
@@ -196,9 +201,9 @@ LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
     else
         browser->nativeWidget()->setPlainText( text );
     determineActionIconsState();
-    infoLabel->hide();
-    suggestView->hide();
-    browser->show();
+    showInfoLabel = false;
+    showSuggestions = false;
+    showBrowser = true;
 }
 
 void
@@ -231,7 +236,7 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     QHeaderView *header = suggestView->nativeWidget()->header();
     header->resizeSection( 0, width * 2 / 3 );
     header->setStretchLastSection( true );
-    suggestView->show();
+    showSuggestions = true;
 }
 
 void
@@ -277,8 +282,8 @@ LyricsAppletPrivate::_closeLyrics()
         q->setCollapseOff();
 
         determineActionIconsState();
-        suggestView->hide();
-        browser->show();
+        showSuggestions = false;
+        showBrowser = true;
         // emit sizeHintChanged(Qt::MaximumSize);
     }
     else
@@ -507,9 +512,13 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     d->titleLabel->setScrollingText( d->titleText );
 
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
-    d->suggestView->isVisible() ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
-    d->infoLabel->isVisible() ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
-    d->browser->isVisible() ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
+    d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
+    d->showInfoLabel ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
+    d->showBrowser ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
+
+    d->showSuggestions ? d->suggestView->show() : d->suggestView->hide();
+    d->showInfoLabel ? d->infoLabel->show() : d->infoLabel->hide();
+    d->showBrowser ? d->browser->show() : d->browser->hide();
 }
 
 void
@@ -520,8 +529,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     unsetCursor();
     d->hasLyrics = false;
-    d->suggestView->hide();
-    d->infoLabel->hide();
+    d->showSuggestions = false;
+    d->showInfoLabel = false;
     setBusy( false );
 
     if( data.contains( "noscriptrunning" ) )
@@ -538,9 +547,9 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             setBusy( true );
         d->titleText = i18n( "Lyrics: Fetching ..." );
         d->infoLabel->setText( i18n( "Lyrics are being fetched" ) );
-        d->infoLabel->show();
-        d->suggestView->hide();
-        d->browser->hide();
+        d->showInfoLabel = true;
+        d->showSuggestions = false;
+        d->showBrowser = false;
     }
     else if( data.contains( "error" ) )
     {
@@ -549,9 +558,9 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                                      "Please check your Internet connection.\n"
                                      "Error message:\n"
                                      "%1", data["error"].toString() ) );
-        d->infoLabel->show();
-        d->suggestView->hide();
-        d->browser->hide();
+        d->showInfoLabel = true;
+        d->showSuggestions = false;
+        d->showBrowser = false;
     }
     else if( data.contains( "suggested" ) )
     {
@@ -589,9 +598,9 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     {
         d->titleText = i18n( "Lyrics: Not found" );
         d->infoLabel->setText( i18n( "There were no lyrics found for this track" ) );
-        d->infoLabel->show();
-        d->suggestView->hide();
-        d->browser->hide();
+        d->showInfoLabel = true;
+        d->showSuggestions = false;
+        d->showBrowser = false;
     }
 
     d->determineActionIconsState();
