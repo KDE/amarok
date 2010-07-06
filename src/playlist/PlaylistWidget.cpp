@@ -54,7 +54,9 @@ Playlist::Widget::Widget( QWidget* parent )
 void
 Playlist::Widget::polish()
 {
+    DEBUG_BLOCK
     m_mainWidget = new KVBox( this );
+    setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
 
@@ -111,7 +113,7 @@ Playlist::Widget::polish()
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
-    KHBox *barBox = new KHBox( this );
+    KHBox *barBox = new KHBox( m_mainWidget );
     barBox->setMargin( 0 );
     barBox->setContentsMargins( 0, 0, 0, 0 );
 
@@ -131,7 +133,7 @@ Playlist::Widget::polish()
 
         plBar->addSeparator();
 
-        m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
+        m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), m_mainWidget );
         m_saveActions = new KActionCollection( m_mainWidget );
         connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
                  SLOT( slotSaveCurrentPlaylist() ) );
@@ -171,8 +173,6 @@ Playlist::Widget::polish()
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
     connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
-
-    m_polished = true;
 
 }
 
@@ -240,8 +240,7 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 void
 Playlist::Widget::showActiveTrack()
 {
-    if( !m_polished )
-        polish();
+    ensurePolish();
     m_playlistView->scrollToActiveTrack();
 }
 

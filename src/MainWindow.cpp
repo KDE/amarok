@@ -533,7 +533,7 @@ MainWindow::exportPlaylist() const //SLOT
 void
 MainWindow::slotShowActiveTrack() const
 {
-    m_playlistWidget->showActiveTrack();
+    m_playlistDock->showActiveTrack();
 }
 
 void
@@ -604,7 +604,7 @@ MainWindow::slotJumpTo() // slot
 {
     DEBUG_BLOCK
 
-    m_playlistWidget->searchWidget()->focusInputLine();
+    m_playlistDock->searchWidget()->focusInputLine();
 }
 
 void

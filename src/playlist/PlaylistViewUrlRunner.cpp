@@ -48,7 +48,7 @@ ViewUrlRunner::run( AmarokUrl url )
     DEBUG_BLOCK
 
     QMap< QString, QString > args = url.args();
-    Widget * playlistWidget = The::mainWindow()->playlistWidget();
+    Widget * playlistWidget = The::mainWindow()->playlistDock();
 
     if( args.keys().contains( "filter" ) )
     {

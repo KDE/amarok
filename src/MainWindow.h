@@ -41,6 +41,7 @@ class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
 namespace Playlist { class Widget; }
+class ContextDock;
 
 
 class KMenu;
@@ -83,7 +84,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         BrowserDock *browserDock() const { return m_browserDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
+        Playlist::Widget * playlistDock() { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -192,7 +193,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<KMenu>     m_searchMenu;
         //QPointer<KVBox>     m_statusbarArea;
 
-        QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
 #ifdef DEBUG_BUILD_TYPE
@@ -203,8 +203,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         Meta::TrackPtr m_currentTrack;
 
-        QDockWidget * m_contextDock;
-        QDockWidget * m_playlistDock;
+        ContextDock * m_contextDock;
+        Playlist::Widget * m_playlistDock;
 
         QPointer<SlimToolbar> m_slimToolbar;
         QPointer<MainToolbar> m_mainToolbar;

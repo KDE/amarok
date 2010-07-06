@@ -42,6 +42,7 @@ protected:
     virtual void hideEvent( QHideEvent* );
 
     virtual void polish() = 0;
+    void ensurePolish();
 
     bool m_polished;
 

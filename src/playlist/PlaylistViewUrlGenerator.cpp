@@ -52,7 +52,7 @@ ViewUrlGenerator::createUrl()
     AmarokUrl url;
     url.setCommand( "playlist" );
     url.setPath( "view" );
-    Widget * playlistWidget = The::mainWindow()->playlistWidget();
+    Widget * playlistWidget = The::mainWindow()->playlistDock();
 
     QString filterExpr = playlistWidget->searchWidget()->currentFilter();
     QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
