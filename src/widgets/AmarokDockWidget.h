@@ -29,6 +29,8 @@ class AmarokDockWidget : public QDockWidget
 public:
     explicit AmarokDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
 
+    void setMovable( bool movable );
+
 signals:
     void layoutChanged();
 
@@ -45,6 +47,8 @@ protected:
     void ensurePolish();
 
     bool m_polished;
+
+    QWidget * m_dummyTitleBarWidget;
 
 
 };

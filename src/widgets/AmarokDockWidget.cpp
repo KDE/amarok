@@ -22,6 +22,7 @@ AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt:
     : QDockWidget( title, parent, flags )
     , m_polished( false )
 {
+    m_dummyTitleBarWidget = new QWidget();
     connect( this, SIGNAL( visibilityChanged( bool ) ), SLOT( slotVisibilityChanged( bool ) ) );
 }
 
@@ -63,6 +64,25 @@ void AmarokDockWidget::ensurePolish()
         polish();
         m_polished = true;
     }
+}
+
+void AmarokDockWidget::setMovable( bool movable )
+{
+
+    if( movable )
+    {
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
+        setTitleBarWidget( 0 );
+        setFeatures( features );
+    }
+    else
+    {
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
+        setTitleBarWidget( m_dummyTitleBarWidget );
+        setFeatures( features );
+    }
+
+
 }
 
 

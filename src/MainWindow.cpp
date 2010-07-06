@@ -200,10 +200,6 @@ MainWindow::~MainWindow()
 
     //AmarokConfig::setPanelsSavedState( sPanels );
 
-    delete m_browserDummyTitleBarWidget;
-    delete m_contextDummyTitleBarWidget;
-    delete m_playlistDummyTitleBarWidget;
-
     //delete m_splitter;
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer;
@@ -245,12 +241,6 @@ MainWindow::init()
     PERF_LOG( "Create sidebar" )
     m_browserDock = new BrowserDock( this );
     m_browserDock->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
-
-    //empty title bar widgets for the docks so we can save some space when the layout is locked
-    //TODO move handling of this into AmarokDockWidget
-    m_browserDummyTitleBarWidget = new QWidget();
-    m_contextDummyTitleBarWidget = new QWidget();
-    m_playlistDummyTitleBarWidget = new QWidget();
 
     m_browserDock->installEventFilter( this );
     PERF_LOG( "Sidebar created" )
@@ -1521,17 +1511,9 @@ MainWindow::setLayoutLocked( bool locked )
 
     if( locked )
     {
-        debug() << "locked!";
-        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
-
-        m_browserDock->setFeatures( features );
-        m_browserDock->setTitleBarWidget( m_browserDummyTitleBarWidget );
-
-        m_contextDock->setFeatures( features );
-        m_contextDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
-
-        m_playlistDock->setFeatures( features );
-        m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
+        m_browserDock->setMovable( false );
+        m_contextDock->setMovable( false );
+        m_playlistDock->setMovable( false );
 
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
@@ -1541,17 +1523,9 @@ MainWindow::setLayoutLocked( bool locked )
     }
     else
     {
-        debug() << "unlocked!";
-        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
-
-        m_browserDock->setFeatures( features );
-        m_contextDock->setFeatures( features );
-        m_playlistDock->setFeatures( features );
-
-
-        m_browserDock->setTitleBarWidget( 0 );
-        m_contextDock->setTitleBarWidget( 0 );
-        m_playlistDock->setTitleBarWidget( 0 );
+        m_browserDock->setMovable( true );
+        m_contextDock->setMovable( true );
+        m_playlistDock->setMovable( true );
 
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
