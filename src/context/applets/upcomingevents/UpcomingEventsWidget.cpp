@@ -307,4 +307,16 @@ UpcomingEventsListWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint
     return QSizeF( 0.0 , size().height() );
 }
 
+QString
+UpcomingEventsListWidget::name() const
+{
+    return m_name;
+}
+
+void
+UpcomingEventsListWidget::setName( const QString &name )
+{
+    m_name = name;
+}
+
 #include "UpcomingEventsWidget.moc"

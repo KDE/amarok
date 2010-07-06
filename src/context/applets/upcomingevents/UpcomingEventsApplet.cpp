@@ -22,6 +22,7 @@
 #include "UpcomingEventsApplet.h"
 
 #include "App.h"
+#include "amarokurls/AmarokUrl.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/support/Amarok.h"
@@ -181,6 +182,14 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         QString artistName = data[ "artist" ].toString();
         LastFmEvent::List newEvents = filterEvents( events );
         addToExtenderItem( m_artistExtenderItem, newEvents, artistName );
+        m_artistEventsList->setName( artistName );
+        if( !m_artistExtenderItem->action( "showinmediasources" ) )
+        {
+            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistExtenderItem );
+            act->setToolTip( i18n( "Show in Media Sources" ) );
+            connect( act, SIGNAL(triggered()), this, SLOT(navigateToArtist()) );
+            m_artistExtenderItem->addAction( "showinmediasources", act );
+        }
     }
     else if( source == "venueevents" )
     {
@@ -193,6 +202,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
 
             Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
             UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
+            listWidget->setName( venue->name );
             extenderItem->setName( venue->name );
             extenderItem->setWidget( listWidget );
             extenderItem->setCollapsed( true );
@@ -547,6 +557,19 @@ UpcomingEventsApplet::changeTimeSpan( const QString &span )
 
     else if (span == i18n("All events") )
         m_temp_timeSpan = "AllEvents";
+}
+
+void
+UpcomingEventsApplet::navigateToArtist()
+{
+    if( m_artistEventsList->name().isEmpty() )
+        return;
+
+    AmarokUrl url;
+    url.setCommand( "navigate" );
+    url.setPath( "collections" );
+    url.appendArg( "filter", "artist:\"" + m_artistEventsList->name() + "\"" );
+    url.run();
 }
 
 void

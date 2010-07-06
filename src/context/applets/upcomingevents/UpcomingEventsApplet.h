@@ -184,6 +184,11 @@ private slots:
      */
     void updateConstraintsSlot();
 
+    /**
+     * Show in media sources slot
+     */
+    void navigateToArtist();
+
 private:
     enum VenueItemRoles
     {

@@ -124,6 +124,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
 class UpcomingEventsListWidget : public Plasma::ScrollWidget
 {
     Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName )
 
 public:
     explicit UpcomingEventsListWidget( QGraphicsWidget *parent = 0 );
@@ -136,6 +137,9 @@ public:
     void addEvent( const LastFmEventPtr &event );
     void addEvents( const LastFmEvent::List &events );
 
+    QString name() const;
+    void setName( const QString &name );
+
     void clear();
 
 protected:
@@ -144,6 +148,7 @@ protected:
 private:
     void addSeparator();
     int m_separatorCount;
+    QString m_name;
     QGraphicsLinearLayout *m_layout;
     Q_DISABLE_COPY( UpcomingEventsListWidget )
 };
