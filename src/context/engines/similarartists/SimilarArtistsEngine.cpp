@@ -35,10 +35,6 @@ K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
 
 using namespace Context;
 
-/**
- * Construct the engine
- * @param parent The object parent to this engine
- */
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
@@ -51,9 +47,6 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVarian
     update();
 }
 
-/**
- * Destroy the dataEngine
- */
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
 }
@@ -116,10 +109,6 @@ SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
         update();
 }
 
-/**
- * Prepare the calling of the similarArtistsRequest method.
- * Launch when the track played on amarok has changed.
- */
 void
 SimilarArtistsEngine::update()
 {
@@ -189,11 +178,6 @@ SimilarArtistsEngine::update()
 
 }
 
-/**
- * Fetches the similar artists for an artist thanks to the LastFm WebService
- * Store this in the similar artist list of this class
- * @param artist_name the name of the artist
- */
 void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
@@ -217,11 +201,6 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
          SLOT(parseSimilarArtists(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-
-/**
- * Fetches the description of the artist artist_name on the LastFM API.
- * @param artist_name the name of the artist
- */
 void
 SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
 {
@@ -240,11 +219,6 @@ SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
          SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-
-/**
- * Fetches the the most known artist track of the artist artistName on the LastFM API
- * @param artistName the name of the artist
- */
 void
 SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
 {
@@ -262,11 +236,6 @@ SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
          SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-
-/**
- * Parse the xml fetched on the lastFM API.
- * Launched when the download of the data are finished.
- */
 void
 SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e ) // SLOT
 {
@@ -392,10 +361,6 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, Net
     debug() << QString( "Found %1 similar artists of '%2'" ).arg( m_similarArtists.size() ).arg( m_artist );
 }
 
-/**
- * Parse the xml fetched on the lastFM API for the similarArtist description
- * Launched when the download of the data are finished and for each similarArtists.
- */
 void
 SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
@@ -477,10 +442,6 @@ SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, 
     }
 }
 
-/**
- * Parse the xml fetched on the lastFM API for the similarArtist most known track
- * Launched when the download of the data are finished and for each similarArtists.
- */
 void
 SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {

@@ -22,22 +22,15 @@
 #include "network/NetworkAccessManagerProxy.h"
 
 //Kde
-#include<KUrl>
-#include <ksqueezedtextlabel.h>
+#include <KUrl>
 
 //Qt
 #include <QWidget>
 #include <QString>
 
-
 class QLabel;
-class QGraphicsScene;
 class QGridLayout;
 class QPushButton;
-
-namespace Collections {
-    class QueryMaker;
-}
 
 /**
  * A widget for display an artist with some details

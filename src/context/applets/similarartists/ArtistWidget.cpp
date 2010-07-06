@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ArtistWidget"
+
 #include "ArtistWidget.h"
 
 //Amarok
@@ -29,23 +31,14 @@
 //KDE
 #include <KHBox>
 #include <KIcon>
-#include <KLocale>
 
 //Qt
 #include <QGridLayout>
-#include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QPushButton>
 #include <QLabel>
 #include <QDesktopServices>
 #include <QTextDocument>
 
-/**
- * ArtistWidget constructor
- * @param parent The widget parent
- */
 ArtistWidget::ArtistWidget( QWidget *parent )
     : QWidget( parent )
 {
@@ -80,7 +73,6 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     // The background of the QLabel is transparent
     m_topTrackLabel->setAttribute( Qt::WA_TranslucentBackground, true );
     m_topTrackLabel->setAlignment( Qt::AlignLeft );
-
 
     KHBox * spacer = new KHBox( this );
     spacer->setFixedHeight( 20 );
@@ -141,9 +133,6 @@ ArtistWidget::ArtistWidget( QWidget *parent )
 }
 
 
-/**
- * ArtistWidget destructor
- */
 ArtistWidget::~ArtistWidget()
 {
     delete m_layout;
@@ -154,21 +143,12 @@ ArtistWidget::~ArtistWidget()
     delete m_desc;
 }
 
-
-/**
- * Change the photo of the artist
- * @param photo The new artist photo
- */
 void
 ArtistWidget::setPhoto( const QPixmap &photo )
 {
     m_image->setPixmap( The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true ) );
 }
 
-/**
- * Change the photo of the artist with a photo load from an Url
- * @param photo The url of the new artist photo
- */
 void
 ArtistWidget::setPhoto( const KUrl& urlPhoto )
 {
@@ -181,10 +161,6 @@ ArtistWidget::setPhoto( const KUrl& urlPhoto )
          SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
-/**
- * Put the image of the artist in the QPixMap
- * @param reply, reply from the network request
- */
 void
 ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
@@ -217,12 +193,6 @@ ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAcc
     //setMaximumHeight(image.height());
 }
 
- /**
- * Change the artist name and the url which allows to display a page
- * which contains informations about this artist
- * @param nom The name of this artist
- * @param url The url of the artist about page
- */
 void
 ArtistWidget::setArtist( const QString &nom, const KUrl &url )
 {
@@ -246,19 +216,12 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
     
 }
 
-/**
- * Change the match pourcentage of the artist
- * @param match The match of this artist
- */
 void
 ArtistWidget::setMatch( const int match )
 {
     m_genre->setText( i18n( "Match" ) + " : " + QString::number( match ) + "%" );
 }
 
-/**
- * Clean the widget => the content of the QLabel are empty
- */
 void
 ArtistWidget::clear()
 {
@@ -268,21 +231,12 @@ ArtistWidget::clear()
     m_topTrackLabel->clear();
 }
 
-/**
- * Open an URL
- * @param url The URL of the artist
- */
 void
 ArtistWidget::openUrl( const QString &url )
 {
     QDesktopServices::openUrl( KUrl( "http://" + url ) );
 }
 
-
-/**
- * Change the artist description which contains informations about this artist
- * @param desc The description of this artist
- */
 void
 ArtistWidget::setDescription(const QString &description)
 {
@@ -300,10 +254,6 @@ ArtistWidget::setDescription(const QString &description)
     }
 }
 
-/**
- * Change the most known track of this artist
- * @param topTrack the top track of this artist
- */
 void
 ArtistWidget::setTopTrack(const QString &topTrack)
 {
@@ -335,8 +285,6 @@ ArtistWidget::setTopTrack(const QString &topTrack)
     }
 }
 
-
-
 void
 ArtistWidget::resizeEvent(QResizeEvent *event)
 {
@@ -344,9 +292,6 @@ ArtistWidget::resizeEvent(QResizeEvent *event)
     elideArtistDescription();
 }
 
-/**
- * Elide the artist description depending on the widget size
- */
 void
 ArtistWidget::elideArtistDescription()
 {
@@ -398,7 +343,6 @@ ArtistWidget::addLastfmArtistStation()
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
-
 
 void
 ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )

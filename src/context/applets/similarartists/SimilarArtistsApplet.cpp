@@ -44,14 +44,6 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 
-
-
-/**
- * SimilarArtistsApplet constructor
- * @param parent The widget parent
- * @param args   List of strings containing two entries: the service id
- *               and the applet id
- */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )
@@ -68,10 +60,6 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
     m_stoppedState = false;
 }
 
-
-/**
- * SimilarArtistsApplet destructor
- */
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     delete m_headerLabel;
@@ -80,9 +68,6 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
     delete m_scroll; // Destroy automatically his child widget
 }
 
-/**
- * Initialization of the applet's display, creation of the layout, scrolls
- */
 void
 SimilarArtistsApplet::init()
 {
@@ -147,9 +132,6 @@ SimilarArtistsApplet::init()
     constraintsEvent();
 }
 
-/**
- * This method allows the connection to the lastfm's api
- */
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
@@ -160,9 +142,6 @@ SimilarArtistsApplet::connectSource( const QString &source )
     }
 }
 
-/**
- * This method puts the widgets in the layout, in the initialization
- */
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -218,9 +197,6 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     }
 }
 
-/**
- * This method was launch when amarok play a new track
- */
 void
 SimilarArtistsApplet::engineNewTrackPlaying( )
 {
@@ -234,9 +210,6 @@ SimilarArtistsApplet::engineNewTrackPlaying( )
     }
 }
 
-/**
- * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
- */
 void
 SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
 {
@@ -266,9 +239,6 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     setCollapseOn();
 }
 
-/**
- * Update the current artist and his similar artists
- */
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
@@ -313,13 +283,11 @@ SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
         drawRoundedRectAroundText( p, m_headerLabel );
 }
 
-
 void
 SimilarArtistsApplet::configure()
 {
     showConfigurationInterface();
 }
-
 
 void
 SimilarArtistsApplet::switchToLang(const QString &lang)
