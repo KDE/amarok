@@ -62,8 +62,12 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
 
-    if( category->prettyName().isEmpty() )   // root item
+    if( category->prettyName().isEmpty() )
+    {
+        // root item
         m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
+        m_mainButton->setIcon( KIcon( "user-home" ) );
+    }
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
