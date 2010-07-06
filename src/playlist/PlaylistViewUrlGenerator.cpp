@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
-#include "PlaylistWidget.h"
+#include "PlaylistDock.h"
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
 
@@ -52,12 +52,12 @@ ViewUrlGenerator::createUrl()
     AmarokUrl url;
     url.setCommand( "playlist" );
     url.setPath( "view" );
-    Widget * playlistWidget = The::mainWindow()->playlistDock();
+    Dock * playlistDock = The::mainWindow()->playlistDock();
 
-    QString filterExpr = playlistWidget->searchWidget()->currentFilter();
-    QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
-    QString sortPath = playlistWidget->sortWidget()->sortPath();
-    QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
+    QString filterExpr = playlistDock->searchWidget()->currentFilter();
+    QString onlyMatches = playlistDock->searchWidget()->onlyMatches() ? "true" : "false";
+    QString sortPath = playlistDock->sortWidget()->sortPath();
+    QString prettySortPath = playlistDock->sortWidget()->prettySortPath();
     QString layout = LayoutManager::instance()->activeLayoutName();
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;

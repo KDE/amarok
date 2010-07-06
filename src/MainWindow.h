@@ -40,7 +40,7 @@ class NetworkAccessViewer;
 class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
-namespace Playlist { class Widget; }
+namespace Playlist { class Dock; }
 class ContextDock;
 
 
@@ -84,7 +84,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         BrowserDock *browserDock() const { return m_browserDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        Playlist::Widget * playlistDock() { return m_playlistDock; }
+        Playlist::Dock * playlistDock() { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -204,7 +204,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         Meta::TrackPtr m_currentTrack;
 
         ContextDock * m_contextDock;
-        Playlist::Widget * m_playlistDock;
+        Playlist::Dock * m_playlistDock;
 
         QPointer<SlimToolbar> m_slimToolbar;
         QPointer<MainToolbar> m_mainToolbar;

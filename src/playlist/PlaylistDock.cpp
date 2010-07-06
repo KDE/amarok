@@ -17,7 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistWidget.h"
+#include "PlaylistDock.h"
 
 #include "ActionClasses.h"
 #include "amarokconfig.h"
@@ -41,7 +41,7 @@
 
 #include <QHBoxLayout>
 
-Playlist::Widget::Widget( QWidget* parent )
+Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "Playlist" ), parent )
 {
     DEBUG_BLOCK
@@ -52,7 +52,7 @@ Playlist::Widget::Widget( QWidget* parent )
 }
 
 void
-Playlist::Widget::polish()
+Playlist::Dock::polish()
 {
     DEBUG_BLOCK
     m_mainWidget = new KVBox( this );
@@ -177,14 +177,14 @@ Playlist::Widget::polish()
 }
 
 QSize
-Playlist::Widget::sizeHint() const
+Playlist::Dock::sizeHint() const
 {
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
 
 
 void
-Playlist::Widget::paletteChanged( const QPalette& palette )
+Playlist::Dock::paletteChanged( const QPalette& palette )
 {
     m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; } " )
                                         .arg( PaletteHandler::highlightColor().name() )
@@ -193,7 +193,7 @@ Playlist::Widget::paletteChanged( const QPalette& palette )
 }
 
 void
-Playlist::Widget::playlistProviderAdded( Playlists::PlaylistProvider *provider, int category )
+Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
@@ -212,7 +212,7 @@ Playlist::Widget::playlistProviderAdded( Playlists::PlaylistProvider *provider, 
 }
 
 void
-Playlist::Widget::playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category )
+Playlist::Dock::playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
@@ -223,7 +223,7 @@ Playlist::Widget::playlistProviderRemoved( Playlists::PlaylistProvider *provider
 }
 
 void
-Playlist::Widget::slotSaveCurrentPlaylist()
+Playlist::Dock::slotSaveCurrentPlaylist()
 {
     DEBUG_BLOCK
 
@@ -238,14 +238,14 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 }
 
 void
-Playlist::Widget::showActiveTrack()
+Playlist::Dock::showActiveTrack()
 {
     ensurePolish();
     m_playlistView->scrollToActiveTrack();
 }
 
 void
-Playlist::Widget::showDynamicHint( bool enabled ) // slot
+Playlist::Dock::showDynamicHint( bool enabled ) // slot
 {
     DEBUG_BLOCK
 
@@ -256,7 +256,7 @@ Playlist::Widget::showDynamicHint( bool enabled ) // slot
 }
 
 void
-Playlist::Widget::clearFilterIfActive() // slot
+Playlist::Dock::clearFilterIfActive() // slot
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config( "Playlist Search" );

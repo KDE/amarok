@@ -43,12 +43,12 @@ namespace Playlist
 
 class ProgressiveSearchWidget;
 
-class Widget : public AmarokDockWidget
+class Dock : public AmarokDockWidget
 {
     Q_OBJECT
 
 public:
-    Widget( QWidget* parent );
+    Dock( QWidget* parent );
     PrettyListView* currentView() { return m_playlistView; }
 
     SortWidget * sortWidget() { return m_sortWidget; }

@@ -54,7 +54,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
-#include "playlist/PlaylistWidget.h"
+#include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -256,7 +256,7 @@ MainWindow::init()
     PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
-    m_playlistDock = new Playlist::Widget( 0 );
+    m_playlistDock = new Playlist::Dock( 0 );
     m_playlistDock->installEventFilter( this );
     PERF_LOG( "Playlist created" )
 
@@ -1023,7 +1023,7 @@ MainWindow::createMenus()
     playlistMenu->setTitle( i18n("&Playlist") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
-    //playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") ); //FIXME: See FIXME in PlaylistWidget.cpp
+    //playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") ); //FIXME: See FIXME in PlaylistDock.cpp
     playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_undo") );
@@ -1590,7 +1590,7 @@ MainWindow::restoreLayout()
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
 
-        //int totalWidgetWidth = m_browsersDock->width() + m_contextView->width() + m_playlistWidget->width();
+        //int totalWidgetWidth = m_browsersDock->width() + m_contextView->width() + m_playlistDock->width();
         int totalWidgetWidth = contentsRect().width();
 
         //get the width of the splitter handles, we need to subtract these...
