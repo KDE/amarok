@@ -323,9 +323,13 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerm, int searchFi
        )
         return true;
 
-    if( searchFields & MatchRating &&
-        track->rating() == QString( searchTerm ).remove( "rating:" ).toInt() )
-        return true;
+    if( searchFields & MatchRating )
+    {
+        bool ok;
+        int rating = QString( searchTerm ).remove( "rating:" ).toInt( &ok );
+        if( ok && ( track->rating() == rating ) )
+            return true;
+    }
 
     return false;
 }
