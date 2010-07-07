@@ -351,9 +351,6 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->modifiers() == Qt::NoModifier )
-        setCurrentIndex( index );
-
     if( !m_expandToggledWhenPressed &&
         event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
