@@ -24,6 +24,7 @@
 #include "UpnpMemoryQueryMaker.h"
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
+#include "UpnpCache.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -39,38 +40,6 @@ using namespace Meta;
 
 namespace Collections {
 
-// TODO : move this to CollectionBase
-static qint64 duration( QString duration ) {
-    QStringList parts = duration.split(":");
-    int hours = parts.takeFirst().toInt();
-    int minutes = parts.takeFirst().toInt();
-    QString rest = parts.takeFirst();
-    int seconds = 0;
-    int mseconds = 0;
-    if( rest.contains(".") ) {
-        int dotIndex = rest.indexOf(".");
-        seconds = rest.left( dotIndex ).toInt();
-        QString frac = rest.mid( dotIndex + 1 );
-        if( frac.contains( "/" ) ) {
-            int slashIndex = frac.indexOf("/");
-            int num = frac.left( frac.indexOf("/") ).toInt();
-            int den = frac.mid( slashIndex + 1 ).toInt();
-            mseconds = num * 1000 / den;
-        }
-        else {
-            mseconds = ("." + frac).toFloat() * 1000;
-        }
-    }
-    else {
-        seconds = rest.toInt();
-    }
-
-    return hours * 60 * 60 * 1000
-        + minutes * 60 * 1000
-        + seconds * 1000
-        + mseconds;
-}
-
 //UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
@@ -78,6 +47,7 @@ UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo &info )
     : UpnpCollectionBase( info )
     , m_mc( new MemoryCollection() )
     , m_fullScanInProgress( false )
+    , m_cache( new UpnpCache( this ) )
 {
     DEBUG_BLOCK
 
@@ -174,12 +144,11 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
 void
 UpnpBrowseCollection::updateMemoryCollection()
 {
-    memoryCollection()->setTrackMap( m_TrackMap );
-    memoryCollection()->setArtistMap( m_ArtistMap );
-    memoryCollection()->setAlbumMap( m_AlbumMap );
-    memoryCollection()->setGenreMap( m_GenreMap );
-    memoryCollection()->setComposerMap( m_ComposerMap );
-    memoryCollection()->setYearMap( m_YearMap );
+    memoryCollection()->setTrackMap( m_cache->tracks() );
+    memoryCollection()->setArtistMap( m_cache->artists() );
+    memoryCollection()->setAlbumMap( m_cache->albums() );
+    memoryCollection()->setGenreMap( m_cache->genres() );
+    memoryCollection()->setYearMap( m_cache->years() );
     emit updated();
 }
 
@@ -187,87 +156,18 @@ void
 UpnpBrowseCollection::createTrack( const KIO::UDSEntry &entry, const QString &baseUrl )
 {
 DEBUG_BLOCK
-// TODO check for meta data updates instead of just returning
-    if( entry.contains( KIO::UPNP_REF_ID )
-        && m_TrackMap.contains( entry.stringValue( KIO::UPNP_REF_ID ) ) )
-        return;
-    if( m_TrackMap.contains( entry.stringValue(KIO::UPNP_ID) ) ) {
-        return;
-    }
-
-#define INSERT_METADATA(type, value)\
-    QString type##String = value;\
-    Upnp##type##Ptr type( new Upnp##type( type##String ) );\
-    if( m_##type##Map.contains( type##String ) )\
-        type = Upnp##type##Ptr::dynamicCast( m_##type##Map[ type##String ] );\
-    else\
-        m_##type##Map[ type##String ] = type##Ptr::dynamicCast( type );
-
-    // TODO check if Meta data is actually available
-
-    INSERT_METADATA( Artist, entry.stringValue( KIO::UPNP_ARTIST ) );
-    INSERT_METADATA( Album, entry.stringValue( KIO::UPNP_ALBUM ) );
-    INSERT_METADATA( Genre, entry.stringValue( KIO::UPNP_GENRE ) );
-
-    QString date = entry.stringValue( KIO::UPNP_DATE );
-    KDateTime dateTime = KDateTime::fromString( date );
-    int year = dateTime.date().year();
-    if( !dateTime.isValid() ) {
-        year = 0;
-    }
-    INSERT_METADATA( Year, QString::number(year) );
-
-    Album->setAlbumArtist( Artist );
-    Artist->addAlbum( Album );
-
-    UpnpTrackPtr t( new UpnpTrack(this) ); 
-    // UDS_NAME is the plain ASCII, relative path prefixed name
-    // but UDS_DISPLAY_NAME is the unicode, 'file' name.
-    QString name = entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-    t->setTitle( name );
-
-    t->setArtist( Artist );
-    t->setAlbum( Album );
-    t->setGenre( Genre );
-    t->setYear( Year );
-
-    t->setPlayableUrl( entry.stringValue(KIO::UDSEntry::UDS_TARGET_URL) );
-    t->setUidUrl( entry.stringValue( KIO::UPNP_ID ) );
-    t->setTrackNumber( entry.stringValue(KIO::UPNP_TRACK_NUMBER).toInt() );
-// TODO validate and then convert to kbps
-    t->setBitrate( entry.stringValue( KIO::UPNP_BITRATE ).toInt() / 1024 );
-
-    t->setLength( duration( entry.stringValue( KIO::UPNP_DURATION ) ) );
-    Artist->addTrack( t );
-    Album->addTrack( t );
-    Genre->addTrack( t );
-    Year->addTrack( t );
-
-    // album art
-    if( ! Album->imageLocation().isValid() )
-        Album->setAlbumArtUrl( entry.stringValue( KIO::UPNP_ALBUMART_URI ) );
-
-    m_TrackMap[t->uidUrl()] = TrackPtr::dynamicCast( t );
+    TrackPtr t = m_cache->getTrack( entry );
 
     QFileInfo info( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
     QString container = QDir(baseUrl).filePath( info.dir().path() );
     debug() << "CONTAINER" << container;
-    m_tracksInContainer[container] << TrackPtr::dynamicCast( t );
+    m_tracksInContainer[container] << t;
 }
 
 void
 UpnpBrowseCollection::removeTrack( TrackPtr t )
 {
-#define DOWNCAST( type, var ) Upnp##type##Ptr::dynamicCast( var )
-
-    UpnpTrackPtr track = DOWNCAST( Track, t );
-    debug() << "IS NULL?" << track.isNull();
-    debug() << "REMOVING " << track->name();
-    m_TrackMap.remove( track->uidUrl() );
-    DOWNCAST( Artist, m_ArtistMap[ track->artist()->name() ] )->removeTrack( track );
-    DOWNCAST( Album, m_AlbumMap[ track->album()->name() ] )->removeTrack( track );
-    DOWNCAST( Genre, m_GenreMap[ track->genre()->name() ] )->removeTrack( track );
-    DOWNCAST( Year, m_YearMap[ track->year()->name() ] )->removeTrack( track );
+    m_cache->removeTrack( t );
 }
 
 void
@@ -326,9 +226,8 @@ Meta::TrackPtr
 UpnpBrowseCollection::trackForUrl( const KUrl &url )
 {
     debug() << "TRACK FOR URL " << url;
-    if( url.scheme() == "upnptrack"
-        && m_TrackMap.contains( url.url() ) )
-        return m_TrackMap[ url.url() ];
+    if( url.scheme() == "upnptrack" && url.host() == collectionId() )
+        return m_cache->tracks()[url.url()];
     debug() << "NONE FOUND";
     return Collection::trackForUrl( url );
 }

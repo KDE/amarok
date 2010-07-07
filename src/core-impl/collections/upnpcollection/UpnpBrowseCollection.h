@@ -40,6 +40,7 @@ class QTimer;
 
 namespace Collections {
 
+class UpnpCache;
 class UpnpMemoryQueryMaker;
 
 class UpnpBrowseCollection : public UpnpCollectionBase
@@ -86,16 +87,9 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     // affects performance or memory
     QHash<QString, Meta::TrackList> m_tracksInContainer;
 
-    // probably move to some separate class
-    // should we just extend MemoryCollection?
-    TrackMap m_TrackMap;
-    ArtistMap m_ArtistMap;
-    AlbumMap m_AlbumMap;
-    GenreMap m_GenreMap;
-    ComposerMap m_ComposerMap;
-    YearMap m_YearMap;
-
     QQueue<QString> m_updateQueue;
+
+    UpnpCache *m_cache;
 };
 
 } //namespace Collections
