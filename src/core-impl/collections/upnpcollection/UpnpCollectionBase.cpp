@@ -36,20 +36,17 @@ UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo &info )
 {
 }
 
-QString
-UpnpCollectionBase::collectionId() const
+QString UpnpCollectionBase::collectionId() const
 {
     return QString("upnp-ms://") + m_deviceInfo.uuid();
 }
 
-QString
-UpnpCollectionBase::prettyName() const
+QString UpnpCollectionBase::prettyName() const
 {
     return m_deviceInfo.friendlyName();
 }
 
-bool
-UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
+bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
 {
     if( url.scheme() == "upnp-ms"
         && url.host() == m_deviceInfo.host()
@@ -57,4 +54,5 @@ UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
         return true;
     return false;
 }
+
 } //namespace Collections
