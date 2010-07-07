@@ -151,8 +151,8 @@ UpnpTrack::setUidUrl( const QString &url )
 {
 // TODO should we include uuid() also in the url?
     m_uidUrl = url;
-    if( !url.startsWith( "upnptrack://" ) )
-        m_uidUrl = "upnptrack://" + m_collection->collectionId() + "/" + m_uidUrl;
+    if( !url.startsWith( "upnp-ms://" ) )
+        m_uidUrl = "upnp-ms://" + m_collection->collectionId() + "/" + m_uidUrl;
 }
 
 void
