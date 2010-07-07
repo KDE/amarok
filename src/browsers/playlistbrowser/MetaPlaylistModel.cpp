@@ -638,9 +638,7 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
     else
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
-        Meta::TrackPtr track = trackFromIndex( idx );
-        int trackIndex = playlist->tracks().indexOf( track );
-        actions << playlist->trackActions( trackIndex );
+        actions << playlist->trackActions( idx.row() );
     }
 
     return actions;
