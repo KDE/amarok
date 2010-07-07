@@ -22,6 +22,7 @@
 #include "statusbar/StatusBar.h"
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
+#include "UpnpCache.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -43,6 +44,7 @@ namespace Collections {
 UpnpSearchCollection::UpnpSearchCollection( const DeviceInfo &info )
     : UpnpCollectionBase( info )
     , m_fullScanInProgress( false )
+    , m_cache( new UpnpCache( this ) )
 {
     DEBUG_BLOCK
 
@@ -67,31 +69,11 @@ void UpnpSearchCollection::slotFilesChanged(const QStringList &list )
 void
 UpnpSearchCollection::startFullScan()
 {
-    DEBUG_BLOCK;
-
-// TODO change this to "/" when we have files changed being
-/// ignored for full scans.
-// right now its good to have the full scan finish quickly for
-// development purposes
-    startIncrementalScan( "/" );
-    m_fullScanInProgress = true;
-    m_fullScanTimer = new QTimer( this );
-    m_fullScanTimer->start(5000);
 }
 
 void
 UpnpSearchCollection::startIncrementalScan( const QString &directory )
 {
-    DEBUG_BLOCK;
-    if( m_fullScanInProgress ) {
-        debug() << "Full scan in progress, aborting";
-        return;
-    }
-    debug() << "Scanning directory" << directory;
-    KUrl url;
-    url.setScheme( "upnp-ms" );
-    url.setHost( m_deviceInfo.uuid() );
-    url.setPath( directory );
 }
 
 QueryMaker*

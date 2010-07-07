@@ -40,6 +40,7 @@ class QTimer;
 namespace Collections {
 
 class UpnpQueryMaker;
+class UpnpCache;
 
 class UpnpSearchCollection : public UpnpCollectionBase
 {
@@ -54,6 +55,8 @@ class UpnpSearchCollection : public UpnpCollectionBase
     virtual KIcon icon() const { return KIcon("network-server"); }
 
     Meta::TrackPtr trackForUrl( const KUrl &url );
+
+    UpnpCache* cache() { return m_cache; }
   signals:
 
   public slots:
@@ -66,6 +69,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
     QTimer *m_fullScanTimer;
     bool m_fullScanInProgress;
 
+    UpnpCache *m_cache;
 };
 
 } //namespace Collections
