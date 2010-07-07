@@ -20,9 +20,8 @@
 #include <KIcon>
 #include <KPushButton>
 
-TranscodeDialog::TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent )
+TranscodeDialog::TranscodeDialog( QWidget *parent )
     : KDialog( parent, Qt::Dialog )
-    //, m_urlList( urlList )
     , m_format( TranscodeFormat::Null() )
 {
     DEBUG_BLOCK
@@ -31,6 +30,8 @@ TranscodeDialog::TranscodeDialog( /*const KUrl::List &urlList,*/ QWidget *parent
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
+    ui.buttonBox->button( KDialogButtonBox::Ok )->hide();
+    ui.buttonBox->button( KDialogButtonBox::Ok )->setText( i18n( "Transc&ode" ) );
 
     setButtons( None );
 
@@ -75,9 +76,8 @@ void
 TranscodeDialog::onTranscodeWithOptionsClicked() //SLOT
 {
     DEBUG_BLOCK
-    //temporary
-    m_format = TranscodeFormat::Flac();
-    KDialog::done( KDialog::Accepted );
+    ui.stackedWidget->setCurrentIndex( 1 );
+    ui.buttonBox->button( KDialogButtonBox::Ok )->show();
 }
 
 TranscodeFormat

@@ -1147,11 +1147,10 @@ void CollectionTreeView::slotCopyTracks()
     {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
-            TranscodeDialog *dialog = new TranscodeDialog( this );
+            TranscodeDialog dialog( this );
             TranscodeFormat format = TranscodeFormat::Null();
-            if( dialog->exec() )
-                format = dialog->transcodeFormat();
-            delete dialog;
+            if( dialog.exec() )
+                format = dialog.transcodeFormat();
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, format );
         }
     }

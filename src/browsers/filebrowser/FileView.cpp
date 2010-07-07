@@ -302,6 +302,7 @@ FileView::slotPrepareCopyTracks()
 void
 FileView::slotCopyTracks( const Meta::TrackList& tracks )
 {
+    DEBUG_BLOCK
     if( !m_copyAction || !m_copyActivated )
         return;
 
@@ -324,12 +325,13 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
             source = new Collections::FileCollectionLocation();
         }
         Collections::CollectionLocation *destination = m_copyAction->collection()->location();
-        TranscodeDialog *dialog = new TranscodeDialog( this );
+        TranscodeDialog dialog( this );
         TranscodeFormat format = TranscodeFormat::Null();
-        if( dialog->exec() )
-            format = dialog->transcodeFormat();
-        delete dialog;
-        source->prepareCopy( tracks, destination, format );
+        if( dialog.exec() )
+        {
+            format = dialog.transcodeFormat();
+            source->prepareCopy( tracks, destination, format );
+        }
     }
     else
     {

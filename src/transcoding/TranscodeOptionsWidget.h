@@ -14,35 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODEDIALOG_H
-#define TRANSCODEDIALOG_H
+#ifndef TRANSCODEOPTIONSWIDGET_H
+#define TRANSCODEOPTIONSWIDGET_H
 
-#include "ui_TranscodeDialog.h"
 #include "core/transcoding/TranscodeFormat.h"
-#include "core/support/Debug.h"
 
-#include <KDialog>
+#include <QWidget>
 
-/**
- * A KDialog for initiating a transcode operation.
- * @author Téo Mrnjavac <teo@kde.org>
- */
-class AMAROK_EXPORT TranscodeDialog : public KDialog
+class TranscodeOptionsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    TranscodeDialog( QWidget *parent );
+    explicit TranscodeOptionsWidget( TranscodeFormat::Encoder encoder, QWidget *parent = 0 );
 
-    TranscodeFormat transcodeFormat() const;
+signals:
+    void optionsChanged( const TranscodeFormat &format );
+
+public slots:
 
 private:
-    TranscodeFormat m_format;
-    Ui::TranscodeDialog ui;
-    //KUrl::List m_urlList;
-private slots:
-    void onJustCopyClicked();
-    void onTranscodeWithDefaultsClicked();
-    void onTranscodeWithOptionsClicked();
+    TranscodeFormat::Encoder m_encoder;
 };
 
-#endif // TRANSCODEDIALOG_H
+#endif // TRANSCODEOPTIONSWIDGET_H

@@ -14,35 +14,39 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODEDIALOG_H
-#define TRANSCODEDIALOG_H
+#include "TranscodeOptionsWidget.h"
 
-#include "ui_TranscodeDialog.h"
-#include "core/transcoding/TranscodeFormat.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
-
-/**
- * A KDialog for initiating a transcode operation.
- * @author Téo Mrnjavac <teo@kde.org>
- */
-class AMAROK_EXPORT TranscodeDialog : public KDialog
+TranscodeOptionsWidget::TranscodeOptionsWidget( TranscodeFormat::Encoder encoder, QWidget *parent )
+    : QWidget(parent)
+    , m_encoder( encoder )
 {
-    Q_OBJECT
-public:
-    TranscodeDialog( QWidget *parent );
+    DEBUG_BLOCK
+    switch( encoder )
+    {
+    case NULL_CODEC:
+        break;
+    case AAC:
+        initQuality();
+        break;
+    case ALAC:
+        //NO IDEA WHAT TO DO WITH THIS!
+        break;
+    case FLAC:
+        initLevel();
+        break;
+    case MP3:
+        initVRating();
+        break;
+    case VORBIS:
+        initQuality();
+        break;
+    case WMA2:
+        initQuality();
+        break;
+    default:
+        debug() << "Bad encoder.";
+    }
 
-    TranscodeFormat transcodeFormat() const;
-
-private:
-    TranscodeFormat m_format;
-    Ui::TranscodeDialog ui;
-    //KUrl::List m_urlList;
-private slots:
-    void onJustCopyClicked();
-    void onTranscodeWithDefaultsClicked();
-    void onTranscodeWithOptionsClicked();
-};
-
-#endif // TRANSCODEDIALOG_H
+}

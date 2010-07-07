@@ -90,80 +90,85 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="spacing">
-      <number>1</number>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <item>
-      <widget class="QCommandLinkButton" name="justCopyButton">
-       <property name="text">
-        <string>&amp;Copy</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="description">
-        <string>Just copy the tracks without transcoding them.</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCommandLinkButton" name="transcodeWithDefaultsButton">
-       <property name="text">
-        <string>&amp;Transcode</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="description">
-        <string>As you copy, transcode the tracks using the preset encoding parameters.
+     <widget class="QWidget" name="selectionPage">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCommandLinkButton" name="justCopyButton">
+         <property name="text">
+          <string>&amp;Copy</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="description">
+          <string>Just copy the tracks without transcoding them.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCommandLinkButton" name="transcodeWithDefaultsButton">
+         <property name="text">
+          <string>&amp;Transcode</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="description">
+          <string>As you copy, transcode the tracks using the preset encoding parameters.
 Medium compression, high quality Ogg Vorbis (lossy).</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCommandLinkButton" name="transcodeWithOptionsButton">
-       <property name="text">
-        <string>Transcode With Custom &amp;Parameters</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="description">
-        <string>Configure your own encoding parameters for this transcoding operation.</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="KDialogButtonBox" name="buttonBox">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCommandLinkButton" name="transcodeWithOptionsButton">
+         <property name="text">
+          <string>Transcode With Custom &amp;Parameters</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="description">
+          <string>Configure your own encoding parameters for this transcoding operation.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>457</width>
+           <height>23</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="codecPage"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="KDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
