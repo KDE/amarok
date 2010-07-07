@@ -33,6 +33,7 @@
 #include "DynamicModel.h"
 #include "EngineController.h"
 #include "core/engine/EngineObserver.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "navigators/DynamicTrackNavigator.h"
@@ -46,6 +47,7 @@
 #include "playlist/PlaylistDock.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <KStandardDirs>
 #include <typeinfo>
 
 Playlist::Actions* Playlist::Actions::s_instance = 0;
@@ -480,42 +482,56 @@ Playlist::Actions::restoreDefaultPlaylist()
     The::playlistManager();
 
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
-    if ( playlist )
+    //check if we should play the first run jingle rather than restore any playlist layout
+    if( AmarokConfig::playFirstRunJingle() )
     {
-        Meta::TrackList tracks = playlist->tracks();
+        QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
+        The::playlistController()->clear();
+        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
+        play( 0 );
+        AmarokConfig::setPlayFirstRunJingle( false );
 
-        QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
+    }
+    else
+    {
+
+        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
+        if ( playlist )
         {
-            i.next();
-            Meta::TrackPtr track = i.value();
-            if ( ! track )
-                i.remove();
-            else if( Playlists::canExpand( track ) )
+            Meta::TrackList tracks = playlist->tracks();
+
+            QMutableListIterator<Meta::TrackPtr> i( tracks );
+            while ( i.hasNext() )
             {
-                Playlists::PlaylistPtr playlist = Playlists::expand( track );
-                //expand() can return 0 if the KIO job errors out
-                if( playlist )
-                {
+                i.next();
+                Meta::TrackPtr track = i.value();
+                if ( ! track )
                     i.remove();
-                    Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks )
-                        if( t )
-                            i.insert( t );
+                else if( Playlists::canExpand( track ) )
+                {
+                    Playlists::PlaylistPtr playlist = Playlists::expand( track );
+                    //expand() can return 0 if the KIO job errors out
+                    if( playlist )
+                    {
+                        i.remove();
+                        Meta::TrackList newtracks = playlist->tracks();
+                        foreach( Meta::TrackPtr t, newtracks )
+                            if( t )
+                                i.insert( t );
+                    }
                 }
             }
+
+            The::playlistController()->insertTracks( 0, tracks );
+
+            QList<int> queuedRows = playlist->queue();
+            queue( playlist->queue() );
+
+            //Select previously playing track
+            const int lastPlayingRow = AmarokConfig::lastPlaying();
+            if( lastPlayingRow >= 0 )
+                Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
         }
-
-        The::playlistController()->insertTracks( 0, tracks );
-
-        QList<int> queuedRows = playlist->queue();
-        queue( playlist->queue() );
-
-        //Select previously playing track
-        const int lastPlayingRow = AmarokConfig::lastPlaying();
-        if( lastPlayingRow >= 0 )
-            Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
     }
 }
 

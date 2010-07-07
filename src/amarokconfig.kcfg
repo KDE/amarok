@@ -118,6 +118,10 @@
         <label>Show the Context View</label>
         <default>true</default>
     </entry>
+    <entry key="PlayFirstRunJingle" type="Bool">
+        <label>Play the first run jingle</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="OrganizeCollectionDialog">
