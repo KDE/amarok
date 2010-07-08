@@ -32,6 +32,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Splitted desktop so mime types can be allocated in a better way
+      (BR 242292).
     * Fixed some tracks not being scanned when they had corrupted MusicBrainz
       IDs. Thanks to Matěj Laitl <matej@laitl.cz> for the patch. (BR 236227)
     * Fixed crash when navigating using "Places" in the file browser. (BR 240338)
