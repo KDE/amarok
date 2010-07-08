@@ -35,7 +35,9 @@
 
 #define NBR_MAX_PARTICIPANT 5
 
-UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFlags wFlags )
+UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
+                                            QGraphicsItem *parent,
+                                            Qt::WindowFlags wFlags )
     : QGraphicsWidget( parent, wFlags )
     , m_image( new QLabel )
     , m_participants( new Plasma::Label( this ) )
@@ -64,6 +66,15 @@ UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFla
     m_url->nativeWidget()->setOpenExternalLinks( true );
     m_url->nativeWidget()->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_image->setText( i18n("Loading picture...") );
+
+    setName( event->name() );
+    setDate( KDateTime( event->date() ) );
+    LastFmLocationPtr location = event->venue()->location;
+    setLocation( location->city + ", " + location->country );
+    const QString &artistList = event->participants().join( " - " );
+    setParticipants( artistList );
+    setUrl( event->url() );
+    setImage( event->imageUrl(LastFmEvent::Large) );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -246,15 +257,7 @@ UpcomingEventsListWidget::addItem( UpcomingEventsWidget *widget )
 void
 UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
 {
-    UpcomingEventsWidget *widget = new UpcomingEventsWidget;
-    widget->setName( event->name() );
-    widget->setDate( KDateTime( event->date() ) );
-    LastFmLocationPtr location = event->venue()->location;
-    widget->setLocation( location->city + ", " + location->country );
-    const QString &artistList = event->participants().join( " - " );
-    widget->setParticipants( artistList );
-    widget->setUrl( event->url() );
-    widget->setImage( event->imageUrl(LastFmEvent::Large) );
+    UpcomingEventsWidget *widget = new UpcomingEventsWidget( event );
     m_layout->addItem( widget );
     addSeparator();
 }

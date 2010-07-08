@@ -43,7 +43,9 @@ class UpcomingEventsWidget : public QGraphicsWidget
          * UpcomingEventsWidget constructor
          * @param QGraphicsWidget*, like QGraphicsWidget constructor
          */
-        UpcomingEventsWidget( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+        UpcomingEventsWidget( const LastFmEventPtr &event,
+                              QGraphicsItem *parent = 0,
+                              Qt::WindowFlags wFlags = 0 );
         ~UpcomingEventsWidget();
 
         // Getters
