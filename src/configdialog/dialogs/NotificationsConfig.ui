@@ -212,7 +212,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_KNotifyEnabled">
         <property name="text">
-         <string>Use &amp;KNotify</string>
+         <string>Use &amp;system notifications</string>
         </property>
        </widget>
       </item>
