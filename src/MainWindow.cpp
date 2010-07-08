@@ -1486,7 +1486,7 @@ MainWindow::engineNewTrackPlaying()
 void
 MainWindow::metadataChanged( Meta::TrackPtr track )
 {
-    if( track )
+    if( track && The::engineController()->currentTrack() == track )
         setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 
