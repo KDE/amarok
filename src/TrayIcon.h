@@ -28,9 +28,6 @@
 #include <QAction>
 #include <QPointer>
 
-class QEvent;
-class App;
-
 
 namespace Amarok {
 
@@ -41,8 +38,6 @@ class TrayIcon : public KStatusNotifierItem, public Engine::EngineObserver, publ
 public:
     TrayIcon( QObject *parent );
 
-    friend class ::App;
-    
     void setVisible( bool visible );
 
 protected:
@@ -63,10 +58,9 @@ private slots:
 
 private:
     void setupMenu();
-    void setupToolTip();
+    void setupToolTip( bool updateIcon );
 
     Meta::TrackPtr m_track;
-    QString m_toolTipIconUid;
 
     SmartPointerList<QAction> m_extraActions;
     QPointer<QAction> m_separator;
