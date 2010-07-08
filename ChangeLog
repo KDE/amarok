@@ -38,6 +38,7 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * The scripts categories are now translatable. (BR 240563)
     * Fixed Amarok 1.4 Database Importer not importing statistics and lyrics of
       tracks that are not yet in database. Thanks to Matěj Laitl for the patch.
       (see comments on BR 218996)
