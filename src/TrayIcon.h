@@ -49,16 +49,13 @@ protected:
     // reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
-    virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
     virtual void engineMuteStateChanged( bool mute );
 
-    //Reimplemented from Meta::Observer
+    // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     virtual void metadataChanged( Meta::TrackPtr track );
-
-    // get notified of 'highlight' color change
-    virtual void paletteChange( const QPalette & oldPalette );
+    virtual void metadataChanged( Meta::AlbumPtr album );
 
 private slots:
     void slotActivated();
@@ -68,13 +65,9 @@ private:
     void setupMenu();
     void setupToolTip();
 
-    void paintIcon( qint64 trackPosition = -1 );
-
     Meta::TrackPtr m_track;
-    qint64 m_trackLength;
     QString m_toolTipIconUid;
 
-    QPixmap m_baseIcon, m_grayedIcon, m_icon;
     SmartPointerList<QAction> m_extraActions;
     QPointer<QAction> m_separator;
 };
