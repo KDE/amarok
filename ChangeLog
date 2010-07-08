@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * Shortcuts: Added "Replay current track" shortcut. (BR 217081)
     * Edit filter dialog: added "added" and "last played" date filters.
     * File browser: added forward and back buttons for accessing navigate history.
     * Organize Dialog: added a way to save multiple file formats as presets. (BR 122672)

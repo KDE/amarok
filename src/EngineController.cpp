@@ -405,6 +405,14 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
 }
 
 void
+EngineController::replay() // slot
+{
+    DEBUG_BLOCK
+
+    seek( 0 );
+}
+
+void
 EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK

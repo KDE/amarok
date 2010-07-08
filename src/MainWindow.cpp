@@ -802,6 +802,13 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( back() ) );
 
     action = new KAction( this );
+    ac->addAction( "replay", action );
+    action->setIcon( KIcon("media-playback-start") );
+    action->setText( i18n( "Restart current track" ) );
+    action->setGlobalShortcut( KShortcut() );
+    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT(replay()) );
+
+    action = new KAction( this );
     ac->addAction( "repopulate", action );
     action->setText( i18n( "Repopulate Playlist" ) );
     action->setIcon( KIcon("view-refresh-amarok") );
