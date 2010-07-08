@@ -151,7 +151,9 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     if( e.code != QNetworkReply::NoError )
     {
         q->removeData( "wikipedia", "busy" );
+        q->removeAllData( "wikipedia" );
         q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
+        q->scheduleSourcesUpdated();
         return;
     }
 
@@ -166,8 +168,8 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     {
         debug() << "article does not exist";
         q->removeAllData( "wikipedia" );
-        q->scheduleSourcesUpdated();
         q->setData( "wikipedia", "message", i18n( "No information found..." ) );
+        q->scheduleSourcesUpdated();
         return;
     }
 
@@ -209,16 +211,12 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
     Q_UNUSED( url );
     Q_Q( WikipediaEngine );
 
-    if( data.isEmpty() )
-    {
-        debug() << "Error parsing wiki langlinks result: data is empty";
-        return;
-    }
-
-    if( e.code != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError || data.isEmpty() )
     {
         debug() << "Parsing langlinks result failed" << e.description;
-        q->removeData( "wikipedia", "busy" );
+        q->removeAllData( "wikipedia" );
+        q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
+        q->scheduleSourcesUpdated();
         return;
     }
 
