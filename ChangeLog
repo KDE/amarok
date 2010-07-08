@@ -33,6 +33,9 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed track name in main window title incorrectly changing when editing
+      tag info for another track. Thanks to Anton Gritsay <anton@angri.ru> for
+      the patch (BR 220521)
     * Splitted desktop so mime types can be allocated in a better way
       (BR 242292).
     * Fixed some tracks not being scanned when they had corrupted MusicBrainz
