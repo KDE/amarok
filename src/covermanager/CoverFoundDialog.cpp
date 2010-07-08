@@ -781,7 +781,7 @@ void CoverFoundSideBar::updateMetaTable()
 {
     clearMetaTable();
 
-    QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
+    QFormLayout *layout = static_cast< QFormLayout* >( m_metaTable->layout() );
     layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
 
     CoverFetch::Metadata::const_iterator mit = m_metadata.constBegin();
@@ -857,10 +857,12 @@ void CoverFoundSideBar::updateMetaTable()
 
 void CoverFoundSideBar::clearMetaTable()
 {
-    QFormLayout *layout = qobject_cast< QFormLayout* >( m_metaTable->layout() );
-    QLayoutItem *child;
-    while( (child = layout->takeAt(0)) != 0 )
+    QFormLayout *layout = static_cast< QFormLayout* >( m_metaTable->layout() );
+    int count = layout->count();
+    while( --count >= 0 )
     {
+        QLayoutItem *child = layout->itemAt( 0 );
+        layout->removeItem( child );
         delete child->widget();
         delete child;
     }
