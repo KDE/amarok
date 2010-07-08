@@ -91,7 +91,6 @@ Amarok::TrayIcon::setupToolTip( bool updateIcon )
         {
             if( m_track->album() && m_track->album()->hasImage() )
             {
-                debug() << "HERE";
                 QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
                 setToolTipIconByPixmap( image );
             }
