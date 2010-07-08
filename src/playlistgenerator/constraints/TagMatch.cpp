@@ -176,7 +176,14 @@ ConstraintTypes::TagMatch::getName() const
     } else if ( m_field == "length" ) {
         return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
-        return v.arg( valueToString() );
+        if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
+            // put quotes around any strings (eg, track title or artist name) ...
+            QString s = QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( valueToString() );
+            return v.arg( s );
+        } else {
+            // ... but don't quote put quotes around anything else
+            return v.arg( valueToString() );
+        }
     }
 }
 
@@ -553,8 +560,6 @@ ConstraintTypes::TagMatch::valueToString() const
             }
             return QString("%1 %2").arg( m_value.value<DateRange>().first ).arg( unit );
         }
-    } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
-        return QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( m_value.toString() );
     } else {
         return m_value.toString();
     }
