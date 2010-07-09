@@ -67,7 +67,10 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
     m_url->nativeWidget()->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_image->setText( i18n("Loading picture...") );
 
-    setName( event->name() );
+    QString name = event->name();
+    if( event->isCancelled() )
+        name = i18nc( "@label:textbox Title for a cancelled upcoming event", "<s>%1</s> (Cancelled)", name );
+    setName( name );
     setDate( KDateTime( event->date() ) );
     LastFmLocationPtr location = event->venue()->location;
     setLocation( location->city + ", " + location->country );
