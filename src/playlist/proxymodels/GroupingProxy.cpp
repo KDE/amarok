@@ -288,8 +288,11 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     // If the grouping category is empty or invalid, 'm_groupingCategoryIndex' will be -1.
     // That will cause us to choose "no grouping".
 
+    DEBUG_BLOCK
+            debug() << m_groupingCategoryIndex;
     switch( m_groupingCategoryIndex )
     {
+
         case 0: //Album
             if( track1 && track1->album() && track2 && track2->album() )
                 return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
@@ -299,13 +302,19 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
         case 2: //Composer
             if( track1 && track1->composer() && track2 && track2->composer() )
                 return ( *track1->composer().data() ) == ( *track2->composer().data() );
-        case 3: //Genre
+        case 3: //Directory
+            return false;  //FIXME
+        case 4: //Genre
             if( track1 && track1->genre() && track2 && track2->genre() )
+            {
+                debug() << "gruping by genre. Comparing " << track1->genre()->prettyName() << " with " << track2->genre()->prettyName();
+                debug() << track1->genre().data() << " == " << track2->genre().data() << " : " << ( *track1->genre().data() == *track2->genre().data());
                 return ( *track1->genre().data() ) == ( *track2->genre().data() );
-        case 4: //Rating
+            }
+        case 5: //Rating
             if( track1 && track1->rating() && track2 && track2->rating() )
                 return ( track1->rating() ) == ( track2->rating() );
-        case 5: //Source
+        case 6: //Source
             if( track1 && track2 )
             {
                 QString source1, source2;
@@ -337,7 +346,7 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
             }
             else
                 return false;
-        case 6: //Year
+        case 7: //Year
             if( track1 && track1->year() && track2 && track2->year() )
                 return ( *track1->year().data() ) == ( *track2->year().data() );
         default:
