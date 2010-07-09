@@ -35,6 +35,9 @@ static QString yearForDate( const QString &upnpDate )
 
 // TODO : move this to CollectionBase
 static qint64 duration( QString duration ) {
+    if( duration.isEmpty() )
+        return 0;
+
     QStringList parts = duration.split(":");
     int hours = parts.takeFirst().toInt();
     int minutes = parts.takeFirst().toInt();
