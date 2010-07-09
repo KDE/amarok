@@ -34,6 +34,9 @@ VERSION 2.3.2-Beta 1
 
   BUGFIXES:
     * Fixed "genre" and other playlist groupings not working. (BR 243344)
+    * Removed track progress effect on TrayIcon as it caused several problems
+      (also caused by a bogus implementation of the KSNI class)
+      (BR 233506, BR 240463, BR 231539, BR 232578, BR 232312).
     * Fixed track name in main window title incorrectly changing when editing
       tag info for another track. Thanks to Anton Gritsay <anton@angri.ru> for
       the patch (BR 220521)
