@@ -59,6 +59,8 @@ public:
      */
     UpcomingEventsApplet( QObject* parent, const QVariantList& args );
 
+    virtual ~UpcomingEventsApplet();
+
     /**
      * \brief Paints the interface
      *

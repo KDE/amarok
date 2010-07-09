@@ -56,6 +56,16 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
     connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(themeChanged()));
 }
 
+UpcomingEventsApplet::~UpcomingEventsApplet()
+{
+    // Remove all items from the extender, so that their configs are not saved
+    // into our rc file. The default configs saved are the positions of the
+    // extender items and is meant for the plasma desktop.
+    QList<Plasma::ExtenderItem*> extenderItems;
+    extenderItems << extender()->attachedItems() << extender()->detachedItems();
+    qDeleteAll( extenderItems );
+}
+
 void
 UpcomingEventsApplet::init()
 {
