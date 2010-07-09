@@ -154,10 +154,7 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
         return;
 
     if( e.code != QNetworkReply::NoError )
-    {
-        cleanUp( url );
-        return;
-    }
+        debug() << "Error fetching data:" << e.description;
 
     QScriptValue obj = m_values[ url ];
     QScriptEngine* engine = m_engines[ url ];
@@ -178,7 +175,7 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
     }
 
     QScriptValueList args;
-    args <<  engine->toScriptValue( data );
+    args << engine->toScriptValue( data );
     obj.call( obj, args );
     cleanUp( url );
 }
@@ -191,10 +188,7 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
         return;
 
     if( e.code != QNetworkReply::NoError )
-    {
-        cleanUp( url );
-        return;
-    }
+        debug() << "Error fetching string:" << e.description;
 
     QScriptValue obj = m_values[ url ];
     QScriptEngine* engine = m_engines[ url ];
@@ -229,7 +223,7 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
     }
 
     QScriptValueList args;
-    args <<  QScriptValue( engine, str );
+    args << QScriptValue( engine, str );
     obj.call( obj, args );
     cleanUp( url );
 }
