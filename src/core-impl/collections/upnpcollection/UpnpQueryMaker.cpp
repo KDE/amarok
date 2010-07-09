@@ -25,6 +25,7 @@
 #include "core/support/Debug.h"
 #include "UpnpSearchCollection.h"
 #include "UpnpMeta.h"
+#include "UpnpCache.h"
 
 namespace Collections {
 
@@ -380,9 +381,7 @@ void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
     Meta::ArtistList ret;
     foreach( KIO::UDSEntry entry, list ) {
         debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-        Meta::UpnpArtist *artist = new Meta::UpnpArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-        Meta::ArtistPtr ptr( artist );
-        ret << ptr;
+        ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
     }
     emitProperResult( Meta::ArtistPtr, ret );
 }
@@ -394,9 +393,7 @@ DEBUG_BLOCK
     Meta::AlbumList ret;
     foreach( KIO::UDSEntry entry, list ) {
         debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-        Meta::UpnpAlbum *album = new Meta::UpnpAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-        Meta::AlbumPtr ptr( album );
-        ret << ptr;
+        ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
     }
     emitProperResult( Meta::AlbumPtr, ret );
 }
@@ -408,12 +405,7 @@ DEBUG_BLOCK
     Meta::TrackList ret;
     foreach( KIO::UDSEntry entry, list ) {
         debug() << this << "TRACK" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-// TODO actually share meta-data setting with UpnpBrowseCollection
-        Meta::UpnpTrack *track = new Meta::UpnpTrack( m_collection );
-        track->setTitle( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-        track->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
-        Meta::TrackPtr ptr( track );
-        ret << ptr;
+        ret << m_collection->cache()->getTrack( entry );
     }
     emitProperResult( Meta::TrackPtr, ret );
 }
