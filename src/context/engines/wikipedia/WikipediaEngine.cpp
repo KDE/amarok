@@ -55,7 +55,7 @@ public:
     // functions
     void checkRequireUpdate( Meta::TrackPtr track );
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
-    void fetchLangLinks( const QString &title, const QString &llcontinue = QString() );
+    void fetchLangLinks( const QString &title, const QString &hostLang, const QString &llcontinue = QString() );
     void reloadWikipedia();
     bool setSelection( SelectionType type ); // returns true if selection is changed
     bool setSelection( const QString &type );
@@ -92,9 +92,11 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
 
     if( data.contains( "reload" ) )
     {
-        debug() << "reloading";
         if( data.value( "reload" ).toBool() )
+        {
+            debug() << "reloading";
             reloadWikipedia();
+        }
         q->removeData( source, "reload" );
     }
 
@@ -134,6 +136,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
         if( !langList.isEmpty() && (preferredLangs != langList) )
         {
             preferredLangs = langList;
+            updateEngine();
             debug() << "updated preferred wikipedia languages:" << preferredLangs;
         }
         q->removeData( source, "lang" );
@@ -150,7 +153,6 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     urls.remove( url );
     if( e.code != QNetworkReply::NoError )
     {
-        q->removeData( "wikipedia", "busy" );
         q->removeAllData( "wikipedia" );
         q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
         q->scheduleSourcesUpdated();
@@ -208,9 +210,11 @@ void
 WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
                                                NetworkAccessManagerProxy::Error e )
 {
-    Q_UNUSED( url );
     Q_Q( WikipediaEngine );
+    if( !urls.contains( url ) )
+        return;
 
+    urls.remove( url );
     if( e.code != QNetworkReply::NoError || data.isEmpty() )
     {
         debug() << "Parsing langlinks result failed" << e.description;
@@ -220,7 +224,11 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         return;
     }
 
-    QHash<QString, QString> langTitleMap;
+    QString hostLang = url.host();
+    hostLang.remove( ".wikipedia.org" );
+    const QString &title = url.queryItemValue( "titles" );
+
+    QHash<QString, QString> langTitleMap; // a hash of langlinks and their titles
     QString llcontinue;
     QXmlStreamReader xml( data );
     while( !xml.atEnd() && !xml.hasError() )
@@ -230,6 +238,10 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         {
             if( xml.attributes().hasAttribute("missing") )
                 break;
+
+            QXmlStreamAttributes a = xml.attributes();
+            if( a.hasAttribute("pageid") && a.hasAttribute("title") )
+                langTitleMap[hostLang] = title;
 
             while( !xml.atEnd() )
             {
@@ -263,32 +275,50 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         }
     }
 
-    q->removeData( "wikipedia", "busy" );
-    /* Since we query langlinks using the English Wikipedia host, interwiki
-     * langlinks results will not contain English pages. So we need to manually
-     * add it here. */
-    if( preferredLangs.contains("en") )
-        langTitleMap["en"] = url.queryItemValue( "titles" );
-
-    QStringListIterator langIter( preferredLangs );
-    while( langIter.hasNext() )
+    if( !langTitleMap.isEmpty() )
     {
-        const QString &lang = langIter.next();
-        const QStringList &prefixes = lang.split( QChar(':') );
-        const QString &urlPrefix = (prefixes.count() == 1) ? prefixes.front() : prefixes.back();
-        if( langTitleMap.contains(urlPrefix) )
+        /* When we query langlinks using a particular language, interwiki
+         * results will not contain links for that language. However, it may
+         * appear as part of the "page" element if there's a match or a redirect
+         * has been set. So we need to manually add it here if it's still empty. */
+        if( preferredLangs.contains(hostLang) && !langTitleMap.contains(hostLang) )
+            langTitleMap[hostLang] = title;
+
+        q->removeData( "wikipedia", "busy" );
+        QStringListIterator langIter( preferredLangs );
+        while( langIter.hasNext() )
         {
-            const QString &title = langTitleMap.value( urlPrefix );
-            fetchWikiUrl( title, urlPrefix );
-            return;
+            QString prefix = langIter.next().split( QChar(':') ).back();
+            if( langTitleMap.contains(prefix) )
+            {
+                QString pageTitle = langTitleMap.value( prefix );
+                fetchWikiUrl( pageTitle, prefix );
+                return;
+            }
         }
     }
 
     if( !llcontinue.isEmpty() )
     {
-        const QString &title = url.queryItemValue( "titles" );
-        fetchLangLinks( title, llcontinue );
-        return;
+        fetchLangLinks( title, hostLang, llcontinue );
+    }
+    else
+    {
+        QRegExp regex( '^' + hostLang + ".*$" );
+        int index = preferredLangs.indexOf( regex );
+        if( (index != -1) && (index < preferredLangs.count() - 1) )
+        {
+            // use next preferred language as base for fetching langlinks since
+            // the current one did not get any results we want.
+            QString prefix = preferredLangs.value( index + 1 ).split( QChar(':') ).back();
+            fetchLangLinks( title, prefix );
+        }
+        else
+        {
+            q->removeAllData( "wikipedia" );
+            q->setData( "wikipedia", "message", i18n( "No information found..." ) );
+            q->scheduleSourcesUpdated();
+        }
     }
 }
 
@@ -322,11 +352,11 @@ WikipediaEnginePrivate::checkRequireUpdate( Meta::TrackPtr track )
         }
     }
 
-    if( needUpdate )
-    {
-        currentTrack = track;
-        updateEngine();
-    }
+    currentTrack = track;
+    if( !needUpdate )
+        return;
+    urls.clear();
+    updateEngine();
 }
 
 void
@@ -343,6 +373,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     pageUrl.setPath( "/w/index.php" );
     pageUrl.addQueryItem( "useskin", "monobook" );
     pageUrl.addQueryItem( "title", title );
+    pageUrl.addQueryItem( "redirects", QString::number(1) );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
     q->setData( "wikipedia", "busy", "busy" );
@@ -351,22 +382,25 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
 }
 
 void
-WikipediaEnginePrivate::fetchLangLinks( const QString &title, const QString &llcontinue )
+WikipediaEnginePrivate::fetchLangLinks( const QString &title,
+                                        const QString &hostLang,
+                                        const QString &llcontinue )
 {
     Q_Q( WikipediaEngine );
-
     KUrl url;
     url.setScheme( "http" );
-    url.setHost( "en.wikipedia.org" );
+    url.setHost( hostLang + ".wikipedia.org" );
     url.setPath( "/w/api.php" );
     url.addQueryItem( "action", "query" );
     url.addQueryItem( "prop", "langlinks" );
     url.addQueryItem( "titles", title );
     url.addQueryItem( "format", "xml" );
     url.addQueryItem( "lllimit", QString::number(100) );
+    url.addQueryItem( "redirects", QString::number(1) );
     if( !llcontinue.isEmpty() )
         url.addQueryItem( "llcontinue", llcontinue );
-
+    urls << url;
+    debug() << "Fetching langlinks:" << url;
     q->setData( "wikipedia", "busy", "busy" );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
@@ -444,15 +478,20 @@ WikipediaEnginePrivate::updateEngine()
             tmpWikiStr = tmpWikiStr.left (index - 1);
     }
 
-    if( preferredLangs.count() > 1 )
+    int preferredLangCount = preferredLangs.count();
+    if( preferredLangCount > 1 )
     {
-        fetchLangLinks( tmpWikiStr );
+        QString prefix = preferredLangs.first().split( QChar(':') ).back();
+        fetchLangLinks( tmpWikiStr, prefix );
+    }
+    else if( preferredLangCount == 1 )
+    {
+        QString prefix = preferredLangs.first().split( QChar(':') ).back();
+        fetchWikiUrl( tmpWikiStr, prefix );
     }
     else
     {
-        const QStringList &prefixes = preferredLangs.first().split( QChar(':') );
-        const QString &urlPrefix = (prefixes.count() == 1) ? prefixes.front() : prefixes.back();
-        fetchWikiUrl( tmpWikiStr, urlPrefix );
+        fetchWikiUrl( tmpWikiStr, "en" );
     }
 }
 
@@ -551,9 +590,7 @@ WikipediaEnginePrivate::wikiParse()
 void
 WikipediaEnginePrivate::reloadWikipedia()
 {
-    DEBUG_BLOCK
     Q_Q( WikipediaEngine );
-    debug() << "wiki url: " << wikiCurrentUrl;
     urls << wikiCurrentUrl;
     q->setData( "wikipedia", "busy", "busy" );
     q->scheduleSourcesUpdated();
@@ -613,7 +650,6 @@ WikipediaEngine::init()
     connect( d->dataContainer, SIGNAL(dataUpdated(QString,Plasma::DataEngine::Data)),
              this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
     d->currentTrack = The::engineController()->currentTrack();
-    d->updateEngine();
 }
 
 bool
