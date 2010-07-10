@@ -33,6 +33,9 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Directories that were once part of the collection but not anymore may not
+      have been properly removed, leading to files outside the collection being
+      scanned. (BR 243532)
     * Fixed "genre" and other playlist groupings not working. (BR 243344)
     * Removed track progress effect on TrayIcon as it caused several problems
       (also caused by a bogus implementation of the KSNI class)

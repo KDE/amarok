@@ -436,15 +436,33 @@ ScanManager::getDirsToScan()
     QList<int> deletedFolderIds;
 
     QStringList result;
+    QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
     for( QListIterator<QString> iter( values ); iter.hasNext(); )
     {
         int id = iter.next().toInt();
         int deviceid = iter.next().toInt();
         const QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, iter.next() );
-        const uint mtime = iter.next().toUInt();
 
+        bool validFolder = false;
+        bool scanRecursively = AmarokConfig::scanRecursively();
+        foreach( QString cFolder, collectionFolders )
+        {
+            cFolder += '/'; //config file paths don't have ending /, sql does
+            if( folder.startsWith( cFolder ) && scanRecursively )
+            {
+                validFolder = true;
+                break;
+            }
+            if( folder == cFolder && !scanRecursively )
+            {
+                validFolder = true;
+                break;
+            }
+        }
+
+        const uint mtime = iter.next().toUInt();
         QFileInfo info( folder );
-        if( info.exists() )
+        if( info.exists() && validFolder )
         {
             m_incrementalDirs << QString( folder + "_AMAROKMTIME_" + QString::number( mtime ) );
             if( info.lastModified().toTime_t() != mtime )
@@ -568,6 +586,7 @@ ScanManager::cleanTables()
     m_storage->query( "DELETE FROM composers;" );
     m_storage->query( "DELETE FROM albums;" );
     m_storage->query( "DELETE FROM artists;" );
+    m_storage->query( "DELETE FROM directories;" );
     //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 

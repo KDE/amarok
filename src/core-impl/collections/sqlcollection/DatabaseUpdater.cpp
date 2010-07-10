@@ -743,7 +743,6 @@ DatabaseUpdater::prepareTemporaryTables()
 void
 DatabaseUpdater::prepareTemporaryTablesForFullScan()
 {
-    m_storage->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
     m_storage->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
 }
 
