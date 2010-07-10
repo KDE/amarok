@@ -85,4 +85,5 @@ private:
     Q_PRIVATE_SLOT( d, void _replyFinished() )
 };
 
+Q_DECLARE_METATYPE( NetworkAccessManagerProxy::Error )
 #endif // AMAROK_NETWORKACCESSMANAGERPROXY

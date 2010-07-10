@@ -64,33 +64,40 @@ public:
     void _replyFinished()
     {
         Q_Q( NetworkAccessManagerProxy );
-        QNetworkReply *reply = qobject_cast<QNetworkReply*>( q->sender() );
-        CallBackData callback = replyMap.take( reply );
-        QByteArray sig = QMetaObject::normalizedSignature( callback.method );
-        sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
-                            // and let Qt's meta object system handle the rest.
-        if( callback.receiver.data() )
+        QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
+        KUrl url = reply->request().url();
+        QList<CallBackData> callbacks = urlMap.values( url );
+        QByteArray data = reply->readAll();
+        data.detach(); // detach so the bytes are not deleted before methods are invoked
+        foreach( const CallBackData &cb, callbacks )
         {
-            bool success( false );
-            const QMetaObject *mo = callback.receiver.data()->metaObject();
-            int methodIndex = mo->indexOfSlot( sig );
-            if( methodIndex != -1 )
+            QByteArray sig = QMetaObject::normalizedSignature( cb.method );
+            sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
+                                // and let Qt's meta object system handle the rest.
+            if( cb.receiver.data() )
             {
-                Error err = { reply->error(), reply->errorString() };
-                QMetaMethod method = mo->method( methodIndex );
-                success = method.invoke( callback.receiver.data(),
-                                         callback.type,
-                                         Q_ARG( KUrl, reply->request().url() ),
-                                         Q_ARG( QByteArray, reply->readAll() ),
-                                         Q_ARG( Error, err ) );
-            }
+                bool success( false );
+                const QMetaObject *mo = cb.receiver.data()->metaObject();
+                int methodIndex = mo->indexOfSlot( sig );
+                if( methodIndex != -1 )
+                {
+                    Error err = { reply->error(), reply->errorString() };
+                    QMetaMethod method = mo->method( methodIndex );
+                    success = method.invoke( cb.receiver.data(),
+                                             cb.type,
+                                             Q_ARG( KUrl, reply->request().url() ),
+                                             Q_ARG( QByteArray, data ),
+                                             Q_ARG( Error, err ) );
+                }
 
-            if( !success )
-            {
-                debug() << QString( "Failed to invoke method %1 of %2" )
-                             .arg( QString(sig) ).arg( mo->className() );
+                if( !success )
+                {
+                    debug() << QString( "Failed to invoke method %1 of %2" )
+                        .arg( QString(sig) ).arg( mo->className() );
+                }
             }
         }
+        urlMap.remove( url );
         reply->deleteLater();
     }
 
@@ -101,7 +108,7 @@ public:
         Qt::ConnectionType type;
     };
 
-    QHash<QNetworkReply*, CallBackData> replyMap;
+    QMultiHash<KUrl, CallBackData> urlMap;
     QString userAgent;
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
@@ -117,6 +124,7 @@ NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     , d( new NetworkAccessManagerProxyPrivate( this ) )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
+    qRegisterMetaType<NetworkAccessManagerProxy::Error>();
 }
 
 NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
@@ -154,10 +162,16 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
         debug() << QString( "Error: URL '%1' is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
         return 0;
     }
+
+    NetworkAccessManagerProxyPrivate::CallBackData cbm = { receiver, method, type };
+    if( d->urlMap.contains(url) )
+    {
+        d->urlMap.insert( url, cbm );
+        return 0;
+    }
+
     QNetworkReply *reply = get( QNetworkRequest(url) );
-    d->replyMap[ reply ].receiver = receiver;
-    d->replyMap[ reply ].method = method;
-    d->replyMap[ reply ].type = type;
+    d->urlMap.insert( url, cbm );
     connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
     return reply;
 }
