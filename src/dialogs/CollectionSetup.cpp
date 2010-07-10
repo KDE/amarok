@@ -119,7 +119,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
-    m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
