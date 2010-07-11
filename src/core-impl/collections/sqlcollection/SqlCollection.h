@@ -120,9 +120,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 
         void dumpDatabaseContent();
 
-    signals:
-        void scanFinished();
-
     private slots:
         void initXesam();
         void slotDeviceAdded( int id );

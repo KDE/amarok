@@ -141,7 +141,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void checkCollectionChanges();
 
     signals:
-        void scanFinished();
         //deprecated, use collectionAdded( Collections::Collection*, CollectionStatus ) instead
         void collectionAdded( Collections::Collection *newCollection );
 
