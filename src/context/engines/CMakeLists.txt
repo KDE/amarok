@@ -4,6 +4,7 @@ add_subdirectory( current )
 add_subdirectory( info )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
+add_subdirectory( labels )
 #add_subdirectory( songkick )
 
 if(LIBLASTFM_FOUND)

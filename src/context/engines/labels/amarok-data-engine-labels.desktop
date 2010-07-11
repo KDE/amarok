@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Labels Data Engine
+X-KDE-ServiceTypes=Plasma/DataEngine
+X-KDE-ParentApp=Amarok
+Type=Service
+Icon=document-properties
+X-KDE-Library=amarok_data_engine_labels
+X-KDE-PluginInfo-Name=amarok-labels
