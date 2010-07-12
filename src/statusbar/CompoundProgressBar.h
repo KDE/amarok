@@ -37,12 +37,14 @@ public:
     ~CompoundProgressBar();
 
     void addProgressBar( ProgressBar * progressBar, QObject *owner );
-    void endProgressOperation( const QObject * owner );
 
     void incrementProgress( const QObject *owner );
     void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
     void setProgressStatus( const QObject *owner, const QString &text );
     void setProgress( const QObject *owner, int steps );
+
+public slots:
+    void endProgressOperation( QObject *owner );
 
 signals:
     void allDone();

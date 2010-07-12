@@ -255,7 +255,7 @@ CoverFetcher::slotDialogFinished()
 }
 
 void
-CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFetch::Metadata data )
+CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFetch::Metadata data )
 {
     if( !m_dialog )
     {

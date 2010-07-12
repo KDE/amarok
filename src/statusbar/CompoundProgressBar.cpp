@@ -75,7 +75,7 @@ void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner
     handleDetailsButton();
 }
 
-void CompoundProgressBar::endProgressOperation( const QObject * owner )
+void CompoundProgressBar::endProgressOperation( QObject *owner )
 {
     if ( !m_progressMap.contains( owner ) )
         return ;

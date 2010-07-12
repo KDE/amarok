@@ -17,11 +17,11 @@
 #ifndef AMAROK_NETWORKACCESSMANAGERPROXY
 #define AMAROK_NETWORKACCESSMANAGERPROXY
 
-#include <config-amarok.h>
-
 #include "amarok_export.h"
+#include "config-amarok.h"
 
-#include <kio/accessmanager.h>
+#include <kdeversion.h>
+#include <KIO/AccessManager>
 
 #include <QNetworkReply>
 
@@ -35,7 +35,11 @@ namespace The
     AMAROK_EXPORT NetworkAccessManagerProxy *networkAccessManager();
 }
 
+#if KDE_IS_VERSION(4, 4, 0)
 class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessManager
+#else
+class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::AccessManager
+#endif
 {
     Q_OBJECT
 
@@ -85,4 +89,5 @@ private:
     Q_PRIVATE_SLOT( d, void _replyFinished() )
 };
 
+Q_DECLARE_METATYPE( NetworkAccessManagerProxy::Error )
 #endif // AMAROK_NETWORKACCESSMANAGERPROXY

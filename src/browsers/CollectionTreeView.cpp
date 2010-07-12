@@ -292,15 +292,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    if( model()->hasChildren( index ) )
-    {
-        if( event->button() != Amarok::contextMouseButton() &&
-            event->modifiers() == Qt::NoModifier )
-        {
-            setExpanded( index, !isExpanded( index ) );
-        }
-    }
-    else
+    if( event->button() != Amarok::contextMouseButton() && event->modifiers() == Qt::NoModifier )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );

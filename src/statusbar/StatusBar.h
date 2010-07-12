@@ -135,7 +135,7 @@ public slots:
      * the progress bar in question
      */
 
-    void endProgressOperation( const QObject * owner )
+    void endProgressOperation( QObject *owner )
     {
         m_progressBar->endProgressOperation( owner );
     }

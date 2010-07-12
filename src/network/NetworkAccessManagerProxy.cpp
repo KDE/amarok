@@ -28,6 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
+#include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -63,38 +64,51 @@ public:
     void _replyFinished()
     {
         Q_Q( NetworkAccessManagerProxy );
-        QNetworkReply *reply = qobject_cast<QNetworkReply*>( q->sender() );
-        CallBackData callback = replyMap.take( reply );
-        QByteArray sig = QMetaObject::normalizedSignature( callback.method );
-        sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
-                            // and let Qt's meta object system handle the rest.
-        bool success( false );
-        const QMetaObject *mo = callback.receiver->metaObject();
-        int methodIndex = mo->indexOfSlot( sig );
-        if( methodIndex != -1 )
+        QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
+        KUrl url = reply->request().url();
+        QList<CallBackData> callbacks = urlMap.values( url );
+        QByteArray data = reply->readAll();
+        data.detach(); // detach so the bytes are not deleted before methods are invoked
+        foreach( const CallBackData &cb, callbacks )
         {
-            Error err = { reply->error(), reply->errorString() };
-            QMetaMethod method = mo->method( methodIndex );
-            success = method.invoke( callback.receiver,
-                                     callback.type,
-                                     Q_ARG( KUrl, reply->request().url() ),
-                                     Q_ARG( QByteArray, reply->readAll() ),
-                                     Q_ARG( Error, err ) );
-        }
-        reply->deleteLater();
+            QByteArray sig = QMetaObject::normalizedSignature( cb.method );
+            sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
+                                // and let Qt's meta object system handle the rest.
+            if( cb.receiver.data() )
+            {
+                bool success( false );
+                const QMetaObject *mo = cb.receiver.data()->metaObject();
+                int methodIndex = mo->indexOfSlot( sig );
+                if( methodIndex != -1 )
+                {
+                    Error err = { reply->error(), reply->errorString() };
+                    QMetaMethod method = mo->method( methodIndex );
+                    success = method.invoke( cb.receiver.data(),
+                                             cb.type,
+                                             Q_ARG( KUrl, reply->request().url() ),
+                                             Q_ARG( QByteArray, data ),
+                                             Q_ARG( Error, err ) );
+                }
 
-        if( !success )
-            debug() << QString( "Failed to invoke method %1 of %2" ).arg( QString(sig) ).arg( mo->className() );
+                if( !success )
+                {
+                    debug() << QString( "Failed to invoke method %1 of %2" )
+                        .arg( QString(sig) ).arg( mo->className() );
+                }
+            }
+        }
+        urlMap.remove( url );
+        reply->deleteLater();
     }
 
     struct CallBackData
     {
-        QObject *receiver;
+        QWeakPointer<QObject> receiver;
         const char *method;
         Qt::ConnectionType type;
     };
 
-    QHash<QNetworkReply*, CallBackData> replyMap;
+    QMultiHash<KUrl, CallBackData> urlMap;
     QString userAgent;
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
@@ -106,10 +120,15 @@ private:
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
+#if KDE_IS_VERSION(4, 4, 0)
     : KIO::Integration::AccessManager( parent )
+#else
+    : KIO::AccessManager( parent )
+#endif
     , d( new NetworkAccessManagerProxyPrivate( this ) )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
+    qRegisterMetaType<NetworkAccessManagerProxy::Error>();
 }
 
 NetworkAccessManagerProxy::~NetworkAccessManagerProxy()
@@ -144,13 +163,19 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
     if( !url.isValid() )
     {
         const QMetaObject *mo = receiver->metaObject();
-        debug() << QString( "Error: URL %1 is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
+        debug() << QString( "Error: URL '%1' is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
         return 0;
     }
+
+    NetworkAccessManagerProxyPrivate::CallBackData cbm = { receiver, method, type };
+    if( d->urlMap.contains(url) )
+    {
+        d->urlMap.insert( url, cbm );
+        return 0;
+    }
+
     QNetworkReply *reply = get( QNetworkRequest(url) );
-    d->replyMap[ reply ].receiver = receiver;
-    d->replyMap[ reply ].method = method;
-    d->replyMap[ reply ].type = type;
+    d->urlMap.insert( url, cbm );
     connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
     return reply;
 }
@@ -184,7 +209,11 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
         break;
     }
 
+#if KDE_IS_VERSION(4, 4, 0)
     QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
+#else
+    QNetworkReply *reply = KIO::AccessManager::createRequest( op, request, outgoingData );
+#endif
 
 #ifdef DEBUG_BUILD_TYPE
     if( d->viewer )
