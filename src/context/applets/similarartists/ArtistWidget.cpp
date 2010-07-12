@@ -302,7 +302,7 @@ ArtistWidget::setTopTrack(const QString &topTrack)
     {
         m_topTrack->setText(i18n("Top track not found"));
     } else {
-        m_topTrack->setText( i18n( "Top track" ) + " : " +  topTrack);
+        m_topTrack->setText( i18n( "Top track" ) + ": " +  topTrack);
     }
 }
 
