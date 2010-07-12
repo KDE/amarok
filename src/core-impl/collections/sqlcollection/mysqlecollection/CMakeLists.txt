@@ -1,12 +1,13 @@
 #build-time only dependency in XesamDbus.h
 #remove at some point
 
+ADD_DEFINITIONS(${MYSQL_CFLAGS})
+
 include_directories(
         .
         ..
         ${CMAKE_SOURCE_DIR}/src
         ${QT_QTCORE_INCLUDES}
-        ${OPENSSL_INCLUDE_DIR}
         ${MYSQL_INCLUDE_DIR}
         )
 
@@ -33,18 +34,10 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${KDE4_KDECORE_LIBS}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
-    ${OPENSSL_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
 )
-
-if(NOT WIN32)
-    target_link_libraries(amarok_collection-mysqlecollection crypto ssl)
-    if(NOT APPLE)
-        target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
-    endif(NOT APPLE)
-endif(NOT WIN32)
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-mysqlecollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
