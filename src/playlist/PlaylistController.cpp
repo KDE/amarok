@@ -25,6 +25,7 @@
 
 #define DEBUG_PREFIX "Playlist::Controller"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
@@ -150,8 +151,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
             playNow = true;
 
-    if ( playNow )
-        Actions::instance()->play( topModelInsertRow );
+    if ( playNow ) {
+        if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
+             AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
+            Actions::instance()->play();
+        else
+            Actions::instance()->play( topModelInsertRow );
+    }
 
     emit changed();
 }
