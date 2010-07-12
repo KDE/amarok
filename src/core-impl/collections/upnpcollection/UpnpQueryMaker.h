@@ -22,6 +22,9 @@
 #include <QObject>
 #include <QStringList>
 #include <QtGlobal>
+#include <QStack>
+
+#include "UpnpQuery.h"
 
 namespace KIO {
   class UDSEntry;
@@ -107,6 +110,7 @@ class UpnpQueryMaker : public QueryMaker
         void handleArtists( const KIO::UDSEntryList &list );
         void handleAlbums( const KIO::UDSEntryList &list );
         void handleTracks( const KIO::UDSEntryList &list );
+
         // TODO
         // this is all silly and crude and engineered
         // on an experimental purpose for the first queries
@@ -117,16 +121,19 @@ class UpnpQueryMaker : public QueryMaker
         QueryType m_queryType;
         AlbumQueryMode m_albumMode;
 
-        QString m_queryString;
-
         bool m_asDataPtrs;
 
         static bool m_runningJob;
         static int m_count;
         // TODO split this off into a class
-        static QHash<QString, KIO::ListJob*> m_queries;
+        static QHash<QString, KIO::ListJob*> m_inProgressQueries;
+
+        UpnpQuery m_query;
 
         bool m_noResults;
+        int m_jobCount;
+
+        Meta::DataList m_cacheEntries;
 };
 
 } //namespace Collections
