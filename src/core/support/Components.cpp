@@ -40,7 +40,7 @@ public:
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
 //in particular it does not delete any objects
-K_GLOBAL_STATIC( ComponentsPrivate, d );
+K_GLOBAL_STATIC( ComponentsPrivate, d )
 
 //a define might be helpful for these getter/setters
 
@@ -69,5 +69,5 @@ COMPONENT_ACCESSORS( Amarok::Logger*, logger, setLogger )
 
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
-COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate );
+COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate )
 
