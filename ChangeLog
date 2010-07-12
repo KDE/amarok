@@ -33,6 +33,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed always playing first track when adding tracks to empty playlist with
+      random mode on. Patch by Anton Gritsay <anton@angri.ru> (BR 240452)
     * Directories that were once part of the collection but not anymore may not
       have been properly removed, leading to files outside the collection being
       scanned. (BR 243532)
