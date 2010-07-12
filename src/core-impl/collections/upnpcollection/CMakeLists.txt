@@ -18,6 +18,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
     UpnpQueryMaker.cpp
     UpnpMeta.cpp
     UpnpCache.cpp
+    UpnpQuery.cpp
     dbuscodec.cpp
 )
 
