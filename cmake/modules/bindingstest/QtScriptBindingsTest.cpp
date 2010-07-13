@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     QApplication app( argc, argv, false );
 
     QStringList allowedBindings;
-    allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.uitools" << "qt.network";
+    allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.network";
     QScriptEngine engine;
     foreach( QString binding, allowedBindings )
     {

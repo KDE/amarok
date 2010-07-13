@@ -18,18 +18,43 @@
 #define AMAROK_FASTFORWARD_WORKER_H
 
 #include "FastForwardImporter.h"
+
 #include "databaseimporter/DatabaseImporter.h"
+#include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QEventLoop>
+#include <QSharedPointer>
 #include <QSqlDatabase>
+
+class ImporterMiscData
+{
+    public:
+        QString cachedLyrics() const { return m_cachedLyrics; }
+        void setCachedLyrics( const QString &lyrics ) { m_cachedLyrics = lyrics; }
+
+        QStringList labels() const { return m_labels; }
+        void addLabel( const QString &label );
+
+    private:
+        QString m_cachedLyrics;
+        QStringList m_labels;
+};
+
+class ImporterMiscDataStorage : public QMap<QString, ImporterMiscData>
+{
+    public:
+        void insertCachedLyrics( const QString &url, const QString &lyrics );
+        void insertLabel ( const QString &url, const QString &label );
+};
 
 class FastForwardWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
-    
+
     public:
         FastForwardWorker();
 
@@ -61,9 +86,42 @@ class FastForwardWorker : public ThreadWeaver::Job
         void queryDone();
 
     private:
-        QSqlDatabase databaseConnection();
+        void setupDatabaseConnection();
         const QString driverName() const;
-        
+        void failWithError( const QString &errorMsg );
+
+        /**
+         * Searches collection by given tags, returns a TrackPtr or 0 if no or multiple tracks match.
+         * emits trackDiscarded(), trackMatchFound(), trackMatchMultiple() as appropriate.
+         */
+        Meta::TrackPtr trySmartMatch( const QString url, const QString title,
+                                      const QString album, const QString artist, const QString composer,
+                                      const QString genre, const uint year, const uint trackNr,
+                                      const uint discNr, const uint filesize );
+
+        /**
+         * sets track statistics (score, rating, firstPlayed, lastPlayed, playCount) using
+         * StatisticsCapability.
+         */
+        void setTrackMetadata( Meta::TrackPtr track, double score, int rating, uint firstPlayed,
+                                  uint lastPlayed, int playCount );
+
+        /**
+         * adds misc track data (lyrics, labels) to cache @param dataForInsert.
+         */
+        void setTrackMiscData( ImporterMiscDataStorage &dataForInsert, Meta::TrackPtr track,
+                               const QString &uniqueId, QString lyrics );
+
+        /**
+         * Inserts misc data such as lyrics and labels to database.
+         */
+        void insertMiscData( const ImporterMiscDataStorage &dataForInsert );
+
+        /**
+         * Copies artwork from A1.4 appdata to A2 appdata
+         */
+        void importArtwork();
+
         bool m_aborted;
         bool m_failed;
 
@@ -77,8 +135,10 @@ class FastForwardWorker : public ThreadWeaver::Job
         bool m_importArtwork;
         QString m_importArtworkDir;
 
+        QSqlDatabase m_db;
+        QMap<QString, QSharedPointer<Collections::CollectionLocation> > m_collectionFolders;
         Meta::TrackList m_matchTracks;
-        bool m_queryRunning;
+        QEventLoop *m_eventLoop;
 };
 
 #endif // multiple inclusion guard

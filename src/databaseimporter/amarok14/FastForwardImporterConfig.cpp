@@ -29,38 +29,40 @@
 FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     : DatabaseImporterConfig( parent )
 {
+    QString fastForwardDataPath = QDir::homePath() + "/.kde/share/apps/amarok";
+
     QWidget *gridHolder = new QWidget( this );
 
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
 
-    QLabel *connectionLabel = new QLabel( i18n("Connection"), gridHolder );
+    QLabel *connectionLabel = new QLabel( i18n( "Connection" ), gridHolder );
     m_connectionCombo = new QComboBox( gridHolder );
     m_connectionCombo->insertItem( 0, "SQLite", FastForwardImporter::SQLite );
     m_connectionCombo->insertItem( 1, "MySQL", FastForwardImporter::MySQL );
     m_connectionCombo->insertItem( 2, "PostgreSQL", FastForwardImporter::PostgreSQL );
 
-    m_databaseLocationLabel = new QLabel( i18n("Database Location"), gridHolder );
+    m_databaseLocationLabel = new QLabel( i18n( "Database Location" ), gridHolder );
     m_databaseLocationInput = new QLineEdit( gridHolder );
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_databaseLocationInput->setCompleter( completer );
-    m_databaseLocationInput->setText( QDir::homePath() + "/.kde/share/apps/amarok/collection.db" );
+    m_databaseLocationInput->setText( fastForwardDataPath + "/collection.db" );
     m_databaseLocationLabel->setBuddy( m_databaseLocationInput );
 
-    m_usernameLabel = new QLabel( i18n("Username"), gridHolder );
+    m_usernameLabel = new QLabel( i18n( "Username" ), gridHolder );
     m_usernameInput = new QLineEdit( gridHolder );
     m_usernameLabel->setBuddy( m_usernameInput );
 
-    m_passwordLabel = new QLabel( i18n("Password"), gridHolder );
+    m_passwordLabel = new QLabel( i18n( "Password" ), gridHolder );
     m_passwordInput = new QLineEdit( gridHolder );
     m_passwordInput->setEchoMode( QLineEdit::Password );
     m_passwordLabel->setBuddy( m_passwordInput );
 
-    m_databaseLabel = new QLabel( i18n("Database Name"), gridHolder );
+    m_databaseLabel = new QLabel( i18n( "Database Name" ), gridHolder );
     m_databaseInput = new QLineEdit( gridHolder );
     m_databaseLabel->setBuddy( m_databaseInput );
 
-    m_hostnameLabel = new QLabel( i18n("Hostname"), gridHolder );
+    m_hostnameLabel = new QLabel( i18n( "Hostname" ), gridHolder );
     m_hostnameInput = new QLineEdit( gridHolder );
     m_hostnameInput->setText( "localhost" );
     m_hostnameLabel->setBuddy( m_hostnameInput );
@@ -83,22 +85,28 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     gridHolder->setLayout( databaseLayout );
 
-    connect( m_connectionCombo, SIGNAL( currentIndexChanged(int) ), SLOT( connectionChanged(int) ) );
+    connect( m_connectionCombo, SIGNAL( currentIndexChanged( int ) ), SLOT( connectionChanged( int ) ) );
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
 
-    m_smartMatchCheck = new QCheckBox( i18n("Match tracks by meta tags"), this );
+    m_smartMatchCheck = new QCheckBox( i18n( "Match tracks by meta tags" ), this );
+    m_smartMatchCheck->setToolTip( i18n( "Perform meta information search on non-existing "
+            "files, possibly detecting file renames. See <b>What's This</b>" ) );
+    m_smartMatchCheck->setWhatsThis( i18n( "If enabled, tracks from old collection that "
+            "do not exist anymore in filesystem are searched by metadata in current "
+            "collection. If a match is found, statistics for matched track are updated "
+            "even if file locations differ." ) );
     m_smartMatchCheck->setChecked( true );
 
-    m_importArtworkCheck = new QCheckBox( i18n("Import downloaded artwork"), this );
+    m_importArtworkCheck = new QCheckBox( i18n( "Import downloaded artwork" ), this );
     m_importArtworkCheck->setChecked( true );
-    
-    const QString oldCoverPath = Amarok::saveLocation( "albumcovers/large/" ).replace("kde4", "kde");
+
+    const QString oldCoverPath = fastForwardDataPath + "/albumcovers/large/";
 
     QWidget *artworkDirHolder = new QWidget( this );
 
     QGridLayout *artworkDirLayout = new QGridLayout( artworkDirHolder );
 
-    QLabel *artworkDirLabel = new QLabel( i18n("Artwork directory"), artworkDirHolder );
+    QLabel *artworkDirLabel = new QLabel( i18n( "Artwork directory" ), artworkDirHolder );
     m_importArtworkDirInput = new QLineEdit( artworkDirHolder );
     m_importArtworkDirInput->setText( oldCoverPath );
 
@@ -107,7 +115,7 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     artworkDirHolder->setLayout( artworkDirLayout );
 
-    connect( m_importArtworkCheck, SIGNAL( stateChanged(int) ), SLOT( importArtworkChanged(int) ) );
+    connect( m_importArtworkCheck, SIGNAL( stateChanged( int ) ), SLOT( importArtworkChanged( int ) ) );
 
     QWidget *spacer = new QWidget( this );
     spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );

@@ -18,7 +18,6 @@
 
 #include "core/support/Amarok.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/CollectionLocation.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
 #include "core/capabilities/StatisticsCapability.h"
@@ -47,12 +46,31 @@ FastForwardWorker::FastForwardWorker()
     , m_password()
     , m_smartMatch( false )
     , m_importArtwork( false )
-    , m_queryRunning( false )
+    , m_eventLoop( 0 )
 {
+    /* fill in m_collectionFolders.
+     * For each collection folder we remember collection location it belongs to. */
+    foreach( Collections::Collection *coll , CollectionManager::instance()->queryableCollections() )
+    {
+        QSharedPointer<Collections::CollectionLocation> location( coll->location() );
+        if( location )
+        {
+            foreach( QString path , location->actualLocation() )
+            {
+                if( m_collectionFolders.contains( path ) )
+                {
+                    warning() << "Multiple collection locations claim the same path " << path;
+                    continue;
+                }
+                m_collectionFolders.insert( path, location );
+                debug() << "Collection folder " << path << " => collection location " << location->prettyLocation();
+            }
+        }
+    }
 }
 
-QSqlDatabase
-FastForwardWorker::databaseConnection()
+void
+FastForwardWorker::setupDatabaseConnection()
 {
     DEBUG_BLOCK
 
@@ -61,28 +79,25 @@ FastForwardWorker::databaseConnection()
     QString driver = driverName();
     if( driver.isEmpty() )
     {
-        emit importError( i18n("No database driver was selected") );
-        m_failed = true;
-        return QSqlDatabase();
+        emit importError( i18n( "No database driver was selected" ) );
+        return; // no need to set m_failed here, it is in failWithError()
     }
 
     if( isSqlite && !QFile::exists( m_databaseLocation ) )
     {
-        emit importError( i18n("Database could not be found at: %1", m_databaseLocation ) );
-        m_failed = true;
-        return QSqlDatabase();
+        emit importError( i18n( "Database could not be found at: %1", m_databaseLocation ) );
+        return;
     }
 
-    QSqlDatabase connection = QSqlDatabase::addDatabase( driver );
-    connection.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
+    m_db = QSqlDatabase::addDatabase( driver );
+    m_db.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
 
     if( !isSqlite )
     {
-        connection.setHostName( m_hostname );
-        connection.setUserName( m_username );
-        connection.setPassword( m_password );
+        m_db.setHostName( m_hostname );
+        m_db.setUserName( m_username );
+        m_db.setPassword( m_password );
     }
-    return connection;
 }
 
 const QString
@@ -102,19 +117,15 @@ FastForwardWorker::run()
 {
     DEBUG_BLOCK
 
-    QSqlDatabase db = databaseConnection();
-    if( !db.open() )
+    setupDatabaseConnection();
+    if( !m_db.open() )
     {
-        QString errorMsg = i18n( "Could not open Amarok 1.4 database: %1", db.lastError().text() );
-        debug() << errorMsg;
-        emit importError( errorMsg );
-        m_failed = true;
+        failWithError( i18n( "Could not open Amarok 1.4 database: %1", m_db.lastError().text() ) );
         return;
     }
 
-
     QString sql =
-      QString( "SELECT lastmountpoint, S.url, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
+      QString( "SELECT lastmountpoint, S.url, S.uniqueid, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
         "FROM statistics S "
         "LEFT OUTER JOIN devices D "
         "  ON S.deviceid = D.id "
@@ -135,20 +146,16 @@ FastForwardWorker::run()
         "LEFT OUTER JOIN year Y "
         "  ON T.year = Y.id "
         "ORDER BY lastmountpoint, S.url" );
-    QSqlQuery query( sql, db );
+    QSqlQuery query( sql, m_db );
 
     if( query.lastError().isValid() )
     {
-        QString errorMsg = i18n( "Could not execute import query: %1", db.lastError().text() );
-        error() << "Error executing import query:" << errorMsg;
-        emit importError( errorMsg );
-        m_failed = true;
+        failWithError( i18n( "Could not execute import query: %1", m_db.lastError().text() ) );
         return;
     }
 
-    debug() << "active?" << query.isActive() << "size:" << query.size();
-
-    QMap<Meta::TrackPtr,QString> tracksForInsert;
+    QMap<Collections::CollectionLocation*, QMap<Meta::TrackPtr,QString>* > tracksForInsert;
+    ImporterMiscDataStorage dataForInsert;
 
     for( int c = 0; query.next(); c++ )
     {
@@ -156,12 +163,13 @@ FastForwardWorker::run()
             return;
 
         int index = 0;
-        QString mount = query.value( index++ ).toString();
-        QString url   = query.value( index++ ).toString();
+        QString mount    = query.value( index++ ).toString();
+        QString url      = query.value( index++ ).toString();
+        QString uniqueId = query.value( index++ ).toString();
 
         uint firstPlayed = query.value( index++ ).toUInt();
         uint lastPlayed  = query.value( index++ ).toUInt();
-        uint score       = query.value( index++ ).toDouble();
+        double score     = query.value( index++ ).toDouble();
         int rating       = query.value( index++ ).toInt();
         int playCount    = query.value( index++ ).toInt();
         QString lyrics   = query.value( index++ ).toString();
@@ -174,193 +182,398 @@ FastForwardWorker::run()
         uint trackNr     = query.value( index++ ).toUInt();
         uint discNr      = query.value( index++ ).toUInt();
         uint filesize    = query.value( index++ ).toUInt();
-        
-        // remove the relative part of the url, and make the url absolute
-        url = mount + url.mid(1);
 
+        // remove the relative part of the url, and make the url absolute
+        url = mount + url.mid( 1 );
 
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-        if( track )
+        if( track ) // track url exists
         {
-            debug() << c << " found track by URL: " << url;
-
-            if( !track->inCollection() )
+            debug() << c << " file exists: " << url;
+            Collections::Collection* collection = track->collection(); // try, often will return 0
+            if( collection )
             {
-                tracksForInsert.insert( track, track->playableUrl().url() );
-                debug() << c << " inserting track:" << track->playableUrl();
+                debug() << c << " track already in databse -> update";
+                emit trackAdded( track );
             }
-            else {
-                Collections::Collection* collection = track->collection();
-                if (collection)
-                    debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+            else
+            {
+                debug() << c << " track not in database";
+
+                Collections::CollectionLocation *location( 0 );
+                // go throungh collection locacions and try to find match
+                QMapIterator<QString, QSharedPointer<Collections::CollectionLocation> > i( m_collectionFolders );
+                while ( i.hasNext() ) {
+                    i.next();
+                    if( url.startsWith( i.key() ) )
+                    {
+                        location = i.value().data();
+                        break;
+                    }
+                }
+
+                if( location ) // a collection that can accept this track exists
+                {
+                    debug() << c << " track found under" << location->prettyLocation() << "-> add";
+                    QMap<Meta::TrackPtr,QString> *map;
+                    if( tracksForInsert.contains( location ) )
+                    {
+                        map = tracksForInsert.value( location );
+                    }
+                    else
+                    {
+                        map = new QMap<Meta::TrackPtr,QString>;
+                        tracksForInsert.insert( location, map );
+                    }
+                    map->insert( track, track->playableUrl().url() );
+                    emit trackAdded( track );
+                }
+                else // collection that can accept this track does not exist
+                {
+                    debug() << c << " track is not under configured collection folders -> discard";
+                    track = 0;
+                    emit trackDiscarded( url );
+                    emit showMessage( QString( "<font color='gray'>%1</font>" ).arg(
+                            i18n( "(track exists, but does not belong into any of your configured collection folders)" ) ) );
+                }
             }
-
-            emit trackAdded( track );
-
         }
-        else
+        else // track url does not exist
         {
-            debug() << c << " no track found by URL: " << url;
-
+            debug() << c << " file does not exist: " << url;
             // we need at least a title for a match
             if ( m_smartMatch && !title.isEmpty() ) {
-
-                debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
-
-                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-                if( !coll )
-                    continue;
-
-                // setup query
-                m_matchTracks.clear();
-                // state var to make the query synchronous (not exactly elegant, but'll do..)
-                m_queryRunning = true;
-
-                Collections::QueryMaker *qm_track = coll->queryMaker()->setQueryType( Collections::QueryMaker::Track );
-
-                // set matching criteria to narrow down the corresponding track in
-                // the new collection as good as possible
-                // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
-                //       lengths
-                //       bitrate: same
-                qm_track->addFilter( Meta::valTitle, title, true, true );
-                qm_track->addFilter( Meta::valAlbum, album, true, true );
-                qm_track->addFilter( Meta::valArtist, artist, true, true );
-                qm_track->addFilter( Meta::valComposer, composer, true, true );
-                qm_track->addFilter( Meta::valGenre, genre, true, true );
-                qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
-
-                connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-                connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-                qm_track->run();
-
-                // block until query is finished
-                QCoreApplication::processEvents();
-                while ( m_queryRunning == true ) {
-                    thread()->msleep( 10 );
-                    QCoreApplication::processEvents();
-                }
-
-                // evaluate query result
-                if ( m_matchTracks.isEmpty() )
-                {
-
-                    debug() << c << " matching done: no track found for url " << url;
-
-                    emit trackDiscarded( url );
-
-                }
-                else if ( m_matchTracks.count() == 1 )
-                {
-
-                    track = m_matchTracks.first();
-
-                    debug() << c << " matching done: matching track found for url " << url;
-                    debug() << c << "  (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
-
-                    emit trackMatchFound( m_matchTracks.first(), url );
-
-                }
-                else
-                {
-                    debug() << c << " matching done: more than one track found for url " << url;
-
-                    foreach( Meta::TrackPtr d_track, m_matchTracks )
-                    {
-                        if ( d_track && d_track->artist() && d_track->album() )
-                            debug() << c << "   found track: " << d_track->name() << " : " << d_track->artist()->name() << " : " << d_track->album()->name() << " - " << d_track->playableUrl();
-                        ;
-                    }
-
-                    emit trackMatchMultiple( m_matchTracks, url );
-                }
-
-
-                delete qm_track;
-
-            } else {
-                debug() << c << " no track produced for URL " << url;
-
+                track = trySmartMatch( url, title, album, artist, composer, genre, year,
+                                       trackNr, discNr, filesize );
+            }
+            else
+            {
+                debug() << c << " smart maching disabled or too few metadata -> discard";
                 emit trackDiscarded( url );
             }
         }
 
         if( track )
         {
-            // import statistics
-            Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
-            if( !ec )
-                continue;
-
-            ec->beginStatisticsUpdate();
-            ec->setScore( score );
-            ec->setRating( rating );
-            ec->setFirstPlayed( firstPlayed );
-            ec->setLastPlayed( lastPlayed );
-            ec->setPlayCount( playCount );
-            ec->endStatisticsUpdate();
-            
-            if( !lyrics.isEmpty() )
-                track->setCachedLyrics( lyrics );
-            }
+            setTrackMetadata( track, score, rating, firstPlayed, lastPlayed, playCount );
+            setTrackMiscData( dataForInsert, track, uniqueId, lyrics );
+        }
     }
 
-    if( tracksForInsert.size() > 0 )
+    // iterate over collection locations, add appropriate tracks to each
     {
-        emit showMessage( i18n( "Synchronizing Amarok database..." ) );
-        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-        location->insertTracks( tracksForInsert );
-        location->insertStatistics( tracksForInsert );
+        QMapIterator<Collections::CollectionLocation*, QMap<Meta::TrackPtr, QString>* > i( tracksForInsert );
+        while( i.hasNext() ) {
+            i.next();
+            Collections::CollectionLocation* location = i.key();
+            QMap<Meta::TrackPtr, QString>* tracks = i.value();
+
+            debug() << "Adding new tracks to collection";
+            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
+                                    tracks->size(), location->prettyLocation() ) );
+            location->insertTracks( *tracks );
+            location->insertStatistics( *tracks );
+            delete tracks; // location is deleted by QSharedPointer
+        }
     }
+
+    insertMiscData( dataForInsert ); // this is a hack, see function definition
 
     if( m_importArtwork )
+        importArtwork();
+}
+
+void
+FastForwardWorker::failWithError( const QString &errorMsg )
+{
+    debug() << errorMsg;
+    emit importError( errorMsg );
+    m_failed = true;
+}
+
+Meta::TrackPtr
+FastForwardWorker::trySmartMatch( const QString url, const QString title, const QString album,
+                                  const QString artist, const QString composer, const QString genre,
+                                  const uint year, const uint trackNr, const uint discNr,
+                                  const uint filesize )
+{
+    Meta::TrackPtr track( 0 );
+
+    debug() << "    trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
+
+    // cleanup from possible previous calls
+    m_matchTracks.clear();
+
+    Collections::QueryMaker *trackQueryMaker = CollectionManager::instance()->queryMaker();
+    trackQueryMaker->setQueryType( Collections::QueryMaker::Track );
+
+    // set matching criteria to narrow down the corresponding track in
+    // the new collection as good as possible
+    // NOTE: length: is ruled out, as A1.4 and A2.x sometimes report different
+    //       lengths
+    //       bitrate: same
+    trackQueryMaker->addFilter( Meta::valTitle, title, true, true );
+    trackQueryMaker->addFilter( Meta::valAlbum, album, true, true );
+    trackQueryMaker->addFilter( Meta::valArtist, artist, true, true );
+    trackQueryMaker->addFilter( Meta::valComposer, composer, true, true );
+    trackQueryMaker->addFilter( Meta::valGenre, genre, true, true );
+    trackQueryMaker->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
+    trackQueryMaker->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
+
+    connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ),
+             Qt::QueuedConnection );
+    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+             SLOT( resultReady( QString, Meta::TrackList ) ),
+             Qt::QueuedConnection );
+    trackQueryMaker->run();
+
+    m_eventLoop = new QEventLoop();
+    m_eventLoop->exec(); // wait for resultReady slot to fire
+    delete m_eventLoop;
+    m_eventLoop = 0; // avoid dangling pointer
+
+    // evaluate query result
+    if ( m_matchTracks.isEmpty() )
     {
-        const QString message = i18n( "Importing downloaded album art" );
-        emit showMessage( message );
+        debug() << "    matching done: no track found -> discard";
+        emit trackDiscarded( url );
+    }
+    else if ( m_matchTracks.count() == 1 )
+    {
+        track = m_matchTracks.first();
+        debug() << "    matching done: matching track found -> update";
+        emit trackMatchFound( m_matchTracks.first(), url );
+    }
+    else
+    {
+        debug() << "    matching done: more than one track found -> discard";
+        emit trackMatchMultiple( m_matchTracks, url );
+    }
 
-        QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
-        QDir newCoverDir( newCoverPath );
-        QDir oldCoverDir( m_importArtworkDir ); 
+    delete trackQueryMaker;
+    return track;
+}
 
-        if( newCoverDir.canonicalPath() == oldCoverDir.canonicalPath() )
-            return;
+void
+FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rating,
+                                        uint firstPlayed, uint lastPlayed, int playCount )
+{
+    /* import statistics. ec may be different object for different track types.
+     * StatisticsCapability for MetaFile::Track only caches info (thus we need to call
+     * insertStatistics() afterwards) while Meta::SqlTrack directly saves data to
+     * database (thus no insertStatistics() call is necessary)
+     */
+    Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
+    if( ec )
+    {
+        ec->beginStatisticsUpdate();
+        ec->setScore( score );
+        ec->setRating( rating );
+        ec->setFirstPlayed( firstPlayed );
+        ec->setLastPlayed( lastPlayed );
+        ec->setPlayCount( playCount );
+        ec->endStatisticsUpdate();
 
-        oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
+        delete ec;
+    }
+    else
+    {
+        warning() << "    track->create<Capabilities::StatisticsCapability>() returned 0!";
+        emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
+                i18n( "Cannot import statistics for %1", track->prettyUrl() ) ) );
+    }
+}
 
-        debug() << "new covers:" << newCoverPath;
-        debug() << "old covers:" << m_importArtworkDir;
+void
+FastForwardWorker::setTrackMiscData( ImporterMiscDataStorage& dataForInsert, Meta::TrackPtr track,
+                                     const QString& uniqueId, QString lyrics )
+{
+    QString url = track->playableUrl().url(); // we cannot reuse url, it may have changed in smartMatch
 
-        foreach( const QFileInfo &image, oldCoverDir.entryInfoList() )
+    // lyrics:
+    QRegExp lyricsFilter( "<[^>]*>" );
+    lyrics.replace( lyricsFilter, QString( "" ) ); // strip html tags
+    lyrics.replace( QString( "&apos;" ), QString( "'" ) );
+    lyrics.replace( QString( "&quot;" ), QString( "\"" ) );
+    lyrics.replace( QString( "&lt;" ), QString( "<" ) );
+    lyrics.replace( QString( "&gt;" ), QString( ">" ) );
+    if( !lyrics.isEmpty() )
+        dataForInsert.insertCachedLyrics( url, lyrics );
+
+    // labels:
+    if( !uniqueId.isEmpty() )
+    {
+        QString labelsSql = QString( "SELECT L.name FROM tags_labels T "
+            "LEFT JOIN labels L ON L.id = T.labelid "
+            "WHERE L.name != '' AND T.uniqueid = '%1'" ).arg( uniqueId );
+        QSqlQuery labelsQuery( labelsSql, m_db );
+
+        if( labelsQuery.lastError().isValid() )
         {
-            if( m_aborted )
-                return;
+            failWithError( i18n( "Could not execute labels import query: %1; query was: %2",
+                                m_db.lastError().text(), labelsSql ) );
+            return;
+        }
 
-            debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
-            QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
-
-            KUrl src( image.absoluteFilePath() );
-            KUrl dst( newPath );
-
-            //TODO: should this be asynchronous?
-            KIO::FileCopyJob *job = KIO::file_copy( src, dst, -1 /*no special perms*/ , KIO::HideProgressInfo );
-            if( !job->exec() ) // job deletes itself
-                error() << "Couldn't copy image" << image.fileName();
+        for( int d = 0; labelsQuery.next(); d++ )
+        {
+            QString label( labelsQuery.value( 0 ).toString() );
+            dataForInsert.insertLabel( url,  label );
         }
     }
 }
 
-void FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+void
+FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert )
+{
+    /* HACK: Meta::Track::setCachedLyrics() and ::addLabel() actually save data only for
+     * Meta:SqlTrack.
+     * Above call trackForUrl() returns MetaFile:Track if a file is not already in collection.
+     * Therefore, we call it again here after all tracks have been added to collection and
+     * hope it will return Meta::SqlTrack. */
+
+    debug() << "updating cached lyrics and labels...";
+    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks...",
+                            dataForInsert.size() ) );
+    int lyricsCount = 0, labelsCount = 0;
+    QMapIterator<QString, ImporterMiscData> i( dataForInsert );
+    while( i.hasNext() )
+    {
+        i.next();
+        QString url = i.key();
+        ImporterMiscData miscData = i.value();
+
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+        if( !track ) {
+            debug() << "trackForUrl() returned null for url " << url <<
+                        ", skipping lyrics and labels update";
+            emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
+                    i18n( "Failed to update lyrics/labels for track %1", url ) ) );
+            continue;
+        }
+
+        if( !miscData.cachedLyrics().isEmpty() )
+        {
+            track->setCachedLyrics( miscData.cachedLyrics() );
+            lyricsCount++;
+        }
+        if( !miscData.labels().isEmpty() )
+        {
+            foreach( QString label, miscData.labels() )
+            {
+                track->addLabel( label );
+            }
+            labelsCount++;
+        }
+    }
+
+    debug() << "lyrics and labels updated";
+    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks.",
+                            lyricsCount, labelsCount ) );
+}
+
+void
+FastForwardWorker::importArtwork()
+{
+    emit showMessage( i18n( "Importing downloaded album art..." ) );
+
+    QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
+    QDir newCoverDir( newCoverPath );
+    QDir oldCoverDir( m_importArtworkDir );
+
+    if( newCoverDir.canonicalPath() == oldCoverDir.canonicalPath() )
+        return;
+
+    oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
+
+    debug() << "new covers:" << newCoverPath;
+    debug() << "old covers:" << m_importArtworkDir;
+
+    int count = 0;
+    foreach( const QFileInfo &image, oldCoverDir.entryInfoList() )
+    {
+        if( m_aborted )
+            return;
+
+        debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
+        QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
+
+        KUrl src( image.absoluteFilePath() );
+        KUrl dst( newPath );
+
+        //TODO: should this be asynchronous?
+        KIO::FileCopyJob *job = KIO::file_copy( src, dst, -1 /*no special perms*/ , KIO::HideProgressInfo );
+        if( !job->exec() ) // job deletes itself
+            error() << "Couldn't copy image" << image.fileName();
+        else
+            count++;
+    }
+
+    emit showMessage( i18n( "Copied %1 cover images.", count ) );
+}
+
+void
+FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
     Q_UNUSED( collectionId )
 
     m_matchTracks << tracks;
 }
 
-void FastForwardWorker::queryDone()
+void
+FastForwardWorker::queryDone()
 {
-    m_queryRunning = false;
+    if( !m_eventLoop )
+    {
+        error() << "FastForwardWorker::queryDone() was called while m_eventLoop == 0!";
+        return;
+    }
+    if( !m_eventLoop->isRunning() )
+    {
+        error() << "FastForwardWorker::queryDone() was called while m_eventLoop wasnt running!";
+        return;
+    }
+    m_eventLoop->exit();
 }
 
+void
+ImporterMiscData::addLabel( const QString &label )
+{
+    if( !m_labels.contains( label ) )
+    {
+        m_labels.append( label );
+    }
+}
+
+
+void
+ImporterMiscDataStorage::insertCachedLyrics( const QString &url, const QString &lyrics )
+{
+    if( contains( url ) )
+    {
+        operator[]( url ).setCachedLyrics( lyrics );
+    }
+    else
+    {
+        ImporterMiscData data;
+        data.setCachedLyrics( lyrics );
+        insert( url, data );
+    }
+}
+
+void
+ImporterMiscDataStorage::insertLabel ( const QString &url, const QString &label )
+{
+    if( contains( url ) )
+    {
+        operator[]( url ).addLabel( label );
+    }
+    else
+    {
+        ImporterMiscData data;
+        data.addLabel( label );
+        insert( url, data );
+    }
+}
