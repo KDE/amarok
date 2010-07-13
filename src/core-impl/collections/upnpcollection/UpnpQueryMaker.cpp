@@ -46,9 +46,17 @@ namespace Collections {
 
 #define emitProperResult( PointerType, list ) \
 do {\
-    foreach( PointerType p, list ){ \
+    foreach( PointerType##Ptr p, list ) \
         m_cacheEntries << Meta::DataPtr::staticCast( p ); \
-}\
+    if ( m_asDataPtrs ) { \
+        emit newResultReady( m_collection->collectionId(), m_cacheEntries ); \
+    } \
+    else { \
+        PointerType##List list; \
+        foreach( Meta::DataPtr ptr, m_cacheEntries ) \
+            list << PointerType##Ptr::staticCast( ptr ); \
+        emit newResultReady( m_collection->collectionId(), list ); \
+    } \
 } while( 0 )
 
 bool UpnpQueryMaker::m_runningJob = false;
@@ -454,7 +462,7 @@ void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
             ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UPNP_ARTIST ) );
         }
     }
-    emitProperResult( Meta::ArtistPtr, ret );
+    emitProperResult( Meta::Artist, ret );
 }
 
 void UpnpQueryMaker::handleAlbums( const KIO::UDSEntryList &list )
@@ -474,7 +482,7 @@ DEBUG_BLOCK
             ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UPNP_ALBUM ) );
         }
     }
-    emitProperResult( Meta::AlbumPtr, ret );
+    emitProperResult( Meta::Album, ret );
 }
 
 void UpnpQueryMaker::handleTracks( const KIO::UDSEntryList &list )
@@ -488,7 +496,7 @@ DEBUG_BLOCK
         debug() << this << "TRACK" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
         ret << m_collection->cache()->getTrack( entry );
     }
-    emitProperResult( Meta::TrackPtr, ret );
+    emitProperResult( Meta::Track, ret );
 }
 
 void UpnpQueryMaker::slotDone( KJob *job )
