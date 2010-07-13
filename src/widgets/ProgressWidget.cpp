@@ -247,7 +247,7 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
     
     const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
     QFontMetrics tFm( m_timeLabelRight->font() );
-    const int labelSize = tFm.maxWidth() * timeLength;
+    const int labelSize = tFm.width(QChar('0')) * timeLength;
 
     //set the sizes of the labesl to the max needed by the length of the track
     //this way the progressbar will not change size during playback of a track
