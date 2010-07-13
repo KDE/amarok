@@ -30,7 +30,7 @@ if(MYSQLCONFIG_EXECUTABLE)
     endif(MYSQL_EMBEDDED_LIBSTEMP)
 
     find_library(MYSQLD_PIC_SEPARATE
-        libmysqld_pic
+        mysqld_pic
         PATHS
         /usr/lib/mysql
     )
