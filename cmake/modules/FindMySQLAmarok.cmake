@@ -29,19 +29,9 @@ if(MYSQLCONFIG_EXECUTABLE)
         set( HAVE_MYSQL_EMBEDDED true )
     endif(MYSQL_EMBEDDED_LIBSTEMP)
 
-    #Debian/Ubuntu have awful broken libmysqld system that has wrong cflags and libs output from mysql_config -- hack around it with all the rest of this section
-    if(UNIX AND NOT WIN32)
-        if(CMAKE_SIZEOF_VOID_P MATCHES "8")
-            check_cxx_compiler_flag("-fPIC" WITH_FPIC)
-            if(WITH_FPIC)
-                set(MYSQL_EMBEDDED_CFLAGS "${MYSQL_EMBEDDED_CFLAGS} -fPIC")
-            endif(WITH_FPIC)
-        endif(CMAKE_SIZEOF_VOID_P MATCHES "8")
-    endif(UNIX AND NOT WIN32)
-
     find_path(MYSQLD_PIC_SEPARATE
         NAMES
-        libmysqld_pic.so
+        libmysqld_pic.a
         PATHS
         /usr/lib/mysql
     )
