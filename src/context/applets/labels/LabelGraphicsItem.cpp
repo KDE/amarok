@@ -16,6 +16,8 @@
 
 #include "LabelGraphicsItem.h"
 
+#include "PaletteHandler.h"
+
 // KDE
 #include <KIconLoader>
 
@@ -113,6 +115,8 @@ void LabelGraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
 
+    setDefaultTextColor( PaletteHandler::highlightColor( 0.7, 1.0 ) );
+
     if( m_selected )
         m_removeLabelItem->show();
     else
@@ -130,10 +134,17 @@ void LabelGraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 void LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
+    
     m_addLabelItem->hide();
     m_removeLabelItem->hide();
     m_blacklistLabelItem->hide();
     m_listLabelItem->hide();
+    
+    if( m_selected )
+        setDefaultTextColor( QColor(0, 110, 0) );
+    else
+        setDefaultTextColor( QColor(0, 0, 0) );
+    
     update();
 }
 

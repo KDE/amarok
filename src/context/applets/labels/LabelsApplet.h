@@ -20,11 +20,9 @@
 #define LABELS_APPLET_H
 
 #include "context/Applet.h"
-#include "context/DataEngine.h"
 #include "core/engine/EngineObserver.h"
 
 #include "../../engines/labels/LabelsInfo.h"
-#include "../../engines/photos/PhotosInfo.h"
 
 #include <ui_labelsSettings.h>
 
