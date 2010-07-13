@@ -41,6 +41,13 @@ if(MYSQLCONFIG_EXECUTABLE)
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
     endif(MYSQLD_PIC_SEPARATE)
 
+    if (UNIX)
+        # libmysqld wants -lpthread, but it is very likely it does not say that
+        # explicitly in --libmysqld-libs
+        find_package(Threads)
+        set(MYSQL_EMBEDDED_LIBRARIES "${MYSQL_EMBEDDED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT}")
+    endif(UNIX)
+
 else(MYSQLCONFIG_EXECUTABLE)
 
     find_path(MYSQL_INCLUDE_DIR mysql.h
