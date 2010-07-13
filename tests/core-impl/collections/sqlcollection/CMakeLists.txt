@@ -1,5 +1,7 @@
 macro(link_database_test test_target)
 
+    add_definitions(${MYSQL_CFLAGS})
+
     if(APPLE)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif(APPLE)
@@ -17,20 +19,12 @@ macro(link_database_test test_target)
         ${KDE4_KDEUI_LIBS}
         ${QT_QTTEST_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        ${MYSQL_EMBEDDED_LIBRARIES}
+        ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES})
 
-    if(NOT WIN32)
-        target_link_libraries(${test_target} crypto ssl)
-        if(NOT APPLE)
-            target_link_libraries(${test_target} crypt pthread)
-        endif(NOT APPLE)
-    endif(NOT WIN32)
-
 endmacro(link_database_test)
 
-ADD_DEFINITIONS(${MYSQL_CFLAGS})
 
 include_directories(
   ${AMAROK_TEST_TREE}

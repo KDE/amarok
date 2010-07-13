@@ -1,7 +1,7 @@
 #build-time only dependency in XesamDbus.h
 #remove at some point
 
-ADD_DEFINITIONS(${MYSQL_CFLAGS})
+add_definitions(${MYSQL_EMBEDDED_CFLAGS})
 
 include_directories(
         .

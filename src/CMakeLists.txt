@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
+add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
 if(APPLE)
     set(mac_SRCS
@@ -58,7 +58,6 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
-    ${MYSQL_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
@@ -735,6 +734,9 @@ else( BUILD_MYSQLE_COLLECTION )
             ${amaroklib_LIB_SRCS}
             MySqlServerTester.cpp
            )
+        add_definitions(${MYSQL_CFLAGS})
+        include_directories(${MYSQL_INCLUDE_DIR})
+        target_link_libraries(amaroklib ${MYSQL_LIBS})
 endif( BUILD_MYSQLE_COLLECTION )
 
 if(KDE4_BUILD_TESTS)
