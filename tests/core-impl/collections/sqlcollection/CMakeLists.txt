@@ -251,3 +251,8 @@ target_link_libraries( testsqlcollectionlocation
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
 
+
+if(NOT WIN32 AND NOT APPLE)
+    target_link_libraries( testsqlcollectionlocation crypt )
+endif(NOT WIN32 AND NOT APPLE)
+

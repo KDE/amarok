@@ -39,6 +39,10 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${ZLIB_LIBRARIES}
 )
 
+if(NOT WIN32 AND NOT APPLE)
+    target_link_libraries( amarok_collection-mysqlecollection crypt )
+endif(NOT WIN32 AND NOT APPLE)
+
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-mysqlecollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
