@@ -1279,7 +1279,7 @@ bool EngineController::isPlayingAudioCd()
     return m_currentIsAudioCd;
 }
 
-QString EngineController::prettyNowPlaying()
+QString EngineController::prettyNowPlaying() const
 {
     Meta::TrackPtr track = currentTrack();
 
@@ -1289,7 +1289,6 @@ QString EngineController::prettyNowPlaying()
         QString prettyTitle = Qt::escape( track->prettyName() );
         QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
         QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-        QString length      = Qt::escape( Meta::msToPrettyTime( track->length() ) );
 
         // ugly because of translation requirements
         if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
@@ -1317,8 +1316,10 @@ QString EngineController::prettyNowPlaying()
             delete sic;
         }
 
-        if ( length.length() > 1 )
+        if ( track->length() > 0 ) {
+            QString length = Qt::escape( Meta::msToPrettyTime( track->length() ) );
             title += " (" + length + ')';
+        }
 
         return title;
     }

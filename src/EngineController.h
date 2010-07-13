@@ -183,7 +183,7 @@ public:
     /**
      * @return QString with a pretty name for the current track
      */
-    QString prettyNowPlaying();
+    QString prettyNowPlaying() const;
 
 public slots:
     /**
