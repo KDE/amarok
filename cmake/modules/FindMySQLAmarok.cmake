@@ -21,22 +21,36 @@ if(MYSQLCONFIG_EXECUTABLE)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --include RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_INCLUDE_DIR)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --cflags RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_CFLAGS)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_LIBRARIES)
-    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBRARIES)
+    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
 
     set(MYSQL_EMBEDDED_CFLAGS ${MYSQL_CFLAGS})
 
-    if(MYSQL_EMBEDDED_LIBRARIES)
+    if(MYSQL_EMBEDDED_LIBSTEMP)
         set( HAVE_MYSQL_EMBEDDED true )
-    endif(MYSQL_EMBEDDED_LIBRARIES)
+    endif(MYSQL_EMBEDDED_LIBSTEMP)
 
-    if (UNIX AND NOT WIN32)
-        if (CMAKE_SIZEOF_VOID_P MATCHES "8")
+    #Debian/Ubuntu have awful broken libmysqld system that has wrong cflags and libs output from mysql_config -- hack around it with all the rest of this section
+    if(UNIX AND NOT WIN32)
+        if(CMAKE_SIZEOF_VOID_P MATCHES "8")
             check_cxx_compiler_flag("-fPIC" WITH_FPIC)
-            if (WITH_FPIC)
+            if(WITH_FPIC)
                 set(MYSQL_EMBEDDED_CFLAGS "${MYSQL_EMBEDDED_CFLAGS} -fPIC")
-            endif (WITH_FPIC)
-        endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
-    endif (UNIX AND NOT WIN32)
+            endif(WITH_FPIC)
+        endif(CMAKE_SIZEOF_VOID_P MATCHES "8")
+    endif(UNIX AND NOT WIN32)
+
+    find_path(MYSQLD_PIC_SEPARATE
+        NAMES
+        libmysqld_pic.so
+        PATHS
+        /usr/lib/mysql
+    )
+
+    if(MYSQLD_PIC_SEPARATE)
+        string(REPLACE "lmysqld" "lmysqld_pic" MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+    else(MYSQLD_PIC_SEPARATE)
+        set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+    endif(MYSQLD_PIC_SEPARATE)
 
 else(MYSQLCONFIG_EXECUTABLE)
 
