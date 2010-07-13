@@ -29,9 +29,8 @@ if(MYSQLCONFIG_EXECUTABLE)
         set( HAVE_MYSQL_EMBEDDED true )
     endif(MYSQL_EMBEDDED_LIBSTEMP)
 
-    find_path(MYSQLD_PIC_SEPARATE
-        NAMES
-        libmysqld_pic.a
+    find_library(MYSQLD_PIC_SEPARATE
+        libmysqld_pic
         PATHS
         /usr/lib/mysql
     )
