@@ -17,6 +17,7 @@ include_directories( .
 )
 
 add_subdirectory( amarokurls )
+add_subdirectory( browsers )
 add_subdirectory( context )
 add_subdirectory( core )
 add_subdirectory( core-impl )
