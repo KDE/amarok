@@ -83,7 +83,8 @@ void
 MediaDeviceHandler::slotDeletingHandler()
 {
     DEBUG_BLOCK
-    The::playlistManager()->removeProvider( m_provider );
+    if( m_provider )
+        The::playlistManager()->removeProvider( m_provider );
 }
 
 void

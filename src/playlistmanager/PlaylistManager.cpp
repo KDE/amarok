@@ -169,6 +169,8 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
         }
     }
 
+    m_providerMap.remove( provider->category(), provider );
+
     emit( providerRemoved( provider, provider->category() ) );
 
     slotUpdated();

@@ -78,7 +78,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
                 The::playlistManager()->providersForCategory( m_playlistCategory );
         foreach( Playlists::PlaylistProvider *provider, providerList )
         {
-            if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
+            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
                 continue;
 
             displayList << provider->prettyName();
