@@ -28,6 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
+#include <QPointer>
 #include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
@@ -74,7 +75,7 @@ public:
             QByteArray sig = QMetaObject::normalizedSignature( cb.method );
             sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
                                 // and let Qt's meta object system handle the rest.
-            if( cb.receiver.data() )
+            if( !cb.receiver.isNull() )
             {
                 bool success( false );
                 const QMetaObject *mo = cb.receiver.data()->metaObject();
@@ -103,7 +104,11 @@ public:
 
     struct CallBackData
     {
+#if QT_VERSION >= 0x040600
         QWeakPointer<QObject> receiver;
+#else
+        QPointer<QObject> receiver;
+#endif
         const char *method;
         Qt::ConnectionType type;
     };
