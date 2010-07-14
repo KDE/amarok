@@ -152,7 +152,7 @@ SimilarArtistsEngine::update()
 
             // we send an empty list
             m_similarArtists.clear();
-            QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+            QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
             setData( "similarArtists", "SimilarArtists", variant );
         }
         else   //valid artist
@@ -246,7 +246,7 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, Net
     if( e.code != QNetworkReply::NoError )
     {
         // probably we haven't access to internet sent a empty list
-        QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
         m_similarArtistsUrl.clear();
         setData( "similarArtists", "SimilarArtists", variant );
         return;
@@ -351,7 +351,8 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, Net
 
             if( !name.isEmpty() )
             {
-                m_similarArtists.append( SimilarArtist( name, match, url, imageUrl, m_artist ) );
+                SimilarArtistPtr artist( new SimilarArtist( name, match, url, imageUrl, m_artist ) );
+                m_similarArtists.append( artist );
                 artistDescriptionRequest( name );
                 artistTopTrackRequest( name );
             }
@@ -421,13 +422,14 @@ SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, 
     }
 
     // we search the correct artist to add his/her/their/its description
-    QList<SimilarArtist>::iterator it;
-    QList<SimilarArtist>::iterator endit = m_similarArtists.end();
+    SimilarArtist::List::iterator it;
+    SimilarArtist::List::iterator endit = m_similarArtists.end();
     for( it = m_similarArtists.begin(); it != endit; ++it )
     {
-        if( it->name() == name )
+        SimilarArtistPtr artist = *it;
+        if( artist->name() == name )
         {
-            it->setDescription( description );
+            artist->setDescription( description );
             break;
         }
     }
@@ -437,7 +439,7 @@ SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, 
             && m_topTrackArtists + 1 >= m_similarArtists.size() )
     {
         // we send the data to the applet
-        QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ) , &m_similarArtists );
+        QVariant variant( QMetaType::type( "SimilarArtist::List" ) , &m_similarArtists );
         setData( "similarArtists", "SimilarArtists", variant );
     }
 }
@@ -502,13 +504,14 @@ SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, Net
     }
 
     // we search the correct artist to add his/her/their/its description
-    QList<SimilarArtist>::iterator it;
-    QList<SimilarArtist>::iterator endit = m_similarArtists.end();
+    SimilarArtist::List::iterator it;
+    SimilarArtist::List::iterator endit = m_similarArtists.end();
     for( it = m_similarArtists.begin(); it != endit; ++it )
     {
-        if( it->name() == name )
+        SimilarArtistPtr artist = *it;
+        if( artist->name() == name )
         {
-            it->setTopTrack( topTrack );
+            artist->setTopTrack( topTrack );
             break;
         }
     }
@@ -518,7 +521,7 @@ SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, Net
             && m_topTrackArtists + 1 >= m_similarArtists.size() )
     {
         // we send the data to the applet
-        QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
         setData( "similarArtists", "SimilarArtists", variant );
     }
 }

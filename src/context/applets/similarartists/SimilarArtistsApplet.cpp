@@ -248,7 +248,7 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     // we see if the artist name is valid
     if ( !m_artist.isEmpty() )
     {
-        m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
+        m_similars = data[ "SimilarArtists" ].value<SimilarArtist::List>();
 
         if ( !m_stoppedState )
         {
@@ -425,11 +425,11 @@ SimilarArtistsApplet::artistsUpdate()
         cpt = 0;
         foreach( ArtistWidget* art, m_artists )
         {
-            art->setArtist( m_similars.at( cpt ).name(), m_similars.at( cpt ).url() );
-            art->setPhoto( m_similars.at( cpt ).urlImage() );
-            art->setMatch( m_similars.at( cpt ).match() );
-            art->setDescription(m_similars.at( cpt ).description());
-            art->setTopTrack(m_similars.at( cpt ).topTrack());
+            art->setArtist( m_similars.at( cpt )->name(), m_similars.at( cpt )->url() );
+            art->setPhoto( m_similars.at( cpt )->urlImage() );
+            art->setMatch( m_similars.at( cpt )->match() );
+            art->setDescription( m_similars.at( cpt )->description() );
+            art->setTopTrack( m_similars.at( cpt )->topTrack() );
             cpt++;
         }
 

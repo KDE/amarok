@@ -22,14 +22,14 @@ SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &
                               const KUrl &urlImage, const QString &similarTo,
                               const QString &description,
                               const QString &topTrack )
+    : m_name( name )
+    , m_match( match )
+    , m_url( url )
+    , m_urlImage( urlImage )
+    , m_description( description )
+    , m_topTrack( topTrack )
+    , m_similarTo( similarTo )
 {
-    m_name = name;
-    m_match = match;
-    m_url = url;
-    m_urlImage = urlImage;
-    m_similarTo = similarTo;
-    m_description = description;
-    m_topTrack = topTrack;
 
     static bool metaTypeRegistered = false;
     if ( !metaTypeRegistered )
@@ -37,6 +37,18 @@ SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &
         qRegisterMetaType<SimilarArtist>( "SimilarArtists" );
         metaTypeRegistered = true;
     }
+}
+
+SimilarArtist::SimilarArtist( const SimilarArtist &other )
+    : QSharedData( other )
+    , m_name( other.m_name )
+    , m_match( other.m_match )
+    , m_url( other.m_url )
+    , m_urlImage( other.m_urlImage )
+    , m_description( other.m_description )
+    , m_topTrack( other.m_topTrack )
+    , m_similarTo( other.m_similarTo )
+{
 }
 
 QString

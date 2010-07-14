@@ -160,7 +160,7 @@ private:
     /**
      * The list of similar artists fetched on the last fm API
      */
-    QList<SimilarArtist> m_similarArtists;
+    SimilarArtist::List m_similarArtists;
 
     /**
      * The artist, whose research is similar artists.
