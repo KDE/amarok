@@ -40,7 +40,7 @@ target_link_libraries(amarok_collection-mysqlecollection
 )
 
 if(NOT WIN32 AND NOT APPLE)
-    target_link_libraries( amarok_collection-mysqlecollection crypt )
+    target_link_libraries( amarok_collection-mysqlecollection crypt pthread )
 endif(NOT WIN32 AND NOT APPLE)
 
 if(APPLE)

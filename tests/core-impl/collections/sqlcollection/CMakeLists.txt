@@ -253,6 +253,6 @@ target_link_libraries( testsqlcollectionlocation
 
 
 if(NOT WIN32 AND NOT APPLE)
-    target_link_libraries( testsqlcollectionlocation crypt )
+    target_link_libraries( testsqlcollectionlocation crypt pthread )
 endif(NOT WIN32 AND NOT APPLE)
 
