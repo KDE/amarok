@@ -108,10 +108,6 @@ DEBUG_BLOCK
     // and experiment in using the filter only for the query
     // and checking the returned upnp:class
     // based on your query types.
-    debug() << this << "---------------------------";
-    for( int i = 0 ; i < queryList.length() ; i++ )
-        debug() << this << queryList[i];
-    debug() << this << "-----------------------";
     for( int i = 0; i < queryList.length() ; i++ ) {
         if( queryList[i].isEmpty() )
             continue;
@@ -307,6 +303,16 @@ DEBUG_BLOCK
 
 // theoretically this should be '=' I think and set to contains below if required
     QString cmpOp = "contains";
+    //TODO should we add filters ourselves
+    // eg. we always query for audioItems, but how do we decide
+    // whether to add a dc:title filter or others.
+    // for example, for the artist list
+    // our query should be like ( pseudocode )
+    // ( upnp:class = audioItem ) and ( dc:title contains "filter" )
+    // OR
+    // ( upnp:class = audioItem ) and ( upnp:artist contains "filter" );
+    // ...
+    // so who adds the second query?
 // TODO add generic FILTER
     QString property = "dc:title";
     switch( value ) {
@@ -421,6 +427,7 @@ DEBUG_BLOCK
 
 void UpnpQueryMaker::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
+    debug() << "RESULT OF " << job << job->error();
     if( job->error() ) {
         debug() << this << "JOB has error" << job->errorString();
         return;
@@ -553,6 +560,7 @@ DEBUG_BLOCK
             }
             //emit newResultReady( m_collection->collectionId(), list );
         }
+        debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
         emit queryDone();
     }
 }
