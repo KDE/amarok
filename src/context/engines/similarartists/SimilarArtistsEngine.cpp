@@ -36,15 +36,10 @@ K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
 using namespace Context;
 
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
-        : DataEngine( parent )
-        , ContextObserver( ContextView::self() )
+    : DataEngine( parent )
+    , Engine::EngineObserver( The::engineController() )
 {
-    m_descriptionWideLang="aut";
-    m_currentSelection="artist";
-    m_requested=true;
-    m_sources.append("current");
-    m_triedRefinedSearch=0;
-    update();
+    m_descriptionWideLang = "aut";
 }
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
@@ -58,16 +53,9 @@ SimilarArtistsEngine::similarArtists( const QString &artistName )
     return artist.getSimilar( artist.getSimilar() );
 }
 
-QStringList
-SimilarArtistsEngine::sources() const
-{
-    return m_sources;
-}
-
 bool
 SimilarArtistsEngine::sourceRequestEvent( const QString &name )
 {
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
 
     // user has changed the maximum artists returned.
@@ -89,17 +77,9 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
 
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
-    setData( name, QVariant() );
     update();
 
     return true;
-}
-
-void
-SimilarArtistsEngine::message( const ContextState &state )
-{
-    if ( state == Current && m_requested )
-        update();
 }
 
 void
@@ -110,72 +90,78 @@ SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 }
 
 void
+SimilarArtistsEngine::engineNewTrackPlaying()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
+    {
+        removeAllData( "similarArtists" );
+    }
+    else if( !m_currentTrack )
+    {
+        m_currentTrack = track;
+        subscribeTo( track );
+        update();
+    }
+    else if( m_currentTrack != track )
+    {
+        Meta::TrackPtr oldTrack = m_currentTrack;
+        unsubscribeFrom( m_currentTrack );
+        m_currentTrack = track;
+        subscribeTo( track );
+        if( m_currentTrack->artist() != oldTrack->artist() )
+            update();
+    }
+}
+
+void
 SimilarArtistsEngine::update()
 {
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
-    // We've got a new track, great, let's fetch some info from SimilarArtists !
-    m_triedRefinedSearch = 0;
-    QString artistName;
-
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
-
-    if ( !currentTrack )
+    if( !m_currentTrack )
         return;
 
+    QString artistName;
     DataEngine::Data data;
-    // default, or applet told us to fetch artist
-    if ( selection() == "artist" )
+    if( m_currentTrack->artist() )
     {
-        if ( currentTrack->artist() )
-        {
-            if (( currentTrack->playableUrl().protocol() == "lastfm" ) ||
-                     ( currentTrack->playableUrl().protocol() == "daap" ) ||
-                     !The::engineController()->isStream() )
-                artistName = currentTrack->artist()->name();
-            else
-                artistName = currentTrack->artist()->prettyName();
-        }
-
-        // we delete the previous update only if the artist requested was not the same
-        if( artistName != m_artist ) {
-            // new update, if a job is not terminated, we kill it
-            // TODO: how to do this?
-        }
-
-        if ( artistName.isEmpty() )   // Unknown artist
-        {
-            m_artist = "Unknown artist";
-            setData( "similarArtists", "artist", m_artist );
-
-            // we send an empty list
-            m_similarArtists.clear();
-            QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
-            setData( "similarArtists", "SimilarArtists", variant );
-        }
-        else   //valid artist
-        {
-            // Read config and inform the engine.
-            KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
-
-            //fix the limit of the request, the default is already fixed by the applet
-            int nbArt = config.readEntry( "maxArtists", "5" ).toInt();
-
-            // wee make a request only if the artist is different
-            // or if the number of artist to display is bigger
-            if ( artistName != m_artist || nbArt > m_maxArtists )   // we update the data only
-            {
-                // if the artist has changed
-                m_maxArtists = nbArt;
-                m_artist = artistName;
-                setData( "similarArtists", "artist", artistName );
-                similarArtistsRequest( artistName );
-            }
-        }
+        if (( m_currentTrack->playableUrl().protocol() == "lastfm" ) ||
+            ( m_currentTrack->playableUrl().protocol() == "daap" ) ||
+            !The::engineController()->isStream() )
+            artistName = m_currentTrack->artist()->name();
+        else
+            artistName = m_currentTrack->artist()->prettyName();
     }
 
+    if( artistName.isEmpty() )   // Unknown artist
+    {
+        m_artist = "Unknown artist";
+        data["artist"] = m_artist;
+
+        // we send an empty list
+        m_similarArtists.clear();
+        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
+        data["SimilarArtists"] = variant;
+    }
+    else   //valid artist
+    {
+        // Read config and inform the engine.
+        KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
+
+        //fix the limit of the request, the default is already fixed by the applet
+        int nbArt = config.readEntry( "maxArtists", "5" ).toInt();
+
+        // wee make a request only if the artist is different
+        // or if the number of artist to display is bigger
+        if( artistName != m_artist || nbArt > m_maxArtists )   // we update the data only
+        {
+            // if the artist has changed
+            m_maxArtists = nbArt;
+            m_artist = artistName;
+            data["artist"] = m_artist;
+            similarArtistsRequest( artistName );
+        }
+    }
+    setData( "similarArtists", data );
 }
 
 void
@@ -237,7 +223,7 @@ SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
 }
 
 void
-SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e ) // SLOT
+SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !url.isValid() || m_similarArtistsUrl != url )
         return;

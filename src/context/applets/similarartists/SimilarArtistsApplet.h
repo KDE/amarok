@@ -148,10 +148,6 @@ private:
      * The max number artists
      */
     int m_maxArtists;
-    /**
-     * Artist which you want to see artists like
-     */
-    int m_temp_maxArtists;
 
     QString m_currentArtist;
 
@@ -167,8 +163,6 @@ private slots:
      */
     void configure();
     void switchToLang(const QString &lang);
-    void changeMaxArtists( int value );
-    void saveMaxArtists();
     void saveSettings();
 };
 

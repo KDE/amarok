@@ -19,11 +19,12 @@
 #ifndef SIMILARARTISTSENGINE_H
 #define SIMILARARTISTSENGINE_H
 
-#include "src/context/ContextObserver.h"
-#include "src/context/DataEngine.h"
-#include "core/meta/Meta.h"
 #include "NetworkAccessManagerProxy.h"
-#include "src/context/applets/similarartists/SimilarArtist.h"
+#include "context/ContextObserver.h"
+#include "context/DataEngine.h"
+#include "context/applets/similarartists/SimilarArtist.h"
+#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
 
 #include <QLocale>
 
@@ -33,10 +34,9 @@ using namespace Context;
  *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
  *  It gets its information from the API lastfm.
  */
-class SimilarArtistsEngine : public DataEngine, public ContextObserver, Meta::Observer
+class SimilarArtistsEngine : public DataEngine, public Meta::Observer, public Engine::EngineObserver
 {
     Q_OBJECT
-    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
 
 public:
 
@@ -50,25 +50,6 @@ public:
      * Destroy the dataEngine
      */
     virtual ~SimilarArtistsEngine();
-
-    QStringList sources() const;
-
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState &state );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    
-    void metadataChanged( Meta::TrackPtr track );
-
-    void setSelection( const QString &selection )
-    {
-        m_currentSelection = selection;
-    }
-    QString selection()
-    {
-        return m_currentSelection;
-    }
 
     /**
     * Fetches the similar artists for an artist thanks to the LastFm WebService
@@ -84,6 +65,12 @@ public:
      */
     void similarArtistsRequest( const QString &artistName );
 
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::TrackPtr track );
+
+    // reimplemented from EngineObserver
+    void engineNewTrackPlaying();
 
 protected:
     bool sourceRequestEvent( const QString &name );
@@ -146,16 +133,6 @@ private:
      * The current track played on amarok
      */
     Meta::TrackPtr m_currentTrack;
-
-    QString m_currentSelection;
-
-    /**
-     * Is true, if someone is asking for data
-     */
-    bool m_requested;
-    
-    QStringList m_sources;
-    short m_triedRefinedSearch;
 
     /**
      * The list of similar artists fetched on the last fm API
