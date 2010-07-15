@@ -218,112 +218,46 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
         return;
     }
 
-    // The reader on the xml document which contains the information of the lastFM API.
-    QXmlStreamReader xmlReader;
-
-    if( !data.isEmpty() )
-    {
-        // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData( data );
-    }
-    else
-    {
+    if( data.isEmpty() )
         return;
-    }
 
     SimilarArtist::List saList;
-    // we search the artist name on the xml
-    while ( !xmlReader.atEnd() && !xmlReader.hasError() )
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        if ( xmlReader.name() == "artist" ) // we have found a similar artist
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "artist" )
         {
-
-            // we search the similar artist name
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "name" )
-            {
-                xmlReader.readNext();
-            }
-
             QString name;
-            // we get the name only if we have found it
-            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                name = xmlReader.readElementText();
-            }
-
-
-            // we search the similar artist match
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "match" )
-            {
-                xmlReader.readNext();
-            }
-
-            float match(0.0);
-            // we get the match only if we have found it
-            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                match = xmlReader.readElementText().toFloat();
-
-                //FIX of the lastFM API
-                // this API return randomly a float between 0 to 1 of 0 to 100
-                if ( match <= 1.0 )
-                {
-                    match = match * 100.0;
-                }
-            }
-
-            // we search the url on lastFM of the similar artist
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "url" )
-            {
-                xmlReader.readNext();
-            }
-
-            KUrl url;
-            // we get the url only if we have found it
-            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
-            {
-                url = KUrl( xmlReader.readElementText() );
-            }
-
-
-            // we search the url on lastFM of the artist image
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.name() != "image" )
-            {
-                xmlReader.readNext();
-            }
-
-            //we search the large image, in the panel of the image proposed by lastFM
-            while ( !xmlReader.atEnd()
-                    && !xmlReader.hasError()
-                    && xmlReader.attributes().value( "size" ) != "large" )
-            {
-                xmlReader.readNext();
-            }
-
+            KUrl artistUrl;
             KUrl imageUrl;
-            // we get the image url only if we have found it
-            if ( !xmlReader.atEnd() && !xmlReader.hasError() )
+            float match( 0.0 );
+            while( !xml.atEnd() )
             {
-                imageUrl = KUrl( xmlReader.readElementText() );
-            }
+                xml.readNext();
+                const QStringRef &n = xml.name();
+                if( xml.isEndElement() && n == "artist" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
 
-            if( !name.isEmpty() )
-            {
-                SimilarArtistPtr artist( new SimilarArtist( name, match, url, imageUrl, m_artist ) );
-                saList.append( artist );
-                artistDescriptionRequest( name );
-                artistTopTrackRequest( name );
+                const QXmlStreamAttributes &a = xml.attributes();
+                if( n == "name" )
+                    name = xml.readElementText();
+                else if( n == "match" )
+                    match = xml.readElementText().toFloat() * 100.0;
+                else if( n == "url" )
+                    artistUrl = KUrl( xml.readElementText() );
+                else if( n == "image" && a.hasAttribute("size") && a.value("size") == "large" )
+                    imageUrl = KUrl( xml.readElementText() );
+                else
+                    xml.skipCurrentElement();
             }
+            SimilarArtistPtr artist( new SimilarArtist( name, match, artistUrl, imageUrl, m_artist ) );
+            saList.append( artist );
+            artistDescriptionRequest( name );
+            artistTopTrackRequest( name );
         }
-        xmlReader.readNext();
     }
 
     debug() << QString( "Found %1 similar artists of '%2'" ).arg( saList.size() ).arg( m_artist );
@@ -341,56 +275,52 @@ SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data,
     if( e.code != QNetworkReply::NoError )
         return;
 
-    // The reader on the xml document which contains the information of the lastFM API.
-    QXmlStreamReader xmlReader;
-
-    if( !data.isEmpty() )
-    {
-        // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData( data );
-    }
-    else
-    {
+    if( data.isEmpty() )
         return;
-    }
-
-    // we search the artist name on the xml
-    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name" )
-    {
-        xmlReader.readNext();
-    }
 
     QString name;
-    // we get the name only if we have found it
-    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
+    QString summary;
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        name = xmlReader.readElementText();
-    }
-    else   // error when parsing the xml
-    {
-        return;
-    }
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "artist" )
+        {
+            while( !xml.atEnd() )
+            {
+                xml.readNext();
+                if( xml.isEndElement() && xml.name() == "artist" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
 
-    // we search the artist description on the xml
-    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "summary" )
-    {
-        xmlReader.readNext();
-    }
+                if( xml.name() == "bio" )
+                {
+                    while( !xml.atEnd() )
+                    {
+                        xml.readNext();
+                        if( xml.isEndElement() && xml.name() == "bio" )
+                            break;
+                        if( !xml.isStartElement() )
+                            continue;
 
-    QString description;
-    // we get the description only if we have found it
-    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
-    {
-        description = xmlReader.readElementText().simplified(); //we clean the string
-    }
-    else
-    {
-        return;
+                        if( xml.name() == "summary" )
+                            summary = xml.readElementText().simplified();
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+                else if( xml.name() == "name" )
+                    name = xml.readElementText();
+                else
+                    xml.skipCurrentElement();
+            }
+        }
     }
 
     Plasma::DataEngine::Data eData;
     eData[ "artist" ] = name;
-    eData[ "text"   ] = description;
+    eData[ "text"   ] = summary;
     m_descriptions << eData;
     if( !m_isDelayingSetData )
         delayedSetData();
@@ -403,55 +333,54 @@ SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, Net
     if( e.code != QNetworkReply::NoError )
         return;
 
-    // The reader on the xml document which contains the information of the lastFM API.
-    QXmlStreamReader xmlReader;
-
-    if( !data.isEmpty() )
-    {
-        // we add to the reader the xml downloaded from lastFM
-        xmlReader.addData( data );
-    }
-    else
-    {
+    if( data.isEmpty() )
         return;
-    }
 
-    // we search the name of the artist
-    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "toptracks" )
-    {
-        xmlReader.readNext();
-    }
-
-    //the name of the artist is on the xml attribute
-    QString name;
-    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
-    {
-        name = xmlReader.attributes().value( "artist" ).toString();
-    }
-    else
-    {
-        return;
-    }
-
-    // we search the first top track on the xml
-    while ( !xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name" )
-    {
-        xmlReader.readNext();
-    }
-
+    QString artist;
     QString topTrack;
-    // we get the name only if we have found it
-    if ( !xmlReader.atEnd() && !xmlReader.hasError() )
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        topTrack = xmlReader.readElementText();
-    }
-    else   // error when parsing the xml
-    {
-        return;
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "track" )
+        {
+            while( !xml.atEnd() )
+            {
+                xml.readNext();
+                if( xml.isEndElement() && xml.name() == "track" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
+
+                if( xml.name() == "artist" )
+                {
+                    while( !xml.atEnd() )
+                    {
+                        xml.readNext();
+                        if( xml.isEndElement() && xml.name() == "artist" )
+                            break;
+                        if( !xml.isStartElement() )
+                            continue;
+
+                        if( xml.name() == "name" )
+                            artist = xml.readElementText();
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+                else if( xml.name() == "name" )
+                    topTrack = xml.readElementText();
+                else
+                    xml.skipCurrentElement();
+            }
+        }
+
+        if( !artist.isEmpty() && !topTrack.isEmpty() )
+            break;
     }
 
     Plasma::DataEngine::Data eData;
-    eData[ "artist" ] = name;
+    eData[ "artist" ] = artist;
     eData[ "track"  ] = topTrack;
     m_topTracks << eData;
     if( !m_isDelayingSetData )
