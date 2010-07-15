@@ -53,9 +53,15 @@ PopupDropperFactory::~PopupDropperFactory()
 }
 
 
-PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
+PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent, bool ignoreEmptyParent )
 {
     DEBUG_BLOCK
+
+    // Lazy loading of widgets not currently shown in layout means that parent could be zero
+    // if this happens, it pops up in its own window -- so detect this
+    // ignoreEmptyParent is for creating submenus, where you set the initial parent to zero
+    if( !parent && !ignoreEmptyParent )
+        return 0;
 
     PopupDropper* pd = new PopupDropper( parent );
     if( !pd )

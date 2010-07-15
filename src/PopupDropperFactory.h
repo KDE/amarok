@@ -45,11 +45,12 @@ class AMAROK_EXPORT PopupDropperFactory : public QObject
         PopupDropper * createPopupDropper();
         
         /**
-         * OVerloaded function for creating a new PopupDropper witha custom parent
+         * Overloaded function for creating a new PopupDropper with a custom parent
          * @param parent The widget to act as the parent
+         * @param ignoreEmptyParent Whether to ignore if the parent is null - use this when creating submenus where the parent is 0
          * @return The newly created PopupDropper
          */
-        PopupDropper * createPopupDropper( QWidget * parent );
+        PopupDropper * createPopupDropper( QWidget * parent, bool ignoreEmptyParent = false );
 
         PopupDropperItem* createItem( QAction * action );
         void adjustItems( PopupDropper *pud );

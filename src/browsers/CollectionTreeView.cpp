@@ -498,7 +498,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         PopupDropper * morePud = 0;
         if( actions.count() > 1 )
         {
-            morePud = The::popupDropperFactory()->createPopupDropper( 0 );
+            morePud = The::popupDropperFactory()->createPopupDropper( 0, true );
 
             foreach( QAction * action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );
