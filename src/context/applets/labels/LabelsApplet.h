@@ -20,9 +20,8 @@
 #define LABELS_APPLET_H
 
 #include "context/Applet.h"
+#include "context/DataEngine.h"
 #include "core/engine/EngineObserver.h"
-
-#include "../../engines/labels/LabelsInfo.h"
 
 #include <ui_labelsSettings.h>
 
@@ -64,7 +63,7 @@ private:
     void updateLabels();
     void startDataQuery();
 
-    QList < LabelsInfo * >  m_labelInfos;
+    QMap < QString, QVariant >    m_labelInfos;
     QList < LabelGraphicsItem * > m_labelItems;
     QStringList             m_currentLabels;
     QStringList             m_allLabels;
@@ -92,7 +91,6 @@ private slots:
 
 };
 
-Q_DECLARE_METATYPE ( QList < LabelsInfo * > )
 K_EXPORT_AMAROK_APPLET( labels, LabelsApplet )
 
 #endif

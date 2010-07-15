@@ -150,11 +150,12 @@ void LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 
 void LabelGraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    if( m_addLabelItem->contains( mapToItem( m_addLabelItem, event->pos() ) ) || m_removeLabelItem->contains( mapToItem( m_removeLabelItem, event->pos() ) ) )
+    if( m_addLabelItem->boundingRect().contains( mapToItem( m_addLabelItem, event->pos() ) ) ||
+        m_removeLabelItem->boundingRect().contains( mapToItem( m_removeLabelItem, event->pos() ) ) )
         emit toggled( toPlainText() );
-    else if( m_blacklistLabelItem->isEnabled() && m_blacklistLabelItem->contains( mapToItem( m_blacklistLabelItem, event->pos() ) ) )
+    else if( m_blacklistLabelItem->isEnabled() && m_blacklistLabelItem->boundingRect().contains( mapToItem( m_blacklistLabelItem, event->pos() ) ) )
         emit blacklisted( toPlainText() );
-    else if( m_listLabelItem->isEnabled() && m_listLabelItem->contains( mapToItem( m_listLabelItem, event->pos() ) ) )
+    else if( m_listLabelItem->isEnabled() && m_listLabelItem->boundingRect().contains( mapToItem( m_listLabelItem, event->pos() ) ) )
         emit list( toPlainText() );
 }
 

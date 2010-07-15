@@ -18,11 +18,11 @@
 #ifndef AMAROK_LABELS_ENGINE
 #define AMAROK_LABELS_ENGINE
 
-#include "LabelsInfo.h"
-
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
+
+#include <QMap>
 
 class KJob;
 
@@ -95,11 +95,10 @@ private:
     bool                    m_reload;
 
     //!  List containing all the info
-    QList < LabelsInfo * >  m_labels;           // Item with all the information
+    QMap < QString, QVariant >   m_labels;           // labels data
 
 };
 
-Q_DECLARE_METATYPE ( QList < LabelsInfo * > )
 K_EXPORT_AMAROK_DATAENGINE( labels, LabelsEngine )
 #endif
 

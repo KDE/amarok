@@ -235,36 +235,66 @@ LabelsApplet::updateLabels()
     qDeleteAll( m_labelItems );
     m_labelItems.clear();
     
-    QMap<QString,int> labels_map;
+    QMap < QString, int > tempLabelsMap;
+    QMap < QString, int > finalLabelsMap;
 
+    // add the user assigned labels directly to the final map
     for( int i = 0; i < m_currentLabels.count(); i++ )
     {
         if( !m_blacklist.contains( m_currentLabels.at( i ) ) )
         {
-            labels_map.insert( m_currentLabels.at( i ), m_personalCount );
+            finalLabelsMap.insert( m_currentLabels.at( i ), m_personalCount );
         }
     }
-    for( int i = 0; i < m_labelInfos.count() && labels_map.count() < m_numLabels; i++ )
+    // add the downloaded labels to the temp map first (if they aren't alreday in the final map / update value in final map if necessary)
+    QMapIterator < QString, QVariant > it_infos ( m_labelInfos );
+    while( it_infos.hasNext() )
     {
-        if( !labels_map.contains( m_labelInfos[i]->name ) && !m_blacklist.contains( m_labelInfos[i]->name ) && m_labelInfos[i]->count >= m_minCount )
+        it_infos.next();
+        if( !finalLabelsMap.contains( it_infos.key() ) && !m_blacklist.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount )
         {
-            labels_map.insert( m_labelInfos[i]->name, m_labelInfos[i]->count );
+            tempLabelsMap.insert( it_infos.key(), it_infos.value().toInt() );
         }
-        else if( labels_map.contains( m_labelInfos[i]->name ) )
+        else if( finalLabelsMap.contains( it_infos.key() ) )
         {
-            labels_map[ m_labelInfos[i]->name ] = m_labelInfos[i]->count;
+            finalLabelsMap[ it_infos.key() ] = it_infos.value().toInt();
         }
     }
-    
-    QMapIterator < QString, int > it ( labels_map );
-    while( it.hasNext() )
+    // then sort the values of the temp map
+    QList < int > tempLabelsValues = tempLabelsMap.values();
+    qSort( tempLabelsValues.begin(), tempLabelsValues.end(), qGreater < int > () );
+    // and copy the highest rated labels to the final map until max. number is reached
+    const int additionalNum = m_numLabels - finalLabelsMap.count();
+    if( additionalNum > 0 && tempLabelsValues.count() > 0 )
     {
-        it.next();
-        int i_size = (int)( it.value() / 10 - 5 );
+        int minCount;
+        if( additionalNum <= tempLabelsValues.count() )
+            minCount = tempLabelsValues.at( additionalNum - 1 );
+        else
+            minCount = tempLabelsValues.last();
+        QMapIterator < QString, int > it_temp ( tempLabelsMap );
+        while( it_temp.hasNext() )
+        {
+            it_temp.next();
+            if( it_temp.value() >= minCount )
+            {
+                finalLabelsMap.insert( it_temp.key(), it_temp.value() );
+                
+                if( finalLabelsMap.count() >= m_numLabels )
+                    break;
+            }
+        }
+    }
+    // and finally create the LabelGraphicsItems
+    QMapIterator < QString, int > it_final ( finalLabelsMap );
+    while( it_final.hasNext() )
+    {
+        it_final.next();
+        int i_size = (int)( it_final.value() / 10 - 5 );
         if( i_size < -1 ) i_size = -1;
 
-        LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it.key(), i_size, this );
-        if( m_currentLabels.contains( it.key() ) ) labelGraphics->setSelected( true );
+        LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), i_size, this );
+        if( m_currentLabels.contains( it_final.key() ) ) labelGraphics->setSelected( true );
         connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
         connect( labelGraphics, SIGNAL( blacklisted( const QString & ) ), this, SLOT( blacklistLabel( const QString & ) ) );
         m_labelItems.append( labelGraphics );
@@ -396,20 +426,19 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     {
         m_titleText = i18n( "Labels for %1 - %2", data[ "artist" ].toString(), data[ "title" ].toString() );
 
-        m_labelInfos = data[ "data" ].value< QList< LabelsInfo * > >();
+        m_labelInfos = data[ "data" ].toMap();
 
         if( m_currentLabels.isEmpty() && m_autoAdd )
         {
-            for( int i = 0; i < m_labelInfos.count(); i++ )
+            QMapIterator < QString, QVariant > it ( m_labelInfos );
+            while( it.hasNext() )
             {
-                if( !m_blacklist.contains( m_labelInfos[i]->name ) )
-                {
-                    if( m_labelInfos[i]->count >= m_minAutoAddCount )
-                        toggleLabel( m_labelInfos[i]->name );
-                }
+                it.next();
+                if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount )
+                    toggleLabel( it.key() );
             }
         }
-
+    
         updateLabels();
 
         setBusy( false );

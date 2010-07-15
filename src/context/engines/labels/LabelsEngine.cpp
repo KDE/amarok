@@ -199,23 +199,11 @@ LabelsEngine::update()
             
         removeAllData( "labels" );
 
-        qDeleteAll( m_labels );
         m_labels.clear();
         
-        // Show the information
-        if( !currentArtist.isEmpty() && !currentTitle.isEmpty() ) // NOTE redundent if clause
-        {
-            setData( "labels", "message", "Fetching");
-            setData( "labels", "artist", currentArtist );
-            setData( "labels", "title", currentTitle );
-        }
-        else
-        {
-            debug() << "No Labels found; artist or title is empty";
-            setData( "labels", "message", i18n( "No information found..." ) );
-            resultFinalize();
-            return;
-        }
+        setData( "labels", "message", "Fetching");
+        setData( "labels", "artist", currentArtist );
+        setData( "labels", "title", currentTitle );
 
         // Query lastfm
         KUrl lastFmUrl;
@@ -268,12 +256,8 @@ void LabelsEngine::resultLastFm( KJob *job )
         debug() << name << " (" << count << ")";
         if( name != m_artist.toLower() && name != m_title.toLower() && name.length() <= 40 )
         {
-            // repare the new labels info
-            LabelsInfo *item = new LabelsInfo;
-            item->name = name;
-            item->count = count;
             // Insert the item in the list
-            m_labels += item;
+            m_labels.insert( name, count );
             m_numLastFm++;
         }
     }
@@ -312,7 +296,7 @@ void LabelsEngine::resultFinalize()
             return;
 
         QVariant var;
-        var.setValue< QList< LabelsInfo *> > ( m_labels );
+        var.setValue< QMap< QString, QVariant > > ( m_labels );
         setData( "labels", "data", var );
     }
 }
