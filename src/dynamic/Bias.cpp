@@ -362,9 +362,9 @@ Dynamic::GlobalBias::setFilter( const Filter &filter)
                     (Collections::QueryMaker::NumberComparison)filter.condition );
             break;
         case Between:
-            m_qm->addNumberFilter( filter.field, filter.numValue,
+            m_qm->addNumberFilter( filter.field, qMin(filter.numValue, filter.numValue2),
                     Collections::QueryMaker::GreaterThan );
-            m_qm->addNumberFilter( filter.field, filter.numValue,
+            m_qm->addNumberFilter( filter.field, qMax(filter.numValue, filter.numValue2),
                     Collections::QueryMaker::LessThan );
             break;
         case OlderThan:
