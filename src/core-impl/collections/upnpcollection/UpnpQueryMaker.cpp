@@ -126,9 +126,10 @@ DEBUG_BLOCK
         else {
             job = KIO::listDir( url, KIO::HideProgressInfo );
             m_inProgressQueries[url] = job;
-            m_jobCount++;
         }
 
+        m_jobCount++;
+        Q_ASSERT( job );
         connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
                 this, SLOT( slotEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
         connect( job, SIGNAL( result(KJob *) ), this, SLOT( slotDone(KJob *) ) );
@@ -510,8 +511,9 @@ DEBUG_BLOCK
     KIO::ListJob *ljob = static_cast<KIO::ListJob*>( job );
     KIO::ListJob *actual = m_inProgressQueries[QUrl::fromPercentEncoding( ljob->url().prettyUrl().toAscii() )];
     debug() << "!!!!!!!! DONE" << ljob << ljob->url();
+    if( actual )
+        actual->deleteLater();
     m_inProgressQueries.remove( QUrl::fromPercentEncoding( ljob->url().prettyUrl().toAscii() ) );
-
 
     if( m_jobCount <= 0 ) {
         if( m_noResults ) {
