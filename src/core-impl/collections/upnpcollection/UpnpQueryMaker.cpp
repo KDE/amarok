@@ -153,7 +153,7 @@ DEBUG_BLOCK
 // TODO allow all, based on search capabilities
 // which should be passed on by the factory
     m_queryType = type;
-    QString typeString;
+/*    QString typeString;
     switch( type ) {
         case Artist:
             debug() << this << "Query type Artist";
@@ -180,7 +180,9 @@ DEBUG_BLOCK
             break;
     }
     if( !typeString.isNull() )
-        m_query.setType( typeString );
+        m_query.setType( typeString );*/
+
+    m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
     return this;
 }
 
@@ -312,13 +314,13 @@ DEBUG_BLOCK
             break;
         case Meta::valArtist:
         {
-            if( m_queryType != Artist )
+            //if( m_queryType != Artist )
                 property = "upnp:artist";
             break;
         }
         case Meta::valAlbum:
         {
-            if( m_queryType != Album )
+            //if( m_queryType != Album )
                 property = "upnp:album";
             break;
         }
@@ -451,14 +453,12 @@ void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
 {
     Meta::ArtistList ret;
     foreach( KIO::UDSEntry entry, list ) {
-        foreach( uint i, entry.listFields() )
-            debug() << entry.stringValue( i );
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.person.musicArtist" ) {
             debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
             ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
         }
         else {
-            debug() << this << "ARTIST" << entry.stringValue( KIO::UPNP_ARTIST );
+            debug() << this << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) << "ARTIST" << entry.stringValue( KIO::UPNP_ARTIST );
             ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UPNP_ARTIST ) );
         }
     }
@@ -471,8 +471,6 @@ DEBUG_BLOCK
     debug() << "HANDLING ALBUMS" << list.length();
     Meta::AlbumList ret;
     foreach( KIO::UDSEntry entry, list ) {
-        foreach( uint i, entry.listFields() )
-            debug() << entry.stringValue( i );
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.album.musicAlbum" ) {
             debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
             ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
@@ -491,9 +489,7 @@ DEBUG_BLOCK
     debug() << "HANDLING TRACKS" << list.length();
     Meta::TrackList ret;
     foreach( KIO::UDSEntry entry, list ) {
-        foreach( uint i, entry.listFields() )
-            debug() << entry.stringValue( i );
-        debug() << this << "TRACK" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
+        debug() << this << "TRACK as data ptr?" << m_asDataPtrs << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
         ret << m_collection->cache()->getTrack( entry );
     }
     emitProperResult( Meta::Track, ret );
@@ -506,9 +502,7 @@ DEBUG_BLOCK
     m_jobCount--;
     KIO::ListJob *ljob = static_cast<KIO::ListJob*>( job );
     KIO::ListJob *actual = m_inProgressQueries[QUrl::fromPercentEncoding( ljob->url().prettyUrl().toAscii() )];
-    debug() << this << "Terminating job for URL " << ljob->url() << actual;
-    if( actual )
-        actual->deleteLater();
+    debug() << "!!!!!!!! DONE" << ljob << ljob->url();
     m_inProgressQueries.remove( QUrl::fromPercentEncoding( ljob->url().prettyUrl().toAscii() ) );
 
 
