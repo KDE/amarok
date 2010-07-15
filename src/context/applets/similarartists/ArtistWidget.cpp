@@ -367,6 +367,7 @@ void
 ArtistsListWidget::addItem( ArtistWidget *widget )
 {
     m_layout->addItem( widget );
+    m_widgets << widget;
     addSeparator();
 }
 
@@ -375,6 +376,7 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
 {
     ArtistWidget *widget = new ArtistWidget( artist );
     m_layout->addItem( widget );
+    m_widgets << widget;
     addSeparator();
 }
 
@@ -401,6 +403,8 @@ ArtistsListWidget::addSeparator()
 void
 ArtistsListWidget::clear()
 {
+    qDeleteAll( m_widgets );
+    m_widgets.clear();
     int count = m_layout->count();
     if( count > 0 )
     {
@@ -442,5 +446,25 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &t
         m_topTrack = tracks.first();
         m_navigateButton->show();
         m_topTrackButton->show();
+    }
+}
+
+void
+ArtistsListWidget::setDescription( const QString &artist, const QString &description )
+{
+    foreach( ArtistWidget *widget, m_widgets )
+    {
+        if( widget->artist()->name() == artist )
+            widget->setDescription( description );
+    }
+}
+
+void
+ArtistsListWidget::setTopTrack( const QString &artist, const QString &track )
+{
+    foreach( ArtistWidget *widget, m_widgets )
+    {
+        if( widget->artist()->name() == artist )
+            widget->setTopTrack( track );
     }
 }

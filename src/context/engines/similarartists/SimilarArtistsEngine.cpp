@@ -29,6 +29,7 @@
 
 #include <KConfigGroup>
 
+#include <QTimer>
 #include <QXmlStreamReader>
 
 K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
@@ -38,6 +39,7 @@ using namespace Context;
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , Engine::EngineObserver( The::engineController() )
+    , m_isDelayingSetData( false )
 {
     m_descriptionWideLang = "aut";
 }
@@ -56,29 +58,27 @@ SimilarArtistsEngine::similarArtists( const QString &artistName )
 bool
 SimilarArtistsEngine::sourceRequestEvent( const QString &name )
 {
-    QStringList tokens = name.split( ':' );
-
-    // user has changed the maximum artists returned.
-    if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
+    if( name == "similarArtists" )
     {
-        if (( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
+        m_currentTrack = The::engineController()->currentTrack();
+    }
+    else
+    {
+        QStringList tokens = name.split( ':' );
+        if( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
         {
-            m_maxArtists = tokens.at( 2 ).toInt();
+            // user has changed the maximum artists returned.
+            if( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
+                m_maxArtists = tokens.at( 2 ).toInt();
+        }
+        else if( tokens.contains( "lang" ) && tokens.size() > 1 )
+        {
+            // user has selected is favorite language.
+            if( ( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
+                m_descriptionWideLang = tokens.at( 2 );
         }
     }
-    // user has selected is favorite language.
-    if ( tokens.contains( "lang" ) && tokens.size() > 1 )
-    {
-        if (( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
-        {
-            m_descriptionWideLang = tokens.at( 2 );
-        }
-    }
-
-    // otherwise, it comes from the engine, a new track is playing.
-    removeAllData( name );
     update();
-
     return true;
 }
 
@@ -121,7 +121,6 @@ SimilarArtistsEngine::update()
         return;
 
     QString artistName;
-    DataEngine::Data data;
     if( m_currentTrack->artist() )
     {
         if (( m_currentTrack->playableUrl().protocol() == "lastfm" ) ||
@@ -135,12 +134,7 @@ SimilarArtistsEngine::update()
     if( artistName.isEmpty() )   // Unknown artist
     {
         m_artist = "Unknown artist";
-        data["artist"] = m_artist;
-
-        // we send an empty list
-        m_similarArtists.clear();
-        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
-        data["SimilarArtists"] = variant;
+        removeAllData( "similarArtists" );
     }
     else   //valid artist
     {
@@ -157,33 +151,25 @@ SimilarArtistsEngine::update()
             // if the artist has changed
             m_maxArtists = nbArt;
             m_artist = artistName;
-            data["artist"] = m_artist;
             similarArtistsRequest( artistName );
         }
     }
-    setData( "similarArtists", data );
 }
 
 void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
-    // we clear the context of the dataEngine
-    m_similarArtists.clear();   // we clear the similarArtists precedently downloaded
-    m_descriptionArtists = 0;   // we mark we haven't downloaded the description of the artists
-    m_topTrackArtists = 0;      // we mark we haven't downloaded the most know tracks of the artists
-
     // we generate the url for the demand on the lastFM Api
-    QUrl url;
+    KUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getSimilar" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "artist", artistName.toLocal8Bit() );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist", artistName );
     url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
 
-    m_similarArtistsUrl = url;
-    The::networkAccessManager()->getData( m_similarArtistsUrl, this,
+    The::networkAccessManager()->getData( url, this,
          SLOT(parseSimilarArtists(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
@@ -191,16 +177,15 @@ void
 SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
 {
     // we genere the url for the demand on the lastFM Api
-    QUrl url;
+    KUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getinfo" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "artist", artistName.toLocal8Bit() );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist", artistName );
     url.addQueryItem( "lang", descriptionLocale() );
 
-    m_artistDescriptionUrls << url;
     The::networkAccessManager()->getData( url, this,
          SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -209,32 +194,27 @@ void
 SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
 {
     // we genere the url for the demand on the lastFM Api
-    QUrl url;
+    KUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.gettoptracks" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "artist",  artistName.toLocal8Bit() );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist",  artistName );
 
-    m_artistTopTrackUrls << url;
     The::networkAccessManager()->getData( url, this,
          SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
+                                           NetworkAccessManagerProxy::Error e )
 {
-    if( !url.isValid() || m_similarArtistsUrl != url )
-        return;
-
-    m_similarArtistsUrl.clear();
+    Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
     {
-        // probably we haven't access to internet sent a empty list
-        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
-        m_similarArtistsUrl.clear();
-        setData( "similarArtists", "SimilarArtists", variant );
+        removeAllData( "similarArtists" );
+        debug() << "Error: failed to parse similar artists xml!" << e.description;
         return;
     }
 
@@ -248,10 +228,10 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, Net
     }
     else
     {
-        m_similarArtistsUrl.clear();
         return;
     }
 
+    SimilarArtist::List saList;
     // we search the artist name on the xml
     while ( !xmlReader.atEnd() && !xmlReader.hasError() )
     {
@@ -338,27 +318,28 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data, Net
             if( !name.isEmpty() )
             {
                 SimilarArtistPtr artist( new SimilarArtist( name, match, url, imageUrl, m_artist ) );
-                m_similarArtists.append( artist );
+                saList.append( artist );
                 artistDescriptionRequest( name );
                 artistTopTrackRequest( name );
             }
         }
         xmlReader.readNext();
     }
-    debug() << QString( "Found %1 similar artists of '%2'" ).arg( m_similarArtists.size() ).arg( m_artist );
+
+    debug() << QString( "Found %1 similar artists of '%2'" ).arg( saList.size() ).arg( m_artist );
+    Plasma::DataEngine::Data eData;
+    eData[ "artist"  ] = m_artist;
+    eData[ "similar" ] = qVariantFromValue( saList );
+    setData( "similarArtists", eData );
 }
 
 void
-SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data,
+                                              NetworkAccessManagerProxy::Error e )
 {
-    if( !url.isValid() || !m_artistDescriptionUrls.contains( url ) )
-        return;
-
-    m_artistDescriptionUrls.remove( url );
+    Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
         return;
-
-    m_descriptionArtists++;
 
     // The reader on the xml document which contains the information of the lastFM API.
     QXmlStreamReader xmlReader;
@@ -407,40 +388,20 @@ SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data, 
         return;
     }
 
-    // we search the correct artist to add his/her/their/its description
-    SimilarArtist::List::iterator it;
-    SimilarArtist::List::iterator endit = m_similarArtists.end();
-    for( it = m_similarArtists.begin(); it != endit; ++it )
-    {
-        SimilarArtistPtr artist = *it;
-        if( artist->name() == name )
-        {
-            artist->setDescription( description );
-            break;
-        }
-    }
-
-    // we have fetched all of the data (artists + descriptions + toptracks)
-    if ( m_descriptionArtists + 1 >= m_similarArtists.size()
-            && m_topTrackArtists + 1 >= m_similarArtists.size() )
-    {
-        // we send the data to the applet
-        QVariant variant( QMetaType::type( "SimilarArtist::List" ) , &m_similarArtists );
-        setData( "similarArtists", "SimilarArtists", variant );
-    }
+    Plasma::DataEngine::Data eData;
+    eData[ "artist" ] = name;
+    eData[ "text"   ] = description;
+    m_descriptions << eData;
+    if( !m_isDelayingSetData )
+        delayedSetData();
 }
 
 void
 SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( !m_artistTopTrackUrls.contains( url ) )
-        return;
-
-    m_artistTopTrackUrls.remove( url );
+    Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
         return;
-
-    m_topTrackArtists++;
 
     // The reader on the xml document which contains the information of the lastFM API.
     QXmlStreamReader xmlReader;
@@ -489,26 +450,31 @@ SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, Net
         return;
     }
 
-    // we search the correct artist to add his/her/their/its description
-    SimilarArtist::List::iterator it;
-    SimilarArtist::List::iterator endit = m_similarArtists.end();
-    for( it = m_similarArtists.begin(); it != endit; ++it )
-    {
-        SimilarArtistPtr artist = *it;
-        if( artist->name() == name )
-        {
-            artist->setTopTrack( topTrack );
-            break;
-        }
-    }
+    Plasma::DataEngine::Data eData;
+    eData[ "artist" ] = name;
+    eData[ "track"  ] = topTrack;
+    m_topTracks << eData;
+    if( !m_isDelayingSetData )
+        delayedSetData();
+}
 
-    // we have fetched all of the data (artists + descriptions + toptracks)
-    if ( m_descriptionArtists + 1 >= m_similarArtists.size()
-            && m_topTrackArtists + 1 >= m_similarArtists.size() )
+void
+SimilarArtistsEngine::delayedSetData()
+{
+    m_isDelayingSetData = true;
+    if( m_topTracks.isEmpty() && m_descriptions.isEmpty() )
     {
-        // we send the data to the applet
-        QVariant variant( QMetaType::type( "SimilarArtist::List" ), &m_similarArtists );
-        setData( "similarArtists", "SimilarArtists", variant );
+        m_isDelayingSetData = false;
+    }
+    else
+    {
+        if( !m_descriptions.isEmpty() )
+            setData( "description", m_descriptions.takeFirst() );
+
+        if( !m_topTracks.isEmpty() )
+            setData( "toptrack", m_topTracks.takeFirst() );
+
+        QTimer::singleShot( 50, this, SLOT(delayedSetData()) );
     }
 }
 

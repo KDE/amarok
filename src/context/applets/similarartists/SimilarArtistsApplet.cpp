@@ -56,8 +56,6 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_stoppedState = false;
 }
 
 SimilarArtistsApplet::~SimilarArtistsApplet()
@@ -106,9 +104,9 @@ SimilarArtistsApplet::init()
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     m_maxArtists = config.readEntry( "maxArtists", "5" ).toInt();
 
-    connectSource( "similarArtists" );
-    connect( dataEngine( "amarok-similarArtists" ),
-             SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    Plasma::DataEngine *engine = dataEngine( "amarok-similarArtists" );
+    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    engine->query( "similarArtists" );
 
     updateConstraints();
     update();
@@ -117,11 +115,11 @@ SimilarArtistsApplet::init()
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
-    if ( source == "similarArtists" )
-    {
-        dataEngine( "amarok-similarArtists" )->connectSource( "similarArtists", this );
-        dataUpdated( source, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
-    }
+    QStringList allowed;
+    allowed << "similarArtists" << "description" << "toptrack";
+
+    if( allowed.contains( source ) )
+        dataEngine( "amarok-similarArtists" )->connectSource( source, this );
 }
 
 void
@@ -130,8 +128,8 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
 
     prepareGeometryChange();
-
-    m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
+    QString header = m_headerLabel->isEmpty() ? i18n( "Similar Artists" ) : m_headerLabel->text();
+    m_headerLabel->setScrollingText( header );
 
     qreal padding = standardPadding();
     qreal scrollWidth  = size().width() - padding;
@@ -148,34 +146,35 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
 
     m_scroll->clear();
 
-    m_stoppedState = true;
-    m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No track playing" ) );
+    m_headerLabel->setScrollingText( i18n( "Similar Artist: No track playing" ) );
     setCollapseOn();
 }
 
 void
-SimilarArtistsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
+SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( name )
-    m_artist = data[ "artist" ].toString();
-
-    // we see if the artist name is valid
-    if( !m_artist.isEmpty() )
+    QString artist = data[ "artist" ].toString();
+    if( source == "similarArtists" )
     {
-        m_similars = data[ "SimilarArtists" ].value<SimilarArtist::List>();
-
-        if( !m_stoppedState )
+        if( !artist.isEmpty() )
         {
+            m_artist = artist;
+            m_similars = data[ "similar" ].value<SimilarArtist::List>();
             artistsUpdate();
         }
+        else
+        {
+            m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
+        }
     }
-    else   // the artist name is invalid
+    else if( source == "description" )
     {
-        m_headerLabel->setText( i18n( "Similar artists" ) );
+        m_scroll->setDescription( artist, data["text"].toString() );
     }
-
-    updateConstraints();
-    update();
+    else if( source == "toptrack" )
+    {
+        m_scroll->setTopTrack( artist, data["track"].toString() );
+    }
 }
 
 void
@@ -222,8 +221,6 @@ SimilarArtistsApplet::switchToLang(const QString &lang)
     else if (lang == i18n("Spanish") )
         m_descriptionPreferredLang = "es";
 
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
-
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
@@ -264,7 +261,6 @@ SimilarArtistsApplet::saveSettings()
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     config.writeEntry( "maxArtists", m_maxArtists );
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:%1" ).arg( m_maxArtists ) );
-    artistsUpdate();
 }
 
 void
@@ -273,19 +269,15 @@ SimilarArtistsApplet::artistsUpdate()
     m_scroll->clear();
     if( !m_similars.isEmpty() )
     {
-        m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
+        m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
         setCollapseOff();
         m_scroll->addArtists( m_similars );
     }
     else // No similar artist found
     {
-        m_headerLabel->setText( i18n( "Similar artists" ) + QString( " : " )
-                                + i18n( "no similar artists found" ) );
+        m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
         setCollapseOn();
     }
 }
 
 #include "SimilarArtistsApplet.moc"
-
-
-

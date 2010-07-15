@@ -95,7 +95,7 @@ public slots:
     /**
      * Update the current artist and his similar artists
      */
-    void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void dataUpdated( const QString &source, const Plasma::DataEngine::Data &data );
 
 private:
 
@@ -119,11 +119,6 @@ private:
      * This scrollArea contents the artists widgets
      */
     ArtistsListWidget *m_scroll;
-
-    /**
-     * Indicates if a track is playing.
-     */
-    bool m_stoppedState;
 
     /**
      * The list of similar artists to display

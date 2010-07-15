@@ -215,6 +215,9 @@ public:
     QString name() const;
     void setName( const QString &name );
 
+    void setDescription( const QString &artist, const QString &description );
+    void setTopTrack( const QString &artist, const QString &track );
+
     void clear();
 
 private:
@@ -222,6 +225,7 @@ private:
     int m_separatorCount;
     QString m_name;
     QGraphicsLinearLayout *m_layout;
+    QList<ArtistWidget*> m_widgets;
     Q_DISABLE_COPY( ArtistsListWidget )
 };
 
