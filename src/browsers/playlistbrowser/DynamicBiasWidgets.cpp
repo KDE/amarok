@@ -536,9 +536,9 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection()
         return;
 
     m_compareSelection = new KComboBox();
-    m_compareSelection->addItem( i18n( "less than" ),    (int)Dynamic::GlobalBias::LessThan );
-    m_compareSelection->addItem( i18n( "equal to" ),     (int)Dynamic::GlobalBias::Equals );
-    m_compareSelection->addItem( i18n( "greater than" ), (int)Dynamic::GlobalBias::GreaterThan );
+    m_compareSelection->addItem( i18n( "Smaller Than" ),    (int)Dynamic::GlobalBias::LessThan );
+    m_compareSelection->addItem( i18n( "Equal To" ),     (int)Dynamic::GlobalBias::Equals );
+    m_compareSelection->addItem( i18n( "Greater Than" ), (int)Dynamic::GlobalBias::GreaterThan );
 
     // those fields can get a between comparation
     if( field == Meta::valYear ||
@@ -550,7 +550,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection()
         field == Meta::valDiscNr ||
         field == Meta::valFirstPlayed ||
         field == Meta::valLastPlayed )
-        m_compareSelection->addItem( i18n( "between" ),      (int)Dynamic::GlobalBias::Between );
+        m_compareSelection->addItem( i18n( "Between" ),      (int)Dynamic::GlobalBias::Between );
 
     // and those fields can get an older than comparation
     if( field == Meta::valFirstPlayed ||
