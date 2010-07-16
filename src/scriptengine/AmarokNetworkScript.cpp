@@ -98,22 +98,19 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
         return object;
     }
     
-    KUrl tmpUrl;
-    QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
-    tmpUrl.setEncodedUrl( url.toEncoded() );
-    
+    KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
 
     // start download, and connect to it
     //FIXME: url is not working directly.
     if( stringResult )
     {
         QString encoding = "UTF-8";
-        if(context->argumentCount() == 3 ) // encoding specified
+        if( context->argumentCount() == 3 ) // encoding specified
             encoding = context->argument( 2 ).toString();
-        AmarokDownloadHelper::instance()->newStringDownload( tmpUrl, engine, context->argument( 1 ), encoding );
+        AmarokDownloadHelper::instance()->newStringDownload( url, engine, context->argument( 1 ), encoding );
     }
     else
-        AmarokDownloadHelper::instance()->newDataDownload( tmpUrl, engine, context->argument( 1 ) );
+        AmarokDownloadHelper::instance()->newDataDownload( url, engine, context->argument( 1 ) );
     // connect to a local slot to extract the qstring
     //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
     return object;
@@ -131,7 +128,7 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 void
 AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
-    m_values[ url ] = obj ;
+    m_values[ url ] = obj;
     m_engines[ url ] = engine;
     m_encodings[ url ] = encoding;
     The::networkAccessManager()->getData( url, this,
@@ -141,7 +138,7 @@ AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine,
 void
 AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    m_values[ url ] = obj ;
+    m_values[ url ] = obj;
     m_engines[ url ] = engine;
     The::networkAccessManager()->getData( url, this,
          SLOT(resultData(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
@@ -158,26 +155,24 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
 
     QScriptValue obj = m_values[ url ];
     QScriptEngine* engine = m_engines[ url ];
+    cleanUp( url );
     
     // now send the data to the associated script object
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
-        cleanUp( url );
         return;
     }
 
     if( !engine )
     {
         debug() << "stored script engine is not valid!";
-        cleanUp( url );
         return;
     }
 
     QScriptValueList args;
     args << engine->toScriptValue( data );
     obj.call( obj, args );
-    cleanUp( url );
 }
 
 
@@ -193,6 +188,7 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
     QScriptValue obj = m_values[ url ];
     QScriptEngine* engine = m_engines[ url ];
     QString encoding = m_encodings[ url ];
+    cleanUp( url );
 
     QString str;
     if( encoding.isEmpty() )
@@ -211,21 +207,18 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
-        cleanUp( url );
         return;
     }
    
     if( !engine )
     {
         debug() << "stored script engine is not valid!";
-        cleanUp( url );
         return;
     }
 
     QScriptValueList args;
     args << QScriptValue( engine, str );
     obj.call( obj, args );
-    cleanUp( url );
 }
 
 void
