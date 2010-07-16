@@ -517,7 +517,7 @@ MetaPlaylistModel::loadPlaylists()
             The::playlistManager()->playlistsOfCategory( m_playlistCategory );
     QListIterator<Playlists::PlaylistPtr> i( playlists );
 
-    debug() << playlists.count() << " playlists for category %2 " << m_playlistCategory;
+    debug() << playlists.count() << " playlists for category " << m_playlistCategory;
 
     while( i.hasNext() )
     {
