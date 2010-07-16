@@ -509,7 +509,7 @@ bool CoverFoundDialog::fetchBigPix()
     bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
     if( !success )
     {
-        if( reply && reply->isRunning() )
+        if( reply )
             reply->abort();
     }
     m_dialog->deleteLater();

@@ -189,7 +189,9 @@ QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
     QNetworkRequest request = req;
+#if QT_VERSION >= 0x040600
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
+#endif
     request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
 
     KIO::CacheControl cc = KProtocolManager::cacheControl();
