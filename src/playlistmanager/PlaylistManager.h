@@ -152,6 +152,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void downloadComplete( KJob *job );
 
     private:
+        void loadPlaylists( Playlists::PlaylistProvider *provider, int category );
+
         static PlaylistManager *s_instance;
         PlaylistManager();
         ~PlaylistManager();

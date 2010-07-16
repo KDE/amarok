@@ -121,6 +121,12 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
     emit( providerAdded( provider, category ) );
     emit( updated() );
 
+    loadPlaylists( provider, category );
+}
+
+void
+PlaylistManager::loadPlaylists( Playlists::PlaylistProvider *provider, int category )
+{
     foreach( Playlists::PlaylistPtr playlist, provider->playlists() )
     {
         if( shouldBeSynced( playlist ) )
@@ -179,6 +185,11 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 void
 PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 {
+    m_playlistMap.clear();
+    foreach( Playlists::PlaylistProvider *provider, m_providerMap.values() )
+    {
+        loadPlaylists( provider, provider->category() );
+    }
     emit( updated() );
 }
 
