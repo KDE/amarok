@@ -250,9 +250,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    emit updated();
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistPtr );
+    emit playlistAdded( playlist );
 
-    return Playlists::PlaylistPtr::dynamicCast( playlistPtr );
+    return playlist;
 }
 
 bool
@@ -287,14 +288,14 @@ PlaylistFileProvider::import( const KUrl &path )
         return false;
     }
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( path );
-    if( !playlist )
+    Playlists::PlaylistFilePtr playlistFile = Playlists::loadPlaylistFile( path );
+    if( !playlistFile )
         return false;
-    playlist->setProvider( this );
-    m_playlists << playlist;
+    playlistFile->setProvider( this );
+    m_playlists << playlistFile;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    emit updated();
+    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     return true;
 }
 
@@ -338,13 +339,12 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
 
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
-
         m_playlists.removeAll( playlistFile );
         loadedPlaylistsConfig().deleteEntry( playlistFile->uidUrl().url() );
         QFile::remove( playlistFile->uidUrl().path() );
+        emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     }
     loadedPlaylistsConfig().sync();
-    emit updated();
 }
 
 void

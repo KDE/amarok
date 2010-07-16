@@ -69,7 +69,10 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plug
         virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
     signals:
+        //These signals have to be defined in subclasses!
         void updated();
+        void playlistAdded( PlaylistPtr playlist );
+        void playlistRemoved( PlaylistPtr playlist );
 
 };
 

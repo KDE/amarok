@@ -113,7 +113,11 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
             newCategory = true;
 
     m_providerMap.insert( category, provider );
-    connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
+    connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
+    connect( provider, SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
+             SLOT(slotPlaylistAdded( Playlists::PlaylistPtr )));
+    connect( provider, SIGNAL(playlistRemoved( Playlists::PlaylistPtr )),
+             SLOT(slotPlaylistRemoved( Playlists::PlaylistPtr )));
 
     if( newCategory )
         emit( categoryAdded( category ) );
@@ -128,22 +132,26 @@ void
 PlaylistManager::loadPlaylists( Playlists::PlaylistProvider *provider, int category )
 {
     foreach( Playlists::PlaylistPtr playlist, provider->playlists() )
+        addPlaylist( playlist, category );
+}
+
+void
+PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
+{
+    if( shouldBeSynced( playlist ) )
     {
-        if( shouldBeSynced( playlist ) )
+        SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
+        m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
+        if( !m_playlistMap.values( category ).contains(
+                Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
         {
-            SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
-            m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
-            if( !m_playlistMap.values( category ).contains(
-                    Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
-            {
-                m_playlistMap.insert( category,
-                                      Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
-            }
+            m_playlistMap.insert( category,
+                                  Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
         }
-        else
-        {
-            m_playlistMap.insert( category, playlist );
-        }
+    }
+    else
+    {
+        m_playlistMap.insert( category, playlist );
     }
 }
 
@@ -160,37 +168,62 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
         return;
     }
 
-    foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
-    {
-        if( typeid( * playlist.data() ) == typeid( SyncedPlaylist ) )
-        {
-            SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
-            syncedPlaylist->removePlaylistsFrom( provider );
-            if( syncedPlaylist->isEmpty() )
-                m_playlistMap.remove( provider->category(), playlist );
-        }
-        else if( playlist->provider() == provider )
-        {
-            m_playlistMap.remove( provider->category(), playlist );
-        }
-    }
+    removePlaylists( provider );
 
     m_providerMap.remove( provider->category(), provider );
 
     emit( providerRemoved( provider, provider->category() ) );
-
-    slotUpdated();
+    emit( updated() );
 }
 
 void
-PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
+PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
 {
-    m_playlistMap.clear();
-    foreach( Playlists::PlaylistProvider *provider, m_providerMap.values() )
+    foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
+        removePlaylist( playlist, provider->category() );
+}
+
+void
+PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
+{
+    if( typeid( * playlist.data() ) == typeid( SyncedPlaylist ) )
     {
-        loadPlaylists( provider, provider->category() );
+        SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+        syncedPlaylist->removePlaylistsFrom( playlist->provider() );
+        if( syncedPlaylist->isEmpty() )
+            m_playlistMap.remove( category, playlist );
     }
+    else
+    {
+        m_playlistMap.remove( category, playlist );
+    }
+}
+
+void
+PlaylistManager::slotUpdated()
+{
+    Playlists::PlaylistProvider *provider =
+            dynamic_cast<Playlists::PlaylistProvider *>( QObject::sender() );
+    if( !provider )
+        return;
+
+    removePlaylists( provider );
+    loadPlaylists( provider, provider->category() );
     emit( updated() );
+}
+
+void
+PlaylistManager::slotPlaylistAdded( Playlists::PlaylistPtr playlist )
+{
+    addPlaylist( playlist, playlist->provider()->category() );
+    emit updated();
+}
+
+void
+PlaylistManager::slotPlaylistRemoved( Playlists::PlaylistPtr playlist )
+{
+    removePlaylist( playlist, playlist->provider()->category() );
+    emit updated();
 }
 
 Playlists::PlaylistList

@@ -148,11 +148,17 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void renamePlaylist( Playlists::PlaylistPtr playlist );
 
     private slots:
-        void slotUpdated( /*PlaylistProvider * provider*/ );
+        void slotUpdated();
+        void slotPlaylistAdded( Playlists::PlaylistPtr playlist );
+        void slotPlaylistRemoved( Playlists::PlaylistPtr playlist );
         void downloadComplete( KJob *job );
 
     private:
         void loadPlaylists( Playlists::PlaylistProvider *provider, int category );
+        void removePlaylists( Playlists::PlaylistProvider *provider );
+
+        void addPlaylist( Playlists::PlaylistPtr playlist, int category );
+        void removePlaylist( Playlists::PlaylistPtr playlist, int category );
 
         static PlaylistManager *s_instance;
         PlaylistManager();
