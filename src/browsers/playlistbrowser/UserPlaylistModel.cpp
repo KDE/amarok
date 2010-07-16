@@ -124,8 +124,7 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
       if( playlistToRemove.isEmpty() )
         return false;
 
-      The::playlistManager()->deletePlaylists( playlistToRemove );
-      return true;
+      return The::playlistManager()->deletePlaylists( playlistToRemove );
     }
     int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
 

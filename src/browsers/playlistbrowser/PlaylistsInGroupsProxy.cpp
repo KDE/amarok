@@ -100,12 +100,13 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         }
 
         //is a playlist not in a folder
-        //FIXME: before confirming deletion of a playlist it already dissapears from the
-        //view. The beginRemoveRows should not be called here but in the source model.
         QModelIndex childIdx = mapToSource( index( row, 0, m_rootNode ) );
-        beginRemoveRows( QModelIndex(), row, row + count - 1 );
         result = m_model->removeRows( childIdx.row(), count, m_rootNode );
-        endRemoveRows();
+        if( result )
+        {
+            beginRemoveRows( parent, row, row + count - 1 );
+            endRemoveRows();
+        }
         return result;
     }
 

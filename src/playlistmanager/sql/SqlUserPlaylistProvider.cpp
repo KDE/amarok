@@ -221,16 +221,16 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
     return actions;
 }
 
-void
+bool
 SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
     foreach( Playlists::PlaylistPtr playlist, playlistList )
         sqlPlaylists << Playlists::SqlPlaylistPtr::dynamicCast( playlist );
-    deleteSqlPlaylists( sqlPlaylists );
+    return deleteSqlPlaylists( sqlPlaylists );
 }
 
-void
+bool
 SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
     if( !m_debug )
@@ -246,7 +246,7 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlist
         dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
         dialog.setMainWidget( &label );
         if( dialog.exec() != QDialog::Accepted )
-            return;
+            return false;
     }
 
     foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
@@ -258,6 +258,8 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlist
         }
     }
     reloadFromDb();
+
+    return true;
 }
 
 Playlists::PlaylistPtr

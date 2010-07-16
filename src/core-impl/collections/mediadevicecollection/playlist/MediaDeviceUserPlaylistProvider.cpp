@@ -183,13 +183,14 @@ MediaDeviceUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const 
     }
 }
 
-void
+bool
 MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     Playlists::MediaDevicePlaylistList pllist;
     foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
-        Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr::staticCast( playlist );
+        Playlists::MediaDevicePlaylistPtr pl =
+                Playlists::MediaDevicePlaylistPtr::staticCast( playlist );
 
         if( pl )
         {
@@ -200,6 +201,8 @@ MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playli
     }
 
     emit playlistsDeleted( pllist );
+
+    return true;
 }
 
 void

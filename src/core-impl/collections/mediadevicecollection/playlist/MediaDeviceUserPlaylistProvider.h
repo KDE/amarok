@@ -57,7 +57,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist );
+        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist );
 
         /// MediaDevice-specific Functions
 

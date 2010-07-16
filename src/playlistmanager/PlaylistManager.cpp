@@ -351,7 +351,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     }
 }
 
-void
+bool
 PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     // Map the playlists to their respective providers
@@ -359,7 +359,8 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
     foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
         // Get the providers of the respective playlists
-        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
+        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>(
+                getProvidersForPlaylist( playlist ).first() );
 
         if( prov )
         {
@@ -379,10 +380,13 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 
     // Pass each list of playlists to the respective provider for deletion
 
+    bool removedSuccess = true;
     foreach( Playlists::UserPlaylistProvider* prov, provLists.keys() )
     {
-        prov->deletePlaylists( provLists.value( prov ) ); //TODO: test
+        removedSuccess = prov->deletePlaylists( provLists.value( prov ) ) && removedSuccess;
     }
+
+    return removedSuccess;
 }
 
 QList<Playlists::PlaylistProvider*>

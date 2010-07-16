@@ -58,10 +58,11 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
                                                   int trackIndex );
 
         // UserPlaylistProvider-specific
-
         virtual bool isWritable() { return false; }
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName ) {Q_UNUSED( playlist ) Q_UNUSED(newName)}
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
+        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName )
+                { Q_UNUSED( playlist ) Q_UNUSED(newName) }
+        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist )
+                { Q_UNUSED( playlistlist ) return false; }
 
     signals:
             void updated();

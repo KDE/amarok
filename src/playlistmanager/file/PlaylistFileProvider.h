@@ -64,7 +64,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
         virtual bool isWritable() { return true; }
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual void deletePlaylists( Playlists::PlaylistList playlistList );
+        virtual bool deletePlaylists( Playlists::PlaylistList playlistList );
 
         virtual void loadPlaylists();
 
@@ -78,7 +78,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         void slotRemove();
 
     private:
-        void deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles );
+        bool deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles );
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;

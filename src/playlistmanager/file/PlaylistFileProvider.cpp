@@ -306,7 +306,7 @@ PlaylistFileProvider::rename( Playlists::PlaylistPtr playlist, const QString &ne
     playlist->setName( newName );
 }
 
-void
+bool
 PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
 {
     Playlists::PlaylistFileList playlistFiles;
@@ -317,10 +317,10 @@ PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
         if( !playlistFile.isNull() )
             playlistFiles << playlistFile;
     }
-    deletePlaylistFiles( playlistFiles );
+    return deletePlaylistFiles( playlistFiles );
 }
 
-void
+bool
 PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles )
 {
     DEBUG_BLOCK
@@ -335,7 +335,7 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
     dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
     dialog.setMainWidget( &label );
     if( dialog.exec() != QDialog::Accepted )
-        return;
+        return false;
 
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
@@ -345,6 +345,8 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
         emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     }
     loadedPlaylistsConfig().sync();
+
+    return true;
 }
 
 void

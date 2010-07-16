@@ -117,7 +117,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void rename( Playlists::PlaylistPtr playlist );
 
-        void deletePlaylists( Playlists::PlaylistList playlistlist );
+        bool deletePlaylists( Playlists::PlaylistList playlistlist );
 
         Podcasts::PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
         Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
