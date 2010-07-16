@@ -38,6 +38,8 @@ namespace ConstraintTypes {
     class PlaylistLength : public Constraint {
         Q_OBJECT
 
+        enum NumComparison { CompareNumLessThan, CompareNumEquals, CompareNumGreaterThan };
+
         public:
             static Constraint* createFromXml(QDomElement&, ConstraintNode*);
             static Constraint* createNew(ConstraintNode*);
@@ -47,7 +49,7 @@ namespace ConstraintTypes {
             virtual void toXml(QDomDocument&, QDomElement&) const;
 
             virtual QString getName() const;
-            
+
             virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
             virtual double satisfaction(const Meta::TrackList&);
             virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;

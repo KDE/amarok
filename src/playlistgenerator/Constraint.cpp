@@ -20,33 +20,4 @@
 
 #include "core/support/Debug.h"
 
-#include <QString>
-
-const double Constraint::magicStrictnessWeight = 3.0;
-
 Constraint::Constraint( ConstraintNode* p ) : ConstraintNode( p ) {}
-
-double Constraint::compare( const QString& a, const int comparison, const QString& b, double strictness ) const
-{
-    Q_UNUSED( strictness ); // strictness is (currently) meaningless for string comparisons
-    if ( comparison == CompareStrEquals ) {
-        if ( a.compare( b, Qt::CaseInsensitive ) == 0 )
-            return 1.0;
-    } else if ( comparison == CompareStrStartsWith ) {
-        if ( a.startsWith( b, Qt::CaseInsensitive ) )
-            return 1.0;
-    } else if ( comparison == CompareStrEndsWith ) {
-        if ( a.endsWith( b, Qt::CaseInsensitive ) )
-            return 1.0;
-    } else if ( comparison == CompareStrContains ) {
-        if ( a.contains( b, Qt::CaseInsensitive ) )
-            return 1.0;
-    } else if ( comparison == CompareStrRegExp ) {
-        QRegExp rx( b );
-        if ( rx.indexIn( a ) >= 0 )
-            return 1.0;
-    } else {
-        return 0.0;
-    }
-    return 0.0;
-}

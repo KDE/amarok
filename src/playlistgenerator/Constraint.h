@@ -19,61 +19,16 @@
 
 #include "ConstraintNode.h"
 
-#include "core/meta/Meta.h"
-
-#include <QDomElement>
-#include <QHash>
-#include <QList>
 #include <QObject>
-#include <QString>
-#include <QtGlobal>
-#include <math.h>
 
 /* ABC for all Constraints */
 class Constraint : public ConstraintNode {
     Q_OBJECT
     public:
-        enum NumComparison { CompareNumLessThan, CompareNumEquals, CompareNumGreaterThan };
-        enum StrComparison { CompareStrEquals, CompareStrStartsWith, CompareStrEndsWith, CompareStrContains, CompareStrRegExp };
-        enum DateComparison { CompareDateBefore, CompareDateOn, CompareDateAfter, CompareDateWithin };
-
-        static const double magicStrictnessWeight;
-
         virtual int getNodeType() const { return ConstraintNode::ConstraintType; }
 
     protected:
         Constraint( ConstraintNode* );
-
-        // A couple of helper functions for subclasses
-        double compare(const QString&, const int, const QString&, const double strictness=1.0) const;
-        template <typename T> double compare(const T, const int, const T, const double strictness=1.0) const;
 };
-
-// Templated function from Constraint
-template <typename T> double Constraint::compare( const T a, const int comparison, const T b, const double strictness ) const {
-
-    /* There's no mathematical rigor to this factor; I came up with some test
-     * cases and what answers I expected, and tried a bunch of different
-     * factors.  This one behaved closest to what I wanted.  -- sth */
-
-    double factor = ( exp( magicStrictnessWeight * strictness) / ( sqrt( (double) b ) + 1.0 ) );
-    if ( comparison == CompareNumEquals ) {
-        // fuzzy equals -- within 1%
-        if ( qAbs( a - b ) < ( ( a + b ) / 200.0 ) ) {
-            return 1.0;
-        } else if ( a > b ) {
-            return exp( factor * ( b - a ) );
-        } else {
-            return exp( factor * ( a - b ) );
-        }
-    } else if ( comparison == CompareNumGreaterThan ) {
-        return (a > b) ? 1.0 : exp( factor * ( a - ( b * 1.05 ) ) );
-    } else if ( comparison == CompareNumLessThan ) {
-        return (a < b) ? 1.0 : exp( factor * ( b - ( a * 1.05 ) ) );
-    } else {
-        return 0.0;
-    }
-    return 0.0;
-}
 
 #endif

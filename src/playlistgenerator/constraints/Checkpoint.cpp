@@ -32,6 +32,7 @@
 #include <QtGlobal>
 
 #include <climits>
+#include <math.h>
 
 Constraint*
 ConstraintTypes::Checkpoint::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

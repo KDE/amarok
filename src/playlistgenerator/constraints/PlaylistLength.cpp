@@ -29,6 +29,7 @@
 #include <QtGlobal>
 
 #include <stdlib.h>
+#include <math.h>
 
 Constraint*
 ConstraintTypes::PlaylistLength::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
@@ -80,7 +81,7 @@ ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, Constrain
 ConstraintTypes::PlaylistLength::PlaylistLength( ConstraintNode* p )
         : Constraint( p )
         , m_length( 0 )
-        , m_comparison( Constraint::CompareNumEquals )
+        , m_comparison( CompareNumEquals )
         , m_strictness( 1.0 )
 {
 }
@@ -187,9 +188,9 @@ ConstraintTypes::PlaylistLength::swapTracks( const Meta::TrackList&, const int, 
 int
 ConstraintTypes::PlaylistLength::suggestInitialPlaylistSize() const
 {
-    if ( m_comparison == Constraint::CompareNumLessThan ) {
+    if ( m_comparison == CompareNumLessThan ) {
         return m_length / 300000;
-    } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+    } else if ( m_comparison == CompareNumGreaterThan ) {
         return m_length / 180000;
     } else {
         return m_length / 240000;
@@ -201,7 +202,7 @@ ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Me
 {
     ConstraintNode::Vote* v = 0;
 
-    if ( m_comparison == Constraint::CompareNumLessThan ) {
+    if ( m_comparison == CompareNumLessThan ) {
         if ( m_totalLength > m_length) {
             int longestLength = 0;
             int longestPosition = -1;
@@ -217,14 +218,14 @@ ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Me
             v->operation = ConstraintNode::OperationDelete;
             v->place = longestPosition;
         }
-    } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+    } else if ( m_comparison == CompareNumGreaterThan ) {
         if ( m_totalLength < m_length) {
             v = new ConstraintNode::Vote;
             v->operation = ConstraintNode::OperationInsert;
             v->place = KRandom::random() % ( playlist.size() + 1 );
             v->track = domain.at( KRandom::random() % domain.size() );
         }
-    } else if ( m_comparison == Constraint::CompareNumEquals ) {
+    } else if ( m_comparison == CompareNumEquals ) {
         int deviation = qAbs( m_totalLength - m_length );
         if ( m_totalLength > m_length ) {
             int randomIdx = KRandom::random() % playlist.size();
@@ -250,11 +251,11 @@ ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Me
 QString
 ConstraintTypes::PlaylistLength::comparisonToString() const
 {
-    if ( m_comparison == Constraint::CompareNumEquals ) {
+    if ( m_comparison == CompareNumEquals ) {
         return QString( i18nc("duration of playlist equals some time", "equals") );
-    } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+    } else if ( m_comparison == CompareNumGreaterThan ) {
         return QString( i18n("longer than") );
-    } else if ( m_comparison == Constraint::CompareNumLessThan ) {
+    } else if ( m_comparison == CompareNumLessThan ) {
         return QString( i18n("shorter than") );
     } else {
         return QString( i18n("unknown comparison") );
@@ -265,11 +266,11 @@ double
 ConstraintTypes::PlaylistLength::transformLength( const qint64 l ) const
 {
     double factor = m_strictness * 0.0003;
-    if ( m_comparison == Constraint::CompareNumEquals ) {
+    if ( m_comparison == CompareNumEquals ) {
         return 4.0 / ( ( 1.0 + exp( factor*( double )( l - m_length ) ) )*( 1.0 + exp( factor*( double )( m_length - l ) ) ) );
-    } else if ( m_comparison == Constraint::CompareNumLessThan ) {
+    } else if ( m_comparison == CompareNumLessThan ) {
         return 1.0 / ( 1.0 + exp( factor*( double )( l - m_length ) ) );
-    } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+    } else if ( m_comparison == CompareNumGreaterThan ) {
         return 1.0 / ( 1.0 + exp( factor*( double )( m_length - l ) ) );
     }
     return 1.0;

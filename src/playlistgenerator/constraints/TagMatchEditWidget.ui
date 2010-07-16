@@ -306,7 +306,11 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                     <item>
-                     <widget class="KIntSpinBox" name="spinBox_ValueDateValue"/>
+                     <widget class="KIntSpinBox" name="spinBox_ValueDateValue">
+                      <property name="maximum">
+                       <number>999</number>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QComboBox" name="comboBox_ValueDateUnit"/>

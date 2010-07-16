@@ -14,13 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Constraint::TagMatchSupport"
+
 #include "TagMatch.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
+
+#include <math.h>
 
 ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
 {
-    // if you add something here, you need to update TagMatch::matches() to handle it
     m_fieldNames << "url"
                  << "title"
                  << "artist name"
@@ -77,7 +82,6 @@ ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
     m_fieldMetaValues.insert( "last played", Meta::valLastPlayed );
     m_fieldMetaValues.insert( "play count", Meta::valPlaycount );
     m_fieldMetaValues.insert( "label", Meta::valLabel );
-    m_fieldMetaValues.insert( "url", Meta::valUrl );
 
     m_fieldPrettyNames.insert( "url", i18n("url") );
     m_fieldPrettyNames.insert( "title", i18n("title") );
@@ -163,4 +167,168 @@ ConstraintTypes::TagMatch::FieldTypes
 ConstraintTypes::TagMatchFieldsModel::type_of( const QString& f ) const
 {
     return m_fieldTypes.value( f );
+}
+
+/*************************************
+**************************************/
+
+ConstraintTypes::TagMatch::Comparer::Comparer() : m_dateWeight( 1209600.0 )
+{
+    m_numFieldWeight.insert( Meta::valYear, 8.0 );
+    m_numFieldWeight.insert( Meta::valTrackNr, 5.0 );
+    m_numFieldWeight.insert( Meta::valDiscNr, 0.75 );
+    m_numFieldWeight.insert( Meta::valLength, 100000.0 );
+    m_numFieldWeight.insert( Meta::valScore, 20.0 );
+    m_numFieldWeight.insert( Meta::valRating, 3.0 );
+    m_numFieldWeight.insert( Meta::valPlaycount, 4.0 );
+}
+
+ConstraintTypes::TagMatch::Comparer::~Comparer()
+{
+}
+
+double
+ConstraintTypes::TagMatch::Comparer::compareNum( const double test,
+                                                 const int comparison,
+                                                 const double target,
+                                                 const double strictness,
+                                                 const qint64 field ) const
+{
+    const double weight = m_numFieldWeight.value( field );
+
+    if ( comparison == CompareNumEquals ) {
+        // fuzzy equals -- within 1%, or within 0.001
+        if ( ( abs( test - target ) < ( abs( test + target ) / 200.0 ) ) || ( abs( test - target ) < 0.001 ) ) {
+            return 1.0;
+        } else {
+            return fuzzyProb( test, target, strictness, weight );
+        }
+    } else if ( comparison == CompareNumGreaterThan ) {
+        return ( test > target ) ? 1.0 : fuzzyProb( test, target, strictness, weight );
+    } else if ( comparison == CompareNumLessThan ) {
+        return ( test < target ) ? 1.0 : fuzzyProb( test, target, strictness, weight );
+    } else {
+        return 0.0;
+    }
+    return 0.0;
+}
+
+double
+ConstraintTypes::TagMatch::Comparer::compareStr( const QString& test,
+                                                 const int comparison,
+                                                 const QString& target ) const
+{
+    if ( comparison == CompareStrEquals ) {
+        if ( test.compare( target, Qt::CaseInsensitive ) == 0 )
+            return 1.0;
+    } else if ( comparison == CompareStrStartsWith ) {
+        if ( test.startsWith( target, Qt::CaseInsensitive ) )
+            return 1.0;
+    } else if ( comparison == CompareStrEndsWith ) {
+        if ( test.endsWith( target, Qt::CaseInsensitive ) )
+            return 1.0;
+    } else if ( comparison == CompareStrContains ) {
+        if ( test.contains( target, Qt::CaseInsensitive ) )
+            return 1.0;
+    } else if ( comparison == CompareStrRegExp ) {
+        QRegExp rx( target );
+        if ( rx.indexIn( test ) >= 0 )
+            return 1.0;
+    } else {
+        return 0.0;
+    }
+    return 0.0;
+}
+
+
+double
+ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
+                                                  const int comparison,
+                                                  const QVariant& targetVar,
+                                                  const double strictness ) const
+{
+    const double weight = m_dateWeight;
+
+    int comp = comparison;
+    uint target = 0;
+    if ( comparison == CompareDateWithin ) {
+        comp = CompareDateAfter;
+        QDateTime now = QDateTime::currentDateTime();
+        DateRange r = targetVar.value<DateRange>();
+        switch ( r.second ) {
+            case 0:
+                target = now.addDays( -1 * r.first ).toTime_t();
+                break;
+            case 1:
+                target = now.addMonths( -1 * r.first ).toTime_t();
+                break;
+            case 2:
+                target = now.addYears( -1 * r.first ).toTime_t();
+                break;
+            default:
+                break;
+        }
+    } else {
+        target = targetVar.value<uint>();
+    }
+
+    if ( comp == CompareDateOn ) {
+        // fuzzy equals -- within 1%, or within 10.0
+        if ( ( abs( test - target ) < ( abs( test + target ) / 200.0 ) ) || ( abs( test - target ) < 10.0 ) ) {
+            return 1.0;
+        } else {
+            return fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+        }
+    } else if ( comp == CompareDateAfter ) {
+        return ( test > target ) ? 1.0 : fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+    } else if ( comp == CompareDateBefore ) {
+        return ( test < target ) ? 1.0 : fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+    } else {
+        return 0.0;
+    }
+    return 0.0;
+}
+
+double
+ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr t, const int comparison, const QString& target ) const
+{
+    Meta::LabelList labelList = t->labels();
+
+    double v = 0.0;
+    foreach ( Meta::LabelPtr label, labelList ) {
+        // this is technically more correct ...
+        // v = qMax( compare( label->prettyName(), comparison, target ), v );
+
+        // ... but as long as compareStr() returns only 0.0 or 1.0, the following is faster:
+        v = compareStr( label->prettyName(), comparison, target );
+        if ( v > 0.99 ) {
+            return 1.0;
+        }
+    }
+
+    return v;
+}
+
+uint
+ConstraintTypes::TagMatch::Comparer::rangeDate( const double strictness ) const
+{
+    if ( strictness > 0.99 ) return 0;
+    const double s = strictness * strictness;
+    return static_cast<uint>( ceil( 0.460517 * m_dateWeight / ( 0.1 + s ) ) );
+}
+
+int
+ConstraintTypes::TagMatch::Comparer::rangeNum( const double strictness, const qint64 field ) const
+{
+    if ( strictness > 0.99 ) return 0;
+    const double s = strictness * strictness;
+    const double w = m_numFieldWeight.value( field );
+    return static_cast<int>( ceil( 0.460517 * w / ( 0.1 + s ) ) );
+}
+
+double
+ConstraintTypes::TagMatch::Comparer::fuzzyProb( const double a, const double b, const double strictness, const double w ) const
+{
+    const double s = strictness * strictness;
+    return exp( -10.0 * ( 0.1 + s ) / w * ( 1 + abs( a - b ) ) );
 }

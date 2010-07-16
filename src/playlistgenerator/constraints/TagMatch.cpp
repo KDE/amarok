@@ -60,6 +60,7 @@ ConstraintTypes::TagMatch::registerMe()
 
 ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         : MatchingConstraint( p )
+        , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
     QDomAttr a;
@@ -82,7 +83,7 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
             m_value = a.value().toInt();
         } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-            if ( m_comparison == Constraint::CompareDateWithin ) {
+            if ( m_comparison == CompareDateWithin ) {
                 QStringList parts = a.value().split(" ");
                 if ( parts.size() == 2 ) {
                     int u = parts.at( 0 ).toInt();
@@ -114,17 +115,19 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
 
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         : MatchingConstraint( p )
-        , m_comparison( Constraint::CompareStrEquals )
+        , m_comparison( CompareStrEquals )
         , m_field( "title" )
         , m_invert( false )
         , m_strictness( 1.0 )
         , m_value()
+        , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
 }
 
 ConstraintTypes::TagMatch::~TagMatch()
 {
+    delete m_comparer;
     delete m_fieldsModel;
 }
 
@@ -192,47 +195,43 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
 {
     if ( ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) ) {
         int v = m_value.toInt();
-
-        double factor;
-        int range;
-        if ( m_field != "length" ) {
-            // compute fuzzy ranges -- this marks the boundary beyond which the fuzzy match probability is less than 1%
-            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
-            range = (int)ceil( 4.6051702 / factor );
-        } else {
-            // small kludge to get fuzziness to play better in the case of track lengths
-            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
-            range = (int)ceil( 4605.1702 / factor );
-        }
-        if ( m_comparison == Constraint::CompareNumEquals ) {
+        int range = static_cast<int>( m_comparer->rangeNum( m_strictness, m_fieldsModel->meta_value_of( m_field ) ) );
+        if ( m_comparison == CompareNumEquals ) {
             if ( !m_invert ) {
-                qm->beginAnd();
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::GreaterThan );
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::LessThan );
-                qm->endAndOr();
+                if ( m_strictness < 0.99 ) { // fuzzy approximation of "1.0"
+                    qm->beginAnd();
+                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::GreaterThan );
+                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::LessThan );
+                    qm->endAndOr();
+                } else {
+                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v, Collections::QueryMaker::Equals );
+                }
+            } else {
+                if ( m_strictness > 0.99 ) {
+                    qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v, Collections::QueryMaker::Equals );
+                }
             }
-        } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+        } else if ( m_comparison == CompareNumGreaterThan ) {
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::GreaterThan );
             else
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::GreaterThan );
-        } else if ( m_comparison == Constraint::CompareNumLessThan ) {
+        } else if ( m_comparison == CompareNumLessThan ) {
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::LessThan );
             else
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::LessThan );
         }
     } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        double factor = ( exp( 5.0 * m_strictness ) ) / 1e6; // duplicated from this::dateComparison()
-        uint range = (uint)ceil( 4.6051702 / factor );
         uint referenceDate = 0;
-        if ( m_comparison == Constraint::CompareDateBefore ) {
+        int range = m_comparer->rangeDate( m_strictness );
+        if ( m_comparison == CompareDateBefore ) {
             referenceDate = m_value.toDateTime().toTime_t();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::LessThan );
             else
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::LessThan );
-        } else if ( m_comparison == Constraint::CompareDateOn ) {
+        } else if ( m_comparison == CompareDateOn ) {
             referenceDate = m_value.toDateTime().toTime_t();
             if ( !m_invert ) {
                 qm->beginAnd();
@@ -240,13 +239,13 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::LessThan );
                 qm->endAndOr();
             }
-        } else if ( m_comparison == Constraint::CompareDateAfter ) {
+        } else if ( m_comparison == CompareDateAfter ) {
             referenceDate = m_value.toDateTime().toTime_t();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
             else
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
-        } else if ( m_comparison == Constraint::CompareDateWithin ) {
+        } else if ( m_comparison == CompareDateWithin ) {
             QDateTime now = QDateTime::currentDateTime();
             DateRange r = m_value.value<DateRange>();
             switch ( r.second ) {
@@ -268,22 +267,22 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
         }
     } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
-        if ( m_comparison == Constraint::CompareStrEquals ) {
+        if ( m_comparison == CompareStrEquals ) {
             if ( m_invert )
                 qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, true );
             else
                 qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, true );
-        } else if ( m_comparison == Constraint::CompareStrStartsWith ) {
+        } else if ( m_comparison == CompareStrStartsWith ) {
             if ( m_invert )
                 qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, false );
             else
                 qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, false );
-        } else if ( m_comparison == Constraint::CompareStrEndsWith ) {
+        } else if ( m_comparison == CompareStrEndsWith ) {
             if ( m_invert )
                 qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, true );
             else
                 qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, true );
-        } else if ( m_comparison == Constraint::CompareStrContains ) {
+        } else if ( m_comparison == CompareStrContains ) {
             if ( m_invert )
                 qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, false );
             else
@@ -405,6 +404,13 @@ ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::Tr
     return 0;
 }
 
+void
+ConstraintTypes::TagMatch::audit( const Meta::TrackList& tl ) const
+{
+    foreach( const Meta::TrackPtr t, tl ) {
+        debug() << t->prettyName() << matches( t );
+    }
+}
 
 const QBitArray
 ConstraintTypes::TagMatch::whatTracksMatch( const Meta::TrackList& tl )
@@ -423,114 +429,52 @@ ConstraintTypes::TagMatch::constraintMatchType() const
     return ( 0 << 28 ) + m_fieldsModel->index_of( m_field );
 }
 
-double
-ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
-{
-    /* comparing dates is a little bit tricky, so I split it off into its own function */
-    int comp;
-    uint referenceDate = 0;
-    if ( m_comparison == Constraint::CompareDateWithin ) {
-        comp = Constraint::CompareDateAfter;
-        QDateTime now = QDateTime::currentDateTime();
-        DateRange r = m_value.value<DateRange>();
-        switch ( r.second ) {
-            case 0:
-                referenceDate = now.addDays( -1 * r.first ).toTime_t();
-                break;
-            case 1:
-                referenceDate = now.addMonths( -1 * r.first ).toTime_t();
-                break;
-            case 2:
-                referenceDate = now.addYears( -1 * r.first ).toTime_t();
-                break;
-            default:
-                break;
-        }
-    } else {
-        comp = m_comparison;
-        referenceDate = m_value.toDateTime().toTime_t();
-    }
-
-    /* I decided to keep the comparison logic here instead of passing it down
-     * to Constraint::compare() because ::compare() calculates the strictness
-     * factor in proportion to the values that were passed to it.  The numbers
-     * involved in date calculations (ie, seconds since the epoch) are so large
-     * that they make ::compare()'s factor pretty much useless, plus the
-     * strictness factor gets smaller when later dates are chosen.  This is a
-     * more useful strictness factor for date calculations. -- stharward */
-
-    double r = 0.0;
-    double factor = ( exp( 5.0 * m_strictness ) ) / 1e6;
-    if ( comp == Constraint::CompareDateOn ) {
-        // fuzzy equals -- within 18 hours
-        if ( qAbs( (double)trackDate - (double)referenceDate ) < ( 64800.0 ) )
-            r = 1.0;
-        else if ( trackDate > referenceDate )
-            r = exp( factor * ( (double)referenceDate - (double)trackDate ) );
-        else
-            r = exp( factor * ( (double)trackDate - (double)referenceDate ) );
-    } else if ( comp == Constraint::CompareDateAfter ) {
-        r = ( trackDate > referenceDate ) ? 1.0 : exp( factor * ( (double)trackDate - (double)referenceDate ) );
-    } else if ( comp == Constraint::CompareDateBefore ) {
-        r = ( trackDate < referenceDate ) ? 1.0 : exp( factor * ( (double)referenceDate - (double)trackDate ) );
-    } else {
-        r = 0.0;
-    }
-
-    return r;
-}
-
-double
-ConstraintTypes::TagMatch::labelComparison( Meta::TrackPtr t ) const
-{
-    Meta::LabelList labelList = t->labels();
-
-    double v = 0.0;
-    foreach ( Meta::LabelPtr label, labelList ) {
-        // this is correct ...
-        // v = qMax( compare( label, m_comparison, m_value.toString() ), v );
-
-        // ... but as long as compare() returns only 0.0 or 1.0, the following is faster:
-        v = compare( label->prettyName(), m_comparison, m_value.toString() );
-        if ( v == 1.0 ) {
-            return 1.0;
-        }
-    }
-
-    return v;
-}
 
 QString
 ConstraintTypes::TagMatch::comparisonToString() const
 {
     if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
-        if ( m_comparison == Constraint::CompareNumEquals ) {
+        if ( m_comparison == CompareNumEquals ) {
             return QString( i18nc("a numerical tag (like year or track number) equals a value","equals") );
-        } else if ( m_comparison == Constraint::CompareNumGreaterThan ) {
+        } else if ( m_comparison == CompareNumGreaterThan ) {
             return QString( i18n("greater than") );
-        } else if ( m_comparison == Constraint::CompareNumLessThan ) {
+        } else if ( m_comparison == CompareNumLessThan ) {
             return QString( i18n("less than") );
         }
     } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        if ( m_comparison == Constraint::CompareDateBefore ) {
+        if ( m_comparison == CompareDateBefore ) {
             return QString( i18n("before") );
-        } else if ( m_comparison == Constraint::CompareDateOn ) {
+        } else if ( m_comparison == CompareDateOn ) {
             return QString( i18n("on") );
-        } else if ( m_comparison == Constraint::CompareDateAfter ) {
+        } else if ( m_comparison == CompareDateAfter ) {
             return QString( i18n("after") );
-        } else if ( m_comparison == Constraint::CompareDateWithin ) {
+        } else if ( m_comparison == CompareDateWithin ) {
             return QString( i18n("within") );
         }
     } else {
-        if ( m_comparison == Constraint::CompareStrEquals ) {
+#if 0
+        // FIXME: Replace the block below with this one after string freeze is lifted
+        if ( m_comparison == CompareStrEquals ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
-        } else if ( m_comparison == Constraint::CompareStrStartsWith ) {
+        } else if ( m_comparison == CompareStrStartsWith ) {
+            return QString( i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with") );
+        } else if ( m_comparison == CompareStrEndsWith ) {
+            return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
+        } else if ( m_comparison == CompareStrContains ) {
+            return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
+        } else if ( m_comparison == CompareStrRegExp ) {
+            return QString( i18n("regexp") );
+        }
+#endif
+        if ( m_comparison == CompareStrEquals ) {
+            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
+        } else if ( m_comparison == CompareStrStartsWith ) {
             return QString( i18n("starts with") );
-        } else if ( m_comparison == Constraint::CompareStrEndsWith ) {
+        } else if ( m_comparison == CompareStrEndsWith ) {
             return QString( i18n("ends with") );
-        } else if ( m_comparison == Constraint::CompareStrContains ) {
+        } else if ( m_comparison == CompareStrContains ) {
             return QString( i18n("contains") );
-        } else if ( m_comparison == Constraint::CompareStrRegExp ) {
+        } else if ( m_comparison == CompareStrRegExp ) {
             return QString( i18n("regexp") );
         }
     }
@@ -541,7 +485,7 @@ QString
 ConstraintTypes::TagMatch::valueToString() const
 {
     if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        if ( m_comparison != Constraint::CompareDateWithin ) {
+        if ( m_comparison != CompareDateWithin ) {
             return m_value.toDate().toString( Qt::ISODate );
         } else {
             QString unit;
@@ -570,70 +514,67 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
 {
     if ( !m_matchCache.contains( track ) ) {
         double v = 0.0;
-        int lengthInSec, targetInSec; // these are used for track length calculations below
-        switch ( m_fieldsModel->meta_value_of( m_field ) ) {
+        qint64 fmv = m_fieldsModel->meta_value_of( m_field );
+        switch ( fmv ) {
             case Meta::valUrl:
-                v = compare( track->prettyUrl(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->prettyUrl(), m_comparison, m_value.toString() );
                 break;
             case Meta::valTitle:
-                v = compare( track->prettyName(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->prettyName(), m_comparison, m_value.toString() );
                 break;
             case Meta::valArtist:
-                v = compare( track->artist()->prettyName(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->artist()->prettyName(), m_comparison, m_value.toString() );
                 break;
             case Meta::valAlbum:
-                v = compare( track->album()->prettyName(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->album()->prettyName(), m_comparison, m_value.toString() );
                 break;
             case Meta::valGenre:
-                v = compare( track->genre()->prettyName(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->genre()->prettyName(), m_comparison, m_value.toString() );
                 break;
             case Meta::valComposer:
-                v = compare( track->composer()->prettyName(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->composer()->prettyName(), m_comparison, m_value.toString() );
                 break;
             case Meta::valYear:
-                v = compare<int>( track->year()->prettyName().toInt(), m_comparison, m_value.toInt() );
+                v = m_comparer->compareNum( track->year()->prettyName().toInt(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valComment:
-                v = compare( track->comment(), m_comparison, m_value.toString() );
+                v = m_comparer->compareStr( track->comment(), m_comparison, m_value.toString() );
                 break;
             case Meta::valTrackNr:
-                v = compare<int>( track->trackNumber(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->trackNumber(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valDiscNr:
-                v = compare<int>( track->discNumber(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->discNumber(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valLength:
-                // the strictness factor doesn't handle milliseconds very well
-                lengthInSec = track->length() / 1000;
-                targetInSec = m_value.toInt() / 1000;
-                v = compare<int>( lengthInSec, m_comparison, targetInSec, m_strictness );
+                v = m_comparer->compareNum( track->length(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valBitrate:
-                v = compare<int>( track->bitrate(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->bitrate(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFilesize:
-                v = compare<int>( track->filesize(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->filesize(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valCreateDate:
-                v = dateComparison( track->createDate().toTime_t() );
+                v = m_comparer->compareDate( track->createDate().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valScore:
-                v = compare<double>( track->score(), m_comparison, m_value.toDouble(), m_strictness );
+                v = m_comparer->compareNum( track->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
                 break;
             case Meta::valRating:
-                v = compare<int>( track->rating(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = dateComparison( track->firstPlayed() );
+                v = m_comparer->compareDate( track->firstPlayed(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = dateComparison( track->lastPlayed() );
+                v = m_comparer->compareDate( track->lastPlayed(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
-                v = compare<int>( track->playCount(), m_comparison, m_value.toInt(), m_strictness );
+                v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valLabel:
-                v = labelComparison( track );
+                v = m_comparer->compareLabels( track, m_comparison, m_value.toString() );
                 break;
             default:
                 v = 0.0;
@@ -733,7 +674,7 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeDate ) {
         ui.comboBox_ComparisonDate->setCurrentIndex( comparison );
         ui.slider_StrictnessDate->setValue( strictness );
-        if ( comparison == Constraint::CompareDateWithin ) {
+        if ( comparison == TagMatch::CompareDateWithin ) {
             ui.stackedWidget_Date->setCurrentIndex( 1 );
             ui.spinBox_ValueDateValue->setValue( value.value<DateRange>().first );
             ui.comboBox_ValueDateUnit->setCurrentIndex( value.value<DateRange>().second );
@@ -759,7 +700,7 @@ ConstraintTypes::TagMatchEditWidget::~TagMatchEditWidget()
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonDate_currentIndexChanged( int c )
 {
-    if ( c == Constraint::CompareDateWithin )
+    if ( c == TagMatch::CompareDateWithin )
         ui.stackedWidget_Date->setCurrentIndex( 1 );
     else
         ui.stackedWidget_Date->setCurrentIndex( 0 );
@@ -818,7 +759,7 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int 
             ui.stackedWidget_Field->setCurrentIndex( 1 );
             c = ui.comboBox_ComparisonDate->currentIndex();
             s = ui.slider_StrictnessDate->value();
-            if ( c == Constraint::CompareDateWithin ) {
+            if ( c == TagMatch::CompareDateWithin ) {
                 ui.stackedWidget_Date->setCurrentIndex( 1 );
                 int a = ui.spinBox_ValueDateValue->value();
                 int b = ui.comboBox_ValueDateUnit->currentIndex();
