@@ -71,14 +71,18 @@ signals:
     void percent( KJob *job, unsigned long percent );
 */
 private slots:
+    void processOutput();
     void transcoderDone( int exitCode, QProcess::ExitStatus exitStatus );
     void init();
 
 private:
+    inline qint64 computeDuration( const QString &output );
+    inline qint64 computeProgress( const QString &output );
     KUrl m_src;
     KUrl m_dest;
     TranscodeFormat m_options;
     KProcess *m_transcoder;
+    qint64 m_duration; //in csec
 };
 
 #endif // TRANSCODEJOB_H

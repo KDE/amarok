@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2010 Teo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -647,6 +648,9 @@ TransferJob::TransferJob( SqlCollectionLocation * location, const TranscodeForma
 
 bool TransferJob::addSubjob( KJob* job )
 {
+    connect( job, SIGNAL( processedAmount( KJob *, KJob::Unit, qulonglong ) ),
+             this, SLOT( propagateProcessedAmount( KJob *, KJob::Unit, qulonglong ) ) );
+    //KCompositeJob::addSubjob doesn't handle progress reporting.
     return KCompositeJob::addSubjob( job );
 }
 
@@ -672,7 +676,8 @@ void TransferJob::start()
 void TransferJob::doWork()
 {
     DEBUG_BLOCK
-    setTotalAmount(  KJob::Files, m_location->m_sources.size() );
+    setTotalAmount( KJob::Files, m_location->m_sources.size() );
+    setTotalAmount( KJob::Bytes, m_location->m_sources.size() * 1000 );
     setProcessedAmount( KJob::Files, 0 );
     if( !m_location->startNextJob( m_transcodeFormat ) )
     {
@@ -692,7 +697,7 @@ void TransferJob::slotJobFinished( KJob* job )
         return;
     }
     setProcessedAmount( KJob::Files, processedAmount( KJob::Files ) + 1 );
-    emitPercent( processedAmount( KJob::Files ), totalAmount( KJob::Files ) );
+    emitPercent( processedAmount( KJob::Files ) * 1000, totalAmount( KJob::Bytes ) );
     debug() << "processed" << processedAmount( KJob::Files ) << " totalAmount" << totalAmount( KJob::Files );
     if( !m_location->startNextJob( m_transcodeFormat ) )
     {
@@ -715,6 +720,17 @@ bool TransferJob::doKill()
     }
     clearSubjobs();
     return KJob::doKill();
+}
+
+void TransferJob::propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount ) //SLOT
+{
+    if( unit == KJob::Bytes )
+    {
+        qulonglong currentJobAmount = ( static_cast< qreal >( amount ) / job->totalAmount( KJob::Bytes ) ) * 1000;
+
+        setProcessedAmount( KJob::Bytes, processedAmount( KJob::Files ) * 1000 + currentJobAmount );
+        emitPercent( processedAmount( KJob::Bytes ), totalAmount( KJob::Bytes ) );
+    }
 }
 
 #include "SqlCollectionLocation.moc"

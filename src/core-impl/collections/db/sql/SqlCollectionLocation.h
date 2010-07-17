@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2010 Teo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -49,9 +50,9 @@ class TransferJob : public KCompositeJob
         TransferJob( SqlCollectionLocation * location, const TranscodeFormat & format );
 
         void start();
-    virtual bool addSubjob( KJob* job );
+        virtual bool addSubjob( KJob* job );
 
-    void emitInfo( const QString &message );
+        void emitInfo( const QString &message );
     public slots:
         /**
          * A move or copy job finished
@@ -59,6 +60,7 @@ class TransferJob : public KCompositeJob
         void slotJobFinished( KJob *job );
     protected slots:
         void doWork();
+        void propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount);
     protected:
         virtual bool doKill();
     private:

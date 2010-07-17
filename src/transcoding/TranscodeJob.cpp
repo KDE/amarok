@@ -24,6 +24,7 @@ TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFo
     , m_src( src )
     , m_dest( dest )
     , m_options( options )
+    , m_duration( -1 )
 {
     DEBUG_BLOCK
     init();
@@ -34,6 +35,7 @@ TranscodeJob::TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *
     , m_src( src )
     , m_dest( src )
     , m_options( options )
+    , m_duration( -1 )
 {
     DEBUG_BLOCK
     debug() << "TranscodeJob ctor!!";
@@ -71,6 +73,8 @@ TranscodeJob::init()
     debug() << m_options.ffmpegParameters();
     debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
 
+    connect( m_transcoder, SIGNAL( readyRead() ),
+             this, SLOT( processOutput() ) );
     connect( m_transcoder, SIGNAL( finished( int, QProcess::ExitStatus ) ),
              this, SLOT( transcoderDone( int, QProcess::ExitStatus ) ) );
 }
@@ -102,4 +106,59 @@ TranscodeJob::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //
         debug() << "NAY, transcoding fail!";
         emitResult();
     }
+}
+
+void
+TranscodeJob::processOutput()
+{
+    QString output = m_transcoder->readAllStandardOutput().data();
+    if( output.simplified().isEmpty() )
+        return;
+
+    if( m_duration == -1 )
+    {
+        m_duration = computeDuration( output );
+        if( m_duration >= 0 )
+            setTotalAmount( KJob::Bytes, m_duration ); //Nothing better than bytes I can think of
+    }
+
+    qint64 progress = computeProgress( output  );
+    if( progress > -1 )
+        setProcessedAmount( KJob::Bytes, progress );
+}
+
+inline qint64
+TranscodeJob::computeDuration( const QString &output )
+{
+    //We match something like "Duration: 00:04:33.60"
+    QRegExp matchDuration( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" );
+
+    if( output.contains( matchDuration ) )
+    {
+        //duration is in csec
+        qint64 duration = matchDuration.cap( 1 ).toLong() * 60 * 60 * 100 +
+                          matchDuration.cap( 2 ).toInt()  * 60 * 100 +
+                          matchDuration.cap( 3 ).toInt()  * 100 +
+                          matchDuration.cap( 4 ).toInt();
+        return duration;
+    }
+    else
+        return -1;
+}
+
+inline qint64
+TranscodeJob::computeProgress( const QString &output )
+{
+    //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
+    //We're going to use the "time" column, which counts the elapsed time in seconds.
+    QRegExp matchTime( "time=(\\d+)\\.(\\d{2})" );
+
+    if( output.contains( matchTime ) )
+    {
+        qint64 time = matchTime.cap( 1 ).toLong() * 100 +
+                      matchTime.cap( 2 ).toInt();
+        return time;
+    }
+    else
+        return -1;
 }
