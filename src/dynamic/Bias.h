@@ -21,6 +21,7 @@
 #define AMAROK_BIAS_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <QDomElement>
 #include <QMutex>
@@ -204,10 +205,10 @@ namespace Dynamic
             struct Filter
             {
                 Filter()
-                    : field(0)
+                    : field(Meta::valArtist)
                     , numValue(0)
                     , numValue2(0)
-                    , condition(Equals)
+                    , condition(Contains)
                 {}
 
                 qint64   field;
