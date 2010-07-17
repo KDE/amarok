@@ -139,6 +139,7 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
             createTrack( entry, sj->url().prettyUrl() );
         }
     }
+    updateMemoryCollection();
 }
 
 void
