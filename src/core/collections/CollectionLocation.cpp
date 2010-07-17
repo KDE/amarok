@@ -295,10 +295,13 @@ CollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool remove
 }
 
 void
-CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
+                                           bool removeSources,
+                                           const TranscodeFormat &format )
 {
     Q_UNUSED( tracks )
     Q_UNUSED( removeSources )
+    Q_UNUSED( format )
     slotShowDestinationDialogDone();
 }
 
@@ -343,7 +346,7 @@ CollectionLocation::slotRemoveOperationFinished()
 void
 CollectionLocation::slotShowSourceDialogDone()
 {
-    emit prepareOperation( m_sourceTracks, m_removeSources );
+    emit prepareOperation( m_sourceTracks, m_removeSources, m_transcodeFormat );
 }
 
 void
@@ -360,10 +363,10 @@ CollectionLocation::slotShowRemoveDialogDone()
 }
 
 void
-CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources )
+CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources, const TranscodeFormat &format )
 {
     m_removeSources = removeSources;
-    showDestinationDialog( tracks, removeSources );
+    showDestinationDialog( tracks, removeSources, format );
 }
 
 void
@@ -482,8 +485,8 @@ CollectionLocation::queryDone()
 void
 CollectionLocation::setupConnections()
 {
-    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
-             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
+    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool, const TranscodeFormat & ) ),
+             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool, const TranscodeFormat & ) ) );
     connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
     connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, const TranscodeFormat & ) ),
              m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, const TranscodeFormat & ) ) );

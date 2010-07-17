@@ -39,20 +39,13 @@ TranscodeJob::TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *
     debug() << "TranscodeJob ctor!!";
     debug()<< src;
     debug()<< src.path();
-    QString destPath = src.path();
-    destPath.truncate( destPath.lastIndexOf( '.' ) + 1 );
-
-    //what follows is a really really really bad way to distinguish between codecs
-    if( m_options.encoder() == TranscodeFormat::MP3 )
-        destPath.append( "mp3" );
-    else if( m_options.encoder() == TranscodeFormat::FLAC )
-        destPath.append( "flac" );
-    else if( m_options.encoder() == TranscodeFormat::VORBIS )
-        destPath.append( "ogg" );
-    else
-        destPath.append("mp3");    // Fallback to mp3 with ffmpeg's crappy default parameters.
-                                   // You have been warned.
-    m_dest.setPath( destPath );
+    if( !( options.fileExtension().isEmpty() ) )
+    {
+        QString destPath = src.path();
+        destPath.truncate( destPath.lastIndexOf( '.' ) + 1 );
+        destPath.append( options.fileExtension() );
+        m_dest.setPath( destPath );
+    }
     init();
 }
 

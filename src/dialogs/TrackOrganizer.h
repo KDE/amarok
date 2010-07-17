@@ -75,6 +75,11 @@ public:
      * @param string the string substitute for the regex match
      */
     void setReplace( const QString &regex, const QString &string );
+    /**
+     * Sets a new file extension for the target file names.
+     * @param fileExtension the file extension
+     */
+    void setTargetFileExtension( const QString &fileExtension );
     
 
     /**
@@ -100,7 +105,7 @@ private:
     bool m_vfatSafe;
     QString m_regexPattern;
     QString m_replaceString;
-    
+    QString m_targetFileExtension;
 };
 
 #endif // TRACKORGANIZER_H

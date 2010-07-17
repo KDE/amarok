@@ -209,7 +209,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void finishCopy();
         void startRemove();
         void finishRemove();
-        void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
+        void prepareOperation( const Meta::TrackList &tracks, bool removeSources, const TranscodeFormat & );
         void operationPrepared();
         void aborted();
 
@@ -269,7 +269,9 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * must call slotShowDestinationDialogDone() after they have acquired all necessary
          * information from the user.
          */
-        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+        virtual void showDestinationDialog( const Meta::TrackList &tracks,
+                                            bool removeSources,
+                                            const TranscodeFormat &format );
 
         /**
          * this methods allows the collection to show a warning dialog before tracks are removed,
@@ -306,7 +308,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     private slots:
 
-        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
+        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources, const TranscodeFormat & );
         void slotOperationPrepared();
         void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, const TranscodeFormat &format );
         void slotFinishCopy();

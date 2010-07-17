@@ -34,8 +34,14 @@
 #include <QDir>
 #include <QApplication>
 
-OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent,  const char *name, bool modal,
-                                                    const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
+OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks,
+                                                    const QStringList &folders,
+                                                    const QString &targetExtension,
+                                                    QWidget *parent,
+                                                    const char *name,
+                                                    bool modal,
+                                                    const QString &caption,
+                                                    QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_detailed( true )
@@ -46,6 +52,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
+    m_targetFileExtension = targetExtension;
 
     if ( tracks.size() > 0 )
     {
@@ -200,6 +207,7 @@ OrganizeCollectionDialog::preview( const QString &format )
 
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
     mTrackOrganizer->setFormatString( format );
+    mTrackOrganizer->setTargetFileExtension( m_targetFileExtension );
     debug() << "format" << format;
     QMap<Meta::TrackPtr, QString> dests = mTrackOrganizer->getDestinations();
     debug() << "dests.size()" << dests.count();

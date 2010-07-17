@@ -85,7 +85,10 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
-    args["filetype"] = track->type();
+    if( m_targetFileExtension == QString() )
+        args["filetype"] = track->type();
+    else
+        args["filetype"] = m_targetFileExtension;
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length() / 1000;
@@ -174,4 +177,9 @@ void TrackOrganizer::setReplace(const QString& regex, const QString& string)
 {
     m_regexPattern = regex;
     m_replaceString = string;
+}
+
+void TrackOrganizer::setTargetFileExtension( const QString &fileExtension )
+{
+    m_targetFileExtension = fileExtension;
 }

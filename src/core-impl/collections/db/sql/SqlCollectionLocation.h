@@ -94,7 +94,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         void setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac );
 
     protected:
-        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+        virtual void showDestinationDialog( const Meta::TrackList &tracks,
+                                            bool removeSources,
+                                            const TranscodeFormat &format );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
                                            const TranscodeFormat & format = TranscodeFormat::Null() );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
@@ -143,6 +145,7 @@ public:
     virtual void setTracks( const Meta::TrackList &tracks ) = 0;
     virtual void setFolders( const QStringList &folders ) = 0;
     virtual void setIsOrganizing( bool organizing ) = 0;
+    virtual void setTranscodeFormat( const TranscodeFormat &format ) = 0;
 
     virtual void show() = 0;
 

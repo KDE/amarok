@@ -264,7 +264,9 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 }
 
 void
-SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
+                                              bool removeSources,
+                                              const TranscodeFormat &format )
 {
     DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
@@ -320,6 +322,8 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     delegate->setTracks( tracks );
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
+    delegate->setTranscodeFormat( format );
+
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
     delegate->show();
