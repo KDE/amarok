@@ -70,7 +70,7 @@ namespace PlaylistBrowserNS
 
         public:
             BiasAddWidget( const QString& caption, const QString& description, QWidget* parent = 0 );
-            
+
         private slots:
             void slotClicked();
 
@@ -102,7 +102,6 @@ namespace PlaylistBrowserNS
             void biasRemoved();
 
         protected: //protected data members make Mike cry :'(
-            KVBox* m_mainLayout;
             Dynamic::Bias* m_bias;
 
         private:

@@ -220,25 +220,22 @@ PlaylistBrowserNS::BiasAddWidget::slotClicked()
 
 PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
     : BiasBoxWidget( parent )
-    , m_mainLayout( new KVBox( this ) )
     , m_bias(b)
 {
     DEBUG_BLOCK
 
-    QHBoxLayout* hLayout = new QHBoxLayout( this );
+    QHBoxLayout* mainLayout = new QHBoxLayout( this );
 
     QToolButton* removeButton = new QToolButton( this );
     removeButton->setIcon( KIcon( "list-remove-amarok" ) );
     removeButton->setToolTip( i18n( "Remove this bias." ) );
     connect( removeButton, SIGNAL( clicked() ), SLOT( biasRemoved() ), Qt::QueuedConnection );
 
-    hLayout->addWidget( removeButton );
-    hLayout->setStretchFactor( removeButton, 0 );
-    hLayout->setAlignment( removeButton, Qt::AlignLeft | Qt::AlignVCenter );
+    mainLayout->addWidget( removeButton );
+    mainLayout->setStretchFactor( removeButton, 0 );
+    mainLayout->setAlignment( removeButton, Qt::AlignLeft | Qt::AlignVCenter );
 
-    hLayout->addWidget( m_mainLayout );
-
-    setLayout( hLayout );
+    setLayout( mainLayout );
 }
 
 void
@@ -287,7 +284,7 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 
     m_controlLayout->setColumnStretch( 0, 0 );
     m_controlLayout->setColumnStretch( 1, 0 );
-    m_controlLayout->setColumnStretch( 1, 1 );
+    m_controlLayout->setColumnStretch( 2, 1 );
 
     syncControlsToBias();
 
@@ -305,6 +302,21 @@ PlaylistBrowserNS::BiasGlobalWidget::~BiasGlobalWidget()
 }
 
 void
+PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
+{
+    int weight = (int)(m_gbias->weight() * 100.0);
+    m_weightSelection->setValue(weight);
+    weightChanged(weight); // the widget value might not have changed and thus the signal not fired
+
+    int index = m_fieldSelection->findData( (int)m_filter.field );
+    m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
+
+    makeCompareSelection();
+    makeValueSelection();
+    setValueSelection();
+}
+
+void
 PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
     m_gbias->setFilter( m_filter );
@@ -312,16 +324,6 @@ PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 
     emit biasChanged( m_bias );
 }
-
-void
-PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
-{
-    m_weightSelection->setValue( (int)(m_gbias->weight() * 100.0) );
-
-    int index = m_fieldSelection->findData( m_filter.field );
-    m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
-}
-
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeFieldSelection()
@@ -343,9 +345,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeFieldSelection()
     m_fieldSelection->addItem( i18n( "Last Played" ), Meta::valLastPlayed );
     m_fieldSelection->addItem( i18n( "Comment" ), Meta::valComment );
     m_fieldSelection->addItem( i18nc( "The name of the file this track is stored in", "Filename" ), Meta::valUrl );
-
     connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(fieldChanged(int)) );
-    m_fieldSelection->setCurrentIndex( 0 );
 }
 
 void
@@ -506,6 +506,7 @@ PlaylistBrowserNS::BiasGlobalWidget::setValueSelection()
     if( m_filter.condition == Dynamic::GlobalBias::Between && m_valueSelection2 )
     {
         m_andLabel = new QLabel( i18n( "and" ), m_controlFrame );
+        m_andLabel->setMinimumHeight( m_fieldSelection->minimumHeight()); // rating will look bad without this.
         m_controlLayout->addWidget( m_andLabel, 3, 1 );
 
         if( m_compareSelection )
@@ -538,7 +539,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection()
     m_compareSelection = new KComboBox();
     m_compareSelection->addItem( i18n( "Smaller Than" ),    (int)Dynamic::GlobalBias::LessThan );
     m_compareSelection->addItem( i18n( "Equal To" ),     (int)Dynamic::GlobalBias::Equals );
-    m_compareSelection->addItem( i18n( "Greater Than" ), (int)Dynamic::GlobalBias::GreaterThan );
+    m_compareSelection->addItem( i18n( "Larger Than" ), (int)Dynamic::GlobalBias::GreaterThan );
 
     // those fields can get a between comparation
     if( field == Meta::valYear ||
@@ -555,7 +556,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection()
     // and those fields can get an older than comparation
     if( field == Meta::valFirstPlayed ||
         field == Meta::valLastPlayed )
-        m_compareSelection->addItem( i18n( "older than" ),      (int)Dynamic::GlobalBias::OlderThan );
+        m_compareSelection->addItem( i18n( "Older Than" ),      (int)Dynamic::GlobalBias::OlderThan );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
             SLOT(compareChanged(int)) );
