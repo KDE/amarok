@@ -138,7 +138,9 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
     {
         return m_activePlaylistPtr;
     }
-    
+
+    m_activeUnsaved = false; // for now it seems that setting a new playlist always sets an unmodified one
+
     // delete old one
     m_activePlaylistPtr.clear();
 
