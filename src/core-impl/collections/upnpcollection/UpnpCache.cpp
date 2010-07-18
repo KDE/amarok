@@ -123,12 +123,14 @@ Meta::TrackPtr UpnpCache::getTrack( const KIO::UDSEntry &entry, bool refresh )
     genre->addTrack( track );
     track->setGenre( genre );
 
-    
-    QString yearStr = yearForDate( entry.stringValue( KIO::UPNP_DATE ) );
 
-    Meta::UpnpYearPtr year = Meta::UpnpYearPtr::staticCast( getYear( yearStr ) );
-    year->addTrack( track );
-    track->setYear( year );
+    // TODO this is plain WRONG! the UPNP_DATE will not have year of the album
+    // it will have year of addition to the collection
+    //QString yearStr = yearForDate( entry.stringValue( KIO::UPNP_DATE ) );
+    //
+    //Meta::UpnpYearPtr year = Meta::UpnpYearPtr::staticCast( getYear( yearStr ) );
+    //year->addTrack( track );
+    //track->setYear( year );
 
     m_trackMap.insert( uidUrl, Meta::TrackPtr::staticCast( track ) );
     return Meta::TrackPtr::staticCast( track );
