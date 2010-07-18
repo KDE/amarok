@@ -110,6 +110,7 @@ class UpnpQueryMaker : public QueryMaker
         void handleArtists( const KIO::UDSEntryList &list );
         void handleAlbums( const KIO::UDSEntryList &list );
         void handleTracks( const KIO::UDSEntryList &list );
+        void handleCustom( const KIO::UDSEntryList &list );
 
         // TODO
         // this is all silly and crude and engineered

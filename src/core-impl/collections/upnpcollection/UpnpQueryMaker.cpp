@@ -100,6 +100,16 @@ DEBUG_BLOCK
     KUrl baseUrl( m_collection->collectionId() );
     baseUrl.addQueryItem( "search", "1" );
 
+    if( m_queryType == Custom ) {
+        switch( m_returnFunction ) {
+            case Count:
+                m_query.reset();
+                m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
+                baseUrl.addQueryItem( "getCount", "1" );
+                break;
+        }
+    }
+
     QStringList queryList = m_query.queries();
     if( queryList.isEmpty() ) {
         emit queryDone();
@@ -448,6 +458,9 @@ void UpnpQueryMaker::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )
         case Track:
             handleTracks( list );
             break;
+        case Custom:
+            handleCustom( list );
+            break;
         default:
             break;
     // TODO handle remaining cases
@@ -504,6 +517,17 @@ DEBUG_BLOCK
         ret << m_collection->cache()->getTrack( entry );
     }
     emitProperResult( Meta::Track, ret );
+}
+
+void UpnpQueryMaker::handleCustom( const KIO::UDSEntryList &list )
+{
+    switch( m_returnFunction ) {
+        case Count:
+            Q_ASSERT( !list.empty() );
+            QString count = list.first().stringValue( KIO::UDSEntry::UDS_NAME );
+            emit newResultReady( m_collection->collectionId(), QStringList( count ) );
+            break;
+    }
 }
 
 void UpnpQueryMaker::slotDone( KJob *job )
