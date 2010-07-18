@@ -133,6 +133,9 @@ class UpnpQueryMaker : public QueryMaker
         int m_jobCount;
 
         Meta::DataList m_cacheEntries;
+
+        ReturnFunction m_returnFunction;
+        qint64 m_returnValue;
 };
 
 } //namespace Collections

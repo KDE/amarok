@@ -194,6 +194,7 @@ QueryMaker* UpnpQueryMaker::addReturnValue( qint64 value )
 {
 DEBUG_BLOCK
     debug() << this << "Add return value" << value;
+    m_returnValue = value;
     return this;
 }
 
@@ -202,6 +203,8 @@ QueryMaker* UpnpQueryMaker::addReturnFunction( ReturnFunction function, qint64 v
 DEBUG_BLOCK
     Q_UNUSED( function )
     debug() << this << "Return function with value" << value;
+    m_returnFunction = function;
+    m_returnValue = value;
     return this;
 }
 
