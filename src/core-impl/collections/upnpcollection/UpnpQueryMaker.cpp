@@ -364,6 +364,36 @@ QueryMaker* UpnpQueryMaker::excludeFilter( qint64 value, const QString &filter, 
 {
 DEBUG_BLOCK
     debug() << this << "Excluding filter" << value << filter << matchBegin << matchEnd;
+    QString cmpOp = "!=";
+    QString property = "dc:title";
+    switch( value ) {
+        case Meta::valTitle:
+            break;
+        case Meta::valArtist:
+        {
+            //if( m_queryType != Artist )
+                property = "upnp:artist";
+            break;
+        }
+        case Meta::valAlbum:
+        {
+            //if( m_queryType != Album )
+                property = "upnp:album";
+            break;
+        }
+        case Meta::valGenre:
+            property = "upnp:genre";
+            break;
+        default:
+            debug() << "UNSUPPORTED QUERY TYPE" << value;
+            break;
+    }
+
+    if( matchBegin || matchEnd )
+        cmpOp = "doesNotContain";
+
+    QString filterString = "( " + property + " " + cmpOp + " \"" + filter + "\" ) ";
+    m_query.addFilter( filterString );
     return this;
 }
 
