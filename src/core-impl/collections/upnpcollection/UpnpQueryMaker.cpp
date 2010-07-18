@@ -163,7 +163,7 @@ DEBUG_BLOCK
     m_queryType = type;
     QString typeString;
     switch( type ) {
-        case Artist:
+        /*case Artist:
             debug() << this << "Query type Artist";
             typeString = "( upnp:class derivedfrom \"object.container.person.musicArtist\" )";
             break;
@@ -178,7 +178,7 @@ DEBUG_BLOCK
         case Genre:
             debug() << this << "Query type Genre";
             typeString = "( upnp:class derivedfrom \"object.container.genre.musicGenre\" )";
-            break;
+            break;*/
         case Custom:
             debug() << this << "Query type Custom";
             break;
