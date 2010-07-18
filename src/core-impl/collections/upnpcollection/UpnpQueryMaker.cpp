@@ -60,7 +60,7 @@ do {\
 } while( 0 )
 
 bool UpnpQueryMaker::m_runningJob = false;
-QHash<QString, KIO::ListJob *> UpnpQueryMaker::m_inProgressQueries = QHash<QString, KIO::ListJob*>();
+QHash<KUrl, KIO::ListJob *> UpnpQueryMaker::m_inProgressQueries = QHash<KUrl, KIO::ListJob*>();
 
 UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     : QueryMaker()
@@ -96,6 +96,10 @@ QueryMaker* UpnpQueryMaker::reset()
 void UpnpQueryMaker::run()
 {
 DEBUG_BLOCK
+
+    KUrl baseUrl( m_collection->collectionId() );
+    baseUrl.addQueryItem( "search", "1" );
+
     QStringList queryList = m_query.queries();
     if( queryList.isEmpty() ) {
         emit queryDone();
@@ -109,9 +113,8 @@ DEBUG_BLOCK
         if( queryList[i].isEmpty() )
             continue;
         
-        QString url = m_collection->collectionId() + "?search=1&query=";
-
-        url += queryList[i];
+        KUrl url( baseUrl );
+        url.addQueryItem( "query", queryList[i] );
 
         debug() << this << "Running query" << url;
 

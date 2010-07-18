@@ -125,7 +125,7 @@ class UpnpQueryMaker : public QueryMaker
 
         static bool m_runningJob;
         // TODO split this off into a class
-        static QHash<QString, KIO::ListJob*> m_inProgressQueries;
+        static QHash<KUrl, KIO::ListJob*> m_inProgressQueries;
 
         UpnpQuery m_query;
 
