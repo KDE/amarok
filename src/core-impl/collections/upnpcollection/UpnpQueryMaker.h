@@ -112,10 +112,7 @@ class UpnpQueryMaker : public QueryMaker
         void handleTracks( const KIO::UDSEntryList &list );
         void handleCustom( const KIO::UDSEntryList &list );
 
-        // TODO
-        // this is all silly and crude and engineered
-        // on an experimental purpose for the first queries
-        // just to understand how it works.
+        QString propertyForValue( qint64 value );
 
         UpnpSearchCollection *m_collection;
 

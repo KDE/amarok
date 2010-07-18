@@ -327,30 +327,9 @@ DEBUG_BLOCK
     // ( upnp:class = audioItem ) and ( upnp:artist contains "filter" );
     // ...
     // so who adds the second query?
-// TODO add generic FILTER
-    QString property = "dc:title";
-    switch( value ) {
-        case Meta::valTitle:
-            break;
-        case Meta::valArtist:
-        {
-            //if( m_queryType != Artist )
-                property = "upnp:artist";
-            break;
-        }
-        case Meta::valAlbum:
-        {
-            //if( m_queryType != Album )
-                property = "upnp:album";
-            break;
-        }
-        case Meta::valGenre:
-            property = "upnp:genre";
-            break;
-        default:
-            debug() << "UNSUPPORTED QUERY TYPE" << value;
-            break;
-    }
+    QString property = propertyForValue( value );
+    if( property.isNull() )
+        return this;
 
     if( matchBegin || matchEnd )
         cmpOp = "contains";
@@ -365,29 +344,9 @@ QueryMaker* UpnpQueryMaker::excludeFilter( qint64 value, const QString &filter, 
 DEBUG_BLOCK
     debug() << this << "Excluding filter" << value << filter << matchBegin << matchEnd;
     QString cmpOp = "!=";
-    QString property = "dc:title";
-    switch( value ) {
-        case Meta::valTitle:
-            break;
-        case Meta::valArtist:
-        {
-            //if( m_queryType != Artist )
-                property = "upnp:artist";
-            break;
-        }
-        case Meta::valAlbum:
-        {
-            //if( m_queryType != Album )
-                property = "upnp:album";
-            break;
-        }
-        case Meta::valGenre:
-            property = "upnp:genre";
-            break;
-        default:
-            debug() << "UNSUPPORTED QUERY TYPE" << value;
-            break;
-    }
+    QString property = propertyForValue( value );
+    if( property.isNull() )
+        return this;
 
     if( matchBegin || matchEnd )
         cmpOp = "doesNotContain";
@@ -621,6 +580,30 @@ DEBUG_BLOCK
         }
         debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
         emit queryDone();
+    }
+}
+
+QString UpnpQueryMaker::propertyForValue( qint64 value )
+{
+    switch( value ) {
+        case Meta::valTitle:
+            return "dc:title";
+        case Meta::valArtist:
+        {
+            //if( m_queryType != Artist )
+                return "upnp:artist";
+        }
+        case Meta::valAlbum:
+        {
+            //if( m_queryType != Album )
+                return "upnp:album";
+        }
+        case Meta::valGenre:
+            return "upnp:genre";
+            break;
+        default:
+            debug() << "UNSUPPORTED QUERY TYPE" << value;
+            return QString();
     }
 }
 
