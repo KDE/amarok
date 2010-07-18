@@ -65,7 +65,8 @@ void UpnpQuery::endAndOr()
 {
     m_andStack.pop();
 
-    Q_ASSERT( !m_andStack.empty() );
+    if( m_andStack.empty() )
+        return;
 
     if( m_andStack.top() ) {
         ExpressionList top = m_stack.pop();
