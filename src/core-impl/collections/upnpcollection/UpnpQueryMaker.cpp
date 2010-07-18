@@ -150,7 +150,7 @@ DEBUG_BLOCK
 // TODO allow all, based on search capabilities
 // which should be passed on by the factory
     m_queryType = type;
-/*    QString typeString;
+    QString typeString;
     switch( type ) {
         case Artist:
             debug() << this << "Query type Artist";
@@ -170,16 +170,16 @@ DEBUG_BLOCK
             break;
         case Custom:
             debug() << this << "Query type Custom";
-// TODO
             break;
         default:
             debug() << this << "Default case: Query type" << typeString;
             break;
     }
-    if( !typeString.isNull() )
-        m_query.setType( typeString );*/
+    if( typeString.isNull() )
+        m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
+    else
+        m_query.setType( typeString );
 
-    m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
     return this;
 }
 
