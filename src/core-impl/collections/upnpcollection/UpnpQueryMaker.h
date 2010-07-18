@@ -124,7 +124,6 @@ class UpnpQueryMaker : public QueryMaker
         bool m_asDataPtrs;
 
         static bool m_runningJob;
-        static int m_count;
         // TODO split this off into a class
         static QHash<QString, KIO::ListJob*> m_inProgressQueries;
 

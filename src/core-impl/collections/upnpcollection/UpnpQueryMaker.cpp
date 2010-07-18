@@ -60,20 +60,17 @@ do {\
 } while( 0 )
 
 bool UpnpQueryMaker::m_runningJob = false;
-int UpnpQueryMaker::m_count = 0;
 QHash<QString, KIO::ListJob *> UpnpQueryMaker::m_inProgressQueries = QHash<QString, KIO::ListJob*>();
 
 UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     : QueryMaker()
     , m_collection( collection )
 {
-    m_count++;
     reset();
 }
 
 UpnpQueryMaker::~UpnpQueryMaker()
 {
-    m_count--;
 }
 
 
