@@ -106,7 +106,7 @@ PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
 }
 
 void
-PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
+PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int category )
 {
     bool newCategory = false;
     if( !m_providerMap.uniqueKeys().contains( category ) )
@@ -180,7 +180,8 @@ void
 PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
 {
     foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
-        removePlaylist( playlist, provider->category() );
+        if( playlist->provider() && playlist->provider() == provider )
+            removePlaylist( playlist, provider->category() );
 }
 
 void
@@ -207,6 +208,8 @@ PlaylistManager::slotUpdated()
     if( !provider )
         return;
 
+    //forcefull reload all the providers playlists.
+    //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
     removePlaylists( provider );
     loadPlaylists( provider, provider->category() );
     emit( updated() );
