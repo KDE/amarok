@@ -50,16 +50,25 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
     }
 
-    char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
-    char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
-
-    if( !QFile::exists( defaultsFile ) )
+    if( !Amarok::config( "MySQLe" ).readEntry( "keepUserMyCnf", false ) )
     {
         QFile df( defaultsFile );
-        if ( !df.open( QIODevice::WriteOnly ) ) {
+        if ( !df.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) {
             error() << "Unable to open " << defaultsFile << " for writing.";
             reportError( "init" );
         }
+        QTextStream out( &df );
+        out << "[embedded]" << endl;
+        out << "datadir = " << databaseDir.toAscii().data() << endl;
+        // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
+        // functions, such as FULLTEXT indexing.
+        out << "default-storage-engine = MyISAM" << endl;
+        out << "loose-innodb = 0" << endl;
+        out << "skip-grant-tables = 1" << endl;
+        out << "myisam-recover = FORCE" << endl;
+        out << "character-set-server = utf8" << endl;
+        out << "collation-server = utf8_bin" << endl;
+        df.close();
     }
 
     if( !QFile::exists( databaseDir ) )
@@ -68,27 +77,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 9;
-    char **server_options = new char* [ num_elements + 1 ];
-    server_options[0] = const_cast<char*>( "amarokmysqld" );
-    server_options[1] = defaultsLine;
-    server_options[2] = databaseLine;
-    // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
-    // functions, such as FULLTEXT indexing.
-    server_options[3] = const_cast<char*>( "--default-storage-engine=MYISAM" );
-    server_options[4] = const_cast<char*>( "--loose-skip-innodb" );
-    server_options[5] = const_cast<char*>( "--skip-grant-tables" );
-    server_options[6] = const_cast<char*>( "--myisam-recover=FORCE" );
-    server_options[7] = const_cast<char*>( "--character-set-server=utf8" );
-    server_options[8] = const_cast<char*>( "--collation-server=utf8_bin" );
-    server_options[num_elements] = 0;
-
-    char **server_groups = new char* [ 3 ];
-    server_groups[0] = const_cast<char*>( "amarokserver" );
-    server_groups[1] = const_cast<char*>( "amarokclient" );
-    server_groups[2] = 0;
-
-    if( mysql_library_init(num_elements, server_options, server_groups) != 0 )
+    setenv( "MYSQL_HOME", Amarok::saveLocation().toAscii().data(), 1 );
+    if( mysql_library_init( 0 , 0, 0 ) != 0 )
     {
         error() << "MySQL library initialization failed.";
         reportError( "init" );
@@ -96,10 +86,6 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     }
 
     m_db = mysql_init( NULL );
-    delete [] server_options;
-    delete [] server_groups;
-    delete [] defaultsLine;
-    delete [] databaseLine;
 
     if( !m_db )
     {
