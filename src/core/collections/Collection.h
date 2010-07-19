@@ -127,12 +127,7 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
             @return A querymaker that belongs to this collection.
         */
         virtual QueryMaker * queryMaker() = 0;
-        /**
-           The collection's UserPlaylistProvider
-           @return The UserPlaylistProvider that belongs to this collection.
 
-        */
-        virtual Playlists::UserPlaylistProvider* userPlaylistProvider() { return 0; }
         /**
             Begin a full scan on the collection.  This is not valid for all collections.
         */
@@ -145,7 +140,7 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
         /**
             Stop a scan on this collection.  This is not valid for all collections
         */
-        virtual void stopScan() {};
+        virtual void stopScan() {}
 
         /**
             The protocol of uids coming from this collection.
