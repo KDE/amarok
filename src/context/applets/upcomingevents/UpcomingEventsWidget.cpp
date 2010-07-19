@@ -150,9 +150,9 @@ void
 UpcomingEventsWidget::setParticipants( const QString &participants )
 {
     QFont font;
-    if( participants == "No other participants" )
+    if( participants.isEmpty() )
     {
-        m_participants->setText( participants );
+        m_participants->setText( i18n( "No other participants" ) );
         font.setItalic( true );
         m_participants->setFont( font );
     }

@@ -38,6 +38,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Make "No other participants" in the events applet translatable.
+      Patch by Jan Janssen. (BR 235311)
     * Fix track number on DAAP shares. Patch by Silvio Frischknecht. (BR 235030)
     * Fixed filtering by rating in the playlist. (BR 240293)
     * The scripts categories are now translatable. (BR 240563)
