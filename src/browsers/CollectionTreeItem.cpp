@@ -212,7 +212,8 @@ CollectionTreeItem::data( int role ) const
                 m_isCounting = true;
 
                 Collections::QueryMaker *qm = m_parentCollection->queryMaker();
-                connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
+                connect( qm, SIGNAL( newResultReady(QString, QStringList) ),
+                         SLOT( tracksCounted(QString, QStringList) ) );
 
                 qm->setAutoDelete( true )
                   ->setQueryType( Collections::QueryMaker::Custom )
