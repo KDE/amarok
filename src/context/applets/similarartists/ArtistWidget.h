@@ -22,13 +22,10 @@
 #include "network/NetworkAccessManagerProxy.h"
 #include "SimilarArtist.h"
 
-//Kde
 #include <KUrl>
 #include <Plasma/ScrollWidget>
 
-//Qt
-#include <QWidget>
-#include <QString>
+#include <QTextLayout>
 
 class QGraphicsGridLayout;
 class QGraphicsLinearLayout;
@@ -61,6 +58,8 @@ public:
      */
     ~ArtistWidget();
 
+    virtual void paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
     /**
      * Pointer to the similar artist this widget is associated with
      */
@@ -91,9 +90,9 @@ private:
     void queryArtist();    //!< Query collection about artist
 
     /**
-     * Elide the artist description depending on the widget size
+     * Layout the text for artist's description
      */
-    void elideArtistDescription();
+    void layoutDescription();
 
     /**
      * Layout for the formatting of the widget contents
@@ -153,12 +152,17 @@ private:
     /**
      * Description of the artist
      */
-    Plasma::Label *m_desc;
+    QGraphicsWidget *m_desc;
 
     /**
-     * The description in text of the artist
+     * Text layout for the artist description
      */
-    QString m_descString;
+    QTextLayout m_descLayout;
+
+    /**
+     * Whether all of artist description is shown
+     */
+    bool m_descCropped;
 
     const SimilarArtistPtr m_artist;
 

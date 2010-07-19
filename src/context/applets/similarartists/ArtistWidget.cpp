@@ -26,13 +26,13 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 
 //KDE
-#include <KHBox>
+#include <KColorUtils>
 #include <KGlobalSettings>
 #include <KIcon>
-#include <KPushButton>
 #include <Plasma/Label>
 #include <Plasma/PushButton>
 
@@ -42,8 +42,10 @@
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
-#include <QPushButton>
+#include <QPainter>
 #include <QTextDocument>
+
+#include <cmath>
 
 ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
                             QGraphicsWidget *parent, Qt::WindowFlags wFlags )
@@ -62,6 +64,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_match     = new QLabel;
     m_topTrackLabel = new QLabel;
     m_desc      = new Plasma::Label( this );
+    m_desc      = new QGraphicsWidget( this );
 
     QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *matchProxy    = new QGraphicsProxyWidget( this );
@@ -82,14 +85,22 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_match->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_nameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
     m_topTrackLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-    m_desc->setAlignment( Qt::AlignLeft );
 
     m_nameLabel->setWordWrap( false );
     m_match->setWordWrap( false );
     m_topTrackLabel->setWordWrap( false );
+
+    m_match->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_topTrackLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_match->setMinimumWidth( 10 );
     m_topTrackLabel->setMinimumWidth( 10 );
     m_nameLabel->setMinimumWidth( 10 );
+
+    QFontMetricsF fm( font() );
+    m_desc->setMinimumHeight( fm.lineSpacing() * 6 );
+    m_desc->setMaximumHeight( fm.lineSpacing() * 6 );
+    m_desc->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_descLayout.setCacheEnabled( true );
 
     QFont artistFont;
     artistFont.setPointSize( artistFont.pointSize() + 2 );
@@ -236,17 +247,17 @@ ArtistWidget::setDescription( const QString &description )
 {
     if( description.isEmpty() )
     {
-        m_desc->setText( i18n( "No description available in your language" ) );
-        m_descString.clear(); //we delete the precedent artist description
+        m_descLayout.clearLayout();
+        m_descLayout.setText( i18n( "No description available in your language" ) );
     }
     else
     {
-        QTextDocument descriptionText;
-        descriptionText.setHtml( description );
-        QString descriptionString = descriptionText.toPlainText();
-        m_descString = descriptionString;
-        elideArtistDescription();
+        QTextDocument doc;
+        doc.setHtml( description );
+        QString plain = doc.toPlainText();
+        m_descLayout.setText( plain );
     }
+    layoutDescription();
 }
 
 void
@@ -283,31 +294,68 @@ ArtistWidget::setTopTrack( const QString &topTrack )
 void
 ArtistWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    Q_UNUSED(event)
-    elideArtistDescription();
     QGraphicsWidget::resizeEvent( event );
+    layoutDescription();
     QFontMetrics fm( m_match->font() );
     m_match->setMaximumWidth( fm.width( m_match->text() ) );
 }
 
 void
-ArtistWidget::elideArtistDescription()
+ArtistWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    if( !m_descString.isEmpty() )
+    QGraphicsWidget::paint( p, option, widget );
+    m_descLayout.draw( p, m_desc->geometry().topLeft() );
+
+    // fade out the last bit of text if not all of the description is shown
+    if( m_descCropped && m_descLayout.lineCount() > 0 )
     {
-        QFontMetricsF fm( font() );
-        qreal nbWidth     = m_desc->nativeWidget()->width();
-        qreal nbHeight    = m_desc->nativeWidget()->height() / ( fm.height() + fm.leading() );
-        qreal widthTot    = nbWidth * nbHeight - fm.lineSpacing() * ( nbHeight - 1 );
-        QString stringTmp = fm.elidedText( m_descString, Qt::ElideRight, widthTot );
+        QFontMetricsF fm( m_desc->font() );
+        QRectF rect = fm.boundingRect( m_desc->geometry(), Qt::AlignCenter, "placeholder" );
+        rect.moveTo( m_desc->geometry().bottomRight() );
+        QTextLine lastLine = m_descLayout.lineAt( m_descLayout.lineCount() - 1 );
+        qreal xoffset = lastLine.naturalTextWidth() - lastLine.width() - rect.width();
+        rect = rect.translated( xoffset, -rect.height() );
 
-        //we delete nbHeigth words because of the wordWrap action
-        for( int i = 0; i < nbHeight; ++i )
-            stringTmp = stringTmp.left( stringTmp.lastIndexOf(' ') );
+        QColor bgColor = The::paletteHandler()->highlightColor( 0.4, 1.05 );
+        bgColor.setAlphaF( bgColor.alphaF() * 0.5 );
+        QColor winColor = The::paletteHandler()->palette().window().color();
+        QColor fadeColor = KColorUtils::overlayColors( winColor, bgColor );
 
-        stringTmp.append( "..." );
-        m_desc->setText( stringTmp );
+        QLinearGradient alphaGradient( 0, 0, 1, 0 );
+        alphaGradient.setCoordinateMode( QGradient::ObjectBoundingMode );
+        alphaGradient.setColorAt( 0, QColor(0, 0, 0, 0) );
+        alphaGradient.setColorAt( 1, fadeColor );
+        p->fillRect( rect, alphaGradient );
     }
+}
+
+void
+ArtistWidget::layoutDescription()
+{
+    QFontMetricsF fm( m_desc->font() );
+    QRectF geom = m_desc->geometry();
+    int maxLines = floor( m_desc->size().height() / fm.lineSpacing() );
+    int leading = fm.leading();
+    qreal height = 0;
+    m_descCropped = true;
+    m_descLayout.clearLayout();
+    m_descLayout.beginLayout();
+    while( m_descLayout.lineCount() < maxLines )
+    {
+        QTextLine line = m_descLayout.createLine();
+        if( !line.isValid() )
+        {
+            m_descCropped = false;
+            break;
+        }
+
+        line.setLineWidth( geom.width() );
+        height += leading;
+        line.setPosition( QPointF(0, height) );
+        height += line.height();
+    }
+    m_descLayout.endLayout();
+    update();
 }
 
 void
