@@ -53,7 +53,7 @@ PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
 {
 
     //Turn the QVariantList of the source into a comma separated string, but only for the real items
-    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn
+    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn
         && role == Qt::DisplayRole )
     {
         QVariant indexData = QtGroupingProxy::data( idx, role );
@@ -65,7 +65,7 @@ PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
     }
 
     if( idx.column() == 0 && isGroup( idx ) && role ==
-        PlaylistBrowserNS::MetaPlaylistModel::ActionRole )
+        PlaylistBrowserNS::PlaylistBrowserModel::ActionRole )
     {
         //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway

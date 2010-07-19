@@ -136,7 +136,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
 
     m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
-                                                      MetaPlaylistModel::ProviderColumn );
+                                                      PlaylistBrowserModel::ProviderColumn );
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
@@ -541,7 +541,7 @@ PodcastView::mousePressEvent( QMouseEvent *event )
     }
 
     const int actionCount =
-            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
     if( actionCount > 0 )
     {
         const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
@@ -566,14 +566,14 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
     if( !index.parent().isValid() ) // not a root element, don't bother checking actions
     {
         const int actionCount =
-            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
         if( actionCount > 0 )
         {
             const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
             if( rect.contains( event->pos() ) )
             {
                 QVariantList variantList =
-                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+                        index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
                 if( variantList.isEmpty() )
                     return;
 
@@ -649,7 +649,7 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
     else
     {
         QList<QAction *> actions =
-         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+         index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
         if( actions.count() > 0 )
         {
             //HACK execute the first action assuming it's load
@@ -716,7 +716,7 @@ PodcastView::actionsFor( QModelIndexList indexes )
     foreach( QModelIndex idx, indexes )
     {
         QList<QAction *> idxActions =
-         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+         idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
         //only add unique actions model is responsible for making them unique
         foreach( QAction *action, idxActions )
         {

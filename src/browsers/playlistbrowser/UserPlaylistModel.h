@@ -17,7 +17,7 @@
 #ifndef USERPLAYLISTMODEL_H
 #define USERPLAYLISTMODEL_H
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 
@@ -33,7 +33,7 @@ namespace PlaylistBrowserNS {
 /**
         @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class UserModel : public MetaPlaylistModel
+class UserModel : public PlaylistBrowserModel
 {
     Q_OBJECT
     public:

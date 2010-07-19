@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -34,7 +34,7 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
     return lhs->prettyName().toLower() < rhs->prettyName().toLower();
 }
 
-MetaPlaylistModel::MetaPlaylistModel( int playlistCategory )
+PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
     //common, unconditional actions
@@ -61,10 +61,10 @@ MetaPlaylistModel::MetaPlaylistModel( int playlistCategory )
 }
 
 QVariant
-MetaPlaylistModel::data( const QModelIndex &index, int role ) const
+PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 {
     //Special negative index to support empty provider groups (PlaylistsByProviderProxy)
-    if( index.row() == -1 && index.column() == MetaPlaylistModel::ProviderColumn )
+    if( index.row() == -1 && index.column() == PlaylistBrowserModel::ProviderColumn )
     {
         QVariantList displayList;
         QVariantList iconList;
@@ -97,9 +97,9 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
             case DescriptionRole:
             case Qt::ToolTipRole: return displayList;
             case Qt::DecorationRole: return iconList;
-            case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
-            case MetaPlaylistModel::ActionRole: return providerActionsList;
-            case MetaPlaylistModel::ByLineRole: return providerByLineList;
+            case PlaylistBrowserModel::ActionCountRole: return providerActionsCountList;
+            case PlaylistBrowserModel::ActionRole: return providerActionsList;
+            case PlaylistBrowserModel::ByLineRole: return providerByLineList;
             case Qt::EditRole: return QVariant();
         }
     }
@@ -129,7 +129,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
     {
         switch( index.column() )
         {
-            case MetaPlaylistModel::PlaylistColumn: //playlist
+            case PlaylistBrowserModel::PlaylistColumn: //playlist
             {
                 food = QVariant::fromValue( playlist );
                 name = playlist->prettyName();
@@ -137,7 +137,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
                 icon = KIcon( "amarok_playlist" );
                 break;
             }
-            case MetaPlaylistModel::LabelColumn: //group
+            case PlaylistBrowserModel::LabelColumn: //group
             {
                 if( !playlist->groups().isEmpty() )
                 {
@@ -147,7 +147,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
                 break;
             }
 
-            case MetaPlaylistModel::ProviderColumn: //source
+            case PlaylistBrowserModel::ProviderColumn: //source
             {
                 QList<Playlists::PlaylistProvider *> providers =
                         The::playlistManager()->getProvidersForPlaylist( playlist );
@@ -180,9 +180,9 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
                     case DescriptionRole:
                     case Qt::ToolTipRole: return descriptionData;
                     case Qt::DecorationRole: return iconData;
-                    case MetaPlaylistModel::ByLineRole:
+                    case PlaylistBrowserModel::ByLineRole:
                         return playlistCountData;
-                    case MetaPlaylistModel::ActionRole:
+                    case PlaylistBrowserModel::ActionRole:
                         return providerActionsData;
                     }
                 }
@@ -211,12 +211,12 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
         case DescriptionRole:
         case Qt::ToolTipRole: return description;
         case Qt::DecorationRole: return QVariant( icon );
-        case MetaPlaylistModel::ByLineRole:
+        case PlaylistBrowserModel::ByLineRole:
             return i18ncp( "number of playlists from one source",
                            "One Playlist", "%1 playlists",
                            playlistCount );
-        case MetaPlaylistModel::ActionRole:
-            return QVariant::fromValue( index.column() == MetaPlaylistModel::ProviderColumn ?
+        case PlaylistBrowserModel::ActionRole:
+            return QVariant::fromValue( index.column() == PlaylistBrowserModel::ProviderColumn ?
                     providerActions : actionsFor( index ) );
 
         default: return QVariant();
@@ -224,7 +224,7 @@ MetaPlaylistModel::data( const QModelIndex &index, int role ) const
 }
 
 bool
-MetaPlaylistModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
     if( !idx.isValid() )
         return false;
@@ -267,7 +267,7 @@ MetaPlaylistModel::setData( const QModelIndex &idx, const QVariant &value, int r
 }
 
 QModelIndex
-MetaPlaylistModel::index( int row, int column, const QModelIndex &parent) const
+PlaylistBrowserModel::index( int row, int column, const QModelIndex &parent) const
 {
     if( !parent.isValid() )
     {
@@ -290,7 +290,7 @@ MetaPlaylistModel::index( int row, int column, const QModelIndex &parent) const
 }
 
 QModelIndex
-MetaPlaylistModel::parent( const QModelIndex &index ) const
+PlaylistBrowserModel::parent( const QModelIndex &index ) const
 {
     if( IS_TRACK(index) )
     {
@@ -302,7 +302,7 @@ MetaPlaylistModel::parent( const QModelIndex &index ) const
 }
 
 int
-MetaPlaylistModel::rowCount( const QModelIndex &parent ) const
+PlaylistBrowserModel::rowCount( const QModelIndex &parent ) const
 {
     if( parent.column() > 0 )
         return 0;
@@ -321,7 +321,7 @@ MetaPlaylistModel::rowCount( const QModelIndex &parent ) const
 }
 
 int
-MetaPlaylistModel::columnCount( const QModelIndex &parent ) const
+PlaylistBrowserModel::columnCount( const QModelIndex &parent ) const
 {
     if( !parent.isValid() ) //for playlists (children of root)
         return 3; //name, group and provider
@@ -331,15 +331,15 @@ MetaPlaylistModel::columnCount( const QModelIndex &parent ) const
 }
 
 Qt::ItemFlags
-MetaPlaylistModel::flags( const QModelIndex &idx ) const
+PlaylistBrowserModel::flags( const QModelIndex &idx ) const
 {
     //Both providers and groups can be empty. QtGroupingProxy makes empty groups from the data in
     //the rootnode (here an invalid QModelIndex).
     //TODO: accept drops and allow drags only if provider is writable.
-    if( idx.column() == MetaPlaylistModel::ProviderColumn )
+    if( idx.column() == PlaylistBrowserModel::ProviderColumn )
         return Qt::ItemIsEnabled;
 
-    if( idx.column() == MetaPlaylistModel::LabelColumn )
+    if( idx.column() == PlaylistBrowserModel::LabelColumn )
         return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
     if( !idx.isValid() )
@@ -353,15 +353,15 @@ MetaPlaylistModel::flags( const QModelIndex &idx ) const
            Qt::ItemIsDropEnabled;
 }
 QVariant
-MetaPlaylistModel::headerData( int section, Qt::Orientation orientation, int role ) const
+PlaylistBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
     if( orientation == Qt::Horizontal && role == Qt::DisplayRole )
     {
         switch( section )
         {
-            case MetaPlaylistModel::PlaylistColumn: return i18n("Name");
-            case MetaPlaylistModel::LabelColumn: return i18n("Group");
-            case MetaPlaylistModel::ProviderColumn: return i18n("Source");
+            case PlaylistBrowserModel::PlaylistColumn: return i18n("Name");
+            case PlaylistBrowserModel::LabelColumn: return i18n("Group");
+            case PlaylistBrowserModel::ProviderColumn: return i18n("Source");
             default: return QVariant();
         }
     }
@@ -370,7 +370,7 @@ MetaPlaylistModel::headerData( int section, Qt::Orientation orientation, int rol
 }
 
 QStringList
-MetaPlaylistModel::mimeTypes() const
+PlaylistBrowserModel::mimeTypes() const
 {
     QStringList ret;
     ret << AmarokMimeData::PLAYLIST_MIME;
@@ -379,7 +379,7 @@ MetaPlaylistModel::mimeTypes() const
 }
 
 QMimeData*
-MetaPlaylistModel::mimeData( const QModelIndexList &indices ) const
+PlaylistBrowserModel::mimeData( const QModelIndexList &indices ) const
 {
     AmarokMimeData* mime = new AmarokMimeData();
 
@@ -401,7 +401,7 @@ MetaPlaylistModel::mimeData( const QModelIndexList &indices ) const
 }
 
 bool
-MetaPlaylistModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column,
+PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column,
                                  const QModelIndex &parent )
 {
     Q_UNUSED( column );
@@ -447,7 +447,7 @@ MetaPlaylistModel::dropMimeData( const QMimeData *data, Qt::DropAction action, i
 }
 
 void
-MetaPlaylistModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+PlaylistBrowserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                           int position )
 {
     Q_UNUSED( track );
@@ -463,7 +463,7 @@ MetaPlaylistModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr t
 }
 
 void
-MetaPlaylistModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
@@ -477,7 +477,7 @@ MetaPlaylistModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 }
 
 void
-MetaPlaylistModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
+PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 {
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
@@ -497,7 +497,7 @@ MetaPlaylistModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 }
 
 void
-MetaPlaylistModel::slotUpdate()
+PlaylistBrowserModel::slotUpdate()
 {
     emit layoutAboutToBeChanged();
 
@@ -511,7 +511,7 @@ MetaPlaylistModel::slotUpdate()
 }
 
 Playlists::PlaylistList
-MetaPlaylistModel::loadPlaylists()
+PlaylistBrowserModel::loadPlaylists()
 {
     Playlists::PlaylistList playlists =
             The::playlistManager()->playlistsOfCategory( m_playlistCategory );
@@ -531,7 +531,7 @@ MetaPlaylistModel::loadPlaylists()
 }
 
 void
-MetaPlaylistModel::slotLoad()
+PlaylistBrowserModel::slotLoad()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
@@ -545,7 +545,7 @@ MetaPlaylistModel::slotLoad()
 }
 
 void
-MetaPlaylistModel::slotAppend()
+PlaylistBrowserModel::slotAppend()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
@@ -559,7 +559,7 @@ MetaPlaylistModel::slotAppend()
 }
 
 Meta::TrackList
-MetaPlaylistModel::tracksFromIndexes( const QModelIndexList &list ) const
+PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
 {
     Meta::TrackList tracks;
     foreach( const QModelIndex &index, list )
@@ -573,7 +573,7 @@ MetaPlaylistModel::tracksFromIndexes( const QModelIndexList &list ) const
 }
 
 Meta::TrackPtr
-MetaPlaylistModel::trackFromIndex( const QModelIndex &idx ) const
+PlaylistBrowserModel::trackFromIndex( const QModelIndex &idx ) const
 {
     if( !idx.isValid() || !IS_TRACK(idx) )
         return Meta::TrackPtr();
@@ -590,7 +590,7 @@ MetaPlaylistModel::trackFromIndex( const QModelIndex &idx ) const
 }
 
 Playlists::PlaylistPtr
-MetaPlaylistModel::playlistFromIndex( const QModelIndex &index ) const
+PlaylistBrowserModel::playlistFromIndex( const QModelIndex &index ) const
 {
     if( !index.isValid() )
         return Playlists::PlaylistPtr();
@@ -599,7 +599,7 @@ MetaPlaylistModel::playlistFromIndex( const QModelIndex &index ) const
 }
 
 Playlists::PlaylistProvider *
-MetaPlaylistModel::providerForIndex( const QModelIndex &idx ) const
+PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
         return 0;
@@ -617,7 +617,7 @@ MetaPlaylistModel::providerForIndex( const QModelIndex &idx ) const
 }
 
 QActionList
-MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
+PlaylistBrowserModel::actionsFor( const QModelIndex &idx ) const
 {
     //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
     QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
@@ -645,7 +645,7 @@ MetaPlaylistModel::actionsFor( const QModelIndex &idx ) const
 }
 
 Playlists::PlaylistProvider *
-MetaPlaylistModel::getProviderByName( const QString &name )
+PlaylistBrowserModel::getProviderByName( const QString &name )
 {
     QList<Playlists::PlaylistProvider *> providers =
             The::playlistManager()->providersForCategory( m_playlistCategory );

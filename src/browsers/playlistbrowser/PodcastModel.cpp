@@ -64,7 +64,7 @@ PlaylistBrowserNS::PodcastModel::destroy()
 }
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
-    : MetaPlaylistModel( PlaylistManager::PodcastChannel )
+    : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
  , m_setNewAction( 0 )
 {
     s_instance = this;
@@ -200,7 +200,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
             {
                 switch( idx.column() )
                 {
-                    case MetaPlaylistModel::PlaylistColumn:
+                    case PlaylistBrowserModel::PlaylistColumn:
                         return pmc->title();
 
                     case SubtitleColumn:
@@ -250,14 +250,14 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case ShortDescriptionRole:
             {
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistColumn )
                     return pmc->description();
                 break;
             }
 
             case ByLineRole:
             {
-                if( idx.column() == MetaPlaylistModel::ProviderColumn )
+                if( idx.column() == PlaylistBrowserModel::ProviderColumn )
                 {
                     Playlists::PlaylistProvider *provider = providerForIndex( idx );
                     if( provider )
@@ -270,21 +270,21 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case Qt::DecorationRole:
             {
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistColumn )
                         return icon( pmc );
                 break;
             }
         }
     }
 
-    return MetaPlaylistModel::data( idx, role );
+    return PlaylistBrowserModel::data( idx, role );
 }
 
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
     //TODO: implement setNew.
-    return MetaPlaylistModel::setData( idx, value, role );
+    return PlaylistBrowserModel::setData( idx, value, role );
 }
 
 int
@@ -436,7 +436,7 @@ PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
 QActionList
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 {
-    QActionList actions = MetaPlaylistModel::actionsFor( idx );
+    QActionList actions = PlaylistBrowserModel::actionsFor( idx );
 
     /* by default a list of podcast episodes can only be changed to isNew = false, except
        when all selected episodes are the same state */

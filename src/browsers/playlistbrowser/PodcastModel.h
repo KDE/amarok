@@ -20,7 +20,7 @@
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastProvider.h"
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
@@ -33,7 +33,7 @@ class OpmlOutline;
 namespace PlaylistBrowserNS {
 
 enum {
-    ShortDescriptionRole = MetaPlaylistModel::CustomRoleOffset,
+    ShortDescriptionRole = PlaylistBrowserModel::CustomRoleOffset,
     LongDescriptionRole
 };
 
@@ -41,7 +41,7 @@ enum {
    be fetched at once with itemData() */
 enum
 {
-    SubtitleColumn = MetaPlaylistModel::CustomColumOffset,
+    SubtitleColumn = PlaylistBrowserModel::CustomColumOffset,
     AuthorColumn,
     KeywordsColumn,
     FilesizeColumn, // episode only
@@ -54,7 +54,7 @@ enum
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public MetaPlaylistModel
+class PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
     public:

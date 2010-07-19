@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_METAPLAYLISTMODEL_H
-#define AMAROK_METAPLAYLISTMODEL_H
+#ifndef AMAROK_PLAYLISTBROWSERMODEL_H
+#define AMAROK_PLAYLISTBROWSERMODEL_H
 
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
@@ -39,7 +39,7 @@ namespace PlaylistBrowserNS {
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class MetaPlaylistModel : public QAbstractItemModel,
+class PlaylistBrowserModel : public QAbstractItemModel,
                           public Playlists::PlaylistObserver
 {
     Q_OBJECT
@@ -60,8 +60,8 @@ class MetaPlaylistModel : public QAbstractItemModel,
             CustomRoleOffset //first role that can be used by sublasses for their own data
         };
 
-        MetaPlaylistModel( int PlaylistCategory );
-        virtual ~MetaPlaylistModel() {}
+        PlaylistBrowserModel( int PlaylistCategory );
+        virtual ~PlaylistBrowserModel() {}
 
         /* QAbstractItemModel methods */
         virtual QVariant data( const QModelIndex &index, int role ) const;
@@ -119,4 +119,4 @@ class MetaPlaylistModel : public QAbstractItemModel,
 //we store these in a QVariant for the load and append actions
 Q_DECLARE_METATYPE( QModelIndexList )
 
-#endif //AMAROK_METAPLAYLISTMODEL_H
+#endif //AMAROK_PLAYLISTBROWSERMODEL_H

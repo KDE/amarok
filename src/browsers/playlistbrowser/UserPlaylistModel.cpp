@@ -66,7 +66,7 @@ PlaylistBrowserNS::UserModel::destroy()
 }
 
 PlaylistBrowserNS::UserModel::UserModel()
-    : MetaPlaylistModel( PlaylistManager::UserPlaylist )
+    : PlaylistBrowserModel( PlaylistManager::UserPlaylist )
 {
     s_instance = this;
 }
@@ -82,14 +82,14 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
 
     switch( idx.column() )
     {
-        case MetaPlaylistModel::PlaylistColumn:
+        case PlaylistBrowserModel::PlaylistColumn:
         {
             debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
-        case MetaPlaylistModel::LabelColumn:
+        case PlaylistBrowserModel::LabelColumn:
         {
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );

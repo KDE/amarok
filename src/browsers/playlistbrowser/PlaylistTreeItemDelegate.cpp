@@ -19,7 +19,7 @@
 
 #include "PlaylistTreeItemDelegate.h"
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
 #include "App.h"
 #include "core/support/Debug.h"
@@ -68,7 +68,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     const int iconHeight = 32;
     const int iconPadX = 4;
     const int actionCount
-            = index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+            = index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
 
     painter->save();
 
@@ -122,7 +122,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data(
-            PlaylistBrowserNS::MetaPlaylistModel::ByLineRole ).toString();
+            PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole ).toString();
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
@@ -162,7 +162,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
         QList<QAction*> actions;
         QVariantList actionsVariants =
-                index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+                index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
         if( !actionsVariants.isEmpty() )
             actions = actionsVariants.first().value<QList<QAction*> >();
 

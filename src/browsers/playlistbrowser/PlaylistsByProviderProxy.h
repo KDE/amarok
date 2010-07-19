@@ -17,7 +17,7 @@
 #define PLAYLISTSBYPROVIDERPROXY_H
 
 #include "QtGroupingProxy.h"
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
 #include <QAction>
 

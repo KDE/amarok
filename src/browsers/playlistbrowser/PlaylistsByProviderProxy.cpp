@@ -39,7 +39,7 @@ PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
     // the source of the actions (makes sense in the UI as well.
 
     //Turn the QVariantList of the source into a comma separated string, but only for the real items
-    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::MetaPlaylistModel::ProviderColumn
+    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn
         && role == Qt::DisplayRole )
     {
         QVariant indexData = QtGroupingProxy::data( idx, role );
