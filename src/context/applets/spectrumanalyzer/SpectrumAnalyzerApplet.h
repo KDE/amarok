@@ -18,15 +18,18 @@
 #define SERVICE_SPECTRUMANALYZER_APPLET_H
 
 #include <kconfigdialog.h>
+
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/engine/EngineObserver.h"
+
 #include <phonon/audiodataoutput.h>
 #include <Plasma/IconWidget>
 #include <plasma/theme.h>
 #include <qgraphicsview.h>
 #include <QGLPixelBuffer>
+#include <QAction>
 
 #include "AnalyzerGlWidget.h"
 

@@ -16,13 +16,14 @@
 
 #include "SpectrumAnalyzerApplet.h"
 
+#include "EngineController.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "App.h"
 
 SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_running( false )
     , m_glBuffer( NULL )
     , m_settingsIcon( 0 )
