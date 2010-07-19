@@ -41,7 +41,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n( "Internal Database" ); }
+        virtual QString prettyName() const { return i18n( "Amarok Database" ); }
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
         virtual KIcon icon() const { return KIcon( "server-database" ); }
 
