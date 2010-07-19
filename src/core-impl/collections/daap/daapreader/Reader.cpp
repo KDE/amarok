@@ -356,6 +356,10 @@ Reader::parseSongList( const QByteArray &data )
             {
                 qint16 shortData;
                 raw >> shortData; DEBUGTAG( shortData )
+                if ( QString( tag ) == "astn" )
+                    trackNumber = shortData;
+                else if ( QString( tag ) == "asyr" )
+                     year = QString::number(shortData);
                 break;
             }
             case LONG:
@@ -365,9 +369,7 @@ Reader::parseSongList( const QByteArray &data )
                 if ( QString( tag ) == "miid" )
                     itemId = QString::number( longData );
                 if ( QString( tag ) == "astm" )
-                    songTime = longData/1000;
-                if ( QString( tag ) == "astn" )
-                    trackNumber = longData;
+                    songTime = longData;
                 break;
             }
             case LONGLONG:
@@ -392,8 +394,6 @@ Reader::parseSongList( const QByteArray &data )
                      composer = QString::fromUtf8( stringData, tagLength );
                 else if ( QString( tag ) == "ascm" )
                      comment = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asyr" )
-                     year = QString::fromUtf8( stringData, tagLength );
                 else if ( QString( tag ) == "asgn" )
                      genre = QString::fromUtf8( stringData, tagLength );
                 break;
