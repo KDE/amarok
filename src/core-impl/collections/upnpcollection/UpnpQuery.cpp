@@ -33,6 +33,7 @@ void UpnpQuery::reset()
     m_expressions.clear();
     m_andStack.clear();
     m_andStack.push( true );
+    m_hasMatchFilter = false;
 }
 
 QStringList UpnpQuery::queries()
@@ -89,11 +90,13 @@ void UpnpQuery::endAndOr()
 
 void UpnpQuery::addFilter(const QString& filter )
 {
+    m_hasMatchFilter = true;
     m_expressions.append( filter );
 }
 
 void UpnpQuery::addMatch(const QString& match )
 {
+    m_hasMatchFilter = true;
     for( int i = 0; i < m_expressions.length() ; ++i ) {
         m_expressions[i] += " and ";
         m_expressions[i] += match;

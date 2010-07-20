@@ -37,6 +37,7 @@ class UpnpQuery
         void addFilter( const QString & );
         void addMatch( const QString & );
         QStringList queries();
+        bool hasMatchFilter() const { return m_hasMatchFilter; }
 
     private:
         // poor man's tree
@@ -46,6 +47,7 @@ class UpnpQuery
         ExpressionListStack m_stack;
         ExpressionList m_expressions;
         QStack<bool> m_andStack;
+        bool m_hasMatchFilter;
 };
 
 #endif // UPNPQUERY_H

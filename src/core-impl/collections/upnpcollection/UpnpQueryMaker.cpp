@@ -110,10 +110,37 @@ DEBUG_BLOCK
         }
     }
 
-    QStringList queryList = m_query.queries();
-    if( queryList.isEmpty() ) {
-        emit queryDone();
-        return;
+    QStringList queryList;
+    if( m_query.hasMatchFilter() ) {
+        queryList = m_query.queries();
+    }
+    else {
+        switch( m_queryType ) {
+             case Artist:
+                 debug() << this << "Query type Artist";
+                 queryList << "( upnp:class derivedfrom \"object.container.person.musicArtist\" )";
+                 break;
+             case Album:
+                 debug() << this << "Query type Album";
+                 queryList << "( upnp:class derivedfrom \"object.container.album.musicAlbum\" )";
+                 break;
+             case Track:
+                 debug() << this << "Query type Track";
+                 queryList << "( upnp:class derivedfrom \"object.item.audioItem\" )";
+                 break;
+             case Genre:
+                 debug() << this << "Query type Genre";
+                 queryList << "( upnp:class derivedfrom \"object.container.genre.musicGenre\" )";
+                 break;
+             case Custom:
+                 debug() << this << "Query type Custom";
+                 queryList << "( upnp:class derivedfrom \"object.item.audioItem\" )";
+                 break;
+             default:
+                 debug() << this << "Default case: Query type";
+                 queryList << "( upnp:class derivedfrom \"object.item.audioItem\" )";
+                 break;
+        }
     }
 
     // and experiment in using the filter only for the query
@@ -161,35 +188,7 @@ DEBUG_BLOCK
 // TODO allow all, based on search capabilities
 // which should be passed on by the factory
     m_queryType = type;
-    QString typeString;
-    switch( type ) {
-        /*case Artist:
-            debug() << this << "Query type Artist";
-            typeString = "( upnp:class derivedfrom \"object.container.person.musicArtist\" )";
-            break;
-        case Album:
-            debug() << this << "Query type Album";
-            typeString = "( upnp:class derivedfrom \"object.container.album.musicAlbum\" )";
-            break;
-        case Track:
-            debug() << this << "Query type Track";
-            typeString = "( upnp:class derivedfrom \"object.item.audioItem\" )";
-            break;
-        case Genre:
-            debug() << this << "Query type Genre";
-            typeString = "( upnp:class derivedfrom \"object.container.genre.musicGenre\" )";
-            break;*/
-        case Custom:
-            debug() << this << "Query type Custom";
-            break;
-        default:
-            debug() << this << "Default case: Query type" << typeString;
-            break;
-    }
-    if( typeString.isNull() )
-        m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
-    else
-        m_query.setType( typeString );
+    m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
 
     return this;
 }
