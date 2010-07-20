@@ -21,7 +21,7 @@
 #define AMAROK_BIAS_H
 
 #include "core/meta/Meta.h"
-#include "core-impl/collections/support/XmlQueryReader.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <QDomElement>
 #include <QMutex>
@@ -190,19 +190,48 @@ namespace Dynamic
     class GlobalBias : public CollectionDependantBias
     {
         Q_OBJECT
-                
+
         public:
-            GlobalBias( double weight, XmlQueryReader::Filter );
-            GlobalBias( Collections::Collection* coll, double weight, XmlQueryReader::Filter query );
-            
+            enum FilterCondition
+            {
+                Equals = 0,
+                GreaterThan = 1,
+                LessThan = 2,
+                Between = 3,
+                OlderThan = 4,
+                Contains = 5 // this is the string comparison
+            };
+
+            struct Filter
+            {
+                Filter()
+                    : field(Meta::valArtist)
+                    , numValue(0)
+                    , numValue2(0)
+                    , condition(Contains)
+                {}
+
+                qint64   field;
+                QString  value;
+                qint64   numValue;
+                qint64   numValue2;
+                FilterCondition condition;
+            };
+
+            GlobalBias( double weight, Filter filter );
+            GlobalBias( Collections::Collection* coll, double weight, Filter filter );
+
             ~GlobalBias();
 
-            void setQuery( XmlQueryReader::Filter );
+            Filter filter() const;
+            void setFilter( const Filter &filter);
+
+            static QString filterConditionToString( FilterCondition cond );
 
             QDomElement xml() const;
+            static GlobalBias* fromXml( QDomElement e );
 
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
-            const XmlQueryReader::Filter& filter() const;
 
             double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const;
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
@@ -230,7 +259,7 @@ namespace Dynamic
             double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
             QPointer<Collections::QueryMaker> m_qm;
-            XmlQueryReader::Filter m_filter;
+            Filter m_filter;
 
             // Disable copy constructor and assignment
             GlobalBias( const GlobalBias& );

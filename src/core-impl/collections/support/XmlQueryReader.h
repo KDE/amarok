@@ -58,15 +58,15 @@ public:
      */
     static Filter readFilter(QXmlStreamReader *reader);
 
+    static qint64 fieldVal( QStringRef field );
+    static int compareVal( QStringRef compare );
+
 private:
     void readQuery();
     void readFilters();
     void readReturnValues();
     void ignoreElements();
     void readAndOr();
-
-    static qint64 fieldVal( QStringRef field );
-    static int compareVal( QStringRef compare );
 
     struct Private;
     Private * const d;

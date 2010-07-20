@@ -137,7 +137,7 @@ void
 PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
 {
     Dynamic::GlobalBias* gb = 
-        new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
+        new Dynamic::GlobalBias( 0.0, Dynamic::GlobalBias::Filter() );
     gb->setActive( false );
     appendBias( gb );
 }
