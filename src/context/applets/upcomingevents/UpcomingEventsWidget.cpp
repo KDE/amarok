@@ -230,7 +230,6 @@ UpcomingEventsWidget::setUrl( const KUrl &url )
 
 UpcomingEventsListWidget::UpcomingEventsListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
-    , m_separatorCount( 0 )
 {
     // The widgets are displayed line by line with only one column
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
@@ -247,22 +246,22 @@ UpcomingEventsListWidget::~UpcomingEventsListWidget()
 int
 UpcomingEventsListWidget::count() const
 {
-    return m_layout->count() - m_separatorCount;
-}
-
-void
-UpcomingEventsListWidget::addItem( UpcomingEventsWidget *widget )
-{
-    m_layout->addItem( widget );
-    addSeparator();
+    return m_sortMap.count();
 }
 
 void
 UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
 {
     UpcomingEventsWidget *widget = new UpcomingEventsWidget( event );
-    m_layout->addItem( widget );
-    addSeparator();
+    QMap<uint, UpcomingEventsWidget*>::const_iterator insertIt, indexIt;
+    insertIt = m_sortMap.insertMulti( event->date().toTime_t(), widget );
+    indexIt = m_sortMap.constBegin();
+    int index( 0 );
+    while( indexIt++ != insertIt )
+        ++index; // find the right index to insert the widget
+    index *= 2;  // take separators into account
+    m_layout->insertItem( index, widget );
+    insertSeparator( index + 1 );
 }
 
 void
@@ -273,7 +272,7 @@ UpcomingEventsListWidget::addEvents( const LastFmEvent::List &events )
 }
 
 void
-UpcomingEventsListWidget::addSeparator()
+UpcomingEventsListWidget::insertSeparator( int index )
 {
     // can also use Plasma::Separator here but that's in kde 4.4
     QFrame *separator = new QFrame;
@@ -281,13 +280,14 @@ UpcomingEventsListWidget::addSeparator()
     separator->setAutoFillBackground( false );
     QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget;
     separatorProxy->setWidget( separator );
-    m_layout->addItem( separatorProxy );
-    ++m_separatorCount;
+    m_layout->insertItem( index, separatorProxy );
 }
 
 void
 UpcomingEventsListWidget::clear()
 {
+    qDeleteAll( m_sortMap.values() );
+    m_sortMap.clear();
     int count = m_layout->count();
     while( --count >= 0 )
     {
@@ -296,7 +296,6 @@ UpcomingEventsListWidget::clear()
         delete child;
     }
     widget()->resize( size().width(), 0 );
-    m_separatorCount = 0;
 }
 
 bool

@@ -211,6 +211,9 @@ private:
     void updateToolBoxIconSize();
     qreal m_toolBoxIconSize;
 
+    void enableVenueGrouping( bool enable );
+    bool m_groupVenues;
+
 private slots:
     void searchVenue( const QString &text );
     void venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );

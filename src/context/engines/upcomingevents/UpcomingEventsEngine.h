@@ -83,12 +83,6 @@ private:
     void updateDataForArtist();
 
     /**
-     * Get events for specific venues
-     * @param ids LastFm's venue ids
-     */
-    void updateDataForVenues( QList<int> ids );
-
-    /**
      * filterEvents filters a list of events depending on settings
      * @param events a list of events to filter
      * @return a new list of events that satisfies filter settings
@@ -110,7 +104,15 @@ private:
      */
     QSet<KUrl> m_urls;
 
+    QList<int> m_venueIds;
+
 private slots:
+    /**
+     * Get events for specific venues
+     * @param ids LastFm's venue ids
+     */
+    void updateDataForVenues();
+
     void artistEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void venueEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };

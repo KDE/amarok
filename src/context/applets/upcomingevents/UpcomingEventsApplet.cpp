@@ -48,6 +48,7 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
     , m_headerLabel( 0 )
     , m_settingsIcon( 0 )
     , m_toolBoxIconSize( 0.0 )
+    , m_groupVenues( false )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -116,6 +117,7 @@ UpcomingEventsApplet::init()
     engine->query( "artistevents" );
 
     // Read config and inform the engine.
+    enableVenueGrouping( Amarok::config("UpcomingEvents Applet").readEntry( "groupVenues", false ) );
     QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
     m_favoriteVenues = venueStringToDataList( venueData );
 
@@ -203,16 +205,24 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         if( !events.isEmpty() )
         {
             LastFmVenuePtr venue = data[ "venue" ].value<LastFmVenuePtr>();
-            if( extender()->hasItem( venue->name ) )
-                extender()->item( venue->name )->destroy();
-            Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
-            UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
-            listWidget->setName( venue->name );
-            extenderItem->setName( venue->name );
-            extenderItem->setWidget( listWidget );
-            extenderItem->setCollapsed( true );
-            extenderItem->showCloseButton();
-            addToExtenderItem( extenderItem, events, venue->name );
+            if( m_groupVenues )
+            {
+                QString title = i18n( "Favorite Venues" );
+                addToExtenderItem( extender()->item("favoritevenuesgroup"), events, title );
+            }
+            else
+            {
+                if( extender()->hasItem( venue->name ) )
+                    extender()->item( venue->name )->destroy();
+                Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
+                UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
+                listWidget->setName( venue->name );
+                extenderItem->setName( venue->name );
+                extenderItem->setWidget( listWidget );
+                extenderItem->setCollapsed( true );
+                extenderItem->showCloseButton();
+                addToExtenderItem( extenderItem, events, venue->name );
+            }
             update();
         }
     }
@@ -223,8 +233,14 @@ UpcomingEventsApplet::clearVenueItems()
 {
     foreach( Plasma::ExtenderItem *item, extender()->items() )
     {
-        if( item != m_artistExtenderItem )
-            item->destroy();
+        if( item == m_artistExtenderItem )
+            continue;
+        if( item->name() == "favoritevenuesgroup" )
+        {
+            static_cast<UpcomingEventsListWidget*>( item->widget() )->clear();
+            continue;
+        }
+        item->destroy();
     }
 }
 
@@ -302,6 +318,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     ui_VenueSettings.photoLabel->hide();
     ui_VenueSettings.infoGroupBox->setFont( KGlobalSettings::smallestReadableFont() );
+    ui_GeneralSettings.groupVenueCheckBox->setCheckState( m_groupVenues ? Qt::Checked : Qt::Unchecked );
 
     ui_VenueSettings.countryCombo->insertSeparator( 1 );
     const QStringList &countryCodes = KGlobal::locale()->allCountriesList();
@@ -549,7 +566,6 @@ void
 UpcomingEventsApplet::saveTimeSpan()
 {
     DEBUG_BLOCK
-    clearVenueItems();
     Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", currentTimeSpan() );
     dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:update" ) );
 }
@@ -557,6 +573,7 @@ UpcomingEventsApplet::saveTimeSpan()
 void
 UpcomingEventsApplet::saveSettings()
 {
+    clearVenueItems();
     saveTimeSpan();
 
     // save venue settings
@@ -573,8 +590,33 @@ UpcomingEventsApplet::saveSettings()
     }
     Amarok::config("UpcomingEvents Applet").writeEntry( "favVenues", venueConfig );
 
+    enableVenueGrouping( ui_GeneralSettings.groupVenueCheckBox->checkState() == Qt::Checked );
+    Amarok::config("UpcomingEvents Applet").writeEntry( "groupVenues", m_groupVenues );
+
     if( !m_favoriteVenues.isEmpty() )
         dataEngine( "amarok-upcomingEvents" )->query( "venueevents:update" );
+}
+
+void
+UpcomingEventsApplet::enableVenueGrouping( bool enable )
+{
+    m_groupVenues = enable;
+    if( enable )
+    {
+        if( !extender()->hasItem("favoritevenuesgroup") )
+        {
+            Plasma::ExtenderItem *item = new Plasma::ExtenderItem( extender() );
+            UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( item );
+            listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
+            item->setName( "favoritevenuesgroup" );
+            item->setWidget( listWidget );
+        }
+    }
+    else
+    {
+        if( extender()->hasItem("favoritevenuesgroup") )
+            extender()->item("favoritevenuesgroup")->destroy();
+    }
 }
 
 #include "UpcomingEventsApplet.moc"

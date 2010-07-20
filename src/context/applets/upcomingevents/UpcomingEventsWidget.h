@@ -135,7 +135,6 @@ public:
     int count() const;
     bool isEmpty() const;
 
-    void addItem( UpcomingEventsWidget *widget );
     void addEvent( const LastFmEventPtr &event );
     void addEvents( const LastFmEvent::List &events );
 
@@ -148,9 +147,9 @@ protected:
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
 private:
-    void addSeparator();
-    int m_separatorCount;
+    void insertSeparator( int index );
     QString m_name;
+    QMap<uint, UpcomingEventsWidget*> m_sortMap;
     QGraphicsLinearLayout *m_layout;
     Q_DISABLE_COPY( UpcomingEventsListWidget )
 };

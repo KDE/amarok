@@ -62,14 +62,14 @@ UpcomingEventsEngine::sourceRequestEvent( const QString &source )
     }
     else if( source == "venueevents" )
     {
-        QList<int> venueIds;
+        m_venueIds.clear();
         QStringList venues = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
         foreach( const QString &venue, venues )
         {
             QStringList frag = venue.split( QChar(';') );
-            venueIds << frag.at( 0 ).toInt();
+            m_venueIds << frag.at( 0 ).toInt();
         }
-        updateDataForVenues( venueIds );
+        updateDataForVenues();
         return true;
     }
     else if( source == "venueevents:update" )
@@ -117,11 +117,11 @@ UpcomingEventsEngine::engineNewTrackPlaying()
 }
 
 void
-UpcomingEventsEngine::updateDataForVenues( QList<int> ids )
+UpcomingEventsEngine::updateDataForVenues()
 {
-    while( !ids.isEmpty() )
+    if( !m_venueIds.isEmpty() )
     {
-        int id = ids.takeFirst();
+        int id = m_venueIds.takeFirst();
         KUrl url;
         url.setScheme( "http" );
         url.setHost( "ws.audioscrobbler.com" );
@@ -131,6 +131,7 @@ UpcomingEventsEngine::updateDataForVenues( QList<int> ids )
         url.addQueryItem( "venue", QString::number( id ) );
         The::networkAccessManager()->getData( url, this,
              SLOT(venueEventsFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        QTimer::singleShot( 50, this, SLOT(updateDataForVenues()) );
     }
 }
 

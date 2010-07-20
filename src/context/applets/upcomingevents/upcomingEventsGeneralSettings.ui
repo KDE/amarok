@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>216</width>
-    <height>33</height>
+    <width>217</width>
+    <height>60</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
@@ -43,6 +43,20 @@
        <string>This year</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="groupVenueLabel">
+     <property name="text">
+      <string>Group venue events:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="groupVenueCheckBox">
+     <property name="text">
+      <string>Enabled</string>
+     </property>
     </widget>
    </item>
   </layout>
