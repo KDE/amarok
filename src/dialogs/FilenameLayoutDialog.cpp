@@ -265,7 +265,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     else
     {
         tokenPool->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
-        tokenPool->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+        tokenPool->addToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
         Token *filetypeToken = new Token( i18n( "File type" ), "filename-filetype-amarok", FileType );
         tokenPool->addToken( filetypeToken );
         tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
@@ -618,7 +618,7 @@ FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
             }
             else if( s.mid( i, 8 ) == "%initial" )
             {
-                m_dropTarget->insertToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+                m_dropTarget->insertToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
                 i += 8;
             }
             else if( s.mid( i, 11 ) == "%discnumber" )
