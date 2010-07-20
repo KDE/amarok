@@ -38,7 +38,7 @@ public:
 
     virtual void setModel( QAbstractItemModel *model );
 
-    void setNewGroupAction( KAction * action );
+    void setNewFolderAction( KAction * action );
 
 protected:
     virtual void keyPressEvent( QKeyEvent *event );

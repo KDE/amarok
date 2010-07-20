@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,35 +15,53 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef USERPLAYLISTCATEGORY_H
-#define USERPLAYLISTCATEGORY_H
+#ifndef PLAYLISTBROWSERVIEW_H
+#define PLAYLISTBROWSERVIEW_H
 
-#include "PlaylistBrowserCategory.h"
+#include "widgets/PrettyTreeView.h"
 
-#include <KDialog>
+#include <QMutex>
 
-#include <QModelIndex>
-#include <QPoint>
-#include <QSortFilterProxyModel>
+class PopupDropper;
+class KAction;
+class QKeyEvent;
+class QMouseEvent;
+class QContextMenuEvent;
 
 namespace PlaylistBrowserNS {
 
-/**
-The widget that displays playlists in the playlist browser
-
-	@author Nikolaj Hald Nielsen <nhn@kde.org>
-*/
-class UserPlaylistCategory : public PlaylistBrowserCategory
+class PlaylistBrowserView : public Amarok::PrettyTreeView
 {
-Q_OBJECT
 public:
-    static QString s_configGroup;
+    explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = 0 );
+    ~PlaylistBrowserView();
 
-    UserPlaylistCategory( QWidget *parent );
+    virtual void setModel( QAbstractItemModel *model );
 
-    ~UserPlaylistCategory();
+    void setNewFolderAction( KAction *action );
+
+protected:
+    virtual void keyPressEvent( QKeyEvent *event );
+    virtual void mousePressEvent( QMouseEvent *event );
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    virtual void mouseMoveEvent( QMouseEvent *event );
+    virtual void startDrag( Qt::DropActions supportedActions );
+
+    virtual void contextMenuEvent( QContextMenuEvent* event );
+
+private:
+    QList<QAction *> actionsFor( QModelIndexList indexes );
+
+    PopupDropper* m_pd;
+
+    KAction *m_addFolderAction;
+
+    bool m_ongoingDrag;
+    QMutex m_dragMutex;
+    bool m_expandToggledWhenPressed;
 };
 
-}
+} // namespace PlaylistBrowserNS
 
-#endif //USERPLAYLISTCATEGORY_H
+#endif // PLAYLISTBROWSERVIEW_H

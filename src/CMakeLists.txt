@@ -361,8 +361,10 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
+    browsers/playlistbrowser/PlaylistBrowserCategory.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
+    browsers/playlistbrowser/PlaylistBrowserView.cpp
     browsers/playlistbrowser/UserPlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
     browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
@@ -370,7 +372,6 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
     browsers/playlistbrowser/UserPlaylistModel.cpp
-    browsers/playlistbrowser/UserPlaylistTreeView.cpp
 )
 
 #####################################################################
