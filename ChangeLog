@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3.2-Beta 1
   FEATURES:
+    * Podcasts can now be filtered on provider and grouped in folders. (BR 219519)
     * Amarok 1.4 Database Importer: added support for importing labels.
       Thanks to Matěj Laitl for the patch. (BR 218996)
     * Shortcuts: Added "Replay current track" shortcut. (BR 217081)

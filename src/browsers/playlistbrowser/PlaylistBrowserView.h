@@ -32,6 +32,7 @@ namespace PlaylistBrowserNS {
 
 class PlaylistBrowserView : public Amarok::PrettyTreeView
 {
+Q_OBJECT
 public:
     explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = 0 );
     ~PlaylistBrowserView();

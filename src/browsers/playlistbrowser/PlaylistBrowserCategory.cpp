@@ -116,6 +116,11 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
         createProviderButton( provider );
     }
 
+    connect( The::playlistManager(), SIGNAL(providerAdded( Playlists::PlaylistProvider*, int )),
+             SLOT(slotProviderAdded( Playlists::PlaylistProvider*, int )) );
+    connect( The::playlistManager(), SIGNAL(providerRemoved( Playlists::PlaylistProvider*, int )),
+             SLOT(slotProviderRemoved( Playlists::PlaylistProvider*, int )) );
+
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ),
              SLOT( newPalette( const QPalette & ) ) );
 }
