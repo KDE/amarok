@@ -68,6 +68,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         out << "myisam-recover = FORCE" << endl;
         out << "character-set-server = utf8" << endl;
         out << "collation-server = utf8_bin" << endl;
+        //If the file is world-writable MySQL won't even read it
+        df.setPermissions( QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther );
         df.close();
     }
 
