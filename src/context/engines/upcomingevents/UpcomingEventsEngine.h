@@ -89,6 +89,13 @@ private:
     void updateDataForVenues( QList<int> ids );
 
     /**
+     * filterEvents filters a list of events depending on settings
+     * @param events a list of events to filter
+     * @return a new list of events that satisfies filter settings
+     */
+    LastFmEvent::List filterEvents( const LastFmEvent::List &events ) const;
+
+    /**
      * The value can be "AllEvents", "ThisWeek", "ThisMonth" or "ThisYear"
      */
     QString m_timeSpan;

@@ -6,40 +6,46 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>180</width>
-    <height>35</height>
+    <width>216</width>
+    <height>33</height>
    </rect>
   </property>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>4</x>
-     <y>4</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
    </property>
-   <item>
-    <property name="text">
-     <string>All events</string>
-    </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="filterLabel">
+     <property name="text">
+      <string>Filter events by date:</string>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>This week</string>
-    </property>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="filterComboBox">
+     <item>
+      <property name="text">
+       <string>All events</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>This week</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>This month</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>This year</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item>
-    <property name="text">
-     <string>This month</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>This year</string>
-    </property>
-   </item>
-  </widget>
+  </layout>
  </widget>
  <resources/>
  <connections/>

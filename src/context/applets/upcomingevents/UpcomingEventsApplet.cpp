@@ -31,7 +31,6 @@
 #include "LastFmEventXmlParser.h"
 
 #include <KConfigDialog>
-#include <KDateTime>
 #include <KGlobalSettings>
 #include <Plasma/Extender>
 #include <Plasma/ExtenderItem>
@@ -117,7 +116,6 @@ UpcomingEventsApplet::init()
     engine->query( "artistevents" );
 
     // Read config and inform the engine.
-    m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
     QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
     m_favoriteVenues = venueStringToDataList( venueData );
 
@@ -190,8 +188,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     {
         m_artistEventsList->clear();
         QString artistName = data[ "artist" ].toString();
-        LastFmEvent::List newEvents = filterEvents( events );
-        addToExtenderItem( m_artistExtenderItem, newEvents, artistName );
+        addToExtenderItem( m_artistExtenderItem, events, artistName );
         m_artistEventsList->setName( artistName );
         if( !m_artistExtenderItem->action( "showinmediasources" ) )
         {
@@ -203,13 +200,11 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     }
     else if( source == "venueevents" )
     {
-        LastFmEvent::List newEvents = filterEvents( events );
-        if( !newEvents.isEmpty() )
+        if( !events.isEmpty() )
         {
             LastFmVenuePtr venue = data[ "venue" ].value<LastFmVenuePtr>();
             if( extender()->hasItem( venue->name ) )
                 extender()->item( venue->name )->destroy();
-
             Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
             UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
             listWidget->setName( venue->name );
@@ -217,8 +212,19 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
             extenderItem->setWidget( listWidget );
             extenderItem->setCollapsed( true );
             extenderItem->showCloseButton();
-            addToExtenderItem( extenderItem, newEvents, venue->name );
+            addToExtenderItem( extenderItem, events, venue->name );
+            update();
         }
+    }
+}
+
+void
+UpcomingEventsApplet::clearVenueItems()
+{
+    foreach( Plasma::ExtenderItem *item, extender()->items() )
+    {
+        if( item != m_artistExtenderItem )
+            item->destroy();
     }
 }
 
@@ -245,30 +251,6 @@ UpcomingEventsApplet::addToExtenderItem( Plasma::ExtenderItem *item,
     item->setTitle( title );
 }
 
-LastFmEvent::List
-UpcomingEventsApplet::filterEvents( const LastFmEvent::List &events ) const
-{
-    KDateTime limite( KDateTime::currentLocalDateTime() );
-    bool timeSpanDisabled = false;
-
-    if( m_timeSpan == "ThisWeek")
-        limite = limite.addDays( 7 );
-    else if( m_timeSpan == "ThisMonth" )
-        limite = limite.addMonths( 1 );
-    else if( m_timeSpan == "ThisYear" )
-        limite = limite.addYears( 1 );
-    else
-        timeSpanDisabled = true;
-
-    LastFmEvent::List newEvents;
-    foreach( const LastFmEventPtr &event, events )
-    {
-        if( timeSpanDisabled || event->date() < limite )
-            newEvents << event;
-    }
-    return newEvents;
-}
-
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
@@ -276,18 +258,9 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     Q_UNUSED( contentsRect )
 
     p->setRenderHint( QPainter::Antialiasing );
-
     addGradientToAppletBackground( p );
-
-    //draw background of wiki text
-    p->save();
-    QColor bg( App::instance()->palette().highlight().color() );
-    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
-
     if( !m_headerLabel->isAnimating() )
         drawRoundedRectAroundText( p, m_headerLabel );
-
-    p->restore();
 }
 
 void
@@ -305,19 +278,17 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     ui_GeneralSettings.setupUi( generalSettings );
     ui_VenueSettings.setupUi( venueSettings );
 
-    m_temp_timeSpan = m_timeSpan;
-
     // TODO bad, it's done manually ...
-    if( m_timeSpan == "AllEvents" )
-        ui_GeneralSettings.comboBox->setCurrentIndex( 0 );
-    else if( m_timeSpan == "ThisWeek" )
-        ui_GeneralSettings.comboBox->setCurrentIndex( 1 );
-    else if( m_timeSpan == "ThisMonth" )
-        ui_GeneralSettings.comboBox->setCurrentIndex( 2 );
-    else if( m_timeSpan == "ThisYear" )
-        ui_GeneralSettings.comboBox->setCurrentIndex( 3 );
+    QString timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
+    if( timeSpan == "AllEvents" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 0 );
+    else if( timeSpan == "ThisWeek" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 1 );
+    else if( timeSpan == "ThisMonth" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 2 );
+    else if( timeSpan == "ThisYear" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 3 );
 
-    connect( ui_GeneralSettings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(changeTimeSpan(QString)) );
     connect( ui_VenueSettings.searchLineEdit, SIGNAL(returnPressed(QString)), SLOT(searchVenue(QString)) );
     connect( ui_VenueSettings.searchResultsList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
     connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
@@ -547,26 +518,18 @@ UpcomingEventsApplet::themeChanged()
     updateToolBoxIconSize();
 }
 
-void
-UpcomingEventsApplet::changeTimeSpan( const QString &span )
+QString
+UpcomingEventsApplet::currentTimeSpan()
 {
-    DEBUG_BLOCK
-    // TODO change this b/c it's BAAADDD !!!
-
-    if (span == i18nc("automatic time span", "Automatic") )
-        m_temp_timeSpan = "AllEvents";
-
-    else if (span == i18n("This week") )
-        m_temp_timeSpan = "ThisWeek";
-
-    else if (span == i18n("This month") )
-        m_temp_timeSpan = "ThisMonth";
-
-    else if (span == i18n("This year") )
-        m_temp_timeSpan = "ThisYear";
-
-    else if (span == i18n("All events") )
-        m_temp_timeSpan = "AllEvents";
+    QString span = ui_GeneralSettings.filterComboBox->currentText();
+    if( span == i18n("This week") )
+        return "ThisWeek";
+    else if( span == i18n("This month") )
+        return "ThisMonth";
+    else if( span == i18n("This year") )
+        return "ThisYear";
+    else
+        return "AllEvents";
 }
 
 void
@@ -586,12 +549,9 @@ void
 UpcomingEventsApplet::saveTimeSpan()
 {
     DEBUG_BLOCK
-
-    m_timeSpan = m_temp_timeSpan;
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:" ) + m_timeSpan );
-
-    Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", m_timeSpan );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:" ) + m_timeSpan );
+    clearVenueItems();
+    Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", currentTimeSpan() );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:update" ) );
 }
 
 void
@@ -599,6 +559,7 @@ UpcomingEventsApplet::saveSettings()
 {
     saveTimeSpan();
 
+    // save venue settings
     QStringList venueConfig;
     m_favoriteVenues.clear();
     for( int i = 0, count = ui_VenueSettings.selectedVenuesList->count() ; i < count; ++i )

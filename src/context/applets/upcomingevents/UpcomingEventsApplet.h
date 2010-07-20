@@ -135,16 +135,6 @@ private:
     Ui::upcomingEventsVenueSettings ui_VenueSettings;
 
     /**
-     * The possible values are "ThisWeek", "ThisMonth", "ThisYear" or "AllEvents"
-     */
-    QString m_timeSpan;
-
-    /**
-     * The temporary m_timeSpan value, used to store or not the user choice
-     */
-    QString m_temp_timeSpan;
-
-    /**
      * The plasma extender item for the upcoming events for the current playing artist
      */
     Plasma::ExtenderItem *m_artistExtenderItem;
@@ -167,9 +157,9 @@ private slots:
     void configure();
 
     /**
-     * Replace the former time span by the new one
+     * Returns the current time span
      */
-    void changeTimeSpan( const QString &span );
+    QString currentTimeSpan();
 
     /**
      * Save the time span choosen by the user
@@ -211,10 +201,10 @@ private:
         QString city;
     };
 
+    void clearVenueItems();
     void addToExtenderItem( Plasma::ExtenderItem *item,
                             const LastFmEvent::List &events,
                             const QString &name );
-    LastFmEvent::List filterEvents( const LastFmEvent::List &events ) const;
     QList<VenueData> venueStringToDataList( const QStringList &list );
     QList<VenueData> m_favoriteVenues;
 

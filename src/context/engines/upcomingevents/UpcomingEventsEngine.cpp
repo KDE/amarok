@@ -44,8 +44,8 @@ using namespace Context;
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , Engine::EngineObserver( The::engineController() )
-        , m_timeSpan( "AllEvents" )
 {
+    m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
 }
 
 UpcomingEventsEngine::~UpcomingEventsEngine()
@@ -77,12 +77,11 @@ UpcomingEventsEngine::sourceRequestEvent( const QString &source )
         removeAllData( source );
         sourceRequestEvent( "venueevents" );
     }
-    else if( source.startsWith( "timespan" ) )
+    else if( source == "timespan:update" )
     {
         // user has changed the timespan.
-        QStringList tokens = source.split( ':' );
-        if( tokens.size() > 1 )
-            m_timeSpan = tokens.at( 1 );
+        m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
+        sourceRequestEvent( "venueevents:update" );
         updateDataForArtist();
         return true;
     }
@@ -179,7 +178,7 @@ UpcomingEventsEngine::artistEventsFetched( const KUrl &url, QByteArray data,
     Plasma::DataEngine::Data engineData;
     if( eventsParser.read() )
     {
-        LastFmEvent::List artistEvents = eventsParser.events();
+        LastFmEvent::List artistEvents = filterEvents( eventsParser.events() );
         engineData[ "artist" ] = m_currentTrack->artist()->name();
         engineData[ "events" ] = qVariantFromValue( artistEvents );
     }
@@ -202,7 +201,7 @@ UpcomingEventsEngine::venueEventsFetched( const KUrl &url, QByteArray data,
     Plasma::DataEngine::Data engineData;
     if( eventsParser.read() )
     {
-        LastFmEvent::List venueEvents = eventsParser.events();
+        LastFmEvent::List venueEvents = filterEvents( eventsParser.events() );
         if( !venueEvents.isEmpty() )
         {
             engineData[ "venue"  ] = qVariantFromValue( venueEvents.first()->venue() );
@@ -210,6 +209,29 @@ UpcomingEventsEngine::venueEventsFetched( const KUrl &url, QByteArray data,
         }
     }
     setData( "venueevents", engineData );
+}
+
+LastFmEvent::List
+UpcomingEventsEngine::filterEvents( const LastFmEvent::List &events ) const
+{
+    KDateTime currentTime( KDateTime::currentLocalDateTime() );
+
+    if( m_timeSpan == "ThisWeek")
+        currentTime = currentTime.addDays( 7 );
+    else if( m_timeSpan == "ThisMonth" )
+        currentTime = currentTime.addMonths( 1 );
+    else if( m_timeSpan == "ThisYear" )
+        currentTime = currentTime.addYears( 1 );
+    else
+        return events; // no filtering is done
+
+    LastFmEvent::List newEvents;
+    foreach( const LastFmEventPtr &event, events )
+    {
+        if( event->date() < currentTime )
+            newEvents << event;
+    }
+    return newEvents;
 }
 
 #include "UpcomingEventsEngine.moc"
