@@ -29,9 +29,11 @@
 class KDateTime;
 class QLabel;
 class QGraphicsLinearLayout;
+class QGraphicsProxyWidget;
 class QPixmap;
 namespace Plasma {
     class Label;
+    class PushButton;
 }
 
 class UpcomingEventsWidget : public QGraphicsWidget
@@ -48,79 +50,85 @@ class UpcomingEventsWidget : public QGraphicsWidget
                               Qt::WindowFlags wFlags = 0 );
         ~UpcomingEventsWidget();
 
-        // Getters
         /**
-         *@return the image
+         * The upcoming event associated with this widget
          */
-        QPixmap image() const;
-        /**
-         *@return the participants Plasma::Label pointer
-         */
-        Plasma::Label  *participants() const;
-        /**
-         *@return the date Plasma::Label pointer
-         */
-        Plasma::Label  *date() const;
-        /**
-         *@return the name Plasma::Label pointer
-         */
-        Plasma::Label  *name() const;
-        /**
-         *@return the location Plasma::Label pointer
-         */
-        Plasma::Label  *location() const;
-        /**
-         *@return the url Plasma::Label pointer
-         */
-        Plasma::Label  *url() const;
+        LastFmEventPtr eventPtr() const
+        { return m_event; }
 
-        // Setters
         /**
          *Set the event's image in Plasma::Label from an url
          *@param KUrl, image's url to be displayed
          */
         void setImage( const KUrl &url );
+
+        /**
+         * Set attendance for this event
+         * @param count number of attendees
+         */
+        void setAttendance( int count );
+
         /**
          *Set the event's participants text in Plasma::Label from a QString
          *@param QString, participant's text to be displayed
          */
-        void    setParticipants( const QString &participants );
+        void setParticipants( const QStringList &participants );
+
         /**
          *Set the event's date in Plasma::Label from a KDateTime
          *@param KDateTime, date to be displayed
          */
-        void    setDate( const KDateTime &date );
+        void setDate( const KDateTime &date );
+
         /**
          *Set the event's name in Plasma::Label from a QString
          *@param QString, name's text to be displayed
          */
-        void    setName( const QString &name );
+        void setName( const QString &name );
+
         /**
          *Set the event's location in a Plasma::Label from a QString
          *@param QString, location's text to be displayed
          */
-        void    setLocation( const QString &location );
+        void setLocation( const LastFmLocationPtr &location );
+
+        /**
+         * Set event venue
+         * @param venue Last.fm's venue
+         */
+        void setVenue( const LastFmVenuePtr &venue );
+
         /**
          *Set the event's url in Plasma::Label from a KUrl
          *@param KUrl, url to be displayed
          */
-        void    setUrl( const KUrl &url );
+        void setUrl( const KUrl &url );
+
+        /**
+         * Set the events tags
+         * @param tags list of tags
+         */
+        void setTags( const QStringList &tags );
 
     private:
+        Plasma::PushButton *m_urlButton;
+        QGraphicsProxyWidget *m_attendance;
+        QGraphicsProxyWidget *m_date;
+        QGraphicsProxyWidget *m_location;
+        QGraphicsProxyWidget *m_name;
+        QGraphicsProxyWidget *m_participants;
+        QGraphicsProxyWidget *m_tags;
+        QGraphicsProxyWidget *m_venue;
         QLabel *m_image;
-        Plasma::Label *m_participants;
-        Plasma::Label *m_date;
-        Plasma::Label *m_location;
-        Plasma::Label *m_name;
-        Plasma::Label *m_url;
         KUrl m_imageUrl;
+        const LastFmEventPtr m_event;
+
+        QGraphicsProxyWidget *createLabel( const QString &text = QString(),
+                                           QSizePolicy::Policy hPolicy = QSizePolicy::Expanding );
 
     private slots:
-        /**
-         *SLOTS
-         *Get pixmap from the internet and set it into image's Plasma::Label
-         */
         void loadImage();
+        void openUrl();
 };
 
 class UpcomingEventsListWidget : public Plasma::ScrollWidget

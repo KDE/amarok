@@ -26,57 +26,89 @@
 #include <KLocale>
 
 #include <Plasma/Label>
+#include <Plasma/PushButton>
 
+#include <QDesktopServices>
 #include <QLabel>
 #include <QPixmap>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 
-#define NBR_MAX_PARTICIPANT 5
-
 UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
                                             QGraphicsItem *parent,
                                             Qt::WindowFlags wFlags )
     : QGraphicsWidget( parent, wFlags )
     , m_image( new QLabel )
-    , m_participants( new Plasma::Label( this ) )
-    , m_date( new Plasma::Label( this ) )
-    , m_location( new Plasma::Label( this ) )
-    , m_name( new Plasma::Label( this ) )
-    , m_url( new Plasma::Label( this ) )
+    , m_event( event )
 {
+    m_image->setText( i18n("Loading picture...") );
     m_image->setAttribute( Qt::WA_NoSystemBackground );
     m_image->setAlignment( Qt::AlignCenter );
     m_image->setFixedSize( 128, 128 );
-    QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget;
+    QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget( this );
     imageProxy->setWidget( m_image );
-    m_participants->nativeWidget()->setWordWrap( true );
-    m_name->nativeWidget()->setWordWrap( true );
+
+    m_attendance   = createLabel();
+    m_date         = createLabel();
+    m_location     = createLabel();
+    m_name         = createLabel();
+    m_participants = createLabel();
+    m_tags         = createLabel();
+    m_venue        = createLabel();
+
+    QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    if( event->url().isValid() )
+    {
+        m_urlButton = new Plasma::PushButton( this );
+        m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
+        m_urlButton->setIcon( KIcon("applications-internet") );
+        m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this event" ) );
+        connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openUrl()) );
+        buttonsLayout->addItem( m_urlButton );
+    }
+
+    QSizePolicy::Policy minPol = QSizePolicy::Minimum;
+    QGraphicsWidget *supportLabel, *venueLabel, *locationLabel, *dateLabel, *attendLabel, *tagsLabel;
+    supportLabel  = createLabel( i18nc("@label:textbox Supporing acts for an event", "Supporting:"), minPol );
+    venueLabel    = createLabel( i18nc("@label:textbox", "Venue:"), minPol );
+    locationLabel = createLabel( i18nc("@label:textbox", "Location:"), minPol );
+    dateLabel     = createLabel( i18nc("@label:textbox", "Date:"), minPol );
+    attendLabel   = createLabel( i18nc("@label:textbox", "Attending:"), minPol );
+    tagsLabel     = createLabel( i18nc("@label:textbox", "Tags:"), minPol );
+
+    QGraphicsGridLayout *infoLayout = new QGraphicsGridLayout;
+    infoLayout->addItem( supportLabel, 0, 0 );
+    infoLayout->addItem( venueLabel, 1, 0 );
+    infoLayout->addItem( locationLabel, 2, 0 );
+    infoLayout->addItem( dateLabel, 3, 0 );
+    infoLayout->addItem( attendLabel, 4, 0 );
+    infoLayout->addItem( tagsLabel, 5, 0 );
+    infoLayout->addItem( m_participants, 0, 1 );
+    infoLayout->addItem( m_venue, 1, 1 );
+    infoLayout->addItem( m_location, 2, 1 );
+    infoLayout->addItem( m_date, 3, 1 );
+    infoLayout->addItem( m_attendance, 4, 1 );
+    infoLayout->addItem( m_tags, 5, 1 );
 
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
-    layout->addItem( imageProxy, 0, 0, 5, 1, Qt::AlignCenter );
-    layout->addItem( m_name, 0, 1, 1, 1 );
-    layout->addItem( m_participants, 1, 1, 1, 1 );
-    layout->addItem( m_location, 2, 1, 1, 1 );
-    layout->addItem( m_date, 3, 1, 1, 1 );
-    layout->addItem( m_url, 4, 1, 1, 1 );
+    layout->addItem( imageProxy, 0, 0, 2, 1, Qt::AlignCenter );
+    layout->addItem( m_name, 0, 1 );
+    layout->addItem( buttonsLayout, 0, 2, Qt::AlignRight );
+    layout->addItem( infoLayout, 1, 1, 1, 2 );
     setLayout( layout );
-
-    m_url->nativeWidget()->setOpenExternalLinks( true );
-    m_url->nativeWidget()->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    m_image->setText( i18n("Loading picture...") );
 
     QString name = event->name();
     if( event->isCancelled() )
         name = i18nc( "@label:textbox Title for a cancelled upcoming event", "<s>%1</s> (Cancelled)", name );
     setName( name );
-    setDate( KDateTime( event->date() ) );
-    LastFmLocationPtr location = event->venue()->location;
-    setLocation( location->city + ", " + location->country );
-    const QString &artistList = event->participants().join( " - " );
-    setParticipants( artistList );
-    setUrl( event->url() );
+    setDate( event->date() );
+    setLocation( event->venue()->location );
+    setVenue( event->venue() );
+    setAttendance( event->attendance() );
+    setParticipants( event->participants() );
+    setTags( event->tags() );
     setImage( event->imageUrl(LastFmEvent::Large) );
 }
 
@@ -84,42 +116,18 @@ UpcomingEventsWidget::~UpcomingEventsWidget()
 {
 }
 
-Plasma::Label *
-UpcomingEventsWidget::date() const
+QGraphicsProxyWidget *
+UpcomingEventsWidget::createLabel( const QString &text, QSizePolicy::Policy hPolicy )
 {
-    return m_date;
-}
-
-QPixmap
-UpcomingEventsWidget::image() const
-{
-    QPixmap image( *m_image->pixmap() );
-    image.detach();
-    return image;
-}
-
-Plasma::Label *
-UpcomingEventsWidget::name() const
-{
-    return m_name;
-}
-
-Plasma::Label *
-UpcomingEventsWidget::location() const
-{
-    return m_location;
-}
-
-Plasma::Label *
-UpcomingEventsWidget::participants() const
-{
-    return m_participants;
-}
-
-Plasma::Label *
-UpcomingEventsWidget::url() const
-{
-    return m_url;
+    QLabel *label = new QLabel;
+    label->setAttribute( Qt::WA_NoSystemBackground );
+    label->setMinimumWidth( 10 );
+    label->setSizePolicy( hPolicy, QSizePolicy::Preferred );
+    label->setText( text );
+    label->setWordWrap( false );
+    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget( this );
+    proxy->setWidget( label );
+    return proxy;
 }
 
 void
@@ -157,75 +165,88 @@ UpcomingEventsWidget::loadImage()
 }
 
 void
-UpcomingEventsWidget::setParticipants( const QString &participants )
+UpcomingEventsWidget::openUrl()
 {
-    QFont font;
+    if( m_event->url().isValid() )
+        QDesktopServices::openUrl( m_event->url() );
+}
+
+void
+UpcomingEventsWidget::setTags( const QStringList &tags )
+{
+    QLabel *tagsLabel = static_cast<QLabel*>( m_tags->widget() );
+    tagsLabel->setText( tags.isEmpty() ? i18n( "none" ) : tags.join(", ") );
+    QStringList tooltips;
+    if( tags.count() > 10 )
+    {
+        for( int i = 0; i < 10; ++i )
+            tooltips << tags.value( i );
+    }
+    else
+        tooltips = tags;
+    tagsLabel->setToolTip( i18nc( "@info:tooltip", "<strong>Tags:</strong><nl/>%1", tooltips.join(", ") ) );
+}
+
+void
+UpcomingEventsWidget::setAttendance( int count )
+{
+    static_cast<QLabel*>(m_attendance->widget())->setText( QString::number(count) );
+}
+
+void
+UpcomingEventsWidget::setParticipants( const QStringList &participants )
+{
+    QLabel *participantsLabel = static_cast<QLabel*>( m_participants->widget() );
     if( participants.isEmpty() )
     {
-        m_participants->setText( i18n( "No other participants" ) );
-        font.setItalic( true );
-        m_participants->setFont( font );
+        participantsLabel->setText( i18n( "none" ) );
     }
     else
     {
-        QStringList listbuff = participants.split(" - ");
-        QString buffer( "" );
-        QString toolTipText;
-        for( int i = 0; i < listbuff.size(); i++ )
+        QString combined = participants.join( ", " );
+        participantsLabel->setText( combined );
+        if( participants.size() > 1 )
         {
-            toolTipText += listbuff.at( i );
-            if( i % 3 == 0 && i )
-            {
-                toolTipText += "\n";
-            }
-            else
-            {
-                if( i < listbuff.size() - 1 ) toolTipText += " - ";
-            }
-
-            if( i < NBR_MAX_PARTICIPANT )
-            {
-                buffer += listbuff.at( i );
-                if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
-            }
+            QString tooltip = i18nc( "@info:tooltip Supporting artists for an event",
+                                     "<strong>Supporting artists:</strong><nl/>%1", combined );
+            participantsLabel->setToolTip( tooltip );
         }
-        if( listbuff.size() > NBR_MAX_PARTICIPANT )
-        {
-            buffer += "...";
-        }
-        m_participants->setToolTip( toolTipText );
-        m_participants->setText( buffer );
-        font.setItalic( false );
-        m_participants->setFont( font );
     }
 }
 
 void
 UpcomingEventsWidget::setDate( const KDateTime &date )
 {
-    m_date->setText( KGlobal::locale()->formatDateTime( date.toClockTime(), KLocale::FancyLongDate ) );
+    QLabel *dateLabel = static_cast<QLabel*>( m_date->widget() );
+    dateLabel->setText( KGlobal::locale()->formatDateTime( date, KLocale::FancyLongDate ) );
 }
 
 void
-UpcomingEventsWidget::setLocation( const QString &location )
+UpcomingEventsWidget::setLocation( const LastFmLocationPtr &loc )
 {
-    m_location->setText( location );
+    QString text = QString( "%1, %2" ).arg( loc->city ).arg( loc->country );
+    if( !loc->street.isEmpty() )
+        text.prepend( loc->street + ", " );
+    QLabel *locLabel = static_cast<QLabel*>( m_location->widget() );
+    locLabel->setText( text );
+    locLabel->setToolTip( i18nc( "@info:tooltip", "<strong>Location:</strong><nl/>%1", text ) );
+}
+
+void
+UpcomingEventsWidget::setVenue( const LastFmVenuePtr &venue )
+{
+    static_cast<QLabel*>( m_venue->widget() )->setText( venue->name );
 }
 
 void
 UpcomingEventsWidget::setName( const QString &name )
 {
+    QLabel *nameLabel = static_cast<QLabel*>( m_name->widget() );
     QFont nameFont;
     nameFont.setBold( true );
-    nameFont.setPointSize( m_name->font().pointSize() + 2 );
-    m_name->setFont( nameFont );
-    m_name->setText( name );
-}
-
-void
-UpcomingEventsWidget::setUrl( const KUrl &url )
-{
-    m_url->setText( "<html><body><a href=\"" + url.prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
+    nameFont.setPointSize( nameLabel->font().pointSize() + 2 );
+    nameLabel->setFont( nameFont );
+    nameLabel->setText( name );
 }
 
 UpcomingEventsListWidget::UpcomingEventsListWidget( QGraphicsWidget *parent )

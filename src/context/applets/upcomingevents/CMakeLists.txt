@@ -1,9 +1,9 @@
 project(context-upcomingevents)
 
 include_directories(
-    ../..
-    ../../..
+    ${Amarok_SOURCE_DIR}/src/context/widgets
     ${Amarok_SOURCE_DIR}/src/network
+    ${Amarok_SOURCE_DIR}/src
     )
 
 set( upcomingEvents_SRCS
