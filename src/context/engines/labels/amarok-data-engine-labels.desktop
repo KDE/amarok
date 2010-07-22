@@ -1,5 +1,9 @@
 [Desktop Entry]
 Name=Labels Data Engine
+Name[it]=Motore dati delle etichette
+Name[pt]=Motor de Dados de Legendas
+Name[sv]=Datagränssnitt för etiketter
+Name[uk]=Рушій даних міток
 Name[x-test]=xxLabels Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok

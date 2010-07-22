@@ -1,5 +1,9 @@
 [Desktop Entry]
 Name=Labels
+Name[it]=Etichette
+Name[pt]=Legendas
+Name[sv]=Etiketter
+Name[uk]=Мітки
 Name[x-test]=xxLabelsxx
 Type=Service
 Icon=amarok_labels
