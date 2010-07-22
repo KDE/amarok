@@ -32,7 +32,7 @@
      <item>
       <widget class="QSpinBox" name="minCountSpinBox">
        <property name="toolTip">
-        <string>Show only lables that are rated at least that high</string>
+        <string>Show only labels that are rated at least that high</string>
        </property>
        <property name="suffix">
         <string notr="true">%</string>
@@ -85,7 +85,7 @@
    <item>
     <widget class="QCheckBox" name="autoAddCheckBox">
      <property name="text">
-      <string>Automaticly add downloaded labels if none are assigned</string>
+      <string>Automatically add downloaded labels if none are assigned</string>
      </property>
     </widget>
    </item>
@@ -110,7 +110,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Show only lables that are rated at least that high</string>
+        <string>Show only labels that are rated at least that high</string>
        </property>
        <property name="suffix">
         <string notr="true">%</string>
