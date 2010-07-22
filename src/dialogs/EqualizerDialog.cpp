@@ -76,7 +76,7 @@ EqualizerDialog::eqSetupUI()
     if( !The::engineController()->isEqSupported() )
     {
         EqualizerGroupBox->setDisabled( true );
-        EqualizerGroupBox->setTitle( i18n( "Sorry, your current Phonon backend version doesn't provide equalizer support." ) );
+        EqualizerGroupBox->setTitle( i18n( "Sorry, your current Phonon backend version does not provide equalizer support." ) );
         eqPresetsGroupBox->hide();
         eqBandsGroupBox->hide();
         return;
