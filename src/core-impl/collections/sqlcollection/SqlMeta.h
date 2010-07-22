@@ -314,12 +314,12 @@ class SqlAlbum : public Meta::Album
 
     private:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
-        QString createScaledImage( QString path, int size ) const;
+        QString createScaledImage( QString path, int size );
         QString findCachedImage( int size ) const;
-        QString findLargeCachedImage() const;
+        QString findLargeCachedImage();
         QString findImage( int size );
         QByteArray imageKey() const;
-        void updateImage( const QString path ) const; // Updates the database to ensure the album has the correct path
+        void updateImage( const QString &path ); // Updates the database to ensure the album has the correct path
         // Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
         int unsetImageId() const;
 
@@ -342,6 +342,7 @@ class SqlAlbum : public Meta::Album
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+        QString m_imagePath;
 
         //TODO: add album artist
 };

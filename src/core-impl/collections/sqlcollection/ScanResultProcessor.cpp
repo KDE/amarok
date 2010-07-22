@@ -201,6 +201,9 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     QString goodPath;
     foreach( const QString &path, paths )
     {
+        if( path.startsWith( "amarok-sqltrackuid://" ) )
+            return path;
+
         QString file = QFileInfo( path ).completeBaseName();
         
         //prioritize "front"

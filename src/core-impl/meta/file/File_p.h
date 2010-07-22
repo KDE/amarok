@@ -53,6 +53,7 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 #include <mp4file.h>
+#include <attachedpictureframe.h>
 
 namespace Capabilities
 {
@@ -79,6 +80,7 @@ struct MetaData
         , trackPeak( 0.0 )
         , albumGain( 0.0 )
         , albumPeak( 0.0 )
+        , embeddedImage( false )
     { }
     QString title;
     QString artist;
@@ -99,7 +101,7 @@ struct MetaData
     qreal trackPeak;
     qreal albumGain;
     qreal albumPeak;
-
+    bool embeddedImage;
 };
 
 class Track::Private : public QObject
@@ -129,7 +131,7 @@ public:
     void readMetaData();
     QVariantMap changes;
 
-    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
+    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( track->getFileRef( url ), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
 
 private:
@@ -137,41 +139,13 @@ private:
     Track *track;
 };
 
-TagLib::FileRef
-Track::Private::getFileRef()
-{
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName;
-    if(url.isLocalFile())
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.toLocalFile().utf16());
-    }
-    else
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
-    }
-#else
-    QByteArray fileName;
-    if(url.isLocalFile())
-    {
-        fileName = QFile::encodeName( url.toLocalFile() );
-    }
-    else
-    {
-        fileName = QFile::encodeName( url.path() );
-    }
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-    return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-}
-
 void Track::Private::readMetaData()
 {
     QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
     m_data.created = fi.created();
 
 #define strip( x ) TStringToQString( x ).trimmed()
-    TagLib::FileRef fileRef = getFileRef();
+    TagLib::FileRef fileRef = track->getFileRef( url );
 
     TagLib::Tag *tag = 0;
     if( !fileRef.isNull() )
@@ -230,7 +204,20 @@ void Track::Private::readMetaData()
             if( !flm[ "TBPM" ].isEmpty() )
                 m_data.bpm = TStringToQString( flm[ "TBPM" ].front()->toString() ).toFloat();
 
-
+            if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
+            {
+                TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
+                TagLib::ID3v2::FrameList::ConstIterator iter;
+                for( iter = apicList.begin(); iter != apicList.end(); ++iter )
+                {
+                    TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
+                    if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
+                        currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
+                    {
+                        m_data.embeddedImage = true;    
+                    }
+                }
+            }
 
         }
         if( AmarokConfig::useCharsetDetector() && tag )

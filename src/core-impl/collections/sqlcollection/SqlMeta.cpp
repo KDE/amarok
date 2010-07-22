@@ -22,6 +22,7 @@
 #include "CapabilityDelegate.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core-impl/meta/file/File.h"
 #include "core-impl/meta/file/TagLibUtils.h"
 #include "ArtistHelper.h"
 #include "SqlCollection.h"
@@ -1218,6 +1219,14 @@ SqlAlbum::image( int size )
 
     QString result;
 
+    if( m_imagePath.isEmpty() )
+    {
+        QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
+        QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
+        if( !res.isEmpty() && !res.first().isEmpty() )
+            m_imagePath = res.first();
+    }
+
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     QString cachedImage = findCachedImage( size );
@@ -1282,6 +1291,7 @@ SqlAlbum::imageLocation( int size )
     // If we don't have the location, it's possible that we haven't tried to find the image yet
     // So, let's look for it and just ignore the result
     QPixmap i = image( size );
+    Q_UNUSED( i )
     if( m_images.contains( size ) )
         return KUrl( m_images.value( size ) );
 
@@ -1304,7 +1314,7 @@ SqlAlbum::setImage( const QPixmap &pixmap )
         removeImage();
 
     const QByteArray widthKey = QByteArray::number( pixmap.width() ) + '@';
-    const QByteArray key = md5sum( artist, m_name, QString() );
+    const QByteArray key = md5sum( artist, m_name, m_imagePath );
     const QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
     pixmap.save( path, "JPG" );
     updateImage( path );
@@ -1371,6 +1381,7 @@ SqlAlbum::removeImage()
         {
             query = "DELETE FROM images WHERE id = %1";
             m_collection->sqlStorage()->query( query.arg( QString::number( imageId ) ) );
+            m_imagePath = QString();
         }
     }
 
@@ -1446,7 +1457,7 @@ SqlAlbum::imageKey() const
     if( artist.isEmpty() && m_name.isEmpty() )
         return QByteArray();
 
-    return md5sum( artist, m_name, QString() );
+    return md5sum( artist, m_name, m_imagePath );
 }
 
 QString
@@ -1466,7 +1477,7 @@ SqlAlbum::findCachedImage( int size ) const
 }
 
 QString
-SqlAlbum::findLargeCachedImage() const
+SqlAlbum::findLargeCachedImage()
 {
     const QByteArray key = imageKey();
     const QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
@@ -1480,9 +1491,10 @@ SqlAlbum::findLargeCachedImage() const
 }
 
 QString
-SqlAlbum::createScaledImage( QString path, int size ) const
+SqlAlbum::createScaledImage( QString path, int size )
 {
-    if( size <= 1 || !QFile::exists(path) )
+    bool embedded = path.startsWith( "amarok-sqltrackuid://" );
+    if( size <= 1 || ( !embedded && !QFile::exists(path) ) )
         return QString();
 
     const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
@@ -1490,14 +1502,32 @@ SqlAlbum::createScaledImage( QString path, int size ) const
         return QString();
 
     const QByteArray widthKey = QByteArray::number( size ) + '@';
-    const QByteArray key = md5sum( artist, m_name, QString() );
+    const QByteArray key = md5sum( artist, m_name, m_imagePath );
     const QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     const QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
 
     // Don't overwrite if it already exists
     if( !QFile::exists( cachedImagePath ) )
     {
-        QImage img( path );
+        QImage img;
+
+        if( embedded )
+        {
+            QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( path );
+            QStringList result = m_collection->sqlStorage()->query( query );
+            if( result.isEmpty() )
+                return QString();
+            
+            QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
+
+            m_imagePath = finalPath;
+            img = MetaFile::Track::getEmbeddedCover( finalPath );
+        }
+        else
+        {
+            img = QImage( path );
+        }
+
         if( img.isNull() )
             return QString();
 
@@ -1529,14 +1559,17 @@ SqlAlbum::findImage( int size )
         {
             fullsize = res.first();
             if( !fullsize.isEmpty() )
+            {
                 m_images.insert( 0, fullsize ); // store the full size version
+                m_imagePath = fullsize;
+            }
         }
     }
 
     if( fullsize == AMAROK_UNSET_MAGIC )
         return AMAROK_UNSET_MAGIC;
 
-    if( QFile::exists( fullsize ) )
+    if( fullsize.startsWith( "amarok-sqltrackuid://" ) || QFile::exists( fullsize ) )
     {
         if( size > 1 )
             return createScaledImage( fullsize, size );
@@ -1547,7 +1580,7 @@ SqlAlbum::findImage( int size )
 }
 
 void
-SqlAlbum::updateImage( const QString path ) const
+SqlAlbum::updateImage( const QString &path )
 {
     DEBUG_BLOCK
     QString query = "SELECT id FROM images WHERE path = '%1'";
@@ -1561,6 +1594,7 @@ SqlAlbum::updateImage( const QString path ) const
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
                             .arg( m_collection->sqlStorage()->escape( path ) );
         imageid = m_collection->sqlStorage()->insert( insert, "images" );
+        m_imagePath = path;
     }
     else
         imageid = res[0].toInt();

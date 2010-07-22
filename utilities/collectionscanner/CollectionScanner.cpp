@@ -42,7 +42,6 @@
 #include <QtDebug>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QTime>
 #include <QTimer>
 #include <QThread>
 
@@ -72,6 +71,7 @@
 
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
+#include <attachedpictureframe.h>
 #include <xiphcomment.h>
 
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
@@ -419,8 +419,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg" << "bmp";
     QStringList validPlaylists; validPlaylists << "m3u" << "pls" << "xspf";
 
+    m_images.clear();
     QList<CoverBundle> covers;
-    QStringList images;
 
     int itemCount = 0;
 
@@ -445,7 +445,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         if( validImages.contains( ext ) )
-            images += path;
+            m_images += path;
 
         else if( m_importPlaylists && validPlaylists.contains( ext ) )
         {
@@ -464,8 +464,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         else
         {
-            //FIXME: PORT 2.0
-//             QList<EmbeddedImage> images;
             const AttributeHash attributes = readTags( path );
 
             if( !attributes.empty() )
@@ -476,24 +474,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
-
-                //FIXME: PORT 2.0
-//                 foreach( EmbeddedImage image, images )
-//                 {
-//                     AttributeHash attributes;
-//                     if( m_batch && !m_rpath.isEmpty() )
-//                     {
-//                         QString rpath = path;
-//                         rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
-//                         rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
-//                         attributes["path"] = rpath;
-//                     }
-//                     else
-//                         attributes["path"] = path;
-//                     attributes["hash"] = image.hash();
-//                     attributes["description"] = image.description();
-//                     writeElement( "embed", attributes );
-//                 }
             }
         }
 
@@ -504,7 +484,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( path == entries.last() || dir != directory( *itTemp ) )
         {
             // we entered the next directory
-            foreach( const QString &imagePath, images )
+            foreach( const QString &imagePath, m_images )
             {
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
@@ -542,7 +522,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
             // clear now because we've processed them
             covers.clear();
-            images.clear();
+            m_images.clear();
         }
     }
 }
@@ -570,11 +550,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 #endif
 #endif
 
+    AttributeHash attributes;
+
+    AFTUtility aftutil;
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
-    AttributeHash attributes;
     bool isValid = false;
     FileType fileType = Unknown;
     if( !fileref.isNull() )
@@ -633,9 +617,20 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
-                //FIXME: Port 2.0
-//                 if( images )
-//                     loadImagesFromTag( *file->ID3v2Tag(), *images );
+                if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
+                {
+                    TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
+                    TagLib::ID3v2::FrameList::ConstIterator iter;
+                    for( iter = apicList.begin(); iter != apicList.end(); ++iter )
+                    {
+                        TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter); 
+                        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
+                            currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
+                        {
+                            m_images += attributes["uniqueid"];
+                        }
+                    }
+                }
             }
 // HACK: charset-detector disabled, so all tags assumed utf-8
 // TODO: fix charset-detector to detect encoding with higher accuracy
@@ -716,8 +711,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
             }
-//             if ( images && file->ID3v2Tag() )
-//                 loadImagesFromTag( *file->ID3v2Tag(), *images );
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
@@ -775,6 +768,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if ( !isValid )
     {
         std::cout << "<dud/>";
+        attributes.remove( "uniqueid" );
         return attributes;
     }
 
@@ -814,9 +808,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     const int size = QFile( path ).size();
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
-
-    AFTUtility aftutil;
-    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
 
     return attributes;
 }
