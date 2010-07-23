@@ -34,11 +34,14 @@
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <QSignalMapper>
 
 UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
                                             QGraphicsItem *parent,
                                             Qt::WindowFlags wFlags )
     : QGraphicsWidget( parent, wFlags )
+    , m_mapButton( 0 )
+    , m_urlButton( 0 )
     , m_image( new QLabel )
     , m_event( event )
 {
@@ -59,6 +62,16 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
     QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    QPointF geo( event->venue()->location->longitude, event->venue()->location->latitude );
+    if( !geo.isNull() )
+    {
+        m_mapButton = new Plasma::PushButton( this );
+        m_mapButton->setMaximumSize( QSizeF( 22, 22 ) );
+        m_mapButton->setIcon( KIcon("edit-find") ); // TODO: a map icon would be nice
+        m_mapButton->setToolTip( i18n( "View map" ) );
+        buttonsLayout->addItem( m_mapButton );
+    }
+
     if( event->url().isValid() )
     {
         m_urlButton = new Plasma::PushButton( this );
@@ -251,12 +264,14 @@ UpcomingEventsWidget::setName( const QString &name )
 
 UpcomingEventsListWidget::UpcomingEventsListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
+    , m_sigmap( new QSignalMapper( this ) )
 {
     // The widgets are displayed line by line with only one column
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     QGraphicsWidget *content = new QGraphicsWidget( this );
     content->setLayout( m_layout );
     setWidget( content );
+    connect( m_sigmap, SIGNAL(mapped(QObject*)), this, SIGNAL(mapRequested(QObject*)) );
 }
 
 UpcomingEventsListWidget::~UpcomingEventsListWidget()
@@ -267,12 +282,19 @@ UpcomingEventsListWidget::~UpcomingEventsListWidget()
 int
 UpcomingEventsListWidget::count() const
 {
-    return m_sortMap.count();
+    return m_events.count();
+}
+
+LastFmEvent::List
+UpcomingEventsListWidget::events() const
+{
+    return m_events;
 }
 
 void
 UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
 {
+    m_events << event;
     UpcomingEventsWidget *widget = new UpcomingEventsWidget( event );
     QMap<uint, UpcomingEventsWidget*>::const_iterator insertIt, indexIt;
     insertIt = m_sortMap.insertMulti( event->date().toTime_t(), widget );
@@ -283,6 +305,9 @@ UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
     index *= 2;  // take separators into account
     m_layout->insertItem( index, widget );
     insertSeparator( index + 1 );
+    connect( widget->m_mapButton, SIGNAL(clicked()), m_sigmap, SLOT(map()) );
+    m_sigmap->setMapping( widget->m_mapButton, widget );
+    emit eventAdded( event );
 }
 
 void
@@ -307,6 +332,9 @@ UpcomingEventsListWidget::insertSeparator( int index )
 void
 UpcomingEventsListWidget::clear()
 {
+    foreach( const LastFmEventPtr &event, m_events )
+        emit eventRemoved( event );
+    m_events.clear();
     qDeleteAll( m_sortMap.values() );
     m_sortMap.clear();
     int count = m_layout->count();

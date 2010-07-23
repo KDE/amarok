@@ -32,10 +32,12 @@ class QGraphicsLinearLayout;
 class QListWidgetItem;
 class QXmlStreamReader;
 class TextScrollingWidget;
+class UpcomingEventsMapWidget;
 
 namespace Plasma
 {
     class IconWidget;
+    class WebView;
 }
 
  /**
@@ -85,6 +87,10 @@ public:
      * \param constraints : the type of constraints that were updated
      */
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+
+signals:
+    void listWidgetAdded( UpcomingEventsListWidget *widget );
+    void listWidgetRemoved( UpcomingEventsListWidget *widget );
 
 protected:
     /**
@@ -214,6 +220,8 @@ private:
     void enableVenueGrouping( bool enable );
     bool m_groupVenues;
 
+    UpcomingEventsMapWidget *mapView( bool expand = true );
+
 private slots:
     void searchVenue( const QString &text );
     void venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
@@ -221,6 +229,8 @@ private slots:
     void showVenueInfo( QListWidgetItem *item );
     void venueResultDoubleClicked( QListWidgetItem *item );
     void selectedVenueDoubleClicked( QListWidgetItem *item );
+    void handleMapRequest( QObject *widget );
+    void listWidgetDestroyed( QObject *obj );
     void openUrl( const QString &url );
     void themeChanged();
 };

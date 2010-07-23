@@ -29,14 +29,16 @@
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "LastFmEventXmlParser.h"
+#include "UpcomingEventsMapWidget.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
+#include <KStandardDirs>
 #include <Plasma/Extender>
 #include <Plasma/ExtenderItem>
 #include <Plasma/IconWidget>
-#include <Plasma/ScrollWidget>
 #include <Plasma/Theme>
+#include <Plasma/WebView>
 
 #include <QDesktopServices>
 #include <QGraphicsLayoutItem>
@@ -95,12 +97,13 @@ UpcomingEventsApplet::init()
     headerLayout->addItem( m_settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
-    m_artistEventsList = new UpcomingEventsListWidget( this );
     m_artistExtenderItem = new Plasma::ExtenderItem( extender() );
+    m_artistEventsList = new UpcomingEventsListWidget( m_artistExtenderItem );
     m_artistExtenderItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
     m_artistExtenderItem->setName( "currentartistevents" );
     m_artistExtenderItem->setWidget( m_artistEventsList );
     m_artistExtenderItem->setCollapsed( true );
+    connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
@@ -147,11 +150,6 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     qreal padding = standardPadding();
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
 
-    qreal scrollAreaW = size().width() - padding;
-    m_artistExtenderItem->setMaximumWidth( scrollAreaW );
-    m_artistEventsList->setMaximumWidth( scrollAreaW );
-    extender()->setMaximumWidth( scrollAreaW );
-
     // how many extender items are expanded
     int expandedCount( 0 );
     QList<Plasma::ExtenderItem*> existingItems = extender()->items();
@@ -169,15 +167,20 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     qreal itemHeight = scrollAreaH - itemsCount * (m_toolBoxIconSize + verticalMargins + padding + 2);
     if( expandedCount > 0 )
         itemHeight /= expandedCount;
+
+    qreal rightMargin;
+    layout()->getContentsMargins( 0, 0, &rightMargin, 0 );
+    qreal scrollAreaW = size().width() - rightMargin / 2.0 - padding;
     foreach( Plasma::ExtenderItem *item, existingItems )
     {
-        UpcomingEventsListWidget *widget = static_cast<UpcomingEventsListWidget*>(item->widget());
-        widget->setMaximumWidth( scrollAreaW );
+        QGraphicsWidget *widget = static_cast<QGraphicsWidget*>(item->widget());
+        widget->setMaximumWidth( scrollAreaW - padding );
         item->setMaximumWidth( scrollAreaW );
         if( expandedCount > 0 && !item->isCollapsed() )
         {
             widget->setMinimumHeight( itemHeight );
             widget->setMaximumHeight( itemHeight );
+            widget->resize( scrollAreaW - padding, itemHeight );
         }
     }
 }
@@ -222,6 +225,9 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
                 extenderItem->setCollapsed( true );
                 extenderItem->showCloseButton();
                 addToExtenderItem( extenderItem, events, venue->name );
+                connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
+                connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
+                emit listWidgetAdded( listWidget );
             }
             update();
         }
@@ -238,6 +244,11 @@ UpcomingEventsApplet::clearVenueItems()
         if( item->name() == "favoritevenuesgroup" )
         {
             static_cast<UpcomingEventsListWidget*>( item->widget() )->clear();
+            continue;
+        }
+        if( item->name() == "venuemapview" )
+        {
+            static_cast<UpcomingEventsMapWidget*>( item->widget() )->clear();
             continue;
         }
         item->destroy();
@@ -535,6 +546,38 @@ UpcomingEventsApplet::themeChanged()
     updateToolBoxIconSize();
 }
 
+UpcomingEventsMapWidget *
+UpcomingEventsApplet::mapView( bool expand )
+{
+    if( extender()->hasItem("venuemapview") )
+    {
+        Plasma::ExtenderItem *item = extender()->item( "venuemapview" );
+        item->setCollapsed( !expand );
+        return static_cast<UpcomingEventsMapWidget*>( item->widget() );
+    }
+
+    Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
+    UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( extenderItem );
+    extenderItem->setTitle( i18n( "Map View" ) );
+    extenderItem->setName( "venuemapview" );
+    extenderItem->setWidget( view );
+    extenderItem->setMinimumWidth( 50 );
+    extenderItem->showCloseButton();
+    extender()->setMinimumWidth( 50 );
+    foreach( Plasma::ExtenderItem *item, extender()->items() )
+    {
+        if( item->name() == "venuemapview" )
+            continue;
+        typedef UpcomingEventsListWidget LW;
+        view->addEventsListWidget( qgraphicsitem_cast<LW*>( item->widget() ) );
+    }
+    connect( this, SIGNAL(listWidgetAdded(UpcomingEventsListWidget*)),
+             view, SLOT(addEventsListWidget(UpcomingEventsListWidget*)) );
+    connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
+             view, SLOT(removeEventsListWidget(UpcomingEventsListWidget*)) );
+    return view;
+}
+
 QString
 UpcomingEventsApplet::currentTimeSpan()
 {
@@ -560,6 +603,24 @@ UpcomingEventsApplet::navigateToArtist()
     url.setPath( "collections" );
     url.appendArg( "filter", "artist:\"" + m_artistEventsList->name() + "\"" );
     url.run();
+}
+
+void
+UpcomingEventsApplet::handleMapRequest( QObject *widget )
+{
+    if( !mapView()->isLoaded() )
+    {
+        UpcomingEventsWidget *eventWidget = static_cast<UpcomingEventsWidget*>( widget );
+        LastFmVenuePtr venue = eventWidget->eventPtr()->venue();
+        mapView()->centerAt( venue );
+    }
+}
+
+void
+UpcomingEventsApplet::listWidgetDestroyed( QObject *obj )
+{
+    UpcomingEventsListWidget *widget = static_cast<UpcomingEventsListWidget*>( obj );
+    emit listWidgetRemoved( widget );
 }
 
 void
@@ -610,6 +671,9 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
             listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
             item->setName( "favoritevenuesgroup" );
             item->setWidget( listWidget );
+            connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
+            connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
+            emit listWidgetAdded( listWidget );
         }
     }
     else

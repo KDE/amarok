@@ -31,6 +31,8 @@ class QLabel;
 class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
 class QPixmap;
+class QPointF;
+class QSignalMapper;
 namespace Plasma {
     class Label;
     class PushButton;
@@ -110,6 +112,9 @@ class UpcomingEventsWidget : public QGraphicsWidget
          */
         void setTags( const QStringList &tags );
 
+    protected:
+        Plasma::PushButton *m_mapButton;
+
     private:
         Plasma::PushButton *m_urlButton;
         QGraphicsProxyWidget *m_attendance;
@@ -126,6 +131,8 @@ class UpcomingEventsWidget : public QGraphicsWidget
         QGraphicsProxyWidget *createLabel( const QString &text = QString(),
                                            QSizePolicy::Policy hPolicy = QSizePolicy::Expanding );
 
+        friend class UpcomingEventsListWidget;
+
     private slots:
         void loadImage();
         void openUrl();
@@ -135,6 +142,7 @@ class UpcomingEventsListWidget : public Plasma::ScrollWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString name READ name WRITE setName )
+    Q_PROPERTY( LastFmEvent::List events READ events )
 
 public:
     explicit UpcomingEventsListWidget( QGraphicsWidget *parent = 0 );
@@ -146,10 +154,16 @@ public:
     void addEvent( const LastFmEventPtr &event );
     void addEvents( const LastFmEvent::List &events );
 
+    LastFmEvent::List events() const;
     QString name() const;
     void setName( const QString &name );
 
     void clear();
+
+signals:
+    void mapRequested( QObject *widget );
+    void eventAdded( const LastFmEventPtr &event );
+    void eventRemoved( const LastFmEventPtr &event );
 
 protected:
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
@@ -157,8 +171,10 @@ protected:
 private:
     void insertSeparator( int index );
     QString m_name;
+    LastFmEvent::List m_events;
     QMap<uint, UpcomingEventsWidget*> m_sortMap;
     QGraphicsLinearLayout *m_layout;
+    QSignalMapper *m_sigmap;
     Q_DISABLE_COPY( UpcomingEventsListWidget )
 };
 
