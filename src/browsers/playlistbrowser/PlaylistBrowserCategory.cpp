@@ -21,7 +21,7 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
@@ -65,7 +65,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
-    m_byFolderProxy = new PlaylistsInGroupsProxy( model );
+    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
 
     m_filterProxy = new QSortFilterProxyModel( this );
     m_filterProxy->setDynamicSortFilter( true );

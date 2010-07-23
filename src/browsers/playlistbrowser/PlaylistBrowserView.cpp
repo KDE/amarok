@@ -28,7 +28,7 @@
 #include "PopupDropperFactory.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
-#include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsInFoldersProxy.h"
 
 #include <KAction>
 #include <KGlobalSettings>

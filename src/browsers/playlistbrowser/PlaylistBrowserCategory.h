@@ -31,7 +31,7 @@ class KActionMenu;
 class KLineEdit;
 class KToolBar;
 
-class PlaylistsInGroupsProxy;
+class PlaylistsInFoldersProxy;
 class PlaylistsByProviderProxy;
 class PlaylistTreeItemDelegate;
 
@@ -80,7 +80,7 @@ private:
 
     PlaylistTreeItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemDelegate;
-    PlaylistsInGroupsProxy *m_byFolderProxy;
+    PlaylistsInFoldersProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;
     QSortFilterProxyModel *m_filterProxy;
 

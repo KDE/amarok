@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTSINGROUPSPROXY_H
-#define PLAYLISTSINGROUPSPROXY_H
+#ifndef PLAYLISTSINFOLDERSPROXY_H
+#define PLAYLISTSINFOLDERSPROXY_H
 
 #include "QtGroupingProxy.h"
 #include "PlaylistBrowserModel.h"
@@ -24,12 +24,12 @@
 
 class QAction;
 
-class PlaylistsInGroupsProxy : public QtGroupingProxy
+class PlaylistsInFoldersProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
-        PlaylistsInGroupsProxy( QAbstractItemModel *model );
-        ~PlaylistsInGroupsProxy();
+        PlaylistsInFoldersProxy( QAbstractItemModel *model );
+        ~PlaylistsInFoldersProxy();
 
         /* PlaylistInGroupsProxy methods */
         QModelIndex createNewGroup( const QString &groupName );
@@ -65,4 +65,4 @@ class PlaylistsInGroupsProxy : public QtGroupingProxy
         QAction *m_deleteFolderAction;
 };
 
-#endif //PLAYLISTSINGROUPSPROXY_H
+#endif //PLAYLISTSINFOLDERSPROXY_H

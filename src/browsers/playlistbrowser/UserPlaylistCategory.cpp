@@ -22,7 +22,7 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"

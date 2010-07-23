@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsInFoldersProxy.h"
 
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
@@ -26,7 +26,7 @@
 #include <KIcon>
 #include <KInputDialog>
 
-PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
+PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
 {
     m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
@@ -44,12 +44,12 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
 }
 
-PlaylistsInGroupsProxy::~PlaylistsInGroupsProxy()
+PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
 {
 }
 
 QVariant
-PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
+PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
 {
 
     //Turn the QVariantList of the source into a comma separated string, but only for the real items
@@ -85,7 +85,7 @@ PlaylistsInGroupsProxy::data( const QModelIndex &idx, int role ) const
 }
 
 bool
-PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &parent )
+PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &parent )
 {
     DEBUG_BLOCK
     bool result;
@@ -133,7 +133,7 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 }
 
 QStringList
-PlaylistsInGroupsProxy::mimeTypes() const
+PlaylistsInFoldersProxy::mimeTypes() const
 {
     QStringList mimeTypes = m_model->mimeTypes();
     mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
@@ -141,7 +141,7 @@ PlaylistsInGroupsProxy::mimeTypes() const
 }
 
 QMimeData *
-PlaylistsInGroupsProxy::mimeData( const QModelIndexList &indexes ) const
+PlaylistsInFoldersProxy::mimeData( const QModelIndexList &indexes ) const
 {
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
@@ -167,7 +167,7 @@ PlaylistsInGroupsProxy::mimeData( const QModelIndexList &indexes ) const
 }
 
 bool
-PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction action,
+PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction action,
                                    int row, int column, const QModelIndex &parent )
 {
     DEBUG_BLOCK
@@ -242,28 +242,28 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
 }
 
 Qt::DropActions
-PlaylistsInGroupsProxy::supportedDropActions() const
+PlaylistsInFoldersProxy::supportedDropActions() const
 {
     //always add MoveAction because playlists can be put into a different group
     return m_model->supportedDropActions() | Qt::MoveAction;
 }
 
 Qt::DropActions
-PlaylistsInGroupsProxy::supportedDragActions() const
+PlaylistsInFoldersProxy::supportedDragActions() const
 {
     //always add MoveAction because playlists can be put into a different group
     return m_model->supportedDragActions() | Qt::MoveAction;
 }
 
 void
-PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
+PlaylistsInFoldersProxy::slotRename( QModelIndex sourceIdx )
 {
     QModelIndex proxyIdx = mapFromSource( sourceIdx );
     emit renameIndex( proxyIdx );
 }
 
 void
-PlaylistsInGroupsProxy::slotDeleteFolder()
+PlaylistsInFoldersProxy::slotDeleteFolder()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
@@ -276,7 +276,7 @@ PlaylistsInGroupsProxy::slotDeleteFolder()
 }
 
 void
-PlaylistsInGroupsProxy::slotRenameFolder()
+PlaylistsInFoldersProxy::slotRenameFolder()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
     if( action == 0 )
@@ -312,7 +312,7 @@ PlaylistsInGroupsProxy::slotRenameFolder()
 }
 
 void
-PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
+PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
@@ -322,7 +322,7 @@ PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 }
 
 QModelIndex
-PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )
+PlaylistsInFoldersProxy::createNewGroup( const QString &groupName )
 {
     ColumnVariantMap data;
     RoleVariantMap roleData;
@@ -333,4 +333,4 @@ PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )
     return addEmptyGroup( data );
 }
 
-#include "PlaylistsInGroupsProxy.moc"
+#include "PlaylistsInFoldersProxy.moc"
