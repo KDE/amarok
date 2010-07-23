@@ -67,8 +67,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const int actionCount
-            = index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
+    const int actionCount =
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
 
     painter->save();
 

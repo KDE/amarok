@@ -274,6 +274,10 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                         return icon( pmc );
                 break;
             }
+
+            case ActionCountRole:
+            case ActionRole:
+                return PlaylistBrowserModel::data( idx, role );
         }
     }
 

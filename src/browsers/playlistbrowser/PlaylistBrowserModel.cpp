@@ -218,6 +218,9 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
         case PlaylistBrowserModel::ActionRole:
             return QVariant::fromValue( index.column() == PlaylistBrowserModel::ProviderColumn ?
                     providerActions : actionsFor( index ) );
+        case PlaylistBrowserModel::ActionCountRole:
+            return QVariant( index.column() == PlaylistBrowserModel::ProviderColumn ?
+                    providerActions.count() : actionsFor( index ).count() );
 
         default: return QVariant();
     }
