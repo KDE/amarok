@@ -106,15 +106,16 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
-//    QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
-//    toolBar->addAction( addPodcastAction );
-//    connect( addPodcastAction, SIGNAL(triggered( bool )), m_podcastModel, SLOT(addPodcast()) );
+    QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
+                                             m_toolBar );
+    m_toolBar->addAction( addPodcastAction );
+    connect( addPodcastAction, SIGNAL(triggered( bool )), The::podcastModel(), SLOT(addPodcast()) );
 
-//    QAction* updateAllAction = new QAction( KIcon("view-refresh-amarok"),
-//                                            i18n("&Update All"), toolBar );
-//    toolBar->addAction( updateAllAction );
-//    connect( updateAllAction, SIGNAL(triggered( bool )),
-//             m_podcastModel, SLOT(refreshPodcasts()) );
+    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"),
+                                            i18n("&Update All"), m_toolBar );
+    m_toolBar->addAction( updateAllAction );
+    connect( updateAllAction, SIGNAL(triggered( bool )),
+             The::podcastModel(), SLOT(refreshPodcasts()) );
 
 
     //transparency

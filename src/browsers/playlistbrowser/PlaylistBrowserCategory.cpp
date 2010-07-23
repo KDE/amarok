@@ -61,8 +61,8 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    KToolBar *toolBar = new KToolBar( this, false, false );
-    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_toolBar = new KToolBar( this, false, false );
+    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
     m_byFolderProxy = new PlaylistsInGroupsProxy( model );
@@ -76,24 +76,24 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
-    toolBar->addAction( m_addFolderAction );
+    m_toolBar->addAction( m_addFolderAction );
     connect( m_addFolderAction, SIGNAL( triggered( bool ) ), SLOT( createNewFolder() ) );
 
     //a QWidget with minimumExpanding makes the next button right aligned.
     QWidget *spacerWidget = new QWidget( this );
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
                                  QSizePolicy::MinimumExpanding );
-    toolBar->addWidget( spacerWidget );
+    m_toolBar->addWidget( spacerWidget );
 
     m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
-    toolBar->addAction( m_providerMenu );
+    m_toolBar->addAction( m_providerMenu );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), m_toolBar );
     toggleAction->setToolTip( i18n( "Merged View" ) );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
-    toolBar->addAction( toggleAction );
+    m_toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
     toggleView( toggleAction->isChecked() );

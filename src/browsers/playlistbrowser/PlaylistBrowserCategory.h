@@ -29,6 +29,7 @@ class QTreeView;
 class KAction;
 class KActionMenu;
 class KLineEdit;
+class KToolBar;
 
 class PlaylistsInGroupsProxy;
 class PlaylistsByProviderProxy;
@@ -54,6 +55,9 @@ public:
                                   PlaylistBrowserModel *model,
                                   QWidget *parent );
     ~PlaylistBrowserCategory();
+
+protected:
+    KToolBar *m_toolBar;
 
 private slots:
     void toggleView( bool );
