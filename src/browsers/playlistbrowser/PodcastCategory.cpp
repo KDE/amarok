@@ -118,6 +118,14 @@ PodcastCategory::PodcastCategory( QWidget *parent )
              The::podcastModel(), SLOT(refreshPodcasts()) );
 
 
+    QAction *importOpmlAction = new QAction( KIcon("document-import")
+                                             , i18n( "Import OPML File" )
+                                             , m_toolBar
+                                         );
+    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
+    m_toolBar->addAction( importOpmlAction );
+    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
     //transparency
 //    QPalette p = m_podcastTreeView->palette();
 //    QColor c = p.color( QPalette::Base );
@@ -136,13 +144,6 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 //    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
 //    m_podcastTreeView->setSizePolicy(sizePolicy1);
 //
-//    QAction *importOpmlAction = new QAction( KIcon("document-import")
-//                                             , i18n( "Import OPML File" )
-//                                             , toolBar
-//                                         );
-//    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
-//    toolBar->addAction( importOpmlAction );
-//    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
 }
 
