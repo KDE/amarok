@@ -566,6 +566,7 @@ SqlPodcastProvider::configureProvider()
     DEBUG_BLOCK
     m_providerSettingsDialog = new KDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
+    m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
     Ui::SqlPodcastProviderSettingsWidget settings;
     settings.setupUi( settingsWidget );
 
