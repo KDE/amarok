@@ -686,15 +686,15 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     // NOTE: possible keywords that could be considered: codec, filetype, etc.
                     const QString &ftStr = elem.text;
-                    FileType ft = Unknown;
+                    Amarok::FileType ft = Amarok::Unknown;
                     if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
-                        ft = Flac;
+                        ft = Amarok::Flac;
                     else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
-                        ft = Mp3;
+                        ft = Amarok::Mp3;
                     else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
-                        ft = Mp4;
+                        ft = Amarok::Mp4;
                     else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
-                        ft = Ogg;
+                        ft = Amarok::Ogg;
 
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
                 }

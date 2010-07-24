@@ -17,6 +17,8 @@
 #ifndef SHARED_FILETYPE_H
 #define SHARED_FILETYPE_H
 
+namespace Amarok{
+
 enum FileType
 {
     Unknown = 0,
@@ -25,5 +27,7 @@ enum FileType
     Flac    = 3,
     Mp4     = 4
 };
+
+}
 
 #endif /* SHARED_FILETYPE_H */

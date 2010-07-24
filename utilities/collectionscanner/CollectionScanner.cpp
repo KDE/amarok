@@ -560,7 +560,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
     bool isValid = false;
-    FileType fileType = Unknown;
+    Amarok::FileType fileType = Amarok::Unknown;
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
@@ -599,7 +599,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
            we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
-            fileType = Mp3;
+            fileType = Amarok::Mp3;
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
@@ -678,7 +678,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
         {
-            fileType = Ogg;
+            fileType = Amarok::Ogg;
             if ( file->tag() )
             {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -696,7 +696,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
-            fileType = Flac;
+            fileType = Amarok::Flac;
             if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -714,7 +714,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
-            fileType = Mp4;
+            fileType = Amarok::Mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
