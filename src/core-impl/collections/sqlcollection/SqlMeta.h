@@ -286,15 +286,36 @@ class SqlAlbum : public Meta::Album
 
         virtual Meta::TrackList tracks();
 
+        /** Returns true if this album is a compilation, meaning that the included songs are from different artists.
+        */
         virtual bool isCompilation() const;
 
+        /** Returns true if this album has an artist.
+         *  The following equation is always true: isCompilation() != hasAlbumArtist()
+         */
         virtual bool hasAlbumArtist() const;
+
+        /** Returns the album artist.
+         *  Note that setting the album artist is not supported.
+         */
         virtual Meta::ArtistPtr albumArtist() const;
 
         //updating album images is possible for local tracks, but let's ignore it for now
-        virtual bool hasImage( int size = 1 ) const;
+
+        /** Returns true if the album has a cover image.
+         *  @param size The maximum width or height of the result. 0 is the original large scale image.
+         */
+        virtual bool hasImage(int size = 1) const;
         virtual bool canUpdateImage() const { return true; }
+
+        /** Returns the album cover image.
+         *  Returns a default image if no specific album image could be found.
+         *  In such a case it will starte the cover fetcher.
+         *
+         *  @param size is the maximum width or height of the resulting image. 0 is the full scale large image.
+         */
         virtual QPixmap image( int size = 1 );
+
         virtual KUrl imageLocation( int size = 1 );
         virtual void setImage( const QPixmap &pixmap );
         virtual void removeImage();
@@ -308,32 +329,76 @@ class SqlAlbum : public Meta::Album
         //SQL specific methods
         int id() const { return m_id; }
 
+        /** Set the compilation flag.
+         *  If the compilation flag is set to "false" then all songs
+         *  with different artists will be moved to other albums, possibly even
+         *  creating them.
+         */
         void setCompilation( bool compilation );
         void setCapabilityDelegate( Capabilities::AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
         Collections::SqlCollection *sqlCollection() const { return m_collection; }
 
     private:
+
+        /**  check if we have an image inside a track (e.g. mp3 APIC)
+        */
+        bool hasEmbeddedImage() const;
+
+        /** Returns the embedded large scale image */
+        QImage getEmbeddedImage() const;
+
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
-        QString createScaledImage( QString path, int size );
-        QString findCachedImage( int size ) const;
-        QString findLargeCachedImage();
-        QString findImage( int size );
+
+        /** Returns a unique key for the album cover. */
         QByteArray imageKey() const;
-        void updateImage( const QString &path ); // Updates the database to ensure the album has the correct path
-        // Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
-        int unsetImageId() const;
+
+        /** Returns the path that the large scale image should have on the disk
+         *  Does not check if the file exists.
+         *  Note: not all large images have a disk cache, e.g. if they are set from outside
+         *    or embedded inside an audio file.
+         *    The largeDiskCache is only used for images set via setImage(QPixmap)
+         */
+        QString largeDiskCachePath() const;
+
+        /** Returns the path that the image should have on the disk
+         *  Does not check if the file exists.
+         *  @param size is the maximum width or height of the resulting image.
+         *         size==0 is the large image and the location of this file is completely different.
+         *         there should never be a scaled cached version of the large image. it dose not make
+         *         sense.
+         */
+        QString scaledDiskCachePath( int size ) const;
+
+        /** Returns the path to the large image
+         * Queries the database for the path of the large scale image.
+         */
+        QString largeImagePath();
+
+        /** Updates the database
+         *  Sets the current albums image to the given path.
+         *  The path should point to a valid image.
+         *  Note: setImage will not delete the already set image.
+         */
+       void setImage( const QString &path );
+
+       /** Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
+       */
+       int unsetImageId() const;
 
     private:
         Collections::SqlCollection* m_collection;
         Capabilities::AlbumCapabilityDelegate *m_delegate;
         QString m_name;
-        int m_id;
+        int m_id; // the id of this album in the database
         int m_artistId;
-        mutable bool m_hasImage;
-        mutable bool m_hasImageChecked;
-        mutable int m_unsetImageId;
+        int m_imageId;
+        mutable QString m_imagePath; // path read from the database
+        mutable bool m_hasImage; // true if we have an original image
+        mutable bool m_hasImageChecked; // true if hasImage was checked
+
+        mutable int m_unsetImageId; // this is the id of the unset magic value in the image sql database
         static const QString AMAROK_UNSET_MAGIC;
-        mutable QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
+
         bool m_tracksLoaded;
         bool m_suppressAutoFetch;
         Meta::ArtistPtr m_artist;
@@ -342,7 +407,6 @@ class SqlAlbum : public Meta::Album
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
-        QString m_imagePath;
 
         //TODO: add album artist
 };

@@ -30,7 +30,6 @@
 #include "SqlRegistry.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/collections/support/SqlStorage.h"
-//#include "mediadevice/CopyToDeviceAction.h"
 
 #include "collectionscanner/AFTUtility.h"
 
@@ -1120,6 +1119,7 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QStrin
     , m_name( name )
     , m_id( id )
     , m_artistId( artist )
+    , m_imageId( -1 )
     , m_hasImage( false )
     , m_hasImageChecked( false )
     , m_unsetImageId( -1 )
@@ -1154,7 +1154,6 @@ SqlAlbum::invalidateCache()
     m_tracksLoaded = false;
     m_hasImage = false;
     m_hasImageChecked = false;
-    m_images.clear();
     m_tracks.clear();
     m_mutex.unlock();
 }
@@ -1186,20 +1185,37 @@ SqlAlbum::tracks()
         return TrackList();
 }
 
+// note for internal implementation:
+// if hasImage returns true then m_imagePath is set
 bool
 SqlAlbum::hasImage( int size ) const
 {
+    Q_UNUSED(size); // we have every size if we have an image at all
+
     if( !m_hasImageChecked )
     {
         m_hasImageChecked = true;
 
-        QString image = const_cast<SqlAlbum*>( this )->findImage( size );
+        const_cast<SqlAlbum*>( this )->largeImagePath();
 
         // The user has explicitly set no cover
-        if( image == AMAROK_UNSET_MAGIC )
+        if( m_imagePath == AMAROK_UNSET_MAGIC )
             m_hasImage = false;
+
+        // if we don't have an image but it was not explicitely blocked
+        else if( m_imagePath.isEmpty() )
+        {
+            // Cover fetching runs in another thread. If there is a retrieved cover
+            // then updateImage() gets called which updates the cache and alerts the
+            // subscribers. We use queueAlbum() because this runs the fetch as a
+            // background job and doesn't give an intruding popup asking for confirmation
+            if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
+                CoverFetcher::instance()->queueAlbum( AlbumPtr(const_cast<SqlAlbum *>(this)) );
+
+            m_hasImage = false;
+        }
         else
-            m_hasImage = !image.isEmpty();
+            m_hasImage = true;
     }
 
     return m_hasImage;
@@ -1208,94 +1224,81 @@ SqlAlbum::hasImage( int size ) const
 QPixmap
 SqlAlbum::image( int size )
 {
-    if( m_hasImageChecked && !m_hasImage )
+    if( !hasImage() )
         return Meta::Album::image( size );
-
-    m_hasImageChecked = true;
-
-    //FIXME this cache doesn't differentiate between shadowed/unshadowed
-    if( m_images.contains( size ) )
-        return QPixmap( m_images.value( size ) );
-
-    QString result;
-
-    if( m_imagePath.isEmpty() )
-    {
-        QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
-        QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
-        if( !res.isEmpty() && !res.first().isEmpty() )
-            m_imagePath = res.first();
-    }
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
-    QString cachedImage = findCachedImage( size );
-    if( !cachedImage.isEmpty() )
-    {
-        result = cachedImage;
-    }
-    // findImage will lookup the original cover and create a scaled version
-    // of the cover if required (returning the path of that scaled image)
+    QString cachedImagePath;
+    if( size == 0 && !hasEmbeddedImage() )
+        cachedImagePath = m_imagePath;
     else
-    {
-        QString image = findImage( size );
+        cachedImagePath = scaledDiskCachePath( size );
 
-        // If we return this value then we don't need to do anything else
-        // as we know that the user has explicitly set no cover
-        if( image == AMAROK_UNSET_MAGIC )
+    //FIXME this cache doesn't differentiate between shadowed/unshadowed
+    // a image exists. just load it.
+    if( !cachedImagePath.isEmpty() && QFile( cachedImagePath ).exists() )
+    {
+        QPixmap pix = QPixmap( cachedImagePath );
+        if( pix.isNull() )
             return Meta::Album::image( size );
-
-        if( !image.isEmpty() && size < 1000 )
-            result = image;
-        else
-        {
-            // After a rescan we seem to lose all image information, so we need
-            // to check that we haven't already downloaded this image before.
-            QString large = findLargeCachedImage();
-            if( !large.isEmpty() )
-                result = createScaledImage( large, size );
-        }
+        return pix;
     }
 
-    if( !result.isEmpty() )
+    // no cached scaled image exists. Have to create it
+
+    QImage img;
+    if( hasEmbeddedImage() )
+        img = getEmbeddedImage();
+    else
+        img = QImage( m_imagePath );
+
+    if( img.isNull() )
+        return Meta::Album::image( size );
+
+    if( size > 0 && size < 1000 )
     {
-        m_hasImage = true;
-        m_images.insert( size, result );
-        return QPixmap( result );
+        img = img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        img.save( cachedImagePath, "JPG" );
+    }
+    else if( hasEmbeddedImage() )
+    {
+        // store it on the disk for later reference.
+        img.save( cachedImagePath, "JPG" );
     }
 
-    // Cover fetching runs in another thread. If there is a retrieved cover
-    // then updateImage() gets called which updates the cache and alerts the
-    // subscribers. We use queueAlbum() because this runs the fetch as a
-    // background job and doesn't give an intruding popup asking for confirmation
-    if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
-        CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
-
-    // If the result image is empty then we didn't find any cached image, nor
-    // could we find the original cover to scale to the appropriate size. Hence,
-    // the album cannot have a cover, for any size. In this case, we return the
-    // default image
-
-    m_hasImage = false;
-
-    return Meta::Album::image( size );
+    return QPixmap::fromImage( img );
 }
 
 KUrl
 SqlAlbum::imageLocation( int size )
 {
-    // If we already have the location, return it
-    if( m_images.contains( size ) )
-        return m_images.value( size );
+    if( !hasImage() )
+        return KUrl();
 
-    // If we don't have the location, it's possible that we haven't tried to find the image yet
-    // So, let's look for it and just ignore the result
-    QPixmap i = image( size );
-    Q_UNUSED( i )
-    if( m_images.contains( size ) )
-        return KUrl( m_images.value( size ) );
+    // findCachedImage looks for a scaled version of the fullsize image
+    // which may have been saved on a previous lookup
+    QString cachedImagePath;
+    if( size == 0 && !hasEmbeddedImage() )
+        cachedImagePath = m_imagePath;
+    else
+        cachedImagePath = scaledDiskCachePath( size );
 
-    return KUrl();
+    if( cachedImagePath.isEmpty() )
+        return KUrl();
+
+    if( !QFile( cachedImagePath ).exists() )
+    {
+        // If we don't have the location, it's possible that we haven't tried to find the image yet
+        // So, let's look for it and just ignore the result
+        QPixmap i = image( size );
+        Q_UNUSED( i )
+    }
+
+    if( !QFile( cachedImagePath ).exists() )
+        return KUrl();
+
+    return cachedImagePath;
 }
 
 void
@@ -1304,20 +1307,17 @@ SqlAlbum::setImage( const QPixmap &pixmap )
     if( pixmap.isNull() )
         return;
 
-    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-    if( artist.isEmpty() && m_name.isEmpty() )
-        return;
-
     // removeImage() will destroy all scaled cached versions of the artwork
     // and remove references from the database if required.
-    if( hasImage( -1 ) ) // -1 is a dummy
-        removeImage();
+    removeImage();
 
-    const QByteArray widthKey = QByteArray::number( pixmap.width() ) + '@';
-    const QByteArray key = md5sum( artist, m_name, m_imagePath );
-    const QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
+    QString path = largeDiskCachePath();
+    // make sure not to overwrite existing images
+    while( QFile(path).exists() )
+        path += "_"; // not that nice but it shouldn't happen that often.
+
+    setImage( path );
     pixmap.save( path, "JPG" );
-    updateImage( path );
 
     notifyObservers();
 }
@@ -1325,68 +1325,56 @@ SqlAlbum::setImage( const QPixmap &pixmap )
 void
 SqlAlbum::removeImage()
 {
-    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-    if( artist.isEmpty() && m_name.isEmpty() )
+    if( !hasImage() )
         return;
 
-    const QByteArray key = md5sum( artist, m_name, m_imagePath );
-
-    // remove the large covers
-    QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
-
-    // remove all cache images
-    QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    QStringList cacheFilter;
-    cacheFilter << QString( '*' + key );
-    QStringList cachedImages = cacheDir.entryList( cacheFilter );
-
-    foreach( const QString &image, cachedImages )
-    {
-        bool r = QFile::remove( cacheDir.filePath( image ) );
-        debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
-    }
-
-    // TODO: remove directory image ??
-
     // Update the database image path
+    // Set the album image to a magic value which will tell Amarok not to fetch it automatically
+    const int unsetId = unsetImageId();
+    QString query = "UPDATE albums SET image = %1 WHERE id = %2";
+    m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
-    QString query = "SELECT images.id, count( images.id ) FROM images, albums "
-                    "WHERE albums.image = images.id AND albums.id = %1 "
-                    "GROUP BY images.id";
-    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_id ) ) );
+    // From here on we check if there are any remaining references to that particular image in the database
+    // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
+    // If there are, we need to leave it since other albums will reference this particular image path.
+    //
+    query = "SELECT count( albums.id ) FROM albums "
+                    "WHERE albums.image = %1";
+    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
     if( !res.isEmpty() )
     {
-        int imageId    = res[0].toInt();
-        int references = res[1].toInt();
-
-        // Set the album image to a magic value which will tell Amarok not to fetch it automatically
-        const int unsetId = unsetImageId();
-
-        query = "UPDATE albums SET image = %1 WHERE id = %2";
-        m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
-
-        // We've just removed a references to that imageid
-        references--;
-
-        // From here on we check if there are any remaining references to that particular image in the database
-        // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
-        // If there are, we need to leave it since other albums will reference this particular image path.
-        //
-        // TODO: Should this cleanup be handled by the Collection at some other point with a DB wide cleanup, with a
-        // vaccuum analyze? Since the use case will most likely be a 1:1 mapping of album-image by moving the cleanup
-        // elsewhere we could remove 2 of the queries for this method - ie, it would be just one UPDATE statement.
+        int references = res[0].toInt();
 
         // If there are no more references to this particular image, then we should clean up
         if( references <= 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
-            m_collection->sqlStorage()->query( query.arg( QString::number( imageId ) ) );
-            m_imagePath = QString();
+            m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+
+            // remove the large cover only if it was cached.
+            QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+            if( QFileInfo(m_imagePath).absoluteDir() == largeCoverDir )
+                QFile::remove( m_imagePath );
+
+            // remove all cache images
+            QString key = md5sum( QString(), QString(), m_imagePath );
+            QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+            QStringList cacheFilter;
+            cacheFilter << QString( "*@" ) + key;
+            QStringList cachedImages = cacheDir.entryList( cacheFilter );
+
+            foreach( const QString &image, cachedImages )
+            {
+                bool r = QFile::remove( cacheDir.filePath( image ) );
+                debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
+            }
         }
     }
 
-    m_images.clear();
+    m_imageId = -1;
+    m_imagePath = QString();
     m_hasImage = false;
+    m_hasImageChecked = true;
 
     notifyObservers();
 }
@@ -1446,171 +1434,151 @@ SqlAlbum::albumArtist() const
 QByteArray
 SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
 {
+    // FIXME: names with unicode characters are not supported.
+    // FIXME: "The Beatles"."Collection" and "The"."Beatles Collection" will produce the same hash.
+    // FIXME: Correcting this now would invalidate all existing image stores.
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
     return context.hexDigest();
 }
 
-QByteArray
-SqlAlbum::imageKey() const
-{
-    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-    if( artist.isEmpty() && m_name.isEmpty() )
-        return QByteArray();
-
-    return md5sum( artist, m_name, m_imagePath );
-}
-
 QString
-SqlAlbum::findCachedImage( int size ) const
+SqlAlbum::largeDiskCachePath() const
 {
-    const QByteArray key = imageKey();
-    if( key.isEmpty() )
-        return QString();
-
-    const QByteArray widthKey = QByteArray::number( size ) + '@';
-    const QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    // check cache for existing cover
-    if( cacheCoverDir.exists( widthKey + key ) )
-        return cacheCoverDir.filePath( widthKey + key );
-
-    return QString();
-}
-
-QString
-SqlAlbum::findLargeCachedImage()
-{
-    const QByteArray key = imageKey();
-    const QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    if( largeCoverDir.exists( key ) )
-    {
-        const QString filePath = largeCoverDir.filePath( key );
-        updateImage( filePath ); // We found a previously downloaded large image, let's keep it for future reference.
-        return filePath;
-    }
-    return QString();
-}
-
-QString
-SqlAlbum::createScaledImage( QString path, int size )
-{
-    bool embedded = path.startsWith( "amarok-sqltrackuid://" );
-    if( size <= 1 || ( !embedded && !QFile::exists(path) ) )
-        return QString();
-
+    // IMPROVEMENT: the large disk cache path could be human readable
     const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
     if( artist.isEmpty() && m_name.isEmpty() )
         return QString();
 
+    QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    const QString key = md5sum( artist, m_name, QString() );
+        return largeCoverDir.filePath( key );
+}
+
+QString
+SqlAlbum::scaledDiskCachePath( int size ) const
+{
     const QByteArray widthKey = QByteArray::number( size ) + '@';
-    const QByteArray key = md5sum( artist, m_name, m_imagePath );
-    const QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    const QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
+    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    QString key = md5sum( QString(), QString(), m_imagePath );
 
-    // Don't overwrite if it already exists
-    if( !QFile::exists( cachedImagePath ) )
+    if( !cacheCoverDir.exists( widthKey + key ) )
     {
-        QImage img;
+        // the correct location is empty
+        // check deprecated locations for the image cache and delete them
+        // (deleting the scaled image cache is fine)
 
-        if( embedded )
-        {
-            QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( path );
-            QStringList result = m_collection->sqlStorage()->query( query );
-            if( result.isEmpty() )
-                return QString();
-            
-            QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
-
-            m_imagePath = finalPath;
-            img = MetaFile::Track::getEmbeddedCover( finalPath );
-        }
+        const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+        if( artist.isEmpty() && m_name.isEmpty() )
+            ; // do nothing special
         else
         {
-            img = QImage( path );
+            QString oldKey;
+            oldKey = md5sum( artist, m_name, m_imagePath );
+            if( cacheCoverDir.exists( widthKey + oldKey ) )
+                cacheCoverDir.remove( widthKey + oldKey );
+
+            oldKey = md5sum( artist, m_name, QString() );
+            if( cacheCoverDir.exists( widthKey + oldKey ) )
+                cacheCoverDir.remove( widthKey + oldKey );
         }
-
-        if( img.isNull() )
-            return QString();
-
-        // resize and save the image
-        img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
     }
-    return cachedImagePath;
+
+    return cacheCoverDir.filePath( widthKey + key );
 }
 
-QString
-SqlAlbum::findImage( int size )
+bool
+SqlAlbum::hasEmbeddedImage() const
 {
-    if( m_images.contains( size ) )
-        return m_images.value( size );
+    if( !hasImage() )
+        return false;
 
-    QString fullsize;
+    return m_imagePath.startsWith( "amarok-sqltrackuid://" );
+}
 
-    // get the full size path from the cache if we have it
-    if( m_images.contains( 0 ) )
+QImage
+SqlAlbum::getEmbeddedImage() const
+{
+    if( !hasEmbeddedImage() )
+        return QImage();
+
+    QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( m_imagePath );
+    QStringList result = m_collection->sqlStorage()->query( query );
+
+
+    if( result.isEmpty() )
+        return QImage();
+
+    QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
+
+    return MetaFile::Track::getEmbeddedCover( finalPath );
+}
+
+
+QString
+SqlAlbum::largeImagePath()
+{
+    // Look up in the database
+    QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
+    QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
+    if( !res.isEmpty() )
     {
-        fullsize = m_images.value( 0 );
-    }
-    // if we don't have it, retrieve it from the database
-    else
-    {
-        QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
-        QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
-        if( !res.isEmpty() )
-        {
-            fullsize = res.first();
-            if( !fullsize.isEmpty() )
-            {
-                m_images.insert( 0, fullsize ); // store the full size version
-                m_imagePath = fullsize;
-            }
-        }
+        m_imageId = res.at(0).toInt();
+        m_imagePath = res.at(1);
+
+        // explicitely deleted image
+        if( m_imagePath == AMAROK_UNSET_MAGIC )
+            return AMAROK_UNSET_MAGIC;
+
+        // embedded image (e.g. id3v2 APIC
+        if( m_imagePath.startsWith( "amarok-sqltrackuid://" ) )
+            return m_imagePath;
+
+        // normal file
+        if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) )
+            return m_imagePath;
     }
 
-    if( fullsize == AMAROK_UNSET_MAGIC )
-        return AMAROK_UNSET_MAGIC;
-
-    if( fullsize.startsWith( "amarok-sqltrackuid://" ) || QFile::exists( fullsize ) )
-    {
-        if( size > 1 )
-            return createScaledImage( fullsize, size );
-        return fullsize;
+    // After a rescan we currently lose all image information, so we need
+    // to check that we haven't already downloaded this image before.
+    m_imagePath = largeDiskCachePath();
+    if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) ) {
+        setImage(m_imagePath);
+        return m_imagePath;
     }
+
+    m_imageId = -1;
+    m_imagePath = QString();
 
     return QString();
 }
 
 void
-SqlAlbum::updateImage( const QString &path )
+SqlAlbum::setImage( const QString &path )
 {
     DEBUG_BLOCK
+
     QString query = "SELECT id FROM images WHERE path = '%1'";
     query = query.arg( m_collection->sqlStorage()->escape( path ) );
     QStringList res = m_collection->sqlStorage()->query( query );
-
-    int imageid = -1;
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
                             .arg( m_collection->sqlStorage()->escape( path ) );
-        imageid = m_collection->sqlStorage()->insert( insert, "images" );
-        m_imagePath = path;
+        m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
-        imageid = res[0].toInt();
+        m_imageId = res[0].toInt();
 
-    if( imageid >= 0 )
+    if( m_imageId >= 0 )
     {
         query = QString("UPDATE albums SET image = %1 WHERE albums.id = %2" )
-                    .arg( QString::number( imageid ), QString::number( m_id ) );
+                    .arg( QString::number( m_imageId ), QString::number( m_id ) );
+        m_collection->sqlStorage()->query( query );
+
+        m_imagePath = path;
         m_hasImage = true;
         m_hasImageChecked = true;
-
-        // Make sure we remove any old cached image locations when setting a new cover
-        m_images.clear();
-
-        m_images.insert( 0, path );
-        m_collection->sqlStorage()->query( query );
     }
 }
 
@@ -1642,6 +1610,7 @@ SqlAlbum::setCompilation( bool compilation )
                 QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
                 m_collection->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
 
+                removeImage();
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
                 m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
 
@@ -1715,50 +1684,46 @@ SqlAlbum::setCompilation( bool compilation )
             //step3: create missing album entries
             //special case: if there is only one album, and it does not exist yet, change the current object instead
             bool currentObjectUpdated = false;
-            if( artists.count() == 1 && artistToTargetAlbum.count() == 0 )
+            foreach( int artistId, artists.keys() )
             {
-                currentObjectUpdated = true;
-                int artistId = artists.keys().first();
-                // There isn't another album with the same name and artist, just change the artist on the album
-                QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
-                m_collection->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
-                m_artistId = artistId;
-            }
-            else
-            {
-                foreach( int artistId, artists.keys() )
+                if( artistToTargetAlbum.contains( artistId ) )
                 {
-                    if( artistToTargetAlbum.contains( artistId ) )
-                    {
-                        //target album for the given artist already exists, do nothing here
-                        continue;
-                    }
-                    QString insert = "INSERT INTO albums (name, artist) VALUES ('%1',%2)";
+                    //target album for the given artist already exists, do nothing here
+                    continue;
+                } else if( !currentObjectUpdated ) {
+                    // update this album
+                    // There isn't another album with the same name and artist, just change the artist on the album
+                    currentObjectUpdated = true;
+                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
+                    m_collection->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
+                    m_artistId = artistId;
+                } else {
+                    // create a new album
+                    QString insert = "INSERT INTO albums (name, artist, image) VALUES ('%1',%2)";
                     SqlStorage *s = m_collection->sqlStorage();
                     int albumId = s->insert( insert.arg( s->escape( m_name ), QString::number( artistId ) ), "albums" );
                     artistToTargetAlbum.insert( artistId, albumId );
                 }
             }
 
-            //step 4: update all tracks, if necessary
-            if( !currentObjectUpdated )
+            //step 4: update all tracks
+            foreach( int trackId, trackToArtist.keys() )
             {
-                foreach( int trackId, trackToArtist.keys() )
-                {
-                    int artistId = trackToArtist.value( trackId );
-                    int albumId = artistToTargetAlbum.value( artistId );
-                    QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
-                    m_collection->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
-                }
+                int artistId = trackToArtist.value( trackId );
+                int albumId = artistToTargetAlbum.value( artistId );
+                QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
+                m_collection->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
             }
 
             //step 5: delete the original album, if necessary
             if( !currentObjectUpdated )
             {
+                removeImage();
                 QString del = "DELETE FROM albums WHERE id = %1;";
                 m_collection->sqlStorage()->query( del.arg( m_id ) );
             }
         }
+
         //ensure that all currently loaded tracks will return the correct album from now on
         foreach( const QString &uid, uids )
         {
