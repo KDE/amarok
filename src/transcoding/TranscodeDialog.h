@@ -23,6 +23,8 @@
 
 #include <KDialog>
 
+#include <QListWidget>
+
 /**
  * A KDialog for initiating a transcode operation.
  * @author Téo Mrnjavac <teo@kde.org>
@@ -36,6 +38,7 @@ public:
     TranscodeFormat transcodeFormat() const;
 
 private:
+    inline void populateFormatList();
     TranscodeFormat m_format;
     Ui::TranscodeDialog ui;
     //KUrl::List m_urlList;
@@ -45,6 +48,7 @@ private slots:
     void onTranscodeWithOptionsClicked();
     void onBackClicked();
     void onCurrentChanged( int page );
+    void onFormatSelect( QListWidgetItem *item );
 };
 
 #endif // TRANSCODEDIALOG_H

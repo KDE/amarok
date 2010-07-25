@@ -106,29 +106,22 @@ TranscodeFormat::fileExtension() const
     {
     case NULL_CODEC:
         return QString();
-        break;
     case AAC:
         return QString( "m4a" );
-        break;
     case ALAC:
         return QString( "m4a" );
-        break;
     case FLAC:
         return QString( "flac" );
-        break;
     case MP3:
         return QString( "mp3" );
-        break;
     case VORBIS:
         return QString( "ogg" );
-        break;
     case WMA2:
         return QString( "wma" );
-        break;
     default:
         debug() << "Bad encoder.";
-        return QString();
     }
+    return QString();
 }
 
 QString
@@ -138,29 +131,22 @@ TranscodeFormat::prettyName( Encoder encoder )
     {
     case NULL_CODEC:
         return QString();
-        break;
     case AAC:
         return i18n( "AAC" );
-        break;
     case ALAC:
         return i18n( "Apple Lossless" );
-        break;
     case FLAC:
         return i18n( "FLAC" );
-        break;
     case MP3:
         return i18n( "MP3" );
-        break;
     case VORBIS:
         return i18n( "Ogg Vorbis" );
-        break;
     case WMA2:
         return i18n( "Windows Media Audio" );
-        break;
     default:
         debug() << "Bad encoder.";
-        return QString();
     }
+    return QString();
 }
 
 QString
@@ -170,29 +156,22 @@ TranscodeFormat::description( Encoder encoder ) //TODO!!!!!!!!!!!!!!
     {
     case NULL_CODEC:
         return QString();
-        break;
     case AAC:
-        return i18n( "AAC" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/Advanced_Audio_Coding>Advanced Audio Coding</a> (AAC) is a patented lossy codec for digital audio.<br>AAC generally achieves better sound quality than MP3 at similar bit rates. It is the preferred lossy encoder for the iPod and some other portable music players." );
     case ALAC:
-        return i18n( "Apple Lossless" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/Apple_Lossless>Apple Lossless</a> (ALAC) is an audio codec for lossless compression of digital music.<br>Recommended only for Apple music players and players that do not support FLAC." );
     case FLAC:
-        return i18n( "FLAC" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/Free_Lossless_Audio_Codec>Free Lossless Audio Codec</a> (FLAC) is an open and royalty-free codec for lossless compression of digital music.<br>If you wish to store your music without compromising on audio quality, FLAC is an excellent choice." );
     case MP3:
-        return i18n( "MP3" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/MP3>MPEG Audio Layer 3</a> (MP3) is a patented digital audio codec using a form of lossy data compression.<br>In spite of its shortcomings, it is a common format for consumer audio storage, and is widely supported on portable music players." );
     case VORBIS:
-        return i18n( "Ogg Vorbis" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a> if an open and royalty-free audio codec for lossy audio compression.<br>It produces smaller files than MP3 at equivalent or higher quality. Ogg Vorbis is an all-around excellent choice, especially for portable music players that support it." );
     case WMA2:
-        return i18n( "Windows Media Audio" );
-        break;
+        return i18n( "<a href=http://en.wikipedia.org/wiki/Windows_Media_Audio>Windows Media Audio</a> (WMA) is a proprietary codec developed by Microsoft for lossy audio compression.<br>Recommended only for portable music players that do not support Ogg Vorbis." );
     default:
         debug() << "Bad encoder.";
-        return QString();
     }
+    return QString();
 }
 
 KIcon
@@ -202,29 +181,22 @@ TranscodeFormat::icon( Encoder encoder ) //TODO!!!!!!!!!!!!!!
     {
     case NULL_CODEC:
         return KIcon();
-        break;
     case AAC:
         return KIcon( "audio-ac3" );
-        break;
     case ALAC:
         return KIcon( "audio-x-flac" );
-        break;
     case FLAC:
         return KIcon( "audio-x-flac" );
-        break;
     case MP3:
         return KIcon( "audio-x-generic" );
-        break;
     case VORBIS:
         return KIcon( "audio-x-wav" );
-        break;
     case WMA2:
         return KIcon( "audio-x-generic" );
-        break;
     default:
         debug() << "Bad encoder.";
-        return KIcon();
     }
+    return KIcon();
 }
 
 //private

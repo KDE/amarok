@@ -22,16 +22,31 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSpinBox>
 
 TranscodeOptionsWidget::TranscodeOptionsWidget( QWidget *parent )
-    : QWidget(parent)
+    : QStackedWidget( parent )
 {
-    QVBoxLayout *vbl = new QVBoxLayout( this );
+    initWelcomePage();
+    for( int i = 1 /*we skip the null codec*/; i < TranscodeFormat::NUM_CODECS; ++i )
+    {
+        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( i );
+        m_pagesMap.insert( encoder, initCodecPage( encoder ) );
+    }
+
+
+}
+
+void
+TranscodeOptionsWidget::initWelcomePage()
+{
+    QWidget *welcomeWidget = new QWidget( this );
+    QVBoxLayout *vbl = new QVBoxLayout( welcomeWidget );
     vbl->addStretch();
-    QHBoxLayout *hbl = new QHBoxLayout( this );
+    QHBoxLayout *hbl = new QHBoxLayout( welcomeWidget );
     vbl->addLayout( hbl );
     hbl->addStretch();
-    QLabel *arrow = new QLabel( this );
+    QLabel *arrow = new QLabel( welcomeWidget );
     arrow->setPixmap( KIcon( "arrow-left" ).pixmap( 16, 16 ) );
     QLabel *message = new QLabel( i18n( "In order to configure the parameters of the transcoding operation, please pick an encoder from the list." ), this );
     message->setWordWrap( true );
@@ -39,31 +54,54 @@ TranscodeOptionsWidget::TranscodeOptionsWidget( QWidget *parent )
     hbl->addWidget( message );
     hbl->addStretch();
     vbl->addStretch();
-    /*DEBUG_BLOCK
-    switch( encoder )
-    {
-    case NULL_CODEC:
-        break;
-    case AAC:
-        initQuality();
-        break;
-    case ALAC:
-        //NO IDEA WHAT TO DO WITH THIS!
-        break;
-    case FLAC:
-        initLevel();
-        break;
-    case MP3:
-        initVRating();
-        break;
-    case VORBIS:
-        initQuality();
-        break;
-    case WMA2:
-        initQuality();
-        break;
-    default:
-        debug() << "Bad encoder.";
-    }*/
 
+    insertWidget( 0, welcomeWidget );
+}
+
+int
+TranscodeOptionsWidget::initCodecPage( TranscodeFormat::Encoder encoder )
+{
+    QWidget *codecWidget = new QWidget( this );
+
+    QVBoxLayout *mainLayout = new QVBoxLayout( codecWidget );
+    mainLayout->addStretch( 1 );
+    if( encoder == TranscodeFormat::AAC ||
+        encoder == TranscodeFormat::VORBIS ||
+        encoder == TranscodeFormat::WMA2 )
+    {
+        QHBoxLayout *lineLayout = new QHBoxLayout( codecWidget );
+        mainLayout->addLayout( lineLayout );
+        QLabel *qualityLabel = new QLabel( i18n( "Quality" ), codecWidget );
+        lineLayout->addWidget( qualityLabel );
+        QSpinBox *qualityEdit = new QSpinBox( codecWidget );
+        lineLayout->addWidget( qualityEdit );
+        qualityEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+        lineLayout->setStretch( lineLayout->indexOf( qualityEdit ), 1 );
+        lineLayout->addStretch( 2 );
+    }
+    else if( encoder == TranscodeFormat::ALAC )
+    {
+        //NO IDEA WHAT TO DO WITH THIS!
+    }
+    else if( encoder == TranscodeFormat::FLAC )
+    {
+        //initLevel();
+    }
+    else if( encoder == TranscodeFormat::MP3 )
+    {
+        //initVRating();
+    }
+    else
+    {
+        debug() << "Bad encoder.";
+    }
+
+    return addWidget( codecWidget );
+}
+
+void
+TranscodeOptionsWidget::switchPage(TranscodeFormat::Encoder encoder)
+{
+    setCurrentIndex( m_pagesMap.value( encoder ) );
+    emit formatChanged( encoder );
 }

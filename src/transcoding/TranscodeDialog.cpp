@@ -20,8 +20,6 @@
 #include <KIcon>
 #include <KPushButton>
 
-#include <QListWidget>
-
 TranscodeDialog::TranscodeDialog( QWidget *parent )
     : KDialog( parent, Qt::Dialog )
     , m_format( TranscodeFormat::Null() )
@@ -32,8 +30,8 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
-    setMinimumSize( 490, 300 );
-    setMaximumWidth( 490 );
+    setMinimumSize( 590, 340 );
+    setMaximumWidth( 590 );
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
 
     setButtons( Ok|Cancel );
@@ -72,13 +70,27 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     connect( ui.backButton, SIGNAL( clicked() ),
              this, SLOT( onBackClicked() ) );
 
+    populateFormatList();
+    connect( ui.formatListWidget, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
+             this, SLOT( onFormatSelect( QListWidgetItem * ) ) );
+
+    ui.formatIconLabel->hide();
+    ui.formatNameLabel->hide();
+    ui.formatDescriptionLabel->hide();
+}
+
+void
+TranscodeDialog::populateFormatList()
+{
     for( int i = 1 /*we skip the null codec*/; i < TranscodeFormat::NUM_CODECS; ++i )
     {
-        QString prettyName = TranscodeFormat::prettyName( static_cast< TranscodeFormat::Encoder >( i ) );
-        QString description = TranscodeFormat::description( static_cast< TranscodeFormat::Encoder >( i ) );
-        KIcon icon = TranscodeFormat::icon( static_cast< TranscodeFormat::Encoder >( i ) );
+        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( i );
+        QString prettyName = TranscodeFormat::prettyName( encoder );
+        QString description = TranscodeFormat::description( encoder );
+        KIcon icon = TranscodeFormat::icon( encoder );
         QListWidgetItem *item = new QListWidgetItem( icon, prettyName );
         item->setToolTip( description );
+        item->setData( Qt::UserRole, encoder );
         ui.formatListWidget->addItem( item );
     }
 }
@@ -118,6 +130,22 @@ TranscodeFormat
 TranscodeDialog::transcodeFormat() const
 {
     return m_format;
+}
+
+void
+TranscodeDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
+{
+    if( item )
+    {
+        ui.formatIconLabel->show();
+        ui.formatNameLabel->show();
+        ui.formatDescriptionLabel->show();
+        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( item->data( Qt::UserRole ).toInt() );
+        ui.formatIconLabel->setPixmap( TranscodeFormat::icon( encoder).pixmap( 32, 32 ) );
+        ui.formatNameLabel->setText( TranscodeFormat::prettyName( encoder ) );
+        ui.formatDescriptionLabel->setText( TranscodeFormat::description( encoder ) );
+        ui.transcodeOptionsWidget->switchPage( encoder );
+    }
 }
 
 #include "TranscodeDialog.moc"

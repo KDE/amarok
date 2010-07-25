@@ -19,20 +19,32 @@
 
 #include "core/transcoding/TranscodeFormat.h"
 
-#include <QWidget>
+#include <QMap>
+#include <QStackedWidget>
 
-class TranscodeOptionsWidget : public QWidget
+class TranscodeOptionsWidget : public QStackedWidget
 {
     Q_OBJECT
 public:
     explicit TranscodeOptionsWidget( QWidget *parent = 0 );
 
 signals:
+    void formatChanged( TranscodeFormat::Encoder encoder );
 
 public slots:
+    void switchPage( TranscodeFormat::Encoder encoder );
 
 private:
+    void initWelcomePage();
 
+    /**
+     * Initializes a transcoding format configuration page on the stacked widget.
+     * @param encoder the encoder enum value.
+     * @return the index of the page where the configuration widget was initialized.
+     */
+    int initCodecPage( TranscodeFormat::Encoder encoder );
+
+    QMap< TranscodeFormat::Encoder, int > m_pagesMap;
 };
 
 #endif // TRANSCODEOPTIONSWIDGET_H
