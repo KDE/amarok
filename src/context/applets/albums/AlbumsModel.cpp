@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "AlbumsModel.h"
+#include "AlbumsDefs.h"
 #include <AmarokMimeData.h>
 #include "AlbumItem.h"
 #include "core/support/Debug.h"
@@ -56,20 +57,23 @@ AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
 
     foreach( QStandardItem *item, items )
     {
-        AlbumItem* album = dynamic_cast<AlbumItem*>( item );
-        if( album )
+        if( item->type() == AlbumType )
         {
-            tracks << album->album()->tracks();
-            debug() << "Requested mimedata for album" << item->text();
+            tracks << static_cast<AlbumItem*>( item )->album()->tracks();
+            debug() << "Requested mimedata for album" << item->data( Qt::UserRole ).toString();
         }
     }
+
     foreach( QStandardItem *item, items )
     {
-        TrackItem* track = dynamic_cast<TrackItem*>( item );
-        if( track && !tracks.contains( track->track() ) )
+        if( item->type() == TrackType )
         {
-            tracks << track->track();
-            debug() << "Requested mimedata for track" << item->text();
+            TrackItem* track = static_cast<TrackItem*>( item );
+            if( track && !tracks.contains( track->track() ) )
+            {
+                tracks << track->track();
+                debug() << "Requested mimedata for track" << item->text().trimmed();
+            }
         }
     }
 
@@ -92,4 +96,4 @@ AlbumsModel::mimeTypes() const
     return types;
 }
 
-
+#include "AlbumsModel.moc"

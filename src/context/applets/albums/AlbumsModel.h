@@ -24,12 +24,14 @@
  */
 class AlbumsModel : public QStandardItemModel
 {
-     public:
-         AlbumsModel( QObject *parent = 0 );
-         virtual ~AlbumsModel() {}
-         virtual QMimeData* mimeData(const QModelIndexList & indices) const;
-         virtual QMimeData* mimeData(const QList<QStandardItem*> & items) const;
-         virtual QStringList mimeTypes() const;
+    Q_OBJECT
+
+public:
+    AlbumsModel( QObject *parent = 0 );
+    virtual ~AlbumsModel() {}
+    virtual QMimeData* mimeData(const QModelIndexList & indices) const;
+    virtual QMimeData* mimeData(const QList<QStandardItem*> & items) const;
+    virtual QStringList mimeTypes() const;
 };
  
 #endif

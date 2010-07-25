@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "AlbumItem.h"
+#include "AlbumsDefs.h"
 #include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"
 
@@ -103,10 +104,14 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
 
     displayText += '\n' + trackCount + ", " + albumLength;
 
-    setText( displayText );
+    setData( displayText, AlbumDisplayRole );
 
     QPixmap cover = The::svgHandler()->imageWithBorder( album, m_iconSize, 3 );
     setIcon( QIcon( cover ) );
 }
 
-
+int
+AlbumItem::type() const
+{
+    return AlbumType;
+}

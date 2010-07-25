@@ -18,14 +18,15 @@
 #ifndef AMAROK_ALBUMSVIEW_H
 #define AMAROK_ALBUMSVIEW_H
 
-#include <QGraphicsProxyWidget>
-
 #include "core/meta/Meta.h"
 
-class QTreeView;
+#include <QGraphicsProxyWidget>
+#include <QStyledItemDelegate>
+
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
 class QModelIndex;
+class QTreeView;
 
 class AlbumsView : public QGraphicsProxyWidget
 {
@@ -67,7 +68,20 @@ private slots:
 
 private:
     Meta::TrackList getSelectedTracks() const;
-    
+};
+
+class AlbumsItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+public:
+    AlbumsItemDelegate( QObject *parent = 0 ) : QStyledItemDelegate( parent ) {}
+    ~AlbumsItemDelegate() {}
+
+    void paint( QPainter *p, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+private:
+    void drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
 };
 
 #endif // multiple inclusion guard

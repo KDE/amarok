@@ -18,6 +18,7 @@
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
+#include "AlbumsDefs.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
@@ -30,8 +31,10 @@
 #include <KIcon>
 #include <KMenu>
 
+#include <QApplication>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
+#include <QPainter>
 #include <QTreeView>
 
 // Subclassed to override the access level of some methods.
@@ -55,6 +58,7 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+            setItemDelegate( new AlbumsItemDelegate( this ) );
         }
 
         // Override access level to make it public. Only visible to the AlbumsView.
@@ -220,5 +224,84 @@ AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
     nativeWidget()->setColumnWidth( 0, 100 );
 }
 
-#include <AlbumsView.moc>
+/*
+ * Customize the painting of AlbumItems in the tree view. The album items'
+ * displayed text is like so: "artist - album (year)\ntracks, time", i.e. the
+ * album info is shown in two lines. When resizing the context view, the string
+ * is elided if the available width is less than the text width. That ellipsis
+ * is done on the whole string however, so the second line disappears. A
+ * solution is to do the eliding ourselves.
+ */
+void
+AlbumsItemDelegate::paint( QPainter *p,
+                           const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const
+{
+    QStyledItemDelegate::paint( p, option, index );
+    const QStandardItemModel *itemModel = static_cast<const QStandardItemModel *>( index.model() );
+    const QStandardItem *item = itemModel->itemFromIndex( index );
+    if( item->type() == AlbumType )
+    {
+        // draw the text ourselves. The superclass will skip painting the
+        // text since the text in Qt::DisplayRole is not actually set.
+        const QString &text = index.data( AlbumDisplayRole ).toString();
+        if( !text.isEmpty() )
+        {
+            QStyleOptionViewItemV4 vopt( option );
+            initStyleOption( &vopt, index );
+            const AlbumItem *albumItem = static_cast<const AlbumItem *>( item );
+            int iconOffset = albumItem->iconSize() + 6; // 6 is from the added svg borders
+            vopt.rect.adjust( iconOffset, 0, 0, 0 );
+            vopt.text = text;
+            drawAlbumText( p, vopt );
+        }
+    }
+}
 
+void
+AlbumsItemDelegate::drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &vopt ) const
+{
+    const QRect &textRect = vopt.rect.adjusted( 2, 0, -4, 0 );
+
+    p->save();
+    p->setClipRect( textRect );
+    applyCommonStyle( p, vopt );
+
+    // elide each line according to available width
+    QFontMetrics fm = vopt.fontMetrics;
+    QStringList texts = vopt.text.split('\n');
+    QMutableStringListIterator it( texts );
+    while( it.hasNext() )
+    {
+        const QString &text = it.next();
+        if( fm.width( text ) > textRect.width() )
+            it.setValue( fm.elidedText( text, Qt::ElideRight, textRect.width() ) );
+    }
+
+    p->drawText( textRect, Qt::AlignLeft | Qt::AlignVCenter, texts.join("\n") );
+    p->restore();
+}
+
+void
+AlbumsItemDelegate::applyCommonStyle( QPainter *p, const QStyleOptionViewItemV4 &vopt ) const
+{
+    // styling code from QCommonStyle. These aren't actually used right
+    // now, but will be needed if something like inline tag editing is
+    // implemented.
+    QPalette::ColorGroup cg = vopt.state & QStyle::State_Enabled
+        ? QPalette::Normal : QPalette::Disabled;
+    if (cg == QPalette::Normal && !(vopt.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
+
+    if (vopt.state & QStyle::State_Selected) {
+        p->setPen(vopt.palette.color(cg, QPalette::HighlightedText));
+    } else {
+        p->setPen(vopt.palette.color(cg, QPalette::Text));
+    }
+    if (vopt.state & QStyle::State_Editing) {
+        p->setPen(vopt.palette.color(cg, QPalette::Text));
+        p->drawRect(vopt.rect.adjusted(0, 0, -1, -1));
+    }
+}
+
+#include <AlbumsView.moc>

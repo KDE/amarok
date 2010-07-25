@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "TrackItem.h"
+#include "AlbumsDefs.h"
 #include "core/meta/support/MetaUtility.h"
 
 #include <QFont>
@@ -76,4 +77,10 @@ TrackItem::bold()
     QFont f = font();
     f.setBold( true );
     setFont( f );
+}
+
+int
+TrackItem::type() const
+{
+    return TrackType;
 }
