@@ -39,10 +39,12 @@
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
 #include <Plasma/WebView>
+#include <Plasma/Svg>
 
 #include <QDesktopServices>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsLinearLayout>
+#include <QSignalMapper>
 #include <QXmlStreamReader>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
@@ -76,6 +78,12 @@ UpcomingEventsApplet::init()
 
     setBackgroundHints( Plasma::Applet::NoBackground );
 
+    Plasma::Svg svg;
+    svg.setImagePath( "widgets/configuration-icons" );
+    m_maximizeIcon = svg.pixmap( "restore" );
+    m_maximizeSignalMapper = new QSignalMapper( this );
+    connect( m_maximizeSignalMapper, SIGNAL(mapped(QString)), this, SLOT(maximizeExtenderItem(QString)) );
+
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setEnabled( true );
@@ -103,6 +111,7 @@ UpcomingEventsApplet::init()
     m_artistExtenderItem->setName( "currentartistevents" );
     m_artistExtenderItem->setWidget( m_artistEventsList );
     m_artistExtenderItem->setCollapsed( true );
+    addMaximizeAction( m_artistExtenderItem );
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
@@ -224,6 +233,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
                 extenderItem->setWidget( listWidget );
                 extenderItem->setCollapsed( true );
                 extenderItem->showCloseButton();
+                addMaximizeAction( extenderItem );
                 addToExtenderItem( extenderItem, events, venue->name );
                 connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
                 connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
@@ -276,6 +286,33 @@ UpcomingEventsApplet::addToExtenderItem( Plasma::ExtenderItem *item,
             : i18ncp( "@title:group Number of upcoming events", "%1: 1 event", "%1: %2 events", name, added );
     }
     item->setTitle( title );
+}
+
+void
+UpcomingEventsApplet::addMaximizeAction( Plasma::ExtenderItem *item )
+{
+    if( !item->action( "maximize" ) )
+    {
+        QAction *act = new QAction( m_maximizeIcon, QString(), item );
+        act->setToolTip( i18n( "Maximize" ) );
+        connect( act, SIGNAL(triggered()), m_maximizeSignalMapper, SLOT(map()) );
+        m_maximizeSignalMapper->setMapping( act, item->name() );
+        item->addAction( "maximize", act );
+    }
+}
+
+void
+UpcomingEventsApplet::maximizeExtenderItem( const QString &name )
+{
+    if( extender()->hasItem( name ) )
+    {
+        extender()->item( name )->setCollapsed( false );
+        foreach( Plasma::ExtenderItem *item, extender()->items() )
+        {
+            if( item->name() != name )
+                item->setCollapsed( true );
+        }
+    }
 }
 
 void
@@ -563,6 +600,7 @@ UpcomingEventsApplet::mapView( bool expand )
     extenderItem->setWidget( view );
     extenderItem->setMinimumWidth( 50 );
     extenderItem->showCloseButton();
+    addMaximizeAction( extenderItem );
     extender()->setMinimumWidth( 50 );
     foreach( Plasma::ExtenderItem *item, extender()->items() )
     {
@@ -671,6 +709,7 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
             listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
             item->setName( "favoritevenuesgroup" );
             item->setWidget( listWidget );
+            addMaximizeAction( item );
             connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
             connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
             emit listWidgetAdded( listWidget );

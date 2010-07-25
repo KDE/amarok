@@ -30,6 +30,7 @@
 class KConfigDialog;
 class QGraphicsLinearLayout;
 class QListWidgetItem;
+class QSignalMapper;
 class QXmlStreamReader;
 class TextScrollingWidget;
 class UpcomingEventsMapWidget;
@@ -216,6 +217,9 @@ private:
 
     void updateToolBoxIconSize();
     qreal m_toolBoxIconSize;
+    QIcon m_maximizeIcon;
+    QSignalMapper *m_maximizeSignalMapper;
+    void addMaximizeAction( Plasma::ExtenderItem *item );
 
     void enableVenueGrouping( bool enable );
     bool m_groupVenues;
@@ -232,6 +236,7 @@ private slots:
     void handleMapRequest( QObject *widget );
     void listWidgetDestroyed( QObject *obj );
     void openUrl( const QString &url );
+    void maximizeExtenderItem( const QString &name );
     void themeChanged();
 };
 
