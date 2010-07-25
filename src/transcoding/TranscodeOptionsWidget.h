@@ -25,15 +25,14 @@ class TranscodeOptionsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TranscodeOptionsWidget( TranscodeFormat::Encoder encoder, QWidget *parent = 0 );
+    explicit TranscodeOptionsWidget( QWidget *parent = 0 );
 
 signals:
-    void optionsChanged( const TranscodeFormat &format );
 
 public slots:
 
 private:
-    TranscodeFormat::Encoder m_encoder;
+
 };
 
 #endif // TRANSCODEOPTIONSWIDGET_H

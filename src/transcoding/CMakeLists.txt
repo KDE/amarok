@@ -11,6 +11,7 @@ include_directories(
 set(amarok_transcoding_SRCS
     TranscodeJob.cpp
     TranscodeDialog.cpp
+    TranscodeOptionsWidget.cpp
 )
 
 kde4_add_ui_files(amarok_transcoding_SRCS

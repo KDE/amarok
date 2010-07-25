@@ -131,6 +131,102 @@ TranscodeFormat::fileExtension() const
     }
 }
 
+QString
+TranscodeFormat::prettyName( Encoder encoder )
+{
+    switch( encoder )
+    {
+    case NULL_CODEC:
+        return QString();
+        break;
+    case AAC:
+        return i18n( "AAC" );
+        break;
+    case ALAC:
+        return i18n( "Apple Lossless" );
+        break;
+    case FLAC:
+        return i18n( "FLAC" );
+        break;
+    case MP3:
+        return i18n( "MP3" );
+        break;
+    case VORBIS:
+        return i18n( "Ogg Vorbis" );
+        break;
+    case WMA2:
+        return i18n( "Windows Media Audio" );
+        break;
+    default:
+        debug() << "Bad encoder.";
+        return QString();
+    }
+}
+
+QString
+TranscodeFormat::description( Encoder encoder ) //TODO!!!!!!!!!!!!!!
+{
+    switch( encoder )
+    {
+    case NULL_CODEC:
+        return QString();
+        break;
+    case AAC:
+        return i18n( "AAC" );
+        break;
+    case ALAC:
+        return i18n( "Apple Lossless" );
+        break;
+    case FLAC:
+        return i18n( "FLAC" );
+        break;
+    case MP3:
+        return i18n( "MP3" );
+        break;
+    case VORBIS:
+        return i18n( "Ogg Vorbis" );
+        break;
+    case WMA2:
+        return i18n( "Windows Media Audio" );
+        break;
+    default:
+        debug() << "Bad encoder.";
+        return QString();
+    }
+}
+
+KIcon
+TranscodeFormat::icon( Encoder encoder ) //TODO!!!!!!!!!!!!!!
+{
+    switch( encoder )
+    {
+    case NULL_CODEC:
+        return KIcon();
+        break;
+    case AAC:
+        return KIcon( "audio-ac3" );
+        break;
+    case ALAC:
+        return KIcon( "audio-x-flac" );
+        break;
+    case FLAC:
+        return KIcon( "audio-x-flac" );
+        break;
+    case MP3:
+        return KIcon( "audio-x-generic" );
+        break;
+    case VORBIS:
+        return KIcon( "audio-x-wav" );
+        break;
+    case WMA2:
+        return KIcon( "audio-x-generic" );
+        break;
+    default:
+        debug() << "Bad encoder.";
+        return KIcon();
+    }
+}
+
 //private
 TranscodeFormat::TranscodeFormat( Encoder encoder )
     : m_encoder( encoder )

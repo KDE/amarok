@@ -21,6 +21,8 @@
 
 #include <QStringList>
 
+#include <KIcon>
+
 class AMAROK_CORE_EXPORT TranscodeFormat
 {
 public:
@@ -35,7 +37,8 @@ public:
         MP3,          //libmp3lame
         VORBIS,       //"libvorbis" supposedly gives better quality than "vorbis" but worse
                       //than oggenc. TODO: investigate
-        WMA2          //wmav2  no idea what's this
+        WMA2,          //wmav2  no idea what's this
+        NUM_CODECS
     };
 
     //We make the real ctor private and use a bunch of named ctors because different codecs
@@ -51,6 +54,9 @@ public:
     QStringList ffmpegParameters() const;
     Encoder encoder() const { return m_encoder; }
     QString fileExtension() const;
+    static QString prettyName( Encoder encoder );
+    static QString description( Encoder encoder );
+    static KIcon icon( Encoder encoder );
 
 private:
     explicit TranscodeFormat( Encoder encoder );

@@ -43,6 +43,8 @@ private slots:
     void onJustCopyClicked();
     void onTranscodeWithDefaultsClicked();
     void onTranscodeWithOptionsClicked();
+    void onBackClicked();
+    void onCurrentChanged( int page );
 };
 
 #endif // TRANSCODEDIALOG_H

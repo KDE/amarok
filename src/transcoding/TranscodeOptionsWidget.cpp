@@ -18,11 +18,28 @@
 
 #include "core/support/Debug.h"
 
-TranscodeOptionsWidget::TranscodeOptionsWidget( TranscodeFormat::Encoder encoder, QWidget *parent )
+#include <KIcon>
+
+#include <QHBoxLayout>
+#include <QLabel>
+
+TranscodeOptionsWidget::TranscodeOptionsWidget( QWidget *parent )
     : QWidget(parent)
-    , m_encoder( encoder )
 {
-    DEBUG_BLOCK
+    QVBoxLayout *vbl = new QVBoxLayout( this );
+    vbl->addStretch();
+    QHBoxLayout *hbl = new QHBoxLayout( this );
+    vbl->addLayout( hbl );
+    hbl->addStretch();
+    QLabel *arrow = new QLabel( this );
+    arrow->setPixmap( KIcon( "arrow-left" ).pixmap( 16, 16 ) );
+    QLabel *message = new QLabel( i18n( "In order to configure the parameters of the transcoding operation, please pick an encoder from the list." ), this );
+    message->setWordWrap( true );
+    hbl->addWidget( arrow );
+    hbl->addWidget( message );
+    hbl->addStretch();
+    vbl->addStretch();
+    /*DEBUG_BLOCK
     switch( encoder )
     {
     case NULL_CODEC:
@@ -47,6 +64,6 @@ TranscodeOptionsWidget::TranscodeOptionsWidget( TranscodeFormat::Encoder encoder
         break;
     default:
         debug() << "Bad encoder.";
-    }
+    }*/
 
 }

@@ -20,6 +20,8 @@
 #include <KIcon>
 #include <KPushButton>
 
+#include <QListWidget>
+
 TranscodeDialog::TranscodeDialog( QWidget *parent )
     : KDialog( parent, Qt::Dialog )
     , m_format( TranscodeFormat::Null() )
@@ -30,10 +32,13 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
-    ui.buttonBox->button( KDialogButtonBox::Ok )->hide();
-    ui.buttonBox->button( KDialogButtonBox::Ok )->setText( i18n( "Transc&ode" ) );
+    setMinimumSize( 490, 300 );
+    setMaximumWidth( 490 );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
 
-    setButtons( None );
+    setButtons( Ok|Cancel );
+    onCurrentChanged( 0 );
+    button( Ok )->setText( i18n( "Transc&ode" ) );
 
     ui.explanatoryTextLabel->setText( i18n( "You are about to copy one or more tracks.\nWhile copying, you can also choose to transcode your music files into another format with an encoder (codec). This can be done to save space or to make your files readable by a portable music player or a particular software program." ) );
 
@@ -41,33 +46,52 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     ui.transcodeWithDefaultsButton->setIcon( KIcon( "audio-x-generic" ) );
     ui.transcodeWithOptionsButton->setIcon( KIcon( "tools-rip-audio-cd" ) );
 
-    connect( ui.justCopyButton, SIGNAL( clicked() ), this, SLOT( onJustCopyClicked() ) );
-    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeWithDefaultsClicked() ) );
-    connect( ui.transcodeWithOptionsButton, SIGNAL( clicked() ), this, SLOT( onTranscodeWithOptionsClicked() ) );
+    ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
+    connect( ui.justCopyButton, SIGNAL( clicked() ),
+             this, SLOT( onJustCopyClicked() ) );
+    ui.transcodeWithDefaultsButton->setMinimumHeight( ui.transcodeWithDefaultsButton->iconSize().height() + 2*10 );
+    ui.transcodeWithDefaultsButton->setDescription(
+            i18nc( "Attention translators. This description must fit in 2 rows, because of a hardcoded constraint in QCommandLinkButton.",
+                   "As you copy, transcode the tracks using the preset encoding parameters.\nMedium compression, high quality Ogg Vorbis (lossy).") );
+    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ),
+             this, SLOT( onTranscodeWithDefaultsClicked() ) );
+    ui.transcodeWithOptionsButton->setMinimumHeight( ui.transcodeWithOptionsButton->iconSize().height() + 2*10 );
+    connect( ui.transcodeWithOptionsButton, SIGNAL( clicked() ),
+             this, SLOT( onTranscodeWithOptionsClicked() ) );
 
 
-    connect( ui.buttonBox->button( KDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
+    connect( button( Cancel ), SIGNAL( clicked() ),
+             this, SLOT( reject() ) );
+    connect( ui.stackedWidget, SIGNAL( currentChanged( int ) ),
+             this, SLOT( onCurrentChanged( int ) ) );
+
+    //Let's set up the codecs page...
+    ui.backButton->setMinimumSize( ui.formatListWidget->width(), ui.backButton->height() + 5 ); //no description text
+    ui.backButton->setMaximumSize( ui.formatListWidget->width(), ui.backButton->height() + 5 );
+    ui.backButton->setIcon( KIcon( "go-previous" ) );
+    connect( ui.backButton, SIGNAL( clicked() ),
+             this, SLOT( onBackClicked() ) );
+
+    for( int i = 1 /*we skip the null codec*/; i < TranscodeFormat::NUM_CODECS; ++i )
+    {
+        QString prettyName = TranscodeFormat::prettyName( static_cast< TranscodeFormat::Encoder >( i ) );
+        QString description = TranscodeFormat::description( static_cast< TranscodeFormat::Encoder >( i ) );
+        KIcon icon = TranscodeFormat::icon( static_cast< TranscodeFormat::Encoder >( i ) );
+        QListWidgetItem *item = new QListWidgetItem( icon, prettyName );
+        item->setToolTip( description );
+        ui.formatListWidget->addItem( item );
+    }
 }
 
 void
 TranscodeDialog::onJustCopyClicked() //SLOT
 {
-    DEBUG_BLOCK
     KDialog::done( KDialog::Accepted );
 }
 
 void
 TranscodeDialog::onTranscodeWithDefaultsClicked() //SLOT
 {
-    DEBUG_BLOCK
-    /*TranscodeFormat format = TranscodeFormat::Vorbis( ui.spinBox->value() );
-    debug() << "\nFormat encoder is: " << format.encoder();
-    debug() << "\nabout to fetch ffmpeg parameters";
-    debug() << "\nParameters: ";
-    debug() << format.ffmpegParameters();
-    KUrl url = m_urlList.first();
-    KJob *doTranscode = new TranscodeJob( url, format,this );
-    doTranscode->start();*/
     m_format = TranscodeFormat::Vorbis();
     KDialog::done( KDialog::Accepted );
 }
@@ -75,9 +99,19 @@ TranscodeDialog::onTranscodeWithDefaultsClicked() //SLOT
 void
 TranscodeDialog::onTranscodeWithOptionsClicked() //SLOT
 {
-    DEBUG_BLOCK
     ui.stackedWidget->setCurrentIndex( 1 );
-    ui.buttonBox->button( KDialogButtonBox::Ok )->show();
+}
+
+void
+TranscodeDialog::onBackClicked() //SLOT
+{
+    ui.stackedWidget->setCurrentIndex( 0 );
+}
+
+void
+TranscodeDialog::onCurrentChanged( int page ) //SLOT
+{
+    button( Ok )->setVisible( page );
 }
 
 TranscodeFormat
