@@ -65,13 +65,10 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
     : QGraphicsProxyWidget( parent )
 {
-    AlbumsTreeView* treeView = new AlbumsTreeView;
+    AlbumsTreeView *treeView = new AlbumsTreeView( 0 );
+    connect( treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
+    connect( treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
     setWidget( treeView );
-    
-    connect( treeView, SIGNAL(       clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
-    connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( slotAppendSelected() ) );
-
-    treeView->show();
 }
 
 AlbumsView::~AlbumsView()
@@ -85,7 +82,7 @@ AlbumsView::setModel( QAbstractItemModel *model )
 }
 
 QAbstractItemModel*
-AlbumsView::model()
+AlbumsView::model() const
 {
     return nativeWidget()->model();
 }
@@ -124,10 +121,10 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     menu.addAction( queueAction );
     menu.addAction( editAction );
 
-    connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
-    connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
-    connect( queueAction , SIGNAL( triggered() ), this, SLOT( slotQueueSelected() ) );
-    connect( editAction  , SIGNAL( triggered() ), this, SLOT( slotEditSelected() ) );
+    connect( appendAction, SIGNAL(triggered()), this, SLOT(slotAppendSelected()) );
+    connect( loadAction  , SIGNAL(triggered()), this, SLOT(slotPlaySelected()) );
+    connect( queueAction , SIGNAL(triggered()), this, SLOT(slotQueueSelected()) );
+    connect( editAction  , SIGNAL(triggered()), this, SLOT(slotEditSelected()) );
 
     KMenu menuCover( i18n( "Album" ), &menu );
     QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );

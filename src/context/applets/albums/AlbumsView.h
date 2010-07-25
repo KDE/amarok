@@ -47,7 +47,7 @@ public:
     /**
      * @return the model shown by this view
      */
-    QAbstractItemModel *model();
+    QAbstractItemModel *model() const;
 
     /**
      * @return the native widget wrapped by this AlbumsView

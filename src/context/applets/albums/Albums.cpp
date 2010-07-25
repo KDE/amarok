@@ -40,10 +40,10 @@
 #include <QPainter>
 #include <QSpinBox>
 #include <QTreeView>
+#include <QGraphicsLinearLayout>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_albumWidth( 50 )
     , m_recentCount( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) )
     , m_albumsView( 0 )
 {
@@ -52,7 +52,6 @@ Albums::Albums( QObject* parent, const QVariantList& args )
 
 Albums::~Albums()
 {
-    delete m_albumsView;
 }
 
 void Albums::init()
@@ -61,32 +60,37 @@ void Albums::init()
     Context::Applet::init();
 
     setBackgroundHints( Plasma::Applet::NoBackground );
-    
-    m_headerText = new TextScrollingWidget( this );
-
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
-    m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Recently added albums" ) );
-    
-    m_albumsView = new AlbumsView( this );
-    m_albumsView->setMinimumSize( 100, 150 );
-    
-    m_model = new AlbumsModel( this );
-    m_model->setColumnCount( 1 );
-    m_albumsView->setModel( m_model );
-    m_albumsView->show();
 
     // properly set the height
     // -1 means ask for all available space left
     resize( globalConfig().readEntry( "width", 500 ), -1 );
 
+    m_headerText = new TextScrollingWidget( this );
+    QFont labelFont;
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
+    m_headerText->setFont( labelFont );
+    m_headerText->setText( i18n( "Recently added albums" ) );
+
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+    headerLayout->addItem( m_headerText );
+
+    m_albumsView = new AlbumsView( this );
+    m_albumsView->setMinimumSize( 100, 150 );
+    m_model = new AlbumsModel( this );
+    m_model->setColumnCount( 1 );
+    m_albumsView->setModel( m_model );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
+    layout->addItem( headerLayout );
+    layout->addItem( m_albumsView );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    setLayout( layout );
+
     dataEngine( "amarok-current" )->connectSource( "albums", this );
-
-    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
-             this, SLOT( connectSource( const QString& ) ) );
-
+    connect( dataEngine( "amarok-current" ), SIGNAL(sourceAdded(QString)),
+             this, SLOT(connectSource(QString)) );
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
@@ -96,16 +100,7 @@ void Albums::init()
 void Albums::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-//    DEBUG_BLOCK
-
-    m_headerText->setScrollingText( i18n( "Recently added albums" ) );
-
-    // here we put all of the text items into the correct locations
-    m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
-    
-    m_albumsView->resize( size().toSize().width() - 2 * standardPadding() , size().toSize().height() - m_headerText->boundingRect().height() - 3 * standardPadding()  );
-    m_albumsView->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
-
+    m_headerText->setScrollingText( m_headerText->text() );
 }
 
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -124,7 +119,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
     debug() << "Received" << m_albums.count() << "albums";
-    m_headerText->setText( data[ "headerText" ].toString() );
+    m_headerText->setScrollingText( data[ "headerText" ].toString() );
 
     //Update the applet (render properly the header)
     update();
@@ -165,7 +160,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         AlbumItem *albumItem = new AlbumItem();
-        albumItem->setIconSize( m_albumWidth );
+        albumItem->setIconSize( 50 );
         albumItem->setAlbum( albumPtr );
         albumItem->setShowArtist( showArtist );
         
@@ -250,7 +245,7 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
     config->setLayout( formLayout );
 
     parent->addPage( config, i18n( "Albums Applet Settings" ), "preferences-system");
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveConfiguration() ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveConfiguration()) );
 }
 
 void Albums::setRecentCount( int val )
@@ -283,9 +278,7 @@ void Albums::reconnectSource()
 {
     dataEngine( "amarok-current" )->disconnectSource( "albums", this );
     dataEngine( "amarok-current" )->connectSource( "albums", this );
-
-    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
-             this, SLOT( connectSource( const QString& ) ) );
+    connect( dataEngine( "amarok-current" ), SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
 }
 
 #include "Albums.moc"

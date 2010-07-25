@@ -37,13 +37,12 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-
 public slots:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
@@ -53,7 +52,6 @@ private slots:
     void setRecentCount( int val );
 
 private:
-    const qreal m_albumWidth;
     int m_recentCount;
     Meta::AlbumList m_albums;
     QStandardItemModel *m_model;
