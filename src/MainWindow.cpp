@@ -839,6 +839,7 @@ MainWindow::createActions()
 
     action = new KAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );
+    action->setGlobalShortcut( KShortcut() );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
     action = new KAction( i18n( "Toggle Full Screen" ), this );
