@@ -41,8 +41,8 @@ namespace Collections {
 //UpnpSearchCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpSearchCollection::UpnpSearchCollection( const DeviceInfo &info )
-    : UpnpCollectionBase( info )
+UpnpSearchCollection::UpnpSearchCollection( Solid::Device dev )
+    : UpnpCollectionBase( dev )
     , m_fullScanInProgress( false )
     , m_cache( new UpnpCache( this ) )
 {

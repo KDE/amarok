@@ -22,14 +22,13 @@
 #include <kio/netaccess.h>
 #include <kdirlister.h>
 #include <kurl.h>
+#include <solid/device.h>
+#include <solid/devicenotifier.h>
+#include <solid/storageaccess.h>
 
 #include "core/support/Debug.h"
 #include "UpnpBrowseCollection.h"
 #include "UpnpSearchCollection.h"
-#include "deviceinfo.h"
-#include "dbuscodec.h"
-
-#include <QtDBus>
 
 namespace Collections {
 
@@ -38,8 +37,6 @@ AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
     : Collections::CollectionFactory()
 {
-    qDBusRegisterMetaType<DeviceTypeMap>();
-    qDBusRegisterMetaType<DeviceInfo>();
     setParent( parent );
     Q_UNUSED( args );
 }
@@ -48,13 +45,11 @@ UpnpCollectionFactory::~UpnpCollectionFactory()
 {
 }
 
-// TODO need to monitor upnp devices somehow
-
 void UpnpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-        QDBusConnection bus = QDBusConnection::sessionBus();
+    /*QDBusConnection bus = QDBusConnection::sessionBus();
 
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi",
@@ -82,70 +77,71 @@ void UpnpCollectionFactory::init()
     }
     else {
         slotDevicesAdded( reply.value() );
-    }
-}
+    }*/
 
-void UpnpCollectionFactory::slotDevicesAdded( const DeviceTypeMap &map )
-{
-    foreach( QString udn, map.keys() ) {
-        QString type = map[udn];
-        if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") ) {
-            createCollection( udn );
+    Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
+    Q_ASSERT( connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) ) );
+    connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
+
+    foreach( Solid::Device device, Solid::Device::allDevices() ) {
+        if( device.udi().startsWith( "/org/kde/upnp" ) && device.is<Solid::StorageAccess>() ) {
+            slotDeviceAdded( device.udi() );
         }
     }
 }
 
-void UpnpCollectionFactory::slotDevicesRemoved( const DeviceTypeMap &map )
+void UpnpCollectionFactory::slotDeviceAdded( const QString &udi )
 {
-    foreach( QString udn, map.keys() ) {
-        udn.replace("uuid:", "");
-        if( m_devices.contains(udn) ) {
-            m_devices[udn]->removeCollection();
-            m_devices.remove(udn);
-        }
+    Solid::Device dev( udi );
+    createCollection( dev );
+}
+
+void UpnpCollectionFactory::slotDeviceRemoved( const QString &udi )
+{
+    if( m_devices.contains(udi) ) {
+        m_devices[udi]->removeCollection();
+        m_devices.remove(udi);
     }
 }
 
-void UpnpCollectionFactory::createCollection( QString udn )
+void UpnpCollectionFactory::createCollection( Solid::Device dev )
 {
-    QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
-   if( !reply.isValid() ) {
-       debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
-       debug() << "Error" << reply.error().message();
-       return;
-   }
-   DeviceInfo info = reply.value();
-   udn.replace("uuid:", "");
+    QString udn = dev.udi().replace("/org/kde/upnp/uuid:", "");
 
-   KIO::ListJob *job = KIO::listDir( "upnp-ms://" + udn + "/?searchcapabilities=1" );
-   connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
-            this, SLOT( slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
-
-   m_searchOptions.clear();
-   if( job->exec() ) {
-       if( job->error() && job->error() == KIO::ERR_COULD_NOT_MOUNT )
-           return;
-       if( m_searchOptions.contains( "upnp:class" )
-           && m_searchOptions.contains( "dc:title" )
-           && m_searchOptions.contains( "upnp:artist" )
-           && m_searchOptions.contains( "upnp:album" ) ) {
-           kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
-           m_devices[udn] = new UpnpSearchCollection( info );
-       }
-       else {
-           kDebug() << "Supported Search() meta-data" << m_searchOptions << "not enough. Using UpnpBrowseCollection";
-           m_devices[udn] = new UpnpBrowseCollection( info );
-       }
-
-       emit newCollection( m_devices[udn] );
-   }
+    KIO::ListJob *job = KIO::listDir( "upnp-ms://" + udn + "/?searchcapabilities=1" );
+    connect( job, SIGNAL(entries( KIO::Job *, const KIO::UDSEntryList & )),
+            this, SLOT(slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & )) );
+    connect( job, SIGNAL(result(KJob *)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
 }
 
 void UpnpCollectionFactory::slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
     Q_UNUSED( job );
-    foreach( KIO::UDSEntry entry, list ) {
-        m_searchOptions << entry.stringValue( KIO::UDSEntry::UDS_NAME );
+    KIO::ListJob *lj = static_cast<KIO::ListJob*>( job );
+    foreach( KIO::UDSEntry entry, list )
+        m_capabilities[lj->url().host()] << entry.stringValue( KIO::UDSEntry::UDS_NAME );
+}
+
+void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
+{
+    KIO::ListJob *lj = static_cast<KIO::ListJob*>( job );
+    QStringList searchCaps = m_capabilities[lj->url().host()];
+
+    if( !job->error() ) {
+        Solid::Device dev( "/org/kde/upnp/uuid:" + lj->url().host() );
+
+        if( searchCaps.contains( "upnp:class" )
+            && searchCaps.contains( "dc:title" )
+            && searchCaps.contains( "upnp:artist" )
+            && searchCaps.contains( "upnp:album" ) ) {
+            kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
+            m_devices[dev.udi()] = new UpnpSearchCollection( dev );
+        }
+        else {
+            kDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
+            m_devices[dev.udi()] = new UpnpBrowseCollection( dev );
+        }
+        emit newCollection( m_devices[dev.udi()] );
     }
 }
 

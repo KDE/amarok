@@ -46,7 +46,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpSearchCollection( const DeviceInfo &info );
+    UpnpSearchCollection( Solid::Device );
     virtual ~UpnpSearchCollection();
 
     virtual void startIncrementalScan( const QString &directory = QString() );

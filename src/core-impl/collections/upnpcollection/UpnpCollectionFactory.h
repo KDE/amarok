@@ -17,10 +17,9 @@
 #ifndef UPNPCOLLECTIONFACTORY_H
 #define UPNPCOLLECTIONFACTORY_H
 
-#include "core/collections/Collection.h"
+#include <solid/device.h>
 
-typedef QHash<QString, QString> DeviceTypeMap;
-Q_DECLARE_METATYPE(DeviceTypeMap);
+#include "core/collections/Collection.h"
 
 class QDBusInterface;
 
@@ -40,18 +39,16 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
   private:
 
   private slots:
-    void slotDevicesAdded( const DeviceTypeMap &map );
-    void slotDevicesRemoved( const DeviceTypeMap &map );
-    void createCollection( QString udn );
+    void slotDeviceAdded( const QString &udi );
+    void slotDeviceRemoved( const QString &udi );
+    void createCollection( Solid::Device dev );
 
     void slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list );
+    void slotSearchCapabilitiesDone( KJob * );
 
   private:
     QHash<QString, UpnpCollectionBase*> m_devices;
-    QDBusInterface *m_iface;
-
-    // reset for every device, only global for signals and slots
-    QStringList m_searchOptions;
+    QHash<QString, QStringList> m_capabilities;
 };
 
 } //namespace Collections

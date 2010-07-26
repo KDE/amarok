@@ -43,8 +43,8 @@ namespace Collections {
 //UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo &info )
-    : UpnpCollectionBase( info )
+UpnpBrowseCollection::UpnpBrowseCollection( Solid::Device dev )
+    : UpnpCollectionBase( dev )
     , m_mc( new MemoryCollection() )
     , m_fullScanInProgress( false )
     , m_cache( new UpnpCache( this ) )
@@ -80,7 +80,7 @@ void UpnpBrowseCollection::processUpdates()
     debug() << "Update URL is" << urlString;
     invalidateTracksIn( urlString );
     KUrl url( urlString );
-    if( url.scheme() != "upnp-ms" || url.host() != m_deviceInfo.uuid() )
+    if( url.scheme() != "upnp-ms" || !m_device.udi().endsWith( url.host() ) )
         return;
     debug() << "Now incremental scanning" << url;
     startIncrementalScan( url.path() );
@@ -196,7 +196,6 @@ DEBUG_BLOCK
 void
 UpnpBrowseCollection::startIncrementalScan( const QString &directory )
 {
-    DEBUG_BLOCK;
     if( m_fullScanInProgress ) {
         debug() << "Full scan in progress, aborting";
         return;
@@ -204,12 +203,12 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     debug() << "Scanning directory" << directory;
     KUrl url;
     url.setScheme( "upnp-ms" );
-    url.setHost( m_deviceInfo.uuid() );
+    url.setHost( m_device.udi().replace( "/org/kde/upnp/uuid:", "" ) );
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
-    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )), 
+    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )),
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
-    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)), 
+    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
                        this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
 
 }

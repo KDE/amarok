@@ -28,8 +28,7 @@
 
 #include <KIcon>
 #include <KDirNotify>
-
-#include <deviceinfo.h>
+#include <solid/device.h>
 
 namespace KIO {
   class Job;
@@ -57,14 +56,14 @@ class UpnpCollectionBase : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollectionBase( const DeviceInfo &info );
+    UpnpCollectionBase( Solid::Device );
     void removeCollection() { emit remove(); }
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     bool possiblyContainsTrack( const KUrl &url ) const;
   protected:
-    const DeviceInfo m_deviceInfo;
+    const Solid::Device m_device;
 };
 
 } //namespace Collections

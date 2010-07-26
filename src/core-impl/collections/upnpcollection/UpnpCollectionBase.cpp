@@ -30,27 +30,28 @@ class KJob;
 
 namespace Collections {
 
-UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo &info )
+UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
     : Collection()
-    , m_deviceInfo( info )
+    , m_device( dev )
 {
 }
 
 QString UpnpCollectionBase::collectionId() const
 {
-    return QString("upnp-ms://") + m_deviceInfo.uuid();
+    return QString("upnp-ms://") + m_device.udi().replace("/org/kde/upnp/uuid:", "");
 }
 
 QString UpnpCollectionBase::prettyName() const
 {
-    return m_deviceInfo.friendlyName();
+    return m_device.product();
 }
 
 bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
 {
-    if( url.scheme() == "upnp-ms"
-        && url.host() == m_deviceInfo.host()
-        && url.port() == m_deviceInfo.port() )
+    debug() << "CONTAINS?" << url;
+    if( url.scheme() == "upnp-ms" )
+//         && url.host() == m_device.host()
+//         && url.port() == m_device.port() )
         return true;
     return false;
 }

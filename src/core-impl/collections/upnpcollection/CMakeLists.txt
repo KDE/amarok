@@ -19,7 +19,6 @@ set(amarok_collection-upnpcollection_PART_SRCS
     UpnpMeta.cpp
     UpnpCache.cpp
     UpnpQuery.cpp
-    dbuscodec.cpp
 )
 
 
@@ -32,6 +31,7 @@ target_link_libraries(
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KPARTS_LIBS}
+    ${KDE4_SOLID_LIBS}
 )
 
 if(APPLE)
