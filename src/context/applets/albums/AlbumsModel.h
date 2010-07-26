@@ -16,6 +16,8 @@
  
 #ifndef AMAROK_ALBUMSMODEL_H
 #define AMAROK_ALBUMSMODEL_H
+
+#include "core/meta/Meta.h"
  
 #include <QStandardItemModel>
 
@@ -29,9 +31,11 @@ class AlbumsModel : public QStandardItemModel
 public:
     AlbumsModel( QObject *parent = 0 );
     virtual ~AlbumsModel() {}
-    virtual QMimeData* mimeData(const QModelIndexList & indices) const;
-    virtual QMimeData* mimeData(const QList<QStandardItem*> & items) const;
+    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
     virtual QStringList mimeTypes() const;
+
+private:
+    Meta::TrackList tracksForIndex( const QModelIndex &index ) const;
 };
  
 #endif

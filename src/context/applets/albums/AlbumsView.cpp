@@ -101,7 +101,10 @@ void
 AlbumsView::itemClicked( const QModelIndex &index )
 {
     bool expanded = nativeWidget()->isExpanded( index );    
-    nativeWidget()->setExpanded( index, !expanded );
+    if( expanded )
+        nativeWidget()->setExpanded( index, !expanded );
+    else
+        setRecursiveExpanded( index, !expanded );
 }
 
 void
@@ -209,6 +212,17 @@ AlbumsView::getSelectedTracks() const
     }
 
     return selected;
+}
+
+void
+AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
+{
+    if( model()->hasChildren( index ) )
+    {
+        for( int i = 0, count = model()->rowCount( index ); i < count; ++i )
+            nativeWidget()->setExpanded( index.child( i, 0 ), expanded );
+    }
+    nativeWidget()->setExpanded( index, expanded );
 }
 
 void

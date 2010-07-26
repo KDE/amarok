@@ -16,8 +16,8 @@
 
 #include "AlbumsModel.h"
 #include "AlbumsDefs.h"
-#include <AmarokMimeData.h>
 #include "AlbumItem.h"
+#include "AmarokMimeData.h"
 #include "core/support/Debug.h"
 #include "TrackItem.h"
 
@@ -27,58 +27,19 @@ AlbumsModel::AlbumsModel( QObject *parent )
 }
 
 QMimeData*
-AlbumsModel::mimeData(const QModelIndexList & indices) const
+AlbumsModel::mimeData( const QModelIndexList &indices ) const
 {
     DEBUG_BLOCK
-    if ( indices.isEmpty() )
-        return 0;
-
-    QList<QStandardItem*> items;
-
-    foreach( const QModelIndex &index, indices )
-    {
-        if ( index.isValid() )
-        {
-            items << itemFromIndex(index);
-        }
-    }
-
-    return mimeData( items );
-}
-
-QMimeData*
-AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
-{
-    DEBUG_BLOCK
-    if ( items.isEmpty() )
+    if( indices.isEmpty() )
         return 0;
 
     Meta::TrackList tracks;
-
-    foreach( QStandardItem *item, items )
-    {
-        if( item->type() == AlbumType )
-        {
-            tracks << static_cast<AlbumItem*>( item )->album()->tracks();
-            debug() << "Requested mimedata for album" << item->data( Qt::UserRole ).toString();
-        }
-    }
-
-    foreach( QStandardItem *item, items )
-    {
-        if( item->type() == TrackType )
-        {
-            TrackItem* track = static_cast<TrackItem*>( item );
-            if( track && !tracks.contains( track->track() ) )
-            {
-                tracks << track->track();
-                debug() << "Requested mimedata for track" << item->text().trimmed();
-            }
-        }
-    }
+    foreach( const QModelIndex &index, indices )
+        tracks << tracksForIndex( index );
+    tracks = tracks.toSet().toList();
 
     // http://doc.trolltech.com/4.4/qabstractitemmodel.html#mimeData
-    // If the list of indexes is empty, or there are no supported MIME types, 
+    // If the list of indexes is empty, or there are no supported MIME types,
     // 0 is returned rather than a serialized empty list.
     if( tracks.isEmpty() )
         return 0;
@@ -86,6 +47,30 @@ AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );
     return mimeData;
+}
+
+Meta::TrackList
+AlbumsModel::tracksForIndex( const QModelIndex &index ) const
+{
+    Meta::TrackList tracks;
+    if( !index.isValid() )
+        return tracks;
+
+    if( hasChildren( index ) )
+    {
+        for( int i = 0, rows = rowCount( index ); i < rows; ++i )
+            tracks << tracksForIndex( index.child( i, 0 ) );
+    }
+    else if( QStandardItem *item = itemFromIndex( index ) )
+    {
+        if( item->type() == TrackType )
+        {
+            TrackItem* trackItem = static_cast<TrackItem*>( item );
+            if( trackItem )
+                tracks << trackItem->track();
+        }
+    }
+    return tracks;
 }
 
 QStringList

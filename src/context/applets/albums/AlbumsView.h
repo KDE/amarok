@@ -55,6 +55,9 @@ public:
      */
     QTreeView* nativeWidget() const;
 
+public slots:
+    void setRecursiveExpanded( const QModelIndex &index, bool expanded );
+
 protected:
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
     void resizeEvent( QGraphicsSceneResizeEvent *event );

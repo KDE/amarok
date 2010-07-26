@@ -164,22 +164,18 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         albumItem->setAlbum( albumPtr );
         albumItem->setShowArtist( showArtist );
         
-        int discNumber = 0;
-
+        int numberOfDiscs = 0;
         int childRow = 0;
 
-        Meta::TrackList tracks=albumPtr->tracks();
-        qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan);
+        Meta::TrackList tracks = albumPtr->tracks();
+        qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
-        foreach( Meta::TrackPtr trackPtr,  tracks)
+        QMultiHash< int, TrackItem* > trackItems; // hash of tracks items for each disc
+        foreach( Meta::TrackPtr trackPtr, tracks )
         {
-            if( trackPtr->discNumber() != discNumber )
-            {
-                discNumber = trackPtr->discNumber();
-                QStandardItem *disc = new QStandardItem();
-                disc->setText( i18n( "Disc %1", discNumber ) );
-                albumItem->setChild( childRow++, disc );
-            }
+            if( numberOfDiscs < trackPtr->discNumber() )
+                numberOfDiscs = trackPtr->discNumber();
+
             TrackItem *trackItem = new TrackItem();
             trackItem->setTrack( trackPtr );
             
@@ -190,13 +186,37 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             // If compilation and same artist, then make bold, but only if there's a current track
             if( currentTrack && currentTrack->artist() == trackPtr->artist() && albumPtr->isCompilation() )
                 trackItem->bold();           
-            
-            albumItem->setChild( childRow++, trackItem );
+
+            trackItems.insert( trackPtr->discNumber(), trackItem );
+        }
+
+        for( int i = 0; i <= numberOfDiscs; ++i )
+        {
+            QList<TrackItem*> items = trackItems.values( i );
+            if( !items.isEmpty() )
+            {
+                const TrackItem *item = items.first();
+                int discNumber = item->track()->discNumber();
+                QStandardItem *discItem( 0 );
+                if( discNumber != 0 )
+                {
+                    discItem = new QStandardItem( i18n("Disc %1", discNumber) );
+                    albumItem->setChild( childRow++, discItem );
+                    int discChildRow = 0;
+                    foreach( TrackItem *trackItem, items )
+                        discItem->setChild( discChildRow++, trackItem );
+                }
+                else
+                {
+                    foreach( TrackItem *trackItem, items )
+                        albumItem->setChild( childRow++, trackItem );
+                }
+            }
         }
         
         m_model->appendRow( albumItem );
         if( currentAlbum && currentAlbum == albumPtr )
-           m_albumsView->nativeWidget()->expand( m_model->indexFromItem( albumItem ) );
+            m_albumsView->setRecursiveExpanded( albumItem->index(), true );
     }
     
     updateConstraints();
