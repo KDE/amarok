@@ -839,7 +839,6 @@ MainWindow::createActions()
 
     action = new KAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
     action = new KAction( i18n( "Toggle Full Screen" ), this );

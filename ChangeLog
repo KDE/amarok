@@ -25,6 +25,8 @@ VERSION 2.3.2-Beta 1
       browser, e.g. "played:<3d".
 
   CHANGES:
+    * Remote Meta+P global shortcut to avoid future problems with new
+      keyboard drivers in notebooks. (BR 235204)
     * Fix size of Slim toolbar time labels. Thanks to Tijl Coosemans for the patch.
     * Amarok 1.4 Database Importer: only import tracks that actually belong in the
       collection. Thanks to Matěj Laitl for the patch. (BR 218999)
