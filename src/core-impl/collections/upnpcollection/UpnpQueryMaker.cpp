@@ -83,6 +83,8 @@ QueryMaker* UpnpQueryMaker::reset()
     m_query.reset();
     m_jobCount = 0;
 
+    m_numericFilters.clear();
+
 // the Amarok Collection Model expects atleast one entry
 // otherwise it will harass us continuously for more entries.
 // of course due to the poor quality of UPnP servers I've
@@ -111,7 +113,7 @@ DEBUG_BLOCK
     }
 
     QStringList queryList;
-    if( m_query.hasMatchFilter() ) {
+    if( m_query.hasMatchFilter() || !m_numericFilters.empty() ) {
         queryList = m_query.queries();
     }
     else {
@@ -360,6 +362,8 @@ QueryMaker* UpnpQueryMaker::addNumberFilter( qint64 value, qint64 filter, Number
 {
 DEBUG_BLOCK
     debug() << this << "Adding number filter" << value << filter << compare;
+    NumericFilter f = { value, filter, compare };
+    m_numericFilters << f;
     return this;
 }
 
@@ -466,6 +470,8 @@ void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
 {
     Meta::ArtistList ret;
     foreach( KIO::UDSEntry entry, list ) {
+        if( !postFilter( entry ) )
+            continue;
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.person.musicArtist" ) {
             debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
             ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
@@ -484,6 +490,8 @@ DEBUG_BLOCK
     debug() << "HANDLING ALBUMS" << list.length();
     Meta::AlbumList ret;
     foreach( KIO::UDSEntry entry, list ) {
+        if( !postFilter( entry ) )
+            continue;
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.album.musicAlbum" ) {
             debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
             ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
@@ -502,6 +510,8 @@ DEBUG_BLOCK
     debug() << "HANDLING TRACKS" << list.length();
     Meta::TrackList ret;
     foreach( KIO::UDSEntry entry, list ) {
+        if( !postFilter( entry ) )
+            continue;
         debug() << this << "TRACK as data ptr?" << m_asDataPtrs << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
         ret << m_collection->cache()->getTrack( entry );
     }
@@ -604,6 +614,36 @@ QString UpnpQueryMaker::propertyForValue( qint64 value )
         default:
             debug() << "UNSUPPORTED QUERY TYPE" << value;
             return QString();
+    }
+}
+
+bool UpnpQueryMaker::postFilter( const KIO::UDSEntry &entry )
+{
+    //numeric filters
+    foreach( NumericFilter filter, m_numericFilters ) {
+        // should be set by the filter based on filter.type
+        qint64 aValue = 0;
+        
+        switch( filter.type ) {
+            case Meta::valCreateDate:
+            {
+                // TODO might use UDSEntry::UDS_CREATION_TIME instead later
+                QString dateString = entry.stringValue( KIO::UPNP_DATE );
+                QDateTime time = QDateTime::fromString( dateString, Qt::ISODate );
+                if( !time.isValid() )
+                    return false;
+                aValue = time.toTime_t();
+                debug() << "FILTER BY creation timestamp entry:" << aValue << "query:" << filter.value << "OP:" << filter.compare;
+                break;
+            }
+        }
+
+        if( ( filter.compare == Equals ) && ( filter.value != aValue ) )
+            return false;
+        else if( ( filter.compare == GreaterThan ) && ( filter.value >= aValue ) )
+            return false; // since only allow entries with aValue > filter.value
+        else if( ( filter.compare == LessThan ) && ( filter.value <= aValue ) )
+            return false;
     }
 }
 

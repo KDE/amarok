@@ -112,6 +112,11 @@ class UpnpQueryMaker : public QueryMaker
         void handleTracks( const KIO::UDSEntryList &list );
         void handleCustom( const KIO::UDSEntryList &list );
 
+        /*
+        * apply numeric filters and such which UPnP doesn't handle.
+        */
+        bool postFilter( const KIO::UDSEntry& entry );
+
         QString propertyForValue( qint64 value );
 
         UpnpSearchCollection *m_collection;
@@ -134,6 +139,13 @@ class UpnpQueryMaker : public QueryMaker
 
         ReturnFunction m_returnFunction;
         qint64 m_returnValue;
+
+        struct NumericFilter {
+            qint64 type;
+            qint64 value;
+            NumberComparison compare;
+        };
+        QList<NumericFilter> m_numericFilters;
 };
 
 } //namespace Collections
