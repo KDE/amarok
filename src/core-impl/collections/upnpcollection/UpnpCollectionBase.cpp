@@ -48,7 +48,6 @@ QString UpnpCollectionBase::prettyName() const
 
 bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
 {
-    debug() << "CONTAINS?" << url;
     if( url.scheme() == "upnp-ms" )
 //         && url.host() == m_device.host()
 //         && url.port() == m_device.port() )
