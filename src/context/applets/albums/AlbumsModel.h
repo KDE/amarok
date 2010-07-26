@@ -31,6 +31,7 @@ class AlbumsModel : public QStandardItemModel
 public:
     AlbumsModel( QObject *parent = 0 );
     virtual ~AlbumsModel() {}
+    virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
     virtual QStringList mimeTypes() const;
 

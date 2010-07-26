@@ -21,9 +21,30 @@
 #include "core/support/Debug.h"
 #include "TrackItem.h"
 
+#include <QFontMetrics>
+
 AlbumsModel::AlbumsModel( QObject *parent )
     : QStandardItemModel( parent )
 {
+}
+
+QVariant
+AlbumsModel::data( const QModelIndex &index, int role ) const
+{
+    if( !index.isValid() )
+        return QVariant();
+
+    if( role == Qt::SizeHintRole )
+    {
+        const QStandardItem *item = itemFromIndex( index );
+        if( item->type() != AlbumType )
+        {
+            QFont font;
+            QFontMetrics fm( font );
+            return QSize( -1, fm.height() + 4 );
+        }
+    }
+    return itemFromIndex( index )->data( role );
 }
 
 QMimeData*
