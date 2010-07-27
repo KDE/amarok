@@ -156,6 +156,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     }
 
     const bool showArtist = !currentTrack;
+    AlbumItem *scrollToAlbum( 0 );
 
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
@@ -216,9 +217,15 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         
         m_model->appendRow( albumItem );
         if( currentAlbum && currentAlbum == albumPtr )
+        {
             m_albumsView->setRecursiveExpanded( albumItem->index(), true );
+            scrollToAlbum = albumItem;
+        }
     }
-    
+
+    if( scrollToAlbum )
+        m_albumsView->nativeWidget()->scrollTo( scrollToAlbum->index(), QAbstractItemView::PositionAtTop );
+
     updateConstraints();
 }
 
