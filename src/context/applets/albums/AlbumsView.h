@@ -20,15 +20,18 @@
 
 #include "core/meta/Meta.h"
 
-#include <QGraphicsProxyWidget>
+#include <QGraphicsWidget>
 #include <QStyledItemDelegate>
 
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
-class QModelIndex;
 class QTreeView;
+namespace Plasma
+{
+    class ScrollBar;
+}
 
-class AlbumsView : public QGraphicsProxyWidget
+class AlbumsView : public QGraphicsWidget
 {
     Q_OBJECT
     Q_PROPERTY( QAbstractItemModel* model READ model WRITE setModel )
@@ -68,9 +71,14 @@ private slots:
     void slotEditSelected();
     void slotPlaySelected();
     void slotQueueSelected();
+    void slotScrollBarRangeChanged( int min, int max );
 
 private:
+    void updateScrollBarVisibility();
+
     Meta::TrackList getSelectedTracks() const;
+    QTreeView *m_treeView;
+    Plasma::ScrollBar *m_scrollBar;
 };
 
 class AlbumsItemDelegate : public QStyledItemDelegate

@@ -31,8 +31,10 @@
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KMenu>
+#include <Plasma/ScrollBar>
 
-#include <QApplication>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
 #include <QPainter>
@@ -58,6 +60,7 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
                 setAnimated( true );
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+            setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
             setItemDelegate( new AlbumsItemDelegate( this ) );
         }
@@ -68,12 +71,34 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
 };
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
-    : QGraphicsProxyWidget( parent )
+    : QGraphicsWidget( parent )
 {
-    AlbumsTreeView *treeView = new AlbumsTreeView( 0 );
-    connect( treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
-    connect( treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
-    setWidget( treeView );
+    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget;
+    m_treeView = new AlbumsTreeView( 0 );
+    connect( m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
+    connect( m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
+    proxy->setWidget( m_treeView );
+
+    QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
+    m_scrollBar = new Plasma::ScrollBar( this );
+    m_scrollBar->setFocusPolicy( Qt::NoFocus );
+
+    // synchronize scrollbars
+    connect( treeScrollBar, SIGNAL(rangeChanged(int,int)), SLOT(slotScrollBarRangeChanged(int,int)) );
+    connect( treeScrollBar, SIGNAL(valueChanged(int)), m_scrollBar, SLOT(setValue(int)) );
+    connect( m_scrollBar, SIGNAL(valueChanged(int)), treeScrollBar, SLOT(setValue(int)) );
+    m_scrollBar->setRange( treeScrollBar->minimum(), treeScrollBar->maximum() );
+    m_scrollBar->setPageStep( treeScrollBar->pageStep() );
+    m_scrollBar->setSingleStep( treeScrollBar->singleStep() );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Horizontal );
+    layout->addItem( proxy );
+    layout->addItem( m_scrollBar );
+    layout->setSpacing( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    setLayout( layout );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    updateScrollBarVisibility();
 }
 
 AlbumsView::~AlbumsView()
@@ -83,27 +108,27 @@ AlbumsView::~AlbumsView()
 void
 AlbumsView::setModel( QAbstractItemModel *model )
 {
-    nativeWidget()->setModel( model );                                                                                               
+    m_treeView->setModel( model );
 }
 
 QAbstractItemModel*
 AlbumsView::model() const
 {
-    return nativeWidget()->model();
+    return m_treeView->model();
 }
 
 QTreeView*
 AlbumsView::nativeWidget() const
 {
-    return static_cast<QTreeView*>( widget() );
+    return m_treeView;
 }
 
 void
 AlbumsView::itemClicked( const QModelIndex &index )
 {
-    bool expanded = nativeWidget()->isExpanded( index );    
+    bool expanded = m_treeView->isExpanded( index );
     if( expanded )
-        nativeWidget()->setExpanded( index, !expanded );
+        m_treeView->setExpanded( index, !expanded );
     else
         setRecursiveExpanded( index, !expanded );
 }
@@ -111,10 +136,10 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
-    const QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
+    const QModelIndex index = m_treeView->indexAt( event->pos().toPoint() );
     if( !index.isValid() )
     {
-        QGraphicsProxyWidget::contextMenuEvent( event );
+        QGraphicsWidget::contextMenuEvent( event );
         return;
     }
 
@@ -187,13 +212,41 @@ AlbumsView::slotEditSelected()
     }
 }
 
+void
+AlbumsView::slotScrollBarRangeChanged( int min, int max )
+{
+    m_scrollBar->setRange( min, max );
+    m_scrollBar->setPageStep( m_treeView->verticalScrollBar()->pageStep() );
+    m_scrollBar->setSingleStep( m_treeView->verticalScrollBar()->singleStep() );
+    updateScrollBarVisibility();
+}
+
+void
+AlbumsView::updateScrollBarVisibility()
+{
+    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
+    if( m_scrollBar->maximum() == 0 )
+    {
+        if( lo->count() > 1 && lo->itemAt(1) == m_scrollBar )
+        {
+            lo->removeAt( 1 );
+            m_scrollBar->hide();
+        }
+    }
+    else if( lo->count() == 1 )
+    {
+        lo->addItem( m_scrollBar );
+        m_scrollBar->show();
+    }
+}
+
 Meta::TrackList
 AlbumsView::getSelectedTracks() const
 {
     Meta::TrackList selected;
 
     const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( const_cast<AlbumsView*>(this)->model());
-    QModelIndexList indexes = static_cast<AlbumsTreeView*>(nativeWidget())->selectedIndexes();
+    QModelIndexList indexes = static_cast<AlbumsTreeView*>( m_treeView )->selectedIndexes();
 
     foreach( const QModelIndex &index, indexes )
     {
@@ -221,22 +274,22 @@ AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
     if( model()->hasChildren( index ) )
     {
         for( int i = 0, count = model()->rowCount( index ); i < count; ++i )
-            nativeWidget()->setExpanded( index.child( i, 0 ), expanded );
+            m_treeView->setExpanded( index.child( i, 0 ), expanded );
     }
-    nativeWidget()->setExpanded( index, expanded );
+    m_treeView->setExpanded( index, expanded );
 }
 
 void
 AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    QGraphicsProxyWidget::resizeEvent( event );
+    QGraphicsWidget::resizeEvent( event );
 
-    const int newWidth = size().width() / nativeWidget()->header()->count();
+    const int newWidth = size().width() / m_treeView->header()->count();
 
-    for( int i = 0; i < nativeWidget()->header()->count(); ++i )
-        nativeWidget()->header()->resizeSection( i, newWidth );
+    for( int i = 0; i < m_treeView->header()->count(); ++i )
+        m_treeView->header()->resizeSection( i, newWidth );
 
-    nativeWidget()->setColumnWidth( 0, 100 );
+    m_treeView->setColumnWidth( 0, 100 );
 }
 
 /*
