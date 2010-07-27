@@ -427,9 +427,17 @@ DEBUG_BLOCK
 
 int UpnpQueryMaker::validFilterMask()
 {
-DEBUG_BLOCK
-// TODO return based on our collections search capabilities!
-    return TitleFilter | AlbumFilter | ArtistFilter | GenreFilter;
+    int mask = 0;
+    QStringList caps = m_collection->searchCapabilities();
+    if( caps.contains( "dc:title" ) )
+        mask |= TitleFilter;
+    if( caps.contains( "upnp:album" ) )
+        mask |= AlbumFilter;
+    if( caps.contains( "upnp:artist" ) )
+        mask |= ArtistFilter;
+    if( caps.contains( "upnp:genre" ) )
+        mask |= GenreFilter;
+    return mask;
 }
 
 void UpnpQueryMaker::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )

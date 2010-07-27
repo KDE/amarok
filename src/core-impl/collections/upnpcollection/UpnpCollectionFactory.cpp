@@ -135,7 +135,7 @@ void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
             && searchCaps.contains( "upnp:artist" )
             && searchCaps.contains( "upnp:album" ) ) {
             kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
-            m_devices[dev.udi()] = new UpnpSearchCollection( dev );
+            m_devices[dev.udi()] = new UpnpSearchCollection( dev, searchCaps );
         }
         else {
             kDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";

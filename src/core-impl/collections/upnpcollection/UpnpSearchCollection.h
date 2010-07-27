@@ -46,7 +46,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpSearchCollection( Solid::Device );
+    UpnpSearchCollection( Solid::Device, QStringList searchCapabilities );
     virtual ~UpnpSearchCollection();
 
     virtual void startIncrementalScan( const QString &directory = QString() );
@@ -57,6 +57,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
     Meta::TrackPtr trackForUrl( const KUrl &url );
 
     UpnpCache* cache() { return m_cache; }
+    QStringList searchCapabilities() { return m_searchCapabilities; }
   signals:
 
   public slots:
@@ -68,6 +69,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
   private:
     QTimer *m_fullScanTimer;
     bool m_fullScanInProgress;
+    QStringList m_searchCapabilities;
 
     UpnpCache *m_cache;
 };

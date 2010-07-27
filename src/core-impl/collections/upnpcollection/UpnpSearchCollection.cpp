@@ -41,9 +41,10 @@ namespace Collections {
 //UpnpSearchCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpSearchCollection::UpnpSearchCollection( Solid::Device dev )
+UpnpSearchCollection::UpnpSearchCollection( Solid::Device dev, QStringList searchCapabilities )
     : UpnpCollectionBase( dev )
     , m_fullScanInProgress( false )
+    , m_searchCapabilities( searchCapabilities )
     , m_cache( new UpnpCache( this ) )
 {
     DEBUG_BLOCK
