@@ -59,7 +59,6 @@ public:
         , settingsIcon( 0 )
         , trackIcon( 0 )
         , webView( 0 )
-        , progressProxy( 0 )
         , wikipediaLabel( 0 )
         , aspectRatio( 0 )
         , isForwardHistory( false )
@@ -119,7 +118,6 @@ public:
     Plasma::IconWidget *settingsIcon;
     Plasma::IconWidget *trackIcon;
     WikipediaWebView *webView;
-    QGraphicsProxyWidget *progressProxy;
     QStack<QUrl> historyBack;
     QStack<QUrl> historyForward;
     QUrl currentUrl;
