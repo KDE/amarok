@@ -25,9 +25,11 @@
 
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
+class QGraphicsProxyWidget;
 class QTreeView;
 namespace Plasma
 {
+    class SvgWidget;
     class ScrollBar;
 }
 
@@ -78,6 +80,9 @@ private:
 
     Meta::TrackList getSelectedTracks() const;
     QTreeView *m_treeView;
+    QGraphicsProxyWidget *m_treeProxy;
+    Plasma::SvgWidget *m_topBorder;
+    Plasma::SvgWidget *m_bottomBorder;
     Plasma::ScrollBar *m_scrollBar;
 };
 

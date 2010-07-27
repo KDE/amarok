@@ -31,6 +31,8 @@
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KMenu>
+#include <Plasma/Svg>
+#include <Plasma/SvgWidget>
 #include <Plasma/ScrollBar>
 
 #include <QGraphicsLinearLayout>
@@ -63,6 +65,7 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
             setItemDelegate( new AlbumsItemDelegate( this ) );
+            setFrameStyle( QFrame::NoFrame );
         }
 
         // Override access level to make it public. Only visible to the AlbumsView.
@@ -73,11 +76,28 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
     : QGraphicsWidget( parent )
 {
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget;
+    Plasma::Svg *borderSvg = new Plasma::Svg( this );
+    borderSvg->setImagePath( "widgets/scrollwidget" );
+
+    m_topBorder = new Plasma::SvgWidget( this );
+    m_topBorder->setSvg( borderSvg );
+    m_topBorder->setElementID( "border-top" );
+    m_topBorder->setZValue( 900 );
+    m_topBorder->resize( -1, 10.0 );
+    m_topBorder->show();
+
+    m_bottomBorder = new Plasma::SvgWidget( this );
+    m_bottomBorder->setSvg( borderSvg );
+    m_bottomBorder->setElementID( "border-bottom" );
+    m_bottomBorder->setZValue( 900 );
+    m_bottomBorder->resize( -1, 10.0 );
+    m_bottomBorder->show();
+
+    m_treeProxy = new QGraphicsProxyWidget;
     m_treeView = new AlbumsTreeView( 0 );
     connect( m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
     connect( m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
-    proxy->setWidget( m_treeView );
+    m_treeProxy->setWidget( m_treeView );
 
     QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
     m_scrollBar = new Plasma::ScrollBar( this );
@@ -92,9 +112,9 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     m_scrollBar->setSingleStep( treeScrollBar->singleStep() );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Horizontal );
-    layout->addItem( proxy );
+    layout->addItem( m_treeProxy );
     layout->addItem( m_scrollBar );
-    layout->setSpacing( 0 );
+    layout->setSpacing( 2 );
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -178,6 +198,21 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
         }
     }
     menu.exec( event->screenPos() );
+}
+
+void
+AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
+{
+    QGraphicsWidget::resizeEvent( event );
+    if( m_topBorder )
+    {
+        m_topBorder->resize( event->newSize().width(), m_topBorder->size().height() );
+        m_bottomBorder->resize( event->newSize().width(), m_bottomBorder->size().height() );
+        m_topBorder->setPos( m_treeProxy->pos() );
+        QPointF bottomPoint = m_treeProxy->boundingRect().bottomLeft();
+        bottomPoint.ry() -= m_bottomBorder->size().height();
+        m_bottomBorder->setPos( bottomPoint );
+    }
 }
 
 void
@@ -277,19 +312,6 @@ AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
             m_treeView->setExpanded( index.child( i, 0 ), expanded );
     }
     m_treeView->setExpanded( index, expanded );
-}
-
-void
-AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
-{
-    QGraphicsWidget::resizeEvent( event );
-
-    const int newWidth = size().width() / m_treeView->header()->count();
-
-    for( int i = 0; i < m_treeView->header()->count(); ++i )
-        m_treeView->header()->resizeSection( i, newWidth );
-
-    m_treeView->setColumnWidth( 0, 100 );
 }
 
 /*
