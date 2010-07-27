@@ -27,7 +27,13 @@ enum AlbumsModelItemTypes
 
 enum AlbumsModelCustomRoles
 {
-    AlbumDisplayRole = Qt::UserRole
+    AlbumDisplayRole = Qt::UserRole,
+    AlbumCompilationRole,
+    AlbumTrackCountRole,
+    TrackNameRole,
+    TrackArtistRole,
+    TrackNumberRole,
+    TrackLengthRole
 };
 
 #endif /* AMAROK_ALBUMSDEFS_H */

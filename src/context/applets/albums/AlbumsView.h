@@ -85,6 +85,8 @@ public:
 
 private:
     void drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    void drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    void applyCommonStyle( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
 };
 
 #endif // multiple inclusion guard

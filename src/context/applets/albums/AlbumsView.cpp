@@ -23,6 +23,7 @@
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
 #include "core/capabilities/CustomActionsCapability.h"
+#include "core/meta/support/MetaUtility.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -239,13 +240,24 @@ AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
 }
 
 /*
- * Customize the painting of AlbumItems in the tree view. The album items'
- * displayed text is like so: "artist - album (year)\ntracks, time", i.e. the
- * album info is shown in two lines. When resizing the context view, the string
- * is elided if the available width is less than the text width. That ellipsis
- * is done on the whole string however, so the second line disappears. A
- * solution is to do the eliding ourselves.
+ * Customize the painting of items in the tree view.
+ *
+ * AlbumItems: The album items' displayed text has the format
+ * "artist - album (year)\ntracks, time", i.e. the album info is shown in two
+ * lines. When resizing the context view, the string is elided if the available
+ * width is less than the text width. That ellipsis is done on the whole string
+ * however, so the second line disappears. A solution is to do the eliding
+ * ourselves.
+ *
+ * TrackItems: The track number and length gets special treatment. They are
+ * painted at the beginning and end of the string, respectively. The track
+ * numbers are right aligned and a suitable width is used to make the numbers
+ * align for all the tracks in the album. The track name and artist (the latter
+ * is included if the album is a compilation), are placed in between the track
+ * number and length; it is elided if necessary. Thus the track number and
+ * length are always shown, even during eliding.
  */
+
 void
 AlbumsItemDelegate::paint( QPainter *p,
                            const QStyleOptionViewItem &option,
@@ -270,6 +282,13 @@ AlbumsItemDelegate::paint( QPainter *p,
             drawAlbumText( p, vopt );
         }
     }
+    else if( item->type() == TrackType )
+    {
+        QStyleOptionViewItemV4 vopt( option );
+        initStyleOption( &vopt, index );
+        vopt.rect.adjust( 0, 0, -2, 0 );
+        drawTrackText( p, vopt );
+    }
 }
 
 void
@@ -293,6 +312,53 @@ AlbumsItemDelegate::drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &vo
     }
 
     p->drawText( textRect, Qt::AlignLeft | Qt::AlignVCenter, texts.join("\n") );
+    p->restore();
+}
+
+void
+AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vopt ) const
+{
+    const QModelIndex &index = vopt.index;
+
+    int trackDigitCount = index.data( AlbumTrackCountRole ).toString().length();
+    bool isCompilation = index.data( AlbumCompilationRole ).toBool();
+    const QString &name = index.data( TrackNameRole ).toString();
+    const QString &artist = index.data( TrackArtistRole ).toString();
+    QString length = " (" + Meta::msToPrettyTime( index.data( TrackLengthRole ).toInt() ) + ')';
+    QString number = index.data( TrackNumberRole ).toString() + ". ";
+    QString middle = isCompilation ? QString( "%1 - %2" ).arg( artist, name ) : name;
+
+    // use boldface font metrics for measuring track numbers
+    QFont boldFont = vopt.font;
+    boldFont.setBold( true );
+    QFontMetrics boldFm( boldFont, p->device() );
+    QFontMetrics fm( vopt.fontMetrics );
+
+    int numberFillWidth = boldFm.width( QChar('0') ) * ( trackDigitCount - number.length() + 2 );
+    int numberRectWidth = numberFillWidth + boldFm.width( number ) + 2;
+    int availableWidth = vopt.rect.width() - numberRectWidth - fm.width( length );
+    if( availableWidth < fm.width( middle ) )
+        middle = fm.elidedText( middle, Qt::ElideRight, availableWidth );
+    QString text = QString( "%2%3" ).arg( middle, length );
+
+    p->save();
+    p->setClipRect( vopt.rect );
+    p->setBackground( vopt.backgroundBrush );
+    p->setLayoutDirection( vopt.direction );
+    p->setFont( vopt.font );
+    applyCommonStyle( p, vopt );
+    QRect numberRect( vopt.rect.topLeft(), QSize( numberRectWidth, vopt.rect.height() ) );
+    QRect textRect( vopt.rect.adjusted( numberRectWidth, 0, 0, 0 ) );
+    p->drawText( textRect, Qt::AlignJustify | Qt::AlignVCenter, text );
+
+    // use a nonbold font for drawing track numbers
+    if( vopt.font.bold() )
+    {
+        QFont font = vopt.font;
+        font.setBold( false );
+        p->setFont( font );
+    }
+    p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
     p->restore();
 }
 
