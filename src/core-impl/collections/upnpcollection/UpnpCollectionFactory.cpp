@@ -80,7 +80,7 @@ void UpnpCollectionFactory::init()
     }*/
 
     Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
-    Q_ASSERT( connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) ) );
+    connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) );
     connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
 
     foreach( Solid::Device device, Solid::Device::allDevices() ) {
