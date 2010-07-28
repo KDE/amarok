@@ -328,10 +328,17 @@ div.medialist ul li
 {
   list-style: none;
 }
+
 div#ogg_player_1, div#ogg_player_2, div#ogg_player_3, div#ogg_player_4, div#ogg_player_5, div#ogg_player_6, div#ogg_player_7, div#ogg_player_8, div#ogg_player_9, div#ogg_player_10, div#ogg_player_11, div#ogg_player_12, div#ogg_player_13
 {
   display: none;
 }
+
+div#jump-to-nav, div.NavFrame, table.metadata
+{
+  display: none;
+}
+
 div.medialist table
 {
   margin: 5pt;

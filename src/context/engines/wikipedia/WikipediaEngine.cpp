@@ -551,6 +551,7 @@ WikipediaEnginePrivate::wikiParse()
     wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
 
     wiki.remove( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ) );
+    wiki.remove( QRegExp( "<p><span[^>]*><[^\"]*\"#_skip_noteTA\">[^<]*<[^<]*</span></p>" ) );
 
     wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
 
