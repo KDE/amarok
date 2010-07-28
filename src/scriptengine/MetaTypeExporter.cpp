@@ -191,6 +191,13 @@ MetaTrackPrototype::url() const
     return track ? track->playableUrl().url() : QString();
 }
 
+double
+MetaTrackPrototype::bpm() const
+{
+    GET_TRACK
+    return track ? track->bpm() : 0.0;
+}
+
 QScriptValue
 MetaTrackPrototype::imagePixmap( int size ) const
 {
@@ -302,7 +309,7 @@ MetaTrackPrototype::setTitle( const QString& title )
 }
 
 void
-MetaTrackPrototype::setImageUrl(const QString& imageUrl )
+MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 {
     GET_TRACK
     if ( track && track->album() ) track->album()->setImage( QPixmap(imageUrl) );

@@ -57,6 +57,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
     Q_PROPERTY( QString imageUrl WRITE setImageUrl READ imageUrl )
     Q_PROPERTY( QString url READ url )
+    Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
 
     public:
         MetaTrackPrototype();
@@ -91,6 +92,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         QString title() const;
         QString imageUrl() const;
         QString url() const;
+        double bpm() const;
 
         void setScore( double score );
         void setRating( int rating );
