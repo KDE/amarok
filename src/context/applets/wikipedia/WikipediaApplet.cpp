@@ -29,6 +29,7 @@
 #include "widgets/TextScrollingWidget.h"
 
 #include <KConfigDialog>
+#include <KGlobalSettings>
 #include <KSaveFile>
 #include <KStandardDirs>
 #include <KTemporaryFile>
@@ -40,6 +41,7 @@
 #include <QAction>
 #include <QDesktopServices>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsView>
 #include <QListWidget>
 #include <QPainter>
 #include <QProgressBar>
@@ -241,6 +243,22 @@ WikipediaAppletPrivate::_reloadWikipedia()
     DEBUG_BLOCK
     dataContainer->setData( "reload", true );
     scheduleEngineUpdate();
+}
+
+void
+WikipediaAppletPrivate::_updateWebFonts()
+{
+    Q_Q( WikipediaApplet );
+    if( !q->view() )
+        return;
+    qreal ratio = q->view()->logicalDpiY() / 72.0;
+    qreal fixedFontSize = KGlobalSettings::fixedFont().pointSize() * ratio;
+    qreal generalFontSize = KGlobalSettings::generalFont().pointSize() * ratio;
+    qreal minimumFontSize = KGlobalSettings::smallestReadableFont().pointSize() * ratio;
+    QWebSettings *webSettings = webView->page()->settings();
+    webSettings->setFontSize( QWebSettings::DefaultFixedFontSize, qRound(fixedFontSize) );
+    webSettings->setFontSize( QWebSettings::DefaultFontSize, qRound(generalFontSize) );
+    webSettings->setFontSize( QWebSettings::MinimumFontSize, qRound(minimumFontSize) );
 }
 
 void
@@ -469,6 +487,8 @@ WikipediaApplet::init()
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     d->webView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->webView->setAttribute( Qt::WA_OpaquePaintEvent, true );
+    d->_updateWebFonts();
+    connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(_updateWebFonts()) );
 
     d->_paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(_paletteChanged(QPalette)) );

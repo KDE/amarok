@@ -87,6 +87,7 @@ public:
 
     void _switchToLang( const QString &lang );
     void _reloadWikipedia();
+    void _updateWebFonts();
 
     void _paletteChanged( const QPalette &palette );
 
