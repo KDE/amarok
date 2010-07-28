@@ -26,7 +26,6 @@
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "MainWindow.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "PaletteHandler.h"
@@ -38,6 +37,7 @@
 #include <KDialog>
 #include <KDirModel>
 #include <KFileItem>
+#include <KGlobalSettings>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>

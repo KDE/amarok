@@ -19,8 +19,6 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "EngineController.h"
-#include "MainWindow.h"
-//#include "mediabrowser.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 

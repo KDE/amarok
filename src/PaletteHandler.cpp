@@ -18,7 +18,6 @@
 
 #include "App.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 
 #include <kglobal.h>
 

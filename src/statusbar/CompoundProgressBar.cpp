@@ -17,7 +17,6 @@
 #include "CompoundProgressBar.h"
 
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 
 #include <KIcon>
 #include <KLocale>

@@ -22,11 +22,11 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
 #include <KLocale>
+#include <KGlobalSettings>
 #include <KPushButton>
 #include <KVBox>
 

@@ -23,7 +23,6 @@
 #include "CollectionConfig.h"
 #include "DatabaseConfig.h"
 #include "GeneralConfig.h"
-#include "MainWindow.h"
 //#include "MediadeviceConfig.h"
 #include "NotificationsConfig.h"
 #include "PlaybackConfig.h"

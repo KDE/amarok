@@ -21,7 +21,6 @@
 #include "core/playlists/PlaylistFormat.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
