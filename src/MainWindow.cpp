@@ -1144,7 +1144,7 @@ MainWindow::paletteChange( const QPalette & oldPalette )
 }
 
 QSize
-MainWindow::backgroundSize()
+MainWindow::backgroundSize() const
 {
     const QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
     const QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
@@ -1474,7 +1474,7 @@ MainWindow::globalBackgroundOffset()
 }
 
 QRect
-MainWindow::contextRectGlobal()
+MainWindow::contextRectGlobal() const
 {
     //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
     //FIXME
@@ -1583,7 +1583,7 @@ MainWindow::setLayoutLocked( bool locked )
 }
 
 bool
-MainWindow::isLayoutLocked()
+MainWindow::isLayoutLocked() const
 {
     return m_layoutLocked;
 }
@@ -1697,7 +1697,7 @@ MainWindow::playAudioCd()
 }
 
 bool
-MainWindow::isWaitingForCd()
+MainWindow::isWaitingForCd() const
 {
     DEBUG_BLOCK
     debug() << "waiting?: " << m_waitingForCd;

@@ -84,7 +84,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         BrowserDock *browserDock() const { return m_browserDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        Playlist::Dock * playlistDock() { return m_playlistDock; }
+        Playlist::Dock * playlistDock() const { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -96,13 +96,12 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         PlaylistBrowserNS::PlaylistBrowser * playlistBrowser();
 
         //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.
-        QSize backgroundSize();
+        QSize backgroundSize() const;
 
-        int contextXOffset();
-        QRect contextRectGlobal();
+        QRect contextRectGlobal() const;
         QPoint globalBackgroundOffset();
 
-        bool isLayoutLocked();
+        bool isLayoutLocked() const;
 
         /**
         *    If an audiocd collection is present. Stop current playback, clear playlist,
@@ -110,7 +109,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         */
         bool playAudioCd();
 
-        bool isWaitingForCd();
+        bool isWaitingForCd() const;
 
     signals:
         void loveTrack( Meta::TrackPtr track );
