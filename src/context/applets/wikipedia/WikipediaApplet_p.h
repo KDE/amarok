@@ -26,8 +26,11 @@
 #include <KUrl>
 
 #include <Plasma/LineEdit>
+#include <Plasma/Svg>
+#include <Plasma/SvgWidget>
 #include <Plasma/WebView>
 
+#include <QGraphicsSceneResizeEvent>
 #include <QStack>
 #include <QWebFrame>
 #include <QWebPage>
@@ -177,6 +180,23 @@ public:
         m_lineEdit->setClearButtonShown( true );
         m_lineEdit->setVisible( false );
 
+        Plasma::Svg *borderSvg = new Plasma::Svg( this );
+        borderSvg->setImagePath( "widgets/scrollwidget" );
+
+        m_topBorder = new Plasma::SvgWidget( this );
+        m_topBorder->setSvg( borderSvg );
+        m_topBorder->setElementID( "border-top" );
+        m_topBorder->setZValue( 900 );
+        m_topBorder->resize( -1, 10.0 );
+        m_topBorder->show();
+
+        m_bottomBorder = new Plasma::SvgWidget( this );
+        m_bottomBorder->setSvg( borderSvg );
+        m_bottomBorder->setElementID( "border-bottom" );
+        m_bottomBorder->setZValue( 900 );
+        m_bottomBorder->resize( -1, 10.0 );
+        m_bottomBorder->show();
+
         page()->parent()->installEventFilter( this );
     }
     ~WikipediaWebView() {}
@@ -216,8 +236,24 @@ protected:
             Plasma::WebView::keyPressEvent( event );
     }
 
+    void resizeEvent( QGraphicsSceneResizeEvent *event )
+    {
+        Plasma::WebView::resizeEvent( event );
+        if( m_topBorder )
+        {
+            m_topBorder->resize( event->newSize().width(), m_topBorder->size().height() );
+            m_bottomBorder->resize( event->newSize().width(), m_bottomBorder->size().height() );
+            QPointF bottomPoint = boundingRect().bottomLeft();
+            bottomPoint.ry() -= m_bottomBorder->size().height();
+            m_bottomBorder->setPos( bottomPoint );
+            m_topBorder->setPos( mapFromParent( pos() ) );
+        }
+    }
+
 private:
     WikipediaSearchLineEdit *m_lineEdit;
+    Plasma::SvgWidget *m_topBorder;
+    Plasma::SvgWidget *m_bottomBorder;
 };
 
 #endif /* AMAROK_WIKIPEDIAAPPLET_P_H */

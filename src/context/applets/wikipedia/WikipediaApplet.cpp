@@ -537,12 +537,12 @@ WikipediaApplet::init()
     headerLayout->addItem( d->albumIcon );
     headerLayout->addItem( d->trackIcon );
     headerLayout->addItem( d->settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+    headerLayout->setContentsMargins( 0, 4, 0, 4 );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
+    layout->setSpacing( 2 );
     layout->addItem( headerLayout );
     layout->addItem( d->webView );
-    layout->setSpacing( 4 );
     setLayout( layout );
 
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
@@ -650,6 +650,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     Q_UNUSED( contentsRect )
     Q_D( WikipediaApplet );
 
+    p->save();
     p->setRenderHint( QPainter::Antialiasing );
 
     addGradientToAppletBackground( p );
@@ -661,7 +662,6 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     QSizeF wikiSize( d->webView->page()->viewportSize() );
     QRectF wikiRect( d->webView->pos(), wikiSize );
 
-    p->save();
     QPainterPath round;
     round.addRoundedRect( wikiRect, 5, 5 );
     p->fillPath( round , The::paletteHandler()->backgroundColor() );
