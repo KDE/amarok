@@ -18,6 +18,7 @@
 
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
+#include "covermanager/CoverFetcher.h"
 #include "PlaydarCollection.h"
 
 #include <QDateTime>
@@ -524,49 +525,72 @@ Meta::PlaydarAlbum::tracks()
 bool
 Meta::PlaydarAlbum::hasImage( int size ) const
 {
-    return Meta::Album::hasImage( size );
+    Q_UNUSED( size );
+    
+    if( !m_cover.isNull() )
+        return true;
+    else
+        return false;
 }
 
 QPixmap
 Meta::PlaydarAlbum::image( int size )
 {
-    return Meta::Album::image( size );
+    if ( m_cover.isNull() )
+    {
+        if( !m_suppressImageAutoFetch && !m_name.isEmpty() )
+            CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
+        
+        return Meta::Album::image( size );
+    }
+    
+    if ( m_coverSizeMap.contains( size ) )
+        return m_coverSizeMap.value( size );
+    
+    QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    
+    m_coverSizeMap.insert( size, scaled );
+    return scaled;
 }
 
 KUrl
 Meta::PlaydarAlbum::imageLocation( int size )
 {
+    if( !m_cover.isNull() )
+        return KUrl();
+
     return Meta::Album::imageLocation( size );
 }
 
 bool
 Meta::PlaydarAlbum::canUpdateImage() const
 {
-    return false;
+    return true;
 }
 
 void
 Meta::PlaydarAlbum::setImage( const QPixmap &pixmap )
 {
-    Q_UNUSED( pixmap );
+    m_cover = pixmap;
 }
 
 void
 Meta::PlaydarAlbum::removeImage()
 {
-    //We don't have an image yet...
+    m_coverSizeMap.clear();
+    m_cover = QPixmap();
 }
 
 void
 Meta::PlaydarAlbum::setSuppressImageAutoFetch( const bool suppress )
 {
-    Q_UNUSED( suppress );
+    m_suppressImageAutoFetch = suppress;
 }
 
 bool
 Meta::PlaydarAlbum::suppressImageAutoFetch() const
 {
-    return false;
+    return m_suppressImageAutoFetch;
 }
 
 void

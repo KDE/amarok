@@ -218,6 +218,9 @@ namespace Meta
             TrackList m_tracks;
             bool m_isCompilation;
             ArtistPtr m_albumArtist;
+            bool m_suppressImageAutoFetch;
+            QPixmap m_cover;
+            QMap< int, QPixmap > m_coverSizeMap;
     };
     
     class PlaydarComposer : public Composer
