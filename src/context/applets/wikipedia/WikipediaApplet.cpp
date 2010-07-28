@@ -485,6 +485,8 @@ WikipediaApplet::init()
     d->webView->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
+    d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::DnsPrefetchEnabled, true );
     d->webView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->webView->setAttribute( Qt::WA_OpaquePaintEvent, true );
     d->_updateWebFonts();
