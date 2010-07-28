@@ -166,9 +166,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     protected:
         bool eventFilter(QObject *, QEvent *);
         virtual void closeEvent( QCloseEvent* );
+        virtual void showEvent( QShowEvent* event );
         virtual void keyPressEvent( QKeyEvent* );
         virtual void resizeEvent ( QResizeEvent * event );
         virtual void paletteChange( const QPalette & oldPalette );
+        virtual bool queryExit(); 
 
     private slots:
         void setRating1() { setRating( 1 ); }
@@ -217,6 +219,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
+        bool m_layoutEverRestored;
 
         bool m_waitingForCd;
 

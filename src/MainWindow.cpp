@@ -131,6 +131,7 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , Engine::EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
+    , m_layoutEverRestored( false )
     , m_waitingForCd( false )
     , m_mouseDown( false )
     , m_LH_initialized( false )
@@ -195,8 +196,6 @@ MainWindow::~MainWindow()
 
     //foreach( int a, m_splitter->saveState() )
     //    sPanels.append( a );
-
-    saveLayout();
 
     //AmarokConfig::setPanelsSavedState( sPanels );
 
@@ -347,9 +346,9 @@ MainWindow::init()
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
     installEventFilter( this );
 
-    //restore the layout
+    // restore the layout on app start
     restoreLayout();
-    saveLayout();
+
     // wait for the eventloop
     QTimer::singleShot( 0, this, SLOT( initLayoutHack() ) );
 }
@@ -421,6 +420,12 @@ MainWindow::saveLayout()  //SLOT
 {
     DEBUG_BLOCK
 
+    // Do not save the layout if the main window is hidden
+    // Qt takes widgets out of the layout if they're not visible.
+    // So this is not going to work. Also see bug 244583
+    if (!isVisible())
+        return;
+
     //save layout to file. Does not go into to rc as it is binary data.
     QFile file( Amarok::saveLocation() + "layout" );
 
@@ -465,13 +470,16 @@ MainWindow::closeEvent( QCloseEvent *e )
 {
     DEBUG_BLOCK
 
+    debug() << "Saving layout before minimizing the MainWindow";
+    saveLayout();
+
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
     hide();
 #else
+
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
-
     if( AmarokConfig::showTrayIcon() && e->spontaneous() && !kapp->sessionSaving() )
     {
         KMessageBox::information( this,
@@ -488,6 +496,31 @@ MainWindow::closeEvent( QCloseEvent *e )
     kapp->quit();
 #endif
 }
+
+void
+MainWindow::showEvent(QShowEvent* e)
+{
+    DEBUG_BLOCK
+
+    // restore layout on first maximize request after start. See bug 244583
+    if (!m_layoutEverRestored)
+        restoreLayout();
+
+    QWidget::showEvent(e);
+}
+
+
+bool
+MainWindow::queryExit()
+{
+    DEBUG_BLOCK
+
+    // save layout on app exit
+    saveLayout();
+    
+    return true; // KMainWindow API expects us to always return true
+}
+
 
 void
 MainWindow::exportPlaylist() const //SLOT
@@ -1412,7 +1445,10 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
             if( me->button() == Qt::LeftButton )
                 m_mouseDown = ( e->type() == QEvent::MouseButtonPress );
         }
+
         return false;
+
+
     }
 
     if( ( ( e->type() == QEvent::Resize && m_mouseDown ) || // only when resized by the splitter :)
@@ -1557,6 +1593,12 @@ MainWindow::restoreLayout()
 {
     DEBUG_BLOCK
 
+    // Do not restore the layout if the main window is hidden
+    // Qt takes widgets out of the layout if they're not visible.
+    // So this is not going to work. Also see bug 244583
+    if (!isVisible())
+        return;
+
     QFile file( Amarok::saveLocation() + "layout" );
     QByteArray layout;
     if( file.open( QIODevice::ReadOnly ) )
@@ -1608,6 +1650,8 @@ MainWindow::restoreLayout()
     // Ensure that we don't end up without any toolbar (can happen after upgrading)
     if( m_mainToolbar->isHidden() && m_slimToolbar->isHidden() )
         m_mainToolbar->show();
+
+    m_layoutEverRestored = true;
 }
 
 
