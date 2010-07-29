@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "PopupWidget.h"
+
 #include "MainWindow.h"
 
 #include "core/support/Debug.h"
@@ -52,7 +53,6 @@ void PopupWidget::reposition()
 
     // p is no longer in the anchor's coordinates
     QPoint p;
-
     p.setX( m_anchor->x() + ( m_anchor->width() - width() ) );
     p.setY( m_anchor->y() - height() );
     move( p );

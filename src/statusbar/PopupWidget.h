@@ -24,10 +24,11 @@ class PopupWidget : public KVBox
 {
 public:
     explicit PopupWidget( QWidget * anchor, const QString &name = QString() );
-
     ~PopupWidget();
+
     void reposition();
 
+private:
     QWidget *m_anchor;
 };
 
