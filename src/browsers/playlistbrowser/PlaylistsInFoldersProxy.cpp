@@ -322,7 +322,7 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 }
 
 QModelIndex
-PlaylistsInFoldersProxy::createNewGroup( const QString &groupName )
+PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
 {
     ColumnVariantMap data;
     RoleVariantMap roleData;

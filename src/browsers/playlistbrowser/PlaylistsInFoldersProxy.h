@@ -32,7 +32,7 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
         ~PlaylistsInFoldersProxy();
 
         /* PlaylistInGroupsProxy methods */
-        QModelIndex createNewGroup( const QString &groupName );
+        QModelIndex createNewFolder( const QString &groupName );
 
         /* QtGroupingProxy methods */
         virtual QVariant data( const QModelIndex &idx, int role ) const;

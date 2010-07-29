@@ -231,7 +231,7 @@ PlaylistBrowserCategory::createNewFolder()
         name = i18nc( "default name for new folder", "New Folder" );
     else
         name = i18nc( "default name for new folder", "New Folder (%1)", n );
-    QModelIndex idx = m_byFolderProxy->createNewGroup( name );
+    QModelIndex idx = m_byFolderProxy->createNewFolder( name );
     m_playlistView->edit( m_filterProxy->mapFromSource( idx ) );
 }
 
