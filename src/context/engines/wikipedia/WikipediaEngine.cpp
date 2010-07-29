@@ -107,7 +107,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
         if( !gotoType.isEmpty() )
         {
             setSelection( gotoType );
-            q->setData( source, "busy", "busy" );
+            q->setData( source, "busy", true );
             updateEngine();
         }
         q->removeData( source, "goto" );
@@ -123,7 +123,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
             if( !wikiCurrentUrl.hasQueryItem( "useskin" ) )
                 wikiCurrentUrl.addQueryItem( "useskin", "monobook" );
             urls << wikiCurrentUrl;
-            q->setData( source, "busy", "busy" );
+            q->setData( source, "busy", true );
             The::networkAccessManager()->getData( wikiCurrentUrl, q,
                  SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
@@ -376,7 +376,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     pageUrl.addQueryItem( "redirects", QString::number(1) );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
-    q->setData( "wikipedia", "busy", "busy" );
+    q->setData( "wikipedia", "busy", true );
     The::networkAccessManager()->getData( pageUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -401,7 +401,7 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
         url.addQueryItem( "llcontinue", llcontinue );
     urls << url;
     debug() << "Fetching langlinks:" << url;
-    q->setData( "wikipedia", "busy", "busy" );
+    q->setData( "wikipedia", "busy", true );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -593,7 +593,7 @@ WikipediaEnginePrivate::reloadWikipedia()
 {
     Q_Q( WikipediaEngine );
     urls << wikiCurrentUrl;
-    q->setData( "wikipedia", "busy", "busy" );
+    q->setData( "wikipedia", "busy", true );
     q->scheduleSourcesUpdated();
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
