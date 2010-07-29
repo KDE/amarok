@@ -500,7 +500,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
-    m_labels = QStringList( *(iter++) );
+    m_labels = QStringList( QString( *(iter++) ).split( ",", QString::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
@@ -560,6 +560,18 @@ Playlists::PlaylistProvider *
 SqlPodcastChannel::provider() const
 {
     return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
+}
+
+QStringList
+SqlPodcastChannel::groups()
+{
+    return m_labels;
+}
+
+void
+SqlPodcastChannel::setGroups( const QStringList &groups )
+{
+    m_labels = groups;
 }
 
 KUrl
@@ -682,9 +694,7 @@ SqlPodcastChannel::updateInDb()
     command = command.arg( escape(m_description) ); //%5
     command = command.arg( escape(m_copyright) ); //%6
     command = command.arg( escape(m_directory.url()) ); //%7
-    //TODO: QStringList -> comma separated QString
-    QString labels = QString("");
-    command = command.arg( escape(labels) ); //%8
+    command = command.arg( escape(m_labels.join( "," )) ); //%8
     command = command.arg( escape(m_subscribeDate.toString()) ); //%9
     command = command.arg( m_autoScan ? boolTrue : boolFalse ); //%10
     command = command.arg( QString::number(m_fetchType) ); //%11

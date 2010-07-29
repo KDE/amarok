@@ -103,6 +103,9 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 
+        virtual QStringList groups();
+        virtual void setGroups( const QStringList &groups );
+
         //Podcasts::PodcastChannel methods
         virtual KUrl uidUrl() const;
         virtual void setTitle( const QString &title );

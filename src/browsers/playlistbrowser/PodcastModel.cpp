@@ -298,30 +298,30 @@ PlaylistBrowserNS::PodcastModel::columnCount( const QModelIndex &parent ) const
     return ColumnCount;
 }
 
-Qt::ItemFlags
-PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
-{
-    if( idx.row() == -1 )
-    {
-        switch( idx.column() )
-        {
-            case ProviderColumn:
-                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-            default: break;
-        }
-    }
-
-    Qt::ItemFlags channelFlags;
-    if( podcastItemType( idx ) == Podcasts::ChannelType )
-    {
-        channelFlags = Qt::ItemIsDropEnabled;
-        if( idx.column() == ProviderColumn )
-            channelFlags |= Qt::ItemIsEditable;
-    }
-
-    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
-                 | channelFlags );
-}
+//Qt::ItemFlags
+//PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
+//{
+//    if( idx.row() == -1 )
+//    {
+//        switch( idx.column() )
+//        {
+//            case ProviderColumn:
+//                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+//            default: break;
+//        }
+//    }
+//
+//    Qt::ItemFlags channelFlags;
+//    if( podcastItemType( idx ) == Podcasts::ChannelType )
+//    {
+//        channelFlags = Qt::ItemIsDropEnabled;
+//        if( idx.column() == ProviderColumn )
+//            channelFlags |= Qt::ItemIsEditable;
+//    }
+//
+//    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
+//                 | channelFlags );
+//}
 
 QVariant
 PlaylistBrowserNS::PodcastModel::headerData( int section, Qt::Orientation orientation,

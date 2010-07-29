@@ -232,38 +232,48 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
     if( !idx.isValid() )
         return false;
 
-    if( idx.column() == ProviderColumn )
+    switch( idx.column() )
     {
-        if( role == Qt::DisplayRole )
+        case ProviderColumn:
         {
-            Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
-            if( !provider )
-                return false;
+            if( role == Qt::DisplayRole )
+            {
+                Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
+                if( !provider )
+                    return false;
 
-            if( IS_TRACK( idx ) )
-            {
-                Meta::TrackPtr track = trackFromIndex( idx );
-                if( !track )
-                    return false;
-                debug() << QString( "Copy track \"%1\" to \"%2\"." )
-                        .arg( track->prettyName() ).arg( provider->prettyName() );
-//                return !provider->addTrack( track ).isNull();
-                provider->addTrack( track ); //ignore result since UmsPodcastProvider returns NULL
-                return true;
+                if( IS_TRACK( idx ) )
+                {
+                    Meta::TrackPtr track = trackFromIndex( idx );
+                    if( !track )
+                        return false;
+                    debug() << QString( "Copy track \"%1\" to \"%2\"." )
+                            .arg( track->prettyName() ).arg( provider->prettyName() );
+    //                return !provider->addTrack( track ).isNull();
+                    provider->addTrack( track ); //ignore result since UmsPodcastProvider returns NULL
+                    return true;
+                }
+                else
+                {
+                    Playlists::PlaylistPtr playlist = playlistFromIndex( idx );
+                    if( !playlist )
+                        return false;
+                    debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
+                            .arg( playlist->prettyName() ).arg( provider->prettyName() );
+                    return !provider->addPlaylist( playlist ).isNull();
+                }
             }
-            else
-            {
-                Playlists::PlaylistPtr playlist = playlistFromIndex( idx );
-                if( !playlist )
-                    return false;
-                debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
-                        .arg( playlist->prettyName() ).arg( provider->prettyName() );
-                return !provider->addPlaylist( playlist ).isNull();
-            }
+            //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+            //TODO: implement setItemData()
+            return true;
         }
-        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
-        //TODO: implement setItemData()
-        return true;
+        case LabelColumn:
+        {
+            debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
+            Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
+            item->setGroups( value.toStringList() );
+            return true;
+        }
     }
 
     return false;
