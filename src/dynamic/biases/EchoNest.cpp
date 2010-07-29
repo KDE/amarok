@@ -37,12 +37,10 @@
 Dynamic::EchoNestBiasFactory::EchoNestBiasFactory()
 : CustomBiasEntryFactory()
 {
-
 }
 
 Dynamic::EchoNestBiasFactory::~EchoNestBiasFactory()
 {
-
 }
 
 QString
@@ -317,7 +315,7 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
     if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
         return;
 
-    //  debug() << "got similar artists:" << similar.values();
+    //debug() << "got similar artists:" << similar.values();
 
     m_qm->beginOr();
     QDomNodeList rel = similar.childNodes();
@@ -325,7 +323,7 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
     {
         QDomNode n = rel.at( i );
         QString artistname = n.firstChildElement( "name" ).text();
-        debug() << "addng related artist:" << artistname;
+        debug() << "Adding related artist:" << artistname;
         m_qm->addFilter( Meta::valArtist, artistname, true, true );
 
     }

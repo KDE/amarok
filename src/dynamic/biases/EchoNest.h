@@ -19,13 +19,9 @@
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include <QNetworkReply>
 #include "core/engine/EngineObserver.h"
 
-/**
-*  This is a bias which adds the suggested songs to the playlist.
-*
-*/
+#include <QNetworkReply>
 
 namespace Collections {
     class Collection;
@@ -41,7 +37,10 @@ class KJob;
 
 namespace Dynamic
 {
-    
+
+    /**
+     * This is a bias which adds the suggested songs to the playlist.
+     */
     class EchoNestBiasFactory : public CustomBiasEntryFactory
     {
         public:
@@ -125,9 +124,7 @@ namespace Dynamic
         private:
             EchoNestBias* m_bias;
             double m_weight;
-            
     };
-    
 }
 
 #endif
