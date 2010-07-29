@@ -214,8 +214,8 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
         const QString abgName = The::paletteHandler()->alternateBackgroundColor().name();
         contents.replace( "{shaded_text_background_color}", abgName );
         contents.replace( "{table_background_color}", abgName );
-        contents.replace( "{border_color}", abgName );
         contents.replace( "{headings_background_color}", abgName );
+        contents.replace( "{border_color}", The::paletteHandler()->highlightColor().name() );
 
         const QByteArray &css = contents.toLatin1();
         qint64 written = writeStyleSheet( css );
@@ -649,23 +649,8 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
     Q_D( WikipediaApplet );
-
-    p->save();
-    p->setRenderHint( QPainter::Antialiasing );
-
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title
     drawRoundedRectAroundText( p, d->wikipediaLabel );
-
-    //draw background of wiki text
-    QSizeF wikiSize( d->webView->page()->viewportSize() );
-    QRectF wikiRect( d->webView->pos(), wikiSize );
-
-    QPainterPath round;
-    round.addRoundedRect( wikiRect, 5, 5 );
-    p->fillPath( round , The::paletteHandler()->backgroundColor() );
-    p->restore();
 }
 
 void
