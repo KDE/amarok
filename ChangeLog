@@ -42,6 +42,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fixed playlist bottom toolbar getting to tall when using "Text only"
+      button style. (BR 228390)
     * Fixed Amarok layout saving when minized to tray. (BR 244583)
     * Make "No other participants" in the events applet translatable.
       Patch by Jan Janssen. (BR 235311)

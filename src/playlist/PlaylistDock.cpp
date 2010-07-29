@@ -48,7 +48,6 @@ Playlist::Dock::Dock( QWidget* parent )
 
     setObjectName( "Playlist dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
-
 }
 
 void
@@ -117,7 +116,8 @@ Playlist::Dock::polish()
     barBox->setMargin( 0 );
     barBox->setContentsMargins( 0, 0, 0, 0 );
 
-    KToolBar *plBar = new KToolBar( barBox, false, false );
+    // Use QToolBar instead of KToolBar, see bug 228390
+    QToolBar *plBar = new QToolBar( barBox );
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
@@ -125,7 +125,6 @@ Playlist::Dock::polish()
 
     { // START Playlist toolbar
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-        plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
