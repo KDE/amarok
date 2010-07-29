@@ -97,6 +97,8 @@ namespace Collections
         
         if( m_shouldQueryCollection && !m_filterMapList.isEmpty() )
         {
+            connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+                     this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
             connect( m_controller, SIGNAL( queryReady( Playdar::Query* ) ),
                     this, SLOT( collectQuery( Playdar::Query* ) ) );
 
