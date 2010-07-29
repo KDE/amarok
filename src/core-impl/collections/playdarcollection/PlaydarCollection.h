@@ -22,6 +22,7 @@
 #include "PlaydarQueryMaker.h"
 #include "PlaydarMeta.h"
 #include "support/Controller.h"
+#include "support/ProxyResolver.h"
 
 #include <KIcon>
 
@@ -47,13 +48,14 @@ namespace Collections
             void newCollection( Collections::Collection *newCollection );
 
         private Q_SLOTS:
+            void checkStatus();
             void playdarReady();
-            void playdarError( Playdar::Controller::ErrorState );
+            void slotPlaydarError( Playdar::Controller::ErrorState error );
+            void collectionRemoved();
 
         private:
             Playdar::Controller* m_controller;
-            int m_collectionCount;
-            
+            QPointer< PlaydarCollection > m_collection;
     };
     
     class PlaydarCollection : public Collection
@@ -90,11 +92,15 @@ namespace Collections
         signals:
             void remove();
             void updated();
+
+        private Q_SLOTS:
+            void slotPlaydarError( Playdar::Controller::ErrorState error );
             
         private:
             QString m_collectionId;
             
             QSharedPointer< MemoryCollection > m_memoryCollection;
+            QList< QPointer< Playdar::ProxyResolver > > m_proxyResolverList;
     };
 }
 

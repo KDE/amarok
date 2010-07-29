@@ -97,8 +97,11 @@ namespace Collections
             void newResultReady( QString collectionId, Meta::LabelList );
             
             void queryDone();
+
+            void playdarError( Playdar::Controller::ErrorState );
         
         private Q_SLOTS:
+            void slotPlaydarError( Playdar::Controller::ErrorState error );
             void collectQuery( Playdar::Query* query );
             void collectResult( Meta::PlaydarTrackPtr track );
             void aQueryEnded( Meta::PlaydarTrackList trackList );

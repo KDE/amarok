@@ -100,7 +100,7 @@ namespace Playdar
              * already connected to Controller::error, since the controller
              * will pass the signal along.
              */
-            void error( Playdar::Controller::ErrorState );
+            void playdarError( Playdar::Controller::ErrorState );
             
         private:
             QPointer< Playdar::Controller > m_controller;

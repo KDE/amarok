@@ -1,6 +1,7 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 include_directories( ${Amarok_SRC_DIR}/src,
+                     ${CMAKE_BINARY_DIR}/src,
                      ${KDE4_INCLUDE_DIR},
                      ${QT_INCLUDES} )
 
@@ -9,7 +10,8 @@ set( amarok_collection-playdarcollection_PART_SRCS
      PlaydarCollection.cpp
      PlaydarQueryMaker.cpp
      support/Controller.cpp
-     support/Query.cpp )
+     support/Query.cpp
+     support/ProxyResolver.cpp )
 
 kde4_add_plugin(amarok_collection-playdarcollection ${amarok_collection-playdarcollection_PART_SRCS})
 

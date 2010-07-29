@@ -496,6 +496,14 @@ namespace Collections
                QueryMaker::ValidFilters( TitleFilter ) |
                m_memoryQueryMaker->validFilterMask();
     }
+
+    void
+    PlaydarQueryMaker::slotPlaydarError( Playdar::Controller::ErrorState error )
+    {
+        DEBUG_BLOCK
+
+        emit playdarError( error );
+    }
     
     void
     PlaydarQueryMaker::collectQuery( Playdar::Query* query )

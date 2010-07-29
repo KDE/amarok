@@ -19,14 +19,18 @@
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
 #include "PlaydarQueryMaker.h"
 #include "support/Controller.h"
+#include "support/ProxyResolver.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
 
 #include <QObject>
 #include <QString>
+#include <QTimer>
 
 namespace Collections
 {
@@ -34,20 +38,13 @@ namespace Collections
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
     
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* &parent, const QVariantList &args )
-        : m_controller( 0 )
-        , m_collectionCount( 0 )
+        : m_controller( new Playdar::Controller() )
+        , m_collection( 0 )
     {
         DEBUG_BLOCK
             
         setParent( parent );
         Q_UNUSED( args );
-        
-        m_controller = new Playdar::Controller();
-        connect( m_controller, SIGNAL( playdarReady() ),
-                 this, SLOT( playdarReady() ) );
-        connect( m_controller, SIGNAL( error( Playdar::Controller::ErrorState ) ),
-                 this, SLOT( playdarError( Playdar::Controller::ErrorState ) ) );
-        m_controller->status();
     }
 
     PlaydarCollectionFactory::~PlaydarCollectionFactory()
@@ -60,24 +57,55 @@ namespace Collections
     PlaydarCollectionFactory::init()
     {
         DEBUG_BLOCK
+
+        m_collection = new PlaydarCollection();
+        connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
+        CollectionManager::instance()->addTrackProvider( m_collection );
         
+        connect( m_controller, SIGNAL( playdarReady() ),
+                 this, SLOT( playdarReady() ) );
+        connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+                 this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+        checkStatus();
     }
+
+    void
+    PlaydarCollectionFactory::checkStatus()
+    {
+        DEBUG_BLOCK
+
+        m_controller->status();
+    }
+
 
     void
     PlaydarCollectionFactory::playdarReady()
     {
         DEBUG_BLOCK
-        
-        delete m_controller;
-        m_collectionCount++;
-        emit newCollection( new PlaydarCollection() );
+
+        if( !m_collection )
+        {
+            m_collection = new PlaydarCollection();
+            connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
+        }
+        emit newCollection( m_collection );
     }
 
     void
-    PlaydarCollectionFactory::playdarError( Playdar::Controller::ErrorState )
+    PlaydarCollectionFactory::slotPlaydarError( Playdar::Controller::ErrorState error )
     {
         DEBUG_BLOCK
-        
+
+        if( error == Playdar::Controller::ErrorState( 1 ) )
+            QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
+    }
+
+    void
+    PlaydarCollectionFactory::collectionRemoved()
+    {
+        DEBUG_BLOCK
+
+        QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
     }
     
     PlaydarCollection::PlaydarCollection()
@@ -98,8 +126,11 @@ namespace Collections
     PlaydarCollection::queryMaker()
     {
         DEBUG_BLOCK
-        
-        return new PlaydarQueryMaker( this );
+
+        PlaydarQueryMaker *freshQueryMaker = new PlaydarQueryMaker( this );
+        connect( freshQueryMaker, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+                 this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+        return freshQueryMaker;
     }
     
     Playlists::UserPlaylistProvider*
@@ -169,16 +200,19 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        /**
-         * TODO: Return a ProxyTrackPtr here, if needed and instead of
-         *       a null TrackPtr, and deliver a properly resolved
-         *       PlaydarTrackPtr once we have one...
-         */
-
         if( m_memoryCollection->trackMap().contains( url.url() ) )
             return m_memoryCollection->trackMap().value( url.url() );
         else
-            return Meta::TrackPtr( 0 );
+        {
+            MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url, true ) );
+            QPointer< Playdar::ProxyResolver > proxyResolver
+                = new Playdar::ProxyResolver( this, url, proxyTrack );
+
+            connect( proxyResolver, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+                     this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+                
+            return Meta::TrackPtr::staticCast( proxyTrack );
+        }
     }
 
     bool
@@ -197,7 +231,6 @@ namespace Collections
         return 0;
     }
 
-    
     void
     PlaydarCollection::addNewTrack( Meta::PlaydarTrackPtr track )
     {
@@ -300,5 +333,12 @@ namespace Collections
     PlaydarCollection::memoryCollection()
     {
         return m_memoryCollection;
+    }
+    
+    void
+    PlaydarCollection::slotPlaydarError( Playdar::Controller::ErrorState error )
+    {
+        if( error == Playdar::Controller::ErrorState( 1 ) )
+            emit remove();
     }
 }

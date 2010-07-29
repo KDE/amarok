@@ -32,6 +32,7 @@ class QString;
 namespace Playdar
 {
     class Query;
+    class ProxyResolver;
     
     /**
      * This class provides a basic interface to Playdar's resolution
@@ -114,7 +115,7 @@ namespace Playdar
             * Emitted after something unfortunate happens,
             * along with the (hopefully) appropriate ErrorType
             */
-            void error( Playdar::Controller::ErrorState );
+            void playdarError( Playdar::Controller::ErrorState );
         
         public:
             /**

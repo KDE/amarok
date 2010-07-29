@@ -124,7 +124,7 @@ namespace Playdar {
         
         if( statusJob->error() != 0 ) {
             debug() << "Error getting status from Playdar";
-            emit error( Playdar::Controller::ErrorState( ExternalError ) );
+            emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );
             return;
         }
         
@@ -150,13 +150,13 @@ namespace Playdar {
         if( !parsedStatus.contains("name") )
         {
             debug() << "Expected a service name from Playdar, received none";
-            emit error( Playdar::Controller::ErrorState( MissingServiceName ) );
+            emit playdarError( Playdar::Controller::ErrorState( MissingServiceName ) );
             return;
         }
         if( parsedStatus.value("name") != QString( "playdar" ) )
         {
             debug() << "Expected Playdar, got response from some other service";
-            emit error( Playdar::Controller::ErrorState( WrongServiceName ) );
+            emit playdarError( Playdar::Controller::ErrorState( WrongServiceName ) );
             return;
         }
         
@@ -172,7 +172,7 @@ namespace Playdar {
         if( queryJob->error() != 0 )
         {
             debug() << "Error getting qid from Playdar";
-            emit error( Playdar::Controller::ErrorState( ExternalError ) );
+            emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );
             return;
         }
         
@@ -199,7 +199,7 @@ namespace Playdar {
         if( !parsedQuery.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, but didn't get it";
-            emit error( Playdar::Controller::ErrorState( MissingQid ) );
+            emit playdarError( Playdar::Controller::ErrorState( MissingQid ) );
             return;
         }
         
@@ -208,8 +208,8 @@ namespace Playdar {
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );
         
-        connect( query, SIGNAL( error( Playdar::Controller::ErrorState ) ),
-                 this, SIGNAL( error( Playdar::Controller::ErrorState ) ) );
+        connect( query, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+                 this, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ) );
         getResults( query );
     }
 }

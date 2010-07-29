@@ -120,7 +120,7 @@ namespace Playdar
         
         if( resultsJob->error() != 0 ) {
             debug() << "Error getting results from Playdar";
-            emit error( Playdar::Controller::ErrorState( 1 ) );
+            emit playdarError( Playdar::Controller::ErrorState( 1 ) );
             return;
         }
         
@@ -146,19 +146,19 @@ namespace Playdar
         if( !parsedResults.contains( "results" ) )
         {
             debug() << "Expecting results in Playdar's response, received none";
-            emit error( Playdar::Controller::ErrorState( 6 ) );
+            emit playdarError( Playdar::Controller::ErrorState( 6 ) );
             return;
         }
         if( !parsedResults.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, received none";
-            emit error( Playdar::Controller::ErrorState( 4 ) );
+            emit playdarError( Playdar::Controller::ErrorState( 4 ) );
             return;
         }
         if( parsedResults.value( "qid" ) != m_qid )
         {
             debug() << "A query recieved the wrong results from Playdar...";
-            emit error( Playdar::Controller::ErrorState( 5 ) );
+            emit playdarError( Playdar::Controller::ErrorState( 5 ) );
             return;
         }
         
