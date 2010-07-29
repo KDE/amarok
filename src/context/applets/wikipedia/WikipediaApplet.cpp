@@ -205,17 +205,22 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
     {
         QString contents = QString( file.readAll() );
 
-        const QColor bg = The::paletteHandler()->backgroundColor();
-        contents.replace( "{text_background_color}", bg.name() );
-        contents.replace( "{text_color}", palette.text().color().name() );
-        contents.replace( "{link_color}", palette.link().color().name() );
-        contents.replace( "{link_hover_color}", palette.linkVisited().color().name() );
+        const QString bg = The::paletteHandler()->backgroundColor().name();
+        contents.replace( "/*{text_background_color}*/", bg );
+        contents.replace( "/*{text_color}*/", palette.text().color().name() );
+        contents.replace( "/*{link_color}*/", palette.link().color().name() );
+        contents.replace( "/*{link_hover_color}*/", palette.linkVisited().color().name() );
 
-        const QString abgName = The::paletteHandler()->alternateBackgroundColor().name();
-        contents.replace( "{shaded_text_background_color}", abgName );
-        contents.replace( "{table_background_color}", abgName );
-        contents.replace( "{headings_background_color}", abgName );
-        contents.replace( "{border_color}", The::paletteHandler()->highlightColor().name() );
+        const QString abg = The::paletteHandler()->alternateBackgroundColor().name();
+        contents.replace( "/*{shaded_text_background_color}*/", abg );
+        contents.replace( "/*{table_background_color}*/", abg );
+        contents.replace( "/*{headings_background_color}*/", abg );
+
+        const QString hiColor = The::paletteHandler()->highlightColor().name();
+        contents.replace( "/*{border_color}*/", hiColor );
+
+        const QString atbg = palette.highlight().color().name();
+        contents.replace( "/*{alternate_table_background_color}*/", atbg );
 
         const QByteArray &css = contents.toLatin1();
         qint64 written = writeStyleSheet( css );
