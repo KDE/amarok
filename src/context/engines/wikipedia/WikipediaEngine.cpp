@@ -61,11 +61,10 @@ public:
     bool setSelection( const QString &type );
     SelectionType selection() const;
     void updateEngine();
-    QString wikiParse();
+    void wikiParse( QString &page );
 
     // data members
     SelectionType currentSelection;
-    QString wiki;
     QUrl wikiCurrentUrl;
     QString wikiLanguagesSection;
     QStringList preferredLangs;
@@ -160,7 +159,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     }
 
     debug() << "Received page from wikipedia:" << url;
-    wiki = result;
+    QString wiki( result );
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
@@ -177,7 +176,8 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
 
     // We've found a page
     DataEngine::Data data;
-    data["page"] = wikiParse();
+    wikiParse( wiki );
+    data["page"] = wiki;
     data["url"] = QUrl(url);
 
     if( currentSelection == Artist ) // default, or applet told us to fetch artist
@@ -495,8 +495,8 @@ WikipediaEnginePrivate::updateEngine()
     }
 }
 
-QString
-WikipediaEnginePrivate::wikiParse()
+void
+WikipediaEnginePrivate::wikiParse( QString &wiki )
 {
     //remove the new-lines and tabs(replace with spaces IS needed).
     wiki.replace( '\n', ' ' );
@@ -576,16 +576,14 @@ WikipediaEnginePrivate::wikiParse()
     wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     wiki.remove( "</textarea>" );
 
-    QString html = "<html><body>\n";
-    html.append( wiki );
+    wiki.prepend( "<html><body>\n" );
     if( !wikiLanguagesSection.isEmpty() )
     {
-        html.append( "<br/><div id=\"wiki_otherlangs\" >"
+        wiki.append( "<br/><div id=\"wiki_otherlangs\" >"
                      + i18nc( "@item:intext Wikipedia webview", "This article in other languages:") + "<br/>"
                      + wikiLanguagesSection + "</div>" );
     }
-    html.append( "</body></html>\n" );
-    return html;
+    wiki.append( "</body></html>\n" );
 }
 
 void
