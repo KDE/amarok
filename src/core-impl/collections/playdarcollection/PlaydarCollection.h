@@ -56,6 +56,7 @@ namespace Collections
         private:
             Playdar::Controller* m_controller;
             QPointer< PlaydarCollection > m_collection;
+            bool m_collectionIsManaged;
     };
     
     class PlaydarCollection : public Collection

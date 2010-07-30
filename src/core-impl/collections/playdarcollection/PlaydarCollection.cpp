@@ -40,6 +40,7 @@ namespace Collections
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* &parent, const QVariantList &args )
         : m_controller( new Playdar::Controller() )
         , m_collection( 0 )
+        , m_collectionIsManaged( false )
     {
         DEBUG_BLOCK
             
@@ -58,15 +59,15 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_collection = new PlaydarCollection();
-        connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
-        CollectionManager::instance()->addTrackProvider( m_collection );
-        
         connect( m_controller, SIGNAL( playdarReady() ),
                  this, SLOT( playdarReady() ) );
         connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                  this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
         checkStatus();
+
+        m_collection = new PlaydarCollection;
+        connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
+        CollectionManager::instance()->addTrackProvider( m_collection );
     }
 
     void
@@ -88,7 +89,16 @@ namespace Collections
             m_collection = new PlaydarCollection();
             connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
         }
-        emit newCollection( m_collection );
+        else if( !m_collectionIsManaged )
+        {
+            CollectionManager::instance()->removeTrackProvider( m_collection );
+        }
+
+        if( !m_collectionIsManaged )
+        {
+            m_collectionIsManaged = true;
+            emit newCollection( m_collection );
+        }
     }
 
     void
@@ -97,7 +107,12 @@ namespace Collections
         DEBUG_BLOCK
 
         if( error == Playdar::Controller::ErrorState( 1 ) )
+        {
+            if( m_collection && !m_collectionIsManaged )
+                CollectionManager::instance()->removeTrackProvider( m_collection );
+            
             QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
+        }
     }
 
     void
@@ -105,6 +120,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        m_collectionIsManaged = false;
         QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
     }
     

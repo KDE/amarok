@@ -121,8 +121,10 @@ Meta::PlaydarTrack::sid() const
 bool
 Meta::PlaydarTrack::isPlayable() const
 {
-    /** TODO: Can this be smart? */
-    return true;
+    if( m_collection.isNull() )
+        return false;
+    else
+        return true;
 }
 
 Meta::AlbumPtr

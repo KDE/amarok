@@ -99,6 +99,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                     realTrack = track;
                     notifyObservers();
                     disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
+                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
                 }
             }
         }
@@ -118,6 +119,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                     subscribeTo( track );
                     realTrack = track;
                     notifyObservers();
+                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
                     disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
                 }
             }
