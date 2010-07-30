@@ -513,14 +513,20 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
 
     QString copyright;
     QString copyrightMark = "<li id=\"f-copyright\">";
-    if ( wiki.indexOf( copyrightMark ) != -1 )
+    int copyrightIndex = wiki.indexOf( copyrightMark );
+    if( copyrightIndex != -1 )
     {
-        copyright = wiki.mid( wiki.indexOf(copyrightMark) + copyrightMark.length() );
+        copyright = wiki.mid( copyrightIndex + copyrightMark.length() );
         copyright = copyright.mid( 0, copyright.indexOf( "</li>" ) );
         copyright.remove( "<br />" );
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
+
+    QString title;
+    int titleIndex = wiki.indexOf( QRegExp("<title>[^<]*</title>") ) + 7;
+    if( titleIndex != -1 )
+        title = wiki.mid( titleIndex, wiki.indexOf( "</title>", titleIndex ) - titleIndex );
 
     // Ok lets remove the top and bottom parts of the page
     wiki = wiki.mid( wiki.indexOf( "<!-- start content -->" ) );
@@ -576,7 +582,9 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     wiki.remove( "</textarea>" );
 
-    wiki.prepend( "<html><body>\n" );
+    wiki.prepend( "<html>\n" );
+    wiki.append( QString("<head><title>%1</title></head>\n").arg(title) );
+    wiki.append( "<body>\n" );
     if( !wikiLanguagesSection.isEmpty() )
     {
         wiki.append( "<br/><div id=\"wiki_otherlangs\" >"

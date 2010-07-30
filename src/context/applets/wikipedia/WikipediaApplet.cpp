@@ -589,7 +589,7 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     Q_D( WikipediaApplet );
-    d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+    d->wikipediaLabel->setScrollingText( d->wikipediaLabel->text() );
 }
 
 bool
@@ -636,6 +636,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
         if( !message.isEmpty() )
         {
             d->webView->setHtml( data[ "message" ].toString(), QUrl() ); // set data
+            d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
             d->dataContainer->removeAllData();
         }
     }
@@ -652,11 +653,16 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
             }
             d->currentUrl = url;
             d->webView->setHtml( data[ "page" ].toString(), url );
+            d->wikipediaLabel->setScrollingText( d->webView->mainFrame()->title() );
             d->updateNavigationIcons();
             d->isBackwardHistory = false;
             d->isForwardHistory = false;
             d->dataContainer->removeAllData();
         }
+    }
+    else
+    {
+        d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     }
 
     if( d->reloadIcon->action() && !d->reloadIcon->action()->isEnabled() )
