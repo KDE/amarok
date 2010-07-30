@@ -16,6 +16,7 @@
 
 #include "PlaydarMeta.h"
 
+#include "src/amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "covermanager/CoverFetcher.h"
@@ -540,7 +541,8 @@ Meta::PlaydarAlbum::image( int size )
 {
     if ( m_cover.isNull() )
     {
-        if( !m_suppressImageAutoFetch && !m_name.isEmpty() && !m_triedToFetchCover )
+        if( !m_suppressImageAutoFetch && !m_name.isEmpty() &&
+            !m_triedToFetchCover && AmarokConfig::autoGetCoverArt() )
         {
             m_triedToFetchCover = true;
             CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
