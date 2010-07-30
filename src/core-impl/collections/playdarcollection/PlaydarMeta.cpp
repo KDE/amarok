@@ -41,7 +41,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
                                   QString &name,
                                   QString &artist,
                                   QString &album,
-                                  QString &type,
+                                  QString &mimetype,
                                   double score,
                                   qint64 length,
                                   int bitrate,
@@ -57,7 +57,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_uidUrl( )
     , m_playableUrl( playableUrl )
     , m_name( name )
-    , m_type( type )
+    , m_mimetype( mimetype )
     , m_score( score )
     , m_length( length )
     , m_bitrate( bitrate )
@@ -67,6 +67,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_createDate( QDateTime::currentDateTime() )
     , m_comment( QString( "" ) )
     , m_rating( 0 )
+    , m_playcount( 0 )
     , m_source( source )
 {
     m_uidUrl.setProtocol( QString( "playdar" ) );
@@ -260,13 +261,19 @@ Meta::PlaydarTrack::firstPlayed() const
 int
 Meta::PlaydarTrack::playCount() const
 {
-    return 0;
+    return m_playcount;
 }
 
 QString
 Meta::PlaydarTrack::type() const
 {
-    return m_type;
+    return QString( "stream" );
+}
+
+QString
+Meta::PlaydarTrack::mimetype() const
+{
+    return m_mimetype;
 }
 
 void
@@ -278,8 +285,11 @@ Meta::PlaydarTrack::prepareToPlay()
 void
 Meta::PlaydarTrack::finishedPlaying( double playedFraction )
 {
-    /** TODO: Anything */
-    Q_UNUSED( playedFraction );
+    if( playedFraction >= 1.0 )
+    {
+        m_playcount++;
+        notifyObservers();
+    }
 }
 
 bool

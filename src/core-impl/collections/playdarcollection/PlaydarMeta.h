@@ -67,7 +67,7 @@ namespace Meta
                           QString &name,
                           QString &artist,
                           QString &album,
-                          QString &type,
+                          QString &mimetype,
                           double score,
                           qint64 length,
                           int bitrate,
@@ -124,6 +124,7 @@ namespace Meta
 
             //PlaydarTrack-specific:
             QString source() const;
+            QString mimetype() const;
             
             void addToCollection( Collections::PlaydarCollection *collection );
             void setAlbum( PlaydarAlbumPtr album );
@@ -153,7 +154,7 @@ namespace Meta
             KUrl m_uidUrl;
             QString m_playableUrl;
             QString m_name;
-            QString m_type;
+            QString m_mimetype;
             double m_score;
             qint64 m_length;
             int m_bitrate;
@@ -163,6 +164,7 @@ namespace Meta
             QDateTime m_createDate;
             QString m_comment;
             int m_rating;
+            int m_playcount;
 
             QString m_source;
     };

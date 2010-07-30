@@ -179,6 +179,7 @@ namespace Playdar
             QString trackAlbum = result.value( "album" ).toString();
             QString trackType = result.value( "mimetype" ).toString();
             QString trackSource = result.value( "source" ).toString();
+            qint64 trackLengthInSeconds( result.value( "duration" ).toInt() );
             aTrack = new Meta::PlaydarTrack
             (
                 trackSid,
@@ -187,8 +188,8 @@ namespace Playdar
                 trackArtist,
                 trackAlbum,
                 trackType,
-                result.value( "score" ).toDouble(),
-                qint64( ( result.value( "length" ).toInt() * 1000 ) ), //convert s to ms
+                result.value( "score" ).toDouble() * 100,
+                ( trackLengthInSeconds * 1000 ), //convert s to ms
                 result.value( "bitrate" ).toInt(),
                 result.value( "size" ).toInt(),
                 trackSource
