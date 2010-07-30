@@ -219,6 +219,7 @@ namespace Meta
             bool m_isCompilation;
             ArtistPtr m_albumArtist;
             bool m_suppressImageAutoFetch;
+            bool m_triedToFetchCover;
             QPixmap m_cover;
             QMap< int, QPixmap > m_coverSizeMap;
     };

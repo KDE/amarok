@@ -204,7 +204,10 @@ namespace Collections
             return m_memoryCollection->trackMap().value( url.url() );
         else
         {
-            MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url, true ) );
+            MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
+            proxyTrack->setArtist( url.queryItem( "artist" ) );
+            proxyTrack->setAlbum( url.queryItem( "album" ) );
+            proxyTrack->setName( url.queryItem( "title" ) );
             QPointer< Playdar::ProxyResolver > proxyResolver
                 = new Playdar::ProxyResolver( this, url, proxyTrack );
 

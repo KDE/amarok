@@ -103,6 +103,26 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             }
         }
 
+        void slotNewCollection( Collections::Collection *newCollection )
+        {
+            if ( !newCollection )
+            {
+                return;
+            }
+
+            if( newCollection->possiblyContainsTrack( url ) )
+            {
+                Meta::TrackPtr track = newCollection->trackForUrl( url );
+                if( track )
+                {
+                    subscribeTo( track );
+                    realTrack = track;
+                    notifyObservers();
+                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
+                }
+            }
+        }
+
         void slotUpdateTrack( Meta::TrackPtr track )
         {
             if( track )
@@ -111,14 +131,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                 realTrack = track;
                 notifyObservers();
             }
-        }
-        void slotCheckCollectionManager()
-        {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-            if( track )
-                realTrack = track;
-            notifyObservers();
-            disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
         }
 };
 

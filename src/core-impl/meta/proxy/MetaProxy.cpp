@@ -86,16 +86,16 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
     d->cachedLength = 0;
 
 	if( !awaitLookupNotification )
-		QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
+    {
+        QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), d, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
+        QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), d, SLOT( slotNewCollection( Collections::Collection* ) ) );
+    }
 
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
-
-	if( !awaitLookupNotification )
-		QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
 
 MetaProxy::Track::~Track()

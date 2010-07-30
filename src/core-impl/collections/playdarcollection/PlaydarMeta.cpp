@@ -474,6 +474,8 @@ Meta::PlaydarAlbum::PlaydarAlbum( const QString &name )
     , m_tracks( )
     , m_isCompilation( false )
     , m_albumArtist( 0 )
+    , m_suppressImageAutoFetch( false )
+    , m_triedToFetchCover( false )
 {
     //Do nothing...
 }
@@ -538,8 +540,11 @@ Meta::PlaydarAlbum::image( int size )
 {
     if ( m_cover.isNull() )
     {
-        if( !m_suppressImageAutoFetch && !m_name.isEmpty() )
+        if( !m_suppressImageAutoFetch && !m_name.isEmpty() && !m_triedToFetchCover )
+        {
+            m_triedToFetchCover = true;
             CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
+        }
         
         return Meta::Album::image( size );
     }

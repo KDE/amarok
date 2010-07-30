@@ -49,7 +49,6 @@ Playdar::ProxyResolver::~ProxyResolver()
 void
 Playdar::ProxyResolver::slotPlaydarError( Playdar::Controller::ErrorState error )
 {
-    m_proxyTrack->updateTrack( Meta::TrackPtr( 0 ) );
     emit playdarError( error );
 }
 
@@ -65,7 +64,10 @@ void
 Playdar::ProxyResolver::collectSolution( Meta::PlaydarTrackPtr track )
 {
     if( !m_collection.isNull() )
+    {
         track->addToCollection( m_collection );
+        track = Meta::PlaydarTrackPtr::staticCast( m_collection->trackForUrl( track->uidUrl() ) );
+    }
     
     m_proxyTrack->updateTrack( Meta::TrackPtr::staticCast( track ) );
     
