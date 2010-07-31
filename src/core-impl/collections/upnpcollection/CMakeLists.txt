@@ -16,6 +16,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
     UpnpCollectionFactory.cpp
     UpnpMemoryQueryMaker.cpp
     UpnpQueryMaker.cpp
+    UpnpQueryMakerInternal.cpp
     UpnpMeta.cpp
     UpnpCache.cpp
     UpnpQuery.cpp
