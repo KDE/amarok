@@ -37,7 +37,6 @@ class UpcomingEventsMapWidget;
 
 namespace Plasma
 {
-    class IconWidget;
     class WebView;
 }
 
@@ -125,11 +124,6 @@ private:
      * Title of the applet (in the top bar)
      */
     TextScrollingWidget *m_headerLabel;
-
-    /**
-     * The icon for the Upcoming Events applet
-     */
-    Plasma::IconWidget *m_settingsIcon;
 
     /**
      * The UI of the general settings page

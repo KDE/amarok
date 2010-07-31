@@ -50,7 +50,6 @@
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
-    , m_settingsIcon( 0 )
     , m_toolBoxIconSize( 0.0 )
     , m_groupVenues( false )
 {
@@ -86,10 +85,10 @@ UpcomingEventsApplet::init()
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setToolTip( i18n( "Settings" ) );
     settingsAction->setEnabled( true );
-    m_settingsIcon = addAction( settingsAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( configure() ) );
+    Plasma::IconWidget *settingsIcon = addAction( settingsAction );
+    connect( settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
     // Use the same font as the other applets
     QFont labelFont;
@@ -102,7 +101,7 @@ UpcomingEventsApplet::init()
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     headerLayout->addItem( m_headerLabel );
-    headerLayout->addItem( m_settingsIcon );
+    headerLayout->addItem( settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     m_artistExtenderItem = new Plasma::ExtenderItem( extender() );
@@ -232,6 +231,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
                 extenderItem->setName( venue->name );
                 extenderItem->setWidget( listWidget );
                 extenderItem->setCollapsed( true );
+                extenderItem->setIcon( KIcon("favorites") );
                 extenderItem->showCloseButton();
                 addMaximizeAction( extenderItem );
                 addToExtenderItem( extenderItem, events, venue->name );
@@ -595,6 +595,7 @@ UpcomingEventsApplet::mapView( bool expand )
 
     Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
     UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( extenderItem );
+    extenderItem->setIcon( KIcon( "edit-find" ) );
     extenderItem->setTitle( i18n( "Map View" ) );
     extenderItem->setName( "venuemapview" );
     extenderItem->setWidget( view );
