@@ -83,18 +83,15 @@ Meta::TrackPtr UpnpCache::getTrack( const KIO::UDSEntry &entry, bool refresh )
     Meta::UpnpTrackPtr track( new Meta::UpnpTrack( m_collection ) );
     track->setUidUrl( entry.stringValue( KIO::UPNP_ID ) );
 
-    QString uidUrl = track->uidUrl();
-
-    if( m_trackMap.contains( uidUrl ) ) {
-        return m_trackMap[uidUrl];
-    }
-
     // if we have a reference ID search for that
     // in either case the original ID (refID) becomes our UID URL instead of the UPNP_ID
     if( entry.contains( KIO::UPNP_REF_ID ) ) {
         track->setUidUrl( entry.stringValue( KIO::UPNP_REF_ID ) );
-        if( m_trackMap.contains( uidUrl ) )
-            return m_trackMap[uidUrl];
+    }
+
+    QString uidUrl = track->uidUrl();
+    if( m_trackMap.contains( uidUrl ) && !refresh ) {
+        return m_trackMap[uidUrl];
     }
 
     // UDS_NAME is the plain ASCII, relative path prefixed name
