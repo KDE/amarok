@@ -518,15 +518,14 @@ Playlist::Actions::restoreDefaultPlaylist()
         if( lastPlayingRow >= 0 )
             Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
     }
-    else if( AmarokConfig::playFirstRunJingle() ) //check if we should play the first run jingle since there is no saved playlist to load
+    //Check if we should load the first run jingle, since there is no saved playlist to load
+    else if( AmarokConfig::playFirstRunJingle() )
     {
         QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
         The::playlistController()->clear();
         The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
-        play( 0 );
         AmarokConfig::setPlayFirstRunJingle( false );
     }
-
 }
 
 namespace The
