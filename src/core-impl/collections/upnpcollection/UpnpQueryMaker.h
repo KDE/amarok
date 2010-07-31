@@ -38,6 +38,7 @@ class KJob;
 namespace Collections {
 
 class UpnpSearchCollection;
+class UpnpQueryMakerInternal;
 
 class UpnpQueryMaker : public QueryMaker
 {
@@ -104,14 +105,13 @@ class UpnpQueryMaker : public QueryMaker
         void queryDone();
 
     private slots:
-        void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
-        void slotDone( KJob * );
-    private:
-        void handleArtists( const KIO::UDSEntryList &list );
-        void handleAlbums( const KIO::UDSEntryList &list );
-        void handleTracks( const KIO::UDSEntryList &list );
+        void slotDone();
+        void handleArtists( Meta::ArtistList );
+        void handleAlbums( Meta::AlbumList );
+        void handleTracks( Meta::TrackList );
         void handleCustom( const KIO::UDSEntryList &list );
 
+    private:
         /*
         * apply numeric filters and such which UPnP doesn't handle.
         */
@@ -120,15 +120,12 @@ class UpnpQueryMaker : public QueryMaker
         QString propertyForValue( qint64 value );
 
         UpnpSearchCollection *m_collection;
+        UpnpQueryMakerInternal *m_internalQM;
 
         QueryType m_queryType;
         AlbumQueryMode m_albumMode;
 
         bool m_asDataPtrs;
-
-        static bool m_runningJob;
-        // TODO split this off into a class
-        static QHash<KUrl, KIO::ListJob*> m_inProgressQueries;
 
         UpnpQuery m_query;
 

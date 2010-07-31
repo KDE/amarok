@@ -24,6 +24,7 @@
 
 #include "core/support/Debug.h"
 #include "UpnpSearchCollection.h"
+#include "UpnpQueryMakerInternal.h"
 #include "UpnpMeta.h"
 #include "UpnpCache.h"
 
@@ -59,18 +60,29 @@ do {\
     } \
 } while( 0 )
 
-bool UpnpQueryMaker::m_runningJob = false;
-QHash<KUrl, KIO::ListJob *> UpnpQueryMaker::m_inProgressQueries = QHash<KUrl, KIO::ListJob*>();
-
 UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     : QueryMaker()
     , m_collection( collection )
+    , m_internalQM( new UpnpQueryMakerInternal( collection ) )
 {
     reset();
+    connect( m_internalQM, SIGNAL(results(bool,KIO::UDSEntryList)),
+             this, SLOT(slotResults(bool,KIO::UDSEntryList)) );
+    connect( m_internalQM, SIGNAL(done()), this, SLOT(slotDone()) );
+
+    connect( m_internalQM, SIGNAL( newResultReady( Meta::TrackList ) ),
+             this, SLOT( handleTracks(Meta::TrackList)) );
+    connect( m_internalQM, SIGNAL( newResultReady( Meta::ArtistList ) ),
+             this, SLOT( handleArtists(Meta::ArtistList)) );
+    connect( m_internalQM, SIGNAL( newResultReady( Meta::AlbumList ) ),
+             this, SLOT( handleAlbums(Meta::AlbumList)) );
+    connect( m_internalQM, SIGNAL( newResultReady( const KIO::UDSEntryList & ) ),
+             this, SLOT( handleCustom( const KIO::UDSEntryList &)) );
 }
 
 UpnpQueryMaker::~UpnpQueryMaker()
 {
+    m_internalQM->deleteLater();
 }
 
 
@@ -84,6 +96,7 @@ QueryMaker* UpnpQueryMaker::reset()
     m_jobCount = 0;
 
     m_numericFilters.clear();
+    m_internalQM->reset();
 
 // the Amarok Collection Model expects atleast one entry
 // otherwise it will harass us continuously for more entries.
@@ -151,30 +164,13 @@ DEBUG_BLOCK
     for( int i = 0; i < queryList.length() ; i++ ) {
         if( queryList[i].isEmpty() )
             continue;
-        
+
         KUrl url( baseUrl );
         url.addQueryItem( "query", queryList[i] );
 
         debug() << this << "Running query" << url;
-
-        KIO::ListJob *job = 0;
-        if( m_inProgressQueries.contains( url ) ) {
-            debug() << "Already have a running job with the same query";
-            job = m_inProgressQueries[url];
-        }
-        else {
-            job = KIO::listDir( url, KIO::HideProgressInfo );
-            m_inProgressQueries[url] = job;
-        }
-
-        m_jobCount++;
-        Q_ASSERT( job );
-        Q_ASSERT( this );
-        connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
-                this, SLOT( slotEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
-        connect( job, SIGNAL( result(KJob *) ), this, SLOT( slotDone(KJob *) ) );
+        m_internalQM->runQuery( url );
     }
-    m_runningJob = true;
 }
 
 void UpnpQueryMaker::abortQuery()
@@ -191,6 +187,7 @@ DEBUG_BLOCK
 // which should be passed on by the factory
     m_queryType = type;
     m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
+    m_internalQM->setQueryType( type );
 
     return this;
 }
@@ -440,165 +437,86 @@ int UpnpQueryMaker::validFilterMask()
     return mask;
 }
 
-void UpnpQueryMaker::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )
+void UpnpQueryMaker::handleArtists( Meta::ArtistList list )
 {
-    debug() << "RESULT OF " << job << job->error();
-    if( job->error() ) {
-        debug() << this << "JOB has error" << job->errorString();
-        return;
-    }
-    debug() << this << "SLOT ENTRIES" << list.length() << m_queryType;
-
-    switch( m_queryType ) {
-        case Artist:
-            handleArtists( list );
-            break;
-        case Album:
-            handleAlbums( list );
-            break;
-        case Track:
-            handleTracks( list );
-            break;
-        case Custom:
-            handleCustom( list );
-            break;
-        default:
-            break;
-    // TODO handle remaining cases
-    }
-
-    if( !list.empty() ) {
-        debug() << "_______________________       RESULTS!  ____________________________";
-        m_noResults = false;
-    }
-
+    // TODO Post filtering
+    emitProperResult( Meta::Artist, list );
 }
 
-void UpnpQueryMaker::handleArtists( const KIO::UDSEntryList &list )
+void UpnpQueryMaker::handleAlbums( Meta::AlbumList list )
 {
-    Meta::ArtistList ret;
-    foreach( KIO::UDSEntry entry, list ) {
-        if( !postFilter( entry ) )
-            continue;
-        if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.person.musicArtist" ) {
-            debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-            ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-        }
-        else {
-            debug() << this << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) << "ARTIST" << entry.stringValue( KIO::UPNP_ARTIST );
-            ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UPNP_ARTIST ) );
-        }
-    }
-    emitProperResult( Meta::Artist, ret );
+    // TODO Post filtering
+    emitProperResult( Meta::Album, list );
 }
 
-void UpnpQueryMaker::handleAlbums( const KIO::UDSEntryList &list )
+void UpnpQueryMaker::handleTracks( Meta::TrackList list )
 {
-DEBUG_BLOCK
-    debug() << "HANDLING ALBUMS" << list.length();
-    Meta::AlbumList ret;
-    foreach( KIO::UDSEntry entry, list ) {
-        if( !postFilter( entry ) )
-            continue;
-        if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.album.musicAlbum" ) {
-            debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-            ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
-        }
-        else {
-            debug() << this << "ALBUM" << entry.stringValue( KIO::UPNP_ALBUM );
-            ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UPNP_ALBUM ) );
-        }
-    }
-    emitProperResult( Meta::Album, ret );
+    // TODO Post filtering
+    emitProperResult( Meta::Track, list );
 }
 
-void UpnpQueryMaker::handleTracks( const KIO::UDSEntryList &list )
-{
-DEBUG_BLOCK
-    debug() << "HANDLING TRACKS" << list.length();
-    Meta::TrackList ret;
-    foreach( KIO::UDSEntry entry, list ) {
-        if( !postFilter( entry ) )
-            continue;
-        debug() << this << "TRACK as data ptr?" << m_asDataPtrs << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-        ret << m_collection->cache()->getTrack( entry );
-    }
-    emitProperResult( Meta::Track, ret );
-}
-
-void UpnpQueryMaker::handleCustom( const KIO::UDSEntryList &list )
+void UpnpQueryMaker::handleCustom( const KIO::UDSEntryList& list )
 {
     switch( m_returnFunction ) {
         case Count:
             Q_ASSERT( !list.empty() );
             QString count = list.first().stringValue( KIO::UDSEntry::UDS_NAME );
+            m_collection->setProperty( "numberOfTracks", count.toUInt() );
             emit newResultReady( m_collection->collectionId(), QStringList( count ) );
             break;
     }
 }
 
-void UpnpQueryMaker::slotDone( KJob *job )
+void UpnpQueryMaker::slotDone()
 {
 DEBUG_BLOCK
-    m_runningJob = false;
-    m_jobCount--;
-    KIO::ListJob *ljob = static_cast<KIO::ListJob*>( job );
-    KIO::ListJob *actual = m_inProgressQueries[ljob->url()];
-    debug() << "!!!!!!!! DONE" << ljob << ljob->url();
-    m_inProgressQueries.remove( ljob->url() );
-    if( actual )
-        actual->deleteLater();
-
-    if( m_jobCount <= 0 ) {
-        if( m_noResults ) {
-            debug() << "++++++++++++++++++++++++++++++++++++ NO RESULTS ++++++++++++++++++++++++";
-            // TODO proper data types not just DataPtr
-            Meta::DataList ret;
-            Meta::UpnpTrack *fake = new Meta::UpnpTrack( m_collection );
-            fake->setTitle( "No results" );
-            fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
-            Meta::DataPtr ptr( fake );
-            ret << ptr;
-            //emit newResultReady( m_collection->collectionId(), ret );
-        }
-
-        if ( m_asDataPtrs ) {
-            emit newResultReady( m_collection->collectionId(), m_cacheEntries );
-        }
-        else {
-            switch( m_queryType ) {
-                case Artist:
-                {
-                    Meta::ArtistList list;
-                    foreach( Meta::DataPtr ptr, m_cacheEntries )
-                        list << Meta::ArtistPtr::staticCast( ptr );
-                    emit newResultReady( m_collection->collectionId(), list );
-                    break;
-                }
-                
-                case Album:
-                {
-                    Meta::AlbumList list;
-                    foreach( Meta::DataPtr ptr, m_cacheEntries )
-                        list << Meta::AlbumPtr::staticCast( ptr );
-                    emit newResultReady( m_collection->collectionId(), list );
-                    break;
-                }
-                
-                case Track:
-                {
-                    Meta::TrackList list;
-                    foreach( Meta::DataPtr ptr, m_cacheEntries )
-                        list << Meta::TrackPtr::staticCast( ptr );
-                    emit newResultReady( m_collection->collectionId(), list );
-                    break;
-                }
-            }
-            //emit newResultReady( m_collection->collectionId(), list );
-        }
-        debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
-        emit queryDone();
+    if( m_noResults ) {
+        debug() << "++++++++++++++++++++++++++++++++++++ NO RESULTS ++++++++++++++++++++++++";
+        // TODO proper data types not just DataPtr
+        Meta::DataList ret;
+        Meta::UpnpTrack *fake = new Meta::UpnpTrack( m_collection );
+        fake->setTitle( "No results" );
+        fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
+        Meta::DataPtr ptr( fake );
+        ret << ptr;
+        //emit newResultReady( m_collection->collectionId(), ret );
     }
+
+    if ( m_asDataPtrs ) {
+        emit newResultReady( m_collection->collectionId(), m_cacheEntries );
+    }
+    else {
+        switch( m_queryType ) {
+            case Artist:
+            {
+                Meta::ArtistList list;
+                foreach( Meta::DataPtr ptr, m_cacheEntries )
+                    list << Meta::ArtistPtr::staticCast( ptr );
+                emit newResultReady( m_collection->collectionId(), list );
+                break;
+            }
+ 
+            case Album:
+            {
+                Meta::AlbumList list;
+                foreach( Meta::DataPtr ptr, m_cacheEntries )
+                    list << Meta::AlbumPtr::staticCast( ptr );
+                emit newResultReady( m_collection->collectionId(), list );
+                break;
+            }
+
+            case Track:
+            {
+                Meta::TrackList list;
+                foreach( Meta::DataPtr ptr, m_cacheEntries )
+                    list << Meta::TrackPtr::staticCast( ptr );
+                emit newResultReady( m_collection->collectionId(), list );
+                break;
+            }
+        }
+    }
+    debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
+    emit queryDone();
 }
 
 QString UpnpQueryMaker::propertyForValue( qint64 value )
