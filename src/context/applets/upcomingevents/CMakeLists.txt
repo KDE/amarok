@@ -12,6 +12,7 @@ set( upcomingEvents_SRCS
      UpcomingEventsApplet.cpp
      UpcomingEventsWidget.cpp
      UpcomingEventsMapWidget.cpp
+     UpcomingEventsCalendarWidget.cpp
      )
 
 kde4_add_ui_files( upcomingEvents_SRCS

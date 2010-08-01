@@ -30,6 +30,7 @@
 #include "SvgHandler.h"
 #include "LastFmEventXmlParser.h"
 #include "UpcomingEventsMapWidget.h"
+#include "UpcomingEventsCalendarWidget.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -44,6 +45,7 @@
 #include <QDesktopServices>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
 #include <QSignalMapper>
 #include <QXmlStreamReader>
 
@@ -83,6 +85,12 @@ UpcomingEventsApplet::init()
     m_maximizeSignalMapper = new QSignalMapper( this );
     connect( m_maximizeSignalMapper, SIGNAL(mapped(QString)), this, SLOT(maximizeExtenderItem(QString)) );
 
+    QAction *calendarAction = new QAction( this );
+    calendarAction->setIcon( KIcon( "view-calendar" ) );
+    calendarAction->setToolTip( i18n( "View Events Calendar" ) );
+    Plasma::IconWidget *calendarIcon = addAction( calendarAction );
+    connect( calendarIcon, SIGNAL(clicked()), this, SLOT(viewCalendar()) );
+
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setToolTip( i18n( "Settings" ) );
@@ -100,6 +108,7 @@ UpcomingEventsApplet::init()
     m_headerLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->addItem( calendarIcon );
     headerLayout->addItem( m_headerLabel );
     headerLayout->addItem( settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
@@ -110,6 +119,7 @@ UpcomingEventsApplet::init()
     m_artistExtenderItem->setName( "currentartistevents" );
     m_artistExtenderItem->setWidget( m_artistEventsList );
     m_artistExtenderItem->setCollapsed( true );
+    m_artistExtenderItem->setIcon( KIcon("filename-artist-amarok") );
     addMaximizeAction( m_artistExtenderItem );
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
@@ -250,6 +260,8 @@ UpcomingEventsApplet::clearVenueItems()
     foreach( Plasma::ExtenderItem *item, extender()->items() )
     {
         if( item == m_artistExtenderItem )
+            continue;
+        if( item->name() == "calendar" )
             continue;
         if( item->name() == "favoritevenuesgroup" )
         {
@@ -607,6 +619,8 @@ UpcomingEventsApplet::mapView( bool expand )
     {
         if( item->name() == "venuemapview" )
             continue;
+        if( item->name() == "calendar" )
+            continue;
         typedef UpcomingEventsListWidget LW;
         view->addEventsListWidget( qgraphicsitem_cast<LW*>( item->widget() ) );
     }
@@ -615,6 +629,37 @@ UpcomingEventsApplet::mapView( bool expand )
     connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
              view, SLOT(removeEventsListWidget(UpcomingEventsListWidget*)) );
     return view;
+}
+
+void
+UpcomingEventsApplet::viewCalendar()
+{
+    if( extender()->hasItem("calendar") )
+    {
+        extender()->item("calendar")->setCollapsed( false );
+        return;
+    }
+
+    Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
+    UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( extenderItem );
+
+    extenderItem->setIcon( KIcon( "view-calendar" ) );
+    extenderItem->setTitle( i18n( "Events Calender" ) );
+    extenderItem->setName( "calendar" );
+    extenderItem->setWidget( calendar );
+    extenderItem->setMinimumWidth( 50 );
+    extenderItem->showCloseButton();
+    extenderItem->addAction( "jumptotoday", calendar->todayAction() );
+    addMaximizeAction( extenderItem );
+    foreach( Plasma::ExtenderItem *item, extender()->items() )
+    {
+        if( item->name() == "venuemapview" )
+            continue;
+        if( item->name() == "calendar" )
+            continue;
+        typedef UpcomingEventsListWidget LW;
+        calendar->addEvents( qgraphicsitem_cast<LW*>( item->widget() )->events() );
+    }
 }
 
 QString
@@ -709,6 +754,7 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
             UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( item );
             listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
             item->setName( "favoritevenuesgroup" );
+            item->setIcon( "favorites" );
             item->setWidget( listWidget );
             addMaximizeAction( item );
             connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
@@ -721,6 +767,7 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
         if( extender()->hasItem("favoritevenuesgroup") )
             extender()->item("favoritevenuesgroup")->destroy();
     }
+    updateConstraints();
 }
 
 #include "UpcomingEventsApplet.moc"

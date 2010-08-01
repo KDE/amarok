@@ -231,6 +231,7 @@ private slots:
     void listWidgetDestroyed( QObject *obj );
     void openUrl( const QString &url );
     void maximizeExtenderItem( const QString &name );
+    void viewCalendar();
     void themeChanged();
 };
 
