@@ -56,7 +56,6 @@ UpcomingEventsWidget::UpcomingEventsWidget( QGraphicsItem *parent, Qt::WindowFla
     layout->addItem( m_location, 2, 1, 1, 1 );
     layout->addItem( m_date, 3, 1, 1, 1 );
     layout->addItem( m_url, 4, 1, 1, 1 );
-    layout->setColumnMinimumWidth( 0, 140 );
     setLayout( layout );
 
     m_url->nativeWidget()->setOpenExternalLinks( true );
@@ -162,7 +161,7 @@ UpcomingEventsWidget::setParticipants( const QString &participants )
             {
                 if( i < listbuff.size() - 1 ) toolTipText += " - ";
             }
-                        
+
             if( i < NBR_MAX_PARTICIPANT )
             {
                 buffer += listbuff.at( i );

@@ -26,12 +26,12 @@
 #include "ui_upcomingEventsSettings.h"
 
 class KConfigDialog;
+class QGraphicsLinearLayout;
 class TextScrollingWidget;
 
 namespace Plasma
 {
     class IconWidget;
-    class ScrollWidget;
 }
 
  /**
@@ -111,7 +111,7 @@ private:
     /**
      * Title of the applet (in the top bar)
      */
-    TextScrollingWidget* m_headerLabel;
+    TextScrollingWidget *m_headerLabel;
 
     /**
      * The icon for the Upcoming Events applet
@@ -146,7 +146,12 @@ private:
     /**
      * The scroll area is used as an embedded widget to be added in the applet
      */
-    Plasma::ScrollWidget *m_scrollWidget;
+    Plasma::ExtenderItem *m_scrollWidget;
+
+    /**
+     * The vertical layout for presenting the list of events
+     */
+    QGraphicsLinearLayout *m_layout;
     
 private slots:
     /**
