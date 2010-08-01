@@ -48,8 +48,6 @@ class UpnpSearchCollection : public UpnpCollectionBase
   public:
     UpnpSearchCollection( Solid::Device, QStringList searchCapabilities );
     virtual ~UpnpSearchCollection();
-
-    virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
 
     virtual KIcon icon() const { return KIcon("network-server"); }
@@ -58,17 +56,10 @@ class UpnpSearchCollection : public UpnpCollectionBase
 
     UpnpCache* cache() { return m_cache; }
     QStringList searchCapabilities() { return m_searchCapabilities; }
-  signals:
-
-  public slots:
-    virtual void startFullScan();
-
   private slots:
     void slotFilesChanged(const QStringList &);
 
   private:
-    QTimer *m_fullScanTimer;
-    bool m_fullScanInProgress;
     QStringList m_searchCapabilities;
 
     UpnpCache *m_cache;

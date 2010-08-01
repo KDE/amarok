@@ -43,13 +43,11 @@ namespace Collections {
 // TODO register for the device bye bye and emit remove()
 UpnpSearchCollection::UpnpSearchCollection( Solid::Device dev, QStringList searchCapabilities )
     : UpnpCollectionBase( dev )
-    , m_fullScanInProgress( false )
     , m_searchCapabilities( searchCapabilities )
     , m_cache( new UpnpCache( this ) )
 {
     DEBUG_BLOCK
 
-    // experimental code, will probably be moved to a better place
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
     Q_ASSERT(connect( notify, SIGNAL( FilesChanged(const QStringList &) ),
                       this, SLOT( slotFilesChanged(const QStringList &) ) ));
@@ -61,20 +59,7 @@ UpnpSearchCollection::~UpnpSearchCollection()
 
 void UpnpSearchCollection::slotFilesChanged(const QStringList &list )
 {
-    if( m_fullScanInProgress )
-        return;
-
     debug() << "Files changed" << list;
-}
-
-void
-UpnpSearchCollection::startFullScan()
-{
-}
-
-void
-UpnpSearchCollection::startIncrementalScan( const QString &directory )
-{
 }
 
 QueryMaker*
