@@ -31,9 +31,11 @@
 #include "core/meta/Meta.h"
 #include "TrackItem.h"
 
-#include <plasma/theme.h>
+#include <Plasma/IconWidget>
+#include <Plasma/Theme>
 #include <KConfigDialog>
 
+#include <QAction>
 #include <QFormLayout>
 #include <QPainter>
 #include <QSpinBox>
@@ -70,10 +72,18 @@ void Albums::init()
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Recently added albums" ) );
 
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setEnabled( true );
+    Plasma::IconWidget *settingsIcon = addAction( settingsAction );
+    settingsIcon->setToolTip( i18n( "Settings" ) );
+    connect( settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
+
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
     headerLayout->addItem( m_headerText );
-
+    headerLayout->addItem( settingsIcon );
+    
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
 
