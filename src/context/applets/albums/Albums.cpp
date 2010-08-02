@@ -90,6 +90,7 @@ void Albums::init()
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
     updateConstraints();
+    update();
 }
 
 void Albums::constraintsEvent( Plasma::Constraints constraints )
@@ -185,12 +186,13 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     }
 
     updateConstraints();
+    update();
 }
 
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
-    Q_UNUSED( p )
+
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
