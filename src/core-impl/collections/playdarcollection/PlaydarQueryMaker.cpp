@@ -153,7 +153,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->setQueryType( type );
+        m_memoryQueryMaker->setQueryType( type );
         
         return this;
     }
@@ -163,7 +163,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->setReturnResultAsDataPtrs( resultAsDataPtrs );
+        m_memoryQueryMaker->setReturnResultAsDataPtrs( resultAsDataPtrs );
         
         return this;
     }
@@ -173,7 +173,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->addReturnValue( value );
+        m_memoryQueryMaker->addReturnValue( value );
         
         return this;
     }
@@ -183,7 +183,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->addReturnFunction( function, value );
+        m_memoryQueryMaker->addReturnFunction( function, value );
         
         return this;
     }
@@ -193,7 +193,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->orderBy( value, descending );
+        m_memoryQueryMaker->orderBy( value, descending );
         
         return this;
     }
@@ -203,7 +203,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->orderByRandom();
+        m_memoryQueryMaker->orderByRandom();
         
         return this;
     }
@@ -213,7 +213,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->includeCollection( collectionId );
+        m_memoryQueryMaker->includeCollection( collectionId );
         
         if( m_collection->collectionId() == collectionId )
             m_shouldQueryCollection = true;
@@ -226,7 +226,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->excludeCollection( collectionId );
+        m_memoryQueryMaker->excludeCollection( collectionId );
         
         if( m_collection->collectionId() == collectionId )
             m_shouldQueryCollection = false;
@@ -239,7 +239,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( track );
+        m_memoryQueryMaker->addMatch( track );
         
         m_filterMapList.clear();
         FilterMap *trackMatch = new FilterMap;
@@ -261,7 +261,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( artist );
+        m_memoryQueryMaker->addMatch( artist );
 
         if( artist )
         {
@@ -277,7 +277,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( album );
+        m_memoryQueryMaker->addMatch( album );
         
         if( album )
         {
@@ -293,7 +293,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( composer );
+        m_memoryQueryMaker->addMatch( composer );
         
         return this;
     }
@@ -303,7 +303,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( genre );
+        m_memoryQueryMaker->addMatch( genre );
         
         return this;
     }
@@ -313,7 +313,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( year );
+        m_memoryQueryMaker->addMatch( year );
         
         return this;
     }
@@ -333,7 +333,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addMatch( label );
+        m_memoryQueryMaker->addMatch( label );
         
         return this;
     }
@@ -343,7 +343,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addFilter( value, filter, matchBegin, matchEnd );
+        m_memoryQueryMaker->addFilter( value, filter, matchBegin, matchEnd );
         
         if( !m_filterMapList.isEmpty() )
         {
@@ -374,7 +374,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->excludeFilter( value, filter, matchBegin, matchEnd );
+        m_memoryQueryMaker->excludeFilter( value, filter, matchBegin, matchEnd );
         
         foreach( FilterMap *filterMap, m_filterMapList )
         {
@@ -394,7 +394,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->addNumberFilter( value, filter, compare );
+        m_memoryQueryMaker->addNumberFilter( value, filter, compare );
         
         return this;
     }
@@ -404,7 +404,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->excludeNumberFilter( value, filter, compare );
+        m_memoryQueryMaker->excludeNumberFilter( value, filter, compare );
         
         return this;
     }
@@ -414,7 +414,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->limitMaxResultSize( size );
+        m_memoryQueryMaker->limitMaxResultSize( size );
         
         return this;
     }
@@ -424,7 +424,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->setAlbumQueryMode( mode );
+        m_memoryQueryMaker->setAlbumQueryMode( mode );
         
         return this;
     }
@@ -434,7 +434,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        m_memoryQueryMaker = m_memoryQueryMaker->setLabelQueryMode( mode );
+        m_memoryQueryMaker->setLabelQueryMode( mode );
         
         return this;
     }
@@ -444,7 +444,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->beginAnd();
+        m_memoryQueryMaker->beginAnd();
         
         m_andOrStack.push( true );
         
@@ -456,7 +456,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->beginOr();
+        m_memoryQueryMaker->beginOr();
         
         m_andOrStack.push( false );
         
@@ -468,7 +468,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->endAndOr();
+        m_memoryQueryMaker->endAndOr();
         
         if( !m_andOrStack.isEmpty() )
             m_andOrStack.pop();
@@ -481,7 +481,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = m_memoryQueryMaker->setAutoDelete( autoDelete );
+        m_memoryQueryMaker->setAutoDelete( autoDelete );
         
         m_autoDelete = autoDelete;
         

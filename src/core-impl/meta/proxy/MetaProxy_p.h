@@ -93,14 +93,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             if( newTrackProvider->possiblyContainsTrack( url ) )
             {
                 Meta::TrackPtr track = newTrackProvider->trackForUrl( url );
-                if( track )
-                {
-                    subscribeTo( track );
-                    realTrack = track;
-                    notifyObservers();
-                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
-                }
+                slotUpdateTrack( track );
             }
         }
 
@@ -114,14 +107,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             if( newCollection->possiblyContainsTrack( url ) )
             {
                 Meta::TrackPtr track = newCollection->trackForUrl( url );
-                if( track )
-                {
-                    subscribeTo( track );
-                    realTrack = track;
-                    notifyObservers();
-                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
-                }
+                slotUpdateTrack( track );
             }
         }
 
@@ -132,6 +118,8 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                 subscribeTo( track );
                 realTrack = track;
                 notifyObservers();
+                disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
+                disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
             }
         }
 };
