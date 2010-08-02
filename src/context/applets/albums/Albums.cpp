@@ -16,21 +16,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Albums"
+
 #include "Albums.h"
 
 #include "AlbumItem.h"
 #include "AlbumsView.h"
-#include "AlbumsModel.h"
 #include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
-#include "context/Svg.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/meta/Meta.h"
-#include "core/meta/support/MetaUtility.h"
-#include "playlist/PlaylistModel.h"
 #include "TrackItem.h"
 
 #include <plasma/theme.h>
@@ -78,9 +76,6 @@ void Albums::init()
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
-    m_model = new AlbumsModel( this );
-    m_model->setColumnCount( 1 );
-    m_albumsView->setModel( m_model );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
@@ -119,10 +114,8 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         return;
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    Meta::AlbumPtr currentAlbum;
-
     const bool showArtist = !currentTrack;
-    AlbumItem *scrollToAlbum( 0 );
+    AlbumItem *currentAlbum( 0 );
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
@@ -180,18 +173,17 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             }
         }
         
-        m_model->appendRow( albumItem );
-        if( currentAlbum && currentAlbum == albumPtr )
-        {
-            m_albumsView->setRecursiveExpanded( albumItem->index(), true );
-            scrollToAlbum = albumItem;
-        }
+        m_albumsView->appendAlbum( albumItem );
+        if( currentTrack && currentTrack->album() == albumPtr )
+            currentAlbum = albumItem;
     }
 
-    if( scrollToAlbum )
-        m_albumsView->nativeWidget()->scrollTo( scrollToAlbum->index(), QAbstractItemView::PositionAtTop );
+    if( currentAlbum )
+    {
+        m_albumsView->setRecursiveExpanded( currentAlbum, true );
+        m_albumsView->scrollTo( currentAlbum );
+    }
 
-    m_model->sort( 0 );
     updateConstraints();
 }
 

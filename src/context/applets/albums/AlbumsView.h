@@ -23,9 +23,11 @@
 #include <QGraphicsWidget>
 #include <QStyledItemDelegate>
 
+class AlbumsModel;
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
 class QGraphicsProxyWidget;
+class QStandardItem;
 class QTreeView;
 namespace Plasma
 {
@@ -36,32 +38,18 @@ namespace Plasma
 class AlbumsView : public QGraphicsWidget
 {
     Q_OBJECT
-    Q_PROPERTY( QAbstractItemModel* model READ model WRITE setModel )
-    Q_PROPERTY( QTreeView* nativeWidget READ nativeWidget )
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
     ~AlbumsView();
 
-    /**
-     * Sets a model for this weather view
-     *
-     * @arg model the model to display
-     */
-    void setModel( QAbstractItemModel *model );
+    void appendAlbum( QStandardItem *album );
+    void scrollTo( QStandardItem *album );
 
-    /**
-     * @return the model shown by this view
-     */
-    QAbstractItemModel *model() const;
-
-    /**
-     * @return the native widget wrapped by this AlbumsView
-     */
-    QTreeView* nativeWidget() const;
+    void clear();
 
 public slots:
-    void setRecursiveExpanded( const QModelIndex &index, bool expanded );
+    void setRecursiveExpanded( QStandardItem *item, bool expanded );
 
 protected:
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
@@ -77,8 +65,10 @@ private slots:
 
 private:
     void updateScrollBarVisibility();
+    void setRecursiveExpanded( const QModelIndex &index, bool expanded );
 
     Meta::TrackList getSelectedTracks() const;
+    AlbumsModel *m_model;
     QTreeView *m_treeView;
     QGraphicsProxyWidget *m_treeProxy;
     Plasma::SvgWidget *m_topBorder;

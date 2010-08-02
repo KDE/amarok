@@ -15,8 +15,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AlbumsView"
+
 #include "AlbumsView.h"
 
+#include "AlbumsModel.h"
 #include "AlbumItem.h"
 #include "AlbumsDefs.h"
 #include "SvgHandler.h"
@@ -24,6 +27,7 @@
 #include "dialogs/TagDialog.h"
 #include "core/capabilities/CustomActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -93,11 +97,15 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     m_bottomBorder->resize( -1, 10.0 );
     m_bottomBorder->show();
 
-    m_treeProxy = new QGraphicsProxyWidget;
+    m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeView = new AlbumsTreeView( 0 );
     connect( m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
     connect( m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
     m_treeProxy->setWidget( m_treeView );
+
+    m_model = new AlbumsModel( this );
+    m_model->setColumnCount( 1 );
+    m_treeView->setModel( m_model );
 
     QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
     m_scrollBar = new Plasma::ScrollBar( this );
@@ -126,21 +134,36 @@ AlbumsView::~AlbumsView()
 }
 
 void
-AlbumsView::setModel( QAbstractItemModel *model )
+AlbumsView::appendAlbum( QStandardItem *album )
 {
-    m_treeView->setModel( model );
+    m_model->appendRow( album );
+    m_model->sort( 0 );
 }
 
-QAbstractItemModel*
-AlbumsView::model() const
+void
+AlbumsView::scrollTo( QStandardItem *album )
 {
-    return m_treeView->model();
+    m_treeView->scrollTo( album->index(), QAbstractItemView::PositionAtTop );
 }
 
-QTreeView*
-AlbumsView::nativeWidget() const
+void
+AlbumsView::clear()
 {
-    return m_treeView;
+    QList< QStandardItem * > items = m_model->takeColumn( 0 );
+    while( !items.isEmpty() )
+    {
+        QStandardItem *item = items.takeFirst();
+        QList< QStandardItem * > kids = item->takeColumn( 0 );
+        while( !kids.isEmpty() )
+        {
+            QStandardItem *kidItem = kids.takeFirst();
+            QList< QStandardItem * > kidskids = kidItem->takeColumn( 0 );
+            qDeleteAll( kidskids );
+        }
+        qDeleteAll( kids );
+    }
+    qDeleteAll( items );
+    m_model->clear();
 }
 
 void
@@ -180,8 +203,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     connect( editAction  , SIGNAL(triggered()), this, SLOT(slotEditSelected()) );
 
     KMenu menuCover( i18n( "Album" ), &menu );
-    QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );
-    AlbumItem *album = dynamic_cast<AlbumItem*>(item);
+    AlbumItem *album = dynamic_cast<AlbumItem*>( m_model->itemFromIndex(index) );
     if( album )
     {
         Meta::AlbumPtr albumPtr = album->album();
@@ -280,14 +302,13 @@ AlbumsView::getSelectedTracks() const
 {
     Meta::TrackList selected;
 
-    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( const_cast<AlbumsView*>(this)->model());
     QModelIndexList indexes = static_cast<AlbumsTreeView*>( m_treeView )->selectedIndexes();
 
     foreach( const QModelIndex &index, indexes )
     {
         if( index.isValid() )
         {
-            QStandardItem *item = itemModel->itemFromIndex( index );
+            QStandardItem *item = m_model->itemFromIndex( index );
             AlbumItem *album = dynamic_cast<AlbumItem*>(item);
             if( album )
             {
@@ -304,11 +325,17 @@ AlbumsView::getSelectedTracks() const
 }
 
 void
+AlbumsView::setRecursiveExpanded( QStandardItem *item, bool expanded )
+{
+    setRecursiveExpanded( item->index(), expanded );
+}
+
+void
 AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
 {
-    if( model()->hasChildren( index ) )
+    if( m_model->hasChildren( index ) )
     {
-        for( int i = 0, count = model()->rowCount( index ); i < count; ++i )
+        for( int i = 0, count = m_model->rowCount( index ); i < count; ++i )
             m_treeView->setExpanded( index.child( i, 0 ), expanded );
     }
     m_treeView->setExpanded( index, expanded );
@@ -332,7 +359,6 @@ AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
  * number and length; it is elided if necessary. Thus the track number and
  * length are always shown, even during eliding.
  */
-
 void
 AlbumsItemDelegate::paint( QPainter *p,
                            const QStyleOptionViewItem &option,

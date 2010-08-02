@@ -19,13 +19,14 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include "AlbumsView.h"
-
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 
-class QStandardItemModel;
+class AlbumsView;
 class TextScrollingWidget;
+namespace Collections {
+    class Collection;
+}
 
 class Albums : public Context::Applet
 {
@@ -52,7 +53,6 @@ private slots:
 
 private:
     int m_recentCount;
-    QStandardItemModel *m_model;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;
 
