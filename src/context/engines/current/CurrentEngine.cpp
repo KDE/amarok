@@ -147,10 +147,9 @@ CurrentEngine::stoppedState()
         // Collect data for the recently added albums
         setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
 
-        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-        if( coll )
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+        if( qm )
         {
-            Collections::QueryMaker *qm = coll->queryMaker();
             qm->setAutoDelete( true );
             qm->setQueryType( Collections::QueryMaker::Album );
             qm->excludeFilter( Meta::valAlbum, QString(), true, true );
@@ -170,11 +169,10 @@ CurrentEngine::stoppedState()
 
     if( m_requested[ "current" ] )
     {
-        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-        if( !coll )
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+        if( !qm )
             return;
 
-        Collections::QueryMaker *qm = coll->queryMaker();
         qm->setAutoDelete( true );
         qm->setQueryType( Collections::QueryMaker::Track );
         qm->excludeFilter( Meta::valTitle, QString(), true, true );
@@ -292,8 +290,7 @@ CurrentEngine::update()
             if( albums.count() == 0 )
             {
                 //try searching the collection as we might be dealing with a non local track
-                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-                Collections::QueryMaker *qm = coll->queryMaker();
+                Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
                 qm->setAutoDelete( true );
                 qm->setQueryType( Collections::QueryMaker::Album );
                 qm->addMatch( artist );
