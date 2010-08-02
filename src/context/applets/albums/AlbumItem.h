@@ -62,6 +62,8 @@ class AlbumItem : public QStandardItem, public Meta::Observer
 
         virtual int type() const;
 
+        virtual bool operator<( const QStandardItem &other ) const;
+
     private:
         Meta::AlbumPtr m_album;
         int            m_iconSize;

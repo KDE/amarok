@@ -18,6 +18,8 @@
 #include "AlbumsDefs.h"
 #include "core/meta/support/MetaUtility.h"
 
+#include <KStringHandler>
+
 #include <QFont>
 
 TrackItem::TrackItem()
@@ -68,4 +70,21 @@ int
 TrackItem::type() const
 {
     return TrackType;
+}
+
+bool
+TrackItem::operator<( const QStandardItem &other ) const
+{
+    int trackA = data( TrackNumberRole ).toInt();
+    int trackB = other.data( TrackNumberRole ).toInt();
+    if( trackA < trackB )
+        return true;
+    else if( trackA == trackB )
+    {
+        const QString nameA = data( TrackNameRole ).toString();
+        const QString nameB = other.data( TrackNameRole ).toString();
+        return KStringHandler::naturalCompare( nameA, nameB, Qt::CaseInsensitive ) < 0;
+    }
+    else
+        return false;
 }

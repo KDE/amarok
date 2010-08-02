@@ -105,60 +105,26 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
 
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     Q_UNUSED( name );
 
-    QList< QStandardItem * > items = m_model->takeColumn( 0 );
-    while( !items.isEmpty() )
-    {
-        QStandardItem *item = items.takeFirst();
-        QList< QStandardItem * > kids = item->takeColumn( 0 );
-        qDeleteAll( kids );
-    }
-    m_model->clear();
-
-    m_albums = data[ "albums" ].value<Meta::AlbumList>();
-    debug() << "Received" << m_albums.count() << "albums";
+    m_albumsView->clear();
+    Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     m_headerText->setScrollingText( data[ "headerText" ].toString() );
 
     //Update the applet (render properly the header)
     update();
 
-    if( m_albums.isEmpty() )
-    {
-        //Don't keep showing the albums for the artist of the last track that had album in the collection
+    //Don't keep showing the albums for the artist of the last track that had album in the collection
+    if( albums.isEmpty() )
         return;
-    }
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Meta::AlbumPtr currentAlbum;
 
-    // Here's a smallish hack to sort the albums based on year:
-    // Put them into a QMultiMap with the key as the year, and then retrieve the QList. Tada!
-    // A little memory inefficient but much more convenient than qSort with Meta::AlbumPtrs.
-    // We only want to sort if we have a current track playing, otherwise we mess up the "recent tracks"
-    if( currentTrack )
-    {
-        currentAlbum = currentTrack->album();
-        QMultiMap<QString, Meta::AlbumPtr> map; // MultiMap, as we can have multiple albums with the same year
-        foreach( Meta::AlbumPtr albumPtr, m_albums )
-        {
-            int year = 0;
-            if( !albumPtr->tracks().isEmpty() )
-                year = albumPtr->tracks().first()->year()->name().toInt();
-            // Here's another little hack. Because we want the albums in reverse chronological order,
-            // we can simply store a larger number for the earlier albums.
-            year = 9999 - year;
-
-            map.insert( QString::number(year), albumPtr );
-        }
-        m_albums = map.values();
-    }
-
     const bool showArtist = !currentTrack;
     AlbumItem *scrollToAlbum( 0 );
 
-    foreach( Meta::AlbumPtr albumPtr, m_albums )
+    foreach( Meta::AlbumPtr albumPtr, albums )
     {
         AlbumItem *albumItem = new AlbumItem();
         albumItem->setIconSize( 50 );
@@ -197,11 +163,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             if( !items.isEmpty() )
             {
                 const TrackItem *item = items.first();
-                int discNumber = item->track()->discNumber();
                 QStandardItem *discItem( 0 );
-                if( discNumber != 0 )
+                if( numberOfDiscs > 0 )
                 {
-                    discItem = new QStandardItem( i18n("Disc %1", discNumber) );
+                    discItem = new QStandardItem( i18n("Disc %1", item->track()->discNumber()) );
                     albumItem->setChild( childRow++, discItem );
                     int discChildRow = 0;
                     foreach( TrackItem *trackItem, items )
@@ -226,6 +191,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     if( scrollToAlbum )
         m_albumsView->nativeWidget()->scrollTo( scrollToAlbum->index(), QAbstractItemView::PositionAtTop );
 
+    m_model->sort( 0 );
     updateConstraints();
 }
 

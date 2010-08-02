@@ -345,17 +345,12 @@ AlbumsItemDelegate::paint( QPainter *p,
     {
         // draw the text ourselves. The superclass will skip painting the
         // text since the text in Qt::DisplayRole is not actually set.
-        const QString &text = index.data( AlbumDisplayRole ).toString();
-        if( !text.isEmpty() )
-        {
-            QStyleOptionViewItemV4 vopt( option );
-            initStyleOption( &vopt, index );
-            const AlbumItem *albumItem = static_cast<const AlbumItem *>( item );
-            int iconOffset = albumItem->iconSize() + 6; // 6 is from the added svg borders
-            vopt.rect.adjust( iconOffset, 0, 0, 0 );
-            vopt.text = text;
-            drawAlbumText( p, vopt );
-        }
+        QStyleOptionViewItemV4 vopt( option );
+        initStyleOption( &vopt, index );
+        const AlbumItem *albumItem = static_cast<const AlbumItem *>( item );
+        int iconOffset = albumItem->iconSize() + 6; // 6 is from the added svg borders
+        vopt.rect.adjust( iconOffset, 0, 0, 0 );
+        drawAlbumText( p, vopt );
     }
     else if( item->type() == TrackType )
     {
@@ -369,15 +364,22 @@ AlbumsItemDelegate::paint( QPainter *p,
 void
 AlbumsItemDelegate::drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &vopt ) const
 {
+    const QModelIndex &index = vopt.index;
     const QRect &textRect = vopt.rect.adjusted( 2, 0, -4, 0 );
 
     p->save();
     p->setClipRect( textRect );
     applyCommonStyle( p, vopt );
 
+    QString name = index.data( AlbumNameRole ).toString();
+    int year     = index.data( AlbumYearRole ).toInt();
+
+    QStringList texts;
+    texts << ((year > 0) ? QString( "%1 (%2)" ).arg( name, QString::number(year) ) : name);
+    texts << index.data( AlbumLengthRole ).toString();
+
     // elide each line according to available width
     QFontMetrics fm = vopt.fontMetrics;
-    QStringList texts = vopt.text.split('\n');
     QMutableStringListIterator it( texts );
     while( it.hasNext() )
     {

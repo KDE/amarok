@@ -23,7 +23,6 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include "core/meta/Meta.h"
 
 class QStandardItemModel;
 class TextScrollingWidget;
@@ -53,7 +52,6 @@ private slots:
 
 private:
     int m_recentCount;
-    Meta::AlbumList m_albums;
     QStandardItemModel *m_model;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;

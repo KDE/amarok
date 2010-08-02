@@ -20,6 +20,7 @@
 #include "SvgHandler.h"
 
 #include <KLocale>
+#include <KStringHandler>
 
 #include <QIcon>
 #include <QPixmap>
@@ -71,40 +72,28 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
     if( !album )
         return;
 
-    QString albumName = album->name();
-    albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
-
-    QString displayText = albumName;
     Meta::TrackList tracks = album->tracks();
-
-    QString year;
     if( !tracks.isEmpty() )
     {
         Meta::TrackPtr first = tracks.first();
-        year = first->year()->name();
-        // do some sanity checking
-        if( year.length() != 4 )
-            year.clear();
+        int year = first->year()->name().toInt();
+        setData( year, AlbumYearRole );
     }
 
-    if( !year.isEmpty() )
-        displayText += QString( " (%1)" ).arg( year );
-
-    if( m_showArtist && album->hasAlbumArtist() )
-        displayText = QString( "%1 - %2" ).arg( album->albumArtist()->name(), displayText );
-
-    QString trackCount = i18np( "%1 track", "%1 tracks", tracks.size() );
+    QString albumName = album->name();
+    albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
+    QString name = ( m_showArtist && album->hasAlbumArtist() )
+                 ? QString( "%1 - %2" ).arg( album->albumArtist()->name(), albumName )
+                 : albumName;
+    setData( name, AlbumNameRole );
 
     qint64 totalTime = 0;
     foreach( Meta::TrackPtr item, tracks )
-    {
         totalTime += item->length();
-    }
-    QString albumLength = QString( " %1" ).arg( Meta::msToPrettyTime( totalTime ) );
 
-    displayText += '\n' + trackCount + ", " + albumLength;
-
-    setData( displayText, AlbumDisplayRole );
+    QString trackCount = i18np( "%1 track", "%1 tracks", tracks.size() );
+    QString lengthText = QString( "%1, %2" ).arg( trackCount, Meta::msToPrettyTime( totalTime ) );
+    setData( lengthText, AlbumLengthRole );
 
     QPixmap cover = The::svgHandler()->imageWithBorder( album, m_iconSize, 3 );
     setIcon( QIcon( cover ) );
@@ -114,4 +103,22 @@ int
 AlbumItem::type() const
 {
     return AlbumType;
+}
+
+bool
+AlbumItem::operator<( const QStandardItem &other ) const
+{
+    // compare the opposite for descending year order
+    int yearA = data( AlbumYearRole ).toInt();
+    int yearB = other.data( AlbumYearRole ).toInt();
+    if( yearA > yearB )
+        return true;
+    else if( yearA == yearB )
+    {
+        const QString nameA = data( AlbumNameRole ).toString();
+        const QString nameB = other.data( AlbumNameRole ).toString();
+        return KStringHandler::naturalCompare( nameA, nameB, Qt::CaseInsensitive ) < 0;
+    }
+    else
+        return false;
 }
