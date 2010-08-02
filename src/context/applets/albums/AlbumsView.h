@@ -19,11 +19,11 @@
 #define AMAROK_ALBUMSVIEW_H
 
 #include "core/meta/Meta.h"
+#include "AlbumsModel.h"
 
 #include <QGraphicsWidget>
 #include <QStyledItemDelegate>
 
-class AlbumsModel;
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
 class QGraphicsProxyWidget;
@@ -38,6 +38,7 @@ namespace Plasma
 class AlbumsView : public QGraphicsWidget
 {
     Q_OBJECT
+    Q_PROPERTY( AlbumsProxyModel::Mode mode READ mode WRITE setMode )
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
@@ -46,15 +47,19 @@ public:
     void appendAlbum( QStandardItem *album );
     void scrollTo( QStandardItem *album );
 
+    AlbumsProxyModel::Mode mode() const;
+    void setMode( AlbumsProxyModel::Mode mode );
+
     void clear();
 
 public slots:
     void setRecursiveExpanded( QStandardItem *item, bool expanded );
+    void sort();
 
 protected:
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
     void resizeEvent( QGraphicsSceneResizeEvent *event );
-    
+
 private slots:
     void itemClicked( const QModelIndex &index );
     void slotAppendSelected();
@@ -69,6 +74,7 @@ private:
 
     Meta::TrackList getSelectedTracks() const;
     AlbumsModel *m_model;
+    AlbumsProxyModel *m_proxyModel;
     QTreeView *m_treeView;
     QGraphicsProxyWidget *m_treeProxy;
     Plasma::SvgWidget *m_topBorder;

@@ -13,13 +13,14 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef AMAROK_ALBUMSMODEL_H
 #define AMAROK_ALBUMSMODEL_H
 
 #include "core/meta/Meta.h"
- 
+
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 
 /**
  * This Model is used to get the right mime type/data for entries in the albums treeview
@@ -38,5 +39,28 @@ public:
 private:
     Meta::TrackList tracksForIndex( const QModelIndex &index ) const;
 };
- 
+
+class AlbumsProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+    Q_PROPERTY( Mode mode READ mode WRITE setMode )
+    Q_ENUMS( Mode )
+
+public:
+    AlbumsProxyModel( QObject *parent );
+    ~AlbumsProxyModel() {}
+
+    enum Mode { SortByCreateDate, SortByYear };
+
+    Mode mode() const;
+    void setMode( Mode mode );
+
+protected:
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+private:
+    Mode m_mode;
+};
+
+
 #endif

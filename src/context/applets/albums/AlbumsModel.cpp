@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AlbumsModel"
+
 #include "AlbumsModel.h"
 #include "AlbumsDefs.h"
 #include "AlbumItem.h"
@@ -100,6 +102,50 @@ AlbumsModel::mimeTypes() const
     QStringList types;
     types << AmarokMimeData::TRACK_MIME;
     return types;
+}
+
+AlbumsProxyModel::AlbumsProxyModel( QObject *parent )
+    : QSortFilterProxyModel( parent )
+    , m_mode( SortByCreateDate )
+{}
+
+bool
+AlbumsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+    const QStandardItemModel *model = static_cast<QStandardItemModel*>( sourceModel() );
+    const QStandardItem *leftItem = model->itemFromIndex( left );
+    int type = leftItem->type();
+    if( type == AlbumType && m_mode == SortByCreateDate )
+    {
+        const AlbumItem *leftAlbum = static_cast<const AlbumItem *>( leftItem );
+        const AlbumItem *rightAlbum = static_cast<const AlbumItem *>( model->itemFromIndex( right ) );
+        Meta::TrackList leftTracks = leftAlbum->album()->tracks();
+        Meta::TrackList rightTracks = rightAlbum->album()->tracks();
+        QVector<QDateTime> leftCreateDates, rightCreateDates;
+        foreach( Meta::TrackPtr track, leftTracks )
+            leftCreateDates << track->createDate();
+        foreach( Meta::TrackPtr track, rightTracks )
+            rightCreateDates << track->createDate();
+        qStableSort( leftCreateDates );
+        qStableSort( rightCreateDates );
+        return leftCreateDates.last() > rightCreateDates.last(); // greater than for reverse listing
+    }
+    else if( type == AlbumType || type == TrackType )
+        return leftItem->operator<( *model->itemFromIndex( right ) );
+    else
+        return QSortFilterProxyModel::lessThan( left, right );
+}
+
+AlbumsProxyModel::Mode
+AlbumsProxyModel::mode() const
+{
+    return m_mode;
+}
+
+void
+AlbumsProxyModel::setMode( Mode mode )
+{
+    m_mode = mode;
 }
 
 #include "AlbumsModel.moc"

@@ -83,7 +83,7 @@ void Albums::init()
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
     headerLayout->addItem( m_headerText );
     headerLayout->addItem( settingsIcon );
-    
+
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
 
@@ -123,8 +123,9 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( albums.isEmpty() )
         return;
-       
+
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    m_albumsView->setMode( currentTrack ? AlbumsProxyModel::SortByYear : AlbumsProxyModel::SortByCreateDate );
     const bool showArtist = !currentTrack;
     AlbumItem *currentAlbum( 0 );
 
@@ -134,7 +135,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         albumItem->setIconSize( 50 );
         albumItem->setAlbum( albumPtr );
         albumItem->setShowArtist( showArtist );
-        
+
         int numberOfDiscs = 0;
         int childRow = 0;
 
@@ -149,14 +150,14 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
             TrackItem *trackItem = new TrackItem();
             trackItem->setTrack( trackPtr );
-            
+
             // Italicise the current track to make it more visible
             if( currentTrack == trackPtr )
                 trackItem->italicise();
 
             // If compilation and same artist, then make bold, but only if there's a current track
             if( currentTrack && currentTrack->artist() == trackPtr->artist() && albumPtr->isCompilation() )
-                trackItem->bold();           
+                trackItem->bold();
 
             trackItems.insert( trackPtr->discNumber(), trackItem );
         }
@@ -183,12 +184,13 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
                 }
             }
         }
-        
+
         m_albumsView->appendAlbum( albumItem );
         if( currentTrack && currentTrack->album() == albumPtr )
             currentAlbum = albumItem;
     }
 
+    m_albumsView->sort();
     if( currentAlbum )
     {
         m_albumsView->setRecursiveExpanded( currentAlbum, true );

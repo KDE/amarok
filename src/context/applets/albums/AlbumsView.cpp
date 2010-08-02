@@ -19,7 +19,6 @@
 
 #include "AlbumsView.h"
 
-#include "AlbumsModel.h"
 #include "AlbumItem.h"
 #include "AlbumsDefs.h"
 #include "SvgHandler.h"
@@ -105,7 +104,12 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
 
     m_model = new AlbumsModel( this );
     m_model->setColumnCount( 1 );
-    m_treeView->setModel( m_model );
+    m_proxyModel = new AlbumsProxyModel( this );
+    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setSortLocaleAware( true );
+    m_proxyModel->setDynamicSortFilter( true );
+    m_proxyModel->setSourceModel( m_model );
+    m_treeView->setModel( m_proxyModel );
 
     QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
     m_scrollBar = new Plasma::ScrollBar( this );
@@ -137,13 +141,19 @@ void
 AlbumsView::appendAlbum( QStandardItem *album )
 {
     m_model->appendRow( album );
-    m_model->sort( 0 );
+}
+
+void
+AlbumsView::sort()
+{
+    m_proxyModel->sort( 0 );
 }
 
 void
 AlbumsView::scrollTo( QStandardItem *album )
 {
-    m_treeView->scrollTo( album->index(), QAbstractItemView::PositionAtTop );
+    const QModelIndex &proxyIndex = m_proxyModel->mapFromSource( album->index() );
+    m_treeView->scrollTo( proxyIndex, QAbstractItemView::PositionAtTop );
 }
 
 void
@@ -164,6 +174,18 @@ AlbumsView::clear()
     }
     qDeleteAll( items );
     m_model->clear();
+}
+
+AlbumsProxyModel::Mode
+AlbumsView::mode() const
+{
+    return m_proxyModel->mode();
+}
+
+void
+AlbumsView::setMode( AlbumsProxyModel::Mode mode )
+{
+    m_proxyModel->setMode( mode );
 }
 
 void
@@ -203,11 +225,11 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     connect( editAction  , SIGNAL(triggered()), this, SLOT(slotEditSelected()) );
 
     KMenu menuCover( i18n( "Album" ), &menu );
-    AlbumItem *album = dynamic_cast<AlbumItem*>( m_model->itemFromIndex(index) );
-    if( album )
+    const QStandardItem *item = m_model->itemFromIndex( m_proxyModel->mapToSource(index) );
+    if( item->type() == AlbumType )
     {
-        Meta::AlbumPtr albumPtr = album->album();
-        Capabilities::CustomActionsCapability *cac = albumPtr->create<Capabilities::CustomActionsCapability>();
+        Meta::AlbumPtr album = static_cast<const AlbumItem*>( item )->album();
+        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
         if( cac )
         {
             QList<QAction *> actions = cac->customActions();
@@ -303,21 +325,28 @@ AlbumsView::getSelectedTracks() const
     Meta::TrackList selected;
 
     QModelIndexList indexes = static_cast<AlbumsTreeView*>( m_treeView )->selectedIndexes();
-
     foreach( const QModelIndex &index, indexes )
     {
         if( index.isValid() )
         {
-            QStandardItem *item = m_model->itemFromIndex( index );
-            AlbumItem *album = dynamic_cast<AlbumItem*>(item);
-            if( album )
+            const QModelIndex &srcIndex = m_proxyModel->mapToSource( index );
+            const QStandardItem *item = m_model->itemFromIndex( srcIndex );
+            if( item->type() == AlbumType )
             {
-                selected << album->album()->tracks();
-                continue;
+                selected << static_cast<const AlbumItem*>( item )->album()->tracks();
             }
-            TrackItem *track = dynamic_cast<TrackItem*>(item);
-            if( track )
-                selected << track->track();
+            else if( item->type() == TrackType )
+            {
+                selected << static_cast<const TrackItem*>( item )->track();
+            }
+            else if( m_model->hasChildren( srcIndex ) ) // disc type
+            {
+                for( int i = m_model->rowCount( srcIndex ) - 1; i >= 0; --i )
+                {
+                    const QStandardItem *trackItem = m_model->itemFromIndex( srcIndex.child(i, 0) );
+                    selected << static_cast<const TrackItem*>( trackItem )->track();
+                }
+            }
         }
     }
 
@@ -327,15 +356,15 @@ AlbumsView::getSelectedTracks() const
 void
 AlbumsView::setRecursiveExpanded( QStandardItem *item, bool expanded )
 {
-    setRecursiveExpanded( item->index(), expanded );
+    setRecursiveExpanded( m_proxyModel->mapFromSource( item->index() ), expanded );
 }
 
 void
 AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
 {
-    if( m_model->hasChildren( index ) )
+    if( m_proxyModel->hasChildren( index ) )
     {
-        for( int i = 0, count = m_model->rowCount( index ); i < count; ++i )
+        for( int i = 0, count = m_proxyModel->rowCount( index ); i < count; ++i )
             m_treeView->setExpanded( index.child( i, 0 ), expanded );
     }
     m_treeView->setExpanded( index, expanded );
@@ -365,8 +394,9 @@ AlbumsItemDelegate::paint( QPainter *p,
                            const QModelIndex &index ) const
 {
     QStyledItemDelegate::paint( p, option, index );
-    const QStandardItemModel *itemModel = static_cast<const QStandardItemModel *>( index.model() );
-    const QStandardItem *item = itemModel->itemFromIndex( index );
+    const QAbstractProxyModel *xyModel = qobject_cast<const QAbstractProxyModel *>( index.model() );
+    const QStandardItemModel *stdModel = qobject_cast<const QStandardItemModel *>( xyModel->sourceModel() );
+    const QStandardItem *item = stdModel->itemFromIndex( xyModel->mapToSource(index) );
     if( item->type() == AlbumType )
     {
         // draw the text ourselves. The superclass will skip painting the
