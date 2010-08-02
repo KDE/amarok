@@ -48,6 +48,7 @@ TrackItem::metadataChanged( Meta::TrackPtr track )
     setData( track->length(), TrackLengthRole );
     setData( track->album()->isCompilation(), AlbumCompilationRole );
     setData( track->album()->tracks().count(), AlbumTrackCountRole );
+    setToolTip( QString( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
 }
 
 void

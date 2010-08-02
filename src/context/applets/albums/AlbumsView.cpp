@@ -413,10 +413,10 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
 
     int numberFillWidth = boldFm.width( QChar('0') ) * ( trackDigitCount - number.length() + 2 );
     int numberRectWidth = numberFillWidth + boldFm.width( number ) + 2;
-    int availableWidth = vopt.rect.width() - numberRectWidth - fm.width( length );
+    int lengthRectWidth = boldFm.width( length );
+    int availableWidth = vopt.rect.width() - numberRectWidth - lengthRectWidth;
     if( availableWidth < fm.width( middle ) )
         middle = fm.elidedText( middle, Qt::ElideRight, availableWidth );
-    QString text = QString( "%2%3" ).arg( middle, length );
 
     p->save();
     p->setClipRect( vopt.rect );
@@ -425,10 +425,11 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
     p->setFont( vopt.font );
     applyCommonStyle( p, vopt );
     QRect numberRect( vopt.rect.topLeft(), QSize( numberRectWidth, vopt.rect.height() ) );
-    QRect textRect( vopt.rect.adjusted( numberRectWidth, 0, 0, 0 ) );
-    p->drawText( textRect, Qt::AlignJustify | Qt::AlignVCenter, text );
+    QRect textRect( numberRect.topRight(), QSize( availableWidth, vopt.rect.height() ) );
+    QRect lengthRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
+    p->drawText( textRect, Qt::AlignJustify | Qt::AlignVCenter, middle );
 
-    // use a nonbold font for drawing track numbers
+    // use a nonbold font for drawing track numbers and lengths
     if( vopt.font.bold() )
     {
         QFont font = vopt.font;
@@ -436,6 +437,7 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
         p->setFont( font );
     }
     p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
+    p->drawText( lengthRect, Qt::AlignRight | Qt::AlignVCenter, length );
     p->restore();
 }
 
