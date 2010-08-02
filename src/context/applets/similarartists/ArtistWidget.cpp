@@ -222,8 +222,7 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
     //Figure out of this applet is present in the local collection, and show the "show in collection" button if so
     m_navigateButton->hide();
 
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    Collections::QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     
     qm->setQueryType( Collections::QueryMaker::Artist );
     qm->addFilter( Collections::QueryMaker::ArtistFilter, m_name );
