@@ -188,6 +188,18 @@ AlbumsView::setMode( AlbumsProxyModel::Mode mode )
     m_proxyModel->setMode( mode );
 }
 
+Qt::Alignment
+AlbumsView::lengthAlignment() const
+{
+    return static_cast<AlbumsItemDelegate*>( m_treeView->itemDelegate() )->lengthAlignment();
+}
+
+void
+AlbumsView::setLengthAlignment( Qt::Alignment alignment )
+{
+    static_cast<AlbumsItemDelegate*>( m_treeView->itemDelegate() )->setLengthAlignment( alignment );
+}
+
 void
 AlbumsView::itemClicked( const QModelIndex &index )
 {
@@ -370,6 +382,11 @@ AlbumsView::setRecursiveExpanded( const QModelIndex &index, bool expanded )
     m_treeView->setExpanded( index, expanded );
 }
 
+AlbumsItemDelegate::AlbumsItemDelegate( QObject *parent )
+    : QStyledItemDelegate( parent )
+    , m_lengthAlignment( Qt::AlignLeft )
+{}
+
 /*
  * Customize the painting of items in the tree view.
  *
@@ -480,8 +497,9 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
     p->setLayoutDirection( vopt.direction );
     p->setFont( vopt.font );
     applyCommonStyle( p, vopt );
+    int textRectWidth = m_lengthAlignment == Qt::AlignLeft ? fm.width( middle ) : availableWidth;
     QRect numberRect( vopt.rect.topLeft(), QSize( numberRectWidth, vopt.rect.height() ) );
-    QRect textRect( numberRect.topRight(), QSize( availableWidth, vopt.rect.height() ) );
+    QRect textRect( numberRect.topRight(), QSize( textRectWidth, vopt.rect.height() ) );
     QRect lengthRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
     p->drawText( textRect, Qt::AlignJustify | Qt::AlignVCenter, middle );
 
@@ -493,7 +511,7 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
         p->setFont( font );
     }
     p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
-    p->drawText( lengthRect, Qt::AlignRight | Qt::AlignVCenter, length );
+    p->drawText( lengthRect, m_lengthAlignment | Qt::AlignVCenter, length );
     p->restore();
 }
 
@@ -517,6 +535,20 @@ AlbumsItemDelegate::applyCommonStyle( QPainter *p, const QStyleOptionViewItemV4 
         p->setPen(vopt.palette.color(cg, QPalette::Text));
         p->drawRect(vopt.rect.adjusted(0, 0, -1, -1));
     }
+}
+
+Qt::Alignment
+AlbumsItemDelegate::lengthAlignment() const
+{
+    return m_lengthAlignment;
+}
+
+void
+AlbumsItemDelegate::setLengthAlignment( Qt::Alignment a )
+{
+    if( a != Qt::AlignLeft && a != Qt::AlignRight )
+        a = Qt::AlignLeft;
+    m_lengthAlignment = a;
 }
 
 #include <AlbumsView.moc>

@@ -39,6 +39,7 @@ class AlbumsView : public QGraphicsWidget
 {
     Q_OBJECT
     Q_PROPERTY( AlbumsProxyModel::Mode mode READ mode WRITE setMode )
+    Q_PROPERTY( Qt::Alignment lengthAlignment READ lengthAlignment WRITE setLengthAlignment )
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
@@ -49,6 +50,9 @@ public:
 
     AlbumsProxyModel::Mode mode() const;
     void setMode( AlbumsProxyModel::Mode mode );
+
+    Qt::Alignment lengthAlignment() const;
+    void setLengthAlignment( Qt::Alignment alignment );
 
     void clear();
 
@@ -85,10 +89,14 @@ private:
 class AlbumsItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
+    Q_PROPERTY( Qt::Alignment lengthAlignment READ lengthAlignment WRITE setLengthAlignment )
 
 public:
-    AlbumsItemDelegate( QObject *parent = 0 ) : QStyledItemDelegate( parent ) {}
+    AlbumsItemDelegate( QObject *parent = 0 );
     ~AlbumsItemDelegate() {}
+
+    Qt::Alignment lengthAlignment() const;
+    void setLengthAlignment( Qt::Alignment alignment );
 
     void paint( QPainter *p, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
@@ -96,6 +104,7 @@ private:
     void drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
     void drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
     void applyCommonStyle( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    Qt::Alignment m_lengthAlignment;
 };
 
 #endif // multiple inclusion guard

@@ -50,9 +50,11 @@ private slots:
     void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
+    void setRightAlignLength( int state );
 
 private:
     int m_recentCount;
+    bool m_rightAlignLength;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;
 

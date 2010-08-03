@@ -36,6 +36,7 @@
 #include <KConfigDialog>
 
 #include <QAction>
+#include <QCheckBox>
 #include <QFormLayout>
 #include <QPainter>
 #include <QSpinBox>
@@ -45,6 +46,7 @@
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_recentCount( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) )
+    , m_rightAlignLength( Amarok::config("Albums Applet").readEntry("RightAlignLength", false) )
     , m_albumsView( 0 )
 {
     setHasConfigurationInterface( true );
@@ -86,6 +88,8 @@ void Albums::init()
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
+    if( m_rightAlignLength )
+        m_albumsView->setLengthAlignment( Qt::AlignRight );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
@@ -237,8 +241,13 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
     spinBox->setValue( m_recentCount );
     connect( spinBox, SIGNAL(valueChanged(int)), SLOT(setRecentCount(int)) );
 
+    QCheckBox *checkBox = new QCheckBox( i18n( "Enabled" ) );
+    checkBox->setCheckState( m_rightAlignLength ? Qt::Checked : Qt::Unchecked );
+    connect( checkBox, SIGNAL(stateChanged(int)), SLOT(setRightAlignLength(int)) );
+
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow( i18n("Number of recently added albums:"), spinBox );
+    formLayout->addRow( i18n("Right align track lengths:"), checkBox );
 
     QWidget *config = new QWidget;
     config->setLayout( formLayout );
@@ -250,6 +259,12 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
 void Albums::setRecentCount( int val )
 {
     m_recentCount = val;
+}
+
+void Albums::setRightAlignLength( int state )
+{
+    m_rightAlignLength = (state == Qt::Checked );
+    m_albumsView->setLengthAlignment( m_rightAlignLength ? Qt::AlignRight : Qt::AlignLeft );
 }
 
 void Albums::connectSource( const QString &source )
@@ -264,6 +279,7 @@ void Albums::connectSource( const QString &source )
 void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
+    Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
     reconnectSource();
 }
 
