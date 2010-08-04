@@ -34,8 +34,10 @@
 namespace Playdar
 {
     Query::Query( const QString &qid,
-                  Playdar::Controller* controller )
+                  Playdar::Controller* controller,
+                  bool waitForSolution )
     : m_controller( controller )
+    , m_waitForSolution( waitForSolution )
     , m_qid( qid )
     , m_artist( QString( "" ) )
     , m_album( QString( "" ) )
@@ -46,6 +48,13 @@ namespace Playdar
     {
         DEBUG_BLOCK
         
+        if( m_waitForSolution )
+        {
+            m_recievedFirstResults = true;
+            m_controller->getResultsLongPoll( this );
+        }
+        else
+            m_controller->getResults( this );
     }
     
     Query::~Query()
@@ -200,6 +209,9 @@ namespace Playdar
                 m_solved = true;
                 m_trackList.prepend( aTrack );
                 emit querySolved( aTrack );
+                
+                if( m_waitForSolution )
+                    return;
             }
             else
             {

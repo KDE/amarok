@@ -29,7 +29,7 @@ Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collectio
                                        const KUrl &url, MetaProxy::TrackPtr track )
     : m_collection( collection )
     , m_proxyTrack( track )
-    , m_controller( new Playdar::Controller )
+    , m_controller( new Playdar::Controller( true ) )
     , m_query()
 {
     connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),

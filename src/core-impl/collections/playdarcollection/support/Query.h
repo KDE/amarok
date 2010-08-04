@@ -47,7 +47,7 @@ namespace Playdar
         
         public:
             //Constructor and Destructor
-            Query( const QString &qid, Playdar::Controller* controller );
+            Query( const QString &qid, Playdar::Controller* controller, bool waitForSolution );
             ~Query();
             
             /** @return UID for this query given by Playdar */
@@ -104,6 +104,7 @@ namespace Playdar
             
         private:
             QPointer< Playdar::Controller > m_controller;
+            bool m_waitForSolution;
             
             QString m_qid;
             QString m_artist;

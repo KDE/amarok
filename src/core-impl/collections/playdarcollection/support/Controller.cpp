@@ -31,8 +31,9 @@
 
 namespace Playdar {
     
-    Controller::Controller()
+    Controller::Controller( bool queriesShouldWaitForSolutions )
         : m_errorState( ErrorState( NoError ) )
+        , m_queriesShouldWaitForSolutions( queriesShouldWaitForSolutions )
         
     {
         DEBUG_BLOCK
@@ -203,13 +204,12 @@ namespace Playdar {
             return;
         }
         
-        Query* query = new Query( parsedQuery.value( "qid" ).toString(), this );
+        Query* query = new Query( parsedQuery.value( "qid" ).toString(), this, m_queriesShouldWaitForSolutions );
         
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );
         
         connect( query, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                  this, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ) );
-        getResults( query );
     }
 }

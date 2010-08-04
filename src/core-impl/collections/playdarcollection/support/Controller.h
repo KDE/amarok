@@ -52,7 +52,7 @@ namespace Playdar
              * We invoke the private function status() here, return immediately,
              * and will emit playdarReady() once things are actually set up.
              */
-            Controller();
+            Controller( bool queriesShouldWaitForSolutions = false );
             /**
              * Controllers to hold on to anything, so the deconstructor does nothing.
              */
@@ -148,6 +148,7 @@ namespace Playdar
             
         private:
             ErrorState m_errorState;
+            bool m_queriesShouldWaitForSolutions;
     };
 }
 
