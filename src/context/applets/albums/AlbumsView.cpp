@@ -421,8 +421,14 @@ AlbumsItemDelegate::paint( QPainter *p,
         QStyleOptionViewItemV4 vopt( option );
         initStyleOption( &vopt, index );
         const AlbumItem *albumItem = static_cast<const AlbumItem *>( item );
-        int iconOffset = albumItem->iconSize() + 6; // 6 is from the added svg borders
-        vopt.rect.adjust( iconOffset, 0, 0, 0 );
+        int iconSize = albumItem->iconSize();
+        QSize coverSize = albumItem->album()->image( iconSize ).size();
+        coverSize.rwidth() += 6; // take into account of svg borders
+        coverSize.rheight() += 6;
+        qreal aspectRatio = static_cast<qreal>( coverSize.width() ) / coverSize.height();
+        const int margin = vopt.widget->style()->pixelMetric( QStyle::PM_FocusFrameHMargin ) + 1;
+        const int offset = qMin( int(iconSize * aspectRatio), iconSize ) + margin;
+        vopt.rect.adjust( offset, 0, 0, 0 );
         drawAlbumText( p, vopt );
     }
     else if( item->type() == TrackType )
@@ -438,7 +444,7 @@ void
 AlbumsItemDelegate::drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &vopt ) const
 {
     const QModelIndex &index = vopt.index;
-    const QRect &textRect = vopt.rect.adjusted( 2, 0, -4, 0 );
+    const QRect &textRect = vopt.rect.adjusted( 4, 0, -4, 0 );
 
     p->save();
     p->setClipRect( textRect );
