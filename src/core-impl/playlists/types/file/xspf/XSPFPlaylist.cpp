@@ -200,7 +200,14 @@ XSPFPlaylist::tracks()
             trackPtr = CollectionManager::instance()->trackForUrl( track.location );
         if ( trackPtr )
         {
-            if( !trackPtr->isPlayable() )
+            /**
+             * NOTE: If this is a MetaProxy::Track, it probably isn't playable yet,
+             *       but that's okay. However, it's not a good idea to get another
+             *       one from the same provider, since the proxy probably means that
+             *       making one involves quite a bit of work.
+             *         - Andy Coder <andrew.coder@gmail.com>
+             */
+            if( !trackPtr->isPlayable() && ( typeid( * trackPtr.data() ) != typeid( MetaProxy::Track ) ) )
                 trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
         }
 
