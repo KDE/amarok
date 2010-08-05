@@ -31,7 +31,7 @@ public:
     enum Encoder
     {
         NULL_CODEC = 0, //null codec
-        AAC,          //aac
+        AAC,          //aac (would libfaac be better?)
         ALAC,         //alac
         FLAC,         //flac
         MP3,          //libmp3lame
@@ -57,6 +57,7 @@ public:
     static QString prettyName( Encoder encoder );
     static QString description( Encoder encoder );
     static KIcon icon( Encoder encoder );
+
 
 private:
     explicit TranscodeFormat( Encoder encoder );

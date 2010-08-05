@@ -17,6 +17,7 @@
 #include "TranscodeOptionsWidget.h"
 
 #include "core/support/Debug.h"
+#include "core/transcoding/TranscodeConfigurationElement.h"
 
 #include <KIcon>
 
@@ -71,12 +72,18 @@ TranscodeOptionsWidget::initCodecPage( TranscodeFormat::Encoder encoder )
     {
         QHBoxLayout *lineLayout = new QHBoxLayout( codecWidget );
         mainLayout->addLayout( lineLayout );
-        QLabel *qualityLabel = new QLabel( i18n( "Quality" ), codecWidget );
+        TranscodeConfigurationElement element =
+                TranscodeConfigurationElement::Numeric( i18n("Quality"), 7, 0, 10 );
+        QWidget *config = element.createConfigurationWidget( codecWidget );
+        debug()<< "Created config widget for " << (int)encoder;
+        lineLayout->addWidget( config );
+        /*QLabel *qualityLabel = new QLabel( i18n( "Quality" ), codecWidget );
         lineLayout->addWidget( qualityLabel );
         QSpinBox *qualityEdit = new QSpinBox( codecWidget );
         lineLayout->addWidget( qualityEdit );
         qualityEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-        lineLayout->setStretch( lineLayout->indexOf( qualityEdit ), 1 );
+        lineLayout->setStretch( lineLayout->indexOf( qualityEdit ), 1 );*/
+
         lineLayout->addStretch( 2 );
     }
     else if( encoder == TranscodeFormat::ALAC )

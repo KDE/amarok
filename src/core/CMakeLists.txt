@@ -79,6 +79,7 @@ set(libcore_support_SRCS
 
 set(libcore_transcoding_SRCS
     transcoding/TranscodeFormat.cpp
+    transcoding/TranscodeConfigurationElement.cpp
 )
 
 #####################################################################
