@@ -193,12 +193,12 @@ DEBUG_BLOCK
     Meta::AlbumList ret;
     foreach( KIO::UDSEntry entry, list ) {
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.album.musicAlbum" ) {
-            debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
-            ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
+            debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) << entry.stringValue(KIO::UPNP_ARTIST);
+            ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ), entry.stringValue( KIO::UPNP_ARTIST ) );
         }
         else {
             if( entry.contains( KIO::UPNP_ALBUM ) ) {
-                ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UPNP_ALBUM ) );
+                ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UPNP_ALBUM ), entry.stringValue( KIO::UPNP_ARTIST ) );
             }
             else {
                 runStat( entry.stringValue( KIO::UPNP_ID ) );
