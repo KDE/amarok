@@ -54,8 +54,10 @@ UpnpQueryMakerInternal::~UpnpQueryMakerInternal()
 void UpnpQueryMakerInternal::queueJob(KIO::SimpleJob* job)
 {
     KUrl url = job->url();
-    debug() << "+-+- RUNNING JOB WITH" << url;
+    debug() << "+-+- RUNNING JOB WITH" << url.prettyUrl();
+    m_collection->assignJob( job );
     m_jobCount++;
+    job->start();
 }
 
 void UpnpQueryMakerInternal::runQuery( KUrl query, bool filter )

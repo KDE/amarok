@@ -40,6 +40,7 @@ class QTimer;
 namespace Collections {
 
 class UpnpQueryMaker;
+class UpnpQueryMakerInternal;
 class UpnpCache;
 
 class UpnpSearchCollection : public UpnpCollectionBase
@@ -63,6 +64,8 @@ class UpnpSearchCollection : public UpnpCollectionBase
     QStringList m_searchCapabilities;
 
     UpnpCache *m_cache;
+
+  friend class UpnpQueryMakerInternal;
 };
 
 } //namespace Collections
