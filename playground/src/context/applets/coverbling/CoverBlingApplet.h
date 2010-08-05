@@ -91,6 +91,7 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
         PictureFlow::ReflectionEffect m_reflectionEffect;
         bool m_openGL;
         bool m_album_or_artist;
+        bool m_initrandompos;
 };
 
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )

@@ -154,7 +154,7 @@ CoverBlingApplet::init()
     m_editsearch->setDefaultTextColor( Qt::white );
     m_album_or_artist = true;
     displaySearchName();
-
+	m_initrandompos = config.readEntry( "RandomPos", false );
     constraintsEvent();
 }
 
@@ -189,6 +189,18 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
     connect( m_albumsearch, SIGNAL( clicked() ), this, SLOT( switchSearchIcon() ) );
     connect( m_editsearch, SIGNAL( editionValidated( QString ) ), this, SLOT( albumSearch( QString ) ) );
+    if (m_initrandompos)
+    {
+		int nbAlbums = m_pictureflow->slideCount() -1;
+		int initial_pos = rand() % nbAlbums;
+		if ( m_animatejump )
+        {
+            m_pictureflow->showSlide( initial_pos );
+        }
+        else
+           m_pictureflow->skipToSlide( initial_pos );
+        slideChanged( initial_pos );
+	}
 }
 
 void CoverBlingApplet::slideChanged( int islideindex )
@@ -315,6 +327,7 @@ void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.coversizeSpin->setValue( m_coversize );
     ui_Settings.autoJumpChk->setChecked( m_autojump );
     ui_Settings.animJumpChk->setChecked( m_animatejump );
+    ui_Settings.randomPosChk->setChecked( m_initrandompos );
 	//if (m_openGL) ui_Settings.renderingCombo->setCurrentIndex(1);
 	//else ui_Settings.renderingCombo->setCurrentIndex(0);
     parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system" );
@@ -336,11 +349,13 @@ void CoverBlingApplet::saveSettings()
 		 //m_openGL = false;
     m_autojump = ui_Settings.autoJumpChk->isChecked();
     m_animatejump = ui_Settings.animJumpChk->isChecked();
+    m_initrandompos = ui_Settings.randomPosChk->isChecked();
     KConfigGroup config = Amarok::config( "CoverBling Applet" );
     config.writeEntry( "CoverSize", m_coversize );
     config.writeEntry( "ReflectionEffect", ( int ) m_reflectionEffect );
     config.writeEntry( "AutoJump", m_autojump );
     config.writeEntry( "AnimateJump", m_animatejump );
+    config.writeEntry( "RandomPos", m_initrandompos );
 	//config.writeEntry( "OpenGL", (int) m_openGL );
 
     constraintsEvent();
