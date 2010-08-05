@@ -107,7 +107,7 @@ Meta::TrackPtr UpnpCache::getTrack( const KIO::UDSEntry &entry, bool refresh )
     artist->addTrack( track );
     track->setArtist( artist );
 
-    Meta::UpnpAlbumPtr album = Meta::UpnpAlbumPtr::staticCast( getAlbum( entry.stringValue( KIO::UPNP_ALBUM ) ) );
+    Meta::UpnpAlbumPtr album = Meta::UpnpAlbumPtr::staticCast( getAlbum( entry.stringValue( KIO::UPNP_ALBUM ), artist->name() ) );
     album->setAlbumArtist( artist );
     album->addTrack( track );
     track->setAlbum( album );
@@ -143,12 +143,13 @@ Meta::ArtistPtr UpnpCache::getArtist( const QString& name )
     return m_artistMap[name];
 }
 
-Meta::AlbumPtr UpnpCache::getAlbum(const QString& name)
+Meta::AlbumPtr UpnpCache::getAlbum(const QString& name, const QString &artist )
 {
     if( m_albumMap.contains( name ) )
         return m_albumMap[name];
 
     Meta::UpnpAlbumPtr album( new Meta::UpnpAlbum( name ) );
+    album->setAlbumArtist( Meta::UpnpArtistPtr::staticCast( getArtist( artist ) ) );
     m_albumMap.insert( name, Meta::AlbumPtr::staticCast( album ) );
     return m_albumMap[name];
 }

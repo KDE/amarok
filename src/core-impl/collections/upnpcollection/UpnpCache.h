@@ -39,7 +39,7 @@ public:
 
     Meta::TrackPtr getTrack( const KIO::UDSEntry &entry, bool refresh = false );
     Meta::ArtistPtr getArtist( const QString &name );
-    Meta::AlbumPtr getAlbum( const QString &name );
+    Meta::AlbumPtr getAlbum( const QString& name, const QString& artist = QString() );
     Meta::GenrePtr getGenre( const QString &name );
     Meta::YearPtr getYear( const QString &name );
 
