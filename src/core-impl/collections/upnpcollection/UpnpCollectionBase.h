@@ -31,8 +31,9 @@
 #include <solid/device.h>
 
 namespace KIO {
-  class Job;
-  class ListJob;
+    class Slave;
+    class Job;
+    class SimpleJob;
 }
 class KJob;
 
@@ -57,13 +58,21 @@ class UpnpCollectionBase : public Collections::Collection
   Q_OBJECT
   public:
     UpnpCollectionBase( Solid::Device );
+    virtual ~UpnpCollectionBase();
     void removeCollection() { emit remove(); }
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     bool possiblyContainsTrack( const KUrl &url ) const;
+
+  private slots:
+    void slotSlaveError( KIO::Slave *slave, int err, const QString &msg );
+    void slotSlaveConnected( KIO::Slave *slave );
   protected:
+    void assignJob( KIO::SimpleJob *job );
     const Solid::Device m_device;
+    KIO::Slave *m_slave;
+    bool m_slaveConnected;
 };
 
 } //namespace Collections

@@ -21,19 +21,32 @@
 #include <kio/upnptypes.h>
 #include <kio/scheduler.h>
 #include <kio/jobclasses.h>
+#include <kio/slave.h>
 
-namespace KIO {
-  class Job;
-  class ListJob;
-}
-class KJob;
+#include "core/support/Debug.h"
 
 namespace Collections {
 
 UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
     : Collection()
     , m_device( dev )
+    , m_slave( 0 )
+    , m_slaveConnected( false )
 {
+    KIO::Scheduler::connect( SIGNAL(slaveError(KIO::Slave*,int,QString)),
+                             this, SLOT(slotSlaveError(KIO::Slave*,int,QString)) );
+    KIO::Scheduler::connect( SIGNAL(slaveConnected(KIO::Slave*)),
+                             this, SLOT(slotSlaveConnected(KIO::Slave*)) );
+    m_slave = KIO::Scheduler::getConnectedSlave( collectionId() );
+}
+
+UpnpCollectionBase::~UpnpCollectionBase()
+{
+    if( m_slave ) {
+        KIO::Scheduler::disconnectSlave( m_slave );
+        m_slave = 0;
+        m_slaveConnected = false;
+    }
 }
 
 QString UpnpCollectionBase::collectionId() const
@@ -53,6 +66,38 @@ bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
 //         && url.port() == m_device.port() )
         return true;
     return false;
+}
+
+void UpnpCollectionBase::assignJob( KIO::SimpleJob *job )
+{
+    KIO::Scheduler::assignJobToSlave( m_slave, job );
+}
+
+void UpnpCollectionBase::slotSlaveError(KIO::Slave* slave, int err, const QString& msg)
+{
+    debug() << "SLAVE ERROR" << slave << err << msg;
+    if( m_slave != slave )
+        return;
+
+    if( err == KIO::ERR_COULD_NOT_CONNECT
+        || err == KIO::ERR_CONNECTION_BROKEN ) {
+        debug() << "COULD NOT CONNECT TO " << msg << "REMOVING THE COLLECTION";
+        emit remove();
+    }
+
+    if( err == KIO::ERR_SLAVE_DIED ) {
+        m_slave = 0;
+        emit remove();
+    }
+}
+
+void UpnpCollectionBase::slotSlaveConnected(KIO::Slave* slave)
+{
+    if( m_slave != slave )
+        return;
+
+    debug() << "SLAVE IS CONNECTED";
+    m_slaveConnected = true;
 }
 
 } //namespace Collections
