@@ -158,8 +158,9 @@ DEBUG_BLOCK
                  break;
              default:
                  debug() << this << "Default case: Query type";
-                 queryList << "( upnp:class derivedfrom \"object.item.audioItem\" )";
-                 break;
+                 // we don't support any other attribute
+                 emit queryDone();
+                 return;
         }
     }
 
