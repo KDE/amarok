@@ -124,6 +124,11 @@ DEBUG_BLOCK
                 break;
         }
     }
+    // we don't deal with compilations
+    else if( m_queryType == Album && m_albumMode == OnlyCompilations ) {
+        emit queryDone();
+        return;
+    }
 
     QStringList queryList;
     if( m_query.hasMatchFilter() || !m_numericFilters.empty() ) {
