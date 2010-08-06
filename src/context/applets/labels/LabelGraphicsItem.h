@@ -46,12 +46,12 @@ private:
     bool                m_selected;
     QPixmap             m_addLabelPixmap;
     QPixmap             m_removeLabelPixmap;
-    QPixmap             m_blacklistLabelPixmap;
     QPixmap             m_listLabelPixmap;
+    QPixmap             m_blacklistLabelPixmap;
     QGraphicsPixmapItem *m_addLabelItem;
     QGraphicsPixmapItem *m_removeLabelItem;
-    QGraphicsPixmapItem *m_blacklistLabelItem;
     QGraphicsPixmapItem *m_listLabelItem;
+    QGraphicsPixmapItem *m_blacklistLabelItem;
     
 signals:
     void toggled( const QString &label );

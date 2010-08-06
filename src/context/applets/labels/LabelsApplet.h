@@ -52,6 +52,7 @@ public slots:
     void dataUpdated( const QString &name, const Plasma::DataEngine::Data &data );
     void connectSource( const QString &source );
     void toggleLabel( const QString &label );
+    void listLabel( const QString &label );
     void blacklistLabel( const QString &label );
     void addLabelPressed();
     void saveSettings();

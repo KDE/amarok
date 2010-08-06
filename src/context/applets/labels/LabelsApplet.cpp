@@ -30,6 +30,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "amarokurls/AmarokUrl.h"
 
 // KDE
 #include <KConfigDialog>
@@ -296,6 +297,7 @@ LabelsApplet::updateLabels()
         LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), i_size, this );
         if( m_currentLabels.contains( it_final.key() ) ) labelGraphics->setSelected( true );
         connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
+        connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
         connect( labelGraphics, SIGNAL( blacklisted( const QString & ) ), this, SLOT( blacklistLabel( const QString & ) ) );
         m_labelItems.append( labelGraphics );
     }
@@ -517,6 +519,16 @@ LabelsApplet::toggleLabel( const QString &label )
     }
     
     updateLabels();
+}
+
+void
+LabelsApplet::listLabel( const QString &label )
+{
+    DEBUG_BLOCK
+    debug() << "listing tracks with label: " << label;
+
+    AmarokUrl bookmark( "amarok://navigate/collections?filter=label:%22" + label + "%22" );
+    bookmark.run();
 }
 
 void
