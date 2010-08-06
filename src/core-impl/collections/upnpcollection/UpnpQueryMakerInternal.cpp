@@ -33,7 +33,7 @@ namespace Collections {
 
 // use filter for faster data transfer and parsing
 // if cached tracks > remote tracks * CACHE_CHECK_THRESHOLD
-static const float CACHE_CHECK_THRESHOLD = 0.25f;
+static const float CACHE_CHECK_THRESHOLD = 0.75f;
     
 UpnpQueryMakerInternal::UpnpQueryMakerInternal( UpnpSearchCollection *collection )
     : m_collection( collection )
