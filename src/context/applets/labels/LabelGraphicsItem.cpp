@@ -91,11 +91,14 @@ void LabelGraphicsItem::setDeltaPointSize( int deltaPointSize )
 
 void LabelGraphicsItem::setSelected( bool selected )
 {
+    QPalette p;
+    QColor c = p.color( QPalette::WindowText );
+    
     m_selected = selected;
     if( m_selected )
         setDefaultTextColor( QColor(0, 110, 0) );
     else
-        setDefaultTextColor( QColor(0, 0, 0) );
+        setDefaultTextColor( c );
     
     if( isUnderMouse() )
     {
@@ -140,10 +143,13 @@ void LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     m_listLabelItem->hide();
     m_blacklistLabelItem->hide();
     
+    QPalette p;
+    QColor c = p.color( QPalette::WindowText );
+
     if( m_selected )
         setDefaultTextColor( QColor(0, 110, 0) );
     else
-        setDefaultTextColor( QColor(0, 0, 0) );
+        setDefaultTextColor( c );
     
     update();
 }
