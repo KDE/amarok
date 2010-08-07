@@ -88,7 +88,7 @@ QString
 SortLevel::prettyName() const
 {
     if( m_category == -1 )
-        return i18n( "Random" );
+        return i18n( "Shuffle" );
     return columnNames.at( m_category );
 }
 

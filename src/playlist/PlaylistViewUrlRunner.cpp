@@ -69,9 +69,9 @@ ViewUrlRunner::run( AmarokUrl url )
         QStringList levels = sortPath.split( '-' );
         foreach( const QString &level, levels )
         {
-            if( level == QString( "Random" ) )
+            if( level == QString( "Random" ) || level == QString( "Shuffle" ) ) //we keep "Random" for compatibility
             {
-                playlistDock->sortWidget()->addLevel( level );
+                playlistDock->sortWidget()->addLevel( QString( "Shuffle" ) );
                 break;
             }
             QStringList levelParts = level.split( '_' );

@@ -54,7 +54,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
 
     //And then the main breadcrumb button...
     bool noArrow = false;
-    if( m_name == "Random" )
+    if( m_name == "Shuffle" )
         noArrow = true;
     m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), noArrow, this );
 
@@ -119,8 +119,8 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
         //FIXME: this menu should have the same margins as other Playlist::Breadcrumb and
         //       BrowserBreadcrumb menus.
     }
-    QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Random" ) ) );
-    action->setData( "Random" );
+    QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Shuffle" ) ) );
+    action->setData( "Shuffle" );
 
     connect( m_menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
@@ -139,7 +139,7 @@ BreadcrumbAddMenuButton::siblingTriggered( QAction *action )
 void
 BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
-    if( usedBreadcrumbLevels.contains( "Random" ) )
+    if( usedBreadcrumbLevels.contains( "Shuffle" ) )
         hide();
     else
         show();

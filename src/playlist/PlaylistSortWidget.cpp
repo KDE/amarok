@@ -66,9 +66,9 @@ SortWidget::SortWidget( QWidget *parent )
         QStringList levels = sortPath.split( '-' );
         foreach( const QString &level, levels )
         {
-            if( level == QString( "Random" ) )
+            if( level == QString( "Shuffle" ) || level == QString( "Random" ) ) //we keep "Random" for compatibility
             {
-                addLevel( level );
+                addLevel( QString( "Shuffle" ) );
                 break;
             }
             QStringList levelParts = level.split( '_' );
@@ -147,7 +147,7 @@ SortWidget::updateSortScheme()
     for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
     {
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
-        int category = ( name == "Random" ) ? -1 : internalColumnNames.indexOf( name );
+        int category = ( name == "Shuffle" ) ? -1 : internalColumnNames.indexOf( name );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         scheme.addLevel( SortLevel( category, sortOrder ) );
     }
@@ -165,7 +165,7 @@ SortWidget::sortPath() const
     {
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString level = ( name == "Random" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
+        QString level = ( name == "Shuffle" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
         path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
     }
     return path;
@@ -180,7 +180,7 @@ SortWidget::prettySortPath() const
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         QString prettyName( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->prettyName() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString prettyLevel = ( name == "Random" ) ? prettyName : ( prettyName + ( sortOrder ? "↓" : "↑" ) );
+        QString prettyLevel = ( name == "Shuffle" ) ? prettyName : ( prettyName + ( sortOrder ? "↓" : "↑" ) );
         prettyPath.append( ( i == m_ribbon->count() - 1 ) ? prettyLevel : ( prettyLevel + " > " ) );
         //TODO: see how this behaves on RTL systems
     }
