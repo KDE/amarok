@@ -18,9 +18,9 @@
 
 #include "core/support/Amarok.h"
 
-#include <QDomNodeList>
 #include <QRegExp>
 #include <QSet>
+#include <QXmlStreamReader>
 
 #define DEBUG_PREFIX "CoverFetchUnit"
 #include "core/support/Debug.h"
@@ -209,11 +209,18 @@ CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album, const 
     prepareUrls();
 }
 
-CoverFetchInfoPayload::CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &xml )
+CoverFetchInfoPayload::CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &data )
     : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Info, src )
-    , m_xml( QString::fromUtf8( xml ) )
 {
-    prepareUrls();
+    switch( src )
+    {
+    default:
+        prepareUrls();
+        break;
+    case CoverFetch::Discogs:
+        prepareDiscogsUrls( data );
+        break;
+    }
 }
 
 CoverFetchInfoPayload::~CoverFetchInfoPayload()
@@ -245,13 +252,6 @@ CoverFetchInfoPayload::prepareUrls()
         metadata[ "source" ] = "Last.fm";
         metadata[ "method" ] = method();
         break;
-
-    case CoverFetch::Discogs:
-        QDomDocument doc;
-        if( doc.setContent( m_xml ) )
-            prepareDiscogsUrls( doc );
-        break;
-
     }
 
     if( url.isValid() )
@@ -259,38 +259,58 @@ CoverFetchInfoPayload::prepareUrls()
 }
 
 void
-CoverFetchInfoPayload::prepareDiscogsUrls( const QDomDocument &doc )
+CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
 {
-    const QDomElement &docElem = doc.documentElement();
-
-    const QDomNode &respNode = docElem.namedItem( "resp" );
-    if( respNode.hasAttributes() )
+    QXmlStreamReader xml( QString::fromUtf8(data) );
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        const QString &stat = respNode.attributes().namedItem( "stat" ).nodeValue();
-        if( stat != "ok" )
-            return;
-    }
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "searchresults" )
+        {
+            while( !xml.atEnd() && !xml.hasError() )
+            {
+                xml.readNext();
+                const QStringRef &n = xml.name();
+                if( xml.isEndElement() && n == "searchresults" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
+                if( n == "result" )
+                {
+                    while( !xml.atEnd() && !xml.hasError() )
+                    {
+                        xml.readNext();
+                        if( xml.isEndElement() && n == "result" )
+                            break;
+                        if( !xml.isStartElement() )
+                            continue;
+                        if( xml.name() == "uri" )
+                        {
+                            KUrl releaseUrl( xml.readElementText() );
+                            QString releaseStr = releaseUrl.url( KUrl::RemoveTrailingSlash );
+                            QString releaseId = releaseStr.split( '/' ).last();
 
-    const QDomNodeList &results = docElem.namedItem( "searchresults" ).childNodes();
-    for( uint x = 0, len = results.length(); x < len; ++x )
-    {
-        const QDomNode resultNode = results.item( x );
-        const KUrl releaseUrl     = resultNode.namedItem( "uri" ).toElement().text();
-        const QString releaseStr  = releaseUrl.url( KUrl::RemoveTrailingSlash );
-        const QString releaseId   = releaseStr.split( '/' ).last();
+                            KUrl url;
+                            url.setScheme( "http" );
+                            url.setHost( "www.discogs.com" );
+                            url.setPath( "/release/" + releaseId );
+                            url.addQueryItem( "api_key", Amarok::discogsApiKey() );
+                            url.addQueryItem( "f", "xml" );
 
-        KUrl url;
-        url.setScheme( "http" );
-        url.setHost( "www.discogs.com" );
-        url.setPath( "/release/" + releaseId );
-        url.addQueryItem( "api_key", Amarok::discogsApiKey() );
-        url.addQueryItem( "f", "xml" );
+                            CoverFetch::Metadata metadata;
+                            metadata[ "source" ] = "Discogs";
 
-        CoverFetch::Metadata metadata;
-        metadata[ "source" ] = "Discogs";
-
-        if( url.isValid() )
-            m_urls.insert( url, metadata );
+                            if( url.isValid() )
+                                m_urls.insert( url, metadata );
+                        }
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+                else
+                    xml.skipCurrentElement();
+            }
+        }
     }
 }
 
@@ -426,101 +446,103 @@ CoverFetchArtPayload::setXml( const QByteArray &xml )
 void
 CoverFetchArtPayload::prepareUrls()
 {
-    QDomDocument doc;
-    if( ( m_src != CoverFetch::Google ) && !doc.setContent( m_xml ) )
+    if( m_src == CoverFetch::Google )
     {
-        debug() << QString( "The xml obtained from %1 is invalid." ).arg( sourceString() );
+        // google is special
+        prepareGoogleUrls();
         return;
     }
 
+    QXmlStreamReader xml( m_xml );
     switch( m_src )
     {
+    default:
     case CoverFetch::LastFm:
-        prepareLastFmUrls( doc );
+        prepareLastFmUrls( xml );
         break;
     case CoverFetch::Yahoo:
-        prepareYahooUrls( doc );
-        break;
-    case CoverFetch::Google:
-        prepareGoogleUrls( m_xml );
+        prepareYahooUrls( xml );
         break;
     case CoverFetch::Discogs:
-        prepareDiscogsUrls( doc );
+        prepareDiscogsUrls( xml );
         break;
+    }
+
+    if( xml.hasError() )
+    {
+        debug() << QString( "Error occured when pareparing %1 urls: %2" )
+                                .arg( sourceString(), xml.errorString() );
     }
 }
 
 void
-CoverFetchArtPayload::prepareDiscogsUrls( const QDomDocument &doc )
+CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
 {
-    const QDomElement &docElem = doc.documentElement();
-    const QDomNode &respNode = docElem.namedItem( "resp" );
-    if( respNode.hasAttributes() )
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        const QString &stat = respNode.attributes().namedItem( "stat" ).nodeValue();
-        if( stat != "ok" )
-            return;
-    }
+        xml.readNext();
+        if( !xml.isStartElement() || xml.name() != "release" )
+            continue;
 
-    CoverFetch::Metadata metadata;
-    const QDomNode &releaseNode = docElem.namedItem( "release" );
-    if( releaseNode.hasAttributes() )
-    {
-        const QDomNamedNodeMap attr = releaseNode.attributes();
-        metadata[ "releaseid" ] = attr.namedItem( "id" ).nodeValue();
-    }
-
-    // TODO: there are a lot more discogs info that can be extracted as metadata.
-    metadata[ "notes" ] = releaseNode.namedItem( "notes" ).toElement().text();
-    metadata[ "title" ] = releaseNode.namedItem( "title" ).toElement().text();
-    metadata[ "country" ] = releaseNode.namedItem( "country" ).toElement().text();
-    metadata[ "released" ] = releaseNode.namedItem( "released" ).toElement().text();
-    metadata[ "source" ] = "Discogs";
-
-    const QDomNodeList imageNodes = releaseNode.namedItem( "images" ).childNodes();
-    for( uint x = 0, len = imageNodes.length(); x < len; ++x )
-    {
-        const QDomNode &node = imageNodes.item( x );
-        if( node.hasAttributes() )
+        const QString releaseId = xml.attributes().value( "id" ).toString();
+        while( !xml.atEnd() && !xml.hasError() )
         {
-            const QDomNamedNodeMap attr = node.attributes();
-            const QString thburl = attr.namedItem( "uri150" ).nodeValue();
-            const KUrl uri       = attr.namedItem( "uri"    ).nodeValue();
-
-            KUrl url;
-            switch( m_size )
-            {
-            case CoverFetch::NormalSize:
-                url = uri;
+            xml.readNext();
+            const QStringRef &n = xml.name();
+            if( xml.isEndElement() && n == "release" )
                 break;
-            case CoverFetch::ThumbSize:
-            default:
-                url = KUrl( thburl );
-                break;
-            }
-
-            if( !url.isValid() )
+            if( !xml.isStartElement() )
                 continue;
 
-            const QString height = attr.namedItem( "height" ).nodeValue();
-            const QString width  = attr.namedItem( "width"  ).nodeValue();
-            const QString type   = attr.namedItem( "type"   ).nodeValue();
-            const QString relUrl = "http://discogs.com/release/" + metadata.value( "releaseid" );
+            CoverFetch::Metadata metadata;
+            metadata[ "source" ] = "Discogs";
+            if( n == "title" )
+                metadata[ "title" ] = xml.readElementText();
+            else if( n == "country" )
+                metadata[ "country" ] = xml.readElementText();
+            else if( n == "released" )
+                metadata[ "released" ] = xml.readElementText();
+            else if( n == "notes" )
+                metadata[ "notes" ] = xml.readElementText();
+            else if( n == "images" )
+            {
+                while( !xml.atEnd() && !xml.hasError() )
+                {
+                    xml.readNext();
+                    if( xml.isEndElement() && xml.name() == "images" )
+                        break;
+                    if( !xml.isStartElement() )
+                        continue;
+                    if( xml.name() == "image" )
+                    {
+                        const QXmlStreamAttributes &attr = xml.attributes();
+                        const KUrl thburl( attr.value( "uri150" ).toString() );
+                        const KUrl uri( attr.value( "uri" ).toString() );
+                        const KUrl url = (m_size == CoverFetch::ThumbSize) ? thburl : uri;
+                        if( !url.isValid() )
+                            continue;
 
-            metadata[ "releaseurl"   ] = relUrl;
-            metadata[ "normalarturl" ] = uri.url();
-            metadata[ "thumbarturl"  ] = thburl;
-            metadata[ "width"        ] = width;
-            metadata[ "height"       ] = height;
-            metadata[ "type"         ] = type;
-
-            m_urls.insert( url, metadata );
+                        metadata[ "releaseid"    ] = releaseId;
+                        metadata[ "releaseurl"   ] = "http://discogs.com/release/" + releaseId;
+                        metadata[ "normalarturl" ] = uri.url();
+                        metadata[ "thumbarturl"  ] = thburl.url();
+                        metadata[ "width"        ] = attr.value( "width"  ).toString();
+                        metadata[ "height"       ] = attr.value( "height" ).toString();
+                        metadata[ "type"         ] = attr.value( "type"   ).toString();
+                        m_urls.insert( url, metadata );
+                    }
+                    else
+                        xml.skipCurrentElement();
+                }
+            }
+            else
+                xml.skipCurrentElement();
         }
     }
 }
 
 void
-CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
+CoverFetchArtPayload::prepareGoogleUrls()
 {
     // code based on Audex CDDA Extractor
     const QString filter = "a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)\\~\\!";
@@ -528,6 +550,7 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
     rx.setMinimal( true );
 
     int pos = 0;
+    QString html = m_xml;
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
         KUrl url( "http://www.google.com" + rx.cap( 1 ) );
@@ -543,14 +566,15 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
         if( !rx.cap( 2 ).isEmpty() )
             metadata[ "thumbarturl" ] = rx.cap( 2 );
 
+        url.clear();
         switch( m_size )
         {
-        case CoverFetch::NormalSize:
-            url = metadata.value( "normalarturl" );
-            break;
-        case CoverFetch::ThumbSize:
         default:
-            url = metadata.value( "thumbarturl" );
+        case CoverFetch::ThumbSize:
+            url = KUrl( metadata.value( "thumbarturl" ) );
+            break;
+        case CoverFetch::NormalSize:
+            url = KUrl( metadata.value( "normalarturl" ) );
             break;
         }
 
@@ -562,161 +586,129 @@ CoverFetchArtPayload::prepareGoogleUrls( const QString &html )
 }
 
 void
-CoverFetchArtPayload::prepareLastFmUrls( const QDomDocument &doc )
+CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
 {
-    QString albumArtist;
-    QDomNodeList results;
-    QSet< QString > artistSet;
-    const QString &searchMethod = method();
-
-    if( searchMethod == "album.getinfo" )
+    QSet<QString> artistSet;
+    if( method() == "album.getinfo" )
     {
-        results = doc.documentElement().childNodes();
-        albumArtist = normalize( album()->albumArtist()->name() );
+        artistSet << normalize( album()->albumArtist()->name() );
     }
-    else if( searchMethod == "album.search" )
+    else if( method() == "album.search" )
     {
-        results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
-
         if( !m_wild && album() )
         {
             const Meta::TrackList tracks = album()->tracks();
             QStringList artistNames( "Various Artists" );
             foreach( const Meta::TrackPtr &track, tracks )
-            {
                 artistNames << track->artist()->name();
-            }
             artistSet = normalize( artistNames ).toSet();
         }
     }
     else return;
 
-    for( uint x = 0, len = results.length(); x < len; ++x )
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        const QDomNode albumNode = results.item( x );
-        const QString artist = normalize( albumNode.namedItem( "artist" ).toElement().text() );
-
-        if( searchMethod == "album.getinfo" && artist != albumArtist )
-            continue;
-        else if( searchMethod == "album.search" && !m_wild && !artistSet.contains( artist ) )
+        xml.readNext();
+        if( !xml.isStartElement() || xml.name() != "album" )
             continue;
 
-        KUrl url;
         CoverFetch::Metadata metadata;
         metadata[ "source" ] = "Last.fm";
-
-        const QDomNodeList list = albumNode.childNodes();
-        for( int i = 0, count = list.count(); i < count; ++i )
+        while( !xml.atEnd() && !xml.hasError() )
         {
-            const QDomNode &node = list.item( i );
-            if( node.nodeName() == "image" && node.hasAttributes() )
+            xml.readNext();
+            const QStringRef &n = xml.name();
+            if( xml.isEndElement() && n == "album" )
+                break;
+            if( !xml.isStartElement() )
+                continue;
+
+            const QString &elemText = xml.readElementText();
+            if( n == "name" )
             {
-                if( !node.isElement() )
+                metadata[ "name" ] = elemText;
+            }
+            else if( n == "artist" )
+            {
+                if( !artistSet.contains( elemText ) )
                     continue;
-
-                const QString elementText = node.toElement().text();
-                const QString sizeStr = node.attributes().namedItem( "size" ).nodeValue();
+                metadata[ "artist" ] = elemText;
+            }
+            else if( n == "url" )
+            {
+                metadata[ "releaseurl" ] = elemText;
+            }
+            else if( n == "image" )
+            {
+                const QString &sizeStr = xml.attributes().value("size").toString();
                 enum CoverFetch::ImageSize imageSize = str2CoverSize( sizeStr );
-
                 switch( imageSize )
                 {
                 case CoverFetch::ThumbSize:
-                    metadata[ "thumbarturl" ] = elementText;
+                    metadata[ "thumbarturl" ] = elemText;
                     break;
                 case CoverFetch::NormalSize:
-                    metadata[ "normalarturl" ] = elementText;
+                    metadata[ "normalarturl" ] = elemText;
                     break;
                 default:
                     continue;
                 }
-
-                if( m_size == imageSize )
-                    url = elementText;
+                m_urls.insert( KUrl( elemText ), metadata );
             }
         }
-
-        if( !url.isValid() )
-            continue;
-
-        QStringList tags;
-        tags << "name" << "artist";
-        foreach( const QString &tag, tags )
-        {
-            const QDomElement e = albumNode.namedItem( tag ).toElement();
-            if( !e.isNull() )
-                metadata[ tag ] = e.text();
-        }
-
-        const QDomElement urlElem = albumNode.namedItem( "url" ).toElement();
-        if( !urlElem.isNull() )
-            metadata[ "releaseurl" ] = urlElem.text();
-
-        if( url.isValid() )
-            m_urls.insert( url, metadata );
     }
 }
 
 void
-CoverFetchArtPayload::prepareYahooUrls( const QDomDocument &doc )
+CoverFetchArtPayload::prepareYahooUrls( QXmlStreamReader &xml )
 {
-    const QDomNodeList results = doc.documentElement().namedItem( "resultset_images" ).childNodes();
-    for( uint x = 0, len = results.length(); x < len; ++x )
+    while( !xml.atEnd() && !xml.hasError() )
     {
-        const QDomNode albumNode = results.item( x );
-        const KUrl url = albumNode.namedItem( coverSize2str( imageSize() ) ).toElement().text();
-        if( !url.isValid() )
+        xml.readNext();
+        if( !xml.isStartElement() || xml.name() != "resultset_images" )
             continue;
 
-        CoverFetch::Metadata metadata;
-        metadata[ "source" ] = "Yahoo!";
-        metadata[ "thumbarturl" ] = albumNode.namedItem( "thumbnail_url" ).toElement().text();
-        metadata[ "normalarturl" ] = albumNode.namedItem( "url" ).toElement().text();
-
-        const QDomNodeList list = albumNode.childNodes();
-        for( int i = 0, count = list.count(); i < count; ++i )
+        while( !xml.atEnd() && !xml.hasError() )
         {
-            const QDomNode &node = list.item( i );
-            if( node.isElement() )
+            xml.readNext();
+            if( xml.isEndElement() && xml.name() == "resultset_images" )
+                break;
+            if( !xml.isStartElement() )
+                continue;
+
+            CoverFetch::Metadata metadata;
+            metadata[ "source" ] = "Yahoo!";
+            if( xml.name() == "result" )
             {
-                const QDomElement element = node.toElement();
-                const QString elementText = element.text();
-                const QString elementTag  = element.tagName();
-                metadata[ elementTag ] = elementText;
+                while( !xml.atEnd() && !xml.hasError() )
+                {
+                    xml.readNext();
+                    const QStringRef &n = xml.name();
+                    if( xml.isEndElement() && n == "result" )
+                        break;
+                    if( !xml.isStartElement() )
+                        continue;
+
+                    if( n == "abstract" )
+                        metadata[ "notes" ] = xml.readElementText();
+                    else if( n == "thumbnail_url" )
+                        metadata[ "thumbarturl" ] = xml.readElementText();
+                    else if( n == "url" )
+                        metadata[ "normalarturl" ] = xml.readElementText();
+                    else
+                        metadata[ xml.name().toString() ] = xml.readElementText();
+                }
+
+                KUrl url = (imageSize() == CoverFetch::ThumbSize)
+                    ? KUrl( metadata["thumbarturl"] )
+                    : KUrl( metadata["normalarturl"] );
+                if( url.isValid() )
+                    m_urls.insert( url, metadata );
             }
+            else
+                xml.skipCurrentElement();
         }
-
-        if( metadata.contains( "abstract" ) )
-        {
-            const QString notes = metadata.take( "abstract" );
-            metadata[ "notes" ] = notes;
-        }
-
-        if( url.isValid() )
-            m_urls.insert( url, metadata );
     }
-}
-
-QString
-CoverFetchArtPayload::coverSize2str( enum CoverFetch::ImageSize size ) const
-{
-    QString str;
-    switch( size )
-    {
-    case CoverFetch::ThumbSize:
-        if( m_src == CoverFetch::LastFm )
-            str = "large"; // around 128x128
-        else if( m_src == CoverFetch::Yahoo )
-            str = "thumbnail_url";
-        break;
-    case CoverFetch::NormalSize:
-    default:
-        if( m_src == CoverFetch::LastFm )
-            str = "extralarge"; // up to 300x300
-        else if( m_src == CoverFetch::Yahoo )
-            str = "url";
-        break;
-    }
-    return str;
 }
 
 enum CoverFetch::ImageSize
