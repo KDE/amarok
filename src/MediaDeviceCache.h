@@ -55,7 +55,7 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
     signals:
         void deviceAdded( const QString &udi );
         void deviceRemoved( const QString &udi );
-	void accessibilityChanged( bool accessible, const QString &udi );
+        void accessibilityChanged( bool accessible, const QString &udi );
 
     public slots:
         void slotAddSolidDevice( const QString &udi );

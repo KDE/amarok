@@ -160,13 +160,17 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
     SqlCollection *coll = new SqlCollection( id, prettyName );
     coll->setCapabilityDelegate( new Capabilities::CollectionCapabilityDelegateImpl() );
 
-    MountPointManager *mpm = new MountPointManager( coll, storage );
-
-    coll->setMountPointManager( new SqlMountPointManagerImpl( mpm ) );
     DatabaseUpdater *updater = new DatabaseUpdater();
     updater->setStorage( storage );
     updater->setCollection( coll );
+
+    //setUpdater runs the update function; this must be run *before* MountPointManager is initialized or its handlers may try to insert
+    //into the database before it's created/updated!
     coll->setUpdater( updater );
+
+    MountPointManager *mpm = new MountPointManager( coll, storage );
+
+    coll->setMountPointManager( new SqlMountPointManagerImpl( mpm ) );
     ScanManager *scanMgr = new ScanManager( coll );
     scanMgr->setCollection( coll );
     scanMgr->setStorage( storage );

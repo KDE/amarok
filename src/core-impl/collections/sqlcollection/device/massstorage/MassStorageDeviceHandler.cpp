@@ -39,6 +39,7 @@ MassStorageDeviceHandler::MassStorageDeviceHandler( int deviceId, const QString 
     , m_mountPoint( mountPoint )
     , m_udi( udi )
 {
+    DEBUG_BLOCK
 }
 
 MassStorageDeviceHandler::~MassStorageDeviceHandler()
@@ -104,7 +105,19 @@ bool MassStorageDeviceHandlerFactory::canCreateFromConfig( ) const
 
 bool MassStorageDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
 {
+    DEBUG_BLOCK
     const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
+    if( !volume )
+    {
+        debug() << "found no volume";
+        return false;
+    }
+    if( volume->uuid().isEmpty() )
+        debug() << "has empty uuid";
+    if( volume->isIgnored() )
+        debug() << "volume is ignored";
+    if( excludedFilesystem( volume->fsType() ) )
+        debug() << "excluded filesystem of type " << volume->fsType();
     return volume && !volume->uuid().isEmpty()
            && !volume->isIgnored() && !excludedFilesystem( volume->fsType() );
 }
@@ -126,7 +139,10 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
 {
     DEBUG_BLOCK
     if( !s )
+    {
+        debug() << "!s, returning 0";
         return 0;
+    }
     const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
     const Solid::StorageAccess *volumeAccess = device.as<Solid::StorageAccess>();
     if( !volume || !volumeAccess )
@@ -135,7 +151,10 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
         return 0;
     }
     if( volumeAccess->filePath().isEmpty() )
+    {
+        debug() << "not mounted, can't do anything";
         return 0; // It's not mounted, we can't do anything.
+    }
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'uuid' "
                                          "AND uuid = '%1';" ).arg( volume->uuid() ) );

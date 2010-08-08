@@ -18,6 +18,8 @@
 
 #include "MountPointManager.h"
 
+#include "MediaDeviceCache.h"
+
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "statusbar/StatusBar.h"
@@ -52,8 +54,8 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
         return;
     }
 
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
+    connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
+    connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
 
     init();
 
@@ -445,14 +447,22 @@ void
 MountPointManager::deviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
-    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume, "udi", udi );
+    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-    //there'll be maximum one device because we are using the udi in the predicate
-    if( !devices.isEmpty() )
+    //Looking for a specific udi in predicate seems flaky/buggy; the foreach loop barely
+    //takes any time, so just be safe
+    bool found = false;
+    debug() << "looking for udi " << udi;
+    foreach( Solid::Device device, devices )
     {
-        Solid::Device device = devices[0];
-        createHandlerFromDevice( device, udi );
+        if( device.udi() == udi )
+        {
+            createHandlerFromDevice( device, udi );
+            found = true;
+        }
     }
+    if( !found )
+        debug() << "Did not find device from Solid for udi " << udi;
 }
 
 void
@@ -479,6 +489,7 @@ MountPointManager::deviceRemoved( const QString &udi )
 
 void MountPointManager::createHandlerFromDevice( const Solid::Device& device, const QString &udi )
 {
+    DEBUG_BLOCK
     if ( device.isValid() )
     {
         debug() << "Device added and mounted, checking handlers";
@@ -507,8 +518,12 @@ void MountPointManager::createHandlerFromDevice( const Solid::Device& device, co
                 emit deviceAdded( key );
                 break;  //we found the added medium and don't have to check the other device handlers
             }
+            else
+                debug() << "Factory can't handle device " << udi;
         }
     }
+    else
+        debug() << "Device not valid!";
 }
 
 

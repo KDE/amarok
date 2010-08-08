@@ -105,7 +105,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 
         void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
         void setRegistry( SqlRegistry *registry ) { m_registry = registry; }
-        void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
+        void setUpdater( DatabaseUpdater *updater );
         void setCapabilityDelegate( Capabilities::CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
         void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }

@@ -73,17 +73,26 @@ SqlCollection::~SqlCollection()
 }
 
 void
-SqlCollection::init()
+SqlCollection::setUpdater( DatabaseUpdater *updater )
 {
-    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
-    if( !m_updater )
+    DEBUG_BLOCK
+    if( !updater )
     {
         debug() << "Could not load updater!";
         return;
     }
-
+    m_updater = updater;
     if( m_updater->needsUpdate() )
+    {
+        debug() << "Needs update!";
         m_updater->update();
+    }
+}
+
+void
+SqlCollection::init()
+{
+    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
 
     QStringList result = m_sqlStorage->query( "SELECT count(*) FROM tracks" );
     // If database version is updated, the collection needs to be rescanned.
