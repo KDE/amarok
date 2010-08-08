@@ -64,8 +64,11 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
 
 LyricsApplet::~ LyricsApplet()
 {
-    m_proxy->setWidget( 0 );
-    delete m_proxy;
+    if( m_proxy )
+    {
+        m_proxy->setWidget( 0 );
+        delete m_proxy;
+    }
     delete m_lyrics;
     delete m_suggested;
 }

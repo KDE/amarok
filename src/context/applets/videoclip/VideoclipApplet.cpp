@@ -73,6 +73,7 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         , Engine::EngineObserver( The::engineController() )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
+        , m_videoWidget( 0 )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );

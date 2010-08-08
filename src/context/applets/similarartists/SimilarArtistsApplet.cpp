@@ -59,6 +59,8 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
         , m_headerAspectRatio( 0.0 )
         , m_headerLabel( 0 )
         , m_settingsIcon( 0 )
+        , m_layout( 0 )
+        , m_scroll( 0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );

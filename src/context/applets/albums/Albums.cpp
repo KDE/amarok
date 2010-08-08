@@ -45,13 +45,14 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_albumWidth( 50 )
     , m_recentCount( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) )
+    , m_albumsView( 0 )
 {
     setHasConfigurationInterface( true );
 }
 
 Albums::~Albums()
 {
-    delete m_albumsView->widget();
+    delete m_albumsView;
 }
 
 void Albums::init()

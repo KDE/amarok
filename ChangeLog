@@ -42,6 +42,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fix crash on exit with newer KDE versions. Patch by Martin Blumenstingl and Felix
+      Geyer. (BR 245513)
     * Fixed playlist bottom toolbar getting to tall when using "Text only"
       button style. (BR 228390)
     * Fixed Amarok layout saving when minized to tray. (BR 244583)

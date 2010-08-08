@@ -42,6 +42,7 @@ SongkickApplet::SongkickApplet( QObject* parent, const QVariantList& args )
     , m_titleLabel( 0 )
     , m_reloadIcon( 0 )
     , m_songkick( 0 )
+    , m_songkickProxy( 0 )
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -49,10 +50,7 @@ SongkickApplet::SongkickApplet( QObject* parent, const QVariantList& args )
 
 SongkickApplet::~ SongkickApplet()
 {
-    m_songkickProxy->setWidget( 0 );
     delete m_songkickProxy;
-    m_songkickProxy = 0;
-    delete m_songkick;
 }
 
 void SongkickApplet::init()
