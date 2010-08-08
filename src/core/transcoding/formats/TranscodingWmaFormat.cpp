@@ -60,7 +60,7 @@ WmaFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( " EA    wmav2" );
+    return ffmpegOutput.contains( QRegExp( ".EA... wmav2" ) );
 }
 
 }

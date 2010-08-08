@@ -33,6 +33,7 @@ PropertyWidget::PropertyWidget( Property property, QWidget * parent )
     QHBoxLayout *mainLayout = new QHBoxLayout( this );
     m_mainLabel = new QLabel( property.prettyName(), this );
     m_mainLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    mainLayout->addSpacing( 5 );
     mainLayout->addWidget( m_mainLabel, 1 );
 
     switch( property.type() )
@@ -59,6 +60,7 @@ PropertyWidget::PropertyWidget( Property property, QWidget * parent )
     m_mainEdit->setToolTip( property.prettyName() );
     mainLayout->addWidget( m_mainEdit );
     m_mainLabel->setBuddy( m_mainEdit );
+    mainLayout->addSpacing( 5 );;
 }
 
 QVariant

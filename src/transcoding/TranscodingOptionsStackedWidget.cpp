@@ -80,7 +80,6 @@ OptionsStackedWidget::initCodecPage( Format *format )
         debug() << "Created config widget for " << format->prettyName()
                 << ", element " << property.name();
     }
-    mainLayout->addStretch( 1 );
 
     return addWidget( codecWidget );
 }
