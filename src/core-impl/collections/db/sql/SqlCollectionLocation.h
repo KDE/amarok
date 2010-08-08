@@ -47,7 +47,7 @@ class TransferJob : public KCompositeJob
 {
     Q_OBJECT
     public:
-        TransferJob( SqlCollectionLocation * location, const TranscodeFormat & format );
+        TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration );
 
         void start();
         virtual bool addSubjob( KJob* job );
@@ -66,7 +66,7 @@ class TransferJob : public KCompositeJob
     private:
         SqlCollectionLocation* m_location;
         bool m_killed;
-        TranscodeFormat m_transcodeFormat;
+        Transcoding::Configuration m_transcodeFormat;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public CollectionLocation
@@ -98,9 +98,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,
-                                            const TranscodeFormat &format );
+                                            const Transcoding::Configuration &configuration );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                           const TranscodeFormat & format = TranscodeFormat::Null() );
+                                           const Transcoding::Configuration & configuration = Transcoding::Configuration() );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
@@ -112,7 +112,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         void slotTransferJobAborted();
 
     private:
-        bool startNextJob( const TranscodeFormat format );
+        void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
+        bool startNextJob( const Transcoding::Configuration configuration );
         bool startNextRemoveJob();
 
         Collections::SqlCollection *m_collection;
@@ -132,7 +133,7 @@ class SqlCollectionLocationFactory
 {
     public:
         virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
-        virtual ~SqlCollectionLocationFactory() {};
+        virtual ~SqlCollectionLocationFactory() {}
 };
 
 } //namespace Collections
@@ -147,7 +148,7 @@ public:
     virtual void setTracks( const Meta::TrackList &tracks ) = 0;
     virtual void setFolders( const QStringList &folders ) = 0;
     virtual void setIsOrganizing( bool organizing ) = 0;
-    virtual void setTranscodeFormat( const TranscodeFormat &format ) = 0;
+    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) = 0;
 
     virtual void show() = 0;
 

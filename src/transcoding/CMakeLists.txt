@@ -9,13 +9,14 @@ include_directories(
 )
 
 set(amarok_transcoding_SRCS
-    TranscodeJob.cpp
-    TranscodeDialog.cpp
-    TranscodeOptionsWidget.cpp
+    TranscodingJob.cpp
+    TranscodingAssistantDialog.cpp
+    TranscodingOptionsStackedWidget.cpp
+    TranscodingPropertyWidget.cpp
 )
 
 kde4_add_ui_files(amarok_transcoding_SRCS
-    TranscodeDialog.ui
+    TranscodingAssistantDialog.ui
 )
 
 kde4_add_library(amarok-transcoding SHARED ${amarok_transcoding_SRCS})

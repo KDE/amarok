@@ -1,0 +1,84 @@
+/****************************************************************************************
+ * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#include "TranscodingFlacFormat.h"
+
+#include "core/transcoding/TranscodingConfiguration.h"
+
+#include <KLocale>
+
+#include <QVariant>
+
+namespace Transcoding
+{
+
+FlacFormat::FlacFormat()
+{
+    m_encoder = FLAC;
+    m_fileExtension = "flac";
+    m_propertyList << Property::Numeric( "level", i18n( "Level" ), 0, 8, 5 );
+}
+
+QString
+FlacFormat::prettyName() const
+{
+    return i18n( "FLAC" );
+}
+
+QString
+FlacFormat::description() const
+{
+    return i18nc( "Feel free to redirect the english Wikipedia link to a local version, if "
+                  "it exists.",
+                  "<a href=http://en.wikipedia.org/wiki/Free_Lossless_Audio_Codec>Free "
+                  "Lossless Audio Codec</a> (FLAC) is an open and royalty-free codec for "
+                  "lossless compression of digital music.<br>If you wish to store your music "
+                  "without compromising on audio quality, FLAC is an excellent choice." );
+}
+
+KIcon
+FlacFormat::icon() const
+{
+    return KIcon( "audio-x-flac" ); //TODO: get a *real* icon!
+}
+
+QStringList
+FlacFormat::ffmpegParameters( const Configuration &configuration ) const
+{
+    QStringList parameters;
+    parameters << "-acodec" << "flac";
+    foreach( Property property, m_propertyList )
+    {
+        if( !configuration.property( property.name() ).isNull()
+            && configuration.property( property.name() ).type() == property.variantType() )
+        {
+            if( property.name() == "level" )
+            {
+                parameters << "-compression_level"
+                           << QString::number( configuration.property( "level" ).toInt() );
+            }
+        }
+    }
+    return parameters;
+}
+
+bool
+FlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
+{
+    return ffmpegOutput.contains( QRegExp( ".EA... flac" ) );
+}
+
+}

@@ -36,6 +36,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/transcoding/TranscodingController.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
@@ -664,6 +665,10 @@ App::continueInit()
         m_mainWindow.data()->show();
         PERF_LOG( "after showing mainWindow" )
     }
+
+    //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
+    //FFmpeg which should not take more than ~200msec.
+    The::transcodingController();
 
     if( splash ) // close splash correctly
     {

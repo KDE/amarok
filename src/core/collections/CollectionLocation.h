@@ -21,7 +21,7 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
-#include "core/transcoding/TranscodeFormat.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 
 #include <QList>
 #include <QObject>
@@ -155,11 +155,11 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
-                          const TranscodeFormat &format = TranscodeFormat::Null() );
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
-                          const TranscodeFormat &format = TranscodeFormat::Null() );
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
         void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
-                          const TranscodeFormat &format = TranscodeFormat::Null() );
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
 
         /**
            convenience method for moving a single track,
@@ -205,11 +205,13 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
     signals:
-        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources, const TranscodeFormat & );
+        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                        const Transcoding::Configuration & );
         void finishCopy();
         void startRemove();
         void finishRemove();
-        void prepareOperation( const Meta::TrackList &tracks, bool removeSources, const TranscodeFormat & );
+        void prepareOperation( const Meta::TrackList &tracks, bool removeSources,
+                               const Transcoding::Configuration & );
         void operationPrepared();
         void aborted();
 
@@ -246,7 +248,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             the files.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                           const TranscodeFormat &format = TranscodeFormat::Null() );
+            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
@@ -271,7 +273,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          */
         virtual void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,
-                                            const TranscodeFormat &format );
+                                            const Transcoding::Configuration &configuration );
 
         /**
          * this methods allows the collection to show a warning dialog before tracks are removed,
@@ -308,9 +310,11 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     private slots:
 
-        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources, const TranscodeFormat & );
+        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
+                                   const Transcoding::Configuration &configuration );
         void slotOperationPrepared();
-        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, const TranscodeFormat &format );
+        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                            const Transcoding::Configuration &configuration );
         void slotFinishCopy();
         void slotStartRemove();
         void slotFinishRemove();
@@ -342,7 +346,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }
         bool m_removeSources;
         bool m_isRemoveAction;
-        TranscodeFormat m_transcodeFormat;  //only used when copying
+        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
         bool m_noRemoveConfirmation;
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move

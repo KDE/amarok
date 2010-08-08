@@ -78,8 +78,16 @@ set(libcore_support_SRCS
 )
 
 set(libcore_transcoding_SRCS
-    transcoding/TranscodeFormat.cpp
-    transcoding/TranscodeConfigurationElement.cpp
+    transcoding/formats/TranscodingNullFormat.cpp
+    transcoding/formats/TranscodingAacFormat.cpp
+    transcoding/formats/TranscodingAlacFormat.cpp
+    transcoding/formats/TranscodingFlacFormat.cpp
+    transcoding/formats/TranscodingMp3Format.cpp
+    transcoding/formats/TranscodingVorbisFormat.cpp
+    transcoding/formats/TranscodingWmaFormat.cpp
+    transcoding/TranscodingConfiguration.cpp
+    transcoding/TranscodingController.cpp
+    transcoding/TranscodingProperty.cpp
 )
 
 #####################################################################

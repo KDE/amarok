@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TranscodeDialog</class>
- <widget class="QWidget" name="TranscodeDialog">
+ <class>AssistantDialog</class>
+ <widget class="QWidget" name="AssistantDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -381,7 +381,7 @@
             </layout>
            </item>
            <item>
-            <widget class="TranscodeOptionsWidget" name="transcodeOptionsWidget" native="true">
+            <widget class="Transcoding::OptionsStackedWidget" name="transcodingOptionsStackedWidget" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -402,9 +402,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TranscodeOptionsWidget</class>
+   <class>Transcoding::OptionsStackedWidget</class>
    <extends>QWidget</extends>
-   <header>TranscodeOptionsWidget.h</header>
+   <header>TranscodingOptionsStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

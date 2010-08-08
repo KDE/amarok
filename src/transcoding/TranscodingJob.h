@@ -14,41 +14,49 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODEJOB_H
-#define TRANSCODEJOB_H
+#ifndef TRANSCODING_JOB_H
+#define TRANSCODING_JOB_H
 
-#include "core/transcoding/TranscodeFormat.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 
 #include <KJob>
 #include <KUrl>
 
 #include <KProcess>
 
+namespace Transcoding
+{
+
 /**
  * A KJob that transcodes an audio stream from a file into another file with a different
  * codec and container format.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_EXPORT TranscodeJob : public KJob
+class AMAROK_EXPORT Job : public KJob
 {
     Q_OBJECT
 public:
     /**
-     * Constructor. Creates a TranscodeJob and fills in the source, destination and
+     * Constructor. Creates a Transcoding::Job and fills in the source, destination and
      * encoder parameters. The job does not start automatically.
      * @param src the path of the source file.
      * @param dest the path of the destination file, to be created.
-     * @param options the string of parameters to be fed to the encoder. This implementation
+     * @param configuration the string of parameters to be fed to the encoder. This implementation
      *        uses the FFmpeg executable, @see http://ffmpeg.org/ffmpeg-doc.html#SEC6
      * @param the parent QObject.
      */
-    explicit TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFormat &options, QObject *parent = 0 );
+    explicit Job( const KUrl &src,
+                  const KUrl &dest,
+                  const Transcoding::Configuration &configuration,
+                  QObject *parent = 0 );
 
     /**
-     * Convenience constructor. Creates a TranscodeJob with the destination file to be
+     * Convenience constructor. Creates a Transcoding::Job with the destination file to be
      * placed in the same directory as the source.
      */
-    explicit TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *parent = 0 );
+    explicit Job( KUrl &src,
+                  const Transcoding::Configuration &configuration,
+                  QObject *parent = 0 );
 
     /**
      * Sets the path of the source file.
@@ -80,9 +88,11 @@ private:
     inline qint64 computeProgress( const QString &output );
     KUrl m_src;
     KUrl m_dest;
-    TranscodeFormat m_options;
+    Transcoding::Configuration m_configuration;
     KProcess *m_transcoder;
     qint64 m_duration; //in csec
 };
 
-#endif // TRANSCODEJOB_H
+} //namespace Transcoding
+
+#endif //TRANSCODING_JOB_H

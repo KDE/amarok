@@ -14,45 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodeJob.h"
+#include "TranscodingJob.h"
+
+#include "src/core/transcoding/TranscodingController.h"
 #include "src/core/support/Debug.h"
 
 #include <KProcess>
 
-TranscodeJob::TranscodeJob( const KUrl &src, const KUrl &dest, const TranscodeFormat &options, QObject *parent )
+namespace Transcoding
+{
+
+Job::Job( const KUrl &src,
+                            const KUrl &dest,
+                            const Transcoding::Configuration &configuration,
+                            QObject *parent )
     : KJob( parent )
     , m_src( src )
     , m_dest( dest )
-    , m_options( options )
+    , m_configuration( configuration )
     , m_duration( -1 )
 {
     DEBUG_BLOCK
     init();
 }
 
-TranscodeJob::TranscodeJob( KUrl &src, const TranscodeFormat &options, QObject *parent )
+Job::Job( KUrl &src,
+                            const Transcoding::Configuration &configuration,
+                            QObject *parent )
     : KJob( parent )
     , m_src( src )
     , m_dest( src )
-    , m_options( options )
+    , m_configuration( configuration )
     , m_duration( -1 )
 {
     DEBUG_BLOCK
-    debug() << "TranscodeJob ctor!!";
+    debug() << "Transcoding::Job ctor!!";
     debug()<< src;
     debug()<< src.path();
-    if( !( options.fileExtension().isEmpty() ) )
+    QString fileExtension = The::transcodingController()->format( configuration.encoder() )->fileExtension();
+    if( !( fileExtension.isEmpty() ) )
     {
         QString destPath = src.path();
         destPath.truncate( destPath.lastIndexOf( '.' ) + 1 );
-        destPath.append( options.fileExtension() );
+        destPath.append( fileExtension );
         m_dest.setPath( destPath );
     }
     init();
 }
 
 void
-TranscodeJob::init()
+Job::init()
 {
     DEBUG_BLOCK
     m_transcoder = new KProcess( this );
@@ -61,16 +72,17 @@ TranscodeJob::init()
 
     //First the executable...
     m_transcoder->setProgram( "ffmpeg" );
-    //... then we'd have the infile options followed by "-i" and the infile path...
+    //... then we'd have the infile configuration followed by "-i" and the infile path...
     *m_transcoder << QString( "-i" )
                   << m_src.path();
-    //... and finally, outfile options followed by the outfile path.
-    *m_transcoder << m_options.ffmpegParameters()
+    //... and finally, outfile configuration followed by the outfile path.
+    const Transcoding::Format *format = The::transcodingController()->format( m_configuration.encoder() );
+    *m_transcoder << format->ffmpegParameters( m_configuration )
                   << m_dest.path();
 
     //debug spam follows
     debug() << "foo";
-    debug() << m_options.ffmpegParameters();
+    debug() << format->ffmpegParameters( m_configuration );
     debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
 
     connect( m_transcoder, SIGNAL( readyRead() ),
@@ -80,7 +92,7 @@ TranscodeJob::init()
 }
 
 void
-TranscodeJob::start()
+Job::start()
 {
     DEBUG_BLOCK
     debug()<< "starting ffmpeg";
@@ -91,7 +103,7 @@ TranscodeJob::start()
 }
 
 void
-TranscodeJob::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
+Job::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( exitStatus );
@@ -109,7 +121,7 @@ TranscodeJob::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //
 }
 
 void
-TranscodeJob::processOutput()
+Job::processOutput()
 {
     QString output = m_transcoder->readAllStandardOutput().data();
     if( output.simplified().isEmpty() )
@@ -128,7 +140,7 @@ TranscodeJob::processOutput()
 }
 
 inline qint64
-TranscodeJob::computeDuration( const QString &output )
+Job::computeDuration( const QString &output )
 {
     //We match something like "Duration: 00:04:33.60"
     QRegExp matchDuration( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" );
@@ -147,7 +159,7 @@ TranscodeJob::computeDuration( const QString &output )
 }
 
 inline qint64
-TranscodeJob::computeProgress( const QString &output )
+Job::computeProgress( const QString &output )
 {
     //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
     //We're going to use the "time" column, which counts the elapsed time in seconds.
@@ -162,3 +174,5 @@ TranscodeJob::computeProgress( const QString &output )
     else
         return -1;
 }
+
+} //namespace Transcoding

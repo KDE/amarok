@@ -14,37 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODEOPTIONSWIDGET_H
-#define TRANSCODEOPTIONSWIDGET_H
+#ifndef TRANSCODING_VORBISFORMAT_H
+#define TRANSCODING_VORBISFORMAT_H
 
-#include "core/transcoding/TranscodeFormat.h"
+#include "core/transcoding/TranscodingFormat.h"
 
-#include <QMap>
-#include <QStackedWidget>
-
-class TranscodeOptionsWidget : public QStackedWidget
+namespace Transcoding
 {
-    Q_OBJECT
+
+/**
+ * This class implements the interface for the FFmpeg Vorbis codec.
+ * @author Téo Mrnjavac <teo@kde.org>
+ */
+class AMAROK_CORE_EXPORT VorbisFormat : public Format
+{
 public:
-    explicit TranscodeOptionsWidget( QWidget *parent = 0 );
-
-signals:
-    void formatChanged( TranscodeFormat::Encoder encoder );
-
-public slots:
-    void switchPage( TranscodeFormat::Encoder encoder );
-
-private:
-    void initWelcomePage();
-
-    /**
-     * Initializes a transcoding format configuration page on the stacked widget.
-     * @param encoder the encoder enum value.
-     * @return the index of the page where the configuration widget was initialized.
-     */
-    int initCodecPage( TranscodeFormat::Encoder encoder );
-
-    QMap< TranscodeFormat::Encoder, int > m_pagesMap;
+    VorbisFormat();
+    QString prettyName() const;
+    QString description() const;
+    KIcon icon() const;
+    QStringList ffmpegParameters( const Configuration &configuration ) const;
+    bool verifyAvailability( const QString &ffmpegOutput ) const;
 };
 
-#endif // TRANSCODEOPTIONSWIDGET_H
+}
+
+#endif // TRANSCODING_VORBISFORMAT_H

@@ -43,7 +43,7 @@
 #include "core/collections/QueryMaker.h"
 #include "SvgHandler.h"
 #include "TagDialog.h"
-#include "transcoding/TranscodeDialog.h"
+#include "transcoding/TranscodingAssistantDialog.h"
 
 #include <QContextMenuEvent>
 #include <QHash>
@@ -722,7 +722,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 
 void
 CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
-                                bool removeSources, TranscodeFormat format ) const
+                                bool removeSources, Transcoding::Configuration configuration ) const
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -770,7 +770,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     else
     {
         debug() << "starting source->prepareCopy";
-        source->prepareCopy( qm, dest, format );
+        source->prepareCopy( qm, dest, configuration );
     }
 }
 
@@ -1147,11 +1147,11 @@ void CollectionTreeView::slotCopyTracks()
     {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
-            TranscodeDialog dialog( this );
-            TranscodeFormat format = TranscodeFormat::Null();
+            Transcoding::AssistantDialog dialog( this );
+            Transcoding::Configuration configuration = Transcoding::Configuration();
             if( dialog.exec() )
-                format = dialog.transcodeFormat();
-            copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, format );
+                configuration = dialog.configuration();
+            copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, configuration );
         }
     }
 }

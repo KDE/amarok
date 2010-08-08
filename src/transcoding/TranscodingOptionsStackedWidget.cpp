@@ -14,10 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodeOptionsWidget.h"
+#include "TranscodingOptionsStackedWidget.h"
 
 #include "core/support/Debug.h"
-#include "core/transcoding/TranscodeConfigurationElement.h"
+#include "core/transcoding/TranscodingProperty.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <KIcon>
 
@@ -25,21 +26,21 @@
 #include <QLabel>
 #include <QSpinBox>
 
-TranscodeOptionsWidget::TranscodeOptionsWidget( QWidget *parent )
+namespace Transcoding
+{
+
+OptionsStackedWidget::OptionsStackedWidget( QWidget *parent )
     : QStackedWidget( parent )
 {
     initWelcomePage();
-    for( int i = 1 /*we skip the null codec*/; i < TranscodeFormat::NUM_CODECS; ++i )
+    foreach( Format *format, The::transcodingController()->availableFormats() )
     {
-        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( i );
-        m_pagesMap.insert( encoder, initCodecPage( encoder ) );
+        m_pagesMap.insert( format->encoder(), initCodecPage( format ) );
     }
-
-
 }
 
 void
-TranscodeOptionsWidget::initWelcomePage()
+OptionsStackedWidget::initWelcomePage()
 {
     QWidget *welcomeWidget = new QWidget( this );
     QVBoxLayout *vbl = new QVBoxLayout( welcomeWidget );
@@ -49,7 +50,9 @@ TranscodeOptionsWidget::initWelcomePage()
     hbl->addStretch();
     QLabel *arrow = new QLabel( welcomeWidget );
     arrow->setPixmap( KIcon( "arrow-left" ).pixmap( 16, 16 ) );
-    QLabel *message = new QLabel( i18n( "In order to configure the parameters of the transcoding operation, please pick an encoder from the list." ), this );
+    QLabel *message = new QLabel( i18n(
+            "In order to configure the parameters of the transcoding operation, please "
+            "pick an encoder from the list." ), this );
     message->setWordWrap( true );
     hbl->addWidget( arrow );
     hbl->addWidget( message );
@@ -60,55 +63,47 @@ TranscodeOptionsWidget::initWelcomePage()
 }
 
 int
-TranscodeOptionsWidget::initCodecPage( TranscodeFormat::Encoder encoder )
+OptionsStackedWidget::initCodecPage( Format *format )
 {
+    m_propertyWidgetsMap.insert( format->encoder(), QList< PropertyWidget * >() );
+
     QWidget *codecWidget = new QWidget( this );
 
     QVBoxLayout *mainLayout = new QVBoxLayout( codecWidget );
     mainLayout->addStretch( 1 );
-    if( encoder == TranscodeFormat::AAC ||
-        encoder == TranscodeFormat::VORBIS ||
-        encoder == TranscodeFormat::WMA2 )
-    {
-        QHBoxLayout *lineLayout = new QHBoxLayout( codecWidget );
-        mainLayout->addLayout( lineLayout );
-        TranscodeConfigurationElement element =
-                TranscodeConfigurationElement::Numeric( i18n("Quality"), 7, 0, 10 );
-        QWidget *config = element.createConfigurationWidget( codecWidget );
-        debug()<< "Created config widget for " << (int)encoder;
-        lineLayout->addWidget( config );
-        /*QLabel *qualityLabel = new QLabel( i18n( "Quality" ), codecWidget );
-        lineLayout->addWidget( qualityLabel );
-        QSpinBox *qualityEdit = new QSpinBox( codecWidget );
-        lineLayout->addWidget( qualityEdit );
-        qualityEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-        lineLayout->setStretch( lineLayout->indexOf( qualityEdit ), 1 );*/
 
-        lineLayout->addStretch( 2 );
-    }
-    else if( encoder == TranscodeFormat::ALAC )
+    foreach( Property property, format->propertyList() )
     {
-        //NO IDEA WHAT TO DO WITH THIS!
+        PropertyWidget *propertyWidget = new PropertyWidget( property, codecWidget );
+        mainLayout->addWidget( propertyWidget );
+        m_propertyWidgetsMap[ format->encoder() ].append( propertyWidget );
+        debug() << "Created config widget for " << format->prettyName()
+                << ", element " << property.name();
     }
-    else if( encoder == TranscodeFormat::FLAC )
-    {
-        //initLevel();
-    }
-    else if( encoder == TranscodeFormat::MP3 )
-    {
-        //initVRating();
-    }
-    else
-    {
-        debug() << "Bad encoder.";
-    }
+    mainLayout->addStretch( 1 );
 
     return addWidget( codecWidget );
 }
 
+const Configuration
+OptionsStackedWidget::configuration() const
+{
+    Encoder encoder = m_pagesMap.key( currentIndex() );
+    Configuration configuration = Configuration( encoder );
+
+    foreach( PropertyWidget *propertyWidget, m_propertyWidgetsMap.value( encoder ) )
+    {
+        configuration.addProperty( propertyWidget->name(), propertyWidget->value() );
+    }
+
+    return configuration;
+}
+
 void
-TranscodeOptionsWidget::switchPage(TranscodeFormat::Encoder encoder)
+OptionsStackedWidget::switchPage( Encoder encoder)
 {
     setCurrentIndex( m_pagesMap.value( encoder ) );
     emit formatChanged( encoder );
 }
+
+} //namespace Transcoding

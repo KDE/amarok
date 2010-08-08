@@ -35,8 +35,9 @@
 #include "PopupDropperFactory.h"
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
-#include "src/transcoding/TranscodeJob.h"
-#include "src/transcoding/TranscodeDialog.h"
+#include "src/transcoding/TranscodingJob.h"
+#include "src/transcoding/TranscodingAssistantDialog.h"
+
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -249,10 +250,10 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<" SRC URL IS " << list.urlList().first();
     debug()<<" SRC URL IS " << list.urlList().first();
 
-    TranscodeDialog *d = new TranscodeDialog( this );
-    debug() << "About to show TranscodeDialog";
+    Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
+    debug() << "About to show Transcoding::AssistantDialog";
     d->show();
-    debug() << "TranscodeDialog shown.";
+    debug() << "Transcoding::AssistantDialog shown.";
 }
 
 void
@@ -325,12 +326,12 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
             source = new Collections::FileCollectionLocation();
         }
         Collections::CollectionLocation *destination = m_copyAction->collection()->location();
-        TranscodeDialog dialog( this );
-        TranscodeFormat format = TranscodeFormat::Null();
+        Transcoding::AssistantDialog dialog( this );
+        Transcoding::Configuration configuration = Transcoding::Configuration();
         if( dialog.exec() )
         {
-            format = dialog.transcodeFormat();
-            source->prepareCopy( tracks, destination, format );
+            configuration = dialog.configuration();
+            source->prepareCopy( tracks, destination, configuration );
         }
     }
     else

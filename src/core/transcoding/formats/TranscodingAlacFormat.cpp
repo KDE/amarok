@@ -14,41 +14,52 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODEDIALOG_H
-#define TRANSCODEDIALOG_H
+#include "TranscodingAlacFormat.h"
 
-#include "ui_TranscodeDialog.h"
-#include "core/transcoding/TranscodeFormat.h"
-#include "core/support/Debug.h"
+#include <KLocale>
 
-#include <KDialog>
-
-#include <QListWidget>
-
-/**
- * A KDialog for initiating a transcode operation.
- * @author Téo Mrnjavac <teo@kde.org>
- */
-class AMAROK_EXPORT TranscodeDialog : public KDialog
+namespace Transcoding
 {
-    Q_OBJECT
-public:
-    TranscodeDialog( QWidget *parent );
 
-    TranscodeFormat transcodeFormat() const;
+AlacFormat::AlacFormat()
+{
+    m_encoder = ALAC;
+    m_fileExtension = "m4a";
+}
 
-private:
-    inline void populateFormatList();
-    TranscodeFormat m_format;
-    Ui::TranscodeDialog ui;
-    //KUrl::List m_urlList;
-private slots:
-    void onJustCopyClicked();
-    void onTranscodeWithDefaultsClicked();
-    void onTranscodeWithOptionsClicked();
-    void onBackClicked();
-    void onCurrentChanged( int page );
-    void onFormatSelect( QListWidgetItem *item );
-};
+QString
+AlacFormat::prettyName() const
+{
+    return i18n( "Apple Lossless" );
+}
 
-#endif // TRANSCODEDIALOG_H
+QString
+AlacFormat::description() const
+{
+    return i18nc( "Feel free to redirect the english Wikipedia link to a local version, if "
+                  "it exists.",
+                  "<a href=http://en.wikipedia.org/wiki/Apple_Lossless>Apple Lossless</a> "
+                  "(ALAC) is an audio codec for lossless compression of digital music.<br>"
+                  "Recommended only for Apple music players and players that do not support "
+                  "FLAC." );
+}
+
+KIcon
+AlacFormat::icon() const
+{
+    return KIcon( "audio-x-flac" ); //TODO: get a *real* icon!
+}
+
+QStringList
+AlacFormat::ffmpegParameters( const Configuration &configuration ) const
+{
+    return QStringList() << "-acodec" << "alac";
+}
+
+bool
+AlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
+{
+    return ffmpegOutput.contains( QRegExp( ".EA... alac" ) );
+}
+
+}

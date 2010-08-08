@@ -14,15 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodeDialog.h"
-#include "TranscodeJob.h"
+#include "TranscodingAssistantDialog.h"
+#include "TranscodingJob.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <KIcon>
 #include <KPushButton>
 
-TranscodeDialog::TranscodeDialog( QWidget *parent )
+namespace Transcoding
+{
+
+AssistantDialog::AssistantDialog( QWidget *parent )
     : KDialog( parent, Qt::Dialog )
-    , m_format( TranscodeFormat::Null() )
 {
     DEBUG_BLOCK
     QWidget *uiBase = new QWidget( this );
@@ -38,7 +41,11 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     onCurrentChanged( 0 );
     button( Ok )->setText( i18n( "Transc&ode" ) );
 
-    ui.explanatoryTextLabel->setText( i18n( "You are about to copy one or more tracks.\nWhile copying, you can also choose to transcode your music files into another format with an encoder (codec). This can be done to save space or to make your files readable by a portable music player or a particular software program." ) );
+    ui.explanatoryTextLabel->setText( i18n(
+            "You are about to copy one or more tracks.\nWhile copying, you can also choose "
+            "to transcode your music files into another format with an encoder (codec). "
+            "This can be done to save space or to make your files readable by a portable "
+            "music player or a particular software program." ) );
 
     ui.justCopyButton->setIcon( KIcon( "edit-copy" ) );
     ui.transcodeWithDefaultsButton->setIcon( KIcon( "audio-x-generic" ) );
@@ -48,9 +55,11 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     connect( ui.justCopyButton, SIGNAL( clicked() ),
              this, SLOT( onJustCopyClicked() ) );
     ui.transcodeWithDefaultsButton->setMinimumHeight( ui.transcodeWithDefaultsButton->iconSize().height() + 2*10 );
-    ui.transcodeWithDefaultsButton->setDescription(
-            i18nc( "Attention translators. This description must fit in 2 rows, because of a hardcoded constraint in QCommandLinkButton.",
-                   "As you copy, transcode the tracks using the preset encoding parameters.\nMedium compression, high quality Ogg Vorbis (lossy).") );
+    ui.transcodeWithDefaultsButton->setDescription( i18nc(
+            "Attention translators. This description *must* fit in 2 rows, because of a "
+            "hardcoded constraint in QCommandLinkButton.",
+            "As you copy, transcode the tracks using the preset encoding parameters.\nMedium "
+            "compression, high quality Ogg Vorbis (lossy)." ) );
     connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ),
              this, SLOT( onTranscodeWithDefaultsClicked() ) );
     ui.transcodeWithOptionsButton->setMinimumHeight( ui.transcodeWithOptionsButton->iconSize().height() + 2*10 );
@@ -77,75 +86,92 @@ TranscodeDialog::TranscodeDialog( QWidget *parent )
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
     ui.formatDescriptionLabel->hide();
+    connect( button( Ok ), SIGNAL( clicked() ),
+             this, SLOT( onTranscodeClicked() ) );
 }
 
 void
-TranscodeDialog::populateFormatList()
+AssistantDialog::populateFormatList()
 {
-    for( int i = 1 /*we skip the null codec*/; i < TranscodeFormat::NUM_CODECS; ++i )
+    foreach( Format *format, The::transcodingController()->availableFormats() )
     {
-        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( i );
-        QString prettyName = TranscodeFormat::prettyName( encoder );
-        QString description = TranscodeFormat::description( encoder );
-        KIcon icon = TranscodeFormat::icon( encoder );
-        QListWidgetItem *item = new QListWidgetItem( icon, prettyName );
-        item->setToolTip( description );
-        item->setData( Qt::UserRole, encoder );
+        QListWidgetItem *item = new QListWidgetItem( format->icon(), format->prettyName() );
+        item->setToolTip( format->description() );
+        item->setData( Qt::UserRole, format->encoder() );
         ui.formatListWidget->addItem( item );
     }
 }
 
 void
-TranscodeDialog::onJustCopyClicked() //SLOT
+AssistantDialog::onJustCopyClicked() //SLOT
 {
     KDialog::done( KDialog::Accepted );
 }
 
 void
-TranscodeDialog::onTranscodeWithDefaultsClicked() //SLOT
+AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
 {
-    m_format = TranscodeFormat::Vorbis();
+    m_configuration = Configuration( VORBIS );
+    foreach( Property property, The::transcodingController()->format( VORBIS )->propertyList() )
+    {
+        switch( property.type() )
+        {
+        case Property::NUMERIC:
+            m_configuration.addProperty( property.name(), property.defaultValue() );
+        case Property::TEXT:
+            m_configuration.addProperty( property.name(), property.defaultText() );
+        case Property::LIST:
+            m_configuration.addProperty( property.name(), property.defaultIndex() );
+        }
+    }
     KDialog::done( KDialog::Accepted );
 }
 
 void
-TranscodeDialog::onTranscodeWithOptionsClicked() //SLOT
+AssistantDialog::onTranscodeWithOptionsClicked() //SLOT
 {
     ui.stackedWidget->setCurrentIndex( 1 );
 }
 
 void
-TranscodeDialog::onBackClicked() //SLOT
+AssistantDialog::onBackClicked() //SLOT
 {
     ui.stackedWidget->setCurrentIndex( 0 );
 }
 
 void
-TranscodeDialog::onCurrentChanged( int page ) //SLOT
+AssistantDialog::onCurrentChanged( int page ) //SLOT
 {
     button( Ok )->setVisible( page );
-}
-
-TranscodeFormat
-TranscodeDialog::transcodeFormat() const
-{
-    return m_format;
+    if( ui.formatListWidget->currentRow() < 0 )
+        button( Ok )->setEnabled( false );
 }
 
 void
-TranscodeDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
+AssistantDialog::onTranscodeClicked() //SLOT
+{
+    m_configuration = ui.transcodingOptionsStackedWidget->configuration();
+    KDialog::done( KDialog::Accepted );
+}
+
+void
+AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
 {
     if( item )
     {
         ui.formatIconLabel->show();
         ui.formatNameLabel->show();
         ui.formatDescriptionLabel->show();
-        TranscodeFormat::Encoder encoder = static_cast< TranscodeFormat::Encoder >( item->data( Qt::UserRole ).toInt() );
-        ui.formatIconLabel->setPixmap( TranscodeFormat::icon( encoder).pixmap( 32, 32 ) );
-        ui.formatNameLabel->setText( TranscodeFormat::prettyName( encoder ) );
-        ui.formatDescriptionLabel->setText( TranscodeFormat::description( encoder ) );
-        ui.transcodeOptionsWidget->switchPage( encoder );
+        Encoder encoder = static_cast< Encoder >( item->data( Qt::UserRole ).toInt() );
+        const Format *format = The::transcodingController()->format( encoder );
+        ui.formatIconLabel->setPixmap( format->icon().pixmap( 32, 32 ) );
+        ui.formatNameLabel->setText( format->prettyName() );
+        ui.formatDescriptionLabel->setText( format->description() );
+        ui.transcodingOptionsStackedWidget->switchPage( encoder );
+        button( Ok )->setEnabled( true );
     }
 }
 
-#include "TranscodeDialog.moc"
+} //namespace Transcoding
+
+#include "TranscodingAssistantDialog.moc"

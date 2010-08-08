@@ -32,7 +32,8 @@
 #include "core-impl/collections/db/sql/MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
-#include "transcoding/TranscodeJob.h"
+#include "transcoding/TranscodingJob.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <QDir>
 #include <QFile>
@@ -267,7 +268,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
                                               bool removeSources,
-                                              const TranscodeFormat &format )
+                                              const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
@@ -323,7 +324,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setTracks( tracks );
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
-    delegate->setTranscodeFormat( format );
+    delegate->setTranscodingConfiguration( configuration );
 
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
@@ -455,7 +456,7 @@ void SqlCollectionLocation::slotTransferJobAborted()
 
 void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                             const TranscodeFormat &format )
+                                             const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
     m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are coyping stuff
@@ -470,13 +471,13 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         statusBarTxt = i18n( "Moving tracks" );
     else
     {
-        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+        if( configuration.encoder() == Transcoding::NULL_CODEC )
             statusBarTxt = i18n( "Copying tracks" );
         else
             statusBarTxt = i18n( "Transcoding tracks" );
     }
 
-    m_transferjob = new TransferJob( this, format );
+    m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this, SLOT( slotTransferJobAborted() ) );
     connect( m_transferjob, SIGNAL( result( KJob * ) ), this, SLOT( slotTransferJobFinished( KJob * ) ) );
     m_transferjob->start();
@@ -504,7 +505,7 @@ SqlCollectionLocation::setOrganizeCollectionDelegateFactory( OrganizeCollectionD
     m_delegateFactory = fac;
 }
 
-bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
+bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration configuration )
 {
     DEBUG_BLOCK
     if( !m_sources.isEmpty() )
@@ -516,7 +517,7 @@ bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
         dest.cleanPath();
 
         src.cleanPath();
-        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+        if( configuration.encoder() == Transcoding::NULL_CODEC )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
@@ -534,7 +535,7 @@ bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
         }
 
         KIO::JobFlags flags;
-        if( format.encoder() == TranscodeFormat::NULL_CODEC )
+        if( configuration.encoder() == Transcoding::NULL_CODEC )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
@@ -562,15 +563,16 @@ bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            if( format.encoder() == TranscodeFormat::NULL_CODEC )
+            if( configuration.encoder() == Transcoding::NULL_CODEC )
                 job = KIO::file_copy( src, dest, -1, flags );
             else
             {
                 QString destPath = dest.path();
                 destPath.truncate( dest.path().lastIndexOf( '.' ) + 1 );
-                destPath.append( format.fileExtension() );
+                destPath.append( The::transcodingController()->
+                                 format( configuration.encoder() )->fileExtension() );
                 dest.setPath( destPath );
-                job = new TranscodeJob( src, dest, format, this );
+                job = new Transcoding::Job( src, dest, configuration, this );
                 job->start();
             }
         }
@@ -583,7 +585,7 @@ bool SqlCollectionLocation::startNextJob( const TranscodeFormat format )
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            if( format.encoder() == TranscodeFormat::NULL_CODEC )
+            if( configuration.encoder() == Transcoding::NULL_CODEC )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             else
                 m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );
@@ -636,11 +638,11 @@ bool SqlCollectionLocation::startNextRemoveJob()
 }
 
 
-TransferJob::TransferJob( SqlCollectionLocation * location, const TranscodeFormat & format )
+TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
     : KCompositeJob( 0 )
     , m_location( location )
     , m_killed( false )
-    , m_transcodeFormat( format )
+    , m_transcodeFormat( configuration )
 {
     setCapabilities( KJob::Killable );
     debug() << "TransferJob::TransferJob";
