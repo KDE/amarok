@@ -653,7 +653,8 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
                 default:
                     continue;
                 }
-                m_urls.insert( KUrl( elemText ), metadata );
+                if( m_size == imageSize )
+                    m_urls.insert( KUrl( elemText ), metadata );
             }
         }
     }
