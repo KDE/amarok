@@ -245,7 +245,7 @@ MainWindow::init()
     PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
-    m_playlistDock = new Playlist::Dock( 0 );
+    m_playlistDock = new Playlist::Dock( this );
     m_playlistDock->installEventFilter( this );
     PERF_LOG( "Playlist created" )
 

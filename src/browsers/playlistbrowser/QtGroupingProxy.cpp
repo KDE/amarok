@@ -68,7 +68,7 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
         i.next();
         int role = i.key();
         QVariant variant = i.value();
-        qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant; //so spammy
+        // qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant; //so spammy
         if( variant.type() == QVariant::List )
         {
             //a list of variants get's expanded to multiple rows
@@ -133,11 +133,11 @@ QtGroupingProxy::buildTree()
         QList<ColumnVariantMap> groupData = belongsTo( rootGroupedIndex );
         foreach( ColumnVariantMap cvm , groupData )
         {
-            qDebug() << cvm;
+            // qDebug() << cvm;
             if( cvm.contains( 0 ) && cvm[0].contains( Qt::DisplayRole ) )
             {
                 QString groupName = cvm[0][Qt::DisplayRole].toString();
-                qDebug() << "Creating empty group: " << groupName;
+                // qDebug() << "Creating empty group: " << groupName;
                 m_groupMaps << cvm;
             }
         }
@@ -157,7 +157,7 @@ QtGroupingProxy::buildTree()
             if( !data.isEmpty() )
             {
                 QString groupName = data[0][Qt::DisplayRole].toString();
-                qDebug() << QString("index %1 belongs to group %2").arg( row ).arg( groupName );
+                // qDebug() << QString("index %1 belongs to group %2").arg( row ).arg( groupName );
 
                 foreach( const ColumnVariantMap &cachedData, m_groupMaps )
                 {

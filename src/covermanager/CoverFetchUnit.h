@@ -21,10 +21,9 @@
 
 #include <KSharedPtr>
 
-#include <QDomDocument>
-
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
+class QXmlStreamReader;
 
 namespace CoverFetch
 {
@@ -139,8 +138,7 @@ protected:
     void prepareUrls();
 
 private:
-    QString m_xml;
-    void prepareDiscogsUrls( const QDomDocument &doc );
+    void prepareDiscogsUrls( const QByteArray &data );
     Q_DISABLE_COPY( CoverFetchInfoPayload )
 };
 
@@ -200,9 +198,6 @@ private:
     /// search is wild mode?
     bool m_wild;
 
-    /// convert ImageSize enum to string
-    QString coverSize2str( enum CoverFetch::ImageSize size ) const;
-
     /// convert string to ImageSize
     enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
 
@@ -213,16 +208,16 @@ private:
     QStringList normalize( const QStringList &rawList );
 
     /// prepare urls from xml provided by Discogs
-    void prepareDiscogsUrls( const QDomDocument &doc );
+    void prepareDiscogsUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Last.fm
-    void prepareLastFmUrls( const QDomDocument &doc );
+    void prepareLastFmUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Yahoo! Image Search
-    void prepareYahooUrls( const QDomDocument &doc );
+    void prepareYahooUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Google Image Search
-    void prepareGoogleUrls( const QString &html );
+    void prepareGoogleUrls();
 
     Q_DISABLE_COPY( CoverFetchArtPayload )
 };

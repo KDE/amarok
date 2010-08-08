@@ -39,6 +39,7 @@ BrowserDock::BrowserDock( QWidget * parent )
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList );
+    ensurePolish();
 }
 
 

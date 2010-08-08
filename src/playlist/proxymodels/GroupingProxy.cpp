@@ -288,8 +288,8 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     // If the grouping category is empty or invalid, 'm_groupingCategoryIndex' will be -1.
     // That will cause us to choose "no grouping".
 
-    DEBUG_BLOCK
-            debug() << m_groupingCategoryIndex;
+    // DEBUG_BLOCK
+            // debug() << m_groupingCategoryIndex;
     switch( m_groupingCategoryIndex )
     {
 

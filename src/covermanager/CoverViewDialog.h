@@ -34,40 +34,35 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
         CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
             : QDialog( parent )
         {
-            setAttribute( Qt::WA_DeleteOnClose );
-
-            #ifdef Q_WS_X11
-            KWindowSystem::setType( winId(), NET::Utility );
-            #endif
-
-            kapp->setTopWidget( this );
+            init();
             setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2",
                             album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
                             album->prettyName() ) ) );
-
-            int screenNumber = KApplication::desktop()->screenNumber( parent );
-
-            PixmapViewer *pixmapViewer = new PixmapViewer( this, album->image( 0 ) /* full sized image */, screenNumber );
-            QHBoxLayout *layout = new QHBoxLayout( this );
-            layout->addWidget( pixmapViewer );
-            layout->setSizeConstraint( QLayout::SetFixedSize );
+            createViewer( album->image(), parent );
         }
 
         CoverViewDialog( QPixmap pixmap, QWidget *parent )
             : QDialog( parent )
         {
-            setAttribute( Qt::WA_DeleteOnClose );
+            init();
+            setWindowTitle( KDialog::makeStandardCaption( i18n( "Cover View" ) ) );
+            createViewer( pixmap, parent );
+        }
 
+    private:
+        void init()
+        {
+            setAttribute( Qt::WA_DeleteOnClose );
+            kapp->setTopWidget( this );
             #ifdef Q_WS_X11
             KWindowSystem::setType( winId(), NET::Utility );
             #endif
+        }
 
-            kapp->setTopWidget( this );
-            setWindowTitle( KDialog::makeStandardCaption( i18n( "Cover View" ) ) );
-
-            int screenNumber = KApplication::desktop()->screenNumber( parent );
-
-            PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap /* full sized image */, screenNumber );
+        void createViewer( const QPixmap &pixmap, const QWidget *widget = 0 )
+        {
+            int screenNumber = KApplication::desktop()->screenNumber( widget );
+            PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap, screenNumber );
             QHBoxLayout *layout = new QHBoxLayout( this );
             layout->addWidget( pixmapViewer );
             layout->setSizeConstraint( QLayout::SetFixedSize );

@@ -155,7 +155,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(updateSearchButton(const QString&)) );
     connect( m_search, SIGNAL(editTextChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
     connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
-    connect( m_searchButton, SIGNAL(pressed()), SLOT(processQuery()) );
+    connect( m_searchButton, SIGNAL(clicked()), SLOT(processQuery()) );
 
     m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
