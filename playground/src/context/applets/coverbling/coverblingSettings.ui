@@ -103,6 +103,19 @@
     <string>Animated jump</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="randomPosChk">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>130</y>
+     <width>141</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Random initial position</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
