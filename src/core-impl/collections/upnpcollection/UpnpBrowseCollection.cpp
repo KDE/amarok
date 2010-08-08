@@ -206,7 +206,7 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     url.setHost( m_device.udi().replace( "/org/kde/upnp/uuid:", "" ) );
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
-    assignJob( listJob );
+    addJob( listJob );
     Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )),
                        this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
     Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),

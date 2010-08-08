@@ -42,6 +42,9 @@ UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
 
 UpnpCollectionBase::~UpnpCollectionBase()
 {
+    foreach( KIO::SimpleJob *job, m_jobSet )
+        job->kill();
+    qDeleteAll( m_jobSet );
     if( m_slave ) {
         KIO::Scheduler::disconnectSlave( m_slave );
         m_slave = 0;
@@ -68,9 +71,17 @@ bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
     return false;
 }
 
-void UpnpCollectionBase::assignJob( KIO::SimpleJob *job )
+void UpnpCollectionBase::addJob( KIO::SimpleJob *job )
 {
+    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotRemoveJob(KJob*)) );
+    m_jobSet.insert( job );
     KIO::Scheduler::assignJobToSlave( m_slave, job );
+}
+
+void UpnpCollectionBase::slotRemoveJob(KJob* job)
+{
+    KIO::SimpleJob *sj = static_cast<KIO::SimpleJob*>( job );
+    m_jobSet.remove( sj );
 }
 
 void UpnpCollectionBase::slotSlaveError(KIO::Slave* slave, int err, const QString& msg)

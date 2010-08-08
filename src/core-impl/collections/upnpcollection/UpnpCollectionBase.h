@@ -19,8 +19,7 @@
 
 #include "core/collections/Collection.h"
 
-#include <QMap>
-#include <QHash>
+#include <QSet>
 #include <QHostInfo>
 #include <QPointer>
 #include <QtGlobal>
@@ -68,11 +67,13 @@ class UpnpCollectionBase : public Collections::Collection
   private slots:
     void slotSlaveError( KIO::Slave *slave, int err, const QString &msg );
     void slotSlaveConnected( KIO::Slave *slave );
+    void slotRemoveJob( KJob *job );
   protected:
-    void assignJob( KIO::SimpleJob *job );
+    void addJob( KIO::SimpleJob *job );
     const Solid::Device m_device;
     KIO::Slave *m_slave;
     bool m_slaveConnected;
+    QSet<KIO::SimpleJob*> m_jobSet;
 };
 
 } //namespace Collections
