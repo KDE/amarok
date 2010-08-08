@@ -194,9 +194,9 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     {
 		int nbAlbums = m_pictureflow->slideCount() -1;
 		int initial_pos = rand() % nbAlbums;
-		if ( m_animatejump )
+        if ( m_animatejump )
         {
-			m_pictureflow->skipToSlide( initial_pos - 10 );
+	    m_pictureflow->skipToSlide( initial_pos - 10 );
             m_pictureflow->showSlide( initial_pos );
         }
         else
