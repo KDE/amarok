@@ -89,10 +89,6 @@ namespace Collections
             m_collection = new PlaydarCollection();
             connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
         }
-        else if( !m_collectionIsManaged )
-        {
-            CollectionManager::instance()->removeTrackProvider( m_collection );
-        }
 
         if( !m_collectionIsManaged )
         {
@@ -284,6 +280,8 @@ namespace Collections
             else
             {
                 albumPtr = track->playdarAlbum();
+                albumPtr->setAlbumArtist( artistPtr );
+                artistPtr->addAlbum( albumPtr );
                 Meta::AlbumPtr album = Meta::AlbumPtr::staticCast( albumPtr );
                 m_memoryCollection->addAlbum( album );
             }

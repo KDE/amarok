@@ -75,11 +75,11 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     m_genre->setAttribute( Qt::WA_TranslucentBackground, true );
     m_genre->setAlignment( Qt::AlignCenter );
 
-    m_topTrack = new QLabel( this );
-    m_topTrack->setWordWrap( true );
+    m_topTrackLabel = new QLabel( this );
+    m_topTrackLabel->setWordWrap( true );
     // The background of the QLabel is transparent
-    m_topTrack->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_topTrack->setAlignment( Qt::AlignLeft );
+    m_topTrackLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+    m_topTrackLabel->setAlignment( Qt::AlignLeft );
 
 
     KHBox * spacer = new KHBox( this );
@@ -87,6 +87,16 @@ ArtistWidget::ArtistWidget( QWidget *parent )
 
     //make sure the buttons are pushed all the way to the right.
     new QWidget( spacer );
+
+    m_topTrackButton = new QPushButton( spacer );
+    m_topTrackButton->setIcon( KIcon( "media-track-add-amarok" ) );
+    m_topTrackButton->setFlat( true );
+    m_topTrackButton->setFixedWidth( 20 );
+    m_topTrackButton->setFixedHeight( 20 );
+    m_topTrackButton->setToolTip( i18n( "Add top track to the Playlist" ) );
+    m_topTrackButton->hide();
+    
+    connect( m_topTrackButton, SIGNAL( clicked( bool ) ), this, SLOT( addTopTrackToPlaylist() ) );
 
     m_navigateButton = new QPushButton( spacer );
     m_navigateButton->setIcon( KIcon( "edit-find" ) );
@@ -121,7 +131,7 @@ ArtistWidget::ArtistWidget( QWidget *parent )
     m_layout->addWidget( m_image, 0, 0, 3, 1 );
     m_layout->addWidget( m_nameLabel, 0, 1 );
     m_layout->addWidget( m_genre, 0, 2 );
-    m_layout->addWidget( m_topTrack, 1, 1, 1, 2 );
+    m_layout->addWidget( m_topTrackLabel, 1, 1, 1, 2 );
     m_layout->addWidget( spacer, 1, 2, 1, 1 );
     m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
@@ -140,7 +150,7 @@ ArtistWidget::~ArtistWidget()
     delete m_image;
     delete m_nameLabel;
     delete m_genre;
-    delete m_topTrack;
+    delete m_topTrackLabel;
     delete m_desc;
 }
 
@@ -225,7 +235,7 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     
     qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->addFilter( Collections::QueryMaker::ArtistFilter, m_name );
+    qm->addFilter( Meta::valArtist, m_name );
     qm->limitMaxResultSize( 1 );
     qm->setAutoDelete( true );
 
@@ -255,7 +265,7 @@ ArtistWidget::clear()
     m_image->clear();
     m_nameLabel->clear();
     m_genre->clear();
-    m_topTrack->clear();
+    m_topTrackLabel->clear();
 }
 
 /**
@@ -297,11 +307,31 @@ ArtistWidget::setDescription(const QString &description)
 void
 ArtistWidget::setTopTrack(const QString &topTrack)
 {
+    m_topTrackButton->hide();
+    
     if(topTrack.isEmpty())
     {
-        m_topTrack->setText(i18n("Top track not found"));
-    } else {
-        m_topTrack->setText( i18n( "Top track" ) + ": " +  topTrack);
+        m_topTrackLabel->setText(i18n("Top track not found"));
+    }
+    else
+    {
+        m_topTrackTitle = topTrack;
+        m_topTrackLabel->setText( i18n( "Top track" ) + ": " +  topTrack );
+
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->beginAnd();
+        qm->addFilter( Meta::valArtist, m_name );
+        qm->addFilter( Meta::valTitle, m_topTrackTitle );
+        qm->endAndOr();
+        qm->limitMaxResultSize( 1 );
+        qm->setAutoDelete( true );
+
+        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+                 SLOT( resultReady( QString, Meta::TrackList ) ) );
+         
+        qm->run();
     }
 }
 
@@ -345,6 +375,13 @@ ArtistWidget::elideArtistDescription()
 }
 
 void
+ArtistWidget::addTopTrackToPlaylist()
+{
+    The::playlistController()->insertOptioned( m_topTrack, Playlist::AppendAndPlay );
+}
+
+
+void
 ArtistWidget::navigateToArtist()
 {
     AmarokUrl url;
@@ -370,4 +407,15 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &
     if( artists.length() > 0 )
         m_navigateButton->show();
 
+}
+
+void
+ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    Q_UNUSED( collectionId )
+    if( !tracks.isEmpty() )
+    {
+        m_topTrack = tracks.first();
+        m_topTrackButton->show();
+    }
 }

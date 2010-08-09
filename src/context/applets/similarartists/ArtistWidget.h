@@ -138,9 +138,24 @@ private:
     QLabel *m_genre;
 
     /**
-     * Top track of the artist
+     * Title of the top track
      */
-    QLabel *m_topTrack;
+    QString m_topTrackTitle;
+
+    /**
+     * Label showing the title of the top track of the artist
+     */
+    QLabel *m_topTrackLabel;
+
+    /**
+     * Meta::LabelPtr to the top track, if it's in a collection
+     */
+    Meta::TrackPtr m_topTrack;
+
+    /**
+     * Button to add the top track to the playlist
+     */
+    QPushButton *m_topTrackButton;
 
     /**
      * Button to add the last.fm simmilar artist station for this artist to the playlist
@@ -181,20 +196,26 @@ private slots:
     void openUrl( const QString &url );
 
     /**
+     * Add top track to the playlist
+     */
+    void addTopTrackToPlaylist();
+
+    /**
      * Navigate to this artist in the local collection
      */
     void navigateToArtist();
 
     /**
-     * Add this artists last.fm simmliar artist stream
+     * Add this artists last.fm similar artist stream
      */
     void addLastfmArtistStation();
 
 
     /**
-     * Get results from the qery maker
+     * Get results from the query maker
      */
     void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
+    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
 };
 
 #endif // ARTIST_WIDGET_H
