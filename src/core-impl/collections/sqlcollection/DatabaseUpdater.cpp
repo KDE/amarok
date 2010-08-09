@@ -744,6 +744,7 @@ void
 DatabaseUpdater::prepareTemporaryTablesForFullScan()
 {
     m_storage->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+    m_storage->query( "INSERT INTO images_temp SELECT * FROM images;" );
 }
 
 void
@@ -811,6 +812,7 @@ DatabaseUpdater::copyToPermanentTables()
     writeCSVFile( "years_temp", "years_temp" );
     writeCSVFile( "composers_temp", "composers_temp" );
     writeCSVFile( "urls_temp", "urls_temp" );
+    writeCSVFile( "images_temp", "images_temp" );
 
     writeCSVFile( "artists", "artists_before" );
     writeCSVFile( "albums", "albums_before" );
@@ -818,7 +820,7 @@ DatabaseUpdater::copyToPermanentTables()
     writeCSVFile( "genres", "genres_before" );
     writeCSVFile( "years", "years_before" );
     writeCSVFile( "composers", "composers_before" );
-    writeCSVFile( "urls", "urls_before" );
+    writeCSVFile( "images", "images_before" );
 
 
     //handle artists before albums
@@ -826,8 +828,7 @@ DatabaseUpdater::copyToPermanentTables()
                    " (SELECT DISTINCT id FROM artists);" ), QString() );
 
     //handle images before albums
-    m_storage->query( "DELETE FROM images;" );
-    m_storage->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
+    m_storage->insert( QString( "REPLACE INTO images SELECT * FROM images_temp;" ), QString() );
 
     m_storage->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN"
                    " ( SELECT DISTINCT id FROM albums );" ), QString() );
@@ -863,6 +864,7 @@ DatabaseUpdater::copyToPermanentTables()
     writeCSVFile( "years", "years_after" );
     writeCSVFile( "composers", "composers_after" );
     writeCSVFile( "urls", "urls_after" );
+    writeCSVFile( "images", "images_after" );
 
     m_collection->sendChangedSignal();
 }
