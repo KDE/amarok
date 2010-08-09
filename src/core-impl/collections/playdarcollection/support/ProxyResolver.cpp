@@ -63,13 +63,17 @@ Playdar::ProxyResolver::collectQuery( Playdar::Query *query )
 void
 Playdar::ProxyResolver::collectSolution( Meta::PlaydarTrackPtr track )
 {
+    Meta::TrackPtr realTrack;
+    
     if( !m_collection.isNull() )
     {
         track->addToCollection( m_collection );
-        track = Meta::PlaydarTrackPtr::staticCast( m_collection->trackForUrl( track->uidUrl() ) );
+        realTrack = m_collection->trackForUrl( track->uidUrl() );
     }
+    else
+        realTrack = Meta::TrackPtr::staticCast( track );
     
-    m_proxyTrack->updateTrack( Meta::TrackPtr::staticCast( track ) );
+    m_proxyTrack->updateTrack( realTrack );
     
     deleteLater();
 }
