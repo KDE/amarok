@@ -16,8 +16,6 @@
 
 #include "TranscodingFlacFormat.h"
 
-#include "core/transcoding/TranscodingConfiguration.h"
-
 #include <KLocale>
 
 #include <QVariant>
@@ -29,7 +27,17 @@ FlacFormat::FlacFormat()
 {
     m_encoder = FLAC;
     m_fileExtension = "flac";
-    m_propertyList << Property::Numeric( "level", i18n( "Level" ), 0, 8, 5 );
+    QString description1 =
+            i18n( "The <a href=http://flac.sourceforge.net/documentation_tools_flac.html>"
+            "compression level</a> is an integer value between 0 and 8 that represents "
+            "the tradeoff between file size and compression speed while encoding:<br/> "
+            "0 = fastest compression, big file<br/>"
+            "8 = slowest compression, small file.<br/>"
+            "Note that since FLAC is by definition a lossless codec, the audio quality "
+            "of the output is exactly the same regardless of the compression level.<br/>"
+            "Also, levels above 5 dramatically increase compression time but create an only "
+            "slightly smaller file, and are not recommended.");
+    m_propertyList << Property::Numeric( "level", i18n( "Compression level" ), description1, 0, 8, 5 );
 }
 
 QString

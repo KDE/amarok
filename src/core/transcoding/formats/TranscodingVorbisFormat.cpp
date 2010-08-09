@@ -25,7 +25,7 @@ VorbisFormat::VorbisFormat()
 {
     m_encoder = VORBIS;
     m_fileExtension = "ogg";
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), 0, 10, 7 );
+    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), i18n(""), 0, 10, 7 );
 }
 
 QString

@@ -25,6 +25,7 @@ AlacFormat::AlacFormat()
 {
     m_encoder = ALAC;
     m_fileExtension = "m4a";
+    //ALAC seems to have absolutely no configurable options whatsoever. Gnomes would love it.
 }
 
 QString
@@ -53,6 +54,7 @@ AlacFormat::icon() const
 QStringList
 AlacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
+    Q_UNUSED( configuration )
     return QStringList() << "-acodec" << "alac";
 }
 

@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 
 #include <QHBoxLayout>
-#include <QSpinBox>
+#include <QSlider>
 #include <QLineEdit>
 #include <QComboBox>
 
@@ -39,9 +39,11 @@ PropertyWidget::PropertyWidget( Property property, QWidget * parent )
     switch( property.type() )
     {
     case Property::NUMERIC:
-        m_mainEdit = new QSpinBox( this );
-        qobject_cast< QSpinBox * >( m_mainEdit )->setRange( property.min(), property.max() );
-        qobject_cast< QSpinBox * >( m_mainEdit )->setValue( property.defaultValue() );
+        m_mainEdit = new QSlider( this );
+        qobject_cast< QSlider * >( m_mainEdit )->setOrientation( Qt::Horizontal );
+        qobject_cast< QSlider * >( m_mainEdit )->setRange( property.min(), property.max() );
+        qobject_cast< QSlider * >( m_mainEdit )->setValue( property.defaultValue() );
+        qobject_cast< QSlider * >( m_mainEdit )->setTickPosition( QSlider::TicksBelow );
         break;
     case Property::TEXT:
         m_mainEdit = new QLineEdit( this );
@@ -50,7 +52,8 @@ PropertyWidget::PropertyWidget( Property property, QWidget * parent )
         break;
     case Property::LIST:
         m_mainEdit = new QComboBox( this );
-        qobject_cast< QComboBox * >( m_mainEdit )->addItems( property.values() );
+        qobject_cast< QComboBox * >( m_mainEdit )->addItems( property.prettyValues() );
+        m_listValues = property.values();
         qobject_cast< QComboBox * >( m_mainEdit )->setCurrentIndex( property.defaultIndex() );
         m_mainEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
         break;
@@ -60,7 +63,7 @@ PropertyWidget::PropertyWidget( Property property, QWidget * parent )
     m_mainEdit->setToolTip( property.prettyName() );
     mainLayout->addWidget( m_mainEdit );
     m_mainLabel->setBuddy( m_mainEdit );
-    mainLayout->addSpacing( 5 );;
+    mainLayout->addSpacing( 5 );
 }
 
 QVariant
@@ -68,14 +71,14 @@ PropertyWidget::value() const
 {
     QByteArray className = m_mainEdit->metaObject()->className();
 
-    if( className == "QSpinBox" )
-        return qobject_cast< QSpinBox * >( m_mainEdit )->value();
+    if( className == "QSlider" )
+        return qobject_cast< QSlider * >( m_mainEdit )->value();
 
     if( className == "QLineEdit" )
         return qobject_cast< QLineEdit * >( m_mainEdit )->text();
 
     if( className == "QComboBox" )
-        return qobject_cast< QComboBox * >( m_mainEdit )->currentText();
+        return m_listValues.at( qobject_cast< QComboBox * >( m_mainEdit )->currentIndex() );
 
     return QVariant();
 }

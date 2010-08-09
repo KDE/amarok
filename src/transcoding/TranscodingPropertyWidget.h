@@ -43,6 +43,7 @@ private:
     QLabel *m_mainLabel;
     QWidget *m_mainEdit;
     QByteArray m_name;
+    QStringList m_listValues;
 };
 
 } //namespace Transcoding

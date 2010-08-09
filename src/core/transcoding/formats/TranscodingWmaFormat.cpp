@@ -25,7 +25,7 @@ WmaFormat::WmaFormat()
 {
     m_encoder = WMA2;
     m_fileExtension = "wma";
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), 0, 10, 7 );    //check docs
+    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), i18n(""), 0, 10, 7 );    //check docs
 }
 
 QString

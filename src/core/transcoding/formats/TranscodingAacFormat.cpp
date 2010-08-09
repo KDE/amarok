@@ -18,6 +18,8 @@
 
 #include <KLocale>
 
+#include <QVariant>
+
 namespace Transcoding
 {
 
@@ -25,7 +27,15 @@ AacFormat::AacFormat()
 {
     m_encoder = AAC;
     m_fileExtension = "m4a";
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), 0, 150, 100 ); //no idea, check ffmpeg docs
+    QString description1 =
+        i18n( "The quality rating is an integer value between 0 and 255 that represents the "
+              "tradeoff between file size and sound quality. While it does not directly "
+              "translate into a bitrate, a higher quality rating generally raises the "
+              "<a href=http://www.ffmpeg.org/faq.html#SEC21>average bitrate</a>.<br/>"
+              "150 is a good choice for music listening on a portable player.<br/>"
+              "Anything below 120 might be unsatisfactory for music and anything above"
+              "220 is probably overkill." );
+    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 0, 255, 150 );
 }
 
 QString
@@ -56,14 +66,26 @@ AacFormat::icon() const
 QStringList
 AacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
-    return QStringList() << "-acodec" << "libfaac"; /* libfaac seems to be the only decent
-                                                       AAC encoder for GNU/Linux and it's
-                                                       a proprietary freeware with LGPL
-                                                       portions. Hopefully in the future
-                                                       FFmpeg's native aac implementation
-                                                       should get better so libfaac won't
-                                                       be necessary any more.
+    QStringList parameters;
+    parameters << "-acodec" << "libfaac"; /* libfaac seems to be the only decent AAC encoder
+                                             for GNU/Linux and it's a proprietary freeware
+                                             with LGPL portions. Hopefully in the future
+                                             FFmpeg's native aac implementation should get
+                                             better so libfaac won't be necessary any more.
                                                             -- Teo 5/aug/2010 */
+    foreach( Property property, m_propertyList )
+    {
+        if( !configuration.property( property.name() ).isNull()
+            && configuration.property( property.name() ).type() == property.variantType() )
+        {
+            if( property.name() == "quality" )
+            {
+                parameters << "-aq"
+                           << QString::number( configuration.property( "quality" ).toInt() );
+            }
+        }
+    }
+    return parameters;
 }
 
 bool

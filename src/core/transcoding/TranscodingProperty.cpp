@@ -28,46 +28,54 @@ namespace Transcoding
 
 Property
 Property::Numeric( const QByteArray name,
-                               const QString &prettyName,
-                               int min,
-                               int max,
-                               int defaultValue )
+                   const QString &prettyName,
+                   const QString &description,
+                   int min,
+                   int max,
+                   int defaultValue )
 {
-    return Property( name, prettyName, NUMERIC, defaultValue, min, max, QStringList(), QString() );
+    return Property( name, prettyName, description, NUMERIC, defaultValue, min, max, QStringList(), QStringList(), QString() );
 }
 
 Property
 Property::String( const QByteArray name,
-                              const QString &prettyName,
-                              const QString &defaultText )
+                  const QString &prettyName,
+                  const QString &description,
+                  const QString &defaultText )
 {
-    return Property( name, prettyName, TEXT, 0, 0, 0, QStringList(), defaultText );
+    return Property( name, prettyName, description, TEXT, 0, 0, 0, QStringList(), QStringList(), defaultText );
 }
 
 Property
 Property::List( const QByteArray name,
-                            const QString &prettyName,
-                            const QStringList &valuesList,
-                            int defaultIndex )
+                const QString &prettyName,
+                const QString &description,
+                const QStringList &valuesList,
+                const QStringList &prettyValuesList,
+                int defaultIndex )
 {
-    return Property( name, prettyName, LIST, defaultIndex, 0, 0, valuesList, QString() );
+    return Property( name, prettyName, description, LIST, defaultIndex, 0, 0, valuesList, prettyValuesList, QString() );
 }
 
 Property::Property( const QByteArray name,
-                                            const QString &prettyName,
-                                            Type type,
-                                            int defaultNumber,
-                                            int min,
-                                            int max,
-                                            const QStringList &values,
-                                            const QString &defaultText )
+                    const QString &prettyName,
+                    const QString &description,
+                    Type type,
+                    int defaultNumber,
+                    int min,
+                    int max,
+                    const QStringList &values,
+                    const QStringList &prettyValues,
+                    const QString &defaultText )
     : m_name( name )
     , m_prettyName( prettyName )
+    , m_description( description )
     , m_type( type )
     , m_defaultNumber( defaultNumber )
     , m_min( min )
     , m_max( max )
     , m_values( values )
+    , m_prettyValues( prettyValues )
     , m_defaultString( defaultText )
 {}
 

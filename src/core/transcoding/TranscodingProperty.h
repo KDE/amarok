@@ -43,23 +43,29 @@ public:
     };
 
     static Property Numeric( const QByteArray name,
-                                         const QString &prettyName,
-                                         int min,
-                                         int max,
-                                         int defaultValue );
+                             const QString &prettyName,
+                             const QString &description,
+                             int min,
+                             int max,
+                             int defaultValue );
 
     static Property String(  const QByteArray name,
-                                         const QString &prettyName,
-                                         const QString &defaultText );
+                             const QString &prettyName,
+                             const QString &description,
+                             const QString &defaultText );
 
     static Property List(    const QByteArray name,
-                                         const QString &prettyName,
-                                         const QStringList &valuesList,
-                                         int defaultIndex );
+                             const QString &prettyName,
+                             const QString &description,
+                             const QStringList &valuesList,
+                             const QStringList &prettyValuesList,
+                             int defaultIndex );
 
     QByteArray name() const { return m_name; }
 
     const QString & prettyName() const { return m_prettyName; }
+
+    const QString & description() const { return m_description; }
 
     Type type() const { return m_type; }
 
@@ -76,24 +82,30 @@ public:
 
     const QStringList & values() const { return m_values; }
 
+    const QStringList & prettyValues() const { return m_prettyValues; }
+
     int defaultIndex() const { return m_defaultNumber; }
 
 private:
     Property( const QByteArray name,
-                          const QString &prettyName,
-                          Type type,
-                          int defaultNumber,
-                          int min,
-                          int max,
-                          const QStringList &values,
-                          const QString &defaultText );
+              const QString &prettyName,
+              const QString &description,
+              Type type,
+              int defaultNumber,
+              int min,
+              int max,
+              const QStringList &values,
+              const QStringList &prettyValues,
+              const QString &defaultText );
     QByteArray m_name;
     QString m_prettyName;
+    QString m_description;
     Type m_type;
     int m_defaultNumber;
     int m_min;
     int m_max;
     QStringList m_values;
+    QStringList m_prettyValues;
     QString m_defaultString;
     QPointer< QWidget > m_widget;
 };

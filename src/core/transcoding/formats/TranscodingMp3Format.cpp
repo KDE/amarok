@@ -25,7 +25,9 @@ Mp3Format::Mp3Format()
 {
     m_encoder = MP3;
     m_fileExtension = "mp3";
-    m_propertyList << Property::Numeric( "vrating", i18n( "V rating" ), 0, 10, 7 ); //no idea, check docs
+    QString description1 =
+            i18n( "");
+    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 9, 0, 6 );
 }
 
 QString
