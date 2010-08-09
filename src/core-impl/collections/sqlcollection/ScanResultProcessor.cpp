@@ -1161,7 +1161,7 @@ ScanResultProcessor::populateCacheHashes()
     lastNum = 0;
     while( index < res.size() )
     {
-        qDebug() << "Reading track "<<m_nextTrackNum<<" at index "<<index<<" with id "<<res.at(index);
+        // qDebug() << "Reading track "<<m_nextTrackNum<<" at index "<<index<<" with id "<<res.at(index);
         QString *currTrack = new QString[TrackColMaxCount];
         lastNum = res.at( index ).toInt();
         for( int i = 0; i < TrackColMaxCount; i++ )

@@ -52,7 +52,7 @@ void AmarokDockWidget::hideEvent( QHideEvent* event )
 
 void AmarokDockWidget::slotVisibilityChanged( bool visible )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     if( visible )
         ensurePolish();
 }

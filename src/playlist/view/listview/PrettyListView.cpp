@@ -338,7 +338,7 @@ Playlist::PrettyListView::showEvent( QShowEvent* event )
 void
 Playlist::PrettyListView::fixInvisible() //SLOT
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
 
     // Part 1: Palette change
     newPalette( palette() );
