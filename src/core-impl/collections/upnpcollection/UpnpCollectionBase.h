@@ -74,6 +74,7 @@ class UpnpCollectionBase : public Collections::Collection
     KIO::Slave *m_slave;
     bool m_slaveConnected;
     QSet<KIO::SimpleJob*> m_jobSet;
+    int m_continuousJobFailureCount;
 };
 
 } //namespace Collections

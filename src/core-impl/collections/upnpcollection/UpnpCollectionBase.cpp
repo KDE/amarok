@@ -27,11 +27,14 @@
 
 namespace Collections {
 
+static const int MAX_JOB_FAILURES_BEFORE_ABORT = 5;
+
 UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
     : Collection()
     , m_device( dev )
     , m_slave( 0 )
     , m_slaveConnected( false )
+    , m_continuousJobFailureCount( 0 )
 {
     KIO::Scheduler::connect( SIGNAL(slaveError(KIO::Slave*,int,QString)),
                              this, SLOT(slotSlaveError(KIO::Slave*,int,QString)) );
@@ -42,9 +45,7 @@ UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
 
 UpnpCollectionBase::~UpnpCollectionBase()
 {
-    foreach( KIO::SimpleJob *job, m_jobSet )
-        job->kill();
-    qDeleteAll( m_jobSet );
+    m_jobSet.clear();
     if( m_slave ) {
         KIO::Scheduler::disconnectSlave( m_slave );
         m_slave = 0;
@@ -81,7 +82,19 @@ void UpnpCollectionBase::addJob( KIO::SimpleJob *job )
 void UpnpCollectionBase::slotRemoveJob(KJob* job)
 {
     KIO::SimpleJob *sj = static_cast<KIO::SimpleJob*>( job );
+
     m_jobSet.remove( sj );
+
+    if( sj->error() ) {
+        m_continuousJobFailureCount++;
+        if( m_continuousJobFailureCount >= MAX_JOB_FAILURES_BEFORE_ABORT ) {
+            debug() << prettyName() << "Had" << m_continuousJobFailureCount << "continuous job failures, something wrong with the device. Removing this collection.";
+            emit remove();
+        }
+    }
+    else {
+        m_continuousJobFailureCount = 0;
+    }
 }
 
 void UpnpCollectionBase::slotSlaveError(KIO::Slave* slave, int err, const QString& msg)
