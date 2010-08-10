@@ -42,6 +42,8 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Fix crash when right clicking on children of "No labels". NoLabel item is
+      now a Data item. (BR 243825)
     * Fix regression in Dynamic Collections. For files that were scanned when
       Dynamic Collections wasn't working, you will need to rescan them to get
       them associated with the proper device.
