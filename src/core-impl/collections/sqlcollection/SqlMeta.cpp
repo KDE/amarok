@@ -40,6 +40,9 @@
 #include <QMultiHash>
 #include <QMutexLocker>
 #include <QPointer>
+#if QT_VERSION >= 0x040600
+#include <QPixmapCache>
+#endif
 
 #include <KCodecs>
 #include <KLocale>
@@ -1227,6 +1230,15 @@ SqlAlbum::image( int size )
     if( !hasImage() )
         return Meta::Album::image( size );
 
+    QPixmap pixmap;
+    // look in the memory pixmap cache
+    // large scale images are not stored in memory
+#if QT_VERSION >= 0x040600
+    QString cachedPixmapKey = QString::number(size) + "@acover" + QString::number(m_imageId);
+    if( size > 0 && QPixmapCache::find( cachedPixmapKey, &pixmap ) )
+        return pixmap;
+#endif
+
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     QString cachedImagePath;
@@ -1239,14 +1251,17 @@ SqlAlbum::image( int size )
     // a image exists. just load it.
     if( !cachedImagePath.isEmpty() && QFile( cachedImagePath ).exists() )
     {
-        QPixmap pix = QPixmap( cachedImagePath );
-        if( pix.isNull() )
+        pixmap = QPixmap( cachedImagePath );
+        if( pixmap.isNull() )
             return Meta::Album::image( size );
-        return pix;
+#if QT_VERSION >= 0x040600
+        if( size > 0)
+            QPixmapCache::insert( cachedPixmapKey, pixmap );
+#endif
+        return pixmap;
     }
 
     // no cached scaled image exists. Have to create it
-
     QImage img;
     if( hasEmbeddedImage() )
         img = getEmbeddedImage();
@@ -1267,7 +1282,12 @@ SqlAlbum::image( int size )
         img.save( cachedImagePath, "JPG" );
     }
 
-    return QPixmap::fromImage( img );
+    pixmap = QPixmap::fromImage( img );
+#if QT_VERSION >= 0x040600
+    if( size > 0)
+        QPixmapCache::insert( cachedPixmapKey, pixmap );
+#endif
+    return pixmap;
 }
 
 KUrl
@@ -1341,6 +1361,7 @@ SqlAlbum::removeImage()
     query = "SELECT count( albums.id ) FROM albums "
                     "WHERE albums.image = %1";
     QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+
     if( !res.isEmpty() )
     {
         int references = res[0].toInt();
