@@ -71,9 +71,9 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )
+        , m_videoWidget( 0 )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
-        , m_videoWidget( 0 )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
