@@ -155,9 +155,6 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     // so it can be blacklisted from LikeBack.
     s_helpMenu->action( KHelpMenu::menuReportBug )->setVisible( false );
 
-    // NOTE: We hide the "Amarok Handbook" entry until the handbook actually exists (WIP)
-    s_helpMenu->action( KHelpMenu::menuHelpContents )->setVisible( false );
-
     // NOTE: "What's This" isn't currently defined for anything in Amarok, so let's remove that too
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
 
