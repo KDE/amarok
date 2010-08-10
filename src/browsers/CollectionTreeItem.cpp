@@ -291,7 +291,7 @@ CollectionTreeItem::level() const
 bool
 CollectionTreeItem::isDataItem() const
 {
-    return m_type == Data || m_type == VariousArtist;
+    return m_type == Data || m_type == VariousArtist || m_type == NoLabel;
 }
 
 bool
