@@ -416,6 +416,7 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &t
     if( !tracks.isEmpty() )
     {
         m_topTrack = tracks.first();
+        m_navigateButton->show();
         m_topTrackButton->show();
     }
 }
