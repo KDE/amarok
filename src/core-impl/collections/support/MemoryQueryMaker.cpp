@@ -111,6 +111,7 @@ MemoryQueryMaker::reset()
     d->returnDataPtrs = false;
     delete d->matcher;
     delete d->job;
+    d->job = 0;
     d->maxsize = -1;
     if( !d->containerFilters.isEmpty() )
         delete d->containerFilters.first();
