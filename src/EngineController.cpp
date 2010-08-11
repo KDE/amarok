@@ -143,8 +143,6 @@ EngineController::initializePhonon()
     delete m_preamp.data();
     delete m_equalizer.data();
 
-    audioReceiver audioReceiver( this );
-
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
 
@@ -216,7 +214,8 @@ EngineController::initializePhonon()
     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
         m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
 }
-// 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
