@@ -198,9 +198,6 @@ private:
     /// search is wild mode?
     bool m_wild;
 
-    /// convert string to ImageSize
-    enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
-
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );
 
@@ -218,6 +215,9 @@ private:
 
     /// prepare urls from xml provided by Google Image Search
     void prepareGoogleUrls();
+
+    /// gets the value of the first available key from hash
+    QString firstAvailableValue( const QStringList &keys, const QHash<QString, QString> &hash );
 
     Q_DISABLE_COPY( CoverFetchArtPayload )
 };

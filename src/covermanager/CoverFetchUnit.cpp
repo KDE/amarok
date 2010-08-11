@@ -612,6 +612,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
         if( !xml.isStartElement() || xml.name() != "album" )
             continue;
 
+        QHash<QString, QString> coverUrlHash;
         CoverFetch::Metadata metadata;
         metadata[ "source" ] = "Last.fm";
         while( !xml.atEnd() && !xml.hasError() )
@@ -623,41 +624,52 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             if( !xml.isStartElement() )
                 continue;
 
-            const QString &elemText = xml.readElementText();
             if( n == "name" )
             {
-                metadata[ "name" ] = elemText;
+                metadata[ "name" ] = xml.readElementText();
             }
             else if( n == "artist" )
             {
-                if( !artistSet.contains( elemText ) )
+                const QString &artist = xml.readElementText();
+                if( !artistSet.contains( artist ) )
                     continue;
-                metadata[ "artist" ] = elemText;
+                metadata[ "artist" ] = artist;
             }
             else if( n == "url" )
             {
-                metadata[ "releaseurl" ] = elemText;
+                metadata[ "releaseurl" ] = xml.readElementText();
             }
             else if( n == "image" )
             {
-                const QString &sizeStr = xml.attributes().value("size").toString();
-                enum CoverFetch::ImageSize imageSize = str2CoverSize( sizeStr );
-                switch( imageSize )
-                {
-                case CoverFetch::ThumbSize:
-                    metadata[ "thumbarturl" ] = elemText;
-                    break;
-                case CoverFetch::NormalSize:
-                    metadata[ "normalarturl" ] = elemText;
-                    break;
-                default:
-                    continue;
-                }
-                if( m_size == imageSize )
-                    m_urls.insert( KUrl( elemText ), metadata );
+                QString sizeStr = xml.attributes().value("size").toString();
+                coverUrlHash[ sizeStr ] = xml.readElementText();
             }
         }
+
+        QStringList acceptableSizes;
+        acceptableSizes << "large" << "medium" << "small";
+        metadata[ "thumbarturl" ] = firstAvailableValue( acceptableSizes, coverUrlHash );
+
+        acceptableSizes.clear();
+        acceptableSizes << "extralarge" << "large";
+        metadata[ "normalarturl" ] = firstAvailableValue( acceptableSizes, coverUrlHash );
+
+        KUrl url( m_size == CoverFetch::ThumbSize ? metadata["thumbarturl"] : metadata["normalarturl"] );
+        if( url.isValid() )
+            m_urls.insert( url , metadata );
     }
+}
+
+QString
+CoverFetchArtPayload::firstAvailableValue( const QStringList &keys, const QHash<QString, QString> &hash )
+{
+    for( int i = 0, size = keys.size(); i < size; ++i )
+    {
+        QString value( hash.value( keys.at(i) ) );
+        if( !value.isEmpty() )
+            return value;
+    }
+    return QString();
 }
 
 void
@@ -710,17 +722,6 @@ CoverFetchArtPayload::prepareYahooUrls( QXmlStreamReader &xml )
                 xml.skipCurrentElement();
         }
     }
-}
-
-enum CoverFetch::ImageSize
-CoverFetchArtPayload::str2CoverSize( const QString &string ) const
-{
-    enum CoverFetch::ImageSize size;
-    if( string == "large" || string == "thumbnail_url" )
-        size = CoverFetch::ThumbSize;
-    else
-        size = CoverFetch::NormalSize;
-    return size;
 }
 
 QString
