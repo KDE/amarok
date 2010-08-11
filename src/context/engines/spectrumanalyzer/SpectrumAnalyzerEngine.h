@@ -81,7 +81,6 @@ class SpectrumAnalyzerEngine : public Context::DataEngine, public ContextObserve
         */
         void update();
 
-        Phonon::AudioDataOutput                                        *m_audioDataOutput;      //!< The audio Data Output to get data
         QMap< Phonon::AudioDataOutput::Channel, QVector< qint16 > >     m_audioData;            //!< Audio data to be passed to the applet
         QStringList                                                     m_sources;              //!< Sources connected to this engine
         bool                                                            m_requested;            //!< Ia an update requested

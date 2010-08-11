@@ -40,6 +40,30 @@ class QTimer;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
+class audioReceiver : public QObject
+{
+    Q_OBJECT
+
+    public:
+     audioReceiver( QObject* parent = 0 ) : QObject( parent ) {};
+     ~audioReceiver() {};
+
+    public slots:
+      void receiveAudioData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData )
+      {
+            Q_UNUSED( audioData )
+
+            qDebug() << "received audio data";
+      };
+
+      void endOfMedia( int samples )
+      {
+            Q_UNUSED( samples )
+
+            qDebug() << "received end of Media Event";
+      };
+};
+
 /**
  * A thin wrapper around Phonon that implements Amarok-specific functionality like
  * replay gain, fade-out on stop and various track capabilities that affect

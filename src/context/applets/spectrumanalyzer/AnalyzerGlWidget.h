@@ -18,8 +18,7 @@
 #define VSXUGLWIDGET_H
 
 #include <QGLWidget>
-
-#define NUMDOTS 9
+#include <QKeyEvent>
 
 class AnalyzerGlWidget: public QGLWidget
 {
@@ -64,18 +63,68 @@ class AnalyzerGlWidget: public QGLWidget
         *   Sets the mode of the analyzer
         *   @arg mode analyzer mode to use
         */
-        void setMode( AnalyzerMode mode );
+        void setMode( int mode );
 
         /**
-        *   Sets the accuracy (e.g. bars per dot) of the analyzer
+        *   @returns the current mode of the analyzer
         */
-        void setAccuracy( int barsPerDot );
+        int getMode();
+
+        /**
+        *   Sets the accuracy (e.g. bars per frequency) of the analyzer
+        */
+        void setAccuracy( float barsPerFrequency ) { m_barsPerFrequency = barsPerFrequency; };
+
+        /**
+        *   @returns the accuracy (e.g. bars per frequency) of the analyzer
+        */
+        float getAccuracy() { return m_barsPerFrequency; };
 
         /**
         *   Sets the frequency values
         *   @arg frequencyValues values of the diffenrent frequencys
         */
         void setFrequencyValues( QVector<int> frequencyValues );
+
+        /**
+        *   @returns if peaks should be shown
+        */
+        bool getPeaksStatus() { return m_showPeaks; };
+
+        /**
+        *   @returns if wave should be shown
+        */
+        bool getWaveStatus() { return m_showWave; };
+
+        /**
+        *   Sets if peaks should be shown
+        *   @arg value Value to set
+        */
+        void setPeaksStatus( bool value ) { m_showPeaks = value; };
+
+        /**
+        *   Sets if Wave should be shown
+        *   @arg value Value to set
+        */
+        void setWaveStatus( bool value ) { m_showWave = value; };
+
+        /**
+        *   Sets peak sinkrate
+        *   @arg sinkrate Value to set
+        */
+        void setSinkrate( float sinkrate ) { m_peakSinkRate = sinkrate; };
+
+        /**
+        *   Gets peak sinkrate
+        */
+        float getSinkrate() { return m_peakSinkRate; };
+
+    signals:
+        /**
+        *   Is emitted when a key was pressed on this widget
+        *   @arg key Key that was pressed
+        */
+        void keyPressed( int key );
 
     private:
         QColor                          m_fillColor;                //!< Color to fill the scene with
@@ -86,8 +135,7 @@ class AnalyzerGlWidget: public QGLWidget
         bool                            m_showPeaks;                //!< should peaks be shown
         bool                            m_showWave;                 //!< show wave overlay in bars mode
         int                             m_peakSinkRate;             //!< sink rate of peaks
-        float                           m_barsPerDot;               //!< bars to show per Dot
-        int                             changecount;
+        float                           m_barsPerFrequency;         //!< bars per frequency
 
         /**
         *   Calls resizeGLScene()
@@ -133,6 +181,19 @@ class AnalyzerGlWidget: public QGLWidget
         *   @arg size size of new value vector
         */
         QVector<int> interpolateSpline( QVector<int> splines, int size );
+
+        /**
+        *   @returns a waterfall diagram color for a value
+        *   @arg value value to calculate color for
+        */
+        QVector<GLubyte> getValueColor( int value );
+
+    protected:
+        /**
+        *   Overrides the normal key handling of QWidget
+        *   @arg event key press event
+        */
+        void keyPressEvent( QKeyEvent * event );
 };
 
 #endif

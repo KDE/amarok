@@ -143,6 +143,8 @@ EngineController::initializePhonon()
     delete m_preamp.data();
     delete m_equalizer.data();
 
+    audioReceiver audioReceiver( this );
+
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
 
@@ -151,9 +153,12 @@ EngineController::initializePhonon()
 
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
     m_audioDataOutput = new Phonon::AudioDataOutput( this );
+    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
     m_path = Phonon::createPath( m_audioDataOutput.data(), m_audio.data() );
+
+    connect( m_audioDataOutput, SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)), this, SIGNAL(audioDataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)) );
 
     m_controller = new Phonon::MediaController( m_media.data() );
 
@@ -938,7 +943,7 @@ EngineController::eqUpdate() //SLOT
 
         if( m_dataPath.effects().indexOf( m_equalizer.data() ) == -1 )
         {
-            if( !m_dataPath.effects().isEmpty() )
+            if( !m_path.effects().isEmpty() )
             {
                 m_dataPath.insertEffect( m_equalizer.data(), m_dataPath.effects().first() );
             }

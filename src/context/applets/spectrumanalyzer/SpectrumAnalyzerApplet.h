@@ -23,6 +23,7 @@
 #include "context/DataEngine.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/engine/EngineObserver.h"
+#include "FastFourierTransformation.h"
 
 #include <phonon/audiodataoutput.h>
 #include <Plasma/IconWidget>
@@ -32,6 +33,7 @@
 #include <QAction>
 
 #include "AnalyzerGlWidget.h"
+#include <ui_spectrumAnalyzerSettings.h>
 
 class TextScrollingWidget;
 
@@ -105,6 +107,12 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         */
         void saveSettings();
 
+        /**
+        *   Called by the AnalyzerGlWidget if a key was pressed
+        *   @arg key Key that was pressed
+        */
+        void keyPressed( int key );
+
     protected:
         /**
         *   Populates the config dialog with stuff
@@ -128,11 +136,20 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         Plasma::IconWidget                                             *m_powerIcon;            //!< Icon for Power on/off
         Plasma::IconWidget                                             *m_detachIcon;           //!< Icon for De/Attach
         Plasma::IconWidget                                             *m_fullscreenIcon;       //!< Icon for Fullscreen mode
+        Plasma::IconWidget                                             *m_modeIcon;             //!< Icon for switching mode
+        Ui::spectrumAnalyzerSettings                                    ui_Settings;            //!< settings dialog
         bool                                                            m_glError;              //!< Did we have an OpenGL error?
         QString                                                         m_glErrorText;          //!< Text of the OpenGL error
         bool                                                            m_detached;             //!< Is the render OpenGL window detached
         bool                                                            m_power;                //!< Applet power status
         bool                                                            m_fullscreen;           //!< are we in fullscreen mode
+        bool                                                            m_cutLowFrequencys;     //!< whether or not low frequencys should be excluded
+
+        /**
+        *   Does a Fast Fourier Transformation on the Audio Data
+        *   @arg audioData audio Data to do the transformation on
+        */
+        void transformAudioData( QVector<float> &audioData );
 
     private slots:
 
@@ -166,6 +183,11 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         *   toggle fullscreen mode
         */
         void toggleFullscreen();
+
+        /**
+        *   Switches the analyzer mode to the next available one
+        */
+        void nextMode();
 };
 
 Q_DECLARE_METATYPE ( QVector< qint16 > )

@@ -1,11 +1,13 @@
 project(context-spectrum-analyzer)
 
-set(spectrum_analyzer_SRCS SpectrumAnalyzerApplet.cpp AnalyzerGlWidget.cpp SplineInterpolation.cpp)
+set(spectrum_analyzer_SRCS SpectrumAnalyzerApplet.cpp AnalyzerGlWidget.cpp SplineInterpolation.cpp FastFourierTransformation.cpp)
 
 include_directories(
                     ../..
                     ../../..
                     )
+
+kde4_add_ui_files( spectrum_analyzer_SRCS spectrumAnalyzerSettings.ui )
 
 kde4_add_plugin(amarok_context_applet_spectrum_analyzer ${spectrum_analyzer_SRCS})
 if(APPLE)

@@ -24,9 +24,8 @@ AnalyzerGlWidget::AnalyzerGlWidget( QGLFormat format, QColor fillColor )
     ,m_showPeaks( false )
     ,m_showWave( false )
     ,m_peakSinkRate( 1.0f )    
-    ,m_barsPerDot( 2 )
+    ,m_barsPerFrequency( 1.0f )
 {
-    changecount = 100;
 }
 
 AnalyzerGlWidget::~AnalyzerGlWidget()
@@ -40,8 +39,8 @@ void AnalyzerGlWidget::initializeGLScene()
     glClearColor( m_fillColor.redF() * 1.2, m_fillColor.greenF() * 1.077, m_fillColor.blueF(), m_fillColor.alphaF() * 0.5 );
     glDisable( GL_DEPTH_TEST );
     glEnable( GL_CULL_FACE );
-    glEnable( GL_BLEND );
-    glEnable( GL_TEXTURE_2D );
+    glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
@@ -64,6 +63,8 @@ void AnalyzerGlWidget::paintGL()
 
 void AnalyzerGlWidget::paintBars( QVector<int> values )
 {
+    glEnable( GL_BLEND );
+    
     if( m_peaks.size() < values.size() )
         m_peaks = values;
     
@@ -122,6 +123,8 @@ void AnalyzerGlWidget::paintBars( QVector<int> values )
         glLoadIdentity();
         paintWave( values );
     }
+
+    glDisable( GL_BLEND );
 }
 
 QVector<int> AnalyzerGlWidget::interpolateSpline( QVector<int> values, int size )
@@ -173,30 +176,113 @@ void AnalyzerGlWidget::paintWave( QVector<int> values )
     glEnd();
 }
 
+QVector<GLubyte> AnalyzerGlWidget::getValueColor( int value )
+{
+    if( value < 0 )
+        value = 0;
+    
+    QVector<GLubyte> result( 3 );
+
+    if( value < 51 )
+    {
+        result[0] = m_fillColor.redF() * 1.2 * 255;
+        result[1] = m_fillColor.greenF() * 1.077 * 255;
+        result[2] = m_fillColor.blueF() * 255;
+    }
+    else if( value < 51 )
+    {
+        result[0] = 0;
+        result[1] = 0;
+        result[2] = ( value / 51 ) * 255;
+    }
+    else if( ( value > 51 ) && ( value < 102 ) )
+    {
+        result[0] = 0;
+        result[1] = ( value / 102 ) * 255;
+        result[2] = 255;
+    }
+    else if( ( value > 102 ) && ( value < 153 ) )
+    {
+        result[0] = 0;
+        result[1] = 255;
+        result[2] = (153 - value) * 5;
+    }
+    else if( ( value > 153 ) && ( value < 204 ) )
+    {
+        result[0] = ( value / 204 ) * 255;
+        result[1] = 255;
+        result[2] = 0;
+    }
+    else if( ( value > 204 ) && ( value < 255 ) )
+    {
+        result[0] = (255 - value) * 5;
+        result[1] = 0;
+        result[2] = 0;
+    }
+    else
+    {
+        result[0] = 255;
+        result[1] = 0;
+        result[2] = 0;
+    }
+
+    return result;
+}
+
 void AnalyzerGlWidget::paintWaterfall( QVector<int> values )
 {
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+    
+    if( ( m_lastValues.size() > 0 ) && ( m_lastValues[0].size() != values.size() ) )
+        m_lastValues.clear();
+
+    while( m_lastValues.size() < 500 )
+    {
+        m_lastValues.append(QVector<int>(values.size()).fill(0));
+    }
+    
+    GLubyte *bitmap = new GLubyte[m_lastValues.size()*values.size()*3]; //Space for a 512x(number of frequencys) Image with RGB Colors
+
     if( m_lastValues.size() > 512 )
         m_lastValues.removeAt( 0 );
 
     m_lastValues.append( values );
 
-    for( int x = 0; x < m_lastValues.size(); x++ )
+    for( int y = 0; y < m_lastValues.size() - 1; y++ )
     {
-        for( int y = 0; y < m_lastValues.value( 0 ).size(); y++ )
+        for( int x = 0; x < values.size() * 3; x += 3 )
         {
-            //TODO: Paint field with colors
-            glBegin( GL_TRIANGLE_STRIP );
-                glVertex3d( 1.0f, -1.0, -0.1 );
-                glVertex3d( 1.0f,  1.0, -0.1 );
-                glVertex3d( -1.0, -1.0, -0.1 );
-                glVertex3d( -1.0,  1.0, -0.1 );
-            glEnd();
+            QVector<GLubyte> color2 = getValueColor( m_lastValues[y][x/3] );
+            bitmap[x+(values.size() * y * 3)] = color2[0];
+            bitmap[x+1+(values.size() * y * 3)] = color2[1];
+            bitmap[x+2+(values.size() * y * 3)] = color2[2];
         }
     }
+
+    glEnable( GL_TEXTURE_2D );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, values.size(), m_lastValues.size(), 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap );
+
+    glBegin( GL_TRIANGLE_STRIP );
+        glTexCoord2f( 1.0f, 0.0f ); glVertex3d( 1.0f, -1.0, -0.1 );
+        glTexCoord2f( 1.0f, 1.0f ); glVertex3d( 1.0f,  1.0, -0.1 );
+        glTexCoord2f( 0.0f, 0.0f ); glVertex3d( -1.0, -1.0, -0.1 );
+        glTexCoord2f( 0.0f, 1.0f ); glVertex3d( -1.0,  1.0, -0.1 );
+    glEnd();
+
+    glDisable( GL_TEXTURE_2D );
 }
 
 void AnalyzerGlWidget::paint3DWaves( QVector<int> values )
 {
+    if( ( m_lastValues.size() > 0 ) && ( values.size() != m_lastValues[0].size() ) )
+        m_lastValues.clear();
+    
+    while( m_lastValues.size() < 250 )
+    {
+        m_lastValues.append(QVector<int>(values.size()).fill(0));
+    }
+    
     if( m_lastValues.size() > 255 )
         m_lastValues.removeAt( 0 );
     
@@ -216,7 +302,7 @@ void AnalyzerGlWidget::paint3DWaves( QVector<int> values )
         glBegin( GL_LINE_STRIP );
             for( int y = 0; y < m_lastValues.size(); y++ )
             {
-                glVertex3f( ( 1.5f / frequencys ) * x - 0.75f, 0.0078f * m_lastValues[y][x] - 1.0f, ( 2.0f / m_lastValues.size() ) * y - 1.0f );
+                glVertex3f( ( 1.5f / frequencys ) * x - 0.75f, 0.0078f * m_lastValues[y][x] - 0.5f, ( 2.0f / m_lastValues.size() ) * y - 1.0f );
             }
             glVertex3f( ( 1.5f / frequencys ) * x - 0.75f, -0.5f, 1.0f );
             glVertex3f( ( 1.5f / frequencys ) * x - 0.75f, -0.5f, 1.1f );
@@ -250,20 +336,6 @@ void AnalyzerGlWidget::paintGLScene()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glLoadIdentity();
 
-    if( changecount > 5 )
-    {
-        m_frequencyValues.clear();
-        for ( int x = 0; x < 256; x++ )
-        {
-            m_frequencyValues.append( rand() % 255 );
-        }
-        changecount = 0;
-    }
-    else
-    {
-        changecount++;
-    }
-
     if( m_frequencyValues.size() < 1 )
         return;
 
@@ -271,49 +343,95 @@ void AnalyzerGlWidget::paintGLScene()
 
     if( m_mode != Channels3D )
     {
-        int numBars = NUMDOTS * m_barsPerDot;
+        int numBars = 1;
+        if( ( m_mode == Waterfall ) && ( m_barsPerFrequency < 0.25f ) )
+        {
+            numBars = m_frequencyValues.size() * 0.25f;
+        }
+        else
+        {
+            numBars = m_frequencyValues.size() * m_barsPerFrequency;
+        }
+
+        if ( numBars <= 0 )
+            numBars = 1;
 
         if ( numBars > m_frequencyValues.size() )
         {
             numBars = m_frequencyValues.size();
         }
-    
-        int valuesPerBar = m_frequencyValues.size() / numBars;
 
-        for( int y = 0; y < numBars; y++ )
+        if ( numBars != m_frequencyValues.size() )
         {
-            int buffer = 0.0f;
+            int valuesPerBar = m_frequencyValues.size() / numBars;
 
-            for( int z = 0; z < valuesPerBar; z++ )
+            for( int y = 0; y < numBars; y++ )
             {
-                buffer += abs( m_frequencyValues[y+z] );
-            }
+                int buffer = 0.0f;
 
-            interpolatedValues.append( buffer / valuesPerBar );
+                for( int z = 0; z < valuesPerBar; z++ )
+                {
+                    buffer += abs( m_frequencyValues[y+z] );
+                }
+
+                interpolatedValues.append( buffer / valuesPerBar );
+            }
+        }
+        else
+        {
+            interpolatedValues = m_frequencyValues;
         }
     }
 
     if ( interpolatedValues.size() < 1 )
         return;
-    
+
     switch ( m_mode )
     {
         case ( Bars ): paintBars( interpolatedValues ); break;
         case ( Wave ): paintWave( interpolatedValues ); break;
         case ( Waterfall ): paintWaterfall( interpolatedValues ); break;
         case ( Waves3D ): paint3DWaves( interpolatedValues ); break;
-        case ( Channels3D ): /*paint3DChannels();*/ break;
+        case ( Channels3D ): /*paint3DChannels();*/ break; //TODO: This needs to be correctly implemented first (see paint3DChannels(QMap<int,QVector<int>>)
         default: paintBars( interpolatedValues ); break;
     }
 }
 
-void AnalyzerGlWidget::setMode( AnalyzerMode mode )
+void AnalyzerGlWidget::setMode( int mode )
 {
-    m_mode = mode;
+    switch ( mode )
+    {
+        case ( 0 ): m_mode = Bars; break;
+        case ( 1 ): m_mode = Wave; break;
+        case ( 2 ): m_mode = Waterfall; break;
+        case ( 3 ): m_mode = Waves3D; break;
+        case ( 4 ): m_mode = Channels3D; break;
+        default: m_mode = Bars; break;
+    }
+}
+
+int AnalyzerGlWidget::getMode()
+{
+    switch ( m_mode )
+    {
+        case ( Bars ): return 0;
+        case ( Wave ): return 1;
+        case ( Waterfall ): return 2;
+        case ( Waves3D ): return 3;
+        case ( Channels3D ): return 4;
+        default: return 0;
+    }
 }
 
 void AnalyzerGlWidget::setFrequencyValues( QVector<int> frequency )
 {
     m_frequencyValues = frequency;
 }
+
+void AnalyzerGlWidget::keyPressEvent( QKeyEvent* event )
+{
+    emit keyPressed( event->key() );
+    QWidget::keyPressEvent( event );
+}
+
 

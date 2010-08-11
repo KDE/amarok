@@ -30,6 +30,7 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
     , m_detached( false )
     , m_power( true )
     , m_fullscreen( false )
+    , m_cutLowFrequencys( true )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -86,9 +87,11 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
         }
     }
 
-     QTimer *timer = new QTimer( this );
-     connect( timer, SIGNAL( timeout() ), this, SLOT( updateOpenGLScene() ) );
-     timer->start( 20 );
+    connect( m_glWidget, SIGNAL( keyPressed(int) ), this, SLOT( keyPressed(int) ) );
+
+    QTimer *timer = new QTimer( this );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( updateOpenGLScene() ) );
+    timer->start( 20 );
 }
 
 SpectrumAnalyzerApplet::~SpectrumAnalyzerApplet()
@@ -98,6 +101,20 @@ SpectrumAnalyzerApplet::~SpectrumAnalyzerApplet()
     if ( !m_glError )
         delete( m_glWidget );
 }
+
+void
+SpectrumAnalyzerApplet::keyPressed( int key )
+{
+    if( ( ( m_detached ) || ( m_fullscreen ) ) && ( key == Qt::Key_Escape ) )
+    {
+        attach();
+        if ( m_detached )
+        {
+            detach( false );
+        }
+    }
+}
+
 
 void
 SpectrumAnalyzerApplet::init()
@@ -167,12 +184,27 @@ SpectrumAnalyzerApplet::init()
         stopAction->setText( i18n( "Power" ) );
         m_powerIcon = addAction( stopAction );
         connect( m_powerIcon, SIGNAL( activated() ), this, SLOT( togglePower() ) );
-    }
 
-    KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
-/*    m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
-    m_Animation = config.readEntry( "Animation", "Fading" );
-    m_KeyWords = config.readEntry( "KeyWords", "" );*/
+        // Switch Mode Icon
+        QAction* modeAction = new QAction( this );
+        modeAction->setIcon( KIcon( "system-switch-user" ) );
+        modeAction->setVisible( true );
+        modeAction->setEnabled( true );
+        modeAction->setText( i18n( "Switch Mode" ) );
+        m_modeIcon = addAction( modeAction );
+        connect( m_modeIcon, SIGNAL( activated() ), this, SLOT( nextMode() ) );
+
+        KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
+        m_glWidget->setAccuracy( config.readEntry<float>( "accuracy", 1.0f ) );
+        m_glWidget->setMode( config.readEntry<int>( "mode", 0 ) );
+        m_glWidget->setPeaksStatus( config.readEntry<int>( "peaks", 1 ) );
+        m_glWidget->setSinkrate( config.readEntry<float>( "sinkrate", 1.0f ) );
+        m_glWidget->setWaveStatus( config.readEntry<int>( "wave", 0 ) );
+        m_cutLowFrequencys = config.readEntry<bool>( "cutfreq", true );
+        m_power = config.readEntry<bool>( "power", true );
+        m_detached = config.readEntry<bool>( "detached", false );
+        m_fullscreen = config.readEntry<bool>( "fullscreen", false );
+    }
 
     constraintsEvent();
 
@@ -196,6 +228,7 @@ SpectrumAnalyzerApplet::toggleFullscreen()
         else
         {
             attach();
+            sleep( 2 );
             detach( true );
         }
     }
@@ -214,12 +247,10 @@ SpectrumAnalyzerApplet::toggleDetach()
 {
     if( m_detached )
     {
-        m_detachIcon->action()->setIcon(  KIcon( "go-up" ) );
         attach();
     }
     else
     {
-        m_detachIcon->action()->setIcon(  KIcon( "go-down" ) );
         detach( false );
     }
 }
@@ -252,6 +283,45 @@ void SpectrumAnalyzerApplet::togglePower()
             }
         }
     }
+
+    KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
+    config.writeEntry<bool>( "power", m_power );
+}
+
+void SpectrumAnalyzerApplet::nextMode()
+{
+    if( !m_glError )
+    {
+        const int mode = m_glWidget->getMode();
+    
+        if( mode == 0 )
+        {
+            m_glWidget->setMode( 1 );
+        }
+        else if ( mode == 1 )
+        {
+            m_glWidget->setMode( 2 );
+        }
+        else if ( mode == 2 )
+        {
+            m_glWidget->setMode( 3 );
+        }
+        else if ( mode == 3 )
+        {
+            m_glWidget->setMode( 0 ); //Because Channels3D are not implemented yet
+        }
+        else if ( mode == 4 )
+        {
+            m_glWidget->setMode( 0 );
+        }
+        else
+        {
+            m_glWidget->setMode( 0 );
+        }
+
+        KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
+        config.writeEntry<int>( "mode", m_glWidget->getMode() );
+    }
 }
 
 void
@@ -270,7 +340,7 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
 
     if ( !m_glError )
     {
-        widmax -= 2 * m_settingsIcon->size().width() + 2 * m_powerIcon->size().width() + 2 * m_detachIcon->size().width() + 2 * m_fullscreenIcon->size().width() + 6 * standardPadding();
+        widmax -= 2 * m_settingsIcon->size().width() + 2 * m_powerIcon->size().width() + 2 * m_detachIcon->size().width() + 2 * m_fullscreenIcon->size().width() + 2 * m_modeIcon->size().width() + 8 * standardPadding();
     }
     
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
@@ -278,7 +348,7 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
     m_headerText->setScrollingText( m_headerText->text(), rect );
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
-    if ( ( !m_detached ) && ( m_power ) )
+    if ( ( !m_detached ) && ( m_power ) && ( m_running ) )
     {
         if ( m_glError )
         {
@@ -286,16 +356,24 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
         }
         else
         {
-            QGLPixelBuffer *oldBuffer = m_glBuffer;
-            m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20, m_glFormat );
-            if ( oldBuffer )
-                delete( oldBuffer );
+            if( ( size().width() > 0 ) && ( size().height() > 0 ) && ( standardPadding() > 0 ) )
+            {
+                QGLPixelBuffer *oldBuffer = m_glBuffer;
+                m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20, m_glFormat );
+                if ( oldBuffer )
+                    delete( oldBuffer );
 
-            m_glBuffer->makeCurrent();
-            m_glWidget->initializeGLScene();
-            m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20 );
-            m_glBuffer->doneCurrent();
-            m_glLabel->setPos( standardPadding(), 20 + rect.bottom() + standardPadding() );
+                m_glBuffer->makeCurrent();
+                m_glWidget->initializeGLScene();
+                m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20 );
+                m_glBuffer->doneCurrent();
+                m_glLabel->setPos( standardPadding(), 20 + rect.bottom() + standardPadding() );
+            }
+            else
+            {
+                m_glError = true;
+                m_glErrorText = "Could not recreate an OpenGL redering context.";
+            }
         }
     }
 
@@ -304,80 +382,84 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
         m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
         m_detachIcon->setPos( size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
         m_fullscreenIcon->setPos( size().width() - m_fullscreenIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-        m_powerIcon->setPos( size().width() - m_powerIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - m_fullscreenIcon->size().width() - standardPadding(), standardPadding() );
+        m_modeIcon->setPos( size().width() - m_modeIcon->size().width() - m_fullscreenIcon->size().width()- m_detachIcon->size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+        m_powerIcon->setPos( size().width() - m_powerIcon->size().width() - m_modeIcon->size().width() - m_detachIcon->size().width() - m_settingsIcon->size().width() - m_fullscreenIcon->size().width() - standardPadding(), standardPadding() );
     }
 }
 
 void
 SpectrumAnalyzerApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
-
     Q_UNUSED( name )
+
+    bool updated = false;
 
     if( data.isEmpty() )
         return;
 
-    if(  ( m_running ) && ( m_power ) && ( !m_glError ) )
+    if( ( m_running ) && ( m_power ) && ( !m_glError ) )
     {
         if ( data.contains( "message" ) && data["message"].toString().contains("clear") )
         {
             m_audioData.clear();
-            if ( !m_detached )
-                m_glLabel->hide();
-            else
-                m_glWidget->hide();
-            setCollapseOn();
+            updated = true;
         }
-        else if ( data.contains( "artist" ) )
+
+        if ( data.contains( "artist" ) )
         {
             m_artist = data[ "artist" ].toString();
+            updated = true;
         }
-        else if ( data.contains( "title" ) )
+
+        if ( data.contains( "title" ) )
         {
             m_title = data[ "title" ].toString();
+            updated = true;
         }
-        else
+
+        if ( data.contains( "data_left" ) )
         {
-            if ( data.contains( "data_left" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::LeftChannel ] = data[ "data_left" ].value< QVector< qint16 > >();
-            }
-            else if ( data.contains( "data_right" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::RightChannel ] = data[ "data_right" ].value< QVector< qint16 > >();
-            }
-            else if ( data.contains( "data_center" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::CenterChannel ] = data[ "data_center" ].value< QVector< qint16 > >();
-            }
-            else if ( data.contains( "data_lefts" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::LeftSurroundChannel ] = data[ "data_lefts" ].value< QVector< qint16 > >();
-            }
-            else if ( data.contains( "data_rights" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::RightSurroundChannel ] = data[ "data_rights" ].value< QVector< qint16 > >();
-            }
-            else if ( data.contains( "data_sub" ) )
-            {
-                m_audioData[ Phonon::AudioDataOutput::SubwooferChannel ] = data[ "data_sub" ].value< QVector< qint16 > >();
-
-            }
-
-            qDebug() << "data data data";
-
-            if ( !m_detached )
-                setCollapseOff();
+            m_audioData[ Phonon::AudioDataOutput::LeftChannel ] = data[ "data_left" ].value< QVector< qint16 > >();
+            updated = true;
         }
+
+        if ( data.contains( "data_right" ) )
+        {
+            m_audioData[ Phonon::AudioDataOutput::RightChannel ] = data[ "data_right" ].value< QVector< qint16 > >();
+            updated = true;
+        }
+
+        if ( data.contains( "data_center" ) )
+        {
+            m_audioData[ Phonon::AudioDataOutput::CenterChannel ] = data[ "data_center" ].value< QVector< qint16 > >();
+            updated = true;
+        }
+
+        if ( data.contains( "data_lefts" ) )
+        {
+            m_audioData[ Phonon::AudioDataOutput::LeftSurroundChannel ] = data[ "data_lefts" ].value< QVector< qint16 > >();
+            updated = true;
+        }
+
+        if ( data.contains( "data_rights" ) )
+        {
+            m_audioData[ Phonon::AudioDataOutput::RightSurroundChannel ] = data[ "data_rights" ].value< QVector< qint16 > >();
+            updated = true;
+        }
+
+        if ( data.contains( "data_sub" ) )
+        {
+            m_audioData[ Phonon::AudioDataOutput::SubwooferChannel ] = data[ "data_sub" ].value< QVector< qint16 > >();
+            updated = true;
+        }
+
+        if ( updated )
+            update();
     }
     else
     {
         setCollapseOn();
     }
-
-    update();
-    updateConstraints();
 }
 
 // SLOT
@@ -391,6 +473,12 @@ SpectrumAnalyzerApplet::attach()
         if ( m_running )
             setCollapseOff();
         m_detached = false;
+        m_detachIcon->action()->setIcon(  KIcon( "go-up" ) );
+        m_fullscreen = false;
+
+        KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
+        config.writeEntry<bool>( "detached", m_detached );
+        config.writeEntry<bool>( "fullscreen", m_fullscreen );
     }
 }
 
@@ -411,6 +499,27 @@ SpectrumAnalyzerApplet::detach( bool fullscreen )
         m_glWidget->doneCurrent();
         setCollapseOn();
         m_detached = true;
+        m_detachIcon->action()->setIcon(  KIcon( "go-down" ) );
+
+        KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
+        config.writeEntry<bool>( "detached", m_detached );
+        config.writeEntry<bool>( "fullscreen", m_fullscreen );
+    }
+}
+
+void
+SpectrumAnalyzerApplet::transformAudioData( QVector<float> &audioData )
+{
+    if ( audioData.size() > 0 )
+    {
+        FastFourierTransformation *fft = new FastFourierTransformation( 9 );
+
+        float *data = audioData.data();
+     
+        fft->spectrum( data );
+        fft->scale( data, 6.0 );
+     
+        delete fft;
     }
 }
 
@@ -420,8 +529,46 @@ SpectrumAnalyzerApplet::updateOpenGLScene()
 {
     if ( ( !m_glError ) && ( m_running ) && ( m_power ) )
     {
-        //TODO: Do Fast Fourier Transform and send data to widget
-        //m_glWidget->setFrequencyValues();
+        if ( m_audioData.size() > 0 )
+        {
+            QVector<float> iAudioData;
+
+            for( int x = 0; x < m_audioData.values().first().size(); x++ )
+            {
+                float sample = 0.0f;
+            
+                if ( m_audioData.contains( Phonon::AudioDataOutput::LeftChannel ) )
+                    sample += m_audioData[Phonon::AudioDataOutput::LeftChannel].at( x );
+
+                if ( m_audioData.contains( Phonon::AudioDataOutput::RightChannel ) )
+                    sample += m_audioData[Phonon::AudioDataOutput::RightChannel].at( x );
+
+                if ( m_audioData.contains( Phonon::AudioDataOutput::LeftSurroundChannel ) )
+                    sample += m_audioData[Phonon::AudioDataOutput::LeftSurroundChannel].at( x );
+
+                if ( m_audioData.contains( Phonon::AudioDataOutput::RightSurroundChannel ) )
+                    sample += m_audioData[Phonon::AudioDataOutput::RightSurroundChannel].at( x );
+
+                if ( m_audioData.contains( Phonon::AudioDataOutput::SubwooferChannel ) )
+                    sample += m_audioData[Phonon::AudioDataOutput::SubwooferChannel].at( x );
+
+                iAudioData.append( sample / ( m_audioData.count() * (1<<15) ) );
+            }
+
+            transformAudioData( iAudioData );
+
+            QVector<int> frequencyData;
+
+            for( int y = 0; y < iAudioData.size(); y++ )
+            {
+                frequencyData.append( iAudioData.at(y) );
+            }
+
+            if( m_cutLowFrequencys )
+                frequencyData.resize( frequencyData.size() / 2 );
+
+            m_glWidget->setFrequencyValues( frequencyData );
+        }
         
         if ( !m_detached )
         {
@@ -469,7 +616,7 @@ SpectrumAnalyzerApplet::engineNewTrackPlaying( )
         }
         else
         {
-            m_glWidget->show();
+            detach( m_fullscreen );
         }
     }
 }
@@ -480,15 +627,18 @@ SpectrumAnalyzerApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackL
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
 
+    m_running = false;
+
     if( m_power )
     {
         if( !m_detached )
             m_glLabel->hide();
         else
             m_glWidget->hide();
-        m_running = false;
+        
         setCollapseOn();
     }
+
     dataEngine( "amarok-spectrum-analyzer" )->query( QString( "spectrum-analyzer:stopped" ) );
 }
 
@@ -497,13 +647,20 @@ SpectrumAnalyzerApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
-/*    ui_Settings.setupUi( settings );*/
+    ui_Settings.setupUi( settings );
 
     parent->addPage( settings, i18n( "Spectrum Analyzer Settings" ), "preferences-system" );
 
-    /*ui_Settings.animationComboBox->setCurrentIndex( ui_Settings.animationComboBox->findText( m_Animation ) );
-    ui_Settings.photosSpinBox->setValue( m_nbPhotos );
-    ui_Settings.additionalkeywordsLineEdit->setText( m_KeyWords );*/
+    if( !m_glError )
+    {
+        ui_Settings.modeComboBox->setCurrentIndex( m_glWidget->getMode() );
+        ui_Settings.interpolSpinBox->setValue( m_glWidget->getAccuracy() * 100 );
+        ui_Settings.peaksCheckBox->setChecked( m_glWidget->getPeaksStatus() );
+        ui_Settings.peaksSpinbox->setValue( m_glWidget->getSinkrate() * 10 );
+        ui_Settings.waveCheckBox->setChecked( m_glWidget->getWaveStatus() );
+        ui_Settings.cutCheckBox->setChecked( m_cutLowFrequencys );
+    }
+    
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -512,18 +669,24 @@ SpectrumAnalyzerApplet::saveSettings()
 {
     KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
 
-/*    m_nbPhotos = ui_Settings.photosSpinBox->value();
-    m_Animation = ui_Settings.animationComboBox->currentText();
-    m_KeyWords = ui_Settings.additionalkeywordsLineEdit->text();
-    config.writeEntry( "NbPhotos", m_nbPhotos );
-    config.writeEntry( "Animation", m_Animation );
-    config.writeEntry( "KeyWords", m_KeyWords );
+    if( !m_glError )
+    {
+        m_glWidget->setMode( ui_Settings.modeComboBox->currentIndex() );
+        m_glWidget->setAccuracy( ui_Settings.interpolSpinBox->value() / 100.0f );
+        m_glWidget->setPeaksStatus( ui_Settings.peaksCheckBox->isChecked() );
+        m_glWidget->setSinkrate( ui_Settings.peaksSpinbox->value() / 10.0f );
+        m_glWidget->setWaveStatus( ui_Settings.waveCheckBox->isChecked() );
+        m_cutLowFrequencys = ui_Settings.cutCheckBox->isChecked();
 
-    m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
-
-    m_widget->clear();
-
-    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+        config.writeEntry<int>( "mode", m_glWidget->getMode() );
+        config.writeEntry<float>( "accuracy", m_glWidget->getAccuracy() );
+        config.writeEntry<bool>( "peaks", m_glWidget->getPeaksStatus() );
+        config.writeEntry<float>( "sinkrate", m_glWidget->getSinkrate() );
+        config.writeEntry<bool>( "wave", m_glWidget->getWaveStatus() );
+        config.writeEntry<bool>( "cutfreq", m_cutLowFrequencys );
+    }
+    
+ /*   dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
     dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );*/
 }
 

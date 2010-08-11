@@ -75,7 +75,6 @@ SpectrumAnalyzerEngine::sourceRequestEvent( const QString& name )
 void
 SpectrumAnalyzerEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK;
     if ( state == Current && m_requested )
         update();
 }
@@ -83,7 +82,7 @@ SpectrumAnalyzerEngine::message( const ContextState& state )
 void
 SpectrumAnalyzerEngine::metadataChanged( Meta::TrackPtr track )
 {
-    m_dataHasChanged = track != m_currentTrack;
+    m_dataHasChanged = ( track != m_currentTrack );
 
     if ( m_dataHasChanged )
         update();
@@ -92,9 +91,6 @@ SpectrumAnalyzerEngine::metadataChanged( Meta::TrackPtr track )
 void
 SpectrumAnalyzerEngine::receiveData( const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> > &data )
 {
-    DEBUG_BLOCK
-
-    qDebug() << "test";
     m_audioData = data;
     m_dataHasChanged = true;
     update();
@@ -103,60 +99,81 @@ SpectrumAnalyzerEngine::receiveData( const QMap<Phonon::AudioDataOutput::Channel
 void
 SpectrumAnalyzerEngine::update()
 {
-    qDebug() << "update";
     if ( !m_dataHasChanged )
+    {
         return;
+    }
     else
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         m_dataHasChanged = false;
 
         removeData( "spectrum-analyzer", "message" );
+        removeData( "spectrum-analyzer", "artist" );
+        removeData( "spectrum-analyzer", "title" );
+        removeData( "spectrum-analyzer", "data_left" );
+        removeData( "spectrum-analyzer", "data_right" );
+        removeData( "spectrum-analyzer", "data_center" );
+        removeData( "spectrum-analyzer", "data_lefts" );
+        removeData( "spectrum-analyzer", "data_rights" );
+        removeData( "spectrum-analyzer", "data_sub" );
         
         if ( m_currentTrack != currentTrack )
         {
             m_audioData.clear();
             m_currentTrack = currentTrack;
             setData( "spectrum-analyzer", "message", "clear");
-            setData( "spectrum-analyzer", "artist", m_currentTrack->artist()->name() );
-            setData( "spectrum-analyzer", "title", m_currentTrack->name() );
+
+            if ( !m_currentTrack.isNull() )
+            {
+                setData( "spectrum-analyzer", "artist", m_currentTrack->artist()->name() );
+                setData( "spectrum-analyzer", "title", m_currentTrack->name() );
+            }
         }
 
-        if ( m_audioData.contains( Phonon::AudioDataOutput::LeftChannel ) )
+        if ( m_audioData.count() > 0 )
         {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::LeftChannel ) );
-            setData( "spectrum-analyzer", "data_left", var );
-        }
-        else if ( m_audioData.contains( Phonon::AudioDataOutput::RightChannel ) )
-        {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::RightChannel ) );
-            setData( "spectrum-analyzer", "data_right", var );
-        }
-        else if ( m_audioData.contains( Phonon::AudioDataOutput::CenterChannel ) )
-        {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::CenterChannel ) );
-            setData( "spectrum-analyzer", "data_center", var );
-        }
-        else if ( m_audioData.contains( Phonon::AudioDataOutput::LeftSurroundChannel ) )
-        {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::LeftSurroundChannel ) );
-            setData( "spectrum-analyzer", "data_lefts", var );
-        }
-        else if ( m_audioData.contains( Phonon::AudioDataOutput::RightSurroundChannel ) )
-        {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::RightSurroundChannel ) );
-            setData( "spectrum-analyzer", "data_rights", var );
-        }
-        else if ( m_audioData.contains( Phonon::AudioDataOutput::SubwooferChannel ) )
-        {
-            QVariant var;
-            var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::SubwooferChannel ) );
-            setData( "spectrum-analyzer", "data_sub", var );
+            if ( m_audioData.contains( Phonon::AudioDataOutput::LeftChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::LeftChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::LeftChannel ) );
+                setData( "spectrum-analyzer", "data_left", var );
+            }
+
+            if ( m_audioData.contains( Phonon::AudioDataOutput::RightChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::RightChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::RightChannel ) );
+                setData( "spectrum-analyzer", "data_right", var );
+            }
+
+            if ( m_audioData.contains( Phonon::AudioDataOutput::CenterChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::CenterChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::CenterChannel ) );
+                setData( "spectrum-analyzer", "data_center", var );
+            }
+
+            if ( m_audioData.contains( Phonon::AudioDataOutput::LeftSurroundChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::LeftSurroundChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::LeftSurroundChannel ) );
+                setData( "spectrum-analyzer", "data_lefts", var );
+            }
+
+            if ( m_audioData.contains( Phonon::AudioDataOutput::RightSurroundChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::RightSurroundChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::RightSurroundChannel ) );
+                setData( "spectrum-analyzer", "data_rights", var );
+            }
+
+            if ( m_audioData.contains( Phonon::AudioDataOutput::SubwooferChannel ) && ( m_audioData.value( Phonon::AudioDataOutput::SubwooferChannel ).count() > 0 ) )
+            {
+                QVariant var;
+                var.setValue< QVector< qint16 > > ( m_audioData.value( Phonon::AudioDataOutput::SubwooferChannel ) );
+                setData( "spectrum-analyzer", "data_sub", var );
+            }
         }
     }
 }
