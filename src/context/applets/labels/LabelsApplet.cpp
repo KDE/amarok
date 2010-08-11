@@ -184,6 +184,9 @@ LabelsApplet::resultReady( const QString &collectionId, const Meta::LabelList &l
 void
 LabelsApplet::engineNewTrackPlaying( )
 {
+    if( !m_addLabelProxy )
+        return;
+
     DEBUG_BLOCK
     m_currentLabels.clear();
     m_labelInfos.clear();
