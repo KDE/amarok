@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef VSXUGLWIDGET_H
-#define VSXUGLWIDGET_H
+#ifndef ANALYZERGLWIDGET_H
+#define ANALYZERGLWIDGET_H
 
 #include <QGLWidget>
 #include <QKeyEvent>

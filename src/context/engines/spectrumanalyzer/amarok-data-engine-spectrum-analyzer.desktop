@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Visualization Data Engine
-Name[de]=Visualisierungs-Datenmodul
-Name[en_GB]=Visualisation Data Engine
+Name=Spectrum Analyzer Data Engine
+Name[de]=VSpectrum Analysator-Datenmodul
+Name[en_GB]=Spectrum Analyzer Data Engine
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
