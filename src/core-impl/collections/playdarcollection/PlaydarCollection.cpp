@@ -212,10 +212,17 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        m_memoryCollection->acquireReadLock();
+        
         if( m_memoryCollection->trackMap().contains( url.url() ) )
-            return m_memoryCollection->trackMap().value( url.url() );
+        {
+            Meta::TrackPtr track = m_memoryCollection->trackMap().value( url.url() );
+            m_memoryCollection->releaseLock();
+            return track;
+        }
         else
         {
+            m_memoryCollection->releaseLock();
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
@@ -251,11 +258,13 @@ namespace Collections
     {
         DEBUG_BLOCK
         
+        m_memoryCollection->acquireReadLock();
+        
         if( !m_memoryCollection->trackMap().contains( track->uidUrl() ) )
         {
-            
+            m_memoryCollection->releaseLock();
             m_memoryCollection->acquireWriteLock();
-
+            
             Meta::PlaydarArtistPtr artistPtr;
             if( m_memoryCollection->artistMap().contains( track->artist()->name() ) )
             {
@@ -344,6 +353,8 @@ namespace Collections
             m_memoryCollection->releaseLock();
             emit updated();
         }
+        else
+            m_memoryCollection->releaseLock();
     }
 
     QSharedPointer< MemoryCollection >

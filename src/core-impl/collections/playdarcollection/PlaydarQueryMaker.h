@@ -23,6 +23,7 @@
 
 #include "support/Controller.h"
 #include "support/Query.h"
+#include "support/QMFunctionTypes.h"
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
@@ -33,6 +34,8 @@
 
 namespace Collections
 {
+    class QueryMakerFunction;
+    
     class PlaydarQueryMaker : public QueryMaker
     {
         Q_OBJECT
@@ -104,13 +107,16 @@ namespace Collections
             void slotPlaydarError( Playdar::Controller::ErrorState error );
             void collectQuery( Playdar::Query* query );
             void collectResult( Meta::PlaydarTrackPtr track );
-            void aQueryEnded( Meta::PlaydarTrackList trackList );
+            void aQueryEnded( const Meta::PlaydarTrackList &trackList );
             void memoryQueryDone();
             
         private:
             bool m_autoDelete;
             bool m_shouldQueryCollection;
             int m_activeQueryCount;
+            bool m_memoryQueryIsRunning;
+            bool m_collectionUpdated;
+            QList< CurriedQMFunction* > m_queryMakerFunctions;
             
             typedef QMap< qint64, QString > FilterMap;
             typedef QList< FilterMap* > FilterMapList;
@@ -122,7 +128,12 @@ namespace Collections
             QPointer< Playdar::Controller > m_controller;
             
             QStack< bool > m_andOrStack;
+            
+            void runMemoryQueryAgain();
     };
+
+    
+
 }
 
 #endif

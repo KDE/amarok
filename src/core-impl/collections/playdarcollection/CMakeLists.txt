@@ -11,7 +11,8 @@ set( amarok_collection-playdarcollection_PART_SRCS
      PlaydarQueryMaker.cpp
      support/Controller.cpp
      support/Query.cpp
-     support/ProxyResolver.cpp )
+     support/ProxyResolver.cpp
+     support/QMFunctionTypes.h )
 
 kde4_add_plugin(amarok_collection-playdarcollection ${amarok_collection-playdarcollection_PART_SRCS})
 
