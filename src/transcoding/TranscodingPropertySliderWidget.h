@@ -14,38 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODING_PROPERTYWIDGET_H
-#define TRANSCODING_PROPERTYWIDGET_H
+#ifndef TRANSCODING_PROPERTYSLIDERWIDGET_H
+#define TRANSCODING_PROPERTYSLIDERWIDGET_H
 
-#include "core/transcoding/TranscodingProperty.h"
+#include "transcoding/TranscodingPropertyWidget.h"
 
-#include <QWidget>
+#include <QLabel>
+#include <QSlider>
 
 namespace Transcoding
 {
 
 /**
- * Provides the interface for a generic configuration editing widget for a given
- * Transcoding::Property.
+ * Provides a single QSlider-based widget for configuring a given Transcoding::Property.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class PropertyWidget
+class PropertySliderWidget : public QWidget, public PropertyWidget
 {
+    Q_OBJECT
 public:
-    static PropertyWidget * create( Property &property, QWidget * parent = 0 );
+    explicit PropertySliderWidget( Property property, QWidget * parent = 0 );
 
-    virtual ~PropertyWidget(){}
+    QVariant value() const;
 
-    virtual QByteArray name() const { return m_name; }
+    QWidget *widget() { return qobject_cast< QWidget *>( this ); }
 
-    virtual QVariant value() const = 0;
+private slots:
+    void onSliderChanged( int value );
 
-    virtual QWidget *widget() = 0;
-
-protected:
-    QByteArray m_name;
+private:
+    QLabel *m_mainLabel;
+    QSlider *m_mainEdit;
+    QLabel *m_midLabel;
+    Property m_property;
 };
 
 } //namespace Transcoding
 
-#endif //TRANSCODING_PROPERTYWIDGET_H
+#endif //TRANSCODING_PROPERTYSLIDERWIDGET_H

@@ -14,38 +14,44 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODING_PROPERTYWIDGET_H
-#define TRANSCODING_PROPERTYWIDGET_H
+#include "TranscodingPropertyComboBoxWidget.h"
 
-#include "core/transcoding/TranscodingProperty.h"
-
-#include <QWidget>
+#include <QHBoxLayout>
 
 namespace Transcoding
 {
 
-/**
- * Provides the interface for a generic configuration editing widget for a given
- * Transcoding::Property.
- * @author Téo Mrnjavac <teo@kde.org>
- */
-class PropertyWidget
+PropertyComboBoxWidget::PropertyComboBoxWidget( Property property, QWidget * parent )
+    : QWidget( parent )
+    , m_property( property )
 {
-public:
-    static PropertyWidget * create( Property &property, QWidget * parent = 0 );
+    m_name = property.name();
 
-    virtual ~PropertyWidget(){}
+    QBoxLayout *mainLayout;
+    m_mainLabel = new QLabel( m_property.prettyName(), this );
+    m_mainLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
-    virtual QByteArray name() const { return m_name; }
+    mainLayout = new QHBoxLayout( this );
+    mainLayout->addSpacing( 5 );
+    mainLayout->addWidget( m_mainLabel, 1 );
 
-    virtual QVariant value() const = 0;
+    m_mainEdit = new QComboBox( this );
+    m_mainEdit->addItems( m_property.prettyValues() );
+    m_listValues = m_property.values();
+    m_mainEdit->setCurrentIndex( m_property.defaultIndex() );
+    m_mainEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
-    virtual QWidget *widget() = 0;
+    mainLayout->addWidget( m_mainEdit );
+    mainLayout->addSpacing( 5 );
 
-protected:
-    QByteArray m_name;
-};
+    m_mainEdit->setToolTip( m_property.description() );
+    m_mainLabel->setBuddy( m_mainEdit );
+}
+
+QVariant
+PropertyComboBoxWidget::value() const
+{
+    return m_listValues.at( m_mainEdit->currentIndex() );
+}
 
 } //namespace Transcoding
-
-#endif //TRANSCODING_PROPERTYWIDGET_H

@@ -26,8 +26,25 @@ Mp3Format::Mp3Format()
     m_encoder = MP3;
     m_fileExtension = "mp3";
     QString description1 =
-            i18n( "");
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 9, 0, 6 );
+            i18n( "blah blah");
+    QStringList valueLabels;
+    QByteArray vbr = "VBR ~%1kb/s";
+    valueLabels
+        << i18n( vbr, 80 )
+        << i18n( vbr, 100 )
+        << i18n( vbr, 120 )
+        << i18n( vbr, 140 )
+        << i18n( vbr, 160 )
+        << i18n( vbr, 175 )
+        << i18n( vbr, 190 )
+        << i18n( vbr, 205 )
+        << i18n( vbr, 220 )
+        << i18n( vbr, 240 );
+
+    m_propertyList << Property::Tradeoff( "quality", i18n( "Expected average bitrate for variable bitrate encoding" ), description1,
+                                          i18n( "Smaller file" ), i18n( "Better sound quality" ),
+                                          valueLabels, 5 );
+    //m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 9, 0, 6 );
 }
 
 QString
@@ -56,7 +73,9 @@ Mp3Format::icon() const
 QStringList
 Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 {
-    return QStringList() << "-acodec" << "libmp3lame";
+    int ffmpegQuality = qAbs( configuration.property( "quality" ).toInt() - 9 );
+    return QStringList() << "-acodec" << "libmp3lame"
+                         << "-aq" << QString::number( ffmpegQuality );
 }
 
 bool

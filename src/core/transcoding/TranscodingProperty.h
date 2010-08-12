@@ -39,27 +39,45 @@ public:
     {
         NUMERIC = 0,
         TEXT,
-        LIST
+        LIST,
+        TRADEOFF
     };
 
-    static Property Numeric( const QByteArray name,
-                             const QString &prettyName,
-                             const QString &description,
-                             int min,
-                             int max,
-                             int defaultValue );
+    static Property Numeric(  const QByteArray name,
+                              const QString &prettyName,
+                              const QString &description,
+                              int min,
+                              int max,
+                              int defaultValue );
 
-    static Property String(  const QByteArray name,
-                             const QString &prettyName,
-                             const QString &description,
-                             const QString &defaultText );
+    static Property String(   const QByteArray name,
+                              const QString &prettyName,
+                              const QString &description,
+                              const QString &defaultText );
 
-    static Property List(    const QByteArray name,
-                             const QString &prettyName,
-                             const QString &description,
-                             const QStringList &valuesList,
-                             const QStringList &prettyValuesList,
-                             int defaultIndex );
+    static Property List(     const QByteArray name,
+                              const QString &prettyName,
+                              const QString &description,
+                              const QStringList &valuesList,
+                              const QStringList &prettyValuesList,
+                              int defaultIndex );
+
+    static Property Tradeoff( const QByteArray name,
+                              const QString &prettyName,
+                              const QString &description,
+                              const QString &leftText,
+                              const QString &rightText,
+                              int min,
+                              int max,
+                              int defaultValue );
+
+    static Property Tradeoff( const QByteArray name,
+                              const QString &prettyName,
+                              const QString &description,
+                              const QString &leftText,
+                              const QString &rightText,
+                              const QStringList &valueLabels,
+                              int defaultValue );
 
     QByteArray name() const { return m_name; }
 

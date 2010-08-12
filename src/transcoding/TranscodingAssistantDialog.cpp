@@ -111,6 +111,7 @@ AssistantDialog::onJustCopyClicked() //SLOT
 void
 AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
 {
+    //REMOVE THIS BUTTON!
     m_configuration = Configuration( VORBIS );
     foreach( Property property, The::transcodingController()->format( VORBIS )->propertyList() )
     {

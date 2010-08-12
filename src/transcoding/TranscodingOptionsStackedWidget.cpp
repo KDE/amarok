@@ -74,8 +74,8 @@ OptionsStackedWidget::initCodecPage( Format *format )
 
     foreach( Property property, format->propertyList() )
     {
-        PropertyWidget *propertyWidget = new PropertyWidget( property, codecWidget );
-        mainLayout->addWidget( propertyWidget );
+        PropertyWidget *propertyWidget = PropertyWidget::create( property, codecWidget );
+        mainLayout->addWidget( propertyWidget->widget() );
         m_propertyWidgetsMap[ format->encoder() ].append( propertyWidget );
         debug() << "Created config widget for " << format->prettyName()
                 << ", element " << property.name();

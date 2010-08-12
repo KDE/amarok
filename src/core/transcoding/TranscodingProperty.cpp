@@ -34,7 +34,8 @@ Property::Numeric( const QByteArray name,
                    int max,
                    int defaultValue )
 {
-    return Property( name, prettyName, description, NUMERIC, defaultValue, min, max, QStringList(), QStringList(), QString() );
+    return Property( name, prettyName, description, NUMERIC,
+                     defaultValue, min, max, QStringList(), QStringList(), QString() );
 }
 
 Property
@@ -43,7 +44,8 @@ Property::String( const QByteArray name,
                   const QString &description,
                   const QString &defaultText )
 {
-    return Property( name, prettyName, description, TEXT, 0, 0, 0, QStringList(), QStringList(), defaultText );
+    return Property( name, prettyName, description, TEXT,
+                     0, 0, 0, QStringList(), QStringList(), defaultText );
 }
 
 Property
@@ -54,7 +56,39 @@ Property::List( const QByteArray name,
                 const QStringList &prettyValuesList,
                 int defaultIndex )
 {
-    return Property( name, prettyName, description, LIST, defaultIndex, 0, 0, valuesList, prettyValuesList, QString() );
+    return Property( name, prettyName, description, LIST,
+                     defaultIndex, 0, 0, valuesList, prettyValuesList, QString() );
+}
+
+Property
+Property::Tradeoff( const QByteArray name,
+                    const QString &prettyName,
+                    const QString &description,
+                    const QString &leftText,
+                    const QString &rightText,
+                    int min,
+                    int max,
+                    int defaultValue )
+{
+    if( max < min )
+        qSwap( min, max );
+    return Property( name, prettyName, description, TRADEOFF,
+                     defaultValue, min, max, QStringList(),
+                     QStringList() << leftText << rightText, QString() );
+}
+
+Property
+Property::Tradeoff( const QByteArray name,
+                    const QString &prettyName,
+                    const QString &description,
+                    const QString &leftText,
+                    const QString &rightText,
+                    const QStringList &valueLabels,
+                    int defaultValue )
+{
+    return Property( name, prettyName, description, TRADEOFF,
+                     defaultValue, 0, valueLabels.isEmpty() ? 0 : valueLabels.size() - 1, valueLabels,
+                     QStringList() << leftText << rightText, QString() );
 }
 
 Property::Property( const QByteArray name,
