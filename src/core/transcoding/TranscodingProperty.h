@@ -88,7 +88,7 @@ public:
     Type type() const { return m_type; }
 
     QVariant::Type variantType() const
-    { return ( m_type == NUMERIC ) ? QVariant::Int : QVariant::String; }
+    { return ( m_type == NUMERIC || m_type == TRADEOFF ) ? QVariant::Int : QVariant::String; }
 
     int min() const { return m_min; }
 

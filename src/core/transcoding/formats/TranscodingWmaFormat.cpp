@@ -25,7 +25,41 @@ WmaFormat::WmaFormat()
 {
     m_encoder = WMA2;
     m_fileExtension = "wma";
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), i18n(""), 0, 10, 7 );    //check docs
+    QString description1 =
+        i18n( "The bitrate is a measure of the quantity of data used to represent a "
+        "second of the audio track.<br>Due to the limitations of the proprietary <b>WMA</b> "
+        "format and the difficulty of reverse-engineering a proprietary encoder, the "
+        "WMA encoder used by Amarok sets a <a href=http://en.wikipedia.org/wiki/"
+        "Windows_Media_Audio#Windows_Media_Audio>constant bitrate (CBR)</a> setting.<br>"
+        "For this reason, the bitrate measure in this slider is a pretty accurate estimate "
+        "of the bitrate of the encoded track.<br>"
+        "<b>136kb/s</b> is a good choice for music listening on a portable player.<br/>"
+        "Anything below <b>112kb/s</b> might be unsatisfactory for music and anything above "
+        "<b>182kb/s</b> is probably overkill.");
+    QStringList valueLabels;
+    QByteArray cbr = "CBR %1kb/s";
+    valueLabels
+        << i18n( cbr, 64 )
+        << i18n( cbr, 80 )
+        << i18n( cbr, 96 )
+        << i18n( cbr, 112 )
+        << i18n( cbr, 136 )
+        << i18n( cbr, 182 )
+        << i18n( cbr, 275 )
+        << i18n( cbr, 550 );
+    m_validBitrates
+        << 65
+        << 75
+        << 88
+        << 106
+        << 133
+        << 180
+        << 271
+        << 545;
+
+    m_propertyList << Property::Tradeoff( "bitrate", i18n( "Bitrate target for constant bitrate encoding" ), description1,
+                                          i18n( "Smaller file" ), i18n( "Better sound quality" ),
+                                          valueLabels, 4 );
 }
 
 QString
@@ -54,8 +88,30 @@ WmaFormat::icon() const
 QStringList
 WmaFormat::ffmpegParameters( const Configuration &configuration ) const
 {
-    return QStringList() << "-acodec" << "wmav2";
+    QStringList parameters;
+    parameters << "-acodec" << "wmav2";
+    foreach( Property property, m_propertyList )
+    {
+        if( !configuration.property( property.name() ).isNull()
+            && configuration.property( property.name() ).type() == property.variantType() )
+        {
+            if( property.name() == "bitrate" )
+            {
+                int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
+                parameters << "-ab"
+                           << QString::number( ffmpegBitrate );
+            }
+        }
+    }
+    return parameters;
 }
+
+int
+WmaFormat::toFfmpegBitrate( int setting ) const
+{
+    return m_validBitrates[ setting ] * 1000;
+}
+
 
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const

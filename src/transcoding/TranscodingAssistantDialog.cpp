@@ -85,7 +85,6 @@ AssistantDialog::AssistantDialog( QWidget *parent )
 
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
-    ui.formatDescriptionLabel->hide();
     connect( button( Ok ), SIGNAL( clicked() ),
              this, SLOT( onTranscodeClicked() ) );
 }
@@ -162,12 +161,14 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
     {
         ui.formatIconLabel->show();
         ui.formatNameLabel->show();
-        ui.formatDescriptionLabel->show();
         Encoder encoder = static_cast< Encoder >( item->data( Qt::UserRole ).toInt() );
         const Format *format = The::transcodingController()->format( encoder );
         ui.formatIconLabel->setPixmap( format->icon().pixmap( 32, 32 ) );
         ui.formatNameLabel->setText( format->prettyName() );
-        ui.formatDescriptionLabel->setText( format->description() );
+        ui.formatIconLabel->setToolTip( format->description() );
+        ui.formatIconLabel->setWhatsThis( format->description() );
+        ui.formatNameLabel->setToolTip( format->description() );
+        ui.formatNameLabel->setWhatsThis( format->description() );
         ui.transcodingOptionsStackedWidget->switchPage( encoder );
         button( Ok )->setEnabled( true );
     }

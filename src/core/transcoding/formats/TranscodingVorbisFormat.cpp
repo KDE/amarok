@@ -25,7 +25,41 @@ VorbisFormat::VorbisFormat()
 {
     m_encoder = VORBIS;
     m_fileExtension = "ogg";
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), i18n(""), 0, 10, 7 );
+    QString description1 =
+        i18n( "The bitrate is a measure of the quantity of data used to represent a "
+        "second of the audio track.<br>The <b>Vorbis</b> encoder used by Amarok supports "
+        "a <a href=http://en.wikipedia.org/wiki/Vorbis#Technical_details>variable bitrate "
+        "(VBR)</a> setting, which means that the bitrate value fluctuates along the track "
+        "based on the complexity of the audio content. More complex intervals of "
+        "data are encoded with a higher bitrate than less complex ones; this "
+        "approach yields overall better quality and a smaller file than having a "
+        "constant bitrate throughout the track.<br>"
+        "The Vorbis encoder uses a quality rating \"-q parameter\" between -1 and 10 to define "
+        "a certain expected audio quality level. The bitrate measure in this slider is "
+        "just a rough estimate (provided by Vorbis) of the average bitrate of the encoded "
+        "track given a q value. In fact, with newer and more efficient Vorbis versions the "
+        "actual bitrate is even lower.<br>"
+        "<b>-q5</b> is a good choice for music listening on a portable player.<br/>"
+        "Anything below <b>-q3</b> might be unsatisfactory for music and anything above "
+        "<b>-q8</b> is probably overkill.");
+    QStringList valueLabels;
+    QByteArray vbr = "-q%1 ~%2kb/s";
+    valueLabels
+        << i18n( vbr, -1, 45 )
+        << i18n( vbr, 0, 64 )
+        << i18n( vbr, 1, 80 )
+        << i18n( vbr, 2, 96 )
+        << i18n( vbr, 3, 112 )
+        << i18n( vbr, 4, 128 )
+        << i18n( vbr, 5, 160 )
+        << i18n( vbr, 6, 192 )
+        << i18n( vbr, 7, 224 )
+        << i18n( vbr, 8, 256 )
+        << i18n( vbr, 9, 320 )
+        << i18n( vbr, 10, 500 );
+    m_propertyList << Property::Tradeoff( "quality", i18n( "Quality rating for variable bitrate encoding" ), description1,
+                                          i18n( "Smaller file" ), i18n( "Better sound quality" ),
+                                          valueLabels, 7 );
 }
 
 QString
@@ -55,8 +89,24 @@ VorbisFormat::icon() const
 QStringList
 VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 {
-    return QStringList() << "-acodec" << "libvorbis";   //libvorbis is better than FFmpeg's
-}                                                       //vorbis implementation in many ways
+    QStringList parameters;
+    parameters << "-acodec" << "libvorbis";   //libvorbis is better than FFmpeg's
+                                              //vorbis implementation in many ways
+    foreach( Property property, m_propertyList )
+    {
+        if( !configuration.property( property.name() ).isNull()
+            && configuration.property( property.name() ).type() == property.variantType() )
+        {
+            if( property.name() == "quality" )
+            {
+                int ffmpegQuality = configuration.property( "quality" ).toInt() - 1;
+                parameters << "-aq"
+                           << QString::number( ffmpegQuality );
+            }
+        }
+    }
+    return parameters;
+}
 
 bool
 VorbisFormat::verifyAvailability( const QString &ffmpegOutput ) const

@@ -56,7 +56,7 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
 
     secondaryTopLayout->addSpacing( 5 );
 
-    QLabel *leftLabel = new QLabel( m_property.prettyValues().at( 0 ) + QString( "\n " ), this );
+    QLabel *leftLabel = new QLabel( m_property.prettyValues().at( 0 ), this );
     secondaryBotLayout->addWidget( leftLabel, 1 );
 
     m_midLabel = new QLabel( QString::number( m_mainEdit->value() ), this );
@@ -67,11 +67,12 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
     }
     connect( m_mainEdit, SIGNAL( valueChanged( int ) ),
              this, SLOT( onSliderChanged( int ) ) );
-    secondaryBotLayout->addWidget( m_midLabel );
 
-    QLabel *rightLabel = new QLabel( m_property.prettyValues().at( 1 ) + QString( "\n " ), this );
+    QLabel *rightLabel = new QLabel( m_property.prettyValues().at( 1 ), this );
     rightLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     secondaryBotLayout->addWidget( rightLabel, 1 );
+
+    mainLayout->addWidget( m_midLabel );
 
     onSliderChanged( m_property.defaultValue() );
 
@@ -96,9 +97,8 @@ PropertySliderWidget::onSliderChanged( int value ) //SLOT
         newText = QString::number( value );
 
     if( value == m_property.defaultValue() )
-        newText += QString( "\n" ) + i18n( "(recommended)" );
-    else
-        newText += QString( "\n " );
+        newText += i18n( " (recommended)" );
+
     m_midLabel->setText( newText );
 }
 

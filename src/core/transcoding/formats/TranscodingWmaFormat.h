@@ -36,6 +36,10 @@ public:
     KIcon icon() const;
     QStringList ffmpegParameters( const Configuration &configuration ) const;
     bool verifyAvailability( const QString &ffmpegOutput ) const;
+
+private:
+    inline int toFfmpegBitrate( int setting ) const;
+    QVector< int > m_validBitrates;
 };
 
 }
