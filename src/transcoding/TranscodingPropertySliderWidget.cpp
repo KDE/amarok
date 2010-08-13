@@ -50,12 +50,13 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
     m_mainEdit->setValue( m_property.defaultValue() );
     m_mainEdit->setTickPosition( QSlider::TicksBelow );
     m_mainEdit->setTickInterval( 1 );
+    m_mainEdit->setPageStep( 2 );
     m_mainEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     secondaryTopLayout->addWidget( m_mainEdit, 3 );
 
     secondaryTopLayout->addSpacing( 5 );
 
-    QLabel *leftLabel = new QLabel( m_property.prettyValues().at( 0 ), this );
+    QLabel *leftLabel = new QLabel( m_property.prettyValues().at( 0 ) + QString( "\n " ), this );
     secondaryBotLayout->addWidget( leftLabel, 1 );
 
     m_midLabel = new QLabel( QString::number( m_mainEdit->value() ), this );
@@ -68,13 +69,18 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
              this, SLOT( onSliderChanged( int ) ) );
     secondaryBotLayout->addWidget( m_midLabel );
 
-    QLabel *rightLabel = new QLabel( m_property.prettyValues().at( 1 ), this );
+    QLabel *rightLabel = new QLabel( m_property.prettyValues().at( 1 ) + QString( "\n " ), this );
     rightLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     secondaryBotLayout->addWidget( rightLabel, 1 );
 
     onSliderChanged( m_property.defaultValue() );
 
-    m_mainEdit->setToolTip( m_property.description() );
+    QString description = m_property.description();
+    m_mainEdit->setToolTip( description );
+    m_mainLabel->setToolTip( description );
+    m_mainEdit->setWhatsThis( description );
+    m_mainLabel->setWhatsThis( description );
+
     m_mainLabel->setBuddy( m_mainEdit );
     m_midLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
 }

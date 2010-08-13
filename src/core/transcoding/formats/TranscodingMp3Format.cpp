@@ -26,7 +26,19 @@ Mp3Format::Mp3Format()
     m_encoder = MP3;
     m_fileExtension = "mp3";
     QString description1 =
-            i18n( "blah blah");
+        i18n( "The bitrate is a measure of the quantity of data used to represent a "
+        "second of the audio track.<br>The <b>MP3</b> encoder used by Amarok supports "
+        "a <a href=http://en.wikipedia.org/wiki/MP3#VBR>variable bitrate (VBR)</a> "
+        "setting, which means that the bitrate value fluctuates along the track "
+        "based on the complexity of the audio content. More complex intervals of "
+        "data are encoded with a higher bitrate than less complex ones; this "
+        "approach yields overall better quality and a smaller file than having a "
+        "constant bitrate throughout the track.<br>"
+        "For this reason, the bitrate measure in this slider is just an estimate "
+        "of the average bitrate of the encoded track.<br>"
+        "<b>160kb/s</b> is a good choice for music listening on a portable player.<br/>"
+        "Anything below <b>120kb/s</b> might be unsatisfactory for music and anything above "
+        "<b>205kb/s</b> is probably overkill.");
     QStringList valueLabels;
     QByteArray vbr = "VBR ~%1kb/s";
     valueLabels
@@ -44,7 +56,6 @@ Mp3Format::Mp3Format()
     m_propertyList << Property::Tradeoff( "quality", i18n( "Expected average bitrate for variable bitrate encoding" ), description1,
                                           i18n( "Smaller file" ), i18n( "Better sound quality" ),
                                           valueLabels, 5 );
-    //m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 9, 0, 6 );
 }
 
 QString
@@ -73,9 +84,22 @@ Mp3Format::icon() const
 QStringList
 Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 {
-    int ffmpegQuality = qAbs( configuration.property( "quality" ).toInt() - 9 );
-    return QStringList() << "-acodec" << "libmp3lame"
-                         << "-aq" << QString::number( ffmpegQuality );
+    QStringList parameters;
+    parameters << "-acodec" << "libmp3lame";
+    foreach( Property property, m_propertyList )
+    {
+        if( !configuration.property( property.name() ).isNull()
+            && configuration.property( property.name() ).type() == property.variantType() )
+        {
+            if( property.name() == "quality" )
+            {
+                int ffmpegQuality = qAbs( configuration.property( "quality" ).toInt() - 9 );
+                parameters << "-aq"
+                           << QString::number( ffmpegQuality );
+            }
+        }
+    }
+    return parameters;
 }
 
 bool

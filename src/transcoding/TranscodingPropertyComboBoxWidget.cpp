@@ -44,7 +44,12 @@ PropertyComboBoxWidget::PropertyComboBoxWidget( Property property, QWidget * par
     mainLayout->addWidget( m_mainEdit );
     mainLayout->addSpacing( 5 );
 
-    m_mainEdit->setToolTip( m_property.description() );
+    QString description = m_property.description();
+    m_mainEdit->setToolTip( description );
+    m_mainLabel->setToolTip( description );
+    m_mainEdit->setWhatsThis( description );
+    m_mainLabel->setWhatsThis( description );
+
     m_mainLabel->setBuddy( m_mainEdit );
 }
 

@@ -30,14 +30,18 @@ FlacFormat::FlacFormat()
     QString description1 =
             i18n( "The <a href=http://flac.sourceforge.net/documentation_tools_flac.html>"
             "compression level</a> is an integer value between 0 and 8 that represents "
-            "the tradeoff between file size and compression speed while encoding:<br/> "
-            "0 = fastest compression, big file<br/>"
-            "8 = slowest compression, small file.<br/>"
+            "the tradeoff between file size and compression speed while encoding with <b>FLAC</b>.<br/> "
+            "Setting the compression level to <b>0</b> yields the shortest compression time but "
+            "generates a comparably big file<br/>"
+            "On the other hand, a compression level of <b>8</b> makes compression quite slow but "
+            "produces the smallest file.<br/>"
             "Note that since FLAC is by definition a lossless codec, the audio quality "
             "of the output is exactly the same regardless of the compression level.<br/>"
-            "Also, levels above 5 dramatically increase compression time but create an only "
-            "slightly smaller file, and are not recommended.");
-    m_propertyList << Property::Numeric( "level", i18n( "Compression level" ), description1, 0, 8, 5 );
+            "Also, levels above <b>5</b> dramatically increase compression time but create an only "
+            "slightly smaller file, and are not recommended." );
+    m_propertyList << Property::Tradeoff( "level", i18n( "Compression level" ), description1,
+                                          i18n( "Faster compression" ), i18n( "Smaller file" ),
+                                          0, 8, 5 );
 }
 
 QString

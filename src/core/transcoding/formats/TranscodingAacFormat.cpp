@@ -28,14 +28,37 @@ AacFormat::AacFormat()
     m_encoder = AAC;
     m_fileExtension = "m4a";
     QString description1 =
-        i18n( "The quality rating is an integer value between 0 and 255 that represents the "
-              "tradeoff between file size and sound quality. While it does not directly "
-              "translate into a bitrate, a higher quality rating generally raises the "
-              "<a href=http://www.ffmpeg.org/faq.html#SEC21>average bitrate</a>.<br/>"
-              "150 is a good choice for music listening on a portable player.<br/>"
-              "Anything below 120 might be unsatisfactory for music and anything above"
-              "220 is probably overkill." );
-    m_propertyList << Property::Numeric( "quality", i18n( "Quality" ), description1, 0, 255, 150 );
+        i18n( "The bitrate is a measure of the quantity of data used to represent a second "
+              "of the audio track.<br>The <b>AAC</b> encoder used by Amarok supports a <a href="
+              "http://en.wikipedia.org/wiki/Variable_bitrate#Advantages_and_disadvantages_of_VBR"
+              ">variable bitrate (VBR)</a> setting, which means that the bitrate value "
+              "fluctuates along the track based on the complexity of the audio content. "
+              "More complex intervals of data are encoded with a higher bitrate than less "
+              "complex ones; this approach yields overall better quality and a smaller file "
+              "than having a constant bitrate throughout the track.<br>"
+              "For this reason, the bitrate measure in this slider is just an estimate "
+              "of the <a href=http://www.ffmpeg.org/faq.html#SEC21>average bitrate</a> of "
+              "the encoded track.<br>"
+              "<b>150kb/s</b> is a good choice for music listening on a portable player.<br/>"
+              "Anything below <b>120kb/s</b> might be unsatisfactory for music and anything above "
+              "<b>200kb/s</b> is probably overkill." );
+    QStringList valueLabels;
+    QByteArray vbr = "VBR ~%1kb/s";
+    valueLabels
+        << i18n( vbr, 25 )
+        << i18n( vbr, 50 )
+        << i18n( vbr, 70 )
+        << i18n( vbr, 90 )
+        << i18n( vbr, 120 )
+        << i18n( vbr, 150 )
+        << i18n( vbr, 170 )
+        << i18n( vbr, 180 )
+        << i18n( vbr, 190 )
+        << i18n( vbr, 200 )
+        << i18n( vbr, 210 );
+    m_propertyList << Property::Tradeoff( "quality", i18n( "Expected average bitrate for variable bitrate encoding" ), description1,
+                                          i18n( "Smaller file" ), i18n( "Better sound quality"),
+                                          valueLabels, 6 );
 }
 
 QString
@@ -81,7 +104,7 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "quality" )
             {
                 parameters << "-aq"
-                           << QString::number( configuration.property( "quality" ).toInt() );
+                           << QString::number( configuration.property( "quality" ).toInt() * 25 + 5 );
             }
         }
     }
