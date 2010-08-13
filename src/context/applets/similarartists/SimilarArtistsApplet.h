@@ -104,10 +104,6 @@ private:
      */
     void artistsUpdate();
 
-    qreal m_aspectRatio;
-    qreal m_headerAspectRatio;
-    QSizeF m_size;
-
     QString m_descriptionPreferredLang;
 
     /**
@@ -143,8 +139,6 @@ private:
      * The max number artists
      */
     int m_maxArtists;
-
-    QString m_currentArtist;
 
 private slots:
 
