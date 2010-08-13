@@ -25,7 +25,7 @@ class CurriedQMFunction
 {
     public:
         virtual ~CurriedQMFunction() {};
-        virtual QueryMaker* operator()() = 0;
+        virtual QueryMaker* operator()( QueryMaker *qm = 0 ) = 0;
 };
 
 class CurriedZeroArityQMFunction : public CurriedQMFunction
@@ -33,19 +33,19 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ();
         
-        CurriedZeroArityQMFunction( QueryMaker *qm, FunPtr function )
-            : m_queryMaker( qm )
-            , m_function( function )
+        CurriedZeroArityQMFunction( FunPtr function )
+            : m_function( function )
         {};
+        virtual ~CurriedZeroArityQMFunction() {};
         
-        QueryMaker* operator()()
+        QueryMaker* operator()( QueryMaker *qm = 0 )
         {
-            ( m_queryMaker->*m_function )();
-            return m_queryMaker;
+            if( qm )
+                return ( qm->*m_function )();
+            return qm;
         };
         
     private:
-        QueryMaker* m_queryMaker;
         FunPtr m_function;
 };
 
@@ -55,20 +55,20 @@ class CurriedUnaryQMFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ( Type );
         
-        CurriedUnaryQMFunction( QueryMaker *qm, FunPtr function, Type parameter )
-            : m_queryMaker( qm )
-            , m_function( function )
+        CurriedUnaryQMFunction( FunPtr function, Type parameter )
+            : m_function( function )
             , m_parameter( parameter )
         {};
+        virtual ~CurriedUnaryQMFunction() {};
         
-        QueryMaker* operator()()
+        QueryMaker* operator()( QueryMaker *qm )
         {
-            ( m_queryMaker->*m_function )( m_parameter );
-            return m_queryMaker;
+            if( qm )
+                return ( qm->*m_function )( m_parameter );
+            return qm;
         };
         
     private:
-        QueryMaker* m_queryMaker;
         FunPtr m_function;
         Type m_parameter;
 };
@@ -79,21 +79,21 @@ class CurriedBinaryQMFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ( FirstType, SecondType );
         
-        CurriedBinaryQMFunction( QueryMaker *qm, FunPtr function, FirstType parameterOne, SecondType parameterTwo )
-            : m_queryMaker( qm )
-            , m_function( function )
+        CurriedBinaryQMFunction( FunPtr function, FirstType parameterOne, SecondType parameterTwo )
+            : m_function( function )
             , m_parameterOne( parameterOne )
             , m_parameterTwo( parameterTwo )
         {};
+        virtual ~CurriedBinaryQMFunction() {};
         
-        QueryMaker* operator()()
+        QueryMaker* operator()( QueryMaker *qm )
         {
-            ( m_queryMaker->*m_function )( m_parameterOne, m_parameterTwo );
-            return m_queryMaker;
+            if( qm )
+                return ( qm->*m_function )( m_parameterOne, m_parameterTwo );
+            return qm;
         };
         
     private:
-        QueryMaker* m_queryMaker;
         FunPtr m_function;
         FirstType m_parameterOne;
         SecondType m_parameterTwo;
@@ -105,56 +105,55 @@ class CurriedTrinaryQMFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ( FirstType, SecondType, ThirdType );
         
-        CurriedTrinaryQMFunction( QueryMaker *qm, FunPtr function, FirstType parameterOne, SecondType parameterTwo, ThirdType parameterThree )
-            : m_queryMaker( qm )
-            , m_function( function )
+        CurriedTrinaryQMFunction( FunPtr function, FirstType parameterOne, SecondType parameterTwo, ThirdType parameterThree )
+            : m_function( function )
             , m_parameterOne( parameterOne )
             , m_parameterTwo( parameterTwo )
             , m_parameterThree( parameterThree )
         {};
+        virtual ~CurriedTrinaryQMFunction() {};
         
-        QueryMaker* operator()()
+        QueryMaker* operator()( QueryMaker *qm )
         {
-            ( m_queryMaker->*m_function )( m_parameterOne, m_parameterTwo, m_parameterThree );
-            return m_queryMaker;
+            if( qm )
+                return ( qm->*m_function )( m_parameterOne, m_parameterTwo, m_parameterThree );
+            return qm;
         };
         
     private:
-        QueryMaker* m_queryMaker;
         FunPtr m_function;
         FirstType m_parameterOne;
         SecondType m_parameterTwo;
         ThirdType m_parameterThree;
 };
 
-template< class FirstType, class SecondType, class ThirdType, class FourthType >
-class CurriedQuarternaryQMFunction : public CurriedQMFunction
+class CurriedQMStringFilterFunction : public CurriedQMFunction
 {
     public:
-        typedef QueryMaker* ( QueryMaker::*FunPtr ) ( FirstType, SecondType, ThirdType, FourthType );
+        typedef QueryMaker* ( QueryMaker::*FunPtr ) ( qint64, const QString&, bool, bool );
         
-        CurriedQuarternaryQMFunction( QueryMaker *qm, FunPtr function, FirstType parameterOne, SecondType parameterTwo, ThirdType parameterThree, FourthType parameterFour )
-            : m_queryMaker( qm )
-            , m_function( function )
-            , m_parameterOne( parameterOne )
-            , m_parameterTwo( parameterTwo )
-            , m_parameterThree( parameterThree )
-            , m_parameterFour( parameterFour )
+        CurriedQMStringFilterFunction( FunPtr function, qint64 value, QString filter, bool matchBegin, bool matchEnd )
+            : m_function( function )
+            , m_value( value )
+            , m_filter( filter )
+            , m_matchBegin( matchBegin )
+            , m_matchEnd( matchEnd )
         {};
+        virtual ~CurriedQMStringFilterFunction() {};
 
-        QueryMaker* operator()()
+        QueryMaker* operator()( QueryMaker *qm )
         {
-            ( m_queryMaker->*m_function )( m_parameterOne, m_parameterTwo, m_parameterThree, m_parameterFour );
-            return m_queryMaker;
+            if( qm )
+                return ( qm->*m_function )( m_value, m_filter, m_matchBegin, m_matchEnd );
+            return qm;
         };
         
     private:
-        QueryMaker* m_queryMaker;
         FunPtr m_function;
-        FirstType m_parameterOne;
-        SecondType m_parameterTwo;
-        ThirdType m_parameterThree;
-        FourthType m_parameterFour;
+        qint64 m_value;
+        QString m_filter;
+        bool m_matchBegin;
+        bool m_matchEnd;
 };
 
 #endif

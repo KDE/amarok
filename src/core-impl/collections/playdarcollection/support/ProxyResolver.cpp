@@ -43,13 +43,15 @@ Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collectio
 
 Playdar::ProxyResolver::~ProxyResolver()
 {
-    
+    delete m_query;
+    delete m_controller;
 }
 
 void
 Playdar::ProxyResolver::slotPlaydarError( Playdar::Controller::ErrorState error )
 {
     emit playdarError( error );
+    this->deleteLater();
 }
 
 void
@@ -58,22 +60,33 @@ Playdar::ProxyResolver::collectQuery( Playdar::Query *query )
     m_query = query;
     connect( m_query, SIGNAL( querySolved( Meta::PlaydarTrackPtr ) ),
              this, SLOT( collectSolution( Meta::PlaydarTrackPtr ) ) );
+    connect( m_query, SIGNAL( queryDone( Playdar::Query*, Meta::PlaydarTrackList ) ),
+             this, SLOT( slotQueryDone( Playdar::Query*, Meta::PlaydarTrackList ) ) );
 }
 
 void
 Playdar::ProxyResolver::collectSolution( Meta::PlaydarTrackPtr track )
 {
-    Meta::TrackPtr realTrack;
-    
-    if( !m_collection.isNull() )
+    if( !m_proxyTrack->isPlayable() )
     {
-        track->addToCollection( m_collection );
-        realTrack = m_collection->trackForUrl( track->uidUrl() );
+        Meta::TrackPtr realTrack;
+        
+        if( !m_collection.isNull() )
+        {
+            track->addToCollection( m_collection );
+            realTrack = m_collection->trackForUrl( track->uidUrl() );
+        }
+        else
+            realTrack = Meta::TrackPtr::staticCast( track );
+        
+        m_proxyTrack->updateTrack( realTrack );
     }
-    else
-        realTrack = Meta::TrackPtr::staticCast( track );
-    
-    m_proxyTrack->updateTrack( realTrack );
-    
-    deleteLater();
 }
+
+void
+Playdar::ProxyResolver::slotQueryDone( Playdar::Query* query, const Meta::PlaydarTrackList& tracks )
+{
+    Q_UNUSED( tracks );
+    this->deleteLater();
+}
+

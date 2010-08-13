@@ -105,12 +105,13 @@ namespace Collections
         
         private Q_SLOTS:
             void slotPlaydarError( Playdar::Controller::ErrorState error );
-            void collectQuery( Playdar::Query* query );
+            void collectQuery( Playdar::Query *query );
             void collectResult( Meta::PlaydarTrackPtr track );
-            void aQueryEnded( const Meta::PlaydarTrackList &trackList );
+            void aQueryEnded( Playdar::Query *query, const Meta::PlaydarTrackList &trackList );
             void memoryQueryDone();
             
         private:
+            QueryType m_queryType;
             bool m_autoDelete;
             bool m_shouldQueryCollection;
             int m_activeQueryCount;
@@ -119,15 +120,12 @@ namespace Collections
             QList< CurriedQMFunction* > m_queryMakerFunctions;
             
             typedef QMap< qint64, QString > FilterMap;
-            typedef QList< FilterMap* > FilterMapList;
-            FilterMapList m_filterMapList;
+            FilterMap m_filterMap;
             
             QPointer< PlaydarCollection > m_collection;
             QPointer< QueryMaker > m_memoryQueryMaker;
             
             QPointer< Playdar::Controller > m_controller;
-            
-            QStack< bool > m_andOrStack;
             
             void runMemoryQueryAgain();
     };

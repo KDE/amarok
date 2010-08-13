@@ -94,7 +94,7 @@ namespace Playdar
              * Emitted once all results that may be found by our means have
              * been found, and returns the internal results list in its final state.
              */
-            void queryDone( Meta::PlaydarTrackList );
+            void queryDone( Playdar::Query*, Meta::PlaydarTrackList );
             /**
              * Indicates an error. Don't bother connecting to this if you're
              * already connected to Controller::error, since the controller

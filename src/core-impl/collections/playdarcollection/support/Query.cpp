@@ -211,7 +211,10 @@ namespace Playdar
                 emit querySolved( aTrack );
                 
                 if( m_waitForSolution )
+                {
+                    emit queryDone( this, m_trackList );
                     return;
+                }
             }
             else
             {
@@ -223,7 +226,7 @@ namespace Playdar
         if( m_recievedFirstResults || m_solved )
         {
             m_recievedFirstResults = true;
-            emit queryDone( m_trackList );
+            emit queryDone( this, m_trackList );
         }
         else
         {

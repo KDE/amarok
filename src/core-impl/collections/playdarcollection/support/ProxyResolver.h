@@ -44,6 +44,7 @@ namespace Playdar
             void slotPlaydarError( Playdar::Controller::ErrorState error );
             void collectQuery( Playdar::Query *query );
             void collectSolution( Meta::PlaydarTrackPtr track );
+            void slotQueryDone( Playdar::Query *query, const Meta::PlaydarTrackList & tracks );
             
         private:
             QPointer< Collections::PlaydarCollection > m_collection;

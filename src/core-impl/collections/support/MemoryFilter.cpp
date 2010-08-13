@@ -223,6 +223,7 @@ StringMemoryFilter::StringMemoryFilter()
 
 StringMemoryFilter::~StringMemoryFilter()
 {
+
 }
 
 void
