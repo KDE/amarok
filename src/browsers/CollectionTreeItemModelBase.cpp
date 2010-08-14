@@ -31,11 +31,14 @@
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
 #include "shared/FileType.h"
+#include "SvgHandler.h"
 
 #include <KIcon>
 #include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
+
+#include <QFontMetrics>
 #include <QPixmap>
 #include <QTimeLine>
 #include <QTimer>
@@ -185,6 +188,67 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         }
     }
     return false;
+}
+
+QVariant
+CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
+{
+    if( item->isDataItem() )
+    {
+        switch( role )
+        {
+        case Qt::DecorationRole:
+            {
+                if( level == -1 )
+                    level = item->level();
+
+                if( d->childQueries.values().contains( item ) )
+                {
+                    if( level < m_levelType.count() )
+                        return m_currentAnimPixmap;
+                }
+
+                if( level < m_levelType.count() )
+                {
+                    if( m_levelType[level] == CategoryId::Album && AmarokConfig::showAlbumArt() )
+                    {
+                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                        if( album )
+                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
+                    }
+                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
+                    {
+                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
+                                                                KIconLoader::Toolbar,
+                                                                KIconLoader::SizeSmall );
+                    }
+                    return iconForLevel( level );
+                }
+                else if( level == m_levelType.count() )
+                {
+                    return KIconLoader::global()->loadIcon( "media-album-track",
+                                                            KIconLoader::Toolbar,
+                                                            KIconLoader::SizeSmall );
+                }
+            }
+            break;
+
+        case Qt::SizeHintRole:
+            {
+                QFont font;
+                QFontMetrics qfm( font );
+                QSize size( 1, qfm.height() + 4 );
+                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+                {
+                    if( size.height() < 34 )
+                        size.setHeight( 34 );
+                }
+                return size;
+            }
+            break;
+        }
+    }
+    return item->data( role );
 }
 
 QVariant

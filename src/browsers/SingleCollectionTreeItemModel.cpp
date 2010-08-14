@@ -22,14 +22,11 @@
 
 #include <amarokconfig.h>
 #include "core/support/Amarok.h"
-#include "SvgHandler.h"
 #include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>
-
-#include <QFontMetrics>
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( )
@@ -64,71 +61,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-
-    if( item->isDataItem() )
-    {
-        switch( role )
-        {
-        case Qt::DecorationRole:
-            {
-                //don't subtract one here like in collectiontreeitemmodel because
-                //there is no collection level here
-
-                //check if the item being queried is currently being populated
-
-                const int level = item->level();
-
-                if( d->childQueries.values().contains( item ) )
-                {
-                    if( level < m_levelType.count() )
-                        return m_currentAnimPixmap;
-                }
-
-                if( level < m_levelType.count() )
-                {
-                    if( m_levelType[level] == CategoryId::Album && AmarokConfig::showAlbumArt() )
-                    {
-                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                        if( album )
-                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                    }
-                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
-                    {
-                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
-                                                                KIconLoader::Toolbar,
-                                                                KIconLoader::SizeSmall );
-                    }
-                    return iconForLevel( level );
-                }
-                else if( level == m_levelType.count() )
-                {
-                    return KIconLoader::global()->loadIcon( "media-album-track",
-                                                            KIconLoader::Toolbar,
-                                                            KIconLoader::SizeSmall );
-                }
-            }
-            break;
-
-        case Qt::SizeHintRole:
-            {
-                QFont font;
-                QFontMetrics qfm( font );
-                QSize size( 1, qfm.height() + 4 );
-                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
-                {
-                    if( size.height() < 34 )
-                        size.setHeight( 34 );
-                }
-                return size;
-            }
-            break;
-
-        case AlternateCollectionRowRole:
-            return ( index.row() % 2 == 1 );
-            break;
-        }
-    }
-    return item->data( role );
+    return dataForItem( item, role );
 }
 
 Qt::ItemFlags

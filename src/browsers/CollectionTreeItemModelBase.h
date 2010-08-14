@@ -53,12 +53,6 @@ namespace CategoryId
     };
 }
 
-enum {
-    AlternateCollectionRowRole = Qt::UserRole + 20
-};
-
-
-
 /**
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
@@ -126,6 +120,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual void updateHeaderText();
         virtual QString nameForLevel( int level ) const;
         virtual int levelModifier() const = 0;
+        virtual QVariant dataForItem( CollectionTreeItem *item, int role, int level = -1 ) const;
 
         virtual void filterChildren() = 0;
         void ensureChildrenLoaded( CollectionTreeItem *item );
