@@ -42,6 +42,7 @@ VERSION 2.3.2-Beta 1
       Patch by Richard Longland <rlongland@hotmail.com>.
 
   BUGFIXES:
+    * Tweaked fuzzy numerical comparisons in the APG. (BR 242281)
     * Finally don't truncate the "Label:" label in TagDialog. (BR 235957)
     * Fix crash when right clicking on children of "No labels". NoLabel item is
       now a Data item. (BR 243825)
