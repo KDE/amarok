@@ -33,6 +33,7 @@
 #include "shared/FileType.h"
 #include "SvgHandler.h"
 
+#include <KGlobalSettings>
 #include <KIcon>
 #include <KIconLoader>
 #include <KLocale>
@@ -63,7 +64,9 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
+    updateRowHeight();
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
+    connect( KGlobalSettings::self(), SIGNAL(kdisplayFontChanged()), SLOT(updateRowHeight()) );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
@@ -235,12 +238,10 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::SizeHintRole:
             {
-                QFont font;
-                QFontMetrics qfm( font );
-                QSize size( 1, qfm.height() + 4 );
+                QSize size( 1, d->rowHeight );
                 if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
                 {
-                    if( size.height() < 34 )
+                    if( d->rowHeight < 34 )
                         size.setHeight( 34 );
                 }
                 return size;
@@ -1351,6 +1352,13 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
 void CollectionTreeItemModelBase::update()
 {
     reset();
+}
+
+void CollectionTreeItemModelBase::updateRowHeight()
+{
+    QFont font;
+    QFontMetrics fm( font );
+    d->rowHeight = fm.height() + 4;
 }
 
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )

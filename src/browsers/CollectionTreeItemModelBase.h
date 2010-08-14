@@ -151,6 +151,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void startAnimationTick();
         void loadingAnimationTick();
         void update();
+
+    private slots:
+        void updateRowHeight();
 };
 
 class CollectionTreeItemModelBase::Private
@@ -161,6 +164,7 @@ class CollectionTreeItemModelBase::Private
     QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
     QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
+    int rowHeight;
 };
 
 #endif
