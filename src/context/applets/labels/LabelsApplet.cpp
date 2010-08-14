@@ -61,6 +61,9 @@ LabelsApplet::~LabelsApplet()
     qDeleteAll( m_labelItems );
     delete m_titleLabel;
     delete m_addLabelProxy;
+
+    delete m_reloadIcon;
+    delete m_settingsIcon;
 }
 
 void
