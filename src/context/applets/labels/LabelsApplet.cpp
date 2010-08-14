@@ -226,6 +226,7 @@ LabelsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, Pla
     m_addLabelProxy->hide();
     m_reloadIcon->setEnabled( false );
     setBusy( false );
+    setMinimumHeight( 0 );
     setCollapseOn();
     dataEngine( "amarok-labels" )->query( QString( "labels:stopped" ) );
 }
@@ -292,17 +293,19 @@ LabelsApplet::updateLabels()
     {
         it_final.next();
         int i_size = (int)( it_final.value() / 10 - 5 );
-        if( i_size < -1 ) i_size = -1;
+        if( i_size < -1 )
+            i_size = -1;
 
         LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), i_size, this );
-        if( m_currentLabels.contains( it_final.key() ) ) labelGraphics->setSelected( true );
+        if( m_currentLabels.contains( it_final.key() ) )
+            labelGraphics->setSelected( true );
         connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
         connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
         connect( labelGraphics, SIGNAL( blacklisted( const QString & ) ), this, SLOT( blacklistLabel( const QString & ) ) );
         m_labelItems.append( labelGraphics );
     }
 
-    constraintsEvent();
+    constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
     update();
 }
 
@@ -336,8 +339,10 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
             if( width + l_size.width() + 3 * standardPadding() <= max_width || i == 0 )
             {
                 width += l_size.width();
-                if( i != 0 ) width += standardPadding();
-                if( l_size.height() > height ) height = l_size.height();
+                if( i != 0 )
+                    width += standardPadding();
+                if( l_size.height() > height )
+                    height = l_size.height();
                 end_index = i;
             }
             else
@@ -363,18 +368,20 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
             m_labelItems[j]->setPos( x_pos, y_pos + (height-c_size.height())/2 );
             x_pos += c_size.width() + standardPadding();
         }
-        if( m_labelItems.count() > 0 ) y_pos += height + standardPadding();
+        if( m_labelItems.count() > 0 )
+            y_pos += height + standardPadding();
 
         qreal addLabelProxyWidth = size().width() - 2 * standardPadding();
-        if( addLabelProxyWidth > 300 ) addLabelProxyWidth = 300;
+        if( addLabelProxyWidth > 300 )
+            addLabelProxyWidth = 300;
         m_addLabelProxy->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
         m_addLabelProxy->setMinimumWidth( addLabelProxyWidth );
         m_addLabelProxy->setMaximumWidth( addLabelProxyWidth );
         y_pos += m_addLabelProxy->size().height() + standardPadding();
 
         resize( size().width(), y_pos );
-        m_heightCurrent = y_pos;
-        emit sizeHintChanged( Qt::PreferredSize );
+        setMinimumSize( size().width(), y_pos );
+        setMaximumSize( size().width(), y_pos );
     }
 }
 
@@ -412,7 +419,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching") )
     {
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
-        updateConstraints();
+        constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
         update();
         if( canAnimate() )
             setBusy( true );
@@ -420,12 +427,13 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     else if ( data.contains( "message" ) )
     {
         m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
-        updateConstraints();
+        constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
         update();
         setBusy( false );
     }
     else if ( data.contains( "data" ) )
     {
+        m_stoppedstate = false;
         m_titleText = i18n( "Labels for %1 - %2", data[ "artist" ].toString(), data[ "title" ].toString() );
 
         m_labelInfos = data[ "data" ].toMap();
