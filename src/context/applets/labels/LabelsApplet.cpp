@@ -57,7 +57,11 @@ LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
 }
 
 LabelsApplet::~LabelsApplet()
-{}
+{
+    qDeleteAll( m_labelItems );
+    delete m_titleLabel;
+    delete m_addLabelProxy;
+}
 
 void
 LabelsApplet::init()
