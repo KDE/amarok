@@ -535,24 +535,33 @@ void LyricsApplet::collapseToMin()
     if( !browser )
         return;
 
-    // use a dummy item to get the lyrics layout being displayed
-    QGraphicsTextItem testItem;
-    testItem.setTextWidth( browser->document()->size().width() );
-    testItem.setFont( browser->currentFont() );
-    testItem.setHtml( browser->toHtml() );
+    qreal testItemHeight = 0;
+
+    // Check if the text browser contains any content (which is
+    // visible to the user).
+    if ( !browser->toPlainText().trimmed().isEmpty() )
+    {
+        // use a dummy item to get the lyrics layout being displayed
+        QGraphicsTextItem testItem;
+        testItem.setTextWidth( browser->document()->size().width() );
+        testItem.setFont( browser->currentFont() );
+        testItem.setHtml( browser->toHtml() );
+
+        // Get the height of the test item.
+        testItemHeight = testItem.boundingRect().height();
+    }
 
     const qreal frameWidth     = browser->frameWidth();
-    const qreal testItemHeight = testItem.boundingRect().height();
     const qreal headerHeight   = m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding();
     const qreal contentHeight  = headerHeight + frameWidth + testItemHeight + frameWidth + standardPadding();
 
     // only show vertical scrollbar if there are lyrics and is needed
     browser->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
-
+    
     // maybe we were just added, don't have a view yet
     if( !containment()->view() )
         return;
-    
+
     const qreal containerOffset = mapToView( containment()->view(), boundingRect() ).topLeft().y();
     const qreal containerHeight = containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
