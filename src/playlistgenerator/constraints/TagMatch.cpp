@@ -457,8 +457,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18n("within") );
         }
     } else {
-#if 0
-        // FIXME: Replace the block below with this one after string freeze is lifted
         if ( m_comparison == CompareStrEquals ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
         } else if ( m_comparison == CompareStrStartsWith ) {
@@ -467,18 +465,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
         } else if ( m_comparison == CompareStrContains ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
-        } else if ( m_comparison == CompareStrRegExp ) {
-            return QString( i18n("regexp") );
-        }
-#endif
-        if ( m_comparison == CompareStrEquals ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
-        } else if ( m_comparison == CompareStrStartsWith ) {
-            return QString( i18n("starts with") );
-        } else if ( m_comparison == CompareStrEndsWith ) {
-            return QString( i18n("ends with") );
-        } else if ( m_comparison == CompareStrContains ) {
-            return QString( i18n("contains") );
         } else if ( m_comparison == CompareStrRegExp ) {
             return QString( i18n("regexp") );
         }
