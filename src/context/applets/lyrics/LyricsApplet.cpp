@@ -313,6 +313,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
 
     update();
+    collapseToMin();
     constraintsEvent();
 }
 
@@ -412,7 +413,7 @@ LyricsApplet::changeLyricsFont()
 
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
     // resize with new font
-    // collapseToMin();
+    collapseToMin();
 }
 
 void
@@ -524,7 +525,7 @@ LyricsApplet::setEditing( const bool isEditing )
 {
     m_lyrics->setReadOnly( !isEditing );
     update();
-    // collapseToMin();
+    collapseToMin();
 }
 
 
@@ -555,6 +556,7 @@ void LyricsApplet::collapseToMin()
     const qreal containerOffset = mapToView( containment()->view(), boundingRect() ).topLeft().y();
     const qreal containerHeight = containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
+
     setCollapseHeight( collapsedHeight );
     setCollapseOn();
     updateConstraints();
