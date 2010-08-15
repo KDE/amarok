@@ -313,7 +313,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
 
     update();
-    collapseToMin();
+    // collapseToMin();
     constraintsEvent();
 }
 
@@ -413,7 +413,7 @@ LyricsApplet::changeLyricsFont()
 
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
     // resize with new font
-    collapseToMin();
+    // collapseToMin();
 }
 
 void
@@ -525,10 +525,20 @@ LyricsApplet::setEditing( const bool isEditing )
 {
     m_lyrics->setReadOnly( !isEditing );
     update();
-    collapseToMin();
+    // collapseToMin();
 }
 
 
+// FIXME: This does not work in all cases yet.
+// There are two known cases where this is broken:
+// -The lyrics applet is visible to the user, showing only a
+//  small amount of text. Then the user hides (hiding != removing)
+//  the applet. Once the track changes and the new track has long
+//  lyrics the scrollbar is clipped.
+// -The lyrics applet's position is moved. Say the lyrics applet would
+//  take all the space. Now there's the current track applet above the
+//  lyrics applet -> once the user moves the lyrics applet before the
+//  current track applet the lyrics applet won't resize.
 void LyricsApplet::collapseToMin()
 {
     QTextBrowser *browser = static_cast< QTextBrowser* >( m_proxy->widget() );
