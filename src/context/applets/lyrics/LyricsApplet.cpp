@@ -532,6 +532,10 @@ LyricsApplet::setEditing( const bool isEditing )
 void LyricsApplet::collapseToMin()
 {
     QTextBrowser *browser = static_cast< QTextBrowser* >( m_proxy->widget() );
+
+    // The proxy does not have a browser after initialization.
+    // There's only a widget after the first dataUpdated() call, so
+    // make sure we're not crashing here.
     if( !browser )
         return;
 
