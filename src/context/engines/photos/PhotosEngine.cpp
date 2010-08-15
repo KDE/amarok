@@ -86,7 +86,7 @@ PhotosEngine::sourceRequestEvent( const QString& name )
     {
         if ( tokens.at( 1 ) == QString( "stopped" ) )
         {
-            removeSource( "photos" );
+//             removeSource( "photos" );
             m_reload = true;
             return false;
         }
