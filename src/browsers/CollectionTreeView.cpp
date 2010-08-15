@@ -44,6 +44,7 @@
 #include "SvgHandler.h"
 #include "TagDialog.h"
 #include "transcoding/TranscodingAssistantDialog.h"
+#include "src/core/transcoding/TranscodingController.h"
 
 #include <QContextMenuEvent>
 #include <QHash>
@@ -1147,10 +1148,17 @@ void CollectionTreeView::slotCopyTracks()
     {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
-            Transcoding::AssistantDialog dialog( this );
             Transcoding::Configuration configuration = Transcoding::Configuration();
-            if( dialog.exec() )
-                configuration = dialog.configuration();
+
+            if( !The::transcodingController()->availableFormats().isEmpty() )
+            {
+                Transcoding::AssistantDialog dialog( this );
+                if( dialog.exec() )
+                    configuration = dialog.configuration();
+            }
+            else
+                debug() << "FFmpeg is not installed or does not support any of the required formats.";
+
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, configuration );
         }
     }

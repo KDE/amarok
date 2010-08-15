@@ -37,7 +37,7 @@
 #include "SvgHandler.h"
 #include "src/transcoding/TranscodingJob.h"
 #include "src/transcoding/TranscodingAssistantDialog.h"
-
+#include "src/core/transcoding/TranscodingController.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -250,10 +250,15 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<" SRC URL IS " << list.urlList().first();
     debug()<<" SRC URL IS " << list.urlList().first();
 
-    Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
-    debug() << "About to show Transcoding::AssistantDialog";
-    d->show();
-    debug() << "Transcoding::AssistantDialog shown.";
+    if( !The::transcodingController()->availableFormats().isEmpty() )
+    {
+        Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
+        debug() << "About to show Transcoding::AssistantDialog";
+        d->show();
+        debug() << "Transcoding::AssistantDialog shown.";
+    }
+    else
+        debug() << "FFmpeg is not installed or does not support any of the required formats.";
 }
 
 void
