@@ -440,7 +440,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        if ( !albumPixmap.isNull() )
+        if ( !emblemPixmap.isNull() )
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
     }
 

@@ -833,7 +833,7 @@ ProxyAlbum::image( int size )
             return album->image( size );
         }
     }
-    return QPixmap();
+    return Meta::Album::image( size );
 }
 
 KUrl
