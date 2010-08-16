@@ -387,8 +387,8 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         y_pos += m_addLabelProxy->size().height() + standardPadding();
 
         resize( size().width(), y_pos );
-        setMinimumSize( size().width(), y_pos );
-        setMaximumSize( size().width(), y_pos );
+        setMinimumHeight( y_pos );
+        setMaximumHeight( y_pos );
     }
 }
 
