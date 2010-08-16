@@ -12,6 +12,8 @@ VERSION 2.4
       the number of tracks in the playlist.  What was the "Playlist Length "
       constraint is now called "Playlist Duration".
     * MPRIS2 support for controlling Amarok over D-Bus.
+    * New "Playdar Collection" allows searching for and listening
+      to music provided by a running local Playdar service.
 
   CHANGES:
     * Bumped KDE dependency to version 4.4., and Qt dependency to 4.6.

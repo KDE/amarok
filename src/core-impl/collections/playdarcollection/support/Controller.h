@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com                              *
+ * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -51,10 +51,13 @@ namespace Playdar
             /**
              * We invoke the private function status() here, return immediately,
              * and will emit playdarReady() once things are actually set up.
+             * @param queriesShouldWaitForSolutions
+             *        If true, Playdar::Querys created by this controller will
+             *        only use getResultsLongPoll instead of first using getResults.
              */
             Controller( bool queriesShouldWaitForSolutions = false );
             /**
-             * Controllers to hold on to anything, so the deconstructor does nothing.
+             * Controllers don't hold on to anything, so the deconstructor does nothing.
              */
             ~Controller();
             

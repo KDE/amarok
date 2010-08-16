@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com                              *
+ * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,13 +37,13 @@ namespace Collections
 
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
     
-    PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* &parent, const QVariantList &args )
+    PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
         : m_controller( new Playdar::Controller() )
         , m_collection( 0 )
         , m_collectionIsManaged( false )
     {
         DEBUG_BLOCK
-            
+
         setParent( parent );
         Q_UNUSED( args );
     }
@@ -121,7 +121,7 @@ namespace Collections
     }
     
     PlaydarCollection::PlaydarCollection()
-        : m_collectionId( "Playdar Collection" )
+        : m_collectionId( i18n( "Playdar Collection" ) )
         , m_memoryCollection( new MemoryCollection )
     {
         DEBUG_BLOCK

@@ -1,18 +1,18 @@
 /****************************************************************************************
-* Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com                              *
-*                                                                                      *
-* This program is free software; you can redistribute it and/or modify it under        *
-* the terms of the GNU General Public License as published by the Free Software        *
-* Foundation; either version 2 of the License, or (at your option) any later           *
-* version.                                                                             *
-*                                                                                      *
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
-* PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
-*                                                                                      *
-* You should have received a copy of the GNU General Public License along with         *
-* this program.  If not, see <http://www.gnu.org/licenses/>.                           *
-****************************************************************************************/
+ * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef PLAYDAR_PROXY_RESOLVER_H
 #define PLAYDAR_PROXY_RESOLVER_H
@@ -28,6 +28,10 @@ class KUrl;
 
 namespace Playdar
 {
+    /**
+     * ProxyResolver takes a MetaProxy::Track and a playdar:// url,
+     * and updates the Track with a PlaydarTrack if we can find it.
+     */
     class ProxyResolver : public QObject
     {
         Q_OBJECT

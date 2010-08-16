@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com                              *
+ * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -39,7 +39,7 @@ namespace Collections
     {
         Q_OBJECT
         public:
-            PlaydarCollectionFactory( QObject* &parent, const QVariantList &args );
+            PlaydarCollectionFactory( QObject* parent, const QVariantList &args );
             virtual ~PlaydarCollectionFactory();
             
             virtual void init();
