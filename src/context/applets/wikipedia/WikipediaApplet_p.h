@@ -34,6 +34,8 @@
 #include <QStack>
 #include <QWebFrame>
 #include <QWebPage>
+#include <QWebInspector>
+#include <QWebSettings>
 
 class KTemporaryFile;
 class WikipediaWebView;
@@ -199,8 +201,19 @@ public:
         m_bottomBorder->show();
 
         page()->parent()->installEventFilter( this );
+#if defined(DEBUG_BUILD_TYPE)
+        page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+        m_inspector = new QWebInspector;
+        m_inspector->setPage( page() );
+#endif
     }
-    ~WikipediaWebView() {}
+
+    ~WikipediaWebView()
+    {
+#if defined(DEBUG_BUILD_TYPE)
+        delete m_inspector;
+#endif
+    }
 
     Plasma::LineEdit *lineEdit()
     { return m_lineEdit; }
@@ -252,6 +265,9 @@ protected:
     }
 
 private:
+#if defined(DEBUG_BUILD_TYPE)
+    QWebInspector *m_inspector;
+#endif
     WikipediaSearchLineEdit *m_lineEdit;
     Plasma::SvgWidget *m_topBorder;
     Plasma::SvgWidget *m_bottomBorder;
