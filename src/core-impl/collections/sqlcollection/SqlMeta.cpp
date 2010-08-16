@@ -1329,7 +1329,7 @@ SqlAlbum::removeImage()
     if( artist.isEmpty() && m_name.isEmpty() )
         return;
 
-    const QByteArray key = md5sum( artist, m_name, QString() );
+    const QByteArray key = md5sum( artist, m_name, m_imagePath );
 
     // remove the large covers
     QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
