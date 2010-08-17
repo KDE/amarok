@@ -42,7 +42,7 @@ class QWidget;
  *                                          |
  *          +-----------------+-------------+-----+--------  ... etc
  *          |                 |                   |
- *      Matching     PreventDuplicates     PlaylistLength
+ *      Matching     PreventDuplicates     PlaylistDuration
  *          |
  *      TagMatch
  *

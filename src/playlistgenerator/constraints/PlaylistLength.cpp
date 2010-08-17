@@ -55,20 +55,25 @@ ConstraintFactoryEntry*
 ConstraintTypes::PlaylistLength::registerMe()
 {
     return new ConstraintFactoryEntry( "PlaylistLength",
-                                       i18n("Playlist Duration"),
-                                       i18n("Sets the preferred duration of the playlist"),
+                                       i18n("Playlist Length"),
+                                       i18n("Sets the preferred number of tracks in the playlist"),
                                        &PlaylistLength::createFromXml, &PlaylistLength::createNew );
 }
 
 ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "length" );
-    if ( !a.isNull() )
+    if ( !a.isNull() ) {
         m_length = a.value().toInt();
+        /* after 2.3.2, what was the PlaylistLength constraint became the
+         * PlaylistDuration constraint, so this works around the instance when
+         * a user loads an XML file generated with the old code -- sth*/
+        if ( m_length > 1000 )
+            m_length /= 240000;
+    }
 
     a = xmlelem.attributeNode( "comparison" );
     if ( !a.isNull() )
@@ -77,18 +82,14 @@ ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, Constrain
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
-
-    debug() << getName();
 }
 
 ConstraintTypes::PlaylistLength::PlaylistLength( ConstraintNode* p )
         : Constraint( p )
-        , m_length( 0 )
+        , m_length( 30 )
         , m_comparison( CompareNumEquals )
         , m_strictness( 1.0 )
 {
-    DEBUG_BLOCK
-    debug() << "new default PlaylistLength";
 }
 
 QWidget*
@@ -115,8 +116,8 @@ ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) c
 QString
 ConstraintTypes::PlaylistLength::getName() const
 {
-    QString v( i18n("Playlist duration %1 %2") );
-    return v.arg( comparisonToString() ).arg( QTime().addMSecs( m_length ).toString( "H:mm:ss" ) );
+    QString v( i18n("Playlist length: %1 %2 tracks") ); // FIXME: proper pluralization
+    return v.arg( comparisonToString() ).arg( m_length );
 }
 
 Collections::QueryMaker*
@@ -128,38 +129,26 @@ ConstraintTypes::PlaylistLength::initQueryMaker( Collections::QueryMaker* qm ) c
 double
 ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl )
 {
-    m_totalLength = 0;
-    foreach( Meta::TrackPtr t, tl ) {
-        m_totalLength += t->length();
-    }
-    return transformLength( m_totalLength );
+    m_totalLength = tl.size();
+    return penalty( m_totalLength );
 }
 
 double
 ConstraintTypes::PlaylistLength::deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr t, const int ) const
 {
-    qint64 l = m_totalLength + t->length();
-    double newS = transformLength( l );
-    double oldS = transformLength( m_totalLength );
-    return newS - oldS;
+    return penalty( m_totalLength + 1 ) - penalty( m_totalLength );
 }
 
 double
-ConstraintTypes::PlaylistLength::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
+ConstraintTypes::PlaylistLength::deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const
 {
-    int l = m_totalLength + t->length() - tl.at( i )->length();
-    double newS = transformLength( l );
-    double oldS = transformLength( m_totalLength );
-    return newS - oldS;
+    return 0.0;
 }
 
 double
-ConstraintTypes::PlaylistLength::deltaS_delete( const Meta::TrackList& tl, const int i ) const
+ConstraintTypes::PlaylistLength::deltaS_delete( const Meta::TrackList&, const int ) const
 {
-    int l = m_totalLength - tl.at( i )->length();
-    double newS = transformLength( l );
-    double oldS = transformLength( m_totalLength );
-    return newS - oldS;
+    return penalty( m_totalLength - 1 ) - penalty( m_totalLength );
 }
 
 double
@@ -169,22 +158,18 @@ ConstraintTypes::PlaylistLength::deltaS_swap( const Meta::TrackList&, const int,
 }
 
 void
-ConstraintTypes::PlaylistLength::insertTrack( const Meta::TrackList&, const Meta::TrackPtr t, const int )
+ConstraintTypes::PlaylistLength::insertTrack( const Meta::TrackList&, const Meta::TrackPtr, const int )
 {
-    m_totalLength += t->length();
+    m_totalLength++;
 }
 
 void
-ConstraintTypes::PlaylistLength::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_totalLength += t->length();
-    m_totalLength -= tl.at( i )->length();
-}
+ConstraintTypes::PlaylistLength::replaceTrack( const Meta::TrackList&, const Meta::TrackPtr, const int ) {}
 
 void
-ConstraintTypes::PlaylistLength::deleteTrack( const Meta::TrackList& tl, const int i )
+ConstraintTypes::PlaylistLength::deleteTrack( const Meta::TrackList&, const int )
 {
-    m_totalLength -= tl.at( i )->length();
+    m_totalLength--;
 }
 
 void
@@ -193,13 +178,7 @@ ConstraintTypes::PlaylistLength::swapTracks( const Meta::TrackList&, const int, 
 int
 ConstraintTypes::PlaylistLength::suggestInitialPlaylistSize() const
 {
-    if ( m_comparison == CompareNumLessThan ) {
-        return m_length / 300000;
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return m_length / 180000;
-    } else {
-        return m_length / 240000;
-    }
+    return m_length;
 }
 
 ConstraintNode::Vote*
@@ -207,48 +186,7 @@ ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Me
 {
     ConstraintNode::Vote* v = 0;
 
-    if ( m_comparison == CompareNumLessThan ) {
-        if ( m_totalLength > m_length) {
-            int longestLength = 0;
-            int longestPosition = -1;
-            for ( int i = 0; i < playlist.size(); i++ ) {
-                Meta::TrackPtr t = playlist.at( i );
-                if ( t->length() > longestLength ) {
-                    longestLength = t->length();
-                    longestPosition = i;
-                }
-            }
-
-            v = new ConstraintNode::Vote;
-            v->operation = ConstraintNode::OperationDelete;
-            v->place = longestPosition;
-        }
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        if ( m_totalLength < m_length) {
-            v = new ConstraintNode::Vote;
-            v->operation = ConstraintNode::OperationInsert;
-            v->place = KRandom::random() % ( playlist.size() + 1 );
-            v->track = domain.at( KRandom::random() % domain.size() );
-        }
-    } else if ( m_comparison == CompareNumEquals ) {
-        int deviation = qAbs( m_totalLength - m_length );
-        if ( m_totalLength > m_length ) {
-            int randomIdx = KRandom::random() % playlist.size();
-            if ( ( playlist.at( randomIdx )->length() / 2 ) < deviation ) {
-                v = new ConstraintNode::Vote;
-                v->operation = ConstraintNode::OperationDelete;
-                v->place = randomIdx;
-            }
-        } else {
-            Meta::TrackPtr randomTrack = domain.at( KRandom::random() % domain.size() );
-            if ( ( randomTrack->length() / 2 ) < deviation ) {
-                v = new ConstraintNode::Vote;
-                v->operation = ConstraintNode::OperationInsert;
-                v->place = KRandom::random() % ( playlist.size() + 1 );
-                v->track = randomTrack;
-            }
-        }
-    }
+    //FIXME: needs to vote for addition or removal as appropriate
 
     return v;
 }
@@ -257,28 +195,36 @@ QString
 ConstraintTypes::PlaylistLength::comparisonToString() const
 {
     if ( m_comparison == CompareNumEquals ) {
-        return QString( i18nc("duration of playlist equals some time", "equals") );
+        return QString( i18nc("number of tracks in playlist equals some number", "equals") );
     } else if ( m_comparison == CompareNumGreaterThan ) {
-        return QString( i18n("longer than") );
+        return QString( i18n("more than") );
     } else if ( m_comparison == CompareNumLessThan ) {
-        return QString( i18n("shorter than") );
+        return QString( i18n("less than") );
     } else {
         return QString( i18n("unknown comparison") );
     }
 }
 
 double
-ConstraintTypes::PlaylistLength::transformLength( const qint64 l ) const
+ConstraintTypes::PlaylistLength::penalty( const int l ) const
 {
-    double factor = m_strictness * 0.0003;
     if ( m_comparison == CompareNumEquals ) {
-        return 4.0 / ( ( 1.0 + exp( factor*( double )( l - m_length ) ) )*( 1.0 + exp( factor*( double )( m_length - l ) ) ) );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return 1.0 / ( 1.0 + exp( factor*( double )( l - m_length ) ) );
+        return ( l == m_length ) ? 1.0 : transformLength( abs( l - m_length ) );
     } else if ( m_comparison == CompareNumGreaterThan ) {
-        return 1.0 / ( 1.0 + exp( factor*( double )( m_length - l ) ) );
+        return ( l > m_length ) ? 1.0 : transformLength( m_length - l );
+    } else if ( m_comparison == CompareNumLessThan ) {
+        return ( l < m_length ) ? 1.0 : transformLength( l - m_length );
+    } else {
+        return 0.0;
     }
-    return 1.0;
+}
+
+double
+ConstraintTypes::PlaylistLength::transformLength( const int delta ) const
+{
+    // Note: delta must be positive
+    const double w = 8.0;
+    return exp( -10.0 * ( 0.1 + m_strictness ) / w * ( delta + 1 ) );
 }
 
 void
@@ -289,9 +235,9 @@ ConstraintTypes::PlaylistLength::setComparison( const int c )
 }
 
 void
-ConstraintTypes::PlaylistLength::setLength( const int v )
+ConstraintTypes::PlaylistLength::setLength( const int l )
 {
-    m_length = v;
+    m_length = l;
     emit dataChanged();
 }
 
@@ -311,15 +257,15 @@ ConstraintTypes::PlaylistLengthEditWidget::PlaylistLengthEditWidget( const int l
 {
     ui.setupUi( this );
 
-    ui.timeEdit_Duration->setTime( QTime().addMSecs( length ) );
+    ui.spinBox_Length->setValue( length );
     ui.comboBox_Comparison->setCurrentIndex( comparison );
     ui.slider_Strictness->setValue( strictness );
 }
 
 void
-ConstraintTypes::PlaylistLengthEditWidget::on_timeEdit_Duration_timeChanged( const QTime& t )
+ConstraintTypes::PlaylistLengthEditWidget::on_spinBox_Length_valueChanged( const int l )
 {
-    emit lengthChanged( QTime().msecsTo( t ) );
+    emit lengthChanged( l );
     emit updated();
 }
 

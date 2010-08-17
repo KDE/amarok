@@ -7,7 +7,6 @@ Backend:
 Constraints:
 - fix preventduplicates: the delta functions are kinda broken
 - last.fm or echonest similar artists constraint
-- playlist length (ie, # of tracks) constraint
 
 GUI:
 - context menu for APGCategory

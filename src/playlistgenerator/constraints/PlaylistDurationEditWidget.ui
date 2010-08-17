@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Soren Harward &lt;stharward@gmail.com&gt;</author>
- <class>PlaylistLengthEditWidget</class>
- <widget class="QWidget" name="PlaylistLengthEditWidget">
+ <class>PlaylistDurationEditWidget</class>
+ <widget class="QWidget" name="PlaylistDurationEditWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>236</width>
+    <width>247</width>
     <height>113</height>
    </rect>
   </property>
@@ -15,13 +15,13 @@
    <string comment="KDE::DoNotExtract">Form</string>
   </property>
   <property name="whatsThis">
-   <string>An editor for a Playlist Length constraint.  The user can the target number of tracks and whether the playlist contain fewer than, equal to, or more than that number of tracks; and the strictness with which the APG should match the target number of tracks.</string>
+   <string>An editor for a PlaylistDuration constraint.  The user can set the name of the constraint; the target duration and whether the playlist should be less than, equal to, or greater than that duration; and the strictness with which the APG should match that duration.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Playlist Length Constraint Settings</string>
+      <string>Playlist Duration Constraint Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
@@ -32,14 +32,14 @@
            <string/>
           </property>
           <property name="whatsThis">
-           <string>Whether the number of tracks in the generated playlist should be less than, equal to, or more than the specified value.</string>
+           <string>Whether the duration of the generated playlist should be shorter than, equal to, or longer than the specified value.</string>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <item>
            <property name="text">
-            <string>fewer than</string>
+            <string>shorter than</string>
            </property>
           </item>
           <item>
@@ -49,7 +49,7 @@
           </item>
           <item>
            <property name="text">
-            <string>more than</string>
+            <string>longer than</string>
            </property>
           </item>
          </widget>
@@ -57,15 +57,22 @@
         <item row="0" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QSpinBox" name="spinBox_Length">
+           <widget class="QTimeEdit" name="timeEdit_Duration">
+            <property name="toolTip">
+             <string/>
+            </property>
             <property name="whatsThis">
-             <string>The target number of tracks for the generated playlist.</string>
+             <string>The desired duration of the playlist, in hours, minutes, and seconds.  Note: because of Qt limitations, the maximum playlist duration that you can specify is 24 hours.</string>
             </property>
-            <property name="maximum">
-             <number>9999</number>
+            <property name="displayFormat">
+             <string>h:mm:ss</string>
             </property>
-            <property name="value">
-             <number>30</number>
+            <property name="time">
+             <time>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+             </time>
             </property>
            </widget>
           </item>
@@ -104,9 +111,6 @@
             <property name="text">
              <string>fuzzy</string>
             </property>
-            <property name="buddy">
-             <cstring></cstring>
-            </property>
            </widget>
           </item>
           <item>
@@ -115,7 +119,7 @@
              <string/>
             </property>
             <property name="whatsThis">
-             <string>How strict the APG should be about matching the playlist length to the specified number of tracks.</string>
+             <string>How strict the APG should be about matching the playlist duration to the specified time.</string>
             </property>
             <property name="maximum">
              <number>10</number>
@@ -159,6 +163,7 @@
  </widget>
  <tabstops>
   <tabstop>comboBox_Comparison</tabstop>
+  <tabstop>timeEdit_Duration</tabstop>
   <tabstop>slider_Strictness</tabstop>
  </tabstops>
  <resources/>

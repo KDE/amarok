@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 VERSION NEXT
   FEATURES:
+    * New "Playlist Length" constraint for the APG, which allows you to specify
+      the number of tracks in the playlist.  What was the "Playlist Length"
+      constraint is now called "Playlist Duration".
 
   CHANGES:
 

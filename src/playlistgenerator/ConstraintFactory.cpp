@@ -21,6 +21,7 @@
 #include "ConstraintGroup.h"
 #include "ConstraintNode.h"
 #include "constraints/Checkpoint.h"
+#include "constraints/PlaylistDuration.h"
 #include "constraints/PlaylistLength.h"
 #include "constraints/PreventDuplicates.h"
 #include "constraints/TagMatch.h"
@@ -78,13 +79,18 @@ ConstraintFactory::ConstraintFactory()
     m_registryNames[r->m_name] = r;
     m_registryUntranslateNames[r->m_i18nName] = r->m_name;
 
-    r = ConstraintTypes::PlaylistLength::registerMe();
+    r = ConstraintTypes::PlaylistDuration::registerMe();
     m_registryIds[1] = r;
     m_registryNames[r->m_name] = r;
     m_registryUntranslateNames[r->m_i18nName] = r->m_name;
 
-    r = ConstraintTypes::PreventDuplicates::registerMe();
+    r = ConstraintTypes::PlaylistLength::registerMe();
     m_registryIds[2] = r;
+    m_registryNames[r->m_name] = r;
+    m_registryUntranslateNames[r->m_i18nName] = r->m_name;
+
+    r = ConstraintTypes::PreventDuplicates::registerMe();
+    m_registryIds[3] = r;
     m_registryNames[r->m_name] = r;
     m_registryUntranslateNames[r->m_i18nName] = r->m_name;
 
