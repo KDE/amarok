@@ -9,6 +9,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fix context menu actions acting on wrong indices in the playlist browser.
 
 
 VERSION 2.3.2-Beta 1

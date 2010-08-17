@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistBrowserModel"
+
 #include "PlaylistBrowserModel.h"
 
 #include "AmarokMimeData.h"

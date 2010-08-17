@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistBrowserView"
+
 #include "PlaylistBrowserView.h"
 
 #include "core/support/Debug.h"
@@ -87,13 +89,16 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
         return;
     }
 
-    const int actionCount =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-    if( actionCount > 0 )
+    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
     {
-        const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-        if( rect.contains( event->pos() ) )
-            return;
+        const int actionCount =
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
+        if( actionCount > 0 )
+        {
+            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
+            if( rect.contains( event->pos() ) )
+                return;
+        }
     }
 
     bool prevExpandState = isExpanded( index );
@@ -262,7 +267,7 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
 
 void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent * event )
 {
-    QModelIndexList indices = selectionModel()->selectedIndexes();
+    QModelIndexList indices = selectedIndexes();
 
     QList<QAction *> actions = actionsFor( indices );
 
