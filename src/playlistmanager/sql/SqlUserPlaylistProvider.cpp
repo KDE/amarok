@@ -30,8 +30,10 @@
 #include "UserPlaylistModel.h"
 
 #include <KDialog>
+#include <KGlobal>
 #include <KIcon>
 #include <KInputDialog>
+#include <KLocale>
 #include <KUrl>
 
 #include <QAction>
@@ -265,8 +267,8 @@ Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    return save( tracks,
-          QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+    QString name = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(), KLocale::LongDate, true );
+    return save( tracks, name );
 }
 
 Playlists::PlaylistPtr
