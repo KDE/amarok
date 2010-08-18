@@ -171,6 +171,14 @@ class SqlTrack : public Meta::Track
         void setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate );
 
     protected:
+        /** Will commit all changes in m_cache.
+         *  commitMetaDataChanges will do four things:<br>
+         *  1. It will update the member variables.
+         *  2. It will call writeMetaDataToFile
+         *  3. It will call writeMetaDataToDB
+         *  4. It will call updateStatisticsInDB
+         *  5. It will notify all observers and the collection about the changes.
+         */
         void commitMetaDataChanges();
         void writeMetaDataToFile();
         void writeMetaDataToDb( const QStringList &fields );

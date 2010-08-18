@@ -283,33 +283,22 @@ SqlTrack::setUrl( const QString &url )
     DEBUG_BLOCK
     m_deviceid = m_collection->mountPointManager()->getIdForUrl( url );
     m_rpath = m_collection->mountPointManager()->getRelativePath( m_deviceid, url );
-    if( m_batchUpdate )
-    {
-        debug() << "Inserting track into cache";
-        m_cache.insert( Meta::Field::URL, m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-    }
-    else
-    {
-        debug() << "Doing immediate update";
-        m_url = url;
-        writeMetaDataToDb( Meta::Field::URL );
-        notifyObservers();
-    }
+
+    m_cache.insert( Meta::Field::URL, m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setUrl( const int deviceid, const QString &rpath )
 {
+    // TODO: abortBatchUpdate will not revert the changes to m_deviceid or m_rpath
     m_deviceid = deviceid;
     m_rpath = rpath;
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::URL, KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceid, rpath ) ) );
-    else
-    {
-        m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-        writeMetaDataToDb( Meta::Field::URL );
-        notifyObservers();
-    }
+
+    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -318,22 +307,9 @@ SqlTrack::setArtist( const QString &newArtist )
     if ( m_artist && m_artist->name() == newArtist )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::ARTIST, newArtist );
-    else
-    {
-        //invalidate cache of the old artist...
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        m_artist = m_collection->registry()->getArtist( newArtist );
-        //and the new one
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::ARTIST, newArtist );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::ARTIST );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::ARTIST, newArtist );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -342,20 +318,9 @@ SqlTrack::setGenre( const QString &newGenre )
     if ( m_genre && m_genre->name() == newGenre )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::GENRE, newGenre );
-    else
-    {
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        m_genre = m_collection->registry()->getGenre( newGenre );
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::GENRE, newGenre );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::GENRE );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::GENRE, newGenre );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -364,20 +329,9 @@ SqlTrack::setComposer( const QString &newComposer )
     if ( m_composer && m_composer->name() == newComposer )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::COMPOSER, newComposer );
-    else
-    {
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        m_composer = m_collection->registry()->getComposer( newComposer );
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::COMPOSER, newComposer );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::COMPOSER );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::COMPOSER, newComposer );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -386,20 +340,9 @@ SqlTrack::setYear( const QString &newYear )
     if ( m_year && m_year->name() == newYear )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::YEAR, newYear );
-    else
-    {
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        m_year = m_collection->registry()->getYear( newYear );
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::YEAR, newYear );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::YEAR );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::YEAR, newYear );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -408,17 +351,9 @@ SqlTrack::setBpm( const qreal newBpm )
     if ( m_bpm && m_bpm == newBpm )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::BPM, newBpm );
-    else
-    {
-        m_bpm = newBpm;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::BPM, newBpm );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::BPM );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::BPM, newBpm );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -427,28 +362,9 @@ SqlTrack::setAlbum( const QString &newAlbum )
     if ( m_album && m_album->name() == newAlbum )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::ALBUM, newAlbum );
-    else
-    {
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        //the album should remain a compilation after renaming it
-        int id = 0;
-        if( m_album->hasAlbumArtist() )
-        {
-            SqlArtist *artist = dynamic_cast<SqlArtist*>(m_album->albumArtist().data());
-            if( artist )
-                id = artist->id();
-        }
-        m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::ALBUM, newAlbum );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::ALBUM );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::ALBUM, newAlbum );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -480,67 +396,33 @@ SqlTrack::setRating( int newRating )
 void
 SqlTrack::setTrackNumber( int newTrackNumber )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
-    else
-    {
-        m_trackNumber= newTrackNumber;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::TRACKNUMBER );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setDiscNumber( int newDiscNumber )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
-    else
-    {
-        m_discNumber = newDiscNumber;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::DISCNUMBER );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setComment( const QString &newComment )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::COMMENT, newComment );
-    else
-    {
-        m_comment = newComment;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::COMMENT, newComment );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::COMMENT );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::COMMENT, newComment );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
-    DEBUG_BLOCK
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::TITLE, newTitle );
-    else
-    {
-        debug() << "setting title in non batch mode " << m_batchUpdate;
-        m_title = newTitle;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::TITLE, newTitle );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::TITLE );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::TITLE, newTitle );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -612,15 +494,13 @@ SqlTrack::endMetaDataUpdate()
 {
     commitMetaDataChanges();
     m_batchUpdate = false;
-    m_cache.clear();
-    notifyObservers();
 }
 
 void
 SqlTrack::abortMetaDataUpdate()
 {
-    m_batchUpdate = false;
     m_cache.clear();
+    m_batchUpdate = false;
 }
 
 
@@ -648,81 +528,99 @@ SqlTrack::updateFileSize()
 void
 SqlTrack::commitMetaDataChanges()
 {
-    if( m_batchUpdate )
+    if( m_cache.isEmpty() )
+        return; // nothing to do
+
+    bool collectionChanged = false;
+
+    if( m_cache.contains( Meta::Field::TITLE ) )
+        m_title = m_cache.value( Meta::Field::TITLE ).toString();
+    if( m_cache.contains( Meta::Field::COMMENT ) )
+        m_comment = m_cache.value( Meta::Field::COMMENT ).toString();
+    if( m_cache.contains( Meta::Field::SCORE ) )
+        m_score = m_cache.value( Meta::Field::SCORE ).toDouble();
+    if( m_cache.contains( Meta::Field::RATING ) )
+        m_rating = m_cache.value( Meta::Field::RATING ).toInt();
+    if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
+        m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
+    if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
+        m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
+    if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
+        m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
+    if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
+        m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
+    if( m_cache.contains( Meta::Field::DISCNUMBER ) )
+        m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
+    if( m_cache.contains( Meta::Field::UNIQUEID ) )
+        m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
+    if( m_cache.contains( Meta::Field::URL ) )
     {
-        if( m_cache.contains( Meta::Field::TITLE ) )
-            m_title = m_cache.value( Meta::Field::TITLE ).toString();
-        if( m_cache.contains( Meta::Field::COMMENT ) )
-            m_comment = m_cache.value( Meta::Field::COMMENT ).toString();
-        if( m_cache.contains( Meta::Field::SCORE ) )
-            m_score = m_cache.value( Meta::Field::SCORE ).toDouble();
-        if( m_cache.contains( Meta::Field::RATING ) )
-            m_rating = m_cache.value( Meta::Field::RATING ).toInt();
-        if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
-            m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
-        if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
-            m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
-        if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
-            m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
-        if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
-            m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
-        if( m_cache.contains( Meta::Field::DISCNUMBER ) )
-            m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
-        if( m_cache.contains( Meta::Field::UNIQUEID ) )
-            m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
-        if( m_cache.contains( Meta::Field::URL ) )
-        {
-            debug() << "m_cache contains a new URL, setting m_url";
-            m_url = m_cache.value( Meta::Field::URL ).toString();
-        }
-
-        //invalidate the cache of both the old and the new object
-        if( m_cache.contains( Meta::Field::ARTIST ) )
-        {
-            KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-            m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
-            KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::ALBUM ) )
-        {
-            KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-            int artistId = 0;
-            if( m_album->hasAlbumArtist() )
-            {
-                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
-            }
-            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
-            KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::COMPOSER ) )
-        {
-            KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-            m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
-            KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::GENRE ) )
-        {
-            KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-            m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
-            KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::YEAR ) )
-        {
-            KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-            m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
-            KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        }
-
-        if( m_cache.contains( Meta::Field::BPM ) )
-            m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
-
-        //updating the tags of the file might change the filesize
-        //therefore write the tag to the file first, and update the db
-        //with the new filesize
-        writeMetaDataToFile();
-        writeMetaDataToDb( m_cache.keys() );
-        updateStatisticsInDb( m_cache.keys() );
+        debug() << "m_cache contains a new URL, setting m_url";
+        m_url = m_cache.value( Meta::Field::URL ).toString();
     }
+
+    if( m_cache.contains( Meta::Field::ARTIST ) )
+    {
+        //invalidate cache of the old artist...
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
+        //and the new one
+        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::ALBUM ) )
+    {
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        //the album should remain a compilation after renaming it
+        int artistId = 0;
+        if( m_album->hasAlbumArtist() )
+        {
+            artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+        }
+        m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
+        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::COMPOSER ) )
+    {
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
+        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::GENRE ) )
+    {
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
+        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::YEAR ) )
+    {
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
+        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::BPM ) )
+        m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
+
+    //updating the tags of the file might change the filesize
+    //therefore write the tag to the file first, and update the db
+    //with the new filesize
+    writeMetaDataToFile();
+    writeMetaDataToDb( m_cache.keys() );
+    updateStatisticsInDb( m_cache.keys() );
+
+    m_cache.clear();
+    notifyObservers();
+    if( collectionChanged )
+        m_collection->sendChangedSignal();
 }
 
 void
