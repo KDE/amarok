@@ -524,6 +524,19 @@ SqlTrack::commitMetaDataChanges()
 
     bool collectionChanged = false;
 
+    // for all the following objects we need to invalidate the cache and
+    // notify the observers after the update
+    KSharedPtr<SqlArtist>   oldArtist;
+    KSharedPtr<SqlArtist>   newArtist;
+    KSharedPtr<SqlAlbum>    oldAlbum;
+    KSharedPtr<SqlAlbum>    newAlbum;
+    KSharedPtr<SqlComposer> oldComposer;
+    KSharedPtr<SqlComposer> newComposer;
+    KSharedPtr<SqlGenre>    oldGenre;
+    KSharedPtr<SqlGenre>    newGenre;
+    KSharedPtr<SqlYear>     oldYear;
+    KSharedPtr<SqlYear>     newYear;
+
     if( m_cache.contains( Meta::Field::TITLE ) )
         m_title = m_cache.value( Meta::Field::TITLE ).toString();
     if( m_cache.contains( Meta::Field::COMMENT ) )
@@ -553,16 +566,16 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::ARTIST ) )
     {
         //invalidate cache of the old artist...
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        oldArtist = static_cast<SqlArtist*>(m_artist.data());
         m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
         //and the new one
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        newArtist = static_cast<SqlArtist*>(m_artist.data());
         collectionChanged = true;
     }
 
     if( m_cache.contains( Meta::Field::ALBUM ) )
     {
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        oldAlbum = static_cast<SqlAlbum*>(m_album.data());
         //the album should remain a compilation after renaming it
         int artistId = 0;
         if( m_album->hasAlbumArtist() )
@@ -570,31 +583,31 @@ SqlTrack::commitMetaDataChanges()
             artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
         }
         m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        newAlbum = static_cast<SqlAlbum*>(m_album.data());
         collectionChanged = true;
     }
 
     if( m_cache.contains( Meta::Field::COMPOSER ) )
     {
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        oldComposer = static_cast<SqlComposer*>(m_composer.data());
         m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        newComposer = static_cast<SqlComposer*>(m_composer.data());
         collectionChanged = true;
     }
 
     if( m_cache.contains( Meta::Field::GENRE ) )
     {
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        oldGenre = static_cast<SqlGenre*>(m_genre.data());
         m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        newGenre = static_cast<SqlGenre*>(m_genre.data());
         collectionChanged = true;
     }
 
     if( m_cache.contains( Meta::Field::YEAR ) )
     {
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        oldYear = static_cast<SqlYear*>(m_year.data());
         m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        newYear = static_cast<SqlYear*>(m_year.data());
         collectionChanged = true;
     }
 
@@ -610,6 +623,25 @@ SqlTrack::commitMetaDataChanges()
 
     m_cache.clear();
     notifyObservers();
+
+    // these calls must be made after the database has been updated
+#define INVALIDATE_AND_UPDATE(X) if( X ) \
+    { \
+        X->invalidateCache(); \
+        X->notifyObservers(); \
+    }
+    INVALIDATE_AND_UPDATE(oldArtist);
+    INVALIDATE_AND_UPDATE(newArtist);
+    INVALIDATE_AND_UPDATE(oldAlbum);
+    INVALIDATE_AND_UPDATE(newAlbum);
+    INVALIDATE_AND_UPDATE(oldComposer);
+    INVALIDATE_AND_UPDATE(newComposer);
+    INVALIDATE_AND_UPDATE(oldGenre);
+    INVALIDATE_AND_UPDATE(newGenre);
+    INVALIDATE_AND_UPDATE(oldYear);
+    INVALIDATE_AND_UPDATE(newYear);
+#undef INVALIDATE_AND_UPDATE
+
     if( collectionChanged )
         m_collection->sendChangedSignal();
 }
@@ -847,6 +879,8 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
                 m_labelsCache.append( Meta::LabelPtr::staticCast( sqlLabel ) );
             }
             notifyObservers();
+            sqlLabel->invalidateCache();
+            sqlLabel->notifyObservers();
         }
     }
 }
@@ -869,6 +903,8 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
             m_labelsCache.removeAll( Meta::LabelPtr::staticCast( sqlLabel ) );
         }
         notifyObservers();
+        sqlLabel->invalidateCache();
+        sqlLabel->notifyObservers();
     }
 }
 

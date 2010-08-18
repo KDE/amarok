@@ -276,6 +276,7 @@ class SqlArtist : public Meta::Artist
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
+        friend class SqlTrack; // needs to call notifyObservers
 };
 
 class SqlAlbum : public Meta::Album
@@ -416,6 +417,8 @@ class SqlAlbum : public Meta::Album
         QMutex m_mutex;
 
         //TODO: add album artist
+
+        friend class SqlTrack; // needs to call notifyObservers
 };
 
 class SqlComposer : public Meta::Composer
@@ -445,6 +448,8 @@ class SqlComposer : public Meta::Composer
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+
+        friend class SqlTrack; // needs to call notifyObservers
 };
 
 class SqlGenre : public Meta::Genre
@@ -474,6 +479,8 @@ class SqlGenre : public Meta::Genre
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+
+        friend class SqlTrack; // needs to call notifyObservers
 };
 
 class SqlYear : public Meta::Year
@@ -503,6 +510,8 @@ class SqlYear : public Meta::Year
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+
+        friend class SqlTrack; // needs to call notifyObservers
 };
 
 class SqlLabel : public Meta::Label
@@ -530,6 +539,8 @@ private:
     //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
     //switch to QReadWriteLock as soon as it does!
     QMutex m_mutex;
+
+    friend class SqlTrack; // needs to call notifyObservers
 };
 
 }
