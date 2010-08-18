@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistBrowserCategory"
+
 #include "PlaylistBrowserCategory.h"
 
 #include "core-impl/collections/support/CollectionManager.h"
@@ -224,15 +226,27 @@ PlaylistBrowserCategory::slotToggleProviderButton( bool enabled )
 void
 PlaylistBrowserCategory::createNewFolder()
 {
-    // TODO: Determine how many "New Folder" entries there are and set n accordingly.
-    int n = 1;
-    QString name;
-    if ( n == 1 )
-        name = i18nc( "default name for new folder", "New Folder" );
-    else
-        name = i18nc( "default name for new folder", "New Folder (%1)", n );
-    QModelIndex idx = m_byFolderProxy->createNewFolder( name );
-    m_playlistView->edit( m_filterProxy->mapFromSource( idx ) );
+    QString name = i18nc( "default name for new folder", "New Folder" );
+    const QModelIndex &rootIndex = m_filterProxy->mapFromSource( m_byFolderProxy->index(0,0) );
+    QModelIndexList folderIndices = m_filterProxy->match( rootIndex, Qt::DisplayRole, name, -1 );
+    QString groupName = name;
+    if( !folderIndices.isEmpty() )
+    {
+        QStringList names;
+        foreach( const QModelIndex &folder, folderIndices )
+            names << folder.data( Qt::DisplayRole ).toString();
+        names.sort();
+        QRegExp regex( "\\((\\d+)\\)" );
+        int folderCount( 0 );
+        int matchIndex = regex.indexIn( names.last() );
+        if( matchIndex != -1 )
+            folderCount = regex.cap( 1 ).toInt();
+        groupName += QString( " (%1)" ).arg( folderCount + 1 );
+    }
+    QModelIndex sourceIndex = m_byFolderProxy->createNewFolder( groupName );
+    QModelIndex idx = m_filterProxy->mapFromSource( sourceIndex );
+    m_playlistView->setCurrentIndex( idx );
+    m_playlistView->edit( idx );
 }
 
 void
