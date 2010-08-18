@@ -10,6 +10,8 @@ VERSION 2.3.2
 
   BUGFIXES:
     * Fix context menu actions acting on wrong indices in the playlist browser.
+    * Fix incorrect text about "rpath" argument to collection scanner.
+      (BR 236076)
 
 
 VERSION 2.3.2-Beta 1
