@@ -136,13 +136,15 @@ PlaylistBrowserCategory::toggleView( bool merged )
 {
     if( merged )
     {
-        m_filterProxy->setSourceModel( m_byFolderProxy );
+        // Bypass the sort/filter proxy in merged view
+        m_playlistView->setModel( m_byFolderProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
     }
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
+        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
     }
@@ -227,8 +229,8 @@ void
 PlaylistBrowserCategory::createNewFolder()
 {
     QString name = i18nc( "default name for new folder", "New Folder" );
-    const QModelIndex &rootIndex = m_filterProxy->mapFromSource( m_byFolderProxy->index(0,0) );
-    QModelIndexList folderIndices = m_filterProxy->match( rootIndex, Qt::DisplayRole, name, -1 );
+    const QModelIndex &rootIndex = m_byFolderProxy->index(0,0);
+    QModelIndexList folderIndices = m_byFolderProxy->match( rootIndex, Qt::DisplayRole, name, -1 );
     QString groupName = name;
     if( !folderIndices.isEmpty() )
     {
@@ -243,8 +245,7 @@ PlaylistBrowserCategory::createNewFolder()
             folderCount = regex.cap( 1 ).toInt();
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
-    QModelIndex sourceIndex = m_byFolderProxy->createNewFolder( groupName );
-    QModelIndex idx = m_filterProxy->mapFromSource( sourceIndex );
+    QModelIndex idx = m_byFolderProxy->createNewFolder( groupName );
     m_playlistView->setCurrentIndex( idx );
     m_playlistView->edit( idx );
 }
