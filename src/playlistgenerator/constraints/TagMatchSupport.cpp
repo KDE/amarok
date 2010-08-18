@@ -272,17 +272,19 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
         target = targetVar.value<uint>();
     }
 
+    const double dte = static_cast<double>(test);
+    const double dta = static_cast<double>(target);
     if ( comp == CompareDateOn ) {
         // fuzzy equals -- within 1%, or within 10.0
-        if ( ( abs( test - target ) < ( abs( test + target ) / 200.0 ) ) || ( abs( test - target ) < 10.0 ) ) {
+        if ( ( abs( dte - dta ) < ( abs( dte + dta ) / 200.0 ) ) || ( abs( dte - dta ) < 10.0 ) ) {
             return 1.0;
         } else {
-            return fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+            return fuzzyProb( dte, dta, strictness, weight );
         }
     } else if ( comp == CompareDateAfter ) {
-        return ( test > target ) ? 1.0 : fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+        return ( test > target ) ? 1.0 : fuzzyProb( dte, dta, strictness, weight );
     } else if ( comp == CompareDateBefore ) {
-        return ( test < target ) ? 1.0 : fuzzyProb( static_cast<double>(test), static_cast<double>(target), strictness, weight );
+        return ( test < target ) ? 1.0 : fuzzyProb( dte, dta, strictness, weight );
     } else {
         return 0.0;
     }
