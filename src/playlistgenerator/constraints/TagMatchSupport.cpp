@@ -292,7 +292,9 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
 }
 
 double
-ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr t, const int comparison, const QString& target ) const
+ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr t,
+                                                    const int comparison,
+                                                    const QString& target ) const
 {
     Meta::LabelList labelList = t->labels();
 

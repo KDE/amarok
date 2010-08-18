@@ -313,7 +313,7 @@ ConstraintGroup::deltaS_swap( const Meta::TrackList& tl, const int place, const 
 }
 
 void
-ConstraintGroup::insertTrack( const Meta::TrackList& tl, Meta::TrackPtr t, const int place )
+ConstraintGroup::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int place )
 {
     double newS;
     if ( m_matchtype == MatchAny ) {
