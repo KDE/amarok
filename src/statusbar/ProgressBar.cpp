@@ -81,14 +81,10 @@ ProgressBar::setDescription( const QString & description )
 ProgressBar *
 ProgressBar::setAbortSlot( QObject * receiver, const char * slot, Qt::ConnectionType type )
 {
-    DEBUG_BLOCK
-
-    debug() << "Setting abort slot for " << m_descriptionLabel->text();
-
+    // DEBUG_BLOCK
+    // debug() << "Setting abort slot for " << m_descriptionLabel->text();
     cancelButton()->setEnabled( true );
-
-
-    debug() << "connecting to " << slot;
+    // debug() << "connecting to " << slot;
     connect( this, SIGNAL( cancelled() ), receiver, slot, type );
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
 

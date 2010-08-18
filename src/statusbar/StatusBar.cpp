@@ -227,6 +227,7 @@ ProgressBar *StatusBar::newProgressOperation( QNetworkReply* reply, const QStrin
     m_nowPlayingWidget->hide();
     NetworkProgressBar * newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( description );
+    newBar->setAbortSlot( reply, SLOT(deleteLater()) );
     connect( reply, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();

@@ -35,7 +35,6 @@ class NetworkProgressBar : public ProgressBar
     private slots:
         void progressChanged( qint64 bytesChanged, qint64 bytesTotal );
         void infoMessage( QNetworkReply::NetworkError code );
-        void finished();
 };
 
 #endif

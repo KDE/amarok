@@ -20,7 +20,8 @@ NetworkProgressBar::NetworkProgressBar( QWidget *parent, QNetworkReply *reply )
     : ProgressBar( parent )
 {
     connect( reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(infoMessage(QNetworkReply::NetworkError)) );
-    connect( reply, SIGNAL(finished()), SLOT(finished()) );
+    connect( reply, SIGNAL(finished()), SLOT(delayedDone()) );
+    connect( reply, SIGNAL(destroyed()), SLOT(delayedDone()) );
 
     switch( reply->operation() )
     {
@@ -56,13 +57,6 @@ void NetworkProgressBar::infoMessage( QNetworkReply::NetworkError code )
         QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
         setDescription( reply->errorString() );
     }
-}
-
-void NetworkProgressBar::finished()
-{
-    // complete the progress no matter what; the finished() signal may be
-    // emitted by abort() or any other error.
-    setValue( maximum() );
 }
 
 #include "NetworkProgressBar.moc"
