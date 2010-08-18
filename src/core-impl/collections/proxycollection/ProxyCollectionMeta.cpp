@@ -57,11 +57,6 @@ public:
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) );
     }
-    void abortMetaDataUpdate()
-    {
-        foreach( Capabilities::EditCapability *ec, m_ec ) ec->abortMetaDataUpdate();
-        m_batchMode = false;
-    }
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
     void setDiscNumber( int newDiscNumber ) { FORWARD( setDiscNumber( newDiscNumber ) ) }

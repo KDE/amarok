@@ -66,7 +66,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-        virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -87,7 +86,6 @@ class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
         virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
         virtual void beginStatisticsUpdate() {};
         virtual void endStatisticsUpdate() {};
-        virtual void abortStatisticsUpdate() {};
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -616,13 +614,6 @@ Track::endMetaDataUpdate()
     d->writeMetaData();
     d->batchUpdate = false;
     notifyObservers();
-}
-
-void
-Track::abortMetaDataUpdate()
-{
-    d->changes.clear();
-    d->batchUpdate = false;
 }
 
 void

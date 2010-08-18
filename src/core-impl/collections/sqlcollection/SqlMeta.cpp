@@ -292,7 +292,6 @@ SqlTrack::setUrl( const QString &url )
 void
 SqlTrack::setUrl( const int deviceid, const QString &rpath )
 {
-    // TODO: abortBatchUpdate will not revert the changes to m_deviceid or m_rpath
     m_deviceid = deviceid;
     m_rpath = rpath;
 
@@ -495,14 +494,6 @@ SqlTrack::endMetaDataUpdate()
     commitMetaDataChanges();
     m_batchUpdate = false;
 }
-
-void
-SqlTrack::abortMetaDataUpdate()
-{
-    m_cache.clear();
-    m_batchUpdate = false;
-}
-
 
 void
 SqlTrack::writeMetaDataToFile()

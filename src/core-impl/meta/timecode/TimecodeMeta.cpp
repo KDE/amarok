@@ -377,12 +377,6 @@ void TimecodeTrack::endMetaDataUpdate()
     notifyObservers();
 }
 
-void TimecodeTrack::abortMetaDataUpdate()
-{
-    m_updatedFields = 0;
-    m_fields.clear();
-}
-
 void
 TimecodeTrack::setAlbum( TimecodeAlbumPtr album )
 {

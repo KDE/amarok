@@ -293,12 +293,6 @@ Track::endMetaDataUpdate()
 }
 
 void
-Track::abortMetaDataUpdate()
-{
-    //not editable
-}
-
-void
 Track::finishedPlaying( double playedFraction )
 {
     Q_UNUSED( playedFraction );

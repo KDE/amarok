@@ -45,7 +45,6 @@ public:
 
     virtual void beginMetaDataUpdate();
     virtual void endMetaDataUpdate();
-    virtual void abortMetaDataUpdate();
 
 private:
     Meta::TimecodeTrack * m_track;

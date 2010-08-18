@@ -141,7 +141,6 @@ class SqlTrack : public Meta::Track
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();
-        virtual void abortMetaDataUpdate();
         virtual void setWriteAllStatisticsFields( const bool enable ) { m_writeAllStatisticsFields = enable; }
 
         virtual void finishedPlaying( double playedFraction );

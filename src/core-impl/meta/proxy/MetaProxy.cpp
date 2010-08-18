@@ -58,7 +58,6 @@ class EditCapabilityProxy : public Capabilities::EditCapability
 
         virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
         virtual void endMetaDataUpdate() {}
-        virtual void abortMetaDataUpdate() {}
 
     private:
         KSharedPtr<MetaProxy::Track> m_track;

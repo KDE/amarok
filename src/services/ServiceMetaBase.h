@@ -223,7 +223,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual void beginMetaDataUpdate() {}    //read only
         virtual void endMetaDataUpdate() {}      //read only
-        virtual void abortMetaDataUpdate() {}    //read only
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 

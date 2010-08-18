@@ -123,7 +123,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
         virtual void endMetaDataUpdate();
-        virtual void abortMetaDataUpdate() { DEBUG_BLOCK }
 /*
         virtual void subscribe ( Observer *observer );
         virtual void unsubscribe ( Observer *observer );

@@ -55,12 +55,10 @@ namespace Capabilities
             virtual void setBpm( const qreal newBpm ) = 0;
 
             /** The track object should not store changed meta data immediately but cache the
-            changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
+            changes until endMetaDataUpdate() is called */
             virtual void beginMetaDataUpdate() = 0;
             /** All meta data has been updated and the object should commit the changed */
             virtual void endMetaDataUpdate() = 0;
-            /** Abort the meta data update without committing the changes */
-            virtual void abortMetaDataUpdate() = 0;
 
     };
 }

@@ -103,7 +103,6 @@ public:
 
     void beginMetaDataUpdate();
     void endMetaDataUpdate();
-    void abortMetaDataUpdate();
 
     //TimecodeTrack specific methods
     void setAlbum( TimecodeAlbumPtr album );

@@ -110,7 +110,6 @@ public:
     //TODO: implement these
     void beginMetaDataUpdate() {}
     void endMetaDataUpdate() {}
-    void abortMetaDataUpdate() {}
 
     bool isEditable() const { return true; }
 

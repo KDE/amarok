@@ -37,12 +37,10 @@ namespace Capabilities
             virtual void setPlayCount( const int playcount ) = 0;
 
             /** The track object should not store changed meta data immediately but cache the
-            changes until endStatisticsUpdate() or abortStatisticsUpdate() is called */
+            changes until endStatisticsUpdate() is called */
             virtual void beginStatisticsUpdate() = 0;
             /** All meta data has been updated and the object should commit the changed */
             virtual void endStatisticsUpdate() = 0;
-            /** Abort the meta data update without committing the changes */
-            virtual void abortStatisticsUpdate() = 0;
     };
 }
 

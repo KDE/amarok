@@ -101,7 +101,6 @@ class AudioCdTrack : public Meta::Track
 
         virtual void beginMetaDataUpdate() {}    //read only
         virtual void endMetaDataUpdate() {}      //read only
-        virtual void abortMetaDataUpdate() {}    //read only
 
         virtual void subscribe ( Observer *observer );
         virtual void unsubscribe ( Observer *observer );

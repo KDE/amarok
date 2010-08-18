@@ -87,7 +87,6 @@ namespace MetaStream
 
             virtual void beginMetaDataUpdate();
             virtual void endMetaDataUpdate();
-            virtual void abortMetaDataUpdate();
 
             virtual void finishedPlaying( double playedFraction );
 

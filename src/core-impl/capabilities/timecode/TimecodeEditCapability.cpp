@@ -101,10 +101,3 @@ TimecodeEditCapability::endMetaDataUpdate()
     m_track->endMetaDataUpdate();
 }
 
-void
-TimecodeEditCapability::abortMetaDataUpdate()
-{
-    m_track->abortMetaDataUpdate();
-}
-
-
