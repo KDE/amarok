@@ -59,6 +59,13 @@ public:
 protected:
     KToolBar *m_toolBar;
 
+    /**
+     * A separator in between the add-folder action and visible-source,
+     * merged-view actions. Subclasses can use it to insert their specialized
+     * actions at a suitable place, thus keeping the generic actions in order.
+     */
+    QAction *m_separator;
+
 private slots:
     void toggleView( bool );
     void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );

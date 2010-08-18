@@ -87,6 +87,9 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
                                  QSizePolicy::MinimumExpanding );
     m_toolBar->addWidget( spacerWidget );
 
+    // add a separator so subclasses can add their actions before it
+    m_separator = m_toolBar->addSeparator();
+
     m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
     m_toolBar->addAction( m_providerMenu );
