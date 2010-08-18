@@ -64,7 +64,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 {
     setContentsMargins( 0, 0, 0, 0 );
     m_toolBar = new KToolBar( this, false, false );
-    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_toolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
     m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
     m_byFolderProxy = new PlaylistsInFoldersProxy( model );
