@@ -570,6 +570,15 @@ SqlTrack::commitMetaDataChanges()
         m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
         //and the new one
         newArtist = static_cast<SqlArtist*>(m_artist.data());
+
+        // if the current album is no compilation and we aren't changing
+        // the album anyway, then we need to create a new album with the
+        // new artist.
+        if( m_album &&
+            m_album->hasAlbumArtist() &&
+            m_cache.contains( Meta::Field::ALBUM ) )
+            m_cache.insert( Meta::Field::ALBUM, m_album->name() );
+
         collectionChanged = true;
     }
 
@@ -584,6 +593,14 @@ SqlTrack::commitMetaDataChanges()
         }
         m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
         newAlbum = static_cast<SqlAlbum*>(m_album.data());
+
+        // copy the image BUG: 203211
+        // IMPROVEMENT: use setImage(QString) to prevent the image being
+        // physically copied.
+        if( oldAlbum &&
+            oldAlbum->hasImage(0) && !newAlbum->hasImage(0) )
+            newAlbum->setImage( oldAlbum->image(0) );
+
         collectionChanged = true;
     }
 
