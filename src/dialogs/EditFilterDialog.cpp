@@ -346,6 +346,10 @@ void EditFilterDialog::selectedAttribute( const QString &attr ) // SLOT
     {
         textWanted( KIcon("filename-comment-amarok") );
     }
+    else if( attr.compare( i18n("Filename") ) == 0 )
+    {
+        textWanted();
+    }
     else if( attr.compare( i18n("Added") ) == 0 )
     {
         dateWanted();
@@ -527,6 +531,11 @@ void EditFilterDialog::slotDefault() // SLOT
     {
         m_filterText += QString( "%1:\"%2\"" )
             .arg( keywordConditionText(i18n("comment")) ).arg( m_ui.editKeywordBox->currentText() );
+    }
+    else if( attr.compare( i18n("Filename") ) == 0 )
+    {
+        m_filterText += QString( "%1:\"%2\"" )
+            .arg( keywordConditionText(i18n("filename")) ).arg( m_ui.editKeywordBox->currentText() );
     }
     else if( attr.compare( i18n("Label") ) == 0 )
     {

@@ -692,6 +692,10 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
                 }
+                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filename" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
+                }
                 else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
