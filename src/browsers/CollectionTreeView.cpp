@@ -73,6 +73,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
+    setEditTriggers( /* SelectedClicked | */ EditKeyPressed );
 #ifdef Q_WS_MAC
     setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
     setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
@@ -292,12 +293,16 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->button() != Amarok::contextMouseButton() && event->modifiers() == Qt::NoModifier )
+    if( event->button() != Amarok::contextMouseButton() &&
+        event->modifiers() == Qt::NoModifier &&
+        (KGlobalSettings::singleClick() || !model()->hasChildren( index )) )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
+        event->accept();
+        return;
     }
-    event->accept();
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
