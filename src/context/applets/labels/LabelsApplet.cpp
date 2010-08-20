@@ -389,6 +389,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         resize( size().width(), y_pos );
         setMinimumHeight( y_pos );
         setMaximumHeight( y_pos );
+        emit sizeHintChanged( Qt::PreferredSize );
     }
 }
 
