@@ -9,6 +9,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fix failure when fetching cddb info for audio CDs in localized Amarok.
     * Fix expanding items in collection browser by double-click, in
       double-click mode.
     * Fix crash when adding new folders repeatedly in podcast/saved playlist

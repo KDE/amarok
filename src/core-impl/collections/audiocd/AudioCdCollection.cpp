@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AudioCdCollection"
+
 #include "AudioCdCollection.h"
 
 #include "amarokconfig.h"
@@ -89,12 +91,38 @@ void
 AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
-
     //get the CDDB info file if possible.
-    m_cdInfoJob =  KIO::storedGet( KUrl( "audiocd:/Information/CDDB Information.txt" ), KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_cdInfoJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( infoFetchComplete( KJob *) ) );
+    KIO::ListJob *listJob = KIO::listRecursive( KUrl("audiocd:/"), KIO::HideProgressInfo, false );
+    connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+             this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
+}
 
+void
+AudioCdCollection::audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list )
+{
+    if( job->error() )
+    {
+        error() << job->error();
+        job->deleteLater();
+    }
+    else
+    {
+        KIO::UDSEntryList::ConstIterator it = list.begin();
+        const KIO::UDSEntryList::ConstIterator end = list.end();
+        for( ; it != end; ++it )
+        {
+            const KIO::UDSEntry &entry = *it;
+            QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
+            if( name.endsWith( QLatin1String(".txt") ) )
+            {
+                KUrl url( QString( "audiocd:/%1" ).arg( name ) );
+                KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+                connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
+                job->deleteLater();
+                break;
+            }
+        }
+    }
 }
 
 void
@@ -104,17 +132,18 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     if( job->error() )
     {
         error() << job->error();
-        m_cdInfoJob->deleteLater();
+        job->deleteLater();
         noInfoAvailable();
     }
     else
     {
-        QString cddbInfo = m_cdInfoJob->data();
+        KIO::StoredTransferJob *tjob = static_cast<KIO::StoredTransferJob*>( job );
+        QString cddbInfo = tjob->data();
 
         KEncodingProber prober;
-        KEncodingProber::ProberState result = prober.feed( m_cdInfoJob->data() );
+        KEncodingProber::ProberState result = prober.feed( tjob->data() );
         if( result != KEncodingProber::NotMe )
-           cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( m_cdInfoJob->data() );
+           cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( tjob->data() );
 
         debug() << "Encoding: " << prober.encoding();
         debug() << "got cddb info: " << cddbInfo;
@@ -485,9 +514,8 @@ AudioCdCollection::readAudioCdSettings()
 bool
 AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
 {
-    DEBUG_BLOCK;
-    debug() << "match: " << url.url().startsWith( "audiocd:/" );
-
+    // DEBUG_BLOCK;
+    // debug() << "match: " << url.url().startsWith( "audiocd:/" );
     return url.url().startsWith( "audiocd:/" );
 }
 

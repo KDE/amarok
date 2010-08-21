@@ -22,7 +22,6 @@
 #include "MemoryCollection.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <kio/jobclasses.h>
 #include <KUrl>
 
 #include <QAction>
@@ -98,11 +97,13 @@ public:
     bool isReady();
 
 public slots:
-    void infoFetchComplete( KJob *job );
     void eject();
 
-private:
+private slots:
+    void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );
+    void infoFetchComplete( KJob *job );
 
+private:
     void readAudioCdSettings();
 
     /**
@@ -114,8 +115,6 @@ private:
     void noInfoAvailable();
 
     void updateProxyTracks();
-
-    KIO::StoredTransferJob * m_cdInfoJob;
 
     QString m_cdName;
     QString m_discCddbId;
