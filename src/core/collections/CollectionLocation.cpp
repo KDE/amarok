@@ -485,6 +485,7 @@ CollectionLocation::setupConnections()
 void
 CollectionLocation::setupRemoveConnections()
 {
+    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
     connect( this, SIGNAL( startRemove() ),
              this, SLOT( slotStartRemove() ) );
     connect( this, SIGNAL( finishRemove() ),

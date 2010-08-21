@@ -105,7 +105,7 @@ void CollectionLocationTest::testFailedCopy()
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
 
-    cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
+    QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed"  );
     QCOMPARE( cl->count, 0 );
     QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
