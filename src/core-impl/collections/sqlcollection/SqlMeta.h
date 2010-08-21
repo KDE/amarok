@@ -311,7 +311,8 @@ class SqlAlbum : public Meta::Album
         //updating album images is possible for local tracks, but let's ignore it for now
 
         /** Returns true if the album has a cover image.
-         *  @param size The maximum width or height of the result. 0 is the original large scale image.
+         *  @param size The maximum width or height of the result.
+         *  when size is <= 1, return the full size image
          */
         virtual bool hasImage(int size = 1) const;
         virtual bool canUpdateImage() const { return true; }
@@ -320,7 +321,8 @@ class SqlAlbum : public Meta::Album
          *  Returns a default image if no specific album image could be found.
          *  In such a case it will starte the cover fetcher.
          *
-         *  @param size is the maximum width or height of the resulting image. 0 is the full scale large image.
+         *  @param size is the maximum width or height of the resulting image.
+         *  when size is <= 1, return the full size image
          */
         virtual QPixmap image( int size = 1 );
 
