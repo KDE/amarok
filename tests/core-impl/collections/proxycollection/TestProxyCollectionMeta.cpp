@@ -434,8 +434,7 @@ class MyEditCapability : public Capabilities::EditCapability
 public:
     MyEditCapability() : Capabilities::EditCapability()
             , beginCallCount(0)
-            , endCallcount(0)
-            , abortCallcount(0) {}
+            , endCallcount(0) {}
     virtual bool isEditable() const { return true; }
     virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
     virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
@@ -449,11 +448,9 @@ public:
     virtual void setBpm( const qreal newBpm ) { Q_UNUSED( newBpm ) };
     virtual void beginMetaDataUpdate() { beginCallCount++; };
     virtual void endMetaDataUpdate() { endCallcount++; };
-    virtual void abortMetaDataUpdate() { abortCallcount++; };
 
     int beginCallCount;
     int endCallcount;
-    int abortCallcount;
 };
 
 void
@@ -503,12 +500,6 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     QTest::qWait( 50 );
     //required so that the colleection browser refreshes itself
     QCOMPARE( spy.count(), 1 );
-
-    QCOMPARE( cap1->abortCallcount, 0 );
-    QCOMPARE( cap2->abortCallcount, 0 );
-    editCap->abortMetaDataUpdate();
-    QCOMPARE( cap1->abortCallcount, 1 );
-    QCOMPARE( cap2->abortCallcount, 1 );
 
     QPointer<MyEditCapability> qpointer1( cap1 );
     QPointer<MyEditCapability> qpointer2( cap2 );
