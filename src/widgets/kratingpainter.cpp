@@ -26,6 +26,8 @@
 #include <kiconeffect.h>
 #include <kdebug.h>
 
+namespace Amarok
+{
 
 class KRatingPainter::Private
 {
@@ -350,3 +352,5 @@ int KRatingPainter::getRatingFromPosition( const QRect& rect, Qt::Alignment alig
     rp.setLayoutDirection( direction );
     return rp.ratingFromPosition( rect, pos );
 }
+
+} // Amarok namespace

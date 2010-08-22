@@ -25,6 +25,8 @@ class QPainter;
 class QPoint;
 class QRect;
 
+namespace Amarok
+{
 
 /**
  * \brief Utility class that draws a row of stars for a rating value.
@@ -207,5 +209,7 @@ private:
     class Private;
     Private* const d;
 };
+
+} // Amarok namespace
 
 #endif

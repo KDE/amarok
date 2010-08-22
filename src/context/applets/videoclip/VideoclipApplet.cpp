@@ -405,7 +405,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
                     QLabel *duration =  new QLabel( item->duration + QString( "<br>" ) + item->views + QString( " views" ) );
 
-                    KRatingWidget* rating = new KRatingWidget;
+                    Amarok::KRatingWidget* rating = new Amarok::KRatingWidget;
                     rating->setRating(( int )( item->rating * 2. ) );
                     rating->setMaximumWidth(( int )(( width / 3 )*2 ) );
                     rating->setMinimumWidth(( int )(( width / 3 )*2 ) );

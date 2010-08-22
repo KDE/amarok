@@ -28,6 +28,9 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
+namespace Amarok
+{
+
 class KRatingWidget::Private
 {
 public:
@@ -250,5 +253,7 @@ void KRatingWidget::resizeEvent( QResizeEvent* e )
 {
     QFrame::resizeEvent( e );
 }
+
+} // Amarok namespace
 
 #include "kratingwidget.moc"

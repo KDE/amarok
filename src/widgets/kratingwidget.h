@@ -21,6 +21,9 @@
 
 //#include "nepomuk_export.h"
 
+namespace Amarok
+{
+
 /**
  * \brief Displays a rating value as a row of pixmaps.
  *
@@ -193,5 +196,7 @@ class KRatingWidget : public QFrame
     class Private;
     Private* const d;
 };
+
+} // Amarok namespace
 
 #endif

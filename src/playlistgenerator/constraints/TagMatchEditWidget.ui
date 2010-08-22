@@ -622,7 +622,7 @@ p, li { white-space: pre-wrap; }
               <item row="0" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="KRatingWidget" name="rating_RatingValue">
+                 <widget class="Amarok::KRatingWidget" name="rating_RatingValue">
                   <property name="whatsThis">
                    <string>The rating that the APG should try to match.</string>
                   </property>
@@ -734,7 +734,7 @@ p, li { white-space: pre-wrap; }
    <header>kdatewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>KRatingWidget</class>
+   <class>Amarok::KRatingWidget</class>
    <extends>QFrame</extends>
    <header>kratingwidget.h</header>
    <container>1</container>

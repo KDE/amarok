@@ -51,6 +51,8 @@
 #include <KVBox>
 #include <klocale.h>
 
+using namespace Amarok;
+
 /**
  *  A class that allows to select a time distance.
  *  Used for GlobalBiasWidget.
