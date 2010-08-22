@@ -50,6 +50,9 @@
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args )
     , Engine::EngineObserver( The::engineController() )
+    , m_titleLabel( 0 )
+    , m_addLabel( 0 )
+    , m_addLabelProxy( 0 )
     , m_reloadIcon( 0 )
     , m_settingsIcon( 0 )
 {
@@ -59,7 +62,6 @@ LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
 LabelsApplet::~LabelsApplet()
 {
     qDeleteAll( m_labelItems );
-    delete m_titleLabel;
     delete m_addLabelProxy;
 
     delete m_reloadIcon;
