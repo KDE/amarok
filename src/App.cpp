@@ -264,10 +264,10 @@ App::~App()
     //mainWindow()->deleteBrowsers();
     delete mainWindow();
 
-    CollectionManager::destroy();
     Playlist::ModelStack::destroy();
     Playlist::Actions::destroy();
     PlaylistManager::destroy();
+    CollectionManager::destroy();
     CoverFetcher::destroy();
     NetworkAccessManagerProxy::destroy();
 
