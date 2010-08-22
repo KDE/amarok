@@ -33,6 +33,7 @@ public:
 
     virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual bool reallyMove( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+    virtual bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual void errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual void notWriteable( CollectionLocation *loc ) const = 0;
     virtual bool deleteEmptyDirs( CollectionLocation *loc ) const = 0;

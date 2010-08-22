@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionLocation"
+
 #include "core/collections/CollectionLocation.h"
 
 #include "core/collections/Collection.h"
@@ -146,6 +148,7 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
