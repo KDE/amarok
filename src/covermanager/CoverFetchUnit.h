@@ -21,9 +21,10 @@
 
 #include <KSharedPtr>
 
+#include <QtCore/QXmlStreamReader>
+
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
-class QXmlStreamReader;
 
 namespace CoverFetch
 {
