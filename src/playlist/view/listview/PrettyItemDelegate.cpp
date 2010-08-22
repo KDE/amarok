@@ -37,7 +37,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
 
-#include "kratingpainter.h"
+#include <Nepomuk/KRatingPainter>
 
 #include <QFontMetricsF>
 #include <QPainter>

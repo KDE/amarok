@@ -23,9 +23,9 @@
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
 
-#include <kratingwidget.h>
 #include <KHBox>
 #include <KVBox>
+#include <Nepomuk/KRatingWidget>
 
 #include <QEvent>
 #include <QKeyEvent>

@@ -4,8 +4,6 @@ set(videoclip_applet_SRCS
     VideoclipApplet.cpp
     VideoItemButton.cpp
     CustomVideoWidget.cpp
-    ${Amarok_SOURCE_DIR}/src/widgets/kratingwidget.cpp
-    ${Amarok_SOURCE_DIR}/src/widgets/kratingpainter.cpp
 )
 
 include_directories(
@@ -19,7 +17,7 @@ include_directories(
 kde4_add_ui_files( videoclip_applet_SRCS videoclipSettings.ui )
 
 kde4_add_plugin(amarok_context_applet_videoclip ${videoclip_applet_SRCS})
-target_link_libraries( amarok_context_applet_videoclip amarokcore amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
+target_link_libraries( amarok_context_applet_videoclip amarokcore amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS} ${KDE4_NEPOMUK_LIBS})
 
 install( TARGETS amarok_context_applet_videoclip DESTINATION ${PLUGIN_INSTALL_DIR} )
 install( FILES amarok-context-applet-videoclip.desktop DESTINATION ${SERVICES_INSTALL_DIR} )

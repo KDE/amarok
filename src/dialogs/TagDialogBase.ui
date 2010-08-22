@@ -1028,7 +1028,7 @@
   <customwidget>
    <class>KRatingWidget</class>
    <extends>QFrame</extends>
-   <header>kratingwidget.h</header>
+   <header>nepomuk/kratingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
