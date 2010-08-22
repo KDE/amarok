@@ -57,15 +57,31 @@ void
 DaapCollectionFactory::init()
 {
     DEBUG_BLOCK
-    //don't block Amarok's startup by connecting to DAAP servers
-    QTimer::singleShot( 1000, this, SLOT( connectToManualServers() ) );
-    m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
-    m_browser->setObjectName("daapServiceBrowser");
-    connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
-                  this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
-    connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
-                  this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
-    m_browser->startBrowse();
+    switch( DNSSD::ServiceBrowser::isAvailable() )
+    {
+    case DNSSD::ServiceBrowser::Working:
+        //don't block Amarok's startup by connecting to DAAP servers
+        QTimer::singleShot( 1000, this, SLOT( connectToManualServers() ) );
+        m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
+        m_browser->setObjectName("daapServiceBrowser");
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
+                 this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
+                 this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
+        m_browser->startBrowse();
+        break;
+
+    case DNSSD::ServiceBrowser::Stopped:
+        debug() << "The Zeroconf daemon is not running";
+        break;
+
+    case DNSSD::ServiceBrowser::Unsupported:
+        debug() << "Zeroconf support is not available";
+        break;
+
+    default:
+        debug() << "Unknown error with Zeroconf";
+    }
 }
 
 void
