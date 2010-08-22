@@ -22,6 +22,8 @@
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
 
+#include <KService>
+
 #include <QList>
 #include <QObject>
 
@@ -164,6 +166,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     private:
         static CollectionManager* s_instance;
+        void loadServices( const KService::List &services );
         CollectionManager();
         ~CollectionManager();
 

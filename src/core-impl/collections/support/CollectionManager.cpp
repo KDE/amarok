@@ -39,7 +39,6 @@
 #include <KBuildSycocaProgressDialog>
 #include <KGlobal>
 #include <KMessageBox>
-#include <KService>
 #include <KPluginLoader>
 #include <KPluginFactory>
 
@@ -172,76 +171,63 @@ CollectionManager::init()
         }
     }
 
-    foreach( KService::Ptr service, plugins )
+    KService::List orderedPlugins;
+    const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
+    foreach( const KService::Ptr &service, plugins )
     {
         const QString name = service->property( "X-KDE-Amarok-name" ).toString();
-        if( name == "mysqlserver-collection" &&
-           !Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
-                continue;
-        if( name == "mysqle-collection" &&
-            Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
-                continue;
-        if( name == "mysqle-collection" || name == "mysqlserver-collection" )
+        if( name == "mysqlserver-collection" )
         {
-            KPluginLoader loader( *( service.constData() ) );
-            KPluginFactory *pluginFactory = loader.factory();
-            if ( pluginFactory )
-            {
-                Collections::CollectionFactory* factory = pluginFactory->create<Collections::CollectionFactory>( this );
-                if ( factory )
-                {
-                    debug() << "Initialising sqlcollection";
-                    connect( factory, SIGNAL( newCollection( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
-                    d->factories.append( factory );
-                    factory->init();
-                    if( name == "mysqle-collection" )
-                        m_haveEmbeddedMysql = true;
-                }
-                else
-                {
-                    debug() << "SqlCollection Plugin has wrong factory class: " << loader.errorString();
-                }
-            }
-            else
-            {
-                warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
-            }
-            break;
+            if( useMySqlServer )
+                orderedPlugins.prepend( service );
+        }
+        else if( name == "mysqle-collection" )
+        {
+            if( !useMySqlServer )
+                orderedPlugins.prepend( service );
+        }
+        else
+        {
+            orderedPlugins.append( service );
         }
     }
+    loadServices( orderedPlugins );
+}
 
-    foreach( KService::Ptr service, plugins )
+void
+CollectionManager::loadServices( const KService::List &services )
+{
+    DEBUG_BLOCK
+    foreach( const KService::Ptr &service, services )
     {
-        //ignore sqlcollection plugins, we have already loaded it above
-        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqlserver-collection" )
-                continue;
-        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" )
-                continue;
-
+        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
         KPluginLoader loader( *( service.constData() ) );
         KPluginFactory *pluginFactory = loader.factory();
-        if ( pluginFactory )
+        if( pluginFactory )
         {
-            Collections::CollectionFactory* factory = pluginFactory->create<Collections::CollectionFactory>( this );
-            if ( factory )
+            Collections::CollectionFactory* factory( 0 );
+            if( (factory = pluginFactory->create<Collections::CollectionFactory>( this )) )
             {
-                connect( factory, SIGNAL( newCollection( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
+                connect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                         this, SLOT(slotNewCollection(Collections::Collection*)) );
                 d->factories.append( factory );
+                debug() << "Initialising" << name;
                 factory->init();
+                if( name == "mysqle-collection" )
+                    m_haveEmbeddedMysql = true;
             }
             else
             {
-                debug() << "Plugin has wrong factory class: " << loader.errorString();
-                continue;
+                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
+                                             .arg( name, loader.errorString() );
             }
         }
         else
         {
-            warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
+            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
+                                                     .arg( name, loader.errorString() );
         }
     }
-
-
 }
 
 void
