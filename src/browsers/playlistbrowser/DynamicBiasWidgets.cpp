@@ -31,6 +31,7 @@
 #include "core/collections/QueryMaker.h"
 #include "SliderWidget.h"
 #include "SvgHandler.h"
+#include "widgets/kratingwidget.h"
 #include "widgets/kdatecombo.h"
 
 #include <typeinfo>
@@ -49,7 +50,6 @@
 #include <KIcon>
 #include <KVBox>
 #include <klocale.h>
-#include <Nepomuk/KRatingWidget>
 
 /**
  *  A class that allows to select a time distance.

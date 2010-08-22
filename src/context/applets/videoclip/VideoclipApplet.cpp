@@ -32,6 +32,8 @@
 #include "context/Svg.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
+#include "widgets/kratingpainter.h"
+#include "widgets/kratingwidget.h"
 #include "widgets/TextScrollingWidget.h"
 
 // KDE
@@ -39,8 +41,6 @@
 #include <KConfigDialog>
 #include <KStandardDirs>
 #include <KVBox>
-#include <Nepomuk/KRatingPainter>
-#include <Nepomuk/KRatingWidget>
 #include <Plasma/Theme>
 #include <Plasma/BusyWidget>
 #include <Plasma/IconWidget>

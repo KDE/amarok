@@ -24,6 +24,8 @@
 
 #include "core/support/Debug.h"
 
+#include "kratingpainter.h"
+
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
 #include <QtGui/QKeyEvent>
@@ -36,8 +38,6 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
-#include <Nepomuk/KRatingPainter>
-
 
 class RatingWidget::Private
 {
