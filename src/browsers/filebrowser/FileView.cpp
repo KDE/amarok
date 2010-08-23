@@ -174,7 +174,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
             }
             else
             {
-                Amarok::PrettyTreeView::edit( index, QAbstractItemView::AllEditTriggers, event );
+                QTimer::singleShot( QApplication::doubleClickInterval(), this, SLOT(slotEditTriggered()) );
                 m_lastSelectedIndex = QModelIndex();
             }
             event->accept();
@@ -183,6 +183,14 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     }
     m_lastSelectedIndex = QModelIndex();
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
+}
+
+void
+FileView::slotEditTriggered()
+{
+    QModelIndexList indices = selectedIndexes();
+    if( indices.count() == 1 && indices.first().isValid() )
+        Amarok::PrettyTreeView::edit( indices.first() );
 }
 
 void

@@ -81,6 +81,9 @@ protected:
     virtual void startDrag( Qt::DropActions supportedActions );
     KFileItemList selectedItems() const;
 
+private slots:
+    void slotEditTriggered();
+
 private:
     Meta::TrackList tracksForEdit() const;
 
