@@ -67,6 +67,9 @@ APG::PresetModel::PresetModel()
 
 APG::PresetModel::~PresetModel()
 {
+    while ( m_presetList.size() > 0 ) {
+        m_presetList.takeFirst()->deleteLater();
+    }
 }
 
 QVariant
