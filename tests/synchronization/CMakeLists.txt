@@ -40,7 +40,8 @@ target_link_libraries(testmasterslavesynchronizationjob
                         amarokcore
                         amaroklib
                         ${KDE4_KDECORE_LIBS}
-                        ${KDE4_KDEUI_LIBS}
+                        ${KDE4_KIO_LIBS}
+                        ${KDE4_KDEUI_ILIBS}
                         ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}
                         ${QT_QTTEST_LIBRARY}
@@ -77,6 +78,7 @@ target_link_libraries(testunionjob
                         amarokcore
                         amaroklib
                         ${KDE4_KDECORE_LIBS}
+                        ${KDE4_KIO_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}
@@ -114,6 +116,7 @@ target_link_libraries(testonewaysynchronizationjob
                         amarokcore
                         amaroklib
                         ${KDE4_KDECORE_LIBS}
+                        ${KDE4_KIO_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}

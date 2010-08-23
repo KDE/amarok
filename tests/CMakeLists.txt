@@ -111,5 +111,5 @@ kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
 
