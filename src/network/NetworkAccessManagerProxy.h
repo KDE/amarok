@@ -73,6 +73,9 @@ public:
     void setNetworkAccessViewer( NetworkAccessViewer *viewer );
 #endif // DEBUG_BUILD_TYPE
 
+public slots:
+    void slotError( QObject *reply );
+
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req,
                                          QIODevice *outgoingData = 0);
