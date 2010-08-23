@@ -63,6 +63,7 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
+    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
@@ -111,6 +112,8 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
+
+    debug() << getName();
 }
 
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
@@ -123,6 +126,8 @@ ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
+    DEBUG_BLOCK
+    debug() << "new default TagMatch";
 }
 
 ConstraintTypes::TagMatch::~TagMatch()

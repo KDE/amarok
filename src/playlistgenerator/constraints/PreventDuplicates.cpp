@@ -59,19 +59,24 @@ ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, Con
         : Constraint( p )
         , m_counterPtr( 0 )
 {
+    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
         m_field = static_cast<DupeField>( a.value().toInt() );
     }
+    debug() << getName();
 }
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( ConstraintNode* p )
         : Constraint( p )
         , m_field( DupeTrack )
         , m_counterPtr( 0 )
-{ }
+{
+    DEBUG_BLOCK
+    debug() << "new default PreventDuplicates";
+}
 
 QWidget*
 ConstraintTypes::PreventDuplicates::editWidget() const

@@ -30,6 +30,7 @@
 
 ConstraintGroup::ConstraintGroup( QDomElement& xmlelem, ConstraintNode* p ) : ConstraintNode( p )
 {
+    DEBUG_BLOCK
     if ( xmlelem.tagName() == "group" ) {
         if ( xmlelem.attribute( "matchtype" ) == "any" ) {
             m_matchtype = MatchAny;
@@ -42,11 +43,13 @@ ConstraintGroup::ConstraintGroup( QDomElement& xmlelem, ConstraintNode* p ) : Co
     } else {
         m_matchtype = MatchAll;
     }
+    debug() << getName();
 }
 
-ConstraintGroup::ConstraintGroup( ConstraintNode* p ) : ConstraintNode( p )
+ConstraintGroup::ConstraintGroup( ConstraintNode* p ) : ConstraintNode( p ), m_matchtype( MatchAll )
 {
-    m_matchtype = MatchAll;
+    DEBUG_BLOCK
+    debug() << "new default ConstraintGroup";
 }
 
 ConstraintGroup*

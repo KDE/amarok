@@ -63,6 +63,7 @@ ConstraintTypes::PlaylistLength::registerMe()
 ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
 {
+    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "length" );
@@ -76,6 +77,8 @@ ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, Constrain
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
+
+    debug() << getName();
 }
 
 ConstraintTypes::PlaylistLength::PlaylistLength( ConstraintNode* p )
@@ -84,6 +87,8 @@ ConstraintTypes::PlaylistLength::PlaylistLength( ConstraintNode* p )
         , m_comparison( CompareNumEquals )
         , m_strictness( 1.0 )
 {
+    DEBUG_BLOCK
+    debug() << "new default PlaylistLength";
 }
 
 QWidget*

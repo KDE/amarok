@@ -71,6 +71,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
         , m_handler( 0 )
         , m_tracker( 0 )
 {
+    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "position" );
@@ -100,6 +101,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
+    debug() << getName();
 }
 
 ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
@@ -110,6 +112,8 @@ ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
         , m_handler( 0 )
         , m_tracker( 0 )
 {
+    DEBUG_BLOCK
+    debug() << "new default Checkpoint";
 }
 
 ConstraintTypes::Checkpoint::~Checkpoint()

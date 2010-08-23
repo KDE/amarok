@@ -42,7 +42,9 @@ ConstraintTypes::TrackSpreader::registerMe()
     return 0;
 }
 
-ConstraintTypes::TrackSpreader::TrackSpreader( ConstraintNode* p ) : Constraint( p ) {}
+ConstraintTypes::TrackSpreader::TrackSpreader( ConstraintNode* p ) : Constraint( p ) {
+    DEBUG_BLOCK
+}
 
 QWidget*
 ConstraintTypes::TrackSpreader::editWidget() const
