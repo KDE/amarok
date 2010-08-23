@@ -444,11 +444,6 @@ void CoverFoundDialog::slotButtonClicked( int button )
             m_pixmap = item->bigPix();
             accept();
         }
-        else
-        {
-            m_pixmap = QPixmap();
-            reject();
-        }
     }
     else
     {
@@ -504,14 +499,10 @@ bool CoverFoundDialog::fetchBigPix()
         m_dialog->setMinimumWidth( 300 );
         connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
                         SLOT(downloadProgressed(qint64,qint64)) );
+        connect( m_dialog, SIGNAL(cancelClicked()), reply, SLOT(deleteLater()) );
     }
     int result = m_dialog->exec();
     bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
-    if( !success )
-    {
-        if( reply )
-            reply->abort();
-    }
     m_dialog->deleteLater();
     reply->deleteLater();
     return success;
