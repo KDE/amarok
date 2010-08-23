@@ -150,6 +150,74 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
     return map;
 }
 
+QVariantMap
+Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
+{
+    QVariantMap map;
+    if( track )
+    {
+        // We do not set mpris::trackid here because it depends on the position
+        // of the track in the playlist
+        map["mpris:length"] = track->length() * 1000; // microseconds
+
+        if( track->album() )
+            map["mpris:artUrl"] = track->album()->imageLocation().url();
+
+        if( track->album() ) {
+            map["xesam:album"] = track->album()->name();
+            if ( track->album()->hasAlbumArtist() )
+                map["xesam:albumArtist"] = QStringList() << track->album()->albumArtist()->name();
+        }
+
+        if( track->artist() )
+            map["xesam:artist"] = QStringList() << track->artist()->name();
+
+        const QString lyrics = track->cachedLyrics();
+        if( !lyrics.isEmpty() )
+            map["xesam:asText"] = lyrics;
+
+        if( track->bpm() > 0 )
+            map["xesam:audioBPM"] = int(track->bpm());
+
+        map["xesam:autoRating"] = track->score();
+
+        map["xseam:comment"] = QStringList() << track->comment();
+
+        if( track->composer() )
+            map["xesam:composer"] = QStringList() << track->composer()->name();
+
+        if( track->year() ) {
+            bool ok;
+            int year = track->year()->name().toInt(&ok);
+            if (ok)
+                map["xesam:contentCreated"] = QDateTime(QDate(year, 1, 1)).toString(Qt::ISODate);
+        }
+
+        if( track->discNumber() )
+            map["xesam:discNumber"] = track->discNumber();
+
+        if( track->firstPlayed() > 0 )
+            map["xesam:firstUsed"] = QDateTime::fromTime_t(track->firstPlayed()).toString(Qt::ISODate);
+
+        if( track->genre() )
+            map["xesam:genre"] = QStringList() << track->genre()->name();
+
+        if( track->lastPlayed() > 0 )
+            map["xesam:lastUsed"] = QDateTime::fromTime_t(track->lastPlayed()).toString(Qt::ISODate);
+
+        map["xesam:title"] = track->prettyName();
+
+        map["xesam:trackNumber"] = track->trackNumber();
+
+        map["xesam:url"] = track->playableUrl().url();
+
+        map["xesam:useCount"] = track->playCount();
+
+        map["xesam:userRating"] = track->rating() / 10.; // xesam:userRating is a float
+    }
+    return map;
+}
+
 
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )

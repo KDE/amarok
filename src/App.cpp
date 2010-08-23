@@ -36,6 +36,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "Mpris2DBusHandler.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
@@ -281,6 +282,7 @@ App::~App()
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
     {
         dbusService->unregisterService("org.mpris.amarok");
+        dbusService->unregisterService("org.mpris.MediaPlayer2.amarok");
     }
 #endif
 }
@@ -654,7 +656,9 @@ App::continueInit()
     new Mpris1::PlayerHandler();
     new Mpris1::TrackListHandler();
     new CollectionDBusHandler( this );
+    new Amarok::Mpris2DBusHandler();
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
+    QDBusConnection::sessionBus().registerService("org.mpris.MediaPlayer2.amarok");
     PERF_LOG( "Done creating DBus handlers" )
 
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
