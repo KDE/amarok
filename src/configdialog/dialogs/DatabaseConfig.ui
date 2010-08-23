@@ -2,9 +2,23 @@
 <ui version="4.0">
  <class>DatabaseConfig</class>
  <widget class="QWidget" name="DatabaseConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>339</width>
+    <height>500</height>
+   </rect>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QCheckBox" name="kcfg_UseServer">
+     <property name="toolTip">
+      <string>Check to enable the use of an external database. Default there already is an embedded MySQL database running.</string>
+     </property>
+     <property name="whatsThis">
+      <string>Check to enable the use of an external database. Default there already is an embedded MySQL database running.</string>
+     </property>
      <property name="text">
       <string>Use &amp;external MySQL database</string>
      </property>
@@ -36,6 +50,10 @@
         </item>
         <item row="0" column="1" colspan="3">
          <widget class="QLineEdit" name="kcfg_Host">
+          <property name="toolTip">
+           <string>Enter the name of the existing MySQL server
+</string>
+          </property>
           <property name="text">
            <string notr="true"/>
           </property>
@@ -68,6 +86,10 @@
         </item>
         <item row="0" column="5">
          <widget class="QSpinBox" name="kcfg_Port">
+          <property name="toolTip">
+           <string>Enter the port number to access the server. Default is port 3306.
+</string>
+          </property>
           <property name="maximum">
            <number>65535</number>
           </property>
@@ -91,6 +113,10 @@
         </item>
         <item row="2" column="1" colspan="5">
          <widget class="QLineEdit" name="kcfg_Password">
+          <property name="toolTip">
+           <string>Enter the password for the default user.
+</string>
+          </property>
           <property name="inputMask">
            <string notr="true"/>
           </property>
@@ -120,6 +146,10 @@
         </item>
         <item row="1" column="1" colspan="5">
          <widget class="QLineEdit" name="kcfg_User">
+          <property name="toolTip">
+           <string>Enter the username to access the database with full access privileges.
+</string>
+          </property>
           <property name="text">
            <string notr="true"/>
           </property>
@@ -143,6 +173,10 @@
         </item>
         <item row="3" column="1" colspan="5">
          <widget class="QLineEdit" name="kcfg_Database">
+          <property name="toolTip">
+           <string>Enter the name of the database. Default preset is amarokdb.
+</string>
+          </property>
           <property name="text">
            <string notr="true"/>
           </property>

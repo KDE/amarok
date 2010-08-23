@@ -19,6 +19,9 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QGroupBox" name="kcfg_OsdEnabled">
+        <property name="toolTip">
+         <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
+        </property>
         <property name="whatsThis">
          <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
         </property>
@@ -126,6 +129,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Check to enable custom colors for the On-Screen-Display.</string>
+           </property>
            <property name="whatsThis">
             <string>Check to enable custom colors for the On-Screen-Display.</string>
            </property>
@@ -187,7 +193,7 @@
               <property name="text">
                <string/>
               </property>
-              <property name="color">
+              <property name="color" stdset="0">
                <color>
                 <red>255</red>
                 <green>0</green>
@@ -201,6 +207,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QCheckBox" name="kcfg_OsdUseTranslucency">
+           <property name="toolTip">
+            <string>If checked, enables translucency if supported by your desktop system.</string>
+           </property>
            <property name="text">
             <string>&amp;Translucent</string>
            </property>
@@ -211,6 +220,9 @@
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_KNotifyEnabled">
+        <property name="toolTip">
+         <string>Check to use the system notification.</string>
+        </property>
         <property name="text">
          <string>Use &amp;system notifications</string>
         </property>
