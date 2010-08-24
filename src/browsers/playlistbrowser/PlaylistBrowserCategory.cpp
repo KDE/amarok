@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <KStandardDirs>
 #include <QToolBar>
+#include <QTreeView>
 #include <QVBoxLayout>
 
 #include <typeinfo>
@@ -132,6 +133,12 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
 PlaylistBrowserCategory::~PlaylistBrowserCategory()
 {
+}
+
+QTreeView *
+PlaylistBrowserCategory::playlistView()
+{
+    return m_playlistView;
 }
 
 void
@@ -260,3 +267,5 @@ PlaylistBrowserCategory::newPalette( const QPalette &palette )
 
     The::paletteHandler()->updateItemView( m_playlistView );
 }
+
+#include "PlaylistBrowserCategory.moc"

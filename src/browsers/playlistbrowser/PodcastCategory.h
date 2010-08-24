@@ -19,13 +19,7 @@
 
 #include "PlaylistBrowserCategory.h"
 
-#include <KDialog>
-
-#include <QModelIndex>
-#include <QPoint>
-#include <QSortFilterProxyModel>
-#include <QItemDelegate>
-#include <QWebPage>
+class QModelIndex;
 
 namespace PlaylistBrowserNS {
 
@@ -48,7 +42,7 @@ class PodcastCategory : public PlaylistBrowserCategory
         ~PodcastCategory();
 
     private slots:
-        void showInfo( const QModelIndex & index );
+        void showInfo( const QModelIndex &index );
         void slotImportOpml();
 };
 

@@ -16,48 +16,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PodcastCategory"
+
 #include "PodcastCategory.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+#include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
-#include "core/podcasts/PodcastMeta.h"
-#include "PopupDropperFactory.h"
-#include "PlaylistsByProviderProxy.h"
-#include "PlaylistTreeItemDelegate.h"
-#include "browsers/InfoProxy.h"
-#include "SvgTinter.h"
-#include "SvgHandler.h"
+#include "PlaylistBrowserView.h"
 
-#include <QAction>
-#include <QFontMetrics>
-#include <QHeaderView>
-#include <QIcon>
-#include <QLinearGradient>
 #include <QModelIndexList>
-#include <QPainter>
-#include <QRegExp>
-#include <QToolBar>
-#include <QVBoxLayout>
-#include <QWebFrame>
-#include <QTextDocument>
-#include <qnamespace.h>
+#include <QTextBrowser>
 
 #include <KAction>
-#include <KMenu>
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
-#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
-
-#include <typeinfo>
 
 namespace The
 {
@@ -126,6 +104,9 @@ PodcastCategory::PodcastCategory( QWidget *parent )
     m_toolBar->insertAction( m_separator, importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
+    PlaylistBrowserView *view = static_cast<PlaylistBrowserView*>( playlistView() );
+    connect( view, SIGNAL(currentItemChanged(QModelIndex)), SLOT(showInfo(QModelIndex)) );
+
     //transparency
 //    QPalette p = m_podcastTreeView->palette();
 //    QColor c = p.color( QPalette::Base );
@@ -143,8 +124,6 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 //    sizePolicy1.setVerticalStretch(0);
 //    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
 //    m_podcastTreeView->setSizePolicy(sizePolicy1);
-//
-
 }
 
 PodcastCategory::~PodcastCategory()
@@ -154,7 +133,9 @@ PodcastCategory::~PodcastCategory()
 void
 PodcastCategory::showInfo( const QModelIndex &index )
 {
-    QVariantMap map;
+    if( !index.isValid() )
+        return;
+
     const int row = index.row();
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
@@ -276,6 +257,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
         .arg( PaletteHandler::highlightColor().name() );
     
+    QVariantMap map;
     map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );

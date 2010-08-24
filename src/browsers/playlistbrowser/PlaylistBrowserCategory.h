@@ -24,8 +24,6 @@
 #include <QPoint>
 #include <QSortFilterProxyModel>
 
-class QTreeView;
-
 class KAction;
 class KActionMenu;
 class KLineEdit;
@@ -65,6 +63,8 @@ protected:
      * actions at a suitable place, thus keeping the generic actions in order.
      */
     QAction *m_separator;
+
+    QTreeView *playlistView();
 
 private slots:
     void toggleView( bool );
