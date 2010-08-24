@@ -52,27 +52,7 @@ class PodcastCategory : public PlaylistBrowserCategory
         void slotImportOpml();
 };
 
-/**
-    A delegate for displaying the Podcast category
-
-    @author Bart Cerneels
- */
-class PodcastCategoryDelegate : public QItemDelegate
-{
-    public:
-        PodcastCategoryDelegate( QTreeView *view );
-        ~PodcastCategoryDelegate();
-
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-
-    private:
-        QTreeView *m_view;
-        mutable int m_lastHeight;
-        QWebPage *m_webPage;
-};
-
-}
+} // namespace PlaylistBrowserNS
 
 namespace The {
     PlaylistBrowserNS::PodcastCategory *podcastCategory();
