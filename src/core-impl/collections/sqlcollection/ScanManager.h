@@ -69,7 +69,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public IScanManager
     private:
         QStringList getDirsToScan();
         void handleRestart();
-        void cleanTables();
         void checkTables( bool full = true );
         void stopParser();
         void writeBatchIncrementalInfoFile();

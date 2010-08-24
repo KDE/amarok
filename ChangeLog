@@ -10,6 +10,9 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fix Collection Browser not properly updating after a full rescan,
+      necessitating Amarok to be closed and reopened. Fixes various bugs. 
+      (BR 172542)
     * Fix possible crash in Labels Applet when playing new track. (BR 248538)
     * Fix cover found dialog closing when download failed or is cancelled.
     * Fix failure when fetching cddb info for audio CDs in localized Amarok.
