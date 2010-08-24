@@ -6,6 +6,7 @@ VERSION 2.3.2
   FEATURES:
 
   CHANGES:
+    * Improved response of current track and albums applet on data updates.
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:

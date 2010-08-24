@@ -46,14 +46,9 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 {
     DEBUG_BLOCK
     Q_UNUSED( args )
-
     m_sources << "current" << "albums";
-    m_requested[ "current" ] = false;
+    m_requested[ "current" ] = true;
     m_requested[ "albums" ] = false;
-    
-    m_timer = new QTimer(this);
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( stoppedState() ) );
-
     update();
 }
 
@@ -75,32 +70,42 @@ CurrentEngine::sourceRequestEvent( const QString& name )
     removeAllData( name );
     setData( name, QVariant() );
     m_requested[ name ] = true;
-    if( The::engineController()->currentTrack() )
-    {
-        update();
-
-    }
-    else
-        m_timer->start();
-
+    update();
     return true;
 }
 
 void
 CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
 {
-    m_state = newState ;
+    m_state = newState;
+}
+
+void
+CurrentEngine::engineTrackChanged( Meta::TrackPtr track )
+{
+    if( track )
+    {
+        if( m_currentTrack )
+            unsubscribeFrom( m_currentTrack );
+        m_currentTrack = track;
+        subscribeTo( track );
+    }
+    else
+    {
+        m_currentTrack.clear();
+    }
+    update();
 }
 
 void
 CurrentEngine::message( const ContextState& state )
 {
+    Q_UNUSED( state )
+    /*
     DEBUG_BLOCK
     
     if( state == Current )
     {
-        m_timer->stop();
-        
         update();
     }
     else if( state == Home )
@@ -111,16 +116,14 @@ CurrentEngine::message( const ContextState& state )
             if( m_currentTrack->album() )
                 unsubscribeFrom( m_currentTrack->album() );
         }        
-        m_timer->start( 1000 );
     }
+    */
 }
 
 void
 CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
-
-    m_timer->stop();    
 
     //TODO
     // if we are in buffering state or loading state, do not show the recently album etc ...
@@ -222,19 +225,11 @@ CurrentEngine::update()
 {
     DEBUG_BLOCK
 
-    if ( m_currentTrack )
-    {
-        unsubscribeFrom( m_currentTrack );
-        if ( m_currentTrack->album() )
-            unsubscribeFrom( m_currentTrack->album() );
-    }
-
-    m_currentTrack = The::engineController()->currentTrack();
-    
     if( !m_currentTrack )
+    {
+        stoppedState();
         return;
-    
-    subscribeTo( m_currentTrack );
+    }
 
     if( m_requested[ "current" ] )
     {
@@ -245,8 +240,6 @@ CurrentEngine::update()
         const int width = 156; // workaround to make the art less grainy. 156 is the width of the nocover image
                             // there is no way to resize the currenttrack applet at this time, so this size
                             // will always look good.
-        if( m_currentTrack->album() )
-            subscribeTo( m_currentTrack->album() );
 
         removeAllData( "current" );
 
@@ -342,7 +335,7 @@ CurrentEngine::setupTracksData()
 void
 CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     Q_UNUSED( collectionId )
 
     m_albums.clear();
@@ -352,7 +345,7 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
 void
 CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     Q_UNUSED( collectionId )
     m_latestTracks.clear();
     m_latestTracks << tracks;
