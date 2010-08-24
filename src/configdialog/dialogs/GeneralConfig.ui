@@ -73,6 +73,9 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QCheckBox" name="kcfg_AutoScrollPlaylist">
+        <property name="toolTip">
+         <string>Check to make the playlist scroll so the current track is always visible.</string>
+        </property>
         <property name="text">
          <string>Automatically scroll playlist to current track</string>
         </property>
