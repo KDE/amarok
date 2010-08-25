@@ -293,8 +293,6 @@ ScanResultProcessor::commit()
     m_collection->dbUpdater()->deleteAllRedundant( "composer" );
     m_collection->dbUpdater()->deleteAllRedundant( "year" );
 
-    debug() << "Sending changed signal";
-    m_collection->sendChangedSignal();
 
     updateAftPermanentTablesUrlString();
     updateAftPermanentTablesUidString();
@@ -303,6 +301,9 @@ ScanResultProcessor::commit()
              m_collection, SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
     emit changedTrackUrlsUids( m_changedUrls, m_changedUids );
+
+    debug() << "Sending changed signal";
+    m_collection->sendChangedSignal();
 }
 
 void

@@ -44,6 +44,7 @@ class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
+class QSignalMapper;
 class QTabWidget;
 
 class CoverFoundDialog : public KDialog
@@ -124,6 +125,7 @@ private:
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
     QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
     QPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
+    QSignalMapper *m_errorSignalMapper;
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };

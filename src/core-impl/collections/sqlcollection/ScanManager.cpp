@@ -22,16 +22,16 @@
 
 #include "ScanManager.h"
 
+#include "amarokconfig.h"
 #include "App.h"
-#include "core/support/Debug.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
-#include "amarokconfig.h"
+#include "statusbar/StatusBar.h"
+#include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "statusbar/StatusBar.h"
 
 #include <QFileInfo>
 #include <QListIterator>
@@ -104,7 +104,6 @@ ScanManager::startFullScan()
     }
 
     checkTables( true );
-    cleanTables();
 
     if( m_parser )
     {
@@ -574,20 +573,6 @@ ScanManager::restartScanner()
     connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
     connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
-}
-
-void
-ScanManager::cleanTables()
-{
-    DEBUG_BLOCK
-    m_storage->query( "DELETE FROM tracks;" );
-    m_storage->query( "DELETE FROM genres;" );
-    m_storage->query( "DELETE FROM years;" );
-    m_storage->query( "DELETE FROM composers;" );
-    m_storage->query( "DELETE FROM albums;" );
-    m_storage->query( "DELETE FROM artists;" );
-    m_storage->query( "DELETE FROM directories;" );
-    //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 
 void

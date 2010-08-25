@@ -45,6 +45,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QScrollArea>
+#include <QSignalMapper>
 #include <QSplitter>
 #include <QTabWidget>
 
@@ -60,6 +61,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_sortEnabled( false )
     , m_unit( unit )
     , m_queryPage( 0 )
+    , m_errorSignalMapper( 0 )
 {
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
@@ -444,11 +446,6 @@ void CoverFoundDialog::slotButtonClicked( int button )
             m_pixmap = item->bigPix();
             accept();
         }
-        else
-        {
-            m_pixmap = QPixmap();
-            reject();
-        }
     }
     else
     {
@@ -504,16 +501,19 @@ bool CoverFoundDialog::fetchBigPix()
         m_dialog->setMinimumWidth( 300 );
         connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
                         SLOT(downloadProgressed(qint64,qint64)) );
+
+        if( !m_errorSignalMapper )
+        {
+            m_errorSignalMapper = new QSignalMapper( this );
+            connect( m_errorSignalMapper, SIGNAL(mapped(QObject*)),
+                     The::networkAccessManager(), SLOT(slotError(QObject*)) );
+        }
+        connect( m_dialog, SIGNAL(cancelClicked()), m_errorSignalMapper, SLOT(map()) );
+        m_errorSignalMapper->setMapping( m_dialog, reply );
     }
     int result = m_dialog->exec();
     bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
-    if( !success )
-    {
-        if( reply )
-            reply->abort();
-    }
     m_dialog->deleteLater();
-    reply->deleteLater();
     return success;
 }
 

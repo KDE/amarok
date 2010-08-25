@@ -41,6 +41,9 @@ public:
 
     void setNewFolderAction( KAction *action );
 
+signals:
+    void currentItemChanged( const QModelIndex &current );
+
 protected:
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
@@ -50,6 +53,9 @@ protected:
     virtual void startDrag( Qt::DropActions supportedActions );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
+
+protected slots:
+    void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
 private:
     QList<QAction *> actionsFor( QModelIndexList indexes );

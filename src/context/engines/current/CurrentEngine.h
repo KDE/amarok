@@ -22,10 +22,9 @@
 #include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h" // album observer
 
-class QTimer;
-
 /**
-    This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
+    This class provides context information on the currently playing track.
+    This includes info such as the artist, trackname, album of the current song, etc.
 
     There is no data source: if you connect to the engine, you immediately
     start getting updates when there is data. 
@@ -50,7 +49,6 @@ class CurrentEngine : public Context::DataEngine,
                       public Meta::Observer
 {
     Q_OBJECT
-
     Q_PROPERTY( int coverWidth READ coverWidth WRITE setCoverWidth  )
 
 public:
@@ -66,7 +64,8 @@ public:
     void setCoverWidth( const int width ) { m_coverWidth = width; }
 
     // inherited from EngineObserver
-    virtual void engineStateChanged(Phonon::State, Phonon::State );
+    virtual void engineStateChanged( Phonon::State, Phonon::State );
+    virtual void engineTrackChanged( Meta::TrackPtr track );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
@@ -83,7 +82,6 @@ private:
     QStringList m_sources;
     QMap< QString, bool > m_requested;
     Meta::TrackPtr m_currentTrack;
-    QTimer *m_timer;
 
     Phonon::State m_state;
     Meta::AlbumList m_albums;
@@ -97,8 +95,6 @@ private slots:
     void setupAlbumsData();
     void setupTracksData();
     void stoppedState();
-
-    
 };
 
 K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )

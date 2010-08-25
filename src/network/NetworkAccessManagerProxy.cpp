@@ -185,6 +185,17 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
     return reply;
 }
 
+void
+NetworkAccessManagerProxy::slotError( QObject *obj )
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>( obj );
+    if( !reply )
+        return;
+    KUrl url = reply->request().url();
+    d->urlMap.remove( url );
+    reply->deleteLater();
+}
+
 QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {

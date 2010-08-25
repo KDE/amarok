@@ -148,6 +148,11 @@
             </item>
             <item>
              <property name="text">
+              <string>Filename</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Format</string>
              </property>
             </item>

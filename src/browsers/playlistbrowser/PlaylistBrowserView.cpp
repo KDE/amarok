@@ -316,4 +316,12 @@ PlaylistBrowserNS::PlaylistBrowserView::setNewFolderAction( KAction *action )
     m_addFolderAction = action;
 }
 
+void
+PlaylistBrowserNS::PlaylistBrowserView::currentChanged( const QModelIndex &current,
+                                                        const QModelIndex &previous )
+{
+    Q_UNUSED( previous )
+    emit currentItemChanged( current );
+}
+
 #include "PlaylistBrowserView.moc"

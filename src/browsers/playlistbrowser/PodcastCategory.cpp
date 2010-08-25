@@ -16,48 +16,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PodcastCategory"
+
 #include "PodcastCategory.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+#include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
-#include "core/podcasts/PodcastMeta.h"
-#include "PopupDropperFactory.h"
-#include "PlaylistsByProviderProxy.h"
-#include "PlaylistTreeItemDelegate.h"
-#include "browsers/InfoProxy.h"
-#include "SvgTinter.h"
-#include "SvgHandler.h"
+#include "PlaylistBrowserView.h"
 
-#include <QAction>
-#include <QFontMetrics>
-#include <QHeaderView>
-#include <QIcon>
-#include <QLinearGradient>
 #include <QModelIndexList>
-#include <QPainter>
-#include <QRegExp>
-#include <QToolBar>
-#include <QVBoxLayout>
-#include <QWebFrame>
-#include <QTextDocument>
-#include <qnamespace.h>
+#include <QTextBrowser>
 
 #include <KAction>
-#include <KMenu>
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
-#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
-
-#include <typeinfo>
 
 namespace The
 {
@@ -126,6 +104,9 @@ PodcastCategory::PodcastCategory( QWidget *parent )
     m_toolBar->insertAction( m_separator, importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
+    PlaylistBrowserView *view = static_cast<PlaylistBrowserView*>( playlistView() );
+    connect( view, SIGNAL(currentItemChanged(QModelIndex)), SLOT(showInfo(QModelIndex)) );
+
     //transparency
 //    QPalette p = m_podcastTreeView->palette();
 //    QColor c = p.color( QPalette::Base );
@@ -143,8 +124,6 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 //    sizePolicy1.setVerticalStretch(0);
 //    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
 //    m_podcastTreeView->setSizePolicy(sizePolicy1);
-//
-
 }
 
 PodcastCategory::~PodcastCategory()
@@ -154,7 +133,9 @@ PodcastCategory::~PodcastCategory()
 void
 PodcastCategory::showInfo( const QModelIndex &index )
 {
-    QVariantMap map;
+    if( !index.isValid() )
+        return;
+
     const int row = index.row();
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
@@ -276,6 +257,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
         .arg( PaletteHandler::highlightColor().name() );
     
+    QVariantMap map;
     map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );
@@ -298,139 +280,6 @@ PodcastCategory::slotImportOpml()
         // user entered nothing or pressed Cancel
         debug() << "invalid input or cancel";
     }
-}
-
-PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView *view )
-    : QItemDelegate()
-    , m_view( view )
-{
-    m_webPage = new QWebPage( view );
-}
-
-PodcastCategoryDelegate::~PodcastCategoryDelegate()
-{
-}
-
-void
-PodcastCategoryDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
-                                const QModelIndex &index ) const
-{
-    DEBUG_BLOCK
-
-    int width = m_view->viewport()->size().width() - 4;
-    int iconWidth = 16;
-    int iconHeight = 16;
-    int iconPadX = 8;
-    int iconPadY = 4;
-    int height = option.rect.height();
-
-    painter->save();
-    painter->setRenderHint ( QPainter::Antialiasing );
-
-    QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" );
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
-
-    painter->setPen(Qt::black);
-
-    painter->setFont(QFont("Arial", 9));
-
-    QIcon icon = index.data( Qt::DecorationRole ).value<QIcon>();
-    QPixmap iconPixmap = icon.pixmap( iconWidth, iconHeight );
-    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ), iconPixmap );
-
-
-    QRectF titleRect;
-    titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
-    titleRect.setTop( option.rect.top() );
-    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 + m_view->indentation() ) );
-    titleRect.setHeight( iconHeight + iconPadY );
-
-    QString title = index.data( Qt::DisplayRole ).toString();
-
-
-    //TODO: these metrics should be made static members so they are not created all the damn time!!
-    QFontMetricsF tfm( painter->font() );
-
-    title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width() - 8, Qt::AlignHCenter );
-    //TODO: has a weird overlap
-    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignBottom, title );
-
-    painter->setFont(QFont("Arial", 8));
-
-    QRect textRect;
-    textRect.setLeft( option.rect.topLeft().x() + iconPadX );
-    textRect.setTop( option.rect.top() + iconHeight + iconPadY );
-    textRect.setWidth( width - ( iconPadX * 2 + m_view->indentation() + 16) );
-    textRect.setHeight( height - ( iconHeight + iconPadY ) );
-
-    QFontMetricsF fm( painter->font() );
-    QRectF textBound;
-
-    QString description = index.data( ShortDescriptionRole ).toString();
-    description.replace( QRegExp("\n "), "\n" );
-    description.replace( QRegExp("\n+"), "\n" );
-
-
-    if (option.state & QStyle::State_Selected)
-        textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
-    else
-        textBound = fm.boundingRect( titleRect, Qt::TextWordWrap | Qt::AlignHCenter, title );
-
-    bool toWide = textBound.width() > textRect.width();
-    bool toHigh = textBound.height() > textRect.height();
-    if ( toHigh || toWide )
-    {
-        QLinearGradient gradient;
-        gradient.setStart( textRect.bottomLeft().x(), textRect.bottomLeft().y() - 16 );
-
-        //if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
-        //else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
-        gradient.setFinalStop( textRect.bottomLeft() );
-
-        gradient.setColorAt(0, painter->pen().color());
-        gradient.setColorAt(0.5, Qt::transparent);
-        gradient.setColorAt(1, Qt::transparent);
-        QPen pen;
-        pen.setBrush(QBrush(gradient));
-        painter->setPen(pen);
-    }
-
-    if (option.state & QStyle::State_Selected)
-    {
-        //painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
-        m_webPage->setViewportSize( QSize( textRect.width(), textRect.height() ) );
-        m_webPage->mainFrame()->setHtml( description );
-        m_webPage->mainFrame()->render ( painter, QRegion( textRect ) );
-    }
-
-    painter->restore();
-
-}
-
-QSize
-PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
-{
-    Q_UNUSED( option );
-
-    int width = m_view->viewport()->size().width() - 4;
-
-    //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
-    //Podcasts::PodcastMetaCommon* pmc = static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() );
-    int height = 24;
-
-    if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
-    {
-        QString description = index.data( ShortDescriptionRole ).toString();
-
-        /*QFontMetrics fm( QFont( "Arial", 8 ) );
-        height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
-                                   Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
-                                   description ).height() + 40;
-        debug() << "Option is selected, height = " << height;*/
-
-    }
-
-    return QSize ( width, height );
 }
 
 #include "PodcastCategory.moc"

@@ -37,9 +37,12 @@ kde4_add_unit_test( testplaylistmodels ${testplaylistmodels_SRCS} )
 add_dependencies( testplaylistmodels amaroklib )
 
 target_link_libraries( testplaylistmodels
+    amarokcore
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${KDE4_PHONON_LIBRARY}
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${GOOGLEMOCK_LIBRARIES}

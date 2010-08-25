@@ -744,7 +744,12 @@ void
 DatabaseUpdater::prepareTemporaryTablesForFullScan()
 {
     m_storage->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+    m_storage->query( "INSERT INTO artists_temp SELECT * FROM artists;" );
+    m_storage->query( "INSERT INTO years_temp SELECT * FROM years;" );
+    m_storage->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
     m_storage->query( "INSERT INTO images_temp SELECT * FROM images;" );
+    m_storage->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
+    m_storage->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
 }
 
 void

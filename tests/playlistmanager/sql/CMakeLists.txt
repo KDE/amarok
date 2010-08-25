@@ -17,4 +17,4 @@ set( testsqluserplaylistprovider_SRCS
      ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
 kde4_add_unit_test( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
-target_link_libraries( testsqluserplaylistprovider ${QT_QTTEST_LIBRARY} amaroklib )
+target_link_libraries( testsqluserplaylistprovider ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
