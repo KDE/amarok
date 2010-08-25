@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 
+#include <KStandardDirs>
 #include <plasma/containment.h>
 #include <plasma/theme.h>
 
@@ -42,6 +43,12 @@ ContextScene::~ContextScene()
 
 void ContextScene::loadDefaultSetup()
 {
+    // Delete amarok-appletsrc config file (created by Plasma), because Plasma tries
+    // to load all applets listed in there, which can lead to duplicated applets which are
+    // not correctly initialized, and all sorts of crashes.
+    // See: BUG 246756
+    QFile::remove( KStandardDirs::locateLocal( "config", "amarok-appletsrc", false ) );
+
     Plasma::Containment* c = addContainment( "amarok_containment_vertical" );
     c->setScreen( -1 );
     c->setFormFactor( Plasma::Planar );

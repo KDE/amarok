@@ -11,6 +11,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fixed potential crashes related to Applet loading. (BR 246756)
     * Fixed incorrect layout of applets on startup.
     * Fixed Collection Browser not properly updating after a full rescan,
       necessitating Amarok to be closed and reopened. Fixes various bugs. 
