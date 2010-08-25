@@ -12,17 +12,18 @@ VERSION 2.3.2
 
   BUGFIXES:
     * Fixed incorrect layout of applets on startup.
-    * Fix Collection Browser not properly updating after a full rescan,
+    * Fixed Collection Browser not properly updating after a full rescan,
       necessitating Amarok to be closed and reopened. Fixes various bugs. 
       (BR 172542)
-    * Fix cover found dialog closing when download failed or is cancelled.
-    * Fix failure when fetching cddb info for audio CDs in localized Amarok.
-    * Fix expanding items in collection browser by double-click, in
+    * Fixed cover found dialog closing when download failed or is cancelled.
+    * Fixed failure when fetching cddb info for audio CDs in localized Amarok.
+    * Fixed expanding items in collection browser by double-click, in
       double-click mode.
-    * Fix crash when adding new folders repeatedly in podcast/saved playlist
+    * Fixed crash when adding new folders repeatedly in podcast/saved playlist
       browsers.
-    * Fix context menu actions acting on wrong indices in the playlist browser.
-    * Fix incorrect text about "rpath" argument to collection scanner.
+    * Fixed context menu actions acting on wrong indices in the playlist
+      browser.
+    * Fixed incorrect text about "rpath" argument to collection scanner.
       (BR 236076)
 
 
