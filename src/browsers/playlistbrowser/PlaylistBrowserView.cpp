@@ -89,7 +89,9 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
         return;
     }
 
-    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
+    // HACK: provider elements hide the root decorations
+    // Don't bother checking actions for the others.
+    if( !rootIsDecorated() && !index.parent().isValid() )
     {
         const int actionCount =
             index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
@@ -115,7 +117,9 @@ void
 PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent * event )
 {
     const QModelIndex index = indexAt( event->pos() );
-    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
+    // HACK: provider elements hide the root decorations
+    // Don't bother checking actions for the others.
+    if( !rootIsDecorated() && !index.parent().isValid() )
     {
         const int actionCount =
             index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
