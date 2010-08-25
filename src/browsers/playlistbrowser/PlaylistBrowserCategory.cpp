@@ -203,6 +203,10 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
     connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton(bool)) );
     m_providerMenu->addAction( providerToggle );
     m_providerActions.insert( provider, providerToggle );
+    if( m_providerActions.count() == 1 )
+        providerToggle->setEnabled( false );
+    else if( m_providerActions.count() == 2 )
+        m_providerActions.values().first()->setEnabled( true );
 }
 
 void
