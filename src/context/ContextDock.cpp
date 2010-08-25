@@ -74,7 +74,7 @@ ContextDock::createContextView( Plasma::Containment *containment )
     connect( m_contextToolbarView, SIGNAL( hideAppletExplorer() ), m_contextView, SLOT( hideAppletExplorer() ) );
     connect( m_contextToolbarView, SIGNAL( showAppletExplorer() ), m_contextView, SLOT( showAppletExplorer() ) );
     m_contextView->showHome();
-    m_contextView->resize( sizeHint() );
+    m_contextView->resize( size() );
     PERF_LOG( "ContexView created" )
 
 }
