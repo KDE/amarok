@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+
 VERSION 2.3.2
   FEATURES:
 
@@ -10,6 +11,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fixed incorrect layout of applets on startup.
     * Fix Collection Browser not properly updating after a full rescan,
       necessitating Amarok to be closed and reopened. Fixes various bugs. 
       (BR 172542)
