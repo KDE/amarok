@@ -436,6 +436,10 @@ ScanManager::getDirsToScan()
 
     QStringList result;
     QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
+    //The below loop is not the most efficient loop ever but changing to something like a QSet introduces
+    //issues because of the differing ending / values. Changing those would require extreme care so as not
+    //to allow "Album" to satisfy the startsWith condition for "Album1", hence verifying against the full 
+    //path including trailing slash
     for( QListIterator<QString> iter( values ); iter.hasNext(); )
     {
         int id = iter.next().toInt();
