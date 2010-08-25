@@ -65,7 +65,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 {
     setContentsMargins( 0, 0, 0, 0 );
     m_toolBar = new KToolBar( this, false, false );
-    m_toolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
     m_byFolderProxy = new PlaylistsInFoldersProxy( model );
@@ -78,29 +78,34 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_defaultItemDelegate = m_playlistView->itemDelegate();
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
-    m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
-    m_toolBar->addAction( m_addFolderAction );
-    connect( m_addFolderAction, SIGNAL( triggered( bool ) ), SLOT( createNewFolder() ) );
-
     //a QWidget with minimumExpanding makes the next button right aligned.
     QWidget *spacerWidget = new QWidget( this );
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
                                  QSizePolicy::MinimumExpanding );
-    m_toolBar->addWidget( spacerWidget );
-
     // add a separator so subclasses can add their actions before it
-    m_separator = m_toolBar->addSeparator();
+    m_separator = m_toolBar->addWidget( spacerWidget );
+
+    m_toolBar->addSeparator();
+
+    m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
+    m_addFolderAction->setPriority( QAction::LowPriority );
+    m_toolBar->addAction( m_addFolderAction );
+    connect( m_addFolderAction, SIGNAL( triggered( bool ) ), SLOT( createNewFolder() ) );
 
     m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
+    m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), m_toolBar );
-    toggleAction->setToolTip( i18n( "Merged View" ) );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ),
+                                         m_toolBar );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
+    toggleAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+
+    m_toolBar->addSeparator();
 
     toggleView( toggleAction->isChecked() );
 

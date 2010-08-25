@@ -86,12 +86,14 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 
     QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );
+    addPodcastAction->setPriority( QAction::NormalPriority );
     m_toolBar->insertAction( m_separator, addPodcastAction );
     connect( addPodcastAction, SIGNAL(triggered( bool )), The::podcastModel(), SLOT(addPodcast()) );
 
     QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"),
                                             i18n("&Update All"), m_toolBar );
-    m_toolBar->insertAction( m_separator, updateAllAction );
+    updateAllAction->setPriority( QAction::LowPriority );
+    m_toolBar->addAction( updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
              The::podcastModel(), SLOT(refreshPodcasts()) );
 
@@ -101,7 +103,8 @@ PodcastCategory::PodcastCategory( QWidget *parent )
                                              , m_toolBar
                                          );
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
-    m_toolBar->insertAction( m_separator, importOpmlAction );
+    importOpmlAction->setPriority( QAction::LowPriority );
+    m_toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
     PlaylistBrowserView *view = static_cast<PlaylistBrowserView*>( playlistView() );
