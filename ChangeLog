@@ -11,6 +11,8 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fixed playlist tooltips not showing up, even when enabled in the playlist
+      layout (BR 249086)
     * Fixed potential crashes related to Applet loading. (BR 246756)
     * Fixed possible crash in Labels Applet when playing new track. (BR 248538)
     * Fixed incorrect layout of applets on startup.
