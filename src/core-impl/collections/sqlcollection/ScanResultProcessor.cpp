@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ScanResultProcessor"
+
 #include "ScanResultProcessor.h"
 
 #include "ArtistHelper.h"
@@ -119,7 +121,7 @@ void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
     //DEBUG_BLOCK
-    //debug() << "SRP::addDirectory on " << dir << " with mtime " << mtime;
+    //debug() << "addDirectory on " << dir << " with mtime " << mtime;
     if( dir.isEmpty() )
     {
         //debug() << "got directory with no path from the scanner, not adding";
@@ -861,24 +863,59 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
     //DEBUG_BLOCK
     if( m_permanentTablesUrlUpdates.isEmpty() )
         return;
+
+    QStringList res = m_storage->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+    if( res.size() < 2 || res[1].toInt() == 0 )
+    {
+        debug() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
+        return;
+    }
+    int maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
+
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        QString query = QString( "UPDATE %1 SET url = CASE uniqueid" ).arg( table );
+        QString queryStart = QString( "UPDATE %1 SET url = CASE uniqueid").arg( table );
+        QString query = queryStart;
         QString query2;
+        QString queryNext;
+        QString query2Next;
         bool first = true;
         foreach( const QString &key, m_permanentTablesUrlUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+            queryNext = QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
                                                        m_storage->escape( m_permanentTablesUrlUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
+                query2Next = QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
+                query2Next = QString( ", '%1'" ).arg( m_storage->escape( key ) );
+
+            // + 20 is for the END WHERE section below
+            if( query.length() + query2.length() + queryNext.length() + query2Next.length() + 25 >= maxSize )
+            {
+                query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
+                m_storage->query( query );
+
+
+                query = queryStart + queryNext;
+                if( query2Next.startsWith( ", " ) )
+                    query2 = query2Next.remove( 0, 2 ); //get rid of the ", "
+                else
+                    query2 = query2Next;
+            }
+            else
+            {
+                query += queryNext;
+                query2 += query2Next;
+            }
+
             first = false;
         }
-        query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
 
-        m_storage->query( query );
+        if( !query2.isEmpty() ) // will be empty if we already queried and added nothing new
+        {
+            query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
+            m_storage->query( query );
+        }
     }
 }
 
@@ -888,24 +925,58 @@ ScanResultProcessor::updateAftPermanentTablesUidString()
     //DEBUG_BLOCK
     if( m_permanentTablesUidUpdates.isEmpty() )
         return;
+
+    QStringList res = m_storage->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+    if( res.size() < 2 || res[1].toInt() == 0 )
+    {
+        debug() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
+        return;
+    }
+    int maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
+
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        QString query = QString( "UPDATE %1 SET uniqueid = CASE url" ).arg( table );
+        QString queryStart = QString( "UPDATE %1 SET uniqueid = CASE url").arg( table );
+        QString query = queryStart;
         QString query2;
+        QString queryNext;
+        QString query2Next;
         bool first = true;
         foreach( const QString &key, m_permanentTablesUidUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+            queryNext = QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
                                                        m_storage->escape( m_permanentTablesUidUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
+                query2Next = QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
+                query2Next = QString( ", '%1'" ).arg( m_storage->escape( key ) );
+
+            // + 20 is for the END WHERE section below
+            if( query.length() + query2.length() + queryNext.length() + query2Next.length() + 20 >= maxSize )
+            {
+                query += QString( " END WHERE url IN(%1);" ).arg( query2 );
+                m_storage->query( query );
+
+                query = queryStart + queryNext;
+                if( query2Next.startsWith( ", " ) )
+                    query2 = query2Next.remove( 0, 2 ); //get rid of the ", "
+                else
+                    query2 = query2Next;
+            }
+            else
+            {
+                query += queryNext;
+                query2 += query2Next;
+            }
+
             first = false;
         }
-        query += QString( " END WHERE url IN(%1);" ).arg( query2 );
 
-        m_storage->query( query );
+        if( !query2.isEmpty() ) // will be empty if we already queried and added nothing new
+        {
+            query += QString( " END WHERE url IN(%1);" ).arg( query2 );
+            m_storage->query( query );
+        }
     }
 }
 
