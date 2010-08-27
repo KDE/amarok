@@ -33,6 +33,8 @@ VERSION 2.3.2
       browser.
     * Fixed incorrect text about "rpath" argument to collection scanner.
       (BR 236076)
+    * Fixed emission of MPRIS StatusChange signal when switching into or out
+      of random mode.
 
 
 VERSION 2.3.2-Beta 1

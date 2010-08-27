@@ -29,10 +29,6 @@ namespace Amarok {
     class PlayerDBusHandler;
 }
 
-namespace The {
-    AMAROK_EXPORT Amarok::PlayerDBusHandler* playerDBusHandler();
-}
-
 struct DBusStatus
 {
     int Play; //Playing = 0, Paused = 1, Stopped = 2
@@ -52,8 +48,6 @@ namespace Amarok
 {
     class AMAROK_EXPORT PlayerDBusHandler : public QObject, public Engine::EngineObserver
     {
-        friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
-
         Q_OBJECT
         public:
             PlayerDBusHandler();
@@ -101,7 +95,7 @@ namespace Amarok
             void Forward( int time );
             void Backward( int time );
 
-                        void updateStatus();
+            void updateStatus();
 
         signals:
             void CapsChange( int );
@@ -114,8 +108,6 @@ namespace Amarok
         private:
             void engineTrackChanged( Meta::TrackPtr track );
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
-
-            static PlayerDBusHandler* s_instance;
     };
 
 } // namespace Amarok

@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/support/MetaUtility.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
@@ -75,7 +76,7 @@ namespace Amarok
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
-        return The::playerDBusHandler()->GetTrackMetadata( The::playlist()->trackAt( position ) );
+        return Meta::Field::mprisMapFromTrack( The::playlist()->trackAt( position ) );
     }
 
     void TracklistDBusHandler::SetLoop( bool enable )

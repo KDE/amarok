@@ -28,7 +28,6 @@
 #include "core/support/Components.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "amarokconfig.h"
-#include "dbus/PlayerDBusHandler.h"
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
@@ -334,8 +333,6 @@ Playlist::Actions::playlistModeChanged()
     }
 
     m_navigator->queueIds( currentQueue );
-
-    The::playerDBusHandler()->updateStatus();
 
     emit navigatorChanged();
 }

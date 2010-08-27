@@ -58,20 +58,19 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, DBusStatus &statu
 namespace Amarok
 {
 
-    PlayerDBusHandler *PlayerDBusHandler::s_instance = 0;
-
     PlayerDBusHandler::PlayerDBusHandler()
         : QObject(kapp),
           EngineObserver( The::engineController() )
     {
         qDBusRegisterMetaType<DBusStatus>();
 
-        s_instance = this;
         setObjectName("PlayerDBusHandler");
 
         new PlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
+        connect( The::playlistActions(), SIGNAL(navigatorChanged()),
+                 this, SLOT(updateStatus()) );
     }
 
     DBusStatus PlayerDBusHandler::GetStatus()
@@ -277,15 +276,5 @@ namespace Amarok
         updateStatus();
     }
 } // namespace Amarok
-
-namespace The {
-    Amarok::PlayerDBusHandler* playerDBusHandler()
-    {
-        if( Amarok::PlayerDBusHandler::s_instance == 0 )
-            Amarok::PlayerDBusHandler::s_instance = new Amarok::PlayerDBusHandler();
-
-        return Amarok::PlayerDBusHandler::s_instance;
-    }
-}
 
 #include "PlayerDBusHandler.moc"
