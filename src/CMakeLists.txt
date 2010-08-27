@@ -481,9 +481,9 @@ set(libdynamic_SRCS
 # DBUS
 #####################################################################
 set(dbus_SRCS
-    dbus/RootDBusHandler.cpp
-    dbus/PlayerDBusHandler.cpp
-    dbus/TracklistDBusHandler.cpp
+    dbus/mpris1/RootHandler.cpp
+    dbus/mpris1/PlayerHandler.cpp
+    dbus/mpris1/TrackListHandler.cpp
     dbus/CollectionDBusHandler.cpp
     dbus/DBusQueryHelper.cpp
 )
@@ -775,10 +775,34 @@ if( LIBLASTFM_FOUND )
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif( LIBLASTFM_FOUND )
 
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml CollectionDBusHandler.h CollectionDBusHandler CollectionAdaptor CollectionAdaptor)
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
+   dbus/mpris1/RootHandler.h
+   Mpris1::RootHandler
+   Mpris1RootAdaptor
+   Mpris1RootAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
+   dbus/mpris1/PlayerHandler.h
+   Mpris1::PlayerHandler
+   Mpris1PlayerAdaptor
+   Mpris1PlayerAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
+   dbus/mpris1/TrackListHandler.h
+   Mpris1::TrackListHandler
+   Mpris1TrackListAdaptor
+   Mpris1TrackListAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.Collection.xml
+   dbus/CollectionDBusHandler.h
+   CollectionDBusHandler
+   CollectionAdaptor
+   CollectionAdaptor )
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
@@ -917,9 +941,9 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 install(FILES  amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
-install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
-              dbus/org.freedesktop.MediaPlayer.player.xml
-              dbus/org.freedesktop.MediaPlayer.tracklist.xml
+install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
+              dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
+              dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
               dbus/org.kde.amarok.Collection.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 

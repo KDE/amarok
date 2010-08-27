@@ -15,37 +15,37 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef ROOT_DBUS_HANDLER_H
-#define ROOT_DBUS_HANDLER_H
+#ifndef MPRIS1_ROOT_HANDLER_H
+#define MPRIS1_ROOT_HANDLER_H
 
 #include <QObject>
 #include <QDBusArgument>
 
-struct Version
+namespace Mpris1
 {
-    quint16 major;
-    quint16 minor;
-};
+    struct Version
+    {
+        quint16 major;
+        quint16 minor;
+    };
 
-Q_DECLARE_METATYPE(Version)
-
-// Marshall the DBusVersion data into a D-BUS argument
-QDBusArgument &operator<<(QDBusArgument &argument, const Version &version);
-// Retrieve the DBusVersion data from the D-BUS argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, Version &version);
-
-namespace Amarok
-{
-    class RootDBusHandler : public QObject
+    class RootHandler : public QObject
     {
         Q_OBJECT
 
         public:
-            RootDBusHandler();
+            RootHandler();
             QString Identity();
             void Quit();
             Version MprisVersion();
     };
 }
 
-#endif
+Q_DECLARE_METATYPE(Mpris1::Version)
+
+// Marshall the DBusVersion data into a D-BUS argument
+QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Version &version);
+// Retrieve the DBusVersion data from the D-BUS argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, Mpris1::Version &version);
+
+#endif // MPRIS1_ROOT_HANDLER_H

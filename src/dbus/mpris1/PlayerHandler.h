@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYER_DBUS_HANDLER_H
-#define PLAYER_DBUS_HANDLER_H
+#ifndef MPRIS1_PLAYER_HANDLER_H
+#define MPRIS1_PLAYER_HANDLER_H
 
 #include "core/meta/Meta.h"
 #include "core/engine/EngineObserver.h"
@@ -25,32 +25,35 @@
 #include <QVariantMap>
 #include <QDBusArgument>
 
-namespace Amarok {
-    class PlayerDBusHandler;
+namespace Mpris1 {
+    class PlayerHandler;
 }
 
-struct DBusStatus
+namespace Mpris1
 {
-    int Play; //Playing = 0, Paused = 1, Stopped = 2
-    int Random; //Linearly = 0, Randomly = 1
-    int Repeat; //Go_To_Next = 0, Repeat_Current = 1
-    int RepeatPlaylist; //Stop_When_Finished = 0, Never_Give_Up_Playing = 1
-};
+    struct Status
+    {
+        int Play; //Playing = 0, Paused = 1, Stopped = 2
+        int Random; //Linearly = 0, Randomly = 1
+        int Repeat; //Go_To_Next = 0, Repeat_Current = 1
+        int RepeatPlaylist; //Stop_When_Finished = 0, Never_Give_Up_Playing = 1
+    };
+}
 
-Q_DECLARE_METATYPE( DBusStatus )
+Q_DECLARE_METATYPE( Mpris1::Status )
 
-// Marshall the DBusStatus data into a D-BUS argument
-QDBusArgument &operator << ( QDBusArgument &argument, const DBusStatus &status );
-// Retrieve the DBusStatus data from the D-BUS argument
-const QDBusArgument &operator >> ( const QDBusArgument &argument, DBusStatus &status );
+// Marshall the Status data into a D-BUS argument
+QDBusArgument &operator << ( QDBusArgument &argument, const Mpris1::Status &status );
+// Retrieve the Status data from the D-BUS argument
+const QDBusArgument &operator >> ( const QDBusArgument &argument, Mpris1::Status &status );
 
-namespace Amarok
+namespace Mpris1
 {
-    class AMAROK_EXPORT PlayerDBusHandler : public QObject, public Engine::EngineObserver
+    class AMAROK_EXPORT PlayerHandler : public QObject, public Engine::EngineObserver
     {
         Q_OBJECT
         public:
-            PlayerDBusHandler();
+            PlayerHandler();
 
             enum DBusCaps {
                  NONE                  = 0,
@@ -64,7 +67,7 @@ namespace Amarok
              };
 
         public slots:
-            DBusStatus GetStatus();
+            Status GetStatus();
 
             void Pause();
             void Play();
@@ -100,7 +103,7 @@ namespace Amarok
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );
-            void StatusChange( DBusStatus );
+            void StatusChange( Mpris1::Status );
 
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
@@ -112,4 +115,4 @@ namespace Amarok
 
 } // namespace Amarok
 
-#endif
+#endif // MPRIS1_PLAYER_HANDLER_H

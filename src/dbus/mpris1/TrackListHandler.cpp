@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TracklistDBusHandler.h"
+#include "TrackListHandler.h"
 
 #include "amarokconfig.h"
 #include "App.h"
@@ -24,26 +24,26 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
-#include "dbus/PlayerDBusHandler.h"
+#include "dbus/mpris1/PlayerHandler.h"
 #include "ActionClasses.h"
 
 
 
-#include "TracklistAdaptor.h"
+#include "Mpris1TrackListAdaptor.h"
 
-namespace Amarok
+namespace Mpris1
 {
 
-    TracklistDBusHandler::TracklistDBusHandler()
+    TrackListHandler::TrackListHandler()
         : QObject( kapp )
     {
-        new TracklistAdaptor(this);
+        new Mpris1TrackListAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
         connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
         connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
-    int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
+    int TrackListHandler::AddTrack( const QString& url, bool playImmediately )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
@@ -58,28 +58,28 @@ namespace Amarok
             return -1;
     }
 
-    void TracklistDBusHandler::DelTrack( int index )
+    void TrackListHandler::DelTrack( int index )
     {
         if( index < GetLength() )
             The::playlistController()->removeRow( index );
     }
 
-    int TracklistDBusHandler::GetCurrentTrack()
+    int TrackListHandler::GetCurrentTrack()
     {
         return The::playlist()->activeRow();
     }
 
-    int TracklistDBusHandler::GetLength()
+    int TrackListHandler::GetLength()
     {
         return The::playlist()->qaim()->rowCount();
     }
 
-    QVariantMap TracklistDBusHandler::GetMetadata( int position )
+    QVariantMap TrackListHandler::GetMetadata( int position )
     {
         return Meta::Field::mprisMapFromTrack( The::playlist()->trackAt( position ) );
     }
 
-    void TracklistDBusHandler::SetLoop( bool enable )
+    void TrackListHandler::SetLoop( bool enable )
     {
         if( enable )
         {
@@ -93,7 +93,7 @@ namespace Amarok
         }
     }
 
-    void TracklistDBusHandler::SetRandom( bool enable )
+    void TrackListHandler::SetRandom( bool enable )
     {
         if( enable )
         {
@@ -107,16 +107,16 @@ namespace Amarok
         }
     }
 
-    void TracklistDBusHandler::PlayTrack( int index )
+    void TrackListHandler::PlayTrack( int index )
     {
         The::playlistActions()->play( index );
     }
 
-    void TracklistDBusHandler::slotTrackListChange()
+    void TrackListHandler::slotTrackListChange()
     {
         emit TrackListChange( The::playlist()->qaim()->rowCount() );
     }
 }
 
-#include "TracklistDBusHandler.moc"
+#include "TrackListHandler.moc"
 
