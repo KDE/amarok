@@ -229,6 +229,10 @@ LabelsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, Pla
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
     DEBUG_BLOCK
+
+    if( !m_addLabelProxy )
+        return;
+
     m_currentLabels.clear();
     m_labelInfos.clear();
     updateLabels();
