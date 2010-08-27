@@ -25,6 +25,8 @@
 
 #include <ui_labelsSettings.h>
 
+#include <QPointer>
+
 class TextScrollingWidget;
 class LabelGraphicsItem;
 class KComboBox;
@@ -72,7 +74,8 @@ private:
     QString                 m_titleText;
     TextScrollingWidget     *m_titleLabel;
     KComboBox               *m_addLabel;
-    QGraphicsProxyWidget    *m_addLabelProxy;
+
+    QPointer<QGraphicsProxyWidget> m_addLabelProxy;
 
     int                     m_numLabels;
     int                     m_minCount;
@@ -82,8 +85,9 @@ private:
     QStringList             m_blacklist;
     bool                    m_stoppedstate;
 
-    Plasma::IconWidget      *m_reloadIcon;
-    Plasma::IconWidget      *m_settingsIcon;
+    QPointer<Plasma::IconWidget> m_reloadIcon;
+    QPointer<Plasma::IconWidget> m_settingsIcon;
+
     Ui::labelsSettings      ui_Settings;
 
 private slots:
