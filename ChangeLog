@@ -11,6 +11,9 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Collection directories that were symlinks could end up storing the wrong
+      absolute path, causing those files to be removed during incremental
+      scans.
     * Fixed playlist tooltips not showing up, even when enabled in the playlist
       layout (BR 249086)
     * Fixed potential crashes related to Applet loading. (BR 246756)

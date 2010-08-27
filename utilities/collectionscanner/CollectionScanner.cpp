@@ -379,12 +379,10 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     QStringList recurseDirs;
     foreach( const QFileInfo &fi, list )
     {
-        if( !fi.exists() )
+        if( !fi.exists() || ( fi.isSymLink() && !QFileInfo( fi.symLinkTarget() ).exists() ) )
             break;
 
-        const QFileInfo &f = fi.isSymLink() ? QFileInfo( fi.symLinkTarget() ) : fi;
-
-        if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
+        if( fi.isDir() && m_recursively && !m_scannedFolders.contains( fi.absoluteFilePath() ) )
         {
             //The following D-Bus call is used to see if a found folder is new or not
             //During an incremental scan the scanning isn't really recursive, as all folders
@@ -395,16 +393,16 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
             bool isInCollection = false;
             if( m_incremental && m_amarokCollectionInterface )
             {
-                QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", f.canonicalFilePath() );
+                QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", fi.absoluteFilePath() );
                 if( reply.isValid() )
                     isInCollection = reply.value();
             }
 
             if( !m_incremental || !isInCollection )
-                recurseDirs << QString( f.absoluteFilePath() + '/' );
+                recurseDirs << QString( fi.absoluteFilePath() + '/' );
         }
-        else if( f.isFile() )
-            entries.append( f.absoluteFilePath() );
+        else if( fi.isFile() )
+            entries.append( fi.absoluteFilePath() );
     }
     foreach( const QString &dir, recurseDirs )
         readDir( dir, entries );
