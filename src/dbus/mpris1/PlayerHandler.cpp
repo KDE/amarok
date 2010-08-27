@@ -20,11 +20,13 @@
 #include "amarokconfig.h"
 #include "ActionClasses.h"
 #include "App.h"
+#include "AppDBusAdaptor.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "Mpris1PlayerAdaptor.h"
+#include "PlayerDBusAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "Osd.h"
@@ -67,6 +69,9 @@ namespace Mpris1
         setObjectName("PlayerHandler");
 
         new Mpris1PlayerAdaptor( this );
+        // amarok extensions:
+        new AppDBusAdaptor( this );
+        new PlayerDBusAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
         connect( The::playlistActions(), SIGNAL(navigatorChanged()),

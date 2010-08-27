@@ -1,0 +1,29 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+
+<node>
+  <interface name="org.kde.amarok.Player">
+
+    <!-- NB: Amarok extensions to the mpris spec -->
+    <method name="VolumeUp">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="VolumeDown">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="Mute">
+    </method>
+
+    <method name="Forward">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="Backward">
+        <arg type="i" direction="in"/>
+    </method>
+
+  </interface>
+</node>
