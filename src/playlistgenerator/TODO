@@ -3,7 +3,6 @@ Backend:
   from XML, and put XML in Constraint superclass
 - monitor APG patent: US 11/994425
 - actually have the speed/accuracy slider do something
-- implement a playlistprovider (per Bart on merge request)
 
 Constraints:
 - fix preventduplicates: the delta functions are kinda broken
