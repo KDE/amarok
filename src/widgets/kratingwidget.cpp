@@ -161,9 +161,13 @@ void KRatingWidget::setRating( unsigned int rating )
 
 void KRatingWidget::setRating( int rating )
 {
-    d->rating = rating;
-    d->hoverRating = rating;
-    update();
+    if ( rating != d->rating ) {
+        d->rating = rating;
+        d->hoverRating = rating;
+        emit ratingChanged( rating );
+        emit ratingChanged( (unsigned int)rating );
+        update();
+    }
 }
 
 
@@ -196,10 +200,8 @@ void KRatingWidget::setOnlyPaintFullSteps( bool fs )
 void KRatingWidget::mousePressEvent( QMouseEvent* e )
 {
     if ( e->button() == Qt::LeftButton ) {
-        d->hoverRating = d->rating = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
-        update();
-        emit ratingChanged( d->rating );
-        emit ratingChanged( (unsigned int)d->rating );
+        d->hoverRating = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
+        setRating( d->hoverRating );
     }
 }
 
@@ -209,9 +211,7 @@ void KRatingWidget::mouseMoveEvent( QMouseEvent* e )
     // when moving the mouse we show the user what the result of clicking will be
     d->hoverRating = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
     if ( d->hoverRating >= 0 && e->buttons() & Qt::LeftButton ) {
-        d->rating = d->hoverRating;
-        emit ratingChanged( d->rating );
-        emit ratingChanged( (unsigned int)d->rating );
+        setRating( d->hoverRating );
     }
     update();
 }
