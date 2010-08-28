@@ -100,7 +100,6 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
 
     private:
         QPointer<CustomVideoWidget> m_videoWidget;
-     //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
         TextScrollingWidget     *m_headerText;
