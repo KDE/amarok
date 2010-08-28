@@ -136,6 +136,9 @@ StarManager::getHalfStar( int num )
     /*if( AmarokConfig::fixedHalfStarColor() || num == -1 )
         return &m_halfStarPix;
     else*/
+    if( num < 1 || num > 5 )
+        return &m_starPix;
+    else
         return &m_halfpixmaps[num - 1];
 }
 

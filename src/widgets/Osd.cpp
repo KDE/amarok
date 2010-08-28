@@ -339,6 +339,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     if( !m_showVolume && m_rating > 0 && !m_paused )
     {
+        // TODO: Check if we couldn't use a KRatingPainter instead
         QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
         QRect r( rect );
 
