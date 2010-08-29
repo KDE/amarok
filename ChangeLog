@@ -12,6 +12,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Also use podcast channel image for downloaded episodes. (BR 229391)
     * Collection directories that were symlinks could end up storing the wrong
       absolute path, causing those files to be removed during incremental
       scans.

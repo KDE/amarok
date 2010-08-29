@@ -321,15 +321,6 @@ SqlPodcastEpisode::setTitle( const QString &title )
     m_title = title;
 }
 
-Meta::AlbumPtr
-SqlPodcastEpisode::album() const
-{
-    if( m_localFile.isNull() )
-        return m_albumPtr;
-
-    return m_localFile->album();
-}
-
 Meta::ArtistPtr
 SqlPodcastEpisode::artist() const
 {

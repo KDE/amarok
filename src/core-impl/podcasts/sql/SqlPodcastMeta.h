@@ -64,7 +64,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 
-        virtual Meta::AlbumPtr album() const;
         virtual Meta::ArtistPtr artist() const;
         virtual Meta::ComposerPtr composer() const;
         virtual Meta::GenrePtr genre() const;

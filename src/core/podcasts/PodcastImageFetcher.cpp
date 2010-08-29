@@ -102,6 +102,7 @@ PodcastImageFetcher::run()
     {
         debug() << "Solid reports we are not online, canceling podcast image download";
         emit( done( this ) );
+        //TODO: schedule another run after Solid reports we are online again
         return;
     }
 
