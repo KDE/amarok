@@ -428,14 +428,20 @@ AlbumsItemDelegate::paint( QPainter *p,
         qreal aspectRatio = static_cast<qreal>( coverSize.width() ) / coverSize.height();
         const int margin = vopt.widget->style()->pixelMetric( QStyle::PM_FocusFrameHMargin ) + 1;
         const int offset = qMin( int(iconSize * aspectRatio), iconSize ) + margin;
-        vopt.rect.adjust( offset, 0, 0, 0 );
+        if( option.direction == Qt::RightToLeft )
+            vopt.rect.adjust( 0, 0, -offset, 0 );
+        else
+            vopt.rect.adjust( offset, 0, 0, 0 );
         drawAlbumText( p, vopt );
     }
     else if( item->type() == TrackType )
     {
         QStyleOptionViewItemV4 vopt( option );
         initStyleOption( &vopt, index );
-        vopt.rect.adjust( 0, 0, -2, 0 );
+        if( option.direction == Qt::RightToLeft )
+            vopt.rect.adjust( 2, 0, 0, 0 );
+        else
+            vopt.rect.adjust( 0, 0, -2, 0 );
         drawTrackText( p, vopt );
     }
 }
@@ -503,11 +509,32 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
     p->setLayoutDirection( vopt.direction );
     p->setFont( vopt.font );
     applyCommonStyle( p, vopt );
-    int textRectWidth = m_lengthAlignment == Qt::AlignLeft ? fm.width( middle ) : availableWidth;
-    QRect numberRect( vopt.rect.topLeft(), QSize( numberRectWidth, vopt.rect.height() ) );
-    QRect textRect( numberRect.topRight(), QSize( textRectWidth, vopt.rect.height() ) );
-    QRect lengthRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
-    p->drawText( textRect, Qt::AlignJustify | Qt::AlignVCenter, middle );
+    int textRectWidth = (m_lengthAlignment == Qt::AlignLeft) ? fm.width( middle ) : availableWidth;
+
+    QRect numberRect;
+    QRect textRect;
+    QRect lengthRect;
+    if( vopt.direction == Qt::RightToLeft )
+    {
+        QPoint corner = vopt.rect.topRight();
+        corner.rx() -= numberRectWidth;
+        numberRect = QRect( corner, QSize( numberRectWidth, vopt.rect.height() ) );
+
+        corner = numberRect.topLeft();
+        corner.rx() -= textRectWidth;
+        textRect = QRect( corner, QSize( textRectWidth, vopt.rect.height() ) );
+
+        corner = textRect.topLeft();
+        corner.rx() -= lengthRectWidth;
+        lengthRect = QRect( corner, QSize( lengthRectWidth, vopt.rect.height() ) );
+    }
+    else
+    {
+        numberRect = QRect( vopt.rect.topLeft(), QSize( numberRectWidth, vopt.rect.height() ) );
+        textRect = QRect( numberRect.topRight(), QSize( textRectWidth, vopt.rect.height() ) );
+        lengthRect = QRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
+    }
+    p->drawText( textRect, Qt::AlignVCenter, middle );
 
     // use a nonbold font for drawing track numbers and lengths
     if( vopt.font.bold() )
