@@ -2,7 +2,6 @@ Backend:
 - replace values in constraints with Qt properties, and use properties for saving/loading
   from XML, and put XML in Constraint superclass
 - monitor APG patent: US 11/994425
-- actually have the speed/accuracy slider do something
 
 Constraints:
 - fix preventduplicates: the delta functions are kinda broken

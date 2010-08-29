@@ -41,6 +41,7 @@ namespace APG {
 
             Meta::TrackList getSolution() const;
             double finalSatisfaction() const;
+            double satisfactionThreshold() const;
             int serial() const { return m_serialNumber; }
             int iterationCount() const { return m_maxCoolingIterations; }
 

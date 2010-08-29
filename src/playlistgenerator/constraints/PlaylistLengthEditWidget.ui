@@ -61,8 +61,11 @@
             <property name="whatsThis">
              <string>The target number of tracks for the generated playlist.</string>
             </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
             <property name="maximum">
-             <number>9999</number>
+             <number>1000</number>
             </property>
             <property name="value">
              <number>30</number>
