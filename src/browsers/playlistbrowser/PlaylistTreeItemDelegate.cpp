@@ -158,8 +158,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     cursorPos.ry() -= 20;
     if( actionCount > 0 && isHover )
     {
-        //HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies in a QVariantList. So only take the first.
-
+        /* HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies
+           in a QVariantList. So only take the first. */
         QList<QAction*> actions;
         QVariantList actionsVariants =
                 index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
@@ -167,7 +167,13 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
             actions = actionsVariants.first().value<QList<QAction*> >();
 
         QRect actionsRect;
-        actionsRect.setLeft( ( width - actionCount * ( ACTIONICON_SIZE + iconPadX ) ) - 2 );
+        if( isRTL )
+            //actions should appear to the right of the expander
+            actionsRect.setLeft( expanderOption.rect.right() + iconPadX );
+        else
+            //actions should appear left of the expander
+            actionsRect.setLeft( expanderOption.rect.left() -
+                                 actionCount * ( ACTIONICON_SIZE + iconPadX ) );
         actionsRect.setTop( option.rect.top() + iconYPadding );
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );

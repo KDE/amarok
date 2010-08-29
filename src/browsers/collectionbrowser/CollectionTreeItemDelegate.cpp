@@ -128,7 +128,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    const int actionsRectWidth = actionCount > 0 ? (ACTIONICON_SIZE * actionCount + 2*2/*margin*/) : 0;
+    const int actionsRectWidth = actionCount > 0 ?
+                                 (ACTIONICON_SIZE * actionCount + 2*2/*margin*/) : 0;
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
@@ -181,9 +182,12 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     //show actions when there are any and mouse is hovering over item
     if( actionCount > 0 && isHover )
     {
-        const QList<QAction*> actions = index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
+        const QList<QAction*> actions =
+                index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
         QRect decoratorRect;
-        decoratorRect.setLeft( ( width - actionCount * ( ACTIONICON_SIZE + iconPadX ) ) - 2 );
+        //actions should appear left of the expander
+        decoratorRect.setLeft( expanderOption.rect.left() -
+                               actionCount * ( ACTIONICON_SIZE + iconPadX ) );
         decoratorRect.setTop( option.rect.top() + iconYPadding );
         decoratorRect.setWidth( actionsRectWidth );
         decoratorRect.setHeight( ACTIONICON_SIZE );
@@ -201,7 +205,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
             const bool isOver = isHover && iconRect.contains( cursorPos );
 
-            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
+            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ?
+                        QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
             i++;
         }
 
@@ -214,7 +219,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 }
 
 QSize
-CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option,
+                                      const QModelIndex & index ) const
 {
     if( index.parent().isValid() )
         return QStyledItemDelegate::sizeHint( option, index );
@@ -226,8 +232,10 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
-           + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
+    height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft,
+                                 index.data( Qt::DisplayRole ).toString() ).height()
+           + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft,
+                                   index.data( CustomRoles::ByLineRole ).toString() ).height()
            + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
            + 20;
 
@@ -240,4 +248,3 @@ CollectionTreeItemDelegate::decoratorRect( const QModelIndex &index )
     QPersistentModelIndex persistentIndex( index );
     return s_indexDecoratorRects.value( persistentIndex );
 }
-
