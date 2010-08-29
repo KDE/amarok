@@ -188,7 +188,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                         return providerActionsData;
                     }
                 }
-                else
+                else if( providers.count() )
                 {
                     Playlists::PlaylistProvider *provider = providers.first();
                     name = description = provider->prettyName();
