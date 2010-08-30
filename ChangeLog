@@ -12,6 +12,8 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fixed a crash when trying to save a playlist to a file where the format
+      of the playlist was unknown. (BR 246168)
     * Also use podcast channel image for downloaded episodes. (BR 229391)
     * Collection directories that were symlinks could end up storing the wrong
       absolute path, causing those files to be removed during incremental

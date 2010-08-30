@@ -29,6 +29,7 @@
 #include <KLocale>
 #include <KTemporaryFile>
 #include <KUrl>
+#include <KMessageBox>
 
 #include <QFile>
 #include <QFileInfo>
@@ -173,8 +174,19 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<i
             break;
     }
 
-    playlist->setQueue( queued );
-    result = playlist->save( path.path(), true );
+    if ( playlist )
+    {
+        playlist->setQueue( queued );
+        result = playlist->save( path.path(), true );
+    }
+    else
+    {
+        // TODO: Add this after git master is open again.
+        // KMessageBox::error( 0,
+        //                    i18n( "The given file extension is valid for a playlist." ),
+        //                    i18n( "Unknown playlist format" ) );
+    }
+    
     return result;
 }
 
