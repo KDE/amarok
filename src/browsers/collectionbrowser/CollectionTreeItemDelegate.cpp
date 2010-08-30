@@ -185,9 +185,13 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         const QList<QAction*> actions =
                 index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
         QRect decoratorRect;
-        //actions should appear left of the expander
-        decoratorRect.setLeft( expanderOption.rect.left() -
-                               actionCount * ( ACTIONICON_SIZE + iconPadX ) );
+        if( isRTL )
+            //actions should appear to the right of the expander
+            decoratorRect.setLeft( expanderOption.rect.right() + iconPadX );
+        else
+            //actions should appear left of the expander
+            decoratorRect.setLeft( expanderOption.rect.left() -
+                                   actionCount * ( ACTIONICON_SIZE + iconPadX ) );
         decoratorRect.setTop( option.rect.top() + iconYPadding );
         decoratorRect.setWidth( actionsRectWidth );
         decoratorRect.setHeight( ACTIONICON_SIZE );
