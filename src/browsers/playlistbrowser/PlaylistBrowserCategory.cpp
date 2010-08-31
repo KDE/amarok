@@ -140,6 +140,19 @@ PlaylistBrowserCategory::~PlaylistBrowserCategory()
 {
 }
 
+QString
+PlaylistBrowserCategory::filter() const
+{
+    return QUrl::toPercentEncoding( m_filterProxy->filterRegExp().pattern() );
+}
+
+void
+PlaylistBrowserCategory::setFilter( const QString &filter )
+{
+    debug() << "Setting filter " << filter;
+    m_filterProxy->setFilterRegExp( QRegExp( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
+}
+
 QTreeView *
 PlaylistBrowserCategory::playlistView()
 {

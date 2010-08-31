@@ -54,6 +54,9 @@ public:
                                   QWidget *parent );
     ~PlaylistBrowserCategory();
 
+    virtual QString filter() const;
+    virtual void setFilter( const QString &filter );
+
 protected:
     KToolBar *m_toolBar;
 
