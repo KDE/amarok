@@ -178,6 +178,9 @@ PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provide
 
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
+
+    //TODO: only turn off merged view for non-empty providers or based on some provider property
+    toggleView( false );
 }
 
 void
