@@ -112,7 +112,6 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     int row = REMOVE_TRACK_MASK(index.internalId());
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
-    QVariant food = QVariant();
     QString name;
     QString description;
     KIcon icon;
@@ -126,13 +125,11 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( IS_TRACK(index) )
             {
                 Meta::TrackPtr track = playlist->tracks()[index.row()];
-                food = QVariant::fromValue( track );
                 name = track->prettyName();
                 icon = KIcon( "amarok_track" );
             }
             else
             {
-                food = QVariant::fromValue( playlist );
                 name = playlist->prettyName();
                 description = playlist->description();
                 icon = KIcon( "amarok_playlist" );
@@ -206,7 +203,6 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 
     switch( role )
     {
-        case 0xf00d: return food;
         case Qt::DisplayRole:
         case Qt::EditRole: return name;
         case DescriptionRole:
