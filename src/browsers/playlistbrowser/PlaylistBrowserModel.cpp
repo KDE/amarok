@@ -350,9 +350,9 @@ PlaylistBrowserModel::flags( const QModelIndex &idx ) const
 {
     //Both providers and groups can be empty. QtGroupingProxy makes empty groups from the data in
     //the rootnode (here an invalid QModelIndex).
-    //TODO: accept drops and allow drags only if provider is writable.
+    //TODO: editable only if provider is writable.
     if( idx.column() == PlaylistBrowserModel::ProviderColumn )
-        return Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled | Qt::ItemIsEditable;
 
     if( idx.column() == PlaylistBrowserModel::LabelColumn )
         return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;

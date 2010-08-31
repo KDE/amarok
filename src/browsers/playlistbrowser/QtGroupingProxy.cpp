@@ -485,6 +485,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
 {
     //only if the grouped column has the editable flag set allow the
     //actions leading to setData on the source (edit, drop & drag)
+//    qDebug() << idx;
     if( isGroup( idx ) )
     {
 //        dumpGroups();
@@ -505,7 +506,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
             {
                 QModelIndex originalIdx = m_model->index( originalRow, m_groupedColumn,
                                                           m_rootNode );
-                //qDebug() << "originalIdx: " << originalIdx;
+//                qDebug() << "originalIdx: " << originalIdx;
                 groupIsEditable = groupIsEditable
                                   ? originalIdx.flags().testFlag( Qt::ItemIsEditable )
                                   : false;
@@ -515,8 +516,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
         }
 
         if( groupIsEditable )
-            return (  defaultFlags | Qt::ItemIsEditable |
-                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
+            return (  defaultFlags | Qt::ItemIsEditable | Qt::ItemIsDropEnabled );
         return defaultFlags;
     }
 
