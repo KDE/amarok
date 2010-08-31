@@ -110,7 +110,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
 
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</html>",
-                         aboutData->programName(), aboutData->version(), QString(KDE_VERSION_STRING)));
+                         aboutData->programName(), aboutData->version(), KDE::versionString()));
 
 
     //Now let's add the tab bar...
