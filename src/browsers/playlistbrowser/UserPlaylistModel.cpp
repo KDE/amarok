@@ -82,7 +82,7 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
 
     switch( idx.column() )
     {
-        case PlaylistBrowserModel::PlaylistColumn:
+        case PlaylistBrowserModel::PlaylistItemColumn:
         {
             debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );

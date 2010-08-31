@@ -116,92 +116,91 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     QString name;
     QString description;
     KIcon icon;
-    QStringList groups;
     int playlistCount = 0;
     QList<QAction *> providerActions;
 
-    if( IS_TRACK(index) )
+    switch( index.column() )
     {
-        Meta::TrackPtr track = playlist->tracks()[index.row()];
-        food = QVariant::fromValue( track );
-        name = track->prettyName();
-        icon = KIcon( "amarok_track" );
-    }
-    else
-    {
-        switch( index.column() )
+        case PlaylistBrowserModel::PlaylistItemColumn: //playlist or track data
         {
-            case PlaylistBrowserModel::PlaylistColumn: //playlist
+            if( IS_TRACK(index) )
+            {
+                Meta::TrackPtr track = playlist->tracks()[index.row()];
+                food = QVariant::fromValue( track );
+                name = track->prettyName();
+                icon = KIcon( "amarok_track" );
+            }
+            else
             {
                 food = QVariant::fromValue( playlist );
                 name = playlist->prettyName();
                 description = playlist->description();
                 icon = KIcon( "amarok_playlist" );
-                break;
             }
-            case PlaylistBrowserModel::LabelColumn: //group
-            {
-                if( !playlist->groups().isEmpty() )
-                {
-                    name = playlist->groups().first();
-                    icon = KIcon( "folder" );
-                }
-                break;
-            }
-
-            case PlaylistBrowserModel::ProviderColumn: //source
-            {
-                QList<Playlists::PlaylistProvider *> providers =
-                        The::playlistManager()->getProvidersForPlaylist( playlist );
-
-                if( providers.count() > 1 )
-                {
-                    QVariantList nameData;
-                    QVariantList descriptionData;
-                    QVariantList iconData;
-                    QVariantList playlistCountData;
-                    QVariantList providerActionsData;
-                    foreach( Playlists::PlaylistProvider *provider, providers )
-                    {
-                        name = description = provider->prettyName();
-                        nameData << name;
-                        descriptionData << description;
-                        icon = provider->icon();
-                        iconData << QVariant( icon );
-                        playlistCount = provider->playlists().count();
-                        playlistCountData << i18ncp( "number of playlists from one source",
-                                                     "One Playlist", "%1 playlists",
-                                                     playlistCount );
-                        providerActions << provider->providerActions();
-                        providerActionsData << QVariant::fromValue( providerActions );
-                    }
-                    switch( role )
-                    {
-                    case Qt::DisplayRole:
-                    case Qt::EditRole: return nameData;
-                    case DescriptionRole:
-                    case Qt::ToolTipRole: return descriptionData;
-                    case Qt::DecorationRole: return iconData;
-                    case PlaylistBrowserModel::ByLineRole:
-                        return playlistCountData;
-                    case PlaylistBrowserModel::ActionRole:
-                        return providerActionsData;
-                    }
-                }
-                else if( providers.count() )
-                {
-                    Playlists::PlaylistProvider *provider = providers.first();
-                    name = description = provider->prettyName();
-                    icon = provider->icon();
-                    playlistCount = provider->playlists().count();
-                    providerActions << provider->providerActions();
-                }
-
-                break;
-            }
-
-            default: return QVariant();
+            break;
         }
+        case PlaylistBrowserModel::LabelColumn: //group
+        {
+            if( !playlist->groups().isEmpty() )
+            {
+                name = playlist->groups().first();
+                icon = KIcon( "folder" );
+            }
+            break;
+        }
+
+        case PlaylistBrowserModel::ProviderColumn: //source
+        {
+            QList<Playlists::PlaylistProvider *> providers =
+                    The::playlistManager()->getProvidersForPlaylist( playlist );
+
+            if( providers.count() > 1 )
+            {
+                QVariantList nameData;
+                QVariantList descriptionData;
+                QVariantList iconData;
+                QVariantList playlistCountData;
+                QVariantList providerActionsData;
+                foreach( Playlists::PlaylistProvider *provider, providers )
+                {
+                    name = description = provider->prettyName();
+                    nameData << name;
+                    descriptionData << description;
+                    icon = provider->icon();
+                    iconData << QVariant( icon );
+                    playlistCount = provider->playlists().count();
+                    playlistCountData << i18ncp( "number of playlists from one source",
+                                                 "One Playlist", "%1 playlists",
+                                                 playlistCount );
+                    providerActions << provider->providerActions();
+                    providerActionsData << QVariant::fromValue( providerActions );
+                }
+                switch( role )
+                {
+                case Qt::DisplayRole:
+                case Qt::EditRole: return nameData;
+                case DescriptionRole:
+                case Qt::ToolTipRole: return descriptionData;
+                case Qt::DecorationRole: return iconData;
+                case PlaylistBrowserModel::ByLineRole:
+                    return playlistCountData;
+                case PlaylistBrowserModel::ActionRole:
+                    return providerActionsData;
+                }
+            }
+            else if( providers.count() )
+            {
+                Playlists::PlaylistProvider *provider = providers.first();
+                name = description = provider->prettyName();
+                icon = provider->icon();
+                playlistCount = provider->playlists().count();
+                providerActions << provider->providerActions();
+            }
+
+            break;
+        }
+
+        default: return QVariant();
     }
 
 
@@ -374,7 +373,7 @@ PlaylistBrowserModel::headerData( int section, Qt::Orientation orientation, int 
     {
         switch( section )
         {
-            case PlaylistBrowserModel::PlaylistColumn: return i18n("Name");
+            case PlaylistBrowserModel::PlaylistItemColumn: return i18n("Name");
             case PlaylistBrowserModel::LabelColumn: return i18n("Group");
             case PlaylistBrowserModel::ProviderColumn: return i18n("Source");
             default: return QVariant();

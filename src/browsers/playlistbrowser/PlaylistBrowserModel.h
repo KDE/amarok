@@ -45,7 +45,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
     Q_OBJECT
     public:
         enum {
-            PlaylistColumn = 0, //Data form the playlist itself
+            PlaylistItemColumn = 0, //Data form the playlist itself or it's tracks
             LabelColumn, //Data from the labels. Can be used as foldernames in the view.
             ProviderColumn, //data from the PlaylistProvider
             CustomColumOffset //first column that can be used by subclasses for their own data

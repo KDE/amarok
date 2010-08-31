@@ -200,7 +200,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
             {
                 switch( idx.column() )
                 {
-                    case PlaylistBrowserModel::PlaylistColumn:
+                    case PlaylistBrowserModel::PlaylistItemColumn:
                         return pmc->title();
 
                     case SubtitleColumn:
@@ -250,7 +250,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case ShortDescriptionRole:
             {
-                if( idx.column() == PlaylistBrowserModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
                     return pmc->description();
                 break;
             }
@@ -270,7 +270,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case Qt::DecorationRole:
             {
-                if( idx.column() == PlaylistBrowserModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
                         return icon( pmc );
                 break;
             }
