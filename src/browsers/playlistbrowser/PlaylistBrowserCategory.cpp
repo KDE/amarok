@@ -151,8 +151,8 @@ PlaylistBrowserCategory::toggleView( bool merged )
 {
     if( merged )
     {
-        // Bypass the sort/filter proxy in merged view
-        m_playlistView->setModel( m_byFolderProxy );
+        m_filterProxy->setSourceModel( m_byFolderProxy );
+        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
     }
