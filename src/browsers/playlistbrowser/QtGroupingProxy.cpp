@@ -68,7 +68,7 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
         i.next();
         int role = i.key();
         QVariant variant = i.value();
-        // qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant; //so spammy
+        // qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant;
         if( variant.type() == QVariant::List )
         {
             //a list of variants get's expanded to multiple rows
@@ -182,7 +182,7 @@ QtGroupingProxy::buildTree()
             m_groupHash.insertMulti( groupIndex, row );
         }
     }
-    dumpGroups();
+//    dumpGroups();
 
     emit layoutChanged();
 }
@@ -487,7 +487,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
     //actions leading to setData on the source (edit, drop & drag)
     if( isGroup( idx ) )
     {
-        dumpGroups();
+//        dumpGroups();
         Qt::ItemFlags defaultFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
         bool groupIsEditable = true;
 
@@ -524,7 +524,8 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
     Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
 
     //check the source model to see if the grouped column is editable;
-    QModelIndex groupedColumnIndex = m_model->index( originalIdx.row(), m_groupedColumn, originalIdx.parent() );
+    QModelIndex groupedColumnIndex =
+            m_model->index( originalIdx.row(), m_groupedColumn, originalIdx.parent() );
     bool groupIsEditable = m_model->flags( groupedColumnIndex ).testFlag( Qt::ItemIsEditable );
     if( groupIsEditable )
         return originalItemFlags | Qt::ItemIsDragEnabled;
@@ -667,7 +668,6 @@ QtGroupingProxy::isAGroupSelected( const QModelIndexList& list ) const
 void
 QtGroupingProxy::dumpGroups() const
 {
-    return; //so spammy
     qDebug() << "m_groupHash: ";
     for( int groupIndex = -1; groupIndex < m_groupHash.keys().count() - 1; groupIndex++ )
     {
