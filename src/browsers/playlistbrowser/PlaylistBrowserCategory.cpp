@@ -151,6 +151,15 @@ PlaylistBrowserCategory::setFilter( const QString &filter )
 {
     debug() << "Setting filter " << filter;
     m_filterProxy->setFilterRegExp( QRegExp( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
+    //disable all other provider-buttons
+    foreach( QAction * const providerAction, m_providerActions.values() )
+    {
+        const Playlists::PlaylistProvider *provider =
+                providerAction->data().value<const Playlists::PlaylistProvider *>();
+        if( provider )
+            providerAction->setChecked(
+                    m_filterProxy->filterRegExp().exactMatch( provider->prettyName() ) );
+    }
 }
 
 QTreeView *
@@ -232,7 +241,8 @@ PlaylistBrowserCategory::slotToggleProviderButton( bool enabled )
     DEBUG_BLOCK
 
     QAction * const action = qobject_cast<QAction *>( QObject::sender() );
-    const Playlists::PlaylistProvider *provider = action->data().value<const Playlists::PlaylistProvider *>();
+    const Playlists::PlaylistProvider *provider =
+            action->data().value<const Playlists::PlaylistProvider *>();
     if( !m_providerActions.keys().contains( provider ) )
         return;
 
