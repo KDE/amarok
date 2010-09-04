@@ -29,7 +29,7 @@ install(
         playlist-sorting-16.png
         pud_items.svg
         smallstar.png
-        splash_screen.png
+        splash_screen.jpg
         star.png
         volume_icon.png
         volume_muted_icon.png
