@@ -57,8 +57,8 @@ public:
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
 private slots:
-    void textDialogOK();
-    void textDialogCancel();
+    void textDialogYes();
+    void textDialogNo();
 
 private:
     void askAboutMissingKWallet();

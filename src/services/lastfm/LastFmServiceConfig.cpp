@@ -50,6 +50,8 @@ LastFmServiceConfig::LastFmServiceConfig()
 
 LastFmServiceConfig::~LastFmServiceConfig()
 {
+    DEBUG_BLOCK
+
     if( m_askDiag )
         m_askDiag->deleteLater();
     if( m_wallet )
@@ -141,8 +143,8 @@ LastFmServiceConfig::askAboutMissingKWallet()
         m_askDiag->setButtons( KDialog::Yes | KDialog::No );
         m_askDiag->setModal( true );
 
-        connect( m_askDiag, SIGNAL( okClicked() ), this, SLOT( textDialogOK() ) );
-        connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
+        connect( m_askDiag, SIGNAL( yesClicked() ), this, SLOT( textDialogYes() ) );
+        connect( m_askDiag, SIGNAL( noClicked() ), this, SLOT( textDialogNo() ) );
     }
     m_askDiag->exec();
 }
@@ -161,8 +163,10 @@ LastFmServiceConfig::reset()
 
 
 void
-LastFmServiceConfig::textDialogOK()
+LastFmServiceConfig::textDialogYes() //SLOT
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "yes" );
     config.sync();
@@ -170,8 +174,10 @@ LastFmServiceConfig::textDialogOK()
 
 
 void
-LastFmServiceConfig::textDialogCancel()
+LastFmServiceConfig::textDialogNo() //SLOT
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "no" );
     config.sync();

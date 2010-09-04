@@ -12,6 +12,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * The Last.fm service did not work without KWallet. (BR 235861)
     * Show actual KDE version in the "About Amarok" dialog, instead of the
       version used at compile time.
     * Fixed a crash when trying to save a playlist to a file where the format
