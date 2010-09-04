@@ -12,6 +12,8 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * The equalizer dialog did not discard changes when clicking "Cancel".
+      Patch by Anton Gritsay <anton@angri.ru>. (BR 242730)
     * The Last.fm service did not work without KWallet. (BR 235861)
     * Show actual KDE version in the "About Amarok" dialog, instead of the
       version used at compile time.

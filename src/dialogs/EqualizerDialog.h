@@ -46,6 +46,7 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void eqSavePreset();
         void eqDeletePreset();
         void eqRestorePreset();
+        void eqRestoreOriginalSettings();
 
     private:
         EqualizerDialog();
@@ -53,6 +54,8 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         QVector<QSlider*> mBands;
         QVector<QLabel*> mBandsValues;
         QVector<QLabel*> mBandsLabels;
+        QList<int> mOriginalGains;
+        QString mOriginalPreset;
 
         void eqSetupUI();
         void eqUpdateToolTips();
@@ -60,6 +63,7 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         bool eqCfgDeletePreset( QString & mPresetName );
         bool eqCfgRestorePreset( QString mPresetName );
         void eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues);
+        void eqRememberOriginalSettings();
         QList<int> eqCfgGetPresetVal ( QString mPresetName );
         QStringList eqGlobalList();
 

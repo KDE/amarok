@@ -62,6 +62,28 @@ void EqualizerDialog::showOnce()
     instance()->activateWindow();
     instance()->show();
     instance()->raise();
+    instance()->eqRememberOriginalSettings();
+}
+
+void
+EqualizerDialog::eqRememberOriginalSettings()
+{
+    mOriginalPreset = eqPresets->itemText(AmarokConfig::equalizerMode());
+    mOriginalGains = AmarokConfig::equalizerGains();
+}
+
+void
+EqualizerDialog::eqRestoreOriginalSettings()
+{
+    int originalPresetIndex = eqPresets->findText( mOriginalPreset );
+    if( originalPresetIndex == -1 ) {
+        // original preset seems to be deleted. will set eq to Off
+        originalPresetIndex = 0;
+    }
+    AmarokConfig::setEqualizerMode( originalPresetIndex );
+    AmarokConfig::setEqualizerGains( mOriginalGains );
+    eqUpdateUI( originalPresetIndex );
+    The::engineController()->eqUpdate();
 }
 
 void
@@ -81,6 +103,8 @@ EqualizerDialog::eqSetupUI()
         eqBandsGroupBox->hide();
         return;
     }
+
+    connect(this, SIGNAL( cancelClicked() ), this, SLOT( eqRestoreOriginalSettings() ));
 
     // Assign slider items to vectors
     mBands.append( eqPreampSlider );
