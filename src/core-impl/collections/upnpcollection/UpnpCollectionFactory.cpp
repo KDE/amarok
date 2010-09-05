@@ -84,16 +84,17 @@ void UpnpCollectionFactory::init()
     connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
 
     foreach( Solid::Device device, Solid::Device::allDevices() ) {
-        if( device.udi().startsWith( "/org/kde/upnp" ) && device.is<Solid::StorageAccess>() ) {
-            slotDeviceAdded( device.udi() );
-        }
+        slotDeviceAdded(device.udi());
     }
 }
 
 void UpnpCollectionFactory::slotDeviceAdded( const QString &udi )
 {
     Solid::Device dev( udi );
-    createCollection( dev );
+    debug() << "CHECKING" << dev.udi();
+    if( dev.udi().startsWith( "/org/kde/upnp" ) && dev.is<Solid::StorageAccess>() ) {
+        createCollection( dev );
+    }
 }
 
 void UpnpCollectionFactory::slotDeviceRemoved( const QString &udi )
