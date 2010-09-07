@@ -314,6 +314,15 @@ class AMAROK_EXPORT BpmNumberFilter : public NumberMemoryFilter
         virtual qint64 value( const Meta::TrackPtr &track ) const;
 };
 
+class AMAROK_EXPORT FormatNumberFilter : public NumberMemoryFilter
+{
+    public:
+        FormatNumberFilter();
+        virtual ~FormatNumberFilter();
+    protected:
+        virtual qint64 value( const Meta::TrackPtr &track ) const;
+};
+
 class AMAROK_EXPORT LabelFilter : public MemoryFilter
 {
 public:

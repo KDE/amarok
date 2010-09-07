@@ -16,6 +16,8 @@
 
 #include "MemoryFilter.h"
 
+#include "shared/FileType.h"
+
 #include <QDateTime>
 
 namespace FilterFactory
@@ -112,6 +114,9 @@ namespace FilterFactory
                 break;
             case Meta::valBpm:
                 result = new BpmNumberFilter();
+                break;
+            case Meta::valFormat:
+                result = new FormatNumberFilter();
                 break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
@@ -642,6 +647,35 @@ BpmNumberFilter::value( const Meta::TrackPtr &track ) const
         return 0;
 
     return track->bpm();
+}
+
+FormatNumberFilter::FormatNumberFilter()
+    : NumberMemoryFilter()
+{
+}
+
+FormatNumberFilter::~FormatNumberFilter()
+{
+}
+
+qint64
+FormatNumberFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( track->bpm() < 0 )
+        return 0;
+
+    const QString &ftStr = track->type();
+    Amarok::FileType ft = Amarok::Unknown;
+    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
+        ft = Amarok::Flac;
+    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
+        ft = Amarok::Mp3;
+    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
+        ft = Amarok::Mp4;
+    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
+        ft = Amarok::Ogg;
+
+    return qint64(ft);
 }
 
 LabelFilter::LabelFilter( const QString &filter, bool matchBegin, bool matchEnd )
