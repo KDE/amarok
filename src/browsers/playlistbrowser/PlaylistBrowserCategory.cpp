@@ -196,7 +196,8 @@ PlaylistBrowserCategory::toggleView( bool merged )
 void
 PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provider, int category )
 {
-    Q_UNUSED( category )
+    if( category != m_playlistCategory )
+        return; //ignore
 
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
