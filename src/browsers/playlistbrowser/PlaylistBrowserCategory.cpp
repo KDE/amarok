@@ -204,6 +204,8 @@ PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provide
 
     //TODO: only turn off merged view for non-empty providers or based on some provider property
     toggleView( false );
+
+    slotToggleProviderButton();
 }
 
 void
@@ -218,7 +220,6 @@ PlaylistBrowserCategory::slotProviderRemoved( Playlists::PlaylistProvider *provi
     }
 }
 
-
 void
 PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider *provider )
 {
@@ -226,7 +227,7 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
     providerToggle->setCheckable( true );
     providerToggle->setChecked( true );
     providerToggle->setData( QVariant::fromValue( provider ) );
-    connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton(bool)) );
+    connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton()) );
     m_providerMenu->addAction( providerToggle );
 
     //if there is only one provider the button needs to be disabled.
@@ -240,17 +241,8 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
 }
 
 void
-PlaylistBrowserCategory::slotToggleProviderButton( bool enabled )
+PlaylistBrowserCategory::slotToggleProviderButton()
 {
-    Q_UNUSED( enabled )
-    DEBUG_BLOCK
-
-    QAction * const action = qobject_cast<QAction *>( QObject::sender() );
-    const Playlists::PlaylistProvider *provider =
-            action->data().value<const Playlists::PlaylistProvider *>();
-    if( !m_providerActions.keys().contains( provider ) )
-        return;
-
     QString filter;
     QActionList checkedActions;
     foreach( const Playlists::PlaylistProvider *p, m_providerActions.keys() )

@@ -73,7 +73,7 @@ private slots:
     void toggleView( bool );
     void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void slotProviderRemoved( Playlists::PlaylistProvider *provider, int category );
-    void slotToggleProviderButton( bool enabled );
+    void slotToggleProviderButton();
 
     void createNewFolder();
 
