@@ -188,6 +188,12 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             else if( providers.count() )
             {
                 Playlists::PlaylistProvider *provider = providers.first();
+                //prevent crash
+                if( !provider )
+                {
+                    error() << "Invalid PlaylistProvider.";
+                    break;
+                }
                 name = description = provider->prettyName();
                 icon = provider->icon();
                 playlistCount = provider->playlists().count();
