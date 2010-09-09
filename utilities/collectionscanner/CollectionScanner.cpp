@@ -826,17 +826,17 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         // Because of this we skip attributes containing characters not belonging to any category.
         const QString data = escape( it.value() );
         const unsigned len = data.length();
-        bool nonPrint = false;
+        bool noCategory = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( !data[i].isPrint() || ( data[i].category() == QChar::NoCategory ) )
+            if( data[i].category() == QChar::NoCategory )
             {
-                nonPrint = true;
+                noCategory = true;
                 break;
             }
         }
 
-        if( nonPrint )
+        if( noCategory )
             continue;
 
         element.setAttribute( it.key(), it.value() );
