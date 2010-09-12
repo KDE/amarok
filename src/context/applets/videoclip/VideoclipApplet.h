@@ -82,9 +82,8 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void engineStateChanged(Phonon::State, Phonon::State );
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-        
+
     public slots:
-        void    setGeom();
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
 

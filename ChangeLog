@@ -12,6 +12,7 @@ VERSION 2.3.2
     * Use system date/time format for default name when saving user playlists.
 
   BUGFIXES:
+    * Fixed incorrect size of the VideoClip applet. (BR 247097)
     * Comments embedded in files that contained newlines or tabs could be
       skipped entirely. (BR 223502)
     * The equalizer dialog did not discard changes when clicking "Cancel".

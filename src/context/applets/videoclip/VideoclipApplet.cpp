@@ -147,9 +147,6 @@ VideoclipApplet::init()
     //Update the applet (render properly the header)
     update();
 
-    // we connect the geometry changed wit(h a setGeom function which will update the video widget geometry
-    connect ( this, SIGNAL(geometryChanged()), SLOT( setGeom() ) );
-
     connectSource( "videoclip" );
     
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
@@ -296,32 +293,23 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
 
-    if( m_widget->isVisible() )
-    {
-        p->save();
+    p->save();
 
-        const int frameWidth        = m_scroll->frameWidth();
-        const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
-        const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
-        const QSizeF proxySize = m_widget->size();
-        const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
-                                 proxySize.height() - frameWidth * 2 - scrollBarHeight );
-        const QPointF widgetPos( m_widget->pos().x() + frameWidth,
-                                 m_widget->pos().y() + frameWidth );
-        const QRectF widgetRect( widgetPos, widgetSize );
+    const int frameWidth        = m_scroll->frameWidth();
+    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
+    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
+    const QSizeF proxySize = m_widget->size();
+    const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
+                             proxySize.height() - frameWidth * 2 - scrollBarHeight );
+    const QPointF widgetPos( m_widget->pos().x() + frameWidth,
+                             m_widget->pos().y() + frameWidth );
+    const QRectF widgetRect( widgetPos, widgetSize );
 
-        QPainterPath path;
-        path.addRoundedRect( widgetRect, 2, 2 );
-        p->fillPath( path, The::paletteHandler()->backgroundColor() );
+    QPainterPath path;
+    path.addRoundedRect( widgetRect, 2, 2 );
+    p->fillPath( path, The::paletteHandler()->backgroundColor() );
 
-        p->restore();
-    }
-}
-
-void
-VideoclipApplet::setGeom( )
-{
-    updateConstraints();
+    p->restore();
 }
 
 void 
@@ -374,8 +362,6 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 		}
         else if ( data.contains( "item:0" ) )
         {
-            // make the animation didn't stop because it was the mees
-            resize( size().width(), m_height );
             m_headerText->setText( i18n( "Video Clip" ) );
             update();
             // set collapsed
