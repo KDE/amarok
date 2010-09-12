@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 
+#include <KStandardDirs>
 #include <plasma/containment.h>
 #include <plasma/theme.h>
 
@@ -42,6 +43,17 @@ ContextScene::~ContextScene()
 
 void ContextScene::loadDefaultSetup()
 {
+    // WORKAROUND for a bug in KDE 4.5.0 and 4.5.1:
+    // Delete amarok-appletsrc config file (created by Plasma), because Plasma tries
+    // to load all applets listed in there, which can lead to crashes due to applets
+    // being loaded twice.
+    // See: BUG 246756
+    if( ( KDE::versionMajor() == 4 && KDE::versionMinor() == 5 && KDE::versionRelease() == 0 ) ||
+        ( KDE::versionMajor() == 4 && KDE::versionMinor() == 5 && KDE::versionRelease() == 1 ) )
+    {
+        QFile::remove( KStandardDirs::locateLocal( "config", "amarok-appletsrc", false ) );
+    }
+
     Plasma::Containment* c = addContainment( "amarok_containment_vertical" );
     c->setScreen( -1 );
     c->setFormFactor( Plasma::Planar );
