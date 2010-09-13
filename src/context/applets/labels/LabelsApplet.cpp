@@ -308,6 +308,10 @@ LabelsApplet::updateLabels()
     while( it_final.hasNext() )
     {
         it_final.next();
+        
+        if( it_final.key().isEmpty() ) // empty labels don't make sense but they cause a freeze
+            continue;
+
         int i_size = (int)( it_final.value() / 10 - 5 );
         if( i_size < -1 )
             i_size = -1;
@@ -476,10 +480,13 @@ void
 LabelsApplet::addLabelPressed()
 {
     QString label = m_addLabel->currentText();
+
+    if( label.isEmpty() )
+        return;
+
     if( !m_currentLabels.contains( label ) )
     {
         toggleLabel( label );
-        m_addLabel->clearEditText();
         if( !m_allLabels.contains( label ) )
         {
             m_allLabels.append( label );
@@ -488,6 +495,7 @@ LabelsApplet::addLabelPressed()
             m_addLabel->insertItems( 0, m_allLabels );
             m_addLabel->completionObject()->setItems( m_allLabels );
         }
+        m_addLabel->clearEditText();
     }
 }
 
@@ -496,6 +504,9 @@ LabelsApplet::toggleLabel( const QString &label )
 {
     DEBUG_BLOCK
     bool selected;
+
+    if( label.isEmpty() )
+        return;
     
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
