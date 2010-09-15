@@ -787,7 +787,20 @@ App::continueInit()
         aUrl.run();
     }
     s_delayedAmarokUrls.clear();
+
+    QTimer::singleShot( 1500, this, SLOT( resizeMainWindow() ) );
 }
+
+
+void App::resizeMainWindow() // SLOT
+{
+    // HACK
+    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
+    // with a wrong initial size. Remove when this bug is fixed in Plasma.
+    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() - 1 );
+    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() + 1 );
+}
+
 
 void App::checkCollectionScannerVersion()  // SLOT
 {
