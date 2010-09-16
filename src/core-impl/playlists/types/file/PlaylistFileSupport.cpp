@@ -181,10 +181,9 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<i
     }
     else
     {
-        // TODO: Add this after git master is open again.
-        // KMessageBox::error( 0,
-        //                    i18n( "The given file extension is valid for a playlist." ),
-        //                    i18n( "Unknown playlist format" ) );
+        KMessageBox::error( 0,
+                            i18n( "The used file extension is not valid for playlists." ),
+                            i18n( "Unknown playlist format" ) );
     }
     
     return result;
