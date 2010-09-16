@@ -849,7 +849,7 @@ MainWindow::createActions()
 
     action = new KAction( this );
     ac->addAction( "disable_dynamic", action );
-    action->setText( i18n( "Disable Dynamic Playlist" );
+    action->setText( i18n( "Disable Dynamic Playlist" ) );
     action->setIcon( KIcon("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
