@@ -1,4 +1,4 @@
-/****************************************************************************************
+ /****************************************************************************************
  * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
@@ -849,7 +849,7 @@ MainWindow::createActions()
 
     action = new KAction( this );
     ac->addAction( "disable_dynamic", action );
-    action->setText( QString() ); //TODO; Give a propper string if we want to use it for anything user visible
+    action->setText( i18n( "Disable Dynamic Playlist" );
     action->setIcon( KIcon("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
