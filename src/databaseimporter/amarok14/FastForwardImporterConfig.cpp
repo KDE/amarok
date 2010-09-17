@@ -91,10 +91,10 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     m_smartMatchCheck = new QCheckBox( i18n( "Match tracks by meta tags" ), this );
     m_smartMatchCheck->setToolTip( i18n( "Perform meta information search on non-existing "
             "files, possibly detecting file renames. See <b>What's This</b>" ) );
-    m_smartMatchCheck->setWhatsThis( i18n( "If enabled, tracks from old collection that "
-            "do not exist anymore in filesystem are searched by metadata in current "
-            "collection. If a match is found, statistics for matched track are updated "
-            "even if file locations differ." ) );
+    m_smartMatchCheck->setWhatsThis( i18n( "If enabled, tracks from the old collection that "
+            "do not exist anymore in the file system are searched for (by metadata) in the current "
+            "collection. If a match is found, statistics for the matched track are updated, "
+            "even if the file locations differ." ) );
     m_smartMatchCheck->setChecked( true );
 
     m_importArtworkCheck = new QCheckBox( i18n( "Import downloaded artwork" ), this );

@@ -14,10 +14,10 @@
    <item row="0" column="0">
     <widget class="QCheckBox" name="kcfg_UseServer">
      <property name="toolTip">
-      <string>Check to enable the use of an external database. Default there already is an embedded MySQL database running.</string>
+      <string>Check to enable the use of an external database. By default there is already an embedded MySQL database running.</string>
      </property>
      <property name="whatsThis">
-      <string>Check to enable the use of an external database. Default there already is an embedded MySQL database running.</string>
+      <string>Check to enable the use of an external database. By default there is already an embedded MySQL database running.</string>
      </property>
      <property name="text">
       <string>Use &amp;external MySQL database</string>

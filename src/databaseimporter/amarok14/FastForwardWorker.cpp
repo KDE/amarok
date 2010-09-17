@@ -234,7 +234,7 @@ FastForwardWorker::run()
                     track = 0;
                     emit trackDiscarded( url );
                     emit showMessage( QString( "<font color='gray'>%1</font>" ).arg(
-                            i18n( "(track exists, but does not belong into any of your configured collection folders)" ) ) );
+                            i18n( "(track exists, but does not belong in any of your configured collection folders)" ) ) );
                 }
             }
         }
@@ -269,8 +269,9 @@ FastForwardWorker::run()
             QMap<Meta::TrackPtr, QString>* tracks = i.value();
 
             debug() << "Adding new tracks to collection";
-            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
-                                    tracks->size(), location->prettyLocation() ) );
+            emit showMessage( i18np( "Adding <b>1 new track</b> to Amarok collection <b>%2</b>.",
+                                     "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
+                                     tracks->size(), location->prettyLocation() ) );
             location->insertTracks( *tracks );
             location->insertStatistics( *tracks );
             delete tracks; // location is deleted by QSharedPointer
@@ -435,8 +436,9 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
      * hope it will return Meta::SqlTrack. */
 
     debug() << "updating cached lyrics and labels...";
-    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks...",
-                            dataForInsert.size() ) );
+    emit showMessage( i18np( "Updating cached lyrics and labels for 1 track...",
+                             "Updating cached lyrics and labels for %1 tracks...",
+                             dataForInsert.size() ) );
     int lyricsCount = 0, labelsCount = 0;
     QMapIterator<QString, ImporterMiscData> i( dataForInsert );
     while( i.hasNext() )
@@ -470,8 +472,18 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
     }
 
     debug() << "lyrics and labels updated";
-    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks.",
-                            lyricsCount, labelsCount ) );
+    QString lyricUpdateMessage = i18np( "Cached lyrics updated for 1 track",
+                                        "Cached lyrics updated for %1 tracks", 
+                                        lyricsCount );
+
+    QString labelUpdateMessage = i18np( "labels added to 1 track",
+                                        "labels added to %1 tracks", 
+                                        labelsCount );
+
+
+    emit showMessage( i18nc( "%1 is e.g. Cached lyrics updated for 2 tracks, %2 is e.g. labels added to 3 tracks",
+                             "%1, %2.",
+                             lyricUpdateMessage, labelUpdateMessage ) );
 }
 
 void
@@ -511,7 +523,7 @@ FastForwardWorker::importArtwork()
             count++;
     }
 
-    emit showMessage( i18n( "Copied %1 cover images.", count ) );
+    emit showMessage( i18np( "Copied 1 cover image.", "Copied %1 cover images.", count ) );
 }
 
 void

@@ -52,10 +52,10 @@
       <item row="2" column="0">
        <widget class="QCheckBox" name="kcfg_AutoGetCoverArt">
         <property name="toolTip">
-         <string>Check to enable the automatic retrieval of cover art from the internet</string>
+         <string>Check to enable the automatic retrieval of cover art from the Internet.</string>
         </property>
         <property name="whatsThis">
-         <string>Check to enable the automatic retrieval of cover art from the internet</string>
+         <string>Check to enable the automatic retrieval of cover art from the Internet.</string>
         </property>
         <property name="text">
          <string>Automatically retrieve cover art</string>

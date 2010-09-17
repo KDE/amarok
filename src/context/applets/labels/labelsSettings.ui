@@ -131,7 +131,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Don't show following labels:</string>
+         <string>Do not show the following labels:</string>
         </property>
        </widget>
       </item>
