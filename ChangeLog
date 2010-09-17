@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+VERSION NEXT
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+    * FLAC BPM tags could be read incorrectly. (BR 234166)
+
 
 VERSION 2.3.2
   FEATURES:
