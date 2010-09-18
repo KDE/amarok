@@ -116,8 +116,11 @@ ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) c
 QString
 ConstraintTypes::PlaylistLength::getName() const
 {
-    QString v( i18n("Playlist length: %1 %2 tracks") ); // FIXME: proper pluralization
-    return v.arg( comparisonToString() ).arg( m_length );
+    QString v( i18ncp( "%2 is e.g. 'more than' or 'less than' or 'equals'",
+                       "Playlist length: %2 1 track",
+                       "Playlist length: %2 %1 tracks",
+                       m_length, comparisonToString() ) );
+    return v;
 }
 
 Collections::QueryMaker*
