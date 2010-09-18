@@ -214,7 +214,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
     KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( name );
+    path.addPath( Amarok::vfatPath( name ) );
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
