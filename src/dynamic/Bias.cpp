@@ -181,14 +181,14 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
-Dynamic::GlobalBias::GlobalBias( double weight, Filter filter )
+Dynamic::GlobalBias::GlobalBias( double weight, MetaQueryWidget::Filter filter )
     : m_qm(0)
 {
     setWeight( weight );
     setFilter( filter );
 }
 
-Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, Filter filter )
+Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, MetaQueryWidget::Filter filter )
     : CollectionDependantBias( coll )
     , m_qm(0)
 {
@@ -202,22 +202,22 @@ Dynamic::GlobalBias::~GlobalBias()
 }
 
 QString
-Dynamic::GlobalBias::filterConditionToString( Dynamic::GlobalBias::FilterCondition cond )
+Dynamic::GlobalBias::filterConditionToString( MetaQueryWidget::FilterCondition cond )
 {
     switch( cond )
     {
-        case Equals:
-            return "equals";
-        case GreaterThan:
-            return "greater";
-        case LessThan:
-            return "less";
-        case Between:
-            return "between";
-        case OlderThan:
-            return "older";
-        case Contains:
-            return "contains";
+    case MetaQueryWidget::Equals:
+        return "equals";
+    case MetaQueryWidget::GreaterThan:
+        return "greater";
+    case MetaQueryWidget::LessThan:
+        return "less";
+    case MetaQueryWidget::Between:
+        return "between";
+    case MetaQueryWidget::OlderThan:
+        return "older";
+    case MetaQueryWidget::Contains:
+        return "contains";
     }
     return QString();
 }
@@ -226,7 +226,7 @@ Dynamic::GlobalBias*
 Dynamic::GlobalBias::fromXml( QDomElement e )
 {
     double weight = 0.0;
-    Dynamic::GlobalBias::Filter filter;
+    MetaQueryWidget::Filter filter;
 
     QDomElement queryElement = e.firstChildElement( "query" );
     if( !queryElement.isNull() )
@@ -244,11 +244,11 @@ Dynamic::GlobalBias::fromXml( QDomElement e )
                 filter.numValue2 = includeElement.attribute( "value2", 0 ).toLongLong();
 
                 QString condition = includeElement.attribute( "compare", "" );
-                filter.condition = Contains;
+                filter.condition = MetaQueryWidget::Contains;
                 for( int i=0; i<5; i++ )
                 {
-                    if( condition == filterConditionToString( (FilterCondition)i ) )
-                        filter.condition = (FilterCondition)i;
+                    if( condition == filterConditionToString( (MetaQueryWidget::FilterCondition)i ) )
+                        filter.condition = (MetaQueryWidget::FilterCondition)i;
                 }
             }
         }
@@ -280,7 +280,7 @@ Dynamic::GlobalBias::xml() const
     QDomElement filtersElement = doc.createElement( "filters" );
     QDomElement includeElement = doc.createElement( "include" );
     includeElement.setAttribute( "field", Collections::XmlQueryWriter::fieldName( m_filter.field ) );
-    if( m_filter.condition == Contains )
+    if( m_filter.condition == MetaQueryWidget::Contains )
         includeElement.setAttribute( "value", m_filter.value );
     else
         includeElement.setAttribute( "value", QString::number( m_filter.numValue ) );
@@ -331,14 +331,14 @@ Dynamic::CollectionFilterCapability* Dynamic::GlobalBias::collectionFilterCapabi
 
 
 
-Dynamic::GlobalBias::Filter
+MetaQueryWidget::Filter
 Dynamic::GlobalBias::filter() const
 {
     return m_filter;
 }
 
 void
-Dynamic::GlobalBias::setFilter( const Filter &filter)
+Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
 {
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
@@ -351,28 +351,44 @@ Dynamic::GlobalBias::setFilter( const Filter &filter)
 
     m_qm = m_collection->queryMaker();
 
-    if( filter.field != 0 )
+    switch( filter.condition )
     {
-        switch( filter.condition )
-        {
-        case Equals:
-        case GreaterThan:
-        case LessThan:
-            m_qm->addNumberFilter( filter.field, filter.numValue,
-                    (Collections::QueryMaker::NumberComparison)filter.condition );
-            break;
-        case Between:
-            m_qm->addNumberFilter( filter.field, qMin(filter.numValue, filter.numValue2)-1,
-                    Collections::QueryMaker::GreaterThan );
-            m_qm->addNumberFilter( filter.field, qMax(filter.numValue, filter.numValue2)+1,
-                    Collections::QueryMaker::LessThan );
-            break;
-        case OlderThan:
-            m_qm->addNumberFilter( filter.field, QDateTime::currentDateTime().toTime_t() - filter.numValue,
-                    Collections::QueryMaker::LessThan );
-            break;
+    case MetaQueryWidget::Equals:
+    case MetaQueryWidget::GreaterThan:
+    case MetaQueryWidget::LessThan:
+        m_qm->addNumberFilter( filter.field, filter.numValue,
+                               (Collections::QueryMaker::NumberComparison)filter.condition );
+        break;
+    case MetaQueryWidget::Between:
+        m_qm->beginAnd();
+        m_qm->addNumberFilter( filter.field, qMin(filter.numValue, filter.numValue2)-1,
+                               Collections::QueryMaker::GreaterThan );
+        m_qm->addNumberFilter( filter.field, qMax(filter.numValue, filter.numValue2)+1,
+                               Collections::QueryMaker::LessThan );
+        m_qm->endAndOr();
+        break;
+    case MetaQueryWidget::OlderThan:
+        m_qm->addNumberFilter( filter.field, QDateTime::currentDateTime().toTime_t() - filter.numValue,
+                               Collections::QueryMaker::LessThan );
+        break;
 
-        case Contains:
+    case MetaQueryWidget::Contains:
+        if( filter.field == 0 )
+        {
+            // simple search
+            // TODO: split different words and make seperate searches
+            m_qm->beginOr();
+            m_qm->addFilter( Meta::valArtist,  filter.value );
+            m_qm->addFilter( Meta::valTitle,   filter.value );
+            m_qm->addFilter( Meta::valAlbum,   filter.value );
+            m_qm->addFilter( Meta::valGenre,   filter.value );
+            m_qm->addFilter( Meta::valUrl,     filter.value );
+            m_qm->addFilter( Meta::valComment, filter.value );
+            m_qm->addFilter( Meta::valLabel,   filter.value );
+            m_qm->endAndOr();
+        }
+        else
+        {
             m_qm->addFilter( filter.field, filter.value );
         }
     }
@@ -616,22 +632,32 @@ Dynamic::NormalBias::relevantField( Meta::TrackPtr track ) const
         return m_mu;
     if( m_field == Meta::valYear && track->year() )
         return (double)track->year()->name().toInt();
-    if( m_field == Meta::valPlaycount )
-        return (double)track->playCount();
-    if( m_field == Meta::valRating )
-        return (double)track->rating();
-    if( m_field == Meta::valScore )
-        return track->score();
-    if( m_field == Meta::valLength )
-        return (double)track->length();
     if( m_field == Meta::valTrackNr )
         return (double)track->trackNumber();
     if( m_field == Meta::valDiscNr )
         return (double)track->discNumber();
+    if( m_field == Meta::valBpm )
+        return (double)track->bpm();
+    if( m_field == Meta::valLength )
+        return (double)track->length();
+    if( m_field == Meta::valBitrate )
+        return (double)track->bitrate();
+    if( m_field == Meta::valSamplerate )
+        return (double)track->sampleRate();
+    if( m_field == Meta::valFilesize )
+        return (double)track->filesize();
+    if( m_field == Meta::valCreateDate )
+        return (double)track->createDate().toTime_t();
+    if( m_field == Meta::valScore )
+        return track->score();
+    if( m_field == Meta::valRating )
+        return (double)track->rating();
     if( m_field == Meta::valFirstPlayed )
         return (double)track->firstPlayed();
     if( m_field == Meta::valLastPlayed )
         return (double)track->lastPlayed();
+    if( m_field == Meta::valPlaycount )
+        return (double)track->playCount();
 
     return m_mu;
 }
@@ -655,26 +681,6 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
         minStdDev = 0.5;
         maxStdDev = 10.0;
     }
-    else if( m_field == Meta::valPlaycount )
-    {
-        minStdDev = 0.5;
-        maxStdDev = 50.0;
-    }
-    else if( m_field == Meta::valRating )
-    {
-        minStdDev = 0.5;
-        maxStdDev = 2.5;
-    }
-    else if( m_field == Meta::valScore )
-    {
-        minStdDev = 1.0;
-        maxStdDev = 50.0;
-    }
-    else if( m_field == Meta::valLength )
-    {
-        minStdDev = 10.0;
-        maxStdDev = 240.0;
-    }
     else if( m_field == Meta::valTrackNr )
     {
         minStdDev = 0.5;
@@ -685,15 +691,57 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
         minStdDev = 0.5;
         maxStdDev = 5.0;
     }
-    else if( m_field == Meta::valFirstPlayed )
+    else if( m_field == Meta::valBpm )
+    {
+        minStdDev = 60;
+        maxStdDev = 200.0;
+    }
+    else if( m_field == Meta::valLength )
+    {
+        minStdDev = 60;
+        maxStdDev = 60.0 * 60.0 * 2.0; // two hours
+    }
+    else if( m_field == Meta::valBitrate )
+    {
+        minStdDev = 60;
+        maxStdDev = 400.0;
+    }
+    else if( m_field == Meta::valSamplerate )
+    {
+        minStdDev = 8000;
+        maxStdDev = 48000.0;
+    }
+    else if( m_field == Meta::valFilesize )
+    {
+        minStdDev = 0;
+        maxStdDev = 200000.0;
+    }
+    else if( m_field == Meta::valScore )
+    {
+        minStdDev = 1.0;
+        maxStdDev = 50.0;
+    }
+    else if( m_field == Meta::valRating )
+    {
+        minStdDev = 0.5;
+        maxStdDev = 2.5;
+    }
+    else if( m_field == Meta::valLength )
+    {
+        minStdDev = 10.0;
+        maxStdDev = 240.0;
+    }
+    else if( m_field == Meta::valCreateDate ||
+             m_field == Meta::valFirstPlayed ||
+             m_field == Meta::valLastPlayed )
     {
         minStdDev = 3600.0;   // one hour
         maxStdDev = 604800.0; // one week
     }
-    else if( m_field == Meta::valLastPlayed )
+    else if( m_field == Meta::valPlaycount )
     {
-        minStdDev = 3600.0;   // one hour
-        maxStdDev = 604800.0; // one week
+        minStdDev = 0.5;
+        maxStdDev = 50.0;
     }
 
     // linear interpolation between min and max std. dev.

@@ -799,6 +799,30 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                         ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
                     }
                 }
+                else if( lcField.compare( "first", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "first played time / access date", "first" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if( compare == Collections::QueryMaker::Equals )
+                    {
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
+                        if( dateCutOff > 0 )
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFirstPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
+                        }
+                    }
+                    else
+                    {
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                        {
+                            qm->endAndOr();
+                            qm->beginAnd();
+                            compareAlt = Collections::QueryMaker::LessThan;
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
+                        }
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFirstPlayed, time_t, compareAlt );
+                    }
+                }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if( compare == Collections::QueryMaker::Equals )
@@ -1208,7 +1232,7 @@ CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
     else // first character is a number
     {
         // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
-        int years = 0, months = 0, weeks = 0, days = 0;
+        int years = 0, months = 0, weeks = 0, days = 0, secs = 0;
         QString tmp;
         for( int i = 0; i < text.length(); i++ )
         {
@@ -1237,8 +1261,23 @@ CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
                 days = -tmp.toInt();
                 break;
             }
+            else if( c == 'h' )
+            {
+                secs = -tmp.toInt() * 60 * 60;
+                break;
+            }
+            else if( c == 'M' )
+            {
+                secs = -tmp.toInt() * 60;
+                break;
+            }
+            else if( c == 's' )
+            {
+                secs = -tmp.toInt();
+                break;
+            }
         }
-        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days );
+        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days ).addSecs( secs );
     }
     return result;
 }

@@ -22,6 +22,7 @@
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "widgets/MetaQueryWidget.h"
 
 #include <QDomElement>
 #include <QMutex>
@@ -192,41 +193,14 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            enum FilterCondition
-            {
-                Equals = 0,
-                GreaterThan = 1,
-                LessThan = 2,
-                Between = 3,
-                OlderThan = 4,
-                Contains = 5 // this is the string comparison
-            };
-
-            struct Filter
-            {
-                Filter()
-                    : field(Meta::valArtist)
-                    , numValue(0)
-                    , numValue2(0)
-                    , condition(Contains)
-                {}
-
-                qint64   field;
-                QString  value;
-                qint64   numValue;
-                qint64   numValue2;
-                FilterCondition condition;
-            };
-
-            GlobalBias( double weight, Filter filter );
-            GlobalBias( Collections::Collection* coll, double weight, Filter filter );
+            GlobalBias( double weight, MetaQueryWidget::Filter filter );
+            GlobalBias( Collections::Collection* coll, double weight, MetaQueryWidget::Filter filter );
 
             ~GlobalBias();
 
-            Filter filter() const;
-            void setFilter( const Filter &filter);
+            MetaQueryWidget::Filter filter() const;
 
-            static QString filterConditionToString( FilterCondition cond );
+            static QString filterConditionToString( MetaQueryWidget::FilterCondition cond );
 
             QDomElement xml() const;
             static GlobalBias* fromXml( QDomElement e );
@@ -250,6 +224,7 @@ namespace Dynamic
 
         public slots:
             void collectionUpdated();
+            void setFilter( const MetaQueryWidget::Filter &filter);
 
         private slots:
             void updateReady( QString collectionId, QStringList );
@@ -259,7 +234,7 @@ namespace Dynamic
             double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
             QPointer<Collections::QueryMaker> m_qm;
-            Filter m_filter;
+            MetaQueryWidget::Filter m_filter;
 
             // Disable copy constructor and assignment
             GlobalBias( const GlobalBias& );

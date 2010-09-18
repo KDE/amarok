@@ -714,6 +714,7 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
     widgets/TrackSelectWidget.cpp
+    widgets/MetaQueryWidget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp

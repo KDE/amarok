@@ -20,6 +20,7 @@
 #include "DynamicBiasModel.h"
 
 #include "core/support/Debug.h"
+#include "widgets/MetaQueryWidget.h"
 #include "DynamicBiasWidgets.h"
 #include "CustomBias.h"
 #include "BiasedPlaylist.h"
@@ -137,7 +138,7 @@ void
 PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
 {
     Dynamic::GlobalBias* gb = 
-        new Dynamic::GlobalBias( 0.0, Dynamic::GlobalBias::Filter() );
+        new Dynamic::GlobalBias( 0.0, MetaQueryWidget::Filter() );
     gb->setActive( false );
     appendBias( gb );
 }

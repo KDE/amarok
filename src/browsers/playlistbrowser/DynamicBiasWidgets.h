@@ -21,6 +21,7 @@
 #define AMAROK_DYNAMICBIASWIDGETS_H
 
 #include "Bias.h"
+#include "widgets/MetaQueryWidget.h"
 
 #include <QWidget>
 
@@ -37,6 +38,7 @@ namespace Amarok
 {
     class Slider;
 }
+
 
 namespace PlaylistBrowserNS
 {
@@ -119,66 +121,15 @@ namespace PlaylistBrowserNS
 
         private slots:
             void weightChanged( int );
-            void fieldChanged( int );
-            void compareChanged( int );
-            void valueChanged( const QString& );
-            void numValueChanged( int );
-            void numValue2Changed( int );
-            void numValueChanged( qint64 );
-            void numValue2Changed( qint64 );
-            void numValueChanged( const QTime& );
-            void numValue2Changed( const QTime& );
-            void numValueDateChanged();
-            void numValue2DateChanged();
-            void numValueTimeDistanceChanged();
-
-            void populateComboBox( QString collectionId, QStringList );
-            void comboBoxPopulated();
-
-        private:
             void syncControlsToBias();
             void syncBiasToControls();
 
-            void makeFieldSelection();
-
-            /** Adds the value selection widgets to the layout.
-             *  Adds m_withLabel, m_compareSelection, m_valueSelection1, m_valueSelection2 and m_andLabel to the layout.
-             */
-            void setValueSelection();
-
-            void makeCompareSelection();
-            void makeValueSelection();
-
-            void makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery );
-
-            void makeArtistSelection();
-            void makeComposerSelection();
-            void makeAlbumSelection();
-            void makeTitleSelection();
-            void makeGenreSelection();
-            void makeGenericNumberSelection( int min, int max, int def );
-            void makePlaycountSelection();
-            void makeRatingSelection();
-            void makeLengthSelection();
-            void makeDateTimeSelection();
-            void makeFilenameSelection();
-
-            QFrame*      m_controlFrame;
-            QGridLayout* m_controlLayout;
-
+        private:
             Amarok::Slider* m_weightSelection;
             QLabel*         m_weightLabel;
-            KComboBox*      m_fieldSelection;
-            QLabel*         m_withLabel;
-            QLabel*         m_andLabel;
-            KComboBox*      m_compareSelection;
-            QWidget*        m_valueSelection1;
-            QWidget*        m_valueSelection2;
+            MetaQueryWidget* m_queryWidget;
 
             Dynamic::GlobalBias* m_gbias;
-            Dynamic::GlobalBias::Filter m_filter;
-
-            QMap< Collections::QueryMaker*, KComboBox* > m_runningQueries;
     };
 
     class BiasNormalWidget : public BiasWidget
@@ -189,30 +140,14 @@ namespace PlaylistBrowserNS
             explicit BiasNormalWidget( Dynamic::NormalBias*, QWidget* parent = 0 );
 
         private slots:
-            void fieldChanged( int );
-            void valueChanged( int );
-            void valueDateChanged();
-            void valueChanged( const QTime& );
             void scaleChanged( int );
+            void syncControlsToBias();
+            void syncBiasToControls();
 
         private:
-            void popuplateFieldSection();
-            void syncControlsToBias();
-            void makeGenericNumberSelection( int min, int max );
-            void makeRatingSelection();
-            void makeScoreSelection();
-            void makeLengthSelection();
-            void makeDateTimeSelection();
-            void setValueSelection( QWidget* w );
-
-            QFrame*      m_controlFrame;
-            QGridLayout* m_controlLayout;
-
-            KComboBox* m_fieldSelection;
-            QLabel*  m_withLabel;
-            QWidget* m_valueSelection;
-            Amarok::Slider* m_scaleSelection;
-            QLabel* m_scaleLabel;
+            Amarok::Slider*  m_scaleSelection;
+            QLabel*          m_scaleLabel;
+            MetaQueryWidget* m_queryWidget;
 
             Dynamic::NormalBias* m_nbias;
     };
