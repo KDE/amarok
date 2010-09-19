@@ -190,6 +190,7 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
 
     int index = m_fieldSelection->findData( (int)m_filter.field );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
+    m_filter = value; // the value can be reset by setFilter
 
     if( !m_noCondition )
         makeCompareSelection();
@@ -564,6 +565,10 @@ MetaQueryWidget::populateComboBox( QString collectionId, QStringList results )
     if( combo.isNull() )
         return;
 
+    // note: adding items seems to reset the edit text, so we have
+    //   to take care of that.
+    disconnect( combo, 0, this, 0 );
+
     // want the results unique and sorted
     const QSet<QString> dataSet = results.toSet();
     QStringList dataList = dataSet.toList();
@@ -573,15 +578,10 @@ MetaQueryWidget::populateComboBox( QString collectionId, QStringList results )
     KCompletion* comp = combo->completionObject();
     comp->setItems( dataList );
 
-    /*
-    int index = combo->findText( m_filter.value );
-    if( index >= 0 )
-        combo->setCurrentIndex( index );
-        */
-
-    connect( combo.data(),
-             SIGNAL( currentIndexChanged( const QString& ) ),
-             SLOT( valueChanged( const QString& ) ) );
+    // reset the text and re-enable the signal
+    combo->setEditText( m_filter.value );
+    connect( combo, SIGNAL(editTextChanged( const QString& ) ),
+            SLOT(valueChanged(const QString&)) );
 }
 
 void
