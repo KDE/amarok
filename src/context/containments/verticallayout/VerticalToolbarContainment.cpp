@@ -144,6 +144,8 @@ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const
     else
         m_applets->addApplet( applet, loc );
 
+     applet->setFlag(QGraphicsItem::ItemIsMovable, false);
+
     return applet;
 }
 
