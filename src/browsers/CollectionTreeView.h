@@ -92,7 +92,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotRemoveTracks();
+        void slotRemoveTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
         void slotOrganize();
 
     private:
@@ -103,7 +103,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const;
-        void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
         QActionList createBasicActions( const QModelIndexList &indcies );
         QActionList createExtendedActions( const QModelIndexList &indcies );
         QActionList createCollectionActions( const QModelIndexList &indices );

@@ -48,6 +48,30 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
     return del;
 }
 
+bool
+CollectionLocationDelegateImpl::reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const
+{
+    Q_UNUSED( loc );
+
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracks )
+        files << track->prettyUrl();
+
+    const QString text( i18ncp( "@info",
+                                "Do you really want to move this track to the trash? "
+                                "It will be removed from disk as well as your collection.",
+                                "Do you really want to move these %1 tracks to the trash? "
+                                "They will be removed from disk as well as your collection.",
+                                tracks.count() ) );
+    const bool rm = KMessageBox::warningContinueCancelList(
+                                0,
+                                text,
+                                files,
+                                i18nc( "@title:window", "Confirm Move to Trash" ),
+                                KStandardGuiItem::remove() ) == KMessageBox::Continue;
+    return rm;
+}
+
 bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const
 {
     Q_UNUSED( loc )

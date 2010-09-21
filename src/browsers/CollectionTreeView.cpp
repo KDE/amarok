@@ -26,6 +26,7 @@
 #include "AmarokMimeData.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
@@ -49,6 +50,7 @@
 #include <QMouseEvent>
 #include <QSet>
 
+#include <KAction>
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KComboBox>
@@ -741,7 +743,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
 }
 
 void
-CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
+CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const
 {
     DEBUG_BLOCK
 
@@ -772,7 +774,14 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
         delete qm;
         return;
     }
-    source->prepareRemove( qm );
+
+    if( useTrash )
+    {
+        Collections::TrashCollectionLocation *trash = new Collections::TrashCollectionLocation();
+        source->prepareMove( qm, trash );
+    }
+    else
+        source->prepareRemove( qm );
 }
 
 void
@@ -1047,10 +1056,11 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
         if( collection && collection->isWritable() )
         {
             //writableCollections.append( collection );
-            QAction *action = new QAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
+            KAction *action = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
             action->setProperty( "popupdropper_svg_id", "delete" );
 
-            connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
+            connect( action, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                     this, SLOT(slotRemoveTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
 
             currentRemoveDestination.insert( action, collection );
         }
@@ -1062,8 +1072,6 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
 
 bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
-
     if( !indices.isEmpty() )
     {
         Collections::Collection *collection = getCollection( indices.first() );
@@ -1132,15 +1140,14 @@ void CollectionTreeView::slotMoveTracks()
     }
 }
 
-void CollectionTreeView::slotRemoveTracks()
+void CollectionTreeView::slotRemoveTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
 {
-    if( sender() )
+    Q_UNUSED( buttons )
+    KAction *action = qobject_cast<KAction*>( sender() );
+    if( action )
     {
-        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
-        {
-            Q_UNUSED( action );
-            removeTracks( m_currentItems );
-        }
+        bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
+        removeTracks( m_currentItems, !skipTrash );
     }
 }
 

@@ -10,6 +10,8 @@ VERSION NEXT
       constraint is now called "Playlist Duration".
 
   CHANGES:
+    * Deleting items in the collection/file browser will move them to trash;
+      pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
     * Fix bug where users could drag applets around indiscriminately

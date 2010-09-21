@@ -129,9 +129,12 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         if( isGoingToRemoveSources() ) // is organize operation?
         {
             SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
-            src = destinationloc->m_originalUrls[track];
-            if( src == track->playableUrl() )
-                return false;
+            if( destinationloc )
+            {
+                src = destinationloc->m_originalUrls[track];
+                if( src == track->playableUrl() )
+                    return false;
+            }
         }
         // we are going to delete it from the database only if is no longer on disk
         removed = !QFile::exists( src.path() );
@@ -647,10 +650,13 @@ bool SqlCollectionLocation::startNextRemoveJob()
         if( isGoingToRemoveSources() ) // is organize operation?
         {
             SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
-            src = destinationloc->m_originalUrls[track];
-            if( src == track->playableUrl() ) {
-                debug() << "src == dst";
-                break;
+            if( destinationloc )
+            {
+                src = destinationloc->m_originalUrls[track];
+                if( src == track->playableUrl() ) {
+                    debug() << "src == dst";
+                    break;
+                }
             }
         }
 
