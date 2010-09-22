@@ -485,9 +485,9 @@ set(dbus_SRCS
     dbus/mpris1/RootHandler.cpp
     dbus/mpris1/PlayerHandler.cpp
     dbus/mpris1/TrackListHandler.cpp
+    dbus/mpris2/Mpris2DBusHandler.cpp
     dbus/CollectionDBusHandler.cpp
     dbus/DBusQueryHelper.cpp
-    dbus/Mpris2DBusHandler.cpp
 )
 
 
@@ -823,14 +823,14 @@ qt4_add_dbus_adaptor(
    CollectionAdaptor )
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
-   dbus/org.mpris.MediaPlayer2.root.xml
-   Mpris2DBusHandler.h
+   dbus/mpris2/org.mpris.MediaPlayer2.root.xml
+   dbus/mpris2/Mpris2DBusHandler.h
    Amarok::Mpris2DBusHandler
    Mpris2RootAdaptor
    Mpris2RootAdaptor )
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS
-   dbus/org.mpris.MediaPlayer2.Player.xml
-   Mpris2DBusHandler.h
+   dbus/mpris2/org.mpris.MediaPlayer2.Player.xml
+   dbus/mpris2/Mpris2DBusHandler.h
    Amarok::Mpris2DBusHandler
    Mpris2PlayerAdaptor
    Mpris2PlayerAdaptor )

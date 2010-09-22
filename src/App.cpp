@@ -36,7 +36,6 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "Mpris2DBusHandler.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
@@ -55,6 +54,7 @@
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
 #include "dbus/mpris1/TrackListHandler.h"
+#include "dbus/mpris2/Mpris2DBusHandler.h"
 #ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
 #else
