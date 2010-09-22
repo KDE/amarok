@@ -129,15 +129,6 @@ namespace Amarok
         void SetPosition( const QDBusObjectPath &trackId, qlonglong offset );
         void OpenUri( const QString &uri );
 
-        // NB: Amarok extensions, not part of the mpris spec
-        void StopAfterCurrent();
-        void VolumeUp( int step ) const;
-        void VolumeDown( int step ) const;
-        void Mute() const;
-        void ShowOSD() const;
-
-        void LoadThemeFile( const QString &path ) const;
-
         // Properties
         void SetLoopStatus( const QString & );
 

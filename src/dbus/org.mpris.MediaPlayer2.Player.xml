@@ -36,28 +36,6 @@
         <arg type="s" direction="in"/>
     </method>
 
-    <!-- NB: Amarok extensions to the mpris spec -->
-    <method name="StopAfterCurrent">
-    </method>
-
-    <method name="VolumeUp">
-        <arg type="i" direction="in"/>
-    </method>
-
-    <method name="VolumeDown">
-        <arg type="i" direction="in"/>
-    </method>
-
-    <method name="Mute">
-    </method>
-
-    <method name="ShowOSD">
-    </method>
-
-    <method name="LoadThemeFile">
-        <arg type="s" direction="in"/>
-    </method>
-
     <!-- Signals -->
     <signal name="Seeked">
         <arg type="x" name="Position"/>
