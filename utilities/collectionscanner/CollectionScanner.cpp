@@ -37,13 +37,13 @@
 #include <QByteArray>
 #include <QDBusReply>
 #include <QDir>
-#include <QDomDocument>
 #include <QFile>
 #include <QtDebug>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QTimer>
 #include <QThread>
+#include <QXmlStreamWriter>
 
 //Taglib:
 #include <apetag.h>
@@ -814,8 +814,10 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 void
 CollectionScanner::writeElement( const QString &name, const AttributeHash &attributes )
 {
-    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
-    QDomElement element = doc.createElement( name );
+    QString text;
+    QXmlStreamWriter writer( &text );
+
+    writer.writeStartElement( name );
 
     QHashIterator<QString, QString> it( attributes );
     while( it.hasNext() )
@@ -829,7 +831,15 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         bool noCategory = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( data[i].category() == QChar::NoCategory )
+            if( data[i].category() == QChar::NoCategory ||
+                data[i].category() == QChar::Other_Surrogate ||
+                ( 
+                    data[i].unicode() < 20 &&
+                    data[i].unicode() != 9 &&
+                    data[i].unicode() != 10 &&
+                    data[i].unicode() != 13
+                )
+            )
             {
                 noCategory = true;
                 break;
@@ -838,15 +848,12 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
 
         if( noCategory )
             continue;
-
-        element.setAttribute( it.key(), it.value() );
+        writer.writeAttribute( it.key(), it.value() );
     }
 
-    QString text;
-    QTextStream stream( &text, QIODevice::WriteOnly );
-    element.save( stream, 0 );
+    writer.writeEndElement();
 
-    std::cout << text.toUtf8().data() << std::endl;
+    std::cout << text.toUtf8().data() << std::endl << std::endl;
 }
 
 // taken verbatim from Qt's sources, since it's stupidly in the QtGui module
