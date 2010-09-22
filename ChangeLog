@@ -11,6 +11,7 @@ VERSION NEXT
   CHANGES:
 
   BUGFIXES:
+    * Fixed an initialization bug which affected all context applets.
     * FLAC BPM tags could be read incorrectly. (BR 234166)
 
 

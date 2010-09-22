@@ -57,6 +57,8 @@ InfoApplet::~InfoApplet()
 
 void  InfoApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
 
     dataEngine( "amarok-info" )->connectSource( "info", this );
 

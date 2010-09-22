@@ -49,8 +49,6 @@ public:
     WikipediaApplet( QObject* parent, const QVariantList& args );
     ~WikipediaApplet();
 
-    void init();
-    
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     
@@ -61,6 +59,7 @@ protected:
     void createConfigurationInterface(KConfigDialog *parent);
     
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:

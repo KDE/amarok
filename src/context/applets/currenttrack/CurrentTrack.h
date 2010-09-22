@@ -54,10 +54,10 @@ public:
     CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
 
-    virtual void init();
     virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:

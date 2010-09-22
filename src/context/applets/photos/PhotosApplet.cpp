@@ -54,6 +54,9 @@ PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
 void 
 PhotosApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_height = 300;

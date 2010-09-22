@@ -75,6 +75,9 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     // properly set the size, asking for the whole cv size.
     resize( 500, -1 );
 

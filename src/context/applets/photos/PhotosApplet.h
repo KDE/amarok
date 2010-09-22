@@ -47,7 +47,6 @@ class PhotosApplet : public Context::Applet, public Engine::EngineObserver
         PhotosApplet( QObject* parent, const QVariantList& args );
         ~PhotosApplet();
 
-        void    init();
         void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -57,6 +56,7 @@ class PhotosApplet : public Context::Applet, public Engine::EngineObserver
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
         
     public slots:
+        virtual void init();
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
         void    saveSettings();

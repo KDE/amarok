@@ -55,6 +55,9 @@ SongkickApplet::~ SongkickApplet()
 
 void SongkickApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     QColor highlight = PaletteHandler::highlightColor().darker( 300 );
 
     m_titleLabel = new QGraphicsSimpleTextItem( i18n("Concerts"), this );

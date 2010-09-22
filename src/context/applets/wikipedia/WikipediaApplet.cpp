@@ -76,7 +76,10 @@ WikipediaApplet::~ WikipediaApplet()
 
 void
 WikipediaApplet::init()
-{   
+{
+    // Call the base implementation.
+    Context::Applet::init();
+
     m_wikipediaLabel = new TextScrollingWidget( this );
 
     m_webView = new Plasma::WebView( this );

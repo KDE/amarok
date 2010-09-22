@@ -41,7 +41,6 @@ public:
     LabelsApplet( QObject *parent, const QVariantList &args );
     ~LabelsApplet();
 
-    virtual void init();
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -51,6 +50,7 @@ public:
     virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
 public slots:
+    virtual void init();
     void dataUpdated( const QString &name, const Plasma::DataEngine::Data &data );
     void connectSource( const QString &source );
     void toggleLabel( const QString &label );

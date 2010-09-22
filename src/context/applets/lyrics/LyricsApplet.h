@@ -42,8 +42,6 @@ public:
     LyricsApplet( QObject* parent, const QVariantList& args );
     ~LyricsApplet();
 
-    virtual void init();
-
     bool hasHeightForWidth() const;
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -51,6 +49,7 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );    
     
 public slots:
+    virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
     void suggestionChosen( const QUrl& link );

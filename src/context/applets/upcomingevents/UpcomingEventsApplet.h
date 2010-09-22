@@ -66,13 +66,6 @@ public:
     UpcomingEventsApplet( QObject* parent, const QVariantList& args );
 
     /**
-     * \brief Initialization
-     *
-     * Initializes the UpcomingEventsApplet with default parameters
-     */
-    void init();
-
-    /**
      * \brief Paints the interface
      *
      * This method is called when the interface should be painted
@@ -109,6 +102,13 @@ protected:
     void createConfigurationInterface(KConfigDialog *parent);
 
 public slots:
+    /**
+     * \brief Initialization
+     *
+     * Initializes the UpcomingEventsApplet with default parameters
+     */
+    virtual void init();
+
     /**
      * Updates the data from the Upcoming Events engine
      *

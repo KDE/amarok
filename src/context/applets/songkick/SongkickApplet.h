@@ -36,8 +36,6 @@ public:
     SongkickApplet( QObject* parent, const QVariantList& args );
     ~SongkickApplet();
 
-    virtual void init();
-
     bool hasHeightForWidth() const;
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -47,6 +45,7 @@ public:
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 public slots:
+    virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 

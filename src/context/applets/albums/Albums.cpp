@@ -57,6 +57,9 @@ Albums::~Albums()
 
 void Albums::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     setBackgroundHints( Plasma::Applet::NoBackground );
     
     m_headerText = new TextScrollingWidget( this );

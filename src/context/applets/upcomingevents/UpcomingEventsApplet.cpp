@@ -71,6 +71,9 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
 void
 UpcomingEventsApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     // The widgets are displayed line by line with only one column
     m_mainLayout = new QVBoxLayout;
     m_mainLayout->setSizeConstraint( QLayout::SetFixedSize);

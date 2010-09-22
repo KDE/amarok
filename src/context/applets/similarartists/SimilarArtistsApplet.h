@@ -70,11 +70,6 @@ public:
     ~SimilarArtistsApplet();
 
 
-    /**
-     * Initialization of the applet's display, creation of the layout, scrolls
-     */
-    void init();
-
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option
                          , const QRect& contentsRect );
     /**
@@ -99,6 +94,10 @@ protected:
     void createConfigurationInterface( KConfigDialog *parent );
 
 public slots:
+    /**
+     * Initialization of the applet's display, creation of the layout, scrolls
+     */
+    virtual void init();
 
     /**
      * Update the current artist and his similar artists

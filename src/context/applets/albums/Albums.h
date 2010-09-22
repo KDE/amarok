@@ -35,13 +35,12 @@ public:
     Albums( QObject* parent, const QVariantList& args );
     ~Albums();
 
-    void init();
-
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
 
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:

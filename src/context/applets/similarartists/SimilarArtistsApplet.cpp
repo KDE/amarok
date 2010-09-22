@@ -86,6 +86,9 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 void
 SimilarArtistsApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     // create the layout for dispose the artists widgets in the scrollarea via a widget
     m_layout = new QVBoxLayout;
     m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );

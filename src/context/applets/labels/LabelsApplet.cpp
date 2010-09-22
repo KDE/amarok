@@ -71,6 +71,9 @@ LabelsApplet::~LabelsApplet()
 void
 LabelsApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     // properly set the size, asking for the whole cv size.

@@ -72,6 +72,9 @@ CurrentTrack::init()
 {
     DEBUG_BLOCK
 
+    // Call the base implementation.
+    Context::Applet::init();
+
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setSpacing( 2 );
 

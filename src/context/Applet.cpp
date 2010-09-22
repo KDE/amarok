@@ -67,7 +67,6 @@ Context::Applet::~Applet( )
     delete m_textBackground;
 }
 
-
 QFont
 Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
