@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,28 +14,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONLOCATIONDELEGATEIMPL_H
-#define COLLECTIONLOCATIONDELEGATEIMPL_H
+#ifndef TRASHCOLLECTIONLOCATION_H
+#define TRASHCOLLECTIONLOCATION_H
 
-#include "amarok_export.h"
-#include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/CollectionLocation.h"
+
+class KJob;
 
 namespace Collections {
 
-class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
+/**
+  * Utility class that allows moving tracks to the KIO trash using standard
+  * CollectionLocation API. It is not intented to be a collection, but more
+  * as a black hole destination.
+  */
+class TrashCollectionLocation : public CollectionLocation
 {
-public:
-    CollectionLocationDelegateImpl() {};
-    virtual ~ CollectionLocationDelegateImpl() {};
+    Q_OBJECT
 
-    virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
-    virtual bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
-    virtual void notWriteable(CollectionLocation* loc) const;
-    virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
+public:
+    TrashCollectionLocation();
+    ~TrashCollectionLocation();
+
+    QString prettyLocation() const;
+    bool isWritable() const;
+
+protected:
+    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+    void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+
+private slots:
+    void slotTrashJobFinished( KJob *job );
+
+private:
+    bool m_trashConfirmed;
+    QHash<KJob*, Meta::TrackList> m_trashJobs;
 };
 
 } //namespace Collections
 
-#endif
+#endif // TRASHCOLLECTIONLOCATION_H

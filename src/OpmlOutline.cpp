@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2009-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,28 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONLOCATIONDELEGATEIMPL_H
-#define COLLECTIONLOCATIONDELEGATEIMPL_H
+#include "OpmlOutline.h"
 
-#include "amarok_export.h"
-#include "core/collections/CollectionLocationDelegate.h"
-
-namespace Collections {
-
-class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
+OpmlOutline::OpmlOutline( OpmlOutline *parent )
+        : m_parent( parent )
+        , m_hasChildren( false )
 {
-public:
-    CollectionLocationDelegateImpl() {};
-    virtual ~ CollectionLocationDelegateImpl() {};
-
-    virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
-    virtual bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
-    virtual void notWriteable(CollectionLocation* loc) const;
-    virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
-};
-
-} //namespace Collections
-
-#endif
+}

@@ -1193,9 +1193,10 @@ TagDialog::readMultipleTracks()
     m_currentData = QVariantMap();
 
     QVariantMap first = dataForTrack( it.peekNext() );
+    QString firstDirectory = it.peekNext()->playableUrl().directory();
 
     bool artist=true, album=true, genre=true, comment=true, year=true,
-         score=true, rating=true, composer=true, discNumber=true;
+         score=true, rating=true, composer=true, discNumber=true, directory = true;
     int songCount=0, ratingCount=0, ratingSum=0, scoreCount=0;
     double scoreSum = 0.f;
     while( it.hasNext() )
@@ -1210,6 +1211,7 @@ TagDialog::readMultipleTracks()
         }
 
         QVariantMap data = dataForTrack( next );
+        QString currDirectory = next->playableUrl().directory();
         songCount++;
         if ( data.value( Meta::Field::RATING ).toInt() )
         {
@@ -1221,11 +1223,10 @@ TagDialog::readMultipleTracks()
             scoreCount++;
             scoreSum += data.value( Meta::Field::SCORE ).toDouble();
         }
-
         if( !it.peekPrevious()->playableUrl().isLocalFile() )
         {
             // If we have a non local file, don't even lose more time comparing
-            artist = album = genre = comment = year = false;
+            artist = album = genre = comment = year = directory = false;
             score  = rating = composer = discNumber = false;
             continue;
         }
@@ -1243,6 +1244,8 @@ TagDialog::readMultipleTracks()
             composer = false;
         if ( discNumber && data.value( Meta::Field::DISCNUMBER ).toInt() != first.value( Meta::Field::DISCNUMBER ).toInt() )
             discNumber = false;
+        if ( directory && firstDirectory != currDirectory)
+            directory = false;
         //score is double internally, but we only show ints in the tab
         if ( score && data.value( Meta::Field::SCORE ).toInt() != first.value( Meta::Field::SCORE ).toInt() )
             score = false;
@@ -1288,6 +1291,15 @@ TagDialog::readMultipleTracks()
     {
         m_currentData.insert( Meta::Field::DISCNUMBER, first.value( Meta::Field::DISCNUMBER ) );
         ui->qSpinBox_discNumber->setValue( first.value( Meta::Field::DISCNUMBER ).toInt() );
+    }
+    if (directory)
+    {
+        //all files are local & have the same Directory
+        m_path = firstDirectory;
+        ui->locationLabel->show();
+        ui->kLineEdit_location->show();
+        ui->pushButton_open->show();
+        ui->kLineEdit_location->setText( firstDirectory );
     }
     if( score )
     {

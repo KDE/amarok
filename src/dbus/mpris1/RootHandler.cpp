@@ -15,15 +15,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "RootDBusHandler.h"
+#include "RootHandler.h"
 
 #include "App.h"
 #include "core/support/Debug.h"
-#include "RootAdaptor.h"
+#include "Mpris1RootAdaptor.h"
 #include "Version.h"
 
 // Marshall the DBusVersion data into a D-BUS argument
-QDBusArgument &operator<<(QDBusArgument &argument, const Version &version)
+QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Version &version)
 {
     argument.beginStructure();
     argument << version.major << version.minor;
@@ -32,7 +32,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const Version &version)
 }
 
 // Retrieve the DBusVersion data from the D-BUS argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, Version &version)
+const QDBusArgument &operator>>(const QDBusArgument &argument, Mpris1::Version &version)
 {
     argument.beginStructure();
     argument >> version.major >> version.minor;
@@ -41,30 +41,30 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, Version &version)
 }
 
 
-namespace Amarok
+namespace Mpris1
 {
 
-    RootDBusHandler::RootDBusHandler()
+    RootHandler::RootHandler()
         : QObject( kapp )
     {
         qDBusRegisterMetaType<Version>();
 
-        new RootAdaptor( this );
+        new Mpris1RootAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/", this);
     }
 
-    QString RootDBusHandler::Identity()
+    QString RootHandler::Identity()
     {
         return QString( "%1 %2" ).arg( "Amarok", AMAROK_VERSION );
     }
 
-    void RootDBusHandler::Quit()
+    void RootHandler::Quit()
     {
         // Same as KStandardAction::Quit
         kapp->quit();
     }
 
-    Version RootDBusHandler::MprisVersion()
+    Version RootHandler::MprisVersion()
     {
         struct Version version;
         version.major = 1;
@@ -74,4 +74,4 @@ namespace Amarok
 
 }
 
-#include "RootDBusHandler.moc"
+#include "mprisv1/RootHandler.moc"

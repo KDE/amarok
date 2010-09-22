@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2009-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,28 +15,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONLOCATIONDELEGATEIMPL_H
-#define COLLECTIONLOCATIONDELEGATEIMPL_H
+#ifndef OPMLOUTLINE_H
+#define OPMLOUTLINE_H
 
 #include "amarok_export.h"
-#include "core/collections/CollectionLocationDelegate.h"
 
-namespace Collections {
+#include <QMap>
+#include <QString>
 
-class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
+class AMAROK_EXPORT OpmlOutline
 {
-public:
-    CollectionLocationDelegateImpl() {};
-    virtual ~ CollectionLocationDelegateImpl() {};
+    public:
+        OpmlOutline( OpmlOutline *parent = 0 );
+        ~OpmlOutline() {}
 
-    virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
-    virtual bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
-    virtual void notWriteable(CollectionLocation* loc) const;
-    virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
+        OpmlOutline *parent() const { return m_parent; }
+        bool isRootItem() const { return m_parent == 0; }
+
+        QMap<QString,QString> attributes() const { return m_attributes; }
+        void addAttribute( const QString &key, const QString &value )
+                { m_attributes.insert( key, value ); }
+
+        QList<OpmlOutline *> children() const { return m_children; }
+        void setHasChildren( bool hasChildren ) { m_hasChildren = hasChildren; }
+        bool hasChildren() const { return m_hasChildren; }
+        void addChild( OpmlOutline *outline ) { m_children << outline; }
+        void addChildren( QList<OpmlOutline *> outlineList )
+                { m_children << outlineList; }
+
+    private:
+        OpmlOutline *m_parent;
+        QMap<QString,QString> m_attributes;
+
+        bool m_hasChildren;
+        QList<OpmlOutline *> m_children;
 };
 
-} //namespace Collections
-
-#endif
+#endif // OPMLOUTLINE_H

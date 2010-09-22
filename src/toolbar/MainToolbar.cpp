@@ -56,8 +56,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-static const QString promoString = i18n( "Rediscover Your Music" );
-
 // #define prev_next_role QPalette::Link
 #define prev_next_role foregroundRole()
 static const int prevOpacity = 128;
@@ -81,6 +79,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     , m_lastTime( -1 )
 {
     setObjectName( "MainToolbar" );
+
+    m_promoString = i18n( "Rediscover Your Music" );
 
     // control padding between buttons and labels, it's style controlled by default
     layout()->setSpacing( 0 );
@@ -124,7 +124,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.label->setForegroundRole( prev_next_role );
     connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
-    m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
+    m_current.label = new AnimatedLabelStack( QStringList( m_promoString ), info );
     m_current.label->setFont( fnt );
     m_current.label->setPadding( 24, 24 );
     m_current.label->setBold( true );
@@ -699,7 +699,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         m_slider->setValue( m_slider->minimum() );
         m_current.key = 0L;
         m_current.uidUrl.clear();
-        m_current.label->setData( QStringList( promoString ) );
+        m_current.label->setData( QStringList( m_promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
     }
 

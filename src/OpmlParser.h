@@ -19,6 +19,7 @@
 #define OPMLPARSER_H
 
 #include "amarok_export.h"
+#include "OpmlOutline.h"
 
 #include <threadweaver/Job.h>
 
@@ -26,34 +27,6 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-
-class AMAROK_EXPORT OpmlOutline
-{
-    public:
-        OpmlOutline( OpmlOutline *parent = 0 );
-        ~OpmlOutline();
-
-        OpmlOutline *parent() const { return m_parent; }
-        bool isRootItem() const { return m_parent == 0; }
-
-        QMap<QString,QString> attributes() const { return m_attributes; }
-        void addAttribute( const QString &key, const QString &value )
-                { m_attributes.insert( key, value ); }
-
-        QList<OpmlOutline *> children() const { return m_children; }
-        void setHasChildren( bool hasChildren ) { m_hasChildren = hasChildren; }
-        bool hasChildren() const { return m_hasChildren; }
-        void addChild( OpmlOutline *outline ) { m_children << outline; }
-        void addChildren( QList<OpmlOutline *> outlineList )
-                { m_children << outlineList; }
-
-    private:
-        OpmlOutline *m_parent;
-        QMap<QString,QString> m_attributes;
-
-        bool m_hasChildren;
-        QList<OpmlOutline *> m_children;
-};
 
 /**
 * Parser for OPML files.

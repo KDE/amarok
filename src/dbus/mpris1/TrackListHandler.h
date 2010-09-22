@@ -15,21 +15,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRACKLIST_DBUS_HANDLER_H
-#define TRACKLIST_DBUS_HANDLER_H
+#ifndef MPRIS1_TRACKLIST_HANDLER_H
+#define MPRIS1_TRACKLIST_HANDLER_H
 
 #include <QObject>
 #include <QVariantMap>
 
-namespace Amarok
+namespace Mpris1
 {
-    class TracklistDBusHandler : public QObject
+    class TrackListHandler : public QObject
     {
         Q_OBJECT
         Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer.tracklist")
 
         public:
-            TracklistDBusHandler();
+            TrackListHandler();
 
             int AddTrack( const QString &, bool );
             void DelTrack( int index );
@@ -50,4 +50,4 @@ namespace Amarok
     };
 }
 
-#endif
+#endif // MPRIS1_TRACKLIST_HANDLER_H

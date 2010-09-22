@@ -117,6 +117,8 @@ private:
     } m_drag;
     int m_trackBarAnimationTimer;
 
+    QString m_promoString;
+
     Phonon::State m_currentEngineState;
 };
 

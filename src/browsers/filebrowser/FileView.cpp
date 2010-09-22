@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "FileView"
+
 #include "FileView.h"
 
 #include "core/support/Debug.h"
@@ -31,13 +33,17 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
+#include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 
+#include <KAction>
+#include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KDialog>
 #include <KDirModel>
 #include <KFileItem>
 #include <KGlobalSettings>
+#include <KMessageBox>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
@@ -47,8 +53,6 @@
 #include <QFileSystemModel>
 #include <QItemDelegate>
 #include <QPainter>
-
-
 
 FileView::FileView( QWidget * parent )
     : Amarok::PrettyTreeView( parent )
@@ -77,13 +81,11 @@ FileView::FileView( QWidget * parent )
 void
 FileView::contextMenuEvent( QContextMenuEvent *e )
 {
-    DEBUG_BLOCK
-
     if( !model() )
         return;
 
     //trying to do fancy stuff while showing places only leads to tears!
-    debug() << model()->objectName();
+    // debug() << model()->objectName();
     if( model()->objectName() == "PLACESMODEL" )
     {
         e->accept();
@@ -95,6 +97,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
+    DEBUG_BLOCK
     KMenu* menu = new KMenu( this );
     QList<QAction *> actions = actionsForIndices( indices );
     foreach( QAction * action, actions )
@@ -379,9 +382,10 @@ FileView::actionsForIndices( const QModelIndexList &indices )
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+        connect( m_deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
     }
 
     actions.append( m_deleteAction );
@@ -502,40 +506,58 @@ FileView::tracksForEdit() const
 }
 
 void
-FileView::slotDelete()
+FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
 {
+    Q_UNUSED( buttons )
     DEBUG_BLOCK
 
     QModelIndexList indices = selectedIndexes();
-
-    if( indices.count() == 0 )
+    if( indices.isEmpty() )
         return;
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this item?",
-                         "Are you sure you want to delete these %1 items?",
-                         indices.count() )
-                    , &dialog
-                  );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
-    dialog.setMainWidget( &label );
-    if( dialog.exec() != QDialog::Accepted )
-        return;
-    
-    
-    QList<KUrl> urls;
+    const bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
+    QString caption;
+    QString labelText;
+    if( skipTrash )
+    {
+        caption = i18nc( "@title:window", "Confirm Delete" );
+        labelText = i18np( "Are you sure you want to delete this item?",
+                           "Are you sure you want to delete these %1 items?",
+                           indices.count() );
+    }
+    else
+    {
+        caption = i18nc( "@title:window", "Confirm Move to Trash" );
+        labelText = i18np( "Are you sure you want to move this item to trash?",
+                           "Are you sure you want to move these %1 items to trash?",
+                           indices.count() );
+    }
 
+    KUrl::List urls;
+    QStringList filepaths;
     foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        debug() << "file path: " << file.url();
-
-        KIO::DeleteJob * job = KIO::del( file.url() );
-        job->start();
+        filepaths << file.localPath();
+        urls << file.url();
     }
 
+    const bool cont = KMessageBox::warningContinueCancelList(
+        0, labelText, filepaths, caption, KStandardGuiItem::remove() ) == KMessageBox::Continue;
+
+    if( !cont )
+        return;
+
+    KIO::Job *job = skipTrash
+        ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
+        : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
+
+    if( job )
+    {
+        debug() << QString( "%1 %2 files" ).arg( skipTrash ? "Deleting" : "Trashing" ).arg( urls.count() );
+        QString statusText = i18nc( "@info:status", "Moving to trash: %1 files", urls.count() );
+        The::statusBar()->newProgressOperation( job, statusText );
+    }
 }
 
 #include "FileView.moc"

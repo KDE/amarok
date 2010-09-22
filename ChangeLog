@@ -4,14 +4,18 @@ Amarok ChangeLog
 
 VERSION NEXT
   FEATURES:
+    * OPML export for podcast subscriptions. (BR 126120)
     * New "Playlist Length" constraint for the APG, which allows you to specify
       the number of tracks in the playlist.  What was the "Playlist Length"
       constraint is now called "Playlist Duration".
 
   CHANGES:
+    * Deleting items in the collection/file browser will move them to trash;
+      pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
     * Fixed an initialization bug which affected all context applets.
+    * Fix bug where users could drag applets around indiscriminately
     * FLAC BPM tags could be read incorrectly. (BR 234166)
 
 

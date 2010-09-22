@@ -39,7 +39,7 @@
 #include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
-#include "PlayerDBusHandler.h"
+#include "dbus/mpris1/PlayerHandler.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
@@ -49,11 +49,11 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "core/plugins/PluginManager.h"
 #include "core/podcasts/PodcastProvider.h"
-#include "RootDBusHandler.h"
+#include "dbus/mpris1/RootHandler.h"
 #include "ScriptManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
-#include "TracklistDBusHandler.h"
+#include "dbus/mpris1/TrackListHandler.h"
 #ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
 #else
@@ -650,9 +650,9 @@ App::continueInit()
     }
 
     PERF_LOG( "Creating DBus handlers" )
-    new Amarok::RootDBusHandler();
-    new Amarok::PlayerDBusHandler();
-    new Amarok::TracklistDBusHandler();
+    new Mpris1::RootHandler();
+    new Mpris1::PlayerHandler();
+    new Mpris1::TrackListHandler();
     new CollectionDBusHandler( this );
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )

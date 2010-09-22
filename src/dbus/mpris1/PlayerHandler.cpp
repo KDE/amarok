@@ -15,23 +15,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlayerDBusHandler.h"
+#include "PlayerHandler.h"
 
 #include "amarokconfig.h"
 #include "ActionClasses.h"
 #include "App.h"
+#include "AppDBusAdaptor.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "PlayerAdaptor.h"
+#include "Mpris1PlayerAdaptor.h"
+#include "PlayerDBusAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "Osd.h"
 #include "SvgHandler.h"
 
-// Marshall the DBusStatus data into a D-BUS argument
-QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
+// Marshall the Status data into a D-BUS argument
+QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Status &status)
 {
     argument.beginStructure();
     argument << status.Play;
@@ -42,8 +44,8 @@ QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
     return argument;
 }
 
-// Retrieve the DBusStatus data from the D-BUS argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, DBusStatus &status)
+// Retrieve the Status data from the D-BUS argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, Mpris1::Status &status)
 {
     argument.beginStructure();
     argument >> status.Play;
@@ -55,27 +57,30 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, DBusStatus &statu
 }
 
 
-namespace Amarok
+namespace Mpris1
 {
 
-    PlayerDBusHandler::PlayerDBusHandler()
+    PlayerHandler::PlayerHandler()
         : QObject(kapp),
           EngineObserver( The::engineController() )
     {
-        qDBusRegisterMetaType<DBusStatus>();
+        qDBusRegisterMetaType<Status>();
 
-        setObjectName("PlayerDBusHandler");
+        setObjectName("PlayerHandler");
 
-        new PlayerAdaptor( this );
+        new Mpris1PlayerAdaptor( this );
+        // amarok extensions:
+        new AppDBusAdaptor( this );
+        new PlayerDBusAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
         connect( The::playlistActions(), SIGNAL(navigatorChanged()),
                  this, SLOT(updateStatus()) );
     }
 
-    DBusStatus PlayerDBusHandler::GetStatus()
+    Status PlayerHandler::GetStatus()
     {
-        DBusStatus status = { 0, 0, 0, 0 };
+        Status status = { 0, 0, 0, 0 };
         switch( The::engineController()->state() )
         {
             case Phonon::PlayingState:
@@ -110,17 +115,17 @@ namespace Amarok
         return status;
     }
 
-    void PlayerDBusHandler::Pause()
+    void PlayerHandler::Pause()
     {
         The::engineController()->playPause();
     }
 
-    void PlayerDBusHandler::Play()
+    void PlayerHandler::Play()
     {
         The::engineController()->play();
     }
 
-    void PlayerDBusHandler::PlayPause()
+    void PlayerHandler::PlayPause()
     {
         if(The::engineController()->state() == Phonon::PlayingState) {
             The::engineController()->pause();
@@ -129,17 +134,17 @@ namespace Amarok
         }
     }
 
-    void PlayerDBusHandler::Next()
+    void PlayerHandler::Next()
     {
         The::playlistActions()->next();
     }
 
-    void PlayerDBusHandler::Prev()
+    void PlayerHandler::Prev()
     {
         The::playlistActions()->back();
     }
 
-    void PlayerDBusHandler::Repeat( bool on )
+    void PlayerHandler::Repeat( bool on )
     {
         debug() << (on ? "Turning repeat on" : "Turning repeat off");
         if( on )
@@ -161,80 +166,80 @@ namespace Amarok
     }
 
     //position is specified in milliseconds
-    int PlayerDBusHandler::PositionGet()
+    int PlayerHandler::PositionGet()
     {
         return The::engineController()->trackPositionMs();
     }
 
-    void PlayerDBusHandler::PositionSet( int time )
+    void PlayerHandler::PositionSet( int time )
     {
         if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
             The::engineController()->seek( time );
     }
 
-    void PlayerDBusHandler::Stop()
+    void PlayerHandler::Stop()
     {
         The::engineController()->stop();
     }
 
-    void PlayerDBusHandler::StopAfterCurrent()
+    void PlayerHandler::StopAfterCurrent()
     {
         The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
     }
 
-    int PlayerDBusHandler::VolumeGet()
+    int PlayerHandler::VolumeGet()
     {
         return The::engineController()->volume();
     }
 
-    void PlayerDBusHandler::VolumeSet( int vol )
+    void PlayerHandler::VolumeSet( int vol )
     {
         The::engineController()->setVolume(vol);
     }
 
-    void PlayerDBusHandler::VolumeUp( int step ) const
+    void PlayerHandler::VolumeUp( int step ) const
     {
         The::engineController()->increaseVolume( step );
     }
 
-    void PlayerDBusHandler::VolumeDown( int step ) const
+    void PlayerHandler::VolumeDown( int step ) const
     {
         The::engineController()->decreaseVolume( step );
     }
 
-    void PlayerDBusHandler::Mute() const
+    void PlayerHandler::Mute() const
     {
         The::engineController()->toggleMute();
     }
 
-    void PlayerDBusHandler::ShowOSD() const
+    void PlayerHandler::ShowOSD() const
     {
         Amarok::OSD::instance()->forceToggleOSD();
     }
 
-    void PlayerDBusHandler::LoadThemeFile( const QString &path ) const
+    void PlayerHandler::LoadThemeFile( const QString &path ) const
     {
         The::svgHandler()->setThemeFile( path );
     }
 
-    void PlayerDBusHandler::Forward( int time )
+    void PlayerHandler::Forward( int time )
     {
         if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
     }
 
-    void PlayerDBusHandler::Backward( int time )
+    void PlayerHandler::Backward( int time )
     {
         if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
     }
 
-    QVariantMap PlayerDBusHandler::GetMetadata()
+    QVariantMap PlayerHandler::GetMetadata()
     {
         return GetTrackMetadata( The::engineController()->currentTrack() );
     }
 
-    int PlayerDBusHandler::GetCaps()
+    int PlayerHandler::GetCaps()
     {
         int caps = NONE;
         Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -251,25 +256,25 @@ namespace Amarok
         return caps;
     }
 
-    void PlayerDBusHandler::updateStatus()
+    void PlayerHandler::updateStatus()
     {
-        DBusStatus status = GetStatus();
+        Status status = GetStatus();
         emit StatusChange( status );
         emit CapsChange( GetCaps() );
     }
 
-    QVariantMap PlayerDBusHandler::GetTrackMetadata( Meta::TrackPtr track )
+    QVariantMap PlayerHandler::GetTrackMetadata( Meta::TrackPtr track )
     {
         return Meta::Field::mprisMapFromTrack( track );
     }
 
-    void PlayerDBusHandler::engineTrackChanged( Meta::TrackPtr track )
+    void PlayerHandler::engineTrackChanged( Meta::TrackPtr track )
     {
         Q_UNUSED( track );
         emit TrackChange( GetMetadata() );
         updateStatus();
     }
-    void PlayerDBusHandler::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+    void PlayerHandler::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
     {
         Q_UNUSED( currentState );
         Q_UNUSED( oldState );
@@ -277,4 +282,4 @@ namespace Amarok
     }
 } // namespace Amarok
 
-#include "PlayerDBusHandler.moc"
+#include "mprisv1/PlayerHandler.moc"
