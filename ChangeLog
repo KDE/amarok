@@ -10,6 +10,7 @@ VERSION NEXT
       constraint is now called "Playlist Duration".
 
   CHANGES:
+    * Improved the usability of device items in Media Sources by adding tooltips.
     * Deleting items in the collection/file browser will move them to trash;
       pressing SHIFT while clicking the action will bypass trash.
 

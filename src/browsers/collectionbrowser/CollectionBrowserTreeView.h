@@ -33,6 +33,10 @@ class CollectionBrowserTreeView : public CollectionTreeView
         virtual void mouseMoveEvent( QMouseEvent *event );
         virtual void mousePressEvent( QMouseEvent *event );
         virtual void mouseReleaseEvent( QMouseEvent *event );
+        virtual bool viewportEvent( QEvent *event );
+
+    private:
+        QAction *decoratorActionAt( const QModelIndex &idx, const QPoint pos );
 };
 
 #endif

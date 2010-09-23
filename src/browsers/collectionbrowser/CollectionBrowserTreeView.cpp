@@ -24,6 +24,7 @@
 
 #include <QAction>
 #include <QMouseEvent>
+#include <QToolTip>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -77,34 +78,59 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
 
-    if( index.parent().isValid() ) // not a root element, don't bother checking actions
+    if( !index.parent().isValid() )
     {
-        CollectionTreeView::mouseReleaseEvent( event );
-        return;
-    }
-
-    const int actionsCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
-    if( actionsCount > 0 )
-    {
-        const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
-        if( rect.contains( event->pos() ) )
+        QAction *decoratorAction = decoratorActionAt( index, event->pos() );
+        if( decoratorAction )
         {
-            QList<QAction*> actions =
-                    index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
-            //hack: rect height == the width of one action's area.
-            int indexOfActionToTrigger
-                = ( event->pos().x() - rect.left() ) / rect.height();
-            debug() << "triggering action " << indexOfActionToTrigger;
-            if( indexOfActionToTrigger >= actions.count() )
-            {
-                debug() << "no such action";
-                return;
-            }
-            QAction *action = actions.value( indexOfActionToTrigger );
-            if( action )
-                action->trigger();
+            decoratorAction->trigger();
             return;
         }
     }
+
     CollectionTreeView::mouseReleaseEvent( event );
+}
+
+bool
+CollectionBrowserTreeView::viewportEvent( QEvent *event )
+{
+    if( event->type() == QEvent::ToolTip )
+    {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
+        const QModelIndex &index = indexAt( helpEvent->pos() );
+        if( !rootIsDecorated() && !index.parent().isValid() )
+        {
+            QAction *action = decoratorActionAt( index, helpEvent->pos() );
+            if( action )
+            {
+                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
+                return true;
+            }
+        }
+    }
+
+    return QAbstractItemView::viewportEvent( event );
+}
+
+QAction *
+CollectionBrowserTreeView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
+{
+        const int actionsCount = idx.data( CustomRoles::DecoratorRoleCount ).toInt();
+    if( actionsCount > 0 )
+    {
+        const QRect &rect = CollectionTreeItemDelegate::decoratorRect( idx );
+        if( rect.contains( pos ) )
+        {
+            QActionList actions = idx.data( CustomRoles::DecoratorRole ).value<QActionList>();
+            if( actions.isEmpty() )
+                return 0;
+
+            //HACK: rect height == the width of one action's area.
+            int indexOfAction = ( pos.x() - rect.left() ) / rect.height();
+            if( indexOfAction >= actions.count() )
+                return 0;
+            return actions.value( indexOfAction );
+        }
+    }
+    return 0;
 }

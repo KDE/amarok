@@ -53,11 +53,13 @@ protected:
     virtual void startDrag( Qt::DropActions supportedActions );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
+    virtual bool viewportEvent( QEvent *event );
 
 protected slots:
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
 private:
+    QAction *decoratorActionAt( const QModelIndex &idx, const QPoint position );
     QList<QAction *> actionsFor( QModelIndexList indexes );
 
     PopupDropper* m_pd;

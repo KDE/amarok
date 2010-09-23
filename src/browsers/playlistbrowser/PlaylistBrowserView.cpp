@@ -39,6 +39,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
+#include <QToolTip>
 
 PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent )
     : Amarok::PrettyTreeView( parent )
@@ -113,6 +114,32 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
     m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
 }
 
+QAction *
+PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
+{
+    const int actionCount =
+        idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
+    if( actionCount > 0 )
+    {
+        const QRect rect = PlaylistTreeItemDelegate::actionsRect( idx );
+        if( rect.contains( pos ) )
+        {
+            QVariantList variantList =
+                    idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
+            if( variantList.isEmpty() )
+                return 0;
+
+            QActionList actions = variantList.first().value<QActionList>();
+            //HACK: rect height == the width of one action's area.
+            int indexOfAction = ( pos.x() - rect.left() ) / rect.height();
+            if( indexOfAction >= actions.count() )
+                return 0;
+            return actions.value( indexOfAction );
+        }
+    }
+    return 0;
+}
+
 void
 PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent * event )
 {
@@ -121,34 +148,9 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent * event )
     // Don't bother checking actions for the others.
     if( !rootIsDecorated() && !index.parent().isValid() )
     {
-        const int actionCount =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-        if( actionCount > 0 )
-        {
-            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-            if( rect.contains( event->pos() ) )
-            {
-                QVariantList variantList =
-                        index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
-                if( variantList.isEmpty() )
-                    return;
-
-                QList<QAction*> actions = variantList.first().value<QList<QAction*> >();
-                //hack: rect height == the width of one action's area.
-                int indexOfActionToTrigger
-                    = ( event->pos().x() - rect.left() ) / rect.height();
-                debug() << "triggering action " << indexOfActionToTrigger;
-                if( indexOfActionToTrigger >= actions.count() )
-                {
-                    debug() << "no such action";
-                    return;
-                }
-                QAction *action = actions.value( indexOfActionToTrigger );
-                if( action )
-                    action->trigger();
-                return;
-            }
-        }
+        QAction *action = decoratorActionAt( index, event->pos() );
+        if( action )
+            action->trigger();
     }
 
     if( m_pd )
@@ -294,6 +296,27 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
     //Clear the data from all actions now that the context menu has executed.
     foreach( QAction *action, actions )
         action->setData( QVariant() );
+}
+
+bool
+PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
+{
+    if( event->type() == QEvent::ToolTip )
+    {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
+        const QModelIndex &index = indexAt( helpEvent->pos() );
+        if( !rootIsDecorated() && !index.parent().isValid() )
+        {
+            QAction *action = decoratorActionAt( index, helpEvent->pos() );
+            if( action )
+            {
+                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
+                return true;
+            }
+        }
+    }
+
+    return QAbstractItemView::viewportEvent( event );
 }
 
 QList<QAction *>
