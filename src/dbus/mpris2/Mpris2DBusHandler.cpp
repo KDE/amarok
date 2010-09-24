@@ -393,9 +393,9 @@ namespace Amarok
         QMetaObject::invokeMethod( this, "updateTrackProperties", Qt::QueuedConnection );
     }
 
-    void Mpris2DBusHandler::engineTrackPositionChanged( qint64 position, bool userSeek )
+    void Mpris2DBusHandler::engineTrackPositionChanged( qint64 position, bool seeked )
     {
-        if( userSeek )
+        if( seeked )
             Seeked( position * 1000 );
     }
     // </EngineObserver>
