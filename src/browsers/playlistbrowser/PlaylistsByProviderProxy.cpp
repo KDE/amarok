@@ -53,6 +53,16 @@ PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
     return QtGroupingProxy::data( idx, role );
 }
 
+Qt::ItemFlags
+PlaylistsByProviderProxy::flags( const QModelIndex &idx ) const
+{
+    //TODO: check if provider supports addPlaylist for DropEnabled
+    if( isGroup( idx ) )
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
+
+    return QtGroupingProxy::flags( idx );
+}
+
 bool
 PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &parent )
 {

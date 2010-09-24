@@ -43,6 +43,9 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         /* reimplement to handle tracks with multiple providers (synced) */
         virtual QVariant data( const QModelIndex &idx, int role ) const;
 
+        /* reimplemented to prevent changing providers name */
+        virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
+
         /* QAbstractModel methods */
         virtual bool removeRows( int row, int count,
                                  const QModelIndex &parent = QModelIndex() );
