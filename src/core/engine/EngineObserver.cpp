@@ -90,10 +90,10 @@ EngineObserver::engineMuteStateChanged( bool mute )
 }
 
 void
-EngineObserver::engineTrackPositionChanged( qint64 position , bool userSeek )
+EngineObserver::engineTrackPositionChanged( qint64 position , bool seeked )
 {
     Q_UNUSED( position );
-    Q_UNUSED( userSeek );
+    Q_UNUSED( seeked );
 }
 
 void

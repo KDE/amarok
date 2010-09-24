@@ -139,9 +139,13 @@ public:
     /**
      * Called when the track position changes
      *
-     * (even when play just progresses?)
+     * This will be called at regular intervals during playback, with
+     * @p seeked set to @c false.
+     *
+     * @param seeked  is @c true is true if the change was due to a seek, and
+     *                @c false if it was just due to normal playback
      */
-    virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
+    virtual void engineTrackPositionChanged( qint64 position, bool seeked );
 
     /**
      * Called when the track length changes, typically because the track has changed
