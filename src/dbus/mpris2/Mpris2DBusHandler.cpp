@@ -70,6 +70,10 @@ static Status getStatus( Phonon::State state )
         case Phonon::ErrorState:
             status = Stopped;
             break;
+        default:
+            Q_ASSERT( false );
+            status = Stopped;
+            break;
     };
     return status;
 }
@@ -302,24 +306,28 @@ namespace Amarok
 
     void Mpris2DBusHandler::updateTrackProgressionProperties()
     {
-        QString status;
+        QString loopStatus;
         // Trying to match with AmarokConfig::EnumTrack
         switch( AmarokConfig::trackProgression() )
         {
             case AmarokConfig::EnumTrackProgression::Normal:
             case AmarokConfig::EnumTrackProgression::RandomTrack:
             case AmarokConfig::EnumTrackProgression::RandomAlbum:
-                status = "None";
+                loopStatus = "None";
                 break;
             case AmarokConfig::EnumTrackProgression::RepeatTrack:
-                status = "Track";
+                loopStatus = "Track";
                 break;
             case AmarokConfig::EnumTrackProgression::RepeatAlbum:
             case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
-                status = "Playlist";
+                loopStatus = "Playlist";
+                break;
+            default:
+                Q_ASSERT( false );
+                loopStatus = "None";
                 break;
         }
-        setPropertyInternal( "LoopStatus", status );
+        setPropertyInternal( "LoopStatus", loopStatus );
 
         bool shuffle;
         switch( AmarokConfig::trackProgression() )
