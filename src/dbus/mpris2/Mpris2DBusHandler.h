@@ -175,8 +175,6 @@ namespace Amarok
 
         void setPropertyInternal( const char *name, const QVariant &value );
 
-        void schedulePropertiesChangedEmission();
-
     private Q_SLOTS:
         void updateTrackProgressionProperties();
         void updatePlaybackStatusProperty();

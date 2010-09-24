@@ -259,14 +259,6 @@ namespace Amarok
     }
     // </org.mpris.MediaPlayer2.Player>
 
-    void Mpris2DBusHandler::schedulePropertiesChangedEmission()
-    {
-        // For now we don't need to use a timer to avoid multiple calls to
-        // emitPropertiesChanged() because it won't do anything if all changed
-        // properties have been emitted
-        QMetaObject::invokeMethod( this, "emitPropertiesChanged", Qt::QueuedConnection );
-    }
-
     void Mpris2DBusHandler::emitPropertiesChanged()
     {
         if( m_changedProperties.isEmpty() )
@@ -299,6 +291,10 @@ namespace Amarok
         {
             // Updating existing property
             QObject::setProperty( name, value );
+
+            if ( m_changedProperties.isEmpty() )
+                QMetaObject::invokeMethod( this, "emitPropertiesChanged", Qt::QueuedConnection );
+
             m_changedProperties << name;
         }
         else
@@ -341,8 +337,6 @@ namespace Amarok
                 break;
         }
         setPropertyInternal( "Shuffle", shuffle );
-
-        schedulePropertiesChangedEmission();
     }
 
     void Mpris2DBusHandler::updatePlaybackStatusProperty()
@@ -361,8 +355,6 @@ namespace Amarok
                 break;
         }
         setPropertyInternal( "PlaybackStatus", status );
-
-        schedulePropertiesChangedEmission();
     }
 
     void Mpris2DBusHandler::updateTrackProperties()
@@ -378,8 +370,6 @@ namespace Amarok
         setPropertyInternal( "CanPause", status == Playing );
         setPropertyInternal( "CanSeek", status != Stopped );
         setPropertyInternal( "Metadata", metaData );
-
-        schedulePropertiesChangedEmission();
     }
 
     // <EngineObserver>
