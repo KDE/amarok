@@ -177,6 +177,7 @@ PlaylistBrowserCategory::toggleView( bool merged )
         m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
+        m_addFolderAction->setHelpText( m_addFolderAction->text() );
     }
     else
     {
@@ -184,11 +185,11 @@ PlaylistBrowserCategory::toggleView( bool merged )
         m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
+        m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
     }
 
     //folders don't make sense in per-provider view
     m_addFolderAction->setEnabled( merged );
-    //TODO: set a tooltip saying why it's disabled mention labels
 
     Amarok::config( m_configGroup ).writeEntry( s_mergeViewKey, merged );
 }
