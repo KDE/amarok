@@ -111,11 +111,14 @@ UpnpBrowseCollection::startFullScan()
 {
     DEBUG_BLOCK;
 
-// TODO change this to "/" when we have files changed being
-/// ignored for full scans.
-// right now its good to have the full scan finish quickly for
-// development purposes
     startIncrementalScan( "/" );
+
+    // TODO probably set abort slot
+    if( The::statusBar() )
+        The::statusBar()->newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
+
+    connect( this, SIGNAL(incrementProgress()), The::statusBar(), SLOT(incrementProgress()), Qt::QueuedConnection );
+
     m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
     Q_ASSERT(
@@ -137,6 +140,9 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
             && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
             createTrack( entry, sj->url().prettyUrl() );
         }
+        if( The::statusBar() )
+            The::statusBar()->incrementProgressTotalSteps( this );
+        emit incrementProgress();
     }
     updateMemoryCollection();
 }
@@ -182,6 +188,8 @@ DEBUG_BLOCK
     if( m_fullScanInProgress ) {
         m_fullScanTimer->stop();
         m_fullScanInProgress = false;
+        if( The::statusBar() )
+            The::statusBar()->endProgressOperation( this );
         debug() << "Full Scan done";
     }
 

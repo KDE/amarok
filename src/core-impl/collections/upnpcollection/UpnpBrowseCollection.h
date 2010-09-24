@@ -59,6 +59,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
   signals:
+    void incrementProgress();
 
   public slots:
     virtual void startFullScan();
