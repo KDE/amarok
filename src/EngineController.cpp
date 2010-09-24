@@ -178,6 +178,7 @@ EngineController::initializePhonon()
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
+    connect( m_media, SIGNAL( seekableChanged( bool ) ), SLOT( slotSeekableChanged( bool ) ) );
 
     connect( m_audio, SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
     connect( m_audio, SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
@@ -772,6 +773,14 @@ EngineController::isStream()
     return false;
 }
 
+bool
+EngineController::isSeekable() const
+{
+    if( m_media )
+        return m_media->isSeekable();
+    return false;
+}
+
 int
 EngineController::trackPosition() const
 {
@@ -1239,6 +1248,11 @@ EngineController::resetFadeout()
         m_fader->setVolume( 1.0 );
         m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
+}
+
+void EngineController::slotSeekableChanged( bool seekable )
+{
+    seekableChangedNotify( seekable );
 }
 
 void EngineController::slotTitleChanged( int titleNumber )

@@ -103,6 +103,12 @@ EngineObserver::engineTrackLengthChanged( qint64 milliseconds )
 }
 
 void
+EngineObserver::engineSeekableChanged( bool seekable )
+{
+    Q_UNUSED( seekable );
+}
+
+void
 EngineObserver::engineDeleted()
 {
     m_subject = 0;
@@ -208,6 +214,13 @@ EngineSubject::trackFinishedNotify( Meta::TrackPtr track )
 {
     foreach( EngineObserver *observer, Observers )
         observer->engineTrackFinished( track );
+}
+
+void
+EngineSubject::seekableChangedNotify( bool seekable )
+{
+    foreach( EngineObserver *observer, Observers )
+        observer->engineSeekableChanged( seekable );
 }
 
 void

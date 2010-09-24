@@ -100,10 +100,22 @@ namespace Amarok
 
         updateTrackProgressionProperties();
         updatePlaybackStatusProperty();
+        updatePlaylistProperties();
         updateTrackProperties();
 
         connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
             SLOT( updateTrackProgressionProperties() ) );
+        // changing the navigator may also affect whether there is a
+        // next or previous track
+        connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
+            SLOT( updatePlaylistProperties() ) );
+
+        connect( The::playlist()->qaim(), SIGNAL( rowsInserted(QModelIndex,int,int) ),
+            SLOT( updatePlaylistProperties() ) );
+        connect( The::playlist()->qaim(), SIGNAL( rowsMoved(QModelIndex,int,int,QModelIndex,int) ),
+            SLOT( updatePlaylistProperties() ) );
+        connect( The::playlist()->qaim(), SIGNAL( rowsRemoved(QModelIndex,int,int) ),
+            SLOT( updatePlaylistProperties() ) );
     }
 
     void Mpris2DBusHandler::setProperty( const char *name, const QVariant &value )
@@ -396,19 +408,50 @@ namespace Amarok
         setPropertyInternal( "PlaybackStatus", status );
     }
 
+    void Mpris2DBusHandler::updatePlaylistProperties()
+    {
+        // FIXME: we should really be able to ask the active navigator
+        // whether it can produce a next/previous track, rather than
+        // depending on this enum.
+        //
+        // However, likelyLastTrack() and likelyNextTrack() don't do quite what we want
+        if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist )
+        {
+            int rowCount = The::playlist()->qaim()->rowCount();
+            setPropertyInternal( "CanGoNext", rowCount > 0 );
+            setPropertyInternal( "CanGoPrevious", rowCount > 0 );
+        }
+        else
+        {
+            int activeRow = The::playlist()->activeRow();
+            setPropertyInternal( "CanGoNext", activeRow < The::playlist()->qaim()->rowCount() - 1 );
+            setPropertyInternal( "CanGoPrevious", activeRow > 0 );
+        }
+    }
+
     void Mpris2DBusHandler::updateTrackProperties()
     {
-        int activeRow = The::playlist()->activeRow();
-        Status status = getStatus();
-        QVariantMap metaData = Meta::Field::mpris20MapFromTrack( The::engineController()->currentTrack() );
-        metaData["mpris:trackid"] = activeMprisTrackId();
+        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+        if ( !currentTrack )
+        {
+            int rowCount = The::playlist()->qaim()->rowCount();
+            setPropertyInternal( "Metadata", QVariantMap() );
+            setPropertyInternal( "CanPlay", rowCount > 0 );
+            setPropertyInternal( "CanPause", false );
+            //setPropertyInternal( "CanSeek", false );
+        }
+        else
+        {
+            QVariantMap metaData = Meta::Field::mpris20MapFromTrack( currentTrack );
+            metaData["mpris:trackid"] = activeMprisTrackId();
 
-        setPropertyInternal( "CanGoNext", activeRow < The::playlist()->qaim()->rowCount() - 1 );
-        setPropertyInternal( "CanGoPrevious", activeRow > 0 );
-        setPropertyInternal( "CanPlay", status != Playing );
-        setPropertyInternal( "CanPause", status == Playing );
-        setPropertyInternal( "CanSeek", status != Stopped );
-        setPropertyInternal( "Metadata", metaData );
+            setPropertyInternal( "CanPlay", true );
+            // Phonon doesn't actually tell us whether the media is pausable,
+            // so we always claim it is
+            setPropertyInternal( "CanPause", true );
+            //setPropertyInternal( "CanSeek", The::engineController()->phononMediaObject()->isSeekable() );
+            setPropertyInternal( "Metadata", metaData );
+        }
     }
 
     // <EngineObserver>
@@ -420,12 +463,18 @@ namespace Amarok
     void Mpris2DBusHandler::engineTrackChanged( Meta::TrackPtr )
     {
         QMetaObject::invokeMethod( this, "updateTrackProperties", Qt::QueuedConnection );
+        QMetaObject::invokeMethod( this, "updatePlaylistProperties", Qt::QueuedConnection );
     }
 
     void Mpris2DBusHandler::engineTrackPositionChanged( qint64 position, bool seeked )
     {
         if( seeked )
             Seeked( position * 1000 );
+    }
+
+    void Mpris2DBusHandler::engineSeekableChanged( bool seekable )
+    {
+        setPropertyInternal( "CanSeek", seekable );
     }
     // </EngineObserver>
 }

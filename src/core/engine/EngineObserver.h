@@ -153,6 +153,13 @@ public:
     virtual void engineTrackLengthChanged( qint64 milliseconds );
 
     /**
+     * Called when the seekable state changes.
+     *
+     * This information is not available immediately after a track changes.
+     */
+    virtual void engineSeekableChanged( bool seekable );
+
+    /**
      * Called when the EngineSubject is deleted.
      *
      * Warning: at this point, the destructor for the engine has already run!
@@ -190,6 +197,7 @@ protected:
     void newTrackPlaying() const;
     void trackChangedNotify( Meta::TrackPtr track );
     void trackFinishedNotify( Meta::TrackPtr track );
+    void seekableChangedNotify( bool seekable );
 
 private Q_SLOTS:
     void observerDestroyed( QObject* object );

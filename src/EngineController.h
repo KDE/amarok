@@ -151,6 +151,11 @@ public:
     bool isStream();
 
     /**
+     * @return @c true if the current track is seekable, @c false otherwise
+     */
+    bool isSeekable() const;
+
+    /**
      * Phonon kequalizer support is required for Amarok to enable equalizer
      * this method return whatever phonon support kequalizer effect.
      *
@@ -331,6 +336,7 @@ private slots:
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
     void slotStopFadeout(); //called after the fade-out has finished
+    void slotSeekableChanged( bool );
 
     /**
      * For volume/mute changes from the phonon side

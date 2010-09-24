@@ -179,6 +179,7 @@ namespace Amarok
         virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
         virtual void engineTrackChanged( Meta::TrackPtr );
         virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
+        virtual void engineSeekableChanged( bool );
 
     private:
         QList<QByteArray> m_changedProperties;
@@ -188,6 +189,7 @@ namespace Amarok
     private Q_SLOTS:
         void updateTrackProgressionProperties();
         void updatePlaybackStatusProperty();
+        void updatePlaylistProperties();
         void updateTrackProperties();
         void emitPropertiesChanged();
     };
