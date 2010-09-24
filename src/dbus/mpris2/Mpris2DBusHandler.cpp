@@ -107,7 +107,6 @@ namespace Amarok
             QObject::setProperty( name, value );
     }
 
-    // <org.mpris.MediaPlayer2>
     void Mpris2DBusHandler::Raise()
     {
         MainWindow *window = App::instance()->mainWindow();
@@ -147,9 +146,7 @@ namespace Amarok
     {
         return The::engineController()->supportedMimeTypes();
     }
-    // </org.mpris.MediaPlayer2>
 
-    // <org.mpris.MediaPlayer2.Player>
     void Mpris2DBusHandler::Pause()
     {
         The::engineController()->playPause();
@@ -257,7 +254,6 @@ namespace Amarok
     {
         return The::engineController()->trackPositionMs() * 1000;
     }
-    // </org.mpris.MediaPlayer2.Player>
 
     void Mpris2DBusHandler::emitPropertiesChanged()
     {
