@@ -30,7 +30,6 @@
 #include <QTimer>
 
 #include <KLocale>
-#include <KMessageBox>
 #include <kdatetime.h>
 #include <kio/upnptypes.h>
 #include <kio/scheduler.h>
@@ -176,7 +175,7 @@ UpnpBrowseCollection::done( KJob *job )
 {
 DEBUG_BLOCK
     if( job->error() ) {
-        KMessageBox::error( 0, i18n("UPNP Error:") + job->errorString() );
+        The::statusBar()->longMessage( i18n("UPnP Error: %1", job->errorString() ), StatusBar::Error );
         return;
     }
     updateMemoryCollection();
