@@ -803,17 +803,18 @@ qt4_add_dbus_adaptor(
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/org.kde.amarok.App.xml
-   dbus/mpris1/PlayerHandler.h
-   Mpris1::PlayerHandler
-   AppDBusAdaptor
-   AppDBusAdaptor )
+   dbus/mpris1/RootHandler.h
+   Mpris1::RootHandler
+   Mpris1AmarokAppAdaptor
+   Mpris1AmarokAppAdaptor )
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/org.kde.amarok.Player.xml
    dbus/mpris1/PlayerHandler.h
    Mpris1::PlayerHandler
-   PlayerDBusAdaptor
-   PlayerDBusAdaptor )
+   Mpris1AmarokPlayerAdaptor
+   Mpris1AmarokPlayerAdaptor )
+
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/org.kde.amarok.Collection.xml
@@ -821,6 +822,7 @@ qt4_add_dbus_adaptor(
    CollectionDBusHandler
    CollectionAdaptor
    CollectionAdaptor )
+
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/mpris2/org.mpris.MediaPlayer2.root.xml
@@ -828,12 +830,27 @@ qt4_add_dbus_adaptor(
    Amarok::Mpris2DBusHandler
    Mpris2RootAdaptor
    Mpris2RootAdaptor )
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
    dbus/mpris2/org.mpris.MediaPlayer2.Player.xml
    dbus/mpris2/Mpris2DBusHandler.h
    Amarok::Mpris2DBusHandler
    Mpris2PlayerAdaptor
    Mpris2PlayerAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.App.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2AmarokAppAdaptor
+   Mpris2AmarokAppAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.Player.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2AmarokPlayerAdaptor
+   Mpris2AmarokPlayerAdaptor )
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )

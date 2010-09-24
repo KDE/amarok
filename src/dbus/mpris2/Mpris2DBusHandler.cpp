@@ -23,6 +23,8 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "Mpris2AmarokAppAdaptor.h"
+#include "Mpris2AmarokPlayerAdaptor.h"
 #include "Mpris2PlayerAdaptor.h"
 #include "Mpris2RootAdaptor.h"
 #include "Osd.h"
@@ -91,6 +93,9 @@ namespace Amarok
     {
         new Mpris2RootAdaptor( this );
         new Mpris2PlayerAdaptor( this );
+        // amarok extensions:
+        new Mpris2AmarokAppAdaptor( this );
+        new Mpris2AmarokPlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject( MPRIS2_OBJECT_PATH, this );
 
         updateTrackProgressionProperties();
@@ -182,6 +187,36 @@ namespace Amarok
     void Mpris2DBusHandler::Stop()
     {
         The::engineController()->stop();
+    }
+
+    void Mpris2DBusHandler::StopAfterCurrent()
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+    }
+
+    void Mpris2DBusHandler::VolumeUp( int step ) const
+    {
+        The::engineController()->increaseVolume( step );
+    }
+
+    void Mpris2DBusHandler::VolumeDown( int step ) const
+    {
+        The::engineController()->decreaseVolume( step );
+    }
+
+    void Mpris2DBusHandler::Mute() const
+    {
+        The::engineController()->toggleMute();
+    }
+
+    void Mpris2DBusHandler::ShowOSD() const
+    {
+        Amarok::OSD::instance()->forceToggleOSD();
+    }
+
+    void Mpris2DBusHandler::LoadThemeFile( const QString &path ) const
+    {
+        The::svgHandler()->setThemeFile( path );
     }
 
     void Mpris2DBusHandler::Seek( qlonglong time )

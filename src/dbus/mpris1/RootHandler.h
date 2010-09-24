@@ -38,6 +38,9 @@ namespace Mpris1
             QString Identity();
             void Quit();
             Version MprisVersion();
+            // NB: Amarok extensions, not part of the mpris spec
+            void ShowOSD() const;
+            void LoadThemeFile( const QString &path ) const;
     };
 }
 

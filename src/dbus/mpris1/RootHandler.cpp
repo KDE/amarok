@@ -19,7 +19,10 @@
 
 #include "App.h"
 #include "core/support/Debug.h"
+#include "Mpris1AmarokAppAdaptor.h"
 #include "Mpris1RootAdaptor.h"
+#include "Osd.h"
+#include "SvgHandler.h"
 #include "Version.h"
 
 // Marshall the DBusVersion data into a D-BUS argument
@@ -50,6 +53,8 @@ namespace Mpris1
         qDBusRegisterMetaType<Version>();
 
         new Mpris1RootAdaptor( this );
+        // amarok extensions:
+        new Mpris1AmarokAppAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/", this);
     }
 
@@ -70,6 +75,16 @@ namespace Mpris1
         version.major = 1;
         version.minor = 0;
         return version;
+    }
+
+    void RootHandler::ShowOSD() const
+    {
+        Amarok::OSD::instance()->forceToggleOSD();
+    }
+
+    void RootHandler::LoadThemeFile( const QString &path ) const
+    {
+        The::svgHandler()->setThemeFile( path );
     }
 
 }

@@ -16,15 +16,17 @@
     <method name="Mute">
     </method>
 
+    <method name="StopAfterCurrent">
+    </method>
+
+    <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
     <method name="Forward">
         <arg type="i" direction="in"/>
     </method>
 
+    <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
     <method name="Backward">
         <arg type="i" direction="in"/>
-    </method>
-
-    <method name="StopAfterCurrent">
     </method>
 
     <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
