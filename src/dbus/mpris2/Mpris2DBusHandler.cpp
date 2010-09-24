@@ -46,14 +46,14 @@ static QString activeMprisTrackId()
 {
     quint64 id = The::playlist()->activeId();
     if( id > 0 )
-        return QString("%1/Track/%2").arg(MPRIS2_OBJECT_PATH).arg(id);
+        return QString( "%1/Track/%2" ).arg( MPRIS2_OBJECT_PATH ).arg( id );
     else
         return QString();
 }
 
 enum Status { Playing, Paused, Stopped };
 
-static Status getStatus( Phonon::State state)
+static Status getStatus( Phonon::State state )
 {
     Status status;
     switch( state )
@@ -264,7 +264,7 @@ namespace Amarok
         // For now we don't need to use a timer to avoid multiple calls to
         // emitPropertiesChanged() because it won't do anything if all changed
         // properties have been emitted
-        QMetaObject::invokeMethod(this, "emitPropertiesChanged", Qt::QueuedConnection);
+        QMetaObject::invokeMethod( this, "emitPropertiesChanged", Qt::QueuedConnection );
     }
 
     void Mpris2DBusHandler::emitPropertiesChanged()
@@ -385,12 +385,12 @@ namespace Amarok
     // <EngineObserver>
     void Mpris2DBusHandler::engineStateChanged( Phonon::State /*currentState*/, Phonon::State /*oldState*/ )
     {
-        QMetaObject::invokeMethod(this, "updatePlaybackStatusProperty", Qt::QueuedConnection);
+        QMetaObject::invokeMethod( this, "updatePlaybackStatusProperty", Qt::QueuedConnection );
     }
 
     void Mpris2DBusHandler::engineTrackChanged( Meta::TrackPtr )
     {
-        QMetaObject::invokeMethod(this, "updateTrackProperties", Qt::QueuedConnection);
+        QMetaObject::invokeMethod( this, "updateTrackProperties", Qt::QueuedConnection );
     }
 
     void Mpris2DBusHandler::engineTrackPositionChanged( qint64 position, bool userSeek )
