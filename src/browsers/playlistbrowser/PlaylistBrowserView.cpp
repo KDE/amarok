@@ -41,7 +41,8 @@
 #include <QModelIndex>
 #include <QToolTip>
 
-PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent )
+PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,
+                                                             QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_pd( 0 )
     , m_addFolderAction( 0 )
@@ -141,7 +142,7 @@ PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &id
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent * event )
+PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
     // HACK: provider elements hide the root decorations
@@ -187,7 +188,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent * event )
+PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
@@ -199,7 +200,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent * eve
     if( !model()->hasChildren( index ) )
     {
         QList<QAction *> actions =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
         if( actions.count() > 0 )
         {
             //HACK execute the first action assuming it's load
@@ -271,11 +272,11 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
      Amarok::PrettyTreeView::keyPressEvent( event );
 }
 
-void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent * event )
+void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndexList indices = selectedIndexes();
 
-    QList<QAction *> actions = actionsFor( indices );
+    QActionList actions = actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
@@ -322,11 +323,11 @@ PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
 QList<QAction *>
 PlaylistBrowserNS::PlaylistBrowserView::actionsFor( QModelIndexList indexes )
 {
-    QList<QAction *> actions;
+    QActionList actions;
     foreach( QModelIndex idx, indexes )
     {
-        QList<QAction *> idxActions =
-         idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
+        QActionList idxActions =
+            idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
         //only add unique actions model is responsible for making them unique
         foreach( QAction *action, idxActions )
         {
