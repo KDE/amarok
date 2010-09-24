@@ -130,8 +130,8 @@ PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &id
                 return 0;
 
             QActionList actions = variantList.first().value<QActionList>();
-            //HACK: rect height == the width of one action's area.
-            int indexOfAction = ( pos.x() - rect.left() ) / rect.height();
+            int indexOfAction = ( pos.x() - rect.left() ) /
+                                PlaylistTreeItemDelegate::delegateActionIconWidth();
             if( indexOfAction >= actions.count() )
                 return 0;
             return actions.value( indexOfAction );

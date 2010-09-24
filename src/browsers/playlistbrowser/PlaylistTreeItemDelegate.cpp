@@ -33,6 +33,7 @@
 #include <QToolButton>
 
 #define ACTIONICON_SIZE 16
+#define ICONPADX 4
 
 QHash<QPersistentModelIndex, QRect> PlaylistTreeItemDelegate::s_indexActionsRects;
 
@@ -49,6 +50,12 @@ PlaylistTreeItemDelegate::PlaylistTreeItemDelegate( QTreeView *view )
 PlaylistTreeItemDelegate::~PlaylistTreeItemDelegate()
 {}
 
+int
+PlaylistTreeItemDelegate::delegateActionIconWidth()
+{
+    return ACTIONICON_SIZE + ICONPADX;
+}
+
 void
 PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
                                    const QModelIndex &index ) const
@@ -61,12 +68,11 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     const bool isRTL = QApplication::isRightToLeft();
     const QPoint topLeft = option.rect.topLeft();
-    const QPoint bottomRight = option.rect.bottomRight();
     const int width = m_view->viewport()->size().width() - 4;
     const int height = sizeHint( option, index ).height();
     const int iconWidth = 32;
     const int iconHeight = 32;
-    const int iconPadX = 4;
+    const int iconPadX = ICONPADX;
     const int actionCount =
             index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
 
@@ -81,8 +87,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     painter->setRenderHint( QPainter::Antialiasing );
 
-    const int iconYPadding = ( height - iconHeight ) / 2;
-    QPoint iconPos( topLeft + QPoint( iconPadX, iconYPadding ) );
+    const int iconPadY = ( height - iconHeight ) / 2;
+    QPoint iconPos( topLeft + QPoint( iconPadX, iconPadY ) );
     if( isRTL )
         iconPos.setX( width - iconWidth - iconPadX );
 
@@ -137,7 +143,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     QRectF titleRect;
     titleRect.setLeft( infoRectLeft );
-    titleRect.setTop( option.rect.top() + iconYPadding );
+    titleRect.setTop( option.rect.top() + iconPadY );
     titleRect.setWidth( titleRectWidth );
     titleRect.setHeight( bigFm.boundingRect( collectionName ).height() );
 
@@ -174,7 +180,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
             //actions should appear left of the expander
             actionsRect.setLeft( expanderOption.rect.left() -
                                  actionCount * ( ACTIONICON_SIZE + iconPadX ) );
-        actionsRect.setTop( option.rect.top() + iconYPadding );
+        actionsRect.setTop( option.rect.top() + iconPadY );
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );
 

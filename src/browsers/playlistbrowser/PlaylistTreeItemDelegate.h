@@ -38,6 +38,11 @@ class PlaylistTreeItemDelegate : public QStyledItemDelegate
 
         static QRect actionsRect( const QModelIndex &index );
 
+        /** Letting the view know how much space one icon takes.
+        *   Required for the delegate actions handling.
+        */
+        static int delegateActionIconWidth();
+
     private:
         QTreeView *m_view;
         QFont m_bigFont;
