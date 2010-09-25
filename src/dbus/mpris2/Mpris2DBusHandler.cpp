@@ -170,7 +170,7 @@ namespace Amarok
 
     void Mpris2DBusHandler::Pause()
     {
-        The::engineController()->playPause();
+        The::engineController()->pause();
     }
 
     void Mpris2DBusHandler::Play()
@@ -180,10 +180,7 @@ namespace Amarok
 
     void Mpris2DBusHandler::PlayPause()
     {
-        if( The::engineController()->state() == Phonon::PlayingState )
-            The::engineController()->pause();
-        else
-            The::engineController()->play();
+        The::engineController()->playPause();
     }
 
     void Mpris2DBusHandler::Next()
