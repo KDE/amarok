@@ -555,7 +555,7 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
     if( job )
     {
         debug() << QString( "%1 %2 files" ).arg( skipTrash ? "Deleting" : "Trashing" ).arg( urls.count() );
-        QString statusText = i18nc( "@info:status", "Moving to trash: %1 files", urls.count() );
+        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file", "Moving to trash: %1 files", urls.count() );
         The::statusBar()->newProgressOperation( job, statusText );
     }
 }
