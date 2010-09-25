@@ -136,8 +136,8 @@ namespace Amarok
         void Mute() const;
         void ShowOSD() const;
         void LoadThemeFile( const QString &path ) const;
-        void Forward( qlonglong offset ) { Seek( offset ); }
-        void Backward( qlonglong offset ) { Seek( -offset ); }
+        void Forward( qlonglong offset ) { Seek( offset*1000 ); }
+        void Backward( qlonglong offset ) { Seek( -offset*1000 ); }
 
         // Properties
         void SetLoopStatus( const QString & );
