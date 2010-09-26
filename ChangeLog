@@ -4,10 +4,10 @@ Amarok ChangeLog
 
 VERSION NEXT
   FEATURES:
-    * New easy to use table-based UI for Ampache server configuration.
+    * New easy to use table-based UI for Ampache server configuration. (BR 200703)
     * OPML export for podcast subscriptions. (BR 126120)
     * New "Playlist Length" constraint for the APG, which allows you to specify
-      the number of tracks in the playlist.  What was the "Playlist Length"
+      the number of tracks in the playlist.  What was the "Playlist Length "
       constraint is now called "Playlist Duration".
 
   CHANGES:
@@ -16,6 +16,7 @@ VERSION NEXT
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Ampache wouldn't connect to servers placed in a subdirectory.
     * Fixed an initialization bug which affected all context applets.
     * Fix bug where users could drag applets around indiscriminately
     * FLAC BPM tags could be read incorrectly. (BR 234166)

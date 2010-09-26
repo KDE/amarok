@@ -51,7 +51,6 @@ private slots:
 
     void add();
     void remove();
-    void modify();
     void serverNameChanged(const QString & text);
     void onCellDoubleClicked(int row, int column);
     void saveCellEdit(int row, int column);    

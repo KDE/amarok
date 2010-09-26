@@ -128,23 +128,13 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
 
-    //we are using http queries later on, so we require
-    KUrl kurl;
-    if( url.contains( "//" ) )
+    //we are using http queries later on, we require http:// prefixed
+    if( !url.contains( "://" ) )
     {
-        kurl.setUrl( url, KUrl::TolerantMode );
-        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
-        {
-            kurl.setProtocol( "http" );
-        }
+        m_server = QLatin1String("http://") + url;
     }
     else
-    {
-        kurl.setProtocol( "http" );
-        kurl.setAuthority( url );
-    }
-
-    m_server = kurl.url();
+        m_server = url;
 
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
 

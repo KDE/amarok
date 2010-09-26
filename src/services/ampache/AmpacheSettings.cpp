@@ -38,22 +38,16 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
 {
     kDebug( 14310 ) << "Creating Ampache config object";
 
-    //QVBoxLayout* l = new QVBoxLayout( this );
-    //QWidget *w = new QWidget;
     m_configDialog = new Ui::AmpacheConfigWidget;
     m_configDialog->setupUi( this );
     m_configDialog->serverList->setMinimumWidth(700);
     m_configDialog->serverList->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
     m_configDialog->serverList->verticalHeader()->hide();
-    //l->addWidget( w );
 
     connect ( m_configDialog->serverList, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(onCellDoubleClicked(int,int)));
     connect ( m_configDialog->serverList, SIGNAL(cellChanged(int,int)), this, SLOT(saveCellEdit(int,int)));
     connect ( m_configDialog->addButton, SIGNAL( clicked() ), this, SLOT( add() ) );
     connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
-    //connect ( m_configDialog->modifyButton, SIGNAL( clicked() ), this, SLOT( modify() ) );
-    connect ( m_configDialog->serverList, SIGNAL ( currentTextChanged ( const QString & ) ), this, SLOT( selectedItemChanged( const QString & ) ) );
-    //connect ( m_configDialog->nameEdit, SIGNAL( textChanged ( const QString & )), this,SLOT(serverNameChanged( const QString & )));
 }
 
 AmpacheSettings::~AmpacheSettings()
@@ -174,7 +168,7 @@ AmpacheSettings::saveCellEdit(int row, int column)
             server.url = newValue;
             break;
         case 2:
-            server.name = newValue;
+            server.username = newValue;
             break;
         case 3:
             server.password = newValue;
@@ -188,22 +182,6 @@ AmpacheSettings::saveCellEdit(int row, int column)
     emit changed( true );
 }
 
-void
-AmpacheSettings::modify()
-{
-/*    int index = m_configDialog->serverList->currentRow();
-
-    AmpacheServerEntry server;
-    server.name = m_configDialog->nameEdit->text();
-    server.url = m_configDialog->serverEdit->text();
-    server.username = m_configDialog->userEdit->text();
-    server.password = m_configDialog->passEdit->text();
-    m_config.updateServer( index, server );
-    m_configDialog->serverList->takeItem( index );
-    m_configDialog->serverList->insertItem( index, server.name );
-
-    emit changed( true ); */
-}
 
 #include "AmpacheSettings.moc"
 
