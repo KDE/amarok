@@ -180,7 +180,7 @@ ConstraintTypes::TagMatch::getName() const
     v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
-        return v.arg( QString( i18nc("number of stars in the rating of a track", "%1 stars") ).arg( r ) );
+        return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
     } else if ( m_field == "length" ) {
         return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
