@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION NEXT
   FEATURES:
+    * New easy to use table-based UI for Ampache server configuration.
     * OPML export for podcast subscriptions. (BR 126120)
     * New "Playlist Length" constraint for the APG, which allows you to specify
       the number of tracks in the playlist.  What was the "Playlist Length"
