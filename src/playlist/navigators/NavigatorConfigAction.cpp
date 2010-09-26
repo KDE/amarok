@@ -144,6 +144,7 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
 
      connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
      connect( favorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setFavored( QAction* ) ) );
+     connect( The::playlistActions(), SIGNAL( navigatorChanged() ), this, SLOT( navigatorChanged() ) );
 }
 
 NavigatorConfigAction::~NavigatorConfigAction()
@@ -205,6 +206,43 @@ void NavigatorConfigAction::setFavored( QAction *favorAction )
     else if( favorAction == m_favorLastPlayedAction )
     {
         AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::LessRecentlyPlayed );
+    }
+}
+
+void NavigatorConfigAction::navigatorChanged()
+{
+    switch( AmarokConfig::trackProgression() )
+    {
+        case AmarokConfig::EnumTrackProgression::RepeatTrack:
+            m_repeatTrackNavigatorAction->setChecked( true );
+            setIcon( m_repeatTrackNavigatorAction->icon() );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RepeatAlbum:
+            m_repeatAlbumNavigatorAction->setChecked( true );
+            setIcon( m_repeatAlbumNavigatorAction->icon() );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+            m_repeatPlaylistNavigatorAction->setChecked( true );
+            setIcon( m_repeatPlaylistNavigatorAction->icon() );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomTrack:
+            m_randomTrackNavigatorAction->setChecked( true );
+            setIcon( m_randomTrackNavigatorAction->icon() );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomAlbum:
+            m_randomAlbumNavigatorAction->setChecked( true );
+            setIcon( m_randomAlbumNavigatorAction->icon() );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::Normal:
+        default:
+            m_standardNavigatorAction->setChecked( true );
+            setIcon( m_standardNavigatorAction->icon() );
+            break;
     }
 }
 

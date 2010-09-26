@@ -75,7 +75,6 @@ namespace Amarok
          * @{
          */
         Q_PROPERTY( double Rate READ Rate WRITE SetRate )
-        Q_PROPERTY( double Volume READ Volume WRITE SetVolume )
         Q_PROPERTY( qlonglong Position READ Position )
         Q_PROPERTY( double MinimumRate READ MinimumRate )
         Q_PROPERTY( double MaximumRate READ MaximumRate )
@@ -131,13 +130,10 @@ namespace Amarok
 
         // NB: Amarok extensions, not part of the mpris spec
         void StopAfterCurrent();
-        void VolumeUp( int step ) const;
-        void VolumeDown( int step ) const;
-        void Mute() const;
+        void AdjustVolume( double increaseBy );
+        void SetMuted( bool );
         void ShowOSD() const;
         void LoadThemeFile( const QString &path ) const;
-        void Forward( qlonglong offset ) { Seek( offset*1000 ); }
-        void Backward( qlonglong offset ) { Seek( -offset*1000 ); }
 
         // Properties
         void SetLoopStatus( const QString & );
@@ -180,6 +176,7 @@ namespace Amarok
         virtual void engineTrackChanged( Meta::TrackPtr );
         virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
         virtual void engineSeekableChanged( bool );
+        virtual void engineVolumeChanged( int percent );
 
     private:
         QList<QByteArray> m_changedProperties;

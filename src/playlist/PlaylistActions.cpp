@@ -286,6 +286,8 @@ Playlist::Actions::playlistModeChanged()
 
         m_navigator = new DynamicTrackNavigator( playlist );
 
+        emit navigatorChanged();
+
         return;
 
     }

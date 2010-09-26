@@ -3,7 +3,7 @@
 
 
 <node>
-  <interface name="org.kde.amarok.Player">
+  <interface name="org.kde.amarok.Mpris1Extensions.Player">
 
     <method name="VolumeUp">
         <arg type="i" direction="in"/>
@@ -19,17 +19,14 @@
     <method name="StopAfterCurrent">
     </method>
 
-    <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
     <method name="Forward">
         <arg type="i" direction="in"/>
     </method>
 
-    <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
     <method name="Backward">
         <arg type="i" direction="in"/>
     </method>
 
-    <!-- this is actually in MPRIS2, but we keep it here for MPRIS1 -->
     <method name="PlayPause">
     </method>
 

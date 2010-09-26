@@ -809,7 +809,7 @@ qt4_add_dbus_adaptor(
    Mpris1AmarokAppAdaptor )
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
-   dbus/org.kde.amarok.Player.xml
+   dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
    dbus/mpris1/PlayerHandler.h
    Mpris1::PlayerHandler
    Mpris1AmarokPlayerAdaptor
@@ -846,7 +846,7 @@ qt4_add_dbus_adaptor(
    Mpris2AmarokAppAdaptor )
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
-   dbus/org.kde.amarok.Player.xml
+   dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
    dbus/mpris2/Mpris2DBusHandler.h
    Amarok::Mpris2DBusHandler
    Mpris2AmarokPlayerAdaptor
@@ -994,7 +994,8 @@ install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
               dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
               dbus/org.kde.amarok.App.xml
               dbus/org.kde.amarok.Collection.xml
-              dbus/org.kde.amarok.Player.xml
+              dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
+              dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 

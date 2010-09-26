@@ -46,6 +46,8 @@ protected slots:
 
     void setFavored( QAction *favorAction );
 
+    void navigatorChanged();
+
 private:
 
     QAction * m_standardNavigatorAction;

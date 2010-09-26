@@ -102,6 +102,7 @@ namespace Amarok
         updatePlaybackStatusProperty();
         updatePlaylistProperties();
         updateTrackProperties();
+        setPropertyInternal( "Volume", static_cast<double>(The::engineController()->volume()) / 100.0 );
 
         connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
             SLOT( updateTrackProgressionProperties() ) );
@@ -120,10 +121,14 @@ namespace Amarok
 
     void Mpris2DBusHandler::setProperty( const char *name, const QVariant &value )
     {
-        if( qstrcmp( name, "LoopStatus" ) )
+        if( qstrcmp( name, "LoopStatus" ) == 0 )
             SetLoopStatus( value.toString() );
-        else if( qstrcmp( name, "Shuffle" ) )
+        else if( qstrcmp( name, "Shuffle" ) == 0 )
             SetShuffle( value.toBool() );
+        else if( qstrcmp( name, "Muted" ) == 0 )
+            SetMuted( value.toBool() );
+        else if( qstrcmp( name, "Volume" ) == 0 )
+            SetVolume( value.toDouble() );
         else
             QObject::setProperty( name, value );
     }
@@ -203,19 +208,14 @@ namespace Amarok
         The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
     }
 
-    void Mpris2DBusHandler::VolumeUp( int step ) const
+    void Mpris2DBusHandler::AdjustVolume( double increaseBy )
     {
-        The::engineController()->increaseVolume( step );
+        The::engineController()->setVolume( The::engineController()->volume() + increaseBy*100 );
     }
 
-    void Mpris2DBusHandler::VolumeDown( int step ) const
+    void Mpris2DBusHandler::SetMuted( bool muted )
     {
-        The::engineController()->decreaseVolume( step );
-    }
-
-    void Mpris2DBusHandler::Mute() const
-    {
-        The::engineController()->toggleMute();
+        The::engineController()->setMuted( muted );
     }
 
     void Mpris2DBusHandler::ShowOSD() const
@@ -285,11 +285,6 @@ namespace Amarok
 
         AmarokConfig::setTrackProgression( progression );
         The::playlistActions()->playlistModeChanged();
-    }
-
-    double Mpris2DBusHandler::Volume() const
-    {
-        return static_cast<double>(The::engineController()->volume()) / 100.0;
     }
 
     void Mpris2DBusHandler::SetVolume( double vol )
@@ -472,6 +467,11 @@ namespace Amarok
     void Mpris2DBusHandler::engineSeekableChanged( bool seekable )
     {
         setPropertyInternal( "CanSeek", seekable );
+    }
+
+    void Mpris2DBusHandler::engineVolumeChanged( int percent )
+    {
+        setPropertyInternal( "Volume", static_cast<double>(percent) / 100.0 );
     }
     // </EngineObserver>
 }

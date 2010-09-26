@@ -1,0 +1,22 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+
+<node>
+  <interface name="org.kde.amarok.Mpris2Extensions.Player">
+
+    <!-- Adjusts the volume by a relative amount -->
+    <!-- negative values decrease the volume, positive values increase it -->
+    <method name="AdjustVolume">
+        <arg type="d" name="IncreaseBy" direction="in"/>
+    </method>
+
+    <method name="StopAfterCurrent">
+    </method>
+
+    <property name="Muted" type="b" access="readwrite">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+
+  </interface>
+</node>
