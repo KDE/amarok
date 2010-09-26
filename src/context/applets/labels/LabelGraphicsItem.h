@@ -31,10 +31,10 @@ class LabelGraphicsItem : public QGraphicsTextItem
     Q_OBJECT
 
 public:
-    LabelGraphicsItem( const QString &text, int deltaPointSize, QGraphicsItem *parent );
+    LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem* parent );
     ~LabelGraphicsItem();
 
-    void setDeltaPointSize( int deltaPointSize );
+    void setDeltaPointSize( qreal deltaPointSize );
     void setSelected( bool selected );
     
 protected:

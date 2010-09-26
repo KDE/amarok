@@ -21,19 +21,18 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 
 #include <ui_labelsSettings.h>
 
 #include <QPointer>
 
-class TextScrollingWidget;
 class LabelGraphicsItem;
+class TextScrollingWidget;
 class KComboBox;
 class QGraphicsProxyWidget;
 
 
-class LabelsApplet : public Context::Applet, public Engine::EngineObserver
+class LabelsApplet : public Context::Applet
 {
     Q_OBJECT
 
@@ -44,10 +43,6 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    
-    // inherited from EngineObserver
-    virtual void engineNewTrackPlaying();
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
 public slots:
     virtual void init();
@@ -60,38 +55,40 @@ public slots:
     void saveSettings();
     
 protected:
-    void createConfigurationInterface(KConfigDialog *parent);
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private:
     void updateLabels();
-    void startDataQuery();
+    void setStoppedState( bool stopped );
 
-    QMap < QString, QVariant >    m_labelInfos;
-    QList < LabelGraphicsItem * > m_labelItems;
-    QStringList             m_currentLabels;
-    QStringList             m_allLabels;
-    
-    QString                 m_titleText;
-    TextScrollingWidget     *m_titleLabel;
-    KComboBox               *m_addLabel;
+    QPointer < Plasma::IconWidget >     m_reloadIcon;
+    QPointer < Plasma::IconWidget >     m_settingsIcon;
+    QString                             m_titleText;
+    QPointer < TextScrollingWidget >    m_titleLabel;
+    QPointer < QGraphicsProxyWidget >   m_addLabelProxy;
+    QPointer < KComboBox >              m_addLabel;
 
-    QPointer<QGraphicsProxyWidget> m_addLabelProxy;
+    QStringList                     m_allLabels;
+    QStringList                     m_userLabels;
+    QMap < QString, QVariant >      m_webLabels;
+    QList < LabelGraphicsItem * >   m_labelItems;
 
     int                     m_numLabels;
     int                     m_minCount;
     int                     m_personalCount;
     bool                    m_autoAdd;
     int                     m_minAutoAddCount;
+    bool                    m_matchArtist;
+    bool                    m_matchTitle;
     QStringList             m_blacklist;
+    
     bool                    m_stoppedstate;
-
-    QPointer<Plasma::IconWidget> m_reloadIcon;
-    QPointer<Plasma::IconWidget> m_settingsIcon;
+    QString                 m_artist;
+    QString                 m_title;
 
     Ui::labelsSettings      ui_Settings;
 
 private slots:
-    void resultReady( const QString &collectionId, const Meta::LabelList &labels );
     void reload();
 
 };

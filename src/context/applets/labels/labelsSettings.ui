@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>404</width>
-    <height>510</height>
+    <height>549</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,18 +21,39 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="rightMargin">
+      <number>50</number>
+     </property>
+     <item row="0" column="0">
       <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Minimum label score:</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QSpinBox" name="minCountSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
-        <string>Show only labels that are rated at least that high</string>
+        <string>Show only labels that are rated at least that high.</string>
        </property>
        <property name="suffix">
         <string notr="true">%</string>
@@ -42,33 +63,69 @@
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Maximum labels to show:</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QSpinBox" name="numLabelsSpinBox"/>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="numLabelsSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Don't show more labels than that.
+Note that always all personal labels will be shown.</string>
+       </property>
+      </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
+     <item row="2" column="0">
       <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Show personal labels with score:</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="2" column="1">
       <widget class="QSpinBox" name="personalCountSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Effects the font size of the personal labels.</string>
+       </property>
        <property name="suffix">
         <string notr="true">%</string>
        </property>
@@ -94,10 +151,19 @@
      <property name="leftMargin">
       <number>30</number>
      </property>
+     <property name="rightMargin">
+      <number>50</number>
+     </property>
      <item>
       <widget class="QLabel" name="minAutoAddCountLabel">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="text">
         <string>Minimum label score:</string>
@@ -109,8 +175,14 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
-        <string>Show only labels that are rated at least that high</string>
+        <string>Add only labels that are rated at least that high.</string>
        </property>
        <property name="suffix">
         <string notr="true">%</string>
@@ -123,15 +195,45 @@
     </layout>
    </item>
    <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>13</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Blacklist</string>
+      <string>Don't show following labels</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QCheckBox" name="matchArtistCheckBox">
+        <property name="text">
+         <string>Labels matching the artist</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="matchTitleCheckBox">
+        <property name="text">
+         <string>Labels matching the title</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Do not show the following labels:</string>
+         <string>Blacklist:</string>
         </property>
        </widget>
       </item>

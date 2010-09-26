@@ -19,58 +19,47 @@
 #include "LabelsApplet.h"
 #include "LabelGraphicsItem.h"
 
-// Amarok
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "core/support/Debug.h"
-#include "EngineController.h"
-#include "context/widgets/TextScrollingWidget.h"
-#include "core/meta/Meta.h"
 #include "Theme.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/MetaQueryMaker.h"
+#include "EngineController.h"
+#include "core/support/Debug.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "context/widgets/TextScrollingWidget.h"
 #include "amarokurls/AmarokUrl.h"
 
-// KDE
-#include <KConfigDialog>
-#include <KGlobalSettings>
-#include <KStandardDirs>
-#include <KMessageBox>
-#include <KComboBox>
 #include <Plasma/IconWidget>
 #include <Plasma/Containment>
 
-// Qt
+#include <KConfigDialog>
+#include <KGlobalSettings>
+#include <KComboBox>
+
 #include <QGraphicsProxyWidget>
-#include <QGraphicsView>
-#include <QGraphicsScene>
 
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args )
-    , Engine::EngineObserver( The::engineController() )
-    , m_titleLabel( 0 )
-    , m_addLabel( 0 )
-    , m_addLabelProxy( 0 )
-    , m_reloadIcon( 0 )
-    , m_settingsIcon( 0 )
 {
     setHasConfigurationInterface( true );
 }
 
 LabelsApplet::~LabelsApplet()
 {
+    DEBUG_BLOCK
     qDeleteAll( m_labelItems );
-    delete m_addLabelProxy;
+    m_labelItems.clear();
 
-    delete m_reloadIcon;
-    delete m_settingsIcon;
+    if( m_reloadIcon )
+        delete m_reloadIcon;
+    if( m_settingsIcon )
+        delete m_settingsIcon;
 }
 
 void
 LabelsApplet::init()
 {
+    DEBUG_BLOCK
+
     // Call the base implementation.
     Context::Applet::init();
 
@@ -121,165 +110,106 @@ LabelsApplet::init()
     m_addLabel->setCompletionMode( KGlobalSettings::CompletionPopup );
     connect( m_addLabel, SIGNAL( returnPressed() ), this, SLOT( addLabelPressed() ) );
     m_addLabelProxy->setWidget( m_addLabel );
-    m_addLabelProxy->hide();
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Labels Applet");
-    m_minCount = config.readEntry( "MinCount", "30" ).toInt();
-    m_numLabels = config.readEntry( "NumLabels", "10" ).toInt();
-    m_personalCount = config.readEntry( "PersonalCount", "60" ).toInt();
-    m_autoAdd = (bool)config.readEntry( "AutoAdd", "0" ).toInt();
-    m_minAutoAddCount = config.readEntry( "MinAutoAddCount", "60" ).toInt();
+    m_minCount = config.readEntry( "MinCount", 30 );
+    m_numLabels = config.readEntry( "NumLabels", 10 );
+    m_personalCount = config.readEntry( "PersonalCount", 70 );
+    m_autoAdd = config.readEntry( "AutoAdd", false );
+    m_minAutoAddCount = config.readEntry( "MinAutoAddCount", 60 );
+    m_matchArtist = config.readEntry( "MatchArtist", true );
+    m_matchTitle = config.readEntry( "MatchTitle", true );
     QStringList defaultBlacklist;
     defaultBlacklist << "favourite" << "like it";
     m_blacklist = config.readEntry( "Blacklist", defaultBlacklist );
 
-    m_stoppedstate = true;
-    setCollapseOn();
-
-    constraintsEvent();
+    setStoppedState( true );
 
     connectSource( "labels" );
     connect( dataEngine( "amarok-labels" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
-
-    startDataQuery();
 }
 
-void
-LabelsApplet::startDataQuery()
+void LabelsApplet::setStoppedState( bool stopped )
 {
-    Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Label );
-
-    QList<Collections::QueryMaker*> queries;
-    queries << label;
-
-    //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
-    //to set the query type. Configuring the queries is ok though
-
-    Collections::QueryMaker *mqm = new Collections::MetaQueryMaker( queries );
-    connect( mqm, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString, Meta::LabelList ) ), Qt::DirectConnection );
-
-    mqm->setAutoDelete( true );
-
-    mqm->run();
-}
-
-void
-LabelsApplet::resultReady( const QString &collectionId, const Meta::LabelList &labels )
-{
-    Q_UNUSED( collectionId )
-
-    foreach( const Meta::LabelPtr &label, labels )
-    {
-        if( !label->name().isEmpty() )
-            m_allLabels << label->name();
-    }
-
-    QString saveText = m_addLabel->lineEdit()->text();
-    m_allLabels.sort();
-    m_addLabel->clear();
-    m_addLabel->insertItems( 0, m_allLabels );
-    m_addLabel->completionObject()->setItems( m_allLabels );
-    m_addLabel->lineEdit()->setText( saveText );
-}
-
-void
-LabelsApplet::engineNewTrackPlaying( )
-{
-    if( !m_addLabelProxy )
-        return;
-
     DEBUG_BLOCK
-    m_currentLabels.clear();
-    m_labelInfos.clear();
+    
+    if( stopped == m_stoppedstate )
+        return;
+    
+    m_stoppedstate = stopped;
 
-    m_addLabelProxy->show();
-    m_addLabel->clearEditText();
-    m_reloadIcon->setEnabled( true );
+    m_userLabels.clear();
+    m_webLabels.clear();
 
-    m_stoppedstate = false;
-    m_titleText = i18n( "Labels" );
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    if( track )
+    if( !stopped )
     {
-        foreach( const Meta::LabelPtr &label, track->labels() )
-        {
-            m_currentLabels += label->name();
-        }
+        m_reloadIcon->setEnabled( true );
+        m_titleText = i18n( "Labels" );
+        m_addLabelProxy->show();
+        m_addLabel->clearEditText();
+    }
+    else
+    {
+        m_reloadIcon->setEnabled( false );
+        m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
+        m_addLabelProxy->hide();
+        setBusy( false );
+        setMinimumHeight( 0 );
+        setCollapseOn();
+        qDeleteAll( m_labelItems );
+        m_labelItems.clear();
     }
 
-    updateLabels();
-    
-    dataEngine( "amarok-labels" )->query( QString( "labels" ) );
+    constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
+    update();
 }
 
 void
 LabelsApplet::reload()
 {
+    DEBUG_BLOCK
     if( !m_stoppedstate )
     {
-        m_labelInfos.clear();
-        dataEngine( "amarok-labels" )->query( QString( "labels:reload" ) );
+        dataEngine( "amarok-labels" )->query( QString( "reload" ) );
     }
-}
-
-void
-LabelsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
-{
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    DEBUG_BLOCK
-
-    if( !m_addLabelProxy )
-        return;
-
-    m_currentLabels.clear();
-    m_labelInfos.clear();
-    updateLabels();
-
-    m_stoppedstate = true;
-    m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
-    m_addLabelProxy->hide();
-    m_reloadIcon->setEnabled( false );
-    setBusy( false );
-    setMinimumHeight( 0 );
-    setCollapseOn();
-    dataEngine( "amarok-labels" )->query( QString( "labels:stopped" ) );
 }
 
 void
 LabelsApplet::updateLabels()
 {
+    DEBUG_BLOCK
     qDeleteAll( m_labelItems );
     m_labelItems.clear();
     
     QMap < QString, int > tempLabelsMap;
     QMap < QString, int > finalLabelsMap;
+    // holds all counts of web labels that are added to the final list
+    QList < int > webCounts;
 
     // add the user assigned labels directly to the final map
-    for( int i = 0; i < m_currentLabels.count(); i++ )
+    for( int i = 0; i < m_userLabels.count(); i++ )
     {
-        if( !m_blacklist.contains( m_currentLabels.at( i ) ) )
-        {
-            finalLabelsMap.insert( m_currentLabels.at( i ), m_personalCount );
-        }
+        finalLabelsMap.insert( m_userLabels.at( i ), m_personalCount );
+        qDebug() << "LabelsApplet:" << "user label:" << m_userLabels.at( i ) << "count:" << m_personalCount;
     }
     // add the downloaded labels to the temp map first (if they aren't alreday in the final map / update value in final map if necessary)
-    QMapIterator < QString, QVariant > it_infos ( m_labelInfos );
+    QMapIterator < QString, QVariant > it_infos ( m_webLabels );
     while( it_infos.hasNext() )
     {
         it_infos.next();
-        if( !finalLabelsMap.contains( it_infos.key() ) && !m_blacklist.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount )
+        if( !finalLabelsMap.contains( it_infos.key() ) && !m_blacklist.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount
+            && QString(it_infos.key()).length() <= 40 && !( m_matchArtist && QString(it_infos.key()).toLower() == m_artist.toLower() )  && !( m_matchTitle && QString(it_infos.key()).toLower() == m_title.toLower() ) )
         {
             tempLabelsMap.insert( it_infos.key(), it_infos.value().toInt() );
         }
-        else if( finalLabelsMap.contains( it_infos.key() ) )
+        else if( finalLabelsMap.contains( it_infos.key() ) && it_infos.value().toInt() > finalLabelsMap[ it_infos.key() ] )
         {
             finalLabelsMap[ it_infos.key() ] = it_infos.value().toInt();
+            webCounts += it_infos.value().toInt();
         }
+        qDebug() << "LabelsApplet:" << "web label:" << it_infos.key() << "count:" << it_infos.value().toInt();
     }
     // then sort the values of the temp map
     QList < int > tempLabelsValues = tempLabelsMap.values();
@@ -289,6 +219,7 @@ LabelsApplet::updateLabels()
     if( additionalNum > 0 && tempLabelsValues.count() > 0 )
     {
         int minCount;
+        QStringList minList;
         if( additionalNum <= tempLabelsValues.count() )
             minCount = tempLabelsValues.at( additionalNum - 1 );
         else
@@ -297,15 +228,28 @@ LabelsApplet::updateLabels()
         while( it_temp.hasNext() )
         {
             it_temp.next();
-            if( it_temp.value() >= minCount )
+            if( it_temp.value() > minCount )
             {
                 finalLabelsMap.insert( it_temp.key(), it_temp.value() );
-                
-                if( finalLabelsMap.count() >= m_numLabels )
-                    break;
+                webCounts += it_temp.value();
+            }
+            else if( it_temp.value() == minCount )
+            {
+                minList += it_temp.key();
             }
         }
+        minList.sort();
+        while( minList.count() > 0 && finalLabelsMap.count() < m_numLabels )
+        {
+            finalLabelsMap.insert( minList.first(), minCount );
+            webCounts += minCount;
+            minList.takeFirst();
+        }
     }
+    // now make the label cloud nicer by determinating the quality of the web labels
+    // 0.7 / 0.3 is a pretty moderate choice; 0.5 / 0.5 would be more extreme
+    const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * webCounts.toSet().count()/webCounts.count() : 1.0;
+    qDebug() << "LabelsApplet:" << "qualityFactor:" << qualityFactor;
     // and finally create the LabelGraphicsItems
     QMapIterator < QString, int > it_final ( finalLabelsMap );
     while( it_final.hasNext() )
@@ -315,12 +259,19 @@ LabelsApplet::updateLabels()
         if( it_final.key().isEmpty() ) // empty labels don't make sense but they cause a freeze
             continue;
 
-        int i_size = (int)( it_final.value() / 10 - 5 );
-        if( i_size < -1 )
-            i_size = -1;
+        // quality of web labels adjusted value
+        int adjustedCount = qualityFactor * it_final.value();
+        if( m_userLabels.contains( it_final.key() ) && adjustedCount < m_personalCount )
+            adjustedCount = m_personalCount;
+        
+        qreal f_size = adjustedCount / 10 - 5;
+        if( f_size < -2 )
+            f_size = -2;
 
-        LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), i_size, this );
-        if( m_currentLabels.contains( it_final.key() ) )
+        qDebug() << "LabelsApplet:" << "final label:" << it_final.key() << "count:" << adjustedCount;
+
+        LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
+        if( m_userLabels.contains( it_final.key() ) )
             labelGraphics->setSelected( true );
         connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
         connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
@@ -335,6 +286,7 @@ LabelsApplet::updateLabels()
 void
 LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
+    DEBUG_BLOCK
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
@@ -374,7 +326,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
                 for( int j=start_index; j<=end_index; j++ )
                 {
                     QRectF c_size = m_labelItems.at(j)->boundingRect();
-                    m_labelItems[j]->setPos( x_pos, y_pos + (height-c_size.height())/2 );
+                    m_labelItems.at(j)->setPos( x_pos, y_pos + (height-c_size.height())/2 );
                     x_pos += c_size.width() + standardPadding();
                 }
                 y_pos += height; // no padding needed
@@ -388,7 +340,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         for( int j = start_index; j <= end_index; j++ )
         {
             QRectF c_size = m_labelItems.at(j)->boundingRect();
-            m_labelItems[j]->setPos( x_pos, y_pos + (height-c_size.height())/2 );
+            m_labelItems.at(j)->setPos( x_pos, y_pos + (height-c_size.height())/2 );
             x_pos += c_size.width() + standardPadding();
         }
         if( m_labelItems.count() > 0 )
@@ -434,14 +386,26 @@ LabelsApplet::connectSource( const QString &source )
 void
 LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data ) // SLOT
 {
+    DEBUG_BLOCK
     Q_UNUSED( name )
 
-    if ( data.empty() )
+    if ( data.isEmpty() )
         return;
 
-    // if we get a message, show it
-    if ( data.contains( "message" ) && data["message"].toString().contains("Fetching") )
+    if ( data.contains( "state" ) && data["state"].toString().contains("started") )
     {
+        qDebug() << "LabelsApplet:" << "started";
+        setStoppedState( false );
+    }
+    else if ( data.contains( "state" ) && data["state"].toString().contains("stopped") )
+    {
+        qDebug() << "LabelsApplet:" << "stopped";
+        setStoppedState( true );
+    }
+    
+    if ( data.contains( "message" ) && data["message"].toString().contains("fetching") )
+    {
+        qDebug() << "LabelsApplet:" << "fetching";
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
         constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
         update();
@@ -450,54 +414,88 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     }
     else if ( data.contains( "message" ) )
     {
+        qDebug() << "LabelsApplet:" << "mssage:" << data[ "message" ].toString();
         m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
         constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
         update();
         setBusy( false );
     }
-    else if ( data.contains( "data" ) )
+
+    if ( data.contains( "artist" ) )
     {
-        m_stoppedstate = false;
-        m_titleText = i18n( "Labels for %1 - %2", data[ "artist" ].toString(), data[ "title" ].toString() );
-
-        m_labelInfos = data[ "data" ].toMap();
-
-        if( m_currentLabels.isEmpty() && m_autoAdd )
-        {
-            QMapIterator < QString, QVariant > it ( m_labelInfos );
-            while( it.hasNext() )
-            {
-                it.next();
-                if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount )
-                    toggleLabel( it.key() );
-            }
-        }
+        qDebug() << "LabelsApplet:" << "artist";
+        m_artist = data[ "artist" ].toString();
+    }
     
-        updateLabels();
+    if ( data.contains( "title" ) )
+    {
+        qDebug() << "LabelsApplet:" << "title";
+        m_title = data[ "title" ].toString();
+    }
+    
+    if ( data.contains( "all" ) )
+    {
+        qDebug() << "LabelsApplet:" << "all";
+        m_allLabels = data[ "all" ].toStringList();
+        m_allLabels.sort();
 
-        setBusy( false );
+        const QString saveText = m_addLabel->lineEdit()->text();
+        m_addLabel->clear();
+        m_addLabel->insertItems( 0, m_allLabels );
+        m_addLabel->completionObject()->setItems( m_allLabels );
+        m_addLabel->lineEdit()->setText( saveText );
+    }
+
+    if ( data.contains( "user" ) )
+    {
+        qDebug() << "LabelsApplet:" << "user";
+        if( !m_stoppedstate ) // otherwise there's been an error
+        {
+            m_userLabels = data[ "user" ].toStringList();
+            m_webLabels.clear(); // we can saftly clear the web labels because user labels will never be updated without the web labels
+
+            if ( !data.contains( "web" ) ) // avoid calling updateLabels twice
+                updateLabels();
+        }
+    }
+    
+    if ( data.contains( "web" ) )
+    {
+        qDebug() << "LabelsApplet:" << "web";
+        if( !m_stoppedstate ) // otherwise there's been an error
+        {
+            m_titleText = i18n( "Labels for %1 by %2", m_title, m_artist );
+            setBusy( false );
+
+            m_webLabels = data[ "web" ].toMap();
+
+            if( m_userLabels.isEmpty() && m_autoAdd )
+            {
+                QMapIterator < QString, QVariant > it ( m_webLabels );
+                while( it.hasNext() )
+                {
+                    it.next();
+                    if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount )
+                        toggleLabel( it.key() );
+                }
+            }
+
+            updateLabels();
+        }
     }
 }
 
 void
 LabelsApplet::addLabelPressed()
 {
-    QString label = m_addLabel->currentText();
+    const QString label = m_addLabel->currentText();
 
     if( label.isEmpty() )
         return;
 
-    if( !m_currentLabels.contains( label ) )
+    if( !m_userLabels.contains( label ) )
     {
         toggleLabel( label );
-        if( !m_allLabels.contains( label ) )
-        {
-            m_allLabels.append( label );
-            m_allLabels.sort();
-            m_addLabel->clear();
-            m_addLabel->insertItems( 0, m_allLabels );
-            m_addLabel->completionObject()->setItems( m_allLabels );
-        }
         m_addLabel->clearEditText();
     }
 }
@@ -506,7 +504,6 @@ void
 LabelsApplet::toggleLabel( const QString &label )
 {
     DEBUG_BLOCK
-    bool selected;
 
     if( label.isEmpty() )
         return;
@@ -532,39 +529,38 @@ LabelsApplet::toggleLabel( const QString &label )
         }
     }
     
-    if( m_currentLabels.contains( label ) )
+    if( m_userLabels.contains( label ) )
     {
         track->removeLabel( labelPtr );
-        m_currentLabels.removeAll( label );
-        debug() << "removing label: " << label;
-        selected = false;
+        debug() << "LabelsApplet:" << "removing label: " << label;
     }
     else
     {
         track->addLabel( label );
-        m_currentLabels.append( label );
-        debug() << "adding label: " << label;
-        selected = true;
+        debug() << "LabelsApplet:" << "adding label: " << label;
     }
     uc->collectionUpdated();
 
-    for( int i = 0; i < m_labelItems.count(); i++ )
+    // no need to update the label cloud since the engine keeps track of label changes of the playing track
+
+    if( !m_allLabels.contains( label ) )
     {
-        if( m_labelItems[i]->toPlainText() == label )
-        {
-            m_labelItems[i]->setSelected( selected );
-            return;
-        }
+        m_allLabels.append( label );
+        m_allLabels.sort();
+        
+        const QString saveText = m_addLabel->lineEdit()->text();
+        m_addLabel->clear();
+        m_addLabel->insertItems( 0, m_allLabels );
+        m_addLabel->completionObject()->setItems( m_allLabels );
+        m_addLabel->lineEdit()->setText( saveText );
     }
-    
-    updateLabels();
 }
 
 void
 LabelsApplet::listLabel( const QString &label )
 {
     DEBUG_BLOCK
-    debug() << "listing tracks with label: " << label;
+    debug() << "LabelsApplet:" << "listing tracks with label: " << label;
 
     AmarokUrl bookmark( "amarok://navigate/collections?filter=label:%22" + label + "%22" );
     bookmark.run();
@@ -574,9 +570,9 @@ void
 LabelsApplet::blacklistLabel( const QString &label )
 {
     DEBUG_BLOCK
-    debug() << "blacklisting label: " << label;
+    debug() << "LabelsApplet:" << "blacklisting label: " << label;
     
-    if( m_currentLabels.contains( label ) )
+    if( m_userLabels.contains( label ) )
         toggleLabel( label );
 
     m_blacklist << label;
@@ -589,6 +585,7 @@ LabelsApplet::blacklistLabel( const QString &label )
 void
 LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    DEBUG_BLOCK
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
@@ -598,9 +595,11 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
     ui_Settings.minCountSpinBox->setValue( m_minCount );
     ui_Settings.numLabelsSpinBox->setValue( m_numLabels );
     ui_Settings.personalCountSpinBox->setValue( m_personalCount );
-    ui_Settings.blacklistEditListBox->insertStringList( m_blacklist );
     ui_Settings.autoAddCheckBox->setChecked( m_autoAdd );
     ui_Settings.minAutoAddCountSpinBox->setValue( m_minAutoAddCount );
+    ui_Settings.matchArtistCheckBox->setChecked( m_matchArtist );
+    ui_Settings.matchTitleCheckBox->setChecked( m_matchTitle );
+    ui_Settings.blacklistEditListBox->insertStringList( m_blacklist );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -615,15 +614,22 @@ LabelsApplet::saveSettings()
     m_personalCount = ui_Settings.personalCountSpinBox->value();
     m_autoAdd = ui_Settings.autoAddCheckBox->checkState() == Qt::Checked;
     m_minAutoAddCount = ui_Settings.minAutoAddCountSpinBox->value();
+    m_matchArtist = ui_Settings.matchArtistCheckBox->checkState() == Qt::Checked;
+    m_matchTitle = ui_Settings.matchTitleCheckBox->checkState() == Qt::Checked;
     m_blacklist = ui_Settings.blacklistEditListBox->items();
     config.writeEntry( "NumLabels", m_numLabels );
     config.writeEntry( "MinCount", m_minCount );
     config.writeEntry( "PersonalCount", m_personalCount );
-    config.writeEntry( "AutoAdd", (int)m_autoAdd );
+    config.writeEntry( "AutoAdd", m_autoAdd );
     config.writeEntry( "MinAutoAddCount", m_minAutoAddCount );
+    config.writeEntry( "MatchArtist", m_matchArtist );
+    config.writeEntry( "MatchTitle", m_matchTitle );
     config.writeEntry( "Blacklist", m_blacklist );
 
-    dataEngine( "amarok-labels" )->query( QString( "labels:reload" ) );
+    if( !m_stoppedstate )
+    {
+        dataEngine( "amarok-labels" )->query( QString( "reload" ) );
+    }
 }
 
 

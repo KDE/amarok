@@ -17,20 +17,16 @@
 
 #include "LabelsEngine.h"
 
-// Amarok
-#include "core/support/Amarok.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "core/support/Debug.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
-// KDE
-#include <KIO/Job>
 #include <KLocale>
 
-// Qt
 #include <QDomDocument>
-
 
 #define DEBUG_PREFIX "LabelsEngine"
 
@@ -40,21 +36,15 @@ using namespace Context;
 LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_jobLastFm( 0 )
-        , m_numLastFm( -1 )
-        , m_requested( true )
-        , m_reload( false )
+        , Engine::EngineObserver( The::engineController() )
 {
     Q_UNUSED( args )
     m_sources << "lastfm" ;
-    m_try = 0;
-    update();
 }
 
 LabelsEngine::~LabelsEngine()
 {
     DEBUG_BLOCK
-    m_labels.clear();
 }
 
 QStringList 
@@ -67,53 +57,124 @@ bool
 LabelsEngine::sourceRequestEvent( const QString &name )
 {
     DEBUG_BLOCK
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
 
-    // we've been notified by the applet to be in state stop
-    if ( tokens.contains( "stopped" ) && tokens.size() > 1 )
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    if( coll )
     {
-        if ( tokens.at( 1 ) == QString( "stopped" ) )
-        {
-            removeSource( "labels" );
-            m_reload = true;
-            return false;
-        }
+        Collections::QueryMaker *qm = coll->queryMaker();
+        qm->setAutoDelete( true );
+        qm->setQueryType( Collections::QueryMaker::Label );
+        m_allLabels.clear();
+
+        connect( qm, SIGNAL( newResultReady( QString, Meta::LabelList ) ),
+                SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+
+        qm->run();
     }
-    // we've been notified by the applet to reload the labels
-    else if ( tokens.contains( "reload" ) && tokens.size() > 1 )
+
+    // if the engine was started after the playback has started, we don't have track of the current track
+    // this may happen, if a) the applet was added to the context view after the playback had started
+    // or b) the context view was hidden in the tabwidget and only shown after the playback had started
+    if ( !m_currentTrack && The::engineController()->currentTrack() )
     {
-        if ( tokens.at( 1 ) == QString( "reload" ) )
-        {
-            m_reload = true;
-        }
+        m_currentTrack = The::engineController()->currentTrack();
+        subscribeTo( m_currentTrack );
     }
-    
-    removeAllData( name );
-    setData( name, QVariant() );
-    m_try = 0;
-    update();
+
+    if ( m_currentTrack )
+        update();
+
     return true;
+}
+
+void
+LabelsEngine::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+
+    foreach( const Meta::LabelPtr &label, labels )
+    {
+        if( !label->name().isEmpty() )
+            m_allLabels << label->name();
+    }
+}
+
+void
+LabelsEngine::dataQueryDone()
+{
+    DEBUG_BLOCK
+    QVariant varAll;
+    varAll.setValue< QStringList >( m_allLabels );
+    setData( "labels", "all", varAll );
+}
+
+void
+LabelsEngine::engineTrackChanged( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+    if( track )
+    {
+        if( m_currentTrack )
+            unsubscribeFrom( m_currentTrack );
+        m_currentTrack = track;
+        subscribeTo( track );
+        update();
+    }
+    else
+    {
+        removeAllData( "labels" );
+        m_userLabels.clear();
+        m_webLabels.clear();
+        m_currentTrack.clear();
+        setData( "labels", "state", "stopped" );
+    }
 }
 
 void 
 LabelsEngine::message( const ContextState &state )
 {
-    if ( state == Current && m_requested )
-    {
-        m_try = 0;
-        update();
-    }
+    DEBUG_BLOCK
+    Q_UNUSED( state )
 }
 
 void 
 LabelsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    const bool hasChanged = track->artist()->name() != m_artist || track->name() != m_title;
-    if ( hasChanged )
+    DEBUG_BLOCK
+    if( !track || track != m_currentTrack )
+        return;
+
+    const bool nameChanged = track->artist()->name() != m_artist || track->name() != m_title;
+    if ( nameChanged )
     {
-        m_try = 0;
         update();
+        return;
+    }
+
+    QStringList currentLabels;
+    foreach( const Meta::LabelPtr &label, track->labels() )
+    {
+        currentLabels += label->name();
+    }
+
+    currentLabels.sort();
+    m_userLabels.sort();
+
+    if( currentLabels != m_userLabels )
+    {
+        m_userLabels = currentLabels;
+        
+        QVariant varUser;
+        varUser.setValue< QStringList >( m_userLabels );
+        setData( "labels", "user", varUser );
+
+        // send the web labels too, because the labels applet clears all web labels if user labels arrive
+        QVariant varWeb;
+        varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
+        setData( "labels", "web", varWeb );
+        
+        return;
     }
 }
 
@@ -121,19 +182,54 @@ void
 LabelsEngine::update()
 {
     DEBUG_BLOCK
+    removeAllData( "labels" );
+    m_userLabels.clear();
+    m_webLabels.clear();
+
+    setData( "labels", "state", "started" );
+
+    if( m_currentTrack )
+    {
+        foreach( const Meta::LabelPtr &label, m_currentTrack->labels() )
+        {
+            m_userLabels += label->name();
+        }
+    }
+
+    QVariant varUser;
+    varUser.setValue< QStringList >( m_userLabels );
+    setData( "labels", "user", varUser );
+
+    m_try = 0;
+    fetchLastFm();
+}
+
+void
+LabelsEngine::fetchLastFm()
+{
+    DEBUG_BLOCK
     QStringList separators;
-    // prevent
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     QString currentArtist;
     QString currentTitle;
+
+    if ( !m_currentTrack || !m_currentTrack->artist() )
+    {
+        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        debug()  << "LabelsEngine:" << "current track is invalid, returning";
+        return;
+    }
+    
     if ( m_try == 0 )
     {
-        currentArtist = ( currentTrack && currentTrack->artist() ) ? currentTrack->artist()->name() : "";
-        currentTitle = currentTrack ? currentTrack->name() : "";
+        currentArtist = m_currentTrack->artist()->name();
+        currentTitle = m_currentTrack->name();
+        m_artist = currentArtist;
+        m_title = currentTitle;
     }
     else if ( m_try == 1 )
     {
         currentArtist = m_artist;
+        currentTitle = m_title;
         separators.clear();
         separators << " (" << " [" << " -" << " featuring" << " feat." << " ft." << "/";
         foreach( const QString &separator, separators )
@@ -144,22 +240,25 @@ LabelsEngine::update()
                 break;
             }
         }
-        if ( currentTitle == m_title && !m_reload )
+        if ( currentTitle == m_title )
         {
+            debug() << "LabelsEngine:" << "try 2: title is the same, retrying";
             m_try++;
-            update();
+            fetchLastFm();
             return;
         }
     }
     else if ( m_try == 2 )
     {
+        currentArtist = m_artist;
+        currentTitle = m_title;
         separators.clear();
         separators << " vs." << " &" << " featuring" << " feat." << " ft." << ", " << " and " << "/";
         foreach( const QString &separator, separators )
         {
             if( m_artist.contains(separator,Qt::CaseInsensitive) )
             {
-                currentArtist = m_title.left( m_artist.indexOf(separator,0,Qt::CaseInsensitive) );
+                currentArtist = m_artist.left( m_artist.indexOf(separator,0,Qt::CaseInsensitive) );
                 break;
             }
         }
@@ -173,35 +272,27 @@ LabelsEngine::update()
                 break;
             }
         }
+        if ( currentArtist == m_artist && currentTitle == m_title )
+        {
+            setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+            debug()  << "LabelsEngine:" << "try 3: artist and title are the same, returning";
+            return;
+        }
     }
-    if ( currentArtist == "" || currentTitle == "" )
-        return;
-    else if ( currentArtist == m_artist && currentTitle == m_title && !m_reload )
-        return;
     else
     {
-        m_reload = false;
-        unsubscribeFrom( m_currentTrack );
-        m_currentTrack = currentTrack;
-        subscribeTo( currentTrack );
+        // shouldn't happen
+        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        debug() << "LabelsEngine:" << "try > 2, returning";
+        return;
+    }
 
-        if ( !currentTrack )
-            return;
+    debug()  << "LabelsEngine:" << "currentArtist:" << currentArtist << "currentTitle:" << currentTitle;
 
-        // Save artist and title
-        if ( m_try == 0 )
-        {
-            m_artist = currentArtist;
-            m_title = currentTitle;
-        }
-
-        m_numLastFm = -1;
-            
-        removeAllData( "labels" );
-
-        m_labels.clear();
-        
-        setData( "labels", "message", "Fetching");
+    if ( !currentArtist.isEmpty() && !currentTitle.isEmpty() )
+    {
+        setData( "labels", "message", "fetching");
+        // send the atist and title actually used for searching labels
         setData( "labels", "artist", currentArtist );
         setData( "labels", "title", currentTitle );
 
@@ -214,37 +305,49 @@ LabelsEngine::update()
         lastFmUrl.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
         lastFmUrl.addQueryItem( "artist", currentArtist.toLocal8Bit() );
         lastFmUrl.addQueryItem( "track", currentTitle.toLocal8Bit() );
+        m_lastFmUrl = lastFmUrl;
         
-        debug()<< "last.fm : " << lastFmUrl.toMimeDataString() ;
-        m_jobLastFm = KIO::storedGet( lastFmUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( m_jobLastFm, SIGNAL( result( KJob * ) ), SLOT( resultLastFm( KJob * ) ) );
+        debug() << "LabelsEngine:" << "last.fm : " << lastFmUrl.toMimeDataString();
+        QNetworkRequest req( lastFmUrl );
+        The::networkAccessManager()->get( req );
+        The::networkAccessManager()->getData( lastFmUrl, this,
+            SLOT(resultLastFm(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    }
+    else
+    {
+        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        qDebug() << "LabelsEngine:" << "artist or track empty";
     }
 }
 
-void LabelsEngine::resultLastFm( KJob *job )
+void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-
-    if ( !m_jobLastFm ) //track changed while we were fetching
-        return;
-
     DEBUG_BLOCK
-    if ( job->error() != KJob::NoError && job == m_jobLastFm ) // It's the correct job but it errored out
+
+    if( m_lastFmUrl != url )
     {
-        setData( "labels", "message", i18n( "Unable to retrieve from last.fm") );
-        debug() << "Unable to retrieve last.fm information: " << job->errorString();
-        m_jobLastFm = 0; // clear job
-        m_numLastFm = 0; //say that we didn't fetch any labels (which is true !)
-        resultFinalize();
+        qDebug() << "LabelsEngine:" << "urls not matching, returning";
+        return;
     }
-    // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+
+    if ( m_currentTrack != The::engineController()->currentTrack() )
+    {
+        qDebug() << "LabelsEngine:" << "no current track, returning";
+        return;
+    }
+
+    if ( e.code != QNetworkReply::NoError )
+    {
+        setData( "labels", "message", i18n( "Unable to retrieve from last.fm" ) );
+        debug() << "LabelsEngine:" << "Unable to retrieve last.fm information: " << e.description;
+        return;
+    }
+
     QDomDocument xmlDoc;
-    xmlDoc.setContent( storedJob->data() );
+    xmlDoc.setContent( data );
     QDomElement topElement = xmlDoc.elementsByTagName("toptags").at(0).toElement();
     QDomNodeList xmlNodeList = topElement.elementsByTagName( "tag" );
 
-    QTime tim, time( 0, 0 );
-    m_numLastFm = 0;
     for ( uint i = 0; i < xmlNodeList.length(); i++ )
     {
         // Get all the information
@@ -253,53 +356,33 @@ void LabelsEngine::resultLastFm( KJob *job )
         QString name = nameElement.text().toLower();
         QDomElement countElement = nd.elementsByTagName("count").at(0).toElement();
         int count = countElement.text().toInt();
-        debug() << name << " (" << count << ")";
-        if( name != m_artist.toLower() && name != m_title.toLower() && name.length() <= 40 )
-        {
-            // Insert the item in the list
-            m_labels.insert( name, count );
-            m_numLastFm++;
-        }
+        debug() << "LabelsEngine:" << name << " (" << count << ")";
+        m_webLabels.insert( name, count );
     }
-    // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "last.fm fetch : " << m_numLastFm << " labels ";
-    
-    m_jobLastFm = 0;
-    resultFinalize();
-}
 
-void LabelsEngine::resultFinalize()
-{
-    if ( m_numLastFm == 0 )
+    if ( m_webLabels.isEmpty() )
     {
-        DEBUG_BLOCK
-        debug() << "No Labels found";
-        setData( "labels", "message", i18n( "No information found..." ) );
         if( m_try < 2 )
         {
             m_try++;
-            update();
+            fetchLastFm();
         }
-        return;
+        else
+        {
+            setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        }
     }
-
-    if ( m_numLastFm == -1 )
-        return;
-
-    if ( !m_labels.empty() )
+    else
     {
         // remove previous message
         removeData( "labels", "message" );
 
-        // if the song hasn't change while fetching, we sent the info
-        if ( m_currentTrack != The::engineController()->currentTrack() )
-            return;
-
-        QVariant var;
-        var.setValue< QMap< QString, QVariant > > ( m_labels );
-        setData( "labels", "data", var );
+        QVariant varWeb;
+        varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
+        setData( "labels", "web", varWeb );
     }
 }
+
 
 #include "LabelsEngine.moc"
 

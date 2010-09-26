@@ -26,7 +26,7 @@
 #include <QGraphicsSceneHoverEvent>
 
 
-LabelGraphicsItem::LabelGraphicsItem( const QString &text, int deltaPointSize, QGraphicsItem *parent )
+LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize, QGraphicsItem *parent )
     : QGraphicsTextItem( text, parent ),
     m_selected( false )
 {
@@ -58,10 +58,10 @@ LabelGraphicsItem::LabelGraphicsItem( const QString &text, int deltaPointSize, Q
 LabelGraphicsItem::~LabelGraphicsItem()
 {}
 
-void LabelGraphicsItem::setDeltaPointSize( int deltaPointSize )
+void LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
 {
     QFont f = font();
-    f.setPointSize( f.pointSize() + deltaPointSize );
+    f.setPointSize( f.pointSizeF() + deltaPointSize );
     setFont( f );
 
     int iconsCount = 3;
