@@ -18,47 +18,22 @@
 
 #include "AmpacheService.h"
 
+#include "AmpacheConfig.h"
+#include "AmpacheAccountLogin.h"
+
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
-#include "AmpacheConfig.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include <config-amarok.h>
 #include "core/support/Debug.h"
-#include "sha256/sha256.h"
-
-#include <KMessageBox>
-#include <kpassworddialog.h>
-#include <KMD5>
-
-#include <QDomDocument>
 
 #ifdef HAVE_LIBLASTFM
   #include "LastfmInfoParser.h"
 #endif
 
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
-
-QString sha256( QString in )
-{
-    unsigned char digest[ SHA512_DIGEST_SIZE];
-    unsigned char* toHash = (unsigned char*)in.toUtf8().data();
-
-    sha256( toHash , qstrlen( ( char* )toHash ), digest );
-
-    // this part copied from main() in sha256.cpp
-    unsigned char output[2 * SHA512_DIGEST_SIZE + 1];
-    int i;
-
-    output[2 * SHA256_DIGEST_SIZE ] = '\0';
-
-    for (i = 0; i < SHA256_DIGEST_SIZE ; i++) {
-       sprintf((char *) output + 2*i, "%02x", digest[i]);
-    }
-
-    return QString::fromAscii( (const char*)output );
-}
 
 void AmpacheServiceFactory::init()
 {
@@ -114,44 +89,17 @@ AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
 
 AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QString &url, const QString &username, const QString &password )
     : ServiceBase( name,  parent )
-    , m_authenticated( false )
-    , m_server ( QString() )
-    , m_sessionId ( QString() )
     , m_infoParser( 0 )
     , m_collection( 0 )
+    , m_ampacheLogin(new AmpacheAccountLogin(url, username, password, this))
 {
     DEBUG_BLOCK
-
-
+    connect(m_ampacheLogin, SIGNAL(loginSuccessful()), this, SLOT(onLoginSuccessful()));
     setShortDescription( i18n( "Amarok frontend for your Ampache server." ) );
     setIcon( KIcon( "view-services-ampache-amarok" ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
-
-    //we are using http queries later on, we require http:// prefixed
-    if( !url.contains( "://" ) )
-    {
-        m_server = QLatin1String("http://") + url;
-    }
-    else
-        m_server = url;
-
-    // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-
-    QString versionString = "<server>/server/xml.server.php?action=ping&user=<user>";
-
-    versionString.replace(QString("<server>"), m_server);
-    versionString.replace(QString("<user>"), username);
-
-    debug() << "Verifying Ampache Version Using: " << versionString;
-
-    m_username = username;
-    m_password = password;
-
-    m_xmlVersionUrl = KUrl( versionString );
-    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
-         SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-#if HAVE_LIBLASTFM
+#ifdef HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif
 }
@@ -175,187 +123,22 @@ AmpacheService::polish()
 void
 AmpacheService::reauthenticate()
 {
-    DEBUG_BLOCK
-
-    debug() << " I am trying to re-authenticate";
-
-    // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-    QString versionString = "<server>/server/xml.server.php?action=ping";
-
-    versionString.replace(QString("<server>"), m_server);
-
-    debug() << "Verifying Ampache Version Using: " << versionString;
-
-    m_xmlVersionUrl = KUrl( versionString );
-    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
-         SLOT(authenticate(KUrl,QByteArray,QNetworkReply::NetworkError)) );
+    m_ampacheLogin->reauthenticate();
 }
+
 
 void
-AmpacheService::authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheService::onLoginSuccessful()
 {
-    if( m_xmlVersionUrl != url )
-        return;
-
-    m_xmlVersionUrl.clear();
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "authenticate Error:" << e.description;
-        return;
-    }
-
-    DEBUG_BLOCK
-    versionVerify( data );
-
-    //lets keep this around for now if we want to allow people to add a service that prompts for stuff
-    if ( m_server.isEmpty() || m_password.isEmpty() )
-    {
-        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to the API, but that does not work
-        dlg.setPrompt( i18n( "Enter the server name and a password" ) );
-        if( !dlg.exec() )
-            return; //the user canceled
-
-        KUrl kurl( dlg.username() );
-        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
-        {
-            kurl.setProtocol( "http" );
-        }
-        m_server = kurl.url();
-        m_password = dlg.password();
-    }
-    else
-    {
-        KUrl kurl( m_server );
-        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
-        {
-            kurl.setProtocol( "http" );
-        }
-        m_server = kurl.url();
-    }
-
-    QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
-    QString rawHandshake;
-    QString authenticationString;
-    QString passPhrase;
-
-    // We need to use different authentication strings depending on the version of ampache
-    if ( m_version > 350000 )
-    {
-        debug() << "New Password Scheme " << m_version;
-        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
-
-        rawHandshake = timestamp + sha256( m_password );
-
-        passPhrase = sha256( rawHandshake );
-        debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
-        debug() << "Version Greater than 350000 Generating new SHA256 Auth" << authenticationString << passPhrase;
-    }
-    else
-    {
-        debug() << "Version Older than 35001 Generated MD5 Auth " << m_version;
-        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
-        rawHandshake = timestamp + m_password;
-        KMD5 context( rawHandshake.toUtf8() );
-        passPhrase = context.hexDigest().data();
-    }
-
-    authenticationString.replace(QString("<server>"), m_server);
-    if ( !m_username.isEmpty() )
-        authenticationString.replace(QString("<username>"), "&user=" + m_username);
-    else
-        authenticationString.remove(QString("<username>"));
-    authenticationString.replace(QString("<passphrase>"), passPhrase);
-    authenticationString.replace(QString("<timestamp>"), timestamp);
-
-    debug() << "Authenticating with string: " << authenticationString << passPhrase;
-
-    // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
-    m_xmlDownloadUrl = KUrl( authenticationString );
-    The::networkAccessManager()->getData( m_xmlDownloadUrl, this,
-         SLOT(authenticationComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
-
-void AmpacheService::authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
-{
-    if( m_xmlDownloadUrl != url )
-        return;
-
-    m_xmlDownloadUrl.clear();
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Authentication Error:" << e.description;
-        return;
-    }
-
-    QByteArray xmlReply( data );
-    debug() << "Authentication reply: " << xmlReply;
-
-    //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
-
-    doc.setContent( xmlReply );
-    QDomElement root = doc.firstChildElement("root");
-
-    //is this an error?
-
-    QDomElement domError = root.firstChildElement("error");
-
-    if ( !domError.isNull() )
-    {
-        KMessageBox::error( this, domError.text(), i18n( "Authentication Error" ) );
-    }
-    else
-    {
-        //find status code:
-        QDomElement element = root.firstChildElement("auth");
-
-        m_sessionId = element.text();
-
-        m_authenticated = true;
-
-        m_collection = new Collections::AmpacheServiceCollection( this, m_server, m_sessionId );
-        // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
-
-        CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
-        QList<int> levels;
-        levels << CategoryId::Artist << CategoryId::Album;
-        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-        m_serviceready = true;
-        emit( ready() );
-    }
-}
-
-void AmpacheService::versionVerify( QByteArray data)
-{
-    DEBUG_BLOCK
-    QByteArray xmlReply = data;
-    debug() << "Version Verify reply: " << xmlReply;
-
-    //so lets figure out what we got here:
-    QDomDocument doc( "version" );
-
-    doc.setContent( xmlReply );
-    QDomElement root = doc.firstChildElement("root");
-    //is this an error?
-
-    QDomElement error = root.firstChildElement("error");
-
-    // It's OK if we get a null response from the version, that just means we're dealing with an older version
-    if( !error.isNull() )
-    {
-        // Default the Version down if it didn't work
-        m_version = 100000;
-        debug() << "versionVerify Error: " << error.text();
-    }
-    else
-    {
-        //find status code:
-        QDomElement element = root.firstChildElement("version");
-
-        m_version = element.text().toInt();
-
-        debug() << "versionVerify Returned: " << m_version;
-    }
+    m_collection = new Collections::AmpacheServiceCollection( this, m_ampacheLogin->server(), m_ampacheLogin->sessionId() );
+    // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
+    
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+    QList<int> levels;
+    levels << CategoryId::Artist << CategoryId::Album;
+    setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+    m_serviceready = true;
+    emit ready();
 }
 
 #include "AmpacheService.moc"

@@ -21,7 +21,7 @@ add_subdirectory( images )
 
 ########### next target ###############
 
-        set(amarok_service_ampache_PART_SRCS
+        set(amarok_service_ampache_PART_SRCS AmpacheAccountLogin.cpp
             AmpacheService.cpp
             AmpacheServiceCollection.cpp
             AmpacheServiceQueryMaker.cpp
@@ -58,7 +58,7 @@ add_subdirectory( images )
 
 ########### next target ###############
 
-        set(kcm_amarok_service_ampache_PART_SRCSS AmpacheSettings.cpp AmpacheConfig.cpp )
+        set(kcm_amarok_service_ampache_PART_SRCSS AddServerDialog.cpp AmpacheSettings.cpp AmpacheConfig.cpp )
 
         kde4_add_ui_files( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewServerWidget.ui )
 

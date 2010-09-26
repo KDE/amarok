@@ -16,9 +16,8 @@
 
 #include "AmpacheSettings.h"
 
+#include "AddServerDialog.h"
 #include "ui_AmpacheConfigWidget.h"
-#include "ui_NewServerWidget.h"
-
 
 #include <kdebug.h>
 #include <kgenericfactory.h>
@@ -112,18 +111,14 @@ AmpacheSettings::add()
 {
     kDebug( 14310 ) << Q_FUNC_INFO;
 
-    Ui::NewServerWidget newServer;
-    QWidget* w = new QWidget();
-    newServer.setupUi(w);
-    KDialog dialog;
-    dialog.setMainWidget(w);
+    AddServerDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
         AmpacheServerEntry server;
-        server.name = newServer.nameLineEdit->text();
-        server.url = newServer.serverAddressLineEdit->text();
-        server.username = newServer.userNameLineEdit->text();
-        server.password = newServer.passwordLineEdit->text();
+        server.name = dialog.name();
+        server.url = dialog.url();
+        server.username = dialog.username();
+        server.password =dialog.password();
         if( server.name.isEmpty())
             return;
         m_config.addServer( server );

@@ -18,8 +18,9 @@
 #define AMPACHESERVICE_H
 
 #include "AmpacheServiceCollection.h"
-#include "NetworkAccessManagerProxy.h"
 #include "ServiceBase.h"
+
+class AmpacheAccountLogin;
 
 class AmpacheServiceFactory: public ServiceFactory
 {
@@ -47,6 +48,7 @@ class AmpacheService : public ServiceBase
 {
 
 Q_OBJECT
+    
 public:
     explicit AmpacheService( AmpacheServiceFactory* parent, const QString &name,
                              const QString &url = QString(), const QString &username = QString(),
@@ -60,24 +62,12 @@ public:
     virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
-    void authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void versionVerify( QByteArray data );
+    void onLoginSuccessful();
 
 private:
-    KUrl m_xmlDownloadUrl;
-    KUrl m_xmlVersionUrl;
-
-    bool m_authenticated;
-    QString m_server;
-    QString m_username;
-    QString m_password;
-    QString m_sessionId;
-    int m_version;
-
     InfoParserBase *m_infoParser;
-
     Collections::AmpacheServiceCollection *  m_collection;
+    AmpacheAccountLogin* m_ampacheLogin;
 
     // Disable copy constructor and assignment
     AmpacheService( const AmpacheService& );
