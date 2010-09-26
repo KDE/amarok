@@ -9,6 +9,7 @@ VERSION NEXT
     * New "Playlist Length" constraint for the APG, which allows you to specify
       the number of tracks in the playlist.  What was the "Playlist Length "
       constraint is now called "Playlist Duration".
+    * MPRIS2 support for controlling Amarok over D-Bus.
 
   CHANGES:
     * Improved the usability of device items in Media Sources by adding tooltips.
