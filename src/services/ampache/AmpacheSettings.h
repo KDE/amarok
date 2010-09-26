@@ -44,14 +44,17 @@ private:
 
     AmpacheConfig m_config;
     Ui::AmpacheConfigWidget * m_configDialog;
-
+    void loadList();
+    int m_lastRowEdited;
+    int m_lastColumnEdited;
 private slots:
 
     void add();
     void remove();
     void modify();
-    void selectedItemChanged ( const QString & name );
     void serverNameChanged(const QString & text);
+    void onCellDoubleClicked(int row, int column);
+    void saveCellEdit(int row, int column);    
 };
 
 #endif
