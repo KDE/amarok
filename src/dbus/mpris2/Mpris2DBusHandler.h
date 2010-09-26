@@ -74,11 +74,11 @@ namespace Amarok
          * @defgroup org.mpris.MediaPlayer2.Player MPRIS 2.0 Player interface
          * @{
          */
-        Q_PROPERTY( int Rate READ Rate WRITE SetRate )
-        Q_PROPERTY( int Volume READ Volume WRITE SetVolume )
+        Q_PROPERTY( double Rate READ Rate WRITE SetRate )
+        Q_PROPERTY( double Volume READ Volume WRITE SetVolume )
         Q_PROPERTY( qlonglong Position READ Position )
-        Q_PROPERTY( int MinimumRate READ MinimumRate )
-        Q_PROPERTY( int MaximumRate READ MaximumRate )
+        Q_PROPERTY( double MinimumRate READ MinimumRate )
+        Q_PROPERTY( double MaximumRate READ MaximumRate )
         Q_PROPERTY( bool CanControl READ CanControl )
         /* @} */
 
@@ -144,26 +144,26 @@ namespace Amarok
 
         int Rate() const
         {
-            return 1;
+            return 1.0;
         }
 
-        void SetRate( int ) {}
+        void SetRate( double ) {}
 
         void SetShuffle( bool );
 
-        int Volume() const;
-        void SetVolume( int );
+        double Volume() const;
+        void SetVolume( double );
 
         qlonglong Position() const;
 
-        int MinimumRate() const
+        double MinimumRate() const
         {
-            return 1;
+            return 1.0;
         }
 
-        int MaximumRate() const
+        double MaximumRate() const
         {
-            return 1;
+            return 1.0;
         }
 
         bool CanControl() const

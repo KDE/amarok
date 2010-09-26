@@ -287,14 +287,14 @@ namespace Amarok
         The::playlistActions()->playlistModeChanged();
     }
 
-    int Mpris2DBusHandler::Volume() const
+    double Mpris2DBusHandler::Volume() const
     {
-        return The::engineController()->volume();
+        return static_cast<double>(The::engineController()->volume()) / 100.0;
     }
 
-    void Mpris2DBusHandler::SetVolume( int vol )
+    void Mpris2DBusHandler::SetVolume( double vol )
     {
-        The::engineController()->setVolume( vol );
+        The::engineController()->setVolume( vol * 100 );
     }
 
     //position is specified in microseconds
