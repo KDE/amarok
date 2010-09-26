@@ -33,6 +33,7 @@ class QVBoxLayout;
 class QLabel;
 class QToolButton;
 class KComboBox;
+class KIntSpinBox;
 class KToolBar;
 class KVBox;
 
@@ -40,6 +41,27 @@ namespace Collections
 {
     class QueryMaker;
 }
+
+/**
+ *  A class that allows to select a time distance.
+ */
+class TimeDistanceWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    TimeDistanceWidget( QWidget *parent = 0 );
+    qint64 timeDistance() const;
+    void setTimeDistance( qint64 value );
+    void connectChanged( QObject *receiver, const char *slot );
+
+protected:
+    KIntSpinBox *m_timeEdit;
+    KComboBox *m_unitSelection;
+
+private slots:
+    void slotUpdateComboBoxLabels( int value );
+};
 
 class MetaQueryWidget : public QWidget
 {

@@ -36,91 +36,88 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QListView>
-#include <QSpinBox>
 #include <QTimeEdit>
 
 #include <KComboBox>
 #include <KIcon>
 #include <KDateTime> // for local time
+#include <KNumInput>
 #include <klocale.h>
 
 using namespace Amarok;
 
-/**
- *  A class that allows to select a time distance.
- */
-class TimeDistanceWidget : public QWidget
+TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
+    : QWidget( parent )
 {
-public:
-    TimeDistanceWidget( QWidget *parent = 0 )
-        : QWidget( parent )
+    m_timeEdit = new KIntSpinBox(this);
+    m_timeEdit->setMinimum( 0 );
+    m_timeEdit->setMaximum( 600 );
+
+    m_unitSelection = new KComboBox(this);
+    connect( m_timeEdit, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateComboBoxLabels(int)) );
+    m_unitSelection->addItem( i18np( "second", "seconds", 0 ) );
+    m_unitSelection->addItem( i18np( "minute", "minutes", 0 ) );
+    m_unitSelection->addItem( i18np( "hour", "hours", 0 ) );
+    m_unitSelection->addItem( i18np( "day", "days", 0 ) );
+
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    hLayout->setContentsMargins(0, 0, 0, 0);
+    hLayout->addWidget( m_timeEdit );
+    hLayout->addWidget( m_unitSelection );
+}
+
+qint64 TimeDistanceWidget::timeDistance() const
+{
+    qint64 time = m_timeEdit->value();
+    switch( m_unitSelection->currentIndex() )
     {
-        m_timeEdit = new QSpinBox(this);
-        m_timeEdit->setMinimum( 0 );
-        m_timeEdit->setMaximum( 600 );
-
-        m_unitSelection = new KComboBox(this);
-        m_unitSelection->addItem( i18n( "seconds" ) );
-        m_unitSelection->addItem( i18n( "minutes" ) );
-        m_unitSelection->addItem( i18n( "hours" ) );
-        m_unitSelection->addItem( i18n( "days" ) );
-
-        QHBoxLayout *hLayout = new QHBoxLayout(this);
-        hLayout->setContentsMargins(0, 0, 0, 0);
-        hLayout->addWidget( m_timeEdit );
-        hLayout->addWidget( m_unitSelection );
+    case 3:
+        time *= 24; // days
+    case 2:
+        time *= 60; // hours
+    case 1:
+        time *= 60; // minutes
     }
 
-    qint64 timeDistance() const
-    {
-        qint64 time = m_timeEdit->value();
-        switch( m_unitSelection->currentIndex() )
-        {
-        case 3:
-            time *= 24 ; // days
-        case 2:
-            time *= 60; // hours
-        case 1:
-            time *= 60; // minutes
-        }
+    return time;
+}
 
-        return time;
-    }
+void TimeDistanceWidget::setTimeDistance( qint64 value )
+{
+    int unit = 0;
+    if( value > 600 || !(value % 60) ) {
+        unit++;
+        value /= 60;
 
-    void setTimeDistance( qint64 value )
-    {
-        int unit = 0;
         if( value > 600 || !(value % 60) ) {
             unit++;
             value /= 60;
 
-            if( value > 600 || !(value % 60) ) {
+            if( value > 600 || !(value % 24) ) {
                 unit++;
-                value /= 60;
-
-                if( value > 600 || !(value % 24) ) {
-                    unit++;
-                    value /= 24;
-                }
+                value /= 24;
             }
         }
-
-        m_unitSelection->setCurrentIndex( unit );
-        m_timeEdit->setValue( value );
     }
 
-    // cmake is tricking me here. It will create a private .moc with the same
-    // name as the public moc. So no Q_OBJECT macro fro my TimeDistanceWidget
-    void connectChanged( QObject *receiver, const char *slot )
-    {
-        connect( m_timeEdit, SIGNAL(valueChanged(const QString&)), receiver, slot );
-        connect( m_unitSelection, SIGNAL(currentIndexChanged(int)), receiver, slot );
-    }
+    m_unitSelection->setCurrentIndex( unit );
+    m_timeEdit->setValue( value );
+}
 
-protected:
-    QSpinBox *m_timeEdit;
-    KComboBox *m_unitSelection;
-};
+void TimeDistanceWidget::connectChanged( QObject *receiver, const char *slot )
+{
+    connect( m_timeEdit, SIGNAL(valueChanged(const QString&)), receiver, slot );
+    connect( m_unitSelection, SIGNAL(currentIndexChanged(int)), receiver, slot );
+}
+
+
+void TimeDistanceWidget::slotUpdateComboBoxLabels( int value )
+{
+    m_unitSelection->setItemText(0, i18np("second", "seconds", value));
+    m_unitSelection->setItemText(1, i18np("minute", "minutes", value));
+    m_unitSelection->setItemText(2, i18np("hour", "hours", value));
+    m_unitSelection->setItemText(3, i18np("day", "days", value));
+}
 
 
 MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCondition )
@@ -678,7 +675,7 @@ MetaQueryWidget::makeLengthSelection()
 void
 MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def )
 {
-    QSpinBox* spin = new QSpinBox();
+    KIntSpinBox* spin = new KIntSpinBox();
     spin->setMinimum( min );
     spin->setMaximum( max );
     if( m_filter.condition == Contains ||
@@ -699,7 +696,7 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def )
         return;
 
     // second spin box for the between selection
-    QSpinBox* spin2 = new QSpinBox();
+    KIntSpinBox* spin2 = new KIntSpinBox();
     spin2->setMinimum( min );
     spin2->setMaximum( max );
     if( m_filter.condition == Contains ||
