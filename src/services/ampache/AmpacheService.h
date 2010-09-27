@@ -20,6 +20,8 @@
 #include "AmpacheServiceCollection.h"
 #include "ServiceBase.h"
 
+#include <QPointer>
+
 class AmpacheAccountLogin;
 
 class AmpacheServiceFactory: public ServiceFactory
@@ -67,7 +69,7 @@ private slots:
 private:
     InfoParserBase *m_infoParser;
     Collections::AmpacheServiceCollection *  m_collection;
-    AmpacheAccountLogin* m_ampacheLogin;
+    QPointer<AmpacheAccountLogin> m_ampacheLogin;
 
     // Disable copy constructor and assignment
     AmpacheService( const AmpacheService& );

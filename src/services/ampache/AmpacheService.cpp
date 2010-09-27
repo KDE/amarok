@@ -108,6 +108,7 @@ AmpacheService::~AmpacheService()
 {
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     delete m_collection;
+    m_ampacheLogin->deleteLater();
 }
 
 void

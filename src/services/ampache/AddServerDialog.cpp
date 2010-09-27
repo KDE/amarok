@@ -18,15 +18,22 @@
 
 #include "AddServerDialog.h"
 
+#include "AmpacheAccountLogin.h"
 #include "ui_NewServerWidget.h"
 
 AddServerDialog::AddServerDialog()
     : KDialog()
     , m_widgets( new Ui::NewServerWidget )
 {
-    m_widgets->setupUi(this);
+    QWidget* widget = new QWidget();
+    m_widgets->setupUi(widget);
+    setMainWidget(widget);
+    
+    m_widgets->verifyButton->setEnabled(false);
     setCaption(i18n("Add new Ampache server"));
     enableButtonOk(false);
+    
+    connect( m_widgets->verifyButton, SIGNAL(released()), this, SLOT(verifyData()));
     QList<QObject*> inputs;
     inputs << m_widgets->nameLineEdit << m_widgets->serverAddressLineEdit
            << m_widgets->userNameLineEdit << m_widgets-> passwordLineEdit;
@@ -42,9 +49,38 @@ AddServerDialog::~AddServerDialog()
 void
 AddServerDialog::anyTextEdited()
 {
-    enableButtonOk(!(name().isEmpty() || url().isEmpty()
+   bool minimumData = (!(name().isEmpty() || url().isEmpty()
                                       || password().isEmpty()
                                       || username().isEmpty() ));
+   enableButtonOk(minimumData);
+   m_widgets->verifyButton->setEnabled(minimumData);
+}
+
+void AddServerDialog::verifyData()
+{
+    m_widgets->verifyButton->setEnabled(false);
+    delete m_login; //should always be null at this point.
+    m_login = new AmpacheAccountLogin( url(), username(), password(), this );
+    connect(m_login, SIGNAL(finished()), this, SLOT(loginResult()));
+}
+
+void AddServerDialog::loginResult()
+{
+    QLabel* label = m_widgets->verifyLabel;
+    QPalette pal = label->palette();
+    if( m_login->authenticated() )
+    {
+        label->setText( i18n("Successfully connected") );
+        pal.setColor( QPalette::WindowText, Qt::darkGreen );
+    }
+    else
+    {
+        label->setText( i18n("Connection failure") );
+        pal.setColor( QPalette::WindowText, Qt::red );
+    }
+    label->setPalette(pal);
+    delete m_login;
+    m_widgets->verifyButton->setEnabled(true);
 }
 
 QString

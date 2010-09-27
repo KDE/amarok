@@ -21,13 +21,20 @@ add_subdirectory( images )
 
 ########### next target ###############
 
-        set(amarok_service_ampache_PART_SRCS AmpacheAccountLogin.cpp
+set(libampache_account_login_SRCS
+    AmpacheAccountLogin.cpp
+    sha256/sha256.cpp)
+kde4_add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
+target_link_libraries(ampache_account_login amaroklib amarokcore ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
+install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+########### next target ###############
+        set(amarok_service_ampache_PART_SRCS 
             AmpacheService.cpp
             AmpacheServiceCollection.cpp
             AmpacheServiceQueryMaker.cpp
             AmpacheMeta.cpp
             AmpacheConfig.cpp
-            sha256/sha256.cpp
         )
         if( LIBLASTFM_FOUND )
             set(amarok_service_ampache_PART_SRCS
@@ -39,6 +46,7 @@ add_subdirectory( images )
 
         kde4_add_plugin(amarok_service_ampache ${amarok_service_ampache_PART_SRCS})
         target_link_libraries(amarok_service_ampache
+            ampache_account_login
             amarokcore
             amaroklib
             ${KDE4_KDECORE_LIBS}
@@ -66,7 +74,9 @@ add_subdirectory( images )
         kde4_add_plugin( kcm_amarok_service_ampache ${kcm_amarok_service_ampache_PART_SRCSS} )
 
 
-        target_link_libraries( kcm_amarok_service_ampache  ${KDE4_KUTILS_LIBS} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${KDE4_KDEUI_LIBS} )
+        target_link_libraries( kcm_amarok_service_ampache
+            ampache_account_login ${KDE4_KUTILS_LIBS} ${QT_QTCORE_LIBRARY}
+            ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${KDE4_KDEUI_LIBS} )
 
         install(TARGETS kcm_amarok_service_ampache  DESTINATION ${PLUGIN_INSTALL_DIR})
 

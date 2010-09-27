@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>163</height>
+    <width>345</width>
+    <height>184</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,20 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="KLineEdit" name="serverAddressLineEdit"/>
+    <widget class="KLineEdit" name="serverAddressLineEdit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="labelUsername">
@@ -58,9 +71,34 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="KPushButton" name="verifyButton">
+     <property name="text">
+      <string>Check Connection</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="verifyLabel">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>

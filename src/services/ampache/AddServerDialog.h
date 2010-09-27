@@ -20,11 +20,15 @@
 #define ADDSERVERDIALOG_H
 
 #include <KDialog>
+#include <QPointer>
 
 namespace Ui
 {
     class NewServerWidget;
 }
+
+class AmpacheAccountLogin;
+
 class AddServerDialog : public KDialog
 {
     Q_OBJECT
@@ -37,8 +41,11 @@ class AddServerDialog : public KDialog
         QString url();
     private slots:
         void anyTextEdited();
+        void verifyData();
+        void loginResult();
     private:
         Ui::NewServerWidget* m_widgets;
+        QPointer<AmpacheAccountLogin> m_login;
 };
 
 #endif // ADDSERVERDIALOG_H

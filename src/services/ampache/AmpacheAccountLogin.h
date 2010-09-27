@@ -23,9 +23,13 @@
 
 #include <QObject>
 #include <KUrl>
+#include <kdemacros.h>
 #include "NetworkAccessManagerProxy.h"
 
-class AmpacheAccountLogin : public QObject
+
+#define AMPACHE_ACCOUNT_EXPORT KDE_EXPORT
+
+class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 {
     Q_OBJECT
     public:
