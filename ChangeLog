@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
+    * Addded a "create new playlist" action in the empty space of the Saved
+      Playlists. (BR202725)
     * Add new type of optional tokens in format string (Collection Organizer)
       (BR 264874)
     * Compilations are properly marked as such when transferring music

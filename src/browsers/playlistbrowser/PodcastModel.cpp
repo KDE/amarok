@@ -390,6 +390,12 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 QActionList
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+    {
+        //TODO: add podcast action
+        return QActionList();
+    }
+
     QActionList actions = PlaylistBrowserModel::actionsFor( idx );
 
     /* by default a list of podcast episodes can only be changed to isNew = false, except

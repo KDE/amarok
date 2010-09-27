@@ -286,7 +286,13 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
 
 void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )
 {
-    QModelIndexList indices = selectedIndexes();
+    QModelIndex clickedIdx = indexAt( event->pos() );
+
+    QModelIndexList indices;
+    if( selectedIndexes().contains( clickedIdx ) )
+        indices << selectedIndexes();
+    else
+        indices << clickedIdx;
 
     QActionList actions = actionsFor( indices );
 
@@ -338,8 +344,8 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( QModelIndexList indexes )
     QActionList actions;
     foreach( QModelIndex idx, indexes )
     {
-        QActionList idxActions =
-            idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
+        QActionList idxActions = model()->data( idx,
+                PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
         //only add unique actions model is responsible for making them unique
         foreach( QAction *action, idxActions )
         {

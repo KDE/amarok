@@ -358,7 +358,8 @@ QVariant
 QtGroupingProxy::data( const QModelIndex &index, int role ) const
 {
     if( !index.isValid() )
-        return QVariant();
+        return sourceModel()->data( m_rootNode, role ); //rootNode could have useful data
+
     //qDebug() << __FUNCTION__ << index << " role: " << role;
     int row = index.row();
     int column = index.column();

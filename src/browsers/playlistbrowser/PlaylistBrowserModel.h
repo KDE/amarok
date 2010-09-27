@@ -116,11 +116,13 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category );
+        void slotCreateEmptyPlaylist();
 
     private:
         int m_playlistCategory;
         QAction *m_appendAction;
         QAction *m_loadAction;
+        QAction *m_createEmptyPlaylistAction;
 };
 
 }

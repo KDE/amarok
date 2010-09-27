@@ -39,6 +39,11 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
 PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
+    m_createEmptyPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ),
+                                               i18n( "Create empty playlist" ),
+                                               this );
+    connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
+
     //common, unconditional actions
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                   this );
@@ -70,9 +75,6 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
 QVariant
 PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 {
-    if( !index.isValid() )
-        return QVariant();
-
     int row = REMOVE_TRACK_MASK(index.internalId());
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
@@ -168,7 +170,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             break;
         }
 
-        default: return QVariant();
+        default: break;
     }
 
 
@@ -400,6 +402,7 @@ PlaylistBrowserModel::flags( const QModelIndex &idx ) const
     return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
            Qt::ItemIsDropEnabled;
 }
+
 QVariant
 PlaylistBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
@@ -677,6 +680,13 @@ PlaylistBrowserModel::slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int 
     endInsertRows();
 }
 
+void
+PlaylistBrowserModel::slotCreateEmptyPlaylist()
+{
+    The::playlistManager()->save( Meta::TrackList(),
+                                  Amarok::generatePlaylistName( Meta::TrackList() ) );
+}
+
 Meta::TrackList
 PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
 {
@@ -742,6 +752,12 @@ PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
 QActionList
 PlaylistBrowserModel::actionsFor( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+    {
+        QActionList emptyActions;
+        emptyActions << m_createEmptyPlaylistAction;
+        return emptyActions;
+    }
     //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
     QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
 

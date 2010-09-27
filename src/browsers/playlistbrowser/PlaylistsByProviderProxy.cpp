@@ -41,6 +41,8 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
 QVariant
 PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
 {
+    //TODO: actions for empty providers
+
     //TODO: filter out actions not from the provider, possibly using QAction separators marking
     // the source of the actions (makes sense in the UI as well.
 
