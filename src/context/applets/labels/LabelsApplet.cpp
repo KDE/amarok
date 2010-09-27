@@ -409,8 +409,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
         constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
         update();
-        if( canAnimate() )
-            setBusy( true );
+        setBusy( true );
     }
     else if ( data.contains( "message" ) )
     {

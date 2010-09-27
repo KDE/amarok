@@ -36,6 +36,12 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
 #include <QPainter>
+#include <QWeakPointer>
+
+namespace Plasma
+{
+    class Animation;
+}
 
 namespace Context
 {
@@ -81,6 +87,7 @@ private:
 
     Plasma::IconWidget *m_leftArrow;
     Plasma::IconWidget *m_rightArrow;
+    QWeakPointer<Plasma::Animation> m_slideAnimation;
 };
 
 } //namespace Context

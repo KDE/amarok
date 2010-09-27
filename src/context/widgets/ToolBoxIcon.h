@@ -24,8 +24,14 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QTextLine>
+#include <QWeakPointer>
 
 class QPainterPath;
+
+namespace Plasma
+{
+    class Animation;
+}
 
 class AMAROK_EXPORT ToolBoxIcon: public Plasma::IconWidget
 {
@@ -34,7 +40,7 @@ class AMAROK_EXPORT ToolBoxIcon: public Plasma::IconWidget
 public:
     explicit ToolBoxIcon( QGraphicsItem *parent = 0, const float opacity = 0.8 );
     ~ToolBoxIcon();
-    
+
     /**
      * reimplemented from Plasma::Icon
      */
@@ -50,7 +56,7 @@ public:
     QString text() const;
 
     void setBrush( const QBrush& );
-    
+
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -59,17 +65,15 @@ protected:
 
 Q_SIGNALS:
     void appletChosen( const QString &pluginName );
-    
+
 private slots:
-    void animateHighlight( qreal progress );
     void mousePressed( bool pressed );
-    
+
 private:
     bool m_hovering;
 
     const qreal m_baseOpacity;
-    qreal m_animOpacity;
-    int m_animHighlightId;
+    QWeakPointer<Plasma::Animation> m_animHighLight;
 
     QGraphicsSimpleTextItem *m_text;
     QBrush m_defaultTextBrush;

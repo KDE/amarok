@@ -26,10 +26,16 @@
 #include <QHash>
 #include <QTimer>
 #include <QStack>
+#include <QWeakPointer>
+
+namespace Plasma
+{
+    class Animation;
+}
 
 namespace Context
 {
-    
+
 class AMAROK_EXPORT AmarokToolBoxMenu : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -42,7 +48,7 @@ public:
     };
 
     explicit AmarokToolBoxMenu( QGraphicsItem *parent = 0, bool runningAppletsOnly = false );
-    
+
     ~AmarokToolBoxMenu();
     QRectF boundingRect() const;
 
@@ -58,7 +64,7 @@ Q_SIGNALS:
     void menuHidden();
     void addAppletToContainment( const QString& );
     void installApplets();
-    
+
 protected:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -74,7 +80,7 @@ private slots:
     void scrollUp();
     void timeToHide();
     void addApplet( const QString &pluginName );
-    
+
 private:
     void init( QMap< QString, QString > allAppletsList, QStringList appletsToShow );
     void createArrow( ToolBoxIcon *arrow, const QString &direction );
@@ -89,7 +95,7 @@ private:
     Containment *m_containment;
 
     bool m_removeApplets;
-    
+
     int m_menuSize;
 
     QStack<QString> m_bottomMenu;
@@ -100,7 +106,12 @@ private:
     ToolBoxIcon *m_upArrow;
     ToolBoxIcon *m_downArrow;
     ToolBoxIcon* m_installScriptedApplet;
-    
+
+    QWeakPointer<Plasma::Animation> m_entryAnimation;
+    QWeakPointer<Plasma::Animation> m_newEntryAnimation;
+    QWeakPointer<Plasma::Animation> m_upArrowAnimation;
+    QWeakPointer<Plasma::Animation> m_downArrowAnimation;
+
     QMap<Plasma::Containment *, QStringList> m_runningApplets;
 
     QTimer *m_timer;

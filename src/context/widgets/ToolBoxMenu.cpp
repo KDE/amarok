@@ -20,6 +20,8 @@
 
 #include <plasma/applet.h>
 #include <plasma/corona.h>
+#include <Plasma/Animator>
+#include <Plasma/Animation>
 
 #include <kicon.h>
 
@@ -30,7 +32,7 @@
 
 namespace Context
 {
-    
+
 AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningAppletsOnly )
     : QObject()
     , QGraphicsItem( parent )
@@ -44,7 +46,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
     QMap< QString, QString > allApplets;
     QStringList appletsToShow; // we need to store the list of
     // all appletname->appletpluginname pairs, even if we do not show them
-    
+
     foreach ( const KPluginInfo& info, Plasma::Applet::listAppletInfo( QString(), "amarok" ) )
     {
         if ( info.property( "NoDisplay" ).toBool() )
@@ -55,9 +57,9 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
 
         allApplets.insert( info.name(), info.pluginName() );
         if( !runningAppletsOnly )
-            appletsToShow << info.name();      
+            appletsToShow << info.name();
     }
-    
+
     if( runningAppletsOnly )
     {
        m_removeApplets = true;
@@ -70,7 +72,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
            }
        }
     }
-    
+
     init( allApplets, appletsToShow );
 }
 
@@ -83,7 +85,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     setAcceptsHoverEvents( true );
 
     m_appletsList = allApplets;
-    
+
     m_timer = new QTimer( this );
     m_scrollDelay = new QTimer( this );
 
@@ -94,7 +96,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     appletsToShow.sort();
     for( int i = appletsToShow.size() - 1; i >= 0; i-- )
         m_bottomMenu.push( appletsToShow[i] );
-    
+
     m_hideIcon = new ToolBoxIcon( this );
 
     QAction *hideMenu = new QAction( this );
@@ -119,7 +121,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_downArrow = new ToolBoxIcon( this );
     createArrow( m_upArrow, "up" );
     createArrow( m_downArrow, "down" );
-   
+
 /* TODO disabled adding scripted applets. framework is in place, but needs some more 
     polish before it's ready for a release. so, turning it off for now. 
     m_installScriptedApplet = new ToolBoxIcon( this );
@@ -132,7 +134,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_installScriptedApplet->resize( size );
     m_installScriptedApplet->setZValue( zValue() + 1 );
     m_installScriptedApplet->hide();
-    
+
     connect( m_installScriptedApplet, SIGNAL( clicked() ), this, SIGNAL( installApplets() ) );
     */
 }
@@ -141,11 +143,11 @@ void
 AmarokToolBoxMenu::setContainment( Containment *newContainment )
 {
     if( m_containment != newContainment )
-    {        
-        Plasma::Corona *corona = newContainment->corona();        
+    {
+        Plasma::Corona *corona = newContainment->corona();
         if( !corona )
             return;
-        
+
         //disconnect containments just in case we use setContainment somewhere else and we end up with
         //more signals connected that we wanted
         QList<Plasma::Containment *> containments = corona->containments();
@@ -247,7 +249,7 @@ void
 AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
 {
     if( sender() != 0 )
-    {        
+    {
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
         if( containment )
         {
@@ -287,15 +289,15 @@ AmarokToolBoxMenu::show( bool refreshApplets )
 {
     if( showing() )
         return;
-    
+
     if( m_timer->isActive() )
         m_timer->stop();
-    
+
     m_showing = true;
 
     if( m_removeApplets && refreshApplets ) // we need to refresh on view to get all running applets
         repopulateMenu();
-    
+
     if( m_bottomMenu.count() > 0 )
     {
         m_downArrow->setPos( boundingRect().width() / 2 - m_downArrow->size().width()/2,
@@ -312,24 +314,36 @@ AmarokToolBoxMenu::show( bool refreshApplets )
                             boundingRect().height() - m_menuSize * height - OFFSET_Y + ENTRY_MARGIN * 2 );
         m_upArrow->show();
     }
-    
+
     m_hideIcon->setPos( 5, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
-    
+
 #if 0
     /* TODO disabled adding scripted applets */
     m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_installScriptedApplet->show();
 #endif
-    
+
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
         ToolBoxIcon *entry = m_currentMenu[m_currentMenu.count() - i - 1];
-        entry->show();        
+        entry->show();
         const int height = static_cast<int>( entry->boundingRect().height() ) + ENTRY_MARGIN;
 
-        Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement, QPoint( 5, boundingRect().height() - height * i - OFFSET_Y ) );
+        Plasma::Animation *entryAnimation = m_entryAnimation.data();
+        if( !entryAnimation )
+        {
+            entryAnimation = Plasma::Animator::create( Plasma::Animator::SlideAnimation );
+            entryAnimation->setTargetWidget( entry );
+            entryAnimation->setProperty( "direction", Plasma::Animation::MoveAny );
+            m_entryAnimation = entryAnimation;
+        }
+        else
+            entryAnimation->stop();
+
+        entryAnimation->setProperty( "distancePointF", QPointF( 5, boundingRect().height() - height * i - OFFSET_Y ) );
+        entryAnimation->start( QAbstractAnimation::DeleteWhenStopped );
     }
 }
 
@@ -338,7 +352,7 @@ AmarokToolBoxMenu::hide()
 {
     if( !showing() )
         return;
-    
+
     if( m_timer->isActive() )
         m_timer->stop();
 
@@ -396,7 +410,7 @@ AmarokToolBoxMenu::removeApplet( const QString& pluginName )
 {
     if( pluginName.isEmpty()  )
         return;
-    
+
     // this is not ideal, but we look through all running applets to find
     // the one that we want
     foreach( Plasma::Applet* applet, containment()->applets() )
@@ -418,7 +432,7 @@ AmarokToolBoxMenu::removeApplet( const QString& pluginName )
     hide();
     show( false );
 }
-    
+
 void
 AmarokToolBoxMenu::createArrow( ToolBoxIcon *arrow, const QString &direction )
 {
@@ -464,8 +478,18 @@ AmarokToolBoxMenu::scrollDown()
 
         foreach( ToolBoxIcon *entry, m_currentMenu )
         {
-            Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
-                                            QPoint( 5, boundingRect().height() - height * i - OFFSET_Y ) );
+            Plasma::Animation *entryAnimation = m_entryAnimation.data();
+            if( !entryAnimation )
+            {
+                entryAnimation = Plasma::Animator::create( Plasma::Animator::SlideAnimation );
+                entryAnimation->setTargetWidget( entry );
+                entryAnimation->setProperty( "direction", Plasma::Animation::MoveAny );
+            }
+            else
+                entryAnimation->stop();
+
+            entryAnimation->setProperty( "distancePointF", QPointF( 5, boundingRect().height() - height * i - OFFSET_Y ) );
+            entryAnimation->start( QAbstractAnimation::DeleteWhenStopped );
             i--;
         }
 
@@ -474,10 +498,33 @@ AmarokToolBoxMenu::scrollDown()
         setupMenuEntry( entryToAdd, appletName );
         m_currentMenu << entryToAdd;
         entryToAdd->setPos( 5, boundingRect().height() - OFFSET_Y );
-        Plasma::Animator::self()->animateItem( entryToAdd, Plasma::Animator::AppearAnimation );
 
-        if( m_bottomMenu.isEmpty() )
-            Plasma::Animator::self()->animateItem( m_downArrow, Plasma::Animator::DisappearAnimation );
+        Plasma::Animation *newEntryAnimation = m_newEntryAnimation.data();
+        if( !newEntryAnimation )
+        {
+            newEntryAnimation = Plasma:Animator::create( Plasma::Animator::FadeAnimation );
+            newEntryAnimation->setTargetWidget( entryToAdd );
+            newEntryAnimation->setProperty( "startOpacity", 0.0 );
+            newEntryAnimation->setProperty( "targetOpacity", 1.0 );
+        }
+        else
+            newEntryAnimation->stop();
+
+        newEntryAnimation->start( QAbstractAnimation::DeleteWhenStopped );
+
+        if( m_bottomMenu.isEmpty() ) {
+            Plasma::Animation *downArrowAnimation = m_downArrowAnimation.data();
+            if( !downArrowAnimation )
+            {
+                downArrowAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+                downArrowAnimation->setTargetWidget( m_downArrow );
+                downArrowAnimation->setProperty("startOpacity", 1.0);
+                downArrowAnimation->setProperty("targetOpacity", 0.0);
+                m_downArrowAnimation = downArrowAnimation;
+            }
+
+            downArrowAnimation->start( QAbstractAnimation::DeleteWhenStopped );
+        }
 
         if( m_topMenu.count() > 0 && !m_upArrow->isVisible() )
         {
@@ -504,8 +551,19 @@ AmarokToolBoxMenu::scrollUp()
         for( int i = entries - 1; i >= 0; i-- )
         {
             ToolBoxIcon *entry = m_currentMenu[i];
-            Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
-                                            QPoint( 5, boundingRect().height() - height * ( entries - i - 1 ) - OFFSET_Y ) );
+            Plasma::Animation *entryAnimation = m_entryAnimation.data();
+            if( !entryAnimation )
+            {
+                entryAnimation = Plasma::Animator::create( Plasma::Animator::SlideAnimation );
+                entryAnimation->setTargetWidget( entry );
+                entryAnimation->setProperty( "direction", Plasma::Animation::MoveAny );
+                m_entryAnimation = entryAnimation;
+            }
+            else
+                entryAnimation->stop();
+
+            entryAnimation->setProperty( "distancePointF", QPointF( 5, boundingRect().height() - height * ( entries - i - 1 ) - OFFSET_Y ) );
+            entryAnimation->start( QAbstractAnimation::DeleteWhenStopped );
         }
 
         ToolBoxIcon *entryToAdd = new ToolBoxIcon( this );
@@ -513,10 +571,35 @@ AmarokToolBoxMenu::scrollUp()
         setupMenuEntry( entryToAdd, appletName );
         m_currentMenu.prepend( entryToAdd );
         entryToAdd->setPos( 5, boundingRect().height() - height * ( m_menuSize - 1 ) - OFFSET_Y );
-        Plasma::Animator::self()->animateItem( entryToAdd, Plasma::Animator::AppearAnimation );
+
+        Plasma::Animation *newEntryAnimation = m_newEntryAnimation.data();
+        if( !newEntryAnimation )
+        {
+            newEntryAnimation = Plasma:Animator::create( Plasma::Animator::FadeAnimation );
+            newEntryAnimation->setTargetWidget( entryToAdd );
+            newEntryAnimation->setProperty( "startOpacity", 0.0 );
+            newEntryAnimation->setProperty( "targetOpacity", 1.0 );
+        }
+        else
+            newEntryAnimation->stop();
+
+        newEntryAnimation->start( QAbstractAnimation::DeleteWhenStopped );
 
         if( m_topMenu.isEmpty() )
-            Plasma::Animator::self()->animateItem( m_upArrow, Plasma::Animator::DisappearAnimation );
+        {
+            Plasma::Animation *upArrowAnimation = m_upArrowAnimation.data();
+            if( !upArrowAnimation )
+            {
+                upArrowAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+                upArrowAnimation->setTargetWidget( m_upArrow );
+                upArrowAnimation->setProperty("startOpacity", 0.0);
+                upArrowAnimation->setProperty("targetOpacity", 1.0);
+                upArrowAnimation->setDirection( QAbstractAnimation::Backward );
+                m_upArrowAnimation = upArrowAnimation;
+            }
+
+            upArrowAnimation->start( QAbstractAnimation::DeleteWhenStopped );
+        }
 
         if( m_bottomMenu.count() > 0 && !m_downArrow->isVisible() )
         {
