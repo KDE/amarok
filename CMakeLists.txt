@@ -69,7 +69,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.3.0")
+    set(KDE_MIN_VERSION "4.4.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
     include (MacroLibrary)
@@ -77,7 +77,7 @@ if( WITH_PLAYER )
     include(MacroBoolTo01)
     include(MacroLogFeature)
 
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.3.0" "" )
+    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.4.0" "" )
 
     find_package( QtScriptQtBindings REQUIRED )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
