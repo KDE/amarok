@@ -45,6 +45,8 @@ namespace Plasma {
 }
 
 static const int MAX_PLAYED_TRACKS = 5;
+static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
+static const KLocalizedString UNKNOWN_ALBUM = ki18n("Unknown Album");
 
 class CurrentTrack : public Context::Applet
 {
@@ -78,6 +80,18 @@ private:
     bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
     // aligns the second QGI to be at the same level as the first (the bottom edges)
     void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
+    QBrush normalBrush();
+    QBrush unknownBrush();
+    /**
+     * Bug 205038
+     * We check if original is an 'invalid' value
+     * In that case we return replacement and
+     * set widget's brush to unknownBrush()
+     *
+     * If original is 'valid', widget brush is set
+     * to normalBrush() and original is returned
+     */
+    QString handleUnknown( QString original, TextScrollingWidget *widget, QString replacement );
 
     TextScrollingWidget* m_title;
     TextScrollingWidget* m_artist;
