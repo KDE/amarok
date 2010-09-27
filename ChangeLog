@@ -17,6 +17,7 @@ VERSION NEXT
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * If album keyword is empty, show "unknown album" in context window (BR 205038)
     * Ampache wouldn't connect to servers placed in a subdirectory.
     * Fixed an initialization bug which affected all context applets.
     * Fix bug where users could drag applets around indiscriminately

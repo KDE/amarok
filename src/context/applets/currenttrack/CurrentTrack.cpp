@@ -275,13 +275,33 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setPos( artistPos.x(), artistPos.y() - lineSpacing );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+
+    if( artist.isNull() ) {
+        QBrush brush = KColorScheme( QPalette::Disabled ).foreground( KColorScheme::NormalText );
+        m_artist->setBrush( brush );
+        artist = i18n( "Unknown Artist" );
+    }
+    else {
+        QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+        m_artist->setBrush( brush );
+    }
+
+    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+
+    if( album.isNull() ) {
+        QBrush brush = KColorScheme( QPalette::Disabled ).foreground( KColorScheme::NormalText );
+        m_album->setBrush( brush );
+        album = i18n( "Unknown Album" );
+    }
+    else {
+        QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+        m_album->setBrush( brush );
+    }
 
     m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
     m_artist->setScrollingText( artist, QRectF( artistPos.x(), textY, textWidth, 30 ) );
     m_album->setScrollingText( album, QRectF( albumPos.x(), textY, textWidth, 30 ) );
-
     if( !m_trackActions.isEmpty() )
     {
         QPointF iconPos = albumPos;
@@ -376,10 +396,34 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_favoriteTracks.clear();
 
     m_currentInfo = data[ "current" ].toMap();
-    m_title->setScrollingText( m_currentInfo[ Meta::Field::TITLE ].toString(), textRect );
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+
+    const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
+    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+
+    if( artist.isNull() ) {
+        QBrush brush = KColorScheme( QPalette::Disabled ).foreground( KColorScheme::NormalText );
+        m_artist->setBrush( brush );
+        artist = i18n( "Unknown Artist" );
+    }
+    else {
+        QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+        m_artist->setBrush( brush );
+    }
+
+    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+
+    if( album.isNull() ) {
+        QBrush brush = KColorScheme( QPalette::Disabled ).foreground( KColorScheme::NormalText );
+        m_album->setBrush( brush );
+        album = i18n( "Unknown Album" );
+    }
+    else {
+        QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+        m_album->setBrush( brush );
+    }
+
+    m_title->setScrollingText( title, textRect );
     m_artist->setScrollingText( artist, textRect );
-    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setScrollingText( album, textRect );
 
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
