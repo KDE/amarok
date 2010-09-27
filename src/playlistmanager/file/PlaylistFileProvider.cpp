@@ -206,7 +206,7 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
 Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") + ".xspf" );
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") + ".xspf" );
 }
 
 Playlists::PlaylistPtr

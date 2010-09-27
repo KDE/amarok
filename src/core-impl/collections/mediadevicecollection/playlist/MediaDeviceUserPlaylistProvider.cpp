@@ -150,7 +150,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
             filteredTracks << track;
 
     return save( filteredTracks,
-                 QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm" ) );
+                 QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm" ) );
 }
 
 Playlists::PlaylistPtr
