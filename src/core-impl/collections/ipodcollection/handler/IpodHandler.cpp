@@ -1401,6 +1401,8 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
 
     if( !job->error() )
         slotFinalizeTrackCopy( track );
+    else
+        slotCopyTrackFailed( track );
 }
 
 void
