@@ -13,11 +13,15 @@ VERSION 2.4
     * MPRIS2 support for controlling Amarok over D-Bus.
 
   CHANGES:
+    * Print message when a file can't be copied to a media player.
+      Patch by Sergey Ivanov <123kash@gmail.com>. (BR 203820)
     * Improved the usability of device items in Media Sources by adding tooltips.
     * Deleting items in the collection/file browser will move them to trash;
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Fixed crash on Windows when exporting playlist to any file type. Patch by
+      James Duncan <james.t.duncan@gmail.com>. (BR 249376)
     * If album keyword is empty, show "unknown album" in context window. (BR 205038)
     * Ampache wouldn't connect to servers placed in a subdirectory.
     * Fixed an initialization bug which affected all context applets.
