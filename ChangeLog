@@ -2,7 +2,8 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
-VERSION NEXT
+
+VERSION 2.4
   FEATURES:
     * New easy to use table-based UI for Ampache server configuration. (BR 200703)
     * OPML export for podcast subscriptions. (BR 126120)
@@ -17,16 +18,14 @@ VERSION NEXT
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
-    * If album keyword is empty, show "unknown album" in context window (BR 205038)
+    * If album keyword is empty, show "unknown album" in context window. (BR 205038)
     * Ampache wouldn't connect to servers placed in a subdirectory.
     * Fixed an initialization bug which affected all context applets.
-    * Fix bug where users could drag applets around indiscriminately
+    * Fixed bug where users could drag applets around indiscriminately.
     * FLAC BPM tags could be read incorrectly. (BR 234166)
 
 
 VERSION 2.3.2
-  FEATURES:
-
   CHANGES:
     * Bumped libMTP dependency to version 1.0.0.
     * Improved response of current track and albums applet on data updates.
