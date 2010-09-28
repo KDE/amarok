@@ -265,3 +265,4 @@ void AmpacheAccountLogin::versionVerify( QByteArray data)
     }
 }
 
+#include "AmpacheAccountLogin.moc"
