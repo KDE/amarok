@@ -61,16 +61,6 @@ Dynamic::Bias::fromXml( QDomElement e )
     if( type == "global" )
     {
         return Dynamic::GlobalBias::fromXml( e );
-#if QT_VERSION >= 0x040600
-#else
-                    // QXmlStreamReader::readNextStartElement doesn't exist in Qt-4.5
-                    // this is the inlined method body, adapted from lines 656 - 665 of
-                    // http://qt.gitorious.org/qt/qt/blobs/4.6/src/corelib/xml/qxmlstream.cpp
-                    while ( reader.readNext() != QXmlStreamReader::Invalid ) {
-                        if ( reader.isEndElement() || reader.isStartElement() )
-                            break;
-                    }
-#endif
     }
     else if( type == "custom" )
     {

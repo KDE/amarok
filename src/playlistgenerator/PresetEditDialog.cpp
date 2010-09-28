@@ -55,9 +55,7 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
     connect( adderMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( addNode( const QString& ) ) );
 
     QMenuBar* menuBar_Actions = new QMenuBar( this );
-#if QT_VERSION >= 0x040600
     menuBar_Actions->setNativeMenuBar( false );  //required to make the menu work on OS X
-#endif
 
     QAction* a;
     QMenu* m = new QMenu( i18n("Add new"), this );

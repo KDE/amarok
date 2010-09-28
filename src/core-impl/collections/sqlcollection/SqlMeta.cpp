@@ -40,9 +40,7 @@
 #include <QMultiHash>
 #include <QMutexLocker>
 #include <QPointer>
-#if QT_VERSION >= 0x040600
 #include <QPixmapCache>
-#endif
 
 #include <KCodecs>
 #include <KLocale>
@@ -1197,11 +1195,9 @@ SqlAlbum::image( int size )
     QPixmap pixmap;
     // look in the memory pixmap cache
     // large scale images are not stored in memory
-#if QT_VERSION >= 0x040600
     QString cachedPixmapKey = QString::number(size) + "@acover" + QString::number(m_imageId);
     if( size > 1 && QPixmapCache::find( cachedPixmapKey, &pixmap ) )
         return pixmap;
-#endif
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
@@ -1218,10 +1214,8 @@ SqlAlbum::image( int size )
         pixmap = QPixmap( cachedImagePath );
         if( pixmap.isNull() )
             return Meta::Album::image( size );
-#if QT_VERSION >= 0x040600
         if( size > 0)
             QPixmapCache::insert( cachedPixmapKey, pixmap );
-#endif
         return pixmap;
     }
 
@@ -1247,10 +1241,8 @@ SqlAlbum::image( int size )
     }
 
     pixmap = QPixmap::fromImage( img );
-#if QT_VERSION >= 0x040600
     if( size > 1)
         QPixmapCache::insert( cachedPixmapKey, pixmap );
-#endif
     return pixmap;
 }
 

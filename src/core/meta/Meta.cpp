@@ -25,9 +25,7 @@
 
 #include <QDir>
 #include <QImage>
-#if QT_VERSION >= 0x040600
 #include <QPixmapCache>
-#endif
 
 #include <KStandardDirs>
 
@@ -463,10 +461,8 @@ Meta::Album::image( int size )
 
     QPixmap pixmap;
     // look in the memory pixmap cache
-#if QT_VERSION >= 0x040600
     if( QPixmapCache::find( noCoverKey, &pixmap ) )
         return pixmap;
-#endif
 
     if( cacheCoverDir.exists( noCoverKey ) )
     {
@@ -478,9 +474,7 @@ Meta::Album::image( int size )
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
     }
-#if QT_VERSION >= 0x040600
     QPixmapCache::insert( noCoverKey, pixmap );
-#endif
     return pixmap;
 }
 
