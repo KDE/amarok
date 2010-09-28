@@ -160,23 +160,18 @@ void OpmlDirectoryService::updateButtonClicked()
 
 void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
 {
-
-
-    if ( downloadJob != m_listDownloadJob )
+    if( downloadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
     debug() << "OpmlDirectoryService: xml file download complete";
 
-
-    //testing
-
-
-
-    if ( !downloadJob->error() == 0 )
+    if( !downloadJob->error() == 0 )
     {
         //TODO: error handling here
         return ;
     }
 
+    downloadJob->deleteLater();
+    m_listDownloadJob = 0;
 
     Amarok::Components::logger()->shortMessage( i18n( "Updating the local Podcast database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
@@ -186,7 +181,8 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
-    OpmlParser *parser = new OpmlParser( m_tempFileName );
+    OpmlParser *parser = new OpmlParser( KUrl( m_tempFileName ) );
+
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
     connect( parser, SIGNAL( outlineParsed( OpmlOutline* ) ),
             SLOT( outlineParsed( OpmlOutline* ) )
@@ -194,9 +190,6 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
 
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     ThreadWeaver::Weaver::instance()->enqueue( parser );
-    downloadJob->deleteLater();
-    m_listDownloadJob = 0;
-
 }
 
 void OpmlDirectoryService::listDownloadCancelled()

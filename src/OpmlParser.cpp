@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *               2009 Mathias Panzenböck <grosser.meister.morti@gmx.net>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,115 +20,417 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QDomDocument>
 #include <QFile>
+#include <QXmlStreamReader>
 
 #include <KLocale>
-#include <threadweaver/Job.h>
+#include <kio/job.h>
 
 const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 
-OpmlParser::OpmlParser( const QString &filename )
+const OpmlParser::StaticData OpmlParser::sd;
+
+OpmlParser::OpmlParser( const KUrl &url )
         : ThreadWeaver::Job()
+        , QXmlStreamReader()
+        , m_url( url )
 {
-    DEBUG_BLOCK
-    m_sFileName = filename;
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SIGNAL( doneParsing() ) );
 }
 
 OpmlParser::~OpmlParser()
 {
-    DEBUG_BLOCK
 }
 
 void
 OpmlParser::run()
 {
-    readConfigFile( m_sFileName );
+    read( m_url );
+}
+
+bool
+OpmlParser::read( const KUrl &url )
+{
+    DEBUG_BLOCK
+    m_url = url;
+    if( m_url.isLocalFile() )
+    {
+        //read directly from local file
+        QFile *localFile = new QFile( m_url.toLocalFile() );
+        if( !localFile->open( QIODevice::ReadOnly ) )
+        {
+            debug() << "failed to open local OPML file " << m_url.url();
+            return false;
+        }
+
+        return read( localFile );
+    }
+
+    m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
+
+    connect( m_transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+             SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+
+    connect( m_transferJob, SIGNAL( result( KJob * ) ),
+             SLOT( downloadResult( KJob * ) ) );
+
+    // parse data
+    return read();
+}
+
+bool
+OpmlParser::read( QIODevice *device )
+{
+    setDevice( device );
+    return read();
 }
 
 void
-OpmlParser::readConfigFile( const QString &filename )
+OpmlParser::slotAddData( KIO::Job *job, const QByteArray &data )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( job )
+
+    QXmlStreamReader::addData( data );
+
+    // parse more data
+    continueRead();
+}
+
+void
+OpmlParser::downloadResult( KJob *job )
+{
+    // parse more data
+    continueRead();
+
+    KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
+    if( job->error() || ( transferJob && transferJob->isErrorPage() ) )
+    {
+        QString errorMessage =
+            i18n( "Reading OPML podcast from %1 failed with error:\n", m_url.url() );
+        errorMessage = errorMessage.append( job->errorString() );
+
+//        emit statusBarSorryMessage( errorMessage );
+    }
+
+    m_transferJob = 0;
+}
+
+void
+OpmlParser::slotAbort()
+{
+    DEBUG_BLOCK
+}
+
+void
+OpmlParser::Action::begin( OpmlParser *opmlParser ) const
+{
+    if( m_begin )
+        (( *opmlParser ).*m_begin )();
+}
+
+void
+OpmlParser::Action::end( OpmlParser *opmlParser ) const
+{
+    if( m_end )
+        (( *opmlParser ).*m_end )();
+}
+
+void
+OpmlParser::Action::characters( OpmlParser *opmlParser ) const
+{
+    if( m_characters )
+        (( *opmlParser ).*m_characters )();
+}
+
+// initialization of the feed parser automata:
+OpmlParser::StaticData::StaticData()
+    : startAction( rootMap )
+    , docAction(
+        docMap,
+        0,
+        &OpmlParser::endDocument )
+    , skipAction( skipMap )
+    , noContentAction(
+            noContentMap,
+            &OpmlParser::beginNoElement,
+            0,
+            &OpmlParser::readNoCharacters )
+    , opmlAction(
+            opmlMap,
+            &OpmlParser::beginOpml )
+    , headAction(
+            headMap,
+            0,
+            &OpmlParser::endHead )
+    , titleAction(
+            textMap,
+            &OpmlParser::beginText,
+            &OpmlParser::endTitle,
+            &OpmlParser::readCharacters )
+    , bodyAction(
+            bodyMap,
+            &OpmlParser::beginOutline,
+            &OpmlParser::endOutline )
+    , outlineAction(
+            outlineMap,
+            &OpmlParser::beginOutline,
+            &OpmlParser::endOutline )
+{
+    // known elements:
+    knownElements[ "opml" ] = Opml;
+    knownElements[ "html" ] = Html;
+    knownElements[ "HTML" ] = Html;
+    knownElements[ "head" ] = Head;
+    knownElements[ "title" ] = Title;
+    knownElements[ "dateCreated" ] = DateCreated;
+    knownElements[ "dateModified" ] = DateModified;
+    knownElements[ "ownerName" ] = OwnerName;
+    knownElements[ "ownerEmail" ] = OwnerEmail;
+    knownElements[ "ownerId" ] = OwnerId;
+    knownElements[ "docs" ] = Docs;
+    knownElements[ "expansionState" ] = ExpansionState;
+    knownElements[ "vertScrollState" ] = VertScrollState;
+    knownElements[ "windowTop" ] = WindowTop;
+    knownElements[ "windowLeft" ] = WindowLeft;
+    knownElements[ "windowBottom" ] = WindowBottom;
+    knownElements[ "windowRight" ] = WindowRight;
+    knownElements[ "body" ] = Body;
+    knownElements[ "outline" ] = Outline;
+
+    // before start document/after end document
+    rootMap.insert( Document, &docAction );
+
+    // parse document
+    docMap.insert( Opml, &opmlAction );
+//    docMap.insert( Html, &htmlAction );
+
+    // parse <opml>
+    opmlMap.insert( Head, &headAction );
+    opmlMap.insert( Body, &bodyAction );
+
+    // parse <head>
+    headMap.insert( Title, &titleAction );
+    headMap.insert( DateCreated, &skipAction );
+    headMap.insert( DateModified, &skipAction );
+    headMap.insert( OwnerName, &skipAction );
+    headMap.insert( OwnerEmail, &skipAction );
+    headMap.insert( OwnerId, &skipAction );
+    headMap.insert( Docs, &skipAction );
+    headMap.insert( ExpansionState, &skipAction );
+    headMap.insert( VertScrollState, &skipAction );
+    headMap.insert( WindowTop, &skipAction );
+    headMap.insert( WindowLeft, &skipAction );
+    headMap.insert( WindowBottom, &skipAction );
+    headMap.insert( WindowRight, &skipAction );
+
+    // parse <body>
+    bodyMap.insert( Outline, &outlineAction );
+
+    // parse <outline> in case of sub-elements
+    outlineMap.insert( Outline, &outlineAction );
+
+    // skip elements
+    skipMap.insert( Any, &skipAction );
+
+}
+
+OpmlParser::ElementType
+OpmlParser::elementType() const
+{
+    if( isEndDocument() || isStartDocument() )
+        return Document;
+
+    if( isCDATA() || isCharacters() )
+        return CharacterData;
+
+    ElementType elementType = sd.knownElements[ QXmlStreamReader::name().toString()];
+
+    return elementType;
+}
+
+bool
+OpmlParser::read()
 {
     DEBUG_BLOCK
 
-    QDomDocument doc( "opml" );
+    m_buffer.clear();
+    m_actionStack.clear();
+    m_actionStack.push( &( OpmlParser::sd.startAction ) );
+    setNamespaceProcessing( false );
 
-    if ( !QFile::exists( filename ) )
+    return continueRead();
+}
+
+bool
+OpmlParser::continueRead()
+{
+    // this is some kind of pushdown automata
+    // with this it should be possible to parse feeds in parallel
+    // without using threads
+    DEBUG_BLOCK
+
+    while( !atEnd() && error() != CustomError )
     {
-        debug() << "Opml file does not exist";
-        return;
+        TokenType token = readNext();
+
+        if( error() == PrematureEndOfDocumentError && m_transferJob )
+            return true;
+
+        if( hasError() )
+        {
+            emit doneParsing();
+            return false;
+        }
+
+        if( m_actionStack.isEmpty() )
+        {
+            debug() << "expected element on stack!";
+            return false;
+        }
+
+        const Action* action = m_actionStack.top();
+        const Action* subAction = 0;
+
+        switch( token )
+        {
+            case Invalid:
+            {
+                debug() << "invalid token received at line " << lineNumber();
+                debug() << "Error:\n" << errorString();
+                return false;
+            }
+
+            case StartDocument:
+            case StartElement:
+                subAction = action->actionMap()[ elementType() ];
+
+                if( !subAction )
+                    subAction = action->actionMap()[ Any ];
+
+                if( !subAction )
+                    subAction = &( OpmlParser::sd.skipAction );
+
+                m_actionStack.push( subAction );
+
+                subAction->begin( this );
+                break;
+
+            case EndDocument:
+            case EndElement:
+                action->end( this );
+
+                if( m_actionStack.pop() != action )
+                {
+                    debug() << "popped other element than expected!";
+                }
+                break;
+
+            case Characters:
+                if( !isWhitespace() || isCDATA() )
+                {
+                    action->characters( this );
+                }
+
+                // ignoreable whitespaces
+            case Comment:
+            case EntityReference:
+            case ProcessingInstruction:
+            case DTD:
+            case NoToken:
+                // ignore
+                break;
+        }
     }
 
-    QFile file( filename );
-    if ( !file.open( QIODevice::ReadOnly ) ) {
-        debug() << "OpmlParser::readConfigFile error reading file";
-        return ;
-    }
-    if ( !doc.setContent( &file ) )
-    {
-        debug() << "OpmlParser::readConfigFile error parsing file";
-        file.close();
-        return ;
-    }
-    file.close();
-
-    //run through all the elements
-    QDomElement docElem = doc.documentElement();
-
-    QDomNode bodyNode = docElem.namedItem( "body" );
-    if( bodyNode.isNull() || !bodyNode.isElement() )
-        return; //TODO: emit parsing element
-
-    debug() << "begin parsing content";
-    parseOpmlBody( bodyNode.toElement() );
-    debug() << "finishing transaction";
-
-    emit( doneParsing() );
+    return !hasError();
 }
 
 void
-OpmlParser::parseOpmlBody( const QDomElement &e )
+OpmlParser::stopWithError( const QString &message )
 {
-    if( e.tagName() != "body" )
-        return; //TODO: emit parsing element
+    raiseError( message );
 
-    QDomElement node = e.firstChildElement( "outline" );
-    while( !node.isNull() )
+    if( m_transferJob )
     {
-        OpmlOutline *outline = parseOutlineElement( node );
-        m_rootOutlines << outline;
-        node = node.nextSiblingElement( "outline" );
+        m_transferJob->kill( KJob::EmitResult );
+        m_transferJob = 0;
     }
+
+    emit doneParsing();
 }
 
-OpmlOutline*
-OpmlParser::parseOutlineElement( const QDomElement &e )
+void
+OpmlParser::beginOpml()
 {
-    if( e.tagName() != "outline" )
-        return 0;
+    m_rootOutline = new OpmlOutline();
+    m_current = m_rootOutline;
+}
 
-    OpmlOutline *outline = new OpmlOutline();
+void
+OpmlParser::beginText()
+{
+    m_buffer.clear();
+}
 
-    QDomNamedNodeMap attributes = e.attributes();
-    for( unsigned int i = 0; i < attributes.length(); i++ )
-    {
-        QDomAttr attribute = attributes.item( i ).toAttr();
-        outline->addAttribute( attribute.name(), attribute.value() );
-    }
-    outline->setHasChildren( e.hasChildNodes() );
+void
+OpmlParser::beginOutline()
+{
+    DEBUG_BLOCK
+    // TODO: should push a new outline on the stack and make it m_current now.
+    OpmlOutline *outline = new OpmlOutline( 0 );
 
-    emit( outlineParsed( outline ) );
+    foreach( QXmlStreamAttribute attribute, attributes() )
+        outline->addAttribute( attribute.name().toString(), attribute.value().toString() );
 
-    QDomNodeList childNodes = e.childNodes();
-    for( int i = 0; i < childNodes.count(); i++ )
-    {
-        QDomNode node = childNodes.item( i );
-        if( !node.isElement() )
-            continue;
-        const QDomElement &element = node.toElement();
-        outline->addChild( parseOutlineElement( element ) );
-    }
+    emit outlineParsed( outline );
+}
 
-    return outline;
+void
+OpmlParser::beginNoElement()
+{
+    DEBUG_BLOCK
+    debug() << "no element expected here, but got element: "
+    << QXmlStreamReader::name();
+}
+
+void
+OpmlParser::endDocument()
+{
+    debug() << "successfuly parsed OPML";
+    emit doneParsing();
+}
+
+void
+OpmlParser::endHead()
+{
+    // done parsing all info of the root in <head>
+    // HACK: <head> elements are passed to the user as attributes of a "root outline"
+    emit outlineParsed( m_rootOutline );
+}
+
+void
+OpmlParser::endTitle()
+{
+    m_rootOutline->addAttribute( "title", m_buffer.trimmed() );
+}
+
+void
+OpmlParser::endOutline()
+{
+    // TODO: remove m_current from the stack
+    // if( outlineStack.isEmpty() )
+    m_outlines << m_current;
+}
+
+void
+OpmlParser::readCharacters()
+{
+    m_buffer += text();
+}
+
+void
+OpmlParser::readNoCharacters()
+{
+    DEBUG_BLOCK
+    debug() << "no characters expected here";
 }
