@@ -33,7 +33,7 @@ OpmlWriter::run()
     _x->setAutoFormatting( true );
     _x->writeStartDocument();
     _x->writeStartElement( "opml" );
-    _x->writeAttribute( "version", "1.0" );
+    _x->writeAttribute( "version", "2.0" );
     _x->writeStartElement( "head" );
     //root outline is threated special, it's attributes will be the elements of <head>
     QMapIterator<QString, QString> ai( m_rootOutline->attributes() ); //attributesIterator

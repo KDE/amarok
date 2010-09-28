@@ -639,6 +639,7 @@ SqlPodcastProvider::slotExportOpml()
         OpmlOutline *channelOutline = new OpmlOutline( rootOutline );
         #define addAttr( k, v ) channelOutline->addAttribute( k, v )
         addAttr( "text", channel->title() );
+        addAttr( "type", "rss" );
         addAttr( "xmlUrl", channel->url().url() );
         rootOutline->addChild( channelOutline );
     }
