@@ -37,6 +37,7 @@ TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     , m_textFormat( Qt::PlainText )
     , m_delta( 0 )
     , m_currentDelta( 0. )
+    , m_animDirection( QAbstractAnimation::Forward )
 {
     setAcceptHoverEvents( true );
     document()->setDocumentMargin( 0 );
@@ -146,7 +147,8 @@ TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
         DEBUG_BLOCK
 
         setText( m_text );
-        QTimer::singleShot( 0, this, SLOT( startAnimation( QAbstractAnimation::Forward ) ) );
+        m_animDirection = QAbstractAnimation::Forward;
+        QTimer::singleShot( 0, this, SLOT( startAnimation() ) );
     }
 }
 
@@ -170,19 +172,24 @@ TextScrollingWidget::animationFinished()
         return;
 
     if( animation->property("direction") == QAbstractAnimation::Forward )
-        QTimer::singleShot( 250, this, SLOT( startAnimation( QAbstractAnimation::Backward ) ) );
+    {
+        m_animDirection = QAbstractAnimation::Backward;
+        QTimer::singleShot( 250, this, SLOT( startAnimation() ) );
+    }
     else
     {
         // Scroll again if the mouse is still over.
-        if( isUnderMouse() )
-            QTimer::singleShot(250, this, SLOT( startAnimation( QAbstractAnimation::Forward ) ) );
+        if( isUnderMouse() ) {
+            m_animDirection = QAbstractAnimation::Forward;
+            QTimer::singleShot(250, this, SLOT( startAnimation() ) );
+        }
         else
-            setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
+            setText( m_fm->elidedText( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
     }
 }
 
 void
-TextScrollingWidget::startAnimation( QAbstractAnimation::Direction direction )
+TextScrollingWidget::startAnimation()
 {
     QPropertyAnimation *animation = m_animation.data();
     if( !animation ) {
@@ -196,7 +203,7 @@ TextScrollingWidget::startAnimation( QAbstractAnimation::Direction direction )
     else
         animation->pause();
 
-    animation->setDirection(direction);
+    animation->setDirection(m_animDirection);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
     connect( animation, SIGNAL( finished() ), this, SLOT( animationFinished() ) );
 }

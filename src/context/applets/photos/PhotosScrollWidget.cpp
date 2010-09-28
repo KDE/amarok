@@ -466,7 +466,7 @@ void PhotosScrollWidget::animate( qreal anim )
 
             break;
         }
-    }        
+    }
 }
 
 #include "PhotosScrollWidget.moc"

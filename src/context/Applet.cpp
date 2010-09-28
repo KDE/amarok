@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 
+#include <KServiceTypeTrader>
+
 namespace Context
 {
 
@@ -40,6 +42,7 @@ namespace Context
 
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
+    , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
     , m_collapsed( false )
     , m_transient( 0 )
     , m_standardPadding( 6.0 )
@@ -310,7 +313,7 @@ Context::Applet::setCollapseOff()
         // stop the animation on now
         if( animation &&
                 animation->state() == QAbstractAnimation::Running &&
-                animation->state() == QAbstractAnimation::Forward )
+                animation->direction() == QAbstractAnimation::Forward )
         {
             animation->stop();
         }
@@ -407,6 +410,11 @@ void
 Context::Applet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
+}
+
+bool Context::Applet::canAnimate()
+{
+    return m_canAnimate;
 }
 
 #include "Applet.moc"

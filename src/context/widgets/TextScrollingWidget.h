@@ -60,11 +60,12 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         Qt::TextFormat textFormat() const;
 
         bool isAnimating();
+
         qreal animationValue() const;
+        void animate( qreal anim );
 
     protected slots:
-        void startAnimation( QAbstractAnimation::Direction direction );
-        void animate( qreal anim );
+        void startAnimation();
         void animationFinished();
 
     protected :
@@ -86,8 +87,9 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         QString                          m_text;           // full sentence
         Qt::TextFormat                   m_textFormat;     // text format
         int                              m_delta;          // complete delta
-        qreal                            m_currentDelta;   // current delta
+        float                            m_currentDelta;   // current delta
         QWeakPointer<QPropertyAnimation> m_animation;      // scroll animation
+        QAbstractAnimation::Direction    m_animDirection;  // animation direction
 };
 
 #endif

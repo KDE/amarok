@@ -250,7 +250,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     else if( data.contains( "fetching" ) )
     {
-        setBusy( true );
+
+        if( canAnimate() )
+            setBusy( true );
 
         m_titleText = i18n( "Lyrics : Fetching ..." );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
