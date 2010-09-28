@@ -104,7 +104,7 @@ WikipediaApplet::init()
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_wikipediaLabel->setFont( labelFont );
-    m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
+    m_wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
 
     QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
@@ -182,10 +182,7 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     const float textWidth = m_wikipediaLabel->boundingRect().width();
     const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
-    const qreal widmax = boundingRect().width() - 4 * standardPadding();
-    const QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_wikipediaLabel->setScrollingText( m_wikipediaLabel->text(), rect );
+    m_wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     m_wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
 
     m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );

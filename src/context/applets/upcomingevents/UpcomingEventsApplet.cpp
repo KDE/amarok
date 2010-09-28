@@ -160,10 +160,8 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
 
     prepareGeometryChange();
-    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
-    m_headerLabel->setScrollingText( m_headerLabel->text(), rect );
+    m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
     m_headerLabel->setPos( ( size().width() - m_headerLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );

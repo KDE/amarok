@@ -84,9 +84,7 @@ void LyricsApplet::init()
     m_titleLabel = new TextScrollingWidget( this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
-    m_titleLabel->setTextFormat( Qt::RichText );
     m_titleLabel->setFont( bigger );
-    m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setText( i18n( "Lyrics" ) );
 
     QAction* editAction = new QAction( this );
@@ -196,10 +194,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     // Assumes all icons are of equal width
     const float iconWidth = m_settingsIcon->size().width();
 
-    qreal widmax = boundingRect().width() - 2 * iconWidth * 4 - 6 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_titleLabel->setScrollingText( m_titleText, rect );
+    m_titleLabel->setScrollingText( m_titleText );
     m_titleLabel->setPos( ( size().width() - m_titleLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     m_settingsIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );

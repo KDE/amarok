@@ -98,10 +98,7 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints )
 //    DEBUG_BLOCK
 
-    qreal widmax = boundingRect().width() - 4 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_headerText->setScrollingText( m_headerText->text(), rect );
+    m_headerText->setScrollingText( i18n( "Recently added albums" ) );
 
     // here we put all of the text items into the correct locations
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );

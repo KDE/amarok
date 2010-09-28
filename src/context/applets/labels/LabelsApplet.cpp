@@ -293,10 +293,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    qreal widmax = boundingRect().width() - 2 * m_reloadIcon.data()->size().width() - 2 * m_settingsIcon.data()->size().width() - 8 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_titleLabel.data()->setScrollingText( m_titleText, rect );
+    m_titleLabel.data()->setScrollingText( m_titleText );
     m_titleLabel.data()->setPos( ( size().width() - m_titleLabel.data()->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     m_reloadIcon.data()->setPos( size().width() - m_reloadIcon.data()->size().width() - m_settingsIcon.data()->size().width() - 2 * standardPadding(), standardPadding() );
