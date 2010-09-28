@@ -140,6 +140,7 @@ namespace Amarok
             warning() << "No window!";
             return;
         }
+        window->show();
         KWindowSystem::forceActiveWindow( window->winId() );
     }
 
