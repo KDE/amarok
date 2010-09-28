@@ -683,6 +683,7 @@ void
 SqlPodcastProvider::slotOpmlWriterDone( int result )
 {
     Q_UNUSED( result )
+
     OpmlWriter *writer = qobject_cast<OpmlWriter *>( QObject::sender() );
     Q_ASSERT( writer );
     writer->device()->close();

@@ -26,7 +26,6 @@
 #include "PodcastCategory.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "SvgHandler.h"
-
 #include <ThreadWeaver/Weaver>
 
 #include <KIcon>
@@ -399,7 +398,7 @@ PlaylistBrowserNS::PodcastModel::importOpml( const KUrl &url )
 
     debug() << "Importing OPML file from " << url;
 
-    OpmlParser *parser = new OpmlParser( url.toLocalFile() );
+    OpmlParser *parser = new OpmlParser( url );
     connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
              SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
     connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
