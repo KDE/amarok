@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "BrowserCategoryList"
+
 #include "BrowserCategoryList.h"
 
 #include "App.h"
@@ -92,7 +94,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
 
 BrowserCategoryList::~BrowserCategoryList()
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     qDeleteAll( m_categories.values() );
     delete m_categoryListView;
     delete m_categoryListModel;

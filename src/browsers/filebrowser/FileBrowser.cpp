@@ -102,7 +102,7 @@ QStringList
 FileBrowser::Private::siblingsForDir( const QString &path )
 {
     // includes the dir itself
-    debug() << "path: " << path;
+    // debug() << "path: " << path;
     QStringList siblings;
     QDir dir( path );
     if( !dir.isRoot() )
@@ -118,7 +118,7 @@ FileBrowser::Private::updateNavigateActions()
 {
     backAction->setEnabled( !backStack.isEmpty() );
     forwardAction->setEnabled( !forwardStack.isEmpty() );
-    upAction->setEnabled( !QDir(currentPath).isRoot() );
+    upAction->setEnabled( !showingPlaces && !QDir(currentPath.path()).isRoot() );
 }
 
 void
@@ -186,7 +186,7 @@ FileBrowser::initView()
     d->readConfig();
     d->restoreHeaderState();
 
-    d->kdirModel->dirLister()->openUrl( KUrl( d->currentPath ) );
+    d->kdirModel->dirLister()->openUrl( d->currentPath );
 
     for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
@@ -238,8 +238,10 @@ FileBrowser::currentDir()
 {
     if( d->showingPlaces )
         return "places:";
+    else if( d->currentPath.isLocalFile() )
+        return d->currentPath.toLocalFile();
     else
-        return d->currentPath;
+        return d->currentPath.url();
 }
 
 void
@@ -266,7 +268,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
             if( placesUrl.startsWith( "file://" ) )
                 placesUrl = placesUrl.replace( "file://", QString() );
 
-            d->backStack.push( KUrl( d->currentPath ) );
+            d->backStack.push( d->currentPath );
             setDir( KUrl( placesUrl ) );
         }
         else
@@ -343,7 +345,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
 
     d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
     d->backStack.push( d->currentPath );
-    d->currentPath = callbackString;
+    d->currentPath = KUrl(callbackString);
     d->updateNavigateActions();
     setupAddItems();
     activate();
@@ -355,37 +357,46 @@ FileBrowser::setupAddItems()
     DEBUG_BLOCK
     clearAdditionalItems();
 
-    QStringList parts = d->currentPath.split( QDir::separator() );
-    QString partialPath;
     debug() << "current path" << d->currentPath;
 
-
-    /*
-     * A URL like /home/user/Music/Prince is shown as [Home] > [Music] > [Prince]
-     */
-    if( d->currentPath.startsWith( QDir::homePath() ) )
+    if( d->currentPath.isLocalFile() )
     {
-        int idx = d->currentPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
-        // everything after the homedir e.g., Music/Prince
-        QString everything_else = d->currentPath.mid( idx );
-        debug() << "everything else" << everything_else;
-        // replace parts with everything else
-        parts = everything_else.split( QDir::separator() ) ;
-        debug() << "parts" << parts;
-        partialPath = QDir::homePath();
+        const QString localPath = d->currentPath.toLocalFile();
+        debug() << "local path" << localPath;
+        QStringList parts;
+        QString partialPath;
 
-        // Add the [Home]
-        QStringList siblings = d->siblingsForDir( QDir::homePath() );
-        addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
-    }
-
-    foreach( const QString& part, parts )
-    {
-        if( !part.isEmpty() )
+        /*
+         * A URL like /home/user/Music/Prince is shown as [Home] > [Music] > [Prince]
+         */
+        if( localPath.startsWith( QDir::homePath() ) )
         {
-            partialPath += '/' + part;
-            QStringList siblings = d->siblingsForDir( partialPath );
-            addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
+            int idx = localPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
+            // everything after the homedir e.g., Music/Prince
+            QString everything_else = localPath.mid( idx );
+            debug() << "everything else" << everything_else;
+            // replace parts with everything else
+            parts = everything_else.split( QDir::separator() ) ;
+            debug() << "parts" << parts;
+            partialPath = QDir::homePath();
+
+            // Add the [Home]
+            QStringList siblings = d->siblingsForDir( QDir::homePath() );
+            addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
+        }
+        else
+        {
+            parts = localPath.split( QDir::separator() );
+        }
+
+        foreach( const QString& part, parts )
+        {
+            if( !part.isEmpty() )
+            {
+                partialPath += '/' + part;
+                QStringList siblings = d->siblingsForDir( partialPath );
+                addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
+            }
         }
     }
 }
@@ -397,7 +408,7 @@ FileBrowser::reActivate()
 
     //go to root:
     d->kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
-    d->currentPath = QDir::rootPath();
+    d->currentPath = KUrl( QDir::rootPath() );
     setupAddItems();
     activate();
 }
@@ -414,7 +425,6 @@ FileBrowser::prettyName() const
 void
 FileBrowser::setDir( const KUrl &dir )
 {
-
     if( dir == "places:" )
         showPlaces();
     else
@@ -432,7 +442,7 @@ FileBrowser::setDir( const KUrl &dir )
        }
 
        d->kdirModel->dirLister()->openUrl( dir );
-       d->currentPath = dir.path();
+       d->currentPath = dir;
        d->updateNavigateActions();
        setupAddItems();
        activate();
@@ -445,7 +455,7 @@ FileBrowser::back()
     if( d->backStack.isEmpty() )
         return;
 
-    d->forwardStack.push( KUrl( d->currentPath ) );
+    d->forwardStack.push( d->currentPath );
     setDir( d->backStack.pop() );
 }
 
@@ -455,7 +465,7 @@ FileBrowser::forward()
     if( d->forwardStack.isEmpty() )
         return;
 
-    d->backStack.push( KUrl( d->currentPath ) );
+    d->backStack.push( d->currentPath );
     setDir( d->forwardStack.pop() );
 }
 
@@ -465,28 +475,16 @@ FileBrowser::up()
     DEBUG_BLOCK
     debug() << "current dir: " << d->currentPath;
 
-    QDir dir( d->currentPath );
-
-    if( !dir.exists( d->currentPath ) )
-    {
-        //assume that we are browsing "places" where "up" does not really work
-        //so just bounce back to the places root
-
-        debug() << "special case for handling up when browsing 'places'";
-        showPlaces();
-    }
-    else if ( d->showingPlaces )
+    if( d->showingPlaces )
     {
         //apparently, the root level of "places" counts as a valid dir. If we are here, make the
         //up button simply go to "home"
         home();
-
     }
     else
     {
-        KUrl url( d->currentPath );
-        d->backStack.push( url );
-        setDir( url.upUrl() );
+        d->backStack.push( d->currentPath );
+        setDir( d->currentPath.upUrl() );
     }
 }
 

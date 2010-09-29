@@ -59,7 +59,7 @@ public:
 
     QTimer filterTimer;
     QString currentFilter;
-    QString currentPath;
+    KUrl currentPath;
     FileView *fileView;
 
     KAction *upAction;
