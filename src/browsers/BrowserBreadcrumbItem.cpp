@@ -139,7 +139,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
-    DEBUG_BLOCK
 }
 
 void

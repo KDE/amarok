@@ -35,6 +35,7 @@
 #include <KComboBox>
 #include <KConfigGroup>
 #include <KDirLister>
+#include <KIO/NetAccess>
 #include <KSaveFile>
 #include <KStandardAction>
 #include <KStandardDirs>
@@ -83,19 +84,27 @@ FileBrowser::Private::~Private()
 void
 FileBrowser::Private::readConfig()
 {
-    const QString homePath = QDir::homePath();
-    debug() << "home path: " <<  homePath;
-    QDir currentDirectory = Amarok::config( "File Browser" ).readEntry( "Current Directory", homePath );
-
-    // fall back to $HOME if config dir has since disappeared
-    currentPath = currentDirectory.exists() ? currentDirectory.path() : homePath;
+    const KUrl homeUrl( QDir::homePath() );
+    const KUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
+    bool useHome( true );
+    // fall back to $HOME if the saved dir has since disappeared or is a remote one
+    if( savedUrl.isLocalFile() )
+    {
+        QDir dir( savedUrl.path() );
+        if( dir.exists() )
+            useHome = false;
+    }
+    else if( KIO::NetAccess::exists( savedUrl, KIO::NetAccess::DestinationSide, 0 ) )
+    {
+        useHome = false;
+    }
+    currentPath = useHome ? homeUrl : savedUrl;
 }
 
 void
 FileBrowser::Private::writeConfig()
 {
-    QString localFile = kdirModel->dirLister()->url().toLocalFile();
-    Amarok::config( "File Browser" ).writeEntry( "Current Directory", localFile );
+    Amarok::config( "File Browser" ).writeEntry( "Current Directory", kdirModel->dirLister()->url() );
 }
 
 QStringList
@@ -340,9 +349,10 @@ void
 FileBrowser::addItemActivated( const QString &callbackString )
 {
     DEBUG_BLOCK
+    if( callbackString.isEmpty() )
+        return;
 
     debug() << "callback: " << callbackString;
-
     d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
     d->backStack.push( d->currentPath );
     d->currentPath = KUrl(callbackString);
@@ -397,6 +407,22 @@ FileBrowser::setupAddItems()
                 QStringList siblings = d->siblingsForDir( partialPath );
                 addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
             }
+        }
+    }
+    else
+    {
+        // TODO: setup remote siblings in breadcrumb arrows
+        const QString proto = d->currentPath.protocol();
+        const QString authority = d->currentPath.authority();
+        const QString protoAuthority = QString( "%1://%2" ).arg( proto, authority );
+        addAdditionalItem( new BrowserBreadcrumbItem( proto + QLatin1Char(':'), QStringList(), proto + QLatin1String("://"), this ) );
+        addAdditionalItem( new BrowserBreadcrumbItem( authority, QStringList(), protoAuthority, this ) );
+        QStringList parts = d->currentPath.path().split( QLatin1Char('/'), QString::SkipEmptyParts );
+        QString partialPath = protoAuthority;
+        foreach( const QString &part, parts )
+        {
+            partialPath += QLatin1Char('/') + part;
+            addAdditionalItem( new BrowserBreadcrumbItem( part, QStringList(), partialPath, this ) );
         }
     }
 }
