@@ -484,8 +484,7 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
 
     QMutexLocker locker( &m_mutex );
 
-    int protocolLength =
-        (QString(m_collection->uidUrlProtocol()) + "://").length();
+    const int protocolLength = QString( m_collection->uidUrlProtocol() + "://" ).length();
 
     m_property.clear();
     m_property.reserve( uids.size() );

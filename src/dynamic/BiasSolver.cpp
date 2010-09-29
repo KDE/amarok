@@ -752,7 +752,7 @@ Dynamic::BiasSolver::getMutation()
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 {
-    const KUrl url = s_universeCollection->uidUrlProtocol() + "://" + QString( uid );
+    const KUrl url = QString( s_universeCollection->uidUrlProtocol() + "://" + uid );
     return s_universeCollection->trackForUrl( url );
 }
 
@@ -828,7 +828,7 @@ Dynamic::BiasSolver::updateUniverse()
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
 
-    s_uidUrlProtocolPrefixLength = (QString(s_universeCollection->uidUrlProtocol()) + "://").length();
+    s_uidUrlProtocolPrefixLength = QString( s_universeCollection->uidUrlProtocol() + "://" ).length();
 
     connect( s_universeQuery, SIGNAL(newResultReady( QString, QStringList )),
             SLOT(universeResults( QString, QStringList )), Qt::DirectConnection );

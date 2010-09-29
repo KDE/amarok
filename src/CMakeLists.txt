@@ -1,3 +1,7 @@
+# Improves speed of string concatenation
+add_definitions(-DQT_USE_FAST_CONCATENATION)
+add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
+
 add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
 if(APPLE)

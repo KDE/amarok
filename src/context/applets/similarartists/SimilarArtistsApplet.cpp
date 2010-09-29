@@ -396,12 +396,12 @@ SimilarArtistsApplet::saveMaxArtists()
     m_maxArtists = m_temp_maxArtists;
 
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" )
-            + m_maxArtists );
+            + QString::number( m_maxArtists ) );
 
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     config.writeEntry( "maxArtists", m_maxArtists );
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" )
-            + m_maxArtists );
+            + QString::number( m_maxArtists ) );
 }
 
 void

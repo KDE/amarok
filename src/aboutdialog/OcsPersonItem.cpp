@@ -171,7 +171,10 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         m_avatar->setAlignment( Qt::AlignCenter );
     }
     if( !( ocsPerson.city().isEmpty() && ocsPerson.country().isEmpty() ) )
-        m_aboutText.append( "<br/>" + ( ocsPerson.city().isEmpty() ? "" : ( ocsPerson.city() + ", " ) ) + ocsPerson.country() );
+        if( ocsPerson.city().isEmpty() )
+            m_aboutText.append( QString( "<br/>" + ocsPerson.city() + ", " ) );
+        else
+            m_aboutText.append( QString( "<br/>" + ocsPerson.country() ) );
 
     if( m_status == Author )
     {

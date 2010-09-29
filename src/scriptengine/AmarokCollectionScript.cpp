@@ -124,7 +124,7 @@ namespace AmarokScript
             parentUrl.setPath( dir );
             if ( !AmarokConfig::scanRecursively() )
             {
-                if ( ( dir == path ) || ( dir + '/' == path ) )
+                if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
                     return true;
             }
             else //scan recursively

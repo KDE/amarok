@@ -1,3 +1,7 @@
+# This breaks with libLastFM, so we remove the definitions for this folder
+remove_definitions(-DQT_USE_FAST_CONCATENATION)
+remove_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
+
 
 include_directories(
         ../

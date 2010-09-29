@@ -173,9 +173,9 @@ CollectionWidget::init()
     // Filter presets. UserRole is used to store the actual syntax.
     KComboBox *combo = d->searchWidget->comboBox();
     const KIcon icon = KStandardGuiItem::find().icon();
-    combo->addItem( icon, i18n("Added Today"), i18n("added") + QString(":<1d") );
-    combo->addItem( icon, i18n("Added This Week"), i18n("added") + QString(":<1w") );
-    combo->addItem( icon, i18n("Added This Month"), i18n("added") + QString(":<1m") );
+    combo->addItem( icon, i18n("Added Today"), i18n("added:<1d" ) );
+    combo->addItem( icon, i18n("Added This Week"), i18n("added:<1w") );
+    combo->addItem( icon, i18n("Added This Month"), i18n("added:<1m") );
     combo->insertSeparator( combo->count() );
 
     QMenu *filterMenu = new QMenu( 0 );

@@ -464,7 +464,7 @@ AudioCdCollection::noInfoAvailable()
     QString prefix( "0" );
     QString trackName = "Track " + prefix + QString::number( i );
 
-    while( KIO::NetAccess::exists( "audiocd:/" + trackName + ".wav", KIO::NetAccess::SourceSide,0 ) )
+    while( KIO::NetAccess::exists( QString( "audiocd:/" + trackName + ".wav" ), KIO::NetAccess::SourceSide, 0 ) )
     {
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 

@@ -420,7 +420,7 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         QVariantMap trackData = Meta::Field::mapFromTrack( track );
         trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
         // overwrite any uidUrl that came with the track with our own sql AFT one
-        trackData.insert( Meta::Field::UNIQUEID, QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( trackMap[ track ] ) );
+        trackData.insert( Meta::Field::UNIQUEID, QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( trackMap[ track ] ) ) );
         metadata.insert( trackMap[ track ], trackData );
         urls.append( trackMap[ track ] );
     }

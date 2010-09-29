@@ -39,8 +39,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     QString databaseDir;
     if( storageLocation.isEmpty() )
     {
-        defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" );
-        databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
+        defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", QString( Amarok::saveLocation() + "my.cnf" ) );
+        databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", QString( Amarok::saveLocation() + "mysqle" ) );
     }
     else
     {

@@ -264,7 +264,7 @@ DaapCollection::queryMaker()
 QString
 DaapCollection::collectionId() const
 {
-    return "daap://" + m_ip + ':' + m_port;
+    return QString( "daap://" + m_ip + ':' ) + QString::number( m_port );
 }
 
 QString

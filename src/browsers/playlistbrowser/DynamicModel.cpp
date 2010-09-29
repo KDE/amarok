@@ -226,7 +226,7 @@ PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
         case Qt::DisplayRole:
         case Qt::EditRole:
             if( i.row() == m_activePlaylist && m_activeUnsaved )
-                return title + " (" + i18n("modified") + ')';
+                return QString( i18n( "%1 (modified) ", title ) );
             else
                 return title;
         default:

@@ -383,12 +383,13 @@ UpcomingEventsApplet::saveAddressAsLink()
     DEBUG_BLOCK
 
     m_enabledLinks = m_temp_enabledLinks;
+    const QString enabledLinks = m_enabledLinks ? "true" : "false";
 
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + m_enabledLinks );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
 
     KConfigGroup config = Amarok::config("UpcomingEvents Applet");
     config.writeEntry( "enabledLinks", m_enabledLinks );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + m_enabledLinks );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
 }
 
 /**

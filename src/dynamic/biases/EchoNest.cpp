@@ -365,8 +365,7 @@ Dynamic::EchoNestBias::updateReady( QString collectionId, QStringList uids )
     Q_UNUSED(collectionId)
     QMutexLocker locker( &m_mutex );
 
-    int protocolLength =
-    ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
+    const int protocolLength = QString( m_collection->uidUrlProtocol() + "://" ).length();
 
     QString key;
     if( m_currentOnly )

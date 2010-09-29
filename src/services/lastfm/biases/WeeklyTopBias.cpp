@@ -271,7 +271,7 @@ Dynamic::WeeklyTopBias::updateReady( QString collectionId, QStringList uids )
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
 
-    int protocolLength = ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
+    const int protocolLength = QString( m_collection->uidUrlProtocol() + "://" ).length();
 
 //     debug() << "setting cache of top UIDs for selected date: to:" << uids;
     m_trackList.clear();

@@ -129,11 +129,10 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-        
-    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
-    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ); }
-    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ); }
-    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
+    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit(); }
+    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ).toLocal8Bit(); }
+    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ).toLocal8Bit(); }
+    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit(); }
 
     #undef AMK_PREFIX
 
@@ -219,7 +218,7 @@ namespace Debug
 
             mutex.lock();
 
-            dbgstream() << qPrintable( "amarok: " + indent() + "BEGIN: " + label );
+            dbgstream() << QString( "amarok: " + indent() + "BEGIN: " + label ).toLocal8Bit();
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -251,9 +250,9 @@ namespace Debug
 
             // Print timing information, and a special message (DELAY) if the method took longer than 5s
             if( duration < 5.0 )
-                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
+                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit();
             else
-                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" );
+                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit();
 
             mutex.unlock();
         }

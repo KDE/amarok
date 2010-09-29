@@ -388,8 +388,7 @@ Dynamic::LastFmBias::addData( QString collectionId, QStringList uids, const QStr
     Q_UNUSED(collectionId)
     QMutexLocker locker( &m_mutex );
 
-    int protocolLength =
-        ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
+    const int protocolLength = QString( m_collection->uidUrlProtocol() + "://" ).length();
 
   //  debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
     data[ index ].clear();
