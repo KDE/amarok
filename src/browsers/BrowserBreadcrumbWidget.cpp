@@ -312,12 +312,12 @@ BrowserBreadcrumbWidget::editUpdated()
         url.run();
         m_widgetStack->setCurrentIndex( 0 );
         return;
-        
     }
 
-    //if it points to a path on the file system, show the file browser (if not already shown) and navigate to this path
-    QDir dir( enteredPath );
-    if( dir.exists() )
+    //if it points to a path on the file system, show the file browser
+    //(if not already shown) and navigate to this path
+    KUrl fileUrl( enteredPath );
+    if( fileUrl.isLocalFile() || !fileUrl.protocol().isEmpty() )
     {
         AmarokUrl url;
         url.setCommand( "navigate" );
@@ -330,14 +330,12 @@ BrowserBreadcrumbWidget::editUpdated()
     }
 
     //if all else fails, try to navigate to it as an amarok url
-
     AmarokUrl url;
     url.setCommand( "navigate" );
     url.setPath( enteredPath );
     url.run();
 
     m_widgetStack->setCurrentIndex( 0 );
-    
 }
 
 bool
@@ -356,6 +354,5 @@ BrowserBreadcrumbWidget::eventFilter( QObject *obj, QEvent *ev )
     }
     return false;
 }
-
 
 #include "BrowserBreadcrumbWidget.moc"
