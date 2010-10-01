@@ -49,11 +49,17 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     m_sources << "current" << "albums";
     m_requested[ "current" ] = true;
     m_requested[ "albums" ] = false;
-    update();
 }
 
 CurrentEngine::~CurrentEngine()
 {
+}
+
+void
+CurrentEngine::init()
+{
+    m_currentTrack = The::engineController()->currentTrack();
+    Plasma::DataEngine::init();
 }
 
 QStringList

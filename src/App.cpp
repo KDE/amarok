@@ -643,6 +643,12 @@ App::continueInit()
         splash->show();
     }
 
+    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        The::engineController()->restoreSession();
+    }
+
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
@@ -681,13 +687,6 @@ App::continueInit()
 
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
     Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
-
-
-    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        The::engineController()->restoreSession();
-    }
 
     if( AmarokConfig::monitorChanges() )
         CollectionManager::instance()->checkCollectionChanges();

@@ -54,6 +54,7 @@ class CurrentEngine : public Context::DataEngine,
 public:
     CurrentEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~CurrentEngine();
+    virtual void init();
 
     QStringList sources() const;
 
