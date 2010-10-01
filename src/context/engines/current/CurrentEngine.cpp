@@ -179,6 +179,7 @@ CurrentEngine::stoppedState()
         qm->setQueryType( Collections::QueryMaker::Track );
         qm->excludeFilter( Meta::valTitle, QString(), true, true );
         qm->orderBy( Meta::valLastPlayed, true );
+        qm->excludeFilter( Meta::valLastPlayed, "2147483647" );
         qm->limitMaxResultSize( 5 );
 
         m_latestTracks.clear();
