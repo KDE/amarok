@@ -21,6 +21,9 @@ VERSION 2.4
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * When Amarok starts and "Continue playing when Amarok is started" is selected,
+      the Current Track applet showed songs of the artist instead of the current
+      track info. Patch by Conrad Hübler. (BR 241641)
     * Fixed crash on Windows when exporting playlist to any file type. Patch by
       James Duncan <james.t.duncan@gmail.com>. (BR 249376)
     * If album keyword is empty, show "unknown album" in context window. (BR 205038)
