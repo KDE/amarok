@@ -464,6 +464,20 @@ SqlTrack::setPlayCount( const int newCount )
 }
 
 void
+SqlTrack::setUid( const QString &newUidOwner, const QString &newUid )
+{
+    if( newUidOwner.isEmpty() || newUid.isEmpty() )
+        return;
+
+    QString uidUrl( "amarok-sqltrackuid://" );
+    if( newUidOwner == "http://musicbrainz.org" )
+        uidUrl += "mb-"+newUid;
+    else
+        uidUrl += newUid;
+    setUidUrl( uidUrl );
+}
+
+void
 SqlTrack::setUidUrl( const QString &uid )
 {
     DEBUG_BLOCK

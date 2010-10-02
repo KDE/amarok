@@ -34,6 +34,7 @@
 #include <oggflacfile.h>
 #include <vorbisfile.h>
 #include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 #include <mp4file.h>
 #include <mp4item.h>
@@ -163,6 +164,30 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 frame->setText( Qt4QStringToTString( bpm ) );
                 file->ID3v2Tag(true)->addFrame( frame );
             }
+        }
+        if( changes.contains( "id_owner" ) && changes.contains( Meta::Field::UNIQUEID ) )
+        {
+            TagLib::String uidOwner = Qt4QStringToTString( changes.value( "id_owner" ).toString() );
+            TagLib::ByteVector uid( changes.value( Meta::Field::UNIQUEID ).toString().toAscii().data() );
+
+            TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
+            TagLib::ID3v2::FrameList::Iterator iter;
+            for( iter = frameList.begin(); iter != frameList.end(); ++iter )
+            {
+                TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+                if( currFrame )
+                    if( uidOwner == currFrame->owner() )
+                    {
+                        file->ID3v2Tag()->removeFrame( currFrame );
+                        break;
+                    }
+            }
+
+            TagLib::ID3v2::UniqueFileIdentifierFrame *uidFrame =
+                        new TagLib::ID3v2::UniqueFileIdentifierFrame( uidOwner, uid );
+            file->ID3v2Tag( true )->addFrame( uidFrame );
+
+            shouldSave = true;
         }
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )

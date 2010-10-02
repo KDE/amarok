@@ -57,6 +57,7 @@ class EditCapabilityMediaDevice : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
+        virtual void setUid( const QString &newUidOwner, const QString &newUid ) { m_track->setUid( newUidOwner, newUid ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
 
@@ -137,6 +138,14 @@ QString
 MediaDeviceTrack::uidUrl() const
 {
     return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
+}
+
+void
+MediaDeviceTrack::setUid( const QString &newUidOwner, const QString &newUid ) const
+{
+    Q_UNUSED( newUidOwner )
+    Q_UNUSED( newUid )
+    //TODO: Implement new UID storeing
 }
 
 QString

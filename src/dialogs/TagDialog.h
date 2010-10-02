@@ -102,6 +102,9 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void guessFromFilename();
 
+        void musicbrainzTagger();
+        void musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > result );
+
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 

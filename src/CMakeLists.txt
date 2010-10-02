@@ -53,6 +53,7 @@ include_directories(
     dialogs
     dynamic
     likeback
+    musicbrainz
     network
     playlistmanager
     statusbar
@@ -660,6 +661,7 @@ set(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
+    dialogs/MusicBrainzTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
     dialogs/ScriptSelector.cpp
@@ -673,6 +675,11 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/FileView.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
+    musicbrainz/MusicBrainzFinder.cpp
+    musicbrainz/MusicBrainzMetaClasses.cpp
+    musicbrainz/MusicBrainzTagsModel.cpp
+    musicbrainz/MusicBrainzTrackListModel.cpp
+    musicbrainz/MusicBrainzXmlParser.cpp
     OpmlOutline.cpp
     OpmlParser.cpp
     OpmlWriter.cpp
@@ -688,6 +695,7 @@ set(amaroklib_LIB_SRCS
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/CheckButton.cpp
     widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
@@ -783,6 +791,21 @@ if( LIBLASTFM_FOUND )
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif( LIBLASTFM_FOUND )
 
+if( LIBOFA_FOUND )
+    set( EXTRA_LIBS
+        ${EXTRA_LIBS}
+        ${LIBOFA_LIBRARY}
+        ${LIBAVFORMAT_LIBRARY}
+        ${LIBAVCODEC_LIBRARY}
+    )
+    set( amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        musicbrainz/MusicDNSAudioDecoder.cpp
+        musicbrainz/MusicDNSFinder.cpp
+        musicbrainz/MusicDNSXmlParser.cpp
+    )
+endif( LIBOFA_FOUND )
+
 qt4_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
@@ -867,6 +890,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
+    dialogs/MusicBrainzTagger.ui
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui

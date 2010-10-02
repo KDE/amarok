@@ -63,6 +63,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
+        virtual void setUid( const QString &newUidOwner, const QString &newUid ) const;
         virtual QString prettyUrl() const;
 
         virtual bool isPlayable() const;

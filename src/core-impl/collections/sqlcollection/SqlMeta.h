@@ -138,6 +138,7 @@ class SqlTrack : public Meta::Track
         { return ( mode == AlbumReplayGain ) ? m_albumPeakGain : m_trackPeakGain; }
 
         virtual void setUidUrl( const QString &uid );
+        virtual void setUid( const QString &newUidOwner, const QString &newUid );
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();

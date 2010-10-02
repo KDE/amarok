@@ -88,6 +88,12 @@ TimecodeEditCapability::setDiscNumber( int newDiscNumber )
     m_track->setDiscNumber( newDiscNumber );
 }
 
+void
+TimecodeEditCapability::setUid( const QString &newUidOwner, const QString &newUid )
+{
+    Q_UNUSED( newUidOwner )
+    Q_UNUSED( newUid )
+}
 
 void
 TimecodeEditCapability::beginMetaDataUpdate()

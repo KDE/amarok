@@ -64,6 +64,7 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
+        virtual void setUid( const QString &newUidOwner, const QString &newUid ) { m_track->setUid( newUidOwner, newUid ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
 
@@ -249,6 +250,21 @@ QString
 Track::uidUrl() const
 {
     return d->url.url();
+}
+
+void
+Track::setUid( const QString &newUidOwner, const QString &newUid ) const
+{
+    if( newUidOwner.isEmpty() || newUid.isEmpty() )
+        return;
+
+    d->changes.insert( "id_owner", QVariant( newUidOwner ) );
+    d->changes.insert( Meta::Field::UNIQUEID, QVariant( newUid ) );
+    if( !d->batchUpdate )
+    {
+        d->writeMetaData();
+        notifyObservers();
+    }
 }
 
 bool

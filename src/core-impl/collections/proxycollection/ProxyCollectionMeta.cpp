@@ -67,6 +67,7 @@ public:
     void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
     void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
     void setYear( const QString &newYear ) { FORWARD( setYear( newYear ) ) }
+    void setUid( const QString &newUidOwner, const QString &newUid ) { FORWARD( setUid( newUidOwner, newUid ) ) }
     bool isEditable() const
     {
         foreach( Capabilities::EditCapability *ec, m_ec )

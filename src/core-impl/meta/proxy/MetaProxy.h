@@ -50,6 +50,7 @@ namespace MetaProxy
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
+            virtual void setUid( const QString &newUidOwner, const QString &newUid ) const;
 
             virtual bool isPlayable() const;
 

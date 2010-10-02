@@ -35,6 +35,7 @@
 #include "core/capabilities/EditCapability.h"
 #include "FilenameLayoutDialog.h"
 #include "MainWindow.h"
+#include "MusicBrainzTagger.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/ReadLabelCapability.h"
@@ -800,6 +801,8 @@ void TagDialog::init()
 
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( ui->pixmap_cover, SIGNAL( customContextMenuRequested(const QPoint &) ), SLOT( showCoverMenu(const QPoint &) ) );
+
+    connect( ui->pushButton_musicbrainz, SIGNAL( clicked() ), SLOT( musicbrainzTagger() ) );
 }
 
 void
@@ -1670,7 +1673,7 @@ TagDialog::saveTags()
              data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
              data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
              data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) ||
-             data.contains( Meta::Field::BPM )
+             data.contains( Meta::Field::BPM ) || data.contains( Meta::Field::UNIQUEID )
              )
         {
 
@@ -1697,6 +1700,8 @@ TagDialog::saveTags()
                 ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
             if( data.contains( Meta::Field::BPM ) )
                 ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
+            if( data.contains( Meta::Field::UNIQUEID ) && data.contains( Meta::Field::UNIQUEIDOWNER ) )
+                ec->setUid( data.value( Meta::Field::UNIQUEIDOWNER ).toString(), data.value( Meta::Field::UNIQUEID ).toString() );
             ec->endMetaDataUpdate();
         }
     }
@@ -1826,6 +1831,40 @@ TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
     {
         comboBox->setCurrentIndex( index );
     }
+}
+
+void
+TagDialog::musicbrainzTagger()
+{
+    DEBUG_BLOCK
+
+    MusicBrainzTagger *dialog = new MusicBrainzTagger( m_tracks, ui->pushButton_musicbrainz->isChecked(), this );
+    dialog->setWindowTitle( i18n( "MusicBrainz Tagger" ) );
+    connect( dialog, SIGNAL( sendResult( const QMap<Meta::TrackPtr,QVariantMap> ) ),
+             this, SLOT( musicbrainzTaggerResult( const QMap<Meta::TrackPtr,QVariantMap> ) ) );
+    dialog->show();
+}
+
+void
+TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > result )
+{
+    if( result.isEmpty() )
+        return;
+    foreach( Meta::TrackPtr track, result.keys() )
+            storeTags( track, TagDialog::TAGSCHANGED, result.value( track ) );
+
+    if( m_perTrack )
+    {
+        loadTags( m_currentTrack );
+        readTags();
+    }
+    else
+    {
+        setMultipleTracksMode();
+        readMultipleTracks();
+        enableItems();
+    }
+    checkModified();
 }
 
 #include "TagDialog.moc"

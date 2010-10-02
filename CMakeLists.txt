@@ -109,6 +109,15 @@ if( WITH_PLAYER )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
 
+    macro_optional_find_package(LibOFA)
+    macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
+    if( LIBOFA_FOUND )
+      macro_optional_find_package(FFmpeg)
+      macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.5" "" )
+      macro_bool_to_01( FFMPEG_FOUND LIBOFA_FOUND )
+    endif( LIBOFA_FOUND )
+    macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+
     if( WITH_IPOD )
         find_package(Ipod)
         if( IPOD_FOUND AND NOT WIN32 )
