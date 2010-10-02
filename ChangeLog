@@ -21,6 +21,8 @@ VERSION 2.4
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Collection Browser should show Artist names for Compilation Albums. (BR
+      252790)
     * When Amarok starts and "Continue playing when Amarok is started" is selected,
       the Current Track applet showed songs of the artist instead of the current
       track info. Patch by Conrad Hübler. (BR 241641)
