@@ -83,7 +83,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     private slots:
         void continueInit();
-        void resizeMainWindow();
 
     public slots:
         void applySettings( bool firstTime = false );

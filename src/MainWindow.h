@@ -148,6 +148,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
+        void resizeWindowHack();
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
 #endif // DEBUG_BUILD_TYPE

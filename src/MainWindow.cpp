@@ -506,6 +506,13 @@ MainWindow::showEvent(QShowEvent* e)
     if (!m_layoutEverRestored)
         restoreLayout();
 
+    static bool windowEverShown = false;
+    if ( !windowEverShown )
+    {
+        windowEverShown = true;
+        QTimer::singleShot( 250, this, SLOT( resizeWindowHack() ) );
+    }
+
     QWidget::showEvent(e);
 }
 
@@ -1702,6 +1709,16 @@ MainWindow::isWaitingForCd() const
     DEBUG_BLOCK
     debug() << "waiting?: " << m_waitingForCd;
     return m_waitingForCd;
+}
+
+void
+MainWindow::resizeWindowHack()
+{
+    // HACK
+    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
+    // with a wrong initial size. Remove when this bug is fixed in Plasma.
+    resize( width(), height() - 1 );
+    resize( width(), height() + 1 );
 }
 
 #include "MainWindow.moc"
