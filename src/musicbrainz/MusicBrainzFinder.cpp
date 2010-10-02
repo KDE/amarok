@@ -292,7 +292,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                         if( metadata[ "track" ].toInt()
                             == mbtrack.releaseOffsets().value( releasePos ) )
                             s += 22;
-                    s += 18 - qMin( abs( track->length() - mbtrack.length() ), 30000 )*18/30000;
+                    s += 18 - qMin( qAbs( track->length() - mbtrack.length() ), Q_INT64_C( 30000 ) )*18/30000;
 
                     if( s > maxScore )
                     {
