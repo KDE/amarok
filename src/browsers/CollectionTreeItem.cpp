@@ -158,6 +158,11 @@ CollectionTreeItem::data( int role ) const
             Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
             QString name = track ? track->fixedName() : m_data->fixedName();
 
+            if ( track && track->album()->isCompilation() )
+            {
+                name.prepend( QString("%1 - ").arg(track->artist()->prettyName()) );
+            }
+
             if( AmarokConfig::showTrackNumbers() && track )
             {
                 int trackNum = track->trackNumber();
