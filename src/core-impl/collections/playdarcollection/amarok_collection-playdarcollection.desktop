@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Service
 Name=Playdar Collection
+Name[x-test]=xxPlaydar Collectionxx
 Comment=Music that Playdar can find
+Comment[x-test]=xxMusic that Playdar can findxx
 
 ServiceTypes=Amarok/Plugin
 
