@@ -66,6 +66,8 @@ include_directories(
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
+    ${LIBAVCODEC_INCLUDE_DIR}
+    ${LIBAVFORMAT_INCLUDE_DIR}
 )
 
 
