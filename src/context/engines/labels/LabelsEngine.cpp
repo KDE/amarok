@@ -24,6 +24,7 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KIO/Job>
 #include <KLocale>
 
 #include <QDomDocument>
@@ -40,6 +41,10 @@ LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
 {
     Q_UNUSED( args )
     m_sources << "lastfm" ;
+
+    m_timeoutTimer.setInterval( 10000 );
+    m_timeoutTimer.setSingleShot( true );
+    connect( &m_timeoutTimer, SIGNAL(timeout()), this, SLOT(timeout()) );
 }
 
 LabelsEngine::~LabelsEngine()
@@ -57,6 +62,7 @@ bool
 LabelsEngine::sourceRequestEvent( const QString &name )
 {
     DEBUG_BLOCK
+    Q_UNUSED( name )
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( coll )
@@ -214,6 +220,8 @@ LabelsEngine::fetchLastFm()
 
     if ( !m_currentTrack || !m_currentTrack->artist() )
     {
+        // stop timeout timer
+        m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
         debug()  << "LabelsEngine:" << "current track is invalid, returning";
         return;
@@ -225,13 +233,14 @@ LabelsEngine::fetchLastFm()
         currentTitle = m_currentTrack->name();
         m_artist = currentArtist;
         m_title = currentTitle;
+        m_timeoutTimer.start();
     }
     else if ( m_try == 1 )
     {
         currentArtist = m_artist;
         currentTitle = m_title;
         separators.clear();
-        separators << " (" << " [" << " -" << " featuring" << " feat." << " ft." << "/";
+        separators << " (" << " [" << " - " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << "/";
         foreach( const QString &separator, separators )
         {
             if( m_title.contains(separator,Qt::CaseInsensitive) )
@@ -253,7 +262,7 @@ LabelsEngine::fetchLastFm()
         currentArtist = m_artist;
         currentTitle = m_title;
         separators.clear();
-        separators << " vs." << " &" << " featuring" << " feat." << " ft." << ", " << " and " << "/";
+        separators << " vs. " << " vs " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << ", " << " and " << " & " << "/";
         foreach( const QString &separator, separators )
         {
             if( m_artist.contains(separator,Qt::CaseInsensitive) )
@@ -263,7 +272,7 @@ LabelsEngine::fetchLastFm()
             }
         }
         separators.clear();
-        separators << " (" << " [" << " -" << " featuring" << " feat." << " ft." << "/";
+        separators << " (" << " [" << " - " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << "/";
         foreach( const QString &separator, separators )
         {
             if( m_title.contains(separator,Qt::CaseInsensitive) )
@@ -272,8 +281,10 @@ LabelsEngine::fetchLastFm()
                 break;
             }
         }
-        if ( currentArtist == m_artist && currentTitle == m_title )
+        if ( currentArtist == m_artist ) // the title got modified the same way as on the last try
         {
+            // stop timeout timer
+            m_timeoutTimer.stop();
             setData( "labels", "message", i18n( "No labels found on last.fm" ) );
             debug()  << "LabelsEngine:" << "try 3: artist and title are the same, returning";
             return;
@@ -282,6 +293,8 @@ LabelsEngine::fetchLastFm()
     else
     {
         // shouldn't happen
+        // stop timeout timer
+        m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
         debug() << "LabelsEngine:" << "try > 2, returning";
         return;
@@ -315,6 +328,8 @@ LabelsEngine::fetchLastFm()
     }
     else
     {
+        // stop timeout timer
+        m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
         qDebug() << "LabelsEngine:" << "artist or track empty";
     }
@@ -338,6 +353,8 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
 
     if ( e.code != QNetworkReply::NoError )
     {
+        // stop timeout timer
+        m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "Unable to retrieve from last.fm" ) );
         debug() << "LabelsEngine:" << "Unable to retrieve last.fm information: " << e.description;
         return;
@@ -369,6 +386,8 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         }
         else
         {
+            // stop timeout timer
+            m_timeoutTimer.stop();
             setData( "labels", "message", i18n( "No labels found on last.fm" ) );
         }
     }
@@ -376,11 +395,18 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
     {
         // remove previous message
         removeData( "labels", "message" );
+        // stop timeout timer
+        m_timeoutTimer.stop();
 
         QVariant varWeb;
         varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
         setData( "labels", "web", varWeb );
     }
+}
+
+void LabelsEngine::timeout()
+{
+    setData( "labels", "message", i18n( "No connection to last.fm" ) );
 }
 
 

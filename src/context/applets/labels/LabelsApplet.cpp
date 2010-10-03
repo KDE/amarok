@@ -106,6 +106,11 @@ LabelsApplet::init()
     m_addLabel = new KComboBox( this );
     m_addLabel->setAttribute( Qt::WA_NoSystemBackground );
     m_addLabel->setAutoFillBackground( false );
+    QPalette p = m_addLabel->palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlphaF( 0.4 );
+    p.setColor( QPalette::Base, c );
+    m_addLabel->setPalette( p );
     m_addLabel->completionObject()->setIgnoreCase( true );
     m_addLabel->setCompletionMode( KGlobalSettings::CompletionPopup );
     connect( m_addLabel, SIGNAL( returnPressed() ), this, SLOT( addLabelPressed() ) );
@@ -120,9 +125,7 @@ LabelsApplet::init()
     m_minAutoAddCount = config.readEntry( "MinAutoAddCount", 60 );
     m_matchArtist = config.readEntry( "MatchArtist", true );
     m_matchTitle = config.readEntry( "MatchTitle", true );
-    QStringList defaultBlacklist;
-    defaultBlacklist << "favourite" << "like it";
-    m_blacklist = config.readEntry( "Blacklist", defaultBlacklist );
+    m_blacklist = config.readEntry( "Blacklist", QStringList() );
 
     setStoppedState( true );
 
@@ -407,17 +410,23 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     {
         qDebug() << "LabelsApplet:" << "fetching";
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
-        constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-        update();
+        if ( !data.contains( "user" ) ) // avoid calling update twice
+        {
+            constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
+            update();
+        }
         if( canAnimate() )
             setBusy( true );
     }
     else if ( data.contains( "message" ) )
     {
-        qDebug() << "LabelsApplet:" << "mssage:" << data[ "message" ].toString();
+        qDebug() << "LabelsApplet:" << "message:" << data[ "message" ].toString();
         m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
-        constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-        update();
+        if ( !data.contains( "user" ) ) // avoid calling update twice
+        {
+            constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
+            update();
+        }
         setBusy( false );
     }
 
@@ -464,7 +473,9 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         qDebug() << "LabelsApplet:" << "web";
         if( !m_stoppedstate ) // otherwise there's been an error
         {
-            m_titleText = i18n( "Labels for %1 by %2", m_title, m_artist );
+            if( !data.contains( "message" ) )
+                m_titleText = i18n( "Labels for %1 by %2", m_title, m_artist );
+            
             setBusy( false );
 
             m_webLabels = data[ "web" ].toMap();
@@ -475,7 +486,8 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
                 while( it.hasNext() )
                 {
                     it.next();
-                    if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount )
+                    if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount
+                        && QString(it.key()).length() <= 40 && !( m_matchArtist && QString(it.key()).toLower() == m_artist.toLower() )  && !( m_matchTitle && QString(it.key()).toLower() == m_title.toLower() ) )
                         toggleLabel( it.key() );
                 }
             }
@@ -532,16 +544,19 @@ LabelsApplet::toggleLabel( const QString &label )
     if( m_userLabels.contains( label ) )
     {
         track->removeLabel( labelPtr );
+        m_userLabels.removeAll( label );
         debug() << "LabelsApplet:" << "removing label: " << label;
     }
     else
     {
         track->addLabel( label );
+        m_userLabels.append( label );
         debug() << "LabelsApplet:" << "adding label: " << label;
     }
     uc->collectionUpdated();
 
     // no need to update the label cloud since the engine keeps track of label changes of the playing track
+    // (except if the lables get auto added, this is why we have to keep m_userLabels up to date)
 
     if( !m_allLabels.contains( label ) )
     {

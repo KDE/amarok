@@ -1,4 +1,4 @@
-project(context-currenttrack)
+project(context-labels)
 
 set(labels_SRCS LabelsApplet.cpp LabelGraphicsItem.cpp)
 

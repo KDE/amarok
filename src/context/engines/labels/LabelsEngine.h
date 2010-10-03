@@ -26,6 +26,7 @@
 
 #include <QMap>
 #include <QPointer>
+#include <QTimer>
 
 class QNetworkReply;
 
@@ -70,6 +71,8 @@ private slots:
     void resultReady( const QString &collectionId, const Meta::LabelList &labels );
     void dataQueryDone();
 
+    void timeout();
+
 private:
   /**
    *   Engine was updated, so we check if the songs is different, and if it is, we delete every and start
@@ -80,6 +83,7 @@ private:
     void updateLocal();
 
     QPointer<QNetworkReply> reply;
+    QTimer m_timeoutTimer;
     
     /// The URL for the network request
     KUrl m_lastFmUrl;
