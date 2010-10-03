@@ -26,7 +26,7 @@
 #include <audioproperties.h>
 #include <fileref.h>
 
-/* CMake check for GDK */
+/* CMake check for GDKPIXBUF */
 #include <config-gdk.h>
 
 extern "C"

@@ -27,7 +27,7 @@
 
 extern "C" {
 #include <glib-object.h> // g_type_init
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
 // work around compile issue with glib >= 2.25
 #ifdef signals
   #undef signals
@@ -787,7 +787,7 @@ IpodHandler::detectModel()
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         debug() << "Got ipodinfo";
         const gchar *modelString = 0;
-        #ifdef GDK_FOUND
+        #ifdef GDKPIXBUF_FOUND
         m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
         #else
         m_supportsArtwork = false;
@@ -1865,7 +1865,7 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 QPixmap
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
         return QPixmap();
@@ -1896,7 +1896,7 @@ IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 void
 IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     if( path.isEmpty() || !m_supportsArtwork )
         return;
 
@@ -1916,7 +1916,7 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 void
 IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     if( image.isNull() || !m_supportsArtwork )
         return;
 

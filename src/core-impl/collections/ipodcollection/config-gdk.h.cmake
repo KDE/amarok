@@ -1,1 +1,1 @@
-#cmakedefine GDK_FOUND 1
+#cmakedefine GDKPIXBUF_FOUND 1
