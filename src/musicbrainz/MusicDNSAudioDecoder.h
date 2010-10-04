@@ -62,7 +62,6 @@ class MusicDNSAudioDecoder : public ThreadWeaver::Job
         void run();
 
     signals:
-        void statusMessage( const QString &message );
         void trackDecoded( const Meta::TrackPtr, const QString );
 
     private:

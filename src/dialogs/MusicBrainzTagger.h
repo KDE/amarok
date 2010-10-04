@@ -60,6 +60,8 @@ class MusicBrainzTagger : public KDialog
 #endif
 
         void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
+        void progressStep();
+
     private:
         void init();
 

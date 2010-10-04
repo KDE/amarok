@@ -58,8 +58,6 @@ MusicDNSFinder::run( const Meta::TrackList &tracks )
                       SLOT( trackDecoded( const Meta::TrackPtr, const QString ) ) );
     connect( decoder, SIGNAL( done( ThreadWeaver::Job * ) ),
                       SLOT( decodingDone( ThreadWeaver::Job * ) ) );
-    connect( decoder, SIGNAL( statusMessage( QString ) ),
-                      SLOT( satusRepeater( QString ) ) );
 
     ThreadWeaver::Weaver::instance()->enqueue( decoder );
 
@@ -85,7 +83,6 @@ void MusicDNSFinder::sendNewRequest()
     m_replyes.insert( reply, req.first );
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
-    emit statusMessage( "Looking for " + req.first->prettyName() + " PUID." );
     debug() << "Request sent: " << req.second.url().toString();
 }
 
@@ -199,8 +196,6 @@ MusicDNSFinder::decodingDone( ThreadWeaver::Job *_decoder )
                 this, SLOT( trackDecoded( const Meta::TrackPtr, const QString ) ) );
     disconnect( decoder, SIGNAL( done( ThreadWeaver::Job * ) ),
                 this, SLOT( decodingDone( ThreadWeaver::Job * ) ) );
-    disconnect( decoder, SIGNAL( statusMessage( QString ) ),
-                this, SLOT( satusRepeater( QString ) ) );
     decoder->deleteLater();
     decodingComplete = true;
 }
@@ -237,12 +232,6 @@ MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr
         _timer->start();
 
     return req;
-}
-
-void
-MusicDNSFinder::satusRepeater( const QString &message )
-{
-    emit statusMessage( message );
 }
 
 #include "MusicDNSFinder.moc"

@@ -38,7 +38,7 @@ class MusicBrainzFinder : public QObject
         bool isRunning();
 
     signals:
-        void statusMessage( const QString &message );
+        void progressStep();
         void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
 
         void done();

@@ -40,7 +40,6 @@ class MusicDNSFinder: public QObject
         void run( const Meta::TrackList &tracks );
 
     signals:
-        void statusMessage( const QString &message );
         void trackFound( const Meta::TrackPtr &track, const QString &puid );
         void done();
 
@@ -54,8 +53,6 @@ class MusicDNSFinder: public QObject
         void decodingDone( ThreadWeaver::Job *_decoder );
 
         void parsingDone( ThreadWeaver::Job *_parser );
-
-        void satusRepeater( const QString &message );
 
     private:
         QNetworkRequest compileRequest( const QString &fingerprint, const Meta::TrackPtr track );

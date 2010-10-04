@@ -161,9 +161,6 @@ MusicBrainzFinder::sendNewRequest()
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
 
-    if( !req.first.isNull() )
-        emit statusMessage( "Looking for " + req.first->prettyName() );
-
     debug() << "Request sent: " << req.second.url().toString();
 }
 
@@ -250,6 +247,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
     disconnect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), this, SLOT( parsingDone( ThreadWeaver::Job * ) ) );
     if( m_parsers.contains( parser ) )
     {
+        emit progressStep();
         Meta::TrackPtr track = m_parsers.take( parser );
         MusicBrainzTrack mbTrack;
         if( parser->type() == MusicBrainzXmlParser::TrackList && !parser->tracks.isEmpty() )
@@ -442,7 +440,6 @@ MusicBrainzFinder::sendTrack( MusicBrainzTrack &track )
         }
 
     emit trackFound( track.track(), tags );
-    emit statusMessage( track.track()->prettyName() + " found." );
 }
 
 QNetworkRequest

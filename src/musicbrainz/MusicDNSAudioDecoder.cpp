@@ -232,7 +232,6 @@ MusicDNSAudioDecoder::run()
 
         if( data.duration() > MIN_SAMPLE_LENGTH )
         {
-            emit statusMessage( "Generating fingerprint for " + track->prettyName() );
             QString fingerprint( ofa_create_print( ( unsigned char * ) data.data(),
                                                    OFA_LITTLE_ENDIAN, ( data.length() >> 1 ),
                                                    data.sRate(), data.channels() ) );
