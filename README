@@ -64,9 +64,12 @@ Required
       http://delta.affinix.com/qca/
 
 Optional
-    * libgpod 0.7.0 (or newer)
-      (iPod support)
-      http://www.gtkpod.org/libgpod/
+    * iPod support requires:
+      * libgpod 0.7.0 (or newer)
+        http://www.gtkpod.org/libgpod/
+      * GDKPixBuf 2.0 (or newer)
+        (For artwork support)
+        http://library.gnome.org/devel/gdk-pixbuf/stable/
 
     * libmtp 1.0.0
       (MTP device support)
@@ -89,10 +92,11 @@ Optional
     
     * MusicBrainz-based audio fingerprint tag lookup requires:
       * FFmpeg - http://ffmpeg.org/
+        * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
-Please note that if compiling from source you may also need to install -devel versions
-of these packages, depending on your distribution.
+Please note that if compiling from source you also need to install -dev/-devel
+versions of these packages, depending on your distribution.
 --------------------------------------------------------------------------------
 
 
