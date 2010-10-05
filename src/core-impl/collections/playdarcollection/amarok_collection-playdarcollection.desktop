@@ -2,6 +2,7 @@
 Type=Service
 Name=Playdar Collection
 Name[de]=Playdar-Sammlung
+Name[et]=Playdari kogu
 Name[pt]=Colecção do Playdar
 Name[pt_BR]=Coleção do Playdar
 Name[sv]=Playdar-samling
@@ -9,6 +10,7 @@ Name[uk]=Збірка Playdar
 Name[x-test]=xxPlaydar Collectionxx
 Comment=Music that Playdar can find
 Comment[de]=Von Playdar auffindbare Musik
+Comment[et]=Muusika, mida Playdar suudab leida
 Comment[pt]=Música que o Playdar consegue encontrar
 Comment[pt_BR]=Música que o Playdar pode encontrar
 Comment[sv]=Musik som Playdar kan hitta
