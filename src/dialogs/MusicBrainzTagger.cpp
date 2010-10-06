@@ -26,7 +26,7 @@
 #include <KMessageBox>
 #include <QTimer>
 
-MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks, bool autostart,
+MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
     : KDialog( parent )
     , ui( new Ui::MusicBrainzTagger() )
@@ -41,8 +41,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks, bool autost
     resize( QSize( 640, 480 ) );
 
     init();
-    if( autostart )
-        search();
+    search();
 }
 
 MusicBrainzTagger::~MusicBrainzTagger()

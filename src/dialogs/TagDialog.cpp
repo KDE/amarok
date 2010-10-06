@@ -1839,7 +1839,7 @@ TagDialog::musicbrainzTagger()
 {
     DEBUG_BLOCK
 
-    MusicBrainzTagger *dialog = new MusicBrainzTagger( m_tracks, ui->pushButton_musicbrainz->isChecked(), this );
+    MusicBrainzTagger *dialog = new MusicBrainzTagger( m_tracks, this );
     dialog->setWindowTitle( i18n( "MusicBrainz Tagger" ) );
     connect( dialog, SIGNAL( sendResult( const QMap<Meta::TrackPtr,QVariantMap> ) ),
              this, SLOT( musicbrainzTaggerResult( const QMap<Meta::TrackPtr,QVariantMap> ) ) );

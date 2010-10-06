@@ -696,7 +696,6 @@ set(amaroklib_LIB_SRCS
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
-    widgets/CheckButton.cpp
     widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp

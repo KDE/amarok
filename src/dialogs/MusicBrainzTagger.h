@@ -44,7 +44,7 @@ class MusicBrainzTagger : public KDialog
         /**
          * @arg tracks Track list for search
          */
-        explicit MusicBrainzTagger( const Meta::TrackList &tracks, bool autostart,
+        explicit MusicBrainzTagger( const Meta::TrackList &tracks,
                                     QWidget *parent = 0 );
         virtual ~MusicBrainzTagger();
 

@@ -554,12 +554,9 @@
          <item row="7" column="1">
           <layout class="QHBoxLayout">
            <item>
-            <widget class="CheckButton" name="pushButton_musicbrainz">
+            <widget class="QPushButton" name="pushButton_musicbrainz">
              <property name="text">
               <string>Get Tags From MusicBrain&amp;z</string>
-             </property>
-             <property name="checkHint" stdset="0">
-              <string>Start search automatically</string>
              </property>
             </widget>
            </item>
@@ -1040,11 +1037,6 @@
    <extends>QFrame</extends>
    <header>kratingwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CheckButton</class>
-   <extends>QPushButton</extends>
-   <header>CheckButton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

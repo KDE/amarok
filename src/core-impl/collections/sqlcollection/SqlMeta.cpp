@@ -466,8 +466,16 @@ SqlTrack::setPlayCount( const int newCount )
 void
 SqlTrack::setUid( const QString &newUidOwner, const QString &newUid )
 {
-    Q_UNUSED( newUidOwner )
-    Q_UNUSED( newUid )
+    if( newUidOwner.isEmpty() || newUid.isEmpty() )
+        return;
+
+    QString uidUrl( "amarok-sqltrackuid://" );
+    if( newUidOwner == "http://musicbrainz.org" )
+        uidUrl += "mb-"+newUid;
+    else
+        uidUrl += newUid;
+
+    setUidUrl( uidUrl );
 }
 
 void
@@ -511,6 +519,10 @@ SqlTrack::writeMetaDataToFile()
     QFile file( m_url.path() );
     if( file.exists() )
         m_filesize = file.size();
+
+    if( !m_newUid.isEmpty() )
+        return;
+
     AFTUtility aftutil;
     m_newUid = QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( m_url.path() );
 }
@@ -563,7 +575,7 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::DISCNUMBER ) )
         m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
     if( m_cache.contains( Meta::Field::UNIQUEID ) )
-        m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
+        m_newUid = m_cache.value( Meta::Field::UNIQUEID ).toString();
     if( m_cache.contains( Meta::Field::URL ) )
     {
         debug() << "m_cache contains a new URL, setting m_url";
