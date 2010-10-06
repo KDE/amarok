@@ -70,7 +70,6 @@ include_directories(
     ${LIBAVFORMAT_INCLUDE_DIR}
 )
 
-
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
 endif ( KDEMULTIMEDIA_FOUND )
