@@ -139,6 +139,7 @@ ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl )
 double
 ConstraintTypes::PlaylistLength::deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr t, const int ) const
 {
+    Q_UNUSED( t )
     return penalty( m_totalLength + 1 ) - penalty( m_totalLength );
 }
 
@@ -187,6 +188,8 @@ ConstraintTypes::PlaylistLength::suggestInitialPlaylistSize() const
 ConstraintNode::Vote*
 ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
 {
+    Q_UNUSED( domain )
+    Q_UNUSED( playlist )
     ConstraintNode::Vote* v = 0;
 
     //FIXME: needs to vote for addition or removal as appropriate
