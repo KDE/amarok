@@ -22,14 +22,15 @@
 #undef QT_NO_DEBUG_OUTPUT
 #undef KDE_NO_DEBUG_OUTPUT
 
-#include <KGlobal>
+#include <QApplication>
 #include <KCmdLineArgs>
 #include <KConfig>
 #include <KConfigGroup>
 #include <kdebug.h>
-#include <QApplication>
+#include <KGlobal>
 #include <QMutex>
 #include <QObject>
+#include <QThread>
 
 #include <sys/time.h>
 #include <unistd.h>
@@ -129,10 +130,12 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
-    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ).toLocal8Bit().constData(); }
-    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ).toLocal8Bit().constData(); }
-    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
+    const QString thread = QString::number( QThread::currentThreadId() ).left( 5 );
+
+    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + thread + ") " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
+    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + thread + ") " + ind + AMK_PREFIX + " [WARNING!]" ).toLocal8Bit().constData(); }
+    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + thread + ") " + ind + AMK_PREFIX + " [ERROR!]" ).toLocal8Bit().constData(); }
+    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + thread + ") " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
 
     #undef AMK_PREFIX
 
@@ -218,7 +221,8 @@ namespace Debug
 
             mutex.lock();
 
-            dbgstream() << QString( "amarok: " + indent() + "BEGIN: " + label ).toLocal8Bit().constData();
+            const QString thread = QString::number( QThread::currentThreadId() ).left( 5 );
+            dbgstream() << QString( "amarok: (" + thread + ") " + indent() + "BEGIN: " + label ).toLocal8Bit().constData();
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -248,11 +252,13 @@ namespace Debug
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
 
+            const QString thread = QString::number( QThread::currentThreadId() ).left( 5 );
+
             // Print timing information, and a special message (DELAY) if the method took longer than 5s
             if( duration < 5.0 )
-                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
+                dbgstream() << QString( "amarok: (" + thread + ") " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
             else
-                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
+                dbgstream() << QString( "amarok: (" + thread + ") " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
 
             mutex.unlock();
         }
