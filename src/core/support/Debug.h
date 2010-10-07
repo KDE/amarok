@@ -31,11 +31,9 @@
 #include <QMutex>
 #include <QObject>
 #include <QThread>
+#include <QTime>
 
-#include <sys/time.h>
-#include <unistd.h>
 #include <iostream>
-#include <cerrno>
 
 #include "shared/amarok_export.h"
 
@@ -206,18 +204,17 @@ namespace Debug
 
     class Block
     {
-        timeval     m_start;
+        QTime m_startTime;
         const char *m_label;
 
     public:
         Block( const char *label )
                 : m_label( label )
         {
-            if ( gettimeofday( &m_start, 0 ) == -1 )
-                dbgstream() << "amarok: Block - gettimeofday failed with "
-                            << strerror(errno);
+            m_startTime = QTime::currentTime();
 
-            if( !debugEnabled() ) return;
+            if( !debugEnabled() )
+                return;
 
             mutex.lock();
 
@@ -228,26 +225,12 @@ namespace Debug
 
         ~Block()
         {
-            if( !debugEnabled() ) return;
+            if( !debugEnabled() )
+                return;
 
             mutex.lock();
-            timeval end;
-            int result = gettimeofday( &end, 0 );
-            if( result == -1 )
-            {
-                mutex.unlock();
-                return;
-            }
 
-            end.tv_sec -= m_start.tv_sec;
-            if( end.tv_usec < m_start.tv_usec) {
-                // Manually carry a one from the seconds field.
-                end.tv_usec += 1000000;
-                end.tv_sec--;
-            }
-            end.tv_usec -= m_start.tv_usec;
-
-            double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
+            const double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / (double)1000.0;
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
 
