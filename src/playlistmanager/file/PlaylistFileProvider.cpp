@@ -355,7 +355,7 @@ PlaylistFileProvider::loadPlaylists()
     DEBUG_BLOCK
     //load the playlists defined in the config
     QStringList keys = loadedPlaylistsConfig().keyList();
-    debug() << "keys " << keys;
+    // debug() << "keys " << keys;
 
     //ConfigEntry: name, file
     foreach( const QString &key, keys )
@@ -393,7 +393,7 @@ PlaylistFileProvider::loadPlaylists()
     {
         KUrl url( playlistDir.path() );
         url.addPath( file );
-        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
+        // debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
