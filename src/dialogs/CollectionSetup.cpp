@@ -226,7 +226,7 @@ namespace CollectionFolder {
     {
         Qt::ItemFlags flags = QFileSystemModel::flags( index );
         const QString path = filePath( index );
-        if( ( recursive() && ancestorChecked( path ) ) || isForbiddenPath( path ) )
+        if( isForbiddenPath( path ) )
             flags ^= Qt::ItemIsEnabled; //disabled!
        
         flags |= Qt::ItemIsUserCheckable;
@@ -256,16 +256,49 @@ namespace CollectionFolder {
     {
         if( index.isValid() && index.column() == 0 && role == Qt::CheckStateRole )
         {
-            QString path = filePath( index );
-            // store checked paths, remove unchecked paths
+            const QString path = filePath( index );
             if( value.toInt() == Qt::Checked )
-                m_checked.insert( path );
+            {
+                // New path selected
+                if( recursive() )
+                {
+                    // Recursive, so clear any paths in m_checked that are made
+                    // redundant by this new selection
+                    QString _path = normalPath( path );
+                    foreach( QString elem, m_checked )
+                    {
+                        if( normalPath( elem ).startsWith( _path ) )
+                            m_checked.remove( elem );
+                    }
+                }
+                m_checked << path;
+            }
             else
+            {
+                // Path un-selected
                 m_checked.remove( path );
-
-            const QModelIndex &parentIndex = parent( index );
-            const int lastRow = rowCount( parentIndex );
-            emit dataChanged( sibling( 0, 0, parentIndex), sibling( lastRow, 0, parentIndex ) );
+                if( recursive() && ancestorChecked( path ) )
+                {
+                    // Recursive, so we need to deal with the case of un-selecting
+                    // an implicitly selected path
+                    const QStringList ancestors = allCheckedAncestors( path );
+                    QString topAncestor;
+                    // Remove all selected ancestor of path, and find shallowest
+                    // ancestor
+                    foreach( QString elem, ancestors )
+                    {
+                        m_checked.remove( elem );
+                        if( elem < topAncestor || topAncestor.isEmpty() )
+                            topAncestor = elem;
+                    }
+                    // Check all paths reachable from topAncestor, except for
+                    // those that are ancestors of path
+                    checkRecursiveSubfolders( topAncestor, path );
+                }
+            }
+            // A check or un-check can possibly require the whole view to change,
+            // so we signal that the root's data is changed
+            emit dataChanged( QModelIndex(), QModelIndex() );
             return true;
         }
         return QFileSystemModel::setData( index, value, role );
@@ -306,7 +339,7 @@ namespace CollectionFolder {
     Model::isForbiddenPath( const QString &path ) const
     {
         // we need the trailing slash otherwise we could forbid "/dev-music" for example
-        QString _path = path.endsWith( '/' ) ? path : path + '/';
+        QString _path = normalPath( path );
         return _path.startsWith( "/proc/" ) || _path.startsWith( "/dev/" ) || _path.startsWith( "/sys/" );
     }
 
@@ -314,29 +347,74 @@ namespace CollectionFolder {
     Model::ancestorChecked( const QString &path ) const
     {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+        const QString _path = normalPath( path );
 
         foreach( const QString &element, m_checked )
         {
-            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            const QString _element = normalPath( element );
             if( _path.startsWith( _element ) && _element != _path )
                 return true;
         }
         return false;
     }
 
-    bool Model::descendantChecked( const QString& path ) const
+    /**
+     * Get a list of all checked paths that are an ancestor of
+     * the given path.
+     */
+    QStringList
+    Model::allCheckedAncestors( const QString &path ) const
+    {
+        const QString _path = normalPath( path );
+        QStringList rtn;
+        foreach( const QString &element, m_checked )
+        {
+            const QString _element = normalPath( element );
+            if ( _path.startsWith( _element ) && _element != _path )
+                rtn << element;
+        }
+        return rtn;
+    }
+
+    bool
+    Model::descendantChecked( const QString &path ) const
     {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+        const QString _path = normalPath( path );
 
         foreach( const QString& element, m_checked )
         {
-            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            const QString _element = normalPath( element );
             if( _element.startsWith( _path ) && _element != _path )
                 return true;
         }
         return false;
+    }
+
+    /**
+     * Check the logical recursive difference of root and excludePath.
+     * For example, if excludePath is a grandchild of root, then this method
+     * will check all of the children of root except the one that is the 
+     * parent of excludePath, as well as excludePath's siblings.
+     */
+    void
+    Model::checkRecursiveSubfolders( const QString &root, const QString &excludePath )
+    {
+        QString _root = normalPath( root );
+        QString _excludePath = normalPath( excludePath );
+        if( _root == _excludePath )
+            return;
+        QDirIterator it( _root );
+        while( it.hasNext() )
+        {
+            QString nextPath = it.next();
+            if( nextPath.endsWith( "/." ) || nextPath.endsWith( "/.." ) )
+                continue;
+            if( !_excludePath.startsWith( nextPath ) )
+                m_checked << nextPath;
+            else
+                checkRecursiveSubfolders( nextPath, excludePath );
+        }
     }
 
 } //namespace Collection

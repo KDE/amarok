@@ -107,9 +107,21 @@ namespace CollectionFolder //just to keep it out of the global namespace
 
         private:
             bool ancestorChecked( const QString &path ) const;
+            QStringList allCheckedAncestors( const QString &path ) const;
             bool descendantChecked( const QString &path ) const;
             bool isForbiddenPath( const QString &path ) const;
-            bool recursive() const { return CollectionSetup::instance() && CollectionSetup::instance()->recursive(); } // simply for convenience
+            void checkRecursiveSubfolders( const QString &root, const QString &excludePath );
+            inline bool recursive() const
+            {
+                // Simply for convenience
+                return CollectionSetup::instance() && CollectionSetup::instance()->recursive();
+            }
+
+            static inline QString normalPath( const QString &path )
+            {
+                return path.endsWith( '/' ) ? path : path + '/';
+            }
+
             QSet<QString> m_checked;
     };
 
