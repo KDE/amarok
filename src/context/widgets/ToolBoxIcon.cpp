@@ -46,6 +46,8 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent, const float opacity )
 
     m_text->setFont( font );
     m_text->show();
+
+    setOpacity( 1.0 - m_baseOpacity );
 }
 
 ToolBoxIcon::~ToolBoxIcon()
