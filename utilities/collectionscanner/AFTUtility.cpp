@@ -168,7 +168,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
         if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) &&
-            mbIdPattern.exactMatch( storedMBId ) )
+            mbIdPattern.exactMatch( identifier ) )
             return QString( "mb-" ) + identifier;
     }
 
