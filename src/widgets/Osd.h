@@ -78,6 +78,7 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
+        void setFontScale( int scale ) { m_fontScale = static_cast<double>(scale) / 100.0; }
 
     protected:
         virtual ~OSDWidget();
@@ -109,6 +110,7 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
+        double      m_fontScale;
 };
 
 
@@ -125,8 +127,9 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
+    //void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
+    void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
     void setUseCustomColors( const bool use, const QColor &fg )
     {
         if( use ) OSDWidget::setTextColor( fg );

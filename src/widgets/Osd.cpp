@@ -62,6 +62,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( 0 )
         , m_showVolume( false )
+        , m_fontScale( 1.15 )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -85,11 +86,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
-
-    QFont f = font();
-    f.setFamily( "Arial" );
-    f.setPointSize( f.pointSize() + 8 );
-    setFont( f );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -116,6 +112,10 @@ OSDWidget::show( const QString &text, QImage newImage )
     }
     else
         m_cover = Amarok::icon();
+
+    QFont f = QFont( "sans-serif" );
+    f.setPointSizeF( f.pointSizeF() * m_fontScale );
+    setFont( f );
 
     m_text = text;
     show();
@@ -622,6 +622,7 @@ Amarok::OSD::applySettings()
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
+    setFontScale( AmarokConfig::osdFontScaling() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );

@@ -60,6 +60,8 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
              m_osdPreview,            SLOT( setVisible( bool ) ) );
     connect( kcfg_OsdUseTranslucency, SIGNAL( toggled( bool ) ),
              m_osdPreview,            SLOT( setTranslucent( bool ) ) );
+    connect( kcfg_OsdFontScaling,     SIGNAL( valueChanged( int ) ),
+             m_osdPreview,            SLOT( setFontScale( int ) ) );
 
     /*
     Amarok::QStringx text = i18n(
@@ -118,6 +120,7 @@ NotificationsConfig::updateSettings()
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
+    //AmarokConfig::setOsdTextScaling( m_osdPreview->); //FIXME?
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );
 

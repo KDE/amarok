@@ -363,9 +363,16 @@
         <default>false</default>
     </entry>
     <entry key="Osd Text Color" type="Color">
-        <label>Font Color for On-Screen Display</label>
+        <label>Font color for OSD</label>
         <whatsthis>The color of the OSD text. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#ffff00</default>
+    </entry>
+    <entry key="Osd Font Scaling" type="Int">
+        <label>Font scaling for OSD</label>
+        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
+        <default>115</default>
+	<min>0</min>
+	<max>1000</max>
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed for</label>

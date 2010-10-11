@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4
   FEATURES:
+    * Size of OSD font is now configurable. (BR 195186)
     * Musicbrainz-based mass tagging UI by Sergey Ivanov.
     * New easy to use table-based UI for Ampache server configuration. (BR 200703)
     * OPML export for podcast subscriptions. (BR 126120)
