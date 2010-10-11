@@ -317,7 +317,7 @@ PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
         }
     }
 
-    return QAbstractItemView::viewportEvent( event );
+    return Amarok::PrettyTreeView::viewportEvent( event );
 }
 
 QList<QAction *>
