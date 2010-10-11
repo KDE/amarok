@@ -23,6 +23,8 @@
 #include "core/support/Debug.h"
 #include "TrackItem.h"
 
+#include <KStringHandler>
+
 #include <QFontMetrics>
 
 AlbumsModel::AlbumsModel( QObject *parent )
@@ -133,7 +135,7 @@ AlbumsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) 
     else if( type == AlbumType || type == TrackType )
         return leftItem->operator<( *model->itemFromIndex( right ) );
     else
-        return QSortFilterProxyModel::lessThan( left, right );
+        return KStringHandler::naturalCompare( leftItem->text(), model->itemFromIndex(right)->text() ) < 0;
 }
 
 AlbumsProxyModel::Mode
