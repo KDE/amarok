@@ -866,7 +866,8 @@ XmlParseJob::run()
         }
         if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError )
         {
-            error() << "Collection scanner abort error: " << m_reader.error();
+            error() << QString( "Collection scanner abort error: %1 (line %2 col %3)" )
+                .arg( m_reader.error() ).arg( m_reader.lineNumber() ).arg( m_reader.columnNumber() );
             //the error cannot be PrematureEndOfDocumentError, so handle an unrecoverable error here
 
             // At this point, most likely the scanner has crashed and is about to get restarted.
