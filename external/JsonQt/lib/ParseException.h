@@ -59,6 +59,6 @@ namespace JsonQt
 			QString m_expected;
 			QString m_remaining;
 	};
-};
+}
 
 #endif
