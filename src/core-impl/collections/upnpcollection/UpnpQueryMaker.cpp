@@ -66,8 +66,6 @@ UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     , m_internalQM( new UpnpQueryMakerInternal( collection ) )
 {
     reset();
-    connect( m_internalQM, SIGNAL(results(bool,KIO::UDSEntryList)),
-             this, SLOT(slotResults(bool,KIO::UDSEntryList)) );
     connect( m_internalQM, SIGNAL(done()), this, SLOT(slotDone()) );
 
     connect( m_internalQM, SIGNAL( newResultReady( Meta::TrackList ) ),
@@ -126,6 +124,16 @@ DEBUG_BLOCK
     }
     // we don't deal with compilations
     else if( m_queryType == Album && m_albumMode == OnlyCompilations ) {
+        // we don't support any other attribute
+        emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+        emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+        emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+        emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+        emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+        emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+        emit newResultReady( m_collection->collectionId(), QStringList() );
+        emit newResultReady( m_collection->collectionId(), Meta::LabelList() );
         emit queryDone();
         return;
     }
@@ -159,6 +167,15 @@ DEBUG_BLOCK
              default:
                  debug() << this << "Default case: Query type";
                  // we don't support any other attribute
+                 emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+                 emit newResultReady( m_collection->collectionId(), QStringList() );
+                 emit newResultReady( m_collection->collectionId(), Meta::LabelList() );
                  emit queryDone();
                  return;
         }
