@@ -55,7 +55,7 @@ static qint64 duration( QString duration ) {
             mseconds = num * 1000 / den;
         }
         else {
-            mseconds = ("." + frac).toFloat() * 1000;
+            mseconds = QString("." + frac).toFloat() * 1000;
         }
     }
     else {

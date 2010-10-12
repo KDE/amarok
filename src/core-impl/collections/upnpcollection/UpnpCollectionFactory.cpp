@@ -109,7 +109,7 @@ void UpnpCollectionFactory::createCollection( Solid::Device dev )
 {
     QString udn = dev.udi().replace("/org/kde/upnp/uuid:", "");
 
-    KIO::ListJob *job = KIO::listDir( "upnp-ms://" + udn + "/?searchcapabilities=1" );
+    KIO::ListJob *job = KIO::listDir( QString("upnp-ms://" + udn + "/?searchcapabilities=1") );
     connect( job, SIGNAL(entries( KIO::Job *, const KIO::UDSEntryList & )),
             this, SLOT(slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & )) );
     connect( job, SIGNAL(result(KJob *)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
