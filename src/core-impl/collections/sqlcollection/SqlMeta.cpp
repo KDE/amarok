@@ -475,6 +475,9 @@ SqlTrack::setUid( const QString &newUidOwner, const QString &newUid )
     else
         uidUrl += newUid;
 
+    m_cache.insert( "uid_owner", newUidOwner );
+    m_cache.insert( "uid", newUid );
+
     setUidUrl( uidUrl );
 }
 

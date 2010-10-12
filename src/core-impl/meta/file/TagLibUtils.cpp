@@ -165,10 +165,11 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->ID3v2Tag(true)->addFrame( frame );
             }
         }
-        if( changes.contains( "id_owner" ) && changes.contains( Meta::Field::UNIQUEID ) )
+        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
         {
-            TagLib::String uidOwner = Qt4QStringToTString( changes.value( "id_owner" ).toString() );
-            TagLib::ByteVector uid( changes.value( Meta::Field::UNIQUEID ).toString().toAscii().data() );
+            shouldSave = true;
+            TagLib::String uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString() );
+            TagLib::ByteVector uid( changes.value( "uid" ).toString().toAscii().data() );
 
             TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
             TagLib::ID3v2::FrameList::Iterator iter;
@@ -186,8 +187,6 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             TagLib::ID3v2::UniqueFileIdentifierFrame *uidFrame =
                         new TagLib::ID3v2::UniqueFileIdentifierFrame( uidOwner, uid );
             file->ID3v2Tag( true )->addFrame( uidFrame );
-
-            shouldSave = true;
         }
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -214,6 +213,17 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->tag()->removeField("BPM");
             }
         }
+        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
+        {
+            shouldSave = true;
+            TagLib::String uidOwner;
+            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
+                uidOwner = "MUSICBRAINZ_TRACKID";
+            else
+                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
+
+            file->tag()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
+        }
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
@@ -239,6 +249,17 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->tag()->removeField("BPM");
             }
         }
+        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
+        {
+            shouldSave = true;
+            TagLib::String uidOwner;
+            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
+                uidOwner = "MUSICBRAINZ_TRACKID";
+            else
+                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
+
+            file->tag()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
+        }
     }
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
@@ -263,6 +284,17 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             } else {
                 file->xiphComment()->removeField("BPM");
             }
+        }
+        if( changes.contains( "uid_owner" ) && changes.contains( Meta::Field::UNIQUEID ) )
+        {
+            shouldSave = true;
+            TagLib::String uidOwner;
+            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
+                uidOwner = "MUSICBRAINZ_TRACKID";
+            else
+                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
+
+            file->xiphComment()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
         }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
