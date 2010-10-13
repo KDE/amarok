@@ -44,7 +44,6 @@
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
         , Engine::EngineObserver( The::engineController() )
-        , m_separator( 0 )
 {
     DEBUG_BLOCK
 
@@ -258,9 +257,9 @@ Amarok::TrayIcon::setupMenu()
     foreach( QAction* action, m_extraActions )
         contextMenu()->removeAction( action );
 
-    contextMenu()->removeAction( m_separator );
+    contextMenu()->removeAction( m_separator.data() );
 
-    delete m_separator;
+    delete m_separator.data();
 
     if( !m_track )
         return;

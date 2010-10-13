@@ -184,11 +184,11 @@ Track::Track( const KUrl &url )
     d->url = url;
     d->provider = new PermanentUrlStatisticsProvider( url.url() );
     d->readMetaData();
-    d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QWeakPointer<MetaFile::Track::Private>( d ) ) );
-    d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QWeakPointer<MetaFile::Track::Private>( d ) ) );
-    d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QWeakPointer<MetaFile::Track::Private>( d ) ) );
-    d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( QWeakPointer<MetaFile::Track::Private>( d ) ) );
-    d->year = Meta::YearPtr( new MetaFile::FileYear( QWeakPointer<MetaFile::Track::Private>( d ) ) );
+    d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( d ) );
+    d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( d ) );
+    d->genre = Meta::GenrePtr( new MetaFile::FileGenre( d ) );
+    d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( d ) );
+    d->year = Meta::YearPtr( new MetaFile::FileYear( d ) );
 }
 
 Track::~Track()

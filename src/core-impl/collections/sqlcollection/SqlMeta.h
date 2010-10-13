@@ -29,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <QWeakPointer>
 
 namespace Capabilities {
     class AlbumCapabilityDelegate;
@@ -54,8 +55,8 @@ class SqlTrack : public Meta::Track
         static TrackPtr getTrack( int deviceid, const QString &rpath, Collections::SqlCollection *collection );
         static TrackPtr getTrackFromUid( const QString &uid, Collections::SqlCollection *collection );
 
-        SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
-        ~ SqlTrack();
+        SqlTrack( QWeakPointer<Collections::SqlCollection> collection, const QStringList &queryResult );
+        ~SqlTrack();
 
         /** returns the title of this track as stored in the database **/
         virtual QString name() const { return m_title; }
@@ -165,8 +166,8 @@ class SqlTrack : public Meta::Track
         int deviceid() const { return m_deviceid; }
         QString rpath() const { return m_rpath; }
         int trackId() const { return m_trackId; }
-        Collections::SqlCollection* sqlCollection() const { return m_collection; }
-        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, Collections::SqlCollection* collection, bool updateObservers = true );
+        QWeakPointer<Collections::SqlCollection> sqlCollection() const { return m_collection; }
+        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, QWeakPointer<Collections::SqlCollection> collection, bool updateObservers = true );
         void updateData( const QStringList &result, bool forceUpdates = false );
         void setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate );
 
@@ -191,7 +192,7 @@ class SqlTrack : public Meta::Track
         static QString getTrackJoinConditions();
         void updateFileSize();
 
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         Capabilities::TrackCapabilityDelegate *m_capabilityDelegate;
 
         QString m_title;
@@ -240,13 +241,13 @@ class SqlTrack : public Meta::Track
 class SqlArtist : public Meta::Artist
 {
     public:
-        SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
+        SqlArtist( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
         ~SqlArtist();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
 
-        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
+        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -264,7 +265,7 @@ class SqlArtist : public Meta::Artist
 
 
     private:
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         Capabilities::ArtistCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
@@ -283,13 +284,13 @@ class SqlArtist : public Meta::Artist
 class SqlAlbum : public Meta::Album
 {
     public:
-        SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
+        SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist );
         ~SqlAlbum();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( Collections::SqlCollection* collection, int id, const QString &name, int artist );
+        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist );
 
         virtual void invalidateCache();
 
@@ -347,7 +348,7 @@ class SqlAlbum : public Meta::Album
          */
         void setCompilation( bool compilation );
         void setCapabilityDelegate( Capabilities::AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
-        Collections::SqlCollection *sqlCollection() const { return m_collection; }
+        QWeakPointer<Collections::SqlCollection> sqlCollection() const { return m_collection; }
 
     private:
 
@@ -397,7 +398,7 @@ class SqlAlbum : public Meta::Album
        int unsetImageId() const;
 
     private:
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         Capabilities::AlbumCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id; // the id of this album in the database
@@ -427,12 +428,12 @@ class SqlAlbum : public Meta::Album
 class SqlComposer : public Meta::Composer
 {
     public:
-        SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
+        SqlComposer( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
+        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -442,7 +443,7 @@ class SqlComposer : public Meta::Composer
         int id() const { return m_id; }
 
     private:
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -458,12 +459,12 @@ class SqlComposer : public Meta::Composer
 class SqlGenre : public Meta::Genre
 {
     public:
-        SqlGenre( Collections::SqlCollection* collection, int id, const QString &name );
+        SqlGenre( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
+        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -473,7 +474,7 @@ class SqlGenre : public Meta::Genre
         int id() const { return m_id; }
 
     private:
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -489,12 +490,12 @@ class SqlGenre : public Meta::Genre
 class SqlYear : public Meta::Year
 {
     public:
-        SqlYear( Collections::SqlCollection* collection, int id, const QString &name );
+        SqlYear( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( Collections::SqlCollection* collection, int id, const QString &name );
+        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -504,7 +505,7 @@ class SqlYear : public Meta::Year
         int id() const { return m_id; }
 
     private:
-        Collections::SqlCollection* m_collection;
+        QWeakPointer<Collections::SqlCollection> m_collection;
         QString m_name;
         int m_id;
         bool m_tracksLoaded;
@@ -520,7 +521,7 @@ class SqlYear : public Meta::Year
 class SqlLabel : public Meta::Label
 {
 public:
-    SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );
+    SqlLabel( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
 
     virtual QString name() const { return m_name; }
     virtual QString prettyName() const { return m_name; }
@@ -533,7 +534,7 @@ public:
     int id() const { return m_id; }
 
 private:
-    Collections::SqlCollection *m_collection;
+    QWeakPointer<Collections::SqlCollection> m_collection;
     QString m_name;
     int m_id;
     bool m_tracksLoaded;

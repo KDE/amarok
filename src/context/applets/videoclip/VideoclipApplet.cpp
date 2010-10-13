@@ -71,7 +71,6 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )
-        , m_videoWidget( 0 )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {
@@ -92,11 +91,11 @@ VideoclipApplet::init()
 
     // CustomWidget is a special VideoWidget for interaction
     m_videoWidget = new CustomVideoWidget();
-    m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
-    m_videoWidget->hide();
+    m_videoWidget.data()->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
+    m_videoWidget.data()->hide();
     
     // we create path no need to add a lot of fancy thing 
-    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
+    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
 
     
     // Load pixmap
@@ -168,7 +167,7 @@ VideoclipApplet::~VideoclipApplet()
 {
     DEBUG_BLOCK
    
-    delete m_videoWidget;
+    delete m_videoWidget.data();
     qDeleteAll( m_videoItemButtons );
 }
 
@@ -178,7 +177,7 @@ VideoclipApplet::engineNewTrackPlaying()
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
     setCollapseOff();
-    m_videoWidget->hide();
+    m_videoWidget.data()->hide();
 }
 
 void
@@ -212,19 +211,19 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
                     setBusy( false );
                     debug() << " VideoclipApplet | Show VideoWidget";
                     m_widget->hide();
-                    m_videoWidget->show();
-                    m_videoWidget->activateWindow();
-                    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
-                    if( m_videoWidget->isActiveWindow() ) {
+                    m_videoWidget.data()->show();
+                    m_videoWidget.data()->activateWindow();
+                    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
+                    if( m_videoWidget.data()->isActiveWindow() ) {
                         //FIXME dual-screen this seems to still show
                         QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-                        QApplication::sendEvent( m_videoWidget, &e );
+                        QApplication::sendEvent( m_videoWidget.data(), &e );
                     }
                 }
                 else
                 {
                     debug() << " VideoclipApplet | Hide VideoWidget";
-                    m_videoWidget->hide();
+                    m_videoWidget.data()->hide();
                 }
             }
             break;
@@ -237,7 +236,7 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
             debug() <<" video state : buffering";
 
             setBusy( true );
-            m_videoWidget->hide();
+            m_videoWidget.data()->hide();
             m_widget->hide();
             break;
         }
@@ -257,7 +256,7 @@ VideoclipApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, 
     // On playback ending, we hide everything and collapse
     setBusy( false );
     m_widget->hide();
-    m_videoWidget->hide();
+    m_videoWidget.data()->hide();
     
     setCollapseOn();
 
@@ -278,7 +277,7 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
     m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
     m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
-    m_videoWidget->setGeometry( QRect(
+    m_videoWidget.data()->setGeometry( QRect(
         pos().toPoint()+QPoint( standardPadding(), m_headerText->boundingRect().height() + 2.5 * standardPadding() ),
         size().toSize()-QSize( 2 * standardPadding(),  m_headerText->boundingRect().height() + 3.5 * standardPadding() ) ) );
 
@@ -331,7 +330,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     if ( data.empty() )
         return;
     
-    if ( !m_videoWidget->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
+    if ( !m_videoWidget.data()->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
     {
         int width = 130;
         // Properly delete previsouly allocated item
@@ -453,14 +452,14 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         setBusy( false );
         debug() << " VideoclipApplet | Show VideoWidget";
         m_widget->hide();
-        m_videoWidget->show();
-        m_videoWidget->activateWindow();
-        if ( m_videoWidget->inputPaths().isEmpty() )
-            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
-        if( m_videoWidget->isActiveWindow() )
+        m_videoWidget.data()->show();
+        m_videoWidget.data()->activateWindow();
+        if ( m_videoWidget.data()->inputPaths().isEmpty() )
+            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
+        if( m_videoWidget.data()->isActiveWindow() )
         {
             QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-            QApplication::sendEvent( m_videoWidget, &e );
+            QApplication::sendEvent( m_videoWidget.data(), &e );
         }
     }
     

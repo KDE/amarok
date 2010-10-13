@@ -91,11 +91,11 @@ void Track::init( int id /* = -1*/ )
         d->lastFmUri = QUrl( "lastfm://play/tracks/" + QString::number( id ) );
     d->length = 0;
 
-    d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QWeakPointer<Track::Private>( d ) ) );
-    d->artistPtr = Meta::ArtistPtr( new LastFmArtist( QWeakPointer<Track::Private>( d ) ) );
-    d->genrePtr = Meta::GenrePtr( new LastFmGenre( QWeakPointer<Track::Private>( d ) ) );
-    d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QWeakPointer<Track::Private>( d ) ) );
-    d->yearPtr = Meta::YearPtr( new LastFmYear( QWeakPointer<Track::Private>( d ) ) );
+    d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( d ) );
+    d->artistPtr = Meta::ArtistPtr( new LastFmArtist( d ) );
+    d->genrePtr = Meta::GenrePtr( new LastFmGenre( d ) );
+    d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
+    d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
     QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );

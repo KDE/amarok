@@ -58,10 +58,10 @@ TestSqlArtist::TestSqlArtist()
 void
 TestSqlArtist::testSortableName()
 {
-    Meta::ArtistPtr artistWithThe( new Meta::SqlArtist( 0, 1, "The Foo" ) );
+    Meta::ArtistPtr artistWithThe( new Meta::SqlArtist( QWeakPointer<Collections::SqlCollection>(), 1, "The Foo" ) );
     QCOMPARE( artistWithThe->sortableName(), QString( "Foo, The" ) );
 
-    Meta::ArtistPtr artistWithoutThe( new Meta::SqlArtist( 0, 1, "No The Foo" ) );
+    Meta::ArtistPtr artistWithoutThe( new Meta::SqlArtist( QWeakPointer<Collections::SqlCollection>(), 1, "No The Foo" ) );
     QCOMPARE( artistWithoutThe->sortableName(), QString( "No The Foo" ) );
 }
 

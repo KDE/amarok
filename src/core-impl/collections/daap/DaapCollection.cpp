@@ -113,9 +113,9 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
     QString key =  serverKey( service.data()->hostName(), service.data()->port() );
     if( m_collectionMap.contains( key ) )
     {
-        DaapCollection *coll = m_collectionMap[ key ];
+        QWeakPointer<DaapCollection> coll = m_collectionMap[ key ];
         if( coll )
-            coll->serverOffline();  //collection will be deleted by collectionmanager
+            coll.data()->serverOffline();  //collection will be deleted by collectionmanager
         else
             warning() << "collection already null";
         
@@ -174,7 +174,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
     foreach( QWeakPointer< DaapCollection > it, m_collectionMap )
     {
-        if( it == collection )
+        if( it.data() == collection )
         {
             m_collectionMap.remove( m_collectionMap.key( it ) );
             break;
@@ -223,9 +223,9 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 
    // debug() << "creating daap collection with" << host << ip << port;
     QWeakPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
-    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
-    m_collectionMap.insert( serverKey( host, port ), coll );
+    connect( coll.data(), SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+    connect( coll.data(), SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+    m_collectionMap.insert( serverKey( host, port ), coll.data() );
 }
 
 //DaapCollection

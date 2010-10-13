@@ -84,7 +84,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         BrowserDock *browserDock() const { return m_browserDock.data(); }
         QWeakPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QWeakPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        Playlist::Dock * playlistDock() const { return m_playlistDock; }
+        QWeakPointer<Playlist::Dock> playlistDock() const { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -192,11 +192,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QWeakPointer<KMenu>     m_settingsMenu;
         QWeakPointer<BrowserDock>  m_browserDock;
         QStringList         m_browserNames;
-        QWeakPointer<KMenu>     m_searchMenu;
+        // QWeakPointer<KMenu>     m_searchMenu;
         //QWeakPointer<KVBox>     m_statusbarArea;
 
-        QWeakPointer<QTimer>           m_timer;  //search filter timer
-        QWeakPointer<QSplitter>        m_splitter;
+        // QWeakPointer<QTimer>           m_timer;  //search filter timer
+        // QWeakPointer<QSplitter>        m_splitter;
 #ifdef DEBUG_BUILD_TYPE
         QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
@@ -205,8 +205,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         Meta::TrackPtr m_currentTrack;
 
-        ContextDock * m_contextDock;
-        Playlist::Dock * m_playlistDock;
+        QWeakPointer<ContextDock> m_contextDock;
+        QWeakPointer<Playlist::Dock> m_playlistDock;
 
         QWeakPointer<SlimToolbar> m_slimToolbar;
         QWeakPointer<MainToolbar> m_mainToolbar;

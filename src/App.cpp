@@ -550,7 +550,7 @@ void App::applySettings( bool firstTime )
 
     if( AmarokConfig::showTrayIcon() && ! m_tray )
     {
-        m_tray = new Amarok::TrayIcon( m_mainWindow );
+        m_tray = new Amarok::TrayIcon( m_mainWindow.data() );
     }
     else if( !AmarokConfig::showTrayIcon() && m_tray )
     {
@@ -570,7 +570,7 @@ void App::applySettings( bool firstTime )
             || !AmarokConfig::showTrayIcon() )
         {
             PERF_LOG( "showing main window again" )
-            m_mainWindow->show();
+            m_mainWindow.data()->show();
             PERF_LOG( "after showing mainWindow" )
         }
     }

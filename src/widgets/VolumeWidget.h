@@ -40,7 +40,7 @@ class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
     Q_OBJECT
 public:
     VolumeWidget( QWidget * );
-    Amarok::VolumeSlider* slider() const { return m_slider; }
+    Amarok::VolumeSlider* slider() const { return m_slider.data(); }
 
 private Q_SLOTS:
     void toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );

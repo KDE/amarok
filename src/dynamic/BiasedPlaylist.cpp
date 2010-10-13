@@ -254,14 +254,14 @@ Dynamic::BiasedPlaylist::solverFinished()
 
     The::statusBar()->endProgressOperation( m_solver.data() );
 
-    bool success = m_solver.d.data()->success();
+    bool success = m_solver.data()->success();
     if( success )
     {
         QMutexLocker locker(&m_bufferMutex);
         m_buffer.append( m_solver.data()->solution() );
     }
 
-    m_solver = 0;
+    m_solver.data()->deleteLater();
 
     // empty collection just give up.
     if(m_buffer.isEmpty())

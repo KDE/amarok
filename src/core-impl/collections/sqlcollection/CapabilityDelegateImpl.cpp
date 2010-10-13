@@ -155,7 +155,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
             if( QFile::remove( m_track->playableUrl().path() ) )
             {
                 QString sql = QString( "DELETE FROM tracks WHERE id = %1;" ).arg( m_track->trackId() );
-                m_track->sqlCollection()->sqlStorage()->query( sql );
+                m_track->sqlCollection().data()->sqlStorage()->query( sql );
             }
         }
 
@@ -341,9 +341,9 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
             debug() << "creating load timecode capability";
             return new TimecodeLoadCapabilityImpl( track );
         case Capabilities::Capability::ReadLabel:
-            return new Capabilities::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
+            return new Capabilities::SqlReadLabelCapability( track, track->sqlCollection().data()->sqlStorage() );
         case Capabilities::Capability::WriteLabel:
-            return new Capabilities::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
+            return new Capabilities::SqlWriteLabelCapability( track, track->sqlCollection().data()->sqlStorage() );
         case Capabilities::Capability::FindInSource:
             return new FindInSourceCapabilityImpl( track );
 
@@ -444,17 +444,17 @@ AlbumCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         case Capabilities::Capability::CustomActions:
         {
             QList<QAction*> actions;
-            actions.append( new CompilationAction( album->sqlCollection(), album ) );
+            actions.append( new CompilationAction( album->sqlCollection().data(), album ) );
 
-            QAction *separator          = new QAction( album->sqlCollection() );
-            QAction *displayCoverAction = new DisplayCoverAction( album->sqlCollection(), Meta::AlbumPtr( album ) );
-            QAction *unsetCoverAction   = new UnsetCoverAction( album->sqlCollection(), Meta::AlbumPtr( album ) );
+            QAction *separator          = new QAction( album->sqlCollection().data() );
+            QAction *displayCoverAction = new DisplayCoverAction( album->sqlCollection().data(), Meta::AlbumPtr( album ) );
+            QAction *unsetCoverAction   = new UnsetCoverAction( album->sqlCollection().data(), Meta::AlbumPtr( album ) );
 
             separator->setSeparator( true );
             actions.append( separator );
             actions.append( displayCoverAction );
-            actions.append( new FetchCoverAction( album->sqlCollection(), Meta::AlbumPtr( album ) ) );
-            actions.append( new SetCustomCoverAction( album->sqlCollection(), Meta::AlbumPtr( album ) ) );
+            actions.append( new FetchCoverAction( album->sqlCollection().data(), Meta::AlbumPtr( album ) ) );
+            actions.append( new SetCustomCoverAction( album->sqlCollection().data(), Meta::AlbumPtr( album ) ) );
             if( !album->hasImage() )
             {
                 displayCoverAction->setEnabled( false );

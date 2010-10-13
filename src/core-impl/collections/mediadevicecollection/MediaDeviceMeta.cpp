@@ -451,7 +451,7 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     }
     else
     {
-        albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection.d, newAlbum ) );
+        albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection.data(), newAlbum ) );
         albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
     }
 

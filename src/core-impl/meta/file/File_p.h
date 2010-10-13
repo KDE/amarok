@@ -31,7 +31,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QSet>
 #include <QString>
 #include <QTextCodec>
@@ -126,7 +126,7 @@ public:
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
     Statistics::StatisticsProvider *provider;
-    QPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
+    QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
 
     void readMetaData();
     QVariantMap changes;
@@ -351,7 +351,7 @@ public:
 
     QString name() const
     {
-        const QString artist = d->m_data.artist;
+        const QString artist = d.data()->m_data.artist;
         return artist;
     }
 
@@ -364,7 +364,7 @@ public:
         return name() == other.name();
     }
 
-    QPointer<MetaFile::Track::Private> const d;
+    QWeakPointer<MetaFile::Track::Private> const d;
 };
 
 class FileAlbum : public Meta::Album
@@ -399,7 +399,7 @@ public:
     {
         if( d )
         {
-            const QString albumName = d->m_data.album;
+            const QString albumName = d.data()->m_data.album;
             return albumName;
         }
         else
@@ -420,7 +420,7 @@ public:
         return name() == other.name();
     }
 
-    QPointer<MetaFile::Track::Private> const d;
+    QWeakPointer<MetaFile::Track::Private> const d;
 };
 
 class FileGenre : public Meta::Genre
@@ -438,7 +438,7 @@ public:
 
     QString name() const
     {
-        const QString genreName = d->m_data.genre;
+        const QString genreName = d.data()->m_data.genre;
         return genreName;
     }
 
@@ -451,7 +451,7 @@ public:
         return name() == other.name();
     }
 
-    QPointer<MetaFile::Track::Private> const d;
+    QWeakPointer<MetaFile::Track::Private> const d;
 };
 
 class FileComposer : public Meta::Composer
@@ -469,7 +469,7 @@ public:
 
     QString name() const
     {
-        const QString composer = d->m_data.composer;
+        const QString composer = d.data()->m_data.composer;
         return composer;
      }
 
@@ -482,7 +482,7 @@ public:
         return name() == other.name();
     }
 
-    QPointer<MetaFile::Track::Private> const d;
+    QWeakPointer<MetaFile::Track::Private> const d;
 };
 
 class FileYear : public Meta::Year
@@ -500,7 +500,7 @@ public:
 
     QString name() const
     {
-        const QString year = QString::number( d->m_data.year );
+        const QString year = QString::number( d.data()->m_data.year );
         return year;
     }
 
@@ -513,7 +513,7 @@ public:
         return name() == other.name();
     }
 
-    QPointer<MetaFile::Track::Private> const d;
+    QWeakPointer<MetaFile::Track::Private> const d;
 };
 
 

@@ -48,7 +48,7 @@ namespace AmarokScript
 
     void AmarokWindowScript::addToolsSeparator()
     {
-        QAction* action = m_toolsMenu->addSeparator();
+        QAction* action = m_toolsMenu.data()->addSeparator();
         m_guiPtrList->append( action );
     }
 
@@ -59,11 +59,11 @@ namespace AmarokScript
 
     void AmarokWindowScript::addSettingsSeparator()
     {
-        QAction* action = m_settingsMenu->addSeparator();
+        QAction* action = m_settingsMenu.data()->addSeparator();
         m_guiPtrList->append( action );
     }
 
-    bool AmarokWindowScript::addMenuAction( KMenu* menu, QString id, QString menuTitle, QString menuProperty, QString icon )
+    bool AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
     {
         DEBUG_BLOCK
 
@@ -81,7 +81,7 @@ namespace AmarokScript
             ac->readSettings();
 
             // add the action to the given menu
-            menu->addAction( ac->action( id ) );
+            menu.data()->addAction( ac->action( id ) );
 
             m_guiPtrList->append( action );
 
