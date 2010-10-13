@@ -24,7 +24,7 @@
 
 #include <KAction>
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <QStringList>
 
 namespace Amarok
@@ -49,7 +49,7 @@ private:
     void engineVolumeChanged( int value );
     void engineMuteStateChanged( bool mute );
 
-    QPointer<Amarok::VolumeSlider> m_slider;
+    QWeakPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
     QStringList m_icons;
 };

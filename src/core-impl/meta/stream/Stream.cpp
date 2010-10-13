@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <QString>
 
 using namespace MetaStream;
@@ -33,8 +33,8 @@ Track::Track( const KUrl &url )
     DEBUG_BLOCK
 
     d->url = url;
-    d->artistPtr = Meta::ArtistPtr( new StreamArtist( QPointer<Track::Private>( d ) ) );
-    d->albumPtr = Meta::AlbumPtr( new StreamAlbum( QPointer<Track::Private>( d ) ) );
+    d->artistPtr = Meta::ArtistPtr( new StreamArtist( d ) );
+    d->albumPtr = Meta::AlbumPtr( new StreamAlbum( d ) );
     d->genrePtr = Meta::GenrePtr( new Meta::DefaultGenre() );
     d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
     d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );

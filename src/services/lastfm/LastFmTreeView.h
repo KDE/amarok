@@ -25,7 +25,7 @@
 
 #include <QList>
 #include <QMutex>
-#include <QPointer>
+#include <QWeakPointer>
 
 class QContextMenuEvent;
 class QMouseEvent;

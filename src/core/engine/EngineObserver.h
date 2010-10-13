@@ -23,7 +23,7 @@
 
 #include <Phonon/Global>
 #include <QHash>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QSet>
 
 class QString;

@@ -124,7 +124,7 @@ private:
       
     void loadConfig();
 
-    typedef QPointer< Context::Applet > AppletPointer;    
+    typedef QWeakPointer< Context::Applet > AppletPointer;    
 
     // holds what is currently being shown
     ContextState m_curState;

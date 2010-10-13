@@ -22,7 +22,7 @@
 
 #include "KVBox"
 
-#include <QPointer>
+#include <QWeakPointer>
 
 
 
@@ -51,9 +51,9 @@ protected slots:
 private:
     KVBox * m_mainWidget;
 
-    QPointer<Context::ContextScene> m_corona;
-    QPointer<Context::ContextView>  m_contextView;
-    QPointer<Context::ToolbarView>  m_contextToolbarView;
+    QWeakPointer<Context::ContextScene> m_corona;
+    QWeakPointer<Context::ContextView>  m_contextView;
+    QWeakPointer<Context::ToolbarView>  m_contextToolbarView;
 
 };
 

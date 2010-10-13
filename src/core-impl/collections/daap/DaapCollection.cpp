@@ -172,7 +172,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     if( !collection )
         return;
     disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
-    foreach( QPointer< DaapCollection > it, m_collectionMap )
+    foreach( QWeakPointer< DaapCollection > it, m_collectionMap )
     {
         if( it == collection )
         {
@@ -222,7 +222,7 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
         return;
 
    // debug() << "creating daap collection with" << host << ip << port;
-    QPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
+    QWeakPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
     connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
     connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
     m_collectionMap.insert( serverKey( host, port ), coll );

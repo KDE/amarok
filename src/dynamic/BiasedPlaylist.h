@@ -26,7 +26,7 @@
 
 #include <QDomElement>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 
 
 namespace Dynamic
@@ -72,7 +72,7 @@ namespace Dynamic
 
             QList<Bias*> m_biases;
 
-            QPointer<BiasSolver> m_solver;
+            QWeakPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };

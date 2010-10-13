@@ -28,7 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
@@ -107,7 +107,7 @@ public:
 #if QT_VERSION >= 0x040600
         QWeakPointer<QObject> receiver;
 #else
-        QPointer<QObject> receiver;
+        QWeakPointer<QObject> receiver;
 #endif
         const char *method;
         Qt::ConnectionType type;

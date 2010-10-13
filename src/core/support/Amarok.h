@@ -27,7 +27,7 @@
 #include <KUrl> // recursiveUrlExpand
 
 #include <QDir>
-#include <QPointer>
+#include <QWeakPointer>
 
 class QColor;
 class QDateTime;
@@ -47,7 +47,7 @@ namespace Amarok
     const int GUI_THREAD_ID = 0;
 
     extern QMutex globalDirsMutex;
-    extern QPointer<KActionCollection> actionCollectionObject;
+    extern QWeakPointer<KActionCollection> actionCollectionObject;
 
     namespace ColorScheme
     {

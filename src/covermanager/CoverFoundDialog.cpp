@@ -537,7 +537,7 @@ void CoverFoundDialog::display()
         return;
 
     const QPixmap &pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
-    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
+    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
     dlg->show();
     dlg->raise();
     dlg->activateWindow();

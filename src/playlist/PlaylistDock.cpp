@@ -203,7 +203,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     if( userProvider == 0 )
         return;
     QAction *action = new KAction( userProvider->icon(), i18n("&Save playlist to \"%1\"", provider->prettyName() ), this );
-    action->setData( QVariant::fromValue( QPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
+    action->setData( QVariant::fromValue( QWeakPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( provider->objectName(), action );
 
     m_savePlaylistMenu->addAction( action );
@@ -230,8 +230,8 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     if( action == 0 )
         return;
 
-    Playlists::UserPlaylistProvider *provider =
-            action->data().value< QPointer<Playlists::UserPlaylistProvider> >();
+    QWeakPointer<Playlists::UserPlaylistProvider> pointer = action->data().value<Playlists::UserPlaylistProvider>;
+    Playlists::UserPlaylistProvider* provider = pointer.data();
 
     The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
 }

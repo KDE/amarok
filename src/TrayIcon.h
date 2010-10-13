@@ -26,7 +26,7 @@
 #include <KStatusNotifierItem> // baseclass
 
 #include <QAction>
-#include <QPointer>
+#include <QWeakPointer>
 
 
 namespace Amarok {
@@ -63,7 +63,7 @@ private:
     Meta::TrackPtr m_track;
 
     SmartPointerList<QAction> m_extraActions;
-    QPointer<QAction> m_separator;
+    QWeakPointer<QAction> m_separator;
 };
 
 }

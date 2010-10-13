@@ -31,7 +31,7 @@
 #include <Phonon/Path>
 #include <Phonon/MediaObject>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 
 // Forward declarations
@@ -99,7 +99,7 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
 
 
     private:
-        QPointer<CustomVideoWidget> m_videoWidget;
+        QWeakPointer<CustomVideoWidget> m_videoWidget;
 
         // The two big container, only one who need a resize
         TextScrollingWidget     *m_headerText;

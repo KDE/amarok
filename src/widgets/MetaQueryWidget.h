@@ -22,7 +22,7 @@
 #define AMAROK_METAQUERY_H
 
 #include <QWidget>
-#include <QPointer>
+#include <QWeakPointer>
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
@@ -182,7 +182,7 @@ class MetaQueryWidget : public QWidget
 
         Filter m_filter;
 
-        QMap< QObject*, QPointer<KComboBox> > m_runningQueries;
+        QMap< QObject*, QWeakPointer<KComboBox> > m_runningQueries;
 };
 
 #endif

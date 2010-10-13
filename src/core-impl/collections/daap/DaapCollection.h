@@ -26,7 +26,7 @@
 #include <QMap>
 #include <QHash>
 #include <QHostInfo>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QtGlobal>
 #include <QSharedPointer>
 
@@ -68,7 +68,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
     private:
         DNSSD::ServiceBrowser* m_browser;
 
-        QMap<QString, QPointer<DaapCollection> > m_collectionMap;
+        QMap<QString, QWeakPointer<DaapCollection> > m_collectionMap;
 
         QHash<int, quint16> m_lookupHash;
 };

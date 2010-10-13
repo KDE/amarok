@@ -32,7 +32,7 @@
 #include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
-#include <QPointer>
+#include <QWeakPointer>
 
 class CoverFoundItem;
 class CoverFoundSideBar;
@@ -124,7 +124,7 @@ private:
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
     QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
-    QPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
+    QWeakPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
     QSignalMapper *m_errorSignalMapper;
 
     Q_DISABLE_COPY( CoverFoundDialog )

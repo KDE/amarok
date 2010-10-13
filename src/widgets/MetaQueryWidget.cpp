@@ -520,7 +520,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
 
     if( populateQuery != 0 )
     {
-        m_runningQueries.insert(populateQuery, QPointer<KComboBox>(combo));
+        m_runningQueries.insert(populateQuery, QWeakPointer<KComboBox>(combo));
         connect( populateQuery, SIGNAL(newResultReady(QString,QStringList)),
                 SLOT(populateComboBox(QString,QStringList)) );
         connect( populateQuery, SIGNAL(queryDone()),
@@ -558,7 +558,7 @@ MetaQueryWidget::populateComboBox( QString collectionId, QStringList results )
     if( !query )
         return;
 
-    QPointer<KComboBox> combo = m_runningQueries.value(query);
+    QWeakPointer<KComboBox> combo = m_runningQueries.value(query);
     if( combo.isNull() )
         return;
 

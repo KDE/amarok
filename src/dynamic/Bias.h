@@ -27,7 +27,7 @@
 #include <QDomElement>
 #include <QMutex>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QSet>
 
 namespace Collections {
@@ -233,7 +233,7 @@ namespace Dynamic
         private:
             double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
-            QPointer<Collections::QueryMaker> m_qm;
+            QWeakPointer<Collections::QueryMaker> m_qm;
             MetaQueryWidget::Filter m_filter;
 
             // Disable copy constructor and assignment

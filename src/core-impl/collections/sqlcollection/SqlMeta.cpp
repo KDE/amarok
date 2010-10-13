@@ -39,7 +39,7 @@
 #include <QFile>
 #include <QMultiHash>
 #include <QMutexLocker>
-#include <QPointer>
+#include <QWeakPointer>
 #if QT_VERSION >= 0x040600
 #include <QPixmapCache>
 #endif
@@ -196,7 +196,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
 
 SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
     : Track()
-    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    , m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     , m_capabilityDelegate( 0 )
     , m_batchUpdate( false )
     , m_writeAllStatisticsFields( false )
@@ -983,7 +983,7 @@ SqlTrack::setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QString &name ) : Artist()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    ,m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     ,m_delegate( 0 )
     ,m_name( name )
     ,m_id( id )
@@ -1003,7 +1003,7 @@ void
 SqlArtist::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<Collections::SqlCollection>( collection );
+    m_collection = QWeakPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1081,7 +1081,7 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
 SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist ) : Album()
-    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    , m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     , m_delegate( 0 )
     , m_name( name )
     , m_id( id )
@@ -1107,7 +1107,7 @@ void
 SqlAlbum::updateData( Collections::SqlCollection *collection, int id, const QString &name, int artist )
 {
     m_mutex.lock();
-    m_collection = QPointer<Collections::SqlCollection>( collection );
+    m_collection = QWeakPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_artistId = artist;
@@ -1743,7 +1743,7 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( Collections::SqlCollection* collection, int id, const QString &name ) : Composer()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    ,m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1756,7 +1756,7 @@ void
 SqlComposer::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<Collections::SqlCollection>( collection );
+    m_collection = QWeakPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1798,7 +1798,7 @@ SqlComposer::tracks()
 //---------------SqlGenre---------------------------------
 
 SqlGenre::SqlGenre( Collections::SqlCollection* collection, int id, const QString &name ) : Genre()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    ,m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1811,7 +1811,7 @@ void
 SqlGenre::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<Collections::SqlCollection>( collection );
+    m_collection = QWeakPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1853,7 +1853,7 @@ SqlGenre::tracks()
 //---------------SqlYear---------------------------------
 
 SqlYear::SqlYear( Collections::SqlCollection* collection, int id, const QString &name ) : Year()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    ,m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
@@ -1866,7 +1866,7 @@ void
 SqlYear::updateData( Collections::SqlCollection *collection, int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = QPointer<Collections::SqlCollection>( collection );
+    m_collection = QWeakPointer<Collections::SqlCollection>( collection );
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1908,7 +1908,7 @@ SqlYear::tracks()
 //---------------SqlLabel---------------------------------
 
 SqlLabel::SqlLabel( Collections::SqlCollection *collection, int id, const QString &name ) : Meta::Label()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    ,m_collection( QWeakPointer<Collections::SqlCollection>( collection ) )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )

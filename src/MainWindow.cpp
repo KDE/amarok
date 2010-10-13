@@ -121,7 +121,7 @@ class ContextWidget : public KVBox
         }
 };
 
-QPointer<MainWindow> MainWindow::s_instance = 0;
+QWeakPointer<MainWindow> MainWindow::s_instance = 0;
 
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }

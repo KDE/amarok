@@ -18,7 +18,7 @@
 #define LAYOUTEDITDIALOG_H
 
 #include <QDialog>
-#include <QPointer>
+#include <QWeakPointer>
 
 class HintingLineEdit;
 class QLineEdit;
@@ -40,7 +40,7 @@ private slots:
     void apply();
     void setPeerWidth( bool peer );
 private:
-    QPointer<TokenWithLayout> m_token;
+    QWeakPointer<TokenWithLayout> m_token;
     HintingLineEdit *m_prefix, *m_suffix;
     QLabel *m_element;
     QSlider *m_width;

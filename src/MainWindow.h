@@ -28,7 +28,7 @@
 #include <KMainWindow>
 #include <KVBox>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 class CollectionWidget;
 class SlimToolbar;
@@ -81,9 +81,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         void activate();
 
-        BrowserDock *browserDock() const { return m_browserDock; }
-        QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
-        QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
+        BrowserDock *browserDock() const { return m_browserDock.data(); }
+        QWeakPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
+        QWeakPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
         Playlist::Dock * playlistDock() const { return m_playlistDock; }
         void deleteBrowsers();
 
@@ -187,18 +187,18 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
 
-        QPointer<QMenuBar>  m_menubar;
-        QPointer<KMenu>     m_toolsMenu;
-        QPointer<KMenu>     m_settingsMenu;
-        QPointer<BrowserDock>  m_browserDock;
+        QWeakPointer<QMenuBar>  m_menubar;
+        QWeakPointer<KMenu>     m_toolsMenu;
+        QWeakPointer<KMenu>     m_settingsMenu;
+        QWeakPointer<BrowserDock>  m_browserDock;
         QStringList         m_browserNames;
-        QPointer<KMenu>     m_searchMenu;
-        //QPointer<KVBox>     m_statusbarArea;
+        QWeakPointer<KMenu>     m_searchMenu;
+        //QWeakPointer<KVBox>     m_statusbarArea;
 
-        QPointer<QTimer>           m_timer;  //search filter timer
-        QPointer<QSplitter>        m_splitter;
+        QWeakPointer<QTimer>           m_timer;  //search filter timer
+        QWeakPointer<QSplitter>        m_splitter;
 #ifdef DEBUG_BUILD_TYPE
-        QPointer<NetworkAccessViewer> m_networkViewer;
+        QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
 
         QByteArray                 m_splitterState;
@@ -208,15 +208,15 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         ContextDock * m_contextDock;
         Playlist::Dock * m_playlistDock;
 
-        QPointer<SlimToolbar> m_slimToolbar;
-        QPointer<MainToolbar> m_mainToolbar;
+        QWeakPointer<SlimToolbar> m_slimToolbar;
+        QWeakPointer<MainToolbar> m_mainToolbar;
 
         void    createActions();
         void    createMenus();
         int     m_lastBrowser;
         int     m_searchField;
 
-        static QPointer<MainWindow> s_instance;
+        static QWeakPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
         bool m_layoutEverRestored;

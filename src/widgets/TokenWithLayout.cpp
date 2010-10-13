@@ -91,7 +91,7 @@ Token * TokenWithLayoutFactory::createToken( const QString &text, const QString 
     return new TokenWithLayout( text, iconName, value, parent );
 }
 
-QPointer<LayoutEditDialog> TokenWithLayout::m_dialog = 0L;
+QWeakPointer<LayoutEditDialog> TokenWithLayout::m_dialog = 0L;
 
 TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent )
     : Token( text, iconName, value, parent  )

@@ -62,23 +62,23 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
 
     // now we create the toolbar
     m_toolbar = new AppletToolbar( containment );
-    m_toolbar->setZValue( m_toolbar->zValue() + 1000 );
+    m_toolbar.data()->setZValue( m_toolbar.data()->zValue() + 1000 );
     // scene()->addItem( m_toolbar );
-    m_toolbar->setPos( TOOLBAR_X_OFFSET, 0 );
+    m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
-   connect( m_toolbar, SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
-   connect( m_toolbar, SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
-   connect( m_toolbar, SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
-   connect( m_toolbar, SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
+   connect( m_toolbar.data(), SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
+   connect( m_toolbar.data(), SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
+   connect( m_toolbar.data(), SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
+   connect( m_toolbar.data(), SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
 
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
-       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar, SLOT( appletAdded( Plasma::Applet*, int ) ) );
-       connect( m_toolbar, SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
+       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar.data(), SLOT( appletAdded( Plasma::Applet*, int ) ) );
+       connect( m_toolbar.data(), SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
        connect( cont, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
-       connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
-       connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
+       connect( m_toolbar.data(), SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
+       connect( m_toolbar.data(), SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
    }
 
    //make background transparent
@@ -117,7 +117,7 @@ Context::ToolbarView::resizeEvent( QResizeEvent *event )
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
 
     if( m_toolbar )
-        m_toolbar->setGeometry( sceneRect() );
+        m_toolbar.data()->setGeometry( sceneRect() );
 }
 
 void
@@ -142,7 +142,7 @@ void
 Context::ToolbarView::toggleConfigMode()
 {
     DEBUG_BLOCK
-    if( m_toolbar->configEnabled() ) // set up config stuff
+    if( m_toolbar.data()->configEnabled() ) // set up config stuff
     {
         debug() << "got config enabled, creating all the move overlays";
           // now add the overlays that handle the drag-n-dropping
@@ -158,13 +158,13 @@ Context::ToolbarView::toggleConfigMode()
                 debug() << "add item has boundingRect:" << item->boundingRect() << "and geom:" << item->geometry() << "and sizehint" << item->effectiveSizeHint( Qt::PreferredSize );
         } */
 
-        for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
+        for( int i = 0; i < m_toolbar.data()->appletLayout()->count(); i++ )
         {
             debug() << "creating a move overlay";
-            Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
+            Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar.data()->appletLayout()->itemAt( i ) );
             if( item )
             {
-                Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
+                Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
                 connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
                 connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
                 connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
@@ -198,7 +198,7 @@ Context::ToolbarView::appletRemoved( Plasma::Applet* applet )
             debug() << "got an overlay to remove";
         }
     }
-    m_toolbar->appletRemoved( applet );
+    m_toolbar.data()->appletRemoved( applet );
     applet->deleteLater();
 }
 
@@ -209,7 +209,7 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
     Q_UNUSED( applet )
     Q_UNUSED( loc )
 
-    if( m_toolbar->configEnabled() )
+    if( m_toolbar.data()->configEnabled() )
         recreateOverlays();
 }
 
@@ -217,7 +217,7 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
 void
 Context::ToolbarView::refreshOverlays()
 {
-    m_toolbar->refreshAddIcons();
+    m_toolbar.data()->refreshAddIcons();
 }
 
 void
@@ -233,13 +233,13 @@ Context::ToolbarView::recreateOverlays()
     QBrush overlayBrush( overlayColor );
     QPalette p( palette() );
     p.setBrush( QPalette::Window, overlayBrush );
-    for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
+    for( int i = 0; i < m_toolbar.data()->appletLayout()->count(); i++ )
     {
         debug() << "creating a move overlay";
-        Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
+        Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar.data()->appletLayout()->itemAt( i ) );
         if( item )
         {
-            Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
+            Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
             connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
             connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
             connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );

@@ -24,7 +24,7 @@
 
 #include <QDateTime>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QTimer>
 
 #include <KSharedPtr>
@@ -91,11 +91,11 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
         QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), d, SLOT( slotNewCollection( Collections::Collection* ) ) );
     }
 
-    d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
-    d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
-    d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
-    d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
-    d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
+    d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( d ) );
+    d->artistPtr = Meta::ArtistPtr( new ProxyArtist( d ) );
+    d->genrePtr = Meta::GenrePtr( new ProxyGenre( d ) );
+    d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
+    d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
 }
 
 MetaProxy::Track::~Track()
