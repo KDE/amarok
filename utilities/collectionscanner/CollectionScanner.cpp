@@ -548,16 +548,14 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 #endif
 #endif
 
-    AttributeHash attributes;
+    TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, readStyle );
 
     AFTUtility aftutil;
-    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
-
-    TagLib::FileRef fileref;
-    TagLib::Tag *tag = 0;
-    fileref = TagLib::FileRef( encodedName, true, readStyle );
+    AttributeHash attributes;
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path, fileref ) );
 
     bool isValid = false;
+    TagLib::Tag *tag = 0;
     Amarok::FileType fileType = Amarok::Unknown;
     if( !fileref.isNull() )
     {

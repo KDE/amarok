@@ -211,21 +211,14 @@ AFTUtility::randomUniqueId( QCryptographicHash &md5 )
 }
 
 const QString
-AFTUtility::readUniqueId( const QString &path )
+AFTUtility::readUniqueId( const QString &path, const TagLib::FileRef &fref )
 {
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
-#else
-    QByteArray fileName = QFile::encodeName( path );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
+    const TagLib::FileRef &fileref = fref.isNull() ? createFileRef( path ) : fref;
 
     QCryptographicHash md5( QCryptographicHash::Md5 );
     QFile qfile( path );
     QByteArray size;
     md5.addData( size.setNum( qfile.size() ) );
-
-    TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
 
     if( fileref.isNull() )
         return randomUniqueId( md5 );
@@ -258,4 +251,16 @@ AFTUtility::readUniqueId( const QString &path )
     }
 
     return randomUniqueId( md5 );
+}
+
+const TagLib::FileRef
+AFTUtility::createFileRef( const QString &path )
+{
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( path );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+    return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
 }

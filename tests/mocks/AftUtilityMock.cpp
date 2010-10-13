@@ -38,7 +38,7 @@ AFTUtility::randomUniqueId( QCryptographicHash &md5 )
 }
 
 const QString
-AFTUtility::readUniqueId( const QString &path )
+AFTUtility::readUniqueId( const QString &path, const TagLib::FileRef& )
 {
     Q_UNUSED( path )
     return "aftutilitymock";

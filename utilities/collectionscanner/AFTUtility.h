@@ -34,6 +34,9 @@ class AFTUtility
         const QString readEmbeddedUniqueId( const TagLib::FileRef &fileref );
 
         const QString randomUniqueId( QCryptographicHash &md5 );
-        const QString readUniqueId( const QString &path );
+        const QString readUniqueId( const QString &path, const TagLib::FileRef &fref = TagLib::FileRef() );
+
+    private:
+        const TagLib::FileRef createFileRef( const QString &path );
 };
 #endif

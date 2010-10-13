@@ -23,6 +23,8 @@ macro(link_database_test test_target)
         ${QT_QTCORE_LIBRARY}
         ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
+        ${TAGLIB-EXTRAS_LIBRARIES}
+        ${TAGLIB_LIBRARIES}
         ${ZLIB_LIBRARIES})
 
 endmacro(link_database_test)
@@ -253,6 +255,8 @@ target_link_libraries( testsqlcollectionlocation
         ${QT_QTCORE_LIBRARY}
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
+        ${TAGLIB-EXTRAS_LIBRARIES}
+        ${TAGLIB_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
 
