@@ -98,7 +98,7 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
+        QScopedPointer<Capabilities::StatisticsCapability> ec( track->create<Capabilities::StatisticsCapability>() );
         if( ec )
         {   
             ec->beginStatisticsUpdate();

@@ -64,7 +64,7 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
     debug() << "deleting old auto timecodes";
     if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
     {
-        TimecodeLoadCapability *tcl = track->create<TimecodeLoadCapability>();
+        QScopedPointer<TimecodeLoadCapability> tcl( track->create<TimecodeLoadCapability>() );
         BookmarkList list = tcl->loadTimecodes();
         foreach( AmarokUrlPtr oldUrl, list )
         {

@@ -222,7 +222,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    Capabilities::EditCapability* ec = track->create<Capabilities::EditCapability>();
+    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     return ( ec && ec->isEditable() );
 }
 

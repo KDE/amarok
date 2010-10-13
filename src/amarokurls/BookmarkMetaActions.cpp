@@ -76,9 +76,8 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     if ( track && track->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
     {
         debug() << " has WriteTimecode  ";
-        Capabilities::TimecodeWriteCapability *tcw = track->create<Capabilities::TimecodeWriteCapability>();
+        QScopedPointer<Capabilities::TimecodeWriteCapability> tcw( track->create<Capabilities::TimecodeWriteCapability>() );
         tcw->writeTimecode( miliseconds );
-        delete tcw;
     }
 }
 

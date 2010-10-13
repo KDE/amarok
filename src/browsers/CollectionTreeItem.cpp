@@ -188,12 +188,9 @@ QList<QAction*>
 CollectionTreeItem::decoratorActions() const
 {
     QList<QAction*> decoratorActions;
-    Capabilities::DecoratorCapability *dc = m_parentCollection->create<Capabilities::DecoratorCapability>();
+    QScopedPointer<Capabilities::DecoratorCapability> dc( m_parentCollection->create<Capabilities::DecoratorCapability>() );
     if( dc )
-    {
         decoratorActions = dc->decoratorActions();
-        delete dc;
-    }
     return decoratorActions;
 }
 

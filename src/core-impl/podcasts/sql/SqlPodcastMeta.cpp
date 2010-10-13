@@ -363,8 +363,8 @@ SqlPodcastEpisode::writeTagsToFile()
     if( m_localFile.isNull() )
         return false;
 
-    Capabilities::EditCapability *ec = m_localFile->create<Capabilities::EditCapability>();
-    if( ec == 0 )
+    QScopedPointer<Capabilities::EditCapability> ec( m_localFile->create<Capabilities::EditCapability>() );
+    if( !ec )
         return false;
 
     debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();

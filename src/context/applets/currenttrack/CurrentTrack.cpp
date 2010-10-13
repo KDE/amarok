@@ -215,11 +215,9 @@ CurrentTrack::trackRatingChanged( int rating )
         return;
 
     // Inform collections of end of a metadata update
-    Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
-    if( !uc )
-        return;
-
-    track->setRating( rating );
+    QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
+    if( uc )
+        track->setRating( rating );
 }
 
 QList<QAction*>
@@ -232,16 +230,15 @@ CurrentTrack::contextualActions()
         return actions;
 
     Meta::AlbumPtr album = track->album();
-    if( album )
+    if( !album )
+        return actions;
+
+    QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
+    if( cac )
     {
-        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-        if( cac )
-        {
-            QList<QAction *> customActions = cac->customActions();
-            foreach( QAction *action, customActions )
-                actions.append( action );
-        }
-        delete cac;
+        QList<QAction *> customActions = cac->customActions();
+        foreach( QAction *action, customActions )
+            actions.append( action );
     }
     return actions;
 }

@@ -42,6 +42,7 @@ MediaDeviceDecoratorCapability::decoratorActions()
     else
         actions << m_coll->ejectAction(); //fallback
 
+    delete collCap;
     return actions;
 }
 

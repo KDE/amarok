@@ -414,7 +414,7 @@ CollectionLocation::slotFinishRemove()
         if(!track)
             continue;
 
-        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
+        QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
         if(!uc)
             continue;
 

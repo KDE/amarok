@@ -75,12 +75,9 @@ TimecodeObserver::trackPlaying( Meta::TrackPtr track )
     {
         if( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 * 1000 )
         {
-            Capabilities::TimecodeWriteCapability *tcw = m_currentTrack->create<Capabilities::TimecodeWriteCapability>();
+            QScopedPointer<Capabilities::TimecodeWriteCapability> tcw( m_currentTrack->create<Capabilities::TimecodeWriteCapability>() );
             if( tcw )
-            {
                 tcw->writeAutoTimecode ( m_currPos ); // save the timecode
-                delete tcw;
-            }
         }
     }
 

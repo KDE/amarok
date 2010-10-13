@@ -1569,7 +1569,7 @@ Capabilities::Capability*
 SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_collection->artistCapabilityDelegate() )
-        m_collection->artistCapabilityDelegate()->createCapabilityInterface( type, this );
+        return m_collection->artistCapabilityDelegate()->createCapabilityInterface( type, this );
     return 0;
 }
 

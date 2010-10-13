@@ -1381,14 +1381,12 @@ QString EngineController::prettyNowPlaying() const
         if ( title.isEmpty() )
             title = i18n( "Unknown track" );
 
-        Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
+        QScopedPointer<Capabilities::SourceInfoCapability> sic( track->create<Capabilities::SourceInfoCapability>() );
         if ( sic )
         {
             QString source = sic->sourceName();
             if ( !source.isEmpty() )
                 title += ' ' + i18nc( "track from source", "from <b>%1</b>", source );
-
-            delete sic;
         }
 
         if ( track->length() > 0 ) {

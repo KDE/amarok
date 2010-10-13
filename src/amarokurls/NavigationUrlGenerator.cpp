@@ -149,7 +149,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 {
     AmarokUrl url;
 
-    Capabilities::BookmarkThisCapability *btc = album->create<Capabilities::BookmarkThisCapability>();
+    QScopedPointer<Capabilities::BookmarkThisCapability> btc( album->create<Capabilities::BookmarkThisCapability>() );
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -188,12 +188,10 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                 url.setName( i18n( "Album \"%1\"", albumName ) );
 
         }
-        delete btc;
     }
 
     //debug() << "got url: " << url.url();
     return url;
-
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
@@ -202,7 +200,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
     AmarokUrl url;
 
-    Capabilities::BookmarkThisCapability *btc = artist->create<Capabilities::BookmarkThisCapability>();
+    QScopedPointer<Capabilities::BookmarkThisCapability> btc( artist->create<Capabilities::BookmarkThisCapability>() );
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -237,7 +235,6 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
                 url.setName( i18n( "Artist \"%1\"", artistName ) );
 
         }
-        delete btc;
     }
 
     return url;

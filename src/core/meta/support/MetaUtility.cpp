@@ -230,7 +230,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     if( !track || !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
         return;
 
-    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();

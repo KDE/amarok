@@ -777,7 +777,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
         Meta::AlbumPtr album = item->albumPtr();
         if( album )
         {
-            Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
+            QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
             if( cac )
             {
                 actions = cac->customActions();
@@ -801,7 +801,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::AlbumPtr album = cvItem->albumPtr();
             if( album )
             {
-                Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
+                QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
                 if( cac )
                 {
                     QList<QAction *> actions = cac->customActions();

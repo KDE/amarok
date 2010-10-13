@@ -508,7 +508,7 @@ LabelsApplet::toggleLabel( const QString &label )
         return;
     
     // Inform collections of end of a metadata update
-    Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
+    QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
     if( !uc )
         return;
 

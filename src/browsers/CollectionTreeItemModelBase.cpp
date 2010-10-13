@@ -117,10 +117,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
                 if( ec )
                     ec->setAlbum( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;

@@ -268,14 +268,13 @@ Amarok::TrayIcon::updateMenu()
 
     if ( m_track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Capabilities::CurrentTrackActionsCapability *cac = m_track->create<Capabilities::CurrentTrackActionsCapability>();
+        QScopedPointer<Capabilities::CurrentTrackActionsCapability> cac( m_track->create<Capabilities::CurrentTrackActionsCapability>() );
         if( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();
             foreach( QAction *action, currentTrackActions )
                 m_extraActions.append( action );
         }
-        delete cac;
     }
 
     if ( m_extraActions.count() > 0 )

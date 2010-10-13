@@ -1550,7 +1550,7 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    Capabilities::ReadLabelCapability *ric = track->create<Capabilities::ReadLabelCapability>();
+    QScopedPointer<Capabilities::ReadLabelCapability> ric( track->create<Capabilities::ReadLabelCapability>() );
     if( !ric )
     {
         debug() << "No Read Label Capability found, no labels available.";
@@ -1654,7 +1654,7 @@ TagDialog::saveTags()
             emit lyricsChanged( track->uidUrl() );
         }
 
-        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+        QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
         if( !ec )
         {
             debug() << "Track does not have Capabilities::EditCapability. Aborting loop.";
@@ -1719,7 +1719,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
+        QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
         if( !uc )
         {
             continue;
@@ -1739,8 +1739,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, collectionsToUpdateMap )
     {
-        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
-
+        QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
         uc->collectionUpdated();
     }
 }
