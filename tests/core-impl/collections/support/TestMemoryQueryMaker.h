@@ -28,6 +28,11 @@ public:
 private slots:
     void testDeleteQueryMakerWhileQueryIsRunning();
     void testDeleteCollectionWhileQueryIsRunning();
+
+    void testStringMemoryFilterSpeedFullMatch();
+    void testStringMemoryFilterSpeedMatchBegin();
+    void testStringMemoryFilterSpeedMatchEnd();
+    void testStringMemoryFilterSpeedMatchAnywhere();
 };
 
 #endif // TESTMEMORYQUERYMAKER_H

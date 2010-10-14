@@ -22,6 +22,7 @@
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "core-impl/collections/support/MemoryFilter.h"
 
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
@@ -89,4 +90,62 @@ TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
     QCOMPARE( spy.count(), 1 );
 
     delete qm;
+}
+
+class TestStringMemoryFilter : public StringMemoryFilter
+{
+public:
+    TestStringMemoryFilter() : StringMemoryFilter() {}
+
+protected:
+    QString value( const Meta::TrackPtr &track ) const { return "abcdef"; }
+
+};
+
+void
+TestMemoryQueryMaker::testStringMemoryFilterSpeedFullMatch()
+{
+    //Test 1: match complete string
+    TestStringMemoryFilter filter1;
+    filter1.setFilter( QString( "abcdef" ), true, true );
+
+    QBENCHMARK {
+        filter1.filterMatches( Meta::TrackPtr() );
+    }
+}
+
+void
+TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchBegin()
+{
+    //Test 2: match beginning of string
+    TestStringMemoryFilter filter2;
+    filter2.setFilter( QString( "abcd" ), true, false );
+
+    QBENCHMARK {
+        filter2.filterMatches( Meta::TrackPtr() );
+    }
+}
+
+void
+TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchEnd()
+{
+    //Test 3: match end of string
+    TestStringMemoryFilter filter3;
+    filter3.setFilter( QString( "cdef" ), false, true );
+
+    QBENCHMARK {
+        filter3.filterMatches( Meta::TrackPtr() );
+    }
+}
+
+void
+TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchAnywhere()
+{
+    //Test 4: match anywhere in string
+    TestStringMemoryFilter filter4;
+    filter4.setFilter( QString( "bcde" ), false, false );
+
+    QBENCHMARK {
+        filter4.filterMatches( Meta::TrackPtr() );
+    }
 }
