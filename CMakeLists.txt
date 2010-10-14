@@ -133,12 +133,11 @@ if( WITH_PLAYER )
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
 
     if( WITH_UPNP )
-        # TODO
         find_package(HUpnp REQUIRED)
-        #if( HUPNP_FOUND )
-        #else( HUPNP_FOUND )
-        #    message(FATAL_ERROR "UPnP collections requires the HUPnP library")
-        #endif( HUPNP_FOUND )
+        if( HUPNP_FOUND )
+        else( HUPNP_FOUND )
+            message(FATAL_ERROR "UPnP collections requires the HUPnP library")
+        endif( HUPNP_FOUND )
 
         macro_log_feature( HUPNP_FOUND "HUpnp" "Support UPnP devices on the network" "http://herqq.org" FALSE "" "" )
     endif( WITH_UPNP )
