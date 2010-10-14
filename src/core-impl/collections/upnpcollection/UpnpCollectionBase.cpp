@@ -45,6 +45,8 @@ UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
 
 UpnpCollectionBase::~UpnpCollectionBase()
 {
+    foreach( KIO::SimpleJob *job, m_jobSet )
+        KIO::Scheduler::cancelJob( job );
     m_jobSet.clear();
     if( m_slave ) {
         KIO::Scheduler::disconnectSlave( m_slave );
