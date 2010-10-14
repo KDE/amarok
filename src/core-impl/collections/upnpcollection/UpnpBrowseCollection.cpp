@@ -42,7 +42,7 @@ namespace Collections {
 //UpnpBrowseCollection
 
 // TODO register for the device bye bye and emit remove()
-UpnpBrowseCollection::UpnpBrowseCollection( Solid::Device dev )
+UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
     : UpnpCollectionBase( dev )
     , m_mc( new MemoryCollection() )
     , m_fullScanInProgress( false )
@@ -79,7 +79,7 @@ void UpnpBrowseCollection::processUpdates()
     debug() << "Update URL is" << urlString;
     invalidateTracksIn( urlString );
     KUrl url( urlString );
-    if( url.scheme() != "upnp-ms" || !m_device.udi().endsWith( url.host() ) )
+    if( url.scheme() != "upnp-ms" || m_device.uuid() != url.host() )
         return;
     debug() << "Now incremental scanning" << url;
     startIncrementalScan( url.path() );
@@ -210,7 +210,7 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     debug() << "Scanning directory" << directory;
     KUrl url;
     url.setScheme( "upnp-ms" );
-    url.setHost( m_device.udi().replace( "/org/kde/upnp/uuid:", "" ) );
+    url.setHost( m_device.uuid() );
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     addJob( listJob );

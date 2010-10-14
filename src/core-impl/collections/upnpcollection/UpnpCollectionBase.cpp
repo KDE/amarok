@@ -29,7 +29,7 @@ namespace Collections {
 
 static const int MAX_JOB_FAILURES_BEFORE_ABORT = 5;
 
-UpnpCollectionBase::UpnpCollectionBase( Solid::Device dev )
+UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo& dev )
     : Collection()
     , m_device( dev )
     , m_slave( 0 )
@@ -57,12 +57,12 @@ UpnpCollectionBase::~UpnpCollectionBase()
 
 QString UpnpCollectionBase::collectionId() const
 {
-    return QString("upnp-ms://") + m_device.udi().replace("/org/kde/upnp/uuid:", "");
+    return QString("upnp-ms://") + m_device.uuid();
 }
 
 QString UpnpCollectionBase::prettyName() const
 {
-    return m_device.product();
+    return m_device.friendlyName();
 }
 
 bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const

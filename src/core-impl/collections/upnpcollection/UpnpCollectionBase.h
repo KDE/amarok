@@ -29,6 +29,8 @@
 #include <KDirNotify>
 #include <solid/device.h>
 
+#include "deviceinfo.h"
+
 namespace KIO {
     class Slave;
     class Job;
@@ -56,7 +58,7 @@ class UpnpCollectionBase : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollectionBase( Solid::Device );
+    UpnpCollectionBase( const DeviceInfo& dev );
     virtual ~UpnpCollectionBase();
     void removeCollection() { emit remove(); }
 
@@ -70,7 +72,8 @@ class UpnpCollectionBase : public Collections::Collection
     void slotRemoveJob( KJob *job );
   protected:
     void addJob( KIO::SimpleJob *job );
-    const Solid::Device m_device;
+    //const Solid::Device m_device;
+    const DeviceInfo m_device;
     KIO::Slave *m_slave;
     bool m_slaveConnected;
     QSet<KIO::SimpleJob*> m_jobSet;

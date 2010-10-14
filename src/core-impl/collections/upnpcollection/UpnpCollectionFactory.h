@@ -21,7 +21,12 @@
 
 #include "core/collections/Collection.h"
 
+#include "deviceinfo.h"
+
 class QDBusInterface;
+
+typedef QHash<QString, QString> DeviceTypeMap;
+Q_DECLARE_METATYPE( DeviceTypeMap );
 
 namespace Collections {
 
@@ -39,9 +44,9 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
   private:
 
   private slots:
-    void slotDeviceAdded( const QString &udi );
-    void slotDeviceRemoved( const QString &udi );
-    void createCollection( Solid::Device dev );
+    void slotDeviceAdded( const DeviceTypeMap &udi );
+    void slotDeviceRemoved( const DeviceTypeMap &udi );
+    void createCollection( const QString& );
 
     void slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list );
     void slotSearchCapabilitiesDone( KJob * );
@@ -49,6 +54,8 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
   private:
     QHash<QString, UpnpCollectionBase*> m_devices;
     QHash<QString, QStringList> m_capabilities;
+
+    QDBusInterface *m_iface;
 };
 
 } //namespace Collections

@@ -30,6 +30,8 @@
 #include "UpnpBrowseCollection.h"
 #include "UpnpSearchCollection.h"
 
+#include "dbuscodec.h"
+
 namespace Collections {
 
 AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
@@ -38,6 +40,8 @@ UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantLis
     : Collections::CollectionFactory()
 {
     setParent( parent );
+    qDBusRegisterMetaType< QHash<QString, QString> >();
+    qDBusRegisterMetaType<DeviceInfo>();
     Q_UNUSED( args );
 }
 
@@ -49,21 +53,21 @@ void UpnpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-    /*QDBusConnection bus = QDBusConnection::sessionBus();
+    QDBusConnection bus = QDBusConnection::sessionBus();
 
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi",
                  "org.kde.Cagibi",
                  "devicesAdded",
                  this,
-                 SLOT( slotDevicesAdded( const DeviceTypeMap & ) ) );
+                 SLOT( slotDeviceAdded( const DeviceTypeMap & ) ) );
 
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi",
                  "org.kde.Cagibi",
                  "devicesRemoved",
                  this,
-                 SLOT( slotDevicesRemoved( const DeviceTypeMap & ) ) );
+                 SLOT( slotDeviceRemoved( const DeviceTypeMap & ) ) );
 
     m_iface = new QDBusInterface("org.kde.Cagibi",
                                                "/org/kde/Cagibi",
@@ -76,40 +80,53 @@ void UpnpCollectionFactory::init()
         //Q_ASSERT(false);
     }
     else {
-        slotDevicesAdded( reply.value() );
-    }*/
+        slotDeviceAdded( reply.value() );
+    }
 
-    Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
-    connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) );
-    connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
+    //Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
+    //connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) );
+    //connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
 
-    foreach( Solid::Device device, Solid::Device::allDevices() ) {
-        slotDeviceAdded(device.udi());
+    //foreach( Solid::Device device, Solid::Device::allDevices() ) {
+    //    slotDeviceAdded(device.udi());
+    //}
+}
+
+void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
+{
+    foreach( QString udn, map.keys() ) {
+        QString type = map[udn];
+        debug() << "|||| DEVICE" << udn << type;
+        if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") )
+            createCollection( udn );
     }
 }
 
-void UpnpCollectionFactory::slotDeviceAdded( const QString &udi )
+void UpnpCollectionFactory::slotDeviceRemoved( const DeviceTypeMap &map )
 {
-    Solid::Device dev( udi );
-    debug() << "CHECKING" << dev.udi();
-    if( dev.udi().startsWith( "/org/kde/upnp" ) && dev.is<Solid::StorageAccess>() ) {
-        createCollection( dev );
+    foreach( QString udn, map.keys() ) {
+        udn.replace("uuid:", "");
+        if( m_devices.contains(udn) ) {
+            m_devices[udn]->removeCollection();
+            m_devices.remove(udn);
+        }
     }
 }
 
-void UpnpCollectionFactory::slotDeviceRemoved( const QString &udi )
+void UpnpCollectionFactory::createCollection( const QString &udn )
 {
-    if( m_devices.contains(udi) ) {
-        m_devices[udi]->removeCollection();
-        m_devices.remove(udi);
+    debug() << "|||| Creating collection " << udn;
+    QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
+    if( !reply.isValid() ) {
+        debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
+        debug() << "Error" << reply.error().message();
+        return;
     }
-}
+    DeviceInfo info = reply.value();
 
-void UpnpCollectionFactory::createCollection( Solid::Device dev )
-{
-    QString udn = dev.udi().replace("/org/kde/upnp/uuid:", "");
-
-    KIO::ListJob *job = KIO::listDir( QString("upnp-ms://" + udn + "/?searchcapabilities=1") );
+    debug() << "|||| Creating collection " << info.uuid();
+    KIO::ListJob *job = KIO::listDir( QString("upnp-ms://" + info.uuid() + "/?searchcapabilities=1") );
+    job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
     connect( job, SIGNAL(entries( KIO::Job *, const KIO::UDSEntryList & )),
             this, SLOT(slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & )) );
     connect( job, SIGNAL(result(KJob *)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
@@ -129,20 +146,20 @@ void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
     QStringList searchCaps = m_capabilities[lj->url().host()];
 
     if( !job->error() ) {
-        Solid::Device dev( "/org/kde/upnp/uuid:" + lj->url().host() );
+        DeviceInfo dev = job->property( "deviceInfo" ).value<DeviceInfo>();
 
         if( searchCaps.contains( "upnp:class" )
             && searchCaps.contains( "dc:title" )
             && searchCaps.contains( "upnp:artist" )
             && searchCaps.contains( "upnp:album" ) ) {
             kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
-            m_devices[dev.udi()] = new UpnpSearchCollection( dev, searchCaps );
+            m_devices[dev.uuid()] = new UpnpSearchCollection( dev, searchCaps );
         }
         else {
             kDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
-            m_devices[dev.udi()] = new UpnpBrowseCollection( dev );
+            m_devices[dev.uuid()] = new UpnpBrowseCollection( dev );
         }
-        emit newCollection( m_devices[dev.udi()] );
+        emit newCollection( m_devices[dev.uuid()] );
     }
 }
 

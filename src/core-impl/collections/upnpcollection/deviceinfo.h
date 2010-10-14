@@ -139,4 +139,5 @@ inline QString DeviceInfo::uuid() const
   return QString(udn()).replace("uuid:", "");
 }
 
+Q_DECLARE_METATYPE( DeviceInfo );
 #endif

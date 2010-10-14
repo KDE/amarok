@@ -47,7 +47,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpSearchCollection( Solid::Device, QStringList searchCapabilities );
+    UpnpSearchCollection( const DeviceInfo&, QStringList searchCapabilities );
     virtual ~UpnpSearchCollection();
     virtual QueryMaker* queryMaker();
 
