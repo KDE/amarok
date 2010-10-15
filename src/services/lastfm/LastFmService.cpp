@@ -48,7 +48,6 @@
 #include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/NetworkAccessManager>
 #include <lastfm/XmlQuery>
 
 #include <KLocale>
@@ -59,7 +58,6 @@
 #include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QPainter>
 #include <QImage>
@@ -240,14 +238,7 @@ LastFmService::init()
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
-
-
-    // set up proxy
-    if( !lastfm::nam() )
-    {
-        QNetworkAccessManager* qnam = The::networkAccessManager();
-        lastfm::setNetworkAccessManager( qnam );
-    }
+    lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
