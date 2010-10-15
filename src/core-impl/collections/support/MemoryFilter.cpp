@@ -55,16 +55,27 @@ namespace FilterFactory
             case Meta::valComment:
             {
                 result = new CommentMemoryFilter( filter, matchBegin, matchEnd );
+                break;
             }
             case Meta::valAlbumArtist:
             {
                 result = new AlbumArtistMemoryFilter( filter, matchBegin, matchEnd );
+                break;
             }
             case Meta::valLabel:
             {
                 result = new LabelFilter( filter, matchBegin, matchEnd );
+                break;
+            }
+            case Meta::valUrl:
+            {
+                UrlMemoryFilter *umf = new UrlMemoryFilter();
+                umf->setFilter( filter, matchBegin, matchEnd );
+                result = umf;
+                break;
             }
         }
+        Q_ASSERT_X( result, "FilterFactory::filter", "called filter with an unknown value, value was " + value );
         return result;
     }
 
@@ -148,7 +159,8 @@ ContainerMemoryFilter::~ContainerMemoryFilter()
 void
 ContainerMemoryFilter::addFilter( MemoryFilter *filter )
 {
-    m_filters.append( filter );
+    if( filter )
+        m_filters.append( filter );
 }
 
 AndContainerMemoryFilter::AndContainerMemoryFilter()
@@ -168,7 +180,7 @@ AndContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 
     foreach( MemoryFilter *filter, m_filters )
     {
-        if( !filter->filterMatches( track ) )
+        if( filter && !filter->filterMatches( track ) )
             return false;
     }
     return true;
@@ -254,6 +266,12 @@ StringMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
     {
         return str.contains( m_filter, Qt::CaseInsensitive );
     }
+}
+
+QString
+UrlMemoryFilter::value( const Meta::TrackPtr &track ) const
+{
+    return track->playableUrl().url();
 }
 
 TitleMemoryFilter::TitleMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )

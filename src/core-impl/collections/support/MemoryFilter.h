@@ -94,6 +94,16 @@ class AMAROK_EXPORT StringMemoryFilter : public MemoryFilter
         bool m_matchEnd;
 };
 
+class AMAROK_EXPORT UrlMemoryFilter : public StringMemoryFilter
+{
+public:
+    UrlMemoryFilter() : StringMemoryFilter() {}
+    virtual ~UrlMemoryFilter() {}
+
+protected:
+    virtual QString value( const Meta::TrackPtr &track ) const;
+};
+
 class AMAROK_EXPORT TitleMemoryFilter : public StringMemoryFilter
 {
     public:
