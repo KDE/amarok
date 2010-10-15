@@ -258,8 +258,8 @@ Track::setUid( const QString &newUidOwner, const QString &newUid ) const
     if( newUidOwner.isEmpty() || newUid.isEmpty() )
         return;
 
-    d->changes.insert( "id_owner", QVariant( newUidOwner ) );
-    d->changes.insert( Meta::Field::UNIQUEID, QVariant( newUid ) );
+    d->changes.insert( "uid_owner", QVariant( newUidOwner ) );
+    d->changes.insert( "uid", QVariant( newUid ) );
     if( !d->batchUpdate )
     {
         d->writeMetaData();
