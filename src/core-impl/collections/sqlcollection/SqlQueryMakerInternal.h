@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QString>
 
 namespace Collections {
@@ -62,7 +62,7 @@ private:
     void handleLabels( const QStringList &result );
 
 private:
-    QPointer<SqlCollection> m_collection;
+    QWeakPointer<SqlCollection> m_collection;
     bool m_resultAsDataPtrs;
     QueryMaker::QueryType m_queryType;
     QString m_query;

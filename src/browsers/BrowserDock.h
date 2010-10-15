@@ -24,7 +24,7 @@
 
 #include <KVBox>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 /**
 The base widget that contains all other browsers, organized in a dig down interface
@@ -47,7 +47,7 @@ private slots:
 
 private:
     BrowserBreadcrumbWidget * m_breadcrumbWidget;
-    QPointer<BrowserCategoryList> m_categoryList;
+    QWeakPointer<BrowserCategoryList> m_categoryList;
     KVBox * m_mainWidget;
 };
 

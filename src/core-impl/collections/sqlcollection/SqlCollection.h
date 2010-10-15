@@ -25,7 +25,7 @@
 #include "SqlRegistry.h"
 #include "core/collections/support/SqlStorage.h"
 
-#include <QPointer>
+#include <QWeakPointer>
 
 #include <KIcon>
 
@@ -132,7 +132,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
         SqlStorage * m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
-        QPointer<IScanManager> m_scanManager;
+        QWeakPointer<IScanManager> m_scanManager;
         SqlMountPointManager *m_mpm;
 
         QString m_collectionId;

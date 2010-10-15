@@ -22,7 +22,7 @@
 #include <QMetaType>
 #include <QMutex>
 #include <QPair>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QQueue>
 #include <QTimer>
 
@@ -34,10 +34,10 @@ typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
 
 struct ProgressData
 {
-    QPointer<KJob> job;
-    QPointer<QNetworkReply> reply;
+    QWeakPointer<KJob> job;
+    QWeakPointer<QNetworkReply> reply;
     QString text;
-    QPointer<QObject> object;
+    QWeakPointer<QObject> object;
     const char *slot;
     Qt::ConnectionType type;
 };

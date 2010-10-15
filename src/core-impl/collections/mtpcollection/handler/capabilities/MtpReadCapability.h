@@ -21,7 +21,7 @@
 #include "mediadevicecollection_export.h"
 #include "ReadCapability.h"
 
-#include <QPointer>
+#include <QWeakPointer>
 
 
 namespace Meta {
@@ -72,7 +72,7 @@ class MtpReadCapability : public ReadCapability
         virtual float totalCapacity() const;
 
     private:
-        QPointer<Meta::MtpHandler> m_handler;
+        QWeakPointer<Meta::MtpHandler> m_handler;
 };
 
 }

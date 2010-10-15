@@ -29,7 +29,7 @@
 #include <KUrl>
 
 #include <QHash>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QString>
 
 namespace Amarok {
@@ -65,7 +65,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         virtual int newInstance();
 
-        inline MainWindow *mainWindow() const { return m_mainWindow; }
+        inline MainWindow *mainWindow() const { return m_mainWindow.data(); }
 
         /**
          * Determines location of the "amarokcollectionscanner" tool.
@@ -109,7 +109,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
     private:
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
-        QPointer<MainWindow>    m_mainWindow;
+        QWeakPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon        *m_tray;
         MediaDeviceManager      *m_mediaDeviceManager;
 

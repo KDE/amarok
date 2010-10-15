@@ -38,7 +38,7 @@ BrowserDock::BrowserDock( QWidget * parent )
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
-    m_breadcrumbWidget->setRootList( m_categoryList );
+    m_breadcrumbWidget->setRootList( m_categoryList.data() );
     ensurePolish();
 }
 
@@ -51,9 +51,9 @@ void BrowserDock::polish()
     DEBUG_BLOCK
     setWidget( m_mainWidget );
 
-    m_categoryList->setIcon( KIcon( "user-home" ) );
+    m_categoryList.data()->setIcon( KIcon( "user-home" ) );
 
-    m_categoryList->setMinimumSize( 100, 300 );
+    m_categoryList.data()->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
@@ -62,26 +62,26 @@ void BrowserDock::polish()
     // Keyboard shortcut for going back one level
     KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
-    connect( action, SIGNAL( triggered( bool ) ), m_categoryList, SLOT( back() ) );
+    connect( action, SIGNAL( triggered( bool ) ), m_categoryList.data(), SLOT( back() ) );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 }
 
 BrowserCategoryList * BrowserDock::list() const
 {
-    return m_categoryList;
+    return m_categoryList.data();
 }
 
 void
 BrowserDock::navigate( const QString & target )
 {
-    m_categoryList->navigate( target );
+    m_categoryList.data()->navigate( target );
 }
 
 void
 BrowserDock::home()
 {
     DEBUG_BLOCK
-    m_categoryList->home();
+    m_categoryList.data()->home();
 }
 
 #include "BrowserDock.moc"

@@ -114,9 +114,9 @@ void
 Dynamic::BiasedPlaylist::requestAbort()
 {
     if( m_solver ) {
-        m_solver->requestAbort();
-        disconnect(m_solver, 0, this, 0);
-        m_solver = 0;
+        m_solver.data()->requestAbort();
+        disconnect(m_solver.data(), 0, this, 0);
+        m_solver.clear();
     }
 }
 
@@ -132,19 +132,19 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         debug() << "assigning new m_solver";
 
         m_solver = new BiasSolver( BUFFER_SIZE, m_biases, getContext() );
-        m_solver->setAutoDelete(true);
-        connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
-        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
-        connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        m_solver.data()->setAutoDelete(true);
+        connect( m_solver.data(), SIGNAL(readyToRun()), SLOT(solverReady()) );
+        connect( m_solver.data(), SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        connect( m_solver.data(), SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
         if( withStatusBar )
         {
-            The::statusBar()->newProgressOperation( m_solver,  i18n( "Generating playlist..." ) );
+            The::statusBar()->newProgressOperation( m_solver.data(), i18n( "Generating playlist..." ) );
 
-            connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+            connect( m_solver.data(), SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
 
-        m_solver->prepareToRun();
+        m_solver.data()->prepareToRun();
         debug() << "called prepareToRun";
     }
     else
@@ -156,14 +156,14 @@ Dynamic::BiasedPlaylist::solverReady()
 {
     debug() << "ENQUEUEING new m_solver!" << m_solver;
     if( m_solver )
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver.data() );
 }
 
 
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    The::statusBar()->setProgress( m_solver, progress );
+    The::statusBar()->setProgress( m_solver.data(), progress );
 }
 
 void
@@ -252,16 +252,16 @@ Dynamic::BiasedPlaylist::solverFinished()
     if( !m_solver )
         return;
 
-    The::statusBar()->endProgressOperation( m_solver );
+    The::statusBar()->endProgressOperation( m_solver.data() );
 
-    bool success = m_solver->success();
+    bool success = m_solver.data()->success();
     if( success )
     {
         QMutexLocker locker(&m_bufferMutex);
-        m_buffer.append( m_solver->solution() );
+        m_buffer.append( m_solver.data()->solution() );
     }
 
-    m_solver = 0;
+    m_solver.data()->deleteLater();
 
     // empty collection just give up.
     if(m_buffer.isEmpty())

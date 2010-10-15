@@ -25,8 +25,8 @@
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QMap>
-#include <QPointer>
 #include <QTimer>
+#include <QWeakPointer>
 
 class QNetworkReply;
 
@@ -82,8 +82,8 @@ private:
     void fetchLastFm();
     void updateLocal();
 
-    QPointer<QNetworkReply> reply;
     QTimer m_timeoutTimer;
+    QWeakPointer<QNetworkReply> reply;
     
     /// The URL for the network request
     KUrl m_lastFmUrl;

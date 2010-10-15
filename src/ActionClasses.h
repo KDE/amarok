@@ -26,7 +26,7 @@
 #include <KToggleAction>
 #include <KSelectAction>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 class KActionCollection;
 class KHelpMenu;

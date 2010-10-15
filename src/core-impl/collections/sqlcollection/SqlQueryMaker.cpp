@@ -25,7 +25,7 @@
 #include "SqlQueryMakerInternal.h"
 #include "core/collections/support/SqlStorage.h"
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <QStack>
 
 #include <threadweaver/Job.h>

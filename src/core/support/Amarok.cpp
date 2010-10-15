@@ -31,7 +31,7 @@
 #include <KStandardDirs>
 #include <KUniqueApplication>
 
-QPointer<KActionCollection> Amarok::actionCollectionObject;
+QWeakPointer<KActionCollection> Amarok::actionCollectionObject;
 QMutex Amarok::globalDirsMutex;
 
 namespace Amarok
@@ -171,10 +171,10 @@ namespace Amarok
         if( !actionCollectionObject )
         {
             actionCollectionObject = new KActionCollection( kapp );
-            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
+            actionCollectionObject.data()->setObjectName( "Amarok-KActionCollection" );
         }
 
-        return actionCollectionObject;
+        return actionCollectionObject.data();
     }
 
     KConfigGroup config( const QString &group )

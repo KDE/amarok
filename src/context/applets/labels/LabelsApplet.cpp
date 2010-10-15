@@ -50,9 +50,9 @@ LabelsApplet::~LabelsApplet()
     m_labelItems.clear();
 
     if( m_reloadIcon )
-        delete m_reloadIcon;
+        delete m_reloadIcon.data();
     if( m_settingsIcon )
-        delete m_settingsIcon;
+        delete m_settingsIcon.data();
 }
 
 void
@@ -75,12 +75,12 @@ LabelsApplet::init()
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_titleLabel = new TextScrollingWidget( this );
-    m_titleLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
-    m_titleLabel->setFont( labelFont );
+    m_titleLabel.data()->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
+    m_titleLabel.data()->setFont( labelFont );
     m_titleText = i18n( "Labels" );
 
     // Set the collapse size
-    setCollapseHeight( m_titleLabel->boundingRect().height() + 3 * standardPadding() );
+    setCollapseHeight( m_titleLabel.data()->boundingRect().height() + 3 * standardPadding() );
 
     // reload icon
     QAction *reloadAction = new QAction( this );
@@ -89,8 +89,8 @@ LabelsApplet::init()
     reloadAction->setEnabled( true );
     reloadAction->setText( i18n( "Reload" ) );
     m_reloadIcon = addAction( reloadAction );
-    m_reloadIcon->setEnabled( false );
-    connect( m_reloadIcon, SIGNAL( clicked() ), this, SLOT( reload() ) );
+    m_reloadIcon.data()->setEnabled( false );
+    connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reload() ) );
 
     // settings icon
     QAction *settingsAction = new QAction( this );
@@ -99,22 +99,22 @@ LabelsApplet::init()
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( settingsAction );
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+    connect( m_settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
     m_addLabelProxy = new QGraphicsProxyWidget( this );
-    m_addLabelProxy->setAttribute( Qt::WA_NoSystemBackground );
+    m_addLabelProxy.data()->setAttribute( Qt::WA_NoSystemBackground );
     m_addLabel = new KComboBox( this );
-    m_addLabel->setAttribute( Qt::WA_NoSystemBackground );
-    m_addLabel->setAutoFillBackground( false );
-    QPalette p = m_addLabel->palette();
+    m_addLabel.data()->setAttribute( Qt::WA_NoSystemBackground );
+    m_addLabel.data()->setAutoFillBackground( false );
+    QPalette p = m_addLabel.data()->palette();
     QColor c = p.color( QPalette::Base );
     c.setAlphaF( 0.4 );
     p.setColor( QPalette::Base, c );
-    m_addLabel->setPalette( p );
-    m_addLabel->completionObject()->setIgnoreCase( true );
-    m_addLabel->setCompletionMode( KGlobalSettings::CompletionPopup );
-    connect( m_addLabel, SIGNAL( returnPressed() ), this, SLOT( addLabelPressed() ) );
-    m_addLabelProxy->setWidget( m_addLabel );
+    m_addLabel.data()->setPalette( p );
+    m_addLabel.data()->completionObject()->setIgnoreCase( true );
+    m_addLabel.data()->setCompletionMode( KGlobalSettings::CompletionPopup );
+    connect( m_addLabel.data(), SIGNAL( returnPressed() ), this, SLOT( addLabelPressed() ) );
+    m_addLabelProxy.data()->setWidget( m_addLabel.data() );
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Labels Applet");
@@ -148,16 +148,16 @@ void LabelsApplet::setStoppedState( bool stopped )
 
     if( !stopped )
     {
-        m_reloadIcon->setEnabled( true );
+        m_reloadIcon.data()->setEnabled( true );
         m_titleText = i18n( "Labels" );
-        m_addLabelProxy->show();
-        m_addLabel->clearEditText();
+        m_addLabelProxy.data()->show();
+        m_addLabel.data()->clearEditText();
     }
     else
     {
-        m_reloadIcon->setEnabled( false );
+        m_reloadIcon.data()->setEnabled( false );
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
-        m_addLabelProxy->hide();
+        m_addLabelProxy.data()->hide();
         setBusy( false );
         setMinimumHeight( 0 );
         setCollapseOn();
@@ -293,19 +293,19 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    qreal widmax = boundingRect().width() - 2 * m_reloadIcon->size().width() - 2 * m_settingsIcon->size().width() - 8 * standardPadding();
+    qreal widmax = boundingRect().width() - 2 * m_reloadIcon.data()->size().width() - 2 * m_settingsIcon.data()->size().width() - 8 * standardPadding();
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
-    m_titleLabel->setScrollingText( m_titleText, rect );
-    m_titleLabel->setPos( ( size().width() - m_titleLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
+    m_titleLabel.data()->setScrollingText( m_titleText, rect );
+    m_titleLabel.data()->setPos( ( size().width() - m_titleLabel.data()->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
-    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - m_settingsIcon->size().width() - 2 * standardPadding(), standardPadding() );
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+    m_reloadIcon.data()->setPos( size().width() - m_reloadIcon.data()->size().width() - m_settingsIcon.data()->size().width() - 2 * standardPadding(), standardPadding() );
+    m_settingsIcon.data()->setPos( size().width() - m_settingsIcon.data()->size().width() - standardPadding(), standardPadding() );
 
     if( !m_stoppedstate )
     {
         qreal x_pos;
-        qreal y_pos = m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding();
+        qreal y_pos = m_titleLabel.data()->pos().y() + m_titleLabel.data()->boundingRect().height() + standardPadding();
         qreal width = 0;
         qreal height = 0;
         int start_index = 0;
@@ -352,10 +352,10 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         qreal addLabelProxyWidth = size().width() - 2 * standardPadding();
         if( addLabelProxyWidth > 300 )
             addLabelProxyWidth = 300;
-        m_addLabelProxy->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
-        m_addLabelProxy->setMinimumWidth( addLabelProxyWidth );
-        m_addLabelProxy->setMaximumWidth( addLabelProxyWidth );
-        y_pos += m_addLabelProxy->size().height() + standardPadding();
+        m_addLabelProxy.data()->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
+        m_addLabelProxy.data()->setMinimumWidth( addLabelProxyWidth );
+        m_addLabelProxy.data()->setMaximumWidth( addLabelProxyWidth );
+        y_pos += m_addLabelProxy.data()->size().height() + standardPadding();
 
         resize( size().width(), y_pos );
         setMinimumHeight( y_pos );
@@ -375,8 +375,8 @@ LabelsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     addGradientToAppletBackground( p );
 
     // draw rounded rect around title (only if not animating )
-    if ( !m_titleLabel->isAnimating() )
-        drawRoundedRectAroundText( p, m_titleLabel );
+    if ( !m_titleLabel.data()->isAnimating() )
+        drawRoundedRectAroundText( p, m_titleLabel.data() );
 }
 
 void
@@ -448,11 +448,11 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         m_allLabels = data[ "all" ].toStringList();
         m_allLabels.sort();
 
-        const QString saveText = m_addLabel->lineEdit()->text();
-        m_addLabel->clear();
-        m_addLabel->insertItems( 0, m_allLabels );
-        m_addLabel->completionObject()->setItems( m_allLabels );
-        m_addLabel->lineEdit()->setText( saveText );
+        const QString saveText = m_addLabel.data()->lineEdit()->text();
+        m_addLabel.data()->clear();
+        m_addLabel.data()->insertItems( 0, m_allLabels );
+        m_addLabel.data()->completionObject()->setItems( m_allLabels );
+        m_addLabel.data()->lineEdit()->setText( saveText );
     }
 
     if ( data.contains( "user" ) )
@@ -500,7 +500,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 void
 LabelsApplet::addLabelPressed()
 {
-    const QString label = m_addLabel->currentText();
+    const QString label = m_addLabel.data()->currentText();
 
     if( label.isEmpty() )
         return;
@@ -508,7 +508,7 @@ LabelsApplet::addLabelPressed()
     if( !m_userLabels.contains( label ) )
     {
         toggleLabel( label );
-        m_addLabel->clearEditText();
+        m_addLabel.data()->clearEditText();
     }
 }
 
@@ -563,11 +563,11 @@ LabelsApplet::toggleLabel( const QString &label )
         m_allLabels.append( label );
         m_allLabels.sort();
         
-        const QString saveText = m_addLabel->lineEdit()->text();
-        m_addLabel->clear();
-        m_addLabel->insertItems( 0, m_allLabels );
-        m_addLabel->completionObject()->setItems( m_allLabels );
-        m_addLabel->lineEdit()->setText( saveText );
+        const QString saveText = m_addLabel.data()->lineEdit()->text();
+        m_addLabel.data()->clear();
+        m_addLabel.data()->insertItems( 0, m_allLabels );
+        m_addLabel.data()->completionObject()->setItems( m_allLabels );
+        m_addLabel.data()->lineEdit()->setText( saveText );
     }
 }
 

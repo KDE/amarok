@@ -28,7 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;

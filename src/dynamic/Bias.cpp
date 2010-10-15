@@ -172,7 +172,6 @@ Dynamic::CollectionDependantBias::collectionUpdated()
 }
 
 Dynamic::GlobalBias::GlobalBias( double weight, MetaQueryWidget::Filter filter )
-    : m_qm(0)
 {
     setWeight( weight );
     setFilter( filter );
@@ -180,7 +179,6 @@ Dynamic::GlobalBias::GlobalBias( double weight, MetaQueryWidget::Filter filter )
 
 Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, MetaQueryWidget::Filter filter )
     : CollectionDependantBias( coll )
-    , m_qm(0)
 {
     setWeight( weight );
     setFilter( filter );
@@ -188,7 +186,7 @@ Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, M
 
 Dynamic::GlobalBias::~GlobalBias()
 {
-    delete m_qm;
+    delete m_qm.data();
 }
 
 QString
@@ -337,7 +335,7 @@ Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
         m_collection = CollectionManager::instance()->primaryCollection();
 
     if (m_qm)
-        delete m_qm;
+        delete m_qm.data();
 
     m_qm = m_collection->queryMaker();
 
@@ -346,19 +344,19 @@ Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
     case MetaQueryWidget::Equals:
     case MetaQueryWidget::GreaterThan:
     case MetaQueryWidget::LessThan:
-        m_qm->addNumberFilter( filter.field, filter.numValue,
+        m_qm.data()->addNumberFilter( filter.field, filter.numValue,
                                (Collections::QueryMaker::NumberComparison)filter.condition );
         break;
     case MetaQueryWidget::Between:
-        m_qm->beginAnd();
-        m_qm->addNumberFilter( filter.field, qMin(filter.numValue, filter.numValue2)-1,
+        m_qm.data()->beginAnd();
+        m_qm.data()->addNumberFilter( filter.field, qMin(filter.numValue, filter.numValue2)-1,
                                Collections::QueryMaker::GreaterThan );
-        m_qm->addNumberFilter( filter.field, qMax(filter.numValue, filter.numValue2)+1,
+        m_qm.data()->addNumberFilter( filter.field, qMax(filter.numValue, filter.numValue2)+1,
                                Collections::QueryMaker::LessThan );
-        m_qm->endAndOr();
+        m_qm.data()->endAndOr();
         break;
     case MetaQueryWidget::OlderThan:
-        m_qm->addNumberFilter( filter.field, QDateTime::currentDateTime().toTime_t() - filter.numValue,
+        m_qm.data()->addNumberFilter( filter.field, QDateTime::currentDateTime().toTime_t() - filter.numValue,
                                Collections::QueryMaker::LessThan );
         break;
 
@@ -367,29 +365,29 @@ Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
         {
             // simple search
             // TODO: split different words and make seperate searches
-            m_qm->beginOr();
-            m_qm->addFilter( Meta::valArtist,  filter.value );
-            m_qm->addFilter( Meta::valTitle,   filter.value );
-            m_qm->addFilter( Meta::valAlbum,   filter.value );
-            m_qm->addFilter( Meta::valGenre,   filter.value );
-            m_qm->addFilter( Meta::valUrl,     filter.value );
-            m_qm->addFilter( Meta::valComment, filter.value );
-            m_qm->addFilter( Meta::valLabel,   filter.value );
-            m_qm->endAndOr();
+            m_qm.data()->beginOr();
+            m_qm.data()->addFilter( Meta::valArtist,  filter.value );
+            m_qm.data()->addFilter( Meta::valTitle,   filter.value );
+            m_qm.data()->addFilter( Meta::valAlbum,   filter.value );
+            m_qm.data()->addFilter( Meta::valGenre,   filter.value );
+            m_qm.data()->addFilter( Meta::valUrl,     filter.value );
+            m_qm.data()->addFilter( Meta::valComment, filter.value );
+            m_qm.data()->addFilter( Meta::valLabel,   filter.value );
+            m_qm.data()->endAndOr();
         }
         else
         {
-            m_qm->addFilter( filter.field, filter.value );
+            m_qm.data()->addFilter( filter.field, filter.value );
         }
     }
 
-    m_qm->setQueryType( Collections::QueryMaker::Custom );
-    m_qm->addReturnValue( Meta::valUniqueId );
-    m_qm->orderByRandom(); // as to not affect the amortized time
+    m_qm.data()->setQueryType( Collections::QueryMaker::Custom );
+    m_qm.data()->addReturnValue( Meta::valUniqueId );
+    m_qm.data()->orderByRandom(); // as to not affect the amortized time
 
-    connect( m_qm, SIGNAL(newResultReady( QString, QStringList )),
+    connect( m_qm.data(), SIGNAL(newResultReady( QString, QStringList )),
             SLOT(updateReady( QString, QStringList )), Qt::DirectConnection );
-    connect( m_qm, SIGNAL(queryDone()), SLOT(updateFinished()), Qt::DirectConnection );
+    connect( m_qm.data(), SIGNAL(queryDone()), SLOT(updateFinished()), Qt::DirectConnection );
 
     m_filter = filter;
     locker.unlock(); // because collectionUpdate also want's a lock
@@ -453,7 +451,7 @@ void Dynamic::GlobalBias::update()
     if( !m_needsUpdating )
         return;
 
-    m_qm->run();
+    m_qm.data()->run();
 }
 
 void

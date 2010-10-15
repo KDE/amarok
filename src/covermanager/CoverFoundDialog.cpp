@@ -222,7 +222,7 @@ CoverFoundDialog::~CoverFoundDialog()
         if( cfi )
             delete cfi;
     }
-    delete m_dialog;
+    delete m_dialog.data();
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
@@ -462,14 +462,14 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
     {
         item->setBigPix( pixmap );
         m_sideBar->setPixmap( pixmap );
-        m_dialog->accept();
+        m_dialog.data()->accept();
     }
     else
     {
         QStringList errors;
         errors << e.description;
         KMessageBox::errorList( this, i18n("Sorry, the cover image could not be retrieved."), errors );
-        m_dialog->reject();
+        m_dialog.data()->reject();
     }
 }
 
@@ -491,14 +491,14 @@ bool CoverFoundDialog::fetchBigPix()
     if( !m_dialog )
     {
         m_dialog = new KProgressDialog( this );
-        m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
-        m_dialog->setLabelText( i18n( "Download Progress" ) );
-        m_dialog->setModal( true );
-        m_dialog->setAllowCancel( true );
-        m_dialog->setAutoClose( false );
-        m_dialog->setAutoReset( true );
-        m_dialog->progressBar()->setMinimum( 0 );
-        m_dialog->setMinimumWidth( 300 );
+        m_dialog.data()->setCaption( i18n( "Fetching Large Cover" ) );
+        m_dialog.data()->setLabelText( i18n( "Download Progress" ) );
+        m_dialog.data()->setModal( true );
+        m_dialog.data()->setAllowCancel( true );
+        m_dialog.data()->setAutoClose( false );
+        m_dialog.data()->setAutoReset( true );
+        m_dialog.data()->progressBar()->setMinimum( 0 );
+        m_dialog.data()->setMinimumWidth( 300 );
         connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
                         SLOT(downloadProgressed(qint64,qint64)) );
 
@@ -508,12 +508,12 @@ bool CoverFoundDialog::fetchBigPix()
             connect( m_errorSignalMapper, SIGNAL(mapped(QObject*)),
                      The::networkAccessManager(), SLOT(slotError(QObject*)) );
         }
-        connect( m_dialog, SIGNAL(cancelClicked()), m_errorSignalMapper, SLOT(map()) );
-        m_errorSignalMapper->setMapping( m_dialog, reply );
+        connect( m_dialog.data(), SIGNAL(cancelClicked()), m_errorSignalMapper, SLOT(map()) );
+        m_errorSignalMapper->setMapping( m_dialog.data(), reply );
     }
-    int result = m_dialog->exec();
-    bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
-    m_dialog->deleteLater();
+    int result = m_dialog.data()->exec();
+    bool success = (result == QDialog::Accepted) && !m_dialog.data()->wasCancelled();
+    m_dialog.data()->deleteLater();
     return success;
 }
 
@@ -521,8 +521,8 @@ void CoverFoundDialog::downloadProgressed( qint64 bytesReceived, qint64 bytesTot
 {
     if( m_dialog )
     {
-        m_dialog->progressBar()->setMaximum( bytesTotal );
-        m_dialog->progressBar()->setValue( bytesReceived );
+        m_dialog.data()->progressBar()->setMaximum( bytesTotal );
+        m_dialog.data()->progressBar()->setValue( bytesReceived );
     }
 }
 
@@ -537,10 +537,10 @@ void CoverFoundDialog::display()
         return;
 
     const QPixmap &pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
-    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
-    dlg->show();
-    dlg->raise();
-    dlg->activateWindow();
+    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
+    dlg.data()->show();
+    dlg.data()->raise();
+    dlg.data()->activateWindow();
 }
 
 void CoverFoundDialog::processQuery()

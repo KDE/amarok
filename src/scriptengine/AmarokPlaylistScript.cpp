@@ -143,7 +143,7 @@ namespace AmarokScript
     {
         DEBUG_BLOCK
 
-        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock()->currentView() );
+        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock().data()->currentView() );
         return list->selectedRows();
     }
 

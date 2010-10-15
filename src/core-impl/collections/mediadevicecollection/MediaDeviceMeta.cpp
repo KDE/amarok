@@ -358,8 +358,8 @@ MediaDeviceTrack::prepareToPlay()
 {
     Meta::MediaDeviceTrackPtr ptr = Meta::MediaDeviceTrackPtr( this );
 
-    if( m_collection && m_collection->handler() )
-        m_collection->handler()->prepareToPlay( ptr );
+    if( m_collection && m_collection.data()->handler() )
+        m_collection.data()->handler()->prepareToPlay( ptr );
 }
 
 // TODO: employ observers (e.g. Handler) to take care of updated
@@ -387,7 +387,7 @@ MediaDeviceTrack::inCollection() const
 Collections::Collection*
 MediaDeviceTrack::collection() const
 {
-    return m_collection;
+    return m_collection.data();
 }
 
 bool
@@ -396,10 +396,10 @@ MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return m_collection ? m_collection->isWritable() : false;
+            return m_collection ? m_collection.data()->isWritable() : false;
 
         case Capabilities::Capability::Updatable:
-            return m_collection ? m_collection->isWritable() : false;
+            return m_collection ? m_collection.data()->isWritable() : false;
 
         default:
             return false;
@@ -414,7 +414,7 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
         case Capabilities::Capability::Editable:
             return new EditCapabilityMediaDevice( this );
         case Capabilities::Capability::Updatable:
-            return new UpdateCapabilityMediaDevice( m_collection );
+            return new UpdateCapabilityMediaDevice( m_collection.data() );
 
         default:
             return 0;
@@ -426,7 +426,7 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 {
     MediaDeviceAlbumPtr albumPtr;
     MediaDeviceTrackPtr track( this );
-    AlbumMap albumMap = m_collection->memoryCollection()->albumMap();
+    AlbumMap albumMap = m_collection.data()->memoryCollection()->albumMap();
 
     // do cleanup of soon to be previous album
 
@@ -451,7 +451,7 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     }
     else
     {
-        albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection, newAlbum ) );
+        albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection.data(), newAlbum ) );
         albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
     }
 
@@ -460,9 +460,9 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     // set track's album to the new album
     setAlbum( albumPtr );
 
-    m_collection->memoryCollection()->acquireWriteLock();
-    m_collection->memoryCollection()->setAlbumMap( albumMap );
-    m_collection->memoryCollection()->releaseLock();
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setAlbumMap( albumMap );
+    m_collection.data()->memoryCollection()->releaseLock();
 }
 
 void
@@ -472,7 +472,7 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
 
     MediaDeviceArtistPtr artistPtr;
     MediaDeviceTrackPtr track( this );
-    ArtistMap artistMap = m_collection->memoryCollection()->artistMap();
+    ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
 
     // do cleanup of soon to be previous artist
 
@@ -506,9 +506,9 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
     // set track's artist to the new artist
     setArtist( artistPtr );
 
-    m_collection->memoryCollection()->acquireWriteLock();
-    m_collection->memoryCollection()->setArtistMap( artistMap );
-    m_collection->memoryCollection()->releaseLock();
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setArtistMap( artistMap );
+    m_collection.data()->memoryCollection()->releaseLock();
 }
 
 void
@@ -518,7 +518,7 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
 
     MediaDeviceGenrePtr genrePtr;
     MediaDeviceTrackPtr track( this );
-    GenreMap genreMap = m_collection->memoryCollection()->genreMap();
+    GenreMap genreMap = m_collection.data()->memoryCollection()->genreMap();
 
     // do cleanup of soon to be previous genre
 
@@ -552,9 +552,9 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
     // set track's genre to the new genre
     setGenre( genrePtr );
 
-    m_collection->memoryCollection()->acquireWriteLock();
-    m_collection->memoryCollection()->setGenreMap( genreMap );
-    m_collection->memoryCollection()->releaseLock();
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setGenreMap( genreMap );
+    m_collection.data()->memoryCollection()->releaseLock();
 }
 
 void
@@ -564,7 +564,7 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
 
     MediaDeviceComposerPtr composerPtr;
     MediaDeviceTrackPtr track( this );
-    ComposerMap composerMap = m_collection->memoryCollection()->composerMap();
+    ComposerMap composerMap = m_collection.data()->memoryCollection()->composerMap();
 
     // do cleanup of soon to be previous composer
 
@@ -598,9 +598,9 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
     // set track's composer to the new composer
     setComposer( composerPtr );
 
-    m_collection->memoryCollection()->acquireWriteLock();
-    m_collection->memoryCollection()->setComposerMap( composerMap );
-    m_collection->memoryCollection()->releaseLock();
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setComposerMap( composerMap );
+    m_collection.data()->memoryCollection()->releaseLock();
 }
 
 void
@@ -610,7 +610,7 @@ MediaDeviceTrack::setYear( const QString &newYear )
 
     MediaDeviceYearPtr yearPtr;
     MediaDeviceTrackPtr track( this );
-    YearMap yearMap = m_collection->memoryCollection()->yearMap();
+    YearMap yearMap = m_collection.data()->memoryCollection()->yearMap();
 
     // do cleanup of soon to be previous year
 
@@ -644,9 +644,9 @@ MediaDeviceTrack::setYear( const QString &newYear )
     // set track's year to the new year
     setYear( yearPtr );
 
-    m_collection->memoryCollection()->acquireWriteLock();
-    m_collection->memoryCollection()->setYearMap( yearMap );
-    m_collection->memoryCollection()->releaseLock();
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setYearMap( yearMap );
+    m_collection.data()->memoryCollection()->releaseLock();
 }
 
 void

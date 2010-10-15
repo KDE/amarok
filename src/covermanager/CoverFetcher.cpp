@@ -53,7 +53,6 @@ void CoverFetcher::destroy()
 CoverFetcher::CoverFetcher()
     : QObject()
     , m_limit( 10 )
-    , m_dialog( 0 )
 {
     setObjectName( "CoverFetcher" );
 
@@ -223,11 +222,11 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
 void
 CoverFetcher::slotDialogFinished()
 {
-    const CoverFetchUnit::Ptr unit = m_dialog->unit();
-    switch( m_dialog->result() )
+    const CoverFetchUnit::Ptr unit = m_dialog.data()->unit();
+    switch( m_dialog.data()->result() )
     {
     case KDialog::Accepted:
-        m_selectedPixmaps.insert( unit, m_dialog->image() );
+        m_selectedPixmaps.insert( unit, m_dialog.data()->image() );
         finish( unit );
         break;
 
@@ -251,7 +250,7 @@ CoverFetcher::slotDialogFinished()
             abortFetch( unit );
     }
 
-    m_dialog->delayedDestruct();
+    m_dialog.data()->delayedDestruct();
 }
 
 void
@@ -267,18 +266,18 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFe
         }
 
         m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog, SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
+        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
                            SLOT(queueQuery(Meta::AlbumPtr, const QString&, int)) );
-        connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
-        connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), SIGNAL(accepted()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), SIGNAL(rejected()), SLOT(slotDialogFinished()) );
 
         if( fetchSource() == CoverFetch::LastFm )
             queueQueryForAlbum( album );
-        m_dialog->setQueryPage( 1 );
+        m_dialog.data()->setQueryPage( 1 );
 
-        m_dialog->show();
-        m_dialog->raise();
-        m_dialog->activateWindow();
+        m_dialog.data()->show();
+        m_dialog.data()->raise();
+        m_dialog.data()->activateWindow();
     }
     else
     {
@@ -287,7 +286,7 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFe
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
             if( payload )
-                m_dialog->add( cover, data, payload->imageSize() );
+                m_dialog.data()->add( cover, data, payload->imageSize() );
         }
     }
 }

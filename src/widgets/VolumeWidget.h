@@ -24,7 +24,7 @@
 
 #include <KAction>
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <QStringList>
 
 namespace Amarok
@@ -40,7 +40,7 @@ class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
     Q_OBJECT
 public:
     VolumeWidget( QWidget * );
-    Amarok::VolumeSlider* slider() const { return m_slider; }
+    Amarok::VolumeSlider* slider() const { return m_slider.data(); }
 
 private Q_SLOTS:
     void toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
@@ -49,7 +49,7 @@ private:
     void engineVolumeChanged( int value );
     void engineMuteStateChanged( bool mute );
 
-    QPointer<Amarok::VolumeSlider> m_slider;
+    QWeakPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
     QStringList m_icons;
 };

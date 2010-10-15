@@ -27,7 +27,7 @@
 
 #include <QComboBox>
 #include <QLabel>
-#include <QPointer>
+#include <QWeakPointer>
 
 class KActionCollection;
 class KActionMenu;
@@ -84,5 +84,5 @@ private:
 };
 }
 
-Q_DECLARE_METATYPE( QPointer<Playlists::UserPlaylistProvider> )
+Q_DECLARE_METATYPE( QWeakPointer<Playlists::UserPlaylistProvider> )
 #endif

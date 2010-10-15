@@ -51,7 +51,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_sqlStorage( 0 )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
-    , m_scanManager( 0 )
     , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
@@ -100,7 +99,7 @@ SqlCollection::init()
     // (e.g. deleted collection.db)
     if( m_updater->rescanNeeded() || ( !result.isEmpty() && result.first().toInt() == 0 ) )
     {
-        QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
+        QTimer::singleShot( 0, m_scanManager.data(), SLOT( startFullScan() ) );
     }
     //perform a quick check of the database
     m_updater->cleanupDatabase();
@@ -110,14 +109,14 @@ void
 SqlCollection::startFullScan()
 {
     if( m_scanManager )
-        m_scanManager->startFullScan();
+        m_scanManager.data()->startFullScan();
 }
 
 void
 SqlCollection::startIncrementalScan( const QString &directory )
 {
     if( m_scanManager )
-        m_scanManager->startIncrementalScan( directory );
+        m_scanManager.data()->startIncrementalScan( directory );
 }
 
 void
@@ -126,7 +125,7 @@ SqlCollection::stopScan()
     DEBUG_BLOCK
 
     if( m_scanManager )
-        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
+        m_scanManager.data()->abort( "Abort requested from SqlCollection::stopScan()" );
 }
 
 QString
@@ -172,7 +171,7 @@ IScanManager*
 SqlCollection::scanManager() const
 {
     Q_ASSERT( m_scanManager );
-    return m_scanManager;
+    return m_scanManager.data();
 }
 
 void
@@ -213,7 +212,7 @@ SqlCollection::removeCollection()
 bool
 SqlCollection::isDirInCollection( QString path )
 {
-    return m_scanManager->isDirInCollection( path );
+    return m_scanManager.data()->isDirInCollection( path );
 }
 
 bool

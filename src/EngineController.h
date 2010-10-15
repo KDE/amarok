@@ -28,7 +28,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 
 #include <Phonon/Path>
 #include <Phonon/MediaController>
@@ -123,7 +123,7 @@ public:
      * Provides access to the Phonon MediaObject for components that need more information
      */
     // const so that it can only be used for info
-    const Phonon::MediaObject* phononMediaObject() const { return m_media; }
+    const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
 
     /**
      * Gets the volume
@@ -365,21 +365,21 @@ private:
 
     Q_DISABLE_COPY( EngineController )
 
-    QPointer<Phonon::MediaObject>       m_media;
-    QPointer<Phonon::VolumeFaderEffect> m_preamp;
-    QPointer<Phonon::Effect>            m_equalizer;
-    QPointer<Phonon::AudioOutput>       m_audio;
-    QPointer<Phonon::VolumeFaderEffect> m_fader;
-    QPointer<Phonon::MediaController>   m_controller;
+    QWeakPointer<Phonon::MediaObject>       m_media;
+    QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
+    QWeakPointer<Phonon::Effect>            m_equalizer;
+    QWeakPointer<Phonon::AudioOutput>       m_audio;
+    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
+    QWeakPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                        m_path;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
-    QPointer<Capabilities::BoundedPlaybackCapability> m_boundedPlayback;
-    QPointer<Capabilities::MultiPlayableCapability> m_multiPlayback;
-    QPointer<Capabilities::MultiSourceCapability> m_multiSource;
+    QWeakPointer<Capabilities::BoundedPlaybackCapability> m_boundedPlayback;
+    QWeakPointer<Capabilities::MultiPlayableCapability> m_multiPlayback;
+    QWeakPointer<Capabilities::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
     int m_volume;

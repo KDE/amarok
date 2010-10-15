@@ -24,7 +24,7 @@
 
 #include <ui_labelsSettings.h>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 class LabelGraphicsItem;
 class TextScrollingWidget;
@@ -61,12 +61,12 @@ private:
     void updateLabels();
     void setStoppedState( bool stopped );
 
-    QPointer < Plasma::IconWidget >     m_reloadIcon;
-    QPointer < Plasma::IconWidget >     m_settingsIcon;
-    QString                             m_titleText;
-    QPointer < TextScrollingWidget >    m_titleLabel;
-    QPointer < QGraphicsProxyWidget >   m_addLabelProxy;
-    QPointer < KComboBox >              m_addLabel;
+    QWeakPointer<Plasma::IconWidget>   m_reloadIcon;
+    QWeakPointer<Plasma::IconWidget>   m_settingsIcon;
+    QString                            m_titleText;
+    QWeakPointer<TextScrollingWidget>  m_titleLabel;
+    QWeakPointer<QGraphicsProxyWidget> m_addLabelProxy;
+    QWeakPointer<KComboBox>            m_addLabel;
 
     QStringList                     m_allLabels;
     QStringList                     m_userLabels;

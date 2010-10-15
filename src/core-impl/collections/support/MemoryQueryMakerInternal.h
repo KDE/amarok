@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 class CustomReturnFunction;
@@ -93,7 +93,7 @@ private:
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;
-    QPointer<QObject> m_guard;
+    QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     bool m_randomize;

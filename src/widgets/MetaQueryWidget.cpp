@@ -524,7 +524,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
 
     if( populateQuery != 0 )
     {
-        m_runningQueries.insert(populateQuery, QPointer<KComboBox>(combo));
+        m_runningQueries.insert(populateQuery, QWeakPointer<KComboBox>(combo));
         connect( populateQuery, SIGNAL(newResultReady(QString,QStringList)),
                 SLOT(populateComboBox(QString,QStringList)) );
         connect( populateQuery, SIGNAL(queryDone()),
@@ -562,26 +562,26 @@ MetaQueryWidget::populateComboBox( QString collectionId, QStringList results )
     if( !query )
         return;
 
-    QPointer<KComboBox> combo = m_runningQueries.value(query);
+    QWeakPointer<KComboBox> combo = m_runningQueries.value(query);
     if( combo.isNull() )
         return;
 
     // note: adding items seems to reset the edit text, so we have
     //   to take care of that.
-    disconnect( combo, 0, this, 0 );
+    disconnect( combo.data(), 0, this, 0 );
 
     // want the results unique and sorted
     const QSet<QString> dataSet = results.toSet();
     QStringList dataList = dataSet.toList();
     dataList.sort();
-    combo->addItems( dataList );
+    combo.data()->addItems( dataList );
 
-    KCompletion* comp = combo->completionObject();
+    KCompletion* comp = combo.data()->completionObject();
     comp->setItems( dataList );
 
     // reset the text and re-enable the signal
-    combo->setEditText( m_filter.value );
-    connect( combo, SIGNAL(editTextChanged( const QString& ) ),
+    combo.data()->setEditText( m_filter.value );
+    connect( combo.data(), SIGNAL(editTextChanged( const QString& ) ),
             SLOT(valueChanged(const QString&)) );
 }
 

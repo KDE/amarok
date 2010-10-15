@@ -159,11 +159,11 @@ ProxyLogger::forwardNotifications()
             ProgressData d = m_progressQueue.dequeue();
             if( d.job )
             {
-                m_logger->newProgressOperation( d.job, d.text, d.object, d.object ? d.slot : 0 , d.type );
+                m_logger->newProgressOperation( d.job.data(), d.text, d.object.data(), d.object.data() ? d.slot : 0 , d.type );
             }
             else if( d.reply )
             {
-                m_logger->newProgressOperation( d.reply, d.text, d.object, d.object ? d.slot : 0 , d.type );
+                m_logger->newProgressOperation( d.reply.data(), d.text, d.object.data(), d.object.data() ? d.slot : 0 , d.type );
             }
         }
     }
