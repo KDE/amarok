@@ -121,11 +121,7 @@ private:
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
-#if KDE_IS_VERSION(4, 4, 0)
     : KIO::Integration::AccessManager( parent )
-#else
-    : KIO::AccessManager( parent )
-#endif
     , d( new NetworkAccessManagerProxyPrivate( this ) )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
@@ -221,11 +217,7 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
         break;
     }
 
-#if KDE_IS_VERSION(4, 4, 0)
     QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
-#else
-    QNetworkReply *reply = KIO::AccessManager::createRequest( op, request, outgoingData );
-#endif
 
 #ifdef DEBUG_BUILD_TYPE
     if( d->viewer )

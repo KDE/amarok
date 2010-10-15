@@ -35,11 +35,7 @@ namespace The
     AMAROK_EXPORT NetworkAccessManagerProxy *networkAccessManager();
 }
 
-#if KDE_IS_VERSION(4, 4, 0)
 class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessManager
-#else
-class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::AccessManager
-#endif
 {
     Q_OBJECT
 
