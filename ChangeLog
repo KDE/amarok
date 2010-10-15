@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
-VERSION 2.4
+VERSION 2.4-Beta 1
   FEATURES:
     * Size of OSD font is now configurable. (BR 195186)
     * Musicbrainz-based mass tagging UI by Sergey Ivanov.
