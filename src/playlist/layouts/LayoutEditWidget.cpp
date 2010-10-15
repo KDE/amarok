@@ -17,6 +17,7 @@
 #include "LayoutEditWidget.h"
 #include "TokenDropTarget.h"
 #include "playlist/PlaylistDefines.h"
+#include "playlist/PlaylistColumnNames.h"
 
 #include "core/support/Debug.h"
 
@@ -85,7 +86,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 
             }
 
-            TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
+            TokenWithLayout *token =  new TokenWithLayout( columnNames( element.value() ), iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setUnderline( element.underline() );

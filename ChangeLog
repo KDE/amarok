@@ -26,6 +26,8 @@ VERSION 2.4-Beta 1
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Playlist sorting breadcrumb items have been untranslatable.
+      Patch by Alexander Potashev <aspotashev@gmail.com>. (BR 189750)
     * Dynamic Playlist criteria were not being saved properly. (BR 243562)
     * Collection Browser should show Artist names for Compilation Albums. (BR
       252790)

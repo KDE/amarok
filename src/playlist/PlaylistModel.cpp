@@ -35,6 +35,7 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
 #include "core/meta/support/MetaUtility.h"
+#include "PlaylistColumnNames.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
@@ -80,7 +81,7 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
     if ( role != Qt::DisplayRole )
         return QVariant();
 
-    return columnNames[section];
+    return columnNames( section );
 }
 
 QVariant

@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "SortScheme.h"
+#include "playlist/PlaylistColumnNames.h"
 
 #include "core/support/Debug.h"
 
@@ -89,7 +90,7 @@ SortLevel::prettyName() const
 {
     if( m_category == -1 )
         return i18n( "Shuffle" );
-    return columnNames.at( m_category );
+    return columnNames( m_category );
 }
 
 // BEGIN SortScheme

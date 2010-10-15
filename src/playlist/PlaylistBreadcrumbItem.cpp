@@ -18,6 +18,7 @@
 #include "PlaylistBreadcrumbItem.h"
 
 #include "PlaylistDefines.h"
+#include "PlaylistColumnNames.h"
 #include "PlaylistSortWidget.h"
 
 #include <KIcon>
@@ -114,7 +115,7 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
     {
         if( !sortableCategories.contains( internalColumnNames.at( i ) ) )
             continue;
-        QAction *action = m_menu->addAction( KIcon( iconNames.at( i ) ), QString( columnNames.at( i ) ) );
+        QAction *action = m_menu->addAction( KIcon( iconNames.at( i ) ), QString( columnNames( i ) ) );
         action->setData( internalColumnNames.at( i ) );
         //FIXME: this menu should have the same margins as other Playlist::Breadcrumb and
         //       BrowserBreadcrumb menus.

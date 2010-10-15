@@ -17,6 +17,7 @@
 #include "PlaylistBreadcrumbLevel.h"
 
 #include "PlaylistDefines.h"
+#include "PlaylistColumnNames.h"
 
 namespace Playlist
 {
@@ -32,7 +33,7 @@ BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
     else
     {
         m_icon = KIcon( iconNames.at( internalColumnNames.indexOf( internalColumnName ) ) );
-        m_prettyName = columnNames.at( internalColumnNames.indexOf( internalColumnName ) );
+        m_prettyName = columnNames( internalColumnNames.indexOf( internalColumnName ) );
     }
 
     for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
@@ -42,7 +43,7 @@ BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
             m_name == currentInternalColumnName )
             continue;
         m_siblings.insert( currentInternalColumnName,
-                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames.at( i ) ) );
+                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames( i ) ) );
     }
     if( m_name != "Shuffle" )
         m_siblings.insert( "Shuffle", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Shuffle" ) ) );
