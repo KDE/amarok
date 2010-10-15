@@ -26,6 +26,7 @@ VERSION 2.4
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Dynamic Playlist criteria were not being saved properly. (BR 243562)
     * Collection Browser should show Artist names for Compilation Albums. (BR
       252790)
     * When Amarok starts and "Continue playing when Amarok is started" is selected,

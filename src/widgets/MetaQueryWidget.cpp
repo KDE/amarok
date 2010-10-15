@@ -124,6 +124,7 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     : QWidget( parent )
     , m_onlyNumeric( onlyNumeric )
     , m_noCondition( noCondition )
+    , m_settingFilter( false )
     , m_andLabel(0)
     , m_compareSelection(0)
     , m_valueSelection1(0)
@@ -140,9 +141,9 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     m_layoutMain->addLayout(m_layoutValue);
 
     m_layoutValueLabels = new QVBoxLayout();
-    m_layoutValue->addLayout(m_layoutValueLabels);
+    m_layoutValue->addLayout(m_layoutValueLabels, 0);
     m_layoutValueValues = new QVBoxLayout();
-    m_layoutValue->addLayout(m_layoutValueValues);
+    m_layoutValue->addLayout(m_layoutValueValues, 1);
 
     if( m_onlyNumeric ) {
         m_filter.field = Meta::valYear;
@@ -176,6 +177,7 @@ MetaQueryWidget::filter() const
 void
 MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
 {
+    m_settingFilter = true;
     m_filter = value;
 
     // correct filter
@@ -187,13 +189,13 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
 
     int index = m_fieldSelection->findData( (int)m_filter.field );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
-    m_filter = value; // the value can be reset by setFilter
 
     if( !m_noCondition )
         makeCompareSelection();
     makeValueSelection();
     setValueSelection();
 
+    m_settingFilter = false;
     emit changed(m_filter);
 }
 
@@ -239,6 +241,9 @@ MetaQueryWidget::makeFieldSelection()
 void
 MetaQueryWidget::fieldChanged( int i )
 {
+    if( m_settingFilter )
+        return;
+
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
     if( m_filter.field == field )
         return; // nothing to do
@@ -515,7 +520,6 @@ void
 MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery )
 {
     KComboBox* combo = new KComboBox( this );
-    combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
     if( populateQuery != 0 )

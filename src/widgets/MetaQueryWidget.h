@@ -169,6 +169,8 @@ class MetaQueryWidget : public QWidget
         bool m_onlyNumeric;
         bool m_noCondition;
 
+        bool m_settingFilter; // if set to true we are just setting the filter
+
         QVBoxLayout* m_layoutMain;
         QHBoxLayout* m_layoutValue;
         QVBoxLayout* m_layoutValueLabels;

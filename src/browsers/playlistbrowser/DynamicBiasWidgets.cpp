@@ -182,20 +182,23 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
     m_weightSelection->setToolTip(
             i18n( "This controls what portion of the playlist should match the criteria" ) );
-    connect( m_weightSelection, SIGNAL(valueChanged(int)),
-            this, SLOT(weightChanged(int)) );
 
     QHBoxLayout* sliderLayout = new QHBoxLayout();
     sliderLayout->addWidget( m_weightSelection );
     sliderLayout->addWidget( m_weightLabel );
 
     m_queryWidget = new MetaQueryWidget( frame );
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)), this, SLOT(syncBiasToControls()));
-
+    m_queryWidget->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
+                                               QSizePolicy::Preferred ) );
     layout->addRow( i18n( "Proportion:" ), sliderLayout );
     layout->addRow( i18n( "Match:" ), m_queryWidget );
 
     syncControlsToBias();
+
+    connect( m_weightSelection, SIGNAL(valueChanged(int)),
+             SLOT(weightChanged(int)) );
+    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
+             SLOT(syncBiasToControls()));
 
     this->layout()->addWidget( frame );
 }
@@ -251,20 +254,21 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
     m_scaleSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
     m_scaleSelection->setToolTip(
             i18n( "This controls how strictly to match the given value." ) );
-    connect( m_scaleSelection, SIGNAL(valueChanged(int)),
-            SLOT(scaleChanged(int)) );
-
     QHBoxLayout* sliderLayout = new QHBoxLayout();
     sliderLayout->addWidget( m_scaleSelection );
     sliderLayout->addWidget( m_scaleLabel );
 
     m_queryWidget = new MetaQueryWidget( frame, true, true );
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget&)), this, SLOT(syncBiasToControls()));
-
     layout->addRow( i18n( "Strictness:" ), sliderLayout );
     layout->addRow( i18n( "Match:" ), m_queryWidget );
 
     syncControlsToBias();
+
+    connect( m_scaleSelection, SIGNAL(valueChanged(int)),
+             SLOT(scaleChanged(int)) );
+    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
+             SLOT(syncBiasToControls()));
+
 
     this->layout()->addWidget( frame );
 }
@@ -277,17 +281,19 @@ PlaylistBrowserNS::BiasNormalWidget::syncControlsToBias()
     scaleChanged(scale); // the widget value might not have changed and thus the signal not fired
 
     MetaQueryWidget::Filter filter;
-    filter.numValue = m_nbias->value();
     filter.field    = m_nbias->field();
+    filter.numValue = m_nbias->value();
 
     m_queryWidget->setFilter( filter );
+
+    filter = m_queryWidget->filter();
 }
 
 void
 PlaylistBrowserNS::BiasNormalWidget::syncBiasToControls()
 {
-    m_nbias->setValue( m_queryWidget->filter().numValue );
     m_nbias->setField( m_queryWidget->filter().field );
+    m_nbias->setValue( m_queryWidget->filter().numValue );
     m_nbias->setScale( m_scaleSelection->value() / 100.0 );
     m_nbias->setActive( true );
 
