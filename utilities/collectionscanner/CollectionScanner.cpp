@@ -834,7 +834,7 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
             if( data[i].category() == QChar::NoCategory ||
                 data[i].category() == QChar::Other_Surrogate ||
                 ( 
-                    data[i].unicode() < 20 &&
+                    data[i].unicode() < 32 &&
                     data[i].unicode() != 9 &&
                     data[i].unicode() != 10 &&
                     data[i].unicode() != 13
