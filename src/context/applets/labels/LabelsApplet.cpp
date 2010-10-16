@@ -195,7 +195,7 @@ LabelsApplet::updateLabels()
     for( int i = 0; i < m_userLabels.count(); i++ )
     {
         finalLabelsMap.insert( m_userLabels.at( i ), m_personalCount );
-        qDebug() << "LabelsApplet:" << "user label:" << m_userLabels.at( i ) << "count:" << m_personalCount;
+        debug() << "LabelsApplet:" << "user label:" << m_userLabels.at( i ) << "count:" << m_personalCount;
     }
     // add the downloaded labels to the temp map first (if they aren't alreday in the final map / update value in final map if necessary)
     QMapIterator < QString, QVariant > it_infos ( m_webLabels );
@@ -212,7 +212,7 @@ LabelsApplet::updateLabels()
             finalLabelsMap[ it_infos.key() ] = it_infos.value().toInt();
             webCounts += it_infos.value().toInt();
         }
-        qDebug() << "LabelsApplet:" << "web label:" << it_infos.key() << "count:" << it_infos.value().toInt();
+        debug() << "LabelsApplet:" << "web label:" << it_infos.key() << "count:" << it_infos.value().toInt();
     }
     // then sort the values of the temp map
     QList < int > tempLabelsValues = tempLabelsMap.values();
@@ -252,7 +252,7 @@ LabelsApplet::updateLabels()
     // now make the label cloud nicer by determinating the quality of the web labels
     // 0.7 / 0.3 is a pretty moderate choice; 0.5 / 0.5 would be more extreme
     const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * webCounts.toSet().count()/webCounts.count() : 1.0;
-    qDebug() << "LabelsApplet:" << "qualityFactor:" << qualityFactor;
+    debug() << "LabelsApplet:" << "qualityFactor:" << qualityFactor;
     // and finally create the LabelGraphicsItems
     QMapIterator < QString, int > it_final ( finalLabelsMap );
     while( it_final.hasNext() )
@@ -271,7 +271,7 @@ LabelsApplet::updateLabels()
         if( f_size < -2 )
             f_size = -2;
 
-        qDebug() << "LabelsApplet:" << "final label:" << it_final.key() << "count:" << adjustedCount;
+        debug() << "LabelsApplet:" << "final label:" << it_final.key() << "count:" << adjustedCount;
 
         LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
         if( m_userLabels.contains( it_final.key() ) )
@@ -397,18 +397,18 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "state" ) && data["state"].toString().contains("started") )
     {
-        qDebug() << "LabelsApplet:" << "started";
+        debug() << "LabelsApplet:" << "started";
         setStoppedState( false );
     }
     else if ( data.contains( "state" ) && data["state"].toString().contains("stopped") )
     {
-        qDebug() << "LabelsApplet:" << "stopped";
+        debug() << "LabelsApplet:" << "stopped";
         setStoppedState( true );
     }
     
     if ( data.contains( "message" ) && data["message"].toString().contains("fetching") )
     {
-        qDebug() << "LabelsApplet:" << "fetching";
+        debug() << "LabelsApplet:" << "fetching";
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
@@ -420,7 +420,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     }
     else if ( data.contains( "message" ) )
     {
-        qDebug() << "LabelsApplet:" << "message:" << data[ "message" ].toString();
+        debug() << "LabelsApplet:" << "message:" << data[ "message" ].toString();
         m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
@@ -432,19 +432,19 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "artist" ) )
     {
-        qDebug() << "LabelsApplet:" << "artist";
+        debug() << "LabelsApplet:" << "artist";
         m_artist = data[ "artist" ].toString();
     }
     
     if ( data.contains( "title" ) )
     {
-        qDebug() << "LabelsApplet:" << "title";
+        debug() << "LabelsApplet:" << "title";
         m_title = data[ "title" ].toString();
     }
     
     if ( data.contains( "all" ) )
     {
-        qDebug() << "LabelsApplet:" << "all";
+        debug() << "LabelsApplet:" << "all";
         m_allLabels = data[ "all" ].toStringList();
         m_allLabels.sort();
 
@@ -457,7 +457,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "user" ) )
     {
-        qDebug() << "LabelsApplet:" << "user";
+        debug() << "LabelsApplet:" << "user";
         if( !m_stoppedstate ) // otherwise there's been an error
         {
             m_userLabels = data[ "user" ].toStringList();
@@ -470,7 +470,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     
     if ( data.contains( "web" ) )
     {
-        qDebug() << "LabelsApplet:" << "web";
+        debug() << "LabelsApplet:" << "web";
         if( !m_stoppedstate ) // otherwise there's been an error
         {
             if( !data.contains( "message" ) )

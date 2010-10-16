@@ -331,7 +331,7 @@ LabelsEngine::fetchLastFm()
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        qDebug() << "LabelsEngine:" << "artist or track empty";
+        debug() << "LabelsEngine:" << "artist or track empty";
     }
 }
 
@@ -341,13 +341,13 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
 
     if( m_lastFmUrl != url )
     {
-        qDebug() << "LabelsEngine:" << "urls not matching, returning";
+        debug() << "LabelsEngine:" << "urls not matching, returning";
         return;
     }
 
     if ( m_currentTrack != The::engineController()->currentTrack() )
     {
-        qDebug() << "LabelsEngine:" << "no current track, returning";
+        debug() << "LabelsEngine:" << "no current track, returning";
         return;
     }
 
