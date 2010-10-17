@@ -19,7 +19,6 @@
 
 #include "App.h"
 #include "Containment.h"
-#include "ContextView.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 

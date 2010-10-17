@@ -41,7 +41,6 @@ class QSpinBox;
 
 namespace Plasma {
     class DataEngine;
-    class TabBar;
 }
 
 static const int MAX_PLAYED_TRACKS = 5;
@@ -131,8 +130,6 @@ private:
     Ui::currentTrackSettings ui_Settings;
 
     QList<Plasma::IconWidget*> m_trackActions;
-
-    Plasma::TabBar *m_tabBar;
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )

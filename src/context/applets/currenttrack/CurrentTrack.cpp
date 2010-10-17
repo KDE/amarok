@@ -52,19 +52,16 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_trackLength( 0 )
     , m_showStatistics( true )
     , m_tracksToShow( 0 )
-    , m_tabBar( 0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-    setImmutability( Plasma::Mutable );
-    // Fix for BUG 190923:
-    // If the widget receives focus, somehow this makes it impossible to open the Amarok menu. Reason unclear.
-    setFocusPolicy( Qt::NoFocus );
+    // Note: there was a Plasma::TabBar used here.
+    //  However this seems to have caused layout and focus issues and BUG 190923
+    //  Until this is working correctly the TabBar should not be used again.
 }
 
 CurrentTrack::~CurrentTrack()
 {
-    delete m_tabBar;
 }
 
 void
@@ -123,8 +120,6 @@ CurrentTrack::init()
     m_noTrack->hide();
     m_noTrack->setText( m_noTrackText );
 
-    m_tabBar = new Plasma::TabBar( this );
-
     m_playCountLabel = i18n( "Play count" );
     m_scoreLabel = i18n( "Score" );
     m_lastPlayedLabel = i18n( "Last Played" );
@@ -132,14 +127,7 @@ CurrentTrack::init()
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
         m_tracks[i] = new TrackWidget( this );
 
-    m_tabBar->addTab( i18n( "Last played" ) );
-    m_tabBar->addTab( i18n( "Favorite tracks" ) );
-
-    // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-    m_tabBar->hide();
-
     connectSource( "current" );
-    connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
@@ -303,16 +291,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     {
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
 
-        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-#if 0
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
-        QFontMetrics fm( m_tabBar->font() );
-        m_tabBar->resize( QSizeF( contentsRect().width() - m_margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
-        m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
-
-        m_tabBar->show();
-#endif
-
         for( int i = 0; i < m_tracksToShow; i++ )
         {
             m_tracks[i]->resize( contentsRect().width() - standardPadding() * 2, textHeight * .8 );
@@ -350,10 +328,8 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     if( !m_lastTracks.isEmpty() )
     {
         Meta::TrackList tracks;
-        if( m_tabBar->currentIndex() == 0 )
-            tracks = m_lastTracks;
-        else
-            tracks = m_favoriteTracks;
+        tracks = m_lastTracks;
+
         int i = 0;
         foreach( Meta::TrackPtr track, tracks )
         {
@@ -475,10 +451,6 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         foreach ( QGraphicsItem *childItem, children )
             childItem->hide();
 
-        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-#if 0
-        m_tabBar->show();
-#endif
         for( int i = 0; i < m_tracksToShow; i++)
             m_tracks[i]->show();
         return;
@@ -493,7 +465,6 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     }
     else
     {
-        m_tabBar->hide();
         m_noTrack->hide();
         for( int i = 0; i < MAX_PLAYED_TRACKS; i++)
             m_tracks[i]->hide();

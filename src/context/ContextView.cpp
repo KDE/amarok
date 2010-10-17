@@ -65,9 +65,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     setInteractive( true );
     setAcceptDrops( true );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-   // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setMouseTracking( true );
-    setScreen( -1 );
+    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     //make background transparent
     QPalette p = palette();
