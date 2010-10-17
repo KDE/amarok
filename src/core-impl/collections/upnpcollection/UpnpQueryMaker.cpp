@@ -312,7 +312,7 @@ QueryMaker* UpnpQueryMaker::addMatch( const Meta::YearPtr &year )
 {
 DEBUG_BLOCK
     debug() << this << "Adding year match" << year->name();
-// TODO 
+// TODO
     return this;
 }
 
@@ -518,7 +518,7 @@ DEBUG_BLOCK
                 emit newResultReady( m_collection->collectionId(), list );
                 break;
             }
- 
+
             case Album:
             {
                 Meta::AlbumList list;
@@ -572,7 +572,7 @@ bool UpnpQueryMaker::postFilter( const KIO::UDSEntry &entry )
     foreach( NumericFilter filter, m_numericFilters ) {
         // should be set by the filter based on filter.type
         qint64 aValue = 0;
-        
+
         switch( filter.type ) {
             case Meta::valCreateDate:
             {

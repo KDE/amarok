@@ -34,7 +34,7 @@ namespace Collections {
 // use filter for faster data transfer and parsing
 // if cached tracks > remote tracks * CACHE_CHECK_THRESHOLD
 static const float CACHE_CHECK_THRESHOLD = 0.75f;
-    
+
 UpnpQueryMakerInternal::UpnpQueryMakerInternal( UpnpSearchCollection *collection )
     : m_collection( collection )
 {
@@ -107,7 +107,7 @@ void UpnpQueryMakerInternal::slotEntries( KIO::Job *job, const KIO::UDSEntryList
         emit results( true, KIO::UDSEntryList() );
     else
         emit results( false, list );
-    
+
     debug() << this << "SLOT ENTRIES" << list.length() << m_queryType;
 
     switch( m_queryType ) {

@@ -3,7 +3,7 @@ include_directories( ../..
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} 
+   ${QT_INCLUDES}
 )
 
 
