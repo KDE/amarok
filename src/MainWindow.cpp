@@ -1158,7 +1158,7 @@ MainWindow::slotShowMenuBar()
         if (KMessageBox::warningContinueCancel(this,
             i18n("You have chosen to hide the menu bar.\n\nPlease remember that you can always use the shortcut \"%1\" to bring it back.")
                 .arg(m_showMenuBar->shortcut().toString()),
-            i18n("Hide menu"), KStandardGuiItem::cont(), KStandardGuiItem::cancel(), "showMenubar") != KMessageBox::Continue)
+            i18n("Hide Menu"), KStandardGuiItem::cont(), KStandardGuiItem::cancel(), "showMenubar") != KMessageBox::Continue)
         {
             //Cancel menu hiding. Revert menu item to checked state.
             m_showMenuBar->setChecked(true);
