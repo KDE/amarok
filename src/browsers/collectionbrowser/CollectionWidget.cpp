@@ -173,9 +173,10 @@ CollectionWidget::init()
     // Filter presets. UserRole is used to store the actual syntax.
     KComboBox *combo = d->searchWidget->comboBox();
     const KIcon icon = KStandardGuiItem::find().icon();
-    combo->addItem( icon, i18n("Added Today"), i18n("added:<1d" ) );
-    combo->addItem( icon, i18n("Added This Week"), i18n("added:<1w") );
-    combo->addItem( icon, i18n("Added This Month"), i18n("added:<1m") );
+    combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Hour"), QLatin1String("added:<1h" ) );
+    combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added Today"), QLatin1String("added:<1d" ) );
+    combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Week"), QLatin1String("added:<1w") );
+    combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Month"), QLatin1String("added:<1m") );
     combo->insertSeparator( combo->count() );
 
     QMenu *filterMenu = new QMenu( 0 );

@@ -20,6 +20,7 @@ VERSION 2.4-Beta 1
       to music provided by a running local Playdar service.
 
   CHANGES:
+    * Add "Added This Hour" filter preset to the collection brower widget.
     * Bumped KDE dependency to version 4.4., and Qt dependency to 4.6.
     * Print message when a file can't be copied to a media player.
       Patch by Sergey Ivanov <123kash@gmail.com>. (BR 203820)
