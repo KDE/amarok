@@ -82,13 +82,13 @@ namespace Debug
     class Indent : QObject
     {
         friend QString &modifieableIndent();
-        Indent() : QObject( qOApp ) { setObjectName( "DEBUG_indent" ); }
+        Indent() : QObject( qOApp ) { setObjectName( QLatin1String("DEBUG_indent") ); }
         QString m_string;
     };
 
     inline QString &modifieableIndent()
     {
-        QObject* o = qOApp ? qOApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
+        QObject* o = qOApp ? qOApp->findChild<QObject*>( QLatin1String("DEBUG_indent") ) : 0;
         QString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
     }
@@ -100,10 +100,7 @@ namespace Debug
 
     inline bool debugEnabled()
     {
-        KConfigGroup config = KGlobal::config()->group( "General" );
-        const bool debug = config.readEntry( "Debug Enabled", false );
-        
-        return debug; 
+        return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Enabled"), false );
     }
 
     inline kdbgstream dbgstream()
@@ -127,10 +124,28 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
-    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ).toLocal8Bit().constData(); }
-    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ).toLocal8Bit().constData(); }
-    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
+    static int s_colors[] = { 1, 2, 4, 5, 6 }; // no yellow and white for sanity
+    static int s_colorIndex = 0;
+
+    static QString colorize( const QString &text, int color = s_colorIndex )
+    {
+        QString output( text );
+        if( !qgetenv("KDE_COLOR_DEBUG").isEmpty() )
+        {
+            output.prepend( QString("amarok: \x1b[00;3%1m").arg(QString::number(s_colors[color])) );
+            output.append( QLatin1String("\x1b[00;39m") );
+            return output;
+        }
+        output.prepend( QLatin1String("amarok: ") );
+        return output;
+    }
+
+    #define GET_INDENT mutex.lock(); const QString &text = colorize( indent() + AMK_PREFIX ); mutex.unlock();
+    static inline kdbgstream debug()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData(); }
+    static inline kdbgstream warning() { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << " \x1b[07;33m[WARNING!]\x1b[00;39m"; }
+    static inline kdbgstream error()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << " \x1b[07;31m[ERROR!]\x1b[00;39m"; }
+    static inline kdbgstream fatal()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData(); }
+    #undef GET_INDENT
 
     #undef AMK_PREFIX
 
@@ -203,10 +218,10 @@ namespace Debug
     {
         QTime m_startTime;
         const char *m_label;
+        int m_color;
 
     public:
-        Block( const char *label )
-                : m_label( label )
+        Block( const char *label ) : m_label( label ), m_color( s_colorIndex )
         {
             m_startTime = QTime::currentTime();
 
@@ -214,9 +229,9 @@ namespace Debug
                 return;
 
             mutex.lock();
-
-            dbgstream() << QString( "amarok: " + indent() + "BEGIN: " + label ).toLocal8Bit().constData();
-            Debug::modifieableIndent() += "  ";
+            s_colorIndex = (s_colorIndex + 1) % 5;
+            dbgstream() << colorize( QString( "%1BEGIN: %2" ).arg( indent(), QString::fromLatin1(label) ), m_color ).toLocal8Bit().constData();
+            Debug::modifieableIndent() += QLatin1String("  ");
             mutex.unlock();
         }
 
@@ -233,9 +248,9 @@ namespace Debug
 
             // Print timing information, and a special message (DELAY) if the method took longer than 5s
             if( duration < 5.0 )
-                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
+                dbgstream() << colorize( QString( "%1END__: %2 - Took %3s" ).arg( indent(), QString::fromLatin1(m_label), QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
             else
-                dbgstream() << QString( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" ).toLocal8Bit().constData();
+                dbgstream() << colorize( QString( "%1END__: %2 - DELAY Took (quite long) %3s" ).arg( indent(), QString::fromLatin1(m_label), QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
 
             mutex.unlock();
         }
