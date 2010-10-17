@@ -21,6 +21,7 @@
 #include "core/transcoding/TranscodingController.h"
 
 #include <KIcon>
+#include <KLocalizedString>
 
 #include <QHBoxLayout>
 #include <QLabel>

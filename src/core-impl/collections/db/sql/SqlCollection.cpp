@@ -23,6 +23,7 @@
 #include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "core/support/Debug.h"
+#include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/MountPointManager.h"
 #include "SqlCollectionLocation.h"
@@ -56,17 +57,25 @@ namespace Collections {
 class OrganizeCollectionDelegateImpl : public OrganizeCollectionDelegate
 {
 public:
-    OrganizeCollectionDelegateImpl() : OrganizeCollectionDelegate(), m_dialog( 0 ), m_organizing( false ) {}
+    OrganizeCollectionDelegateImpl()
+        : OrganizeCollectionDelegate()
+        , m_dialog( 0 )
+        , m_organizing( false ) {}
     virtual ~ OrganizeCollectionDelegateImpl() { delete m_dialog; }
 
     virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
     virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
     virtual void setIsOrganizing( bool organizing ) { m_organizing = organizing; }
+    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration
+                                                  = Transcoding::Configuration() )
+    { m_targetFileExtension =
+      The::transcodingController()->format( configuration.encoder() )->fileExtension(); }
 
     virtual void show()
     {
         m_dialog = new OrganizeCollectionDialog( m_tracks,
                     m_folders,
+                    m_targetFileExtension,
                     The::mainWindow(), //parent
                     "", //name is unused
                     true, //modal
@@ -86,6 +95,7 @@ private:
     QStringList m_folders;
     OrganizeCollectionDialog *m_dialog;
     bool m_organizing;
+    QString m_targetFileExtension;
 };
 
 

@@ -67,6 +67,8 @@ public:
     void setTracks( const Meta::TrackList &tracks ) { Q_UNUSED( tracks ) }
     void setFolders( const QStringList &folders ) { Q_UNUSED( folders ) }
     void setIsOrganizing( bool organizing ) { Q_UNUSED( organizing ) }
+    void setTranscodingConfiguration(const Transcoding::Configuration &configuration)
+    { Q_UNUSED( configuration ) }
 
     void show() { emit accepted(); }
 

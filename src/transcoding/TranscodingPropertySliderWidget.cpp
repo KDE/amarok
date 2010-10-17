@@ -18,6 +18,8 @@
 
 #include "core/support/Debug.h"
 
+#include "KLocalizedString"
+
 #include <QHBoxLayout>
 
 namespace Transcoding
