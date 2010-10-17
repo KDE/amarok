@@ -48,6 +48,13 @@ public:
     void updateItemView( QAbstractItemView * view );
 
     /**
+    * Returns the foreground color for the painter by checking the painting QWidget::foregroundRole() and falling back to
+    * QPalette::WindowText (or QPalette::HighlightedText if @param selected)
+    * Uses the widgets palette or the application palette as fallback
+    */    
+    QColor foregroundColor( const QPainter *p, bool selected = false );
+
+    /**
      * Returns the highlight color which should be used instead of the color from KDE.
      * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
      */

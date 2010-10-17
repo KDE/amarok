@@ -22,6 +22,7 @@
 #include "core/support/Debug.h"
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategory.h"
+#include "PaletteHandler.h"
 
 #include <QApplication>
 #include <QFontMetrics>
@@ -62,10 +63,7 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
 
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
-    if ( option.state & QStyle::State_Selected )
-        painter->setPen( App::instance()->palette().highlightedText().color() );
-    else
-        painter->setPen( App::instance()->palette().text().color() );
+    painter->setPen( The::paletteHandler()->foregroundColor( painter, option.state & QStyle::State_Selected ) );
     
     painter->setRenderHint( QPainter::Antialiasing );
 
