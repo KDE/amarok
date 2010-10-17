@@ -128,7 +128,7 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    #define CURRENT_THREAD QString::number( QThread::currentThreadId() ).left( 5 )
+    #define CURRENT_THREAD QString::number( QThread::currentThreadId() ).right( 5 )
 
     static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + CURRENT_THREAD + ") " + ind + AMK_PREFIX ).toLocal8Bit().constData(); }
     static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << QString( "amarok: (" + CURRENT_THREAD + ") " + ind + AMK_PREFIX + " [WARNING!]" ).toLocal8Bit().constData(); }
