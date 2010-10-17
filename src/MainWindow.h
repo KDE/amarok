@@ -27,6 +27,7 @@
 
 #include <KMainWindow>
 #include <KVBox>
+#include <KAction>
 
 #include <QWeakPointer>
 
@@ -90,6 +91,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
         virtual QMenu* createPopupMenu();
 
+        void addViewMenuItems(QMenu* menu);
+
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
@@ -143,6 +146,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;
+        void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
@@ -213,6 +217,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         void    createActions();
         void    createMenus();
+
+        KAction* m_showMenuBar;
+
         int     m_lastBrowser;
         int     m_searchField;
 

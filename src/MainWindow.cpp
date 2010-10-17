@@ -130,6 +130,7 @@ namespace The {
 MainWindow::MainWindow()
     : KMainWindow( 0 )
     , Engine::EngineObserver( The::engineController() )
+    , m_showMenuBar( 0 )
     , m_lastBrowser( 0 )
     , m_layoutEverRestored( false )
     , m_waitingForCd( false )
@@ -183,6 +184,8 @@ MainWindow::MainWindow()
         m_browserDock.data()->list()->navigate( path );
 
     setAutoSaveSettings();
+
+    m_showMenuBar->setChecked(!menuBar()->isHidden());  // workaround for bug #171080
 }
 
 MainWindow::~MainWindow()
@@ -357,8 +360,23 @@ MainWindow::init()
 QMenu*
 MainWindow::createPopupMenu()
 {
-    DEBUG_BLOCK
     QMenu* menu = new QMenu( this );
+
+    // Show/hide menu bar
+    if (!menuBar()->isVisible())
+        menu->addAction( m_showMenuBar );
+
+    menu->addSeparator();
+
+    addViewMenuItems(menu);
+
+    return menu;
+}
+
+void
+MainWindow::addViewMenuItems(QMenu* menu)
+{
+    DEBUG_BLOCK
     menu->setTitle( i18nc("@item:inmenu", "&View" ) );
 
     // Layout locking:
@@ -396,8 +414,6 @@ MainWindow::createPopupMenu()
             menu->addAction( action );
         }
     }
-
-    return menu;
 }
 
 void
@@ -753,6 +769,7 @@ MainWindow::createActions()
     const Playlist::Controller* const pc = The::playlistController();
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    m_showMenuBar = KStandardAction::showMenubar(this, SLOT(slotShowMenuBar()), ac);
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( KIcon( "configure-shortcuts-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( KIcon( "configure-amarok" ) );
@@ -1055,6 +1072,11 @@ MainWindow::createMenus()
 #endif
     //END Actions menu
 
+    //BEGIN View menu
+    QMenu* viewMenu = new QMenu(this);
+    addViewMenuItems(viewMenu);
+    //END View menu
+
     //BEGIN Playlist menu
     KMenu *playlistMenu = new KMenu( m_menubar.data() );
     playlistMenu->setTitle( i18n("&Playlist") );
@@ -1090,6 +1112,8 @@ MainWindow::createMenus()
     m_settingsMenu = new KMenu( m_menubar.data() );
     m_settingsMenu.data()->setTitle( i18n("&Settings") );
 
+    m_settingsMenu.data()->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::ShowMenubar ) ) );
+
     //TODO use KStandardAction or KXmlGuiWindow
 
     // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
@@ -1107,7 +1131,7 @@ MainWindow::createMenus()
     //END Settings menu
 
     m_menubar.data()->addMenu( actionsMenu );
-    m_menubar.data()->addMenu( createPopupMenu() );
+    m_menubar.data()->addMenu( viewMenu );
     m_menubar.data()->addMenu( playlistMenu );
     m_menubar.data()->addMenu( m_toolsMenu.data() );
     m_menubar.data()->addMenu( m_settingsMenu.data() );
@@ -1123,6 +1147,25 @@ MainWindow::createMenus()
                             Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
     m_menubar.data()->addMenu( helpMenu );
+}
+
+void
+MainWindow::slotShowMenuBar()
+{
+    if (!m_showMenuBar->isChecked())
+    {
+        //User have chosen to hide a menu. Lets warn him
+        if (KMessageBox::warningContinueCancel(this,
+            i18n("You have chosen to hide a menu bar.\nRemember that you can always use shortcut \"%1\" to show it back.")
+                .arg(m_showMenuBar->shortcut().toString()),
+            i18n("Hide menu"), KStandardGuiItem::cont(), KStandardGuiItem::cancel(), "showMenubar") != KMessageBox::Continue)
+        {
+            //Cancel menu hiding. Revert menu item to checked state.
+            m_showMenuBar->setChecked(true);
+            return;
+        }
+    }
+    menuBar()->setVisible(m_showMenuBar->isChecked());
 }
 
 void
