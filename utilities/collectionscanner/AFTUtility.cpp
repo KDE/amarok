@@ -137,6 +137,25 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             mbIdPattern.exactMatch( storedMBId ) )
             return QString( "mb-" ) + storedMBId;
     }
+    else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        const TagLib::MP4::ItemListMap &itemsMap = file->tag()->itemListMap();
+        TagLib::Map<TagLib::String, TagLib::MP4::Item>::ConstIterator it = itemsMap.begin();
+        TagLib::Map<TagLib::String, TagLib::MP4::Item>::ConstIterator itEnd = itemsMap.end();
+        while( it != itEnd )
+        {
+            // TODO: read embedded AFT ids too (although AFTTagger doesn't support mp4 files yet)
+            const TagLib::String &key = (*it).first;
+            if( key.find("MusicBrainz Track Id") != -1 )
+            {
+                const QString &mbid = TStringToQString((*it).second.toStringList().toString());
+                if( !mbid.isEmpty() && ( mbid != mbDefaultUUID ) && mbIdPattern.exactMatch( mbid ) )
+                    return QString( "mb-%1" ).arg( mbid );
+            }
+            ++it;
+        }
+    }
+
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
     TagLib::Ogg::XiphComment *comment = 0;
     if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )

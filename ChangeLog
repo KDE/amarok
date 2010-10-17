@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * Read MusicBrainz IDs of MP4 files during scanning.
     * Ability to hide and show the menu bar. Patch by 
       Valentyn Pavliuchenko <valentyn.pavliuchenko@gmail.com>.
     * Size of OSD font is now configurable. (BR 195186)
