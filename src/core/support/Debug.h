@@ -140,10 +140,18 @@ namespace Debug
         return output;
     }
 
+    static QString reverseColorize( const QString &text, int color )
+    {
+        if( !qgetenv("KDE_COLOR_DEBUG").isEmpty() )
+            return QString("\x1b[07;3%1m%2\x1b[00;39m").arg(QString::number(color), text);
+        else
+            return text;
+    }
+
     #define GET_INDENT mutex.lock(); const QString &text = colorize( indent() + AMK_PREFIX ); mutex.unlock();
     static inline kdbgstream debug()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData(); }
-    static inline kdbgstream warning() { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << " \x1b[07;33m[WARNING!]\x1b[00;39m"; }
-    static inline kdbgstream error()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << " \x1b[07;31m[ERROR!]\x1b[00;39m"; }
+    static inline kdbgstream warning() { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << reverseColorize(QLatin1String(" [WARNING!]"), 3).toLocal8Bit().constData(); }
+    static inline kdbgstream error()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData() << reverseColorize(QLatin1String(" [ERROR!]"), 1).toLocal8Bit().constData(); }
     static inline kdbgstream fatal()   { GET_INDENT; return dbgstream() << text.toLocal8Bit().constData(); }
     #undef GET_INDENT
 
