@@ -67,6 +67,13 @@ namespace FilterFactory
                 result = new LabelFilter( filter, matchBegin, matchEnd );
                 break;
             }
+            case Meta::valLastPlayed:
+            {
+                LastPlayedFilter *lpf = new LastPlayedFilter();
+                lpf->setFilter( (qint64)filter.toInt(), Collections::QueryMaker::Equals );
+                result = lpf;
+                break;
+            }
             case Meta::valUrl:
             {
                 UrlMemoryFilter *umf = new UrlMemoryFilter();
