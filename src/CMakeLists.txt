@@ -642,6 +642,7 @@ set(amaroklib_LIB_SRCS
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
+    TrayIcon.cpp
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp
@@ -736,18 +737,6 @@ set(amaroklib_LIB_SRCS
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
 )
-
-if(KSTATUSNOTIFIERITEM_FOUND)
-    set(amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        TrayIcon.cpp
-        )
-else(KSTATUSNOTIFIERITEM_FOUND)
-    set(amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        TrayIconLegacy.cpp
-        )
-endif(KSTATUSNOTIFIERITEM_FOUND)
 
 if( BUILD_MYSQLE_COLLECTION )
 else( BUILD_MYSQLE_COLLECTION )
@@ -910,8 +899,8 @@ target_link_libraries(amaroklib
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KFILE_LIBS}
     ${KDE4_KHTML_LIBS}
+    ${KDE4_KNEWSTUFF3_LIBS}
     ${KDE4_KNEWSTUFF2_LIBS}
-    ${KDE4_KNEWSTUFF_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_KUTILS_LIBS}
     ${KDE4_PHONON_LIBRARY}
@@ -930,10 +919,6 @@ target_link_libraries(amaroklib
     amarokcore
     amarokocsclient
 )
-
-if (KDE_VERSION VERSION_GREATER "4.3.80")
-    target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
-endif (KDE_VERSION VERSION_GREATER "4.3.80")
 
 if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})

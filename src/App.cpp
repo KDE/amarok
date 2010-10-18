@@ -55,11 +55,8 @@
 #include "statemanagement/DefaultApplicationController.h"
 #include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2DBusHandler.h"
-#ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
-#else
-#include "TrayIconLegacy.h"
-#endif
+
 
 #ifdef NO_MYSQL_EMBEDDED
 #include "MySqlServerTester.h"
