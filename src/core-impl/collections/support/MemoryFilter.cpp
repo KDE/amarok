@@ -75,7 +75,7 @@ namespace FilterFactory
                 break;
             }
         }
-        Q_ASSERT_X( result, "FilterFactory::filter", "called filter with an unknown value, value was " + value );
+        Q_ASSERT_X( result, "FilterFactory::filter", QString( "called filter with an unknown value, value was %1" ).arg( QString::number( value ) ).toLocal8Bit() );
         return result;
     }
 
