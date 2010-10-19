@@ -104,6 +104,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         // static member functions
         static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name
 
+        /** Set the columns that are displayed in the tooltip */
+        static void setTooltipColumns( bool columns[] );
+
     signals:
         void activeTrackChanged( quint64 );
         void queueChanged();
@@ -112,6 +115,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
     private:
+        QString tooltipFor( Meta::TrackPtr track ) const;
+
         // Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
@@ -145,6 +150,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         int m_setStateOfItem_batchMinRow;    //!< For 'setStateOfItem_batch*()'
         int m_setStateOfItem_batchMaxRow;
+
+        static bool s_tooltipColumns[NUM_COLUMNS];
 };
 
 } // namespace Playlist

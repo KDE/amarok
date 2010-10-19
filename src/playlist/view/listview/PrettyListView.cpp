@@ -48,7 +48,6 @@
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
-#include "playlist/view/tooltips/ToolTipManager.h"
 
 #include <KApplication>
 #include <KMenu>
@@ -77,7 +76,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_firstScrollToActiveTrack( true )
         , m_rowsInsertedScrollItem( 0 )
         , m_pd( 0 )
-        , m_toolTipManager(0)
 {
     // QAbstractItemView basics
     setModel( The::playlist()->qaim() );
@@ -92,7 +90,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setVerticalScrollMode( ScrollPerPixel );
 
     setMouseTracking( true );
-
 
     // Rendering adjustments
     setFrameShape( QFrame::NoFrame );
@@ -122,11 +119,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     m_animationTimer = new QTimer(this);
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
     m_animationTimer->setInterval( 250 );
-
-
-    // Tooltips
-    m_toolTipManager = new ToolTipManager(this);
-
 
     playlistLayoutChanged();
 
@@ -322,7 +314,6 @@ Playlist::PrettyListView::selectionModel_setCurrentIndex( const QModelIndex &ind
     QModelIndex indexCopy = model()->index( index.row(), index.column() );
     selectionModel()->setCurrentIndex( indexCopy, command );
 }
-
 
 void
 Playlist::PrettyListView::showEvent( QShowEvent* event )
@@ -933,37 +924,35 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     else
         m_animationTimer->stop();
 
-    // Indicate to the tooltip manager what to display based on the layout
-    // That way, we avoid doing it every time we want to display the tooltip
-    // This will be done every time the layout will be changed
-    m_toolTipManager->cancelExclusions();
+    // -- update the tooltip columns in the playlist model
+    bool tooltipColumns[Playlist::NUM_COLUMNS];
+    for( int i=0; i<Playlist::NUM_COLUMNS; ++i )
+        tooltipColumns[i] = true;
+
+    // bool excludeCover = false;
+
     for( int part = 0; part < PlaylistLayout::NumParts; part++ )
     {
-        bool single = ( part == PlaylistLayout::Single );
-        PlaylistLayout layout = LayoutManager::instance()->activeLayout();
-        excludeFieldsFromTooltip( layout.layoutForPart( (PlaylistLayout::Part)part ), single );
+        // bool single = ( part == PlaylistLayout::Single );
+        Playlist::PlaylistLayout layout = Playlist::LayoutManager::instance()->activeLayout();
+        Playlist::LayoutItemConfig item = layout.layoutForPart( (PlaylistLayout::Part)part );
+
+        for (int activeRow = 0; activeRow < item.rows(); activeRow++)
+        {
+            for (int activeElement = 0; activeElement < item.row(activeRow).count();activeElement++)
+            {
+                Playlist::Column column = (Playlist::Column)item.row(activeRow).element(activeElement).value();
+                tooltipColumns[column] = false;
+            }
+        }
+        // excludeCover |= item.showCover();
     }
+    Playlist::Model::setTooltipColumns( tooltipColumns );
 
     update();
 
     // Schedule a re-scroll to the active playlist row. Assumption: Qt will run this *after* the repaint.
     QTimer::singleShot( 0, this, SLOT( slotPlaylistActiveTrackChanged() ) );
-}
-
-void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )
-{
-    for (int activeRow = 0; activeRow < item.rows(); activeRow++)
-    {
-        for (int activeElement = 0; activeElement < item.row(activeRow).count();activeElement++)
-        {
-            Playlist::Column column = (Playlist::Column)item.row(activeRow).element(activeElement).value();
-            m_toolTipManager->excludeField( column , single );
-        }
-    }
-    if (item.showCover())
-    {
-        m_toolTipManager->excludeCover( single );
-    }
 }
 
 #include "PrettyListView.moc"

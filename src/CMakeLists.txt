@@ -396,18 +396,6 @@ set(libplaylistmanager_SRCS
 )
 
 #####################################################################
-# TOOLTIPS
-#####################################################################
-set(libtooltip_SRCS
-    playlist/view/tooltips/AmarokToolTip.cpp
-    playlist/view/tooltips/KToolTip.cpp
-    playlist/view/tooltips/KToolTipDelegate.cpp
-    playlist/view/tooltips/KToolTipItem.cpp
-    playlist/view/tooltips/KFormattedBalloonTipDelegate.cpp
-    playlist/view/tooltips/ToolTipManager.cpp
-)
-
-#####################################################################
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS

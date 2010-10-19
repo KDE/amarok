@@ -44,6 +44,7 @@
 
 #include <KGlobal>
 #include <KUrl>
+#include <KIconLoader>
 
 #include <QAction>
 #include <QDate>
@@ -51,6 +52,99 @@
 #include <QTextDocument>
 
 #include <typeinfo>
+
+bool Playlist::Model::s_tooltipColumns[NUM_COLUMNS];
+
+// ------- helper functions for the tooltip
+
+static QString
+breakLongLinesHTML(const QString& text)
+{
+    // Now let's break up long lines so that the tooltip doesn't become hideously large
+
+    // The size of the normal, standard line
+    const int lnSize = 50;
+    if (text.size() <= lnSize)
+    {
+        // If the text is not too long, return it as it is
+        return text;
+    }
+    else
+    {
+        QString textInLines;
+
+        QStringList words = text.trimmed().split(' ');
+        int lineLength = 0;
+        while(words.size() > 0)
+        {
+            QString word = words.first();
+            // Let's check if the next word makes the current line too long.
+            if (lineLength + word.size() + 1 > lnSize)
+            {
+                if (lineLength > 0)
+                {
+                    textInLines += "<br/>";
+                }
+                lineLength = 0;
+                // Let's check if the next word is not too long for the new line to contain
+                // If it is, cut it
+                while (word.size() > lnSize)
+                {
+                    QString wordPart = word;
+                    wordPart.resize(lnSize);
+                    word.remove(0,lnSize);
+                    textInLines += wordPart + "<br/>";
+                }
+            }
+            textInLines += word + " ";
+            lineLength += word.size() + 1;
+            words.removeFirst();
+        }
+        return textInLines.trimmed();
+    }
+}
+
+/**
+* Prepares a row for the playlist tooltips consisting of an icon representing
+* an mp3 tag and its value
+* @param column The colunm used to display the icon
+* @param value The QString value to be shown
+* @return The line to be shown or an empty QString if the value is null
+*/
+static QString
+HTMLLine( const Playlist::Column& column, const QString& value, bool force = false )
+{
+    if ( (!value.isEmpty()) || (force) )
+    {
+        QString line;
+        line += "<tr><td align=\"right\">";
+        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconNames[column] , -16)+"\" />";
+        line += "</td><td align=\"left\">";
+        line += breakLongLinesHTML( value );
+        line += "</td></tr>";
+        return line;
+    }
+    else
+        return QString();
+}
+
+/**
+* Prepares a row for the playlist tooltips consisting of an icon representing
+* an mp3 tag and its value
+* @param column The colunm used to display the icon
+* @param value The integer value to be shown
+* @return The line to be shown or an empty QString if the value is 0
+*/
+static QString
+HTMLLine( const Playlist::Column& column, const int value, bool force = false )
+{
+    if ( (value != 0) || (force) )
+    {
+        return HTMLLine( column, QString::number( value ) );
+    }
+    else
+        return QString();
+}
 
 
 Playlist::Model::Model( QObject *parent )
@@ -82,6 +176,68 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
         return QVariant();
 
     return columnNames( section );
+}
+
+void
+Playlist::Model::setTooltipColumns( bool columns[] )
+{
+    for( int i=0; i<Playlist::NUM_COLUMNS; ++i )
+        s_tooltipColumns[i] = columns[i];
+}
+
+QString
+Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
+{
+    QString text;
+    // get the shared pointers now to be thread safe
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr album = track->album();
+    Meta::GenrePtr genre = track->genre();
+    Meta::ComposerPtr composer = track->composer();
+    Meta::YearPtr year = track->year();
+
+    if( s_tooltipColumns[Playlist::Title] )
+        text += HTMLLine( Playlist::Title, track->prettyName() );
+
+    if( s_tooltipColumns[Playlist::Artist] && artist )
+        text += HTMLLine( Playlist::Artist, artist->prettyName() );
+
+    if( s_tooltipColumns[Playlist::Album] && album )
+        text += HTMLLine( Playlist::Album, album->prettyName() );
+
+    if( s_tooltipColumns[Playlist::DiscNumber] )
+        text += HTMLLine( Playlist::DiscNumber, track->discNumber() );
+
+    if( s_tooltipColumns[Playlist::TrackNumber] )
+        text += HTMLLine( Playlist::TrackNumber, track->trackNumber() );
+
+    if( s_tooltipColumns[Playlist::Composer] && composer )
+        text += HTMLLine( Playlist::Composer, composer->prettyName() );
+
+    if( s_tooltipColumns[Playlist::Genre] && genre )
+        text += HTMLLine( Playlist::Genre, genre->prettyName() );
+
+    if( s_tooltipColumns[Playlist::Year] && year )
+        text += HTMLLine( Playlist::Year, year->name().toInt() );
+
+    if( s_tooltipColumns[Playlist::Comment])
+        text += HTMLLine( Playlist::Comment, track->comment() );
+
+    if( s_tooltipColumns[Playlist::Score] )
+        text += HTMLLine( Playlist::Score, QString::number( static_cast<int>( track->score() ) ), true );
+
+    if( s_tooltipColumns[Playlist::Rating] )
+        text += HTMLLine( Playlist::Rating, QString::number( static_cast<double>(track->rating())/2.0 ), true );
+
+    if( s_tooltipColumns[Playlist::PlayCount] )
+        text += HTMLLine( Playlist::PlayCount, track->playCount(), true );
+
+    if( text.isEmpty() )
+        text = QString( i18n( "No extra information available" ) );
+    else
+        text = QString("<table>"+ text +"</table>");
+
+    return text;
 }
 
 QVariant
@@ -116,12 +272,15 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
 
-    else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+    else if ( role == Qt::ToolTipRole )
+        return tooltipFor( m_items.at( row )->track() );
+
+    else if ( role == Qt::DisplayRole )
     {
         switch ( index.column() )
         {
             case PlaceHolder:
-                return QString();
+                return "Test";
             case Album:
             {
                 if ( m_items.at( row )->track()->album() )
@@ -612,12 +771,8 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
-
-    Meta::TrackList tracks = album->tracks();
-    foreach( Meta::TrackPtr track, tracks )
-        metadataChanged( track );
-    debug()<<"Album metadata changed";
+    Q_UNUSED( album );
+    // every interesting change will also be indicated through metadataChanged( Meta::TrackPtr )
 }
 
 bool
@@ -707,9 +862,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_totalSize += track->filesize();
         subscribeTo( track );
 
-        if ( track->album() )
-            subscribeTo( track->album() );
-
         Item* newitem = new Item( track );
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
@@ -796,11 +948,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_totalSize -= track->filesize();
 
         if( !containsTrack( track ) ) // check against same track two times in playlist
-        {
             unsubscribeFrom( track );
-            if ( track->album() )
-                unsubscribeFrom( track->album() );
-        }
     }
 
     qDeleteAll(delitems);
