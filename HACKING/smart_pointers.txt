@@ -1,14 +1,14 @@
-QPointer
+QWeakPointer
 ====================
-QPointer is a guarded pointer for QObjects, so it automatically becomes 0 when
+QWeakPointer is a guarded pointer for QObjects, so it automatically becomes 0 when
 the data it points to is deleted. If you have a member variable that's a QObject
-and are ever worried that it might be dangling, make it a QPointer. There's
+and are ever worried that it might be dangling, make it a QWeakPointer. There's
 really no reason not to for variables that stick around, it adds little
 overhead.
 
 KSharedPtr
 ====================
-Unlike QPointer, KSharedPtr is dangerous and must be used carefully. 
+Unlike QWeakPointer, KSharedPtr is dangerous and must be used carefully. 
 
 == Undercounting ==
 KSharedPtr uses reference counting. When a KSharedPtr is in scope, it adds one
