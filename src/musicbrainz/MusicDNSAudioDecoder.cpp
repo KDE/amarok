@@ -198,7 +198,7 @@ MusicDNSAudioDecoder::run()
                     }
 
                     outSize = bufferSize;
-                    decoderRet = avcodec_decode_audio3( pCodecCtx, ( qint16 * )buffer, &outSize, &tmpPacket );
+                    decoderRet = avcodec_decode_audio2( pCodecCtx, ( qint16 * )buffer, &outSize, tmpPacket.data, tmpPacket.size );
                     if( decoderRet < 0 )
                     {
                         debug() << "Error while decoding.";
