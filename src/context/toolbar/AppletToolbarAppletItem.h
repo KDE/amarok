@@ -26,6 +26,8 @@
 class QStyleOptionGraphicsItem;
 class QPainter;
 class QGraphicsSceneMouseEvent;
+class QGraphicsTextItem;
+class QPropertyAnimation;
 
 namespace Plasma
 {
@@ -78,9 +80,9 @@ class AppletToolbarAppletItem : public AppletToolbarBase
         Plasma::IconWidget* addAction( QAction *action, int size );
 
         Plasma::Applet* m_applet;
-        Plasma::Label * m_label;
+        QGraphicsTextItem* m_label;
 
-        QWeakPointer<Plasma::Animation> m_opacityAnimation;
+        QWeakPointer<QPropertyAnimation> m_opacityAnimation;
 
         Plasma::IconWidget* m_deleteIcon;
 

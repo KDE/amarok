@@ -23,21 +23,17 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <Plasma/Animator>
-#include <Plasma/Animation>
 #include <Plasma/Applet>
 #include <Plasma/IconWidget>
-#include <Plasma/Label>
 
 #include <KIcon>
 
 #include <QAction>
-#include <QBitmap>
-#include <QDrag>
-#include <QMimeData>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsTextItem>
+#include <QPropertyAnimation>
 
 
 Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent, Plasma::Applet* applet )
@@ -48,15 +44,15 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     , m_labelPadding( 5 )
     , m_configEnabled( false )
 {
-    m_label = new Plasma::Label( this );
+    m_label = new QGraphicsTextItem( this );
     if( m_applet )
     {
-       m_label->setText( m_applet->name() );
+       m_label->setPlainText( m_applet->name() );
        setToolTip( m_applet->name() );
     }
     else
     {
-        m_label->setText( i18n("no applet name") );
+        m_label->setPlainText( i18n("no applet name") );
     }
 
     setAcceptHoverEvents( true );
@@ -113,18 +109,24 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event 
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1 );
 
         if( fm.width( m_applet->name() ) + m_deleteIcon->boundingRect().width() > boundingRect().width() )
-            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
+            m_label->setPlainText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
         else
-            m_label->setText( m_applet->name() );
-    } else
+            m_label->setPlainText( m_applet->name() );
+
+        m_label->setPos( ( ( boundingRect().width() - m_deleteIcon->boundingRect().width() ) - m_label->boundingRect().width() )  / 2,
+                         ( boundingRect().height() - m_label->boundingRect().height() ) / 2 );
+    }
+    else
     {
         if( fm.width( m_applet->name() ) > boundingRect().width() )
-            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
+            m_label->setPlainText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
         else
-            m_label->setText( m_applet->name() );
-    }
+            m_label->setPlainText( m_applet->name() );
 
-    m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
+        m_label->setPos( ( boundingRect().width()  - m_label->boundingRect().width() )  / 2,
+                         ( boundingRect().height() - m_label->boundingRect().height() ) / 2 );
+
+    }
 
     emit geometryChanged();
 }
@@ -195,14 +197,13 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
 void
 Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animation *animation = m_opacityAnimation.data();
+    QPropertyAnimation *animation = m_opacityAnimation.data();
     if( !animation )
     {
-        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
-        animation->setTargetWidget( m_label );
-        animation->setProperty( "duration", 300 );
-        animation->setProperty( "startOpacity", 0.5 );
-        animation->setProperty( "targetOpacity", 1.0 );
+        animation = new QPropertyAnimation( m_label, "opacity" );
+        animation->setDuration( 300 );
+        animation->setStartValue( 0.5 );
+        animation->setEndValue( 1.0 );
         m_opacityAnimation = animation;
     }
     else if( animation->state() == QAbstractAnimation::Running )
@@ -216,14 +217,13 @@ Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 void
 Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animation *animation = m_opacityAnimation.data();
+    QPropertyAnimation *animation = m_opacityAnimation.data();
     if( !animation )
     {
-        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
-        animation->setTargetWidget( m_label );
-        animation->setProperty( "duration", 300 );
-        animation->setProperty( "startOpacity", 0.5 );
-        animation->setProperty( "targetOpacity", 1.0 );
+        animation = new QPropertyAnimation( m_label, "opacity" );
+        animation->setDuration( 300 );
+        animation->setStartValue( 0.5 );
+        animation->setEndValue( 1.0 );
         m_opacityAnimation = animation;
     }
     else if( animation->state() == QAbstractAnimation::Running )
