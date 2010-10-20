@@ -36,14 +36,14 @@ SvgTinter::SvgTinter()
 SvgTinter::~SvgTinter()
 {}
 
-QString
-SvgTinter::tint(QString filename)
+QByteArray
+SvgTinter::tint( const QString &filename)
 {
     QFile file( filename );
     if ( !file.open( QIODevice::ReadOnly ) )
     {
         error() << "Unable to open file: " << filename;
-        return QString();
+        return QByteArray();
     }
 
     QByteArray svg_source( file.readAll() );
@@ -54,24 +54,24 @@ SvgTinter::tint(QString filename)
         QBuffer buf( &svg_source );
         QIODevice *flt = KFilterDev::device( &buf, QString::fromLatin1("application/x-gzip"), false );
         if (!flt)
-            return QString();
+            return QByteArray();
         if (!flt->open(QIODevice::ReadOnly))
         {
             delete flt;
-            return QString();
+            return QByteArray();
         }
         svg_source = flt->readAll();
         delete flt;
     }
 
-    QString svg_string( svg_source );
-    const QStringList tintKeys = m_tintMap.keys();
-    foreach ( const QString &colorName, tintKeys ) {
-        //debug() << "replace " <<  colorName << " with " << m_tintMap.value( colorName );
-        svg_string.replace( colorName, m_tintMap.value( colorName ) );
+    // QString svg_string( svg_source );
+    QHashIterator<QByteArray, QString> tintIter( m_tintMap );
+    while( tintIter.hasNext() )
+    {
+        tintIter.next();
+        svg_source.replace( tintIter.key(), tintIter.value().toLocal8Bit() );
     }
-
-    return svg_string;
+    return svg_source;
 }
 
 void

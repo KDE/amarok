@@ -265,7 +265,7 @@ SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
     return addBordersToPixmap( album->image(imageSize), borderWidth, key );
 }
 
-QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
+QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache )
 {
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;

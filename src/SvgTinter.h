@@ -22,7 +22,7 @@
 
 #include <QColor>
 #include <QFile>
-#include <QMap>
+#include <QHash>
 #include <QString>
 #include <QPalette>
 
@@ -44,7 +44,7 @@ class SvgTinter
     public:
         ~SvgTinter();
 
-        QString AMAROK_EXPORT tint( QString filename );
+        QByteArray AMAROK_EXPORT tint( const QString &filename );
         void AMAROK_EXPORT init();
 
         QColor blendColors( const QColor& color1, const QColor& color2, int percent );
@@ -53,7 +53,7 @@ class SvgTinter
         SvgTinter();
 
         static SvgTinter * s_instance;
-        QMap<QString, QString> m_tintMap;
+        QHash<QByteArray, QString> m_tintMap;
 
         QPalette m_lastPalette;
         bool m_firstRun;

@@ -95,7 +95,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * @param name A name for use as the basis of the cache key that for caching the completed image plus borders.
          * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
          */
-        QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
+        QPixmap addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
 
         /**
          * Paint a custom slider using the specified painter. The slider consists
