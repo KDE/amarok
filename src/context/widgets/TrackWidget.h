@@ -75,7 +75,10 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon, public Meta::Observer
         * @param rating the new rating to give to the track.
         */
         void changeTrackRating( int rating );
-        
+
+        /** Updates the ui to reflect the changed track */
+        void updateTrack();
+
     private:
         Meta::TrackPtr m_track;
         RatingWidget *m_rating;

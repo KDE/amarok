@@ -289,7 +289,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     if( !m_lastTracks.isEmpty() )
     {
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
+        m_tracksToShow = qMin( MAX_PLAYED_TRACKS, qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) ) );
 
         for( int i = 0; i < m_tracksToShow; i++ )
         {
@@ -327,15 +327,10 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     if( !m_lastTracks.isEmpty() )
     {
-        Meta::TrackList tracks;
-        tracks = m_lastTracks;
+        Meta::TrackList tracks = m_lastTracks;
 
-        int i = 0;
-        foreach( Meta::TrackPtr track, tracks )
-        {
-            m_tracks[i]->setTrack( track );
-            i++;
-        }
+        for( int i = 0; i < tracks.count() && i < MAX_PLAYED_TRACKS; i++ )
+            m_tracks[i]->setTrack( tracks[i] );
 
         updateConstraints();
         update();

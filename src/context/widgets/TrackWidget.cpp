@@ -125,20 +125,32 @@ TrackWidget::setTrack( Meta::TrackPtr track )
 {
     if( m_track )
         unsubscribeFrom( m_track );
-    
-    m_track = track;
-    m_rating->setRating( track->rating() );
-    m_scoreText->setText( QString("%1").arg( int( track->score() ) ) );
 
-    subscribeTo( track );
+    m_track = track;
+
+    if( m_track )
+        subscribeTo( m_track );
+
+    // to get at least a little bit thread safety
+    QMetaObject::invokeMethod(this, "updateTrack", Qt::QueuedConnection);
 }
 
 void TrackWidget::metadataChanged( Meta::TrackPtr track )
 {
-    m_rating->setRating( track->rating() );
-    m_scoreText->setText( QString("%1").arg( int( track->score() ) ) );
+    Q_UNUSED(track);
+    // use a queued connection until we have a "real" signal for metadata changed
+    QMetaObject::invokeMethod(this, "updateTrack", Qt::QueuedConnection);
 }
 
+void
+TrackWidget::updateTrack()
+{
+    if( m_track )
+    {
+        m_rating->setRating( m_track->rating() );
+        m_scoreText->setText( QString("%1").arg( int( m_track->score() ) ) );
+    }
+}
 
 void
 TrackWidget::show()
