@@ -43,7 +43,10 @@ public:
     void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
 
     // helper function for view which lets us determine if a click is within an album group's header
-    static bool insideItemHeader( const QPoint&, const QRect& );
+    bool insideItemHeader( const QPoint&, const QRect& );
+
+    /** Returns the height an item header would have */
+    int headerHeight() const;
 
    /**
     * Handle clicks witin a delegate.
@@ -66,12 +69,12 @@ public:
     * @param painter The QPainter used to paint the item.
     * @param option Additional state options used to paint the item..
     * @param index The model index of the track in the playlist that we are painting.
-    * @param ignoreMarkers A boolean value specifying wheter we should ignore any "markers" when painting this item.
+    * @param headerRow A boolean value specifying wheter we should ignore any "markers" when painting this item.
     *                      Markers can be such things as the "now playing" background, queue markers, multi track markers and the likes.
     *                      The main reason for wanting to ignore these is that when painting the head part of the first track in the group, these
     *                      things should not be shown as they will be hown in the track part of the item.
     */
-    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreMarkers = false ) const;
+    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool headerRow = false ) const;
 
 
 protected slots:

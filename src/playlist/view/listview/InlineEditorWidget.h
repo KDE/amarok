@@ -19,7 +19,7 @@
 
 #include "playlist/layouts/LayoutItemConfig.h"
 
-#include <KVBox>
+#include <KHBox>
 
 #include <QModelIndex>
 #include <QSplitter>
@@ -27,22 +27,18 @@
 /**
     An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
 */
-class InlineEditorWidget : public KVBox
+class InlineEditorWidget : public KHBox
 {
     Q_OBJECT
 
 public:
-    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, bool hasHeader );
+    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int height );
     ~InlineEditorWidget();
 
     QMap<int, QString> changedValues();
 
 signals:
-
     void editingDone( InlineEditorWidget * editor );
-
-protected:
-    void paintEvent( QPaintEvent * event );
 
 protected slots:
     void editValueChanged();
@@ -51,17 +47,15 @@ protected slots:
 
 private:
     void createChildWidgets();
-    QPoint centerImage( const QPixmap&, const QRectF& ) const;
     bool eventFilter( QObject *obj, QEvent *event );
 
     QPersistentModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
+    int m_itemHeight;
 
     QMap<QWidget *, int> m_editorRoleMap;
     QMap<int, QString> m_changedValues;
     QMap<int, QString> m_orgValues;
-
-    int m_headerHeight;
 
     QMap<QSplitter *, int> m_splitterRowMap;
     bool m_layoutChanged;

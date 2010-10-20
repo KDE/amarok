@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +21,7 @@
 #include "moodbar/MoodbarManager.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/layouts/LayoutManager.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
 #include "widgets/kratingwidget.h"
@@ -37,43 +39,22 @@
 using namespace Amarok;
 using namespace Playlist;
 
-const qreal Playlist::ALBUM_WIDTH = 50.0;
-const qreal Playlist::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
-const qreal Playlist::MARGIN = 2.0;
-const qreal Playlist::MARGINH = 6.0;
-const qreal Playlist::MARGINBODY = 1.0;
-const qreal Playlist::PADDING = 1.0;
-
-InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, bool hasHeader )
-    : KVBox( parent )
+InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index,
+                                        PlaylistLayout layout, int height )
+    : KHBox( parent )
     , m_index( index )
     , m_layout( layout )
+    , m_itemHeight( height )
     , m_layoutChanged( false )
 {
-    setContentsMargins( 0, 0, 0, 0 );
-    setSpacing( 0 );
-    setAutoFillBackground ( false );
-    int height = 0;
+    setAutoFillBackground( false ); // we want our own playlist background
 
-    QFontMetricsF nfm( font() );
-    QFont boldfont( font() );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
+    int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    setContentsMargins( frameHMargin, frameVMargin, frameHMargin, frameVMargin );
+    setContentsMargins( frameHMargin, 0, frameHMargin, 0 );
 
-    int s_fontHeight = bfm.height();
-
-    int rowCount = PrettyItemDelegate::rowsForItem( m_index );
-
-    m_headerHeight = 0;
-
-    height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
-    setFixedHeight( height );
-    setFixedWidth( parent->width() );
-
-    if( hasHeader )
-        m_headerHeight = ( height * layout.layoutForPart( PlaylistLayout::Head) .rows() ) / rowCount - 1;
-
-    //prevent editor closing when cliking a rating widget or pressing return in a line edit.
+    //prevent editor closing when clicking a rating widget or pressing return in a line edit.
     setFocusPolicy( Qt::StrongFocus );
 
     createChildWidgets();
@@ -85,67 +66,42 @@ InlineEditorWidget::~InlineEditorWidget()
 
 void InlineEditorWidget::createChildWidgets()
 {
-    DEBUG_BLOCK
-
-    debug() << "width: " << width();
-
-    //if we are a head item, create a blank widget to make space for the head info
-
-    if ( m_headerHeight != 0 )
-    {
-        QWidget * headSpacer = new QWidget( this );
-        headSpacer->setFixedHeight( m_headerHeight );
-    }
-
-    KHBox * trackBox = new KHBox( this );
-
     //For now, we don't allow editing of the "head" data, just the body
     LayoutItemConfig config = m_layout.layoutForItem( m_index );
 
-    int rowCount = config.rows();
-
-    if ( rowCount == 0 )
+    int trackRows = config.rows();
+    if ( trackRows == 0 )
         return;
 
-    int rowHeight = height() / rowCount;
+    // some style margins:
+    int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
 
-    int imageSize = height() - MARGIN * 2;
+    int coverHeight = m_itemHeight - frameVMargin * 2;
+    int rowHeight = m_itemHeight / trackRows;
 
     if ( config.showCover() )
     {
-        //add a small "spacer" widget to offset the cover a little.
-        QWidget * coverSpacer = new QWidget( trackBox );
-        coverSpacer->setFixedWidth( MARGINH - MARGIN );
-
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
-
-        if ( albumPixmap.width() > albumPixmap.width() )
-            albumPixmap = albumPixmap.scaledToWidth( imageSize );
-        else
-            albumPixmap = albumPixmap.scaledToHeight( imageSize );
-
-        QModelIndex emblemIndex = m_index.model()->index( m_index.row(), SourceEmblem );
-        QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
-
         if ( !albumPixmap.isNull() )
         {
-            QPainter painter( &albumPixmap );
-            painter.drawPixmap( QRectF( 0, 0, 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
+            if ( albumPixmap.width() > albumPixmap.width() )
+                albumPixmap = albumPixmap.scaledToWidth( coverHeight );
+            else
+                albumPixmap = albumPixmap.scaledToHeight( coverHeight );
 
-            QLabel * coverLabel = new QLabel( trackBox );
+            QLabel *coverLabel = new QLabel( this );
             coverLabel->setPixmap( albumPixmap );
-            coverLabel->setGeometry( QRect( 0, 0, height(), height() ) );
-            coverLabel->setMaximumSize( height(), height() );
-            coverLabel->setMargin ( MARGIN );
+
+            QWidget *spacing = new QWidget( this );
+            spacing->setFixedWidth( frameHMargin * 2 );
         }
     }
 
-    KVBox * rowsWidget = new KVBox( trackBox );
-    rowsWidget->setContentsMargins( 0, 0, 0, 0 );
-    rowsWidget->setSpacing( 0 );
+    KVBox *rowsWidget = new KVBox( this );
 
-    for ( int i = 0; i < rowCount; i++ )
+    for ( int i = 0; i < trackRows; i++ )
     {
 
         QSplitter *rowWidget = new QSplitter( rowsWidget );
@@ -153,17 +109,8 @@ void InlineEditorWidget::createChildWidgets()
 
         m_splitterRowMap.insert( rowWidget, i );
 
-        // the Oxygen widget style causes the frame around items too squashed
-        const KConfigGroup configGlobale( KGlobal::config(), "General" );
-        QString widgetStyle = configGlobale.readEntry( "widgetStyle", QString() );
-        if( widgetStyle == "oxygen" ) {
-            rowWidget->setContentsMargins( 0, -3, 0, -3 );
-        } else {
-            rowWidget->setContentsMargins( 0, 0, 0, 0 );
-        }
 
         LayoutItemConfigRow row = config.row( i );
-
         const int elementCount = row.count();
 
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
@@ -183,26 +130,20 @@ void InlineEditorWidget::createChildWidgets()
         {
             LayoutItemConfigRowElement element = row.element( j );
 
-            int value = element.value();
-
-            QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
-            QString text = textIndex.data( Qt::DisplayRole ).toString();
-            m_orgValues.insert( value, text );
-
-            qreal itemWidth = 0.0;
-
-            QRectF elementBox;
-
+            // -- calculate the size
             qreal size;
             if ( element.size() > 0.0001 )
                 size = element.size();
             else
                 size = spacePerAutoSizeElem;
 
-            if( size < 0.01 )
-                size = 0.01;
+            qreal itemWidth = 100 * size;
 
-            itemWidth = 100 * size;
+            int value = element.value();
+
+            QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
+            QString text = textIndex.data( Qt::DisplayRole ).toString();
+            m_orgValues.insert( value, text );
 
             //special case for painting the rating...
             if ( value == Rating )
@@ -212,6 +153,7 @@ void InlineEditorWidget::createChildWidgets()
                 KRatingWidget * ratingWidget = new KRatingWidget( 0 );
                 rowWidget->addWidget( ratingWidget );
                 rowWidget->setStretchFactor( itemIndex, itemWidth );
+                ratingWidget->setAlignment( element.alignment() );
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
@@ -225,7 +167,7 @@ void InlineEditorWidget::createChildWidgets()
                 debug() << "painting divider...";
                 QPixmap left = The::svgHandler()->renderSvg(
                         "divider_left",
-                        1, rowHeight ,
+                        1, rowHeight,
                         "divider_left" );
 
                 QPixmap right = The::svgHandler()->renderSvg(
@@ -273,8 +215,20 @@ void InlineEditorWidget::createChildWidgets()
                     QLineEdit * edit = new QLineEdit( text, 0 );
                     rowWidget->addWidget( edit );
                     rowWidget->setStretchFactor( itemIndex, itemWidth );
+                    edit->setFrame( false );
                     edit->setAlignment( element.alignment() );
                     edit->installEventFilter(this);
+
+                    // -- set font
+                    bool bold = element.bold();
+                    bool italic = element.italic();
+                    bool underline = element.underline();
+
+                    QFont font = edit->font();
+                    font.setBold( bold );
+                    font.setItalic( italic );
+                    font.setUnderline( underline );
+                    edit->setFont( font );
 
                     connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
@@ -292,42 +246,6 @@ void InlineEditorWidget::createChildWidgets()
             itemIndex++;
         }
     }
-}
-
-QPoint
-InlineEditorWidget::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
-{
-    const qreal pixmapRatio = ( qreal )pixmap.width() / ( qreal )pixmap.height();
-
-    qreal moveByX = 0.0;
-    qreal moveByY = 0.0;
-
-    if ( pixmapRatio >= 1 )
-        moveByY = ( rect.height() - ( rect.width() / pixmapRatio ) ) / 2.0;
-    else
-        moveByX = ( rect.width() - ( rect.height() * pixmapRatio ) ) / 2.0;
-
-    return QPoint( moveByX, moveByY );
-}
-
-void
-InlineEditorWidget::paintEvent( QPaintEvent * event )
-{
-    QPainter painter( this );
-    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" ) );
-
-    //if this is an editor for a head item, use the delegates paintItem function
-    //to draw the head part, which currently cannot be edited this way
-
-    if( m_headerHeight != 0 )
-    {
-        PrettyItemDelegate delegate;
-        QStyleOptionViewItem option;
-        option.rect = QRect( 0, 0, width(), m_headerHeight );
-        delegate.paintItem( m_layout.layoutForPart( PlaylistLayout::Head ), &painter, option, m_index, true );
-    }
-
-    event->accept();
 }
 
 void InlineEditorWidget::editValueChanged()
@@ -467,7 +385,7 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
 
     }
     else
-        return KVBox::eventFilter( obj, event );
+        return KHBox::eventFilter( obj, event );
 }
 
 #include "InlineEditorWidget.moc"

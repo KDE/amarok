@@ -512,8 +512,11 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
 
-        if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
+        if( m_prettyDelegate->clicked( relPos, itemRect, index ) )
+        {
+            event->accept();
             return;  //click already handled...
+        }
     }
 
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
@@ -607,7 +610,7 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
         QPoint mousePressPos = event->pos();
         mousePressPos.rx() += horizontalOffset();
         mousePressPos.ry() += verticalOffset();
-        return PrettyItemDelegate::insideItemHeader( mousePressPos, rectForIndex( index ) );
+        return m_prettyDelegate->insideItemHeader( mousePressPos, rectForIndex( index ) );
     }
     return false;
 }
