@@ -26,7 +26,7 @@ class QStyleOptionSlider;
 
 #include <KPixmapCache>
 #include <QReadWriteLock>
-#include <KSvgRenderer>
+#include <QSvgRenderer>
 
 #include <QPixmap>
 #include <QString>
@@ -49,8 +49,8 @@ class AMAROK_EXPORT SvgHandler : public QObject
     public:
         ~SvgHandler();
 
-        KSvgRenderer* getRenderer( const QString &name );
-        KSvgRenderer* getRenderer();
+        QSvgRenderer* getRenderer( const QString &name );
+        QSvgRenderer* getRenderer();
         QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
 
         /**
@@ -157,7 +157,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
         KPixmapCache * m_cache;
         KPixmapCache * m_sliderHandleCache;
 
-        QHash<QString,KSvgRenderer*> m_renderers;
+        QHash<QString,QSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;
 
         QString m_themeFile;

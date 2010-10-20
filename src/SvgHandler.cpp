@@ -71,10 +71,7 @@ SvgHandler::~SvgHandler()
     m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
     delete m_sliderHandleCache;
 
-    foreach( KSvgRenderer* item, m_renderers )
-    {
-        delete item;
-    }
+    qDeleteAll( m_renderers );
     m_renderers.clear();
 
     The::s_SvgHandler_instance = 0;
@@ -83,14 +80,8 @@ SvgHandler::~SvgHandler()
 
 bool SvgHandler::loadSvg( const QString& name )
 {
-    QString svgFilename;
-    
-    if ( !m_customTheme )
-        svgFilename = KStandardDirs::locate( "data", name );
-    else
-        svgFilename = name;
-    
-    KSvgRenderer *renderer = new KSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
+    const QString &svgFilename = !m_customTheme ? KStandardDirs::locate( "data", name ) : name;
+    QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ) );
 
     if ( !renderer->isValid() )
     {
@@ -107,7 +98,7 @@ bool SvgHandler::loadSvg( const QString& name )
     return true;
 }
 
-KSvgRenderer* SvgHandler::getRenderer( const QString& name )
+QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
     QReadLocker readLocker( &m_lock );
     if( ! m_renderers[name] )
@@ -116,14 +107,14 @@ KSvgRenderer* SvgHandler::getRenderer( const QString& name )
         if( !loadSvg( name ) )
         {
             QWriteLocker writeLocker( &m_lock );
-            m_renderers[name] = new KSvgRenderer();
+            m_renderers[name] = new QSvgRenderer();
         }
         readLocker.relock();
     }
     return m_renderers[name];
 }
 
-KSvgRenderer * SvgHandler::getRenderer()
+QSvgRenderer * SvgHandler::getRenderer()
 {
     return getRenderer( m_themeFile );
 }
