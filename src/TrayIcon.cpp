@@ -44,6 +44,7 @@
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
         , Engine::EngineObserver( The::engineController() )
+        , m_track( The::engineController()->currentTrack() )
 {
     DEBUG_BLOCK
 
@@ -68,11 +69,12 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "next"       ) );
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
-    PERF_LOG( "Adding system tray icon" );
+    PERF_LOG( "Initializing system tray icon" );
 
     setIconByName( "amarok" );
-
+    setupOverlayIcon( The::engineController()->state() );
     setupToolTip( true );
+    setupMenu();
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ), SLOT( slotActivated() ) );
@@ -183,28 +185,28 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
                 subscribeTo( track->album() );
             }
 
-            setOverlayIconByName( "media-playback-start" );
             setupMenu();
             break;
 
         case Phonon::StoppedState:
-            m_track = 0;
+            if ( m_track )
+            {
+                unsubscribeFrom( m_track );
+                unsubscribeFrom( m_track->album() );
+                m_track = 0;
+            }
 
-            setOverlayIconByName( QString() );
             setupMenu(); // remove custom track actions on stop
             break;
 
         case Phonon::PausedState:
-            setOverlayIconByName( "media-playback-pause" );
-            break;
-
         case Phonon::LoadingState:
         case Phonon::ErrorState:
         case Phonon::BufferingState:
-            setOverlayIconByName( QString() );
             break;
     }
 
+    setupOverlayIcon( state );
     setupToolTip( true );
 }
 
@@ -293,6 +295,28 @@ Amarok::TrayIcon::setupMenu()
         // readd
         contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
+    }
+}
+
+void
+Amarok::TrayIcon::setupOverlayIcon( Phonon::State state )
+{
+    switch( state )
+    {
+    case Phonon::PlayingState:
+        setOverlayIconByName( "media-playback-start" );
+        break;
+    case Phonon::StoppedState:
+        setOverlayIconByName( QString() );
+        break;
+    case Phonon::PausedState:
+        setOverlayIconByName( "media-playback-pause" );
+        break;
+    case Phonon::LoadingState:
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
+        setOverlayIconByName( QString() );
+        break;
     }
 }
 

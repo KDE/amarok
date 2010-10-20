@@ -58,6 +58,7 @@ private slots:
 
 private:
     void setupMenu();
+    void setupOverlayIcon( Phonon::State state );
     void setupToolTip( bool updateIcon );
 
     Meta::TrackPtr m_track;
