@@ -205,10 +205,12 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QString contents = QString( file.readAll() );
+        // transparent background
+        QPalette newPalette( palette );
+        newPalette.setBrush( QPalette::Base, QColor::fromRgbF(0, 0, 0, 0) );
+        webView->page()->setPalette( newPalette );
 
-        const QString bg = The::paletteHandler()->backgroundColor().name();
-        contents.replace( "/*{text_background_color}*/", bg );
+        QString contents = QString( file.readAll() );
         contents.replace( "/*{text_color}*/", palette.text().color().name() );
         contents.replace( "/*{link_color}*/", palette.link().color().name() );
         contents.replace( "/*{link_hover_color}*/", palette.linkVisited().color().name() );
@@ -231,10 +233,9 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
             QUrl cssUrl( QString("data:text/css;charset=utf-8;base64,") + css.toBase64() );
             //NOTE  We give it encoded on a base64
             // as it is currently broken on QtWebkit (see https://bugs.webkit.org/show_bug.cgi?id=34884 )
-            webView->mainFrame()->page()->settings()->setUserStyleSheetUrl( cssUrl );
+            webView->settings()->setUserStyleSheetUrl( cssUrl );
         }
     }
-    file.close();
 }
 
 void
@@ -482,7 +483,7 @@ WikipediaApplet::init()
 
     d->wikipediaLabel = new TextScrollingWidget( this );
     d->webView = new WikipediaWebView( this );
-    d->webView->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    d->webView->page()->currentFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
@@ -653,7 +654,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
             }
             d->currentUrl = url;
             d->webView->setHtml( data[ "page" ].toString(), url );
-            d->wikipediaLabel->setScrollingText( d->webView->mainFrame()->title() );
+            d->wikipediaLabel->setScrollingText( d->webView->page()->currentFrame()->title() );
             d->updateNavigationIcons();
             d->isBackwardHistory = false;
             d->isForwardHistory = false;

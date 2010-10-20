@@ -22,13 +22,13 @@
 #include "WikipediaApplet.h"
 #include "ui_wikipediaSettings.h"
 
+#include <KGraphicsWebView>
 #include <KLineEdit>
 #include <KUrl>
 
 #include <Plasma/LineEdit>
 #include <Plasma/Svg>
 #include <Plasma/SvgWidget>
-#include <Plasma/WebView>
 
 #include <QGraphicsSceneResizeEvent>
 #include <QStack>
@@ -170,13 +170,13 @@ protected:
     }
 };
 
-class WikipediaWebView : public Plasma::WebView
+class WikipediaWebView : public KGraphicsWebView
 {
     Q_OBJECT
 
 public:
     WikipediaWebView( QGraphicsItem *parent = 0 )
-        : Plasma::WebView( parent )
+        : KGraphicsWebView( parent )
     {
         m_lineEdit = new WikipediaSearchLineEdit( this );
         m_lineEdit->setContentsMargins( 0, 0, 0, 0 );
@@ -231,7 +231,7 @@ protected:
             }
             return false;
         }
-        return Plasma::WebView::eventFilter( obj, event );
+        return KGraphicsWebView::eventFilter( obj, event );
     }
 
     void keyPressEvent( QKeyEvent *event )
@@ -240,19 +240,19 @@ protected:
         {
             qreal offsetX = m_lineEdit->rect().width();
             qreal offsetY = m_lineEdit->rect().height();
-            offsetX += mainFrame()->scrollBarGeometry( Qt::Vertical ).width();
+            offsetX += page()->currentFrame()->scrollBarGeometry( Qt::Vertical ).width();
             m_lineEdit->setPos( rect().bottomRight() - QPointF( offsetX, offsetY ) );
             m_lineEdit->setFocus( Qt::PopupFocusReason );
             m_lineEdit->show();
             event->accept();
         }
         else
-            Plasma::WebView::keyPressEvent( event );
+            KGraphicsWebView::keyPressEvent( event );
     }
 
     void resizeEvent( QGraphicsSceneResizeEvent *event )
     {
-        Plasma::WebView::resizeEvent( event );
+        KGraphicsWebView::resizeEvent( event );
         if( m_topBorder )
         {
             m_topBorder->resize( event->newSize().width(), m_topBorder->size().height() );
