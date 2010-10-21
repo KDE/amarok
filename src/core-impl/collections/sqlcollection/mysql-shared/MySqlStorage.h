@@ -24,6 +24,10 @@
 #include <QMutex>
 #include <QString>
 
+#ifdef Q_WS_WIN
+  #include <winsock2.h>
+#endif
+
 struct st_mysql;
 typedef struct st_mysql MYSQL;
 
