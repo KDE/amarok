@@ -277,21 +277,21 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
 
     else if ( role == Qt::DisplayRole )
     {
+        Meta::AlbumPtr album = m_items.at( row )->track()->album();
         switch ( index.column() )
         {
             case PlaceHolder:
                 return "Test";
             case Album:
             {
-                if ( m_items.at( row )->track()->album() )
-                    return m_items.at( row )->track()->album()->name();
+                if( album )
+                    return album->name();
                 return QString();
             }
             case AlbumArtist:
             {
-                if ( m_items.at( row )->track()->album() )
-                    if (  m_items.at( row )->track()->album()->albumArtist() )
-                        return m_items.at( row )->track()->album()->albumArtist()->name();
+                if( album && album->albumArtist() )
+                    return album->albumArtist()->name();
                 return QString();
             }
             case Artist:
@@ -322,8 +322,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case CoverImage:
             {
-                if ( m_items.at( row )->track()->album() )
-                    return The::svgHandler()->imageWithBorder( m_items.at( row )->track()->album(), 100 ); //FIXME:size?
+                if( album )
+                    return The::svgHandler()->imageWithBorder( album, 100 ); //FIXME:size?
                 return QImage();
             }
             case Directory:
@@ -771,8 +771,17 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
-    Q_UNUSED( album );
-    // every interesting change will also be indicated through metadataChanged( Meta::TrackPtr )
+    // Mainly to get update about changed covers
+    const int size = m_items.size();
+    for ( int i = 0; i < size; i++ )
+    {
+        if ( m_items.at( i )->track()->album() == album )
+        {
+            emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
+            debug()<<"Metadata updated for album"<<album->prettyName();
+            break;
+        }
+    }
 }
 
 bool
@@ -861,6 +870,9 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_totalLength += track->length();
         m_totalSize += track->filesize();
         subscribeTo( track );
+        Meta::AlbumPtr album = track->album();
+        if( album )
+            subscribeTo( album );
 
         Item* newitem = new Item( track );
         m_items.insert( ic.second, newitem );
@@ -933,6 +945,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         Item* item = originalList.at(rc.second);
         Q_ASSERT( track == item->track() );
 
+        // -- remove the items from the lists
         int idx = rowForItem( item );
         if (idx != -1) {
             beginRemoveRows(QModelIndex(), idx, idx);
@@ -947,8 +960,29 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_totalLength -= track->length();
         m_totalSize -= track->filesize();
 
+        // -- unsubscribe
         if( !containsTrack( track ) ) // check against same track two times in playlist
+        {
             unsubscribeFrom( track );
+
+            Meta::AlbumPtr album = track->album();
+            if( album )
+            {
+                // check if we are the last track in playlist with this album
+                bool last = true;
+                const int size = m_items.size();
+                for ( int i = 0; i < size; i++ )
+                {
+                    if( m_items.at( i )->track()->album() == album )
+                    {
+                        last = false;
+                        break;
+                    }
+                }
+                if( last )
+                    unsubscribeFrom( album );
+            }
+        }
     }
 
     qDeleteAll(delitems);
