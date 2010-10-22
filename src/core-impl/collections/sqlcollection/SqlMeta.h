@@ -407,6 +407,8 @@ class SqlAlbum : public Meta::Album
         mutable QString m_imagePath; // path read from the database
         mutable bool m_hasImage; // true if we have an original image
         mutable bool m_hasImageChecked; // true if hasImage was checked
+        QSet<QString> m_pixmapCacheIds; // all our image keys
+        bool m_pixmapCacheDirty; // true if we should remove our images from the cache
 
         mutable int m_unsetImageId; // this is the id of the unset magic value in the image sql database
         static const QString AMAROK_UNSET_MAGIC;

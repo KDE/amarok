@@ -1086,6 +1086,7 @@ SqlAlbum::SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id,
     , m_imageId( -1 )
     , m_hasImage( false )
     , m_hasImageChecked( false )
+    , m_pixmapCacheDirty( false )
     , m_unsetImageId( -1 )
     , m_tracksLoaded( false )
     , m_suppressAutoFetch( false )
@@ -1188,8 +1189,19 @@ SqlAlbum::hasImage( int size ) const
 QPixmap
 SqlAlbum::image( int size )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !hasImage() )
         return Meta::Album::image( size );
+
+    // clean the pixmap cache here in the hope that ::image is only called from the UI thread
+    if( m_pixmapCacheDirty )
+    {
+        foreach( const QString id, m_pixmapCacheIds )
+            QPixmapCache::remove( id );
+        m_pixmapCacheIds.clear();
+        m_pixmapCacheDirty = false;
+    }
 
     QPixmap pixmap;
     // look in the memory pixmap cache
@@ -1214,7 +1226,10 @@ SqlAlbum::image( int size )
         if( pixmap.isNull() )
             return Meta::Album::image( size );
         if( size > 0)
+        {
             QPixmapCache::insert( cachedPixmapKey, pixmap );
+            m_pixmapCacheIds.insert( cachedPixmapKey );
+        }
         return pixmap;
     }
 
@@ -1241,7 +1256,10 @@ SqlAlbum::image( int size )
 
     pixmap = QPixmap::fromImage( img );
     if( size > 1)
+    {
         QPixmapCache::insert( cachedPixmapKey, pixmap );
+        m_pixmapCacheIds.insert( cachedPixmapKey );
+    }
     return pixmap;
 }
 
@@ -1351,6 +1369,7 @@ SqlAlbum::removeImage()
     m_imagePath = QString();
     m_hasImage = false;
     m_hasImageChecked = true;
+    m_pixmapCacheDirty = true;
 
     notifyObservers();
 }
@@ -1555,6 +1574,7 @@ SqlAlbum::setImage( const QString &path )
         m_imagePath = path;
         m_hasImage = true;
         m_hasImageChecked = true;
+        m_pixmapCacheDirty = true;
     }
 }
 
