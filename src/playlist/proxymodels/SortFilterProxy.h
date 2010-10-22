@@ -76,6 +76,12 @@ class SortFilterProxy : public ProxyBase, public SortProxy
         //!   Playlist::AbstractModel search-related functions.
         void clearSearchTerm();
         void filterUpdated();
+
+        /** This will set the search term for the filter.
+            filterUpdated() must be called to update the results.
+            This allows client 'PrettyListView' to give the user the time to type a few
+            characters before we do a filter run that might block for a few seconds.
+        */
         int find( const QString & searchTerm, int searchFields = MatchTrack );
         void showOnlyMatches( bool onlyMatches );
 

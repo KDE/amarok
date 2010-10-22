@@ -80,39 +80,47 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
             {
                 Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
                 Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
+                QString trackAStr = trackA->sortableName().toLower();
+                QString trackBStr = trackB->sortableName().toLower();
 
-                if( trackA->sortableName() < trackB->sortableName() )
+                if( trackAStr < trackBStr )
                 {   decided = true; verdict = true;    }
-                else if( trackA->sortableName() > trackB->sortableName() )
+                else if( trackAStr > trackBStr )
                 {   decided = true; verdict = false;     }
             }
             else if( m_scheme.level( i ).category() == Playlist::Album )
             {
                 Meta::AlbumPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->album();
                 Meta::AlbumPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->album();
+                QString trackAStr = trackA->sortableName().toLower();
+                QString trackBStr = trackB->sortableName().toLower();
 
-                if( trackA->sortableName() < trackB->sortableName() )
+                if( trackAStr < trackBStr )
                 {   decided = true; verdict = true;    }
-                else if( trackA->sortableName() > trackB->sortableName() )
+                else if( trackAStr > trackBStr )
                 {   decided = true; verdict = false;     }
             }
             else if( m_scheme.level( i ).category() == Playlist::Artist )
             {
                 Meta::ArtistPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->artist();
                 Meta::ArtistPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->artist();
+                QString trackAStr = trackA->sortableName().toLower();
+                QString trackBStr = trackB->sortableName().toLower();
 
-                if( trackA->sortableName() < trackB->sortableName() )
+                if( trackAStr < trackBStr )
                 {   decided = true; verdict = true;    }
-                else if( trackA->sortableName() > trackB->sortableName() )
+                else if( trackAStr > trackBStr )
                 {   decided = true; verdict = false;     }
             }
 
             //And now the comparison logic for ordinary columns.
             else if( m_scheme.level( i ).isString() )
             {
-                if( dataA.toString().toLower() < dataB.toString().toLower() )
+                QString dataAStr = dataA.toString().toLower();
+                QString dataBStr = dataB.toString().toLower();
+                if( dataAStr < dataBStr )
                 {   decided = true;  verdict = true;   }
-                else if( dataA.toString().toLower() > dataB.toString().toLower() )
+                else if( dataAStr > dataBStr )
                 {   decided = true;  verdict = false;   }
             }
             else if( m_scheme.level( i ).isFloat() )

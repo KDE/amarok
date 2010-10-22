@@ -188,8 +188,9 @@ void TestPlaylistModels::testFiltering()
     ModelStack::instance()->sortProxy()->updateSortMap( scheme ); 
     
     ModelStack::instance()->filterProxy()->showOnlyMatches( true );
-    ModelStack::instance()->filterProxy()->find( "ou" ); 
-    
+    ModelStack::instance()->filterProxy()->find( "ou" );
+    ModelStack::instance()->filterProxy()->filterUpdated();
+
     AbstractModel * topModel = ModelStack::instance()->top();
     
     QCOMPARE( topModel->qaim()->rowCount(), 3 );
