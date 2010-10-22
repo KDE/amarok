@@ -30,10 +30,11 @@
 class KConfigDialog;
 class QGraphicsLinearLayout;
 class QListWidgetItem;
-class QSignalMapper;
 class QXmlStreamReader;
 class TextScrollingWidget;
 class UpcomingEventsMapWidget;
+class UpcomingEventsStackItem;
+class UpcomingEventsStack;
 
 namespace Plasma
 {
@@ -136,9 +137,9 @@ private:
     Ui::upcomingEventsVenueSettings ui_VenueSettings;
 
     /**
-     * The plasma extender item for the upcoming events for the current playing artist
+     * The stack item for the upcoming events for the current playing artist
      */
-    Plasma::ExtenderItem *m_artistExtenderItem;
+    UpcomingEventsStackItem *m_artistStackItem;
 
     /**
      * The list widget presenting upcoming events
@@ -173,11 +174,6 @@ private slots:
     void saveSettings();
 
     /**
-     * Update constraints when extender items are collapsed/expanded
-     */
-    void updateConstraintsSlot();
-
-    /**
      * Show in media sources slot
      */
     void navigateToArtist();
@@ -203,22 +199,17 @@ private:
     };
 
     void clearVenueItems();
-    void addToExtenderItem( Plasma::ExtenderItem *item,
-                            const LastFmEvent::List &events,
-                            const QString &name );
+    void addToStackItem( UpcomingEventsStackItem *item,
+                         const LastFmEvent::List &events,
+                         const QString &name );
     QList<VenueData> venueStringToDataList( const QStringList &list );
     QList<VenueData> m_favoriteVenues;
-
-    void updateToolBoxIconSize();
-    qreal m_toolBoxIconSize;
-    QIcon m_maximizeIcon;
-    QSignalMapper *m_maximizeSignalMapper;
-    void addMaximizeAction( Plasma::ExtenderItem *item );
 
     void enableVenueGrouping( bool enable );
     bool m_groupVenues;
 
-    UpcomingEventsMapWidget *mapView( bool expand = true );
+    UpcomingEventsStack *m_stack;
+    UpcomingEventsMapWidget *mapView();
 
 private slots:
     void searchVenue( const QString &text );
@@ -230,9 +221,7 @@ private slots:
     void handleMapRequest( QObject *widget );
     void listWidgetDestroyed( QObject *obj );
     void openUrl( const QString &url );
-    void maximizeExtenderItem( const QString &name );
     void viewCalendar();
-    void themeChanged();
 };
 
 K_EXPORT_AMAROK_APPLET( upcomingEvents, UpcomingEventsApplet )

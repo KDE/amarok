@@ -11,6 +11,8 @@ set( upcomingEvents_SRCS
      LastFmEventXmlParser.cpp
      UpcomingEventsApplet.cpp
      UpcomingEventsWidget.cpp
+     UpcomingEventsStack.cpp
+     UpcomingEventsStackItem.cpp
      UpcomingEventsMapWidget.cpp
      UpcomingEventsCalendarWidget.cpp
      )

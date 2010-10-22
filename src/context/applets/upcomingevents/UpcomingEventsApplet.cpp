@@ -21,7 +21,6 @@
 
 #include "UpcomingEventsApplet.h"
 
-#include "App.h"
 #include "amarokurls/AmarokUrl.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/widgets/TextScrollingWidget.h"
@@ -31,44 +30,31 @@
 #include "LastFmEventXmlParser.h"
 #include "UpcomingEventsMapWidget.h"
 #include "UpcomingEventsCalendarWidget.h"
+#include "UpcomingEventsStack.h"
+#include "UpcomingEventsStackItem.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
-#include <KStandardDirs>
-#include <Plasma/Extender>
-#include <Plasma/ExtenderItem>
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
-#include <Plasma/WebView>
 #include <Plasma/Svg>
 
 #include <QDesktopServices>
-#include <QGraphicsLayoutItem>
 #include <QGraphicsLinearLayout>
-#include <QGraphicsProxyWidget>
-#include <QSignalMapper>
 #include <QXmlStreamReader>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
-    , m_toolBoxIconSize( 0.0 )
     , m_groupVenues( false )
+    , m_stack( 0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-    updateToolBoxIconSize();
-    connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(themeChanged()));
 }
 
 UpcomingEventsApplet::~UpcomingEventsApplet()
 {
-    // Remove all items from the extender, so that their configs are not saved
-    // into our rc file. The default configs saved are the positions of the
-    // extender items and is meant for the plasma desktop.
-    QList<Plasma::ExtenderItem*> extenderItems;
-    extenderItems << extender()->attachedItems() << extender()->detachedItems();
-    qDeleteAll( extenderItems );
 }
 
 void
@@ -76,14 +62,12 @@ UpcomingEventsApplet::init()
 {
     // Call the base implementation.
     Context::Applet::init();
-
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    Plasma::Svg svg;
-    svg.setImagePath( "widgets/configuration-icons" );
-    m_maximizeIcon = svg.pixmap( "restore" );
-    m_maximizeSignalMapper = new QSignalMapper( this );
-    connect( m_maximizeSignalMapper, SIGNAL(mapped(QString)), this, SLOT(maximizeExtenderItem(QString)) );
+    m_stack = new UpcomingEventsStack( this );
+    m_stack->setContentsMargins( 0, 0, 0, 0 );
+    connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
+             m_stack, SLOT(cleanupListWidgets()) );
 
     QAction *calendarAction = new QAction( this );
     calendarAction->setIcon( KIcon( "view-calendar" ) );
@@ -113,34 +97,31 @@ UpcomingEventsApplet::init()
     headerLayout->addItem( settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
-    m_artistExtenderItem = new Plasma::ExtenderItem( extender() );
-    m_artistEventsList = new UpcomingEventsListWidget( m_artistExtenderItem );
-    m_artistExtenderItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
-    m_artistExtenderItem->setName( "currentartistevents" );
-    m_artistExtenderItem->setWidget( m_artistEventsList );
-    m_artistExtenderItem->setCollapsed( true );
-    m_artistExtenderItem->setIcon( KIcon("filename-artist-amarok") );
-    addMaximizeAction( m_artistExtenderItem );
+    m_artistStackItem = m_stack->create( QLatin1String("currentartistevents") );
+    m_artistEventsList = new UpcomingEventsListWidget( m_artistStackItem );
+    m_artistStackItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
+    m_artistStackItem->setWidget( m_artistEventsList );
+    m_artistStackItem->setCollapsed( true );
+    m_artistStackItem->setIcon( KIcon("filename-artist-amarok") );
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
-    layout->addItem( extender() );
+    layout->addItem( m_stack );
     setLayout( layout );
-    connect( extender(), SIGNAL(geometryChanged()), SLOT(updateConstraintsSlot()) );
 
     // ask for all the CV height
     resize( 500, -1 );
-
-    Plasma::DataEngine *engine = dataEngine( "amarok-upcomingEvents" );
-    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(engineSourceAdded(QString)) );
-    engine->query( "venueevents" );
-    engine->query( "artistevents" );
 
     // Read config and inform the engine.
     enableVenueGrouping( Amarok::config("UpcomingEvents Applet").readEntry( "groupVenues", false ) );
     QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
     m_favoriteVenues = venueStringToDataList( venueData );
+
+    Plasma::DataEngine *engine = dataEngine( "amarok-upcomingEvents" );
+    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(engineSourceAdded(QString)) );
+    engine->query( "artistevents" );
+    engine->query( "venueevents" );
 
     updateConstraints();
     update();
@@ -154,53 +135,11 @@ UpcomingEventsApplet::engineSourceAdded( const QString &source )
 }
 
 void
-UpcomingEventsApplet::updateConstraintsSlot()
-{
-    updateConstraints();
-    update();
-}
-
-void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     prepareGeometryChange();
-    qreal padding = standardPadding();
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
-
-    // how many extender items are expanded
-    int expandedCount( 0 );
-    QList<Plasma::ExtenderItem*> existingItems = extender()->items();
-    foreach( Plasma::ExtenderItem *item, existingItems )
-    {
-        if( !item->isCollapsed() )
-            ++expandedCount;
-    }
-
-    // set the dimensions correctly for all extender items depending
-    // on whether they are collapsed or not.
-    int itemsCount = extender()->items().count();
-    qreal verticalMargins = 8;
-    qreal scrollAreaH = size().height() - extender()->pos().y();
-    qreal itemHeight = scrollAreaH - itemsCount * (m_toolBoxIconSize + verticalMargins + padding + 2);
-    if( expandedCount > 0 )
-        itemHeight /= expandedCount;
-
-    qreal rightMargin;
-    layout()->getContentsMargins( 0, 0, &rightMargin, 0 );
-    qreal scrollAreaW = size().width() - rightMargin / 2.0 - padding;
-    foreach( Plasma::ExtenderItem *item, existingItems )
-    {
-        QGraphicsWidget *widget = static_cast<QGraphicsWidget*>(item->widget());
-        widget->setMaximumWidth( scrollAreaW - padding );
-        item->setMaximumWidth( scrollAreaW );
-        if( expandedCount > 0 && !item->isCollapsed() )
-        {
-            widget->setMinimumHeight( itemHeight );
-            widget->setMaximumHeight( itemHeight );
-            widget->resize( scrollAreaW - padding, itemHeight );
-        }
-    }
 }
 
 void
@@ -211,45 +150,66 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     {
         m_artistEventsList->clear();
         QString artistName = data[ "artist" ].toString();
-        addToExtenderItem( m_artistExtenderItem, events, artistName );
-        m_artistEventsList->setName( artistName );
-        if( !m_artistExtenderItem->action( "showinmediasources" ) )
+        addToStackItem( m_artistStackItem, events, artistName );
+        if( !m_artistStackItem->action( "showinmediasources" ) )
         {
-            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistExtenderItem );
+            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistStackItem );
             act->setToolTip( i18n( "Show in Media Sources" ) );
             connect( act, SIGNAL(triggered()), this, SLOT(navigateToArtist()) );
-            m_artistExtenderItem->addAction( "showinmediasources", act );
+            m_artistStackItem->addAction( "showinmediasources", act );
         }
+        m_artistStackItem->setCollapsed( events.isEmpty() );
     }
     else if( source == "venueevents" )
     {
         if( !events.isEmpty() )
         {
             LastFmVenuePtr venue = data[ "venue" ].value<LastFmVenuePtr>();
-            if( m_groupVenues )
+            if( m_groupVenues && m_stack->hasItem("favoritevenuesgroup") )
             {
                 QString title = i18n( "Favorite Venues" );
-                addToExtenderItem( extender()->item("favoritevenuesgroup"), events, title );
+                addToStackItem( m_stack->item("favoritevenuesgroup"), events, title );
             }
             else
             {
-                if( extender()->hasItem( venue->name ) )
-                    extender()->item( venue->name )->destroy();
-                Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
-                UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( extenderItem );
-                listWidget->setName( venue->name );
-                extenderItem->setName( venue->name );
-                extenderItem->setWidget( listWidget );
-                extenderItem->setCollapsed( true );
-                extenderItem->setIcon( KIcon("favorites") );
-                extenderItem->showCloseButton();
-                addMaximizeAction( extenderItem );
-                addToExtenderItem( extenderItem, events, venue->name );
-                connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
-                connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
-                emit listWidgetAdded( listWidget );
+                UpcomingEventsStackItem *stackItem( 0 );
+                UpcomingEventsListWidget *listWidget( 0 );
+                LastFmEvent::List newEvents;
+                if( !m_stack->hasItem( venue->name ) )
+                {
+                    stackItem = m_stack->create( venue->name );
+                    listWidget = new UpcomingEventsListWidget( stackItem );
+                    listWidget->setName( venue->name );
+                    stackItem->setWidget( listWidget );
+                    stackItem->setCollapsed( true );
+                    stackItem->setIcon( KIcon("favorites") );
+                    stackItem->showCloseButton();
+                    connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
+                    connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
+                    emit listWidgetAdded( listWidget );
+                    newEvents = events;
+                }
+                else
+                {
+                    stackItem = m_stack->item( venue->name );
+                    typedef UpcomingEventsListWidget UELW;
+                    UELW *widget = static_cast<UELW*>( stackItem->widget() );
+                    newEvents = events.toSet().subtract( widget->events().toSet() ).toList();
+                }
+                addToStackItem( stackItem, newEvents, venue->name );
             }
             update();
+        }
+        else if( m_groupVenues && m_stack->hasItem( QLatin1String("favoritevenuesgroup") ) )
+        {
+            m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
+        }
+        else
+        {
+            // remove all venue lists
+            const QRegExp pattern( QLatin1String("^(?!(currentartistevents|venuemapview|calendar)).*$") );
+            QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+            qDeleteAll( eventItems );
         }
     }
 }
@@ -257,30 +217,14 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
 void
 UpcomingEventsApplet::clearVenueItems()
 {
-    foreach( Plasma::ExtenderItem *item, extender()->items() )
-    {
-        if( item == m_artistExtenderItem )
-            continue;
-        if( item->name() == "calendar" )
-            continue;
-        if( item->name() == "favoritevenuesgroup" )
-        {
-            static_cast<UpcomingEventsListWidget*>( item->widget() )->clear();
-            continue;
-        }
-        if( item->name() == "venuemapview" )
-        {
-            static_cast<UpcomingEventsMapWidget*>( item->widget() )->clear();
-            continue;
-        }
-        item->destroy();
-    }
+    m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
+    m_stack->remove( QLatin1String("venuemapview" ) );
 }
 
 void
-UpcomingEventsApplet::addToExtenderItem( Plasma::ExtenderItem *item,
-                                         const LastFmEvent::List &events,
-                                         const QString &name )
+UpcomingEventsApplet::addToStackItem( UpcomingEventsStackItem *item,
+                                      const LastFmEvent::List &events,
+                                      const QString &name )
 {
     UpcomingEventsListWidget *listWidget = static_cast<UpcomingEventsListWidget*>( item->widget() );
     listWidget->addEvents( events );
@@ -298,33 +242,7 @@ UpcomingEventsApplet::addToExtenderItem( Plasma::ExtenderItem *item,
             : i18ncp( "@title:group Number of upcoming events", "%1: 1 event", "%1: %2 events", name, added );
     }
     item->setTitle( title );
-}
-
-void
-UpcomingEventsApplet::addMaximizeAction( Plasma::ExtenderItem *item )
-{
-    if( !item->action( "maximize" ) )
-    {
-        QAction *act = new QAction( m_maximizeIcon, QString(), item );
-        act->setToolTip( i18n( "Maximize" ) );
-        connect( act, SIGNAL(triggered()), m_maximizeSignalMapper, SLOT(map()) );
-        m_maximizeSignalMapper->setMapping( act, item->name() );
-        item->addAction( "maximize", act );
-    }
-}
-
-void
-UpcomingEventsApplet::maximizeExtenderItem( const QString &name )
-{
-    if( extender()->hasItem( name ) )
-    {
-        extender()->item( name )->setCollapsed( false );
-        foreach( Plasma::ExtenderItem *item, extender()->items() )
-        {
-            if( item->name() != name )
-                item->setCollapsed( true );
-        }
-    }
+    item->layout()->invalidate();
 }
 
 void
@@ -575,54 +493,30 @@ UpcomingEventsApplet::openUrl( const QString &url )
     QDesktopServices::openUrl( QUrl(url) );
 }
 
-void
-UpcomingEventsApplet::updateToolBoxIconSize()
-{
-    Plasma::FrameSvg *background = new Plasma::FrameSvg(this);
-    background->setImagePath("widgets/extender-dragger");
-    background->resize();
-    QSizeF size = background->elementSize("hint-preferred-icon-size");
-    size = size.expandedTo(QSizeF(KIconLoader::SizeSmall,KIconLoader::SizeSmall));
-    Plasma::Theme *theme = Plasma::Theme::defaultTheme();
-    QFont font = theme->font(Plasma::Theme::DefaultFont);
-    QFontMetrics fm(font);
-    m_toolBoxIconSize = qMax(size.height(), (qreal) fm.height());
-}
-
-void
-UpcomingEventsApplet::themeChanged()
-{
-    updateToolBoxIconSize();
-}
-
 UpcomingEventsMapWidget *
-UpcomingEventsApplet::mapView( bool expand )
+UpcomingEventsApplet::mapView()
 {
-    if( extender()->hasItem("venuemapview") )
+    if( m_stack->hasItem("venuemapview") )
     {
-        Plasma::ExtenderItem *item = extender()->item( "venuemapview" );
-        item->setCollapsed( !expand );
+        UpcomingEventsStackItem *item = m_stack->item( "venuemapview" );
         return static_cast<UpcomingEventsMapWidget*>( item->widget() );
     }
 
-    Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
-    UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( extenderItem );
-    extenderItem->setIcon( KIcon( "edit-find" ) );
-    extenderItem->setTitle( i18n( "Map View" ) );
-    extenderItem->setName( "venuemapview" );
-    extenderItem->setWidget( view );
-    extenderItem->setMinimumWidth( 50 );
-    extenderItem->showCloseButton();
-    addMaximizeAction( extenderItem );
-    extender()->setMinimumWidth( 50 );
-    foreach( Plasma::ExtenderItem *item, extender()->items() )
+    UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("venuemapview") );
+    UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( stackItem );
+    stackItem->setIcon( KIcon( "edit-find" ) );
+    stackItem->setTitle( i18n( "Map View" ) );
+    stackItem->setWidget( view );
+    stackItem->setMinimumWidth( 50 );
+    stackItem->showCloseButton();
+    m_stack->setMinimumWidth( 50 );
+    const QRegExp pattern( QLatin1String("^(?!(venuemapview|calendar)).*$") );
+    QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+    foreach( UpcomingEventsStackItem *item, eventItems )
     {
-        if( item->name() == "venuemapview" )
-            continue;
-        if( item->name() == "calendar" )
-            continue;
         typedef UpcomingEventsListWidget LW;
-        view->addEventsListWidget( qgraphicsitem_cast<LW*>( item->widget() ) );
+        if( item )
+            view->addEventsListWidget( qgraphicsitem_cast<LW*>( item->widget() ) );
     }
     connect( this, SIGNAL(listWidgetAdded(UpcomingEventsListWidget*)),
              view, SLOT(addEventsListWidget(UpcomingEventsListWidget*)) );
@@ -634,31 +528,27 @@ UpcomingEventsApplet::mapView( bool expand )
 void
 UpcomingEventsApplet::viewCalendar()
 {
-    if( extender()->hasItem("calendar") )
+    if( m_stack->hasItem("calendar") )
     {
-        extender()->item("calendar")->setCollapsed( false );
+        m_stack->item("calendar")->setCollapsed( false );
         return;
     }
 
-    Plasma::ExtenderItem *extenderItem = new Plasma::ExtenderItem( extender() );
-    UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( extenderItem );
-
-    extenderItem->setIcon( KIcon( "view-calendar" ) );
-    extenderItem->setTitle( i18n( "Events Calender" ) );
-    extenderItem->setName( "calendar" );
-    extenderItem->setWidget( calendar );
-    extenderItem->setMinimumWidth( 50 );
-    extenderItem->showCloseButton();
-    extenderItem->addAction( "jumptotoday", calendar->todayAction() );
-    addMaximizeAction( extenderItem );
-    foreach( Plasma::ExtenderItem *item, extender()->items() )
+    UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("calendar") );
+    UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( stackItem );
+    stackItem->setIcon( KIcon( "view-calendar" ) );
+    stackItem->setTitle( i18n( "Events Calender" ) );
+    stackItem->setWidget( calendar );
+    stackItem->setMinimumWidth( 50 );
+    stackItem->showCloseButton();
+    stackItem->addAction( "jumptotoday", calendar->todayAction() );
+    const QRegExp pattern( QLatin1String("^(?!(venuemapview|calendar)).*$") );
+    QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+    foreach( UpcomingEventsStackItem *item, eventItems )
     {
-        if( item->name() == "venuemapview" )
-            continue;
-        if( item->name() == "calendar" )
-            continue;
         typedef UpcomingEventsListWidget LW;
-        calendar->addEvents( qgraphicsitem_cast<LW*>( item->widget() )->events() );
+        if( item )
+            calendar->addEvents( qgraphicsitem_cast<LW*>( item->widget() )->events() );
     }
 }
 
@@ -697,6 +587,7 @@ UpcomingEventsApplet::handleMapRequest( QObject *widget )
         UpcomingEventsWidget *eventWidget = static_cast<UpcomingEventsWidget*>( widget );
         LastFmVenuePtr venue = eventWidget->eventPtr()->venue();
         mapView()->centerAt( venue );
+        m_stack->maximizeItem( QLatin1String("venuemapview") );
     }
 }
 
@@ -748,15 +639,17 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
     m_groupVenues = enable;
     if( enable )
     {
-        if( !extender()->hasItem("favoritevenuesgroup") )
+        if( !m_stack->hasItem("favoritevenuesgroup") )
         {
-            Plasma::ExtenderItem *item = new Plasma::ExtenderItem( extender() );
+            UpcomingEventsStackItem *item = m_stack->create( QLatin1String("favoritevenuesgroup") );
             UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( item );
             listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
-            item->setName( "favoritevenuesgroup" );
+            QString title = i18ncp("@title:group Number of upcoming events",
+                                   "%1: 1 event", "%1: %2 events",
+                                   listWidget->name(), listWidget->count());
+            item->setTitle( title );
             item->setIcon( "favorites" );
             item->setWidget( listWidget );
-            addMaximizeAction( item );
             connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
             connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
             emit listWidgetAdded( listWidget );
@@ -764,8 +657,7 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
     }
     else
     {
-        if( extender()->hasItem("favoritevenuesgroup") )
-            extender()->item("favoritevenuesgroup")->destroy();
+        m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
     }
     updateConstraints();
 }

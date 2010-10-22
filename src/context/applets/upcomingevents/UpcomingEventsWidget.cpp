@@ -344,7 +344,6 @@ UpcomingEventsListWidget::clear()
         m_layout->removeItem( child );
         delete child;
     }
-    widget()->resize( size().width(), 0 );
 }
 
 bool
@@ -357,8 +356,7 @@ QSizeF
 UpcomingEventsListWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     Q_UNUSED( which )
-    Q_UNUSED( constraint )
-    return QSizeF( 0.0 , size().height() );
+    return constraint;
 }
 
 QString
