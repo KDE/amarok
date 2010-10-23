@@ -56,6 +56,7 @@ public:
     void checkRequireUpdate( Meta::TrackPtr track );
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
     void fetchLangLinks( const QString &title, const QString &hostLang, const QString &llcontinue = QString() );
+    void fetchListing( const QString &title, const QString &hostLang );
     void reloadWikipedia();
     bool setSelection( SelectionType type ); // returns true if selection is changed
     bool setSelection( const QString &type );
@@ -66,9 +67,7 @@ public:
     // data members
     SelectionType currentSelection;
     QUrl wikiCurrentUrl;
-    QString wikiLanguagesSection;
     QStringList preferredLangs;
-    QString currentWikiLang;
     Meta::TrackPtr currentTrack;
 
     Plasma::DataContainer *dataContainer;
@@ -78,6 +77,7 @@ public:
     // private slots
     void _dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data );
     void _parseLangLinksResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void _parseListingResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
 };
 
@@ -241,7 +241,15 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
 
             QXmlStreamAttributes a = xml.attributes();
             if( a.hasAttribute("pageid") && a.hasAttribute("title") )
+            {
+                const QString &pageTitle = a.value( QLatin1String("title") ).toString();
+                if( pageTitle.endsWith(QLatin1String("(disambiguation)")) )
+                {
+                    fetchListing( title, hostLang );
+                    return;
+                }
                 langTitleMap[hostLang] = title;
+            }
 
             while( !xml.atEnd() )
             {
@@ -315,11 +323,104 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
         }
         else
         {
-            q->removeAllData( "wikipedia" );
-            q->setData( "wikipedia", "message", i18n( "No information found..." ) );
-            q->scheduleSourcesUpdated();
+            QStringList refinePossibleLangs = preferredLangs.filter( QRegExp("^(en|fr|de|pl).*$") );
+            if( refinePossibleLangs.isEmpty() )
+            {
+                q->removeAllData( "wikipedia" );
+                q->setData( "wikipedia", "message", i18n( "No information found..." ) );
+                q->scheduleSourcesUpdated();
+                return;
+            }
+            fetchListing( title, refinePossibleLangs.first().split( QChar(':') ).back() );
         }
     }
+}
+
+void
+WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
+                                             QByteArray data,
+                                             NetworkAccessManagerProxy::Error e )
+{
+    Q_Q( WikipediaEngine );
+    if( !urls.contains( url ) )
+        return;
+
+    urls.remove( url );
+    if( e.code != QNetworkReply::NoError || data.isEmpty() )
+    {
+        debug() << "Parsing listing result failed" << e.description;
+        q->removeAllData( "wikipedia" );
+        q->setData( "wikipedia", "message", i18n("Unable to retrieve Wikipedia information: %1", e.description) );
+        q->scheduleSourcesUpdated();
+        return;
+    }
+
+    QString hostLang = url.host();
+    hostLang.remove( QLatin1String(".wikipedia.org") );
+    const QString &title = url.queryItemValue( QLatin1String("srsearch") );
+
+    QStringList titles;
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == QLatin1String("search") )
+        {
+            while( xml.readNextStartElement() )
+            {
+                if( xml.name() == QLatin1String("p") )
+                {
+                    if( xml.attributes().hasAttribute( QLatin1String("title") ) )
+                        titles << xml.attributes().value( QLatin1String("title") ).toString();
+                    xml.skipCurrentElement();
+                }
+                else xml.skipCurrentElement();
+            }
+        }
+    }
+
+    if( titles.isEmpty() )
+    {
+        QStringList refinePossibleLangs = preferredLangs.filter( QRegExp("^(en|fr|de|pl).*$") );
+        int index = refinePossibleLangs.indexOf( hostLang );
+        if( (index != -1) && (index < refinePossibleLangs.count() - 1) )
+            fetchListing( title, refinePossibleLangs.value( index + 1 ).split( QChar(':') ).back() );
+        return;
+    }
+
+    QString pattern;
+    switch( currentSelection )
+    {
+    default:
+    case Artist:
+        if( hostLang == QLatin1String("en") )
+            pattern = QLatin1String(".*\\(.*(band|musician|singer).*\\)");
+        else if( hostLang == QLatin1String("fr") )
+            pattern = QLatin1String(".*\\(.*(groupe|musicien|chanteur|chanteuse).*\\)");
+        else if( hostLang == QLatin1String("de") )
+            pattern = QLatin1String(".*\\(.*(band|musiker).*\\)");
+        else if( hostLang == QLatin1String("pl") )
+            pattern = QLatin1String(".*\\(.*(grupa muzyczna).*\\)");
+        break;
+
+    case Album:
+        if( hostLang == QLatin1String("en") )
+            pattern = QLatin1String(".*\\(.*(album|score|soundtrack).*\\)");
+        else if( hostLang == QLatin1String("fr") )
+            pattern = QLatin1String(".*\\(.*(album|BO).*\\)");
+        break;
+
+    case Track:
+        if( hostLang == QLatin1String("en") )
+            pattern = QLatin1String(".*\\(.*song|track.*\\)");
+        else if( hostLang == QLatin1String("pl") )
+            pattern = QLatin1String(".*\\(.*singel.*\\)");
+        break;
+    }
+
+    int patternIndex = titles.indexOf( QRegExp(pattern, Qt::CaseInsensitive) );
+    const QString result = ( patternIndex != -1 ) ? titles.at( patternIndex ) : titles.first();
+    fetchWikiUrl( result, hostLang ); // end of the line
 }
 
 void
@@ -366,7 +467,6 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
     // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
-    currentWikiLang = urlPrefix;
     KUrl pageUrl;
     pageUrl.setScheme( "http" );
     pageUrl.setHost( urlPrefix + ".wikipedia.org" );
@@ -404,6 +504,27 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
     q->setData( "wikipedia", "busy", true );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+void
+WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostLang )
+{
+    Q_Q( WikipediaEngine );
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( hostLang + ".wikipedia.org" );
+    url.setPath( "/w/api.php" );
+    url.addQueryItem( "action", "query" );
+    url.addQueryItem( "list", "search" );
+    url.addQueryItem( "srsearch", title );
+    url.addQueryItem( "srprop", "size" );
+    url.addQueryItem( "srredirects", QString::number(1) );
+    url.addQueryItem( "format", "xml" );
+    urls << url;
+    debug() << "Fetching listing:" << url;
+    q->setData( "wikipedia", "busy", true );
+    The::networkAccessManager()->getData( url, q,
+         SLOT(_parseListingResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -478,21 +599,10 @@ WikipediaEnginePrivate::updateEngine()
             tmpWikiStr = tmpWikiStr.left (index - 1);
     }
 
-    int preferredLangCount = preferredLangs.count();
-    if( preferredLangCount > 1 )
-    {
-        QString prefix = preferredLangs.first().split( QChar(':') ).back();
-        fetchLangLinks( tmpWikiStr, prefix );
-    }
-    else if( preferredLangCount == 1 )
-    {
-        QString prefix = preferredLangs.first().split( QChar(':') ).back();
-        fetchWikiUrl( tmpWikiStr, prefix );
-    }
-    else
-    {
-        fetchWikiUrl( tmpWikiStr, "en" );
-    }
+    if( preferredLangs.isEmpty() )
+        preferredLangs = QStringList() << QLatin1String("en:en");
+
+    fetchLangLinks( tmpWikiStr, preferredLangs.first().split( QChar(':') ).back() );
 }
 
 void
@@ -502,9 +612,9 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.replace( '\n', ' ' );
     wiki.replace( '\t', ' ' );
 
-    wikiLanguagesSection.clear();
+    QString wikiLanguagesSection;
     // Get the available language list
-    if ( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
+    if( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
         wikiLanguagesSection = wiki.mid( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") );
         wikiLanguagesSection = wikiLanguagesSection.mid( wikiLanguagesSection.indexOf("<ul>") );
