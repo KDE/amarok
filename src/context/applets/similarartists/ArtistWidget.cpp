@@ -43,6 +43,7 @@
 #include <QGraphicsLinearLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QPixmapCache>
 #include <QTextDocument>
 
 #include <cmath>
@@ -177,6 +178,12 @@ ArtistWidget::fetchPhoto()
     m_image->clear();
     m_image->setText( i18n( "Loading the picture..." ) );
 
+    QPixmap image;
+    if( QPixmapCache::find( m_artist->urlImage().url(), &image ) )
+    {
+        m_image->setPixmap( image );
+        return;
+    }
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
          SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)), Qt::QueuedConnection );
 }
@@ -193,9 +200,13 @@ ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAcc
     }
 
     QPixmap image;
-    image.loadFromData( data );
-    image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 6, QString(), true ) );
+    if( image.loadFromData( data ) )
+    {
+        image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        image = The::svgHandler()->addBordersToPixmap( image, 6, QString(), true );
+        m_image->setPixmap( image );
+        QPixmapCache::insert( url.url(), image );
+    }
 }
 
 void
