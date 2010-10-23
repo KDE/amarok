@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QLabel>
 #include <QPixmap>
+#include <QPixmapCache>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
@@ -127,6 +128,8 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
 {
+    if( !m_imageUrl.isEmpty() )
+        QPixmapCache::remove( m_imageUrl.url() );
 }
 
 QGraphicsProxyWidget *
@@ -151,6 +154,13 @@ UpcomingEventsWidget::setImage( const KUrl &url )
         m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 120 ) );
         return;
     }
+
+    QPixmap pixmap;
+    if( QPixmapCache::find(url.url(), &pixmap) )
+    {
+        m_image->setPixmap( pixmap );
+        return;
+    }
     m_imageUrl = url;
     QNetworkReply *reply = The::networkAccessManager()->get( QNetworkRequest(url) );
     connect( reply, SIGNAL(finished()), SLOT(loadImage()), Qt::QueuedConnection );
@@ -164,7 +174,6 @@ UpcomingEventsWidget::loadImage()
     if( m_imageUrl != url )
         return;
 
-    m_imageUrl.clear();
     if( reply->error() != QNetworkReply::NoError )
         return;
 
@@ -172,7 +181,9 @@ UpcomingEventsWidget::loadImage()
     if( image.loadFromData( reply->readAll() ) )
     {
         image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 6, QString(), true ) );
+        image = The::svgHandler()->addBordersToPixmap( image, 6, QString(), true );
+        QPixmapCache::insert( url.url(), image );
+        m_image->setPixmap( image );
     }
     reply->deleteLater();
 }
