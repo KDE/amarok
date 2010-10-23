@@ -376,7 +376,7 @@ WikipediaAppletPrivate::_configureLangSelector()
 
     for( int i = 0, count = langList.count(); i < count; ++i )
     {
-        const QStringList &split = langList.at( i ).split( QChar(':') );
+        const QStringList &split = langList.at( i ).split( QLatin1Char(':') );
         const QString &prefix    = split.first();
         const QString &urlPrefix = (split.count() == 1) ? prefix : split.at( 1 );
         QList<QListWidgetItem*> foundItems = availableListWidget->findItems( QString("[%1]").arg( prefix ),
