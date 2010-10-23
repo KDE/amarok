@@ -63,6 +63,7 @@ public:
     SelectionType selection() const;
     void updateEngine();
     void wikiParse( QString &page );
+    QString createLanguageComboBox( const QMap<QString, QString> &languageMap );
 
     // data members
     SelectionType currentSelection;
@@ -612,13 +613,31 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.replace( '\n', ' ' );
     wiki.replace( '\t', ' ' );
 
-    QString wikiLanguagesSection;
     // Get the available language list
+    QString wikiLanguagesSection;
+    QMap<QString, QString> langMap;
     if( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
         wikiLanguagesSection = wiki.mid( wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") );
         wikiLanguagesSection = wikiLanguagesSection.mid( wikiLanguagesSection.indexOf("<ul>") );
         wikiLanguagesSection = wikiLanguagesSection.mid( 0, wikiLanguagesSection.indexOf( "</div>" ) );
+        QXmlStreamReader xml( wikiLanguagesSection );
+        while( !xml.atEnd() && !xml.hasError() )
+        {
+            xml.readNext();
+            if( xml.isStartElement() && xml.name() == QLatin1String("li") )
+            {
+                while( xml.readNextStartElement() )
+                {
+                    if( xml.name() == QLatin1String("a") )
+                    {
+                        QString url = xml.attributes().value("href").toString();
+                        langMap[ xml.readElementText() ] = url;
+                    }
+                    else xml.skipCurrentElement();
+                }
+            }
+        }
     }
 
     QString copyright;
@@ -695,13 +714,27 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.prepend( "<html>\n" );
     wiki.append( QString("<head><title>%1</title></head>\n").arg(title) );
     wiki.append( "<body>\n" );
-    if( !wikiLanguagesSection.isEmpty() )
-    {
-        wiki.append( "<br/><div id=\"wiki_otherlangs\" >"
-                     + i18nc( "@item:intext Wikipedia webview", "This article in other languages:") + "<br/>"
-                     + wikiLanguagesSection + "</div>" );
-    }
+    wiki.append( createLanguageComboBox(langMap) );
     wiki.append( "</body></html>\n" );
+}
+
+QString
+WikipediaEnginePrivate::createLanguageComboBox( const QMap<QString, QString> &languageMap )
+{
+    if( languageMap.isEmpty() )
+        return QString();
+
+    QString html;
+    QMapIterator<QString, QString> i(languageMap);
+    while( i.hasNext() )
+    {
+        i.next();
+        html += QString( "<option value=\"%1\">%2</option>" ).arg( i.value(), i.key() );
+    }
+    html.prepend( QString("<form name=\"langform\"><select name=\"links\" size=\"1\">") );
+    html.append( QString("/select><input type=\"button\" value=\"%1\" ").arg( i18n("Choose Language") ) );
+    html.append( QString("onClick=\"mWebPage.loadWikipediaUrl(document.langform.links.options[document.langform.links.selectedIndex].value);\"></form>") );
+    return html;
 }
 
 void

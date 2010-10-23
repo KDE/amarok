@@ -52,6 +52,7 @@ public:
 public slots:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void loadWikipediaUrl( const QString &url );
 
 protected:
     void createConfigurationInterface(KConfigDialog *parent);
@@ -82,6 +83,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _pageLoadFinished(bool) )
     Q_PRIVATE_SLOT( d_ptr, void _searchLineEditTextEdited(const QString&) )
     Q_PRIVATE_SLOT( d_ptr, void _searchLineEditReturnPressed() )
+    Q_PRIVATE_SLOT( d_ptr, void _jsWindowObjectCleared() )
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

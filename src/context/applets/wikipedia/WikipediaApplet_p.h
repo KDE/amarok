@@ -105,6 +105,7 @@ public:
     void _pageLoadFinished( bool ok );
     void _searchLineEditTextEdited( const QString &text );
     void _searchLineEditReturnPressed();
+    void _jsWindowObjectCleared();
 
     // data members
     enum WikiLangRoles

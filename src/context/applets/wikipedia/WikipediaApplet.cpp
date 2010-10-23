@@ -165,6 +165,13 @@ WikipediaAppletPrivate::_gotoTrack()
 }
 
 void
+WikipediaAppletPrivate::_jsWindowObjectCleared()
+{
+    Q_Q( WikipediaApplet );
+    webView->page()->mainFrame()->addToJavaScriptWindowObject( "mWebPage", q );
+}
+
+void
 WikipediaAppletPrivate::_linkClicked( const QUrl &url )
 {
     Q_Q( WikipediaApplet );
@@ -483,7 +490,8 @@ WikipediaApplet::init()
 
     d->wikipediaLabel = new TextScrollingWidget( this );
     d->webView = new WikipediaWebView( this );
-    d->webView->page()->currentFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    d->webView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    d->webView->page()->mainFrame()->addToJavaScriptWindowObject( "mWebPage", this );
     d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
@@ -498,6 +506,7 @@ WikipediaApplet::init()
     connect( d->webView->page(), SIGNAL(linkClicked(QUrl)), SLOT(_linkClicked(QUrl)) );
     connect( d->webView->page(), SIGNAL(loadStarted()), SLOT(_pageLoadStarted()) );
     connect( d->webView->page(), SIGNAL(loadFinished(bool)), SLOT(_pageLoadFinished(bool)) );
+    connect( d->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(_jsWindowObjectCleared()) );
     connect( d->webView->lineEdit(), SIGNAL(textChanged(QString)), SLOT(_searchLineEditTextEdited(QString)) );
     connect( d->webView->lineEdit(), SIGNAL(returnPressed()), SLOT(_searchLineEditReturnPressed()) );
 
@@ -677,6 +686,13 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
 
     if( d->trackIcon->action() && !d->trackIcon->action()->isEnabled() )
         d->trackIcon->action()->setEnabled( true );
+}
+
+void
+WikipediaApplet::loadWikipediaUrl( const QString &url )
+{
+    Q_D( WikipediaApplet );
+    d->_linkClicked( QUrl(url) );
 }
 
 void
