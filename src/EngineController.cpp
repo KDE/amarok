@@ -364,31 +364,22 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     if( !track ) // Guard
         return;
 
+    stop( true );
+
     m_currentTrack = track;
-    m_currentIsAudioCd = false;
-    delete m_boundedPlayback.data();
-    delete m_multiPlayback.data();
-    delete m_multiSource.data();
     m_boundedPlayback = m_currentTrack->create<Capabilities::BoundedPlaybackCapability>();
     m_multiPlayback = m_currentTrack->create<Capabilities::MultiPlayableCapability>();
     m_multiSource = m_currentTrack->create<Capabilities::MultiSourceCapability>();
-
-
-    m_nextTrack.clear();
-    m_nextUrl.clear();
-    m_media.data()->clearQueue();
 
     m_currentTrack->prepareToPlay();
 
     if( m_multiPlayback )
     {
-        m_media.data()->stop();
         connect( m_multiPlayback.data(), SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
         m_multiPlayback.data()->fetchFirst();
     }
     else if( m_multiSource )
     {
-        m_media.data()->stop();
         debug() << "Got a MultiSource Track with " <<  m_multiSource.data()->sources().count() << " sources";
         connect( m_multiSource.data(), SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
         playUrl( m_currentTrack->playableUrl(), 0 );
@@ -521,6 +512,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 
     m_currentIsAudioCd = false;
     // need to get a new instance of multi if played again
+    delete m_boundedPlayback.data();
     delete m_multiPlayback.data();
     delete m_multiSource.data();
 
