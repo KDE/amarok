@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,11 +21,11 @@
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "CapabilityDelegate.h"
-#include "core/support/Debug.h"
-#include "core/meta/support/MetaUtility.h"
-#include "core-impl/meta/file/File.h"
-#include "core-impl/meta/file/TagLibUtils.h"
-#include "ArtistHelper.h"
+#include <core/support/Debug.h>
+#include <core/meta/support/MetaUtility.h>
+#include <core-impl/meta/file/File.h> // for getting an embedded cover
+#include <core-impl/meta/file/TagLibUtils.h>
+#include <core-impl/collections/sqlcollection/ArtistHelper.h>
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
@@ -38,12 +39,24 @@
 #include <QDir>
 #include <QFile>
 #include <QMultiHash>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 #include <QMutexLocker>
 #include <QPixmapCache>
 
 #include <KCodecs>
 #include <KLocale>
 #include <KSharedPtr>
+
+// additional constants
+namespace Meta
+{
+    namespace Field
+    {
+        static const QString ALBUM_ID = "Album id";
+    }
+}
 
 using namespace Meta;
 
@@ -114,13 +127,13 @@ SqlTrack::getTrackFromUid( const QString &uid, Collections::SqlCollection* colle
 }
 
 void
-SqlTrack::refreshFromDatabase( const QString &uid, QWeakPointer<Collections::SqlCollection> collection, bool updateObservers )
+SqlTrack::refreshFromDatabase( const QString &uid, bool updateObservers )
 {
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
     query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
-                       collection.data()->sqlStorage()->escape( uid ) );
-    QStringList result = collection.data()->sqlStorage()->query( query );
+                       m_collection->sqlStorage()->escape( uid ) );
+    QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return;
 
@@ -132,11 +145,13 @@ SqlTrack::refreshFromDatabase( const QString &uid, QWeakPointer<Collections::Sql
 void
 SqlTrack::updateData( const QStringList &result, bool forceUpdates )
 {
+    QWriteLocker locker( &m_lock );
+
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);
     m_uid = *(iter++);
-    m_url = KUrl( m_collection.data()->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
+    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
     m_comment = *(iter++);
@@ -171,27 +186,36 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
         m_albumGain = albumGain.toDouble();
         m_albumPeakGain = albumPeakGain.toDouble();
     }
-    SqlRegistry* registry = m_collection.data()->registry();
+    SqlRegistry* registry = m_collection->registry();
+
     QString artist = *(iter++);
     int artistId = (*(iter++)).toInt();
-    m_artist = registry->getArtist( artist, artistId, forceUpdates );
+    if( artistId > 0 ) // sanity check
+        m_artist = registry->getArtist( artist, artistId, forceUpdates );
+
     QString album = *(iter++);
     int albumId =(*(iter++)).toInt();
     int albumArtistId = (*(iter++)).toInt();
-    m_album = registry->getAlbum( album, albumId, albumArtistId, forceUpdates );
+    if( albumId > 0 ) // sanity check
+        m_album = registry->getAlbum( album, albumId, albumArtistId, forceUpdates );
     QString genre = *(iter++);
     int genreId = (*(iter++)).toInt();
-    m_genre = registry->getGenre( genre, genreId, forceUpdates );
+    if( genreId > 0 ) // sanity check
+        m_genre = registry->getGenre( genre, genreId, forceUpdates );
+
     QString composer = *(iter++);
     int composerId = (*(iter++)).toInt();
-    m_composer = registry->getComposer( composer, composerId, forceUpdates );
+    if( composerId > 0 ) // sanity check
+        m_composer = registry->getComposer( composer, composerId, forceUpdates );
+
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
-    m_year = registry->getYear( year, yearId, forceUpdates );
+    if( yearId > 0 ) // sanity check
+        m_year = registry->getYear( year, yearId, forceUpdates );
     //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( Collections::SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
 }
 
-SqlTrack::SqlTrack( QWeakPointer<Collections::SqlCollection> collection, const QStringList &result )
+SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( collection )
     , m_capabilityDelegate( 0 )
@@ -204,49 +228,59 @@ SqlTrack::SqlTrack( QWeakPointer<Collections::SqlCollection> collection, const Q
 
 SqlTrack::~SqlTrack()
 {
+    QWriteLocker locker( &m_lock );
+
     delete m_capabilityDelegate;
-}
-
-bool
-SqlTrack::isPlayable() const
-{
-    //a song is not playable anymore if the collection was removed
-    return m_collection && QFile::exists( m_url.path() );
-}
-
-bool
-SqlTrack::isEditable() const
-{
-    QFile::Permissions p = QFile::permissions( m_url.path() );
-    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
-    return m_collection && QFile::exists( m_url.path() ) && editable;
+    if( !m_cache.isEmpty() )
+        warning() << "Destroying track with unwritten meta information." << m_title << "cache:" << m_cache;
+    if( m_batchUpdate )
+        warning() << "Destroying track with unclosed batch update." << m_title;
 }
 
 QString
-SqlTrack::type() const
+SqlTrack::name() const
 {
-    return m_url.isLocalFile()
-           ? Amarok::extension( m_url.fileName() )
-           : i18n( "Stream" );
+    QReadLocker locker( &m_lock );
+    return m_title;
 }
+
+QString
+SqlTrack::prettyName() const
+{
+    if ( !name().isEmpty() )
+        return name();
+    return  prettyTitle( m_url.fileName() );
+}
+
 
 QString
 SqlTrack::fullPrettyName() const
 {
-    QString s = m_artist->name();
+    QString artistName;
+    Meta::ArtistPtr artist = this->artist();
+    if( artist )
+        artistName = artist->name();
 
     //FIXME doesn't work for resume playback
 
+    QString s;
+    if( !artistName.isEmpty() )
+        s = i18n("%1 - %2", artist->name(), name() );
+
     if( s.isEmpty() )
         s = name();
-    else
-        s = i18n("%1 - %2", m_artist->name(), name() );
 
-    //TODO
     if( s.isEmpty() )
-        s = prettyTitle( m_url.fileName() );
+        s = prettyTitle( playableUrl().fileName() );
 
     return s;
+}
+
+KUrl
+SqlTrack::playableUrl() const
+{
+    QReadLocker locker( &m_lock );
+    return m_url;
 }
 
 QString
@@ -265,97 +299,45 @@ SqlTrack::prettyTitle( const QString &filename ) //static
     return s;
 }
 
-
 QString
-SqlTrack::prettyName() const
+SqlTrack::prettyUrl() const
 {
-    if ( !name().isEmpty() )
-        return name();
-    return  prettyTitle( m_url.fileName() );
+    QReadLocker locker( &m_lock );
+    return m_url.path();
 }
 
-void
-SqlTrack::setUrl( const QString &url )
+bool
+SqlTrack::isPlayable() const
 {
-    DEBUG_BLOCK
-    m_deviceid = m_collection.data()->mountPointManager()->getIdForUrl( url );
-    m_rpath = m_collection.data()->mountPointManager()->getRelativePath( m_deviceid, url );
+    QReadLocker locker( &m_lock );
 
-    m_cache.insert( Meta::Field::URL, m_collection.data()->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
+    //a song is not playable anymore if the collection was removed
+    return m_collection && QFile::exists( m_url.path() );
 }
 
-void
-SqlTrack::setUrl( const int deviceid, const QString &rpath )
+bool
+SqlTrack::isEditable() const
 {
-    m_deviceid = deviceid;
-    m_rpath = rpath;
+    QReadLocker locker( &m_lock );
 
-    m_url = KUrl( m_collection.data()->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
+    QFile::Permissions p = QFile::permissions( m_url.path() );
+    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
+    return m_collection && QFile::exists( m_url.path() ) && editable;
 }
 
-void
-SqlTrack::setArtist( const QString &newArtist )
+Meta::AlbumPtr
+SqlTrack::album() const
 {
-    if ( m_artist && m_artist->name() == newArtist )
-        return;
-
-    m_cache.insert( Meta::Field::ARTIST, newArtist );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
-}
-
-void
-SqlTrack::setGenre( const QString &newGenre )
-{
-    if ( m_genre && m_genre->name() == newGenre )
-        return;
-
-    m_cache.insert( Meta::Field::GENRE, newGenre );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
-}
-
-void
-SqlTrack::setComposer( const QString &newComposer )
-{
-    if ( m_composer && m_composer->name() == newComposer )
-        return;
-
-    m_cache.insert( Meta::Field::COMPOSER, newComposer );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
-}
-
-void
-SqlTrack::setYear( const QString &newYear )
-{
-    if ( m_year && m_year->name() == newYear )
-        return;
-
-    m_cache.insert( Meta::Field::YEAR, newYear );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
-}
-
-void
-SqlTrack::setBpm( const qreal newBpm )
-{
-    if ( m_bpm && m_bpm == newBpm )
-        return;
-
-    m_cache.insert( Meta::Field::BPM, newBpm );
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
+    QReadLocker locker( &m_lock );
+    return m_album;
 }
 
 void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
-    if ( m_album && m_album->name() == newAlbum )
+    QWriteLocker locker( &m_lock );
+
+    if( m_album && m_album->name() == newAlbum )
         return;
 
     m_cache.insert( Meta::Field::ALBUM, newAlbum );
@@ -364,106 +346,397 @@ SqlTrack::setAlbum( const QString &newAlbum )
 }
 
 void
-SqlTrack::setScore( double newScore )
+SqlTrack::setAlbum( int albumId )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::SCORE, newScore );
-    else
+    QWriteLocker locker( &m_lock );
+
+    if( m_album )
     {
-        m_score = newScore;
-        updateStatisticsInDb( Meta::Field::SCORE );
-        notifyObservers();
+        Meta::SqlAlbum *oldAlbum = static_cast<SqlAlbum*>(m_album.data());
+        if( oldAlbum->id() == albumId )
+            return;
     }
-}
 
-void
-SqlTrack::setRating( int newRating )
-{
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::RATING, newRating );
-    else
-    {
-        m_rating = newRating;
-        updateStatisticsInDb( Meta::Field::RATING );
-        notifyObservers();
-    }
-}
-
-void
-SqlTrack::setTrackNumber( int newTrackNumber )
-{
-    m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
+    m_cache.insert( Meta::Field::ALBUM_ID, albumId );
     if( !m_batchUpdate )
         commitMetaDataChanges();
 }
 
-void
-SqlTrack::setDiscNumber( int newDiscNumber )
+Meta::ArtistPtr
+SqlTrack::artist() const
 {
-    m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
+    QReadLocker locker( &m_lock );
+    return m_artist;
+}
+
+void
+SqlTrack::setArtist( const QString &newArtist )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_artist && m_artist->name() == newArtist )
+        return;
+
+    m_cache.insert( Meta::Field::ARTIST, newArtist );
     if( !m_batchUpdate )
         commitMetaDataChanges();
 }
 
-void
-SqlTrack::setComment( const QString &newComment )
+Meta::ComposerPtr
+SqlTrack::composer() const
 {
-    m_cache.insert( Meta::Field::COMMENT, newComment );
+    QReadLocker locker( &m_lock );
+    return m_composer;
+}
+
+void
+SqlTrack::setComposer( const QString &newComposer )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_composer && m_composer->name() == newComposer )
+        return;
+
+    m_cache.insert( Meta::Field::COMPOSER, newComposer );
     if( !m_batchUpdate )
         commitMetaDataChanges();
+}
+
+Meta::YearPtr
+SqlTrack::year() const
+{
+    QReadLocker locker( &m_lock );
+    return m_year;
+}
+
+void
+SqlTrack::setYear( const QString &newYear )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_year && m_year->name() == newYear )
+        return;
+
+    m_cache.insert( Meta::Field::YEAR, newYear );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+Meta::GenrePtr
+SqlTrack::genre() const
+{
+    QReadLocker locker( &m_lock );
+    return m_genre;
+}
+
+void
+SqlTrack::setGenre( const QString &newGenre )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_genre && m_genre->name() == newGenre )
+        return;
+
+    m_cache.insert( Meta::Field::GENRE, newGenre );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+QString
+SqlTrack::type() const
+{
+    QReadLocker locker( &m_lock );
+
+    return m_url.isLocalFile()
+           ? Amarok::extension( m_url.fileName() )
+           : "stream"; // don't localize. This is used in different files to identify streams.
 }
 
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
+    QWriteLocker locker( &m_lock );
+
+    if ( m_title == newTitle )
+        return;
+
     m_cache.insert( Meta::Field::TITLE, newTitle );
     if( !m_batchUpdate )
         commitMetaDataChanges();
 }
 
+QString
+SqlTrack::uidUrl() const
+{
+    QReadLocker locker( &m_lock );
+    return m_uid;
+}
+
+qreal
+SqlTrack::bpm() const
+{
+    QReadLocker locker( &m_lock );
+    return m_bpm;
+}
+
+void
+SqlTrack::setBpm( const qreal newBpm )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_bpm == newBpm )
+        return;
+
+    m_cache.insert( Meta::Field::BPM, newBpm );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+QString
+SqlTrack::comment() const
+{
+    QReadLocker locker( &m_lock );
+    return m_comment;
+}
+
+void
+SqlTrack::setComment( const QString &newComment )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newComment == m_comment )
+        return;
+
+    m_cache.insert( Meta::Field::COMMENT, newComment );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+double
+SqlTrack::score() const
+{
+    QReadLocker locker( &m_lock );
+    return m_score;
+}
+
+void
+SqlTrack::setScore( double newScore )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newScore == m_score )
+        return;
+
+    m_cache.insert( Meta::Field::SCORE, newScore );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+int
+SqlTrack::rating() const
+{
+    QReadLocker locker( &m_lock );
+    return m_rating;
+}
+
+void
+SqlTrack::setRating( int newRating )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newRating == m_rating )
+        return;
+
+    m_cache.insert( Meta::Field::RATING, newRating );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+qint64
+SqlTrack::length() const
+{
+    QReadLocker locker( &m_lock );
+    return m_length;
+}
+
+void
+SqlTrack::setLength( qint64 newLength )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newLength == m_length )
+        return;
+
+    m_cache.insert( Meta::Field::LENGTH, newLength );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+int
+SqlTrack::filesize() const
+{
+    QReadLocker locker( &m_lock );
+    return m_filesize;
+}
+
+int
+SqlTrack::sampleRate() const
+{
+    QReadLocker locker( &m_lock );
+    return m_sampleRate;
+}
+
+void
+SqlTrack::setSampleRate( int newSampleRate )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newSampleRate == m_sampleRate )
+        return;
+
+    m_cache.insert( Meta::Field::SAMPLERATE, newSampleRate );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+int
+SqlTrack::bitrate() const
+{
+    QReadLocker locker( &m_lock );
+    return m_bitrate;
+}
+
+void
+SqlTrack::setBitrate( int newBitrate )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newBitrate == m_bitrate )
+        return;
+
+    m_cache.insert( Meta::Field::BITRATE, newBitrate );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+QDateTime
+SqlTrack::createDate() const
+{
+    QReadLocker locker( &m_lock );
+    return m_createDate;
+}
+
+int
+SqlTrack::trackNumber() const
+{
+    QReadLocker locker( &m_lock );
+    return m_trackNumber;
+}
+
+void
+SqlTrack::setTrackNumber( int newTrackNumber )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newTrackNumber == m_trackNumber )
+        return;
+
+    m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+int
+SqlTrack::discNumber() const
+{
+    QReadLocker locker( &m_lock );
+    return m_discNumber;
+}
+
+void
+SqlTrack::setDiscNumber( int newDiscNumber )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newDiscNumber == m_discNumber )
+        return;
+
+    m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+uint
+SqlTrack::lastPlayed() const
+{
+    QReadLocker locker( &m_lock );
+    return m_lastPlayed;
+}
+
 void
 SqlTrack::setLastPlayed( const uint newTime )
 {
+    QWriteLocker locker( &m_lock );
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::LAST_PLAYED, newTime );
     else
     {
         m_lastPlayed = newTime;
         updateStatisticsInDb( Meta::Field::LAST_PLAYED );
+        locker.unlock();
         notifyObservers();
     }
+}
+
+uint
+SqlTrack::firstPlayed() const
+{
+    QReadLocker locker( &m_lock );
+    return m_firstPlayed;
 }
 
 void
 SqlTrack::setFirstPlayed( const uint newTime )
 {
+    QWriteLocker locker( &m_lock );
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::FIRST_PLAYED, newTime );
     else
     {
         m_firstPlayed = newTime;
         updateStatisticsInDb( Meta::Field::FIRST_PLAYED );
+        locker.unlock();
         notifyObservers();
     }
+}
+
+int
+SqlTrack::playCount() const
+{
+    QReadLocker locker( &m_lock );
+    return m_playCount;
 }
 
 void
 SqlTrack::setPlayCount( const int newCount )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::PLAYCOUNT, newCount );
-    else
-    {
-        m_playCount = newCount;
-        updateStatisticsInDb( Meta::Field::PLAYCOUNT);
-        notifyObservers();
-    }
+    QWriteLocker locker( &m_lock );
+
+    if( newCount == m_playCount )
+        return;
+
+    m_cache.insert( Meta::Field::PLAYCOUNT, newCount );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setUidUrl( const QString &uid )
 {
     DEBUG_BLOCK
+    QWriteLocker locker( &m_lock );
     QString newid = uid;
     if( !newid.startsWith( "amarok-sqltrackuid" ) )
         newid.prepend( "amarok-sqltrackuid://" );
@@ -482,14 +755,18 @@ SqlTrack::setUidUrl( const QString &uid )
 void
 SqlTrack::beginMetaDataUpdate()
 {
+    QWriteLocker locker( &m_lock );
+
     m_batchUpdate = true;
 }
 
 void
 SqlTrack::endMetaDataUpdate()
 {
-    commitMetaDataChanges();
+    QWriteLocker locker( &m_lock );
+
     m_batchUpdate = false;
+    commitMetaDataChanges();
 }
 
 void
@@ -568,7 +845,7 @@ SqlTrack::commitMetaDataChanges()
     {
         //invalidate cache of the old artist...
         oldArtist = static_cast<SqlArtist*>(m_artist.data());
-        m_artist = m_collection.data()->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
+        m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
         //and the new one
         newArtist = static_cast<SqlArtist*>(m_artist.data());
 
@@ -583,16 +860,23 @@ SqlTrack::commitMetaDataChanges()
         collectionChanged = true;
     }
 
-    if( m_cache.contains( Meta::Field::ALBUM ) )
+    if( m_cache.contains( Meta::Field::ALBUM ) ||
+        m_cache.contains( Meta::Field::ALBUM_ID ) )
     {
         oldAlbum = static_cast<SqlAlbum*>(m_album.data());
-        //the album should remain a compilation after renaming it
-        int artistId = 0;
-        if( m_album->hasAlbumArtist() )
+
+        if( m_cache.contains( Meta::Field::ALBUM_ID ) )
+            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM_ID ).toInt() );
+        else
         {
-            artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+            //the album should remain a compilation after renaming it
+            int artistId = 0;
+            if( m_album->hasAlbumArtist() )
+            {
+                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+            }
+            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
         }
-        m_album = m_collection.data()->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
         newAlbum = static_cast<SqlAlbum*>(m_album.data());
 
         // copy the image BUG: 203211
@@ -608,7 +892,7 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::COMPOSER ) )
     {
         oldComposer = static_cast<SqlComposer*>(m_composer.data());
-        m_composer = m_collection.data()->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
+        m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
         newComposer = static_cast<SqlComposer*>(m_composer.data());
         collectionChanged = true;
     }
@@ -616,7 +900,7 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::GENRE ) )
     {
         oldGenre = static_cast<SqlGenre*>(m_genre.data());
-        m_genre = m_collection.data()->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
+        m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
         newGenre = static_cast<SqlGenre*>(m_genre.data());
         collectionChanged = true;
     }
@@ -624,7 +908,7 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::YEAR ) )
     {
         oldYear = static_cast<SqlYear*>(m_year.data());
-        m_year = m_collection.data()->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
+        m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
         newYear = static_cast<SqlYear*>(m_year.data());
         collectionChanged = true;
     }
@@ -640,6 +924,8 @@ SqlTrack::commitMetaDataChanges()
     updateStatisticsInDb( m_cache.keys() );
 
     m_cache.clear();
+
+    m_lock.unlock(); // prevent deadlocks
     notifyObservers();
 
     // these calls must be made after the database has been updated
@@ -661,7 +947,9 @@ SqlTrack::commitMetaDataChanges()
 #undef INVALIDATE_AND_UPDATE
 
     if( collectionChanged )
-        m_collection.data()->sendChangedSignal();
+        m_collection->sendChangedSignal();
+
+    m_lock.lockForWrite(); // lock again to prevent double unlock
 }
 
 void
@@ -673,8 +961,8 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
     {
         debug() << "looking for UID " << m_uid;
         QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
-        query = query.arg( m_collection.data()->sqlStorage()->escape( m_uid ) );
-        QStringList res = m_collection.data()->sqlStorage()->query( query );
+        query = query.arg( m_collection->sqlStorage()->escape( m_uid ) );
+        QStringList res = m_collection->sqlStorage()->query( query );
         if( res.isEmpty() )
         {
             debug() << "Could not perform update in writeMetaDataToDb";
@@ -686,16 +974,17 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         //whether or not commas are needed
         QString tags = QString( "id=%1" ).arg( id );
         if( fields.contains( Meta::Field::TITLE ) )
-            tags += QString( ",title='%1'" ).arg( m_collection.data()->sqlStorage()->escape( m_title ) );
+            tags += QString( ",title='%1'" ).arg( m_collection->sqlStorage()->escape( m_title ) );
         if( fields.contains( Meta::Field::COMMENT ) )
-            tags += QString( ",comment='%1'" ).arg( m_collection.data()->sqlStorage()->escape( m_comment ) );
+            tags += QString( ",comment='%1'" ).arg( m_collection->sqlStorage()->escape( m_comment ) );
         if( fields.contains( Meta::Field::TRACKNUMBER ) )
             tags += QString( ",tracknumber=%1" ).arg( QString::number( m_trackNumber ) );
         if( fields.contains( Meta::Field::DISCNUMBER ) )
             tags += QString( ",discnumber=%1" ).arg( QString::number( m_discNumber ) );
         if( fields.contains( Meta::Field::ARTIST ) )
             tags += QString( ",artist=%1" ).arg( QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() ) );
-        if( fields.contains( Meta::Field::ALBUM ) )
+        if( fields.contains( Meta::Field::ALBUM ) ||
+            fields.contains( Meta::Field::ALBUM_ID ) )
             tags += QString( ",album=%1" ).arg( QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() ) );
         if( fields.contains( Meta::Field::GENRE ) )
             tags += QString( ",genre=%1" ).arg( QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() ) );
@@ -709,7 +998,7 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         tags += QString( ",filesize=%1" ).arg( m_filesize );
         update = update.arg( tags, QString::number( id ) );
         debug() << "Running following update query: " << update;
-        m_collection.data()->sqlStorage()->query( update );
+        m_collection->sqlStorage()->query( update );
     }
 
     if( !m_newUid.isEmpty() )
@@ -717,7 +1006,7 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
         update = update.arg( m_newUid, m_uid );
         debug() << "Updating uid from " << m_uid << " to " << m_newUid;
-        m_collection.data()->sqlStorage()->query( update );
+        m_collection->sqlStorage()->query( update );
         m_uid = m_newUid;
         m_newUid.clear();
     }
@@ -727,12 +1016,12 @@ void
 SqlTrack::updateStatisticsInDb( const QStringList &fields )
 {
     QString query = "SELECT urls.id FROM urls WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
-    query = query.arg( QString::number( m_deviceid ), m_collection.data()->sqlStorage()->escape( m_rpath ) );
-    QStringList res = m_collection.data()->sqlStorage()->query( query );
+    query = query.arg( QString::number( m_deviceid ), m_collection->sqlStorage()->escape( m_rpath ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return; // No idea why this happens.. but it does
     int urlId = res[0].toInt();
-    QStringList count = m_collection.data()->sqlStorage()->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
+    QStringList count = m_collection->sqlStorage()->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
     if( count[0].toInt() == 0 )
     {
         m_firstPlayed = QDateTime::currentDateTime().toTime_t();
@@ -745,7 +1034,7 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
                 , QString::number( m_lastPlayed )
                 , QString::number( m_firstPlayed ) );
         insert = insert.arg( data );
-        m_collection.data()->sqlStorage()->insert( insert, "statistics" );
+        m_collection->sqlStorage()->insert( insert, "statistics" );
     }
     else
     {
@@ -765,7 +1054,7 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
 
         update = update.arg( stats, QString::number( urlId ) );
 
-        m_collection.data()->sqlStorage()->query( update );
+        m_collection->sqlStorage()->query( update );
     }
 }
 
@@ -773,17 +1062,14 @@ void
 SqlTrack::finishedPlaying( double playedFraction )
 {
     DEBUG_BLOCK
-
-    beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
+    beginMetaDataUpdate(); // Batch updates, so we only bother our observers once.
 
     bool doUpdate = false;
 
-    if( m_length < 30000 && playedFraction == 1.0 )
-        doUpdate = true;
-    if( playedFraction >= 0.5 && m_length >= 30000 ) //song >= 30 seconds and at least half played
-        doUpdate = true;
-    if( playedFraction * m_length > 240000 )
-        doUpdate = true;
+    if( m_length < 60000 ) // less than 1min
+        doUpdate = playedFraction >= 0.9;
+    else
+        doUpdate = playedFraction >= 0.7;
 
     if( doUpdate )
     {
@@ -801,21 +1087,22 @@ SqlTrack::finishedPlaying( double playedFraction )
 bool
 SqlTrack::inCollection() const
 {
-    return true;
+    QReadLocker locker( &m_lock );
+    return m_trackId > 0;
 }
 
 Collections::Collection*
 SqlTrack::collection() const
 {
-    return m_collection.data();
+    return m_collection;
 }
 
 QString
 SqlTrack::cachedLyrics() const
 {
     QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
-                        .arg( m_collection.data()->sqlStorage()->escape( m_rpath ) );
-    QStringList result = m_collection.data()->sqlStorage()->query( query );
+                        .arg( m_collection->sqlStorage()->escape( m_rpath ) );
+    QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
     return result[0];
@@ -825,9 +1112,9 @@ void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
-                        .arg( m_collection.data()->sqlStorage()->escape(m_rpath) );
+                        .arg( m_collection->sqlStorage()->escape(m_rpath) );
 
-    const QStringList queryResult = m_collection.data()->sqlStorage()->query( query );
+    const QStringList queryResult = m_collection->sqlStorage()->query( query );
 
     if( queryResult.isEmpty() )
         return;
@@ -835,16 +1122,16 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     if( queryResult[0].toInt() == 0 )
     {
         QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
-                            .arg( m_collection.data()->sqlStorage()->escape( m_rpath ),
-                                  m_collection.data()->sqlStorage()->escape( lyrics ) );
-        m_collection.data()->sqlStorage()->insert( insert, "lyrics" );
+                            .arg( m_collection->sqlStorage()->escape( m_rpath ),
+                                  m_collection->sqlStorage()->escape( lyrics ) );
+        m_collection->sqlStorage()->insert( insert, "lyrics" );
     }
     else
     {
         QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
-                            .arg( m_collection.data()->sqlStorage()->escape( lyrics ),
-                                  m_collection.data()->sqlStorage()->escape( m_rpath ) );
-        m_collection.data()->sqlStorage()->query( update );
+                            .arg( m_collection->sqlStorage()->escape( lyrics ),
+                                  m_collection->sqlStorage()->escape( m_rpath ) );
+        m_collection->sqlStorage()->query( update );
     }
 }
 
@@ -863,7 +1150,7 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 void
 SqlTrack::addLabel( const QString &label )
 {
-    Meta::LabelPtr realLabel = m_collection.data()->registry()->getLabel( label, -1 );
+    Meta::LabelPtr realLabel = m_collection->registry()->getLabel( label );
     addLabel( realLabel );
 }
 
@@ -873,12 +1160,12 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
     KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
     if( !sqlLabel )
     {
-        Meta::LabelPtr tmp = m_collection.data()->registry()->getLabel( label->name(), -1 );
+        Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name() );
         sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
     }
     if( sqlLabel )
     {
-        QStringList rs = m_collection.data()->sqlStorage()->query( QString( "SELECT url FROM tracks WHERE id = %1;" ).arg( m_trackId ) );
+        QStringList rs = m_collection->sqlStorage()->query( QString( "SELECT url FROM tracks WHERE id = %1;" ).arg( m_trackId ) );
         if( rs.isEmpty() )
         {
             warning() << "Did not find entry in TRACKS table for track ID " << m_trackId;
@@ -886,11 +1173,11 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
         }
         QString urlId = rs.first();
         QString countQuery = "SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;";
-        QStringList countRs = m_collection.data()->sqlStorage()->query( countQuery.arg( urlId, QString::number( sqlLabel->id() ) ) );
+        QStringList countRs = m_collection->sqlStorage()->query( countQuery.arg( urlId, QString::number( sqlLabel->id() ) ) );
         if( countRs.first().toInt() == 0 )
         {
             QString insert = "INSERT INTO urls_labels(url,label) VALUES (%1,%2);";
-            m_collection.data()->sqlStorage()->insert( insert.arg( urlId, QString::number( sqlLabel->id() ) ), "urls_labels" );
+            m_collection->sqlStorage()->insert( insert.arg( urlId, QString::number( sqlLabel->id() ) ), "urls_labels" );
 
             if( m_labelsInCache )
             {
@@ -903,19 +1190,40 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
     }
 }
 
+int
+SqlTrack::deviceId() const
+{
+    QReadLocker locker( &m_lock );
+    return m_deviceid;
+}
+
+QString
+SqlTrack::rpath() const
+{
+    QReadLocker locker( &m_lock );
+    return m_rpath;
+}
+
+int
+SqlTrack::trackId() const
+{
+    QReadLocker locker( &m_lock );
+    return m_trackId;
+}
+
 void
 SqlTrack::removeLabel( const Meta::LabelPtr &label )
 {
     KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
     if( !sqlLabel )
     {
-        Meta::LabelPtr tmp = m_collection.data()->registry()->getLabel( label->name(), -1 );
+        Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name() );
         sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
     }
     if( sqlLabel )
     {
         QString query = "DELETE FROM urls_labels WHERE label = %2 and url = (SELECT url FROM tracks WHERE id = %1);";
-        m_collection.data()->sqlStorage()->query( query.arg( QString::number( m_trackId ), QString::number( sqlLabel->id() ) ) );
+        m_collection->sqlStorage()->query( query.arg( QString::number( m_trackId ), QString::number( sqlLabel->id() ) ) );
         if( m_labelsInCache )
         {
             m_labelsCache.removeAll( Meta::LabelPtr::staticCast( sqlLabel ) );
@@ -935,7 +1243,7 @@ SqlTrack::labels() const
     }
     else if( m_collection )
     {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( Collections::QueryMaker::Label );
         const_cast<SqlTrack*>( this )->addMatchTo( qm );
         qm->setBlocking( true );
@@ -961,16 +1269,15 @@ SqlTrack::setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate
 
 //---------------------- class Artist --------------------------
 
-SqlArtist::SqlArtist( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name ) : Artist()
+SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QString &name ) : Artist()
     ,m_collection( collection )
     ,m_delegate( 0 )
-    ,m_name( name )
     ,m_id( id )
+    ,m_name( name )
     ,m_tracksLoaded( false )
     ,m_albumsLoaded( false )
-    ,m_mutex( QMutex::Recursive )
 {
-    //nothing to do (yet)
+    Q_ASSERT( m_id > 0 );
 }
 
 Meta::SqlArtist::~SqlArtist()
@@ -979,10 +1286,9 @@ Meta::SqlArtist::~SqlArtist()
 }
 
 void
-SqlArtist::updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name )
+SqlArtist::updateData( int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = collection;
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -991,10 +1297,9 @@ SqlArtist::updateData( QWeakPointer<Collections::SqlCollection> collection, int 
 void
 SqlArtist::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1002,22 +1307,17 @@ SqlArtist::tracks()
 {
     QMutexLocker locker( &m_mutex );
     if( m_tracksLoaded )
-    {
         return m_tracks;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
-        qm->setBlocking( true );
-        qm->run();
-        m_tracks = qm->tracks( m_collection.data()->collectionId() );
-        delete qm;
-        m_tracksLoaded = true;
-        return m_tracks;
-    }
-    return TrackList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    addMatchTo( qm );
+    qm->setBlocking( true );
+    qm->run();
+    m_tracks = qm->tracks( m_collection->collectionId() );
+    delete qm;
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 
 AlbumList
@@ -1025,22 +1325,17 @@ SqlArtist::albums()
 {
     QMutexLocker locker( &m_mutex );
     if( m_albumsLoaded )
-    {
         return m_albums;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Album );
-        addMatchTo( qm );
-        qm->setBlocking( true );
-        qm->run();
-        m_albums = qm->albums( m_collection.data()->collectionId() );
-        delete qm;
-        m_albumsLoaded = true;
-        return m_albums;
-    }
-    return AlbumList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Album );
+    addMatchTo( qm );
+    qm->setBlocking( true );
+    qm->run();
+    m_albums = qm->albums( m_collection->collectionId() );
+    delete qm;
+    m_albumsLoaded = true;
+    return m_albums;
 }
 
 bool
@@ -1056,10 +1351,10 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 
-//---------------SqlAlbum---------------------------------
+//--------------- class Album ---------------------------------
 const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
-SqlAlbum::SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist ) : Album()
+SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist ) : Album()
     , m_collection( collection )
     , m_delegate( 0 )
     , m_name( name )
@@ -1072,10 +1367,10 @@ SqlAlbum::SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id,
     , m_unsetImageId( -1 )
     , m_tracksLoaded( false )
     , m_suppressAutoFetch( false )
-    , m_artist()
     , m_mutex( QMutex::Recursive )
 {
-    //nothing to do
+    Q_ASSERT( m_collection );
+    Q_ASSERT( m_id > 0 );
 }
 
 Meta::SqlAlbum::~SqlAlbum()
@@ -1084,10 +1379,9 @@ Meta::SqlAlbum::~SqlAlbum()
 }
 
 void
-SqlAlbum::updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist )
+SqlAlbum::updateData( int id, const QString &name, int artist )
 {
     m_mutex.lock();
-    m_collection = collection;
     m_id = id;
     m_name = name;
     m_artistId = artist;
@@ -1097,12 +1391,11 @@ SqlAlbum::updateData( QWeakPointer<Collections::SqlCollection> collection, int i
 void
 SqlAlbum::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_hasImage = false;
     m_hasImageChecked = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1110,26 +1403,20 @@ SqlAlbum::tracks()
 {
     QMutexLocker locker( &m_mutex );
     if( m_tracksLoaded )
-    {
         return m_tracks;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
-        qm->orderBy( Meta::valDiscNr );
-        qm->orderBy( Meta::valTrackNr );
-        qm->orderBy( Meta::valTitle );
-        qm->setBlocking( true );
-        qm->run();
-        m_tracks = qm->tracks( m_collection.data()->collectionId() );
-        delete qm;
-        m_tracksLoaded = true;
-        return m_tracks;
-    }
-    else
-        return TrackList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    addMatchTo( qm );
+    qm->orderBy( Meta::valDiscNr );
+    qm->orderBy( Meta::valTrackNr );
+    qm->orderBy( Meta::valTitle );
+    qm->setBlocking( true );
+    qm->run();
+    m_tracks = qm->tracks( m_collection->collectionId() );
+    delete qm;
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 
 // note for internal implementation:
@@ -1137,6 +1424,7 @@ SqlAlbum::tracks()
 bool
 SqlAlbum::hasImage( int size ) const
 {
+    QMutexLocker locker( &const_cast<SqlAlbum *>(this)->m_mutex );
     Q_UNUSED(size); // we have every size if we have an image at all
 
     if( !m_hasImageChecked )
@@ -1195,7 +1483,7 @@ SqlAlbum::image( int size )
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     QString cachedImagePath;
-    if( size <= 1 && !hasEmbeddedImage() )
+    if( size <= 1 )
         cachedImagePath = m_imagePath;
     else
         cachedImagePath = scaledDiskCachePath( size );
@@ -1217,10 +1505,7 @@ SqlAlbum::image( int size )
 
     // no cached scaled image exists. Have to create it
     QImage img;
-    if( hasEmbeddedImage() )
-        img = getEmbeddedImage();
-    else
-        img = QImage( m_imagePath );
+    img = QImage( m_imagePath );
 
     if( img.isNull() )
         return Meta::Album::image( size );
@@ -1228,11 +1513,6 @@ SqlAlbum::image( int size )
     if( size > 1 && size < 1000 )
     {
         img = img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cachedImagePath, "JPG" );
-    }
-    else if( hasEmbeddedImage() )
-    {
-        // store it on the disk for later reference.
         img.save( cachedImagePath, "JPG" );
     }
 
@@ -1254,7 +1534,7 @@ SqlAlbum::imageLocation( int size )
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     QString cachedImagePath;
-    if( size >= 1 && !hasEmbeddedImage() )
+    if( size <= 1 )
         cachedImagePath = m_imagePath;
     else
         cachedImagePath = scaledDiskCachePath( size );
@@ -1279,6 +1559,7 @@ SqlAlbum::imageLocation( int size )
 void
 SqlAlbum::setImage( const QImage &image )
 {
+    QMutexLocker locker( &m_mutex );
     if( image.isNull() )
         return;
 
@@ -1291,15 +1572,15 @@ SqlAlbum::setImage( const QImage &image )
     while( QFile(path).exists() )
         path += "_"; // not that nice but it shouldn't happen that often.
 
-    setImage( path );
     image.save( path, "JPG" );
-
-    notifyObservers();
+    locker.unlock();
+    setImage( path ); // setImage notifies observers
 }
 
 void
 SqlAlbum::removeImage()
 {
+    QMutexLocker locker( &m_mutex );
     if( !hasImage() )
         return;
 
@@ -1307,7 +1588,7 @@ SqlAlbum::removeImage()
     // Set the album image to a magic value which will tell Amarok not to fetch it automatically
     const int unsetId = unsetImageId();
     QString query = "UPDATE albums SET image = %1 WHERE id = %2";
-    m_collection.data()->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
+    m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
     // From here on we check if there are any remaining references to that particular image in the database
     // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
@@ -1315,7 +1596,7 @@ SqlAlbum::removeImage()
     //
     query = "SELECT count( albums.id ) FROM albums "
                     "WHERE albums.image = %1";
-    QStringList res = m_collection.data()->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
 
     if( !res.isEmpty() )
     {
@@ -1325,7 +1606,7 @@ SqlAlbum::removeImage()
         if( references <= 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
-            m_collection.data()->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+            m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
 
             // remove the large cover only if it was cached.
             QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
@@ -1353,6 +1634,7 @@ SqlAlbum::removeImage()
     m_hasImageChecked = true;
     m_pixmapCacheDirty = true;
 
+    locker.unlock();
     notifyObservers();
 }
 
@@ -1364,7 +1646,7 @@ SqlAlbum::unsetImageId() const
         return m_unsetImageId;
 
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    QStringList res = m_collection.data()->sqlStorage()->query( query.arg( AMAROK_UNSET_MAGIC ) );
+    QStringList res = m_collection->sqlStorage()->query( query.arg( AMAROK_UNSET_MAGIC ) );
 
     // We already have the AMAROK_UNSET_MAGIC variable in the database
     if( !res.isEmpty() )
@@ -1375,8 +1657,8 @@ SqlAlbum::unsetImageId() const
     {
         // We need to create this value
         query = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                         .arg( m_collection.data()->sqlStorage()->escape( AMAROK_UNSET_MAGIC ) );
-        m_unsetImageId = m_collection.data()->sqlStorage()->insert( query, "images" );
+                         .arg( m_collection->sqlStorage()->escape( AMAROK_UNSET_MAGIC ) );
+        m_unsetImageId = m_collection->sqlStorage()->insert( query, "images" );
     }
     return m_unsetImageId;
 }
@@ -1396,14 +1678,14 @@ SqlAlbum::hasAlbumArtist() const
 Meta::ArtistPtr
 SqlAlbum::albumArtist() const
 {
-    if( m_artistId != 0 && !m_artist )
+    if( m_artistId > 0 && !m_artist )
     {
         QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
-        QStringList result = m_collection.data()->sqlStorage()->query( query );
+        QStringList result = m_collection->sqlStorage()->query( query );
         if( result.isEmpty() )
             return Meta::ArtistPtr(); //FIXME BORKED LOGIC: can return 0, although m_artistId != 0
         const_cast<SqlAlbum*>( this )->m_artist =
-            m_collection.data()->registry()->getArtist( result.first(), m_artistId );
+            m_collection->registry()->getArtist( result.first(), m_artistId );
     }
     return m_artist;
 }
@@ -1463,40 +1745,12 @@ SqlAlbum::scaledDiskCachePath( int size ) const
     return cacheCoverDir.filePath( widthKey + key );
 }
 
-bool
-SqlAlbum::hasEmbeddedImage() const
-{
-    if( !hasImage() )
-        return false;
-
-    return m_imagePath.startsWith( "amarok-sqltrackuid://" );
-}
-
-QImage
-SqlAlbum::getEmbeddedImage() const
-{
-    if( !hasEmbeddedImage() )
-        return QImage();
-
-    QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( m_imagePath );
-    QStringList result = m_collection.data()->sqlStorage()->query( query );
-
-
-    if( result.isEmpty() )
-        return QImage();
-
-    QString finalPath = m_collection.data()->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
-
-    return MetaFile::Track::getEmbeddedCover( finalPath );
-}
-
-
 QString
 SqlAlbum::largeImagePath()
 {
     // Look up in the database
-    QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
-    QStringList res = m_collection.data()->sqlStorage()->query( query.arg( m_id ) );
+    QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;"; // TODO: shouldn't we do a JOIN here?
+    QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
     if( !res.isEmpty() )
     {
         m_imageId = res.at(0).toInt();
@@ -1508,7 +1762,11 @@ SqlAlbum::largeImagePath()
 
         // embedded image (e.g. id3v2 APIC
         if( m_imagePath.startsWith( "amarok-sqltrackuid://" ) )
+        {
+            // Amarok 2.3.2 did store embedded images as unique ids in the database
+            setImage( m_imagePath );
             return m_imagePath;
+        }
 
         // normal file
         if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) )
@@ -1532,17 +1790,41 @@ SqlAlbum::largeImagePath()
 void
 SqlAlbum::setImage( const QString &path )
 {
-    DEBUG_BLOCK
+    QMutexLocker locker( &m_mutex );
+    debug() << "SqlAlbum::setImage" << m_name << "path:" << path;
 
+    // --- embedded cover
+    {
+        // -- check if we have a track with the given path as uid
+        QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( path );
+        QStringList result = m_collection->sqlStorage()->query( query );
+        if( !result.isEmpty() )
+        {
+            // we need to write the cover to the disk so that it won't get lost when
+            // the track uid changes or even worse the track is deleted.
+
+            // -- find the track with the cover
+            QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
+
+            QImage image = MetaFile::Track::getEmbeddedCover( finalPath );
+            if( image.isNull() )
+                return;
+
+            setImage( image );
+            return;
+        }
+    }
+
+    // --- a normal path
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    query = query.arg( m_collection.data()->sqlStorage()->escape( path ) );
-    QStringList res = m_collection.data()->sqlStorage()->query( query );
+    query = query.arg( m_collection->sqlStorage()->escape( path ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                            .arg( m_collection.data()->sqlStorage()->escape( path ) );
-        m_imageId = m_collection.data()->sqlStorage()->insert( insert, "images" );
+                            .arg( m_collection->sqlStorage()->escape( path ) );
+        m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
         m_imageId = res[0].toInt();
@@ -1551,13 +1833,16 @@ SqlAlbum::setImage( const QString &path )
     {
         query = QString("UPDATE albums SET image = %1 WHERE albums.id = %2" )
                     .arg( QString::number( m_imageId ), QString::number( m_id ) );
-        m_collection.data()->sqlStorage()->query( query );
+        m_collection->sqlStorage()->query( query );
 
         m_imagePath = path;
         m_hasImage = true;
         m_hasImageChecked = true;
         m_pixmapCacheDirty = true;
     }
+
+    locker.unlock();
+    notifyObservers();
 }
 
 void
@@ -1570,154 +1855,49 @@ SqlAlbum::setCompilation( bool compilation )
     }
     else
     {
-        QString uidQuery = "SELECT uniqueid FROM tracks INNER JOIN urls ON tracks.url = urls.id WHERE album = %1;";
-        QStringList uids = m_collection.data()->sqlStorage()->query( uidQuery.arg( m_id ) );
         if( compilation )
         {
-            // A compilation is an album where artist is NULL. Set the album's artist to NULL when the album is set to compilation.
-            m_artistId = 0;
-            m_artist = Meta::ArtistPtr();
+            // get the new compilation album
+            Meta::AlbumPtr metaAlbum = m_collection->registry()->getAlbum( name(), -1, -1 );
+            KSharedPtr<SqlAlbum> sqlAlbum = KSharedPtr<SqlAlbum>::dynamicCast( metaAlbum );
 
-            // Check to see if another album with the same name is already an collection?
-            QString select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist IS NULL";
-            QStringList albumId = m_collection.data()->sqlStorage()->query( select.arg( name() ).arg( m_id ) );
-            if( !albumId.empty() ) {
-                // Another album with the same name is already a collection, move all the tracks from the old album to the existing one and
-                // delete the current one. This avoids duplicate entries in the compilation list.
-                int otherId = albumId[0].toInt();
-                QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
-                m_collection.data()->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
+            Meta::TrackList myTracks = tracks();
+            foreach( Meta::TrackPtr metaTrack, myTracks )
+            {
+                KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( metaTrack );
 
-                removeImage();
-                QString delete_album = "DELETE FROM albums WHERE id = %1";
-                m_collection.data()->sqlStorage()->query( delete_album.arg( m_id ) );
+                // copy over the cover image
+                if( sqlTrack->album()->hasImage() && !sqlAlbum->hasImage() )
+                    sqlAlbum->setImage( sqlTrack->album()->imageLocation().path() );
 
-                m_id = otherId;
-            } else {
-                QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
-                m_collection.data()->sqlStorage()->query( update.arg( m_id ) );
+                // move the track
+                sqlTrack->setAlbum( sqlAlbum->id() );
             }
+            /* TODO: delete all old tracks albums */
         }
         else
         {
-            //step1: get the actual artists per track
-            QHash<int,QString> artists;
-            QHash<int,int> trackToArtist;
+            Meta::TrackList myTracks = tracks();
+            foreach( Meta::TrackPtr metaTrack, myTracks )
             {
-                QString trackSelect = "SELECT tracks.id, tracks.artist, artists.name "
-                                      "FROM tracks INNER JOIN artists ON tracks.artist = artists.id WHERE tracks.album = %1;";
-                QStringList trackSelectResult = m_collection.data()->sqlStorage()->query( trackSelect.arg( m_id ) );
+                KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( metaTrack );
+                Meta::ArtistPtr trackArtist = sqlTrack->artist();
+                KSharedPtr<SqlArtist> sqlArtist = KSharedPtr<SqlArtist>::dynamicCast( trackArtist );
 
-                QStringListIterator iter( trackSelectResult );
-                while( iter.hasNext() )
-                {
-                    int track = iter.next().toInt();
-                    int artist = iter.next().toInt();
-                    QString artistName = iter.next();
-                    trackToArtist.insert( track, artist );
-                    artists.insert( artist, artistName );
-                }
+                // get the new album
+                Meta::AlbumPtr metaAlbum = m_collection->registry()->getAlbum(
+                    sqlTrack->album()->name(), -1, sqlArtist ? sqlArtist->id() : -1 );
+                KSharedPtr<SqlAlbum> sqlAlbum = KSharedPtr<SqlAlbum>::dynamicCast( metaAlbum );
+
+                // copy over the cover image
+                if( sqlTrack->album()->hasImage() && !sqlAlbum->hasImage() )
+                    sqlAlbum->setImage( sqlTrack->album()->imageLocation().path() );
+
+                // move the track
+                sqlTrack->setAlbum( sqlAlbum->id() );
             }
-
-            //step2: figure out, per artist, if an appropriate album already exists
-            //taking into account A feat. B stuff
-            QHash<int,int> artistToTargetAlbum;
-            {
-                QMultiHash<QString, int> actualNameToTrackArtistIds;
-                foreach( int id, artists.keys() )
-                {
-                    QString name = ArtistHelper::realTrackArtist( artists.value( id ) );
-                    actualNameToTrackArtistIds.insert( name, id );
-                }
-
-                //the loop below assumes two return values per row!
-                QString select = "SELECT albums.id, artists.name FROM albums "
-                                 "INNER JOIN artists ON albums.artist = artists.id "
-                                 "WHERE albums.name = '%1' AND albums.id != %2 AND ( 0 %3 )";
-                QString artistNames;
-                foreach( const QString &name, actualNameToTrackArtistIds.keys() )
-                {
-                    QString tmp = "OR artists.name = '%1' ";
-                    artistNames += tmp.arg( m_collection.data()->sqlStorage()->escape( name ) );
-                }
-                QStringList data = m_collection.data()->sqlStorage()->query( select.arg( m_collection.data()->sqlStorage()->escape( m_name ), QString::number( m_id ), artistNames ) );
-
-                QStringListIterator iter( data );
-                while( iter.hasNext() )
-                {
-                    int albumId = iter.next().toInt();
-                    QString artist = iter.next();
-                    //lookup original artist:
-                    if( actualNameToTrackArtistIds.contains( artist ) )
-                    {
-                        foreach( int trackArtist, actualNameToTrackArtistIds.values( artist ) )
-                        {
-                            artistToTargetAlbum.insert( trackArtist, albumId );
-                        }
-                    }
-                }
-
-            }
-
-            //step3: create missing album entries
-            //special case: if there is only one album, and it does not exist yet, change the current object instead
-            bool currentObjectUpdated = false;
-            foreach( int artistId, artists.keys() )
-            {
-                if( artistToTargetAlbum.contains( artistId ) )
-                {
-                    //target album for the given artist already exists, do nothing here
-                    continue;
-                } else if( !currentObjectUpdated ) {
-                    // update this album
-                    // There isn't another album with the same name and artist, just change the artist on the album
-                    currentObjectUpdated = true;
-                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
-                    m_collection.data()->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
-                    m_artistId = artistId;
-                } else {
-                    // create a new album
-                    QString insert = "INSERT INTO albums (name, artist, image) VALUES ('%1',%2)";
-                    SqlStorage *s = m_collection.data()->sqlStorage();
-                    int albumId = s->insert( insert.arg( s->escape( m_name ), QString::number( artistId ) ), "albums" );
-                    artistToTargetAlbum.insert( artistId, albumId );
-                }
-            }
-
-            //step 4: update all tracks
-            foreach( int trackId, trackToArtist.keys() )
-            {
-                int artistId = trackToArtist.value( trackId );
-                int albumId = artistToTargetAlbum.value( artistId );
-                QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
-                m_collection.data()->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
-            }
-
-            //step 5: delete the original album, if necessary
-            if( !currentObjectUpdated )
-            {
-                removeImage();
-                QString del = "DELETE FROM albums WHERE id = %1;";
-                m_collection.data()->sqlStorage()->query( del.arg( m_id ) );
-            }
+            /* TODO //step 5: delete the original album, if necessary */
         }
-
-        //ensure that all currently loaded tracks will return the correct album from now on
-        foreach( const QString &uid, uids )
-        {
-            if( m_collection.data()->registry()->checkUidExists( uid ) )
-            {
-                Meta::TrackPtr track = m_collection.data()->registry()->getTrackFromUid( uid );
-                SqlTrack *sqlTrack = dynamic_cast<SqlTrack*>( track.data() );
-                if( sqlTrack )
-                {
-                    sqlTrack->refreshFromDatabase( uid, m_collection.data(), false ); //we will notify observers below
-                }
-            }
-        }
-
-        notifyObservers();
-        m_collection.data()->sendChangedSignal();
     }
 }
 
@@ -1735,21 +1915,21 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 
 //---------------SqlComposer---------------------------------
 
-SqlComposer::SqlComposer( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name ) : Composer()
-    ,m_collection( collection )
-    ,m_name( name )
+SqlComposer::SqlComposer( Collections::SqlCollection* collection, int id, const QString &name ) : Composer()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_id( id )
+    ,m_name( name )
     ,m_tracksLoaded( false )
-    ,m_mutex( QMutex::Recursive )
 {
+    Q_ASSERT( m_collection );
+    Q_ASSERT( m_id > 0 );
     //nothing to do
 }
 
 void
-SqlComposer::updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name )
+SqlComposer::updateData( int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = collection;
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1758,10 +1938,9 @@ SqlComposer::updateData( QWeakPointer<Collections::SqlCollection> collection, in
 void
 SqlComposer::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1774,12 +1953,12 @@ SqlComposer::tracks()
     }
     else if( m_collection )
     {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( Collections::QueryMaker::Track );
         addMatchTo( qm );
         qm->setBlocking( true );
         qm->run();
-        m_tracks = qm->tracks( m_collection.data()->collectionId() );
+        m_tracks = qm->tracks( m_collection->collectionId() );
         delete qm;
         m_tracksLoaded = true;
         return m_tracks;
@@ -1790,21 +1969,21 @@ SqlComposer::tracks()
 
 //---------------SqlGenre---------------------------------
 
-SqlGenre::SqlGenre( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name ) : Genre()
-    ,m_collection( collection )
-    ,m_name( name )
+SqlGenre::SqlGenre( Collections::SqlCollection* collection, int id, const QString &name ) : Genre()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_id( id )
+    ,m_name( name )
     ,m_tracksLoaded( false )
-    ,m_mutex( QMutex::Recursive )
 {
+    Q_ASSERT( m_collection );
+    Q_ASSERT( m_id > 0 );
     //nothing to do
 }
 
 void
-SqlGenre::updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name )
+SqlGenre::updateData( int id, const QString &name )
 {
     m_mutex.lock();
-    m_collection = collection;
     m_id = id;
     m_name = name;
     m_mutex.unlock();
@@ -1813,10 +1992,9 @@ SqlGenre::updateData( QWeakPointer<Collections::SqlCollection> collection, int i
 void
 SqlGenre::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1824,54 +2002,46 @@ SqlGenre::tracks()
 {
     QMutexLocker locker( &m_mutex );
     if( m_tracksLoaded )
-    {
         return m_tracks;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
-        qm->setBlocking( true );
-        qm->run();
-        m_tracks = qm->tracks( m_collection.data()->collectionId() );
-        delete qm;
-        m_tracksLoaded = true;
-        return m_tracks;
-    }
-    else
-        return TrackList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    addMatchTo( qm );
+    qm->setBlocking( true );
+    qm->run();
+    m_tracks = qm->tracks( m_collection->collectionId() );
+    delete qm;
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 
 //---------------SqlYear---------------------------------
 
-SqlYear::SqlYear( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name ) : Year()
+SqlYear::SqlYear( Collections::SqlCollection* collection, int id, const QString &year) : Year()
     ,m_collection( collection )
-    ,m_name( name )
     ,m_id( id )
+    ,m_name( year )
     ,m_tracksLoaded( false )
-    ,m_mutex( QMutex::Recursive )
 {
+    Q_ASSERT( m_collection );
+    Q_ASSERT( m_id > 0 );
     //nothing to do
 }
 
 void
-SqlYear::updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name )
+SqlYear::updateData( int id, const QString &name )
 {
-    m_mutex.lock();
-    m_collection = collection;
+    QMutexLocker locker( &m_mutex );
     m_id = id;
     m_name = name;
-    m_mutex.unlock();
 }
 
 void
 SqlYear::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1879,44 +2049,37 @@ SqlYear::tracks()
 {
     QMutexLocker locker( &m_mutex );
     if( m_tracksLoaded )
-    {
         return m_tracks;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
-        qm->setBlocking( true );
-        qm->run();
-        m_tracks = qm->tracks( m_collection.data()->collectionId() );
-        delete qm;
-        m_tracksLoaded = true;
-        return m_tracks;
-    }
-    else
-        return TrackList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    addMatchTo( qm );
+    qm->setBlocking( true );
+    qm->run();
+    m_tracks = qm->tracks( m_collection->collectionId() );
+    delete qm;
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 
 //---------------SqlLabel---------------------------------
 
-SqlLabel::SqlLabel( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name ) : Meta::Label()
-    ,m_collection( collection )
-    ,m_name( name )
+SqlLabel::SqlLabel( Collections::SqlCollection *collection, int id, const QString &name ) : Meta::Label()
+    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
     ,m_id( id )
+    ,m_name( name )
     ,m_tracksLoaded( false )
-    ,m_mutex( QMutex::Recursive )
 {
-    //nothing to do
+    Q_ASSERT( m_collection );
+    Q_ASSERT( m_id > 0 );
 }
 
 void
 SqlLabel::invalidateCache()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     m_tracksLoaded = false;
     m_tracks.clear();
-    m_mutex.unlock();
 }
 
 TrackList
@@ -1924,22 +2087,16 @@ SqlLabel::tracks()
 {
     QMutexLocker locker( &m_mutex );
     if( m_tracksLoaded )
-    {
         return m_tracks;
-    }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection.data()->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
-        qm->setBlocking( true );
-        qm->run();
-        m_tracks = qm->tracks();
-        delete qm;
-        m_tracksLoaded = true;
-        return m_tracks;
-    }
-    else
-        return TrackList();
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    addMatchTo( qm );
+    qm->setBlocking( true );
+    qm->run();
+    m_tracks = qm->tracks();
+    delete qm;
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 

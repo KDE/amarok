@@ -51,14 +51,13 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         Meta::TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );
         Meta::TrackPtr getTrackFromUid( const QString &uid );
-        void updateCachedUrl( const QPair<QString, QString> &oldnew );
-        void updateCachedUid( const QString &oldUid, const QString &newUid );
         bool checkUidExists( const QString &uid );
 
         Meta::ArtistPtr getArtist( const QString &name, int id = -1, bool refresh = false );
         Meta::GenrePtr getGenre( const QString &name, int id = -1, bool refresh = false );
         Meta::ComposerPtr getComposer( const QString &name, int id = -1, bool refresh = false );
         Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
+        Meta::AlbumPtr getAlbum( int id );
         Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
         Meta::LabelPtr getLabel( const QString &label, int id = -1, bool refresh = false );
 
@@ -71,9 +70,21 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         virtual Capabilities::TrackCapabilityDelegate *createTrackDelegate() const;
 
     private slots:
+        /** empytCache clears up the different hash tables by unrefing all pointers that are no longer ref'd by anyone else.
+            SqlRegistry is calling this function periodically.
+            This is no free ticket for modifying the database directly as
+            parties holding Meta pointers will still have the old status.
+        */
         void emptyCache();
 
     private:
+        // only SqlTrack can change this
+        void updateCachedUrl( const QPair<QString, QString> &oldnew );
+        void updateCachedUid( const QString &oldUid, const QString &newUid );
+
+        friend class Meta::SqlTrack;
+        friend class Collections::SqlCollection;
+
 
         //we don't care about the ordering so use the faster QHash
         QHash<TrackId, Meta::TrackPtr > m_trackMap;

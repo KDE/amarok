@@ -341,7 +341,7 @@ SqlCollection::updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const Q
         }
     }
     foreach( const QString &key, trackList.keys() )
-        trackList[key]->refreshFromDatabase( key, this, true );
+        trackList[key]->refreshFromDatabase( key, true );
 }
 
 void

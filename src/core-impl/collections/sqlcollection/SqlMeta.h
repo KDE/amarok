@@ -19,17 +19,16 @@
 #define SQLMETA_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
 #include "amarok_sqlcollection_export.h"
 
 #include <QByteArray>
-#include <QDateTime>
-#include <QHash>
-#include <QMap>
 #include <QMutex>
+#include <QReadWriteLock>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include <QWeakPointer>
+#include <QPixmap>
 
 namespace Capabilities {
     class AlbumCapabilityDelegate;
@@ -42,24 +41,29 @@ namespace Collections {
     class SqlCollection;
 }
 
+class SqlScanResultProcessor;
+
 namespace Meta
 {
 
+/** The SqlTrack is a Meta::Track used by the SqlCollection.
+    The SqlTrack has a couple of functions for writing values and also
+    some functions for getting e.g. the track id used in the underlying database.
+    However it is not recommended to interface with the database directly.
+
+    The whole class should be thread save.
+*/
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 {
     public:
-        /** returns a string of all database values that can be fetched for a track */
-        static QString getTrackReturnValues();
-        /** returns the number of return values in getTrackReturnValues() */
-        static int getTrackReturnValueCount();
         static TrackPtr getTrack( int deviceid, const QString &rpath, Collections::SqlCollection *collection );
         static TrackPtr getTrackFromUid( const QString &uid, Collections::SqlCollection *collection );
 
-        SqlTrack( QWeakPointer<Collections::SqlCollection> collection, const QStringList &queryResult );
+        SqlTrack( Collections::SqlCollection* collection, const QStringList &queryResult );
         ~SqlTrack();
 
         /** returns the title of this track as stored in the database **/
-        virtual QString name() const { return m_title; }
+        virtual QString name() const;
         /** returns the title of the track if existing in the database,
             a value deduced from the file name otherwise */
         virtual QString prettyName() const;
@@ -68,77 +72,85 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual QString fullPrettyName() const;
 
         /** returns the KUrl object describing the position of the track */
-        virtual KUrl playableUrl() const { return m_url; }
+        virtual KUrl playableUrl() const;
+
         /** returns a string describing the position of the track; same as url() */
-        virtual QString prettyUrl() const { return m_url.path(); }
+        virtual QString prettyUrl() const;
+
         /** returns a string describing the position of the track */
-        virtual QString uidUrl() const { return m_uid; }
+        virtual QString uidUrl() const;
+        virtual void setUidUrl( const QString &uid );
 
         /** true if there is a collection and the file exists on disk */
         virtual bool isPlayable() const;
         /** true if there is a collection, the file exists on disk and is writeable */
         virtual bool isEditable() const;
 
-        virtual Meta::AlbumPtr album() const { return m_album; }
+        virtual Meta::AlbumPtr album() const;
         virtual void setAlbum( const QString &newAlbum );
+        virtual void setAlbum( int albumId );
         virtual void setArtist( const QString &newArtist );
-        virtual Meta::ArtistPtr artist() const { return m_artist; }
-        virtual Meta::ComposerPtr composer() const { return m_composer; }
+        virtual Meta::ArtistPtr artist() const;
+        virtual Meta::ComposerPtr composer() const;
         virtual void setComposer( const QString &newComposer );
-        virtual Meta::YearPtr year() const { return m_year; }
+        virtual Meta::YearPtr year() const;
         virtual void setYear( const QString &newYear );
-        virtual Meta::GenrePtr genre() const { return m_genre; }
+        virtual Meta::GenrePtr genre() const;
         virtual void setGenre( const QString &newGenre );
 
         virtual QString type() const;
 
-        //helper functions
-        static QString prettyTitle( const QString &filename );
-
         virtual void setTitle( const QString &newTitle );
 
-        virtual void setUrl( const QString &url );
+        /*
+        // virtual void setUrl( const QString &url );
         virtual void setUrl( const int deviceid, const QString &rpath );
+        */
 
-        virtual qreal bpm() const { return m_bpm; }
+        virtual qreal bpm() const;
         virtual void setBpm( const qreal newBpm );
 
-        virtual QString comment() const { return m_comment; }
+        virtual QString comment() const;
         virtual void setComment( const QString &newComment );
 
-        virtual double score() const { return m_score; }
+        virtual double score() const;
         virtual void setScore( double newScore );
 
-        virtual int rating() const { return m_rating; }
+        virtual int rating() const;
         virtual void setRating( int newRating );
 
-        virtual qint64 length() const { return m_length; }
-        virtual int filesize() const { return m_filesize; }
-        virtual int sampleRate() const { return m_sampleRate; }
-        virtual int bitrate() const { return m_bitrate; }
-        virtual QDateTime createDate() const { return m_createDate; }
+        virtual qint64 length() const;
+        virtual void setLength( qint64 newLength );
 
-        virtual int trackNumber() const { return m_trackNumber; }
+        virtual int filesize() const;
+
+        virtual int sampleRate() const;
+        virtual void setSampleRate( int newSampleRate );
+
+        virtual int bitrate() const;
+        virtual void setBitrate( int newBitrate );
+
+        virtual QDateTime createDate() const;
+
+        virtual int trackNumber() const;
         virtual void setTrackNumber( int newTrackNumber );
 
-        virtual int discNumber() const { return m_discNumber; }
+        virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual uint firstPlayed() const { return m_firstPlayed; }
+        virtual uint firstPlayed() const;
         virtual void setFirstPlayed( const uint newTime );
 
-        virtual uint lastPlayed() const { return m_lastPlayed; }
+        virtual uint lastPlayed() const;
         virtual void setLastPlayed( const uint newTime );
 
-        virtual int playCount() const { return m_playCount; }
+        virtual int playCount() const;
         virtual void setPlayCount( const int newCount );
 
         virtual qreal replayGain( ReplayGainMode mode ) const
         { return ( mode == AlbumReplayGain ) ? m_albumGain : m_trackGain; }
         virtual qreal replayPeakGain( ReplayGainMode mode ) const
         { return ( mode == AlbumReplayGain ) ? m_albumPeakGain : m_trackPeakGain; }
-
-        virtual void setUidUrl( const QString &uid );
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();
@@ -161,23 +173,32 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual void removeLabel( const Meta::LabelPtr &label );
         virtual Meta::LabelList labels() const;
 
-        //SqlTrack specific methods
-        int deviceid() const { return m_deviceid; }
-        QString rpath() const { return m_rpath; }
-        int trackId() const { return m_trackId; }
-        QWeakPointer<Collections::SqlCollection> sqlCollection() const { return m_collection; }
-        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, QWeakPointer<Collections::SqlCollection> collection, bool updateObservers = true );
+        // SqlTrack specific methods
+
+        int deviceId() const;
+        QString rpath() const;
+        int trackId() const;
+        Collections::SqlCollection* sqlCollection() const { return m_collection; }
+        AMAROK_SQLCOLLECTION_EXPORT_TESTS void refreshFromDatabase( const QString &uid, bool updateObservers = true );
         void updateData( const QStringList &result, bool forceUpdates = false );
         void setCapabilityDelegate( Capabilities::TrackCapabilityDelegate *delegate );
 
+        // SqlDatabase specific values
+
+        /** returns a string of all database values that can be fetched for a track */
+        static QString getTrackReturnValues();
+        /** returns the number of return values in getTrackReturnValues() */
+        static int getTrackReturnValueCount();
+        /** returns a string of all database joins that are required to fetch all values for a track*/
+        static QString getTrackJoinConditions();
+
+
     protected:
         /** Will commit all changes in m_cache.
-         *  commitMetaDataChanges will do four things:<br>
+         *  commitMetaDataChanges will do three things:<br>
          *  1. It will update the member variables.
-         *  2. It will call writeMetaDataToFile
-         *  3. It will call writeMetaDataToDB
-         *  4. It will call updateStatisticsInDB
-         *  5. It will notify all observers and the collection about the changes.
+         *  2. It will call all write methods
+         *  3. It will notify all observers and the collection about the changes.
          */
         void commitMetaDataChanges();
         void writeMetaDataToFile();
@@ -187,19 +208,26 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         void updateStatisticsInDb( const QString &field ) { updateStatisticsInDb( QStringList( field ) ); }
 
     private:
-        /** returns a string of all database joins that are required to fetch all values for a track*/
-        static QString getTrackJoinConditions();
+        //helper functions
         void updateFileSize();
+        static QString prettyTitle( const QString &filename );
 
-        QWeakPointer<Collections::SqlCollection> m_collection;
+        Collections::SqlCollection* const m_collection;
         Capabilities::TrackCapabilityDelegate *m_capabilityDelegate;
 
         QString m_title;
-        KUrl m_url;
 
+        // the url table
+        int m_urlId;
         int m_deviceid;
         QString m_rpath;
+        int m_directoryId; // only set when the urls table needs to be written
+        KUrl m_url;
+        QString m_uid;
+
+        // the rest
         int m_trackId;
+        int m_statisticsId;
 
         qint64 m_length;
         qint64 m_filesize;
@@ -214,7 +242,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         double m_score;
         QString m_comment;
         qreal m_bpm;
-        QString m_uid;
         qreal m_albumGain;
         qreal m_albumPeakGain;
         qreal m_trackGain;
@@ -231,22 +258,28 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         bool m_writeAllStatisticsFields;
         QVariantMap m_cache;
 
+        /** This ReadWriteLock is protecting all internal variables.
+            It is ensuring that m_cache, m_batchUpdate and the othre internal variable are
+            in a consistent state all the time.
+        */
+        mutable QReadWriteLock m_lock;
+
         mutable bool m_labelsInCache;
         mutable Meta::LabelList m_labelsCache;
 
         QString m_newUid;
 };
 
-class SqlArtist : public Meta::Artist
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
 {
     public:
-        SqlArtist( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
         ~SqlArtist();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
 
-        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        void updateData( int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -262,19 +295,16 @@ class SqlArtist : public Meta::Artist
         int id() const { return m_id; }
         void setCapabilityDelegate( Capabilities::ArtistCapabilityDelegate *delegate ) { m_delegate = delegate; }
 
-
     private:
-        QWeakPointer<Collections::SqlCollection> m_collection;
+        Collections::SqlCollection* const m_collection;
         Capabilities::ArtistCapabilityDelegate *m_delegate;
-        QString m_name;
         int m_id;
+        QString m_name;
+
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
         bool m_albumsLoaded;
         Meta::AlbumList m_albums;
-        //QReadWriteLock does not support lock upgrades :(
-        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-        //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
         friend class SqlTrack; // needs to call notifyObservers
@@ -283,13 +313,13 @@ class SqlArtist : public Meta::Artist
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
 {
     public:
-        SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist );
+        SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
         ~SqlAlbum();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist );
+        void updateData( int id, const QString &name, int artist );
 
         virtual void invalidateCache();
 
@@ -315,19 +345,22 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
          *  @param size The maximum width or height of the result.
          *  when size is <= 1, return the full size image
          */
-        virtual bool hasImage(int size = 1) const;
+        virtual bool hasImage(int size = 0) const;
         virtual bool canUpdateImage() const { return true; }
 
         /** Returns the album cover image.
          *  Returns a default image if no specific album image could be found.
-         *  In such a case it will starte the cover fetcher.
+         *  In such a case it will start the cover fetcher.
+         *
+         *  Note: as this function can create a pixmap it is not recommended to
+         *  call this function from outside the UI thread.
          *
          *  @param size is the maximum width or height of the resulting image.
          *  when size is <= 1, return the full size image
          */
-        virtual QPixmap image( int size = 1 );
+        virtual QPixmap image( int size = 0 );
 
-        virtual KUrl imageLocation( int size = 1 );
+        virtual KUrl imageLocation( int size = 0 );
         virtual void setImage( const QImage &image );
         virtual void removeImage();
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
@@ -341,22 +374,18 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         int id() const { return m_id; }
 
         /** Set the compilation flag.
+         *  Actually it does not cange this album but instead moves
+         *  the tracks to other albums (e.g. one with the same name which is a
+         *  compilation)
          *  If the compilation flag is set to "false" then all songs
          *  with different artists will be moved to other albums, possibly even
          *  creating them.
          */
         void setCompilation( bool compilation );
         void setCapabilityDelegate( Capabilities::AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
-        QWeakPointer<Collections::SqlCollection> sqlCollection() const { return m_collection; }
+        Collections::SqlCollection *sqlCollection() const { return m_collection; }
 
     private:
-
-        /**  check if we have an image inside a track (e.g. mp3 APIC)
-        */
-        bool hasEmbeddedImage() const;
-
-        /** Returns the embedded large scale image */
-        QImage getEmbeddedImage() const;
 
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
 
@@ -397,8 +426,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
        int unsetImageId() const;
 
     private:
-        QWeakPointer<Collections::SqlCollection> m_collection;
+        Collections::SqlCollection* const m_collection;
         Capabilities::AlbumCapabilityDelegate *m_delegate;
+
         QString m_name;
         int m_id; // the id of this album in the database
         int m_artistId;
@@ -416,25 +446,23 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         bool m_suppressAutoFetch;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
-        //QReadWriteLock does not support lock upgrades :(
-        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-        //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
         //TODO: add album artist
 
         friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlScanResultProcessor; // needs to set images directly
 };
 
-class SqlComposer : public Meta::Composer
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlComposer : public Meta::Composer
 {
     public:
-        SqlComposer( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        void updateData( int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -444,14 +472,13 @@ class SqlComposer : public Meta::Composer
         int id() const { return m_id; }
 
     private:
-        QWeakPointer<Collections::SqlCollection> m_collection;
-        QString m_name;
+        Collections::SqlCollection* const m_collection;
+
         int m_id;
+        QString m_name;
+
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        //QReadWriteLock does not support lock upgrades :(
-        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-        //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
         friend class SqlTrack; // needs to call notifyObservers
@@ -460,13 +487,14 @@ class SqlComposer : public Meta::Composer
 class SqlGenre : public Meta::Genre
 {
     public:
-        SqlGenre( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        SqlGenre( Collections::SqlCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
-        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        void updateData( int id, const QString &name );
 
+        /** Invalidates the tracks cache */
         virtual void invalidateCache();
 
         virtual Meta::TrackList tracks();
@@ -475,29 +503,29 @@ class SqlGenre : public Meta::Genre
         int id() const { return m_id; }
 
     private:
-        QWeakPointer<Collections::SqlCollection> m_collection;
-        QString m_name;
+        Collections::SqlCollection* const m_collection;
+
         int m_id;
+        QString m_name;
+
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        //QReadWriteLock does not support lock upgrades :(
-        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-        //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
         friend class SqlTrack; // needs to call notifyObservers
 };
 
-class SqlYear : public Meta::Year
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
 {
     public:
-        SqlYear( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        SqlYear( Collections::SqlCollection* collection, int id, const QString &year );
 
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
+        virtual QString prettyName() const { return name(); }
 
-        void updateData( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+        void updateData( int id, const QString &name );
 
+        /** Invalidates the tracks cache */
         virtual void invalidateCache();
 
         virtual Meta::TrackList tracks();
@@ -506,27 +534,26 @@ class SqlYear : public Meta::Year
         int id() const { return m_id; }
 
     private:
-        QWeakPointer<Collections::SqlCollection> m_collection;
-        QString m_name;
+        Collections::SqlCollection* const m_collection;
         int m_id;
+        QString m_name;
+
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        //QReadWriteLock does not support lock upgrades :(
-        //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-        //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
         friend class SqlTrack; // needs to call notifyObservers
 };
 
-class SqlLabel : public Meta::Label
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlLabel : public Meta::Label
 {
 public:
-    SqlLabel( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name );
+    SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );
 
     virtual QString name() const { return m_name; }
     virtual QString prettyName() const { return m_name; }
 
+    /** Invalidates the tracks cache */
     virtual void invalidateCache();
 
     virtual Meta::TrackList tracks();
@@ -535,14 +562,12 @@ public:
     int id() const { return m_id; }
 
 private:
-    QWeakPointer<Collections::SqlCollection> m_collection;
-    QString m_name;
-    int m_id;
+    Collections::SqlCollection* const m_collection;
+    const int m_id;
+    const QString m_name;
+
     bool m_tracksLoaded;
     Meta::TrackList m_tracks;
-    //QReadWriteLock does not support lock upgrades :(
-    //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
-    //switch to QReadWriteLock as soon as it does!
     QMutex m_mutex;
 
     friend class SqlTrack; // needs to call notifyObservers

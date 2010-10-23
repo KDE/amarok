@@ -194,7 +194,7 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
         if( m_artistMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<Meta::SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( id, name );
             return m_artistMap.value( id );
         }
 
@@ -232,7 +232,7 @@ SqlRegistry::getGenre( const QString &name, int id, bool refresh )
         if( m_genreMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<Meta::SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( id, name );
             return m_genreMap.value( id );
         }
 
@@ -268,7 +268,7 @@ SqlRegistry::getComposer( const QString &name, int id, bool refresh )
         if( m_composerMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<Meta::SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( id, name );
             return m_composerMap.value( id );
         }
 
@@ -304,7 +304,7 @@ SqlRegistry::getYear( const QString &name, int id, bool refresh )
         if( m_yearMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<Meta::SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( m_collection, id, name );
+                KSharedPtr<Meta::SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( id, name );
             return m_yearMap.value( id );
         }
 
@@ -312,6 +312,30 @@ SqlRegistry::getYear( const QString &name, int id, bool refresh )
         m_yearMap.insert( id, year );
         return year;
     }
+}
+
+Meta::AlbumPtr
+SqlRegistry::getAlbum( int id )
+{
+    if( id <= 0 )
+        return Meta::AlbumPtr();
+
+    QMutexLocker locker( &m_albumMutex );
+    if( m_albumMap.contains( id ) )
+        return m_albumMap.value( id );
+
+    QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( id );
+    QStringList res = m_collection->sqlStorage()->query( query );
+    if( res.isEmpty() )
+        return Meta::AlbumPtr(); // someone messed up
+
+    QString name = res[0];
+    int artistId = res[1].toInt();
+
+    Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
+    Meta::AlbumPtr album( sqlAlbum );
+    m_albumMap.insert( id, album );
+    return album;
 }
 
 Meta::AlbumPtr
@@ -336,7 +360,9 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
             QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO albums( name,artist ) VALUES ('%1',%2);" ).arg( m_storage->escape( name ), QString::number( artist ) );
+                QString insert = QString( "INSERT INTO albums( name,artist ) VALUES ('%1',%2);" ).
+                    arg( m_storage->escape( name ),
+                         artist > 0 ? QString::number( artist ) : "NULL" );
                 id = m_storage->insert( insert, "albums" );
             }
             else
@@ -348,7 +374,7 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
         if( m_albumMap.contains( id ) )
         {
             if( refresh )
-                KSharedPtr<Meta::SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( m_collection, id, name, artist );
+                KSharedPtr<Meta::SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( id, name, artist );
             return m_albumMap.value( id );
         }
 
