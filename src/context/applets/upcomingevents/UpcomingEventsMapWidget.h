@@ -19,13 +19,13 @@
 
 #include "LastFmEvent.h"
 
-#include <Plasma/WebView>
+#include <KGraphicsWebView>
 
 class QGraphicsItem;
 class UpcomingEventsListWidget;
 class UpcomingEventsMapWidgetPrivate;
 
-class UpcomingEventsMapWidget : public Plasma::WebView
+class UpcomingEventsMapWidget : public KGraphicsWebView
 {
     Q_OBJECT
     Q_PROPERTY( int eventCount READ eventCount )

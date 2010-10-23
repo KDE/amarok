@@ -91,7 +91,7 @@ UpcomingEventsMapWidgetPrivate::addMarker( const LastFmEventPtr &event )
         .arg( QString::number( loc->longitude ) )
         .arg( eventForMapIcon(event).url() )
         .arg( createInfoString(event) );
-    q->mainFrame()->evaluateJavaScript( js );
+    q->page()->mainFrame()->evaluateJavaScript( js );
 }
 
 void
@@ -113,7 +113,7 @@ UpcomingEventsMapWidgetPrivate::removeMarker( const LastFmEventPtr &event )
     QString js = QString( "javascript:removeMarker(%1,%2)" )
         .arg( QString::number( loc->latitude ) )
         .arg( QString::number( loc->longitude ) );
-    q->mainFrame()->evaluateJavaScript( js );
+    q->page()->mainFrame()->evaluateJavaScript( js );
 }
 
 QString
@@ -209,11 +209,7 @@ UpcomingEventsMapWidgetPrivate::_init()
     q->connect( q, SIGNAL(loadFinished(bool)), q, SLOT(_loadFinished(bool)) );
     QFile mapHtml( KStandardDirs::locate( "data", "amarok/data/upcoming-events-map.html" ) );
     if( mapHtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        KUrl base = KUrl::fromPath( QFileInfo( mapHtml ).path() );
-        q->setHtml( mapHtml.readAll(), base.path(KUrl::AddTrailingSlash) );
-    }
-    mapHtml.close();
+        q->setHtml( mapHtml.readAll() );
 }
 
 void
@@ -244,7 +240,7 @@ UpcomingEventsMapWidgetPrivate::_loadFinished( bool success )
 }
 
 UpcomingEventsMapWidget::UpcomingEventsMapWidget( QGraphicsItem *parent )
-    : Plasma::WebView( parent )
+    : KGraphicsWebView( parent )
     , d_ptr( new UpcomingEventsMapWidgetPrivate( this ) )
 {
     page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
@@ -341,7 +337,7 @@ UpcomingEventsMapWidget::centerAt( double latitude, double longitude )
     QString lat( QString::number( latitude ) );
     QString lng( QString::number( longitude ) );
     QString js = QString( "javascript:centerAt(%1,%2)" ).arg( lat ).arg( lng );
-    mainFrame()->evaluateJavaScript( js );
+    page()->mainFrame()->evaluateJavaScript( js );
 }
 
 void
@@ -356,7 +352,7 @@ UpcomingEventsMapWidget::clear()
 {
     Q_D( UpcomingEventsMapWidget );
     d->events.clear();
-    mainFrame()->evaluateJavaScript( "javascript:clearMarkers()" );
+    page()->mainFrame()->evaluateJavaScript( "javascript:clearMarkers()" );
 }
 
 #include "UpcomingEventsMapWidget.moc"
