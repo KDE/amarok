@@ -11,6 +11,8 @@ install(FILES
         emblem-jamendo-scalable.svgz
         emblem-lastfm.png
         emblem-lastfm-scalable.svg
+        emblem-gpodder.png
+    emblem-gpodder-scalable.svgz
         emblem-magnatune.png
         emblem-mp3tunes.png
         emblem-ampache.png
