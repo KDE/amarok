@@ -32,6 +32,7 @@
 
 #include <KApplication>
 #include <KIcon>
+#include <KLocale>
 #include <KWindowSystem>
 
 #include <QDesktopWidget>

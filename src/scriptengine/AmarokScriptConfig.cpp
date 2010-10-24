@@ -17,8 +17,8 @@
 #include "AmarokScriptConfig.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 
+#include <KConfigGroup>
 #include <KGlobal>
 
 namespace AmarokScript

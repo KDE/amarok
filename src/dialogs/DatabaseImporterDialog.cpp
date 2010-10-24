@@ -20,6 +20,7 @@
 #include "databaseimporter/amarok14/FastForwardImporter.h"
 #include "databaseimporter/itunes/ITunesImporter.h"
 
+#include <KLocale>
 #include <KPageWidgetItem>
 #include <KVBox>
 

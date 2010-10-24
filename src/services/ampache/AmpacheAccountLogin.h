@@ -21,11 +21,12 @@
 #ifndef AMPACHEACCOUNTLOGIN_H
 #define AMPACHEACCOUNTLOGIN_H
 
-#include <QObject>
-#include <KUrl>
-#include <kdemacros.h>
 #include "NetworkAccessManagerProxy.h"
 
+#include <KUrl>
+#include <kdemacros.h>
+
+#include <QObject>
 
 #define AMPACHE_ACCOUNT_EXPORT KDE_EXPORT
 

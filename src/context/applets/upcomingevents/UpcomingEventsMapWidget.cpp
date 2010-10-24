@@ -14,13 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "UpcomingEventsMapWidget"
-
 #include "UpcomingEventsMapWidget.h"
 #include "UpcomingEventsWidget.h"
 #include "network/NetworkAccessManagerProxy.h"
-#include "core/support/Debug.h"
 
+#include <KLocale>
 #include <KStandardDirs>
 
 #include <QDesktopServices>

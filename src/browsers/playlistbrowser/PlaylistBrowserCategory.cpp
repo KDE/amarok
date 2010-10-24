@@ -35,7 +35,7 @@
 #include <KButtonGroup>
 #include <KIcon>
 #include <KLineEdit>
-
+#include <KConfigGroup>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QGridLayout>

@@ -17,10 +17,10 @@
 #include "BookmarkManager.h"
 
 #include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 
 #include <KApplication>
 #include <KDialog>
+#include <KLocale>
 
 #include <QHBoxLayout>
 
@@ -62,7 +62,6 @@ BookmarkManager::~BookmarkManager()
 
 void BookmarkManager::showOnce()
 {
-    DEBUG_BLOCK
     instance()->activateWindow();
     instance()->show();
     instance()->raise();

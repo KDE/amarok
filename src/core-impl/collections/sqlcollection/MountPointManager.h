@@ -22,7 +22,7 @@
 #include "core/plugins/Plugin.h"
 #include "core/plugins/PluginManager.h"
 
-#include <KConfig>
+#include <KConfigGroup>
 #include <KUrl>
 #include <solid/device.h>
 #include <threadweaver/Job.h>

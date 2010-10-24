@@ -14,8 +14,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "APGCategory"
-
 #include "APGCategory.h"
 
 #include "amarokconfig.h"
@@ -26,9 +24,8 @@
 #include "playlistgenerator/ConstraintTestWrapper.h"
 #endif
 
-#include "core/support/Debug.h"
-
 #include <KIcon>
+#include <KLocale>
 
 #include <QAction>
 #include <QHBoxLayout>

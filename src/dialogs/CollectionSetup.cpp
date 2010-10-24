@@ -31,6 +31,7 @@
 #include <KVBox>
 
 #include <QAction>
+#include <QApplication>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDir>

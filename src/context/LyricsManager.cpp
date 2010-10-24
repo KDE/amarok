@@ -20,6 +20,8 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 
+#include <KLocale>
+
 #include <QDomDocument>
 
 ////////////////////////////////////////////////////////////////

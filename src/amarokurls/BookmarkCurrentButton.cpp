@@ -20,6 +20,7 @@
 #include "BookmarkModel.h"
 
 #include <KIcon>
+#include <KLocale>
 
 #include <QMenu>
 #include <QString>

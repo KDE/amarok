@@ -15,9 +15,9 @@
  ****************************************************************************************/
 
 #include "CustomVideoWidget.h"
-#include "core/support/Debug.h"
 
 #include <KAction>
+#include <KLocale>
 #include <KMenu>
 
 #include <QKeyEvent>

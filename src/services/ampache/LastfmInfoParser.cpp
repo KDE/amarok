@@ -20,10 +20,12 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QNetworkReply>
 #include <lastfm/XmlQuery>
 #include <lastfm/ws.h>
 
+#include <KLocale>
+
+#include <QNetworkReply>
 
 void LastfmInfoParser::getInfo(Meta::TrackPtr track)
 {

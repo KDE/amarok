@@ -33,11 +33,12 @@
 
 #include "core/support/Debug.h"
 
-#include <QWeakPointer>
-#include <QUrl>
-
+#include <KLocale>
 #include <KSharedPtr>
 #include <KStandardDirs>
+
+#include <QWeakPointer>
+#include <QUrl>
 
 #include <lastfm/Track>
 

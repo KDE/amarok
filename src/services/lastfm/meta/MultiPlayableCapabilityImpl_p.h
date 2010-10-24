@@ -27,6 +27,7 @@
 #include <lastfm/RadioTuner>
 #include <lastfm/ws.h>
 
+#include <KLocale>
 
 class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability, public Meta::Observer
 {

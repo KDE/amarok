@@ -14,15 +14,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "APG::TreeModel"
-
 #include "TreeModel.h"
 
 #include "Constraint.h"
 #include "ConstraintFactory.h"
 
-#include "core/support/Debug.h"
-
+#include <KLocale>
 
 APG::TreeModel::TreeModel( ConstraintNode* r, QObject* p ) : QAbstractItemModel( p ), m_rootNode( r )
 {

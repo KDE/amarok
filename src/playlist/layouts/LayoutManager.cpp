@@ -25,6 +25,7 @@
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistModelStack.h"
 
+#include <KConfigGroup>
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <KUrl>

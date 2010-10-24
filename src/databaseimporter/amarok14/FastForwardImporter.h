@@ -19,8 +19,6 @@
 
 #include "databaseimporter/DatabaseImporter.h"
 
-#include <QSqlDatabase>
-
 class FastForwardImporterConfig;
 class FastForwardWorker;
 

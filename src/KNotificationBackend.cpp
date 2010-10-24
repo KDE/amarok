@@ -17,13 +17,13 @@
 #include "KNotificationBackend.h"
 
 #include "core/support/Amarok.h"
-#include "SvgHandler.h"
-#include "core/support/Debug.h"
-#include "EngineController.h"
 #include "core/meta/Meta.h"
+#include "SvgHandler.h"
+#include "EngineController.h"
+
+#include <KLocale>
 
 #include <QTimer>
-
 
 namespace Amarok
 {
@@ -48,8 +48,6 @@ Amarok::KNotificationBackend::KNotificationBackend()
     , m_notify( 0 )
     , m_enabled( false )
 {
-    DEBUG_BLOCK
-
     m_timer = new QTimer( this );
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( showCurrentTrack() ) );
@@ -57,8 +55,6 @@ Amarok::KNotificationBackend::KNotificationBackend()
 
 Amarok::KNotificationBackend::~KNotificationBackend()
 {
-    DEBUG_BLOCK
-
     if (m_notify)
         m_notify->close();
 }
@@ -103,8 +99,6 @@ Amarok::KNotificationBackend::engineStateChanged( Phonon::State state, Phonon::S
 void
 Amarok::KNotificationBackend::engineNewTrackPlaying()
 {
-    DEBUG_BLOCK
-
     if( !m_enabled )
         return; // KNotify is disabled, so don't start timer
 
@@ -114,8 +108,6 @@ Amarok::KNotificationBackend::engineNewTrackPlaying()
 void
 Amarok::KNotificationBackend::showCurrentTrack() // slot
 {
-    DEBUG_BLOCK
-
     if( !m_enabled )
         return;
 

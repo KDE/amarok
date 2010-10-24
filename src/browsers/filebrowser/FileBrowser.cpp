@@ -33,6 +33,7 @@
 
 #include <KAction>
 #include <KComboBox>
+#include <KConfigGroup>
 #include <KDirLister>
 #include <KSaveFile>
 #include <KStandardAction>

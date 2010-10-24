@@ -28,6 +28,8 @@
 #include "core/meta/support/MetaConstants.h"
 #include "meta/LastFmMeta.h"
 
+#include <KLocale>
+
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),

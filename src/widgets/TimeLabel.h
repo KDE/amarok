@@ -22,8 +22,10 @@
 #include "EngineController.h"
 #include "ProgressWidget.h"
 
+#include <KGlobalSettings>
+#include <KLocale>
+
 #include <QLabel>
-#include <kglobalsettings.h>
 #include <QFontMetrics>
 #include <QMouseEvent>
 

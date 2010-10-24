@@ -21,6 +21,7 @@
 #include "SliderWidget.h"
 
 #include <KComboBox>
+#include <KLocale>
 
 #include <QLabel>
 #include <QFrame>

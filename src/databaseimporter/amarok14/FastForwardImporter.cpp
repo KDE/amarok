@@ -20,6 +20,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 
+#include <KLocale>
 
 FastForwardImporter::FastForwardImporter( QObject *parent )
     : DatabaseImporter( parent )

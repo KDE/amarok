@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KConfig>
+#include <KConfigGroup>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>

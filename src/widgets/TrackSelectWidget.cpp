@@ -26,6 +26,7 @@
 
 #include <amarokconfig.h>
 
+#include <KLocale>
 #include <KSqueezedTextLabel>
 #include <KVBox>
 

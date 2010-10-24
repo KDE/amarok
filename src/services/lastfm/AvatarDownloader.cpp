@@ -20,6 +20,8 @@
 #include "AvatarDownloader.h"
 #include "core/support/Debug.h"
 
+#include <KUrl>
+
 AvatarDownloader::AvatarDownloader()
 {
 }

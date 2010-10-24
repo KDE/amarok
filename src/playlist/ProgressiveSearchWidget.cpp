@@ -21,6 +21,7 @@
 
 #include <KAction>
 #include <KColorScheme>
+#include <KConfigGroup>
 #include <KHBox>
 #include <KLocale>
 

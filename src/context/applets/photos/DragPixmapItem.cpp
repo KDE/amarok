@@ -17,12 +17,15 @@
 #include "DragPixmapItem.h"
 
 #define DEBUG_PREFIX "DragPixmapItem"
-#include "core/support/Debug.h"
+
+#include <core/support/Debug.h>
 
 // KDE
 #include <KIcon>
+#include <KLocale>
 
 // QT
+#include <QApplication>
 #include <QDesktopServices>
 #include <QDrag>
 #include <QGraphicsSceneMouseEvent>

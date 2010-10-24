@@ -23,6 +23,7 @@
 
 #include <KAction>
 #include <KIcon>
+#include <KLocale>
 
 BrowserDock::BrowserDock( QWidget * parent )
     : AmarokDockWidget( i18n( "Media Sources" ), parent )

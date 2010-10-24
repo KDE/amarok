@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 
 #include <KIcon>
+#include <KLocale>
 
 #include <QDir>
 #include <QMenu>

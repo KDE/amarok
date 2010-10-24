@@ -16,6 +16,8 @@
  
 #include "MagnatuneUrlRunner.h"
 
+#include <KLocale>
+
 MagnatuneUrlRunner::MagnatuneUrlRunner()
  : QObject()
  , AmarokUrlRunnerBase()

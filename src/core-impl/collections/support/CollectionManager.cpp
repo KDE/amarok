@@ -37,7 +37,7 @@
 #include <QTimer>
 
 #include <KBuildSycocaProgressDialog>
-#include <KGlobal>
+#include <KConfigGroup>
 #include <KMessageBox>
 #include <KPluginLoader>
 #include <KPluginFactory>
