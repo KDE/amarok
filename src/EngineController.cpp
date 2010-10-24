@@ -75,8 +75,12 @@ EngineController::destroy()
 }
 
 EngineController::EngineController()
-    : m_playWhenFetched( true )
-    , m_fadeoutTimer( new QTimer( this ) )
+    : m_fader( 0 )
+    , m_fadeoutTimer( 0 )
+    , m_boundedPlayback( 0 )
+    , m_multiPlayback( 0 )
+    , m_multiSource( 0 )
+    , m_playWhenFetched( true )
     , m_volume( 0 )
     , m_currentIsAudioCd( false )
     , m_ignoreVolumeChangeAction ( false )
@@ -84,12 +88,10 @@ EngineController::EngineController()
     , m_tickInterval( 0 )
     , m_lastTickPosition( -1 )
     , m_lastTickCount( 0 )
+    , m_mutex( QMutex::Recursive )
 {
     DEBUG_BLOCK
 
-    m_fadeoutTimer->setSingleShot( true );
-
-    connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
 }
 
 EngineController::~EngineController()
@@ -101,6 +103,13 @@ EngineController::~EngineController()
     m_media.data()->blockSignals(true);
     m_media.data()->stop();
 
+    delete m_boundedPlayback;
+    m_boundedPlayback = 0;
+    delete m_multiPlayback; // need to get a new instance of multi if played again
+    m_multiPlayback = 0;
+    delete m_multiSource;
+    m_multiSource = 0;
+
     delete m_media.data();
     delete m_audio.data();
 }
@@ -108,9 +117,17 @@ EngineController::~EngineController()
 void
 EngineController::createFadeoutEffect()
 {
-    m_fader = new Phonon::VolumeFaderEffect( this );
-    m_path.insertEffect( m_fader.data() );
-    m_fader.data()->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+    QMutexLocker locker( &m_mutex );
+    if( !m_fader )
+    {
+        m_fader = new Phonon::VolumeFaderEffect( this );
+        m_path.insertEffect( m_fader );
+        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+
+        m_fadeoutTimer = new QTimer( this );
+        m_fadeoutTimer->setSingleShot( true );
+        connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
+    }
 }
 
 void
@@ -124,7 +141,6 @@ EngineController::initializePhonon()
     delete m_audio.data();
     delete m_preamp.data();
     delete m_equalizer.data();
-    delete m_fader.data();
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -155,12 +171,6 @@ EngineController::initializePhonon()
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_preamp.data() );
-    }
-
-    // only create fader if we have fadeout on, VolumeFaderEffect can cause phonon issues
-    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() )
-    {
-        createFadeoutEffect();
     }
 
     m_media.data()->setTickInterval( 100 );
@@ -357,46 +367,49 @@ EngineController::play() //SLOT
 }
 
 void
-EngineController::play( const Meta::TrackPtr& track, uint offset )
+EngineController::play( Meta::TrackPtr track, uint offset )
 {
     DEBUG_BLOCK
 
     if( !track ) // Guard
         return;
 
+    // clear the current track without sending playbackEnded or trackChangeNotify yet
+    // we want to continue but ::stop() doesn't know that
+    if( m_currentTrack )
+    {
+        debug() << "m_currentTrack != 0";
+        const qint64 pos = trackPositionMs();
+        const qint64 length = m_currentTrack->length();
+        m_currentTrack->finishedPlaying( double(pos)/double(length) );
+        m_currentTrack = 0;
+    }
+
+    stop( true );
+
     m_currentTrack = track;
-    m_currentIsAudioCd = false;
-    delete m_boundedPlayback.data();
-    delete m_multiPlayback.data();
-    delete m_multiSource.data();
+    debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<m_currentTrack->name();
     m_boundedPlayback = m_currentTrack->create<Capabilities::BoundedPlaybackCapability>();
     m_multiPlayback = m_currentTrack->create<Capabilities::MultiPlayableCapability>();
     m_multiSource = m_currentTrack->create<Capabilities::MultiSourceCapability>();
-
-
-    m_nextTrack.clear();
-    m_nextUrl.clear();
-    m_media.data()->clearQueue();
 
     m_currentTrack->prepareToPlay();
 
     if( m_multiPlayback )
     {
-        m_media.data()->stop();
-        connect( m_multiPlayback.data(), SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
-        m_multiPlayback.data()->fetchFirst();
+        connect( m_multiPlayback, SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
+        m_multiPlayback->fetchFirst();
     }
     else if( m_multiSource )
     {
-        m_media.data()->stop();
-        debug() << "Got a MultiSource Track with " <<  m_multiSource.data()->sources().count() << " sources";
-        connect( m_multiSource.data(), SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
+        debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
+        connect( m_multiSource, SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
         playUrl( m_currentTrack->playableUrl(), 0 );
     }
     else if( m_boundedPlayback )
     {
-        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback.data()->startPosition();
-        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback.data()->startPosition() );
+        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
+        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
@@ -519,17 +532,6 @@ EngineController::stop( bool forceInstant ) //SLOT
 {
     DEBUG_BLOCK
 
-    m_currentIsAudioCd = false;
-    // need to get a new instance of multi if played again
-    delete m_multiPlayback.data();
-    delete m_multiSource.data();
-
-    m_mutex.lock();
-    m_nextTrack.clear();
-    m_nextUrl.clear();
-    m_media.data()->clearQueue();
-    m_mutex.unlock();
-
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack )
     {
@@ -539,10 +541,27 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
         playbackEnded( pos, length, Engine::EngineObserver::EndedStopped );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
+        m_currentTrack = 0;
+    }
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_currentIsAudioCd = false;
+        delete m_boundedPlayback;
+        m_boundedPlayback = 0;
+        delete m_multiPlayback; // need to get a new instance of multi if played again
+        m_multiPlayback = 0;
+        delete m_multiSource;
+        m_multiSource = 0;
+
+        m_nextTrack.clear();
+        m_nextUrl.clear();
+        m_media.data()->clearQueue();
     }
 
     // Stop instantly if fadeout is already running, or the media is not playing
-    if( m_fadeoutTimer->isActive() || m_media.data()->state() != Phonon::PlayingState )
+    if( ( m_fadeoutTimer && m_fadeoutTimer->isActive() ) ||
+        m_media.data()->state() != Phonon::PlayingState )
     {
         forceInstant = true;
     }
@@ -550,11 +569,8 @@ EngineController::stop( bool forceInstant ) //SLOT
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
     {
         // WARNING: this can cause a gap in playback in GStreamer
-        if( !m_fader )
-            createFadeoutEffect();
-
-        m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
-
+        createFadeoutEffect();
+        m_fader->fadeOut( AmarokConfig::fadeoutLength() );
         m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
 
         stateChangedNotify( Phonon::StoppedState, m_media.data()->state() ); //immediately disable Stop action
@@ -564,8 +580,6 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_media.data()->stop();
         m_media.data()->setCurrentSource( Phonon::MediaSource() );
     }
-
-    m_currentTrack = 0;
 }
 
 bool
@@ -610,11 +624,11 @@ EngineController::seek( int ms ) //SLOT
 
         if( m_boundedPlayback )
         {
-            seekTo = m_boundedPlayback.data()->startPosition() + ms;
-            if( seekTo < m_boundedPlayback.data()->startPosition() )
-                seekTo = m_boundedPlayback.data()->startPosition();
-            else if( seekTo > m_boundedPlayback.data()->startPosition() + trackLength() )
-                seekTo = m_boundedPlayback.data()->startPosition() + trackLength();
+            seekTo = m_boundedPlayback->startPosition() + ms;
+            if( seekTo < m_boundedPlayback->startPosition() )
+                seekTo = m_boundedPlayback->startPosition();
+            else if( seekTo > m_boundedPlayback->startPosition() + trackLength() )
+                seekTo = m_boundedPlayback->startPosition() + trackLength();
         }
         else
             seekTo = ms;
@@ -757,7 +771,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
 Phonon::State
 EngineController::state() const
 {
-    if ( m_fadeoutTimer->isActive() )
+    if( m_fadeoutTimer && m_fadeoutTimer->isActive() )
         return Phonon::StoppedState;
     else
         return phononMediaObject()->state();
@@ -904,7 +918,7 @@ EngineController::slotTick( qint64 position )
     if( m_boundedPlayback )
     {
         qint64 newPosition = position;
-        trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback.data()->startPosition() ), false );
+        trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
 
         // Calculate a better position.  Sometimes the position doesn't update
         // with a good resolution (for example, 1 sec for TrueAudio files in the
@@ -919,7 +933,7 @@ EngineController::slotTick( qint64 position )
         m_lastTickPosition = position;
 
         //don't go beyond the stop point
-        if( newPosition >= m_boundedPlayback.data()->endPosition() )
+        if( newPosition >= m_boundedPlayback->endPosition() )
         {
             slotAboutToFinish();
         }
@@ -947,13 +961,13 @@ EngineController::slotAboutToFinish()
         m_mutex.lock();
         m_playWhenFetched = false;
         m_mutex.unlock();
-        m_multiPlayback.data()->fetchNext();
+        m_multiPlayback->fetchNext();
         debug() << "The queue has: " << m_media.data()->queue().size() << " tracks in it";
     }
     else if( m_multiSource )
     {
         debug() << "source finished, lets get the next one";
-        KUrl nextSource = m_multiSource.data()->next();
+        KUrl nextSource = m_multiSource->next();
 
         if ( !nextSource.isEmpty() )
         { //more sources
@@ -1100,13 +1114,13 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             m_mutex.lock();
             m_playWhenFetched = true;
             m_mutex.unlock();
-            m_multiPlayback.data()->fetchNext();
+            m_multiPlayback->fetchNext();
             debug() << "The queue has: " << m_media.data()->queue().size() << " tracks in it";
         }
         else if( m_multiSource )
         {
             debug() << "source error, lets get the next one";
-            KUrl nextSource = m_multiSource.data()->next();
+            KUrl nextSource = m_multiSource->next();
 
             if ( !nextSource.isEmpty() )
             { //more sources
@@ -1124,7 +1138,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             The::playlistActions()->requestNextTrack();
     }
 
-    if ( m_fadeoutTimer->isActive() )
+    if( m_fadeoutTimer && m_fadeoutTimer->isActive() )
     {
         // We've stopped already as far as the rest of Amarok is concerned
         if ( oldState == Phonon::PlayingState )
@@ -1242,11 +1256,12 @@ EngineController::slotStopFadeout() //SLOT
 void
 EngineController::resetFadeout()
 {
-    m_fadeoutTimer->stop();
-    if ( m_fader.data() )
+    if( m_fader )
     {
-        m_fader.data()->setVolume( 1.0 );
-        m_fader.data()->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+        m_fader->setVolume( 1.0 );
+        m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+
+        m_fadeoutTimer->stop();
     }
 }
 

@@ -203,7 +203,7 @@ public slots:
      *
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
-    void play( const Meta::TrackPtr&, uint offset = 0 );
+    void play( Meta::TrackPtr track, uint offset = 0 );
 
     /**
      * Replays the current track
@@ -369,19 +369,20 @@ private:
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
     QWeakPointer<Phonon::Effect>            m_equalizer;
     QWeakPointer<Phonon::AudioOutput>       m_audio;
-    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
     QWeakPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                        m_path;
+
+    Phonon::VolumeFaderEffect* m_fader;
+    QTimer* m_fadeoutTimer;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
-    QWeakPointer<Capabilities::BoundedPlaybackCapability> m_boundedPlayback;
-    QWeakPointer<Capabilities::MultiPlayableCapability> m_multiPlayback;
-    QWeakPointer<Capabilities::MultiSourceCapability> m_multiSource;
+    Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
+    Capabilities::MultiPlayableCapability* m_multiPlayback;
+    Capabilities::MultiSourceCapability* m_multiSource;
     bool m_playWhenFetched;
-    QTimer* m_fadeoutTimer;
     int m_volume;
     bool m_currentIsAudioCd;
 

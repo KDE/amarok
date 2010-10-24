@@ -216,20 +216,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
     if ( track )
     {
         if ( now )
-        {
-            Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-            Phonon::State engineState = The::engineController()->state();
-            if( currentTrack && ( engineState == Phonon::PlayingState
-                               || engineState == Phonon::PausedState
-                               || engineState == Phonon::BufferingState ) )
-            {
-                //Theres a track playing now, calculate statistics for that track before playing a new one.
-                const double finishedPercent = (double)The::engineController()->trackPositionMs() / (double)currentTrack->length();
-                debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
-                currentTrack->finishedPlaying( finishedPercent );
-            }
             The::engineController()->play( track );
-        }
         else
             The::engineController()->setNextTrack( track );
     }
