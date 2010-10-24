@@ -18,9 +18,9 @@
 #ifndef AMAROK_LYRICS_ENGINE
 #define AMAROK_LYRICS_ENGINE
 
-#include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 /**
@@ -33,7 +33,8 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver, public Meta::Observer
+class LyricsEngine : public DataEngine, public Engine::EngineObserver,
+                     public LyricsObserver, public Meta::Observer
 {
     Q_OBJECT
 
@@ -42,8 +43,8 @@ public:
     
     QStringList sources() const;
     
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
+    // reimplemented from EngineObserver
+    void engineTrackChanged( Meta::TrackPtr track );
     
     // reimplemented from LyricsObserver
     void newLyrics( QStringList& lyrics );
@@ -58,9 +59,10 @@ public:
 protected:
     bool sourceRequestEvent( const QString& name );
     
-private:
+private slots:
     void update();
     
+private:
     // stores is we have been disabled (disconnected)
     bool m_requested;
    

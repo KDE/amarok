@@ -20,7 +20,6 @@
 #define SIMILARARTISTSENGINE_H
 
 #include "NetworkAccessManagerProxy.h"
-#include "context/ContextObserver.h"
 #include "context/DataEngine.h"
 #include "context/applets/similarartists/SimilarArtist.h"
 #include "core/engine/EngineObserver.h"

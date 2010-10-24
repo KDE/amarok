@@ -200,10 +200,10 @@ LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
         browser->nativeWidget()->setHtml( text );
     else
         browser->nativeWidget()->setPlainText( text );
-    determineActionIconsState();
     showInfoLabel = false;
     showSuggestions = false;
     showBrowser = true;
+    determineActionIconsState();
 }
 
 void

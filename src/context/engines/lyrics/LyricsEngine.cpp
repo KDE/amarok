@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsEngine"
+
 #include "LyricsEngine.h"
 
 #include "core/support/Amarok.h"
@@ -23,12 +25,13 @@
 #include "EngineController.h"
 #include "ScriptManager.h"
 
+#include <QTimer>
 
 using namespace Context;
 
 LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
+    , Engine::EngineObserver( The::engineController() )
     , LyricsObserver( LyricsManager::self() )
 {
     m_requested = true; // testing
@@ -66,16 +69,23 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     }
     removeAllData( name );
     setData( name, QVariant());
-    update();
-
+    // in the case where we are resuming playback on startup. Need to be sure
+    // the script manager is running and a lyrics script is loaded first.
+    QTimer::singleShot( 0, this, SLOT(update()) );
     return true;
 }
 
-void LyricsEngine::message( const ContextState& state )
+void LyricsEngine::engineTrackChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack && m_currentTrack && currentTrack != m_currentTrack )
+    if( !track )
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "stopped" ,"stopped" );
+        return;
+    }
+
+    if( track && m_currentTrack && track != m_currentTrack )
     {
         m_prevLyrics = m_currentLyrics;
         m_prevLyricsList = m_currentLyricsList;
@@ -85,15 +95,7 @@ void LyricsEngine::message( const ContextState& state )
         m_currentLyricsList.clear();
         m_currentSuggestionsList.clear();
     }
-    if( state == Current && m_requested )
-    {
-        update();
-    } else if( state == Home )
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "stopped" ,"stopped" );
-    }
-    
+    update();
 }
 
 void LyricsEngine::metadataChanged( Meta::TrackPtr track )
