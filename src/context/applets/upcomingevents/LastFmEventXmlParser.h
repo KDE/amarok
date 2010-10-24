@@ -20,8 +20,7 @@
 #include "LastFmEvent.h"
 
 #include <QString>
-
-class QXmlStreamReader;
+#include <QXmlStreamReader>
 
 class LastFmEventXmlParser
 {

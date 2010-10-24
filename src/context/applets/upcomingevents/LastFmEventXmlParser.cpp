@@ -16,7 +16,6 @@
 
 #include "LastFmEventXmlParser.h"
 
-#include <QXmlStreamReader>
 
 LastFmEventXmlParser::LastFmEventXmlParser( QXmlStreamReader &reader )
     : m_xml( reader )
