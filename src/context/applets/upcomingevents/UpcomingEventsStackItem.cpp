@@ -31,6 +31,7 @@
 #include <QFontMetrics>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsSceneResizeEvent>
+#include <QLabel>
 #include <QPainter>
 #include <QSignalMapper>
 #include <QStyleOptionGraphicsItem>
@@ -293,7 +294,7 @@ UpcomingEventsStackItem::UpcomingEventsStackItem( const QString &name,
     d->collapseButton = new Plasma::IconWidget( d->toolbox );
     d->collapseButton->setCursor( Qt::ArrowCursor );
     d->titleLabel = new Plasma::Label( d->toolbox );
-    d->titleLabel->setWordWrap( false );
+    d->titleLabel->nativeWidget()->setWordWrap( false );
     d->titleLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
 
     d->toolboxLayout->addItem( d->collapseButton );
