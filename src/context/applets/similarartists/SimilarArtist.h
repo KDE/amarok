@@ -18,21 +18,26 @@
 #define SIMILAR_ARTIST_H
 
 //Kde
+#include <KSharedPtr>
 #include <KUrl>
 
 //Qt
-#include<QString>
+#include <QSharedData>
+#include <QString>
 
+class SimilarArtist;
+typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
 
 /**
  * Represents a similar artist to another
  * @author Joffrey Clavel
  * @version 0.1
  */
-class SimilarArtist
+class SimilarArtist : public QSharedData
 {
 public:
-    
+    typedef QList<SimilarArtistPtr> List;
+
     /**
      * Create an empty similar artist
      */
@@ -51,8 +56,10 @@ public:
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
                    const KUrl &urlImage, const QString &similarTo,
-                   const QString &description=QString(),
-                   const QString &topTrack=QString() );
+                   const QString &description = QString(),
+                   const QString &topTrack = QString() );
+
+    SimilarArtist( const SimilarArtist &other );
 
     /**
      * @return The name of this artist
@@ -96,12 +103,6 @@ public:
      */
     void setTopTrack(const QString &track);
 
-    /**
-     * Define a new type for help the communication
-     * between the data engine SimilarArtists and the applet SimilarArtists
-     */
-    typedef QList<SimilarArtist> SimilarArtistsList ;
-
 private:
     /**
      * The name of this artist
@@ -137,11 +138,10 @@ private:
      * The name of the artist similar to this artist
      */
     QString m_similarTo;
-
 };
 
 Q_DECLARE_METATYPE( SimilarArtist )
-Q_DECLARE_METATYPE( SimilarArtist::SimilarArtistsList )
+Q_DECLARE_METATYPE( SimilarArtistPtr )
+Q_DECLARE_METATYPE( SimilarArtist::List )
 
 #endif // SIMILAR_ARTIST_H
-

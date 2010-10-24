@@ -19,15 +19,13 @@
 #ifndef AMAROK_WIKIPEDIA_ENGINE
 #define AMAROK_WIKIPEDIA_ENGINE
 
-#include "ContextObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 #include "context/DataEngine.h"
 #include "NetworkAccessManagerProxy.h"
 
-#include <QLocale>
-
 /**
-    This class provide Wikipedia data for use in Context applets. 
+    This class provide Wikipedia data for use in Context applets.
 
 NOTE: The QVariant data is structured like this:
            * the key name is the artist
@@ -35,62 +33,40 @@ NOTE: The QVariant data is structured like this:
 */
 
 using namespace Context;
+namespace Plasma
+{
+    class DataContainer;
+}
+class WikipediaEnginePrivate;
 
-class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
+class WikipediaEngine : public DataEngine, Meta::Observer, Engine::EngineObserver
 {
     Q_OBJECT
-    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
-        
+
 public:
     WikipediaEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~WikipediaEngine();
-    
-    QStringList sources() const;
-    
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
+
+    virtual void init();
+
+    // reimplemented from EngineObserver
+    virtual void engineTrackChanged( Meta::TrackPtr track );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
 
-    void setSelection( const QString& selection ) { m_currentSelection = selection; }
-    QString selection() { return m_currentSelection; }
-    
 protected:
-    bool sourceRequestEvent( const QString& name );
-    
-private slots:
-    void wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
-    
+    bool sourceRequestEvent( const QString &source );
+
 private:
-    void update();
-    
-    QString wikiArtistPostfix();
-    QString wikiAlbumPostfix();
-    QString wikiTrackPostfix();
-    QUrl wikiUrl( const QString& item ) const;
-    QString wikiLocale() const;
+    WikipediaEnginePrivate *const d_ptr;
+    Q_DECLARE_PRIVATE( WikipediaEngine )
 
-    QString wikiParse();
-    
-    void reloadWikipedia();
-
-    Meta::TrackPtr m_currentTrack;
-        
-    QString m_currentSelection;
-    bool m_requested;
-    QStringList m_sources;
-    QString m_wiki;
-    QString m_wikiCurrentEntry;
-    QString m_wikiCurrentLastEntry;
-    QUrl m_wikiCurrentUrl;
-    QString m_wikiLanguages;
-    QLocale m_wikiLang;
-    QString m_wikiWideLang;
-    short m_triedRefinedSearch;
-
-    QSet< QUrl > m_urls;
+    Q_PRIVATE_SLOT( d_ptr, void _dataContainerUpdated(const QString&,const Plasma::DataEngine::Data&) )
+    Q_PRIVATE_SLOT( d_ptr, void _wikiResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
+    Q_PRIVATE_SLOT( d_ptr, void _parseLangLinksResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
+    Q_PRIVATE_SLOT( d_ptr, void _parseListingResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )

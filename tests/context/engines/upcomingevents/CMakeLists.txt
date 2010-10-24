@@ -18,6 +18,7 @@ set( testupcomingeventsengine_SRCS
     ${AMAROK_SOURCE_TREE}/context/ContextObserver.cpp
     ${AMAROK_SOURCE_TREE}/context/engines/upcomingevents/UpcomingEventsEngine.cpp
     ${AMAROK_SOURCE_TREE}/context/applets/upcomingevents/LastFmEvent.cpp
+    ${AMAROK_SOURCE_TREE}/context/applets/upcomingevents/LastFmEventXmlParser.cpp
 )
 
 kde4_add_unit_test( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )

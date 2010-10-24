@@ -19,108 +19,163 @@
 #define UPCOMING_EVENTS_WIDGET_H
 
 #include "NetworkAccessManagerProxy.h"
+#include "LastFmEvent.h"
 
-// Kde include
 #include <KUrl>
+#include <Plasma/ScrollWidget>
 
-// Qt include
-#include <QWidget>
-#include <QDate>
-#include <QPixmap>
-#include <QScrollArea>
+#include <QGraphicsWidget>
 
 class KDateTime;
 class QLabel;
-class QGridLayout;
+class QGraphicsLinearLayout;
+class QGraphicsProxyWidget;
+class QPixmap;
+class QPointF;
+class QSignalMapper;
+namespace Plasma {
+    class Label;
+    class PushButton;
+}
 
-class UpcomingEventsWidget : public QWidget
+class UpcomingEventsWidget : public QGraphicsWidget
 {
     Q_OBJECT
-    
+
     public:
         /**
          * UpcomingEventsWidget constructor
-         * @param QWidget*, like QWidget constructor
+         * @param QGraphicsWidget*, like QGraphicsWidget constructor
          */
-        UpcomingEventsWidget( QWidget * parent = 0 );
-        ~UpcomingEventsWidget ();
+        UpcomingEventsWidget( const LastFmEventPtr &event,
+                              QGraphicsItem *parent = 0,
+                              Qt::WindowFlags wFlags = 0 );
+        ~UpcomingEventsWidget();
 
-        // Getters
         /**
-         *@return the image QLabel pointer
+         * The upcoming event associated with this widget
          */
-        QLabel  *image() const;
-        /**
-         *@return the participants QLabel pointer
-         */
-        QLabel  *participants() const;
-        /**
-         *@return the date QLabel pointer
-         */
-        QLabel  *date() const;
-        /**
-         *@return the name QLabel pointer
-         */
-        QLabel  *name() const;
-        /**
-         *@return the location QLabel pointer
-         */
-        QLabel  *location() const;
-        /**
-         *@return the url QLabel pointer
-         */
-        QLabel  *url() const;
+        LastFmEventPtr eventPtr() const
+        { return m_event; }
 
-        // Setters
         /**
-         *Set the event's image in QLabel from an url
+         *Set the event's image in Plasma::Label from an url
          *@param KUrl, image's url to be displayed
          */
-        void    setImage( const KUrl &urlImage );
+        void setImage( const KUrl &url );
+
         /**
-         *Set the event's participants text in QLabel from a QString
+         * Set attendance for this event
+         * @param count number of attendees
+         */
+        void setAttendance( int count );
+
+        /**
+         *Set the event's participants text in Plasma::Label from a QString
          *@param QString, participant's text to be displayed
          */
-        void    setParticipants( const QString &participants );
+        void setParticipants( const QStringList &participants );
+
         /**
-         *Set the event's date in QLabel from a KDateTime
+         *Set the event's date in Plasma::Label from a KDateTime
          *@param KDateTime, date to be displayed
          */
-        void    setDate( const KDateTime &date );
+        void setDate( const KDateTime &date );
+
         /**
-         *Set the event's name in QLabel from a QString
+         *Set the event's name in Plasma::Label from a QString
          *@param QString, name's text to be displayed
          */
-        void    setName( const QString &name );
+        void setName( const QString &name );
+
         /**
-         *Set the event's location in a QLabel from a QString
+         *Set the event's location in a Plasma::Label from a QString
          *@param QString, location's text to be displayed
          */
-        void    setLocation( const QString &location );
+        void setLocation( const LastFmLocationPtr &location );
+
         /**
-         *Set the event's url in QLabel from a KUrl
+         * Set event venue
+         * @param venue Last.fm's venue
+         */
+        void setVenue( const LastFmVenuePtr &venue );
+
+        /**
+         *Set the event's url in Plasma::Label from a KUrl
          *@param KUrl, url to be displayed
          */
-        void    setUrl( const KUrl &url );
+        void setUrl( const KUrl &url );
+
+        /**
+         * Set the events tags
+         * @param tags list of tags
+         */
+        void setTags( const QStringList &tags );
+
+    protected:
+        Plasma::PushButton *m_mapButton;
 
     private:
-
-        QGridLayout *m_layout;
+        Plasma::PushButton *m_urlButton;
+        QGraphicsProxyWidget *m_attendance;
+        QGraphicsProxyWidget *m_date;
+        QGraphicsProxyWidget *m_location;
+        QGraphicsProxyWidget *m_name;
+        QGraphicsProxyWidget *m_participants;
+        QGraphicsProxyWidget *m_tags;
+        QGraphicsProxyWidget *m_venue;
         QLabel *m_image;
-        QLabel *m_participants;
-        QLabel *m_date;
-        QLabel *m_location;
-        QLabel *m_name;
-        QLabel *m_url;
-        QFrame *m_frame;
         KUrl m_imageUrl;
+        const LastFmEventPtr m_event;
+
+        QGraphicsProxyWidget *createLabel( const QString &text = QString(),
+                                           QSizePolicy::Policy hPolicy = QSizePolicy::Expanding );
+
+        friend class UpcomingEventsListWidget;
 
     private slots:
-        /**
-         *SLOTS
-         *Get pixmap from the internet and set it into image's QLabel
-         */
-        void loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void loadImage();
+        void openUrl();
+};
+
+class UpcomingEventsListWidget : public Plasma::ScrollWidget
+{
+    Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName )
+    Q_PROPERTY( LastFmEvent::List events READ events )
+
+public:
+    explicit UpcomingEventsListWidget( QGraphicsWidget *parent = 0 );
+    ~UpcomingEventsListWidget();
+
+    int count() const;
+    bool isEmpty() const;
+
+    void addEvent( const LastFmEventPtr &event );
+    void addEvents( const LastFmEvent::List &events );
+
+    LastFmEvent::List events() const;
+    QString name() const;
+    void setName( const QString &name );
+
+    void clear();
+
+signals:
+    void mapRequested( QObject *widget );
+    void eventAdded( const LastFmEventPtr &event );
+    void eventRemoved( const LastFmEventPtr &event );
+
+protected:
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
+private:
+    void insertSeparator( int index );
+    QString m_name;
+    LastFmEvent::List m_events;
+    QMap<uint, UpcomingEventsWidget*> m_sortMap;
+    QGraphicsLinearLayout *m_layout;
+    QSignalMapper *m_sigmap;
+    Q_DISABLE_COPY( UpcomingEventsListWidget )
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */

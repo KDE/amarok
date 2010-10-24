@@ -87,7 +87,7 @@ VideoclipApplet::init()
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_height = 300;
-    resize( size().width(), m_height );
+    resize( 300, -1 );
 
     // CustomWidget is a special VideoWidget for interaction
     m_videoWidget = new CustomVideoWidget();
@@ -143,6 +143,16 @@ VideoclipApplet::init()
 
     m_widget = new QGraphicsProxyWidget( this );
     m_widget->setWidget( m_scroll );
+    m_widget->hide();
+
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
+    headerLayout->addItem( m_headerText );
+    headerLayout->addItem( m_settingsIcon );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    layout->addItem( headerLayout );
+    layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     constraintsEvent();
     
@@ -160,7 +170,7 @@ VideoclipApplet::init()
     KConfigGroup config = Amarok::config("Videoclip Applet");
     m_youtubeHQ = config.readEntry( "YoutubeHQ", false );
     dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
-    
+    setCollapseOn();
 }
 
 VideoclipApplet::~VideoclipApplet()
@@ -177,7 +187,11 @@ VideoclipApplet::engineNewTrackPlaying()
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
     setCollapseOff();
-    m_videoWidget.data()->hide();
+    static_cast<QGraphicsLinearLayout*>( layout() )->addItem( m_widget );
+    m_videoWidget.data()->show();
+    setMinimumHeight( 300 );
+    emit sizeHintChanged( Qt::MinimumSize );
+    layout()->invalidate();
 }
 
 void
@@ -257,7 +271,7 @@ VideoclipApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, 
     setBusy( false );
     m_widget->hide();
     m_videoWidget.data()->hide();
-    
+    static_cast<QGraphicsLinearLayout*>( layout() )->removeItem( m_widget );
     setCollapseOn();
 
 }
@@ -268,20 +282,7 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    qreal widmax = boundingRect().width() - 4 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_headerText->setScrollingText( m_headerText->text(), rect );
-
-    // tint the applet size
-    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
-    m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
-    m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
-    m_videoWidget.data()->setGeometry( QRect(
-        pos().toPoint()+QPoint( standardPadding(), m_headerText->boundingRect().height() + 2.5 * standardPadding() ),
-        size().toSize()-QSize( 2 * standardPadding(),  m_headerText->boundingRect().height() + 3.5 * standardPadding() ) ) );
-
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+    m_headerText->setScrollingText( i18n( "Video Clip" ) );
 }
 
 void 
@@ -294,24 +295,6 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     addGradientToAppletBackground( p );
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
-
-    p->save();
-
-    const int frameWidth        = m_scroll->frameWidth();
-    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
-    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
-    const QSizeF proxySize = m_widget->size();
-    const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
-                             proxySize.height() - frameWidth * 2 - scrollBarHeight );
-    const QPointF widgetPos( m_widget->pos().x() + frameWidth,
-                             m_widget->pos().y() + frameWidth );
-    const QRectF widgetRect( widgetPos, widgetSize );
-
-    QPainterPath path;
-    path.addRoundedRect( widgetRect, 2, 2 );
-    p->fillPath( path, The::paletteHandler()->backgroundColor() );
-
-    p->restore();
 }
 
 void 
@@ -350,7 +333,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             update();
             debug() <<" message fetching ";
             m_widget->hide();
-
+            static_cast<QGraphicsLinearLayout*>( layout() )->removeItem( m_widget );
 			setBusy( true );
         }
 		else if ( data.contains( "message" ) )
@@ -360,6 +343,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             update();
 			setBusy( false );
             m_widget->hide();
+            static_cast<QGraphicsLinearLayout*>( layout() )->removeItem( m_widget );
             setCollapseOn();
 		}
         else if ( data.contains( "item:0" ) )

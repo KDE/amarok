@@ -112,6 +112,10 @@ CurrentTrack::init()
     m_artist->setFont( font );
     m_album->setFont( font );
 
+    m_title->setAlignment( Qt::AlignLeft );
+    m_artist->setAlignment( Qt::AlignLeft );
+    m_album->setAlignment( Qt::AlignLeft );
+
     const QFont tinyFont = KGlobalSettings::smallestReadableFont();
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
@@ -223,14 +227,12 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_ratingWidget->setPos( x, y );
 
     /* this is the pos of the albumcover */
-    const qreal textX =  albumCoverPos.x() + albumWidth + padding;
-    const qreal textWidth = size().toSize().width() - ( textX + padding * 2 + 23 );
+    const qreal textX = albumCoverPos.x() + albumWidth + padding;
     const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
     QFontMetrics fm( m_title->font() );
     qreal lineSpacing = fm.height() + 4;
-    m_maxTextWidth = textWidth;
 
     const qreal byTextWidth = m_byText->boundingRect().width();
     const qreal onTextWidth = m_onText->boundingRect().width();
@@ -244,23 +246,23 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         // align to location of on text
         m_byText->setPos( textX, textY + lineSpacing + 3 );
         m_artist->setPos( m_byText->pos().x() + byTextWidth + 5, 0 );
-        alignBottomToFirst( m_byText, m_artist );
+        alignBaseLineToFirst( m_byText, m_artist );
         m_album->setPos( artistPos.x(), 0 );
         m_onText->setPos( albumPos.x() - onTextWidth - 5, textY + lineSpacing * 2 + 3 );
-        alignBottomToFirst( m_onText, m_album );
+        alignBaseLineToFirst( m_onText, m_album );
     }
     else
     {
         // align to location/width of by text
         m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
         m_album->setPos( m_onText->pos().x() + onTextWidth + 5, 0 );
-        alignBottomToFirst( m_onText, m_album );
+        alignBaseLineToFirst( m_onText, m_album );
         m_artist->setPos( albumPos.x(), 0 );
         m_byText->setPos( artistPos.x() - byTextWidth - 5, textY + lineSpacing + 3 );
-        alignBottomToFirst( m_byText, m_artist );
+        alignBaseLineToFirst( m_byText, m_artist );
     }
 
-    m_title->setPos( artistPos.x(), artistPos.y() - lineSpacing );
+    m_title->setPos( m_artist->pos().x(), m_artist->pos().y() - lineSpacing );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
@@ -271,12 +273,25 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     album = handleUnknown(album, m_album, UNKNOWN_ALBUM.toString());
 
-    m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
-    m_artist->setScrollingText( artist, QRectF( artistPos.x(), textY, textWidth, 30 ) );
-    m_album->setScrollingText( album, QRectF( albumPos.x(), textY, textWidth, 30 ) );
+    const qreal byTextX = m_byText->pos().x();
+    const qreal onTextX = m_onText->pos().x();
+    m_maxTextWidth = size().width() - (byTextX > onTextX ? byTextX : onTextX) - 4 * padding;
+
+    m_title->setMaximumWidth( m_maxTextWidth );
+    m_artist->setMaximumWidth( m_maxTextWidth );
+    m_album->setMaximumWidth( m_maxTextWidth );
+
+    m_title->setMinimumWidth( m_maxTextWidth );
+    m_artist->setMinimumWidth( m_maxTextWidth );
+    m_album->setMinimumWidth( m_maxTextWidth );
+
+    m_title->setScrollingText( title );
+    m_artist->setScrollingText( artist );
+    m_album->setScrollingText( album );
+
     if( !m_trackActions.isEmpty() )
     {
-        QPointF iconPos = albumPos;
+        QPointF iconPos = m_album->pos();
         iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
@@ -302,7 +317,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     }
     else if( !m_noTrackText.isEmpty() )
     {
-        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, m_maxTextWidth, 30 ) ) );
         m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     }
@@ -316,10 +331,8 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     DEBUG_BLOCK
     Q_UNUSED( name );
 
-    if( data.size() == 0 )
+    if( data.isEmpty() )
         return;
-
-    QRect textRect( 0, 0, m_maxTextWidth, 30 );
 
     m_noTrackText = data[ "notrack" ].toString();
     m_lastTracks = data[ "lastTracks" ].value<Meta::TrackList>();
@@ -361,9 +374,9 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     album = handleUnknown(album, m_album, UNKNOWN_ALBUM.toString());
 
-    m_title->setScrollingText( title, textRect );
-    m_artist->setScrollingText( artist, textRect );
-    m_album->setScrollingText( album, textRect );
+    m_title->setScrollingText( title );
+    m_artist->setScrollingText( artist );
+    m_album->setScrollingText( album );
 
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
 
@@ -678,7 +691,7 @@ CurrentTrack::changeTitleFont()
     KConfigGroup config = Amarok::config("Current Track Applet");
     config.writeEntry( "Font", font.toString() );
 
-    constraintsEvent();
+    updateConstraints();
 }
 
 void
@@ -744,10 +757,10 @@ CurrentTrack::tabChanged( int index )
 }
 
 void
-CurrentTrack::alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b )
+CurrentTrack::alignBaseLineToFirst( QGraphicsSimpleTextItem *a, TextScrollingWidget *b )
 {
-    qreal guideY = a->pos().y() + a->boundingRect().height();
-    qreal newY = guideY - b->boundingRect().height() + 1; // just a bit off for some reason (when used w/ text)
+    qreal guideY = a->pos().y() + QFontMetricsF( a->font() ).ascent();
+    qreal newY   = guideY - QFontMetricsF( b->font() ).ascent();
     b->setPos( b->x(), newY );
 }
 

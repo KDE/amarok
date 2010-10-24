@@ -51,7 +51,6 @@ class KConfigDialog;
 class KratingWidget;
 class KratingPainter;
 class QAction;
-class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;

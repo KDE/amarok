@@ -97,7 +97,7 @@ Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRect
 }
 
 void
-Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsTextItem* textItem )
+Context::Applet::drawRoundedRectAroundText( QPainter *p, QGraphicsWidget *textItem )
 {
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
@@ -109,19 +109,8 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsTextItem* text
         m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
     }
 
-    // Paint in integer coordinates, align to grid
     QRectF rect = textItem->boundingRect();
-    rect.setX( qRound( rect.x() ) );
-    rect.setY( qRound( rect.y() ) );
-    rect.setHeight( qRound( rect.height() ) );
-    rect.setWidth( qRound( rect.width() ) );
-    rect.moveTopLeft( textItem->pos() );
-
-    QPointF pos = textItem->pos();
-    pos.setX( qRound( pos.x() ) );
-    pos.setY( qRound( pos.y() ) );
-
-    rect.moveTopLeft( pos );
+    rect = mapRectFromItem( textItem, rect );
     rect.adjust( -5, -5, 5, 5 );
 
     m_textBackground->resizeFrame( rect.size() );

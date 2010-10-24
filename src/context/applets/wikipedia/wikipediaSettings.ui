@@ -6,40 +6,70 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>110</width>
-    <height>39</height>
+    <width>592</width>
+    <height>249</height>
    </rect>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="labelAlignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="topMargin">
+    <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QComboBox" name="comboBox">
-     <item>
-      <property name="text">
-       <string comment="automatic language selection">Automatic</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>English</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>French</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>German</string>
-      </property>
-     </item>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="1" column="0" colspan="2">
+    <widget class="KActionSelector" name="langSelector">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
     </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="progressLayout">
+     <property name="leftMargin">
+      <number>4</number>
+     </property>
+     <property name="rightMargin">
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="KPushButton" name="downloadButton"/>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KActionSelector</class>
+   <extends>QWidget</extends>
+   <header>kactionselector.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

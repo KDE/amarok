@@ -15,7 +15,10 @@
  ****************************************************************************************/
 
 #include "TrackItem.h"
+#include "AlbumsDefs.h"
 #include "core/meta/support/MetaUtility.h"
+
+#include <KStringHandler>
 
 #include <QFont>
 
@@ -39,27 +42,13 @@ TrackItem::setTrack( Meta::TrackPtr trackPtr )
 void
 TrackItem::metadataChanged( Meta::TrackPtr track )
 {
-    int trackNumber = track->trackNumber();
-    QString trackName = track->prettyName();
-    QString trackArtist = track->artist()->prettyName();
-    QString trackTime = Meta::msToPrettyTime( track->length() );
-    bool isCompilation = track->album()->isCompilation();
-
-    QString text;
-
-    if( isCompilation ) {
-        if( trackNumber > 0 )
-            text = QString( "%1  %2 - %3 (%4)" ).arg( QString::number( trackNumber ), 4, ' ').arg(trackArtist).arg(trackName).arg(trackTime);
-        else
-            text = QString( "    %1 - %2 (%3)" ).arg( trackArtist, trackName, trackTime );
-    } else {
-        if( trackNumber > 0 )
-            text = QString( "%1  %2 (%3)" ).arg( QString::number( trackNumber ), 4, ' ').arg(trackName).arg(trackTime);
-        else
-            text = QString( "    %1 (%2)" ).arg( trackName, trackTime );
-    }
-
-    setText( text );
+    setData( track->prettyName(), TrackNameRole );
+    setData( track->artist()->prettyName(), TrackArtistRole );
+    setData( track->trackNumber(), TrackNumberRole );
+    setData( track->length(), TrackLengthRole );
+    setData( track->album()->isCompilation(), AlbumCompilationRole );
+    setData( track->album()->tracks().count(), AlbumTrackCountRole );
+    setToolTip( QString( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
 }
 
 void
@@ -76,4 +65,27 @@ TrackItem::bold()
     QFont f = font();
     f.setBold( true );
     setFont( f );
+}
+
+int
+TrackItem::type() const
+{
+    return TrackType;
+}
+
+bool
+TrackItem::operator<( const QStandardItem &other ) const
+{
+    int trackA = data( TrackNumberRole ).toInt();
+    int trackB = other.data( TrackNumberRole ).toInt();
+    if( trackA < trackB )
+        return true;
+    else if( trackA == trackB )
+    {
+        const QString nameA = data( TrackNameRole ).toString();
+        const QString nameB = other.data( TrackNameRole ).toString();
+        return KStringHandler::naturalCompare( nameA, nameB, Qt::CaseInsensitive ) < 0;
+    }
+    else
+        return false;
 }

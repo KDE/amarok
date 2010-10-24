@@ -77,8 +77,10 @@ private:
     QList<QAction*> contextualActions();
 
     bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
-    // aligns the second QGI to be at the same level as the first (the bottom edges)
-    void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
+
+    // aligns the second QGI to be at the same level as the first (the font baseline)
+    void alignBaseLineToFirst( QGraphicsSimpleTextItem *a, TextScrollingWidget *b );
+
     QBrush normalBrush();
     QBrush unknownBrush();
     /**

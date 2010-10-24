@@ -43,7 +43,6 @@ namespace Plasma
 class IconWidget;
 }
 
-
 /**
  * SimilarArtists will display similar artists from the Internet, relative to the current playing artist.
  * @author Joffrey Clavel
@@ -69,26 +68,20 @@ public:
      */
     ~SimilarArtistsApplet();
 
+    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option,
+                         const QRect& contentsRect );
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option
-                         , const QRect& contentsRect );
     /**
      * This method puts the widgets in the layout, in the initialization
      */
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     // inherited from EngineObserver
-
-    /**
-     * This method was launch when amarok play a new track
-     */
-    virtual void engineNewTrackPlaying();
-
     /**
      * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
      */
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength
-                                      , PlaybackEndedReason reason );
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength,
+                                      PlaybackEndedReason reason );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
@@ -102,7 +95,7 @@ public slots:
     /**
      * Update the current artist and his similar artists
      */
-    void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void dataUpdated( const QString &source, const Plasma::DataEngine::Data &data );
 
 private:
 
@@ -111,36 +104,22 @@ private:
      */
     void artistsUpdate();
 
-    qreal m_aspectRatio;
-    qreal m_headerAspectRatio;
-    QSizeF m_size;
-
     QString m_descriptionPreferredLang;
 
     /**
      * Layout for the formatting of the applet contents
      */
-    QVBoxLayout *m_layout;
-
-    /**
-     * This proxy widget contents the scrollArea
-     */
-    QGraphicsProxyWidget *m_scrollProxy;
+    QGraphicsLinearLayout *m_layout;
 
     /**
      * This scrollArea contents the artists widgets
      */
-    QScrollArea             *m_scroll;
-
-    /**
-     * Indicates if a track is playing.
-     */
-    bool  m_stoppedState;
+    ArtistsListWidget *m_scroll;
 
     /**
      * The list of similar artists to display
      */
-    SimilarArtist::SimilarArtistsList m_similars;
+    SimilarArtist::List m_similars;
 
     /**
      * Artist which you want to see artists like
@@ -156,22 +135,10 @@ private:
     Plasma::IconWidget *m_settingsIcon;
     Ui::similarArtistsSettings ui_Settings;
 
-    //elements of the applet
-    QList<ArtistWidget*> m_artists;
-
-    //list of the separators
-    QList<QWidget *> m_layoutWidgetList;
-
     /**
      * The max number artists
      */
     int m_maxArtists;
-    /**
-     * Artist which you want to see artists like
-     */
-    int m_temp_maxArtists;
-
-    QString m_currentArtist;
 
 private slots:
 
@@ -185,10 +152,7 @@ private slots:
      */
     void configure();
     void switchToLang(const QString &lang);
-    void changeMaxArtists( int value );
-    void saveMaxArtists();
     void saveSettings();
-
 };
 
 K_EXPORT_AMAROK_APPLET( similarArtists, SimilarArtistsApplet )

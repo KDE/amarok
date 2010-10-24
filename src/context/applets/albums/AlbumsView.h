@@ -18,56 +18,93 @@
 #ifndef AMAROK_ALBUMSVIEW_H
 #define AMAROK_ALBUMSVIEW_H
 
-#include <QGraphicsProxyWidget>
-
 #include "core/meta/Meta.h"
+#include "AlbumsModel.h"
 
-class QTreeView;
+#include <QGraphicsWidget>
+#include <QStyledItemDelegate>
+
 class QAbstractItemModel;
 class QGraphicsSceneContextMenuEvent;
-class QModelIndex;
+class QGraphicsProxyWidget;
+class QStandardItem;
+class QTreeView;
+namespace Plasma
+{
+    class SvgWidget;
+    class ScrollBar;
+}
 
-class AlbumsView : public QGraphicsProxyWidget
+class AlbumsView : public QGraphicsWidget
 {
     Q_OBJECT
-    Q_PROPERTY( QAbstractItemModel* model READ model WRITE setModel )
-    Q_PROPERTY( QTreeView* nativeWidget READ nativeWidget )
+    Q_PROPERTY( AlbumsProxyModel::Mode mode READ mode WRITE setMode )
+    Q_PROPERTY( Qt::Alignment lengthAlignment READ lengthAlignment WRITE setLengthAlignment )
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
     ~AlbumsView();
 
-    /**
-     * Sets a model for this weather view
-     *
-     * @arg model the model to display
-     */
-    void setModel( QAbstractItemModel *model );
+    void appendAlbum( QStandardItem *album );
+    void scrollTo( QStandardItem *album );
 
-    /**
-     * @return the model shown by this view
-     */
-    QAbstractItemModel *model();
+    AlbumsProxyModel::Mode mode() const;
+    void setMode( AlbumsProxyModel::Mode mode );
 
-    /**
-     * @return the native widget wrapped by this AlbumsView
-     */
-    QTreeView* nativeWidget() const;
+    Qt::Alignment lengthAlignment() const;
+    void setLengthAlignment( Qt::Alignment alignment );
+
+    void clear();
+
+public slots:
+    void setRecursiveExpanded( QStandardItem *item, bool expanded );
+    void sort();
 
 protected:
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
     void resizeEvent( QGraphicsSceneResizeEvent *event );
-    
+
 private slots:
     void itemClicked( const QModelIndex &index );
     void slotAppendSelected();
     void slotEditSelected();
     void slotPlaySelected();
     void slotQueueSelected();
+    void slotScrollBarRangeChanged( int min, int max );
 
 private:
+    void updateScrollBarVisibility();
+    void setRecursiveExpanded( const QModelIndex &index, bool expanded );
+
     Meta::TrackList getSelectedTracks() const;
-    
+    AlbumsModel *m_model;
+    AlbumsProxyModel *m_proxyModel;
+    QTreeView *m_treeView;
+    QGraphicsProxyWidget *m_treeProxy;
+    Plasma::SvgWidget *m_topBorder;
+    Plasma::SvgWidget *m_bottomBorder;
+    Plasma::ScrollBar *m_scrollBar;
+};
+
+class AlbumsItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+    Q_PROPERTY( Qt::Alignment lengthAlignment READ lengthAlignment WRITE setLengthAlignment )
+
+public:
+    AlbumsItemDelegate( QObject *parent = 0 );
+    ~AlbumsItemDelegate() {}
+
+    Qt::Alignment lengthAlignment() const;
+    void setLengthAlignment( Qt::Alignment alignment );
+
+    void paint( QPainter *p, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+private:
+    void drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    void drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    void applyCommonStyle( QPainter *p, const QStyleOptionViewItemV4 &option ) const;
+    Qt::Alignment m_lengthAlignment;
 };
 
 #endif // multiple inclusion guard

@@ -88,7 +88,7 @@ public:
                                              cb.type,
                                              Q_ARG( KUrl, reply->request().url() ),
                                              Q_ARG( QByteArray, data ),
-                                             Q_ARG( Error, err ) );
+                                             Q_ARG( NetworkAccessManagerProxy::Error, err ) );
                 }
 
                 if( !success )

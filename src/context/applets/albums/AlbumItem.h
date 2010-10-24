@@ -26,7 +26,7 @@ class AlbumItem : public QStandardItem, public Meta::Observer
 {
     public:
         AlbumItem();
-        ~AlbumItem() { }
+        ~AlbumItem() {}
 
         /**
          * Sets the AlbumPtr for this item to associate with
@@ -60,7 +60,9 @@ class AlbumItem : public QStandardItem, public Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::AlbumPtr album );
 
-        virtual int type() const { return QStandardItem::UserType; }
+        virtual int type() const;
+
+        virtual bool operator<( const QStandardItem &other ) const;
 
     private:
         Meta::AlbumPtr m_album;

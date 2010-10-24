@@ -19,77 +19,85 @@
 
 #include "amarok_export.h"
 
-#include <QGraphicsTextItem>
+#include <QGraphicsWidget>
 #include <QAbstractAnimation>
 
 //forward
-class QFontMetrics;
-class QPainter;
-class QPropertyAnimation;
+class TextScrollingWidgetPrivate;
 
 /**
 * \brief An animated QGrahicsTextItem on hovering
 *
-* The text will be automatically truncate to a QrectF and will be animated when hovering
-*
-* \sa QGraphicsTextItem
+* The text will be automatically truncate to a specified width and will
+* be animated when mouse is hovering above the text (if truncated).
 *
 * \author Simon Esneault <simon.esneault@gmail.com>
 */
 
-class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
+class AMAROK_EXPORT TextScrollingWidget : public QGraphicsWidget
 {
     Q_OBJECT
-    Q_PROPERTY(qreal animationValue READ animationValue WRITE animate)
-    public:
+    Q_PROPERTY( qreal animationValue READ animationValue WRITE animate )
+    Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
+    Q_PROPERTY( QBrush brush READ brush WRITE setBrush )
+    Q_PROPERTY( QString text READ text WRITE setText )
+    Q_PROPERTY( QFont font READ font WRITE setFont )
+    Q_PROPERTY( bool empty READ isEmpty )
 
-        TextScrollingWidget( QGraphicsItem* parent = 0 );
+    public:
+        TextScrollingWidget( QGraphicsWidget* parent = 0, Qt::WindowFlags wFlags = 0 );
         virtual ~TextScrollingWidget();
+
+        /**
+        * Set the scrolling text. The text will be elided and scrolled
+        * automatically if text is wider than the avaialble geometry.
+        */
+        void setScrollingText( const QString &text );
+
+        void setAlignment( Qt::Alignment alignment );
 
         void setBrush( const QBrush &brush );
 
-        /**
-        * Set the Text and more important the QRectF which will define the scrolling area
-        */
-        void setScrollingText( const QString &text, const QRectF &rect );
-
         void setText( const QString &text );
-        void setTextFormat( Qt::TextFormat fmt );
+
+        void setFont( const QFont &font );
+
+        Qt::Alignment alignment() const;
+
+        QBrush brush() const;
+
+        QFont font() const;
 
         QString text() const;
-        Qt::TextFormat textFormat() const;
 
-        bool isAnimating();
+        bool isAnimating() const;
 
-        qreal animationValue() const;
-        void animate( qreal anim );
+        bool isEmpty() const;
+
+        virtual QRectF boundingRect() const;
 
     protected slots:
-        void startAnimation();
+        void startAnimation( QAbstractAnimation::Direction direction );
         void animationFinished();
 
-    protected :
+    protected:
         /**
         * Reimplement mouse hover enter event
         */
         virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* );
 
-        /**
-        * Reimplement paint in order to clip the widget
-        */
-        virtual void paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
+        virtual void setGeometry( const QRectF &rect );
+
+        qreal animationValue() const;
+        void animate( qreal anim );
 
     private:
-        bool requirePlainText() const;
+        TextScrollingWidgetPrivate *const d_ptr;
+        Q_DECLARE_PRIVATE( TextScrollingWidget )
 
-        QRectF                           m_rect;           // box size
-        QFontMetrics                     *m_fm;            // font metrics which will cut the text.
-        QString                          m_text;           // full sentence
-        Qt::TextFormat                   m_textFormat;     // text format
-        int                              m_delta;          // complete delta
-        float                            m_currentDelta;   // current delta
-        QWeakPointer<QPropertyAnimation> m_animation;      // scroll animation
-        QAbstractAnimation::Direction    m_animDirection;  // animation direction
+        Q_PRIVATE_SLOT( d_ptr, void _delayedForwardAnimation() )
 };
 
 #endif

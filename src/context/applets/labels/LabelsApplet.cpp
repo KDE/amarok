@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LabelsApplet"
+
 #include "LabelsApplet.h"
 #include "LabelGraphicsItem.h"
 
@@ -34,6 +36,7 @@
 #include <KGlobalSettings>
 #include <KComboBox>
 
+#include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 
 
@@ -80,7 +83,7 @@ LabelsApplet::init()
     m_titleText = i18n( "Labels" );
 
     // Set the collapse size
-    setCollapseHeight( m_titleLabel.data()->boundingRect().height() + 3 * standardPadding() );
+    setCollapseHeight( m_titleLabel.data()->size().height() + 3 * standardPadding() );
 
     // reload icon
     QAction *reloadAction = new QAction( this );
@@ -100,6 +103,15 @@ LabelsApplet::init()
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( settingsAction );
     connect( m_settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
+    headerLayout->addItem( m_reloadIcon.data() );
+    headerLayout->addItem( m_titleLabel.data() );
+    headerLayout->addItem( m_settingsIcon.data() );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    layout->addItem( headerLayout );
 
     m_addLabelProxy = new QGraphicsProxyWidget( this );
     m_addLabelProxy.data()->setAttribute( Qt::WA_NoSystemBackground );
@@ -293,10 +305,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    qreal widmax = boundingRect().width() - 2 * m_reloadIcon.data()->size().width() - 2 * m_settingsIcon.data()->size().width() - 8 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_titleLabel.data()->setScrollingText( m_titleText, rect );
+    m_titleLabel.data()->setScrollingText( m_titleText );
     m_titleLabel.data()->setPos( ( size().width() - m_titleLabel.data()->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     m_reloadIcon.data()->setPos( size().width() - m_reloadIcon.data()->size().width() - m_settingsIcon.data()->size().width() - 2 * standardPadding(), standardPadding() );

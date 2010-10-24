@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ArtistWidget"
+
 #include "ArtistWidget.h"
 
 //Amarok
@@ -24,174 +26,172 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 
 //KDE
-#include <KHBox>
+#include <KColorUtils>
+#include <KGlobalSettings>
 #include <KIcon>
-#include <KLocale>
+#include <Plasma/Label>
+#include <Plasma/PushButton>
 
 //Qt
-#include <QGridLayout>
-#include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QPushButton>
-#include <QLabel>
 #include <QDesktopServices>
+#include <QFontMetricsF>
+#include <QGraphicsGridLayout>
+#include <QGraphicsLinearLayout>
+#include <QLabel>
+#include <QPainter>
+#include <QPixmapCache>
 #include <QTextDocument>
 
-/**
- * ArtistWidget constructor
- * @param parent The widget parent
- */
-ArtistWidget::ArtistWidget( QWidget *parent )
-    : QWidget( parent )
+#include <cmath>
+
+ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
+                            QGraphicsWidget *parent, Qt::WindowFlags wFlags )
+    : QGraphicsWidget( parent, wFlags )
+    , m_artist( artist )
 {
+    setAttribute( Qt::WA_NoSystemBackground, true );
 
-    // set a fixed size for all widget, for harmonize the similar artists applet display
-    this->setMinimumHeight( 115 );
-    this->setMaximumHeight( 115 );
+    m_image = new QLabel;
+    m_image->setAttribute( Qt::WA_NoSystemBackground, true );
+    m_image->setFixedSize( 128, 128 );
+    QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget( this );
+    imageProxy->setWidget( m_image );
 
-    this->setMinimumWidth(350);
+    m_nameLabel = new QLabel;
+    m_match     = new QLabel;
+    m_topTrackLabel = new QLabel;
+    m_desc      = new Plasma::Label( this );
+    m_desc      = new QGraphicsWidget( this );
 
-    // The background og this widget is transparent
-    m_layout = new QGridLayout( this );
-    this->setAttribute( Qt::WA_TranslucentBackground, true );
+    QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
+    QGraphicsProxyWidget *matchProxy    = new QGraphicsProxyWidget( this );
+    QGraphicsProxyWidget *topTrackProxy = new QGraphicsProxyWidget( this );
+    nameProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    matchProxy->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    topTrackProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
-    m_image = new QLabel( this );
-    // The background of the QLabel is transparent
-    m_image->setAttribute( Qt::WA_TranslucentBackground, true );
+    nameProxy->setWidget( m_nameLabel );
+    matchProxy->setWidget( m_match );
+    topTrackProxy->setWidget( m_topTrackLabel );
+
+    m_nameLabel->setAttribute( Qt::WA_NoSystemBackground );
+    m_match->setAttribute( Qt::WA_NoSystemBackground );
+    m_topTrackLabel->setAttribute( Qt::WA_NoSystemBackground );
+
     m_image->setAlignment( Qt::AlignCenter );
+    m_match->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+    m_nameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+    m_topTrackLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
 
-    m_nameLabel = new QLabel( this );
-    // The background of the QLabel is transparent
-    m_nameLabel->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_nameLabel->setAlignment( Qt::AlignCenter );
+    m_nameLabel->setWordWrap( false );
+    m_match->setWordWrap( false );
+    m_topTrackLabel->setWordWrap( false );
 
-    m_genre = new QLabel( this );
-    // The background of the QLabel is transparent
-    m_genre->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_genre->setAlignment( Qt::AlignCenter );
+    m_match->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_topTrackLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_match->setMinimumWidth( 10 );
+    m_topTrackLabel->setMinimumWidth( 10 );
+    m_nameLabel->setMinimumWidth( 10 );
 
-    m_topTrackLabel = new QLabel( this );
-    m_topTrackLabel->setWordWrap( true );
-    // The background of the QLabel is transparent
-    m_topTrackLabel->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_topTrackLabel->setAlignment( Qt::AlignLeft );
+    QFontMetricsF fm( font() );
+    m_desc->setMinimumHeight( fm.lineSpacing() * 6 );
+    m_desc->setMaximumHeight( fm.lineSpacing() * 6 );
+    m_desc->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_descLayout.setCacheEnabled( true );
 
+    QFont artistFont;
+    artistFont.setPointSize( artistFont.pointSize() + 2 );
+    artistFont.setBold( true );
+    m_nameLabel->setFont( artistFont );
+    m_topTrackLabel->setFont( KGlobalSettings::smallestReadableFont() );
+    m_match->setFont( KGlobalSettings::smallestReadableFont() );
+    m_image->setFont( KGlobalSettings::smallestReadableFont() );
 
-    KHBox * spacer = new KHBox( this );
-    spacer->setFixedHeight( 20 );
-
-    //make sure the buttons are pushed all the way to the right.
-    new QWidget( spacer );
-
-    m_topTrackButton = new QPushButton( spacer );
-    m_topTrackButton->setIcon( KIcon( "media-track-add-amarok" ) );
-    m_topTrackButton->setFlat( true );
-    m_topTrackButton->setFixedWidth( 20 );
-    m_topTrackButton->setFixedHeight( 20 );
-    m_topTrackButton->setToolTip( i18n( "Add top track to the Playlist" ) );
-    m_topTrackButton->hide();
-    
-    connect( m_topTrackButton, SIGNAL( clicked( bool ) ), this, SLOT( addTopTrackToPlaylist() ) );
-
-    m_navigateButton = new QPushButton( spacer );
+    m_navigateButton = new Plasma::PushButton( this );
+    m_navigateButton->setMaximumSize( QSizeF( 22, 22 ) );
     m_navigateButton->setIcon( KIcon( "edit-find" ) );
-    m_navigateButton->setFlat( true );
-    m_navigateButton->setFixedWidth( 20 );
-    m_navigateButton->setFixedHeight( 20 );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
     m_navigateButton->hide();
-
-    connect( m_navigateButton, SIGNAL( clicked( bool ) ), this, SLOT( navigateToArtist() ) );
-
+    connect( m_navigateButton, SIGNAL(clicked()), this, SLOT(navigateToArtist()) );
     
-    m_lastfmStationButton = new QPushButton( spacer );
+    m_lastfmStationButton = new Plasma::PushButton( this );
+    m_lastfmStationButton->setMaximumSize( QSizeF( 22, 22 ) );
     m_lastfmStationButton->setIcon( KIcon("view-services-lastfm-amarok") );
-    m_lastfmStationButton->setFlat( true );
-    m_lastfmStationButton->setFixedWidth( 20 );
-    m_lastfmStationButton->setFixedHeight( 20 );
-    m_lastfmStationButton->setToolTip( i18n( "Add last.fm artist station to the Playlist" ) );
+    m_lastfmStationButton->setToolTip( i18n( "Add Last.fm artist station to the Playlist" ) );
+    connect( m_lastfmStationButton, SIGNAL(clicked()), this, SLOT(addLastfmArtistStation()) );
 
-    connect( m_lastfmStationButton, SIGNAL( clicked( bool ) ), this, SLOT( addLastfmArtistStation() ) );
+    m_topTrackButton = new Plasma::PushButton( this );
+    m_topTrackButton->setMaximumSize( QSizeF( 22, 22 ) );
+    m_topTrackButton->setIcon( KIcon( "media-track-add-amarok" ) );
+    m_topTrackButton->setToolTip( i18n( "Add top track to the Playlist" ) );
+    m_topTrackButton->hide();
+    connect( m_topTrackButton, SIGNAL(clicked()), this, SLOT(addTopTrackToPlaylist()) );
 
+    QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    buttonsLayout->addItem( m_topTrackButton );
+    buttonsLayout->addItem( m_navigateButton );
+    buttonsLayout->addItem( m_lastfmStationButton );
 
-    m_desc= new QLabel( this );
-    m_desc->setWordWrap( true );
-    // The background of the QLabel is transparent
-    m_desc->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_desc->setAlignment( Qt::AlignLeft );
-    m_desc->setMinimumHeight( 50 );
-
+    QString artistUrl = m_artist->url().url();
+    if( !artistUrl.isEmpty() )
+    {
+        m_urlButton = new Plasma::PushButton( this );
+        m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
+        m_urlButton->setIcon( KIcon("applications-internet") );
+        m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this artist" ) );
+        connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openArtistUrl()) );
+        buttonsLayout->addItem( m_urlButton );
+    }
 
     // the image display is extended on two row
-    m_layout->addWidget( m_image, 0, 0, 3, 1 );
-    m_layout->addWidget( m_nameLabel, 0, 1 );
-    m_layout->addWidget( m_genre, 0, 2 );
-    m_layout->addWidget( m_topTrackLabel, 1, 1, 1, 2 );
-    m_layout->addWidget( spacer, 1, 2, 1, 1 );
-    m_layout->addWidget( m_desc, 2, 1, 1, 2 );
+    m_layout = new QGraphicsGridLayout;
+    m_layout->addItem( imageProxy, 0, 0, 3, 1 );
+    m_layout->addItem( nameProxy, 0, 1 );
+    m_layout->addItem( buttonsLayout, 0, 2, Qt::AlignRight );
+    m_layout->addItem( topTrackProxy, 1, 1 );
+    m_layout->addItem( matchProxy, 1, 2, Qt::AlignRight );
+    m_layout->addItem( m_desc, 2, 1, 1, 2 );
+    setLayout( m_layout );
 
-    // open the url of the similar artist when his name is clicked
-    connect( m_nameLabel, SIGNAL( linkActivated( const QString & ) ), this
-             , SLOT( openUrl( const QString  & ) ) );
+    m_match->setText( i18n( "Match: %1%", QString::number( m_artist->match() ) ) );
+    m_nameLabel->setText( m_artist->name() );
+
+    fetchPhoto();
+    queryArtist();
+    setDescription( m_artist->description() );
+    setTopTrack( m_artist->topTrack() );
 }
 
-
-/**
- * ArtistWidget destructor
- */
 ArtistWidget::~ArtistWidget()
 {
-    delete m_layout;
-    delete m_image;
-    delete m_nameLabel;
-    delete m_genre;
-    delete m_topTrackLabel;
-    delete m_desc;
 }
 
-
-/**
- * Change the photo of the artist
- * @param photo The new artist photo
- */
 void
-ArtistWidget::setPhoto( const QPixmap &photo )
-{
-    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true ) );
-}
-
-/**
- * Change the photo of the artist with a photo load from an Url
- * @param photo The url of the new artist photo
- */
-void
-ArtistWidget::setPhoto( const KUrl& urlPhoto )
+ArtistWidget::fetchPhoto()
 {
     // display a message for the user while the fetch of the picture
     m_image->clear();
     m_image->setText( i18n( "Loading the picture..." ) );
 
-    m_url = urlPhoto;
-    The::networkAccessManager()->getData( urlPhoto, this,
-         SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    QPixmap image;
+    if( QPixmapCache::find( m_artist->urlImage().url(), &image ) )
+    {
+        m_image->setPixmap( image );
+        return;
+    }
+    The::networkAccessManager()->getData( m_artist->urlImage(), this,
+         SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)), Qt::QueuedConnection );
 }
 
-/**
- * Put the image of the artist in the QPixMap
- * @param reply, reply from the network request
- */
 void
 ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( m_url != url )
-        return;
-
-    m_url.clear();
+    Q_UNUSED( url );
     if( e.code != QNetworkReply::NoError )
     {
         m_image->clear();
@@ -200,178 +200,173 @@ ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAcc
     }
 
     QPixmap image;
-    image.loadFromData( data );
-
-    if( image.width() > 100 )
+    if( image.loadFromData( data ) )
     {
-        image = image.scaledToWidth( 100, Qt::SmoothTransformation );
+        image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        image = The::svgHandler()->addBordersToPixmap( image, 6, QString(), true );
+        m_image->setPixmap( image );
+        QPixmapCache::insert( url.url(), image );
     }
-
-    if( image.height() > 100 )
-    {
-        image = image.scaledToHeight( 100, Qt::SmoothTransformation );
-    }
-    m_image->clear();
-    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-    //the height of the widget depends on the height of the artist picture
-    //setMaximumHeight(image.height());
 }
 
- /**
- * Change the artist name and the url which allows to display a page
- * which contains informations about this artist
- * @param nom The name of this artist
- * @param url The url of the artist about page
- */
 void
-ArtistWidget::setArtist( const QString &nom, const KUrl &url )
+ArtistWidget::queryArtist()
 {
-    m_name = nom;
-    m_nameLabel->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
-
-    //Figure out of this applet is present in the local collection, and show the "show in collection" button if so
+    // Figure out of this applet is present in the local collection,
+    // and show the "show in collection" button if so
     m_navigateButton->hide();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     
     qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->addFilter( Meta::valArtist, m_name );
+    qm->addFilter( Meta::valArtist, m_nameLabel->text() );
     qm->limitMaxResultSize( 1 );
     qm->setAutoDelete( true );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-            SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(QString,Meta::ArtistList)),
+             SLOT(resultReady(QString,Meta::ArtistList)), Qt::QueuedConnection );
 
     qm->run();
-    
 }
 
-/**
- * Change the match pourcentage of the artist
- * @param match The match of this artist
- */
-void
-ArtistWidget::setMatch( const int match )
+SimilarArtistPtr
+ArtistWidget::artist() const
 {
-    m_genre->setText( i18n( "Match" ) + " : " + QString::number( match ) + "%" );
+    return m_artist;
 }
 
-/**
- * Clean the widget => the content of the QLabel are empty
- */
 void
 ArtistWidget::clear()
 {
     m_image->clear();
     m_nameLabel->clear();
-    m_genre->clear();
+    m_match->clear();
     m_topTrackLabel->clear();
 }
 
-/**
- * Open an URL
- * @param url The URL of the artist
- */
 void
-ArtistWidget::openUrl( const QString &url )
+ArtistWidget::openArtistUrl()
 {
-    QDesktopServices::openUrl( KUrl( "http://" + url ) );
+    // somehow Last.fm decides to supply this url without the scheme
+    KUrl artistUrl = QString( "http://%1" ).arg( m_artist->url().url() );
+    if( artistUrl.isValid() )
+        QDesktopServices::openUrl( artistUrl );
 }
 
-
-/**
- * Change the artist description which contains informations about this artist
- * @param desc The description of this artist
- */
 void
-ArtistWidget::setDescription(const QString &description)
+ArtistWidget::setDescription( const QString &description )
 {
-    if(description.isEmpty())
+    if( description.isEmpty() )
     {
-        m_desc->setText(i18n("No description available in your language"));
-        m_descString.clear(); //we delete the precedent artist description
-    } else {
-        QTextDocument descriptionText;
-        descriptionText.setHtml(description);
-        QString descriptionString = descriptionText.toPlainText();
-        m_descString=descriptionString;
-
-        elideArtistDescription();
+        m_descLayout.clearLayout();
+        m_descLayout.setText( i18n( "No description available in your language" ) );
     }
+    else
+    {
+        QTextDocument doc;
+        doc.setHtml( description );
+        QString plain = doc.toPlainText();
+        m_descLayout.setText( plain );
+    }
+    layoutDescription();
 }
 
-/**
- * Change the most known track of this artist
- * @param topTrack the top track of this artist
- */
 void
-ArtistWidget::setTopTrack(const QString &topTrack)
+ArtistWidget::setTopTrack( const QString &topTrack )
 {
     m_topTrackButton->hide();
     
-    if(topTrack.isEmpty())
+    if( topTrack.isEmpty() )
     {
-        m_topTrackLabel->setText(i18n("Top track not found"));
+        m_topTrackLabel->setText( i18n("Top track not found") );
     }
     else
     {
         m_topTrackTitle = topTrack;
-        m_topTrackLabel->setText( i18n( "Top track" ) + ": " +  topTrack );
+        m_topTrackLabel->setText( i18n("Top track: %1", topTrack) );
 
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
 
         qm->setQueryType( Collections::QueryMaker::Track );
         qm->beginAnd();
-        qm->addFilter( Meta::valArtist, m_name );
+        qm->addFilter( Meta::valArtist, m_nameLabel->text() );
         qm->addFilter( Meta::valTitle, m_topTrackTitle );
         qm->endAndOr();
         qm->limitMaxResultSize( 1 );
         qm->setAutoDelete( true );
 
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-                 SLOT( resultReady( QString, Meta::TrackList ) ) );
+        connect( qm, SIGNAL(newResultReady(QString,Meta::TrackList)),
+                 SLOT(resultReady(QString,Meta::TrackList)) );
          
         qm->run();
     }
 }
 
-
-
 void
-ArtistWidget::resizeEvent(QResizeEvent *event)
+ArtistWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    Q_UNUSED(event)
-    elideArtistDescription();
+    QGraphicsWidget::resizeEvent( event );
+    layoutDescription();
+    QFontMetrics fm( m_match->font() );
+    m_match->setMaximumWidth( fm.width( m_match->text() ) );
 }
 
-/**
- * Elide the artist description depending on the widget size
- */
 void
-ArtistWidget::elideArtistDescription()
+ArtistWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    DEBUG_BLOCK
-    if(!m_descString.isEmpty())
+    QGraphicsWidget::paint( p, option, widget );
+    m_descLayout.draw( p, m_desc->geometry().topLeft() );
+
+    // fade out the last bit of text if not all of the description is shown
+    if( m_descCropped && m_descLayout.lineCount() > 0 )
     {
-        QFontMetrics fontMetric(fontMetrics());
-        int space = fontMetric.lineSpacing();
-        int lineSpace = fontMetric.leading();
-        int heightChar = fontMetric.height();
-        int nbWidth = m_desc->width() ;
-        float nbHeight = m_desc->height() / (heightChar+lineSpace) ;
-        int widthTot = nbWidth * nbHeight - (space*(nbHeight-1));
+        QFontMetricsF fm( m_desc->font() );
+        QRectF rect = fm.boundingRect( m_desc->geometry(), Qt::AlignCenter, "placeholder" );
+        rect.moveTo( m_desc->geometry().bottomRight() );
+        QTextLine lastLine = m_descLayout.lineAt( m_descLayout.lineCount() - 1 );
+        qreal xoffset = lastLine.naturalTextWidth() - lastLine.width() - rect.width();
+        rect = rect.translated( xoffset, -rect.height() );
 
-        QString stringTmp=fontMetric.elidedText(m_descString,Qt::ElideRight,widthTot);
+        QColor bgColor = The::paletteHandler()->highlightColor( 0.4, 1.05 );
+        bgColor.setAlphaF( bgColor.alphaF() * 0.5 );
+        QColor winColor = The::paletteHandler()->palette().window().color();
+        QColor fadeColor = KColorUtils::overlayColors( winColor, bgColor );
 
-        //we delete nbHeigth words because of the wordWrap action
-        for( int i = 0; i < nbHeight; ++i)
+        QLinearGradient alphaGradient( 0, 0, 1, 0 );
+        alphaGradient.setCoordinateMode( QGradient::ObjectBoundingMode );
+        alphaGradient.setColorAt( 0, QColor(0, 0, 0, 0) );
+        alphaGradient.setColorAt( 1, fadeColor );
+        p->fillRect( rect, alphaGradient );
+    }
+}
+
+void
+ArtistWidget::layoutDescription()
+{
+    QFontMetricsF fm( m_desc->font() );
+    QRectF geom = m_desc->geometry();
+    int maxLines = floor( m_desc->size().height() / fm.lineSpacing() );
+    int leading = fm.leading();
+    qreal height = 0;
+    m_descCropped = true;
+    m_descLayout.clearLayout();
+    m_descLayout.beginLayout();
+    while( m_descLayout.lineCount() < maxLines )
+    {
+        QTextLine line = m_descLayout.createLine();
+        if( !line.isValid() )
         {
-            stringTmp = stringTmp.left( stringTmp.lastIndexOf(' ') );
+            m_descCropped = false;
+            break;
         }
 
-        stringTmp.append("...");
-        m_desc->setText(stringTmp);
+        line.setLineWidth( geom.width() );
+        height += leading;
+        line.setPosition( QPointF(0, height) );
+        height += line.height();
     }
+    m_descLayout.endLayout();
+    update();
 }
 
 void
@@ -380,25 +375,23 @@ ArtistWidget::addTopTrackToPlaylist()
     The::playlistController()->insertOptioned( m_topTrack, Playlist::AppendAndPlay );
 }
 
-
 void
 ArtistWidget::navigateToArtist()
 {
     AmarokUrl url;
     url.setCommand( "navigate" );
     url.setPath( "collections" );
-    url.appendArg( "filter", "artist:\"" + m_name + "\"" );
+    url.appendArg( "filter", "artist:\"" + m_artist->name() + "\"" );
     url.run();
 }
 
 void
 ArtistWidget::addLastfmArtistStation()
 {
-    const QString url = "lastfm://artist/" + m_name + "/similarartists";
+    const QString url = "lastfm://artist/" + m_artist->name() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
-
 
 void
 ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
@@ -406,7 +399,101 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &
     Q_UNUSED( collectionId )
     if( artists.length() > 0 )
         m_navigateButton->show();
+}
 
+ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )
+    : Plasma::ScrollWidget( parent )
+    , m_separatorCount( 0 )
+{
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
+    QGraphicsWidget *content = new QGraphicsWidget( this );
+    content->setLayout( m_layout );
+    setWidget( content );
+}
+
+ArtistsListWidget::~ArtistsListWidget()
+{
+    clear();
+}
+
+int
+ArtistsListWidget::count() const
+{
+    return m_layout->count() - m_separatorCount;
+}
+
+void
+ArtistsListWidget::addItem( ArtistWidget *widget )
+{
+    m_layout->addItem( widget );
+    m_widgets << widget;
+    addSeparator();
+}
+
+void
+ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
+{
+    ArtistWidget *widget = new ArtistWidget( artist );
+    m_layout->addItem( widget );
+    m_widgets << widget;
+    addSeparator();
+}
+
+void
+ArtistsListWidget::addArtists( const SimilarArtist::List &artists )
+{
+    foreach( const SimilarArtistPtr &artist, artists )
+        addArtist( artist );
+}
+
+void
+ArtistsListWidget::addSeparator()
+{
+    // can also use Plasma::Separator here but that's in kde 4.4
+    QFrame *separator = new QFrame;
+    separator->setFrameStyle( QFrame::HLine );
+    separator->setAutoFillBackground( false );
+    QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget;
+    separatorProxy->setWidget( separator );
+    m_layout->addItem( separatorProxy );
+    ++m_separatorCount;
+}
+
+void
+ArtistsListWidget::clear()
+{
+    qDeleteAll( m_widgets );
+    m_widgets.clear();
+    int count = m_layout->count();
+    if( count > 0 )
+    {
+        while( --count >= 0 )
+        {
+            QGraphicsLayoutItem *child = m_layout->itemAt( 0 );
+            m_layout->removeItem( child );
+            delete child;
+        }
+        widget()->resize( size().width(), 0 );
+        m_separatorCount = 0;
+    }
+}
+
+bool
+ArtistsListWidget::isEmpty() const
+{
+    return count() == 0;
+}
+
+QString
+ArtistsListWidget::name() const
+{
+    return m_name;
+}
+
+void
+ArtistsListWidget::setName( const QString &name )
+{
+    m_name = name;
 }
 
 void
@@ -418,5 +505,25 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &t
         m_topTrack = tracks.first();
         m_navigateButton->show();
         m_topTrackButton->show();
+    }
+}
+
+void
+ArtistsListWidget::setDescription( const QString &artist, const QString &description )
+{
+    foreach( ArtistWidget *widget, m_widgets )
+    {
+        if( widget->artist()->name() == artist )
+            widget->setDescription( description );
+    }
+}
+
+void
+ArtistsListWidget::setTopTrack( const QString &artist, const QString &track )
+{
+    foreach( ArtistWidget *widget, m_widgets )
+    {
+        if( widget->artist()->name() == artist )
+            widget->setTopTrack( track );
     }
 }

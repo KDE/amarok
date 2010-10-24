@@ -17,243 +17,234 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "UpcomingEventsApplet"
+
 #include "UpcomingEventsApplet.h"
 
-#include "core/support/Amarok.h"
-#include "App.h"
-#include "context/ContextView.h"
-#include "core/support/Debug.h"
+#include "amarokurls/AmarokUrl.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
-#include "PaletteHandler.h"
-#include "context/Svg.h"
 #include "context/widgets/TextScrollingWidget.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "SvgHandler.h"
+#include "LastFmEventXmlParser.h"
+#include "UpcomingEventsMapWidget.h"
+#include "UpcomingEventsCalendarWidget.h"
+#include "UpcomingEventsStack.h"
+#include "UpcomingEventsStackItem.h"
 
-// Qt
-#include <QDesktopServices>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsGridLayout>
-#include <QGraphicsLayoutItem>
-#include <QGraphicsProxyWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QScrollBar>
-
-// KDE
-#include <plasma/widgets/iconwidget.h>
 #include <KConfigDialog>
-#include <KDateTime>
-#include <KStandardDirs>
+#include <KGlobalSettings>
+#include <Plasma/IconWidget>
 #include <Plasma/Theme>
+#include <Plasma/Svg>
 
-/**
- * \brief Constructor
- *
- * UpcomingEventsApplet constructor
- *
- * \param parent : the UpcomingEventsApplet parent (used by Context::Applet)
- * \param args : (used by Context::Applet)
- */
+#include <QDesktopServices>
+#include <QGraphicsLinearLayout>
+#include <QXmlStreamReader>
+
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
-    , m_settingsIcon( 0 )    
+    , m_groupVenues( false )
+    , m_stack( 0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
-/**
- * \brief Initialization
- *
- * Initializes the UpcomingEventsApplet with default parameters
- */
+UpcomingEventsApplet::~UpcomingEventsApplet()
+{
+}
+
 void
 UpcomingEventsApplet::init()
 {
     // Call the base implementation.
     Context::Applet::init();
-
-    // The widgets are displayed line by line with only one column
-    m_mainLayout = new QVBoxLayout;
-    m_mainLayout->setSizeConstraint( QLayout::SetFixedSize);
-    m_mainLayout->setAlignment( Qt::AlignJustify );
-    m_headerLabel = new TextScrollingWidget( this );
-    
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    m_stack = new UpcomingEventsStack( this );
+    m_stack->setContentsMargins( 0, 0, 0, 0 );
+    connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
+             m_stack, SLOT(cleanupListWidgets()) );
+
+    QAction *calendarAction = new QAction( this );
+    calendarAction->setIcon( KIcon( "view-calendar" ) );
+    calendarAction->setToolTip( i18n( "View Events Calendar" ) );
+    Plasma::IconWidget *calendarIcon = addAction( calendarAction );
+    connect( calendarIcon, SIGNAL(clicked()), this, SLOT(viewCalendar()) );
+
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setToolTip( i18n( "Settings" ) );
+    settingsAction->setEnabled( true );
+    Plasma::IconWidget *settingsIcon = addAction( settingsAction );
+    connect( settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
     // Use the same font as the other applets
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerLabel = new TextScrollingWidget( this );
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
+    m_headerLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
-    // Use an embedded widget for the applet
-    m_scrollProxy = new QGraphicsProxyWidget( this );
-    m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->addItem( calendarIcon );
+    headerLayout->addItem( m_headerLabel );
+    headerLayout->addItem( settingsIcon );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
-    QWidget * scrollContent = new QWidget;
-    scrollContent->setAttribute( Qt::WA_NoSystemBackground );
-    scrollContent->setLayout( m_mainLayout );
-    scrollContent->show();
+    m_artistStackItem = m_stack->create( QLatin1String("currentartistevents") );
+    m_artistEventsList = new UpcomingEventsListWidget( m_artistStackItem );
+    m_artistStackItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
+    m_artistStackItem->setWidget( m_artistEventsList );
+    m_artistStackItem->setCollapsed( true );
+    m_artistStackItem->setIcon( KIcon("filename-artist-amarok") );
+    connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
-    m_scroll = new QScrollArea;
-    m_scroll->setWidget( scrollContent );
-    m_scroll->setFrameShape( QFrame::NoFrame );
-    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
-    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
-
-    m_scrollProxy->setWidget( m_scroll );
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
+    layout->addItem( headerLayout );
+    layout->addItem( m_stack );
+    setLayout( layout );
 
     // ask for all the CV height
     resize( 500, -1 );
 
-    QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
-    settingsAction->setEnabled( true );
-    m_settingsIcon = addAction( settingsAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( configure() ) );
-
-    connectSource( "upcomingEvents" );
-    connect( dataEngine( "amarok-upcomingEvents" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
-
-    constraintsEvent();
-
     // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
-    m_enabledLinks = config.readEntry( "enabledLinks", 0 );
-}
+    enableVenueGrouping( Amarok::config("UpcomingEvents Applet").readEntry( "groupVenues", false ) );
+    QStringList venueData = Amarok::config("UpcomingEvents Applet").readEntry( "favVenues", QStringList() );
+    m_favoriteVenues = venueStringToDataList( venueData );
 
-/**
- * Connects the source to the Upcoming Events engine
- * and calls the dataUpdated function
- */
-void
-UpcomingEventsApplet::connectSource( const QString &source )
-{
-    if( source == "upcomingEvents" )
-    {
-        dataEngine( "amarok-upcomingEvents" )->connectSource( "upcomingEvents", this );
-        dataUpdated( source, dataEngine( "amarok-upcomingEvents" )->query( "upcomingEvents" ) );
-    }
-}
-
-/**
- * Called when any of the geometry constraints have been updated.
- *
- * This is always called prior to painting and should be used as an
- * opportunity to layout the widget, calculate sizings, etc.
- *
- * Do not call update() from this method; an update() will be triggered
- * at the appropriate time for the applet.
- *
- * \param constraints : the type of constraints that were updated
- */
-void
-UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-    DEBUG_BLOCK
-    
-    Q_UNUSED( constraints );
-
-    prepareGeometryChange();
-    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_headerLabel->setScrollingText( m_headerLabel->text(), rect );
-    m_headerLabel->setPos( ( size().width() - m_headerLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
-
-    m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
-    QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
-    
-    m_scrollProxy->setMinimumSize( artistsSize );
-    m_scrollProxy->setMaximumSize( artistsSize );
-    
-    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
-    m_scroll->widget()->setMinimumSize( artistSize );
-    m_scroll->widget()->setMaximumSize( artistSize );
-
-    // Icon positionning
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-
-    for( int i = 0; i < m_widgets.size(); i++ )
-    {
-        m_mainLayout->addWidget( m_widgets.at( i ) );
-    }
-}
-
-/**
- * Updates the data from the Upcoming Events engine
- *
- * \param name : the name
- * \param data : the engine from where the data are received
- */
-void
-UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
-{
-    DEBUG_BLOCK
-    Q_UNUSED( name )
-    QString artistName = data[ "artist" ].toString();
-    if (artistName.compare( "" ) != 0)
-        m_headerLabel->setText( i18n( "Upcoming events for %1", artistName ) );
-    else
-        m_headerLabel->setText( i18n( "Upcoming events" ) );
-
-    LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
-
-    qDeleteAll( m_widgets );
-    m_widgets.clear();
-
-    for( int i = 0; i < events.size(); i++ )
-    {
-        const QString artistList = events.at( i ).artists().join( " - " );
-        KDateTime limite(KDateTime::currentLocalDateTime());
-        bool timeSpanDisabled = false;
-
-        if ( this->m_timeSpan == "ThisWeek")
-            limite = limite.addDays( 7 );
-        else if( this->m_timeSpan == "ThisMonth" )
-            limite = limite.addMonths( 1 );
-        else if( this->m_timeSpan == "ThisYear" )
-            limite = limite.addYears( 1 );
-        else
-            timeSpanDisabled = true;
-
-        if ( timeSpanDisabled || events.at( i ).date() < limite.dateTime() )
-        {
-            UpcomingEventsWidget * widget = new UpcomingEventsWidget;
-            widget->setName( events.at( i ).name() );
-            widget->setDate( KDateTime( events.at( i ).date() ) );
-            widget->setLocation( events.at( i ).location() );
-            widget->setParticipants( artistList );
-            widget->setUrl( events.at( i ).url() );
-            widget->setImage( events.at( i ).smallImageUrl() );
-            m_widgets.insert( i, widget );
-        }
-    }
-
-    if(  0 == m_widgets.size() && artistName.compare( "" ) != 0 )
-    {
-        m_headerLabel->setText( i18n( "No upcoming events for %1", artistName ) );
-    }
+    Plasma::DataEngine *engine = dataEngine( "amarok-upcomingEvents" );
+    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(engineSourceAdded(QString)) );
+    engine->query( "artistevents" );
+    engine->query( "venueevents" );
 
     updateConstraints();
     update();
 }
 
-/**
- * \brief Paints the interface
- *
- * This method is called when the interface should be painted
- *
- * \param painter : the QPainter to use to do the paintiner
- * \param option : the style options object
- * \param contentsRect : the rect to paint within; automatically adjusted for
- *                     the background, if any
- */
+void
+UpcomingEventsApplet::engineSourceAdded( const QString &source )
+{
+    if( source == "artistevents" || source == "venueevents" )
+        dataEngine( "amarok-upcomingEvents" )->connectSource( source, this );
+}
+
+void
+UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
+{
+    Q_UNUSED( constraints );
+    prepareGeometryChange();
+    m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
+}
+
+void
+UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
+{
+    const LastFmEvent::List &events = data[ "events" ].value< LastFmEvent::List >();
+    if( source == "artistevents" )
+    {
+        m_artistEventsList->clear();
+        QString artistName = data[ "artist" ].toString();
+        addToStackItem( m_artistStackItem, events, artistName );
+        if( !m_artistStackItem->action( "showinmediasources" ) )
+        {
+            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistStackItem );
+            act->setToolTip( i18n( "Show in Media Sources" ) );
+            connect( act, SIGNAL(triggered()), this, SLOT(navigateToArtist()) );
+            m_artistStackItem->addAction( "showinmediasources", act );
+        }
+        m_artistStackItem->setCollapsed( events.isEmpty() );
+    }
+    else if( source == "venueevents" )
+    {
+        if( !events.isEmpty() )
+        {
+            LastFmVenuePtr venue = data[ "venue" ].value<LastFmVenuePtr>();
+            if( m_groupVenues && m_stack->hasItem("favoritevenuesgroup") )
+            {
+                QString title = i18n( "Favorite Venues" );
+                addToStackItem( m_stack->item("favoritevenuesgroup"), events, title );
+            }
+            else
+            {
+                UpcomingEventsStackItem *stackItem( 0 );
+                UpcomingEventsListWidget *listWidget( 0 );
+                LastFmEvent::List newEvents;
+                if( !m_stack->hasItem( venue->name ) )
+                {
+                    stackItem = m_stack->create( venue->name );
+                    listWidget = new UpcomingEventsListWidget( stackItem );
+                    listWidget->setName( venue->name );
+                    stackItem->setWidget( listWidget );
+                    stackItem->setCollapsed( true );
+                    stackItem->setIcon( KIcon("favorites") );
+                    stackItem->showCloseButton();
+                    connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
+                    connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
+                    emit listWidgetAdded( listWidget );
+                    newEvents = events;
+                }
+                else
+                {
+                    stackItem = m_stack->item( venue->name );
+                    typedef UpcomingEventsListWidget UELW;
+                    UELW *widget = static_cast<UELW*>( stackItem->widget() );
+                    newEvents = events.toSet().subtract( widget->events().toSet() ).toList();
+                }
+                addToStackItem( stackItem, newEvents, venue->name );
+            }
+            update();
+        }
+        else if( m_groupVenues && m_stack->hasItem( QLatin1String("favoritevenuesgroup") ) )
+        {
+            m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
+        }
+        else
+        {
+            // remove all venue lists
+            const QRegExp pattern( QLatin1String("^(?!(currentartistevents|venuemapview|calendar)).*$") );
+            QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+            qDeleteAll( eventItems );
+        }
+    }
+}
+
+void
+UpcomingEventsApplet::clearVenueItems()
+{
+    m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
+    m_stack->remove( QLatin1String("venuemapview" ) );
+}
+
+void
+UpcomingEventsApplet::addToStackItem( UpcomingEventsStackItem *item,
+                                      const LastFmEvent::List &events,
+                                      const QString &name )
+{
+    UpcomingEventsListWidget *listWidget = static_cast<UpcomingEventsListWidget*>( item->widget() );
+    listWidget->addEvents( events );
+
+    QString title;
+    int added = listWidget->count();
+    if( added == 0 )
+    {
+        title = name.isEmpty() ? i18n( "No upcoming events" ) : i18n( "%1: No upcoming events", name );
+    }
+    else
+    {
+        title = name.isEmpty()
+            ? i18ncp( "@title:group Number of upcoming events", "1 event", "%1 events", added )
+            : i18ncp( "@title:group Number of upcoming events", "%1: 1 event", "%1: %2 events", name, added );
+    }
+    item->setTitle( title );
+    item->layout()->invalidate();
+}
+
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
@@ -261,23 +252,11 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     Q_UNUSED( contentsRect )
 
     p->setRenderHint( QPainter::Antialiasing );
-
     addGradientToAppletBackground( p );
-
-    //draw background of wiki text
-    p->save();
-    QColor bg( App::instance()->palette().highlight().color() );
-    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
-
     if( !m_headerLabel->isAnimating() )
         drawRoundedRectAroundText( p, m_headerLabel );
-
-    p->restore();
 }
 
-/**
- * Show the settings windows
- */
 void
 UpcomingEventsApplet::configure()
 {
@@ -285,121 +264,402 @@ UpcomingEventsApplet::configure()
     showConfigurationInterface();
 }
 
-/**
- * Reimplement this method so provide a configuration interface,
- * parented to the supplied widget. Ownership of the widgets is passed
- * to the parent widget.
- *
- * \param parent : the dialog which is the parent of the configuration
- *               widgets
- */
 void
 UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    QWidget *settings = new QWidget();
-    ui_Settings.setupUi( settings );
-
-    m_temp_timeSpan = m_timeSpan;
-    m_temp_enabledLinks = m_enabledLinks;
+    QWidget *generalSettings = new QWidget;
+    QWidget *venueSettings = new QWidget;
+    ui_GeneralSettings.setupUi( generalSettings );
+    ui_VenueSettings.setupUi( venueSettings );
 
     // TODO bad, it's done manually ...
-    if ( m_timeSpan == "AllEvents" )
-        ui_Settings.comboBox->setCurrentIndex( 0 );
-    else if ( m_timeSpan == "ThisWeek" )
-        ui_Settings.comboBox->setCurrentIndex( 1 );
-    else if ( m_timeSpan == "ThisMonth" )
-        ui_Settings.comboBox->setCurrentIndex( 2 );
-    else if ( m_timeSpan == "ThisYear" )
-        ui_Settings.comboBox->setCurrentIndex( 3 );
+    QString timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
+    if( timeSpan == "AllEvents" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 0 );
+    else if( timeSpan == "ThisWeek" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 1 );
+    else if( timeSpan == "ThisMonth" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 2 );
+    else if( timeSpan == "ThisYear" )
+        ui_GeneralSettings.filterComboBox->setCurrentIndex( 3 );
 
-    if ( m_enabledLinks )
-        ui_Settings.checkBox->setCheckState ( Qt::Checked );    
-    
-    parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
-    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
-    connect( ui_Settings.checkBox, SIGNAL( stateChanged( int ) ), this, SLOT( setAddressAsLink( int ) ) );
-    connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );    
+    connect( ui_VenueSettings.searchLineEdit, SIGNAL(returnPressed(QString)), SLOT(searchVenue(QString)) );
+    connect( ui_VenueSettings.searchResultsList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
+    connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(showVenueInfo(QListWidgetItem*)) );
+    connect( ui_VenueSettings.searchResultsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(venueResultDoubleClicked(QListWidgetItem*)) );
+    connect( ui_VenueSettings.selectedVenuesList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(selectedVenueDoubleClicked(QListWidgetItem*)) );
+    connect( ui_VenueSettings.urlValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.urlValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.websiteValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( ui_VenueSettings.websiteValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
+    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+
+    ui_VenueSettings.photoLabel->hide();
+    ui_VenueSettings.infoGroupBox->setFont( KGlobalSettings::smallestReadableFont() );
+    ui_GeneralSettings.groupVenueCheckBox->setCheckState( m_groupVenues ? Qt::Checked : Qt::Unchecked );
+
+    ui_VenueSettings.countryCombo->insertSeparator( 1 );
+    const QStringList &countryCodes = KGlobal::locale()->allCountriesList();
+    foreach( const QString &code, countryCodes )
+        ui_VenueSettings.countryCombo->addItem( KGlobal::locale()->countryCodeToName(code), code );
+
+    foreach( const VenueData &data, m_favoriteVenues )
+    {
+        QListWidgetItem *item = new QListWidgetItem;
+        item->setData( VenueIdRole, data.id );
+        item->setData( VenueCityRole, data.city );
+        item->setData( VenueNameRole, data.name );
+        item->setText( QString( "%1, %2" )
+                       .arg( item->data( VenueNameRole ).toString() )
+                       .arg( item->data( VenueCityRole ).toString() ) );
+        ui_VenueSettings.selectedVenuesList->addItem( item );
+    }
+
+    parent->addPage( generalSettings, i18n( "Upcoming Events Settings" ), "preferences-system");
+    parent->addPage( venueSettings, i18n( "Favorite Venues" ), "favorites" );
 }
 
-/**
- * Replace the former time span by the new one
- */
 void
-UpcomingEventsApplet::changeTimeSpan(QString span)
+UpcomingEventsApplet::venueResultDoubleClicked( QListWidgetItem *item )
 {
-    DEBUG_BLOCK
-    // TODO change this b/c it's BAAADDD !!!
-    
-    if (span == i18nc("automatic time span", "Automatic") )
-        m_temp_timeSpan = "AllEvents";
+    if( !item )
+        return;
 
-    else if (span == i18n("This week") )
-        m_temp_timeSpan = "ThisWeek";
-
-    else if (span == i18n("This month") )
-        m_temp_timeSpan = "ThisMonth";
-
-    else if (span == i18n("This year") )
-        m_temp_timeSpan = "ThisYear";
-
-    else if (span == i18n("All events") )
-        m_temp_timeSpan = "AllEvents";
+    int row = ui_VenueSettings.searchResultsList->row( item );
+    QListWidgetItem *moveItem = ui_VenueSettings.searchResultsList->takeItem( row );
+    ui_VenueSettings.searchResultsList->clearSelection();
+    ui_VenueSettings.selectedVenuesList->addItem( moveItem );
+    ui_VenueSettings.selectedVenuesList->setCurrentItem( moveItem );
 }
 
-/**
- * Save the time span choosen by the user
- */
+void
+UpcomingEventsApplet::selectedVenueDoubleClicked( QListWidgetItem *item )
+{
+    if( !item )
+        return;
+
+    int row = ui_VenueSettings.selectedVenuesList->row( item );
+    QListWidgetItem *moveItem = ui_VenueSettings.selectedVenuesList->takeItem( row );
+    ui_VenueSettings.selectedVenuesList->clearSelection();
+    ui_VenueSettings.searchResultsList->addItem( moveItem );
+    ui_VenueSettings.searchResultsList->setCurrentItem( moveItem );
+}
+
+void
+UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
+{
+    if( !item )
+        return;
+
+    const QString &name    = item->data( VenueNameRole ).toString();
+    const QString &city    = item->data( VenueCityRole ).toString();
+    const QString &country = item->data( VenueCountryRole ).toString();
+    const QString &street  = item->data( VenueStreetRole ).toString();
+    const KUrl &url        = item->data( VenueUrlRole ).value<KUrl>();
+    const KUrl &website    = item->data( VenueWebsiteRole ).value<KUrl>();
+    const KUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<KUrl>();
+
+    ui_VenueSettings.nameValue->setText( name );
+    ui_VenueSettings.cityValue->setText( city );
+    ui_VenueSettings.countryValue->setText( country );
+    ui_VenueSettings.streetValue->setText( street );
+
+    if( url.isValid() )
+    {
+        ui_VenueSettings.urlValue->setText( i18n("link") );
+        ui_VenueSettings.urlValue->setUrl( url.url() );
+    }
+    else
+        ui_VenueSettings.urlValue->clear();
+
+    if( website.isValid() )
+    {
+        ui_VenueSettings.websiteValue->setText( i18n("link") );
+        ui_VenueSettings.websiteValue->setUrl( website.url() );
+    }
+    else
+        ui_VenueSettings.websiteValue->clear();
+
+    if( photoUrl.isValid() )
+    {
+        The::networkAccessManager()->getData( photoUrl, this,
+             SLOT(venuePhotoResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    }
+    else
+    {
+        ui_VenueSettings.photoLabel->hide();
+        ui_VenueSettings.photoLabel->clear();
+    }
+}
+
+void
+UpcomingEventsApplet::searchVenue( const QString &text )
+{
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "venue.search" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "venue", text );
+    int currentCountryIndex = ui_VenueSettings.countryCombo->currentIndex();
+    const QString &countryCode = ui_VenueSettings.countryCombo->itemData( currentCountryIndex ).toString();
+    if( !countryCode.isEmpty() )
+        url.addQueryItem( "country", countryCode );
+    The::networkAccessManager()->getData( url, this,
+         SLOT(venueResults(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+void
+UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Failed to get venue results:" << e.description;
+        return;
+    }
+
+    ui_VenueSettings.searchResultsList->clear();
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "venue" )
+        {
+            LastFmVenueXmlParser venueParser( xml );
+            if( venueParser.read() )
+            {
+                QListWidgetItem *item = new QListWidgetItem;
+
+                LastFmVenuePtr venue = venueParser.venue();
+                item->setData( VenueIdRole, venue->id );
+                item->setData( VenueNameRole, venue->name );
+                item->setData( VenuePhotoUrlRole, venue->imageUrls[LastFmEvent::Large] );
+                item->setData( VenueUrlRole, venue->url );
+                item->setData( VenueWebsiteRole, venue->website );
+
+                LastFmLocationPtr location = venue->location;
+                item->setData( VenueCityRole, location->city );
+                item->setData( VenueCountryRole, location->country );
+                item->setData( VenueStreetRole, location->street );
+
+                item->setText( QString( "%1, %2" )
+                               .arg( item->data( VenueNameRole ).toString() )
+                               .arg( item->data( VenueCityRole ).toString() ) );
+                ui_VenueSettings.searchResultsList->addItem( item );
+            }
+        }
+    }
+}
+
+void
+UpcomingEventsApplet::venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Failed to get venue photo:" << e.description;
+        return;
+    }
+
+    QPixmap photo;
+    if( photo.loadFromData( data ) )
+    {
+        photo = photo.scaled( 140, 140, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        photo = The::svgHandler()->addBordersToPixmap( photo, 5, QString(), true );
+        ui_VenueSettings.photoLabel->setPixmap( photo );
+        ui_VenueSettings.photoLabel->show();
+    }
+}
+
+QList<UpcomingEventsApplet::VenueData>
+UpcomingEventsApplet::venueStringToDataList( const QStringList &list )
+{
+    // config qstringlist is stored as format: QString(id;name;city), QString(id;name;city), ...
+    QList<VenueData> dataList;
+    foreach( const QString &item, list )
+    {
+        const QStringList &frag = item.split( QChar(';') );
+        VenueData data = { frag.at( 0 ).toInt(), frag.at( 1 ), frag.at( 2 ) };
+        dataList << data;
+    }
+    return dataList;
+}
+
+void
+UpcomingEventsApplet::openUrl( const QString &url )
+{
+    QDesktopServices::openUrl( QUrl(url) );
+}
+
+UpcomingEventsMapWidget *
+UpcomingEventsApplet::mapView()
+{
+    if( m_stack->hasItem("venuemapview") )
+    {
+        UpcomingEventsStackItem *item = m_stack->item( "venuemapview" );
+        return static_cast<UpcomingEventsMapWidget*>( item->widget() );
+    }
+
+    UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("venuemapview") );
+    UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( stackItem );
+    stackItem->setIcon( KIcon( "edit-find" ) );
+    stackItem->setTitle( i18n( "Map View" ) );
+    stackItem->setWidget( view );
+    stackItem->setMinimumWidth( 50 );
+    stackItem->showCloseButton();
+    m_stack->setMinimumWidth( 50 );
+    const QRegExp pattern( QLatin1String("^(?!(venuemapview|calendar)).*$") );
+    QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+    foreach( UpcomingEventsStackItem *item, eventItems )
+    {
+        typedef UpcomingEventsListWidget LW;
+        if( item )
+            view->addEventsListWidget( qgraphicsitem_cast<LW*>( item->widget() ) );
+    }
+    connect( this, SIGNAL(listWidgetAdded(UpcomingEventsListWidget*)),
+             view, SLOT(addEventsListWidget(UpcomingEventsListWidget*)) );
+    connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
+             view, SLOT(removeEventsListWidget(UpcomingEventsListWidget*)) );
+    return view;
+}
+
+void
+UpcomingEventsApplet::viewCalendar()
+{
+    if( m_stack->hasItem("calendar") )
+    {
+        m_stack->item("calendar")->setCollapsed( false );
+        return;
+    }
+
+    UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("calendar") );
+    UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( stackItem );
+    stackItem->setIcon( KIcon( "view-calendar" ) );
+    stackItem->setTitle( i18n( "Events Calender" ) );
+    stackItem->setWidget( calendar );
+    stackItem->setMinimumWidth( 50 );
+    stackItem->showCloseButton();
+    stackItem->addAction( "jumptotoday", calendar->todayAction() );
+    const QRegExp pattern( QLatin1String("^(?!(venuemapview|calendar)).*$") );
+    QList<UpcomingEventsStackItem*> eventItems = m_stack->items( pattern );
+    foreach( UpcomingEventsStackItem *item, eventItems )
+    {
+        typedef UpcomingEventsListWidget LW;
+        if( item )
+            calendar->addEvents( qgraphicsitem_cast<LW*>( item->widget() )->events() );
+    }
+}
+
+QString
+UpcomingEventsApplet::currentTimeSpan()
+{
+    QString span = ui_GeneralSettings.filterComboBox->currentText();
+    if( span == i18n("This week") )
+        return "ThisWeek";
+    else if( span == i18n("This month") )
+        return "ThisMonth";
+    else if( span == i18n("This year") )
+        return "ThisYear";
+    else
+        return "AllEvents";
+}
+
+void
+UpcomingEventsApplet::navigateToArtist()
+{
+    if( m_artistEventsList->name().isEmpty() )
+        return;
+
+    AmarokUrl url;
+    url.setCommand( "navigate" );
+    url.setPath( "collections" );
+    url.appendArg( "filter", "artist:\"" + m_artistEventsList->name() + "\"" );
+    url.run();
+}
+
+void
+UpcomingEventsApplet::handleMapRequest( QObject *widget )
+{
+    if( !mapView()->isLoaded() )
+    {
+        UpcomingEventsWidget *eventWidget = static_cast<UpcomingEventsWidget*>( widget );
+        LastFmVenuePtr venue = eventWidget->eventPtr()->venue();
+        mapView()->centerAt( venue );
+        m_stack->maximizeItem( QLatin1String("venuemapview") );
+    }
+}
+
+void
+UpcomingEventsApplet::listWidgetDestroyed( QObject *obj )
+{
+    UpcomingEventsListWidget *widget = static_cast<UpcomingEventsListWidget*>( obj );
+    emit listWidgetRemoved( widget );
+}
+
 void
 UpcomingEventsApplet::saveTimeSpan()
 {
     DEBUG_BLOCK
-    
-    m_timeSpan = m_temp_timeSpan;
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
-
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    config.writeEntry( "timeSpan", m_timeSpan );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
+    Amarok::config("UpcomingEvents Applet").writeEntry( "timeSpan", currentTimeSpan() );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "timespan:update" ) );
 }
 
-/**
- * Sets the upcoming events as links
- */
-void
-UpcomingEventsApplet::setAddressAsLink(int state)
-{
-    DEBUG_BLOCK
-
-    m_temp_enabledLinks = (state == Qt::Checked);
-}
-
-/**
- * Displays all the upcoming events addresses as links
- */
-void
-UpcomingEventsApplet::saveAddressAsLink()
-{
-    DEBUG_BLOCK
-
-    m_enabledLinks = m_temp_enabledLinks;
-    const QString enabledLinks = m_enabledLinks ? "true" : "false";
-
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
-
-    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
-    config.writeEntry( "enabledLinks", m_enabledLinks );
-    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + enabledLinks );
-}
-
-/**
- * Save all the upcoming events settings
- */
 void
 UpcomingEventsApplet::saveSettings()
 {
+    clearVenueItems();
     saveTimeSpan();
-    saveAddressAsLink();
+
+    // save venue settings
+    QStringList venueConfig;
+    m_favoriteVenues.clear();
+    for( int i = 0, count = ui_VenueSettings.selectedVenuesList->count() ; i < count; ++i )
+    {
+        int itemId = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueIdRole ).toString().toInt();
+        QString itemCity = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueCityRole ).toString();
+        QString itemName = ui_VenueSettings.selectedVenuesList->item( i )->data( VenueNameRole ).toString();
+        VenueData data = { itemId, itemName, itemCity };
+        m_favoriteVenues << data;
+        venueConfig << (QStringList() << QString::number(itemId) << itemName << itemCity).join( QChar(';') );
+    }
+    Amarok::config("UpcomingEvents Applet").writeEntry( "favVenues", venueConfig );
+
+    enableVenueGrouping( ui_GeneralSettings.groupVenueCheckBox->checkState() == Qt::Checked );
+    Amarok::config("UpcomingEvents Applet").writeEntry( "groupVenues", m_groupVenues );
+
+    if( !m_favoriteVenues.isEmpty() )
+        dataEngine( "amarok-upcomingEvents" )->query( "venueevents:update" );
+}
+
+void
+UpcomingEventsApplet::enableVenueGrouping( bool enable )
+{
+    m_groupVenues = enable;
+    if( enable )
+    {
+        if( !m_stack->hasItem("favoritevenuesgroup") )
+        {
+            UpcomingEventsStackItem *item = m_stack->create( QLatin1String("favoritevenuesgroup") );
+            UpcomingEventsListWidget *listWidget = new UpcomingEventsListWidget( item );
+            listWidget->setName( i18nc( "@title:group", "Favorite Venues" ) );
+            QString title = i18ncp("@title:group Number of upcoming events",
+                                   "%1: 1 event", "%1: %2 events",
+                                   listWidget->name(), listWidget->count());
+            item->setTitle( title );
+            item->setIcon( "favorites" );
+            item->setWidget( listWidget );
+            connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
+            connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
+            emit listWidgetAdded( listWidget );
+        }
+    }
+    else
+    {
+        m_stack->remove( QLatin1String("favoritevenuesgroup" ) );
+    }
+    updateConstraints();
 }
 
 #include "UpcomingEventsApplet.moc"

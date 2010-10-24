@@ -58,10 +58,7 @@ PhotosApplet::init()
     Context::Applet::init();
 
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_height = 300;
-
-    resize( 500, m_height );
+    resize( 500, -1 );
     
     // Create label
     QFont labelFont;
@@ -84,14 +81,23 @@ PhotosApplet::init()
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
+    m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_widget->setContentsMargins( 0, 0, 0, 0 );
 
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
+    headerLayout->addItem( m_headerText );
+    headerLayout->addItem( m_settingsIcon );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    layout->addItem( headerLayout );
+    layout->addItem( m_widget );
     
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
     m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
     m_Animation = config.readEntry( "Animation", "Fading" );
     m_KeyWords = config.readEntry( "KeyWords", "" );
-    
 
     if ( m_Animation == i18nc( "animation type", "Automatic" ) )
         m_widget->setMode( 0 );
@@ -110,6 +116,7 @@ PhotosApplet::init()
 
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
     dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
+    setCollapseOn();
 }
 
 PhotosApplet::~PhotosApplet()
@@ -145,18 +152,7 @@ void
 PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
-    prepareGeometryChange();
-
-    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-    
-    m_headerText->setScrollingText( m_headerText->text(), rect );
-    m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
-
-    m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
-    m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
-
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+    m_headerText->setScrollingText( i18n( "Photos" ) );
 }
 
 void 
@@ -249,6 +245,9 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
             m_widget->show();
             setBusy(false);
+            setMinimumHeight( 300 );
+            emit sizeHintChanged( Qt::MinimumSize );
+            layout()->invalidate();
         }
         else
             return;

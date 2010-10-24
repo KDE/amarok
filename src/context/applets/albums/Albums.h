@@ -19,14 +19,14 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include "AlbumsView.h"
-
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include "core/meta/Meta.h"
 
-class QStandardItemModel;
+class AlbumsView;
 class TextScrollingWidget;
+namespace Collections {
+    class Collection;
+}
 
 class Albums : public Context::Applet
 {
@@ -37,13 +37,12 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-
 public slots:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
@@ -51,12 +50,11 @@ private slots:
     void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
+    void setRightAlignLength( int state );
 
 private:
-    const qreal m_albumWidth;
     int m_recentCount;
-    Meta::AlbumList m_albums;
-    QStandardItemModel *m_model;
+    bool m_rightAlignLength;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;
 

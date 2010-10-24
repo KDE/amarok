@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * Added support for all Wikipedia languages. (BR 220617)
+    * Added incremental search in the Wikipedia applet (press
+      '/' or global search key when in focus).
+    * Added "Favorite Venues" to the upcoming events applet.
     * Read MusicBrainz IDs of MP4 files during scanning.
     * Ability to hide and show the menu bar. Patch by 
       Valentyn Pavliuchenko <valentyn.pavliuchenko@gmail.com>.
@@ -20,6 +24,17 @@ VERSION 2.4-Beta 1
       to music provided by a running local Playdar service.
 
   CHANGES:
+    * Show a progress bar while loading pages in the Wikipedia applet.
+    * Added option to right-align "year" in the albums applet.
+    * Improved alignment of tracks in the albums applet.
+    * Scroll to the current album and make its tracks visible in the albums
+      applet. (BR 187011)
+    * Added ability to expand/collapse/drag disc items in the albums applet.
+      (BR 249488)
+    * Improved appearance of similar artist, upcoming events, and Wikipedia
+      applets.
+    * Improved presentation of suggested lyrics (currently only 3rd party
+      scripts use).
     * Use QTooltip for playlist tooltips
     * Changed playlist delegate margins and inline editor formating.
     * Add "Added This Hour" filter preset to the collection brower widget.
@@ -31,6 +46,8 @@ VERSION 2.4-Beta 1
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Fixed Wikipedia applet header layout issues. (BR 215171)
+    * Fixed truncated heading in albums applet. (BR 231001)
     * Playlist sorting breadcrumb items have been untranslatable.
       Patch by Alexander Potashev <aspotashev@gmail.com>. (BR 189750)
     * Dynamic Playlist criteria were not being saved properly. (BR 243562)

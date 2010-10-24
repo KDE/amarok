@@ -20,20 +20,14 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/Svg.h"
-
-#include <ktemporaryfile.h>
-#include <plasma/framesvg.h>
-
-#include <QGraphicsProxyWidget>
-#include <qwebview.h>
-
-#include <ui_wikipediaSettings.h>
+#include "NetworkAccessManagerProxy.h"
 
 class QAction;
 class KDialog;
 class KConfigDialog;
+class QListWidgetItem;
 class TextScrollingWidget;
+class WikipediaAppletPrivate;
 
 namespace Plasma
 {
@@ -55,65 +49,41 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-protected:
-    void createConfigurationInterface(KConfigDialog *parent);
-    
 public slots:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void loadWikipediaUrl( const QString &url );
+
+protected:
+    void createConfigurationInterface(KConfigDialog *parent);
 
 private:
-    qreal m_aspectRatio;
-    qreal m_headerAspectRatio;
-    QSizeF m_size;
+    WikipediaAppletPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE( WikipediaApplet )
 
-    TextScrollingWidget* m_wikipediaLabel;
+    Q_PRIVATE_SLOT( d_ptr, void _goBackward() )
+    Q_PRIVATE_SLOT( d_ptr, void _goForward() )
+    Q_PRIVATE_SLOT( d_ptr, void _gotoAlbum() )
+    Q_PRIVATE_SLOT( d_ptr, void _gotoArtist() )
+    Q_PRIVATE_SLOT( d_ptr, void _gotoTrack() )
+    Q_PRIVATE_SLOT( d_ptr, void _linkClicked(const QUrl&) )
+    Q_PRIVATE_SLOT( d_ptr, void _loadSettings() )
+    Q_PRIVATE_SLOT( d_ptr, void _paletteChanged(const QPalette&) )
+    Q_PRIVATE_SLOT( d_ptr, void _reloadWikipedia() )
+    Q_PRIVATE_SLOT( d_ptr, void _updateWebFonts() )
 
-    Plasma::WebView * m_webView;
+    Q_PRIVATE_SLOT( d_ptr, void _getLangMapProgress(qint64,qint64) )
+    Q_PRIVATE_SLOT( d_ptr, void _getLangMapFinished(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
+    Q_PRIVATE_SLOT( d_ptr, void _getLangMap() )
+    Q_PRIVATE_SLOT( d_ptr, void _configureLangSelector() )
+    Q_PRIVATE_SLOT( d_ptr, void _langSelectorItemChanged(QListWidgetItem*) )
 
-    QString m_label;
-    QString m_title;
-
-    Plasma::IconWidget *m_backwardIcon;
-    Plasma::IconWidget *m_forwardIcon;
-    Plasma::IconWidget *m_artistIcon;
-    Plasma::IconWidget *m_albumIcon;
-    Plasma::IconWidget *m_trackIcon;
-    Plasma::IconWidget *m_settingsIcon;
-    Plasma::IconWidget *m_reloadIcon;
-
-    Ui::wikipediaSettings ui_Settings;
-    
-    KTemporaryFile* m_css;
-
-    struct HistoryItem
-    {
-        KUrl url;
-        QString page;
-    };
-    QList <HistoryItem> m_historyBack;
-    QList <HistoryItem> m_historyForward;
-    HistoryItem m_current;
-
-    QString m_wikiPreferredLang;
-
-    bool m_gotMessage;
-    
-private slots:
-    void connectSource( const QString &source );
-    void linkClicked( const QUrl &url );
-    
-    void goBackward();    
-    void goForward();
-    void gotoArtist();
-    void gotoAlbum();
-    void gotoTrack();
-
-    void switchLang();
-    void switchToLang(QString lang);
-    void reloadWikipedia();
-    
-    void paletteChanged( const QPalette & palette );
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadStarted() )
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadProgress(int) )
+    Q_PRIVATE_SLOT( d_ptr, void _pageLoadFinished(bool) )
+    Q_PRIVATE_SLOT( d_ptr, void _searchLineEditTextEdited(const QString&) )
+    Q_PRIVATE_SLOT( d_ptr, void _searchLineEditReturnPressed() )
+    Q_PRIVATE_SLOT( d_ptr, void _jsWindowObjectCleared() )
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

@@ -62,7 +62,7 @@ void LyricsSubject::sendNewLyricsHtml( QString lyrics )
     }
 }
 
-void LyricsSubject::sendNewSuggestions( QStringList sug )
+void LyricsSubject::sendNewSuggestions( const QVariantList &sug )
 {
     foreach( LyricsObserver* obs, m_observers )
     {
@@ -128,17 +128,14 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         }
         else
         {
-            QStringList suggested;
-            for( uint i = 0; i < l.length(); ++i )
+            QVariantList suggested;
+            for( int i = 0, len = l.length(); i < len; ++i )
             {
-                const QString url    = l.item( i ).toElement().attribute( "url" );
-                const QString artist = l.item( i ).toElement().attribute( "artist" );
-                const QString title  = l.item( i ).toElement().attribute( "title" );
-
-                suggested << QString( "%1 - %2 - %3" ).arg( title, artist, url );
+                const QString &url    = l.item( i ).toElement().attribute( "url" );
+                const QString &artist = l.item( i ).toElement().attribute( "artist" );
+                const QString &title  = l.item( i ).toElement().attribute( "title" );
+                suggested << ( QStringList() << title << artist << url );
             }
-            // setData( "lyrics", "suggested", suggested );
-            // TODO for now suggested is disabled
             sendNewSuggestions( suggested );
         }
     }

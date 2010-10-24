@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,53 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_TRACKITEM_H
-#define AMAROK_TRACKITEM_H
-
-#include "core/meta/Meta.h"
+#ifndef AMAROK_ALBUMSDEFS_H
+#define AMAROK_ALBUMSDEFS_H
 
 #include <QStandardItem>
 
-class TrackItem : public QStandardItem, public Meta::Observer
+enum AlbumsModelItemTypes
 {
-    public:
-        TrackItem();
-        ~TrackItem() { }
-
-        /**
-         * Sets the TrackPtr for this item to associate with
-         *
-         * @arg track pointer to associate with
-         */
-        void setTrack( Meta::TrackPtr trackPtr );
-
-        /**
-         * @return the track pointer associated with this item
-         */
-        Meta::TrackPtr track() const { return m_track; }
-
-        /**
-         * Applies an italic style if the track is the currently
-         * playing track
-         */
-        void italicise();
-	
-        /**
-         * Applies a bold style if the track is owned by the currently
-         * playing artist
-         */
-        void bold();
-
-        // overloaded from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track );
-
-        virtual int type() const;
-
-        virtual bool operator<( const QStandardItem &other ) const;
-
-    private:
-        Meta::TrackPtr m_track;
+    AlbumType = QStandardItem::UserType,
+    TrackType
 };
 
-#endif // multiple inclusion guard
+enum AlbumsModelCustomRoles
+{
+    AlbumCompilationRole = Qt::UserRole + 1,
+    AlbumTrackCountRole,
+    AlbumNameRole,
+    AlbumLengthRole,
+    AlbumYearRole,
+    TrackNameRole,
+    TrackArtistRole,
+    TrackNumberRole,
+    TrackLengthRole
+};
+
+#endif /* AMAROK_ALBUMSDEFS_H */

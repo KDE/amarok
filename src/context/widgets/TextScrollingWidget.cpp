@@ -14,213 +14,295 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "TextScrollingWidget"
 #include "TextScrollingWidget.h"
 
 #include "core/support/Debug.h"
 
 #include <QFont>
-#include <QFontMetrics>
-#include <QGraphicsTextItem>
+#include <QFontMetricsF>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneHoverEvent>
-#include <QGraphicsWidget>
-#include <QPainter>
-#include <QTextDocument>
 #include <QTimer>
 #include <QPropertyAnimation>
 
-#define DEBUG_PREFIX "TextScrollingWidget"
+class TextScrollingWidgetPrivate
+{
+public:
+    TextScrollingWidgetPrivate( TextScrollingWidget *parent )
+        : width( 0.0 )
+        , delta( 0.0 )
+        , currentDelta( 0.0 )
+        , alignment( Qt::AlignHCenter )
+        , textItem( new QGraphicsSimpleTextItem( parent ) )
+        , q_ptr( parent )
+    {}
 
+    ~TextScrollingWidgetPrivate()
+    {}
 
-TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
-    : QGraphicsTextItem( parent )
-    , m_fm( 0 )
-    , m_textFormat( Qt::PlainText )
-    , m_delta( 0 )
-    , m_currentDelta( 0. )
-    , m_animDirection( QAbstractAnimation::Forward )
+    void _delayedForwardAnimation()
+    {
+        Q_Q( TextScrollingWidget );
+        if( q->isUnderMouse() )
+            q->startAnimation( QAbstractAnimation::Forward );
+    }
+
+    qreal             width;          // box width
+    qreal             delta;          // complete delta
+    qreal             currentDelta;   // current delta
+    QString           text;           // full sentence
+    Qt::Alignment     alignment;      // horizontal text item alignment
+    QWeakPointer<QPropertyAnimation> animation; // scroll animation
+
+    // QGraphicsTextItem *textItem;
+    QGraphicsSimpleTextItem *textItem;
+
+private:
+    TextScrollingWidget *const q_ptr;
+    Q_DECLARE_PUBLIC( TextScrollingWidget )
+};
+
+TextScrollingWidget::TextScrollingWidget( QGraphicsWidget *parent, Qt::WindowFlags wFlags )
+    : QGraphicsWidget( parent, wFlags )
+    , d_ptr( new TextScrollingWidgetPrivate(this) )
 {
     setAcceptHoverEvents( true );
-    document()->setDocumentMargin( 0 );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    setFlags( flags() | QGraphicsItem::ItemClipsChildrenToShape );
 }
 
 TextScrollingWidget::~TextScrollingWidget()
 {
-    delete m_fm;
+    delete d_ptr;
 }
 
 void
 TextScrollingWidget::setBrush( const QBrush &brush )
 {
-    setDefaultTextColor( brush.color() );
+    Q_D( TextScrollingWidget );
+    d->textItem->setBrush( brush );
 }
 
 void
-TextScrollingWidget::setScrollingText( const QString &text, const QRectF &rect )
+TextScrollingWidget::setScrollingText( const QString &text )
 {
- //   DEBUG_BLOCK
-    if ( !m_fm )
-        m_fm = new QFontMetrics( font() );
-    m_rect = rect;
-    m_text = text;
-    m_currentDelta = 0;
+    Q_D( TextScrollingWidget );
 
     // reset the animation and stuff
-    QPropertyAnimation *animation = m_animation.data();
+    QPropertyAnimation *animation = d->animation.data();
     if( animation ) {
         animation->stop();
-        m_animation.clear();
+        d->animation.clear();
     }
 
-    const int textWidth = m_fm->width( m_text );
-    m_delta = textWidth + 5 > m_rect.width() ? textWidth + 8 - m_rect.width() : 0;
-    setText( m_fm->elidedText( m_text, Qt::ElideRight, (int)m_rect.width() ) );
+    updateGeometry();
+    QFontMetricsF fm( font() );
+    int textWidth = fm.width( text );
+    d->width = size().width();
+    d->text = text;
+    d->delta = textWidth > d->width ? textWidth - d->width : 0;
+    d->textItem->setText( fm.elidedText( text, Qt::ElideRight, d->width ) );
 }
 
 void
 TextScrollingWidget::setText( const QString &text )
 {
-    if( requirePlainText() )
-        setPlainText( text );
-    else
-        setHtml( text );
+    Q_D( TextScrollingWidget );
+    d->textItem->setText( text );
 }
 
 void
-TextScrollingWidget::setTextFormat( Qt::TextFormat fmt )
+TextScrollingWidget::setAlignment( Qt::Alignment alignment )
 {
-    m_textFormat = fmt;
+    Q_D( TextScrollingWidget );
+    d->alignment = alignment;
+    updateGeometry();
+}
+
+void
+TextScrollingWidget::setFont( const QFont &font )
+{
+    Q_D( TextScrollingWidget );
+    d->textItem->setFont( font );
+    QFontMetricsF fm( font );
+    const int textWidth = fm.width( d->text );
+    d->delta = textWidth > d->width ? textWidth - d->width + 5 : 0;
+}
+
+QBrush
+TextScrollingWidget::brush() const
+{
+    Q_D( const TextScrollingWidget );
+    return d->textItem->brush();
+}
+
+QFont
+TextScrollingWidget::font() const
+{
+    Q_D( const TextScrollingWidget );
+    return d->textItem->font();
 }
 
 QString
 TextScrollingWidget::text() const
 {
-    if( requirePlainText() )
-        return toPlainText();
-    else
-        return toHtml();
-}
-
-bool
-TextScrollingWidget::requirePlainText() const
-{
-    bool plain;
-    switch( m_textFormat )
-    {
-    case Qt::RichText:
-        plain = false;
-        break;
-
-    case Qt::AutoText:
-        plain = !Qt::mightBeRichText( m_text );
-        break;
-
-    case Qt::PlainText:
-    default:
-        plain = true;
-    }
-    return plain;
-}
-
-Qt::TextFormat
-TextScrollingWidget::textFormat() const
-{
-    return m_textFormat;
+    Q_D( const TextScrollingWidget );
+    return d->text;
 }
 
 void
-TextScrollingWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+TextScrollingWidget::setGeometry( const QRectF &rect )
 {
-    // clip the widget.
-    QRect rec( boundingRect().translated( m_currentDelta, 0 ).toRect() );
-    rec.setWidth( m_rect.width() );
+    Q_D( TextScrollingWidget );
+    prepareGeometryChange();
+    QGraphicsWidget::setGeometry( rect );
+    setPos( rect.topLeft() );
 
-    painter->setClipRegion( QRegion( rec ) );
-    QGraphicsTextItem::paint( painter, option, widget );
+    QRectF textRect = mapFromParent( rect ).boundingRect();
+    qreal textX( 0.0 );
+    switch( d->alignment )
+    {
+    case Qt::AlignHCenter:
+        textX = ( textRect.width() - d->textItem->boundingRect().width() ) / 2;
+        break;
+    default:
+    case Qt::AlignLeft:
+        textX = textRect.left();
+        break;
+    case Qt::AlignRight:
+        textX = textRect.right() - d->textItem->boundingRect().width();
+        break;
+    }
+    d->textItem->setPos( textX, textRect.top() );
 }
 
 void
 TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
 {
     Q_UNUSED( e );
-    if( !isAnimating() && m_delta )
+    Q_D( TextScrollingWidget );
+    if( !isAnimating() && d->delta )
     {
-        DEBUG_BLOCK
-
-        setText( m_text );
-        m_animDirection = QAbstractAnimation::Forward;
-        QTimer::singleShot( 0, this, SLOT( startAnimation() ) );
+        // DEBUG_BLOCK
+        setText( d->text );
+        QTimer::singleShot( 250, this, SLOT(_delayedForwardAnimation()) );
     }
 }
 
 bool
-TextScrollingWidget::isAnimating()
+TextScrollingWidget::isEmpty() const
 {
-    return ( m_animation.data() && m_animation.data()->state() == QAbstractAnimation::Running );
+    Q_D( const TextScrollingWidget );
+    return d->text.isEmpty();
+}
+
+bool
+TextScrollingWidget::isAnimating() const
+{
+    Q_D( const TextScrollingWidget );
+    return ( d->animation.data() && d->animation.data()->state() == QAbstractAnimation::Running );
 }
 
 qreal
 TextScrollingWidget::animationValue() const
 {
-    return m_currentDelta;
+    Q_D( const TextScrollingWidget );
+    return d->currentDelta;
 }
 
 void
 TextScrollingWidget::animationFinished()
 {
-    QPropertyAnimation *animation = m_animation.data();
+    Q_D( TextScrollingWidget );
+    QPropertyAnimation *animation = d->animation.data();
     if( !animation )
         return;
 
-    if( animation->property("direction") == QAbstractAnimation::Forward )
+    if( animation->direction() == QAbstractAnimation::Forward )
     {
-        m_animDirection = QAbstractAnimation::Backward;
-        QTimer::singleShot( 250, this, SLOT( startAnimation() ) );
+        startAnimation( QAbstractAnimation::Backward );
     }
     else
     {
         // Scroll again if the mouse is still over.
-        if( isUnderMouse() ) {
-            m_animDirection = QAbstractAnimation::Forward;
-            QTimer::singleShot(250, this, SLOT( startAnimation() ) );
-        }
+        if( isUnderMouse() )
+            startAnimation( QAbstractAnimation::Forward );
         else
-            setText( m_fm->elidedText( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
+        {
+            setScrollingText( d->text );
+            d->animation.data()->deleteLater();
+        }
     }
 }
 
 void
-TextScrollingWidget::startAnimation()
+TextScrollingWidget::startAnimation( QAbstractAnimation::Direction direction )
 {
-    QPropertyAnimation *animation = m_animation.data();
-    if( !animation ) {
+    Q_D( TextScrollingWidget );
+    QPropertyAnimation *animation = d->animation.data();
+    if( !animation )
+    {
         animation = new QPropertyAnimation( this, "animationValue" );
-        animation->setDuration( m_delta*15 );
+        animation->setDuration( d->delta*15 );
         animation->setStartValue( 0.0 );
         animation->setEndValue( 1.0 );
         animation->setEasingCurve( QEasingCurve::InOutQuad );
-        m_animation = animation;
+        d->animation = animation;
+        connect( animation, SIGNAL( finished() ), this, SLOT( animationFinished() ) );
     }
     else
-        animation->pause();
+    {
+        animation->stop();
+    }
 
-    animation->setDirection(m_animDirection);
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-    connect( animation, SIGNAL( finished() ), this, SLOT( animationFinished() ) );
+    animation->setDirection( direction );
+    animation->start( QAbstractAnimation::KeepWhenStopped );
 }
 
 void
 TextScrollingWidget::animate( qreal value )
 {
-    // DEBUG BLOCK
-    if( m_animation.isNull() )
+    // DEBUG_BLOCK
+    Q_D( TextScrollingWidget );
+    if( d->animation.isNull() )
         return;
 
-    if( m_animation.data()->property( "direction" ) == QAbstractAnimation::Forward )
-        m_currentDelta = value * m_delta;
-    else
-        m_currentDelta = m_delta - ( value * m_delta );
+    d->currentDelta = -value * d->delta;
+    d->textItem->setPos( d->currentDelta, 0 );
+}
 
-    setPos( m_rect.left() - m_currentDelta, pos().y() );
+QSizeF
+TextScrollingWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    Q_D( const TextScrollingWidget );
+    QFontMetricsF fm( font() );
+    switch( which )
+    {
+    case Qt::MinimumSize:
+        return QSizeF( fm.width( d->text ) / 4.0, fm.height() );
+    case Qt::MaximumSize:
+        return QSizeF( -1, fm.height() + 8 );
+    case Qt::MinimumDescent:
+        return QSizeF( QGraphicsWidget::sizeHint(which, constraint).width(), fm.descent() );
+    default:
+        break;
+    }
+    return QSizeF( constraint.width(), fm.height() );
+}
+
+Qt::Alignment
+TextScrollingWidget::alignment() const
+{
+    Q_D( const TextScrollingWidget );
+    return d->alignment;
+}
+
+QRectF
+TextScrollingWidget::boundingRect() const
+{
+    Q_D( const TextScrollingWidget );
+    return mapRectFromItem( d->textItem, d->textItem->boundingRect() );
 }
 
 #include "TextScrollingWidget.moc"
