@@ -3,102 +3,80 @@ first { element: is; completely: ignored; }
 body
 {
   margin: 0px;
-  padding: 2px;
-/*  color: gray;*/
-  color: {text_color};
- /* background-color: {background_color}; */
-  font-size: 11pt;
+  padding: 6px 2px;
+  color: /*{text_color}*/;
+  font-size: medium;
 }
 
 h1, h2, h3, h4, h5, h6
 {
-/*  border-bottom: 1px dotted silver; */
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  font-weight: 100;
-  margin: 0;
-  padding: 2;
- /* background-color: {headings_background_color}; */
-  color: {text_color};
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 5pt 0;
+  padding: 2pt 5pt;
+  background-color: /*{headings_background_color}*/;
+  color: /*{text_color}*/;
 }
 
-h1
+p, div, table, ul, li
 {
-  font-size: 20pt;
+  font-size: medium;
 }
-h2
+
+span.citation
 {
-  font-size: 18pt;
-  background-color: {headings_background_color};
-}
-h3
-{
-  font-size: 16pt;
-}
-h4
-{
-  font-size: 14pt;
-}
-h5
-{
-  font-size: 13pt;
-}
-h6
-{
-  font-size: 12pt;
-}
-p, div, table, ul
-{
-  font-size: 11pt;
+  font-size: 90%;
 }
 
 ul li
 {
-  display: inline;
   margin-right: 5pt;
 }
 ul li a
 {
   text-decoration: none;
-  color: {link_color};
+  color: /*{link_color}*/;
 }
 ul li a:hover
 {
   text-decoration: underline;
-  color: {link_hover_color};
+  color: /*{link_hover_color}*/;
 }
 
 div#wiki_otherlangs
 {
-/*  border-bottom: 1px solid silver; */
-  border: 4px solid {border_color}; 
-    -webkit-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-  background-color: {text_background_color};
-  color: {text_color};
+  clear: both;
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: /*{shaded_text_background_color}*/;
+  padding: 5pt;
+  color: /*{text_color}*/;
 }
 
 div#bodyContent
 {
-  color: {text_color};
+  color: /*{text_color}*/;
 }
 div#bodyContent *
 {
-  color: {text_color};
+  color: /*{text_color}*/;
 }
 
-/* Bullet list definition gracefully gottened from wikipedia - since we're showing their data, we should really present it like it was intended. So, we use their bullet. */
+/* Bullet list definition gracefully gottened from wikipedia - since we're
+ * showing their data, we should really present it like it was intended. So, we
+ * use their bullet. */
 div#bodyContent ul
 {
-  line-height: 1.5em;
   list-style-type: square;
-  margin: .3em 0 0 1.5em;
-  padding: 0;
+  margin: 0 1em;
+  padding: 0 1em;
   list-style-image: url(bullet.gif);
 }
 div#bodyContent ul li
@@ -108,61 +86,70 @@ div#bodyContent ul li
 div#bodyContent a
 {
   text-decoration: none;
-  color: {link_color};
+  color: /*{link_color}*/;
 }
 div#bodyContent a:hover
 {
   text-decoration: underline;
-  color: {link_hover_color};
+  color: /*{link_hover_color}*/;
 }
 
 /* table for embedded media clip boxes */
 table.metadata, table.ambox
 {
   border-radius: 1.6em;
-/*  border: 1px dotted silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-/*  position: relative;
-  left: 50%;
-  width: 80%;*/
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   position: relative;
   left: 50%;
   width: 50%;
-  margin: 10pt 0 10pt -40%;
+  margin: 5pt 0;
   padding: 5pt;
 }
 
 table.infobox
 {
+  clear: right;
   float: right;
-  top: 10px;
   width: 150pt;
-/*  border: 1px dotted silver; */
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  background-color: {table_background_color};
-  margin-left: 5pt;
-
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: /*{table_background_color}*/;
+  margin: 5pt 2pt 0 5pt;
 }
+
+table.bordered
+{
+  clear: both;
+  display: inline-block;
+  margin: 5pt 2pt 0 5pt;
+}
+
 table.infobox th
 {
-  font-weight: 100;
-  vertical-align: top;
-  text-align: left;
   padding: 2pt;
-  background-color: {table_background_color};
-  color: {text_color};
+  border: 1px solid /*{border_color}*/;
+  background-color: /*{alternate_table_background_color}*/;
+  color: /*{text_color}*/;
 }
-table.infobox td
+
+table.gallery
 {
-  vertical-align: top;
+  clear: both;
+  display: block;
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: /*{table_background_color}*/;
+  margin: 5pt 0;
 }
 
 table#toc
@@ -171,32 +158,34 @@ table#toc
 }
 
 /*
-We're hiding the TOC, as it currently links directly to the wikipedia URL, not relatively to the anchor inside the document, which make it open up in an external browser - not really what we want it to do...
+We're hiding the TOC, as it currently links directly to the wikipedia URL, not
+relatively to the anchor inside the document, which make it open up in an
+external browser - not really what we want it to do...
 table#toc
 {
-  border: 1px dotted silver;
-  background: #f0f0f0;
-  
+border: 1px dotted silver;
+background: #f0f0f0;
+
 }
-#toctitle h2
-{
+  #toctitle h2
+  {
   font-size: 11pt;
   background: silver;
   padding: 2pt;
 }
-table#toc ul
-{
+  table#toc ul
+  {
   list-style: none;
 }
-table#toc a,table#toc a span
-{
+  table#toc a,table#toc a span
+  {
   color: #424280;
 }
-table#toc a:hover,table#toc a:hover span
-{
+  table#toc a:hover,table#toc a:hover span
+  {
   color: #7E7EFF;
 }
-*/
+ */
 
 /* heading text - e.g. "This article is about the band", etc. */
 div.dablink
@@ -204,7 +193,7 @@ div.dablink
   width: 100%;
   text-align: left;
   font-style: italic;
-  color: {text color};
+  color: /*{text_color}*/;
 }
 div#contentSub
 {
@@ -221,134 +210,135 @@ div#jump-to-nav
 }
 div#contentSub a, div#jump-to-nav a, div.dablink a
 {
-  color: {link_hover_color};
+  color: /*{link_hover_color}*/;
 }
 
 div#stub
 {
-  border-radius: 1.6em;
-/*  border: 1px dotted silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  position: relative;
-  left: 50%;
-  margin-left: -40%;
+  clear: right;
+  background-color: /*{shaded_text_background_color}*/;
+  border: 2px solid /*{border_color}*/;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   width: 80%;
-  margin-bottom: 10pt;
   padding: 5pt;
-  background-color: {shaded_text_background_color};
+  margin-bottom: 10pt;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 table.wikitable
 {
-/*  border: 1px solid silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   border-collapse: collapse;
   margin: 5pt;
-  background-color: {shaded_text_background_color};
+  background-color: /*{table_background_color}*/;
 }
 table.wikitable th
 {
-/*  border: 1px solid silver;*/
-  border: 2px solid {border_color}; 
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  padding: 1pt;
-  background-color: {shaded_text_background_color};
+  padding: 2pt;
+  background-color: /*{alternate_table_background_color}*/;
+  border: 2px solid /*{border_color}*/;
 }
 table.wikitable td
 {
-/*  border: 1px solid silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  padding: 1pt;
-  background-color: {shaded_text_background_color};
+  padding: 2pt;
+  background-color: /*{table_background_color}*/;
+  border: 2px solid /*{border_color}*/;
 }
 
 table.navbox
 {
-/*  border: 1px solid silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   border-collapse: collapse;
   margin: 5pt 2% 5pt 2%;
   width: 96%;
-  background-color: {shaded_text_background_color};
+  background-color: /*{shaded_text_background_color}*/;
 }
 table.navbox td
 {
-/*  border-top: 1px solid silver;*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-  background-color: {shaded_text_background_color};
+  border: 2px solid /*{border_color}*/;
+  background-color: /*{table_background_color}*/;
 }
 
 /*  article thumbnail images */
 div.thumb
 {
-/*  border: 1px solid {shaded_text_background_color};*/
-  border: 2px solid {border_color};
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;	
-	-moz-border-radius: 4px;
+  border: 2px solid /*{border_color}*/;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
   border-radius: 4px;
-  width: 16em;
-  margin: 5pt 2% 5pt 2%;
-  padding: 6px !important;
-  font-size: 94%;
-  text-align: center;
-  word-wrap: normal;
-  background-color: {table_background_color};
+  margin: 5pt;
+  padding: 2pt;
+  width: auto;
+  background-color: /*{table_background_color}*/;
 }
 
-div.tright
+div.thumbinner
 {
-  float: right;
+  text-align: center;
+  overflow: hidden;
+}
+
+div.thumbimage
+{
+  margin: 2pt 0;
 }
 
 /* captions for thumbnail images */
 div.thumbcaption
 {
-  font-style: italic;
   border: none;
   text-align: left;
   line-height: 1.4em;
-  padding: 3px !important;
-  font-size: 94%;
-  color: {text color};
+  font-size: smaller;
 }
 
 div.magnify
 {
   float: right;
+  border: none !important;
+  background: none !important;
+}
+
+div.tright
+{
+  clear: right;
+  float: right;
+}
+div.tleft
+{
+  float: left;
+  clear: left;
 }
 
 div.medialist ul li
 {
   list-style: none;
 }
+
 div#ogg_player_1, div#ogg_player_2, div#ogg_player_3, div#ogg_player_4, div#ogg_player_5, div#ogg_player_6, div#ogg_player_7, div#ogg_player_8, div#ogg_player_9, div#ogg_player_10, div#ogg_player_11, div#ogg_player_12, div#ogg_player_13
 {
   display: none;
 }
+
+div#jump-to-nav, div.NavFrame, table.metadata
+{
+  display: none;
+}
+
 div.medialist table
 {
   margin: 5pt;

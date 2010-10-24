@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LabelsEngine"
+
 #include "LabelsEngine.h"
 
 #include "ContextObserver.h"
@@ -29,10 +31,7 @@
 
 #include <QDomDocument>
 
-#define DEBUG_PREFIX "LabelsEngine"
-
 using namespace Context;
-
 
 LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
         : DataEngine( parent )
@@ -373,7 +372,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         QString name = nameElement.text().toLower();
         QDomElement countElement = nd.elementsByTagName("count").at(0).toElement();
         int count = countElement.text().toInt();
-        debug() << "LabelsEngine:" << name << " (" << count << ")";
+        // debug() << "LabelsEngine:" << name << " (" << count << ")";
         m_webLabels.insert( name, count );
     }
 

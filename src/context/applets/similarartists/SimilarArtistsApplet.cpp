@@ -44,19 +44,9 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 
-
-
-/**
- * SimilarArtistsApplet constructor
- * @param parent The widget parent
- * @param args   List of strings containing two entries: the service id
- *               and the applet id
- */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )
-        , m_aspectRatio( 0 )
-        , m_headerAspectRatio( 0.0 )
         , m_layout( 0 )
         , m_scroll( 0 )
         , m_headerLabel( 0 )
@@ -64,42 +54,24 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_stoppedState = false;
 }
 
-
-/**
- * SimilarArtistsApplet destructor
- */
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
-    delete m_headerLabel;
-    delete m_settingsIcon;
-    delete m_layout;
-    delete m_scroll; // Destroy automatically his child widget
 }
 
-/**
- * Initialization of the applet's display, creation of the layout, scrolls
- */
 void
 SimilarArtistsApplet::init()
 {
     // Call the base implementation.
     Context::Applet::init();
 
-    // create the layout for dispose the artists widgets in the scrollarea via a widget
-    m_layout = new QVBoxLayout;
-    m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-
-    m_headerLabel = new TextScrollingWidget( this );
-
     // ask for all the CV height
     resize( 500, -1 );
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerLabel = new TextScrollingWidget( this );
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Similar Artists" ) );
@@ -111,190 +83,96 @@ SimilarArtistsApplet::init()
     settingsAction->setEnabled( true );
     m_settingsIcon = addAction( settingsAction );
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( configure() ) );
+    connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
-    // permit to add the scrollarea in this applet
-    m_scrollProxy = new QGraphicsProxyWidget( this );
-    m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
-
-    // this widget contents the artists widgets and it is added on the scrollarea
-    QWidget *scrollContent = new QWidget;
-    scrollContent->setAttribute( Qt::WA_NoSystemBackground );
-    scrollContent->setLayout( m_layout );
-    scrollContent->show();
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->addItem( m_headerLabel );
+    headerLayout->addItem( m_settingsIcon );
+    headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     // create a scrollarea
-    m_scroll = new QScrollArea;
-    m_scroll->setWidget( scrollContent );
-    m_scroll->setFrameShape( QFrame::NoFrame );
-    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
-    m_scroll->setAlignment( Qt::AlignHCenter ); // for the widget in the scrollarea
-    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+    m_scroll = new ArtistsListWidget( this );
 
-    // add the scrollarea in the applet
-    m_scrollProxy->setWidget( m_scroll );
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
+    m_layout->addItem( headerLayout );
+    m_layout->addItem( m_scroll );
+    setLayout( m_layout );
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     m_maxArtists = config.readEntry( "maxArtists", "5" ).toInt();
-    m_temp_maxArtists=m_maxArtists;
 
-    connectSource( "similarArtists" );
-    connect( dataEngine( "amarok-similarArtists" ),
-             SIGNAL( sourceAdded( const QString & ) ),
-             SLOT( connectSource( const QString & ) ) );
+    Plasma::DataEngine *engine = dataEngine( "amarok-similarArtists" );
+    connect( engine, SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    engine->query( "similarArtists" );
 
-    constraintsEvent();
+    updateConstraints();
+    update();
 }
 
-/**
- * This method allows the connection to the lastfm's api
- */
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
-    if ( source == "similarArtists" )
-    {
-        dataEngine( "amarok-similarArtists" )->connectSource( "similarArtists", this );
-        dataUpdated( source, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
-    }
+    QStringList allowed;
+    allowed << "similarArtists" << "description" << "toptrack";
+
+    if( allowed.contains( source ) )
+        dataEngine( "amarok-similarArtists" )->connectSource( source, this );
 }
 
-/**
- * This method puts the widgets in the layout, in the initialization
- */
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
 
     prepareGeometryChange();
+    QString header = m_headerLabel->isEmpty() ? i18n( "Similar Artists" ) : m_headerLabel->text();
+    m_headerLabel->setScrollingText( header );
 
-    m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
-    m_headerLabel->setPos(( size().width() - m_headerLabel->boundingRect().width() ) / 2 ,
-                          standardPadding() + 3 );
-
-    // Icon positionning
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(),
-                            standardPadding() );
-
-
-    // ScrollArea positionning via the proxyWidget
-    m_scrollProxy->setPos( standardPadding(),
-                           m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
-
-    QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
-    m_scrollProxy->setMinimumSize( artistsSize );
-    m_scrollProxy->setMaximumSize( artistsSize );
-
-    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
-    m_scroll->widget()->setMinimumSize( artistSize );
-    m_scroll->widget()->setMaximumSize( artistSize );
-
-    // Icon positionning
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-
-    //we must clear the list to not have a bug with the separators
-    while ( !m_layoutWidgetList.empty() )
-    {
-        m_layoutWidgetList.front()->hide();
-        m_layout->removeWidget( m_layoutWidgetList.front() );
-        delete m_layoutWidgetList.front();
-        m_layoutWidgetList.pop_front();
-    }
-
-    for ( int i = 0; i < m_artists.size(); i++ )
-    {
-        m_layout->addWidget( m_artists.at( i ) );
-        if ( i < m_artists.size() - 1 )
-        {
-            QFrame *line = new QFrame();
-            line->setFrameStyle( QFrame::HLine );
-            line->setAutoFillBackground( false );
-            line->setMaximumWidth( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width() );
-            m_layout->addWidget( line, Qt::AlignHCenter );
-            m_layoutWidgetList.push_back( line );
-        }
-    }
+    qreal padding = standardPadding();
+    qreal scrollWidth  = size().width() - padding;
+    qreal scrollHeight = size().height() - m_headerLabel->boundingRect().bottom() - 2 * padding;
+    QSizeF scrollSize( scrollWidth, scrollHeight );
+    m_scroll->setMaximumSize( scrollSize );
 }
 
-/**
- * This method was launch when amarok play a new track
- */
-void
-SimilarArtistsApplet::engineNewTrackPlaying( )
-{
-    DEBUG_BLOCK
-
-    if ( m_stoppedState )
-    {
-        m_stoppedState = false;
-        setCollapseOff();
-        artistsUpdate();
-    }
-}
-
-/**
- * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
- */
 void
 SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
 
-    // we clear all artists
-    foreach( ArtistWidget* art, m_artists )
-    {
-        m_layout->removeWidget( art );
-        delete art;
-    }
+    m_scroll->clear();
 
-    // we clear all separators
-    while ( !m_layoutWidgetList.empty() )
-    {
-        m_layoutWidgetList.front()->hide();
-        m_layout->removeWidget( m_layoutWidgetList.front() );
-        delete m_layoutWidgetList.front();
-        m_layoutWidgetList.pop_front();
-    }
-
-    m_artists.clear();
-
-    m_stoppedState = true;
-    m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No track playing" ) );
+    m_headerLabel->setScrollingText( i18n( "Similar Artist: No track playing" ) );
     setCollapseOn();
 }
 
-/**
- * Update the current artist and his similar artists
- */
 void
-SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( name )
-    m_artist = data[ "artist" ].toString();
-
-    // we see if the artist name is valid
-    if ( !m_artist.isEmpty() )
+    QString artist = data[ "artist" ].toString();
+    if( source == "similarArtists" )
     {
-        m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
-
-        if ( !m_stoppedState )
+        if( !artist.isEmpty() )
         {
+            m_artist = artist;
+            m_similars = data[ "similar" ].value<SimilarArtist::List>();
             artistsUpdate();
         }
-
+        else
+        {
+            m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
+        }
     }
-    else   // the artist name is invalid
+    else if( source == "description" )
     {
-        m_headerLabel->setText( i18n( "Similar artists" ) );
+        m_scroll->setDescription( artist, data["text"].toString() );
     }
-
-    updateConstraints();
-    update();
-
-
+    else if( source == "toptrack" )
+    {
+        m_scroll->setTopTrack( artist, data["track"].toString() );
+    }
 }
 
 void
@@ -309,17 +187,15 @@ SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     addGradientToAppletBackground( p );
 
     // draw rounded rect around title (only if not animating )
-    if ( !m_headerLabel->isAnimating() )
+    if( !m_headerLabel->isAnimating() )
         drawRoundedRectAroundText( p, m_headerLabel );
 }
-
 
 void
 SimilarArtistsApplet::configure()
 {
     showConfigurationInterface();
 }
-
 
 void
 SimilarArtistsApplet::switchToLang(const QString &lang)
@@ -342,8 +218,6 @@ SimilarArtistsApplet::switchToLang(const QString &lang)
 
     else if (lang == i18n("Spanish") )
         m_descriptionPreferredLang = "es";
-
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
 
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
@@ -370,129 +244,38 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
     else if ( m_descriptionPreferredLang == "es" )
         ui_Settings.comboBox->setCurrentIndex( 5 );
 
-    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
-
     ui_Settings.spinBox->setValue( m_maxArtists );
 
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system" );
 
-    connect( ui_Settings.spinBox, SIGNAL( valueChanged( int ) ), this,
-             SLOT( changeMaxArtists( int ) ) );
-    connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );
-}
-
-void
-SimilarArtistsApplet::changeMaxArtists( int value )
-{
-    m_temp_maxArtists = value;
-}
-
-void
-SimilarArtistsApplet::saveMaxArtists()
-{
-
-    m_maxArtists = m_temp_maxArtists;
-
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" )
-            + QString::number( m_maxArtists ) );
-
-    KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
-    config.writeEntry( "maxArtists", m_maxArtists );
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" )
-            + QString::number( m_maxArtists ) );
+    connect( ui_Settings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(switchToLang(QString)) );
+    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
 }
 
 void
 SimilarArtistsApplet::saveSettings()
 {
-    saveMaxArtists();
-
-    artistsUpdate();
+    m_maxArtists = ui_Settings.spinBox->value();
+    KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
+    config.writeEntry( "maxArtists", m_maxArtists );
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:%1" ).arg( m_maxArtists ) );
 }
 
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-    if ( !m_similars.isEmpty() )
+    m_scroll->clear();
+    if( !m_similars.isEmpty() )
     {
-        m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
-
-        //if the applet are collapsed, decollapse it
+        m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
         setCollapseOff();
-
-        // we see the number of artist we need display
-        int sizeArtistsDisplay = m_maxArtists > m_similars.size() ? m_similars.size() : m_maxArtists;
-
-        // we adapt the list size
-        int cpt = m_artists.size() + 1; // the first row (0) is dedicated for the applet title
-
-        //if necessary, we increase the number of artists to display
-        while ( cpt <= sizeArtistsDisplay )
-        {
-            ArtistWidget *art = new ArtistWidget;
-            m_artists.append( art );
-            m_layout->addWidget( m_artists.last() );
-            cpt++;
-        }
-
-        //if necessary, we reduce the number of artists to display
-        cpt = sizeArtistsDisplay;
-        while ( cpt < m_artists.size() )
-        {
-            m_layout->removeWidget( m_artists.last() );
-            delete m_artists.last();
-            m_artists.removeLast();
-        }
-
-        //if necessary, we reduce the number of separators to display
-        while ( cpt < m_layoutWidgetList.size() )
-        {
-            m_layoutWidgetList.front()->hide();
-            m_layout->removeWidget( m_layoutWidgetList.front() );
-            delete m_layoutWidgetList.front();
-            m_layoutWidgetList.pop_front();
-        }
-
-        // we set the display of the artists widgets
-        cpt = 0;
-        foreach( ArtistWidget* art, m_artists )
-        {
-            art->setArtist( m_similars.at( cpt ).name(), m_similars.at( cpt ).url() );
-            art->setPhoto( m_similars.at( cpt ).urlImage() );
-            art->setMatch( m_similars.at( cpt ).match() );
-            art->setDescription(m_similars.at( cpt ).description());
-            art->setTopTrack(m_similars.at( cpt ).topTrack());
-            cpt++;
-        }
-
+        m_scroll->addArtists( m_similars );
     }
     else // No similar artist found
     {
-        // we clear all artists
-        foreach( ArtistWidget* art, m_artists )
-        {
-            m_layout->removeWidget( art );
-            delete art;
-        }
-
-        // we clear all separators
-        while ( !m_layoutWidgetList.empty() )
-        {
-            m_layoutWidgetList.front()->hide();
-            m_layout->removeWidget( m_layoutWidgetList.front() );
-            delete m_layoutWidgetList.front();
-            m_layoutWidgetList.pop_front();
-        }
-
-        m_artists.clear();
-
-        m_headerLabel->setText( i18n( "Similar artists" ) + QString( " : " )
-                                + i18n( "no similar artists found" ) );
+        m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
         setCollapseOn();
     }
 }
 
 #include "SimilarArtistsApplet.moc"
-
-
-

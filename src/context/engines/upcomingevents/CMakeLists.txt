@@ -1,5 +1,6 @@
 include_directories( ${Amarok_SOURCE_DIR}/src
                      ${Amarok_SOURCE_DIR}/src/context
+                     ${Amarok_SOURCE_DIR}/src/context/applets/upcomingevents
                      ${LIBLASTFM_INCLUDE_DIR}
                      ${LIBLASTFM_INCLUDE_DIR}/..
                      ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
@@ -7,7 +8,8 @@ include_directories( ${Amarok_SOURCE_DIR}/src
 
 set( upcomingEvents_engine_SRCS
      UpcomingEventsEngine.cpp
-     ../../applets/upcomingevents/LastFmEvent.cpp
+     ${Amarok_SOURCE_DIR}/src/context/applets/upcomingevents/LastFmEvent.cpp
+     ${Amarok_SOURCE_DIR}/src/context/applets/upcomingevents/LastFmEventXmlParser.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_upcomingEvents ${upcomingEvents_engine_SRCS})

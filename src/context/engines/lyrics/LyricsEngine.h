@@ -48,7 +48,7 @@ public:
     // reimplemented from LyricsObserver
     void newLyrics( QStringList& lyrics );
     void newLyricsHtml( QString& lyrics );
-    void newSuggestions( QStringList& suggest );
+    void newSuggestions( const QVariantList &suggest );
     void lyricsMessage( QString& key, QString& val );
 
     // reimplemented from Meta::Observer
@@ -70,7 +70,7 @@ private:
     // title or the artist change (but not other attributes like rating, score,
     // composer etc).
     QStringList m_currentLyricsList,m_prevLyricsList;
-    QStringList m_currentSuggestionsList,m_prevSuggestionsList;
+    QVariantList m_currentSuggestionsList,m_prevSuggestionsList;
     QString m_currentLyrics,m_prevLyrics;
     QString        m_title;
     QString        m_artist;

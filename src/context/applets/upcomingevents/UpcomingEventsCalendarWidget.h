@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Andreas Muetzel <andreas.muetzel@gmx.net>                         *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,53 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ALBUMSMODEL_H
-#define AMAROK_ALBUMSMODEL_H
+#ifndef AMAROK_UPCOMINGEVENTSCALENDARWIDGET_H
+#define AMAROK_UPCOMINGEVENTSCALENDARWIDGET_H
 
-#include "core/meta/Meta.h"
+#include "LastFmEvent.h"
 
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
+#include <QGraphicsProxyWidget>
 
-/**
- * This Model is used to get the right mime type/data for entries in the albums treeview
- */
-class AlbumsModel : public QStandardItemModel
+class UpcomingEventsCalendarWidgetPrivate;
+
+class UpcomingEventsCalendarWidget : public QGraphicsProxyWidget
 {
     Q_OBJECT
+    Q_PROPERTY( LastFmEvent::List events READ events )
+    Q_PROPERTY( QAction* todayAction READ todayAction )
 
 public:
-    AlbumsModel( QObject *parent = 0 );
-    virtual ~AlbumsModel() {}
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
-    virtual QStringList mimeTypes() const;
+    UpcomingEventsCalendarWidget( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    ~UpcomingEventsCalendarWidget();
+
+    void clear();
+    LastFmEvent::List events() const;
+    QAction *todayAction();
+
+public slots:
+    void addEvent( const LastFmEventPtr &event );
+    void addEvents( const LastFmEvent::List &events );
 
 private:
-    Meta::TrackList tracksForIndex( const QModelIndex &index ) const;
+    UpcomingEventsCalendarWidgetPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE( UpcomingEventsCalendarWidget )
+    Q_DISABLE_COPY( UpcomingEventsCalendarWidget )
+
+    Q_PRIVATE_SLOT( d_ptr, void _paletteChanged(QPalette) )
+    Q_PRIVATE_SLOT( d_ptr, void _jumpToToday() )
+    Q_PRIVATE_SLOT( d_ptr, void _updateToday() )
 };
 
-class AlbumsProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-    Q_PROPERTY( Mode mode READ mode WRITE setMode )
-    Q_ENUMS( Mode )
-
-public:
-    AlbumsProxyModel( QObject *parent );
-    ~AlbumsProxyModel() {}
-
-    enum Mode { SortByCreateDate, SortByYear };
-
-    Mode mode() const;
-    void setMode( Mode mode );
-
-protected:
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-private:
-    Mode m_mode;
-};
-
-
-#endif
+#endif /* AMAROK_UPCOMINGEVENTSCALENDARWIDGET_H */

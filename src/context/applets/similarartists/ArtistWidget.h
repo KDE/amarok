@@ -20,23 +20,20 @@
 
 #include "core/meta/Meta.h"
 #include "network/NetworkAccessManagerProxy.h"
+#include "SimilarArtist.h"
 
-//Kde
-#include<KUrl>
-#include <ksqueezedtextlabel.h>
+#include <KUrl>
+#include <Plasma/ScrollWidget>
 
-//Qt
-#include <QWidget>
-#include <QString>
+#include <QTextLayout>
 
-
+class QGraphicsGridLayout;
+class QGraphicsLinearLayout;
 class QLabel;
-class QGraphicsScene;
-class QGridLayout;
-class QPushButton;
 
-namespace Collections {
-    class QueryMaker;
+namespace Plasma {
+    class Label;
+    class PushButton;
 }
 
 /**
@@ -44,50 +41,38 @@ namespace Collections {
  * @author Joffrey Clavel
  * @version 0.2
  */
-class ArtistWidget : public QWidget
+class ArtistWidget : public QGraphicsWidget
 {
     Q_OBJECT
-public:
 
+public:
     /**
      * ArtistWidget constructor
      * @param parent The widget parent
      */
-    ArtistWidget( QWidget *parent =0 );
+    ArtistWidget( const SimilarArtistPtr &artist,
+                  QGraphicsWidget *parent = 0, Qt::WindowFlags wFlags = 0 );
+
     /**
      * ArtistWidget destructor
      */
     ~ArtistWidget();
 
-    /**
-     * Change the photo of the artist with a QPixmap
-     * @param photo The new artist photo
-     */
-    void setPhoto( const QPixmap &photo );
+    virtual void paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
     /**
-     * Change the photo of the artist with a photo load from an Url
-     * @param photo The url of the new artist photo
+     * Pointer to the similar artist this widget is associated with
      */
-    void setPhoto( const KUrl &urlPhoto );
+    SimilarArtistPtr artist() const;
 
     /**
-     * Change the artist name and the url which allows to display a page
-     * which contains informations about this artist
-     * @param nom The name of this artist
-     * @param url The url of the artist about page
+     * Clean the widget => the content of the QLabel is empty
      */
-    void setArtist( const QString &nom, const KUrl &url );
+    void clear();
 
     /**
-     * Change the match pourcentage of the artist
-     * @param match The match of the artist
-     */
-    void setMatch( const int match );
-
-    /**
-     * Change the artist description which contains informations about this artist
-     * @param desc The description of this artist
+     * Set the artist description
+     * @param description The description of this artist
      */
     void setDescription( const QString &description );
 
@@ -97,45 +82,37 @@ public:
      */
     void setTopTrack( const QString &topTrack );
 
-    void resizeEvent(QResizeEvent *event);
-
-    /**
-     * Clean the widget => the content of the QLabel is empty
-     */
-    void clear();
+protected:
+    void resizeEvent( QGraphicsSceneResizeEvent *event );
 
 private:
+    void fetchPhoto();     //!< Fetch the photo of the artist
+    void queryArtist();    //!< Query collection about artist
 
     /**
-     * Elide the artist description depending on the widget size
+     * Layout the text for artist's description
      */
-    void elideArtistDescription();
+    void layoutDescription();
 
     /**
      * Layout for the formatting of the widget contents
      */
-    QGridLayout *m_layout;
+    QGraphicsGridLayout *m_layout;
 
-    //elements of the widget
     /**
      * Image of the artist
      */
     QLabel *m_image;
 
     /**
-     * Name of the artist
-     */
-    QString m_name;
-    
-    /**
      * Label showing the name of the artist
      */
     QLabel *m_nameLabel;
 
     /**
-     * Genre of the artist's music
+     * Similarity match percentage
      */
-    QLabel *m_genre;
+    QLabel *m_match;
 
     /**
      * Title of the top track
@@ -155,37 +132,43 @@ private:
     /**
      * Button to add the top track to the playlist
      */
-    QPushButton *m_topTrackButton;
+    Plasma::PushButton *m_topTrackButton;
 
     /**
      * Button to add the last.fm simmilar artist station for this artist to the playlist
      */
-    QPushButton *m_lastfmStationButton;
-    
+    Plasma::PushButton *m_lastfmStationButton;
+
     /**
      * Button to navigate to the artit in the local collection
      */
-    QPushButton *m_navigateButton;
+    Plasma::PushButton *m_navigateButton;
+
+    /**
+     * Button to open Last.fm's artist webpage using external browser
+     */
+    Plasma::PushButton *m_urlButton;
 
     /**
      * Description of the artist
      */
-    QLabel *m_desc;
+    QGraphicsWidget *m_desc;
 
     /**
-     * The description in text of the artist
+     * Text layout for the artist description
      */
-    QString m_descString;
+    QTextLayout m_descLayout;
 
     /**
-     * URL of the image from the web
+     * Whether all of artist description is shown
      */
-    KUrl m_url;
+    bool m_descCropped;
+
+    const SimilarArtistPtr m_artist;
 
 private slots:
     /**
-     * Put the image of the artist in the QPixMap
-     * @param reply, reply from the network request
+     * Handle artist photo retrieved from Last.fm
      */
     void setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
@@ -193,7 +176,7 @@ private slots:
      * Open an URL
      * @param url The URL of the artist
      */
-    void openUrl( const QString &url );
+    void openArtistUrl();
 
     /**
      * Add top track to the playlist
@@ -210,12 +193,44 @@ private slots:
      */
     void addLastfmArtistStation();
 
-
     /**
      * Get results from the query maker
      */
     void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
     void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+};
+
+class ArtistsListWidget : public Plasma::ScrollWidget
+{
+    Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName )
+
+public:
+    explicit ArtistsListWidget( QGraphicsWidget *parent = 0 );
+    ~ArtistsListWidget();
+
+    int count() const;
+    bool isEmpty() const;
+
+    void addItem( ArtistWidget *widget );
+    void addArtist( const SimilarArtistPtr &artist );
+    void addArtists( const SimilarArtist::List &artists );
+
+    QString name() const;
+    void setName( const QString &name );
+
+    void setDescription( const QString &artist, const QString &description );
+    void setTopTrack( const QString &artist, const QString &track );
+
+    void clear();
+
+private:
+    void addSeparator();
+    int m_separatorCount;
+    QString m_name;
+    QGraphicsLinearLayout *m_layout;
+    QList<ArtistWidget*> m_widgets;
+    Q_DISABLE_COPY( ArtistsListWidget )
 };
 
 #endif // ARTIST_WIDGET_H

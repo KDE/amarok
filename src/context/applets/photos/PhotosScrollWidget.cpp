@@ -129,7 +129,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->setPos( m_actualpos, 0 );
                         dragpix->SetClickableUrl( item->urlpage );
                         dragpix->show();
@@ -146,7 +146,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                     {
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                            item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                            item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->SetClickableUrl( item->urlpage );
 
                         // only pos and show if no animation, otherwise it will be set at the end automatically
@@ -177,7 +177,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 
                         DragPixmapItem *dragpix = new DragPixmapItem( this );
                         dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo.scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                         dragpix->setPos( ( size().width() - dragpix->boundingRect().width() ) / 2, 0 );
                         dragpix->SetClickableUrl( item->urlpage );
                         dragpix->hide();
@@ -274,7 +274,7 @@ void PhotosScrollWidget::resize(qreal wid, qreal hei)
                 if ( !item->pixmap().isNull() )
                 {
                     if ( size().height() != hei )
-                        item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 4 * m_margin,  Qt::SmoothTransformation ) );
+                        item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 2 * m_margin,  Qt::SmoothTransformation ) );
                     if ( size().width() != wid )
                         item->setPos( ( wid - item->boundingRect().width() ) / 2, 0 );
                 }

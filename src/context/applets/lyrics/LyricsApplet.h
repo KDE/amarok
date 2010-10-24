@@ -20,19 +20,10 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/Svg.h"
 
 #include <ui_lyricsSettings.h>
 
-class TextScrollingWidget;
-class QGraphicsProxyWidget;
-class QTextBrowser;
-
-namespace Plasma
-{
-    class FrameSvg;
-    class IconWidget;
-}
+class LyricsAppletPrivate;
 
 class LyricsApplet : public Context::Applet
 {
@@ -52,45 +43,25 @@ public slots:
     virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void suggestionChosen( const QUrl& link );
     void refreshLyrics();
     
 private slots:
-    void paletteChanged( const QPalette & palette );
-    void editLyrics();
-    void closeLyrics();
-    void saveLyrics();
-    void changeLyricsFont();
+    void paletteChanged( const QPalette &palette );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *e );
 
 private:
-    void setEditing( const bool isEditing );
-    void collapseToMin();
-    void determineActionIconsState();
-    void showLyrics();
-    void showSuggested();
+    LyricsAppletPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE( LyricsApplet )
 
-    QString m_titleText;
-    TextScrollingWidget* m_titleLabel;
-
-    Plasma::IconWidget*  m_saveIcon;
-    Plasma::IconWidget*  m_editIcon;
-    Plasma::IconWidget*  m_reloadIcon;
-    Plasma::IconWidget*  m_closeIcon;
-    Plasma::IconWidget*  m_settingsIcon;
-
-    // holds main body
-    QGraphicsProxyWidget *m_proxy;
-    QTextBrowser         *m_lyrics;
-    QTextBrowser         *m_suggested;
-
-    Ui::lyricsSettings    ui_Settings;
-
-    bool m_hasLyrics;
-    bool m_isRichText;
+    Q_PRIVATE_SLOT( d_ptr, void _editLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _changeLyricsFont() )
+    Q_PRIVATE_SLOT( d_ptr, void _closeLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
+    Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
+    Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
