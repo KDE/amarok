@@ -303,7 +303,7 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
             if( langTitleMap.contains(prefix) )
             {
                 QString pageTitle = langTitleMap.value( prefix );
-                fetchWikiUrl( pageTitle, prefix );
+                fetchListing( pageTitle, prefix );
                 return;
             }
         }
