@@ -74,7 +74,11 @@ public:
     *                      The main reason for wanting to ignore these is that when painting the head part of the first track in the group, these
     *                      things should not be shown as they will be hown in the track part of the item.
     */
-    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool headerRow = false ) const;
+    void paintItem( const LayoutItemConfig &config,
+                    QPainter* painter,
+                    const QStyleOptionViewItem& option,
+                    const QModelIndex& index,
+                    bool headerRow = false ) const;
 
 
 protected slots:

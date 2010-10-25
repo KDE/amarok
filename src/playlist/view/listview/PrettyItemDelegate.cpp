@@ -253,7 +253,11 @@ PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
 }
 
 
-void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool headerRow ) const
+void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
+                                              QPainter* painter,
+                                              const QStyleOptionViewItem& option,
+                                              const QModelIndex& index,
+                                              bool headerRow ) const
 {
     int rowCount = config.rows();
 
