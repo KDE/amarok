@@ -58,13 +58,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
 
         /**
-         * Paint the background for a text label. May or may not actually be a
-         * rounded rect, name is obsolete.  Use for the titles of applets, or
-         * other heading text.
-         */
-        void drawRoundedRectAroundText( QPainter *p, QGraphicsWidget *t );
-
-        /**
          * Paint the background of an applet, so it fits with all the other applets.
          *  Background is *no longer a gradient*. However, please use this to
          *  stay consistent with other applets.

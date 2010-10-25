@@ -80,6 +80,7 @@ LabelsApplet::init()
     m_titleLabel = new TextScrollingWidget( this );
     m_titleLabel.data()->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_titleLabel.data()->setFont( labelFont );
+    m_titleLabel.data()->setDrawBackground( true );
     m_titleText = i18n( "Labels" );
 
     // Set the collapse size
@@ -382,10 +383,6 @@ LabelsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     p->setRenderHint( QPainter::Antialiasing );
     // tint the whole applet
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title (only if not animating )
-    if ( !m_titleLabel.data()->isAnimating() )
-        drawRoundedRectAroundText( p, m_titleLabel.data() );
 }
 
 void

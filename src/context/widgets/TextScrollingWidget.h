@@ -41,6 +41,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsWidget
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
     Q_PROPERTY( QBrush brush READ brush WRITE setBrush )
     Q_PROPERTY( QString text READ text WRITE setText )
+    Q_PROPERTY( bool drawBackground READ isDrawingBackground WRITE setDrawBackground )
     Q_PROPERTY( QFont font READ font WRITE setFont )
     Q_PROPERTY( bool empty READ isEmpty )
 
@@ -58,6 +59,8 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsWidget
 
         void setBrush( const QBrush &brush );
 
+        void setDrawBackground( bool enable );
+
         void setText( const QString &text );
 
         void setFont( const QFont &font );
@@ -74,7 +77,11 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsWidget
 
         bool isEmpty() const;
 
+        bool isDrawingBackground() const;
+
         virtual QRectF boundingRect() const;
+
+        void paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
     protected slots:
         void startAnimation( QAbstractAnimation::Direction direction );

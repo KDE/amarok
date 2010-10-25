@@ -379,6 +379,7 @@ LyricsApplet::init()
     d->titleLabel->setFont( bigger );
     d->titleLabel->setText( i18n( "Lyrics" ) );
     d->titleLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    d->titleLabel->setDrawBackground( true );
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
@@ -619,16 +620,8 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
-    Q_D( LyricsApplet );
-
     p->setRenderHint( QPainter::Antialiasing );
-
-    // tint the whole applet
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title (only if not animating )
-    if ( !d->titleLabel->isAnimating() )
-        drawRoundedRectAroundText( p, d->titleLabel );
 }
 
 void

@@ -19,10 +19,13 @@
 
 #include "core/support/Debug.h"
 
+#include <Plasma/FrameSvg>
+
 #include <QFont>
 #include <QFontMetricsF>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneHoverEvent>
+#include <QPainter>
 #include <QTimer>
 #include <QPropertyAnimation>
 
@@ -33,7 +36,9 @@ public:
         : width( 0.0 )
         , delta( 0.0 )
         , currentDelta( 0.0 )
+        , drawBackground( false )
         , alignment( Qt::AlignHCenter )
+        , textBackground( 0 )
         , textItem( new QGraphicsSimpleTextItem( parent ) )
         , q_ptr( parent )
     {}
@@ -48,11 +53,35 @@ public:
             q->startAnimation( QAbstractAnimation::Forward );
     }
 
+    void drawRoundedRectAroundText( QPainter *p )
+    {
+        Q_Q( TextScrollingWidget );
+        p->save();
+        p->setRenderHint( QPainter::Antialiasing );
+
+        if( !textBackground )
+        {
+            textBackground = new Plasma::FrameSvg();
+            textBackground->setImagePath( QLatin1String("widgets/text-background") );
+            textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
+        }
+
+        QRectF rect = textItem->boundingRect();
+        rect = q->mapRectFromItem( textItem, rect );
+        rect.adjust( -5, -5, 5, 5 );
+
+        textBackground->resizeFrame( rect.size() );
+        textBackground->paintFrame( p, rect.topLeft() );
+        p->restore();
+    }
+
     qreal             width;          // box width
     qreal             delta;          // complete delta
     qreal             currentDelta;   // current delta
+    bool              drawBackground; // whether to draw background svg
     QString           text;           // full sentence
     Qt::Alignment     alignment;      // horizontal text item alignment
+    Plasma::FrameSvg *textBackground; // background svg for text
     QWeakPointer<QPropertyAnimation> animation; // scroll animation
 
     // QGraphicsTextItem *textItem;
@@ -303,6 +332,29 @@ TextScrollingWidget::boundingRect() const
 {
     Q_D( const TextScrollingWidget );
     return mapRectFromItem( d->textItem, d->textItem->boundingRect() );
+}
+
+void
+TextScrollingWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+    QGraphicsWidget::paint( p, option, widget );
+    Q_D( TextScrollingWidget );
+    if( d->drawBackground )
+        d->drawRoundedRectAroundText( p );
+}
+
+bool
+TextScrollingWidget::isDrawingBackground() const
+{
+    Q_D( const TextScrollingWidget );
+    return d->drawBackground;
+}
+
+void
+TextScrollingWidget::setDrawBackground( bool enable )
+{
+    Q_D( TextScrollingWidget );
+    d->drawBackground = enable;
 }
 
 #include "TextScrollingWidget.moc"

@@ -119,6 +119,7 @@ VideoclipApplet::init()
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Video Clip" ) );
+    m_headerText->setDrawBackground( true );
 
     // Set the collapse size
     setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
@@ -293,8 +294,6 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     p->setRenderHint( QPainter::Antialiasing );
     // tint the whole applet
     addGradientToAppletBackground( p );
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerText );
 }
 
 void 

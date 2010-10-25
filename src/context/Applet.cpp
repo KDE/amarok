@@ -97,28 +97,6 @@ Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRect
 }
 
 void
-Context::Applet::drawRoundedRectAroundText( QPainter *p, QGraphicsWidget *textItem )
-{
-    p->save();
-    p->setRenderHint( QPainter::Antialiasing );
-
-    if ( !m_textBackground )
-    {
-        m_textBackground = new Plasma::FrameSvg();
-        m_textBackground->setImagePath( "widgets/text-background" );
-        m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-    }
-
-    QRectF rect = textItem->boundingRect();
-    rect = mapRectFromItem( textItem, rect );
-    rect.adjust( -5, -5, 5, 5 );
-
-    m_textBackground->resizeFrame( rect.size() );
-    m_textBackground->paintFrame( p, rect.topLeft() );
-    p->restore();
-}
-
-void
 Context::Applet::addGradientToAppletBackground( QPainter* p )
 {
         // tint the whole applet

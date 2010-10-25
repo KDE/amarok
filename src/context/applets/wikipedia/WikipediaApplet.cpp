@@ -515,6 +515,7 @@ WikipediaApplet::init()
     d->wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     d->wikipediaLabel->setFont( labelFont );
     d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+    d->wikipediaLabel->setDrawBackground( true );
 
     QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
@@ -700,9 +701,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
-    Q_D( WikipediaApplet );
     addGradientToAppletBackground( p );
-    drawRoundedRectAroundText( p, d->wikipediaLabel );
 }
 
 void

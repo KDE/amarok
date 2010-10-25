@@ -73,6 +73,7 @@ void Albums::init()
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Recently added albums" ) );
+    m_headerText->setDrawBackground( true );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -228,10 +229,6 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
 
     // tint the whole applet
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title if not currently animating
-    if ( !m_headerText->isAnimating() )
-        drawRoundedRectAroundText( p, m_headerText );
 }
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )

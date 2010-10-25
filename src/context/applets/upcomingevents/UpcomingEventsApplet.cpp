@@ -90,6 +90,7 @@ UpcomingEventsApplet::init()
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
     m_headerLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    m_headerLabel->setDrawBackground( true );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     headerLayout->addItem( calendarIcon );
@@ -253,8 +254,6 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
     p->setRenderHint( QPainter::Antialiasing );
     addGradientToAppletBackground( p );
-    if( !m_headerLabel->isAnimating() )
-        drawRoundedRectAroundText( p, m_headerLabel );
 }
 
 void

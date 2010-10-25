@@ -75,6 +75,7 @@ SimilarArtistsApplet::init()
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Similar Artists" ) );
+    m_headerLabel->setDrawBackground( true );
 
     setCollapseHeight( m_headerLabel->boundingRect().height() + 3 * standardPadding() );
 
@@ -181,14 +182,8 @@ SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
-
     p->setRenderHint( QPainter::Antialiasing );
-
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title (only if not animating )
-    if( !m_headerLabel->isAnimating() )
-        drawRoundedRectAroundText( p, m_headerLabel );
 }
 
 void
