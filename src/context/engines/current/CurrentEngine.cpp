@@ -59,6 +59,8 @@ void
 CurrentEngine::init()
 {
     m_currentTrack = The::engineController()->currentTrack();
+    if( m_currentTrack )
+        subscribeTo( m_currentTrack );
     Plasma::DataEngine::init();
 }
 
