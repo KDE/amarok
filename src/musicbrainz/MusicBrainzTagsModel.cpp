@@ -100,9 +100,9 @@ MusicBrainzTagsModel::headerData( int section, Qt::Orientation orientation, int 
     if( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         switch( section )
         {
-            case 1: return "Title";
-            case 2: return "Artist";
-            case 3: return "Album";
+            case 1: return i18n( "Title" );
+            case 2: return i18n( "Artist" );
+            case 3: return i18n( "Album" );
             default: return QVariant();
         }
 

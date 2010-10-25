@@ -45,7 +45,7 @@ MusicDNSFinder::MusicDNSFinder( QObject *parent,
     _timer->setInterval( 1000 );
 
     decodingComplete = false;
-    
+
     connect( net, SIGNAL( finished( QNetworkReply * ) ), SLOT( gotReply( QNetworkReply * ) ) );
     connect( _timer, SIGNAL( timeout() ), SLOT( sendNewRequest() ) );
 }
@@ -69,13 +69,7 @@ void MusicDNSFinder::sendNewRequest()
     DEBUG_BLOCK
     if( m_requests.isEmpty() )
     {
-        if( m_parsers.isEmpty() &&  m_replyes.isEmpty() && decodingComplete )
-        {
-            debug() << "There is no any queued requests. Stopping timer.";
-            _timer->stop();
-            emit done();
-        }
-        _timer->stop();
+        checkDone();
         return;
     }
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
@@ -90,40 +84,20 @@ void
 MusicDNSFinder::gotReply( QNetworkReply *reply )
 {
     DEBUG_BLOCK
-    if( !m_replyes.contains( reply ) )
+    if( reply->error() == QNetworkReply::NoError && m_replyes.contains( reply ) )
     {
-        if( m_parsers.isEmpty() &&  m_replyes.isEmpty() && decodingComplete )
-        {
-            debug() << "There is no any queued requests. Stopping timer.";
-            _timer->stop();
-            emit done();
-        }
-        return;
+        QString document( reply->readAll() );
+        MusicDNSXmlParser *parser = new MusicDNSXmlParser( document );
+        if( !m_replyes.value( reply ).isNull() )
+            m_parsers.insert( parser, m_replyes.value( reply ) );
+
+        connect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( parsingDone( ThreadWeaver::Job * ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( parser );
     }
-    if( reply->error() != QNetworkReply::NoError )
-    {
-        debug() << "Request failed, remove it from queue.";
-        m_replyes.remove( reply );
 
-        if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete  )
-        {
-            debug() << "There is no any queued requests. Stopping timer.";
-            _timer->stop();
-            emit done();
-        }
-        reply->deleteLater();
-        return;
-    }
-    QString document( reply->readAll() );
-    MusicDNSXmlParser *parser = new MusicDNSXmlParser( document );
-    if( !m_replyes[reply].isNull() )
-        m_parsers.insert( parser, m_replyes.take( reply ) );
-
-    connect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( parsingDone( ThreadWeaver::Job * ) ) );
-
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
-
+    m_replyes.remove( reply );
     reply->deleteLater();
+    checkDone();
 }
 
 void
@@ -134,10 +108,7 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
     if( !reply )
         return;
 
-    if( !m_replyes.contains( reply ) )
-        return;
-
-    if( code == QNetworkReply::NoError )
+    if( !m_replyes.contains( reply ) || code == QNetworkReply::NoError )
         return;
 
     disconnect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
@@ -145,37 +116,29 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
 
     debug() << "Error occurred during network request: " << reply->errorString();
     m_replyes.remove( reply );
-
-    if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete  )
-    {
-        debug() << "There is no any queued requests. Stopping timer.";
-        _timer->stop();
-        emit done();
-    }
     reply->deleteLater();
+    checkDone();
 }
 
 void
 MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
 {
     DEBUG_BLOCK
-    MusicDNSXmlParser *parser = ( MusicDNSXmlParser * )_parser;
+    MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
     disconnect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), this, SLOT( parsingDone( ThreadWeaver::Job * ) ) );
     if( m_parsers.contains( parser ) )
     {
-        if( parser->puid().first() != "00000000-0000-0000-0000-000000000000" )
-            emit trackFound( m_parsers.take( parser ), parser->puid().first() );
-        else
-            m_parsers.remove( parser );
+        foreach( QString PUID, parser->puid() )
+            if( PUID != "00000000-0000-0000-0000-000000000000" )
+            {
+                emit trackFound( m_parsers.value( parser ), PUID );
+                break;
+            }
+        m_parsers.remove( parser );
     }
 
-    if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete )
-    {
-        debug() << "There is no any queued requests. Stopping timer.";
-        _timer->stop();
-        emit done();
-    }
     parser->deleteLater();
+    checkDone();
 }
 
 void
@@ -198,6 +161,18 @@ MusicDNSFinder::decodingDone( ThreadWeaver::Job *_decoder )
                 this, SLOT( decodingDone( ThreadWeaver::Job * ) ) );
     decoder->deleteLater();
     decodingComplete = true;
+    checkDone();
+}
+
+void
+MusicDNSFinder::checkDone()
+{
+    if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete )
+    {
+        debug() << "There is no any queued requests. Stopping timer.";
+        _timer->stop();
+        emit done();
+    }
 }
 
 QNetworkRequest

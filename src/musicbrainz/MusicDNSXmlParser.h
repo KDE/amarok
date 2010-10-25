@@ -24,6 +24,7 @@
 
 class MusicDNSXmlParser : public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         MusicDNSXmlParser(QString &doc );
         void run();

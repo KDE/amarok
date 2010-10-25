@@ -89,10 +89,9 @@ TimecodeEditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-TimecodeEditCapability::setUid( const QString &newUidOwner, const QString &newUid )
+TimecodeEditCapability::setUidUrl( const QString &newUidUrl )
 {
-    Q_UNUSED( newUidOwner )
-    Q_UNUSED( newUid )
+    Q_UNUSED( newUidUrl )
 }
 
 void

@@ -75,6 +75,7 @@ class MusicBrainzTagger : public KDialog
         MusicDNSFinder *mdns_finder;
         bool mdns_used;
         bool mdns_searchDone;
+        bool mb_searchDone;
 #endif
 
         MusicBrainzTrackListModel *q_trackListModel;

@@ -55,9 +55,9 @@ MusicBrainzTrackListModel::headerData( int section, Qt::Orientation orientation,
     if( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         switch( section )
         {
-            case 0: return "Title";
-            case 1: return "Artist";
-            case 2: return "Album";
+            case 0: return i18n( "Title" );
+            case 1: return i18n( "Artist" );
+            case 2: return i18n( "Album" );
             default: return QVariant();
         }
 

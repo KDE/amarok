@@ -18,7 +18,6 @@
 #define MUSICBRAINZFINDER_H
 
 #include "core/meta/Meta.h"
-#include "MusicBrainzMetaClasses.h"
 #include "MusicBrainzXmlParser.h"
 #include "NetworkAccessManagerProxy.h"
 #include "shared/Version.h"
@@ -63,26 +62,29 @@ class MusicBrainzFinder : public QObject
         QNetworkRequest compilePUIDRequest( const QString &puid );
         QNetworkRequest compileIDRequest( const QString &id );
 
-        QMap< QString, QString > guessMetadata( const Meta::TrackPtr &track );
+        void checkDone();
 
-        void sendTrack( MusicBrainzTrack &track );
+        QVariantMap guessMetadata( const Meta::TrackPtr &track );
+
+        void sendTrack( const Meta::TrackPtr track, const QVariantMap &info );
 
         QString mb_host;
         int mb_port;
         QString mb_pathPrefix;
-        const QString mb_username;
-        const QString mb_password;
+        QString mb_username;
+        QString mb_password;
 
-        QMap < Meta::TrackPtr, QMap < QString, QString > > m_parsedmetadata;
+        QMap < Meta::TrackPtr, QVariantMap > m_parsedMetaData;
 
         QNetworkAccessManager *net;
         QList < QPair < Meta::TrackPtr, QNetworkRequest > > m_requests;
         QMap < QNetworkReply *, Meta::TrackPtr > m_replyes;
         QMap < MusicBrainzXmlParser *, Meta::TrackPtr > m_parsers;
 
-        MusicBrainzTrackList mb_tracks;
-        MusicBrainzArtistList mb_artists;
-        MusicBrainzReleaseList mb_releases;
+        QMap < QString, Meta::TrackPtr > mb_tracks;     // MB Track ID -> TrackPtr
+        QMap < QString, QVariantMap > mb_trackInfo;     // MB Track ID -> Track info
+        QMap < QString, QVariantMap > mb_releasesCache; // MB Release ID -> Release info
+        QMap < QString, QStringList > mb_waitingForReleaseQueue;
 
         QTimer *_timer;
 };

@@ -43,7 +43,7 @@ namespace MetaFile
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
-            virtual void setUid( const QString &newUidOwner, const QString &newUid ) const;
+            virtual void setUidUrl( const QString &newUidUrl ) const;
 
             virtual bool isPlayable() const;
             virtual bool isEditable() const;

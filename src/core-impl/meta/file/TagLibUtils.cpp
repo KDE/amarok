@@ -29,6 +29,8 @@
 #include <tstringlist.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
+#include <apetag.h>
+#include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
@@ -122,6 +124,21 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     }
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            if( file->ID3v2Tag() )
+                file->ID3v2Tag()->removeFrames( "TPE2" );
+
+            QString artist = changes.value( Meta::Field::ALBUMARTIST ).toString();
+            if( !artist.isEmpty() )
+            {
+                TagLib::ID3v2::TextIdentificationFrame* frame =
+                        new TagLib::ID3v2::TextIdentificationFrame( "TPE2" );
+                frame->setText( Qt4QStringToTString( artist ) );
+                file->ID3v2Tag(true)->addFrame( frame );
+            }
+        }
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
             shouldSave = true;
@@ -165,32 +182,51 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->ID3v2Tag(true)->addFrame( frame );
             }
         }
-        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
+        if( changes.contains( Meta::Field::UNIQUEID ) )
         {
             shouldSave = true;
-            TagLib::String uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString() );
-            TagLib::ByteVector uid( changes.value( "uid" ).toString().toAscii().data() );
+
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::String uidOwner;
+            TagLib::ByteVector uid;
+
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "http://musicbrainz.org" );
+                uid = url.mid( 3 ).toAscii().data();
+            }
+            else
+            {
+                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = url.toAscii().data();
+            }
 
             TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
             TagLib::ID3v2::FrameList::Iterator iter;
             for( iter = frameList.begin(); iter != frameList.end(); ++iter )
             {
                 TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-                if( currFrame )
-                    if( uidOwner == currFrame->owner() )
-                    {
-                        file->ID3v2Tag()->removeFrame( currFrame );
-                        break;
-                    }
+                if( currFrame && uidOwner == currFrame->owner() )
+                {
+                    file->ID3v2Tag()->removeFrame( currFrame );
+                    break;
+                }
             }
 
-            TagLib::ID3v2::UniqueFileIdentifierFrame *uidFrame =
-                        new TagLib::ID3v2::UniqueFileIdentifierFrame( uidOwner, uid );
+            TagLib::ID3v2::UniqueFileIdentifierFrame *uidFrame = new TagLib::ID3v2::UniqueFileIdentifierFrame( uidOwner, uid );
             file->ID3v2Tag( true )->addFrame( uidFrame );
         }
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
+            file->tag()->addField("ALBUMARTIST", artist);
+        }
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
             shouldSave = true;
@@ -213,20 +249,37 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->tag()->removeField("BPM");
             }
         }
-        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
+        if( changes.contains( Meta::Field::UNIQUEID ) )
         {
             shouldSave = true;
-            TagLib::String uidOwner;
-            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
-                uidOwner = "MUSICBRAINZ_TRACKID";
-            else
-                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
 
-            file->tag()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::String uidOwner;
+            TagLib::String uid;
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
+                uid = Qt4QStringToTString( url.mid( 3 ) );
+            }
+            else
+            {
+                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = Qt4QStringToTString( url );
+            }
+
+            file->tag()->addField( uidOwner, uid );
         }
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
+            file->tag()->addField("ALBUMARTIST", artist);
+        }
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
             shouldSave = true;
@@ -249,20 +302,37 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->tag()->removeField("BPM");
             }
         }
-        if( changes.contains( "uid_owner" ) && changes.contains( "uid" ) )
+        if( changes.contains( Meta::Field:: UNIQUEID ) )
         {
             shouldSave = true;
-            TagLib::String uidOwner;
-            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
-                uidOwner = "MUSICBRAINZ_TRACKID";
-            else
-                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
 
-            file->tag()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::String uidOwner;
+            TagLib::String uid;
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
+                uid = Qt4QStringToTString( url.mid( 3 ) );
+            }
+            else
+            {
+                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = Qt4QStringToTString( url );
+            }
+
+            file->tag()->addField( uidOwner, uid );
         }
     }
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
+            file->xiphComment()->addField("ALBUMARTIST", artist);
+        }
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
             shouldSave = true;
@@ -285,20 +355,38 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->xiphComment()->removeField("BPM");
             }
         }
-        if( changes.contains( "uid_owner" ) && changes.contains( Meta::Field::UNIQUEID ) )
+        if( changes.contains( Meta::Field::UNIQUEID ) )
         {
             shouldSave = true;
-            TagLib::String uidOwner;
-            if( changes.value( "uid_owner" ).toString() == "http://musicbrainz.org" )
-                uidOwner = "MUSICBRAINZ_TRACKID";
-            else
-                uidOwner = Qt4QStringToTString( changes.value( "uid_owner" ).toString().toUpper() );
 
-            file->xiphComment()->addField( uidOwner, Qt4QStringToTString( changes.value( "uid" ).toString() ) );
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::String uidOwner;
+            TagLib::String uid;
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
+                uid = Qt4QStringToTString( url.mid( 3 ) );
+            }
+            else
+            {
+                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = Qt4QStringToTString( url );
+            }
+
+            file->xiphComment()->addField( uidOwner, uid );
         }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
+            mp4tag->itemListMap()["aART"] = TagLib::StringList( artist );
+        }
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
             shouldSave = true;
@@ -319,6 +407,80 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             int bpm = changes.value( Meta::Field::BPM ).toInt();
             mp4tag->itemListMap()["bpm"] = TagLib::MP4::Item( bpm, 0 );
+        }
+        if( changes.contains( Meta::Field::UNIQUEID ) )
+        {
+            shouldSave = true;
+
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            TagLib::String uidOwner;
+            TagLib::String uid;
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "----:MusicBrainz Track Id" );
+                uid = Qt4QStringToTString( url.mid( 3 ) );
+            }
+            else
+            {
+                uidOwner = TagLib::String( "----:Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = Qt4QStringToTString( url );
+            }
+            mp4tag->itemListMap()[uidOwner] = TagLib::StringList( uid );
+        }
+    }
+    else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        {
+            shouldSave = true;
+            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
+            file->APETag()->addValue( "Album Artist", artist );
+        }
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            shouldSave = true;
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            file->APETag()->addValue( "Composer", composer );
+        }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            shouldSave = true;
+            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
+            file->APETag()->addValue( "Disc", disc );
+        }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            if (changes.value( Meta::Field::BPM ).toDouble() > 0)
+            {
+                shouldSave = true;
+                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
+                file->APETag()->addValue( "BPM", bpm );
+            }
+        }
+        if( changes.contains( Meta::Field::UNIQUEID ) )
+        {
+            shouldSave = true;
+
+            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
+                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
+                          : changes.value( Meta::Field::UNIQUEID ).toString();
+            TagLib::String uidOwner;
+            TagLib::String uid;
+            if( url.startsWith( "mb-" ) )
+            {
+                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
+                uid = Qt4QStringToTString( url.mid( 3 ) );
+            }
+            else
+            {
+                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
+                uid = Qt4QStringToTString( url );
+            }
+
+            file->APETag()->addValue( uidOwner, uid );
         }
     }
     if( shouldSave )

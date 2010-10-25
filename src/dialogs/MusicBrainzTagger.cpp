@@ -73,6 +73,7 @@ MusicBrainzTagger::init()
     ui->treeView_Result->header()->setToolTip( i18n( "Click on the first column header to check all tracks" ) );
 
 #ifdef HAVE_LIBOFA
+    mdns_used = mdns_searchDone = mb_searchDone= false;
     mdns_finder = new MusicDNSFinder( this );
     connect( mdns_finder, SIGNAL( trackFound( Meta::TrackPtr, QString ) ),
              mb_finder, SLOT( lookUpByPUID( Meta::TrackPtr, QString ) ) );
@@ -95,9 +96,7 @@ void
 MusicBrainzTagger::search()
 {
     m_failedTracks.clear();
-#ifdef HAVE_LIBOFA
-    mdns_used = mdns_searchDone = false;
-#endif
+
     if( ui->treeView_Tracks->selectionModel()->selectedRows().isEmpty() )
         ui->treeView_Tracks->selectAll();
 
@@ -112,6 +111,14 @@ MusicBrainzTagger::search()
     ui->progressBar->setValue( 0 );
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
     ui->progressBar->show();
+#ifdef HAVE_LIBOFA
+    if( mb_searchDone )
+    {
+        mdns_used = true;
+        mdns_finder->run( m_failedTracks );
+        return;
+    }
+#endif
     mb_finder->run( m_failedTracks );
 }
 
@@ -136,12 +143,13 @@ MusicBrainzTagger::searchDone()
 Try to find them with MusicDNS service?" ), windowTitle() ) == KMessageBox::Yes )
         {
             mdns_used = true;
+            mdns_searchDone = false;
             ui->progressBar->setRange( 0, m_failedTracks.count() );
             ui->progressBar->setValue( 0 );
             mdns_finder->run( m_failedTracks );
             return;
         }
-    mdns_used = false;
+    mb_searchDone = true;
 #endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();

@@ -46,6 +46,7 @@
 #include <id3v1tag.h>
 #include <id3v2tag.h>
 #include <mpcfile.h>
+#include <apetag.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
@@ -85,6 +86,7 @@ struct MetaData
     QString title;
     QString artist;
     QString album;
+    QString albumArtist;
     QString comment;
     QString composer;
     QString genre;
@@ -199,7 +201,7 @@ void Track::Private::readMetaData()
                 m_data.composer = strip( flm[ "TCOM" ].front()->toString() );
 
             if( !flm[ "TPE2" ].isEmpty() )
-                m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
+                m_data.albumArtist = strip( flm[ "TPE2" ].front()->toString() );
 
             if( !flm[ "TBPM" ].isEmpty() )
                 m_data.bpm = TStringToQString( flm[ "TBPM" ].front()->toString() ).toFloat();
@@ -214,7 +216,7 @@ void Track::Private::readMetaData()
                     if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
                         currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
                     {
-                        m_data.embeddedImage = true;    
+                        m_data.embeddedImage = true;
                     }
                 }
             }
@@ -265,6 +267,8 @@ void Track::Private::readMetaData()
         if( file->tag() )
         {
             const TagLib::Ogg::FieldListMap flm = file->tag()->fieldListMap();
+            if( !flm[ "ALBUMARTIST" ].isEmpty() )
+                m_data.albumArtist = strip( flm[ "ALBUMARTIST" ].front() );
             if( !flm[ "COMPOSER" ].isEmpty() )
                 m_data.composer = strip( flm[ "COMPOSER" ].front() );
             if( !flm[ "DISCNUMBER" ].isEmpty() )
@@ -279,6 +283,8 @@ void Track::Private::readMetaData()
         if( file->xiphComment() )
         {
             const TagLib::Ogg::FieldListMap flm = file->xiphComment()->fieldListMap();
+            if( !flm[ "ALBUMARTIST" ].isEmpty() )
+                m_data.albumArtist = strip( flm[ "ALBUMARTIST" ].front() );
             if( !flm[ "COMPOSER" ].isEmpty() )
                 m_data.composer = strip( flm[ "COMPOSER" ].front() );
             if( !flm[ "DISCNUMBER" ].isEmpty() )
@@ -292,6 +298,9 @@ void Track::Private::readMetaData()
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
+            if ( mp4tag->itemListMap().contains( "aART" ) )
+                m_data.albumArtist = strip( mp4tag->itemListMap()["aART"].toStringList().front() );
+
             if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
                 m_data.composer = strip( mp4tag->itemListMap()["\xA9wrt"].toStringList().front() );
 
@@ -300,6 +309,21 @@ void Track::Private::readMetaData()
 
             if ( mp4tag->itemListMap().contains( "tmpo" ) )
                 m_data.bpm = mp4tag->itemListMap()["tmpo"].toIntPair().first;
+        }
+    }
+    else if( TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File *>( fileRef.file() ) )
+    {
+        if( file->APETag() )
+        {
+            const TagLib::APE::ItemListMap &itemsMap = file->APETag()->itemListMap();
+            if( itemsMap.contains( "Album Artist" ) )
+                m_data.albumArtist = strip( itemsMap[ "Album Artist" ].toString() );
+            if( itemsMap.contains( "Composer" ) )
+                m_data.composer = strip( itemsMap[ "Composer" ].toString() );
+            if( itemsMap.contains( "Disc" ) )
+                disc = strip( itemsMap[ "Disc" ].toString() );
+            if( itemsMap.contains( "BPM" ) )
+                m_data.bpm = TStringToQString( itemsMap[ "BPM" ].toString() ).toFloat();
         }
     }
     if( !disc.isEmpty() )
@@ -325,6 +349,11 @@ void Track::Private::readMetaData()
     {
         m_data.title = url.fileName();
     }
+
+    if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
+        m_data.artist = m_data.albumArtist;
+    else if( !m_data.artist.isEmpty() && m_data.albumArtist.isEmpty() )
+        m_data.albumArtist = m_data.artist;
 
     // debug() << "Read metadata from file for: " + m_data.title;
 }

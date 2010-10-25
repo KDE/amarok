@@ -54,7 +54,7 @@ namespace Capabilities
 
             virtual void setBpm( const qreal newBpm ) = 0;
 
-            virtual void setUid( const QString &newUidOwner, const QString &newUid ) = 0;
+            virtual void setUidUrl( const QString &newUidUrl ) = 0;
 
             /** The track object should not store changed meta data immediately but cache the
             changes until endMetaDataUpdate() is called */

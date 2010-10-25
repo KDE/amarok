@@ -18,7 +18,7 @@
 #define MUSICBRAINZTAGSMODEL_H
 
 #include <KLocalizedString>
-#include "MusicBrainzMetaClasses.h"
+#include <core/meta/Meta.h>
 #include <QAbstractItemModel>
 
 class MusicBrainzTagsModel : public QAbstractItemModel

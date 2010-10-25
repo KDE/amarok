@@ -14,57 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZXMLPARSER_H
-#define MUSICBRAINZXMLPARSER_H
+#ifndef MUSICBRAINZMETA_H
+#define MUSICBRAINZMETA_H
 
-#include <QDomDocument>
-#include <QStringList>
-#include <QVariantMap>
+#include <QString>
 
-#include <threadweaver/Job.h>
-
-class MusicBrainzXmlParser : public ThreadWeaver::Job
+namespace MusicBrainz
 {
-    Q_OBJECT
-    public:
-        enum
-        {
-            Release     = 1,
-            TrackList   = 2,
-            Track       = 3
-        };
+    static const QString ARTISTID   = "mb:ArtistID";
+    static const QString RELEASEID  = "mb:ReleaseID";
+    static const QString RELEASELIST= "mb:ReleaseList";
+    static const QString TRACKID    = "mb:TrackID";
+    static const QString TRACKOFFSET= "mb:TrackOffset";
+}
 
-        MusicBrainzXmlParser(QString &doc );
-        void run();
-
-        int type();
-
-        QVariantMap grabFirstTrack();
-
-        QMap< QString, QVariantMap > tracks;
-        QMap< QString, QString > artists;
-        QMap< QString, QVariantMap > releases;
-
-    private:
-        void parseElement( const QDomElement &e );
-        void parseChildren( const QDomElement &e );
-
-        QStringList parseReleaseList( const QDomElement &e );
-        QString parseRelease( const QDomElement &e );
-
-        int parseReleaseEventList( const QDomElement &e );
-        int parseReleaseEvent( const QDomElement &e );
-
-        QStringList parseTrackList( const QDomElement &e );
-        QString parseTrack( const QDomElement &e );
-
-        QString parseArtist( const QDomElement &e );
-
-        QDomDocument m_doc;
-
-        int m_type;
-
-        QVariantMap currentTrackOffsets;
-};
-
-#endif // MUSICBRAINZXMLPARSER_H
+#endif //MUSICBRAINZMETA_H

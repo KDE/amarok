@@ -28,6 +28,7 @@
 #include <kio/global.h>
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
+        static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
         static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
         static const QString XESAM_BPM            = "http://freedesktop.org/standards/xesam/1.0/core#audioBPM";
@@ -316,6 +317,8 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
 {
     if( name == XESAM_ARTIST )
         return Meta::Field::ARTIST;
+    if( name == XESAM_ALBUMARTIST )
+        return Meta::Field::ALBUMARTIST;
     else if( name == XESAM_ALBUM )
         return Meta::Field::ALBUM;
     else if( name == XESAM_BITRATE )

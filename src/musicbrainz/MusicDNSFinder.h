@@ -56,6 +56,7 @@ class MusicDNSFinder: public QObject
 
     private:
         QNetworkRequest compileRequest( const QString &fingerprint, const Meta::TrackPtr track );
+        void checkDone();
 
         QString mdns_host;
         int mdns_port;
