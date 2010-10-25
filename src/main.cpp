@@ -232,8 +232,6 @@ int main( int argc, char *argv[] )
         return 0;
     }
 
-    args->clear(); // Free up some memory
-
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
     return app.exec();
