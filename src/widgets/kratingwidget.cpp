@@ -209,11 +209,14 @@ void KRatingWidget::mousePressEvent( QMouseEvent* e )
 void KRatingWidget::mouseMoveEvent( QMouseEvent* e )
 {
     // when moving the mouse we show the user what the result of clicking will be
+    const int prevHoverRating = d->hoverRating;
     d->hoverRating = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
+    if ( d->hoverRating != prevHoverRating ) {
+        update();
+    }
     if ( d->hoverRating >= 0 && e->buttons() & Qt::LeftButton ) {
         setRating( d->hoverRating );
     }
-    update();
 }
 
 
