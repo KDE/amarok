@@ -20,16 +20,12 @@
 #include "TestCaseConverter.h"
 
 #include "CaseConverter.h"
-#include "core/support/Debug.h"
 
 #include <QtTest/QTest>
 
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestCaseConverter )
-
-//required for Debug.h
-QMutex Debug::mutex;
 
 TestCaseConverter::TestCaseConverter()
 {

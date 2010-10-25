@@ -20,17 +20,12 @@
 #include "TestTagGuesser.h"
 
 #include "dialogs/TagGuesser.h"
-#include "core/support/Debug.h"
 
 #include <QMap>
-#include <QDebug>
 
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestTagGuesser )
-
-//required for Debug.h
-QMutex Debug::mutex;
 
 TestTagGuesser::TestTagGuesser()
 {

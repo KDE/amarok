@@ -53,7 +53,7 @@ set( testcaseconverter_SRCS
 
 kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
 
-target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
 
 #------------------------ Test Expression -----------------------------
 
@@ -96,7 +96,7 @@ set( testtagguesser_SRCS
 
 kde4_add_unit_test( testtagguesser  ${testtagguesser_SRCS} )
 
-target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
 
 #------------------------ Test TrackOrganizer -----------------------------
 
