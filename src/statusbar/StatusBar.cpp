@@ -16,8 +16,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "StatusBar"
+
 #include "statusbar/StatusBar.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LongMessageWidget.h"
@@ -168,6 +171,9 @@ StatusBar::StatusBar( QWidget * parent )
     {
         warning() << "Was not able to register statusbar as logger";
     }
+
+    if( AmarokConfig::resumePlayback() )
+        m_currentTrack = The::engineController()->currentTrack();
 }
 
 
