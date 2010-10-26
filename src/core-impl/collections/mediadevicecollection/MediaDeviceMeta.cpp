@@ -778,7 +778,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
     , m_isCompilation( false )
     , m_hasImage( true ) // assume it has a cover until proven otherwise
     , m_hasImageChecked( false )
-    , m_image( QPixmap() )
+    , m_image( QImage() )
     , m_albumArtist( 0 )
 {
     MediaDeviceHandler *handler = m_collection->handler();
@@ -852,8 +852,8 @@ MediaDeviceAlbum::image( int size )
     if( !m_image.isNull() )
     {
         if( !size )
-            return m_image;
-        return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+            return QPixmap::fromImage(m_image);
+        return QPixmap::fromImage(m_image).scaled( QSize( size, size ), Qt::KeepAspectRatio );
     }
     if( m_artworkCapability )
     {
@@ -863,10 +863,10 @@ MediaDeviceAlbum::image( int size )
         if( !cover.isNull() )
         {
             m_hasImage = true;
-            m_image = cover;
+            m_image = cover.toImage();
             if( !size )
-                return m_image;
-            return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+                return cover;
+            return cover.scaled( QSize( size, size ), Qt::KeepAspectRatio );
         }
         else
             m_hasImage = false;
@@ -885,13 +885,13 @@ MediaDeviceAlbum::canUpdateImage() const
 
 // TODO: forward setImage calls to handler
 void
-MediaDeviceAlbum::setImage( const QPixmap &pixmap )
+MediaDeviceAlbum::setImage( const QImage &image )
 {
     if( m_artworkCapability && m_artworkCapability->canUpdateCover() )
     {
-        m_image = pixmap;
+        m_image = image;
         m_hasImage = true;
-        m_artworkCapability->setCover( MediaDeviceAlbumPtr( this ), pixmap );
+        m_artworkCapability->setCover( MediaDeviceAlbumPtr( this ), image );
     }
 }
 

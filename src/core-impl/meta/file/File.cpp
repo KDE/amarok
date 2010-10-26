@@ -749,6 +749,7 @@ QImage
 Track::getEmbeddedCover( const QString &path ) //static
 {
     TagLib::FileRef fileref = getFileRef( path );
+debug() << "Track::getEmbeddedCover" << path;
 
     if( fileref.isNull() )
         return QImage();
@@ -760,6 +761,7 @@ Track::getEmbeddedCover( const QString &path ) //static
     TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
     TagLib::ID3v2::FrameList::ConstIterator iter;
     TagLib::ID3v2::AttachedPictureFrame* frameToUse = 0;
+debug() << "Track::getEmbeddedCover found apics" << apicList.size();
     for( iter = apicList.begin(); iter != apicList.end(); ++iter )
     {
         TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
@@ -768,8 +770,11 @@ Track::getEmbeddedCover( const QString &path ) //static
         else if( !frameToUse && currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
             frameToUse = currFrame;
     }
+debug() << "Track::getEmbeddedCover frameToUse" << frameToUse;
     if( !frameToUse )
         return QImage();
+
+debug() << "Track::getEmbeddedCover size:" << frameToUse->picture().size();
 
     return QImage::fromData((uchar*)(frameToUse->picture().data()), frameToUse->picture().size());
 }

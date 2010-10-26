@@ -542,7 +542,7 @@ TimecodeAlbum::image( int size )
     if ( m_coverSizeMap.contains( size ) )
          return m_coverSizeMap.value( size );
 
-    QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    QPixmap scaled = QPixmap::fromImage(m_cover).scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     m_coverSizeMap.insert( size, scaled );
     return scaled;
@@ -555,9 +555,9 @@ TimecodeAlbum::canUpdateImage() const
 }
 
 void
-TimecodeAlbum::setImage( const QPixmap & pixmap )
+TimecodeAlbum::setImage( const QImage &image )
 {
-    m_cover = pixmap;
+    m_cover = image;
     notifyObservers();
 }
 

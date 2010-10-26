@@ -169,11 +169,11 @@ SetCustomCoverAction::slotTriggered()
 
     if( !file.isEmpty() )
     {
-        QPixmap pixmap;
+        QImage image;
 
         if( file.isLocalFile() )
         {
-            pixmap.load( file.path() );
+            image.load( file.path() );
 
         }
         else
@@ -190,15 +190,15 @@ SetCustomCoverAction::slotTriggered()
                                                   qobject_cast<QWidget*>( parent() ) );
 
             if( ret )
-                pixmap.load( coverDownloadPath );
+                image.load( coverDownloadPath );
         }
 
-        if( !pixmap.isNull() )
+        if( !image.isNull() )
         {
             foreach( Meta::AlbumPtr album, m_albums )
             {
                 if( album && album->canUpdateImage() )
-                    album->setImage( pixmap );
+                    album->setImage( image );
             }
         }
     }

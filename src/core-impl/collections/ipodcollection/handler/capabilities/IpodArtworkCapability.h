@@ -36,7 +36,7 @@ namespace Handler
 
             virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
 
-            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QPixmap &pixmap );
+            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image );
 
             virtual void setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path );
 

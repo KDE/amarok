@@ -222,7 +222,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual bool hasImage( int size = 1 ) const;
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
         virtual void setImagePath( const QString &path );
         virtual void removeImage();
 
@@ -245,7 +245,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         bool            m_isCompilation;
         mutable bool    m_hasImage;
         bool            m_hasImageChecked;
-        QPixmap         m_image;
+        QImage          m_image;
         MediaDeviceArtistPtr   m_albumArtist;
 };
 

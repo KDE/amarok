@@ -25,6 +25,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QMetaType>
+#include <QImage>
 #include <QPixmap>
 #include <QSet>
 #include <QSharedData>
@@ -345,7 +346,7 @@ namespace Meta
         Q_PROPERTY( ArtistPtr albumArtist READ albumArtist )
         Q_PROPERTY( TrackList tracks READ tracks )
         Q_PROPERTY( bool hasImage READ hasImage )
-        Q_PROPERTY( QPixmap image READ image WRITE setImage )
+        // Q_PROPERTY( QPixmap image READ image WRITE setImage )
         Q_PROPERTY( bool supressImageAutoFetch READ suppressImageAutoFetch WRITE setSuppressImageAutoFetch )
 
         public:
@@ -365,16 +366,25 @@ namespace Meta
              *  when size is <= 1, return the full size image
              */
             /** returns true if the album has a cover set */
-            virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return false; }
-            /** returns the "nocover" image; proper cover image getter is
-             * implemented in subclasses  */
-            virtual QPixmap image( int size = 1 );
+            virtual bool hasImage( int size = 0 ) const { Q_UNUSED( size ); return false; }
+
+            /** Returns the image for the album, usually the cover image.
+                The default implementation returns the "nocover" image; proper cover image getter is
+                implemented in subclasses.
+            */
+            virtual QPixmap image( int size = 0 );
+
             /** returns the image location on disk */
-            virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl(); }
+            virtual KUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return KUrl(); }
+
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
-            /** updates the cover of the album */
-            virtual void setImage( const QPixmap &pixmap ) { Q_UNUSED( pixmap ); } //TODO: choose parameter
+
+            /** updates the cover of the album
+                @param image The large scale image that should be used as cover for the album.
+                Note: the parameter should not be a QPixmap as a pixmap can only be created reliable in a UI thread.
+            */
+            virtual void setImage( const QImage &image ) { Q_UNUSED( image ); }
             /** removes the album art */
             virtual void removeImage() { }
             /** don't automatically fetch artwork */

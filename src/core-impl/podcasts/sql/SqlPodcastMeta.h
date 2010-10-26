@@ -110,8 +110,8 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }
-        virtual void setImage( const QPixmap &image );
-        virtual QPixmap image() const { return m_image; }
+        virtual void setImage( const QImage &image );
+        virtual QPixmap image() const { return QPixmap::fromImage(m_image); }
         virtual KUrl imageUrl() const { return m_imageUrl; }
         virtual void setImageUrl( const KUrl &imageUrl );
 

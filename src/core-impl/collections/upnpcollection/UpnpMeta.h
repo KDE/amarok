@@ -181,9 +181,7 @@ class UpnpAlbum : public QObject, public Meta::Album
 
         virtual bool hasImage( int size = 1 ) const;
         virtual QPixmap image( int size = 1 );
-        virtual bool canUpdateImage() const { return false; };
-        virtual void setImage( const QPixmap &pixmap ) { Q_UNUSED(pixmap); };
-        virtual KUrl imageLocation( int size = 1 ); 
+        virtual KUrl imageLocation( int size = 1 );
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 

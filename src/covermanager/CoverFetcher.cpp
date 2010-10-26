@@ -139,7 +139,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     // show the dialog straight away if fetch is interactive
     if( !m_dialog && unit->isInteractive() )
     {
-        showCover( unit, QPixmap() );
+        showCover( unit, QImage() );
     }
     else if( urls.isEmpty() )
     {
@@ -200,18 +200,18 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
         break;
 
     case CoverFetchPayload::Art:
-        QPixmap pixmap;
-        if( pixmap.loadFromData( data ) )
+        QImage image;
+        if( image.loadFromData( data ) )
         {
             if( unit->isInteractive() )
             {
                 const CoverFetch::Metadata &metadata = payload->urls().value( url );
-                showCover( unit, pixmap, metadata );
+                showCover( unit, image, metadata );
                 m_queue->remove( unit );
             }
             else
             {
-                m_selectedPixmaps.insert( unit, pixmap );
+                m_selectedImages.insert( unit, image );
                 finish( unit );
             }
         }
@@ -226,7 +226,7 @@ CoverFetcher::slotDialogFinished()
     switch( m_dialog.data()->result() )
     {
     case KDialog::Accepted:
-        m_selectedPixmaps.insert( unit, m_dialog.data()->image() );
+        m_selectedImages.insert( unit, m_dialog.data()->image() );
         finish( unit );
         break;
 
@@ -255,7 +255,7 @@ CoverFetcher::slotDialogFinished()
 
 void
 CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
-                         const QPixmap &cover,
+                         const QImage &cover,
                          const CoverFetch::Metadata &data )
 {
     if( !m_dialog )
@@ -298,7 +298,7 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 {
     m_queue->remove( unit );
     m_queueLater.removeAll( unit->album() );
-    m_selectedPixmaps.remove( unit );
+    m_selectedImages.remove( unit );
     KUrl::List urls = m_urls.keys( unit );
     foreach( const KUrl &url, urls )
         m_urls.remove( url );
@@ -322,7 +322,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
-        album->setImage( m_selectedPixmaps.take( unit ) );
+        album->setImage( m_selectedImages.take( unit ) );
         abortFetch( unit );
         break;
 

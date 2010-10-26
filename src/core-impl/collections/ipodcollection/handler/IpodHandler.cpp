@@ -1914,7 +1914,7 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 }
 
 void
-IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
+IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image )
 {
 #ifdef GDKPIXBUF_FOUND
     if( image.isNull() || !m_supportsArtwork )

@@ -199,7 +199,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
-        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image );
+        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image );
         virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
 
         virtual void prepareToCopy();

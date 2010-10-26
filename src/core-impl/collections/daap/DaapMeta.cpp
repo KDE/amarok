@@ -439,9 +439,9 @@ DaapAlbum::canUpdateImage() const
 }
 
 void
-DaapAlbum::setImage( const QPixmap &pixmap )
+DaapAlbum::setImage( const QImage &image )
 {
-    Q_UNUSED(pixmap);
+    Q_UNUSED(image);
     //TODO
 }
 

@@ -878,11 +878,11 @@ ProxyAlbum::canUpdateImage() const
 }
 
 void
-ProxyAlbum::setImage( const QPixmap &pixmap )
+ProxyAlbum::setImage( const QImage &image )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
-        album->setImage( pixmap );
+        album->setImage( image );
     }
 }
 

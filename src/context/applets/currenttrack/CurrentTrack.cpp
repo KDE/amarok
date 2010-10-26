@@ -699,7 +699,7 @@ CurrentTrack::coverDropped( QPixmap cover )
         return;
 
     if ( !cover.isNull() )
-        album->setImage( cover );
+        album->setImage( cover.toImage() );
 }
 
 void

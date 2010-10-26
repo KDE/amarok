@@ -170,7 +170,7 @@ class DaapAlbum : public Meta::Album
 
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
 
         //DaapAlbum specific methods
         void addTrack( DaapTrackPtr track );

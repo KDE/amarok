@@ -129,7 +129,7 @@ namespace Meta {
         /** Returns true if it is possible to update the cover of the album */
         virtual bool canUpdateImage() const;
         /** updates the cover of the album */
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
         virtual void removeImage();
         /** don't automatically fetch artwork */
         virtual void setSuppressImageAutoFetch( const bool suppress );

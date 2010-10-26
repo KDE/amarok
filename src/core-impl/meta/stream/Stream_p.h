@@ -205,9 +205,9 @@ public:
         return name();
     }
 
-    void setImage( const QPixmap &pixmap )
+    void setImage( const QImage &image )
     {
-        m_cover = pixmap;
+        m_cover = image;
     }
 
     QPixmap image( int size )
@@ -219,7 +219,7 @@ public:
         if ( m_coverSizeMap.contains( size ) )
             return m_coverSizeMap.value( size );
 
-        QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        QPixmap scaled = QPixmap::fromImage(m_cover).scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
         m_coverSizeMap.insert( size, scaled );
         return scaled;
@@ -231,7 +231,7 @@ public:
 
     MetaStream::Track::Private * const d;
     QMap <int, QPixmap> m_coverSizeMap;
-    QPixmap m_cover;
+    QImage m_cover;
 };
 
 

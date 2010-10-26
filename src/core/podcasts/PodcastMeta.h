@@ -241,14 +241,14 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual KUrl webLink() const { return m_webLink; }
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual KUrl imageUrl() const { return m_imageUrl; }
-        virtual QPixmap image() const { return m_image; }
+        virtual QPixmap image() const { return QPixmap::fromImage(m_image); }
         virtual QString copyright() { return m_copyright; }
         virtual QStringList labels() const { return m_labels; }
         virtual QDate subscribeDate() const { return m_subscribeDate; }
 
         virtual void setUrl( const KUrl &url ) { m_url = url; }
         virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
-        virtual void setImage( const QPixmap &image ) { m_image = image; }
+        virtual void setImage( const QImage &image ) { m_image = image; }
         virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
         virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
         virtual void setLabels( const QStringList &labels ) { m_labels = labels; }
@@ -280,7 +280,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
     protected:
         KUrl m_url;
         KUrl m_webLink;
-        QPixmap m_image;
+        QImage m_image;
         KUrl m_imageUrl;
         QStringList m_labels;
         QDate m_subscribeDate;

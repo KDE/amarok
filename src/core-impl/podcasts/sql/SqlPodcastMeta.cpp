@@ -524,7 +524,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_copyright = channel->copyright();
     
     if( channel->hasImage() )
-        m_image = channel->image();
+        m_image = channel->image().toImage();
 
     //Default Settings
 
@@ -593,7 +593,7 @@ SqlPodcastChannel::episodes()
 }
 
 void
-SqlPodcastChannel::setImage( const QPixmap &image )
+SqlPodcastChannel::setImage( const QImage &image )
 {
     DEBUG_BLOCK
 
@@ -609,7 +609,7 @@ SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
 
     if( imageUrl.isLocalFile() )
     {
-        m_image = QPixmap( imageUrl.path() );
+        m_image = QImage( imageUrl.path() );
         return;
     }
 

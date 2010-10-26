@@ -202,9 +202,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     if( !m_album->hasImage() )
         m_sideBar->setPixmap( m_album->image(190) );
     else if( payload )
-        add( m_album->image(), data, payload->imageSize() );
+        add( m_album->image().toImage(), data, payload->imageSize() );
     else
-        add( m_album->image(), data );
+        add( m_album->image().toImage(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
 }
@@ -230,14 +230,14 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
-void CoverFoundDialog::add( const QPixmap &cover,
+void CoverFoundDialog::add( const QImage &cover,
                             const CoverFetch::Metadata &metadata,
                             const CoverFetch::ImageSize imageSize )
 {
     if( cover.isNull() )
         return;
 
-    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
+    CoverFoundItem *item = new CoverFoundItem( QPixmap::fromImage(cover), metadata, imageSize );
     if( !contains( item ) )
         addToView( item );
     else
@@ -334,8 +334,9 @@ void CoverFoundDialog::itemSelected()
     CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
     if( it )
     {
-        m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-        m_sideBar->setPixmap( m_pixmap, it->metadata() );
+        QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+        m_image = pixmap.toImage();
+        m_sideBar->setPixmap( pixmap, it->metadata() );
     }
 }
 
@@ -441,7 +442,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 
         if( gotBigPix )
         {
-            m_pixmap = item->bigPix();
+            m_image = item->bigPix().toImage();
             accept();
         }
     }

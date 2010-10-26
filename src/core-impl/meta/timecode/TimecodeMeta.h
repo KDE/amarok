@@ -197,7 +197,7 @@ public:
 
     virtual QPixmap image( int size = 1 );
     virtual bool canUpdateImage() const;
-    virtual void setImage( const QPixmap &pixmap );
+    virtual void setImage( const QImage &image );
 
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
     virtual Capabilities::Capability* asCapabilityInterface( Capabilities::Capability::Type type );
@@ -218,7 +218,7 @@ private:
     bool m_isCompilation;
     TimecodeArtistPtr m_albumArtist;
 
-    QPixmap m_cover;
+    QImage m_cover;
     QMap<int, QPixmap> m_coverSizeMap;
 
     QAction *m_separator;

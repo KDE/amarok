@@ -328,7 +328,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         virtual QPixmap image( int size = 1 );
 
         virtual KUrl imageLocation( int size = 1 );
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
         virtual void removeImage();
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
         virtual bool suppressImageAutoFetch() const { return m_suppressAutoFetch; }
@@ -367,7 +367,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
          *  Does not check if the file exists.
          *  Note: not all large images have a disk cache, e.g. if they are set from outside
          *    or embedded inside an audio file.
-         *    The largeDiskCache is only used for images set via setImage(QPixmap)
+         *    The largeDiskCache is only used for images set via setImage(QImage)
          */
         QString largeDiskCachePath() const;
 

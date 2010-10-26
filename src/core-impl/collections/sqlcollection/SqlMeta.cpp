@@ -600,7 +600,7 @@ SqlTrack::commitMetaDataChanges()
         // physically copied.
         if( oldAlbum &&
             oldAlbum->hasImage(0) && !newAlbum->hasImage(0) )
-            newAlbum->setImage( oldAlbum->image(0) );
+            newAlbum->setImage( oldAlbum->image(0).toImage() );
 
         collectionChanged = true;
     }
@@ -1277,9 +1277,9 @@ SqlAlbum::imageLocation( int size )
 }
 
 void
-SqlAlbum::setImage( const QPixmap &pixmap )
+SqlAlbum::setImage( const QImage &image )
 {
-    if( pixmap.isNull() )
+    if( image.isNull() )
         return;
 
     // removeImage() will destroy all scaled cached versions of the artwork
@@ -1292,7 +1292,7 @@ SqlAlbum::setImage( const QPixmap &pixmap )
         path += "_"; // not that nice but it shouldn't happen that often.
 
     setImage( path );
-    pixmap.save( path, "JPG" );
+    image.save( path, "JPG" );
 
     notifyObservers();
 }

@@ -82,7 +82,7 @@ private:
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
     QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
-    QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
+    QHash< const CoverFetchUnit::Ptr, QImage > m_selectedImages;
 
     QStringList m_errors;
 
@@ -95,7 +95,7 @@ private:
 
     /// Show the cover that has been found
     void showCover( const CoverFetchUnit::Ptr &unit,
-                    const QPixmap &cover = QPixmap(),
+                    const QImage &cover = QImage(),
                     const CoverFetch::Metadata &data = CoverFetch::Metadata() );
 
     CoverFetch::Source fetchSource() const;

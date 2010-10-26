@@ -207,7 +207,7 @@ namespace Meta
             QPixmap image( int size = 1 );
             KUrl imageLocation( int size = 1 );
             bool canUpdateImage() const;
-            void setImage( const QPixmap &pixmap );
+            void setImage( const QImage &image );
             void removeImage();
             void setSuppressImageAutoFetch( const bool suppress );
             bool suppressImageAutoFetch() const;
@@ -222,7 +222,7 @@ namespace Meta
             ArtistPtr m_albumArtist;
             bool m_suppressImageAutoFetch;
             bool m_triedToFetchCover;
-            QPixmap m_cover;
+            QImage m_cover;
             QMap< int, QPixmap > m_coverSizeMap;
     };
     

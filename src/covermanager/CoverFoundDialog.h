@@ -31,7 +31,7 @@
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
-#include <QPixmap>
+#include <QImage>
 #include <QWeakPointer>
 
 class CoverFoundItem;
@@ -59,7 +59,7 @@ public:
     /**
      * @returns the currently selected cover image
      */
-    const QPixmap image() const { return m_pixmap; }
+    const QImage image() const { return m_image; }
 
     void setQueryPage( int page );
 
@@ -69,7 +69,7 @@ signals:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
-    void add( const QPixmap &cover,
+    void add( const QImage &cover,
               const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
@@ -116,7 +116,7 @@ private:
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
-    QPixmap m_pixmap;                 //!< Currently selected cover image
+    QImage m_image;                   //!< Currently selected cover image
     QString m_query;                  //!< Cache for the last entered custom query
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size

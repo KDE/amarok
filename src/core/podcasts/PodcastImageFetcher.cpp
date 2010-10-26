@@ -40,11 +40,11 @@ PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
     {
         debug() << "using cached image for " << channel->title();
         QString imagePath = cachedImagePath( channel ).toLocalFile();
-        QPixmap pixmap( imagePath );
-        if( pixmap.isNull() )
+        QImage image( imagePath );
+        if( image.isNull() )
             error() << "could not load pixmap from " << imagePath;
         else
-            channel->setImage( pixmap );
+            channel->setImage( image );
         return;
     }
 
@@ -142,11 +142,11 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
     else
     {
         QString imagePath = cachedImagePath( channel ).toLocalFile();
-        QPixmap pixmap( imagePath );
-        if( pixmap.isNull() )
+        QImage image( imagePath );
+        if( image.isNull() )
             error() << "could not load pixmap from " << imagePath;
         else
-            channel->setImage( pixmap );
+            channel->setImage( image );
     }
 
     //call run again to start the next batch of transfers.
