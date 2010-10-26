@@ -20,6 +20,7 @@
 #include "Mp3tunesMeta.h"
 #include "statusbar/StatusBar.h"
 
+#include <KLocale>
 #include <QStringList>
 
 Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
@@ -236,8 +237,7 @@ Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStrin
     m_tracklist = tracklist;
 
     The::statusBar()->newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ) )->setMaximum( m_tracklist.count() );
-    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT(
-incrementProgress() ), Qt::QueuedConnection );
+    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()

@@ -19,7 +19,10 @@
 #include "core/support/Debug.h"
 
 #include <QByteArray>
+#include <QStringList>
+
 #include <memory>
+
 
 Mp3tunesLocker::Mp3tunesLocker ( const QString & partnerToken )
 {

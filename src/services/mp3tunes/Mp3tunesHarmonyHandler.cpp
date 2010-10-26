@@ -22,6 +22,9 @@
 #include <QList>
 #include <QVariant>
 
+#include <unistd.h>
+
+
 Mp3tunesHarmonyHandler::Mp3tunesHarmonyHandler( QString identifier,
                                                 QString email,
                                                 QString pin )
