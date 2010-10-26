@@ -23,11 +23,12 @@
 #undef QT_NO_DEBUG_OUTPUT
 #undef KDE_NO_DEBUG_OUTPUT
 
+#include "shared/amarok_export.h"
+
 #include <kdebug.h>
+
 #include <QMutex>
 #include <QTime>
-
-#include "shared/amarok_export.h"
 
 // Platform specific macros
 #ifdef _WIN32

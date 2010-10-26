@@ -18,11 +18,10 @@
 #define LYRICS_MANAGER_H
 
 #include "amarok_export.h"
-#include "core/support/Debug.h"
 
 #include <QList>
-#include <QByteArray>
 #include <QString>
+#include <QVariant>
 
 class LyricsSubject;
 

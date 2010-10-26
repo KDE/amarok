@@ -20,6 +20,7 @@
 #include "AmarokUrl.h"
 #include "BookmarkViewItem.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 
