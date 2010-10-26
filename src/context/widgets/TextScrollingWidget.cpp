@@ -26,6 +26,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
+#include <QTextDocument>
 #include <QTimer>
 #include <QPropertyAnimation>
 
@@ -83,8 +84,6 @@ public:
     Qt::Alignment     alignment;      // horizontal text item alignment
     Plasma::FrameSvg *textBackground; // background svg for text
     QWeakPointer<QPropertyAnimation> animation; // scroll animation
-
-    // QGraphicsTextItem *textItem;
     QGraphicsSimpleTextItem *textItem;
 
 private:
@@ -129,16 +128,23 @@ TextScrollingWidget::setScrollingText( const QString &text )
     QFontMetricsF fm( font() );
     int textWidth = fm.width( text );
     d->width = size().width();
-    d->text = text;
     d->delta = textWidth > d->width ? textWidth - d->width : 0;
-    d->textItem->setText( fm.elidedText( text, Qt::ElideRight, d->width ) );
+    QTextDocument doc;
+    doc.setHtml( text );
+    d->text = doc.toPlainText();
+    d->textItem->setText( fm.elidedText( d->text, Qt::ElideRight, d->width ) );
 }
 
 void
 TextScrollingWidget::setText( const QString &text )
 {
     Q_D( TextScrollingWidget );
-    d->textItem->setText( text );
+    QTextDocument doc;
+    doc.setHtml( text );
+    d->text = doc.toPlainText();
+    d->textItem->setText( d->text );
+    if( d->animation )
+        d->animation.data()->stop();
 }
 
 void
