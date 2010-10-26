@@ -53,6 +53,9 @@ signals:
     void moodbarCreationFailed( const QString &error );
     void moodbarStyleChanged();
 
+private slots:
+    void paletteChanged( const QPalette &palette );
+
 private:
     MoodbarManager();
 
