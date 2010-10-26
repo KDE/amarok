@@ -316,9 +316,22 @@ MusicBrainzXmlParser::parseArtist( const QDomElement &e )
 }
 
 QVariantMap
-MusicBrainzXmlParser::grabFirstTrack()
+MusicBrainzXmlParser::grabTrackByLength( const quint64 length )
 {
-    QVariantMap track = tracks.values().first();
+    QString chosenTrack;
+    quint64 min = length;
+    quint64 difference = 0;
+    foreach( QString trackID, tracks.keys() )
+    {
+        difference = qAbs< quint64 >( length - tracks.value( trackID ).value( Meta::Field::LENGTH ).toULongLong() );
+        if( difference < min )
+        {
+            chosenTrack = trackID;
+            min = difference;
+        }
+    }
+
+    QVariantMap track = chosenTrack.isEmpty() ? tracks.values().first() : tracks.value( chosenTrack );
     QString release = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
     track.insert( MusicBrainz::RELEASEID, release );
     track.insert( Meta::Field::ALBUM,

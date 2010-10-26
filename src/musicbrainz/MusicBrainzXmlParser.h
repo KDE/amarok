@@ -39,7 +39,7 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
 
         int type();
 
-        QVariantMap grabFirstTrack();
+        QVariantMap grabTrackByLength( const quint64 length );
 
         QMap< QString, QVariantMap > tracks;
         QMap< QString, QString > artists;

@@ -118,7 +118,7 @@ MusicBrainzFinder::lookUpByPUID( const Meta::TrackPtr &track, const QString &pui
 void
 MusicBrainzFinder::run( const Meta::TrackList &tracks )
 {
-    QRegExp mb_trackId( "^amarok-sqltrackuid://mb-(\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12})$" );
+    QRegExp mb_trackId( "^amarok-\\w+://mb-(\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12})$" );
     foreach( Meta::TrackPtr track, tracks )
     {
         if( !track->uidUrl().isEmpty() )
@@ -302,56 +302,14 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                 curTrack = chosenTrack;
             }
             else
-                curTrack = parser->grabFirstTrack();
+                curTrack = parser->grabTrackByLength( trackPtr->length() );
 
-            if( curTrack.contains( MusicBrainz::RELEASEID ) )
-            {
-                QString releaseID = curTrack.value( MusicBrainz::RELEASEID ).toString();
-                if( !mb_releasesCache.contains( releaseID ) )
-                {
-                    if( !mb_waitingForReleaseQueue.contains( releaseID ) )
-                    {
-                        mb_waitingForReleaseQueue.insert( releaseID,
-                                                          QStringList( curTrack.value( MusicBrainz::TRACKID ).toString() ) );
-                        m_requests.append( qMakePair( Meta::TrackPtr(), compileReleaseRequest( releaseID ) ) );
-                    }
-                    else
-                        mb_waitingForReleaseQueue[ releaseID ].append( QStringList( curTrack.value( MusicBrainz::TRACKID ).toString() ) );
-
-                    mb_tracks.insert( curTrack.value( MusicBrainz::TRACKID ).toString(), trackPtr );
-                    mb_trackInfo.insert( curTrack.value( MusicBrainz::TRACKID ).toString(), curTrack );
-                }
-                else
-                    sendTrack( trackPtr, curTrack );
-            }
-            else
-                sendTrack( trackPtr, curTrack );
+            sendTrack( trackPtr, curTrack );
         }
         else if( parser->type() == MusicBrainzXmlParser::Track && !parser->tracks.isEmpty() )
         {
-            curTrack = parser->grabFirstTrack();
-            if( curTrack.contains( MusicBrainz::RELEASEID ) )
-            {
-                QString releaseID = curTrack.value( MusicBrainz::RELEASEID ).toString();
-                if( !mb_releasesCache.contains( releaseID ) )
-                {
-                    if( !mb_waitingForReleaseQueue.contains( releaseID ) )
-                    {
-                        mb_waitingForReleaseQueue.insert( releaseID,
-                                                          QStringList( curTrack.value( MusicBrainz::TRACKID ).toString() ) );
-                        m_requests.append( qMakePair( Meta::TrackPtr(), compileReleaseRequest( releaseID ) ) );
-                    }
-                    else
-                        mb_waitingForReleaseQueue[ releaseID ].append( QStringList( curTrack.value( MusicBrainz::TRACKID ).toString() ) );
-
-                    mb_tracks.insert( curTrack.value( MusicBrainz::TRACKID ).toString(), trackPtr );
-                    mb_trackInfo.insert( curTrack.value( MusicBrainz::TRACKID ).toString(), curTrack );
-                }
-                else
-                    sendTrack( trackPtr, curTrack );
-            }
-            else
-                sendTrack( trackPtr, curTrack );
+            curTrack = parser->grabTrackByLength( trackPtr->length() );
+            sendTrack( trackPtr, curTrack );
         }
         else
             debug() << "Unexpected parsing result";
@@ -428,22 +386,42 @@ void
 MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &info )
 {
     QVariantMap tags = info;
+    if( tags.contains( MusicBrainz::RELEASEID ) )
+    {
+        QString releaseID = tags.value( MusicBrainz::RELEASEID ).toString();
+        if( mb_releasesCache.contains( releaseID ) )
+        {
+            QVariantMap release = mb_releasesCache.value( releaseID );
+            tags.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE) );
+
+            if( release.contains( Meta::Field::YEAR ) )
+                tags.insert( Meta::Field::YEAR, release.value( Meta::Field::YEAR ) );
+
+            if( release.contains( Meta::Field::ARTIST ) )
+                tags.insert( Meta::Field::ALBUMARTIST, release.value( Meta::Field::ARTIST ) );
+        }
+        else
+        {
+            if( !mb_waitingForReleaseQueue.contains( releaseID ) )
+            {
+                mb_waitingForReleaseQueue.insert( releaseID,
+                QStringList( tags.value( MusicBrainz::TRACKID ).toString() ) );
+                m_requests.append( qMakePair( Meta::TrackPtr(), compileReleaseRequest( releaseID ) ) );
+            }
+            else
+                mb_waitingForReleaseQueue[ releaseID ].append( QStringList( tags.value( MusicBrainz::TRACKID ).toString() ) );
+
+            mb_tracks.insert( tags.value( MusicBrainz::TRACKID ).toString(), track );
+            mb_trackInfo.insert( tags.value( MusicBrainz::TRACKID ).toString(), tags );
+
+            return;
+        }
+    }
+
     tags.remove( MusicBrainz::RELEASELIST );
     tags.remove( MusicBrainz::TRACKOFFSET );
     tags.insert( Meta::Field::UNIQUEID, tags.value( MusicBrainz::TRACKID ).toString().prepend( "mb-" ) );
-    if( tags.contains( MusicBrainz::RELEASEID )
-        && mb_releasesCache.contains( tags.value( MusicBrainz::RELEASEID ).toString() ) )
-    {
-        QVariantMap release = mb_releasesCache.value( tags.value( MusicBrainz::RELEASEID ).toString() );
 
-        tags.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE) );
-
-        if( release.contains( Meta::Field::YEAR ) )
-            tags.insert( Meta::Field::YEAR, release.value( Meta::Field::YEAR ) );
-
-        if( release.contains( Meta::Field::ARTIST ) )
-            tags.insert( Meta::Field::ALBUMARTIST, release.value( Meta::Field::ARTIST ) );
-    }
     emit trackFound( track, tags );
 }
 
