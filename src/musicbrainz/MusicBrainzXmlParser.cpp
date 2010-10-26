@@ -323,7 +323,7 @@ MusicBrainzXmlParser::grabTrackByLength( const quint64 length )
     quint64 difference = 0;
     foreach( QString trackID, tracks.keys() )
     {
-        difference = qAbs< quint64 >( length - tracks.value( trackID ).value( Meta::Field::LENGTH ).toULongLong() );
+        difference = qAbs< qint64 >( length - tracks.value( trackID ).value( Meta::Field::LENGTH ).toULongLong() );
         if( difference < min )
         {
             chosenTrack = trackID;
