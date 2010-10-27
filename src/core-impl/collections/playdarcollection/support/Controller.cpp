@@ -121,8 +121,6 @@ namespace Playdar {
     void
     Controller::processStatus( KJob *statusJob )
     {
-        DEBUG_BLOCK
-        
         if( statusJob->error() != 0 ) {
             debug() << "Error getting status from Playdar";
             emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );

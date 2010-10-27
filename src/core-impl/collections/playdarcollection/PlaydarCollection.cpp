@@ -73,8 +73,6 @@ namespace Collections
     void
     PlaydarCollectionFactory::checkStatus()
     {
-        DEBUG_BLOCK
-
         m_controller->status();
     }
 
@@ -100,7 +98,7 @@ namespace Collections
     void
     PlaydarCollectionFactory::slotPlaydarError( Playdar::Controller::ErrorState error )
     {
-        DEBUG_BLOCK
+        // DEBUG_BLOCK
 
         if( error == Playdar::Controller::ErrorState( 1 ) )
         {

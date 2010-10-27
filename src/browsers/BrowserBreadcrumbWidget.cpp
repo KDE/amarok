@@ -222,8 +222,7 @@ void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent * event )
 
 void BrowserBreadcrumbWidget::hideAsNeeded( int width )
 {
-
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
 
     //we need to check if there is enough space for all items, if not, we start hiding items from the left (excluding the home item) until they fit (we never hide the rightmost item)
     //we also add he hidden levels to the drop down menu of the last item so they are accessible.
@@ -236,7 +235,7 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     if( m_rootList->activeCategory() != 0 )
         allItems.append( m_rootList->activeCategory()->additionalItems() );
 
-    debug() << "the active category is: " <<  m_rootList->activeCategoryName();
+    // debug() << "the active category is: " <<  m_rootList->activeCategoryName();
     
 
     int sizeOfFirst = allItems.first()->nominalWidth();
@@ -245,11 +244,11 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     int spaceLeft = width - ( sizeOfFirst + sizeOfLast + 28 );
 
     int numberOfItems = allItems.count();
-    debug() << numberOfItems << " items.";
+    // debug() << numberOfItems << " items.";
 
     for( int i = numberOfItems - 2; i > 0; i-- )
     {
-        debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
+        // debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
         
         if( allItems.at( i )->nominalWidth() <= spaceLeft )
         {
