@@ -121,6 +121,9 @@ MusicBrainzXmlParser::parseTrack( const QDomElement &e )
     else
         return id;
 
+    if( e.hasAttribute( "ext:score" ) )
+        track.insert( Meta::Field::SCORE, e.attribute( "ext:score" ).toInt() );
+
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
     QString elementName;

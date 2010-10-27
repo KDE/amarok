@@ -225,6 +225,9 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                 float maxSimilarity = 0.0;
                 foreach( QVariantMap track, parser->tracks.values() )
                 {
+                    if( track.value( Meta::Field::SCORE ).toInt() < 50 )
+                        continue;
+
                     int s = 0;
                     int maxPossibleScore = 0;
 
@@ -427,6 +430,7 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &inf
 
     tags.remove( MusicBrainz::RELEASELIST );
     tags.remove( MusicBrainz::TRACKOFFSET );
+    tags.remove( Meta::Field::SCORE );
     tags.insert( Meta::Field::UNIQUEID, tags.value( MusicBrainz::TRACKID ).toString().prepend( "mb-" ) );
 
     emit trackFound( track, tags );
