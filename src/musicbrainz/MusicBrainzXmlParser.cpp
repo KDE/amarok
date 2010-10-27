@@ -135,7 +135,11 @@ MusicBrainzXmlParser::parseTrack( const QDomElement &e )
             if( elementName == "title" )
                 track.insert( Meta::Field::TITLE, dElement.text() );
             else if( elementName == "duration" )
-                track.insert( Meta::Field::LENGTH, dElement.text().toInt() );
+            {
+                int length = dElement.text().toInt();
+                if( length > 0 )
+                    track.insert( Meta::Field::LENGTH, length );
+            }
             else if( elementName == "artist" )
             {
                 track.insert( MusicBrainz::ARTISTID, parseArtist( dElement ) );
@@ -223,11 +227,15 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                 }
             }
             else if( elementName == "track-list" && dElement.hasAttribute( "offset" ) )
-                currentTrackOffsets.insert( id, dElement.attribute( "offset" ) );
+            {
+                int offset = dElement.attribute( "offset" ).toInt();
+                if( offset > 0 )
+                    currentTrackOffsets.insert( id, offset );
+            }
             else if( elementName == "release-event-list" )
             {
-                unsigned int year = parseReleaseEventList( dElement );
-                if( year )
+                int year = parseReleaseEventList( dElement );
+                if( year > 0 )
                     release.insert( Meta::Field::YEAR, year );
             }
         }
