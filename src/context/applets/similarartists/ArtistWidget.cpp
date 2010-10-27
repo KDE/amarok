@@ -33,7 +33,6 @@
 #include <KColorUtils>
 #include <KGlobalSettings>
 #include <KIcon>
-#include <Plasma/Label>
 #include <Plasma/PushButton>
 
 //Qt
@@ -64,7 +63,6 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_nameLabel = new QLabel;
     m_match     = new QLabel;
     m_topTrackLabel = new QLabel;
-    m_desc      = new Plasma::Label( this );
     m_desc      = new QGraphicsWidget( this );
 
     QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
