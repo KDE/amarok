@@ -32,11 +32,12 @@
 #include "widgets/ContainmentArrow.h"
 #include "widgets/appletexplorer/AppletExplorer.h"
 
-#include <plasma/containment.h>
-#include <plasma/view.h>
-#include <QMouseEvent>
+#include <Plasma/Containment>
+#include <Plasma/View>
 
+#include <QMouseEvent>
 #include <QGraphicsView>
+#include <QWeakPointer>
 
 class QPixmap;
 class ContextUrlRunner;
@@ -139,7 +140,7 @@ private:
 
     ContextUrlRunner * m_urlRunner;
 
-    AppletExplorer* m_appletExplorer;
+    QWeakPointer<AppletExplorer> m_appletExplorer;
 };
 
 } // Context namespace

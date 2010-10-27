@@ -52,7 +52,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , Engine::EngineObserver( The::engineController() )
     , m_curState( Home )
     , m_firstPlayingState( true )
-    , m_appletExplorer( 0 )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -87,22 +86,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     cont->updateConstraints();
     Containment* amarokContainment = qobject_cast<Containment* >( cont );
     if( amarokContainment )
-    {
         amarokContainment->setView( this );
-    //    amarokContainment->addCurrentTrack();
-    }
-
-    m_appletExplorer = new AppletExplorer( cont );
-    m_appletExplorer->setContainment( amarokContainment );
-    m_appletExplorer->setPos( 0, cont->size().height() - m_appletExplorer->size().height() );
-    m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
-    m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
-    m_appletExplorer->hide();
-
-    connect( m_appletExplorer, SIGNAL( addAppletToContainment( const QString&, const int ) ),
-             amarokContainment, SLOT( addApplet( const QString&, const int ) ) );
-
-    connect( m_appletExplorer, SIGNAL( appletExplorerHid() ), this, SIGNAL( appletExplorerHid() ) );
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
@@ -244,13 +228,29 @@ ContextView::addApplet( const QString& name, const QStringList& args )
 void
 ContextView::hideAppletExplorer()
 {
-    m_appletExplorer->hide();
+    if( m_appletExplorer )
+        m_appletExplorer.data()->hide();
 }
 
 void
 ContextView::showAppletExplorer()
 {
-    m_appletExplorer->show();
+    if( !m_appletExplorer )
+    {
+        Context::Containment *cont = qobject_cast<Context::Containment*>( containment() );
+        m_appletExplorer = new AppletExplorer( cont );
+        m_appletExplorer.data()->setContainment( cont );
+        m_appletExplorer.data()->setPos( 0, containment()->size().height() - m_appletExplorer.data()->size().height() );
+        m_appletExplorer.data()->setZValue( m_appletExplorer.data()->zValue() + 1000 );
+        m_appletExplorer.data()->setFlag( QGraphicsItem::ItemIsSelectable );
+
+        connect( m_appletExplorer.data(), SIGNAL(addAppletToContainment(QString, const int)),
+                 cont, SLOT(addApplet(QString, const int)) );
+
+        connect( m_appletExplorer.data(), SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
+        updateContainmentsGeometry();
+    }
+    m_appletExplorer.data()->show();
 }
 
 
@@ -277,8 +277,11 @@ ContextView::updateContainmentsGeometry()
 {
     containment()->resize( rect().size() );
     containment()->setPos( rect().topLeft() );
-    m_appletExplorer->resize( rect().width(), m_appletExplorer->size().height() );
-    m_appletExplorer->setPos( 0, rect().height() - m_appletExplorer->size().height() - 5 );
+    if( m_appletExplorer )
+    {
+        m_appletExplorer.data()->resize( rect().width(), m_appletExplorer.data()->size().height() );
+        m_appletExplorer.data()->setPos( 0, rect().height() - m_appletExplorer.data()->size().height() - 5 );
+    }
 }
 
 void
