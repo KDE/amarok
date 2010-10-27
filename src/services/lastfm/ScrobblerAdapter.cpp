@@ -79,9 +79,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
         
         m_current.setTitle( track->name() );
         m_current.setDuration( track->length() / 1000 );
-        if( track->composer() && !track->composer()->name().isEmpty() )
-            m_current.setArtist( track->composer()->name() );
-        else if( track->artist() )
+        if( track->artist() )
             m_current.setArtist( track->artist()->name() );
         if( track->album() )
             m_current.setAlbum( track->album()->name() );
@@ -126,7 +124,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track &&
         ( track->type() == "stream" && ( !track->name().isEmpty() 
-          && ( track->artist() || track->composer() ) ) ) ) // got a stream, and it has enough info to be a new track
+          && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
@@ -136,10 +134,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
         resetVariables();
                     
         m_current.setTitle( track->name() );
-        if( track->composer() && !track->composer()->name().isEmpty() )
-            m_current.setArtist( track->composer()->name() );
-        else if( track->artist() )
-            m_current.setArtist( track->artist()->name() );
+        m_current.setArtist( track->artist()->name() );
         m_current.stamp();
         
         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
@@ -217,10 +212,8 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
     {
         lastfm::MutableTrack trackInfo;
         trackInfo.setTitle( track->name() );
-        if( track->composer() && !track->composer()->name().isEmpty() )
-            m_current.setArtist( track->composer()->name() );
-        else if( track->artist() )
-            m_current.setArtist( track->artist()->name() );
+        if( track->artist() )
+            trackInfo.setArtist( track->artist()->name() );
         if( track->album() )
             trackInfo.setAlbum( track->album()->name() );
 
