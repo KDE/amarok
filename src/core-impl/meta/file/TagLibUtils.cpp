@@ -420,12 +420,12 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             TagLib::String uid;
             if( url.startsWith( "mb-" ) )
             {
-                uidOwner = TagLib::String( "----:MusicBrainz Track Id" );
+                uidOwner = TagLib::String( "----:com.apple.iTunes:MusicBrainz Track Id" );
                 uid = Qt4QStringToTString( url.mid( 3 ) );
             }
             else
             {
-                uidOwner = TagLib::String( "----:Amarok 2 AFTv1 - amarok.kde.org" );
+                uidOwner = TagLib::String( "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" );
                 uid = Qt4QStringToTString( url );
             }
             mp4tag->itemListMap()[uidOwner] = TagLib::StringList( uid );
