@@ -21,6 +21,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AppletExplorer"
 
 #include "AppletExplorer.h"
 
@@ -28,19 +29,15 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <plasma/containment.h>
-#include <plasma/widgets/pushbutton.h>
-#include <plasma/widgets/label.h>
-
 #include <KIcon>
+#include <Plasma/Applet>
+#include <Plasma/ScrollWidget>
 
-#include <QAction>
+#include <QGraphicsLinearLayout>
 #include <QStyleOptionGraphicsItem>
-#include <QSizePolicy>
+#include <QSignalMapper>
 
-#define HEIGHT 130
-#define ICON_SIZE 16
-
+#define HEIGHT 120
 
 namespace Context
 {
@@ -48,7 +45,7 @@ namespace Context
 AppletExplorer::AppletExplorer( QGraphicsItem *parent )
     : QGraphicsWidget( parent )
     , m_containment( 0 )
-    , m_mainLayout( 0 )
+    , m_scrollWidget( 0 )
 {
     init();
 }
@@ -57,11 +54,11 @@ AppletExplorer::~AppletExplorer()
 {}
 
 void
-AppletExplorer::addApplet( AppletItem *appletItem )
+AppletExplorer::addApplet( const QString &name )
 {
     DEBUG_BLOCK
-    if( appletItem && !appletItem->pluginName().isEmpty() && containment() )
-        emit  addAppletToContainment( appletItem->pluginName(), -1 ); //always add the applet at the end
+    if( !name.isEmpty() && containment() )
+        emit addAppletToContainment( name, -1 ); //always add the applet at the end
 }
 
 void
@@ -74,15 +71,24 @@ AppletExplorer::hideMenu()
 void
 AppletExplorer::init()
 {
-    m_mainLayout = new QGraphicsLinearLayout( Qt::Vertical );
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    QSignalMapper *iconTriggerMapper = new QSignalMapper( this );
+    QGraphicsWidget *scrollView = new QGraphicsWidget( this );
+    m_scrollWidget = new Plasma::ScrollWidget( this );
+    m_scrollWidget->setWidget( scrollView );
+    m_scrollWidget->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    QGraphicsLinearLayout *scrollLayout = new QGraphicsLinearLayout( scrollView );
 
-    m_appletsListWidget = new AppletsListWidget();
+    foreach( AppletIconWidget *widget, listAppletWidgets() )
+    {
+        scrollLayout->addItem( widget );
+        widget->setMinimumSize( widget->sizeFromIconSize( 48 ) );
+        widget->setMaximumSize( widget->sizeFromIconSize( 48 ) );
+        connect( widget, SIGNAL(clicked()), iconTriggerMapper, SLOT(map()) );
+        iconTriggerMapper->setMapping( widget, widget->pluginName() );
+    }
 
-    m_appletsListWidget->setPreferredSize( -1, -1 );
-
-    connect( m_appletsListWidget, SIGNAL( appletClicked( AppletItem * ) ), SLOT( addApplet( AppletItem * ) ) );
-
-    m_appletsListWidget->setModel( &m_model );
+    connect( iconTriggerMapper, SIGNAL(mapped(QString)), SLOT(addApplet(QString)) );
 
     m_hideIcon = new Plasma::IconWidget( this );
     
@@ -90,18 +96,15 @@ AppletExplorer::init()
     m_hideIcon->setToolTip( i18n( "Hide menu" ) );
 
     connect( m_hideIcon, SIGNAL( clicked() ), this, SLOT( hideMenu() ) );
-    m_hideIcon->setMinimumSize( m_hideIcon->sizeFromIconSize( ICON_SIZE ) );
-    m_hideIcon->setMaximumSize( m_hideIcon->sizeFromIconSize( ICON_SIZE ) );
+    m_hideIcon->setMinimumSize( m_hideIcon->sizeFromIconSize( 16 ) );
+    m_hideIcon->setMaximumSize( m_hideIcon->sizeFromIconSize( 16 ) );
     
-    m_mainLayout->addItem( m_hideIcon );
-    m_mainLayout->addItem( m_appletsListWidget );
-    m_mainLayout->setAlignment( m_hideIcon, Qt::AlignLeft );
-    m_mainLayout->setAlignment( m_appletsListWidget, Qt::AlignTop | Qt::AlignHCenter );
+    layout->addItem( m_hideIcon );
+    layout->addItem( m_scrollWidget );
+    layout->setAlignment( m_hideIcon, Qt::AlignRight );
     
     setMaximumHeight( HEIGHT );
     setMinimumHeight( HEIGHT );
-
-    setLayout( m_mainLayout );
 }
 
 void
@@ -149,14 +152,20 @@ AppletExplorer::containment() const
     return m_containment;
 }
 
-void
-AppletExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
+QList<AppletIconWidget*>
+AppletExplorer::listAppletWidgets()
 {
-    DEBUG_BLOCK
+    QList<AppletIconWidget*> widgets;
+    foreach( const KPluginInfo &info, Plasma::Applet::listAppletInfo( QString(), "amarok" ) )
+    {
+        if( info.property( "NoDisplay" ).toBool() || info.category() == i18n( "Containments" ) )
+            continue;
 
-    m_mainLayout->setGeometry( QRectF( QPointF( 0, 0 ), event->newSize() ) );
+        widgets << new AppletIconWidget( info, this );
+    }
+    return widgets;
 }
 
-}//namespace Context
+} //namespace Context
 
 #include "AppletExplorer.moc"

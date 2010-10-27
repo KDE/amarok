@@ -39,6 +39,7 @@
 //Qt
 #include <QDesktopServices>
 #include <QTextEdit>
+#include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>

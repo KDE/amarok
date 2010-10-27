@@ -27,12 +27,11 @@
 #define APPLET_ICON_H
 
 #include "amarok_export.h"
-#include "AppletItemModel.h"
 
-#include <plasma/widgets/iconwidget.h>
+#include <Plasma/IconWidget>
 
-#include <QPainter>
-
+class KPluginInfo;
+class QPainter;
 class QGraphicsSceneMouseEvent;
 
 namespace Context
@@ -43,18 +42,19 @@ class AMAROK_EXPORT AppletIconWidget: public Plasma::IconWidget
     Q_OBJECT
 
 public:
-    explicit AppletIconWidget( AppletItem *appletItem = 0, QGraphicsItem *parent = 0 );
+    explicit AppletIconWidget( const KPluginInfo &info, QGraphicsItem *parent = 0 );
     virtual ~AppletIconWidget();
 
-    AppletItem *appletItem() const;
+    QString pluginName() const;
 
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
 private:
-    AppletItem *m_appletItem;
+    QString m_pluginName;
+    Q_DISABLE_COPY( AppletIconWidget )
 };
 
-}
+} // namespace Context
 
-#endif
+#endif // APPLET_ICON_H

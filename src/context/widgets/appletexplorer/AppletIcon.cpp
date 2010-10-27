@@ -24,40 +24,30 @@
  ****************************************************************************************/
 
 #include "AppletIcon.h"
+
+#include <KIcon>
+#include <KPluginInfo>
 #include <KStandardDirs>
 
 #include <QColor>
 #include <QGraphicsSceneMouseEvent>
+#include <QPainter>
 
 namespace Context
 {
     
-AppletIconWidget::AppletIconWidget( AppletItem *appletItem, QGraphicsItem *parent )
+AppletIconWidget::AppletIconWidget( const KPluginInfo &info, QGraphicsItem *parent )
     : Plasma::IconWidget( parent )
-    , m_appletItem( appletItem )
+    , m_pluginName( info.pluginName() )
 {
-    if( appletItem )
-    {
-        setText( appletItem->name() );
-        setIcon( appletItem->icon() );
-        setToolTip( appletItem->name() );
-    }
-    else
-    {
-        setText( "no name" );
-        setIcon( "widgets/clock" );
-    }
-    setTextBackgroundColor( QColor() );
+    setText( info.name() );
+    setIcon( KIcon( info.icon().isEmpty() ? "application-x-plasma" : info.icon() ) );
+    setToolTip( info.name() );
+    setTextBackgroundColor( Qt::transparent );
 }
 
 AppletIconWidget::~AppletIconWidget()
 {}
-
-AppletItem *
-AppletIconWidget::appletItem() const
-{
-    return m_appletItem;
-}
 
 void
 AppletIconWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
@@ -101,6 +91,12 @@ AppletIconWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *opti
     Plasma::IconWidget::paint( painter, option, widget );
 }
 
+QString
+AppletIconWidget::pluginName() const
+{
+    return m_pluginName;
 }
+
+} // namespace Context
 
 #include "AppletIcon.moc"

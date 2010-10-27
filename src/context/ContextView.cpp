@@ -20,6 +20,8 @@
   available at kdebase/workspace/plasma
 */
 
+#define DEBUG_PREFIX "ContextView"
+
 #include "ContextView.h"
 
 #include "core/support/Amarok.h"
@@ -94,6 +96,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     m_appletExplorer->setContainment( amarokContainment );
     m_appletExplorer->setPos( 0, cont->size().height() - m_appletExplorer->size().height() );
     m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
+    m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
     m_appletExplorer->hide();
 
     connect( m_appletExplorer, SIGNAL( addAppletToContainment( const QString&, const int ) ),
@@ -282,7 +285,7 @@ void
 ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
-        QGraphicsView::wheelEvent( event );
+        Plasma::View::wheelEvent( event );
 }
 
 QStringList
