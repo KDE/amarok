@@ -133,16 +133,9 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , m_showMenuBar( 0 )
     , m_lastBrowser( 0 )
-    , m_layoutEverRestored( false )
     , m_waitingForCd( false )
-    , m_mouseDown( false )
-    , m_LH_initialized( false )
 {
     DEBUG_BLOCK
-
-    m_saveLayoutChangesTimer = new QTimer( this );
-    m_saveLayoutChangesTimer->setSingleShot( true );
-    connect( m_saveLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( saveLayout() ) );
 
     setObjectName( "MainWindow" );
     s_instance = this;
@@ -362,9 +355,6 @@ MainWindow::init()
 
     // restore the layout on app start
     restoreLayout();
-
-    // wait for the eventloop
-    QTimer::singleShot( 0, this, SLOT( initLayoutHack() ) );
 }
 
 
@@ -430,16 +420,8 @@ MainWindow::addViewMenuItems(QMenu* menu)
 void
 MainWindow::showBrowser( const QString &name )
 {
-    const int index = m_browserNames.indexOf( name );
-    showBrowser( index );
-}
-
-void
-MainWindow::showBrowser( const int index )
-{
-    Q_UNUSED( index )
-    //if( index >= 0 && index != m_browsersDock->currentIndex() )
-    //    m_browsersDock->showWidget( index );
+    Q_UNUSED( name );
+    // showBrowser( index ); // FIXME
 }
 
 void
@@ -491,38 +473,9 @@ MainWindow::saveLayout()  //SLOT
     if( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         file.write( saveState( LAYOUT_VERSION ) );
-
-        #ifdef Q_OS_UNIX  // fsync() only exists on Posix
-        fsync( file.handle() );
-        #endif
-
-        file.close();
+        file.flush();
     }
 }
-
-void
-MainWindow::keyPressEvent( QKeyEvent *e )
-{
-    if( !( e->modifiers() & Qt::ControlModifier ) )
-        return KMainWindow::keyPressEvent( e );
-
-    /*int n = -1;
-    switch( e->key() )
-    {
-        case Qt::Key_0: n = 0; break;
-        case Qt::Key_1: n = 1; break;
-        case Qt::Key_2: n = 2; break;
-        case Qt::Key_3: n = 3; break;
-        case Qt::Key_4: n = 4; break;
-        default:
-            return KMainWindow::keyPressEvent( e );
-    }
-    if( n == 0 && m_browsersDock->currentIndex() >= 0 )
-        m_browsersDock->showWidget( m_browsersDock->currentIndex() );
-    else if( n > 0 )
-        showBrowser( n - 1 ); // map from human to computer counting*/
-}
-
 
 void
 MainWindow::closeEvent( QCloseEvent *e )
@@ -560,10 +513,6 @@ void
 MainWindow::showEvent(QShowEvent* e)
 {
     DEBUG_BLOCK
-
-    // restore layout on first maximize request after start. See bug 244583
-    if (!m_layoutEverRestored)
-        restoreLayout();
 
     static bool windowEverShown = false;
     if ( !windowEverShown )
@@ -789,17 +738,6 @@ MainWindow::activate()
         KWindowSystem::activateWindow( winId() );
 #else
     setVisible( true );
-#endif
-}
-
-bool
-MainWindow::isReallyShown() const
-{
-#ifdef Q_WS_X11
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), NET::WMDesktop, 0 );
-    return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
-#else
-    return !isHidden();
 #endif
 }
 
@@ -1240,344 +1178,6 @@ MainWindow::paletteChange( const QPalette & oldPalette )
     The::paletteHandler()->setPalette( palette() );
 }
 
-QSize
-MainWindow::backgroundSize() const
-{
-    const QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
-    const QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
-
-    return QSize( bottomRight1.x() - topLeft.x() + 1, bottomRight1.y() - topLeft.y() );
-}
-
-//BEGIN DOCK LAYOUT FIXING HACK ====================================================================
-
-/**
-    Docks that are either hidden, floating or tabbed shall not be taken into account for ratio calculations
-    unfortunately docks that are hiddeen in tabs are not "hidden", but just have an invalid geometry
-*/
-bool
-MainWindow::LH_isIrrelevant( const QDockWidget *dock )
-{
-    bool ret = !dock->isVisibleTo( this ) || dock->isFloating();
-    if( !ret )
-    {
-        const QRect r = dock->geometry();
-        ret = r.right() < 1 || r.bottom() < 1;
-    }
-    return  ret;
-}
-
-/**
-    We've atm three dock, ie. 0 or 1 tabbar. It's also the only bar as direct child.
-    We need to dig it as it constructed and deleted on UI changes by the user
-*/
-QTabBar *
-MainWindow::LH_dockingTabbar()
-{
-    QObjectList kids = children();
-    foreach ( QObject *kid, kids )
-    {
-        if( kid->isWidgetType() )
-            if( QTabBar *bar = qobject_cast<QTabBar*>( kid ) )
-                return bar;
-    }
-    return 0;
-}
-
-/**
-    this function calculates the area covered by the docks - i.e. rect() minus menubar and toolbar
-*/
-void
-MainWindow::LH_extend( QRect &target, const QDockWidget *dock )
-{
-    if( LH_isIrrelevant( dock ) )
-        return;
-    if( target.isNull() )
-    {
-        target = dock->geometry();
-        return;
-    }
-    const QRect source = dock->geometry();
-    if( source.left() < target.left() ) target.setLeft( source.left() );
-    if( source.right() > target.right() ) target.setRight( source.right() );
-    if( source.top() < target.top() ) target.setTop( source.top() );
-    if( source.bottom() > target.bottom() ) target.setBottom( source.bottom() );
-}
-
-/**
-    which size the dock should have in our opinion, based upon the ratios and the docking area.
-    takes size constraints into account
-*/
-QSize
-MainWindow::LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, float ry, int splitter )
-{
-    if( LH_isIrrelevant( dock ) )
-        return QSize( 0, 0 );
-    QSize ret;
-    int tabHeight = 0;
-    if( !tabifiedDockWidgets( dock ).isEmpty() )
-    {
-        if( QTabBar *bar = LH_dockingTabbar() )
-            tabHeight = bar->height();
-    }
-    const QSize min = dock->minimumSize();
-    ret.setWidth( qMax( min.width(), (int)( rx == 1.0 ? area.width() : rx*area.width() - splitter/2 ) ) );
-    ret.setHeight( qMax( min.height(), (int)( ry == 1.0 ? area.height() - tabHeight : ry*area.height() - ( splitter/2 + tabHeight ) ) ) );
-    return ret;
-}
-
-/**
-    used to check whether the current dock size "more or less" matches our opinion
-    if one of the sizes isNull() it's invalid and the current size is ok.
-*/
-bool
-MainWindow::LH_fuzzyMatch( const QSize &sz1, const QSize &sz2 )
-{
-    return sz1.isNull() || sz2.isNull() ||
-           ( sz1.width() < sz2.width() + 6 && sz1.width() > sz2.width() - 6 &&
-             sz1.height() < sz2.height() + 6 && sz1.height() > sz2.height() - 6 );
-}
-
-/**
-    whether the dock has reached it's minimum width OR height
-*/
-bool
-MainWindow::LH_isConstrained( const QDockWidget *dock )
-{
-    if( LH_isIrrelevant( dock ) )
-        return false;
-    return dock->minimumWidth() == dock->width() || dock->minimumHeight() == dock->height();
-}
-
-#define FREE_SIZE(_DOCK_,_INDEX_)   if( !_DOCK_->isFloating() ) { \
-                                        _DOCK_->setMinimumSize( mins[_INDEX_] );\
-                                        _DOCK_->setMaximumSize( maxs[_INDEX_] ); } //
-
-void
-MainWindow::initLayoutHack()
-{
-    // the init _should_ be superflous, but hey: why risk it ;-)
-    m_playlistRatio.x = 0.0; m_playlistRatio.y = 0.0;
-    m_browserRatio = m_contextRatio = m_playlistRatio;
-
-    m_dockingRect = QRect();
-    LH_extend( m_dockingRect, m_browserDock.data() );
-    LH_extend( m_dockingRect, m_contextDock.data() );
-    LH_extend( m_dockingRect, m_playlistDock.data() );
-
-    // initially calculate ratios
-    updateDockRatio( m_browserDock.data() );
-    updateDockRatio( m_contextDock.data() );
-    updateDockRatio( m_playlistDock.data() );
-
-    m_LH_initialized = true;
-
-    // connect to dock changes (esp. tab selection)
-    // this _is_ required...
-    connect ( m_browserDock.data(), SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
-    connect ( m_contextDock.data(), SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
-    connect ( m_playlistDock.data(), SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
-
-    // but i think these can be omitted (move along a show event for tech. reasons)
-//     topLevelChanged( bool )
-//     dockLocationChanged(Qt::DockWidgetArea)
-
-    slotShowActiveTrack();    // See comment in 'playlist/view/PrettyListView.cpp constructor'.
-}
-
-void
-MainWindow::resizeEvent( QResizeEvent * event )
-{
-    DEBUG_BLOCK
-    // NOTICE: uncomment this to test default behaviour
-//     QMainWindow::resizeEvent( event );
-//     return;
-
-    // reset timer for saving changes
-    // 30 secs - this is no more crucial and we don't have to store every sh** ;-)
-    m_saveLayoutChangesTimer->start( 30000 );
-
-    // prevent flicker, NOTICE to prevent all flicker, this must be done by an (bug prone) passing-on eventfiler :-(
-    setUpdatesEnabled( false );
-
-    // stop listening to resize events, we're gonna trigger them now
-    m_browserDock.data()->removeEventFilter( this );
-    m_contextDock.data()->removeEventFilter( this );
-    m_playlistDock.data()->removeEventFilter( this );
-
-    QMainWindow::resizeEvent( event );
-
-    // ok, the window was resized and our little docklings fill the entire docking area
-    // -> m_dockingRect is their bounding rect
-    m_dockingRect = QRect();
-    LH_extend( m_dockingRect, m_browserDock.data() );
-    LH_extend( m_dockingRect, m_contextDock.data() );
-    LH_extend( m_dockingRect, m_playlistDock.data() );
-
-    // if we hit a minimumSize constraint, we can no more keep aspects at all atm. and just hope
-    // that Qt distributed the lacking space evenly ;-)
-    if( !m_LH_initialized ||
-        LH_isConstrained( m_contextDock.data() ) || LH_isConstrained( m_browserDock.data() ) || LH_isConstrained( m_playlistDock.data() ) )
-    {
-        setUpdatesEnabled( true );
-
-        // continue to listen to resize events
-        m_browserDock.data()->installEventFilter( this );
-        m_contextDock.data()->installEventFilter( this );
-        m_playlistDock.data()->installEventFilter( this );
-
-        return;
-    }
-
-#define DESIRED_SIZE(_DOCK_) LH_desiredSize( _DOCK_##Dock.data(), m_dockingRect, _DOCK_##Ratio.x, _DOCK_##Ratio.y, splitterSize )
-    int splitterSize = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
-    const QSize dContextSz = DESIRED_SIZE( m_context );
-    const QSize dBrowsersSz = DESIRED_SIZE( m_browser );
-    const QSize dPlaylistSz = DESIRED_SIZE( m_playlist );
-#undef DESIRED_SIZE
-
-    // good god: prevent recursive resizes ;-)
-    setFixedSize( size() );
-
-    layout()->setEnabled( false );
-    QCoreApplication::sendPostedEvents( this, QEvent::LayoutRequest );
-    layout()->invalidate();
-    layout()->setEnabled( true );
-
-    // don't be super picky - there's an integer imprecision anyway and we just want to fix
-    // major resize errors w/o being to intrusive or flickering
-    if( !( LH_fuzzyMatch( dContextSz, m_contextDock.data()->size() ) &&
-           LH_fuzzyMatch( dBrowsersSz, m_browserDock.data()->size() ) &&
-           LH_fuzzyMatch( dPlaylistSz, m_playlistDock.data()->size() ) ) )
-    {
-//         debug() << "SIZE MISMATCH, FORCING";
-        const QSize mins[3] = { m_contextDock.data()->minimumSize(), m_browserDock.data()->minimumSize(), m_playlistDock.data()->minimumSize() };
-        const QSize maxs[3] = { m_contextDock.data()->maximumSize(), m_browserDock.data()->maximumSize(), m_playlistDock.data()->maximumSize() };
-
-        // fix sizes to our idea, so the layout has few options left ;-)
-        if( !m_contextDock.data()->isFloating() ) m_contextDock.data()->setFixedSize( dContextSz );
-        if( !m_browserDock.data()->isFloating() ) m_browserDock.data()->setFixedSize( dBrowsersSz );
-        if( !m_playlistDock.data()->isFloating() ) m_playlistDock.data()->setFixedSize( dPlaylistSz );
-
-        // trigger a no-choice layouting
-        layout()->activate();
-        QCoreApplication::sendPostedEvents( this, QEvent::LayoutRequest );
-
-        // unleash sizes
-        layout()->setEnabled( false );
-        FREE_SIZE( m_contextDock.data(), 0 );
-        FREE_SIZE( m_browserDock.data(), 1 );
-        FREE_SIZE( m_playlistDock.data(), 2 );
-        layout()->setEnabled( true );
-    }
-
-    // unleash size
-    setMinimumSize( 0, 0 );
-    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
-    // continue to listen to resize events
-    m_browserDock.data()->installEventFilter( this );
-    m_contextDock.data()->installEventFilter( this );
-    m_playlistDock.data()->installEventFilter( this );
-
-    // update on screen
-    setUpdatesEnabled( true );
-}
-
-#undef FREE_SIZE
-
-// i hate these slots - but we get no show/hide events on tab selection :-(
-void MainWindow::updateDockRatio( QDockWidget *dock )
-{
-    if( !LH_isIrrelevant( dock ) )
-    {
-        QRect area = m_dockingRect;
-        int tabHeight = 0;
-        if( !tabifiedDockWidgets( dock ).isEmpty() )
-        {
-            if( QTabBar *bar = LH_dockingTabbar() )
-                tabHeight = bar->height();
-        }
-        int splitterSize = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, dock );
-
-        Ratio r;
-        if( dock->width() == area.width() )
-            r.x = 1.0;
-        else
-            r.x = ( (float)( dock->width() + splitterSize/2) ) / area.width();
-        if( dock->height() == area.height() - tabHeight )
-            r.y = 1.0;
-        else
-            r.y = ( (float)( dock->height() + splitterSize/2 + tabHeight ) ) / area.height();
-
-        if( dock == m_browserDock.data() )
-            m_browserRatio = r;
-        else if( dock == m_contextDock.data() )
-            m_contextRatio = r;
-        else
-            m_playlistRatio = r;
-//         debug() << "==>" << r.x << r.y;
-    }
-    // UI changed -> trigger delayed storage
-    m_saveLayoutChangesTimer->start( 30000 );
-}
-
-// this slot is connected to the visibilityChange event, fired on show/hide (in most cases... *sigh*) and tab changes
-void MainWindow::updateDockRatio()
-{
-    if( QDockWidget *dock = qobject_cast<QDockWidget*>( sender() ) )
-        updateDockRatio( dock );
-}
-
-bool MainWindow::eventFilter( QObject *o, QEvent *e )
-{
-    // NOTICE this _must_ be handled by an eventfilter, as otherwise the "spliters" eventfilter
-    // will eat and we don't receive it
-    if( o == this )
-    {
-        if( e->type() == QEvent::MouseButtonPress || e->type() == QEvent::MouseButtonRelease )
-        {
-            QMouseEvent *me = static_cast<QMouseEvent*>( e );
-            if( me->button() == Qt::LeftButton )
-                m_mouseDown = ( e->type() == QEvent::MouseButtonPress );
-        }
-
-        return false;
-
-
-    }
-
-    if( ( ( e->type() == QEvent::Resize && m_mouseDown ) || // only when resized by the splitter :)
-             e->type() == QEvent::Show || e->type() == QEvent::Hide ) && // show/hide is _NOT_ sufficient for tab changes
-        ( o == m_browserDock.data() || o == m_contextDock.data() || o == m_playlistDock.data() ) )
-    {
-        QDockWidget *dock = static_cast<QDockWidget*>( o );
-//         if(e->type() == QEvent::Resize)
-//             debug() << dock << dock->size() << m_dockingRect.size();
-//         else
-//             debug() << "other!" << dock << dock->size() << m_dockingRect.size();
-        updateDockRatio( dock );
-    }
-    return false;
-}
-
-//END DOCK LAYOUT FIXING HACK ======================================================================
-
-QPoint
-MainWindow::globalBackgroundOffset()
-{
-    return menuBar()->mapToGlobal( QPoint( 0, 0 ) );
-}
-
-QRect
-MainWindow::contextRectGlobal() const
-{
-    //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
-    //FIXME
-    QPoint contextPos = mapToGlobal( m_contextDock.data()->pos() );
-    return QRect( contextPos.x(), contextPos.y(), m_contextDock.data()->width(), m_contextDock.data()->height() );
-}
-
 void
 MainWindow::slotStopped()
 {
@@ -1727,8 +1327,6 @@ MainWindow::restoreLayout()
     // Ensure that we don't end up without any toolbar (can happen after upgrading)
     if( m_mainToolbar.data()->isHidden() && m_slimToolbar.data()->isHidden() )
         m_mainToolbar.data()->show();
-
-    m_layoutEverRestored = true;
 }
 
 
