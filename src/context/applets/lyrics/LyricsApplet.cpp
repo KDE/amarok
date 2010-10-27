@@ -111,13 +111,10 @@ private:
 void
 LyricsAppletPrivate::setEditing( const bool isEditing )
 {
-    Q_Q( LyricsApplet );
     browser->nativeWidget()->setReadOnly( !isEditing );
     KTextBrowser *textBrowser = browser->nativeWidget();
     QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
     textBrowser->viewport()->setBackgroundRole( bg );
-    q->update();
-    // d->collaspeToMin();
 }
 
 void
@@ -254,20 +251,17 @@ LyricsAppletPrivate::_changeLyricsFont()
 void
 LyricsAppletPrivate::_editLyrics()
 {
-    Q_Q( LyricsApplet );
     if( !hasLyrics )
         browser->nativeWidget()->clear();
 
     setEditing( true );
     determineActionIconsState();
     browser->nativeWidget()->ensureCursorVisible();
-    q->setCollapseOff();
 }
 
 void
 LyricsAppletPrivate::_closeLyrics()
 {
-    Q_Q( LyricsApplet );
     if( hasLyrics )
     {
         QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
@@ -279,7 +273,6 @@ LyricsAppletPrivate::_closeLyrics()
             browser->nativeWidget()->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
 
         vbar->setSliderPosition( savedPosition );
-        q->setCollapseOff();
 
         determineActionIconsState();
         showSuggestions = false;
@@ -298,7 +291,6 @@ LyricsAppletPrivate::_closeLyrics()
 void
 LyricsAppletPrivate::_saveLyrics()
 {
-    Q_Q( LyricsApplet );
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
 
     if( curtrack )
@@ -307,7 +299,6 @@ LyricsAppletPrivate::_saveLyrics()
         {
             const QString lyrics = isRichText ? browser->nativeWidget()->toHtml() : browser->nativeWidget()->toPlainText();
             curtrack->setCachedLyrics( lyrics );
-            q->setCollapseOff();
             hasLyrics = true;
         }
         else
@@ -511,15 +502,6 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
     d->titleLabel->setScrollingText( d->titleText );
-
-    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
-    d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
-    d->showInfoLabel ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
-    d->showBrowser ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
-
-    d->showSuggestions ? d->suggestView->show() : d->suggestView->hide();
-    d->showInfoLabel ? d->infoLabel->show() : d->infoLabel->hide();
-    d->showBrowser ? d->browser->show() : d->browser->hide();
 }
 
 void
@@ -603,6 +585,15 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->showSuggestions = false;
         d->showBrowser = false;
     }
+
+    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
+    d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
+    d->showInfoLabel ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
+    d->showBrowser ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
+
+    d->showSuggestions ? d->suggestView->show() : d->suggestView->hide();
+    d->showInfoLabel ? d->infoLabel->show() : d->infoLabel->hide();
+    d->showBrowser ? d->browser->show() : d->browser->hide();
 
     d->determineActionIconsState();
     constraintsEvent();
