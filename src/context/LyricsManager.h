@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 
+#include <QStringList>
 #include <QList>
 #include <QString>
 #include <QVariant>
