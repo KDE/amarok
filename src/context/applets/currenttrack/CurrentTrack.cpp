@@ -171,7 +171,6 @@ CurrentTrack::changeTrackRating( int rating )
         return;
 
     track->setRating( rating );
-    debug() << "Changed rating to:" << rating;
 }
 
 QList<QAction*>
@@ -186,7 +185,6 @@ CurrentTrack::contextualActions()
         return actions;
 
     Meta::AlbumPtr album = track->album();
-
     if( album )
     {
         Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
@@ -236,32 +234,17 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     const qreal byTextWidth = m_byText->boundingRect().width();
     const qreal onTextWidth = m_onText->boundingRect().width();
-    const QPointF artistPos = m_artist->pos();
-    const QPointF albumPos  = m_album->pos();
 
     // align to either the album or artist line, depending if "On" or "By" is longer in this current translation
     // i18n makes things complicated :P
-    if( byTextWidth > onTextWidth )
-    {
-        // align to location of on text
-        m_byText->setPos( textX, textY + lineSpacing + 3 );
-        m_artist->setPos( m_byText->pos().x() + byTextWidth + 5, 0 );
-        alignBaseLineToFirst( m_byText, m_artist );
-        m_album->setPos( artistPos.x(), 0 );
-        m_onText->setPos( albumPos.x() - onTextWidth - 5, textY + lineSpacing * 2 + 3 );
-        alignBaseLineToFirst( m_onText, m_album );
-    }
-    else
-    {
-        // align to location/width of by text
-        m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
-        m_album->setPos( m_onText->pos().x() + onTextWidth + 5, 0 );
-        alignBaseLineToFirst( m_onText, m_album );
-        m_artist->setPos( albumPos.x(), 0 );
-        m_byText->setPos( artistPos.x() - byTextWidth - 5, textY + lineSpacing + 3 );
-        alignBaseLineToFirst( m_byText, m_artist );
-    }
-
+    // this is the position between the small "On" or "By" texts and the real info.
+    qreal middleX = textX + qMax( byTextWidth, onTextWidth );
+    m_byText->setPos( middleX - byTextWidth, textY + lineSpacing + 3 );
+    m_onText->setPos( middleX - onTextWidth, textY + lineSpacing * 2 + 3 );
+    m_artist->setPos( middleX + 5, 0 );
+    alignBaseLineToFirst( m_byText, m_artist );
+    m_album->setPos( middleX + 5, 0 );
+    alignBaseLineToFirst( m_onText, m_album );
     m_title->setPos( m_artist->pos().x(), m_artist->pos().y() - lineSpacing );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
@@ -272,10 +255,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
 
     album = handleUnknown(album, m_album, UNKNOWN_ALBUM.toString());
-
-    const qreal byTextX = m_byText->pos().x();
-    const qreal onTextX = m_onText->pos().x();
-    m_maxTextWidth = size().width() - (byTextX > onTextX ? byTextX : onTextX) - 4 * padding;
 
     m_title->setMaximumWidth( m_maxTextWidth );
     m_artist->setMaximumWidth( m_maxTextWidth );
@@ -639,13 +618,14 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     }
 }
 
-bool
+void
 CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 {
-    const int borderWidth = 5;
+    QPixmap coverWithBorders;
 
     if( !cover.isNull() )
     {
+        const int borderWidth = 5;
         width -= borderWidth * 2;
 
         qreal size = width;
@@ -666,16 +646,14 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         m_albumCover->setPos( moveByX, moveByY );
 
 
-        QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
+        coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
 
-        // HACK to make it "on top always !"
-        m_albumCover->setCacheMode(NoCache);
-        m_albumCover->setPixmap( coverWithBorders );
-        m_albumCover->update();
-        m_albumCover->setCacheMode(ItemCoordinateCache);
-        return true;
     }
-    return false;
+    // HACK to make it "on top always !"
+    m_albumCover->setCacheMode(NoCache);
+    m_albumCover->setPixmap( coverWithBorders );
+    m_albumCover->update();
+    m_albumCover->setCacheMode(ItemCoordinateCache);
 }
 
 void

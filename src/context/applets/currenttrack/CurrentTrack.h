@@ -76,7 +76,7 @@ private slots:
 private:
     QList<QAction*> contextualActions();
 
-    bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
+    void resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
 
     // aligns the second QGI to be at the same level as the first (the font baseline)
     void alignBaseLineToFirst( QGraphicsSimpleTextItem *a, TextScrollingWidget *b );
