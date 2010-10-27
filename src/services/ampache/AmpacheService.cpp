@@ -33,6 +33,8 @@
   #include "LastfmInfoParser.h"
 #endif
 
+#include <KLocale>
+
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
 
 void AmpacheServiceFactory::init()
