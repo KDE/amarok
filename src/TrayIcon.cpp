@@ -284,9 +284,13 @@ Amarok::TrayIcon::setupMenu()
 
     if ( m_extraActions.count() > 0 )
     {
-        // remove the two bottom items, so we can push them to the button again
+        KActionCollection const *ac = Amarok::actionCollection();
+        QAction *preferenceAction = ac->action( KStandardAction::name( KStandardAction::Preferences ) );
+
+        // remove the 3 bottom items, so we can push them to the bottom again
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
+        contextMenu()->removeAction( preferenceAction );
 
         foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
@@ -295,6 +299,7 @@ Amarok::TrayIcon::setupMenu()
         // readd
         contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
+        contextMenu()->addAction( preferenceAction );
     }
 }
 
