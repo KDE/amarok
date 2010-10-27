@@ -122,9 +122,10 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
             wikiCurrentUrl = clickUrl;
             if( !wikiCurrentUrl.hasQueryItem( QLatin1String("useskin") ) )
                 wikiCurrentUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
-            urls << wikiCurrentUrl;
+            KUrl encodedUrl( wikiCurrentUrl.toString() );
+            urls << encodedUrl;
             q->setData( source, QLatin1String("busy"), true );
-            The::networkAccessManager()->getData( wikiCurrentUrl, q,
+            The::networkAccessManager()->getData( encodedUrl, q,
                  SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         q->removeData( source, QLatin1String("clickUrl") );
