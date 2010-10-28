@@ -187,23 +187,18 @@ void
 SimilarArtistsApplet::switchToLang(const QString &lang)
 {
     DEBUG_BLOCK
-    if (lang == i18nc("automatic language selection", "Automatic") )
-        m_descriptionPreferredLang = "aut";
-
-    else if (lang == i18n("English") )
+    if (lang == i18n("English") )
         m_descriptionPreferredLang = "en";
-
     else if (lang == i18n("French") )
         m_descriptionPreferredLang = "fr";
-
     else if (lang == i18n("German") )
         m_descriptionPreferredLang = "de";
-
     else if (lang == i18n("Italian") )
         m_descriptionPreferredLang = "it";
-
     else if (lang == i18n("Spanish") )
         m_descriptionPreferredLang = "es";
+    else
+        m_descriptionPreferredLang = "aut";
 
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
