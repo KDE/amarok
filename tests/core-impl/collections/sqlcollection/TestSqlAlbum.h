@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTSQLTRACKEDITING_H
-#define TESTSQLTRACKEDITING_H
+#ifndef TESTSQLALBUM_H
+#define TESTSQLALBUM_H
 
 #include <QtTest/QtTest>
 
@@ -28,11 +28,11 @@ namespace Collections {
     class SqlCollection;
 }
 
-class TestSqlTrackEditing : public QObject
+class TestSqlAlbum : public QObject
 {
     Q_OBJECT
 public:
-    TestSqlTrackEditing();
+    TestSqlAlbum();
 
 private slots:
     void initTestCase();
@@ -41,13 +41,22 @@ private slots:
     void init();
     void cleanup();
 
-    void testChangeGenreToExisting();
-    void testChangeGenreToNew();
-    void testChangeComposerToExisting();
-    void testChangeComposerToNew();
-    void testChangeYearToExisting();
-    void testChangeYearToNew();
-    void testChangeAlbumToExisting();
+    void testCapabilities();
+
+    void testSetCompilationWithoutExistingCompilation();
+    void testSetCompilationWithExistingCompilation();
+    void testUnsetCompilationWithoutExistingAlbum();
+    void testUnsetCompilationWithExistingAlbum();
+    void testUnsetCompilationWithMultipleExistingAlbums();
+
+    void testUnsetCompilationWithArtistAFeaturingB();
+    void testUnsetCompilationWithMultipleArtists();
+
+    //void testSetCompilationWithoutExistingCompilationWithMultipleTracks();
+    //void testSetCompilationWithExistingComiplationWithMultipleTracks();
+    //void testUnsetCompilationWithoutExistingAlbumWithMultipleTracks();
+    //void testUnsetCompilationWithExistingAlbumWithMultipleTracks();
+    //void testUnsetCompilationWithMultipleExistingAlbumsWithMultipleTracks();
 
 private:
     Collections::SqlCollection *m_collection;
@@ -56,4 +65,4 @@ private:
     SqlRegistry *m_registry;
 };
 
-#endif // TESTSQLTRACKEDITING_H
+#endif // TESTSQLALBUM_H

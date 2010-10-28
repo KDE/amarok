@@ -161,7 +161,7 @@ signals:
         void deviceRemoved( int id );
 };
 
-class IScanManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS IScanManager : public QObject
 {
     Q_OBJECT
 public:

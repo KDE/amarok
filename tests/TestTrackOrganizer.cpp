@@ -40,9 +40,6 @@ using ::testing::AnyNumber;
 
 QTEST_KDEMAIN_CORE( TestTrackOrganizer )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 namespace Collections {
 
 class MyCollectionTestImpl : public CollectionTestImpl

@@ -10,11 +10,13 @@ macro(link_database_test test_target)
     add_dependencies( ${test_target} amarokcore )
     add_dependencies( ${test_target} amaroklib)
     add_dependencies( ${test_target} amarok-sqlcollection)
+    add_dependencies( ${test_target} amarok_collection-mysqlecollection)
 
     target_link_libraries(${test_target}
         amarokcore
         amaroklib
         amarok-sqlcollection
+        amarok_collection-mysqlecollection
         ${KDE4_KDECORE_LIBS}
         ${KDE4_KIO_LIBS}
         ${KDE4_THREADWEAVER_LIBRARIES}
@@ -33,7 +35,7 @@ endmacro(link_database_test)
 include_directories(
   ${AMAROK_TEST_TREE}
   ${AMAROK_SOURCE_TREE}
-  ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection
+  ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql
   ${AMAROK_SOURCE_TREE}/core-impl/logger
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
@@ -48,69 +50,27 @@ include_directories(
 
 set( databaseupdatertest_SRCS
         DatabaseUpdaterTest.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
     )
 
-kde4_add_unit_test( testdatabaseupdater TESTNAME amarok-testdatabaseupdater ${databaseupdatertest_SRCS} )
-link_database_test( testdatabaseupdater )
+kde4_add_unit_test( testsqldatabaseupdater TESTNAME testsqldatabaseupdater ${databaseupdatertest_SRCS} )
+link_database_test( testsqldatabaseupdater )
 
-#-------------------------------- Test Album Compilation Change -----------------------
+#-------------------------------- Test SqlAlbum -----------------------
 
-set( testalbumcompilationchange_SRCS
-        TestAlbumCompilationChange.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
+set( testsqlalbum_SRCS
+        TestSqlAlbum.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 
-kde4_add_unit_test( testalbumcompilationchange TESTNAME amarok-testalbumcompilationchange ${testalbumcompilationchange_SRCS} )
+kde4_add_unit_test( testsqlalbum TESTNAME testsqlalbum ${testsqlalbum_SRCS} )
 
-link_database_test( testalbumcompilationchange )
+link_database_test( testsqlalbum )
 
-
-#-------------------------------- Test SqlTrack Editing -----------------------
-
-set( testsqltrackediting_SRCS
-        TestSqlTrackEditing.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
-        ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
-    )
-
-
-kde4_add_unit_test( testsqltrackediting ${testsqltrackediting_SRCS} )
-
-link_database_test( testsqltrackediting )
 #-------------------------------- Test SqlArtist -----------------------
 
 set( testsqlartist_SRCS
         TestSqlArtist.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
@@ -122,12 +82,6 @@ link_database_test( testsqlartist )
 
 set( testsqlcollection_SRCS
         TestSqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
@@ -140,18 +94,6 @@ link_database_test( testsqlcollection )
 
 set( testsqlquerymaker_SRCS
         TestSqlQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/QueryMaker.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
@@ -164,8 +106,6 @@ link_database_test( testsqlquerymaker )
 
 set( testscanresultprocessorfull_SRCS
         TestScanResultProcessorFull.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
     )
 
 
@@ -196,19 +136,8 @@ target_link_libraries( testartisthelper
 
 set( testsqltrack_SRCS
         TestSqlTrack.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
-        ${AMAROK_SOURCE_TREE}/core/collections/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+        ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
     )
 
 
@@ -220,18 +149,7 @@ link_database_test( testsqltrack )
 
 set( testsqlcollectionlocation_SRCS
         TestSqlCollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMakerInternal.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 kde4_add_unit_test( testsqlcollectionlocation ${testsqlcollectionlocation_SRCS} )
@@ -247,6 +165,7 @@ target_link_libraries( testsqlcollectionlocation
         amarokcore
         amaroklib
         amarok-sqlcollection
+        amarok_collection-mysqlecollection
         ${KDE4_KDECORE_LIBS}
         ${KDE4_KIO_LIBS}
         ${KDE4_KDEUI_LIBS}
@@ -258,8 +177,8 @@ target_link_libraries( testsqlcollectionlocation
         ${TAGLIB-EXTRAS_LIBRARIES}
         ${TAGLIB_LIBRARIES}
         ${ZLIB_LIBRARIES}
-        ${GOOGLEMOCK_LIBRARIES})
-
+        ${GOOGLEMOCK_LIBRARIES}
+        )
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( testsqlcollectionlocation crypt pthread )

@@ -16,11 +16,10 @@
 
 #include "TestSqlCollection.h"
 
-#include "core/collections/Collection.h"
-#include "DatabaseUpdater.h"
-#include "core/support/Debug.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
+#include <core/collections/Collection.h>
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
+#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
 
 #include "SqlMountPointManagerMock.h"
 

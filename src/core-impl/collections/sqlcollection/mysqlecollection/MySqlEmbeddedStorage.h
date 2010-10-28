@@ -18,13 +18,14 @@
 #ifndef MYSQLEMBEDDEDSTORAGE_H
 #define MYSQLEMBEDDEDSTORAGE_H
 
-#include "core/collections/support/SqlStorage.h"
-#include "mysql-shared/MySqlStorage.h"
+#include "../amarok_sqlcollection_export.h"
+#include <core/collections/support/SqlStorage.h>
+#include <core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.h>
 
 /**
  * Implements a MySqlCollection using a MySQL Embedded Server
  */
-class MySqlEmbeddedStorage : public MySqlStorage
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS MySqlEmbeddedStorage : public MySqlStorage
 {
     public:
         /*

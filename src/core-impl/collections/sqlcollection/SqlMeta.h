@@ -45,7 +45,7 @@ namespace Collections {
 namespace Meta
 {
 
-class SqlTrack : public Meta::Track
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 {
     public:
         /** returns a string of all database values that can be fetched for a track */
@@ -280,7 +280,7 @@ class SqlArtist : public Meta::Artist
         friend class SqlTrack; // needs to call notifyObservers
 };
 
-class SqlAlbum : public Meta::Album
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( QWeakPointer<Collections::SqlCollection> collection, int id, const QString &name, int artist );

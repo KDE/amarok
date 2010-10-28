@@ -49,6 +49,14 @@ private slots:
     void testRemoveLabelFromTrack();
     void testRemoveLabelFromTrackWhenNotInCache();
 
+    void testChangeGenreToExisting();
+    void testChangeGenreToNew();
+    void testChangeComposerToExisting();
+    void testChangeComposerToNew();
+    void testChangeYearToExisting();
+    void testChangeYearToNew();
+    void testChangeAlbumToExisting();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;

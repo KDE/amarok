@@ -350,10 +350,13 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
+    /* we can't do this. there is a difference between a track artist and an album artist.
+       also the auto test breaks.
     if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
         m_data.artist = m_data.albumArtist;
     else if( !m_data.artist.isEmpty() && m_data.albumArtist.isEmpty() )
         m_data.albumArtist = m_data.artist;
+        */
 
     // debug() << "Read metadata from file for: " + m_data.title;
 }

@@ -25,6 +25,7 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
+#include <QApplication>
 #include <QModelIndex>
 #include <QSet>
 #include <QStringList>
@@ -118,6 +119,13 @@ TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
     qRegisterMetaType<Meta::DataList>();
+
+    m_app = new QApplication( 0, 0 ); // need an application for pixmaps
+}
+
+TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
+{
+    delete m_app;
 }
 
 void

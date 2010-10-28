@@ -122,6 +122,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
+        EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ArtistPtr() ) );
         coll->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;

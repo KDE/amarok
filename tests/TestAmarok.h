@@ -35,13 +35,9 @@ private slots:
     void testCleanPath();
     void testComputeScore();
     void testConciseTimeSince();
-    void testDecapitateString();
-    void testEscapeHTMLAttr();
     void testExtension();
     void testManipulateThe();
-    void testRecursiveUrlExpand();
     void testSaveLocation();
-    void testUnescapeHTMLAttr();
     void testVerboseTimeSince();
     void testVfatPath();
 

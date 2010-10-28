@@ -20,7 +20,7 @@
 
 #include <gmock/gmock.h>
 
-#include "SqlCollection.h"
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
 
 class IScanManagerMock : public IScanManager
 {

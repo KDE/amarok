@@ -19,11 +19,11 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/TagLibUtils.h"
 
-#include "DatabaseUpdater.h"
-#include "SqlCollection.h"
-#include "SqlQueryMaker.h"
-#include "SqlRegistry.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/SqlQueryMaker.h>
+#include <core-impl/collections/sqlcollection/SqlRegistry.h>
+#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
 
 #include "SqlMountPointManagerMock.h"
 
@@ -34,32 +34,6 @@
 using namespace Collections;
 
 QTEST_KDEMAIN_CORE( TestSqlQueryMaker )
-
-//defined in TagLibUtils.h
-
-namespace TagLib
-{
-    struct FileRef
-    {
-        //dummy
-    };
-}
-
-void
-Meta::Field::writeFields(const QString &filename, const QVariantMap &changes )
-{
-    Q_UNUSED( filename )
-    Q_UNUSED( changes )
-    return;
-}
-
-void
-Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
-{
-    Q_UNUSED( fileref )
-    Q_UNUSED( changes )
-    return;
-}
 
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
@@ -112,10 +86,24 @@ TestSqlQueryMaker::initTestCase()
     SqlRegistry *registry = new SqlRegistry( m_collection );
     registry->setStorage( m_storage );
     m_collection->setRegistry( registry );
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
+
+    DatabaseUpdater *updater = new DatabaseUpdater();
+    updater->setStorage( m_storage );
+    updater->setCollection( m_collection );
+    updater->update();
+
+    m_collection->setUpdater( updater );
+
+    m_storage->query( "TRUNCATE TABLE years;" );
+    m_storage->query( "TRUNCATE TABLE genres;" );
+    m_storage->query( "TRUNCATE TABLE composers;" );
+    m_storage->query( "TRUNCATE TABLE albums;" );
+    m_storage->query( "TRUNCATE TABLE artists;" );
+    m_storage->query( "TRUNCATE TABLE tracks;" );
+    m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE labels;" );
+    m_storage->query( "TRUNCATE TABLE statistics;" );
+    m_storage->query( "TRUNCATE TABLE urls_labels;" );
 
     //setup test data
     m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
@@ -161,9 +149,11 @@ TestSqlQueryMaker::initTestCase()
                       "VALUES(6,6,'track6','',1,4,2,2,2);" );
 
     m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
-                      "VALUES(1,1000,10000, 50.0,5,100);" );
+                      "VALUES(1,1000,10000, 50.0,2,100);" );
     m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
-                      "VALUES(2,3000,30000, 70.0,9,50);" );
+                      "VALUES(2,2000,30000, 70.0,9,50);" );
+    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(3,4000,20000, 60.0,4,10);" );
 
     m_storage->query( "INSERT INTO labels(id,label) VALUES (1,'labelA'), (2,'labelB'),(3,'test');" );
     m_storage->query( "INSERT INTO urls_labels(url,label) VALUES (1,1),(1,2),(2,2),(3,3),(4,3),(4,2);" );
@@ -175,9 +165,7 @@ TestSqlQueryMaker::cleanupTestCase()
 {
     delete m_collection;
     //m_storage is deleted by SqlCollection
-    //m_registry is deleted by SqlCollection
     delete m_tmpDir;
-
 }
 
 void
@@ -250,62 +238,77 @@ TestSqlQueryMaker::testQueryTracks()
 void
 TestSqlQueryMaker::testAlbumQueryMode()
 {
-    Collections::SqlQueryMaker qm( m_collection );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+        qm.setQueryType( Collections::QueryMaker::Album );
+        qm.run();
+        QCOMPARE( qm.albums( "testId" ).count(), 1 );
+    }
 
-    qm.setBlocking( true );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-    qm.setQueryType( Collections::QueryMaker::Album );
-    qm.run();
-    QCOMPARE( qm.albums( "testId" ).count(), 1 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm.setQueryType( Collections::QueryMaker::Album );
+        qm.run();
+        QCOMPARE( qm.albums( "testId" ).count(), 4 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-    qm.setQueryType( Collections::QueryMaker::Album );
-    qm.run();
-    QCOMPARE( qm.albums( "testId" ).count(), 4 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setQueryType( Collections::QueryMaker::Track );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+        qm.run();
+        QCOMPARE( qm.tracks( "testId" ).count(), 2 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setQueryType( Collections::QueryMaker::Track );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-    qm.run();
-    QCOMPARE( qm.tracks( "testId" ).count(), 2 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setQueryType( Collections::QueryMaker::Track );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm.run();
+        QCOMPARE( qm.tracks( "testId" ).count(), 4 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setQueryType( Collections::QueryMaker::Track );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-    qm.run();
-    QCOMPARE( qm.tracks( "testId" ).count(), 4 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setQueryType( Collections::QueryMaker::Artist );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+        qm.run();
+        QCOMPARE( qm.artists( "testId" ).count() , 2 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setQueryType( Collections::QueryMaker::Artist );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-    qm.run();
-    QCOMPARE( qm.artists( "testId" ).count() , 2 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setQueryType( Collections::QueryMaker::Artist );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm.run();
+        QCOMPARE( qm.artists( "testId" ).count(), 3 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setQueryType( Collections::QueryMaker::Artist );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-    qm.run();
-    QCOMPARE( qm.artists( "testId" ).count(), 3 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+        qm.setQueryType( Collections::QueryMaker::Genre );
+        qm.run();
+        QCOMPARE( qm.genres( "testId" ).count(), 2 );
+    }
 
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-    qm.setQueryType( Collections::QueryMaker::Genre );
-    qm.run();
-    QCOMPARE( qm.genres( "testId" ).count(), 2 );
-
-    qm.reset();
-    qm.setBlocking( true );
-    qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-    qm.setQueryType( Collections::QueryMaker::Genre );
-    qm.run();
-    QCOMPARE( qm.genres( "testId" ).count(), 3 );
+    {
+        Collections::SqlQueryMaker qm( m_collection );
+        qm.setBlocking( true );
+        qm.setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm.setQueryType( Collections::QueryMaker::Genre );
+        qm.run();
+        QCOMPARE( qm.genres( "testId" ).count(), 3 );
+    }
 
 }
 
@@ -752,11 +755,11 @@ TestSqlQueryMaker::testMatch_data()
     SqlRegistry *r = m_collection->registry();
 
     QTest::newRow( "track matches artist" ) << Collections::QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
-    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1",1,1 ) ) << 1;
+    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1", 1, 1 ) ) << 1;
     QTest::newRow( "track matches genre" ) << Collections::QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
     QTest::newRow( "track matches composer" ) << Collections::QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
     QTest::newRow( "track matches year" ) << Collections::QueryMaker::Track << asList( r->getYear("1")) << 3;
-    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1",1,1)) << 1;
+    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1", 1, 1 )) << 1;
     QTest::newRow( "artist matches genre" ) << Collections::QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
 }
 
@@ -802,11 +805,11 @@ TestSqlQueryMaker::testDynamicCollection()
 
     mpm.mountPoints.insert( 1, "/foo" );
 
-    trackQm.reset();
-    trackQm.setQueryType( Collections::QueryMaker::Track );
-    trackQm.setBlocking( true );
-    trackQm.run();
-    QCOMPARE( trackQm.tracks( "testId" ).count(), 4 );
+    Collections::SqlQueryMaker trackQm2( m_collection );
+    trackQm2.setQueryType( Collections::QueryMaker::Track );
+    trackQm2.setBlocking( true );
+    trackQm2.run();
+    QCOMPARE( trackQm2.tracks( "testId" ).count(), 4 );
 
     Collections::SqlQueryMaker artistQm( m_collection );
     artistQm.setQueryType( Collections::QueryMaker::Artist );
@@ -908,9 +911,9 @@ TestSqlQueryMaker::testNumberFilter_data()
     QTest::addColumn<bool>( "exclude" );
     QTest::addColumn<int>( "count" );
 
-    QTest::newRow( "include rating greater 4" ) << Collections::QueryMaker::Track << Meta::valRating << 4 << Collections::QueryMaker::GreaterThan << false << 2;
-    QTest::newRow( "exclude rating smaller 4" ) << Collections::QueryMaker::Album << Meta::valRating << 4 << Collections::QueryMaker::LessThan << true << 2;
-    QTest::newRow( "exclude tracks first played later than 2000" ) << Collections::QueryMaker::Track << Meta::valFirstPlayed << 2000 << Collections::QueryMaker::GreaterThan << true << 1;
+    QTest::newRow( "include rating greater 4" ) << Collections::QueryMaker::Track << Meta::valRating << 4 << Collections::QueryMaker::GreaterThan << false << 1;
+    QTest::newRow( "exclude rating smaller 4" ) << Collections::QueryMaker::Album << Meta::valRating << 4 << Collections::QueryMaker::LessThan << true << 4;
+    QTest::newRow( "exclude tracks first played later than 2000" ) << Collections::QueryMaker::Track << Meta::valFirstPlayed << 2000 << Collections::QueryMaker::GreaterThan << true << 5;
     //having never been played does not mean played before 20000
     QTest::newRow( "include last played before 20000" ) << Collections::QueryMaker::Track << Meta::valLastPlayed << 20000 << Collections::QueryMaker::LessThan << false << 1;
     QTest::newRow( "playcount equals 100" ) << Collections::QueryMaker::Album << Meta::valPlaycount << 100 << Collections::QueryMaker::Equals << false << 1;
@@ -953,7 +956,7 @@ TestSqlQueryMaker::testReturnFunctions_data()
     QTest::addColumn<QString>( "result" );
 
     QTest::newRow( "count tracks" ) << Collections::QueryMaker::Count << Meta::valTitle << QString( "6" );
-    QTest::newRow( "sum of playcount" ) << Collections::QueryMaker::Sum << Meta::valPlaycount << QString( "150" );
+    QTest::newRow( "sum of playcount" ) << Collections::QueryMaker::Sum << Meta::valPlaycount << QString( "160" );
     QTest::newRow( "min score" ) << Collections::QueryMaker::Min << Meta::valScore << QString( "50" );
     QTest::newRow( "max rating" ) << Collections::QueryMaker::Max << Meta::valRating << QString( "9" );
 }
@@ -973,7 +976,6 @@ TestSqlQueryMaker::testReturnFunctions()
     qm.run();
 
     QCOMPARE( qm.customData( "testId" ).first(), result );
-
 }
 
 void
@@ -1149,41 +1151,6 @@ TestSqlQueryMaker::testLabelQueryMode()
 
     QCOMPARE( qm.data().count(), result );
 
-}
-
-void
-TestSqlQueryMaker::testResetRunningQuery()
-{
-    for( int i = 0; i < 10; i++ )
-    {
-    int iteration = 0;
-    bool queryNotDoneYet = true;
-    Collections::SqlQueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
-
-    //wait one second per query in total, that should be enough for it to complete
-    do
-    {
-        QSignalSpy spy( qm, SIGNAL(queryDone()) );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->addFilter( Meta::valTitle, QString::number( iteration), false, false );
-        qm->run();
-        //wait 2 msec more per iteration, might have to be tweaked
-        if( iteration > 0 )
-        {
-            QTest::qWait( 2 * iteration );
-        }
-        qm->reset();
-        queryNotDoneYet = ( spy.count() == 0 );
-        if( iteration > 50 )
-        {
-            break;
-        }
-        QTest::qWait( 1000 - 2 * iteration );
-        iteration++;
-    } while ( queryNotDoneYet );
-    //delete qm;
-    qDebug() << "Iterations: " << iteration;
-    }
 }
 
 #include "TestSqlQueryMaker.moc"

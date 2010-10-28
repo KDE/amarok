@@ -62,7 +62,7 @@ void TestMetaFileTrack::cleanupTestCase()
 }
 
 void TestMetaFileTrack::testNameAndSetTitle()
-{ 
+{
     // why aren't those called set/getTitle?
     QCOMPARE( m_track->name(), QString( "Platz 01" ) );
 
@@ -202,16 +202,16 @@ void TestMetaFileTrack::testSetGetArtist()
     QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );
 
     m_track->setArtist( "" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "" ) );
 
     m_track->setArtist( "test" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "test" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "test" ) );
 
     m_track->setArtist( "Another Test" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "Another Test" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Another Test" ) );
 
     m_track->setArtist( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Some Umlauts: äöü" ) );
 
     m_track->setArtist( "Free Music Charts" );
     QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );

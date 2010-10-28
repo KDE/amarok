@@ -21,13 +21,13 @@
 #include <QDebug>
 
 #include "core/meta/support/MetaConstants.h"
-#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
-#include "SqlCollection.h"
-#include "DatabaseUpdater.h"
-#include "ScanResultProcessor.h"
 #include "core/collections/support/SqlStorage.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
-#include "core-impl/collections/sqlcollection/SqlRegistry.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
+#include <core-impl/collections/sqlcollection/ScanResultProcessor.h>
+#include <core-impl/collections/sqlcollection/SqlRegistry.h>
+#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
 
 
 #include "config-amarok-test.h"
@@ -56,19 +56,20 @@ TestScanResultProcessorFull::initTestCase()
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
-    SqlMountPointManagerMock *mpm = new SqlMountPointManagerMock();
+    SqlMountPointManager *mpm = new SqlMountPointManagerMock();
     m_collection->setMountPointManager( mpm );
-
-    DatabaseUpdater *updater = new DatabaseUpdater();
-    m_collection->setUpdater( updater );
-    updater->setStorage( m_storage );
-    updater->setCollection( m_collection );
-    updater->update();
 
     // registry needed when updating urls and nobody checks for NULL
     SqlRegistry *registry = new SqlRegistry( m_collection );
     registry->setStorage( m_storage );
     m_collection->setRegistry( registry );
+
+    DatabaseUpdater *updater = new DatabaseUpdater();
+    updater->setStorage( m_storage );
+    updater->setCollection( m_collection );
+    updater->update();
+
+    m_collection->setUpdater( updater );
 }
 
 void

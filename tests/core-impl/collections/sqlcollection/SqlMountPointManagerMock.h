@@ -17,7 +17,8 @@
 #ifndef SQLMOUNTPOINTMANAGERMOCK_H
 #define SQLMOUNTPOINTMANAGERMOCK_H
 
-#include "SqlCollection.h"
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/MountPointManager.h>
 
 #include <QMap>
 #include <QString>
@@ -27,6 +28,12 @@
 class SqlMountPointManagerMock : public SqlMountPointManager
 {
 public:
+
+    SqlMountPointManagerMock()
+        : SqlMountPointManager()
+    {
+    }
+
     int getIdForUrl( const KUrl &url )
     {
         QString path = url.path();
@@ -41,7 +48,7 @@ public:
         return -1;
     }
 
-    QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
+    virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
     {
         if( deviceId == -1 )
             return relativePath.right( relativePath.length() -1 );
@@ -51,7 +58,7 @@ public:
         }
     }
 
-    QString getRelativePath( const int deviceId, const QString& absolutePath ) const
+    virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const
     {
         if( deviceId == -1 )
             return '.' + absolutePath;
@@ -70,7 +77,7 @@ public:
         return result;
     }
 
-    QStringList collectionFolders() const
+    virtual QStringList collectionFolders() const
     {
         return folders;
     }

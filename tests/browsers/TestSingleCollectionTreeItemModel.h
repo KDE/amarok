@@ -19,11 +19,14 @@
 
 #include <QtTest/QTest>
 
+class QApplication;
+
 class TestSingleCollectionTreeItemModel : public QObject
 {
     Q_OBJECT
 public:
     TestSingleCollectionTreeItemModel();
+    ~TestSingleCollectionTreeItemModel();
 
 private slots:
     void init();
@@ -34,6 +37,9 @@ private slots:
     void testAddTrack();
 
     void testAddTrackWithFilter();
+
+private:
+    QApplication *m_app;
 
 };
 

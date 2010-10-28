@@ -61,8 +61,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-        virtual QStringList groups() { return m_groups; }
-
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
@@ -78,7 +76,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
         QString m_name;
-        QStringList m_groups;
 };
 
 }

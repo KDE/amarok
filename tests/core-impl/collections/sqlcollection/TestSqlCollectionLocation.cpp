@@ -16,20 +16,20 @@
 
 #include "TestSqlCollectionLocation.h"
 
-#include "DatabaseUpdater.h"
-#include "core/support/Debug.h"
-#include "core/support/Components.h"
-#include "core-impl/logger/ProxyLogger.h"
-#include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlCollectionLocation.h"
-#include "SqlRegistry.h"
-#include "ScanManager.h"
+#include "core/support/Components.h"
+#include "core/collections/MockCollectionLocationDelegate.h"
+#include <core-impl/logger/ProxyLogger.h>
+#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
+#include <core-impl/collections/sqlcollection/DefaultSqlQueryMakerFactory.h>
+#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/SqlCollectionLocation.h>
+#include <core-impl/collections/sqlcollection/SqlRegistry.h>
+#include <core-impl/collections/sqlcollection/ScanManager.h>
+
 #include "SqlMountPointManagerMock.h"
 #include "IScanManagerMock.h"
-#include "core/collections/MockCollectionLocationDelegate.h"
 
 #include "config-amarok-test.h"
 
@@ -47,8 +47,6 @@
 using ::testing::AnyNumber;
 using ::testing::Return;
 using ::testing::_;
-
-QMutex Debug::mutex;
 
 class MySqlCollectionLocation : public Collections::SqlCollectionLocation
 {
@@ -146,7 +144,18 @@ TestSqlCollectionLocation::init()
     m_registry = new SqlRegistry( m_collection );
     m_registry->setStorage( m_storage );
     m_collection->setRegistry( m_registry );
+
     //setup base data
+    m_storage->query( "TRUNCATE TABLE years;" );
+    m_storage->query( "TRUNCATE TABLE genres;" );
+    m_storage->query( "TRUNCATE TABLE composers;" );
+    m_storage->query( "TRUNCATE TABLE albums;" );
+    m_storage->query( "TRUNCATE TABLE artists;" );
+    m_storage->query( "TRUNCATE TABLE tracks;" );
+    m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE labels;" );
+    m_storage->query( "TRUNCATE TABLE urls_labels;" );
+
     m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'artist2');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
@@ -184,15 +193,6 @@ TestSqlCollectionLocation::cleanup()
     delete m_registry;
     m_collection->setRegistry( 0 );
     m_collection->setScanManager( 0 );
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE labels;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
 }
 
 void

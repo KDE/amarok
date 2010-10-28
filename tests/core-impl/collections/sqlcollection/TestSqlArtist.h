@@ -18,16 +18,35 @@
 #define TESTSQLARTIST_H
 
 #include <QtTest/QtTest>
+#include <KTempDir>
+
+class SqlStorage;
+
+namespace Collections {
+    class SqlCollection;
+}
 
 class TestSqlArtist : public QObject
 {
     Q_OBJECT
-
 public:
     TestSqlArtist();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
+
+    void init();
+    void cleanup();
+
     void testSortableName();
+
+private:
+    Collections::SqlCollection *m_collection;
+    SqlStorage *m_storage;
+    KTempDir *m_tmpDir;
+
+    public:
 };
 
 #endif // TESTSQLARTIST_H

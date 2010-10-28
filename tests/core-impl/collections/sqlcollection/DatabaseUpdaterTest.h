@@ -19,6 +19,14 @@
 
 #include <QtTest/QtTest>
 
+#include <KTempDir>
+
+class SqlStorage;
+
+namespace Collections {
+    class SqlCollection;
+}
+
 class DatabaseUpdaterTest : public QObject
 {
     Q_OBJECT
@@ -26,11 +34,21 @@ public:
     DatabaseUpdaterTest();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
+
+    void cleanup();
+
     void testNeedsUpdate();
     void testNeedsNoUpdate();
+    void testDeleteAllRedundant();
+    void testCheckTables();
     void testCreatePermanentTables();
-    //void testCreateTemporaryTables();
-    //void testCopyTemporaryToPermanentTables();
+
+private:
+    Collections::SqlCollection *m_collection;
+    SqlStorage *m_storage;
+    KTempDir *m_tmpDir;
 };
 
 #endif // DATABASEUPDATERTEST_H

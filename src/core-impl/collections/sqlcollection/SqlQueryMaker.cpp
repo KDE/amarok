@@ -398,7 +398,11 @@ QueryMaker*
 SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
-    d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
+
+    if( !artist || artist->name().isEmpty() )
+        d->queryMatch += " AND ( artists.name IS NULL OR artists.name = '')";
+    else
+        d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
     return this;
 }
 
@@ -406,17 +410,26 @@ QueryMaker*
 SqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
-    //handle compilations
-    d->queryMatch += QString( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
-    Meta::ArtistPtr albumArtist = album->albumArtist();
-    if( albumArtist )
-    {
-        d->linkedTables |= Private::ALBUMARTIST_TAB;
-        d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( albumArtist->name() ) );
-    }
+
+    // handle singles
+    if( !album || album->name().isEmpty() )
+        d->queryMatch += QString( " AND ( albums.name IS NULL OR albums.name = '' )" );
     else
+        d->queryMatch += QString( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
+
+    if( album )
     {
-        d->queryMatch += " AND albums.artist IS NULL";
+        //handle compilations
+        Meta::ArtistPtr albumArtist = album->albumArtist();
+        if( albumArtist )
+        {
+            d->linkedTables |= Private::ALBUMARTIST_TAB;
+            d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( albumArtist->name() ) );
+        }
+        else
+        {
+            d->queryMatch += " AND albums.artist IS NULL";
+        }
     }
     return this;
 }
@@ -440,8 +453,16 @@ SqlQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 QueryMaker*
 SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 {
-    d->linkedTables |= Private::YEAR_TAB;
-    d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
+    // handle tracks without a year
+    if( !year )
+    {
+        d->queryMatch += " AND year IS NULL";
+    }
+    else
+    {
+        d->linkedTables |= Private::YEAR_TAB;
+        d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
+    }
     return this;
 }
 
@@ -476,8 +497,19 @@ SqlQueryMaker::addMatch( const Meta::DataPtr &data )
 QueryMaker*
 SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    //special casing for albumartist...
-    if( value == Meta::valAlbumArtist && filter.isEmpty() )
+    // special case for album...
+    if( value == Meta::valAlbum && filter.isEmpty() )
+    {
+        d->linkedTables |= Private::ALBUM_TAB;
+        d->queryFilter += QString( " %1 ( album.name IS NULL or album.name = '') " ).arg( andOr() );
+    }
+    else if( value == Meta::valArtist && filter.isEmpty() )
+    {
+        d->linkedTables |= Private::ARTIST_TAB;
+        d->queryFilter += QString( " %1 ( artist.name IS NULL or artists.name = '') " ).arg( andOr() );
+    }
+    // special case for albumartist...
+    else if( value == Meta::valAlbumArtist && filter.isEmpty() )
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
         d->linkedTables |= Private::ALBUM_TAB;
@@ -538,16 +570,8 @@ SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberC
             break;
     }
 
-    if( (filter == 0 && compare == QueryMaker::Equals)
-     || (filter <  0 && compare == QueryMaker::GreaterThan)
-     || (filter >  0 && compare == QueryMaker::LessThan) )
-    {
-        d->queryFilter += QString( " %1 (%2 %3 %4 or %2 is null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
-    }
-    else
-    {
-        d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
-    }
+    // note: a NULL value in the database means undefined and not 0!
+    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
 
     return this;
 }
@@ -569,16 +593,10 @@ SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Num
             break;
     }
 
-    if( (filter == 0 && compare == QueryMaker::Equals)
-     || (filter >= 0 && compare == QueryMaker::GreaterThan)
-     || (filter <= 0 && compare == QueryMaker::LessThan) )
-    {
-        d->queryFilter += QString( " %1 (%2 %3 %4 and %2 is not null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
-    }
-    else
-    {
-        d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
-    }
+    // note: a NULL value in the database means undefined and not 0!
+    // We can't exclude NULL values here because they are not defined!
+    d->queryFilter += QString( " %1 (%2 %3 %4 or %2 is null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+
     return this;
 }
 
@@ -812,18 +830,20 @@ SqlQueryMaker::buildQuery()
     query += " WHERE 1 ";
 
     //dynamic collection
-    Q_ASSERT( m_collection->mountPointManager() );
-    IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
-    QString commaSeparatedIds;
-    foreach( int id, list )
+    if( m_collection->mountPointManager() )
     {
-        if( !commaSeparatedIds.isEmpty() )
-            commaSeparatedIds += ',';
-        commaSeparatedIds += QString::number( id );
-    }
-    if( !commaSeparatedIds.isEmpty() )
-    {
-        query += QString( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
+        IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
+        if( !list.isEmpty() )
+        {
+            QString commaSeparatedIds;
+            foreach( int id, list )
+            {
+                if( !commaSeparatedIds.isEmpty() )
+                    commaSeparatedIds += ',';
+                commaSeparatedIds += QString::number( id );
+            }
+            query += QString( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
+        }
     }
 
     switch( d->albumMode )

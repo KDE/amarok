@@ -36,19 +36,6 @@ QMutex Amarok::globalDirsMutex;
 
 namespace Amarok
 {
-    /*
-    * Transform to be usable within HTML/XHTML attributes
-    */
-    QString escapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( '%', "%25" ).replace( '\'', "%27" ).replace( '"', "%22" ).
-                replace( '#', "%23" ).replace( '?', "%3F" );
-    }
-    QString unescapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
-                replace( "%27", "'" ).replace( "%25", "%" );
-    }
 
     QString verboseTimeSince( const QDateTime &datetime )
     {
@@ -335,66 +322,4 @@ namespace Amarok
         return s;
     }
 
-    /* Strip the common prefix of two strings from the first one and trim
-     * whitespace from the beginning of the resultant string.
-     * Case-insensitive.
-     *
-     * @param input the string being processed
-     * @param ref the string used to determine prefix
-     */
-    QString decapitateString( const QString &input, const QString &ref )
-    {
-        int len;    //the length of common prefix calculated so far
-        for ( len = 0; len < input.length() && len < ref.length(); len++ )
-        {
-            if ( input.at( len ).toUpper() != ref.at( len ).toUpper() )
-                break;
-        }
-
-        return input.right( input.length() - len ).trimmed();
-    }
-
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
-    {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister( 0 );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !Playlists::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
-    }
-
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
-
-        return urls;
-    }
 } // End namespace Amarok

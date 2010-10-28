@@ -19,6 +19,7 @@
 #ifndef AMAROK_SQLCOLLECTIONLOCATION_H
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
+#include "amarok_sqlcollection_export.h"
 #include "core/collections/CollectionLocation.h"
 #include <KJob>
 #include <KCompositeJob>
@@ -62,7 +63,7 @@ class TransferJob : public KCompositeJob
         bool m_killed;
 };
 
-class SqlCollectionLocation : public CollectionLocation
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 
@@ -132,7 +133,7 @@ class SqlCollectionLocationFactory
 
 } //namespace Collections
 
-class OrganizeCollectionDelegate : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS OrganizeCollectionDelegate : public QObject
 {
     Q_OBJECT
 public:

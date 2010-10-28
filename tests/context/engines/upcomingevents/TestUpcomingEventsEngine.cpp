@@ -31,7 +31,6 @@ QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
 TestUpcomingEventsEngine::TestUpcomingEventsEngine(QObject* parent)
     : TestDataEngine(parent)
 {
-
 }
 
 
@@ -61,6 +60,7 @@ TestUpcomingEventsEngine::cleanupTestCase()
 {
     //Write here cleaning
     delete m_engine;
+    m_engine = 0;
 }
 
 #include "TestUpcomingEventsEngine.moc"

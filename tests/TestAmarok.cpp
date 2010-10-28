@@ -114,26 +114,6 @@ void TestAmarok::testConciseTimeSince()
     /* any other good ideas what to test here? */
 }
 
-void TestAmarok::testDecapitateString()
-{
-    QCOMPARE( Amarok::decapitateString( "", "" ), QString( "" ) );
-
-    QCOMPARE( Amarok::decapitateString( "abc123", "abc456" ), QString( "123" ) );
-    QCOMPARE( Amarok::decapitateString( "abc", "123" ), QString( "abc" ) );
-    QCOMPARE( Amarok::decapitateString( "abc", "" ), QString( "abc" ) );
-    QCOMPARE( Amarok::decapitateString( "", "abc" ), QString( "" ) );
-}
-
-void TestAmarok::testEscapeHTMLAttr()
-{
-    QCOMPARE( Amarok::escapeHTMLAttr( "" ), QString( "" ) );
-
-    QCOMPARE( Amarok::escapeHTMLAttr( "test\"fu=bar" ), QString( "test%22fu=bar" ) );
-    QCOMPARE( Amarok::escapeHTMLAttr( "test#fu=bar" ), QString( "test%23fu=bar" ) );
-    QCOMPARE( Amarok::escapeHTMLAttr( "test%fu=bar" ), QString( "test%25fu=bar" ) );
-    QCOMPARE( Amarok::escapeHTMLAttr( "test\'fu=bar" ), QString( "test%27fu=bar" ) );
-    QCOMPARE( Amarok::escapeHTMLAttr( "test?fu=bar" ), QString( "test%3Ffu=bar" ) );
-}
 
 void TestAmarok::testExtension()
 {
@@ -198,54 +178,6 @@ void TestAmarok::testManipulateThe()
     QCOMPARE( teststring, QString::fromUtf8( "The Äöü" ) );
 }
 
-void TestAmarok::testRecursiveUrlExpand()
-{
-    /* There are two overloaded variants of this function */
-    KUrl url( "" );
-    KUrl::List urlList, resultList;
-
-    resultList = Amarok::recursiveUrlExpand( url );
-    QVERIFY( resultList.isEmpty() );
-
-    resultList = Amarok::recursiveUrlExpand( urlList );
-    QVERIFY( resultList.isEmpty() );
-
-    urlList.append( url );
-    resultList = Amarok::recursiveUrlExpand( urlList );
-    QVERIFY( resultList.isEmpty() );
-
-    url = dataPath( "data/playlists/" );
-    resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.size(), 2 ); // there are two files that are not playlists
-    QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "CMakeLists.txt" ) );
-
-
-    url = dataPath( "data/" );
-    resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.size(), 23 );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/invalid.cue" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/testsheet01-iso8859-1.cue" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/testsheet01-utf8.cue" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/no-playlist.png" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 01.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 02.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 03.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 04.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 05.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 06.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 07.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 08.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 09.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 10.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track01.ogg" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track02.ogg" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track03.ogg" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/CMakeLists.txt" ) ) );
-    QVERIFY( !resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/test.xspf" ) ) );
-    QVERIFY( !resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/test.pls" ) ) );
-}
-
 void TestAmarok::testSaveLocation()
 {
     QString saveLocation = Amarok::saveLocation();
@@ -255,17 +187,6 @@ void TestAmarok::testSaveLocation()
     QCOMPARE( QDir::isAbsolutePath( saveLocation ), true );
     QCOMPARE( saveLocationDir.isReadable(), true );
     /* any other good ideas what to test here? */
-}
-
-void TestAmarok::testUnescapeHTMLAttr()
-{
-    QCOMPARE( Amarok::unescapeHTMLAttr( "" ), QString( "" ) );
-
-    QCOMPARE( Amarok::unescapeHTMLAttr( "test%22fu=bar" ), QString( "test\"fu=bar" ) );
-    QCOMPARE( Amarok::unescapeHTMLAttr( "test%23fu=bar" ), QString( "test#fu=bar" ) );
-    QCOMPARE( Amarok::unescapeHTMLAttr( "test%25fu=bar" ), QString( "test%fu=bar" ) );
-    QCOMPARE( Amarok::unescapeHTMLAttr( "test%27fu=bar" ), QString( "test\'fu=bar" ) );
-    QCOMPARE( Amarok::unescapeHTMLAttr( "test%3Ffu=bar" ), QString( "test?fu=bar" ) );
 }
 
 void TestAmarok::testVerboseTimeSince()

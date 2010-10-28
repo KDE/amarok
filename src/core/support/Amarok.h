@@ -24,7 +24,6 @@
 #include <KActionCollection>
 #include <KConfig>
 #include <KIO/NetAccess>
-#include <KUrl> // recursiveUrlExpand
 
 #include <QDir>
 #include <QWeakPointer>
@@ -120,16 +119,6 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
-    /**
-     * For recursively expanding the contents of a directory into a KUrl::List
-     * (playlists are ignored)
-     */
-
-    // TODO: New in Amarok2 -> recursiveUrlExpand has been replaced
-    // existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
-    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
-
     AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
     AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
     AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t );
@@ -195,20 +184,6 @@ namespace Amarok
      * @return The cleaned up path.
      */
     AMAROK_CORE_EXPORT QString vfatPath( const QString &path );
-
-    /**
-     * Compare both strings from left to right and remove the common part from input
-     * @param input the string that get's cleaned.
-     * @param ref a reference to compare input with.
-     * @return The cleaned up string.
-     */
-    AMAROK_CORE_EXPORT QString decapitateString( const QString &input, const QString &ref );
-
-    /*
-     * Transform to be usable within HTML/XHTML attributes
-     */
-    AMAROK_CORE_EXPORT QString escapeHTMLAttr( const QString &s );
-    AMAROK_CORE_EXPORT QString unescapeHTMLAttr( const QString &s );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**

@@ -16,52 +16,89 @@
 
 #include "TestSqlArtist.h"
 
-#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "core-impl/meta/file/TagLibUtils.h"
-#include "SqlMeta.h"
+#include <core-impl/collections/sqlcollection/SqlCollection.h>
+#include <core-impl/collections/sqlcollection/DefaultSqlQueryMakerFactory.h>
+#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
+#include "SqlMountPointManagerMock.h"
 
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestSqlArtist )
 
-//defined in TagLibUtils.h
-
-namespace TagLib
-{
-    struct FileRef
-    {
-        //dummy
-    };
-}
-
-void
-Meta::Field::writeFields(const QString &filename, const QVariantMap &changes )
-{
-    Q_UNUSED( filename )
-    Q_UNUSED( changes )
-    return;
-}
-
-void
-Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
-{
-    Q_UNUSED( fileref )
-    Q_UNUSED( changes )
-    return;
-}
-
 TestSqlArtist::TestSqlArtist()
+    : QObject()
+    , m_collection( 0 )
+    , m_storage( 0 )
+    , m_tmpDir( 0 )
 {
+}
+
+void
+TestSqlArtist::initTestCase()
+{
+    m_tmpDir = new KTempDir();
+    m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
+    m_collection->setSqlStorage( m_storage );
+    m_collection->setMountPointManager( new SqlMountPointManagerMock() );
+
+    SqlRegistry *registry = new SqlRegistry( m_collection );
+    registry->setStorage( m_storage );
+    m_collection->setRegistry( registry );
+
+    DatabaseUpdater updater;
+    updater.setStorage( m_storage );
+    updater.setCollection( m_collection );
+    updater.update();
+}
+
+void
+TestSqlArtist::cleanupTestCase()
+{
+    delete m_collection;
+    //m_storage is deleted by SqlCollection
+    delete m_tmpDir;
+}
+
+void
+TestSqlArtist::init()
+{
+    //setup base data
+    m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'The Foo');" );
+    m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'No The Foo');" );
+    m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
+
+    m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
+    m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
+    m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
+
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');" );
+}
+
+void
+TestSqlArtist::cleanup()
+{
+    m_storage->query( "TRUNCATE TABLE years;" );
+    m_storage->query( "TRUNCATE TABLE genres;" );
+    m_storage->query( "TRUNCATE TABLE composers;" );
+    m_storage->query( "TRUNCATE TABLE albums;" );
+    m_storage->query( "TRUNCATE TABLE artists;" );
+    m_storage->query( "TRUNCATE TABLE tracks;" );
+    m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE labels;" );
+    m_storage->query( "TRUNCATE TABLE urls_labels;" );
 }
 
 void
 TestSqlArtist::testSortableName()
 {
-    Meta::ArtistPtr artistWithThe( new Meta::SqlArtist( QWeakPointer<Collections::SqlCollection>(), 1, "The Foo" ) );
+    Meta::ArtistPtr artistWithThe = m_collection->registry()->getArtist( "The Foo" );
     QCOMPARE( artistWithThe->sortableName(), QString( "Foo, The" ) );
 
-    Meta::ArtistPtr artistWithoutThe( new Meta::SqlArtist( QWeakPointer<Collections::SqlCollection>(), 1, "No The Foo" ) );
+    Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( "No The Foo" );
     QCOMPARE( artistWithoutThe->sortableName(), QString( "No The Foo" ) );
 }
 
