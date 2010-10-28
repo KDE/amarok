@@ -27,6 +27,7 @@
 
 #include <Plasma/Label>
 #include <Plasma/PushButton>
+#include <Plasma/Separator>
 
 #include <QDesktopServices>
 #include <QLabel>
@@ -315,7 +316,7 @@ UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
         ++index; // find the right index to insert the widget
     index *= 2;  // take separators into account
     m_layout->insertItem( index, widget );
-    insertSeparator( index + 1 );
+    m_layout->insertItem( index + 1, new Plasma::Separator );
     connect( widget->m_mapButton, SIGNAL(clicked()), m_sigmap, SLOT(map()) );
     m_sigmap->setMapping( widget->m_mapButton, widget );
     emit eventAdded( event );
@@ -326,18 +327,6 @@ UpcomingEventsListWidget::addEvents( const LastFmEvent::List &events )
 {
     foreach( const LastFmEventPtr &event, events )
         addEvent( event );
-}
-
-void
-UpcomingEventsListWidget::insertSeparator( int index )
-{
-    // can also use Plasma::Separator here but that's in kde 4.4
-    QFrame *separator = new QFrame;
-    separator->setFrameStyle( QFrame::HLine );
-    separator->setAutoFillBackground( false );
-    QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget;
-    separatorProxy->setWidget( separator );
-    m_layout->insertItem( index, separatorProxy );
 }
 
 void

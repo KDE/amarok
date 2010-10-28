@@ -169,7 +169,6 @@ protected:
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
 private:
-    void insertSeparator( int index );
     QString m_name;
     LastFmEvent::List m_events;
     QMap<uint, UpcomingEventsWidget*> m_sortMap;

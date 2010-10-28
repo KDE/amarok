@@ -34,6 +34,7 @@
 #include <KGlobalSettings>
 #include <KIcon>
 #include <Plasma/PushButton>
+#include <Plasma/Separator>
 
 //Qt
 #include <QDesktopServices>
@@ -423,18 +424,20 @@ ArtistsListWidget::count() const
 void
 ArtistsListWidget::addItem( ArtistWidget *widget )
 {
+    if( !m_widgets.isEmpty() )
+        addSeparator();
     m_layout->addItem( widget );
     m_widgets << widget;
-    addSeparator();
 }
 
 void
 ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
 {
+    if( !m_widgets.isEmpty() )
+        addSeparator();
     ArtistWidget *widget = new ArtistWidget( artist );
     m_layout->addItem( widget );
     m_widgets << widget;
-    addSeparator();
 }
 
 void
@@ -447,13 +450,7 @@ ArtistsListWidget::addArtists( const SimilarArtist::List &artists )
 void
 ArtistsListWidget::addSeparator()
 {
-    // can also use Plasma::Separator here but that's in kde 4.4
-    QFrame *separator = new QFrame;
-    separator->setFrameStyle( QFrame::HLine );
-    separator->setAutoFillBackground( false );
-    QGraphicsProxyWidget *separatorProxy = new QGraphicsProxyWidget;
-    separatorProxy->setWidget( separator );
-    m_layout->addItem( separatorProxy );
+    m_layout->addItem( new Plasma::Separator );
     ++m_separatorCount;
 }
 
