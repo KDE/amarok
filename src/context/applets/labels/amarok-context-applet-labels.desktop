@@ -24,7 +24,7 @@ Name[sv]=Etiketter
 Name[uk]=Мітки
 Name[x-test]=xxLabelsxx
 Type=Service
-Icon=amarok_labels
+Icon=label-amarok
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_labels

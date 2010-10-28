@@ -234,7 +234,7 @@ MetaQueryWidget::makeFieldSelection()
     m_fieldSelection->addItem( KIcon("filename-last-played"), i18n( "Last Played" ), Meta::valLastPlayed );
     m_fieldSelection->addItem( KIcon("filename-comment-amarok"), i18n( "Play Count" ), Meta::valPlaycount );
     if (!m_onlyNumeric)
-        m_fieldSelection->addItem( /* KIcon("filename-labels-amarok"),*/ i18n( "Label" ), Meta::valLabel );
+        m_fieldSelection->addItem( KIcon("label-amarok"), i18n( "Label" ), Meta::valLabel );
     connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(fieldChanged(int)) );
 }
 
