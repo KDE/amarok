@@ -429,6 +429,7 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
         break;
     }
 
+    pattern.prepend( title );
     int patternIndex = titles.indexOf( QRegExp(pattern, Qt::CaseInsensitive) );
     const QString result = ( patternIndex != -1 ) ? titles.at( patternIndex ) : titles.first();
     fetchWikiUrl( result, hostLang ); // end of the line
