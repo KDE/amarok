@@ -50,6 +50,8 @@ VERSION 2.4-Beta 1
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Don't ignore the "use relative path" checkbox in the playlist export dialog.
+      (BR 250689)
     * Fixed applet explorer getting stuck. (BR 253058)
     * Fixed Wikipedia applet header layout issues. (BR 215171)
     * Fixed truncated heading in albums applet. (BR 231001)

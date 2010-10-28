@@ -24,6 +24,7 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "statusbar/StatusBar.h"
+#include "amarokconfig.h"
 
 
 #include <KLocale>
@@ -177,7 +178,7 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<i
     if ( playlist )
     {
         playlist->setQueue( queued );
-        result = playlist->save( path.path(), true );
+        result = playlist->save( path.path(), AmarokConfig::relativePlaylist() );
     }
     else
     {
