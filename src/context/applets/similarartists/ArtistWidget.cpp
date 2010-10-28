@@ -471,7 +471,6 @@ ArtistsListWidget::clear()
             m_layout->removeItem( child );
             delete child;
         }
-        widget()->resize( size().width(), 0 );
         m_separatorCount = 0;
     }
 }
@@ -525,3 +524,5 @@ ArtistsListWidget::setTopTrack( const QString &artist, const QString &track )
             widget->setTopTrack( track );
     }
 }
+
+#include "ArtistWidget.moc"

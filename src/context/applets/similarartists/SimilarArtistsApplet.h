@@ -20,10 +20,8 @@
 #define SIMILAR_ARTISTS_APPLET_H
 
 
-#include "./ArtistWidget.h"
-#include "./SimilarArtist.h"
-
-//Amarok
+#include "ArtistWidget.h"
+#include "SimilarArtist.h"
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "core/engine/EngineObserver.h"
@@ -31,12 +29,8 @@
 #include <ui_similarArtistsSettings.h>
 
 
-class QAction;
 class TextScrollingWidget;
 class KConfigDialog;
-class QVBoxLayout;
-class QGraphicsProxyWidget;
-class QScrollArea;
 
 namespace Plasma
 {
@@ -105,11 +99,6 @@ private:
     void artistsUpdate();
 
     QString m_descriptionPreferredLang;
-
-    /**
-     * Layout for the formatting of the applet contents
-     */
-    QGraphicsLinearLayout *m_layout;
 
     /**
      * This scrollArea contents the artists widgets

@@ -48,7 +48,6 @@
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )
-        , m_layout( 0 )
         , m_scroll( 0 )
         , m_headerLabel( 0 )
         , m_settingsIcon( 0 )
@@ -78,8 +77,6 @@ SimilarArtistsApplet::init()
     m_headerLabel->setText( i18n( "Similar Artists" ) );
     m_headerLabel->setDrawBackground( true );
 
-    setCollapseHeight( m_headerLabel->boundingRect().height() + 3 * standardPadding() );
-
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setEnabled( true );
@@ -94,11 +91,11 @@ SimilarArtistsApplet::init()
 
     // create a scrollarea
     m_scroll = new ArtistsListWidget( this );
+    m_scroll->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
-    m_layout->addItem( headerLayout );
-    m_layout->addItem( m_scroll );
-    setLayout( m_layout );
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    layout->addItem( headerLayout );
+    layout->addItem( m_scroll );
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
@@ -130,12 +127,6 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
     QString header = m_headerLabel->isEmpty() ? i18n( "Similar Artists" ) : m_headerLabel->text();
     m_headerLabel->setScrollingText( header );
-
-    qreal padding = standardPadding();
-    qreal scrollWidth  = size().width() - padding;
-    qreal scrollHeight = size().height() - m_headerLabel->boundingRect().bottom() - 2 * padding;
-    QSizeF scrollSize( scrollWidth, scrollHeight );
-    m_scroll->setMaximumSize( scrollSize );
 }
 
 void
@@ -147,7 +138,6 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     m_scroll->clear();
 
     m_headerLabel->setScrollingText( i18n( "Similar Artist: No track playing" ) );
-    setCollapseOn();
 }
 
 void
@@ -264,13 +254,11 @@ SimilarArtistsApplet::artistsUpdate()
     if( !m_similars.isEmpty() )
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
-        setCollapseOff();
         m_scroll->addArtists( m_similars );
     }
     else // No similar artist found
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
-        setCollapseOn();
     }
 }
 
