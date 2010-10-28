@@ -251,9 +251,9 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 void
 SimilarArtistsApplet::saveSettings()
 {
+    DEBUG_BLOCK
     m_maxArtists = ui_Settings.spinBox->value();
-    KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
-    config.writeEntry( "maxArtists", m_maxArtists );
+    Amarok::config( "SimilarArtists Applet" ).writeEntry( "maxArtists", m_maxArtists );
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:%1" ).arg( m_maxArtists ) );
 }
 

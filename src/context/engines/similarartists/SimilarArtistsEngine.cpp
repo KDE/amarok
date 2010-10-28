@@ -42,6 +42,8 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVarian
     , m_isDelayingSetData( false )
 {
     m_descriptionWideLang = "aut";
+    m_maxArtists = Amarok::config( "SimilarArtists Applet" ).readEntry( "maxArtists", "5" ).toInt();
+    m_currentTrack = The::engineController()->currentTrack();
 }
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
@@ -69,7 +71,12 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
         {
             // user has changed the maximum artists returned.
             if( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
-                m_maxArtists = tokens.at( 2 ).toInt();
+            {
+                int artistCount = tokens.at( 2 ).toInt();
+                if( artistCount == m_maxArtists )
+                    return false;
+                m_maxArtists = artistCount;
+            }
         }
         else if( tokens.contains( "lang" ) && tokens.size() > 1 )
         {
@@ -78,7 +85,7 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
                 m_descriptionWideLang = tokens.at( 2 );
         }
     }
-    update();
+    update( true );
     return true;
 }
 
@@ -115,11 +122,12 @@ SimilarArtistsEngine::engineNewTrackPlaying()
 }
 
 void
-SimilarArtistsEngine::update()
+SimilarArtistsEngine::update( bool force )
 {
     if( !m_currentTrack )
         return;
 
+    DEBUG_BLOCK
     QString artistName;
     if( m_currentTrack->artist() )
     {
@@ -138,18 +146,11 @@ SimilarArtistsEngine::update()
     }
     else   //valid artist
     {
-        // Read config and inform the engine.
-        KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
-
-        //fix the limit of the request, the default is already fixed by the applet
-        int nbArt = config.readEntry( "maxArtists", "5" ).toInt();
-
         // wee make a request only if the artist is different
         // or if the number of artist to display is bigger
-        if( artistName != m_artist || nbArt > m_maxArtists )   // we update the data only
+        if( force || (artistName != m_artist) )   // we update the data only
         {
             // if the artist has changed
-            m_maxArtists = nbArt;
             m_artist = artistName;
             similarArtistsRequest( artistName );
         }

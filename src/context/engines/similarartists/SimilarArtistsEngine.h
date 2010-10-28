@@ -87,7 +87,7 @@ private:
      * Prepare the calling of the similarArtistsRequest method.
      * Launch when the track played on amarok has changed.
      */
-    void update();
+    void update( bool force = false );
 
     /**
      * Fetches the description of the artist artistName on the LastFM API.
