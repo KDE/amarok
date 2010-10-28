@@ -1,5 +1,6 @@
 include_directories( .
   ${AMAROK_TEST_TREE}
+  ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
 )
 
