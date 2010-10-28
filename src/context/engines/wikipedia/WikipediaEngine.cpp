@@ -391,6 +391,11 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
         int index = refinePossibleLangs.indexOf( hostLang );
         if( (index != -1) && (index < refinePossibleLangs.count() - 1) )
             fetchListing( title, refinePossibleLangs.value( index + 1 ).split( QLatin1Char(':') ).back() );
+        else
+        {
+            q->removeAllData( QLatin1String("wikipedia") );
+            q->setData( QLatin1String("wikipedia"), QLatin1String("message"), i18n( "No information found..." ) );
+        }
         return;
     }
 
