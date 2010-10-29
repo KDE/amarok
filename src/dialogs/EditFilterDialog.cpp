@@ -94,7 +94,7 @@ void EditFilterDialog::slotAttributeChanged()
 {
     // only enable the "match all words" radio on fields that can actually
     // have several words.
-    m_ui.filterActionGroupBox->setEnabled( !MetaQueryWidget::isNumeric( m_ui.attributeQuery->filter().field ) );
+    m_ui.filterActionGroupBox->setEnabled( m_ui.attributeQuery->filter().field == 0 );
 }
 
 void EditFilterDialog::slotAppend()
@@ -119,29 +119,42 @@ void EditFilterDialog::slotAppend()
 
     m_previousFilterText = m_filterText;
 
+    bool invert = m_ui.invertButton->isChecked();
+    if( m_ui.matchNot->isEnabled() && m_ui.matchNot->isChecked())
+        invert = !invert;
+
     if( filter.field == 0 /*simple search*/ )
     {
-        debug() << "selected text: '" << filter.value << "'";
+        QString line;
 
         QStringList list = filter.value.split( ' ' );
-        for ( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
+
+        // at least one word
+        if( m_ui.matchAny->isChecked() )
         {
-            QString word = *it;
-
-            // exactly the words
-            if( m_ui.matchLiteral->isChecked() )
-                word = "\"" + word + "\"";
-
-            // exclude words
-            if( m_ui.matchNot->isChecked() )
-                word = "-" + word;
-
-            // at least one word
-            if( m_ui.matchAny->isChecked() && !m_filterText.isEmpty() )
-                word = "OR " + word;
-
-            m_filterText += " " + word;
+            if( !invert )
+                line = list.join( " OR " );
+            else
+                line = list.join( " OR -" );
         }
+
+        // exactly the words
+        else if( m_ui.matchLiteral->isChecked() )
+            line = "\"" + filter.value + "\"";
+
+        // all the words
+        else
+        {
+            if( !invert )
+                line = list.join( " " );
+            else
+                line = list.join( " -" );
+        }
+
+        m_filterText += ' ';
+        if( invert )
+            m_filterText += '-';
+        m_filterText += line;
     }
     else
     {
@@ -152,7 +165,7 @@ void EditFilterDialog::slotAppend()
                 m_filterText += "OR ";
         }
 
-        m_filterText += filter.toString( m_ui.matchNot->isChecked() );
+        m_filterText += filter.toString( invert );
     }
     emit filterChanged( m_filterText );
 }
@@ -188,13 +201,11 @@ void EditFilterDialog::slotOk() // SLOT
     // If there's a filter typed in but unadded, add it.
     // This makes it easier to just add one condition - you only need to press OK.
     MetaQueryWidget::Filter filter = m_ui.attributeQuery->filter();
-    if( filter.condition != MetaQueryWidget::Contains ||
-        !filter.value.isEmpty() )
+    if( !m_appended &&
+        (filter.condition != MetaQueryWidget::Contains || !filter.value.isEmpty()) )
         slotAppend();
 
-    // Don't let OK do anything if they haven't set any filters.
-    if (m_appended)
-        accept();
+    accept();
 }
 
 #include "EditFilterDialog.moc"
