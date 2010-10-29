@@ -256,6 +256,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     album = handleUnknown(album, m_album, UNKNOWN_ALBUM.toString());
 
+    m_maxTextWidth = size().width() - qMax( mapRectFromItem(m_byText, m_byText->boundingRect()).right(),
+                                            mapRectFromItem(m_onText, m_onText->boundingRect()).right() );
     m_title->setMaximumWidth( m_maxTextWidth );
     m_artist->setMaximumWidth( m_maxTextWidth );
     m_album->setMaximumWidth( m_maxTextWidth );
@@ -490,7 +492,6 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     p->save();
     qreal leftEdge = qMax( m_onText->pos().x(), m_byText->pos().x() );
-    qreal localMaxTextWidth = m_maxTextWidth + qMax( m_onText->boundingRect().width(), m_byText->boundingRect().width() ) + 5;
     QColor topColor( 255, 255, 255, 120 );
     QColor bottomColor( 255, 255, 255, 90 );
     qreal leftX = boundingRect().size().width() - standardPadding();
@@ -553,7 +554,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
         QRectF rect = QRectF(leftEdge, // align vertically with track info text
                             m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                            localMaxTextWidth * factor,
+                            m_maxTextWidth * factor,
                             m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
 
 
@@ -561,16 +562,16 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
 
         factor = fm.width( scoreText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        rect.setWidth( m_maxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + m_maxTextWidth * prevFactor );
         prevFactor = factor;
 
         m_scoreLabel = truncateTextToFit( scoreText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
 
         factor = fm.width( lastPlayedText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        rect.setWidth( m_maxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + m_maxTextWidth * prevFactor );
 
         m_lastPlayedLabel = truncateTextToFit( lastPlayedText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
@@ -579,20 +580,20 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         prevFactor = factor;
         rect = QRectF( leftEdge,
                     m_ratingWidget->pos().y() + 3,
-                    localMaxTextWidth * factor,
+                    m_maxTextWidth * factor,
                     m_ratingWidget->boundingRect().height() - 4 );
         p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
 
         factor = fm.width( scoreText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        rect.setWidth( m_maxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + m_maxTextWidth * prevFactor );
         prevFactor = factor;
 
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
 
         factor = fm.width( lastPlayedText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        rect.setWidth( m_maxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + m_maxTextWidth * prevFactor );
 
         m_playedLast = truncateTextToFit( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ), this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
