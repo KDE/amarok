@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MySqlStorage"
+
 #include "MySqlStorage.h"
 
 #include "core/support/Amarok.h"
@@ -141,19 +143,22 @@ QStringList MySqlStorage::query( const QString& statement )
         warning() << "Errr... query returned but with no fields";
     }
 
+#if QT_VERSION >= 0x040700
+    int rows = mysql_num_rows( pres );
+    values.reserve( rows );
+#endif
     MYSQL_ROW row = mysql_fetch_row( pres );
     while( row )
     {
-        for( int i = 0; i < number; i++ )
+        for( int i = 0; i < number; ++i )
         {
             values << QString::fromUtf8( (const char*) row[i] );
         }
-    
+
         row = mysql_fetch_row( pres );
     }
 
     mysql_free_result( pres );
-    
     return values;
 }
 
