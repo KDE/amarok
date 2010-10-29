@@ -99,6 +99,7 @@ MySqlStorage::~MySqlStorage()
 {
     DEBUG_BLOCK
 
+    QMutexLocker locker( &m_mutex );
     if( m_db )
     {
         mysql_close( m_db );
