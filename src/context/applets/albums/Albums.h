@@ -57,8 +57,6 @@ private:
     bool m_rightAlignLength;
     AlbumsView *m_albumsView;
     TextScrollingWidget *m_headerText;
-
-    void reconnectSource();
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )

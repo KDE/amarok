@@ -118,17 +118,14 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     Q_UNUSED( name );
 
-    m_albumsView->clear();
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     m_headerText->setScrollingText( data[ "headerText" ].toString() );
-
-    //Update the applet (render properly the header)
-    update();
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( albums.isEmpty() )
         return;
 
+    m_albumsView->clear();
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     m_albumsView->setMode( currentTrack ? AlbumsProxyModel::SortByYear : AlbumsProxyModel::SortByCreateDate );
     const bool showArtist = !currentTrack;
@@ -277,21 +274,13 @@ void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
     Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
-    reconnectSource();
+    dataEngine( "amarok-current" )->query( "albums" );
 }
 
 void Albums::collectionDataChanged( Collections::Collection *collection )
 {
     Q_UNUSED( collection )
-    reconnectSource();
-}
-
-void Albums::reconnectSource()
-{
-    dataEngine( "amarok-current" )->disconnectSource( "albums", this );
-    dataEngine( "amarok-current" )->connectSource( "albums", this );
-    connect( dataEngine( "amarok-current" ), SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    dataEngine( "amarok-current" )->query( "albums" );
 }
 
 #include "Albums.moc"
-

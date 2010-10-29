@@ -76,7 +76,6 @@ CurrentEngine::sourceRequestEvent( const QString& name )
     DEBUG_BLOCK
 
     removeAllData( name );
-    setData( name, QVariant() );
     m_requested[ name ] = true;
     update();
     return true;
