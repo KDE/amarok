@@ -101,8 +101,6 @@ const QString& Debug::indent()
 
 bool Debug::debugEnabled()
 {
-    return true;
-
     return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Enabled"), false );
 }
 
