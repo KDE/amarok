@@ -72,10 +72,10 @@ void LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
         iconsCount--;
         maxWidth = ( boundingRect().width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
     }
-    int iconsSize = maxHeight < maxWidth ? maxHeight : maxWidth;
+    const int iconsSize = qMin( maxHeight, maxWidth );
     const int iconsSpaceA = ( boundingRect().width() - iconsSize * iconsCount ) / ( iconsCount - 1 );
     const int iconsSpaceB = iconsSize / 2;
-    int iconsSpace = iconsSpaceA < iconsSpaceB ? iconsSpaceA : iconsSpaceB;
+    const int iconsSpace = qMin( iconsSpaceA, iconsSpaceB );
 
     m_addLabelItem->setPixmap( m_addLabelPixmap.scaledToHeight( iconsSize, Qt::SmoothTransformation ) );
     m_addLabelItem->setPos( 0, ( boundingRect().height() - iconsSize ) / 2 );

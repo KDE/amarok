@@ -124,6 +124,12 @@ LabelsEngine::engineTrackChanged( Meta::TrackPtr track )
             unsubscribeFrom( m_currentTrack );
         m_currentTrack = track;
         subscribeTo( track );
+        
+        if( m_currentTrack->album() )
+            m_album = m_currentTrack->album()->name();
+        else
+            m_album.clear();
+        
         update();
     }
     else
@@ -228,10 +234,10 @@ LabelsEngine::fetchLastFm()
     
     if ( m_try == 0 )
     {
-        currentArtist = m_currentTrack->artist()->name();
-        currentTitle = m_currentTrack->name();
-        m_artist = currentArtist;
-        m_title = currentTitle;
+        m_artist = m_currentTrack->artist()->name();
+        m_title = m_currentTrack->name();
+        currentArtist = m_artist;
+        currentTitle = m_title;
         m_timeoutTimer.start();
     }
     else if ( m_try == 1 )
@@ -250,7 +256,7 @@ LabelsEngine::fetchLastFm()
         }
         if ( currentTitle == m_title )
         {
-            debug() << "LabelsEngine:" << "try 2: title is the same, retrying";
+            debug() << "try 2: title is the same, retrying";
             m_try++;
             fetchLastFm();
             return;
@@ -295,7 +301,7 @@ LabelsEngine::fetchLastFm()
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        debug() << "LabelsEngine:" << "try > 2, returning";
+        debug() << "try > 2, returning";
         return;
     }
 
@@ -307,6 +313,7 @@ LabelsEngine::fetchLastFm()
         // send the atist and title actually used for searching labels
         setData( "labels", "artist", currentArtist );
         setData( "labels", "title", currentTitle );
+        setData( "labels", "album", m_album );
 
         // Query lastfm
         KUrl lastFmUrl;
@@ -319,7 +326,7 @@ LabelsEngine::fetchLastFm()
         lastFmUrl.addQueryItem( "track", currentTitle.toLocal8Bit() );
         m_lastFmUrl = lastFmUrl;
         
-        debug() << "LabelsEngine:" << "last.fm : " << lastFmUrl.toMimeDataString();
+        debug() << "last.fm : " << lastFmUrl.toMimeDataString();
         QNetworkRequest req( lastFmUrl );
         The::networkAccessManager()->get( req );
         The::networkAccessManager()->getData( lastFmUrl, this,
@@ -330,7 +337,7 @@ LabelsEngine::fetchLastFm()
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        debug() << "LabelsEngine:" << "artist or track empty";
+        debug() << "artist or track empty";
     }
 }
 
@@ -340,13 +347,13 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
 
     if( m_lastFmUrl != url )
     {
-        debug() << "LabelsEngine:" << "urls not matching, returning";
+        debug() << "urls not matching, returning";
         return;
     }
 
     if ( m_currentTrack != The::engineController()->currentTrack() )
     {
-        debug() << "LabelsEngine:" << "no current track, returning";
+        debug() << "no current track, returning";
         return;
     }
 
@@ -355,7 +362,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "Unable to retrieve from last.fm" ) );
-        debug() << "LabelsEngine:" << "Unable to retrieve last.fm information: " << e.description;
+        debug() << "Unable to retrieve last.fm information: " << e.description;
         return;
     }
 
@@ -372,7 +379,6 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         QString name = nameElement.text().toLower();
         QDomElement countElement = nd.elementsByTagName("count").at(0).toElement();
         int count = countElement.text().toInt();
-        // debug() << "LabelsEngine:" << name << " (" << count << ")";
         m_webLabels.insert( name, count );
     }
 

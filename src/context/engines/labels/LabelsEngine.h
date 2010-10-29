@@ -28,8 +28,6 @@
 #include <QTimer>
 #include <QWeakPointer>
 
-class QNetworkReply;
-
 using namespace Context;
 
  /**
@@ -56,7 +54,7 @@ public:
     void metadataChanged( Meta::TrackPtr track );
 
 protected:
-    //reimplement from Plasma::DataEngine
+    // reimplemented from Plasma::DataEngine
     bool sourceRequestEvent( const QString &name );
 
 private slots:
@@ -83,7 +81,6 @@ private:
     void updateLocal();
 
     QTimer m_timeoutTimer;
-    QWeakPointer<QNetworkReply> reply;
     
     /// The URL for the network request
     KUrl m_lastFmUrl;
@@ -96,6 +93,8 @@ private:
     // updates. We only want to update the labels if the artist change
     QString                     m_artist;
     QString                     m_title;
+    // Send the album name to the applet, used to filter labels that match the album
+    QString                     m_album;
 
     int                         m_try;
 

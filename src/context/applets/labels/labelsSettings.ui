@@ -231,6 +231,13 @@ Note that always all personal labels will be shown.</string>
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="matchAlbumCheckBox">
+        <property name="text">
+         <string>Labels matching the album</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Blacklist:</string>

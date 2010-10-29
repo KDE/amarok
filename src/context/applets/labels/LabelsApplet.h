@@ -80,11 +80,13 @@ private:
     int                     m_minAutoAddCount;
     bool                    m_matchArtist;
     bool                    m_matchTitle;
+    bool                    m_matchAlbum;
     QStringList             m_blacklist;
     
     bool                    m_stoppedstate;
     QString                 m_artist;
     QString                 m_title;
+    QString                 m_album;
 
     Ui::labelsSettings      ui_Settings;
 
