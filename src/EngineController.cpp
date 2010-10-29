@@ -119,7 +119,6 @@ EngineController::createFadeoutEffect()
     if( !m_fader )
     {
         m_fader = new Phonon::VolumeFaderEffect( this );
-        //m_path.insertEffect( m_fader );
         m_dataPath.insertEffect( m_fader );
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
 
@@ -180,7 +179,6 @@ EngineController::initializePhonon()
     if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
-//      m_path.insertEffect( m_preamp );
         m_dataPath.insertEffect( m_preamp );
     }
 
@@ -928,18 +926,6 @@ EngineController::eqUpdate() //SLOT
             m_equalizer.data()->setParameterValue( mParam, scaledVal );
         }
         // Insert effect into path if needed
-//         if( m_path.effects().indexOf( m_equalizerdata() ) == -1 )
-//         {
-//             if( !m_path.effects().isEmpty() )
-//             {
-//                 m_path.insertEffect( m_equalizer, m_path.effects().first() );
-//             }
-//             else
-//             {
-//                 m_path.insertEffect( m_equalizer );
-//             }
-//         }
-
         if( m_dataPath.effects().indexOf( m_equalizer.data() ) == -1 )
         {
             if( !m_path.effects().isEmpty() )
@@ -1122,7 +1108,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
         {
             m_preamp = new Phonon::VolumeFaderEffect( this );
-//             m_path.insertEffect( m_preamp );
             m_dataPath.insertEffect( m_preamp.data() );
         }
 
