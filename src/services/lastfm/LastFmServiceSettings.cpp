@@ -100,7 +100,8 @@ LastFmServiceSettings::testLogin()
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
-    lastfm::setNetworkAccessManager( The::networkAccessManager() );
+    if( !lastfm::nam() )
+        lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
@@ -115,6 +116,7 @@ LastFmServiceSettings::testLogin()
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, SIGNAL( finished() ), SLOT( onAuthenticated() ) );
+    connect( m_authQuery, SIGNAL( error( QNetworkReply::NetworkError ) ), SLOT( onError( QNetworkReply::NetworkError ) ) );
 }
 
 void
@@ -151,10 +153,32 @@ LastFmServiceSettings::onAuthenticated()
 
         default:
             debug() << "Unhandled QNetworkReply state, probably not important";
-            return;
     }
     m_authQuery->deleteLater();
 }
+
+void
+LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
+{
+    DEBUG_BLOCK
+
+    if( code == QNetworkReply::NoError )
+        return;
+
+    if( code == QNetworkReply::AuthenticationRequiredError )
+    {
+        onAuthenticated();
+        return;
+    }
+
+    KMessageBox::error( this, i18n( "Unable to connect to Last.fm service." ), i18n( "Failed" ) );
+    m_configDialog->testLogin->setText( i18n( "Test Login" ) );
+    m_configDialog->testLogin->setEnabled( true );
+
+    debug() << "Error occurred during network request: " << m_authQuery->errorString();
+    m_authQuery->deleteLater();
+}
+
 
 void
 LastFmServiceSettings::load()
