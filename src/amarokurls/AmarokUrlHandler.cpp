@@ -59,7 +59,7 @@ AmarokUrlHandler::AmarokUrlHandler()
     m_navigationRunner = new NavigationUrlRunner();
     m_playlistViewRunner = new Playlist::ViewUrlRunner();
     m_playRunner = new PlayUrlRunner();
-    m_timecodeObserver = new TimecodeObserver();
+    m_timecodeObserver = new TimecodeObserver( this );
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
     registerRunner( m_playlistViewRunner, m_playlistViewRunner->command() );

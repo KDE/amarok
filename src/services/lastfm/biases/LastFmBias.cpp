@@ -84,7 +84,6 @@ Dynamic::LastFmBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::LastFmBias::LastFmBias( bool similarArtists )
     : Dynamic::CustomBiasEntry()
-    , Engine::EngineObserver( The::engineController() )
     , m_similarArtists( similarArtists )
     , m_artistQuery( 0 )
     , m_qm( 0 )
@@ -92,9 +91,13 @@ Dynamic::LastFmBias::LastFmBias( bool similarArtists )
     DEBUG_BLOCK
 
     connect( this, SIGNAL( doneFetching() ), this, SLOT( saveDataToFile() ) );
-    
+
     loadFromFile();
-    engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
+    updateBias(); // kick it into gear if a track is already playnig. if not, it's harmless
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( updateBias() ) );
 }
 
 Dynamic::LastFmBias::~LastFmBias()
@@ -152,12 +155,6 @@ Dynamic::LastFmBias::activated(int index)
     }
     updateBias();
     emit biasChanged();
-}
-
-void
-Dynamic::LastFmBias::engineNewTrackPlaying()
-{
-    updateBias();
 }
 
 void Dynamic::LastFmBias::updateBias()

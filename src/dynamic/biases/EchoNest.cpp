@@ -79,13 +79,19 @@ Dynamic::EchoNestBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::EchoNestBias::EchoNestBias()
     : Dynamic::CustomBiasEntry()
-    , Engine::EngineObserver( The::engineController() )
     , m_artistSuggestedQuery( 0 )
     , m_qm( 0 )
     , m_currentOnly( true )
 {
-    DEBUG_BLOCK
-    engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
+    DEBUG_BLOCK;
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+
+    trackPlaying( engine->currentTrack() ); // kick it into gear if a track is already playing. if not, it's harmless
+
 }
 
 Dynamic::EchoNestBias::~EchoNestBias()
@@ -126,10 +132,9 @@ Dynamic::EchoNestBias::configWidget( QWidget* parent )
 }
 
 void
-Dynamic::EchoNestBias::engineNewTrackPlaying()
+Dynamic::EchoNestBias::trackPlaying( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    Meta::TrackPtr track = The::engineController()->currentTrack();
 
     if( track && track->artist() && !track->artist()->name().isEmpty() )
     {
@@ -520,8 +525,9 @@ Dynamic::EchoNestBias::selectionChanged( int which )
         m_currentOnly = false;
     else
         m_currentOnly = true;
-    engineNewTrackPlaying(); // refresh
 
+    EngineController *engine = The::engineController();
+    trackPlaying( engine->currentTrack() ); // refresh
 }
 
 

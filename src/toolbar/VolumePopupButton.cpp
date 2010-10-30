@@ -35,7 +35,6 @@
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
     : QToolButton( parent )
-    , Engine::EngineObserver( The::engineController() )
 {
     //create the volume popup
     m_volumeMenu = new QMenu( this );
@@ -76,12 +75,18 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     muteBar->addAction( m_muteAction );
 
     //set correct icon and label initially
-    engineVolumeChanged( ec->volume() );
+    volumeChanged( ec->volume() );
+
+    connect( ec, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+
+    connect( ec, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
 
 }
 
 void
-VolumePopupButton::engineVolumeChanged( int newVolume )
+VolumePopupButton::volumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
         setIcon( KIcon( "audio-volume-low" ) );
@@ -103,7 +108,7 @@ VolumePopupButton::engineVolumeChanged( int newVolume )
 }
 
 void
-VolumePopupButton::engineMuteStateChanged( bool muted )
+VolumePopupButton::muteStateChanged( bool muted )
 {
     const int volume = The::engineController()->volume();
 
@@ -114,7 +119,7 @@ VolumePopupButton::engineMuteStateChanged( bool muted )
     }
     else
     {
-        engineVolumeChanged( volume );
+        volumeChanged( volume );
     }
 
     m_muteAction->setChecked( muted );

@@ -331,7 +331,7 @@ Reader::parseSongList( const QByteArray &data )
     QString comment;
     QString album;
     QString genre;
-    int year;
+    int year = 0;
     qint32 trackNumber=0;
     qint32 songTime=0;
 

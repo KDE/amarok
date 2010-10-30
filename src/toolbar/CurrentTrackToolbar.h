@@ -13,27 +13,24 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef CURRENTTRACKTOOLBAR_H
 #define CURRENTTRACKTOOLBAR_H
 
-#include "core/engine/EngineObserver.h" //baseclass
-
 #include <QToolBar>
 
-/**
-A toolbar that contains the CurrentTrackActions of the currently playing track.
+/** A toolbar that contains the CurrentTrackActions of the currently playing track.
 */
-class CurrentTrackToolbar : public QToolBar, public Engine::EngineObserver
+class CurrentTrackToolbar : public QToolBar
 {
+    Q_OBJECT
+
 public:
     CurrentTrackToolbar( QWidget * parent );
 
     ~CurrentTrackToolbar();
 
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-
-protected:
+protected slots:
     void handleAddActions();
 };
 

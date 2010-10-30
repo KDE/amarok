@@ -24,7 +24,6 @@
 #include "SimilarArtist.h"
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 
 #include <ui_similarArtistsSettings.h>
 
@@ -43,7 +42,7 @@ class IconWidget;
  * @author Oleksandr Khayrullin
  * @version 0.1
  */
-class SimilarArtistsApplet : public Context::Applet, public Engine::EngineObserver
+class SimilarArtistsApplet : public Context::Applet
 {
     Q_OBJECT
 
@@ -70,13 +69,6 @@ public:
      */
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-    // inherited from EngineObserver
-    /**
-     * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
-     */
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength,
-                                      PlaybackEndedReason reason );
-
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
 
@@ -90,6 +82,9 @@ public slots:
      * Update the current artist and his similar artists
      */
     void dataUpdated( const QString &source, const Plasma::DataEngine::Data &data );
+
+private slots:
+    void stopped();
 
 private:
 

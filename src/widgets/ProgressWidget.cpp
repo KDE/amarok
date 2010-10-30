@@ -32,7 +32,6 @@
 
 ProgressWidget::ProgressWidget( QWidget *parent )
         : QWidget( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
 
     QHBoxLayout *box = new QHBoxLayout( this );
@@ -63,10 +62,31 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     box->addWidget( m_slider );
     box->addWidget( m_timeLabelRight );
 
-    engineStateChanged( Phonon::StoppedState );
+    EngineController *engine = The::engineController();
 
-    connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
-    connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( drawTimeDisplay( int ) ) );
+    if( engine->isPaused() )
+        paused();
+    else if( engine->isPlaying() )
+        trackPlaying();
+    else
+        stopped();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying() ) );
+    connect( engine, SIGNAL( trackLengthChanged( qint64 ) ),
+             this, SLOT( trackLengthChanged( qint64 ) ) );
+    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+             this, SLOT( trackPositionChanged( qint64 ) ) );
+
+    connect( m_slider, SIGNAL( sliderReleased( int ) ),
+             engine, SLOT( seek( int ) ) );
+
+    connect( m_slider, SIGNAL( valueChanged( int ) ),
+             SLOT( drawTimeDisplay( int ) ) );
 
     setBackgroundRole( QPalette::BrightText );
 
@@ -179,63 +199,49 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 }
 
 void
-ProgressWidget::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
+ProgressWidget::stopped()
 {
-    //debug() << "POSITION: " << position;
-    m_slider->setSliderValue( position );
+    m_slider->setEnabled( false );
+    m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+    m_slider->setMaximum( 0 );
+    m_timeLabelLeft->setEnabled( false );
+    m_timeLabelLeft->setEnabled( false );
+    m_timeLabelLeft->setShowTime( false );
+    m_timeLabelRight->setShowTime( false );
 
-    if ( !m_slider->isEnabled() )
-        drawTimeDisplay( position );
+    m_currentUrlId.clear();
+    m_slider->clearTriangles();
 }
 
 void
-ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
+ProgressWidget::paused()
 {
-    switch ( state )
-    {
-        case Phonon::LoadingState:
-            if ( !The::engineController()->currentTrack() || ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
-            {
-                m_slider->setEnabled( false );
-                debug() << "slider disabled!";
-                m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
-                m_slider->setMaximum( 0 );
-                m_timeLabelLeft->setEnabled( false );
-                m_timeLabelLeft->setEnabled( false );
-                m_timeLabelLeft->setShowTime( false );
-                m_timeLabelRight->setShowTime( false );
-            }
-            break;
-
-        case Phonon::PlayingState:
-
-            //in some cases (for streams mostly), we do not get an event for track length changes once
-            //loading is done, causing maximum() to return 0 at when playback starts. In this case we need
-            //to make sure that maximum is set correctly or the slider will not move.
-            if( m_slider->maximum() == 0 )
-                m_slider->setMaximum( The::engineController()->trackLength() );
-
-            m_timeLabelLeft->setEnabled( true );
-            m_timeLabelLeft->setEnabled( true );
-            m_timeLabelLeft->setShowTime( true );
-            m_timeLabelRight->setShowTime( true );
-            //fallthrough
-            break;
-
-        case Phonon::StoppedState:
-        case Phonon::BufferingState:
-        case Phonon::ErrorState:
-            break;
-
-        case Phonon::PausedState:
-            m_timeLabelLeft->setEnabled( true );
-            m_timeLabelRight->setEnabled( true );
-            break;
-    }
+    // I am wondering, is there a way that the track can get paused
+    // directly?
+    m_timeLabelLeft->setEnabled( true );
+    m_timeLabelRight->setEnabled( true );
 }
 
 void
-ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
+ProgressWidget::trackPlaying()
+{
+    //in some cases (for streams mostly), we do not get an event for track length changes once
+    //loading is done, causing maximum() to return 0 at when playback starts. In this case we need
+    //to make sure that maximum is set correctly or the slider will not move.
+    m_slider->setEnabled( false );
+    if( m_slider->maximum() == 0 )
+        m_slider->setMaximum( The::engineController()->trackLength() );
+
+    m_timeLabelLeft->setEnabled( true );
+    m_timeLabelLeft->setEnabled( true );
+    m_timeLabelLeft->setShowTime( true );
+    m_timeLabelRight->setShowTime( true );
+
+    trackLengthChanged( The::engineController()->trackLength() );
+}
+
+void
+ProgressWidget::trackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
 
@@ -244,7 +250,7 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
     m_slider->setMaximum( milliseconds );
     m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
-    
+
     const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
     QFontMetrics tFm( m_timeLabelRight->font() );
     const int labelSize = tFm.width(QChar('0')) * timeLength;
@@ -261,6 +267,17 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
 
     redrawBookmarks();
 }
+
+void
+ProgressWidget::trackPositionChanged( qint64 position )
+{
+    //debug() << "POSITION: " << position;
+    m_slider->setSliderValue( position );
+
+    if ( !m_slider->isEnabled() )
+        drawTimeDisplay( position );
+}
+
 
 void
 ProgressWidget::redrawBookmarks( const QString *BookmarkName )
@@ -293,37 +310,10 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
     }
 }
 
-void
-ProgressWidget::engineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-    m_slider->setEnabled( false );
-    engineTrackLengthChanged( The::engineController()->trackLength() );
-}
-
 QSize ProgressWidget::sizeHint() const
 {
     //int height = fontMetrics().boundingRect( "123456789:-" ).height();
     return QSize( width(), 12 );
-}
-
-void ProgressWidget::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
-{
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
-    DEBUG_BLOCK
-
-    m_slider->setEnabled( false );
-    m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
-    m_slider->setMaximum( 0 );
-    m_timeLabelLeft->setEnabled( false );
-    m_timeLabelLeft->setEnabled( false );
-    m_timeLabelLeft->setShowTime( false );
-    m_timeLabelRight->setShowTime( false );
-
-    m_currentUrlId.clear();
-    m_slider->clearTriangles();
 }
 
 #include "ProgressWidget.moc"

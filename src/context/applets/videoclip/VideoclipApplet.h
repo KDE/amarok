@@ -21,7 +21,6 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 #include "core/support/SmartPointerList.h"
 
 #include "VideoclipInfo.h"
@@ -64,7 +63,7 @@ class VideoItemButton;
  /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
    * If a video is detected in the playlist, it will also play the video inside the VideoWidget.
    */
-class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
+class VideoclipApplet : public Context::Applet
 {
         Q_OBJECT
 
@@ -75,11 +74,6 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
         void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-        // inherited from EngineObserver
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged(Phonon::State, Phonon::State );
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
     public slots:
         virtual void init();
@@ -96,6 +90,10 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
     protected:
         void    createConfigurationInterface(KConfigDialog *parent);
 
+    private slots:
+        virtual void trackPlaying();
+        virtual void stateChanged(Phonon::State, Phonon::State );
+        virtual void stopped();
 
     private:
         QWeakPointer<CustomVideoWidget> m_videoWidget;

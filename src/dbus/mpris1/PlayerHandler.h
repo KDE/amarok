@@ -19,7 +19,6 @@
 #define MPRIS1_PLAYER_HANDLER_H
 
 #include "core/meta/Meta.h"
-#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -49,7 +48,7 @@ const QDBusArgument &operator >> ( const QDBusArgument &argument, Mpris1::Status
 
 namespace Mpris1
 {
-    class AMAROK_EXPORT PlayerHandler : public QObject, public Engine::EngineObserver
+    class AMAROK_EXPORT PlayerHandler : public QObject
     {
         Q_OBJECT
         public:
@@ -108,9 +107,9 @@ namespace Mpris1
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
 
-        private:
-            void engineTrackChanged( Meta::TrackPtr track );
-            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
+        private slots:
+            void slotTrackChanged( Meta::TrackPtr track );
+            void slotStateChanged();
     };
 
 } // namespace Amarok

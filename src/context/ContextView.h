@@ -48,7 +48,7 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public Plasma::View, public Engine::EngineObserver, public ContextSubject
+class AMAROK_EXPORT ContextView : public Plasma::View, public ContextSubject
 {
     Q_OBJECT
 
@@ -91,7 +91,6 @@ public:
 
 
 public slots:
-
     /**
      * Add the applet with the given plugin name to the context view. Will add in default position, which is at
      *  the end of the applet list.
@@ -105,15 +104,14 @@ public slots:
 
 signals:
     void appletExplorerHid();
-        
+
 protected:
-    
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-    void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
-    virtual void engineNewTrackPlaying();
-    
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
+
+private slots:
+    void slotTrackChanged( Meta::TrackPtr track );
+    void slotMetadataChanged( Meta::TrackPtr track );
 
 private:
     static ContextView* s_self;
@@ -129,14 +127,6 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
-
-    //it seems we get a Phonon::PausedState before we start to play anything.
-    //Because we generally don't want to update the context view when moving from
-    //Paused to Playing state, this causes the CV to not get updated when starting Amarok
-    //with a track being resumed (Resume playback enabled in the options). To avoid this,
-     //we always kick the cv on the first play state we receive, irregardless if the
-     //previous state was Paused.
-    bool m_firstPlayingState;
 
     ContextUrlRunner * m_urlRunner;
 

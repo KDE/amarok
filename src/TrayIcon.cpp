@@ -22,7 +22,6 @@
 #include "TrayIcon.h"
 
 #include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
@@ -43,11 +42,8 @@
 
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
-        , Engine::EngineObserver( The::engineController() )
         , m_track( The::engineController()->currentTrack() )
 {
-    DEBUG_BLOCK
-
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
 
@@ -71,35 +67,70 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Initializing system tray icon" );
 
+    EngineController* const engine = The::engineController();
+
     setIconByName( "amarok" );
-    setupOverlayIcon( The::engineController()->state() );
-    setupToolTip( true );
-    setupMenu();
+    updateOverlayIcon();
+    updateToolTipIcon();
+    updateMenu();
+
+    m_track = engine->currentTrack();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
+
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
+
+    connect( engine, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( updateToolTip() ) );
+
+    connect( engine, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( updateToolTip() ) );
+
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
-    connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ), SLOT( slotActivated() ) );
+    connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
+             The::engineController(), SLOT( playPause() ) );
 }
 
 void
-Amarok::TrayIcon::setupToolTip( bool updateIcon )
+Amarok::TrayIcon::updateToolTipIcon()
+{
+    updateToolTip(); // the normal update
+
+    if( m_track )
+    {
+        if( m_track->album() && m_track->album()->hasImage() )
+        {
+            QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
+            setToolTipIconByPixmap( image );
+        }
+        else
+        {
+            setToolTipIconByName( "amarok" );
+        }
+    }
+    else
+    {
+        setToolTipIconByName( "amarok" );
+    }
+}
+
+
+void
+Amarok::TrayIcon::updateToolTip()
 {
     if( m_track )
     {
         setToolTipTitle( The::engineController()->prettyNowPlaying() );
-
-        // check if we really need to update the icon (performance tweak)
-        if( updateIcon )
-        {
-            if( m_track->album() && m_track->album()->hasImage() )
-            {
-                QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
-                setToolTipIconByPixmap( image );
-            }
-            else
-            {
-                setToolTipIconByName( "amarok" );
-            }
-        }
 
         QStringList tooltip;
 
@@ -151,10 +182,54 @@ Amarok::TrayIcon::setupToolTip( bool updateIcon )
     }
     else
     {
-        setToolTipIconByName( "amarok" );
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
         setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
     }
+}
+
+void
+Amarok::TrayIcon::trackPlaying( Meta::TrackPtr track )
+{
+    m_track = track;
+
+    updateOverlayIcon();
+    updateMenu();
+    updateToolTipIcon();
+}
+
+void
+Amarok::TrayIcon::paused()
+{
+    updateOverlayIcon();
+    updateToolTipIcon();
+
+}
+
+void
+Amarok::TrayIcon::stopped()
+{
+    m_track = 0;
+    updateOverlayIcon();
+    updateMenu(); // remove custom track actions on stop
+    updateToolTipIcon();
+}
+
+void
+Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
+{
+    Q_UNUSED( track )
+
+    updateToolTip();
+    updateMenu();
+}
+
+void
+Amarok::TrayIcon::metadataChanged( Meta::AlbumPtr album )
+{
+    Q_UNUSED( album )
+
+    updateToolTipIcon();
+    updateMenu();
 }
 
 void
@@ -165,99 +240,21 @@ Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
     The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
-void
-Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    switch( state )
-    {
-        case Phonon::PlayingState:
-            if ( m_track )
-            {
-                unsubscribeFrom( m_track );
-                unsubscribeFrom( m_track->album() );
-            }
-            m_track = track;
-            if ( track )
-            {
-                subscribeTo( track );
-                subscribeTo( track->album() );
-            }
-
-            setupMenu();
-            break;
-
-        case Phonon::StoppedState:
-            if ( m_track )
-            {
-                unsubscribeFrom( m_track );
-                unsubscribeFrom( m_track->album() );
-                m_track = 0;
-            }
-
-            setupMenu(); // remove custom track actions on stop
-            break;
-
-        case Phonon::PausedState:
-        case Phonon::LoadingState:
-        case Phonon::ErrorState:
-        case Phonon::BufferingState:
-            break;
-    }
-
-    setupOverlayIcon( state );
-    setupToolTip( true );
-}
 
 void
-Amarok::TrayIcon::engineNewTrackPlaying()
-{
-    m_track = The::engineController()->currentTrack();
-
-    setupToolTip( true );
-    setupMenu();
-}
-
-void
-Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-
-    setupToolTip( false );
-    setupMenu();
-}
-
-void
-Amarok::TrayIcon::metadataChanged( Meta::AlbumPtr album )
-{
-    Q_UNUSED( album )
-
-    setupToolTip( true );
-    setupMenu();
-}
-
-void
-Amarok::TrayIcon::engineVolumeChanged( int percent )
-{
-    Q_UNUSED( percent );
-
-    setupToolTip( false );
-}
-
-void
-Amarok::TrayIcon::engineMuteStateChanged( bool mute )
-{
-    Q_UNUSED( mute );
-
-    setupToolTip( false );
-}
-
-void
-Amarok::TrayIcon::setupMenu()
+Amarok::TrayIcon::updateMenu()
 {
     foreach( QAction* action, m_extraActions )
+    {
         contextMenu()->removeAction( action );
+        // -- delete actions without parent (e.g. the ones from the capabilities)
+        if( !action->parent() )
+        {
+            delete action;
+        }
+    }
+    m_extraActions.clear();
 
     contextMenu()->removeAction( m_separator.data() );
 
@@ -266,7 +263,6 @@ Amarok::TrayIcon::setupMenu()
     if( !m_track )
         return;
 
-    m_extraActions.clear();
     foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
         m_extraActions.append( action );
 
@@ -304,31 +300,14 @@ Amarok::TrayIcon::setupMenu()
 }
 
 void
-Amarok::TrayIcon::setupOverlayIcon( Phonon::State state )
+Amarok::TrayIcon::updateOverlayIcon()
 {
-    switch( state )
-    {
-    case Phonon::PlayingState:
+    if( The::engineController()->isPlaying() )
         setOverlayIconByName( "media-playback-start" );
-        break;
-    case Phonon::StoppedState:
-        setOverlayIconByName( QString() );
-        break;
-    case Phonon::PausedState:
+    else if( The::engineController()->isPaused() )
         setOverlayIconByName( "media-playback-pause" );
-        break;
-    case Phonon::LoadingState:
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
+    else
         setOverlayIconByName( QString() );
-        break;
-    }
-}
-
-void
-Amarok::TrayIcon::slotActivated()
-{
-    The::engineController()->playPause();
 }
 
 #include "TrayIcon.moc"

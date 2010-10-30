@@ -107,7 +107,6 @@ namespace The
 
 StatusBar::StatusBar( QWidget * parent )
         : KStatusBar( parent )
-        , Engine::EngineObserver( The::engineController() )
         , m_progressBar( new CompoundProgressBar( this ) )
         , m_busy( false )
         , m_shortMessageTimer( new QTimer( this ) )
@@ -160,6 +159,17 @@ StatusBar::StatusBar( QWidget * parent )
     connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
 
     Amarok::Logger *logger = Amarok::Components::logger();
     ProxyLogger *proxy = qobject_cast<ProxyLogger*>( logger );
@@ -282,70 +292,37 @@ void StatusBar::nextShortMessage()
     }
 }
 
-void StatusBar::metadataChanged( Meta::TrackPtr track )
+void StatusBar::trackMetadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track );
+    if( track )
+        updateInfo( track );
+}
 
-    if ( m_currentTrack )
+void
+StatusBar::stopped()
+{
+    m_nowPlayingLabel->setText( QString() );
+    m_nowPlayingEmblem->hide();
+}
+
+void
+StatusBar::paused()
+{
+    m_nowPlayingLabel->setText( i18n( "Amarok is paused" ) );
+    m_nowPlayingEmblem->hide();
+}
+
+void
+StatusBar::trackPlaying( Meta::TrackPtr track )
+{
+    m_currentTrack = track;
+
+    if( m_currentTrack )
         updateInfo( m_currentTrack );
-    else
-        engineNewTrackPlaying();
 }
 
-void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState )
-{
-    Q_UNUSED( oldState )
-
-    switch ( state )
-    {
-    case Phonon::StoppedState:
-        m_nowPlayingLabel->setText( QString() );
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::LoadingState:
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        else
-            m_nowPlayingLabel->setText( QString() );
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::PausedState:
-        m_nowPlayingLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::PlayingState:
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        //else
-        //resetMainText(); // if we were paused, this is necessary
-        break;
-
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
-}
-
-void StatusBar::engineNewTrackPlaying()
-{
-    if ( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
-
-    m_currentTrack = The::engineController()->currentTrack();
-
-    if ( !m_currentTrack )
-    {
-        m_currentTrack = Meta::TrackPtr();
-        return;
-    }
-    subscribeTo( m_currentTrack );
-    updateInfo( m_currentTrack );
-}
-
-void StatusBar::updateInfo( Meta::TrackPtr track )
+void
+StatusBar::updateInfo( Meta::TrackPtr track )
 {
     // Check if we have any source info:
     Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();

@@ -22,12 +22,11 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
-#include "core/engine/EngineObserver.h"
 #include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
 #include <KVBox>
-#include <KAction>
+#include <Phonon/Global>
 
 #include <QWeakPointer>
 
@@ -46,6 +45,7 @@ class ContextDock;
 
 
 class KMenu;
+class KAction;
 class QMenuBar;
 class QSplitter;
 class QTimer;
@@ -63,7 +63,7 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserver, public Meta::Observer
+class AMAROK_EXPORT MainWindow : public KMainWindow
 {
     friend MainWindow* The::mainWindow();
 
@@ -140,16 +140,12 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void showAbout();
         void showReportBug();
 
-    protected:
-        //Reimplemented from EngineObserver
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineNewTrackPlaying();
-
-        //Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track );
-
     private slots:
+        void slotStopped();
+        void slotPaused();
+        void slotNewTrackPlaying();
+        void slotMetadataChanged( Meta::TrackPtr track );
+
         void exportPlaylist() const;
         void slotShowActiveTrack() const;
         void slotShowBookmarkManager() const;
@@ -215,8 +211,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 #endif // DEBUG_BUILD_TYPE
 
         QByteArray                 m_splitterState;
-
-        Meta::TrackPtr m_currentTrack;
 
         QWeakPointer<ContextDock> m_contextDock;
         QWeakPointer<Playlist::Dock> m_playlistDock;

@@ -25,7 +25,6 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/Svg.h"
-#include "EngineObserver.h"
 
 #include <KDialog>
 #include <Phonon/VideoWidget>
@@ -41,7 +40,7 @@ class QSpinBox;
 class QCheckBox;
 
 
-class Video : public Context::Applet, public EngineObserver
+class Video : public Context::Applet
 {
     Q_OBJECT
 
@@ -54,9 +53,6 @@ public:
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     QSizeF effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-
-protected:
-    void EngineNewTrackPlaying(); //reimpl EngineObserver
 
 private:
     Phonon::VideoWidget* m_videoWidget;

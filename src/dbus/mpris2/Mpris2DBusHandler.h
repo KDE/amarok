@@ -18,7 +18,9 @@
 #ifndef MPRIS2_DBUS_HANDLER_H
 #define MPRIS2_DBUS_HANDLER_H
 
-#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
+
+#include <Phonon/Global>
 
 #include <QObject>
 #include <QVariant>
@@ -54,7 +56,7 @@ namespace Amarok
      * checks whether the property really changed and adds it to
      * m_changedProperties if it has.
      */
-    class Mpris2DBusHandler : public QObject, public Engine::EngineObserver
+    class Mpris2DBusHandler : public QObject
     {
         Q_OBJECT
         /**
@@ -171,12 +173,6 @@ namespace Amarok
         void Seeked( qlonglong );
         /* @} */
 
-    protected:
-        virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
-        virtual void engineTrackChanged( Meta::TrackPtr );
-        virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
-        virtual void engineSeekableChanged( bool );
-        virtual void engineVolumeChanged( int percent );
 
     private:
         QList<QByteArray> m_changedProperties;
@@ -184,6 +180,10 @@ namespace Amarok
         void setPropertyInternal( const char *name, const QVariant &value );
 
     private Q_SLOTS:
+        void trackPositionChanged( qint64 position, bool userSeek );
+        void seekableChanged( bool );
+        void volumeChanged( int percent );
+
         void updateTrackProgressionProperties();
         void updatePlaybackStatusProperty();
         void updatePlaylistProperties();

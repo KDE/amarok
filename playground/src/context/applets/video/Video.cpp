@@ -32,7 +32,6 @@
 
 Video::Video( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
 
@@ -63,12 +62,6 @@ Video::~Video()
 
     delete m_videoWidget;
 } 
-
-void
-EngineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-}
 
 void
 Video::constraintsEvent( Plasma::Constraints constraints )

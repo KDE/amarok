@@ -38,10 +38,7 @@ using namespace Context;
 
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
-    , Engine::EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
-    , m_state( Phonon::StoppedState )
     , m_currentArtist( 0 )
 {
     DEBUG_BLOCK
@@ -49,6 +46,18 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     m_sources << "current" << "albums";
     m_requested[ "current" ] = true;
     m_requested[ "albums" ] = false;
+
+    EngineController* engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
 }
 
 CurrentEngine::~CurrentEngine()
@@ -58,10 +67,8 @@ CurrentEngine::~CurrentEngine()
 void
 CurrentEngine::init()
 {
-    m_currentTrack = The::engineController()->currentTrack();
-    if( m_currentTrack )
-        subscribeTo( m_currentTrack );
     Plasma::DataEngine::init();
+    update( The::engineController()->currentTrack() );
 }
 
 QStringList
@@ -75,73 +82,43 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
 
-    removeAllData( name );
+    removeAllData( name ); // unneeded?
     m_requested[ name ] = true;
-    update();
+    update( The::engineController()->currentTrack() );
     return true;
 }
 
 void
-CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
+CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
-    m_state = newState;
+    const int width = 156; // ARGH, hardcoded?
+    setData( "current", "albumart", album->image( width ) );
 }
 
 void
-CurrentEngine::engineTrackChanged( Meta::TrackPtr track )
+CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
-    if( track )
-    {
-        if( m_currentTrack )
-            unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-    }
-    else
-    {
-        m_currentTrack.clear();
-    }
-    update();
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
+    setData( "current", "current", trackInfo );
+    if( m_requested[ "albums" ] )
+        update( track );
 }
 
 void
-CurrentEngine::message( const ContextState& state )
+CurrentEngine::trackChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( state )
-    /*
-    DEBUG_BLOCK
-    
-    if( state == Current )
-    {
-        update();
-    }
-    else if( state == Home )
-    {
-        if( m_currentTrack )
-        {
-            unsubscribeFrom( m_currentTrack );
-            if( m_currentTrack->album() )
-                unsubscribeFrom( m_currentTrack->album() );
-        }        
-    }
-    */
+    update( track );
 }
 
 void
-CurrentEngine::stoppedState()
+CurrentEngine::stopped()
 {
     DEBUG_BLOCK
 
-    //TODO
-    // if we are in buffering state or loading state, do not show the recently album etc ...
-    if ( m_state == Phonon::BufferingState || m_state== Phonon::LoadingState )
-        return;
-    
     removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
     removeAllData( "albums" );
     m_currentArtist = 0;
-
 
     if( m_requested[ "albums" ] )
     {
@@ -207,51 +184,31 @@ CurrentEngine::stoppedState()
             SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( m_qmFavTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
     */
-    
 }
 
 void
-CurrentEngine::metadataChanged( Meta::AlbumPtr album )
-{
-    const int width = 156;
-    setData( "current", "albumart", album->image( width ) );
-}
-
-void
-CurrentEngine::metadataChanged( Meta::TrackPtr track )
-{
-    QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
-    setData( "current", "current", trackInfo );
-    if( m_requested[ "albums" ] )
-        update();
-}
-
-void
-CurrentEngine::update()
+CurrentEngine::update( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    if( !m_currentTrack )
+    if( !track )
     {
-        stoppedState();
+        stopped();
         return;
     }
 
     if( m_requested[ "current" ] )
     {
 
-        QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
+        QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
 
-        //const int width = coverWidth(); // this is always == 0, someone needs to setCoverWidth()
-        const int width = 156; // workaround to make the art less grainy. 156 is the width of the nocover image
-                            // there is no way to resize the currenttrack applet at this time, so this size
-                            // will always look good.
-
+        const int width = m_coverWidth;
         removeAllData( "current" );
 
-        if( m_currentTrack->album() )
+        Meta::AlbumPtr album = track->album();
+        if( album )
         {
-            QPixmap art = m_currentTrack->album()->image( width );
+            QPixmap art = album->image( width );
             setData( "current", "albumart",  QVariant( art ) );
         }
         else
@@ -259,7 +216,7 @@ CurrentEngine::update()
 
         setData( "current", "current", trackInfo );
 
-        Capabilities::SourceInfoCapability *sic = m_currentTrack->create<Capabilities::SourceInfoCapability>();
+        Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
         if( sic )
         {
             //is the source defined
@@ -277,7 +234,7 @@ CurrentEngine::update()
     if( m_requested[ "albums" ] )
     {
         //generate data for album applet
-        Meta::ArtistPtr artist = m_currentTrack->artist();
+        Meta::ArtistPtr artist = track->artist();
 
         //We need to update the albums data even if the artist is the same, since the current track is
         //most likely different, and thus the rendering of the albums applet should change
@@ -313,6 +270,7 @@ CurrentEngine::update()
         }
     }
 }
+
 
 void
 CurrentEngine::setupAlbumsData()

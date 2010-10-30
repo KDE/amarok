@@ -21,7 +21,6 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 
 #include "../../engines/photos/PhotosInfo.h"
 
@@ -39,9 +38,9 @@ namespace Plasma
 
  /** PhotosApplet will display photos from the Internet, relative to the current playing song
    */
-class PhotosApplet : public Context::Applet, public Engine::EngineObserver
+class PhotosApplet : public Context::Applet
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         PhotosApplet( QObject* parent, const QVariantList& args );
@@ -51,16 +50,16 @@ class PhotosApplet : public Context::Applet, public Engine::EngineObserver
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-        // inherited from EngineObserver
-        virtual void engineNewTrackPlaying();
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-        
     public slots:
         virtual void init();
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
         void    saveSettings();
 
+    protected slots:
+        void trackPlaying();
+        void stopped();
+        
     protected:
         void createConfigurationInterface(KConfigDialog *parent);
         

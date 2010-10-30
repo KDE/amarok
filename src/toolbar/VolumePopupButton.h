@@ -18,8 +18,6 @@
 #ifndef VOLUMEPOPUPBUTTON_H
 #define VOLUMEPOPUPBUTTON_H
 
-#include "core/engine/EngineObserver.h"
-
 #include <QToolButton>
 
 class QAction;
@@ -32,21 +30,22 @@ class QWheelEvent;
 namespace Amarok { class VolumeSlider; }
 
 
-class VolumePopupButton : public QToolButton, public Engine::EngineObserver
+class VolumePopupButton : public QToolButton
 {
     Q_OBJECT
 
 public:
     VolumePopupButton( QWidget * parent );
-    
+
 protected:
     virtual void mouseReleaseEvent( QMouseEvent * event );
     virtual void wheelEvent( QWheelEvent * event );
 
-private:
-    void engineVolumeChanged( int newVolume );
-    void engineMuteStateChanged( bool muted );
+private Q_SLOTS:
+    void volumeChanged( int newVolume );
+    void muteStateChanged( bool muted );
 
+private:
     QLabel * m_volumeLabel;
     QToolButton * m_volumeToolButton;
     QMenu * m_volumeMenu;

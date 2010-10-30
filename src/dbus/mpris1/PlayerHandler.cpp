@@ -31,6 +31,8 @@
 #include "Osd.h"
 #include "SvgHandler.h"
 
+#include <Phonon/Global>
+
 // Marshall the Status data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Status &status)
 {
@@ -60,8 +62,7 @@ namespace Mpris1
 {
 
     PlayerHandler::PlayerHandler()
-        : QObject(kapp),
-          EngineObserver( The::engineController() )
+        : QObject(kapp)
     {
         qDBusRegisterMetaType<Status>();
 
@@ -74,25 +75,31 @@ namespace Mpris1
 
         connect( The::playlistActions(), SIGNAL(navigatorChanged()),
                  this, SLOT(updateStatus()) );
+
+        EngineController *engine = The::engineController();
+
+        connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+                 this, SLOT( slotStateChanged() ) );
+        connect( engine, SIGNAL( paused() ),
+                 this, SLOT( slotStateChanged() ) );
+        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+                 this, SLOT( slotStateChanged() ) );
+        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+                 this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
     }
 
     Status PlayerHandler::GetStatus()
     {
         Status status = { 0, 0, 0, 0 };
-        switch( The::engineController()->state() )
-        {
-            case Phonon::PlayingState:
-            case Phonon::BufferingState:
-                status.Play = 0; //Playing
-                break;
-            case Phonon::PausedState:
-                status.Play = 1; //Paused
-                break;
-            case Phonon::LoadingState:
-            case Phonon::StoppedState:
-            case Phonon::ErrorState:
-                status.Play = 2; //Stopped
-        };
+
+        EngineController *engine = The::engineController();
+        if( engine->isPlaying() )
+            status.Play = 0; //Playing
+        else if( engine->isPaused() )
+            status.Play = 1; //Paused
+        else
+            status.Play = 2; //Stopped
+
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
             status.Random = 1;
@@ -125,11 +132,7 @@ namespace Mpris1
 
     void PlayerHandler::PlayPause()
     {
-        if(The::engineController()->state() == Phonon::PlayingState) {
-            The::engineController()->pause();
-        } else {
-            The::engineController()->play();
-        }
+        The::engineController()->playPause();
     }
 
     void PlayerHandler::Next()
@@ -171,7 +174,7 @@ namespace Mpris1
 
     void PlayerHandler::PositionSet( int time )
     {
-        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+        if( time > 0 && !The::engineController()->isStopped() )
             The::engineController()->seek( time );
     }
 
@@ -222,13 +225,13 @@ namespace Mpris1
 
     void PlayerHandler::Forward( int time )
     {
-        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+        if( time > 0 && !The::engineController()->isStopped() )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
     }
 
     void PlayerHandler::Backward( int time )
     {
-        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+        if( time > 0 && The::engineController()->isStopped() )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
     }
 
@@ -242,10 +245,14 @@ namespace Mpris1
         int caps = NONE;
         Meta::TrackPtr track = The::engineController()->currentTrack();
         caps |= CAN_HAS_TRACKLIST;
-        if ( track ) caps |= CAN_PROVIDE_METADATA;
-        if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
-        if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
-        if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
+        if ( track )
+            caps |= CAN_PROVIDE_METADATA;
+        if ( GetStatus().Play == 0 /*playing*/ )
+            caps |= CAN_PAUSE;
+        if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) )
+            caps |= CAN_PLAY;
+        if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) )
+            caps |= CAN_SEEK;
         if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->qaim()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;
@@ -266,16 +273,14 @@ namespace Mpris1
         return Meta::Field::mprisMapFromTrack( track );
     }
 
-    void PlayerHandler::engineTrackChanged( Meta::TrackPtr track )
+    void PlayerHandler::slotTrackChanged( Meta::TrackPtr track )
     {
-        Q_UNUSED( track );
-        emit TrackChange( GetMetadata() );
+        emit TrackChange( GetTrackMetadata( track ) );
         updateStatus();
     }
-    void PlayerHandler::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+
+    void PlayerHandler::slotStateChanged()
     {
-        Q_UNUSED( currentState );
-        Q_UNUSED( oldState );
         updateStatus();
     }
 } // namespace Amarok

@@ -20,7 +20,6 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 #include "PhotoBrowser.h"
 #include "ui_coverblingSettings.h"
 
@@ -38,7 +37,7 @@ namespace Plasma
     class IconWidget;
 }
 
-class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
+class CoverBlingApplet : public Context::Applet
 {
     Q_OBJECT
 
@@ -48,9 +47,6 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
 
         void init();
         void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-                
-	// inherited from EngineObserver
-        virtual void engineNewTrackPlaying();
 
     public slots:
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
@@ -64,6 +60,7 @@ class CoverBlingApplet : public Context::Applet, public Engine::EngineObserver
 		void albumSearch(QString ialbum);
 		void switchSearchIcon();
 		void displaySearchName();
+
     protected :
         virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);

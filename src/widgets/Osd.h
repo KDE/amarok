@@ -18,7 +18,6 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QImage>
@@ -158,7 +157,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public Engine::EngineObserver, public Meta::Observer
+    class OSD : public OSDWidget
     {
         Q_OBJECT
 
@@ -172,16 +171,12 @@ namespace Amarok
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
 
-    protected:
-        // Reimplemented from EngineObserver
-        virtual void engineVolumeChanged( int );
-        virtual void engineMuteStateChanged( bool );
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
-
-        // Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::AlbumPtr album );
+    protected slots:
+        void muteStateChanged( bool mute );
+        void trackPlaying( Meta::TrackPtr track );
+        void stopped();
+        void paused();
+        void metadataChanged();
 
     public slots:
         /**

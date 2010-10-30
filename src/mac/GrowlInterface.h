@@ -17,33 +17,28 @@
 #ifndef AMAROK_GROWL_INTERFACE_H
 #define AMAROK_GROWL_INTERFACE_H
 
- 
- 
-#include <QString> 
+
+
+#include <QObject>
+#include <QString>
 #include <QImage>
- 
+
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "EngineController.h" 
+#include "EngineController.h"
 #include "core/engine/EngineObserver.h"
     
  // NOTE if not on mac, this whole file is useless, so not even going to try
-class GrowlInterface : public Engine::EngineObserver , public Meta::Observer
+class GrowlInterface : QObject
 {
+    Q_OBJECT
+
     public:
         GrowlInterface( QString appName );
-     
-        void show( Meta::TrackPtr );
-     
-    protected:
-        // Reimplemented from EngineObserver
-        virtual void engineVolumeChanged( int );
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
 
-        // Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track ); 
+    protected slots:
+        void show( Meta::TrackPtr );
+
     private:
         QString m_appName;
         Meta::TrackPtr m_currentTrack;

@@ -47,13 +47,17 @@
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , Engine::EngineObserver( The::engineController() )
         , m_scroll( 0 )
         , m_headerLabel( 0 )
         , m_settingsIcon( 0 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
 }
 
 SimilarArtistsApplet::~SimilarArtistsApplet()
@@ -130,11 +134,8 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
-SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
+SimilarArtistsApplet::stopped()
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-
     m_scroll->clear();
 
     m_headerLabel->setScrollingText( i18n( "Similar Artist: No track playing" ) );

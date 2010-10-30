@@ -28,7 +28,7 @@ class VolumePopupButton;
 /**
   An new toolbar implementation.
 */
-class SlimToolbar : public QToolBar, public Engine::EngineObserver
+class SlimToolbar : public QToolBar
 {
     Q_OBJECT
 

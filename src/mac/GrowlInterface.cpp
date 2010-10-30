@@ -27,8 +27,12 @@
 
 GrowlInterface::GrowlInterface( QString appName ) :
                 m_appName( appName )
-              ,  EngineObserver( The::engineController() )
-{}
+{
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( show( Meta::TrackPtr ) ) );
+}
 
 void
 GrowlInterface::show( Meta::TrackPtr track )
@@ -68,43 +72,4 @@ GrowlInterface::show( Meta::TrackPtr track )
         App::instance()->trayIcon()->showMessage( "Amarok", text, QString() );
     }
 
-}
-
-void
-GrowlInterface::engineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = track;
-    subscribeTo( track );
-    metadataChanged( track );
-
-    show( m_currentTrack );
-}
-
-void
-GrowlInterface::engineStateChanged( Phonon::State state, Phonon::State oldState )
-{
-    Q_UNUSED( oldState )
-    DEBUG_BLOCK
-  //  if( state == Phonon::PausedState )
-  //        show( i18n( "Paused" ) );
-}
-
-
-void
-GrowlInterface::engineVolumeChanged( int newVolume )
-{
-  //  volChanged( newVolume );
-}
-
-void
-GrowlInterface::metadataChanged( Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-    DEBUG_BLOCK
-
-   // show( m_currentTrack );
 }

@@ -49,9 +49,7 @@ ContextView* ContextView::s_self = 0;
 
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
     : Plasma::View( cont, parent )
-    , Engine::EngineObserver( The::engineController() )
     , m_curState( Home )
-    , m_firstPlayingState( true )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -90,6 +88,13 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
+
+    EngineController* const engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
 }
 
 ContextView::~ContextView()
@@ -150,35 +155,24 @@ void ContextView::clearNoSave()
 }
 
 
-void ContextView::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
+void ContextView::slotTrackChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
-    messageNotify( Home );
-}
-
-
-void ContextView::engineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-    messageNotify( Current );
-    m_firstPlayingState = false;
+    if( track )
+        messageNotify( Current );
+    else
+        messageNotify( Home );
 }
 
 
 void
-ContextView::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+ContextView::slotMetadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( newMetaData )
-    Q_UNUSED( trackChanged )
     DEBUG_BLOCK
 
     // if we are listening to a stream, take the new metadata as a "new track"
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->type() == "stream" )
+    if( track && The::engineController()->isStream() )
         messageNotify( Current );
 }
 

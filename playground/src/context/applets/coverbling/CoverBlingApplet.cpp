@@ -52,11 +52,15 @@
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , Engine::EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
 
     setHasConfigurationInterface( true );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( jumpToPlaying() ) );
 }
 
 void
@@ -409,7 +413,7 @@ void CoverBlingApplet::jumpToPlaying()
     }
 }
 
-void CoverBlingApplet::engineNewTrackPlaying( )
+void CoverBlingApplet::trackPlaying( Meta::TrackPtr track )
 {
     if ( m_autojump )
     {

@@ -76,10 +76,6 @@ set(libcore_support_SRCS
     support/Debug.cpp
 )
 
-set(libcore_engine_SRCS
-    engine/EngineObserver.cpp
-)
-
 #####################################################################
 # LIBCORE
 #####################################################################
@@ -92,7 +88,6 @@ set(libcore_LIB_SRCS
     ${libcore_playlists_SRCS}
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}
-    ${libcore_engine_SRCS}
     ${libcore_support_SRCS}
 )
 

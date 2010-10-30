@@ -19,7 +19,6 @@
 #ifndef AMAROK_STATUS_BAR_H
 #define AMAROK_STATUS_BAR_H
 
-#include "core/engine/EngineObserver.h"
 #include "MainWindow.h"
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
@@ -47,7 +46,7 @@ A new, much simpler status bar as the old one really did not survive the porting
 
 	@author
 */
-class AMAROK_EXPORT StatusBar : public KStatusBar, public Engine::EngineObserver, public Meta::Observer
+class AMAROK_EXPORT StatusBar : public KStatusBar
 {
     Q_OBJECT
     //friend StatusBar* The::statusBar();
@@ -64,9 +63,6 @@ public:
 
     void shortMessage( const QString &text );
     void longMessage( const QString &text, MessageType type = Information );
-
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
 
 signals:
     void signalLongMessage( const QString & text, MessageType type );
@@ -141,10 +137,13 @@ public slots:
     }
 
 protected:
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewTrackPlaying();
 
 protected slots:
+    void stopped();
+    void paused();
+    void trackPlaying( Meta::TrackPtr track );
+    void trackMetadataChanged( Meta::TrackPtr track );
+
     void hideProgress();
     void nextShortMessage();
     void hideLongMessage();

@@ -18,14 +18,13 @@
 #define AMAROK_ENGINE_SCRIPT_H
 
 #include "MetaTypeExporter.h"
-#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QtScript>
 
 namespace AmarokScript
 {
-    class AmarokEngineScript : public QObject, public Engine::EngineObserver
+    class AmarokEngineScript : public QObject
     {
         Q_OBJECT
 
@@ -45,7 +44,7 @@ namespace AmarokScript
                 Playing  = 0,
                 Paused   = 1,
                 Stopped  = 2,
-                Error    = -1
+                Error    = -1 // deprecated. reason: Amarok will try to resolve the error by itself and never stay in the error state. In the worst case it will stop
             };
 
         public slots:
@@ -62,26 +61,59 @@ namespace AmarokScript
             int  IncreaseVolume( int ticks = 100/25 );
             int  DecreaseVolume( int ticks = 100/25 );
             void Mute();
+            /** This function returns the track position in seconds */
             int  trackPosition() const;
+            /** This function returns the track position in milliseconds */
             int  trackPositionMs() const;
+            /** This function returns the current engine state.
+                @returns 0 when playing or buffering, 1 when paused, 2 when stopped or loading and -1 in case of an error.
+            */
             int  engineState() const;
+            /** This function returns the current track.
+                The current track might even be valid when not in playing state.
+            */
             QVariant currentTrack() const;
 
         signals:
             void trackFinished(); // when playback stops altogether
+
+            /** This signal will be emitted every time the current track changes.
+                It will not be emitted if e.g. the title of the current track changes.
+                For this you will need to connect to newMetaData signal.
+            */
             void trackChanged();
-            void newMetaData( const QHash<qint64, QString>&, bool );
+
+            /** This signal will indicate newly received meta data.
+                The signal will be triggered as soon as the phonon backend parses new meta data or
+                the current track or album data is changed through Amarok.
+                @param metaData Not longer filled. Use currentTrack to get the current meta data.
+                @param newTrack Always false. Use trackChanged to find changed tracks.
+            */
+            void newMetaData( const QHash<qint64, QString>& metaData, bool newTrack );
+
+            /** Will be emitted as soon as the user changes the track playback position. */
             void trackSeeked( int ); //return relative time in million second
+
+            /** This signal will be emitted when the volume changes.
+                @param volume The relative volume between 0 (mute) and 100.
+            */
             void volumeChanged( int );
-            void trackPlayPause( int );  //Playing: 0, Paused: 1
+
+            /** This signal is emitted when the engine state switches to play or pause.
+                Note: You could get two trackPlayPause(1) in a row if e.g. the state
+                changed to stopped in beetween (which you will notice if connecting to
+                the trackFinished signal)
+                @param state Is 0 when state changed to playing or 1 when the state switched to pause.
+            */
+            void trackPlayPause( int state );
+
+        private slots:
+            void trackPositionChanged( qint64 );
+            void slotNewMetaData();
+            void slotPaused();
+            void slotPlaying();
 
         private:
-            void engineVolumeChanged( int value );
-            void engineTrackPositionChanged( qint64 position, bool userSeek );
-            void engineTrackChanged( Meta::TrackPtr track );
-            void engineTrackFinished( Meta::TrackPtr track );
-            void engineNewMetaData( const QHash<qint64, QString> &newData, bool trackChanged );
-            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
 
             bool randomMode() const;
             bool dynamicMode() const;

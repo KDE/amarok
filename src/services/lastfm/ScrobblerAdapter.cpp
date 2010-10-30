@@ -32,7 +32,6 @@
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
-      EngineObserver( The::engineController() ),
       m_scrobbler( new lastfm::Audioscrobbler( clientId ) ),
       m_clientId( clientId ),
       m_lastSaved( 0 )
@@ -53,6 +52,17 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     
     connect( The::mainWindow(), SIGNAL( loveTrack( Meta::TrackPtr) ), SLOT( loveTrack( Meta::TrackPtr ) ) );
     connect( The::mainWindow(), SIGNAL( banTrack() ), SLOT( banTrack() ) );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped( qint64, qint64 ) ) );
+    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+             this, SLOT( trackPositionChanged( qint64, bool ) ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
 }
 
 
@@ -61,11 +71,10 @@ ScrobblerAdapter::~ScrobblerAdapter()
 
 
 void
-ScrobblerAdapter::engineNewTrackPlaying()
+ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
         m_lastSaved = m_lastPosition; // HACK engineController is broken :(
@@ -113,15 +122,12 @@ ScrobblerAdapter::engineNewTrackPlaying()
 }
 
 
-void 
-ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+void
+ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( newMetaData )
-    Q_UNUSED( trackChanged )
     DEBUG_BLOCK
 
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
-    Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track &&
         ( track->type() == "stream" && ( !track->name().isEmpty() 
           && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
@@ -148,20 +154,19 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 }
 
 void
-ScrobblerAdapter::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
+ScrobblerAdapter::stopped( qint64 finalPosition, qint64 trackLength )
 {
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
     DEBUG_BLOCK
+    Q_UNUSED( trackLength );
 
-    engineTrackPositionChanged( finalPosition, false );
+    trackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
 }
 
 
 void
-ScrobblerAdapter::engineTrackPositionChanged( qint64 position, bool userSeek )
+ScrobblerAdapter::trackPositionChanged( qint64 position, bool userSeek )
 {
     // HACK enginecontroller is fscked. it sends engineTrackPositionChanged messages
     // with info for the last track even after engineNewTrackPlaying. this means that

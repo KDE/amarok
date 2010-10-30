@@ -19,10 +19,11 @@
 #define AMAROK_STREAM_P_H
 
 #include "core/support/Debug.h"
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "EngineController.h"
+
+#include <Phonon/Global>
 
 #include <QList>
 #include <QObject>
@@ -30,14 +31,19 @@
 
 using namespace MetaStream;
 
-class MetaStream::Track::Private : public QObject, public Engine::EngineObserver
+class MetaStream::Track::Private : public QObject
 {
     Q_OBJECT
+
     public:
         Private( Track *t )
-            : EngineObserver( The::engineController() )
-            , track( t )
-        {}
+            : track( t )
+        {
+            EngineController *engine = The::engineController();
+
+            connect( engine, SIGNAL( currentMetadataChanged( QVariantMap ) ),
+                     this, SLOT( currentMetadataChanged( QVariantMap ) ) );
+        }
 
         void notify() const
         {
@@ -50,21 +56,19 @@ class MetaStream::Track::Private : public QObject, public Engine::EngineObserver
             }
         }
 
-        void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
+        void currentMetadataChanged( QVariantMap metaData )
         {
-            Q_UNUSED( trackChanged )
-
-            if( metaData.value( Meta::valUrl ) == url.url() )
+            if( metaData.value( Meta::Field::URL ) == url.url() )
             {
                 DEBUG_BLOCK
                 debug() << "Applying new Metadata.";
 
-                if( metaData.contains( Meta::valArtist ) )
-                    artist = metaData.value( Meta::valArtist );
-                if( metaData.contains( Meta::valTitle ) )
-                    title = metaData.value( Meta::valTitle );
-                if( metaData.contains( Meta::valAlbum ) )
-                    album = metaData.value( Meta::valAlbum );
+                if( metaData.contains( Meta::Field::ARTIST ) )
+                    artist = metaData.value( Meta::Field::ARTIST ).toString();
+                if( metaData.contains( Meta::Field::TITLE ) )
+                    title = metaData.value( Meta::Field::TITLE ).toString();
+                if( metaData.contains( Meta::Field::ALBUM ) )
+                    album = metaData.value( Meta::Field::ALBUM ).toString();
 
                 // Special demangling of artist/title for Shoutcast streams, which usually have "Artist - Title" in the title tag:
                 if( artist.isEmpty() && title.contains( " - " ) ) {
@@ -76,35 +80,6 @@ class MetaStream::Track::Private : public QObject, public Engine::EngineObserver
                 }
 
                 notify();
-            }
-        }
-
-        void engineStateChanged( Phonon::State state, Phonon::State oldState )
-        {
-            Q_UNUSED( oldState )
-
-            if ( state ==  Phonon::PlayingState ) {
-                Meta::TrackPtr track = The::engineController()->currentTrack();
-
-                if ( track && track->playableUrl().url() == url.url() )
-                { 
-                    if( track->artist() )
-                        artist = track->artist()->name();
-                    title = track->name();
-                    if( track->album() )
-                        album = track->album()->name();
-
-                        // Special demangling of artist/title for Shoutcast streams, which usually have "Artist - Title" in the title tag:
-                    if( !track->artist() && title.contains( " - " ) ) {
-                        const QStringList artist_title = title.split( " - " );
-                        if( artist_title.size() >= 2 ) {
-                            artist = artist_title[0];
-                            title  = title.remove( 0, artist.length() + 3 );
-                        }
-                    }
-
-                    notify();
-                }
             }
         }
 

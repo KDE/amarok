@@ -17,8 +17,6 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include "core/engine/EngineObserver.h"
-
 #include <KNotification>
 
 namespace Amarok {
@@ -26,7 +24,7 @@ namespace Amarok {
 /**
  * Class for accessing KNotify in KDE
  **/
-class KNotificationBackend : public QObject, public Engine::EngineObserver
+class KNotificationBackend : public QObject
 {
     Q_OBJECT
 
@@ -41,11 +39,9 @@ public Q_SLOTS:
     void showCurrentTrack();
 
 protected:
-    // Reimplemented from engineobserver
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewTrackPlaying();
 
 private slots:
+    void trackPlaying();
     void notificationClosed();
 
 private:

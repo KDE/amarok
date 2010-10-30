@@ -22,7 +22,6 @@
 #define AMAROK_ENGINECONTROLLER_H
 
 #include "core/capabilities/BoundedPlaybackCapability.h"
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QMap>
@@ -47,7 +46,7 @@ namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect
  * replay gain, fade-out on stop and various track capabilities that affect
  * playback.
  */
-class AMAROK_EXPORT EngineController : public Engine::EngineSubject
+class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
 {
     Q_OBJECT
 
@@ -111,16 +110,13 @@ public:
      */
     void setNextTrack( Meta::TrackPtr track );
 
-    /**
-     * The state of the engine
-     */
-    Phonon::State state() const;
-
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
     /*AMAROK_EXPORT*/ static bool installDistroCodec();
 
-    /**
-     * Provides access to the Phonon MediaObject for components that need more information
+    /** Returns the media object Amarok is using for playback.
+     *  Provides access to the Phonon MediaObject for components that need more information
+     *  This is not for normal use, except maybe when you really need
+     *  the stateChanged signal.
      */
     // const so that it can only be used for info
     const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
@@ -142,9 +138,32 @@ public:
     bool isPaused() const;
 
     /**
-     * Streams sometimes have to be treated specially.  For example, it is typically
-     * not possible to rewind a stream (at least, not without returning to the
-     * start of it).
+     * @return @c true if Amarok is playing, @c false if it is stopped or pause
+     * Note: A fading out track is considered already stopped.
+     */
+    bool isPlaying() const;
+
+    /**
+     * @return @c true if Amarok is stopped, @c false if it is playing or pause
+     * Note: A fading out track is considered already stopped.
+     */
+    bool isStopped() const;
+
+    /**
+     * @return @c true if Amarok is currently buffering or loading.
+     * Usually Amarok isPlaying is true in those cases too but that depends on the
+     * Phonon backend.
+     */
+    bool isBuffering() const;
+
+    /**
+     * Streams sometimes have to be treated specially.
+     * For example, it is typically not possible to rewind a stream (at least,
+     * not without returning to the start of it).
+     * However for rewinding we have isSeekable().
+     * Also for streams usually the meta data received by currentTrack() is only
+     * for the whole stream while the meta data received by currentMetaDataChanged
+     * will be more current (or contain advertisment)
      *
      * @return @c true if the current track is a stream, @c false otherwise
      */
@@ -193,15 +212,13 @@ public:
 public slots:
     /**
      * Plays the current track, if there is one
-     *
-     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     * This happens asynchronously.
      */
     void play();
 
     /**
      * Plays the specified track
-     *
-     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     * This happens asynchronously.
      */
     void play( Meta::TrackPtr track, uint offset = 0 );
 
@@ -214,22 +231,19 @@ public slots:
 
     /**
      * Pauses the current track
-     *
-     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     * This happens asynchronously.
      */
     void pause();
 
     /**
      * Stops playing
-     *
-     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     * This happens asynchronously.
      */
     void stop( bool forceInstant = false );
 
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
-     *
-     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     * This happens asynchronously.
      */
     void playPause(); //pauses if playing, plays if paused or stopped
 
@@ -317,17 +331,130 @@ public slots:
 
     /**
      * Update equalizer status - enabled,disabled,set values
-     *
-     *
      */
     void eqUpdate();
+
+
+Q_SIGNALS:
+    /**
+     * Emitted when the playback stops while playing a track.
+     * This signal is not emitted when the track pauses or the playback stopps because
+     * Amarok was closed and "resume at start" is configured.
+     * It is also not emitted if the playback continues with another track. In such
+     * a case you would just get another trackPlaying signal.
+     * Both parameters are in milli seconds.
+     */
+    void stopped( qint64 /*ms*/ finalPosition, qint64 /*ms*/ trackLength );
+
+    /**
+     * Called when the playback is paused.
+     * When the playback is resumed a trackPlaying signal will be emitted.
+     * When the playback is stopped then a stopped signal will be emitted.
+     */
+    void paused();
+
+    /** While trying to play the track an error occured.
+     *  This usually means that the engine will try to play the next track in
+     *  the playlist until it gives up.
+     *  So you will get a trackPlaying or stopped signal next.
+     */
+    void trackError( Meta::TrackPtr track );
+
+    /**
+     * Called when a new track starts playing or an old track starts playing now.
+     *
+     * It also might be called several time in sequence
+     * with the same track in cases when e.g. you have
+     * a multi source track.
+     *
+     * Unlike trackChanged(), this is not called when playback stops.
+     */
+    void trackPlaying( Meta::TrackPtr track );
+
+    /**
+     * Called when the current track changes
+     *
+     * Note that this is possibly only called once in case of a stream or on
+     * the other hand multiple times with the same track in cases when e.g. you have
+     * a multi source track.
+     *
+     * Unlike trackPlaying(), this is called when playback stops with Meta::TrackPtr( 0 ) for @p track.
+     *
+     * @param track The new track; may be null
+     */
+    void trackChanged( Meta::TrackPtr track );
+
+    /** Emitted when the metadata of the current track changes.
+        You might want to connect also to trackChanged to get more changes because
+        this signal is only emitted when the track metadata changes while it's playing.
+        Also connecting to currentMetadataChanged would give you information when the current track
+        is a stream. In such a case the meta information from track might be unreliable.
+     */
+    void trackMetadataChanged( Meta::TrackPtr track );
+
+    /** Emitted when the metadata of the current album changes.
+     */
+    void albumMetadataChanged( Meta::AlbumPtr album );
+
+    /**
+     * Emitted then the information for the current changed.
+     * This signal contains data from Phonon about the meta data of the track or stream.
+     * This signal is expecially emitted when a stream changes it's metadata.
+     * This can happen e.g. in a ogg stream where the currentTrack data will probably
+     * not be updated.
+     *
+     * MetaStream::Track::Private in Stream_p.h will connect to this signal to update it's internal data
+     * and then itself trigger a trackMetadataChanged.
+     * @param metadata Contains the url, artist, album title, title, genre, tracknumber and length
+     */
+    void currentMetadataChanged( QVariantMap metadata );
+
+    /**
+     * Called when the seekable value was changed
+     */
+    void seekableChanged( bool seekable );
+
+    /**
+     * Called when the volume was changed
+     */
+    void volumeChanged( int percent );
+
+    /**
+     * Called when audio output was enabled or disabled
+     *
+     * NB: if setMute() was called on the engine controller, but it didn't change the
+     * mute state, this will not be called
+     */
+    void muteStateChanged( bool mute );
+
+    /** Called when the track position changes.
+        If the track just progresses you will get a notification every couple of milliseconds.
+        @parem position The current position in milliseconds
+        @param userSeek True if the position change was caused by the user
+    */
+    void trackPositionChanged( qint64 position, bool userSeek );
+
+    /**
+       Called when the track length changes, typically because the track has changed but
+       also when phonon manages to determine the full track length.
+    */
+    void trackLengthChanged( qint64 milliseconds );
+
+    /**
+     * Called when Amarok is closed and we disconnect from Phonon.
+     * @param resumePlayback True if amarok will continue playback after a restart.
+     */
+    void sessionEnded( bool resumePlayback );
 
 private slots:
     /**
      * Sets up the Phonon system
      */
     void initializePhonon();
-    void slotQueueEnded();
+    /** This slot is connected to the phonon finished signal.
+        It is emitted when the queue is empty and the current media come to an end.
+    */
+    void slotFinished();
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
@@ -351,7 +478,27 @@ private slots:
      */
     void slotTitleChanged( int titleNumber );
 
+protected:
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    virtual void metadataChanged( Meta::TrackPtr track );
+    virtual void metadataChanged( Meta::AlbumPtr album );
+
 private:
+
+    /** Tries to get the url of the given track setting it as current.
+        This function will cause slotPlayableUrlFetched
+        to be called eventually.
+    */
+    void getUrl( Meta::TrackPtr track, uint offset );
+
+    /** Will try to get either the next url or the next track.
+        This function will call or initiate a call to slotPlayableUrlFetched or
+        setNextTrack.
+        slotPlayableUrlFetched, setNextTrack or slotQueueEnded.
+    */
+    void getNextUrlOrTrack();
+
     /**
      * Plays the media at a specified URL
      *
@@ -363,6 +510,21 @@ private:
     void createFadeoutEffect();
     void resetFadeout();
 
+    void setGain();
+
+    /** Returns the meta data sub set needed for currentMetadataChanged */
+    QVariantMap trackData( Meta::TrackPtr track );
+
+    /** Try to detect MetaData spam in Streams.
+        Some streams are doing advertisment in the metadata. We try to filter that out
+    */
+    bool isMetadataSpam( QVariantMap meta );
+
+    /** Will change the current track, notifying everybody about the change.
+        This function will also update the different variables connected to the current track e.g. m_boundedPlayback or m_fetchFirst.
+    */
+    void setCurrentTrack( Meta::TrackPtr track );
+
     Q_DISABLE_COPY( EngineController )
 
     QWeakPointer<Phonon::MediaObject>       m_media;
@@ -370,12 +532,13 @@ private:
     QWeakPointer<Phonon::Effect>            m_equalizer;
     QWeakPointer<Phonon::AudioOutput>       m_audio;
     QWeakPointer<Phonon::MediaController>   m_controller;
-    Phonon::Path                        m_path;
+    Phonon::Path                            m_path;
 
     Phonon::VolumeFaderEffect* m_fader;
     QTimer* m_fadeoutTimer;
 
     Meta::TrackPtr  m_currentTrack;
+    Meta::AlbumPtr  m_currentAlbum;
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
@@ -385,6 +548,9 @@ private:
     bool m_playWhenFetched;
     int m_volume;
     bool m_currentIsAudioCd;
+
+    QVariantMap m_currentMetadata;
+    QList<QVariantMap> m_metaDataHistory; // against metadata spam
 
     /**
      * Some flags to prevent feedback loops in volume updates

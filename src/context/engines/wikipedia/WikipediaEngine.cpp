@@ -822,9 +822,9 @@ WikipediaEnginePrivate::setSelection( const QString &type )
 
 WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , Engine::EngineObserver( The::engineController() )
     , d_ptr( new WikipediaEnginePrivate( this ) )
 {
+
 }
 
 WikipediaEngine::~WikipediaEngine()
@@ -841,7 +841,15 @@ WikipediaEngine::init()
     addSource( d->dataContainer );
     connect( d->dataContainer, SIGNAL(dataUpdated(QString,Plasma::DataEngine::Data)),
              this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
-    d->currentTrack = The::engineController()->currentTrack();
+
+    EngineController *engine = The::engineController();
+
+    d->currentTrack = engine->currentTrack();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( update( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( update( Meta::TrackPtr ) ) );
 }
 
 bool
@@ -861,14 +869,7 @@ WikipediaEngine::sourceRequestEvent( const QString &source )
 }
 
 void
-WikipediaEngine::engineTrackChanged( Meta::TrackPtr track )
-{
-    Q_D( WikipediaEngine );
-    d->checkRequireUpdate( track );
-}
-
-void
-WikipediaEngine::metadataChanged( Meta::TrackPtr track )
+WikipediaEngine::update( Meta::TrackPtr track )
 {
     Q_D( WikipediaEngine );
     d->checkRequireUpdate( track );

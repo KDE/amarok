@@ -23,24 +23,20 @@
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
     : QToolBar( parent )
-    , Engine::EngineObserver( The::engineController() )
 {
     setToolButtonStyle( Qt::ToolButtonIconOnly );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     //setIconDimensions( 16 );
     setContentsMargins( 0, 0, 0, 0 );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( handleAddActions() ) );
 }
 
 CurrentTrackToolbar::~CurrentTrackToolbar()
 {}
-
-void CurrentTrackToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
-{
-    Q_UNUSED( state )
-    Q_UNUSED( oldState )
-
-    handleAddActions();
-}
 
 void CurrentTrackToolbar::handleAddActions()
 {

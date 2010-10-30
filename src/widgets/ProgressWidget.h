@@ -17,9 +17,9 @@
 #ifndef AMAROK_PROGRESSWIDGET_H
 #define AMAROK_PROGRESSWIDGET_H
 
-#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
 
-#include <unistd.h>
+#include <Phonon/Global>
 
 #include <QHash>
 #include <QPainter>
@@ -29,7 +29,7 @@
 class TimeLabel;
 namespace Amarok { class TimeSlider; }
 
-class ProgressWidget : public QWidget, public Engine::EngineObserver
+class ProgressWidget : public QWidget
 {
     Q_OBJECT
     public:
@@ -42,19 +42,17 @@ class ProgressWidget : public QWidget, public Engine::EngineObserver
     public slots:
         void drawTimeDisplay( int position );
 
-    protected:
-        virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineTrackLengthChanged( qint64 milliseconds );
-        virtual void engineNewTrackPlaying();
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
+    protected slots:
+        void stopped();
+        void paused();
+        void trackPlaying();
+        void trackLengthChanged( qint64 milliseconds );
+        void trackPositionChanged( qint64 position );
 
-        void layout();
-        
     private slots:
         void addBookmark( const QString &name, int milliSeconds );
         void redrawBookmarks(const QString *BookmarkName = 0);
-        
+
     private:
         TimeLabel *m_timeLabelLeft;
         TimeLabel *m_timeLabelRight;

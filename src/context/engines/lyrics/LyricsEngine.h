@@ -20,7 +20,6 @@
 
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 /**
@@ -33,40 +32,31 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public Engine::EngineObserver,
-                     public LyricsObserver, public Meta::Observer
+class LyricsEngine : public DataEngine, public LyricsObserver
 {
     Q_OBJECT
 
 public:
     LyricsEngine( QObject* parent, const QList<QVariant>& args );
-    
+
     QStringList sources() const;
-    
-    // reimplemented from EngineObserver
-    void engineTrackChanged( Meta::TrackPtr track );
-    
+
     // reimplemented from LyricsObserver
     void newLyrics( QStringList& lyrics );
     void newLyricsHtml( QString& lyrics );
     void newSuggestions( const QVariantList &suggest );
     void lyricsMessage( QString& key, QString& val );
 
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
-    
 protected:
     bool sourceRequestEvent( const QString& name );
-    
+
 private slots:
     void update();
-    
+
 private:
     // stores is we have been disabled (disconnected)
     bool m_requested;
-   
-    Meta::TrackPtr m_currentTrack;
+
     // Cache the title/artist of the current track so we can check against
     // metadata updates. We only want to update the lyrics if either the
     // title or the artist change (but not other attributes like rating, score,

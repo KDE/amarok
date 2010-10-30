@@ -131,7 +131,6 @@ namespace The {
 
 MainWindow::MainWindow()
     : KMainWindow( 0 )
-    , Engine::EngineObserver( The::engineController() )
     , m_showMenuBar( 0 )
     , m_lastBrowser( 0 )
     , m_layoutEverRestored( false )
@@ -188,6 +187,16 @@ MainWindow::MainWindow()
     setAutoSaveSettings();
 
     m_showMenuBar->setChecked(!menuBar()->isHidden());  // workaround for bug #171080
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( slotStopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( slotPaused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( slotNewTrackPlaying() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
 }
 
 MainWindow::~MainWindow()
@@ -1566,44 +1575,25 @@ MainWindow::contextRectGlobal() const
 }
 
 void
-MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
+MainWindow::slotStopped()
 {
-    Q_UNUSED( oldState )
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    switch( state )
-    {
-    case Phonon::StoppedState:
-        m_currentTrack = 0;
-        setPlainCaption( i18n( AMAROK_CAPTION ) );
-        break;
-
-    case Phonon::PlayingState:
-        unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-        metadataChanged( track );
-        break;
-
-    case Phonon::PausedState:
-        setPlainCaption( i18n( "Paused  ::  %1", QString( AMAROK_CAPTION ) ) );
-        break;
-
-    default:
-        break;
-    }
+    setPlainCaption( i18n( AMAROK_CAPTION ) );
 }
 
 void
-MainWindow::engineNewTrackPlaying()
+MainWindow::slotPaused()
 {
-    m_currentTrack = The::engineController()->currentTrack();
-    metadataChanged( m_currentTrack );
+    setPlainCaption( i18n( "Paused  ::  %1", QString( AMAROK_CAPTION ) ) );
 }
 
 void
-MainWindow::metadataChanged( Meta::TrackPtr track )
+MainWindow::slotNewTrackPlaying()
+{
+    slotMetadataChanged( The::engineController()->currentTrack() );
+}
+
+void
+MainWindow::slotMetadataChanged( Meta::TrackPtr track )
 {
     if( track && The::engineController()->currentTrack() == track )
         setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );

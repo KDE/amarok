@@ -560,8 +560,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
                                                        buttonSize, buttonSize,
                                                        "back_button" ) );
 
-    if ( EngineController::instance()->state() == Phonon::PlayingState ||
-         EngineController::instance()->state() == Phonon::PlayingState )
+    if( The::engineController()->isPlaying() )
     {
         offset += ( buttonSize + iconSpacing );
         painter->drawPixmap( offset, y + 2,
@@ -593,8 +592,8 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
     offset += ( buttonSize + iconSpacing );
 
-    long trackLength = EngineController::instance()->trackLength();
-    long trackPos = EngineController::instance()->trackPositionMs();
+    long trackLength = The::engineController()->trackLength();
+    long trackPos = The::engineController()->trackPositionMs();
     qreal trackPercentage = 0.0;
 
     if ( trackLength > 0 )

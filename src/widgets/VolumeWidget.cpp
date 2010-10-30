@@ -32,7 +32,6 @@
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
-    , Engine::EngineObserver( The::engineController() )
 {
     setIconDimensions( 16 );
     setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -58,6 +57,12 @@ VolumeWidget::VolumeWidget( QWidget *parent )
 
     EngineController* const ec = The::engineController();
 
+    connect( ec, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+
+    connect( ec, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
+
     connect( m_action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
     connect( m_action, SIGNAL( triggered( Qt::MouseButtons, Qt::KeyboardModifiers ) ), SLOT( toggleMute( Qt::MouseButtons, Qt::KeyboardModifiers ) ) );
     connect( m_slider.data(), SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
@@ -74,7 +79,7 @@ VolumeWidget::toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifi
 }
 
 void
-VolumeWidget::engineVolumeChanged( int value )
+VolumeWidget::volumeChanged( int value )
 {
     m_slider.data()->setToolTip( i18n( "Volume: %1%", value ) );
 
@@ -83,7 +88,7 @@ VolumeWidget::engineVolumeChanged( int value )
 }
 
 void
-VolumeWidget::engineMuteStateChanged( bool mute )
+VolumeWidget::muteStateChanged( bool mute )
 {
     if( mute )
         m_slider.data()->setToolTip( i18n( "Volume: <i>Muted</i>" ) );

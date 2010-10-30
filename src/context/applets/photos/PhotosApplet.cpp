@@ -43,15 +43,20 @@
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , Engine::EngineObserver( The::engineController() )
     , m_stoppedstate( false )
     , m_settingsIcon( 0 )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying() ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
 }
 
-void 
+void
 PhotosApplet::init()
 {
     // Call the base implementation.
@@ -126,7 +131,7 @@ PhotosApplet::~PhotosApplet()
 }
 
 void
-PhotosApplet::engineNewTrackPlaying( )
+PhotosApplet::trackPlaying( )
 {
     DEBUG_BLOCK
     m_stoppedstate = false;
@@ -134,10 +139,8 @@ PhotosApplet::engineNewTrackPlaying( )
 }
 
 void
-PhotosApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
+PhotosApplet::stopped()
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
     DEBUG_BLOCK
 
     m_stoppedstate = true;

@@ -27,29 +27,24 @@ class VolumeDial;
 
 namespace Amarok { class TimeSlider; }
 
-#include "core/engine/EngineObserver.h" //baseclass
+#include "core/meta/Meta.h"
+#include <Phonon/Global>
+
 #include <QToolBar>
 
-
-class MainToolbar : public QToolBar, public Engine::EngineObserver
+class MainToolbar : public QToolBar
 {
     Q_OBJECT
 
 public:
     MainToolbar( QWidget *parent = 0 );
-    void engineMuteStateChanged( bool mute );
-    void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
-    void engineTrackChanged( Meta::TrackPtr track );
-    void engineTrackLengthChanged( qint64 ms );
-    void engineTrackPositionChanged( qint64 position, bool userSeek );
-    void engineVolumeChanged( int percent );
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
+    void showEvent( QShowEvent *ev );
     void hideEvent( QHideEvent *ev );
     void paintEvent( QPaintEvent *ev );
     void resizeEvent( QResizeEvent *ev );
-    void showEvent( QShowEvent *ev );
     void timerEvent( QTimerEvent *ev );
 
 private:
@@ -58,15 +53,21 @@ private:
     void updateCurrentTrackActions();
 
 private slots:
+    void stopped();
+    void paused();
+    void playing();
+    void trackChanged( Meta::TrackPtr track );
+    void trackLengthChanged( qint64 ms );
+    void trackPositionChanged( qint64 position, bool userSeek );
+
+    void muteStateChanged( bool mute );
+    void volumeChanged( int percent );
     void addBookmark( const QString &name, int milliSeconds );
-    void checkEngineState();
     void filter( const QString &string );
     void layoutProgressBar();
     void layoutTrackBar();
     void setLabelTime( int ms );
-    void setPlaying( bool on );
     void updateBookmarks( const QString *BookmarkName );
-    void updateLabels();
     void updatePrevAndNext();
 
 private:

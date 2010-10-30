@@ -19,7 +19,6 @@
 #ifndef AMAROK_WIKIPEDIA_ENGINE
 #define AMAROK_WIKIPEDIA_ENGINE
 
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 #include "context/DataEngine.h"
 #include "NetworkAccessManagerProxy.h"
@@ -39,7 +38,7 @@ namespace Plasma
 }
 class WikipediaEnginePrivate;
 
-class WikipediaEngine : public DataEngine, Meta::Observer, Engine::EngineObserver
+class WikipediaEngine : public DataEngine
 {
     Q_OBJECT
 
@@ -49,12 +48,8 @@ public:
 
     virtual void init();
 
-    // reimplemented from EngineObserver
-    virtual void engineTrackChanged( Meta::TrackPtr track );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
+protected slots:
+    void update( Meta::TrackPtr track );
 
 protected:
     bool sourceRequestEvent( const QString &source );

@@ -43,9 +43,15 @@ using namespace Context;
 
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
     m_timeSpan = Amarok::config("UpcomingEvents Applet").readEntry( "timeSpan", "AllEvents" );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( updateDataForArtist() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( updateDataForArtist() ) );
 }
 
 UpcomingEventsEngine::~UpcomingEventsEngine()
@@ -57,7 +63,7 @@ UpcomingEventsEngine::sourceRequestEvent( const QString &source )
 {
     if( source == "artistevents" )
     {
-        engineNewTrackPlaying();
+        updateDataForArtist();
         return false; // data is not ready yet, but will be soon
     }
     else if( source == "venueevents" )
@@ -89,34 +95,6 @@ UpcomingEventsEngine::sourceRequestEvent( const QString &source )
 }
 
 void
-UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
-{
-    if( m_currentTrack->artist() != track->artist() )
-        updateDataForArtist();
-}
-
-void
-UpcomingEventsEngine::engineNewTrackPlaying()
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( !m_currentTrack )
-    {
-        subscribeTo( track );
-        m_currentTrack = track;
-        updateDataForArtist();
-    }
-    else if( m_currentTrack != track )
-    {
-        Meta::ArtistPtr oldArtist = m_currentTrack->artist();
-        unsubscribeFrom( m_currentTrack );
-        subscribeTo( track );
-        m_currentTrack = track;
-        if( oldArtist != track->artist() )
-            updateDataForArtist();
-    }
-}
-
-void
 UpcomingEventsEngine::updateDataForVenues()
 {
     if( !m_venueIds.isEmpty() )
@@ -138,12 +116,15 @@ UpcomingEventsEngine::updateDataForVenues()
 void
 UpcomingEventsEngine::updateDataForArtist()
 {
-    if( !m_currentTrack )
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
         return;
 
-    const QString &artistName = m_currentTrack->artist()->name();
-    if( artistName.isEmpty() )
+    Meta::ArtistPtr artist = track->artist();
+    if( !artist || artist == m_currentArtist || artist->name().isEmpty() )
         return;
+
+    m_currentArtist = artist;
 
     // Prepares the url for LastFm request
     m_urls.clear();
@@ -153,7 +134,7 @@ UpcomingEventsEngine::updateDataForArtist()
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getEvents" );
     url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "artist", artistName );
+    url.addQueryItem( "artist", m_currentArtist->name() );
     m_urls << url;
     The::networkAccessManager()->getData( url, this,
          SLOT(artistEventsFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
@@ -180,7 +161,7 @@ UpcomingEventsEngine::artistEventsFetched( const KUrl &url, QByteArray data,
     if( eventsParser.read() )
     {
         LastFmEvent::List artistEvents = filterEvents( eventsParser.events() );
-        engineData[ "artist" ] = m_currentTrack->artist()->name();
+        engineData[ "artist" ] = m_currentArtist->name();
         engineData[ "events" ] = qVariantFromValue( artistEvents );
     }
     setData( "artistevents", engineData );

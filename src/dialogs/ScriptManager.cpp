@@ -87,7 +87,6 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 ScriptManager::ScriptManager( QWidget* parent )
         : KDialog( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
     Ui::ScriptManagerBase gui;

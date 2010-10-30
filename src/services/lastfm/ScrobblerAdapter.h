@@ -18,7 +18,6 @@
 #ifndef LASTFMSCROBBLERADAPTER_H
 #define LASTFMSCROBBLERADAPTER_H
 
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <lastfm/Audioscrobbler>
@@ -26,19 +25,13 @@
 
 #include <QVariant>
 
-
-class ScrobblerAdapter : public QObject, public Engine::EngineObserver
+class ScrobblerAdapter : public QObject
 {
     Q_OBJECT
 
 public:
     ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
-
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-    virtual void engineTrackPositionChanged( qint64 position , bool userSeek );
-    virtual void engineNewTrackPlaying();
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
 
     void skip();
     void love();
@@ -47,6 +40,12 @@ public:
 public slots:
     void loveTrack( Meta::TrackPtr );
     void banTrack();
+
+private slots:
+    void stopped( qint64 finalPosition, qint64 trackLength );
+    void trackPositionChanged( qint64 position, bool userSeek );
+    void trackPlaying( Meta::TrackPtr track );
+    void trackMetadataChanged( Meta::TrackPtr track );
 
 private:
     void resetVariables();

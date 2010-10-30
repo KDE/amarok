@@ -19,7 +19,6 @@
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include "core/engine/EngineObserver.h"
 
 #include <QNetworkReply>
 
@@ -52,7 +51,7 @@ class LastFmBiasFactory : public CustomBiasEntryFactory
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-class LastFmBias : public CustomBiasEntry, public Engine::EngineObserver
+class LastFmBias : public CustomBiasEntry
 {
     Q_OBJECT
 public:
@@ -70,9 +69,6 @@ public:
 
     virtual bool hasCollectionFilterCapability();
     virtual CollectionFilterCapability* collectionFilterCapability( double weight );
-
-    // reimplemented from EngineObserver
-    virtual void engineNewTrackPlaying();
 
     void update();
 

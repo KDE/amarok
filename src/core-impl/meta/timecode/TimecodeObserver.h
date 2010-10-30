@@ -17,8 +17,8 @@
 #ifndef TIMECODEOBSERVER_H
 #define TIMECODEOBSERVER_H
 
+#include <QObject>
 #include "EngineController.h"
-
 
 /**
  * This class handles auto timecoding (position bookmarking) of tracks.
@@ -26,15 +26,18 @@
  * when the user stops playing the track (before the ending) a timecode
  * will be created.
  */
-class TimecodeObserver : public Engine::EngineObserver
+class TimecodeObserver : public QObject
 {
+    Q_OBJECT
+
 public:
-    TimecodeObserver();
+    TimecodeObserver( QObject *parent = 0 );
     virtual ~TimecodeObserver();
 
-    virtual void engineNewTrackPlaying();
-    virtual void enginePlaybackEnded ( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason );
-    virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
+protected slots:
+    void stopped( qint64 finalPosition, qint64 trackLength );
+    void trackPlaying( Meta::TrackPtr track );
+    void trackPositionChanged( qint64 position, bool userSeek );
 
 private:
     bool m_trackTimecodeable; //!< stores if current track has the writetimecode capability

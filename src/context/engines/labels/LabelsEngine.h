@@ -20,7 +20,6 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 #include "network/NetworkAccessManagerProxy.h"
 
@@ -34,7 +33,7 @@ using namespace Context;
    *   This class provide labels from flickr
    *
    */
-class LabelsEngine : public DataEngine, public ContextObserver, public Engine::EngineObserver, Meta::Observer
+class LabelsEngine : public DataEngine, public ContextObserver
 {
     Q_OBJECT
 public:
@@ -42,28 +41,19 @@ public:
     virtual ~LabelsEngine();
 
     QStringList sources() const;
-    
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState &state );
-
-    // inherited from EngineObserver
-    virtual void engineTrackChanged( Meta::TrackPtr track );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
 
 protected:
     // reimplemented from Plasma::DataEngine
     bool sourceRequestEvent( const QString &name );
 
 private slots:
-  /**
-   *   This slots will handle last.fm result for this query:
-   *   API key is : 402d3ca8e9bc9d3cf9b85e1202944ca5
-   *   http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist=radiohead&track=paranoid+android&api_key=b25b959554ed76058ac220b7b2e0a026
-   *   see here for details: http://www.lastfm.com/api/
-   */
+
+    /**
+     *   This slots will handle last.fm result for this query:
+     *   API key is : 402d3ca8e9bc9d3cf9b85e1202944ca5
+     *   http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist=radiohead&track=paranoid+android&api_key=b25b959554ed76058ac220b7b2e0a026
+     *   see here for details: http://www.lastfm.com/api/
+     */
     void resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     void resultReady( const QString &collectionId, const Meta::LabelList &labels );
@@ -81,14 +71,12 @@ private:
     void updateLocal();
 
     QTimer m_timeoutTimer;
-    
+
     /// The URL for the network request
     KUrl m_lastFmUrl;
 
     QStringList                 m_sources;
 
-    Meta::TrackPtr              m_currentTrack;
-    
     // Cache the artist and title of the current track so we can check against metadata
     // updates. We only want to update the labels if the artist change
     QString                     m_artist;

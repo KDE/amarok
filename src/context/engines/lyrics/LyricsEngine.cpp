@@ -31,10 +31,16 @@ using namespace Context;
 
 LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , Engine::EngineObserver( The::engineController() )
     , LyricsObserver( LyricsManager::self() )
 {
     m_requested = true; // testing
+
+    EngineController* engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ) );
 }
 
 QStringList LyricsEngine::sources() const
@@ -75,17 +81,56 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     return true;
 }
 
-void LyricsEngine::engineTrackChanged( Meta::TrackPtr track )
+void LyricsEngine::update()
 {
-    DEBUG_BLOCK
-    if( !track )
+    // -- get current title and artist
+    QString title;
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    QString artist;
+    Meta::ArtistPtr currentArtist;
+    if( currentTrack )
     {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "stopped" ,"stopped" );
-        return;
+        title = currentTrack->name();
+        currentArtist = currentTrack->artist();
+        if( currentArtist )
+            artist = currentArtist->name();
     }
 
-    if( track && m_currentTrack && track != m_currentTrack )
+    // -- clean up title
+    if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+        title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+        artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+
+    if( title.isEmpty() && currentTrack )
+    {
+        /* If title is empty, try to use pretty title.
+           The fact that it often (but not always) has "artist name" together, can be bad,
+           but at least the user will hopefully get nice suggestions. */
+        QString prettyTitle = currentTrack->prettyName();
+        int h = prettyTitle.indexOf( '-' );
+        if ( h != -1 )
+        {
+            title = prettyTitle.mid( h+1 ).trimmed();
+            if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+                title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            if( artist.isEmpty() ) {
+                artist = prettyTitle.mid( 0, h ).trimmed();
+                if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+                    artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            }
+        }
+    }
+
+    // -- check if something changed for the previous fetched lyrics
+    if( title == m_title && artist == m_artist )
+        return; // nothing changed
+
+    // -- really need new lyrics
+    m_title = title;
+    m_artist = artist;
+
+    if( title.isEmpty() || artist.isEmpty() )
     {
         m_prevLyrics = m_currentLyrics;
         m_prevLyricsList = m_currentLyricsList;
@@ -94,61 +139,17 @@ void LyricsEngine::engineTrackChanged( Meta::TrackPtr track )
         m_currentLyrics.clear();
         m_currentLyricsList.clear();
         m_currentSuggestionsList.clear();
-    }
-    update();
-}
 
-void LyricsEngine::metadataChanged( Meta::TrackPtr track )
-{
-    const bool hasChanged = track->name() != m_title || 
-                            track->artist()->name() != m_artist;
-
-    if( hasChanged )
-        update();
-}
-
-void LyricsEngine::update()
-{
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack || !currentTrack->artist() )
+        removeAllData( "lyrics" );
+        setData( "lyrics", "fetching", "fetching" );
+        m_currentLyrics = "Lyrics Unavailable";
         return;
-
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
+    }
 
     QString lyrics = currentTrack->cachedLyrics();
-    
+
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
-    
-    m_title = currentTrack->name();
-    m_artist = currentTrack->artist()->name();
-
-    if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
-
-    if( m_title.isEmpty() )
-    {
-        /* If title is empty, try to use pretty title.
-           The fact that it often (but not always) has "artist name" together, can be bad,
-           but at least the user will hopefully get nice suggestions. */
-        QString prettyTitle = The::engineController()->currentTrack()->prettyName();
-        int h = prettyTitle.indexOf( '-' );
-        if ( h != -1 )
-        {
-            m_title = prettyTitle.mid( h+1 ).trimmed();
-            if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-            if( m_artist.isEmpty() ) {
-                m_artist = prettyTitle.mid( 0, h ).trimmed();
-                if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                    m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
-            }
-        }
-    }
 
     if( cached )
     {

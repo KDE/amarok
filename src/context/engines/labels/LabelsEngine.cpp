@@ -36,7 +36,6 @@ using namespace Context;
 LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , Engine::EngineObserver( The::engineController() )
 {
     Q_UNUSED( args )
     m_sources << "lastfm" ;
@@ -44,6 +43,13 @@ LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
     m_timeoutTimer.setInterval( 10000 );
     m_timeoutTimer.setSingleShot( true );
     connect( &m_timeoutTimer, SIGNAL(timeout()), this, SLOT(timeout()) );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ) );
 }
 
 LabelsEngine::~LabelsEngine()
@@ -78,17 +84,7 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->run();
     }
 
-    // if the engine was started after the playback has started, we don't have track of the current track
-    // this may happen, if a) the applet was added to the context view after the playback had started
-    // or b) the context view was hidden in the tabwidget and only shown after the playback had started
-    if ( !m_currentTrack && The::engineController()->currentTrack() )
-    {
-        m_currentTrack = The::engineController()->currentTrack();
-        subscribeTo( m_currentTrack );
-    }
-
-    if ( m_currentTrack )
-        update();
+    update();
 
     return true;
 }
@@ -115,104 +111,61 @@ LabelsEngine::dataQueryDone()
 }
 
 void
-LabelsEngine::engineTrackChanged( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    if( track )
-    {
-        if( m_currentTrack )
-            unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-        
-        if( m_currentTrack->album() )
-            m_album = m_currentTrack->album()->name();
-        else
-            m_album.clear();
-        
-        update();
-    }
-    else
-    {
-        removeAllData( "labels" );
-        m_userLabels.clear();
-        m_webLabels.clear();
-        m_currentTrack.clear();
-        setData( "labels", "state", "stopped" );
-    }
-}
-
-void 
-LabelsEngine::message( const ContextState &state )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( state )
-}
-
-void 
-LabelsEngine::metadataChanged( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    if( !track || track != m_currentTrack )
-        return;
-
-    const bool nameChanged = track->artist()->name() != m_artist || track->name() != m_title;
-    if ( nameChanged )
-    {
-        update();
-        return;
-    }
-
-    QStringList currentLabels;
-    foreach( const Meta::LabelPtr &label, track->labels() )
-    {
-        currentLabels += label->name();
-    }
-
-    currentLabels.sort();
-    m_userLabels.sort();
-
-    if( currentLabels != m_userLabels )
-    {
-        m_userLabels = currentLabels;
-        
-        QVariant varUser;
-        varUser.setValue< QStringList >( m_userLabels );
-        setData( "labels", "user", varUser );
-
-        // send the web labels too, because the labels applet clears all web labels if user labels arrive
-        QVariant varWeb;
-        varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
-        setData( "labels", "web", varWeb );
-        
-        return;
-    }
-}
-
-void
 LabelsEngine::update()
 {
     DEBUG_BLOCK
-    removeAllData( "labels" );
-    m_userLabels.clear();
-    m_webLabels.clear();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
+    QString title;
+    Meta::ArtistPtr artist;
+    QStringList labels;
+
+    if( track )
+    {
+        title = track->name();
+        artist = track->artist();
+        foreach( const Meta::LabelPtr &label, track->labels() )
+            labels += label->name();
+    }
+
+    labels.sort();
+    m_userLabels.sort();
+
+    // -- check if really something changed
+    if( artist->name() == m_artist &&
+        title == m_title &&
+        labels == m_userLabels )
+        return; // nothing to do
+
+    removeAllData( "labels" );
     setData( "labels", "state", "started" );
 
-    if( m_currentTrack )
-    {
-        foreach( const Meta::LabelPtr &label, m_currentTrack->labels() )
-        {
-            m_userLabels += label->name();
-        }
-    }
+    m_artist = artist->name();
+    m_title = title;
+    m_userLabels = labels;
 
     QVariant varUser;
     varUser.setValue< QStringList >( m_userLabels );
     setData( "labels", "user", varUser );
 
-    m_try = 0;
-    fetchLastFm();
+    // send the web labels too, because the labels applet clears all web labels if user labels arrive
+    QVariant varWeb;
+    varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
+    setData( "labels", "web", varWeb );
+
+    if( m_title.isEmpty() || m_artist.isEmpty() )
+    {
+        // stop timeout timer
+        m_timeoutTimer.stop();
+        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        debug()  << "LabelsEngine:" << "current track is invalid, returning";
+        return;
+    }
+    else
+    {
+        m_try = 0;
+        fetchLastFm();
+    }
 }
 
 void
@@ -223,7 +176,7 @@ LabelsEngine::fetchLastFm()
     QString currentArtist;
     QString currentTitle;
 
-    if ( !m_currentTrack || !m_currentTrack->artist() )
+    if( m_title.isEmpty() || m_artist.isEmpty() )
     {
         // stop timeout timer
         m_timeoutTimer.stop();
@@ -234,8 +187,6 @@ LabelsEngine::fetchLastFm()
     
     if ( m_try == 0 )
     {
-        m_artist = m_currentTrack->artist()->name();
-        m_title = m_currentTrack->name();
         currentArtist = m_artist;
         currentTitle = m_title;
         m_timeoutTimer.start();
@@ -343,17 +294,11 @@ LabelsEngine::fetchLastFm()
 
 void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
     if( m_lastFmUrl != url )
     {
         debug() << "urls not matching, returning";
-        return;
-    }
-
-    if ( m_currentTrack != The::engineController()->currentTrack() )
-    {
-        debug() << "no current track, returning";
         return;
     }
 

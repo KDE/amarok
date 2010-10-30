@@ -19,7 +19,6 @@
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include "core/engine/EngineObserver.h"
 
 #include <QNetworkReply>
 
@@ -53,8 +52,7 @@ namespace Dynamic
             virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e);
     };
     
-    // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-    class EchoNestBias : public CustomBiasEntry, public Engine::EngineObserver
+    class EchoNestBias : public CustomBiasEntry
     {
         Q_OBJECT
         public:
@@ -67,18 +65,17 @@ namespace Dynamic
             
             virtual bool trackSatisfies ( const Meta::TrackPtr track );
             virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
-            
+
             virtual QDomElement xml( QDomDocument doc ) const;
-            
+
             virtual bool hasCollectionFilterCapability();
             virtual CollectionFilterCapability* collectionFilterCapability( double weight );
-            
-            // reimplemented from EngineObserver
-            virtual void engineNewTrackPlaying();
-            
+
             void update();
-            
+
         private Q_SLOTS:
+            void trackPlaying( Meta::TrackPtr );
+
             void artistNameQueryDone( KJob* );
             void artistSuggestedQueryDone( KJob* );
             void updateReady ( QString collectionId, QStringList );

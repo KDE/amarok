@@ -55,41 +55,20 @@ static QString activeMprisTrackId()
 
 enum Status { Playing, Paused, Stopped };
 
-static Status getStatus( Phonon::State state )
-{
-    Status status;
-    switch( state )
-    {
-        case Phonon::PlayingState:
-        case Phonon::BufferingState:
-            status = Playing;
-            break;
-        case Phonon::PausedState:
-            status = Paused;
-            break;
-        case Phonon::LoadingState:
-        case Phonon::StoppedState:
-        case Phonon::ErrorState:
-            status = Stopped;
-            break;
-        default:
-            Q_ASSERT( false );
-            status = Stopped;
-            break;
-    };
-    return status;
-}
-
 static Status getStatus()
 {
-    return getStatus( The::engineController()->state() );
+    if( The::engineController()->isPlaying() )
+        return Playing;
+    else if( The::engineController()->isPaused() )
+        return Paused;
+    else
+        return Stopped;
 }
 
 namespace Amarok
 {
     Mpris2DBusHandler::Mpris2DBusHandler()
-        : QObject( kapp ),
-          EngineObserver( The::engineController() )
+        : QObject( kapp )
     {
         new Mpris2RootAdaptor( this );
         new Mpris2PlayerAdaptor( this );
@@ -117,6 +96,26 @@ namespace Amarok
             SLOT( updatePlaylistProperties() ) );
         connect( The::playlist()->qaim(), SIGNAL( rowsRemoved(QModelIndex,int,int) ),
             SLOT( updatePlaylistProperties() ) );
+
+        EngineController *engine = The::engineController();
+
+        connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+                 this, SLOT( updatePlaybackStatusProperty() ) );
+        connect( engine, SIGNAL( paused() ),
+                 this, SLOT( updatePlaybackStatusProperty() ) );
+        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+                 this, SLOT( updatePlaybackStatusProperty() ) );
+
+        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+                 this, SLOT( updatePlaylistProperties() ) );
+
+        connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+                 this, SLOT( trackPositionChanged( qint64, bool ) ) );
+        connect( engine, SIGNAL( seekableChanged( bool ) ),
+                 this, SLOT( seekableChanged( bool ) ) );
+        connect( engine, SIGNAL( volumeChanged( int ) ),
+                 this, SLOT( volumeChanged( int ) ) );
+
     }
 
     void Mpris2DBusHandler::setProperty( const char *name, const QVariant &value )
@@ -446,34 +445,21 @@ namespace Amarok
         }
     }
 
-    // <EngineObserver>
-    void Mpris2DBusHandler::engineStateChanged( Phonon::State /*currentState*/, Phonon::State /*oldState*/ )
-    {
-        QMetaObject::invokeMethod( this, "updatePlaybackStatusProperty", Qt::QueuedConnection );
-    }
-
-    void Mpris2DBusHandler::engineTrackChanged( Meta::TrackPtr )
-    {
-        QMetaObject::invokeMethod( this, "updateTrackProperties", Qt::QueuedConnection );
-        QMetaObject::invokeMethod( this, "updatePlaylistProperties", Qt::QueuedConnection );
-    }
-
-    void Mpris2DBusHandler::engineTrackPositionChanged( qint64 position, bool seeked )
+    void Mpris2DBusHandler::trackPositionChanged( qint64 position, bool seeked )
     {
         if( seeked )
             Seeked( position * 1000 );
     }
 
-    void Mpris2DBusHandler::engineSeekableChanged( bool seekable )
+    void Mpris2DBusHandler::seekableChanged( bool seekable )
     {
         setPropertyInternal( "CanSeek", seekable );
     }
 
-    void Mpris2DBusHandler::engineVolumeChanged( int percent )
+    void Mpris2DBusHandler::volumeChanged( int percent )
     {
         setPropertyInternal( "Volume", static_cast<double>(percent) / 100.0 );
     }
-    // </EngineObserver>
 }
 
 #include "Mpris2DBusHandler.moc"

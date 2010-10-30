@@ -67,15 +67,26 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
  */
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , Engine::EngineObserver( The::engineController() )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying() ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+
+    const Phonon::MediaObject *media = engine->phononMediaObject();
+
+    connect( media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
+             this, SLOT( stateChanged( Phonon::State, Phonon::State ) ) );
 }
 
-void 
+void
 VideoclipApplet::init()
 {
     // Call the base implementation.
@@ -162,7 +173,7 @@ VideoclipApplet::init()
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
-    engineStateChanged(Phonon::PlayingState,Phonon::StoppedState);// kickstart
+    stateChanged(Phonon::PlayingState,Phonon::StoppedState);// kickstart
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Videoclip Applet");
@@ -179,8 +190,8 @@ VideoclipApplet::~VideoclipApplet()
     qDeleteAll( m_videoItemButtons );
 }
 
-void 
-VideoclipApplet::engineNewTrackPlaying()
+void
+VideoclipApplet::trackPlaying()
 {
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
@@ -193,7 +204,7 @@ VideoclipApplet::engineNewTrackPlaying()
 }
 
 void
-VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State oldState)
+VideoclipApplet::stateChanged(Phonon::State currentState, Phonon::State oldState)
 {
     DEBUG_BLOCK
 
@@ -207,7 +218,7 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
         // when switching from buffering to to playing, we launch the vid widget
         case Phonon::PlayingState :
         {
-            // We need this has when song switching the state will do
+            // We need this as when song switching the state will do
             // playing > stopped > playing > loading > buffering > playing
 
             // --well, not on OS X. there it will go oldState == stopped,
@@ -258,13 +269,9 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
     }
 }
 
-void 
-VideoclipApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
+void
+VideoclipApplet::stopped()
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
-
     // On playback ending, we hide everything and collapse
     setBusy( false );
     m_widget->hide();
@@ -424,7 +431,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         }
     }
 
-    // FIXME This should be in engineStateChanged(), but for now it help fixing the bug 210332
+    // FIXME This should be in stateChanged(), but for now it help fixing the bug 210332
     else if ( The::engineController()->phononMediaObject()->hasVideo()
         && The::engineController()->phononMediaObject()->state() != Phonon::BufferingState
         && The::engineController()->phononMediaObject()->state() != Phonon::LoadingState )

@@ -17,17 +17,15 @@
 #ifndef AMAROK_CURRENT_ENGINE
 #define AMAROK_CURRENT_ENGINE
 
-#include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
-#include "core/meta/Meta.h" // album observer
+#include "core/meta/Meta.h"
 
 /**
     This class provides context information on the currently playing track.
     This includes info such as the artist, trackname, album of the current song, etc.
 
     There is no data source: if you connect to the engine, you immediately
-    start getting updates when there is data. 
+    start getting updates when there is data.
 
     The key of the data is "current".
     The data is structured as a QVariantList, with the order:
@@ -42,11 +40,7 @@
         * Album cover (QImage)
 
 */
-
-class CurrentEngine : public Context::DataEngine, 
-                      public ContextObserver,
-                      public Engine::EngineObserver,
-                      public Meta::Observer
+class CurrentEngine : public Context::DataEngine
 {
     Q_OBJECT
     Q_PROPERTY( int coverWidth READ coverWidth WRITE setCoverWidth  )
@@ -58,44 +52,36 @@ public:
 
     QStringList sources() const;
 
-    // reimplemented from Context::Observer
-    virtual void message( const Context::ContextState& state );
-
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
 
-    // inherited from EngineObserver
-    virtual void engineStateChanged( Phonon::State, Phonon::State );
-    virtual void engineTrackChanged( Meta::TrackPtr track );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
+private slots:
     void metadataChanged( Meta::AlbumPtr album );
     void metadataChanged( Meta::TrackPtr track );
+    void trackChanged( Meta::TrackPtr track );
+    void stopped();
 
 protected:
     bool sourceRequestEvent( const QString& name );
 
 private:
-    void update();    
-    
+    void update( Meta::TrackPtr track );
+
     int m_coverWidth;
     QStringList m_sources;
     QMap< QString, bool > m_requested;
     Meta::TrackPtr m_currentTrack;
 
-    Phonon::State m_state;
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
     Meta::TrackList m_latestTracks;
     Meta::TrackList m_favoriteTracks;
-    
+
 private slots:
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
     void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
     void setupAlbumsData();
     void setupTracksData();
-    void stoppedState();
 };
 
 K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )

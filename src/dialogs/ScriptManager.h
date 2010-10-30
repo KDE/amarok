@@ -19,9 +19,9 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
+#include "shared/amarok_export.h"
 #include "scriptengine/AmarokScript.h"
 #include "scriptengine/AmarokScriptableServiceScript.h"
-#include "core/engine/EngineObserver.h"   //baseclass
 #include "ScriptSelector.h"
 #include "ScriptUpdater.h"
 
@@ -39,7 +39,7 @@ class KPluginSelector;
 class QScriptEngine;
 class ScriptUpdater;
 
-class AMAROK_EXPORT ScriptManager : public KDialog, public Engine::EngineObserver
+class AMAROK_EXPORT ScriptManager : public KDialog
 {
     Q_OBJECT
 

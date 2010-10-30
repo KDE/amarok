@@ -29,9 +29,36 @@ namespace AmarokScript
 {
     AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
         : QObject( kapp )
-        , Engine::EngineObserver( The::engineController() )
     {
         Q_UNUSED( ScriptEngine );
+
+        EngineController *engine = The::engineController();
+
+        connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+                 this, SLOT( trackPositionChanged( qint64 ) ) );
+
+        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+                 this, SIGNAL( trackChanged() ) );
+
+        connect( engine, SIGNAL( paused() ),
+                this, SLOT( slotPaused() ) );
+
+        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+                this, SLOT( slotPlaying() ) );
+
+        connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+                this, SIGNAL( trackFinished() ) );
+
+        connect( engine, SIGNAL( currentMetadataChanged( QVariantMap ) ),
+                 this, SLOT( slotNewMetaData() ) );
+        connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+                 this, SLOT( slotNewMetaData() ) );
+        connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+                 this, SLOT( slotNewMetaData() ) );
+
+        connect( engine, SIGNAL( volumeChanged( int ) ),
+                 this, SIGNAL( volumeChanged( int ) ) );
+
     }
 
     AmarokEngineScript::~AmarokEngineScript()
@@ -114,20 +141,13 @@ namespace AmarokScript
 
     int AmarokEngineScript::engineState() const
     {
-        switch( The::engineController()->state() )
-        {
-            case Phonon::PlayingState:
-            case Phonon::BufferingState:
-                return Playing;
-            case Phonon::PausedState:
-                return Paused;
-            case Phonon::LoadingState:
-            case Phonon::StoppedState:
-                return Stopped;
-            default:
-            case Phonon::ErrorState:
-                return Error;
-        };
+
+        if( The::engineController()->isPlaying() )
+            return Playing;
+        else if( The::engineController()->isPaused() )
+            return Paused;
+        else
+            return Stopped;
     }
 
     QVariant AmarokEngineScript::currentTrack() const
@@ -136,38 +156,24 @@ namespace AmarokScript
         return QVariant::fromValue( track );
     }
 
-    void AmarokEngineScript::engineVolumeChanged( int newVolume )
+    void AmarokEngineScript::trackPositionChanged( qint64 pos )
     {
-        emit volumeChanged( newVolume );
-    }
-    void AmarokEngineScript::engineTrackPositionChanged( qint64 position, bool userSeek )
-    {
-        Q_UNUSED( userSeek )
-        emit trackSeeked( position );
-    }
-    void AmarokEngineScript::engineTrackChanged( Meta::TrackPtr track )
-    {
-        Q_UNUSED( track )
-        emit trackChanged();
-    }
-    void AmarokEngineScript::engineTrackFinished( Meta::TrackPtr track)
-    {
-        Q_UNUSED( track )
-        emit trackFinished();
+        emit trackSeeked( pos );
     }
 
-    void AmarokEngineScript::engineNewMetaData( const QHash<qint64, QString> &newData, bool trackChanged )
+    void AmarokEngineScript::slotNewMetaData()
     {
-        emit newMetaData( newData, trackChanged );
+        emit newMetaData( QHash<qint64, QString>(), false );
     }
-    void AmarokEngineScript::engineStateChanged( Phonon::State newState, Phonon::State oldState )
-    {
-        Q_UNUSED( oldState );
 
-        if( newState == Phonon::PlayingState )
-            emit trackPlayPause( Playing );
-        else if( newState == Phonon::PausedState )
-            emit trackPlayPause( Paused );
+    void AmarokEngineScript::slotPaused()
+    {
+        emit trackPlayPause( Paused );
+    }
+
+    void AmarokEngineScript::slotPlaying()
+    {
+        emit trackPlayPause( Playing );
     }
 
     bool AmarokEngineScript::randomMode() const

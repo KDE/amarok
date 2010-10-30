@@ -15,7 +15,6 @@ include_directories(
 set( testplaylistmodels_SRCS
         TestPlaylistModels.cpp
 	${AMAROK_SOURCE_TREE}/EngineController.cpp
-        ${AMAROK_SOURCE_TREE}/core/engine/EngineObserver.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
 	${AMAROK_SOURCE_TREE}/playlist/PlaylistColumnNames.cpp

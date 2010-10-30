@@ -22,7 +22,6 @@
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
-#include "core/engine/EngineObserver.h"
 #include "network/NetworkAccessManagerProxy.h"
 
 // Qt
@@ -39,7 +38,7 @@ using namespace Context;
  *
  * This class provide UpcomingEvents data for use in Context applets
  */
-class UpcomingEventsEngine : public DataEngine, public Meta::Observer, public Engine::EngineObserver
+class UpcomingEventsEngine : public DataEngine
 {
     Q_OBJECT
 
@@ -58,18 +57,6 @@ public:
      */
     virtual ~UpcomingEventsEngine();
 
-    /**
-     * This method is called when the metadata of a track has changed.
-     * The called class may not cache the pointer
-     */
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
-
-    /**
-     * Reimplemented from Engine::EngineObserver
-     */
-    void engineNewTrackPlaying();
-
 protected:
     /**
      * Reimplemented from Plasma::DataEngine
@@ -77,10 +64,6 @@ protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
-    /**
-     * Sends the data to the observers (e.g UpcomingEventsApplet)
-     */
-    void updateDataForArtist();
 
     /**
      * filterEvents filters a list of events depending on settings
@@ -95,21 +78,28 @@ private:
     QString m_timeSpan;
 
     /**
-     * The current track playing
+     * The current artist
      */
-    Meta::TrackPtr m_currentTrack;
+    Meta::ArtistPtr m_currentArtist;
 
     /**
      * Current URLs of events being fetched
      */
     QSet<KUrl> m_urls;
 
+    /**
+     * @param ids LastFm's venue ids
+     */
     QList<int> m_venueIds;
 
 private slots:
     /**
+     * Get events for specific artist
+     */
+    void updateDataForArtist();
+
+    /**
      * Get events for specific venues
-     * @param ids LastFm's venue ids
      */
     void updateDataForVenues();
 

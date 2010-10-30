@@ -57,9 +57,6 @@ DefaultApplicationController::shutdown()
     //destroy all central components instead of letting them be
     //destroyed in a random order as static objects
 
-
-    //do more stuff
-
     delete Components::setEngineController( 0 );
     delete Components::setCollectionLocationDelegate( 0 );
     delete Components::setLogger( 0 );

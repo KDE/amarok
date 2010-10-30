@@ -141,14 +141,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
     }
 
-    const Phonon::State engineState = The::engineController()->state();
-    debug() << "engine state: " << engineState;
+    debug() << "engine playing?: " << The::engineController()->isPlaying();
 
     bool playNow = false;
-    if ( options & DirectPlay )
+    if( options & DirectPlay )
         playNow = true;
-    if ( options & StartPlay )
-        if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
+    if( options & StartPlay )
+        if( !The::engineController()->isPlaying() )
             playNow = true;
 
     if ( playNow ) {

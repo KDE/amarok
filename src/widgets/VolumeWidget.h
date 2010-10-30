@@ -19,7 +19,6 @@
 #ifndef VOLUMEWIDGET_H
 #define VOLUMEWIDGET_H
 
-#include "core/engine/EngineObserver.h"
 #include "ToolBar.h"
 
 #include <KAction>
@@ -35,7 +34,7 @@ namespace Amarok
 /**
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
+class VolumeWidget : public Amarok::ToolBar
 {
     Q_OBJECT
 public:
@@ -44,11 +43,10 @@ public:
 
 private Q_SLOTS:
     void toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void volumeChanged( int value );
+    void muteStateChanged( bool mute );
 
 private:
-    void engineVolumeChanged( int value );
-    void engineMuteStateChanged( bool mute );
-
     QWeakPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
     QStringList m_icons;

@@ -22,7 +22,6 @@
 #include "NetworkAccessManagerProxy.h"
 #include "context/DataEngine.h"
 #include "context/applets/similarartists/SimilarArtist.h"
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QLocale>
@@ -33,7 +32,7 @@ using namespace Context;
  *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
  *  It gets its information from the API lastfm.
  */
-class SimilarArtistsEngine : public DataEngine, public Meta::Observer, public Engine::EngineObserver
+class SimilarArtistsEngine : public DataEngine
 {
     Q_OBJECT
 
@@ -64,13 +63,6 @@ public:
      */
     void similarArtistsRequest( const QString &artistName );
 
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
-
-    // reimplemented from EngineObserver
-    void engineNewTrackPlaying();
-
 protected:
     bool sourceRequestEvent( const QString &name );
 
@@ -82,12 +74,6 @@ private:
     QList<Plasma::DataEngine::Data> m_topTracks;
     QLocale m_descriptionLang;
     QString m_descriptionWideLang;
-
-    /**
-     * Prepare the calling of the similarArtistsRequest method.
-     * Launch when the track played on amarok has changed.
-     */
-    void update( bool force = false );
 
     /**
      * Fetches the description of the artist artistName on the LastFM API.
@@ -107,16 +93,16 @@ private:
     int m_maxArtists;
 
     /**
-     * The current track played on amarok
-     */
-    Meta::TrackPtr m_currentTrack;
-
-    /**
      * The artist, whose research is similar artists.
      */
     QString m_artist;
 
 private slots:
+    /**
+     * Prepare the calling of the similarArtistsRequest method.
+     * Launch when the track played on amarok has changed.
+     */
+    void update();
 
     /**
      * Parse the xml fetched on the lastFM API.
