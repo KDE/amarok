@@ -104,7 +104,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     DEBUG_BLOCK
 
     const QString directory = m_url.directory();
-    bool hasTracks( false );
+    bool hasTracks = false;
     m_tracksLoaded = false;
 
     do
@@ -117,6 +117,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
+            Meta::TrackPtr trackPtr;
             line = line.replace( "\\", "/" );
 
             debug() << "line:" << line;
@@ -135,23 +136,20 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
-                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( kurl );
 
-                if ( trackPtr ) {
-                    debug() << "track url: " << trackPtr->prettyUrl();
-                    m_tracks.append( trackPtr );
-                    hasTracks = true;
-                    m_tracksLoaded = true;
-                }
+                trackPtr = CollectionManager::instance()->trackForUrl( kurl );
             }
             else
             {
-                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
-                if ( trackPtr ) {
-                    m_tracks.append( trackPtr );
-                    hasTracks = true;
-                    m_tracksLoaded = true;
-                }
+                debug() << "absolute url";
+                trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
+            }
+
+            if ( trackPtr ) {
+                debug() << "track url: " << trackPtr->prettyUrl();
+                m_tracks.append( trackPtr );
+                hasTracks = true;
+                m_tracksLoaded = true;
             }
         }
     } while( !stream.atEnd() );
