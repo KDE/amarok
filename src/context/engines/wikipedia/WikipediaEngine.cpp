@@ -624,17 +624,19 @@ void
 WikipediaEnginePrivate::wikiParse( QString &wiki )
 {
     //remove the new-lines and tabs(replace with spaces IS needed).
-    wiki.replace( '\n', ' ' );
-    wiki.replace( '\t', ' ' );
+    wiki.replace( '\n', QLatin1Char(' ') );
+    wiki.replace( '\t', QLatin1Char(' ') );
 
     // Get the available language list
     QString wikiLanguagesSection;
     QMap<QString, QString> langMap;
-    if( wiki.indexOf( QLatin1String("<div id=\"p-lang\" class=\"portlet\">") ) != -1 )
+    int langSectionIndex = 0;
+    if( (langSectionIndex = wiki.indexOf( QLatin1String("<div id=\"p-lang\" class=\"portlet\">") )) != -1 )
     {
-        wikiLanguagesSection = wiki.mid( wiki.indexOf( QLatin1String("<div id=\"p-lang\" class=\"portlet\">") ) );
-        wikiLanguagesSection = wikiLanguagesSection.mid( wikiLanguagesSection.indexOf( QLatin1String("<ul>") ) );
-        wikiLanguagesSection = wikiLanguagesSection.mid( 0, wikiLanguagesSection.indexOf( QLatin1String("</div>") ) );
+        QStringRef sref = wiki.midRef( langSectionIndex );
+        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("<ul>"), sref.position() ) - sref.position() );
+        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("</dev>"), sref.position() ) - sref.position() );
+        wikiLanguagesSection = sref.toString();
         QXmlStreamReader xml( wikiLanguagesSection );
         while( !xml.atEnd() && !xml.hasError() )
         {
@@ -655,43 +657,69 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     }
 
     QString copyright;
-    QString copyrightMark = QLatin1String("<li id=\"f-copyright\">");
+    const QString copyrightMark = QLatin1String("<li id=\"f-copyright\">");
     int copyrightIndex = wiki.indexOf( copyrightMark );
     if( copyrightIndex != -1 )
     {
-        copyright = wiki.mid( copyrightIndex + copyrightMark.length() );
-        copyright = copyright.mid( 0, copyright.indexOf( QLatin1String("</li>") ) );
+        QStringRef sref = wiki.midRef( copyrightIndex + copyrightMark.length() );
+        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("</li>"), sref.position() ) - sref.position() );
+        copyright = sref.toString();
         copyright.remove( QLatin1String("<br />") );
         //only one br at the beginning
         copyright.prepend( QLatin1String("<br />") );
     }
 
-    QString title;
-    int titleIndex = wiki.indexOf( QRegExp( QLatin1String("<title>[^<]*</title>") ) ) + 7;
-    if( titleIndex != -1 )
-        title = wiki.mid( titleIndex, wiki.indexOf( QLatin1String("</title>"), titleIndex ) - titleIndex );
+    const int titleIndex = wiki.indexOf( QRegExp( QLatin1String("<title>[^<]*</title>") ) ) + 7;
+    const int bsTitleIndex = wiki.indexOf( QLatin1String("</title>"), titleIndex ) - titleIndex;
+    const QString title = wiki.mid( titleIndex, bsTitleIndex );
 
     // Ok lets remove the top and bottom parts of the page
-    wiki = wiki.mid( wiki.indexOf( QLatin1String("<!-- start content -->") ) );
-    wiki = wiki.mid( 0, wiki.indexOf( QLatin1String("<div class=\"printfooter\">") ) );
+    QStringRef wikiRef;
+    wikiRef = wiki.midRef( wiki.indexOf( QLatin1String("<!-- start content -->") ) );
+    wikiRef = wiki.midRef( wikiRef.position(), wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), wikiRef.position() ) - wikiRef.position() );
+    wiki = wikiRef.toString();
 
-    // lets remove the warning box
-    QString mbox = QLatin1String("<table class=\"metadata plainlinks ambox");
-    QString mboxend = QLatin1String("</table>");
-    while ( wiki.indexOf( mbox ) != -1 )
-        wiki.remove( wiki.indexOf( mbox ), wiki.mid( wiki.indexOf( mbox ) ).indexOf( mboxend ) + mboxend.size() );
+    { // lets remove the warning box
+        const QString wBox    = QLatin1String("<table class=\"metadata plainlinks ambox");
+        const QString wBoxEnd = QLatin1String("</table>");
+        const int wBoxEndSize = wBoxEnd.size();
+        int matchIndex = 0;
+        QStringMatcher mboxMatcher( wBox );
+        while( (matchIndex = mboxMatcher.indexIn(wiki, matchIndex)) != -1 )
+        {
+            const int nToBoxEnd = wiki.indexOf( wBoxEnd, matchIndex ) - matchIndex;
+            QStringRef wBoxRef = wiki.midRef( matchIndex, nToBoxEnd + wBoxEndSize );
+            wiki.remove( wBoxRef.toString() );
+        }
+    }
 
-    QString protec = QLatin1String("<div><a href=\"/wiki/Wikipedia:Protection_policy") ;
-    QString protecend = QLatin1String("</a></div>") ;
-    while ( wiki.indexOf( protec ) != -1 )
-        wiki.remove( wiki.indexOf( protec ), wiki.mid( wiki.indexOf( protec ) ).indexOf( protecend ) + protecend.size() );
+    { // remove protection policy (we dont't do edits)
+        const QString protec = QLatin1String("<div><a href=\"/wiki/Wikipedia:Protection_policy") ;
+        const QString protecEnd = QLatin1String("</a></div>") ;
+        const int protecEndSize = protecEnd.size();
+        int matchIndex = 0;
+        QStringMatcher protecMatcher( protec );
+        while( (matchIndex = protecMatcher.indexIn(wiki, matchIndex)) != -1 )
+        {
+            const int nToBoxEnd = wiki.indexOf( protecEnd, matchIndex ) - matchIndex;
+            QStringRef pRef = wiki.midRef( matchIndex, nToBoxEnd + protecEndSize );
+            wiki.remove( pRef.toString() );
+        }
+    }
 
-    // lets also remove the "lock" image
-    QString topicon = QLatin1String("<div class=\"metadata topicon\" ");
-    QString topiconend = QLatin1String("</a></div>");
-     while ( wiki.indexOf( topicon ) != -1 )
-        wiki.remove( wiki.indexOf( topicon ), wiki.mid( wiki.indexOf( topicon ) ).indexOf( topiconend ) + topiconend.size() );
-
+    { // lets also remove the "lock" image
+        const QString topIcon = QLatin1String("<div class=\"metadata topicon\" ");
+        const QString topIconEnd = QLatin1String("</a></div>");
+        const int topIconEndSize = topIconEnd.size();
+        int matchIndex = 0;
+        QStringMatcher topIconMatcher( topIcon );
+        while( (matchIndex = topIconMatcher.indexIn(wiki, matchIndex)) != -1 )
+        {
+            const int nToBoxEnd = wiki.indexOf( topIconEnd, matchIndex ) - matchIndex;
+            QStringRef tRef = wiki.midRef( matchIndex, nToBoxEnd + topIconEndSize );
+            wiki.remove( tRef.toString() );
+        }
+    }
 
     // Adding back style and license information
     wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
