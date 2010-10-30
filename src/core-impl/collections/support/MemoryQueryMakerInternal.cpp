@@ -201,9 +201,10 @@ MemoryQueryMakerInternal::handleResult()
             Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
             foreach( Meta::TrackPtr track, tmpTracks )
             {
+                Meta::AlbumPtr album = track->album();
                 if( ( m_albumQueryMode == QueryMaker::AllAlbums
-                    || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                    || ( m_albumQueryMode == QueryMaker::OnlyCompilations && (!album || album->isCompilation()) )
+                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                     ( m_labelQueryMode == QueryMaker::NoConstraint
                       || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
                       || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
@@ -232,9 +233,10 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = album->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
+                    Meta::AlbumPtr album = track->album();
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
-                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && (!album || album->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
                           || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )

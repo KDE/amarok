@@ -38,7 +38,7 @@ class AMAROK_EXPORT MemoryFilter
     public:
         MemoryFilter();
         virtual ~MemoryFilter();
-        virtual bool filterMatches( const Meta::TrackPtr &track ) const = 0;
+        virtual bool filterMatches( Meta::TrackPtr track ) const = 0;
 };
 
 class AMAROK_EXPORT ContainerMemoryFilter : public MemoryFilter
@@ -56,7 +56,7 @@ class AMAROK_EXPORT AndContainerMemoryFilter : public ContainerMemoryFilter
     public:
         AndContainerMemoryFilter();
         virtual ~AndContainerMemoryFilter();
-        virtual bool filterMatches( const Meta::TrackPtr &track ) const;
+        virtual bool filterMatches( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
@@ -64,7 +64,7 @@ class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
     public:
         OrContainerMemoryFilter();
         virtual ~OrContainerMemoryFilter();
-        virtual bool filterMatches( const Meta::TrackPtr &track ) const;
+        virtual bool filterMatches( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
@@ -72,7 +72,7 @@ class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
     public:
         NegateMemoryFilter( MemoryFilter *filter );
         virtual ~NegateMemoryFilter();
-        virtual bool filterMatches( const Meta::TrackPtr &track ) const;
+        virtual bool filterMatches( Meta::TrackPtr track ) const;
     private:
         MemoryFilter *m_filter;
 };
@@ -82,11 +82,11 @@ class AMAROK_EXPORT StringMemoryFilter : public MemoryFilter
     public:
         StringMemoryFilter();
         virtual ~StringMemoryFilter();
-        virtual bool filterMatches( const Meta::TrackPtr &track ) const;
+        virtual bool filterMatches( Meta::TrackPtr track ) const;
 
         void setFilter( const QString &filter, bool matchBegin, bool matchEnd );
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const = 0;
+        virtual QString value( Meta::TrackPtr track ) const = 0;
 
     private:
         QString m_filter;
@@ -101,7 +101,7 @@ public:
     virtual ~UrlMemoryFilter() {}
 
 protected:
-    virtual QString value( const Meta::TrackPtr &track ) const;
+    virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT TitleMemoryFilter : public StringMemoryFilter
@@ -111,7 +111,7 @@ class AMAROK_EXPORT TitleMemoryFilter : public StringMemoryFilter
         virtual ~TitleMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT ArtistMemoryFilter : public StringMemoryFilter
@@ -121,7 +121,7 @@ class AMAROK_EXPORT ArtistMemoryFilter : public StringMemoryFilter
         virtual ~ArtistMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT AlbumMemoryFilter : public StringMemoryFilter
@@ -131,7 +131,7 @@ class AMAROK_EXPORT AlbumMemoryFilter : public StringMemoryFilter
         virtual ~AlbumMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT AlbumArtistMemoryFilter : public StringMemoryFilter
@@ -141,7 +141,7 @@ class AMAROK_EXPORT AlbumArtistMemoryFilter : public StringMemoryFilter
         virtual ~AlbumArtistMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT GenreMemoryFilter : public StringMemoryFilter
@@ -151,7 +151,7 @@ class AMAROK_EXPORT GenreMemoryFilter : public StringMemoryFilter
         virtual ~GenreMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT ComposerMemoryFilter : public StringMemoryFilter
@@ -161,7 +161,7 @@ class AMAROK_EXPORT ComposerMemoryFilter : public StringMemoryFilter
         virtual ~ComposerMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT YearMemoryFilter : public StringMemoryFilter
@@ -171,7 +171,7 @@ class AMAROK_EXPORT YearMemoryFilter : public StringMemoryFilter
         virtual ~YearMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT CommentMemoryFilter : public StringMemoryFilter
@@ -181,7 +181,7 @@ class AMAROK_EXPORT CommentMemoryFilter : public StringMemoryFilter
         virtual ~CommentMemoryFilter();
 
     protected:
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        virtual QString value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT NumberMemoryFilter : public MemoryFilter
@@ -190,9 +190,9 @@ class AMAROK_EXPORT NumberMemoryFilter : public MemoryFilter
         NumberMemoryFilter();
         virtual ~NumberMemoryFilter();
         void setFilter( qint64 filter, Collections::QueryMaker::NumberComparison compare );
-        bool filterMatches( const Meta::TrackPtr &track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const;
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const = 0;
+        virtual qint64 value( Meta::TrackPtr track ) const = 0;
     private:
         qint64 m_filter;
         Collections::QueryMaker::NumberComparison m_compare;
@@ -204,7 +204,7 @@ class AMAROK_EXPORT TrackNumberFilter : public NumberMemoryFilter
         TrackNumberFilter();
         virtual ~TrackNumberFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT DiscNumberFilter : public NumberMemoryFilter
@@ -213,7 +213,7 @@ class AMAROK_EXPORT DiscNumberFilter : public NumberMemoryFilter
         DiscNumberFilter();
         virtual ~DiscNumberFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT RatingFilter : public NumberMemoryFilter
@@ -222,7 +222,7 @@ class AMAROK_EXPORT RatingFilter : public NumberMemoryFilter
         RatingFilter();
         virtual ~RatingFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT ScoreFilter : public NumberMemoryFilter
@@ -231,7 +231,7 @@ class AMAROK_EXPORT ScoreFilter : public NumberMemoryFilter
         ScoreFilter();
         virtual ~ScoreFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT PlaycountFilter : public NumberMemoryFilter
@@ -240,7 +240,7 @@ class AMAROK_EXPORT PlaycountFilter : public NumberMemoryFilter
         PlaycountFilter();
         virtual ~PlaycountFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT FirstPlayedFilter : public NumberMemoryFilter
@@ -249,7 +249,7 @@ class AMAROK_EXPORT FirstPlayedFilter : public NumberMemoryFilter
         FirstPlayedFilter();
         virtual ~FirstPlayedFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT LastPlayedFilter : public NumberMemoryFilter
@@ -258,7 +258,7 @@ class AMAROK_EXPORT LastPlayedFilter : public NumberMemoryFilter
         LastPlayedFilter();
         virtual ~LastPlayedFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT LengthFilter : public NumberMemoryFilter
@@ -267,7 +267,7 @@ class AMAROK_EXPORT LengthFilter : public NumberMemoryFilter
         LengthFilter();
         virtual ~LengthFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT FilesizeFilter : public NumberMemoryFilter
@@ -276,7 +276,7 @@ class AMAROK_EXPORT FilesizeFilter : public NumberMemoryFilter
         FilesizeFilter();
         virtual ~FilesizeFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT SampleRateFilter : public NumberMemoryFilter
@@ -285,7 +285,7 @@ class AMAROK_EXPORT SampleRateFilter : public NumberMemoryFilter
         SampleRateFilter();
         virtual ~SampleRateFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT BitrateFilter : public NumberMemoryFilter
@@ -294,7 +294,7 @@ class AMAROK_EXPORT BitrateFilter : public NumberMemoryFilter
         BitrateFilter();
         virtual ~BitrateFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT CreateDateFilter : public NumberMemoryFilter
@@ -303,7 +303,7 @@ class AMAROK_EXPORT CreateDateFilter : public NumberMemoryFilter
         CreateDateFilter();
         virtual ~CreateDateFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT YearNumberFilter : public NumberMemoryFilter
@@ -312,7 +312,7 @@ class AMAROK_EXPORT YearNumberFilter : public NumberMemoryFilter
         YearNumberFilter();
         virtual ~YearNumberFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT BpmNumberFilter : public NumberMemoryFilter
@@ -321,7 +321,7 @@ class AMAROK_EXPORT BpmNumberFilter : public NumberMemoryFilter
         BpmNumberFilter();
         virtual ~BpmNumberFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT FormatNumberFilter : public NumberMemoryFilter
@@ -330,7 +330,7 @@ class AMAROK_EXPORT FormatNumberFilter : public NumberMemoryFilter
         FormatNumberFilter();
         virtual ~FormatNumberFilter();
     protected:
-        virtual qint64 value( const Meta::TrackPtr &track ) const;
+        virtual qint64 value( Meta::TrackPtr track ) const;
 };
 
 class AMAROK_EXPORT LabelFilter : public MemoryFilter
@@ -338,7 +338,7 @@ class AMAROK_EXPORT LabelFilter : public MemoryFilter
 public:
     LabelFilter( const QString &filter, bool matchBegin, bool matchEnd );
     virtual ~ LabelFilter();
-    bool filterMatches( const Meta::TrackPtr &track ) const;
+    bool filterMatches( Meta::TrackPtr track ) const;
 
 private:
     QRegExp m_expression;

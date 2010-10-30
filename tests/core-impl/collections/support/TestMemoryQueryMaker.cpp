@@ -98,7 +98,7 @@ public:
     TestStringMemoryFilter() : StringMemoryFilter() {}
 
 protected:
-    QString value( const Meta::TrackPtr &track ) const { return "abcdef"; }
+    QString value( Meta::TrackPtr track ) const { Q_UNUSED(track); return "abcdef"; }
 
 };
 
