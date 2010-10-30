@@ -143,8 +143,8 @@ Block::Block( const char *label )
     mutex.lock();
     s_colorIndex = (s_colorIndex + 1) % 5;
     dbgstream()
-        << colorize( QString( "BEGIN: %2" )
-            .arg( QString::fromLatin1(label) ), m_color ).toLocal8Bit().constData();
+        << qPrintable( colorize( QLatin1String( "BEGIN:" ), m_color ) )
+        << label;
     IndentPrivate::instance()->m_string += QLatin1String("  ");
     mutex.unlock();
 }
@@ -163,14 +163,14 @@ Block::~Block()
     // Print timing information, and a special message (DELAY) if the method took longer than 5s
     if( duration < 5.0 )
         dbgstream()
-            << colorize( QString( "END__: %2 - Took %3s" )
-                .arg( QString::fromLatin1(m_label) )
-                .arg( QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
+            << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
+            << m_label
+            << qPrintable( colorize( QLatin1String( "- Took: %3s""") ).arg( QString::number(duration, 'g', 2) ) );
     else
         dbgstream()
-            << colorize( QString( "END__: %2 - DELAY Took (quite long) %3s" )
-                .arg( QString::fromLatin1(m_label) )
-                .arg( QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
+            << qPrintable( colorize( QString( "END__:" ), m_color ) )
+            << m_label
+            << qPrintable( reverseColorize( QString( "- DELAY Took (quite long) %3s").arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
 }
 
 void Debug::stamp()
