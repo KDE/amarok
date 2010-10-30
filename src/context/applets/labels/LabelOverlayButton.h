@@ -14,62 +14,48 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef LABEL_GRAPHICS_ITEM_H
-#define LABEL_GRAPHICS_ITEM_H
+#ifndef LABEL_OVERLAY_BUTTON_H
+#define LABEL_OVERLAY_BUTTON_H
 
-#include "context/Applet.h"
+#include <QGraphicsItem>
+#include <QPixmap>
 
-#include <QGraphicsTextItem>
-#include <QWeakPointer>
-
-class LabelOverlayButton;
+class KIconEffect;
 class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
-class QPropertyAnimation;
+class QPainter;
+class QStyleOptionGraphicsItem;
+class QWidget;
 
-class LabelGraphicsItem : public QGraphicsTextItem
+class LabelOverlayButton : public QObject, public QGraphicsItem
 {
     Q_OBJECT
-    Q_PROPERTY( qreal hoverValue READ hoverValue WRITE setHoverValue )
+    Q_INTERFACES( QGraphicsItem )
+    Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
 public:
-    LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem *parent );
-    ~LabelGraphicsItem();
+    LabelOverlayButton( QGraphicsItem *parent );
+    ~LabelOverlayButton();
 
-    void setDeltaPointSize( qreal deltaPointSize );
-    void setSelected( bool selected );
+    void setPixmap( const QPixmap& pixmap );
+    QPixmap pixmap();
+    void setSize( int size );
+    int size();
     void updateHoverStatus();
-    
+
+    QRectF boundingRect() const;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+
 protected:
-    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
 
 private:
-    qreal hoverValue();
-    void setHoverValue( qreal value );
-
-    qreal                            m_hoverValue;
-    QColor                           m_hoverColor;
+    KIconEffect     *m_iconEffect;
+    QPixmap         m_pixmap;
+    QPixmap         m_scaledPixmap;
+    int             m_size;
     
-    bool                             m_selected;
-    QWeakPointer<QPropertyAnimation> m_hoverValueAnimation;
-    
-    QWeakPointer<LabelOverlayButton> m_addLabelItem;
-    QWeakPointer<LabelOverlayButton> m_removeLabelItem;
-    QWeakPointer<LabelOverlayButton> m_listLabelItem;
-    QWeakPointer<LabelOverlayButton> m_blacklistLabelItem;
-    
-    QWeakPointer<QPropertyAnimation> m_addLabelAnimation;
-    QWeakPointer<QPropertyAnimation> m_removeLabelAnimation;
-    QWeakPointer<QPropertyAnimation> m_listLabelAnimation;
-    QWeakPointer<QPropertyAnimation> m_blacklistLabelAnimation;
-    
-signals:
-    void toggled( const QString &label );
-    void blacklisted( const QString &label );
-    void list( const QString &label );
 };
 
 #endif
-

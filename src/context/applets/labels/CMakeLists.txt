@@ -1,6 +1,6 @@
 project(context-labels)
 
-set(labels_SRCS LabelsApplet.cpp LabelGraphicsItem.cpp)
+set(labels_SRCS LabelsApplet.cpp LabelGraphicsItem.cpp LabelOverlayButton.cpp)
 
 include_directories( ../..
                      ../../.. )

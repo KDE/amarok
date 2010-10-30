@@ -288,7 +288,6 @@ LabelsApplet::updateLabels()
         debug() << "final label:" << it_final.key() << "count:" << adjustedCount;
 
         LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
-        labelGraphics->setPos( 0, m_reloadIcon.data()->pos().y() + m_reloadIcon.data()->size().height() ); // don't initialize at (0,0) or the hover buttons get shown on manual reload
         if( m_userLabels.contains( it_final.key() ) )
             labelGraphics->setSelected( true );
         connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
@@ -338,6 +337,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
                 {
                     QRectF c_size = m_labelItems.at(j)->boundingRect();
                     m_labelItems.at(j)->setPos( x_pos, y_pos + (height-c_size.height())/2 );
+                    m_labelItems.at(j)->updateHoverStatus();
                     x_pos += c_size.width() + standardPadding();
                 }
                 y_pos += height; // no padding needed
@@ -352,14 +352,13 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         {
             QRectF c_size = m_labelItems.at(j)->boundingRect();
             m_labelItems.at(j)->setPos( x_pos, y_pos + (height-c_size.height())/2 );
+            m_labelItems.at(j)->updateHoverStatus();
             x_pos += c_size.width() + standardPadding();
         }
         if( m_labelItems.count() > 0 )
             y_pos += height + standardPadding();
 
-        qreal addLabelProxyWidth = size().width() - 2 * standardPadding();
-        if( addLabelProxyWidth > 300 )
-            addLabelProxyWidth = 300;
+        const qreal addLabelProxyWidth = qMin( size().width() - 2 * standardPadding(), 300.0 );
         m_addLabelProxy.data()->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
         m_addLabelProxy.data()->setMinimumWidth( addLabelProxyWidth );
         m_addLabelProxy.data()->setMaximumWidth( addLabelProxyWidth );
