@@ -50,8 +50,6 @@ private:
 
 private slots:
     void settingsChanged();
-public slots:
-    void onEr(QNetworkReply::NetworkError);
 };
 
 #endif // LASTFMSERVICESETTINGS_H
