@@ -53,7 +53,7 @@ class CoverFoundDialog : public KDialog
 
 public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                               const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                               const CoverFetch::Metadata &data = CoverFetch::Metadata(),
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
 
@@ -71,7 +71,7 @@ signals:
 
 public slots:
     void add( const QPixmap &cover,
-              const CoverFetch::Metadata metadata,
+              const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
@@ -163,7 +163,7 @@ class CoverFoundItem : public QListWidgetItem
 {
 public:
     explicit CoverFoundItem( const QPixmap &cover,
-                             const CoverFetch::Metadata data,
+                             const CoverFetch::Metadata &data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = 0 );
     ~CoverFoundItem();

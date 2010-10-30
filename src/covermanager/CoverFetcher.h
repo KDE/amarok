@@ -94,9 +94,9 @@ private:
                  const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover( CoverFetchUnit::Ptr unit,
+    void showCover( const CoverFetchUnit::Ptr &unit,
                     const QPixmap &cover = QPixmap(),
-                    CoverFetch::Metadata data = CoverFetch::Metadata() );
+                    const CoverFetch::Metadata &data = CoverFetch::Metadata() );
 
     CoverFetch::Source fetchSource() const;
 };

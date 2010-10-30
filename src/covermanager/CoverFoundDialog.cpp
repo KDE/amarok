@@ -53,7 +53,7 @@
 #include "core/support/Debug.h"
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                                    const CoverFetch::Metadata data,
+                                    const CoverFetch::Metadata &data,
                                     QWidget *parent )
     : KDialog( parent )
     , m_album( unit->album() )
@@ -233,7 +233,7 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
 }
 
 void CoverFoundDialog::add( const QPixmap &cover,
-                            const CoverFetch::Metadata metadata,
+                            const CoverFetch::Metadata &metadata,
                             const CoverFetch::ImageSize imageSize )
 {
     if( cover.isNull() )
@@ -651,7 +651,7 @@ void CoverFoundDialog::sortCoversBySize()
     foreach( QListWidgetItem *viewItem, viewItems  )
     {
         CoverFoundItem *coverItem = dynamic_cast<CoverFoundItem*>( viewItem );
-        const CoverFetch::Metadata meta = coverItem->metadata();
+        const CoverFetch::Metadata &meta = coverItem->metadata();
         const int itemSize = meta.value( "width" ).toInt() * meta.value( "height" ).toInt();
         sortItems.insert( itemSize, coverItem );
         m_sortSizes << itemSize;
@@ -869,7 +869,7 @@ void CoverFoundSideBar::clearMetaTable()
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap &cover,
-                                const CoverFetch::Metadata data,
+                                const CoverFetch::Metadata &data,
                                 const CoverFetch::ImageSize imageSize,
                                 QListWidget *parent )
     : QListWidgetItem( parent )

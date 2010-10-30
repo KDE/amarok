@@ -205,7 +205,7 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
         {
             if( unit->isInteractive() )
             {
-                const CoverFetch::Metadata metadata = payload->urls().value( url );
+                const CoverFetch::Metadata &metadata = payload->urls().value( url );
                 showCover( unit, pixmap, metadata );
                 m_queue->remove( unit );
             }
@@ -254,7 +254,9 @@ CoverFetcher::slotDialogFinished()
 }
 
 void
-CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFetch::Metadata data )
+CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
+                         const QPixmap &cover,
+                         const CoverFetch::Metadata &data )
 {
     if( !m_dialog )
     {
