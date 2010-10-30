@@ -22,6 +22,7 @@
 
 #include <kdeversion.h>
 #include <KIO/AccessManager>
+#include <KUrl>
 
 #include <QNetworkReply>
 
@@ -63,6 +64,9 @@ public:
      */
     QNetworkReply *getData( const KUrl &url, QObject *receiver, const char *method,
                             Qt::ConnectionType type = Qt::AutoConnection );
+
+    int abortGet( const KUrl &url );
+    int abortGet( const KUrl::List &urls );
 
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();

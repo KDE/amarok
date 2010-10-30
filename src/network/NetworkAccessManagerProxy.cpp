@@ -67,25 +67,25 @@ public:
         Q_Q( NetworkAccessManagerProxy );
         QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
         KUrl url = reply->request().url();
-        QList<CallBackData> callbacks = urlMap.values( url );
+        QList<CallBackData*> callbacks = urlMap.values( url );
         QByteArray data = reply->readAll();
         data.detach(); // detach so the bytes are not deleted before methods are invoked
-        foreach( const CallBackData &cb, callbacks )
+        foreach( const CallBackData *cb, callbacks )
         {
-            QByteArray sig = QMetaObject::normalizedSignature( cb.method );
+            QByteArray sig = QMetaObject::normalizedSignature( cb->method );
             sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
                                 // and let Qt's meta object system handle the rest.
-            if( !cb.receiver.isNull() )
+            if( cb->receiver )
             {
                 bool success( false );
-                const QMetaObject *mo = cb.receiver.data()->metaObject();
+                const QMetaObject *mo = cb->receiver.data()->metaObject();
                 int methodIndex = mo->indexOfSlot( sig );
                 if( methodIndex != -1 )
                 {
                     Error err = { reply->error(), reply->errorString() };
                     QMetaMethod method = mo->method( methodIndex );
-                    success = method.invoke( cb.receiver.data(),
-                                             cb.type,
+                    success = method.invoke( cb->receiver.data(),
+                                             cb->type,
                                              Q_ARG( KUrl, reply->request().url() ),
                                              Q_ARG( QByteArray, data ),
                                              Q_ARG( NetworkAccessManagerProxy::Error, err ) );
@@ -102,14 +102,31 @@ public:
         reply->deleteLater();
     }
 
-    struct CallBackData
+    class CallBackData
     {
+    public:
+        CallBackData( QObject *rec, QNetworkReply *rep, const char *met, Qt::ConnectionType t )
+            : receiver( rec )
+            , reply( rep )
+            , method( met )
+            , type( t )
+        {}
+
+        ~CallBackData()
+        {
+            if( !reply )
+                return;
+            reply.data()->abort();
+            reply.data()->deleteLater();
+        }
+
         QWeakPointer<QObject> receiver;
+        QWeakPointer<QNetworkReply> reply;
         const char *method;
         Qt::ConnectionType type;
     };
 
-    QMultiHash<KUrl, CallBackData> urlMap;
+    QMultiHash<KUrl, CallBackData*> urlMap;
     QString userAgent;
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
@@ -164,17 +181,33 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
         return 0;
     }
 
-    NetworkAccessManagerProxyPrivate::CallBackData cbm = { receiver, method, type };
-    if( d->urlMap.contains(url) )
-    {
-        d->urlMap.insert( url, cbm );
-        return 0;
-    }
-
-    QNetworkReply *reply = get( QNetworkRequest(url) );
+    QNetworkReply *r = d->urlMap.contains(url) ? d->urlMap.value(url)->reply.data() : get( QNetworkRequest(url) );
+    typedef NetworkAccessManagerProxyPrivate::CallBackData PrivateCallBackData;
+    PrivateCallBackData *cbm = new PrivateCallBackData( receiver, r, method, type );
     d->urlMap.insert( url, cbm );
-    connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
-    return reply;
+    connect( r, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
+    return r;
+}
+
+int
+NetworkAccessManagerProxy::abortGet( const KUrl::List &urls )
+{
+    int removed = 0;
+    const QSet<KUrl> &urlSet = urls.toSet();
+    foreach( const KUrl &url, urlSet )
+        removed += abortGet( url );
+    return removed;
+}
+
+int
+NetworkAccessManagerProxy::abortGet( const KUrl &url )
+{
+    if( !d->urlMap.contains(url) )
+        return 0;
+
+    qDeleteAll( d->urlMap.values( url ) );
+    int removed = d->urlMap.remove( url );
+    return removed;
 }
 
 void

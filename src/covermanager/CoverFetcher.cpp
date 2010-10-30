@@ -302,6 +302,7 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     KUrl::List urls = m_urls.keys( unit );
     foreach( const KUrl &url, urls )
         m_urls.remove( url );
+    The::networkAccessManager()->abortGet( urls );
 }
 
 void
