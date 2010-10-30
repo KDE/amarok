@@ -97,7 +97,7 @@ ServicePluginManager::init()
             //check if this service is enabled
             QString pluginName = factory->info().pluginName();
 
-            debug() << "PLUGIN CHECK: " << pluginName;
+            debug() << "PLUGIN CHECK:" << pluginName;
             if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
             {
                 factory->init();

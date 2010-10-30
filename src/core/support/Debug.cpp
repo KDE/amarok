@@ -31,6 +31,8 @@
 
 #include <iostream>
 
+#define APP_PREFIX QLatin1String( "amarok:" )
+
 #define DEBUG_INDENT_OBJECTNAME QLatin1String("Debug_Indent_object")
 
 AMAROK_CORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
@@ -75,21 +77,19 @@ static QString toString( DebugLevel level )
 
 static QString colorize( const QString &text, int color = s_colorIndex )
 {
-    QString output( text );
-    if( !qgetenv("KDE_COLOR_DEBUG").isEmpty() )
-    {
-        output.prepend( QString("amarok: \x1b[00;3%1m").arg(QString::number(s_colors[color])) );
-        output.append( QLatin1String("\x1b[00;39m") );
-        return output;
-    }
-    output.prepend( QLatin1String("amarok: ") );
-    return output;
+    if( !qgetenv( "KDE_COLOR_DEBUG" ).isEmpty() )
+        return QString( "\x1b[00;3%1m%2\x1b[00;39m" )
+            .arg( QString::number( s_colors[color] ) )
+            .arg( text );
+    else
+        return text;
 }
 
 static QString reverseColorize( const QString &text, int color )
 {
-    if( !qgetenv("KDE_COLOR_DEBUG").isEmpty() )
-        return QString("\x1b[07;3%1m%2\x1b[00;39m").arg(QString::number(color), text);
+    if( !qgetenv( "KDE_COLOR_DEBUG").isEmpty() )
+        return QString( "\x1b[07;3%1m%2\x1b[00;39m" )
+            .arg( QString::number(color), text );
     else
         return text;
 }
@@ -106,19 +106,18 @@ bool Debug::debugEnabled()
 
 kdbgstream Debug::dbgstream( DebugLevel level )
 {
+    if( !debugEnabled() )
+        return kDebugDevNull();
+
     mutex.lock();
     const QString &currentIndent = indent();
     mutex.unlock();
 
-    QString text = QString("%1%2 %3")
-        .arg( currentIndent )
-        .arg( AMK_PREFIX )
-        .arg( reverseColorize(toString(level), level) );
+    QString text = APP_PREFIX + currentIndent + AMK_PREFIX;
+    if ( level > KDEBUG_INFO )
+        text.append( ' ' + reverseColorize( toString(level), level ) );
 
-    if (debugEnabled())
-        return kdbgstream( QtDebugMsg ) << text.toLocal8Bit().constData();
-
-    return kDebugDevNull();
+    return kdbgstream( QtDebugMsg ) << qPrintable( text );
 }
 
 void Debug::perfLog( const QString &message, const QString &func )
@@ -136,14 +135,16 @@ Block::Block( const char *label )
     : m_label( label )
     , m_color( s_colorIndex )
 {
-    m_startTime = QTime::currentTime();
-
     if( !debugEnabled() )
         return;
 
+    m_startTime = QTime::currentTime();
+
     mutex.lock();
     s_colorIndex = (s_colorIndex + 1) % 5;
-    dbgstream() << colorize( QString( "BEGIN: %2" ).arg( QString::fromLatin1(label) ), m_color ).toLocal8Bit().constData();
+    dbgstream()
+        << colorize( QString( "BEGIN: %2" )
+            .arg( QString::fromLatin1(label) ), m_color ).toLocal8Bit().constData();
     IndentPrivate::instance()->m_string += QLatin1String("  ");
     mutex.unlock();
 }
@@ -161,9 +162,15 @@ Block::~Block()
 
     // Print timing information, and a special message (DELAY) if the method took longer than 5s
     if( duration < 5.0 )
-        dbgstream() << colorize( QString( "END__: %2 - Took %3s" ).arg( QString::fromLatin1(m_label), QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
+        dbgstream()
+            << colorize( QString( "END__: %2 - Took %3s" )
+                .arg( QString::fromLatin1(m_label) )
+                .arg( QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
     else
-        dbgstream() << colorize( QString( "END__: %2 - DELAY Took (quite long) %3s" ).arg( QString::fromLatin1(m_label), QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
+        dbgstream()
+            << colorize( QString( "END__: %2 - DELAY Took (quite long) %3s" )
+                .arg( QString::fromLatin1(m_label) )
+                .arg( QString::number(duration, 'g', 2) ), m_color ).toLocal8Bit().constData();
 }
 
 void Debug::stamp()

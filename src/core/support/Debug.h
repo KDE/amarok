@@ -113,10 +113,10 @@ using Debug::fatal;
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
 /// Use this to remind yourself to finish the implementation of a function
-#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED:" << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to alert other developers to stop using a function
-#define AMAROK_DEPRECATED warning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_DEPRECATED warning() << "DEPRECATED:" << __PRETTY_FUNCTION__ << endl;
 
 /// Performance logging
 #define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
