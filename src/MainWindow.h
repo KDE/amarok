@@ -70,12 +70,21 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     Q_OBJECT
 
     public:
+        enum AmarokDockId {
+            AmarokDockNavigation,
+            AmarokDockContext,
+            AmarokDockPlaylist
+        };
+        
         MainWindow();
         ~MainWindow();
 
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name );
         void addBrowser( const QString &name, QWidget *widget, const QString &text, const QString &icon );
+
+        //ensures the dock widget is visible in case it is tabbed
+        void showDock( AmarokDockId dockId );
 
         //takes into account minimized, multiple desktops, etc.
         bool isReallyShown() const;

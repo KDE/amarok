@@ -16,6 +16,7 @@
 
 #include "ContextUrlRunner.h"
 
+#include "MainWindow.h"
 #include "AmarokUrlHandler.h"
 #include "context/ContextView.h"
 
@@ -58,6 +59,8 @@ bool ContextUrlRunner::run( AmarokUrl url )
             cont->addApplet( appletPluginName, -1 );
         }
     }
+
+    The::mainWindow()->showDock( MainWindow::AmarokDockContext );
 
     return true;
 }

@@ -434,6 +434,38 @@ MainWindow::showBrowser( const int index )
 }
 
 void
+MainWindow::showDock( AmarokDockId dockId )
+{
+    QString name;
+    switch( dockId )
+    {
+        case AmarokDockNavigation:
+            name = m_browserDock.data()->windowTitle();
+            break;
+        case AmarokDockContext:
+            name = m_contextDock.data()->windowTitle();
+            break;
+        case AmarokDockPlaylist:
+            name = m_playlistDock.data()->windowTitle();
+            break;
+    }
+  
+    QList < QTabBar * > tabList = findChildren < QTabBar * > ();
+
+    foreach( QTabBar *bar, tabList )
+    {
+        for( int i = 0; i < bar->count(); i++ )
+        {
+            if( bar->tabText( i ) == name )
+            {
+                bar->setCurrentIndex( i );
+                break;
+            }
+        }
+    }
+}
+
+void
 MainWindow::saveLayout()  //SLOT
 {
     DEBUG_BLOCK

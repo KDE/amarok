@@ -115,6 +115,8 @@ NavigationUrlRunner::run( AmarokUrl url )
     if ( args.keys().contains( "filter" ) )
         active->setFilter( args.value( "filter" ) );
 
+    The::mainWindow()->showDock( MainWindow::AmarokDockNavigation );
+
     return true;
 }
 

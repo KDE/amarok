@@ -17,6 +17,7 @@
 
 #include "PlaylistViewUrlRunner.h"
 
+#include "MainWindow.h"
 #include "AmarokUrlHandler.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
@@ -91,6 +92,8 @@ ViewUrlRunner::run( AmarokUrl url )
         QString layout = args.value( "layout" );
         LayoutManager::instance()->setActiveLayout( layout );
     }
+    
+    The::mainWindow()->showDock( MainWindow::AmarokDockPlaylist );
 
     return true;
 }
