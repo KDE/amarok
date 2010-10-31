@@ -31,7 +31,10 @@
 
 #include <iostream>
 
-#define APP_PREFIX QLatin1String( "amarok:" )
+// Define Application wide prefix
+#ifndef APP_PREFIX
+#define APP_PREFIX QLatin1String( "amarok" )
+#endif
 
 #define DEBUG_INDENT_OBJECTNAME QLatin1String("Debug_Indent_object")
 
@@ -113,11 +116,14 @@ kdbgstream Debug::dbgstream( DebugLevel level )
     const QString &currentIndent = indent();
     mutex.unlock();
 
-    QString text = APP_PREFIX + currentIndent + AMK_PREFIX;
+    QString text = QString("%1%2")
+        .arg( APP_PREFIX )
+        .arg( currentIndent );
     if ( level > KDEBUG_INFO )
         text.append( ' ' + reverseColorize( toString(level), level ) );
 
-    return kdbgstream( QtDebugMsg ) << qPrintable( text );
+    return kdbgstream( QtDebugMsg )
+        << qPrintable( text );
 }
 
 void Debug::perfLog( const QString &message, const QString &func )
@@ -165,7 +171,7 @@ Block::~Block()
         dbgstream()
             << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
             << m_label
-            << qPrintable( colorize( QLatin1String( "- Took: %3s""") ).arg( QString::number(duration, 'g', 2) ) );
+            << qPrintable( colorize( QString( "- Took: %3s""").arg( QString::number(duration, 'g', 2) ), m_color ) );
     else
         dbgstream()
             << qPrintable( colorize( QString( "END__:" ), m_color ) )

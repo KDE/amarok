@@ -40,9 +40,9 @@
 
 // Debug prefix, override if needed
 #ifndef DEBUG_PREFIX
-#define AMK_PREFIX ""
+#define AMAROK_PREFIX ""
 #else
-#define AMK_PREFIX "[" DEBUG_PREFIX "]"
+#define AMAROK_PREFIX "[" DEBUG_PREFIX "]"
 #endif
 
 /**
@@ -90,10 +90,18 @@ namespace Debug
     AMAROK_CORE_EXPORT bool debugEnabled();
     AMAROK_CORE_EXPORT const QString &indent();
 
-    static inline kdbgstream debug()   { return dbgstream(KDEBUG_INFO); }
-    static inline kdbgstream warning() { return dbgstream(KDEBUG_WARN); }
-    static inline kdbgstream error()   { return dbgstream(KDEBUG_ERROR); }
-    static inline kdbgstream fatal()   { return dbgstream(KDEBUG_FATAL); }
+    static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {
+#ifdef DEBUG_PREFIX
+        return dbgstream( level ) << AMAROK_PREFIX;
+#else
+        return dbgstream( level );
+#endif
+    }
+
+    static inline kdbgstream debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
+    static inline kdbgstream warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
+    static inline kdbgstream error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
+    static inline kdbgstream fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
 
     AMAROK_CORE_EXPORT void perfLog( const QString &message, const QString &func );
 }
