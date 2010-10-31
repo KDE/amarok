@@ -398,12 +398,12 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
                 Genre_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "track" ) )
-                Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + QString( tags["track"].toInt() ) + "</font>" );
+                Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + QString::number( tags["track"].toInt() ) + "</font>" );
             else
                 Track_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "year" ) )
-                Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString( tags["year"].toInt() ) + "</font>" );
+                Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString::number( tags["year"].toInt() ) + "</font>" );
             else
                 Year_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
