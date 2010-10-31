@@ -127,6 +127,8 @@ MusicBrainzFinder::run( const Meta::TrackList &tracks )
             }
         m_requests.append( qMakePair( track, compileRequest( track ) ) );
     }
+
+    m_singleTrackSearch = tracks.count() == 1;
     _timer->start();
 }
 
@@ -290,7 +292,17 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                     }
 
                     float sim = float( s ) / maxPossibleScore;
-                    if( ( sim > maxSimilarity ) && ( sim > 0.6 ) )
+
+                    if( sim < 0.6 )
+                        continue;
+
+                    if( m_singleTrackSearch )
+                    {
+                        sendTrack( trackPtr, track );
+                        continue;
+                    }
+
+                    if( sim > maxSimilarity )
                     {
                         maxSimilarity = sim;
                         chosenTrack = track;
@@ -298,7 +310,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                 }
 
                 m_parsedMetaData.remove( trackPtr );
-                if( chosenTrack.isEmpty() )
+                if( chosenTrack.isEmpty() || m_singleTrackSearch )
                 {
                     parser->deleteLater();
                     checkDone();
@@ -307,7 +319,28 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                 curTrack = chosenTrack;
             }
             else
-                curTrack = parser->grabTrackByLength( trackPtr->length() );
+            {
+                if( m_singleTrackSearch )
+                {
+                    foreach( QString trackID, parser->tracks.keys() )
+                    {
+                        QVariantMap track = parser->grabTrackByID( trackID );
+                        if( track.contains( Meta::Field::SCORE ) )
+                        {
+                            if( track.value( Meta::Field::SCORE ).toInt() >= 50 )
+                                sendTrack( trackPtr, track );
+                        }
+                        else
+                            sendTrack( trackPtr, track );
+                    }
+
+                    parser->deleteLater();
+                    checkDone();
+                    return;
+                }
+                else
+                    curTrack = parser->grabTrackByLength( trackPtr->length() );
+            }
 
             sendTrack( trackPtr, curTrack );
         }
@@ -395,6 +428,9 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track )
 void
 MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &info )
 {
+    if( info.isEmpty() )
+        return;
+
     QVariantMap tags = info;
     if( tags.contains( MusicBrainz::RELEASEID ) )
     {

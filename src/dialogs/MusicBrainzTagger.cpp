@@ -83,7 +83,7 @@ MusicBrainzTagger::init()
              SLOT( trackFound( const Meta::TrackPtr, const QVariantMap ) ) );
     connect( mb_finder, SIGNAL( done() ), SLOT( searchDone() ) );
     connect( mb_finder, SIGNAL( trackFound( const Meta::TrackPtr, const QVariantMap ) ),
-             q_resultsModel, SLOT( trackFound( const Meta::TrackPtr, const QVariantMap ) ) );
+             q_resultsModel, SLOT( addTrack( const Meta::TrackPtr, const QVariantMap ) ) );
     connect( mb_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
     connect( ui->treeView_Result->header(), SIGNAL( sectionClicked( int ) ),
              q_resultsModel, SLOT( selectAll( int ) ) );

@@ -21,6 +21,30 @@
 #include <core/meta/Meta.h>
 #include <QAbstractItemModel>
 
+class MusciBrainzTagsItem
+{
+    public:
+        MusciBrainzTagsItem( Meta::TrackPtr track,  const QVariantMap tags = QVariantMap() );
+        MusciBrainzTagsItem() {}
+
+        Meta::TrackPtr track();
+
+        Qt::ItemFlags flags();
+
+        QVariant data( int column );
+        QVariantMap data();
+        void setData( QVariantMap tags );
+
+        bool checked();
+        void setChecked( bool checked );
+
+    private:
+        Meta::TrackPtr m_track;
+        QVariantMap m_data;
+
+        bool m_checked;
+};
+
 class MusicBrainzTagsModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -32,7 +56,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
         QModelIndex parent( const QModelIndex &index ) const;
 
-        Qt::ItemFlags flags ( const QModelIndex &index ) const;
+        Qt::ItemFlags flags( const QModelIndex &index ) const;
         QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         bool setData( const QModelIndex &index, const QVariant &value, int role );
         QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
@@ -43,13 +67,13 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         QMap < Meta::TrackPtr, QVariantMap > getAllChecked(); 
 
     public slots:
-        void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
+        void addTrack( const Meta::TrackPtr track, const QVariantMap tags );
         void selectAll( int section );
 
     private:
-        Meta::TrackList m_tracks;
-        QMap < Meta::TrackPtr, QVariantMap > m_tags;
-        QList < Qt::CheckState > m_tracksToSave;
+        QList < MusciBrainzTagsItem > m_items;
+
+        bool m_singleTrackMode;
 };
 
 #endif // MUSICBRAINZTAGSMODEL_H

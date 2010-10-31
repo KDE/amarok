@@ -23,12 +23,92 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
 
-MusicBrainzTagsModel::MusicBrainzTagsModel( Meta::TrackList tracks, QObject* parent)
-                    : QAbstractItemModel(parent)
-                    , m_tracks( tracks )
+MusciBrainzTagsItem::MusciBrainzTagsItem( Meta::TrackPtr track, const QVariantMap tags )
+                   : m_track( track )
+                   , m_data( tags )
+                   , m_checked( false )
 {
-    for( int i = 0; i < m_tracks.count(); i++ )
-        m_tracksToSave.append( Qt::Unchecked );
+}
+
+Qt::ItemFlags
+MusciBrainzTagsItem::flags()
+{
+    if( m_data.isEmpty() )
+        return Qt::NoItemFlags;
+
+    return Qt::ItemIsUserCheckable;
+}
+
+QVariant
+MusciBrainzTagsItem::data( int column )
+{
+    if( m_data.isEmpty() )
+        return QVariant();
+
+    switch( column )
+    {
+        case 1: return m_data.contains( Meta::Field::TITLE )
+                              ? m_data.value( Meta::Field::TITLE )
+                              : QVariant();
+        case 2: return m_data.contains( Meta::Field::ARTIST )
+                              ? m_data.value( Meta::Field::ARTIST )
+                              : QVariant();
+        case 3: return m_data.contains( Meta::Field::ALBUM )
+                              ? m_data.value( Meta::Field::ALBUM )
+                              : QVariant();
+        case 4: return m_data.contains( Meta::Field::ALBUMARTIST )
+                              ? m_data.value( Meta::Field::ALBUMARTIST )
+                              : QVariant();
+    }
+
+    return QVariant();
+}
+
+QVariantMap
+MusciBrainzTagsItem::data()
+{
+    return m_data;
+}
+
+void
+MusciBrainzTagsItem::setData( QVariantMap tags )
+{
+    m_data = tags;
+}
+
+bool
+MusciBrainzTagsItem::checked()
+{
+    return m_checked;
+}
+
+void
+MusciBrainzTagsItem::setChecked( bool checked )
+{
+    if( m_data.isEmpty() )
+        return;
+    m_checked = checked;
+}
+
+Meta::TrackPtr
+MusciBrainzTagsItem::track()
+{
+    return m_track;
+}
+
+
+MusicBrainzTagsModel::MusicBrainzTagsModel( Meta::TrackList tracks, QObject* parent)
+                    : QAbstractItemModel( parent )
+{
+    if( tracks.count() == 1 )
+    {
+        m_singleTrackMode = true;
+        return;
+    }
+
+    m_singleTrackMode = false;
+    foreach( Meta::TrackPtr track, tracks )
+        m_items.append( MusciBrainzTagsItem( track ) );
 }
 
 MusicBrainzTagsModel::~MusicBrainzTagsModel()
@@ -55,25 +135,11 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     if( role == Qt::DisplayRole )
-    {
-        if( m_tags.contains( m_tracks.value( index.row() ) ) )
-        {
-            QVariantMap tags = m_tags.value( m_tracks.value( index.row() ) );
-            switch( index.column() )
-            {
-                case 1: return tags.value( Meta::Field::TITLE );
-                case 2: return tags.contains( Meta::Field::ALBUM )? tags.value( Meta::Field::ARTIST ) : "";
-                case 3: return tags.contains( Meta::Field::ALBUM )? tags.value( Meta::Field::ALBUM ) : "";
-                default: return QVariant();
-            }
-        }
-    }
+        return m_items.value( index.row() ).data( index.column() );
     else if( role == Qt::CheckStateRole &&
-             m_tags.contains( m_tracks.value( index.row() ) ) &&
-             index.column() == 0 )
-    {
-        return m_tracksToSave.value( index.row() );
-    }
+             index.column() == 0 &&
+             m_items.value( index.row() ).flags() == Qt::ItemIsUserCheckable )
+        return m_items.value( index.row() ).checked() ? Qt::Checked : Qt::Unchecked;
     else if( role == Qt::SizeHintRole && index.column() == 0 )
         return QSize( 0, 21 );
     return QVariant();
@@ -85,13 +151,13 @@ MusicBrainzTagsModel::setData( const QModelIndex &index, const QVariant &value, 
     if( !index.isValid() || role != Qt::CheckStateRole  || index.column() != 0 )
         return false;
 
-    if( m_tags.contains( m_tracks.value( index.row() ) ) && index.column() == 0 )
-    {
-        m_tracksToSave[ index.row() ] = static_cast< Qt::CheckState >( value.toInt() );
-        return true;
-    }
-    else
-        return false;
+    if( m_singleTrackMode )
+        for( int i = 0; i < m_items.count(); i++ )
+            m_items[ i ].setChecked( false );
+
+    m_items[ index.row() ].setChecked( value.toBool() );
+    emit dataChanged( createIndex( 0, 0 ), createIndex( m_items.count() - 1, 0 ) );
+    return true;
 }
 
 QVariant
@@ -115,16 +181,13 @@ MusicBrainzTagsModel::flags( const QModelIndex &index ) const
     if( !index.isValid() )
         return QAbstractItemModel::flags( index );
 
-    if( m_tags.contains( m_tracks.value( index.row() ) ) && index.column() == 0 )
-        return Qt::ItemIsUserCheckable | QAbstractItemModel::flags( index );
-
-    return QAbstractItemModel::flags( index );
+    return m_items.value( index.row() ).flags() | QAbstractItemModel::flags( index );
 }
 
 int
 MusicBrainzTagsModel::rowCount( const QModelIndex &parent ) const
 {
-    return parent.isValid()? -1 : m_tracks.count();
+    return parent.isValid()? -1 : m_items.count();
 }
 
 int
@@ -134,39 +197,43 @@ MusicBrainzTagsModel::columnCount( const QModelIndex & ) const
 }
 
 void
-MusicBrainzTagsModel::trackFound( const Meta::TrackPtr track, const QVariantMap tags )
+MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap tags )
 {
-    if( !m_tracks.contains( track ) )
-        return;
+    if( m_singleTrackMode )
+    {
+        m_items.append( MusciBrainzTagsItem( track, tags ) );
+        emit layoutChanged();
+    }
+    else
+        for( int i = 0; i < m_items.count(); i++ )
+            if( m_items.value( i ).track() == track )
+            {
+                m_items[ i ].setData( tags );
+                break;
+            }
 
-    m_tags.insert( track, tags );
-
-    emit dataChanged( createIndex( 0, 0 ), createIndex( m_tracks.count() - 1, 4) );
+    emit dataChanged( createIndex( 0, 0 ), createIndex( m_items.count() - 1, 4 ) );
 }
 
 void
 MusicBrainzTagsModel::selectAll( int section )
 {
-    if( section != 0 )
+    if( section != 0 || m_singleTrackMode )
         return;
 
-    for( int i = 0; i < m_tracks.count(); i++ )
-        if( m_tags.contains( m_tracks.value( i ) ) )
-            m_tracksToSave[i] = Qt::Checked;
+    for( int i = 0; i < m_items.count(); i++ )
+        m_items[ i ].setChecked( true );
 
-    emit dataChanged( createIndex( 0, 0), createIndex( m_tracks.count() - 1, 0 ) );
+    emit dataChanged( createIndex( 0, 0), createIndex( m_items.count() - 1, 0 ) );
 }
 
 QMap < Meta::TrackPtr, QVariantMap >
 MusicBrainzTagsModel::getAllChecked()
 {
     QMap < Meta::TrackPtr, QVariantMap > result;
-    for( int i = 0; i < m_tracks.count(); i++ )
-        if( m_tags.contains( m_tracks.value( i ) ) &&
-            m_tracksToSave.value( i ) == Qt::Checked )
-        {
-            result.insert( m_tracks.value( i ), m_tags.value( m_tracks.value( i ) ) );
-        }
+    foreach( MusciBrainzTagsItem item, m_items )
+        if( item.checked() )
+            result.insert( item.track(), item.data() );
 
     return result;
 }

@@ -48,7 +48,6 @@ class MusicBrainzFinder : public QObject
         void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
     private slots:
-
         void sendNewRequest();
         void gotReply( QNetworkReply *reply );
         void authenticationRequest( QNetworkReply *reply, QAuthenticator *authenticator );
@@ -73,6 +72,8 @@ class MusicBrainzFinder : public QObject
         QString mb_pathPrefix;
         QString mb_username;
         QString mb_password;
+
+        bool m_singleTrackSearch;
 
         QMap < Meta::TrackPtr, QVariantMap > m_parsedMetaData;
 

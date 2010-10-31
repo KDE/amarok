@@ -353,3 +353,21 @@ MusicBrainzXmlParser::grabTrackByLength( const quint64 length )
     track.remove( MusicBrainz::TRACKOFFSET );
     return track;
 }
+
+QVariantMap
+MusicBrainzXmlParser::grabTrackByID( const QString &ID )
+{
+    if( !tracks.contains( ID ) )
+        return QVariantMap();
+
+    QVariantMap track = tracks.value( ID );
+    QString release = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+    track.insert( MusicBrainz::RELEASEID, release );
+    track.insert( Meta::Field::ALBUM,
+                  releases.value( release ).value( Meta::Field::TITLE ).toString() );
+    track.insert( Meta::Field::TRACKNUMBER,
+                  track.value( MusicBrainz::TRACKOFFSET ).toMap().value( release ).toInt() );
+    track.remove( MusicBrainz::RELEASELIST );
+    track.remove( MusicBrainz::TRACKOFFSET );
+    return track;
+}
