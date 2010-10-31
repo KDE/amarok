@@ -360,8 +360,8 @@ App::handleCliArgs() //static
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
     const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
 
-
     Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
+    Amarok::config().writeEntry( "Debug Colorization Enabled", args->isSet( "debug" ) );
 
     // Debug output will only work from this point on. If Amarok was run without debug output before,
     // then a part of the output (until this point) will be missing. Inform the user about this:
@@ -470,6 +470,8 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
+    options.add("c");
+    options.add("color", ki18n("Colorize the debug information."));
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
