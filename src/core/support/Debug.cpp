@@ -176,12 +176,12 @@ Block::~Block()
         dbgstream()
             << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
             << m_label
-            << qPrintable( colorize( QString( "- Took: %3s""").arg( QString::number(duration, 'g', 2) ), m_color ) );
+            << qPrintable( colorize( QString( "[Took: %3s]").arg( QString::number(duration, 'g', 2) ), m_color ) );
     else
         dbgstream()
             << qPrintable( colorize( QString( "END__:" ), m_color ) )
             << m_label
-            << qPrintable( reverseColorize( QString( "- DELAY Took (quite long) %3s").arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
+            << qPrintable( reverseColorize( QString( "[DELAY Took (quite long) %3s]").arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
 }
 
 void Debug::stamp()
