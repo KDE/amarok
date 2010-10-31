@@ -23,13 +23,24 @@
 #include "core/support/Debug.h"
 #include "TrackItem.h"
 
+#include <KGlobalSettings>
 #include <KStringHandler>
 
 #include <QFontMetrics>
 
 AlbumsModel::AlbumsModel( QObject *parent )
     : QStandardItemModel( parent )
+    , m_rowHeight( 0 )
 {
+    connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(updateRowHeight()) );
+    updateRowHeight();
+}
+
+void
+AlbumsModel::updateRowHeight()
+{
+    QFont font;
+    m_rowHeight = QFontMetrics( font ).height();
 }
 
 QVariant
@@ -41,12 +52,9 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
     if( role == Qt::SizeHintRole )
     {
         const QStandardItem *item = itemFromIndex( index );
-        if( item->type() != AlbumType )
-        {
-            QFont font;
-            QFontMetrics fm( font );
-            return QSize( -1, fm.height() + 4 );
-        }
+        int h = 4;
+        h += (item->type() != AlbumType) ? m_rowHeight : static_cast<const AlbumItem *>( item )->iconSize();
+        return QSize( -1, h );
     }
     return itemFromIndex( index )->data( role );
 }

@@ -36,8 +36,12 @@ public:
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
     virtual QStringList mimeTypes() const;
 
+private slots:
+    void updateRowHeight();
+
 private:
     Meta::TrackList tracksForIndex( const QModelIndex &index ) const;
+    int m_rowHeight;
 };
 
 class AlbumsProxyModel : public QSortFilterProxyModel
