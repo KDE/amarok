@@ -149,8 +149,9 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     const LastFmEvent::List &events = data[ "events" ].value< LastFmEvent::List >();
     if( source == "artistevents" )
     {
-        m_artistEventsList->clear();
         QString artistName = data[ "artist" ].toString();
+        m_artistEventsList->clear();
+        m_artistEventsList->setName( artistName );
         addToStackItem( m_artistStackItem, events, artistName );
         if( !m_artistStackItem->action( "showinmediasources" ) )
         {
