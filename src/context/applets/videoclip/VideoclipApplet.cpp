@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-//Plasma applet for showing videoclip in the context view
+#define DEBUG_PREFIX "VideoclipApplet"
 
 #include "VideoclipApplet.h" 
 
@@ -59,15 +59,12 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-#define DEBUG_PREFIX "VideoclipApplet"
-
-
-
-
 Q_DECLARE_METATYPE ( VideoInfo *)
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
-
+/**
+ * Plasma applet for showing a videoclip in the context view
+ */
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , Engine::EngineObserver( The::engineController() )

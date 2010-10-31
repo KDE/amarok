@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverBlingApplet"
+
 #include "CoverBlingApplet.h"
 
 // Amarok
@@ -46,10 +48,7 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <KStandardDirs>
-#include <QDesktopWidget>
-
-#define DEBUG_PREFIX "CoverBlingApplet"
-
+#include <QDesktopWidget
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

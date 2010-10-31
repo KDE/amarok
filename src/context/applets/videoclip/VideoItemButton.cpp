@@ -18,6 +18,8 @@
 
 #include "VideoItemButton.h"
 
+#define DEBUG_PREFIX "VideoItemButton"
+
 #include "SvgHandler.h"
 #include "core/support/Debug.h"
 
@@ -26,8 +28,6 @@
 #include <KAction>
 #include <KIcon>
 #include <KMenu>
-
-#define DEBUG_PREFIX "VideoItemButton"
 
 VideoItemButton::VideoItemButton()
     : QToolButton()
