@@ -80,7 +80,7 @@ static QString toString( DebugLevel level )
 
 static QString colorize( const QString &text, int color = s_colorIndex )
 {
-    if( debugColorEnabled() )
+    if( !debugColorDisabled() )
         return QString( "\x1b[00;3%1m%2\x1b[00;39m" )
             .arg( QString::number( s_colors[color] ) )
             .arg( text );
@@ -90,7 +90,7 @@ static QString colorize( const QString &text, int color = s_colorIndex )
 
 static QString reverseColorize( const QString &text, int color )
 {
-    if( debugColorEnabled() )
+    if( !debugColorDisabled() )
         return QString( "\x1b[07;3%1m%2\x1b[00;39m" )
             .arg( QString::number(color), text );
     else
@@ -107,9 +107,9 @@ bool Debug::debugEnabled()
     return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Enabled"), false );
 }
 
-bool Debug::debugColorEnabled()
+bool Debug::debugColorDisabled()
 {
-    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Colorization Enabled"), true );
+    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Colorization Disabled"), false );
 }
 
 kdbgstream Debug::dbgstream( DebugLevel level )
