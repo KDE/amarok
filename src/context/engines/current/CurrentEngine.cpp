@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CurrentEngine"
+
 #include "CurrentEngine.h"
 
 #include "core/support/Amarok.h"
@@ -90,8 +92,7 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
-    const int width = 156; // ARGH, hardcoded?
-    setData( "current", "albumart", album->image( width ) );
+    setData( "current", "albumart", album->image( m_coverWidth ) );
 }
 
 void
@@ -141,72 +142,28 @@ CurrentEngine::stopped()
             qm->run();
         }
     }
-
-    // Get the latest tracks played:
-
-    if( m_requested[ "current" ] )
-    {
-        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-        if( !qm )
-            return;
-
-        qm->setAutoDelete( true );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->excludeFilter( Meta::valTitle, QString(), true, true );
-        qm->orderBy( Meta::valLastPlayed, true );
-        qm->excludeFilter( Meta::valLastPlayed, "2147483647" );
-        qm->limitMaxResultSize( 5 );
-
-        m_latestTracks.clear();
-
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-                SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
-
-        qm->run();
-    }
-
-    // Get the favorite tracks:
-    /* commenting out for now, we disabled the tabbar so this is just taking up CPU cycles
-    if( m_qmFavTracks )
-        m_qmFavTracks->reset();
-    else
-        m_qmFavTracks = coll->queryMaker();
-    m_qmFavTracks->setQueryType( Collections::QueryMaker::Track );
-    m_qmFavTracks->excludeFilter( Meta::valTitle, QString(), true, true );
-    m_qmFavTracks->orderBy( Meta::valScore, true );
-    m_qmFavTracks->limitMaxResultSize( 5 );
-
-    m_qmFavTracks->run();
-
-    connect( m_qmFavTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-            SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( m_qmFavTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
-    */
 }
 
 void
 CurrentEngine::update( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     if( !track )
     {
         stopped();
         return;
     }
 
+    DEBUG_BLOCK
     if( m_requested[ "current" ] )
     {
         QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
 
-        const int width = m_coverWidth;
         removeAllData( "current" );
 
         Meta::AlbumPtr album = track->album();
         if( album )
         {
-            QPixmap art = album->image( width );
+            QPixmap art = album->image( m_coverWidth );
             setData( "current", "albumart",  QVariant( art ) );
         }
         else
@@ -279,21 +236,6 @@ CurrentEngine::setupAlbumsData()
 }
 
 void
-CurrentEngine::setupTracksData()
-{
-    QVariant v;
-    v.setValue( m_latestTracks );
-    setData( "current", "lastTracks", v );
-    /*
-    else if( sender() == m_qmFavTracks )
-    {
-        v.setValue( m_favoriteTracks );
-        setData( "current", "favoriteTracks", v );
-    }
-    */
-}
-
-void
 CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
     // DEBUG_BLOCK
@@ -302,22 +244,5 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
     m_albums.clear();
     m_albums << albums;
 }
-
-void
-CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
-{
-    // DEBUG_BLOCK
-    Q_UNUSED( collectionId )
-    m_latestTracks.clear();
-    m_latestTracks << tracks;
-    /*
-    else if( sender() == m_qmFavTracks )
-    {
-        m_favoriteTracks.clear();
-        m_favoriteTracks << tracks;
-    }
-    */
-}
-
 
 #include "CurrentEngine.moc"

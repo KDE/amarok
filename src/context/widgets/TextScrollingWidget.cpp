@@ -51,7 +51,10 @@ public:
     {
         Q_Q( TextScrollingWidget );
         if( q->isUnderMouse() )
+        {
+            q->setText( text );
             q->startAnimation( QAbstractAnimation::Forward );
+        }
     }
 
     void drawRoundedRectAroundText( QPainter *p )
@@ -215,14 +218,10 @@ TextScrollingWidget::setGeometry( const QRectF &rect )
 void
 TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
 {
-    Q_UNUSED( e );
     Q_D( TextScrollingWidget );
     if( !isAnimating() && d->delta )
-    {
-        // DEBUG_BLOCK
-        setText( d->text );
-        QTimer::singleShot( 250, this, SLOT(_delayedForwardAnimation()) );
-    }
+        QTimer::singleShot( 150, this, SLOT(_delayedForwardAnimation()) );
+    e->accept();
 }
 
 bool
@@ -267,6 +266,7 @@ TextScrollingWidget::animationFinished()
         {
             setScrollingText( d->text );
             d->animation.data()->deleteLater();
+            update();
         }
     }
 }

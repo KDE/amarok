@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_BLOCK "VerticalAppletLayout"
+#define DEBUG_PREFIX "VerticalAppletLayout"
 
 #include "VerticalAppletLayout.h"
 

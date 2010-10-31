@@ -22,6 +22,7 @@
 
 #include <KUrl>
 
+#include <QGraphicsLayoutItem>
 #include <QGraphicsPixmapItem>
 
 //forward
@@ -45,7 +46,7 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         DropPixmapItem( QGraphicsItem* parent = 0 );
 
     signals:
-        void imageDropped( QPixmap );
+        void imageDropped( const QPixmap &pixmap );
         
     public slots:
         /**
@@ -62,6 +63,38 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
     private:
         KUrl m_url;
 
+};
+
+class AMAROK_EXPORT DropPixmapLayoutItem : public QObject, public QGraphicsLayoutItem
+{
+    Q_OBJECT
+    Q_INTERFACES( QGraphicsLayoutItem )
+    Q_PROPERTY( QPixmap pixmap READ pixmap WRITE setPixmap )
+    Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
+
+public:
+    explicit DropPixmapLayoutItem( QGraphicsLayoutItem *parent = 0, bool isLayout = false );
+    virtual ~DropPixmapLayoutItem();
+
+    virtual void setGeometry( const QRectF &rect );
+
+    qreal opacity() const;
+    void setOpacity( qreal value );
+
+    QPixmap pixmap() const;
+    void setPixmap( const QPixmap &pixmap );
+
+    void show();
+    void hide();
+
+signals:
+    void imageDropped( const QPixmap &pixmap );
+
+protected:
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
+private:
+    DropPixmapItem *m_pixmap;
 };
 
 #endif // DROPPIXMAPITEM_H

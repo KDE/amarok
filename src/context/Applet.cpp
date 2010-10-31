@@ -90,7 +90,7 @@ Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds 
 }
 
 QString
-Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
+Context::Applet::truncateTextToFit( const QString &text, const QFont& font, const QRectF& bounds )
 {
     QFontMetrics fm( font );
     return fm.elidedText ( text, Qt::ElideRight, (int)bounds.width() );

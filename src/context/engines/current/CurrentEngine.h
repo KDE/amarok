@@ -70,18 +70,13 @@ private:
     int m_coverWidth;
     QStringList m_sources;
     QMap< QString, bool > m_requested;
-    Meta::TrackPtr m_currentTrack;
 
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
-    Meta::TrackList m_latestTracks;
-    Meta::TrackList m_favoriteTracks;
 
 private slots:
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
     void setupAlbumsData();
-    void setupTracksData();
 };
 
 K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )

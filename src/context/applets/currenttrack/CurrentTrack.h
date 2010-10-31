@@ -19,31 +19,23 @@
 #ifndef CURRENT_TRACK_APPLET_H
 #define CURRENT_TRACK_APPLET_H
 
-#include <context/Applet.h>
-#include <context/DataEngine.h>
-#include <context/widgets/TrackWidget.h>
+#include "context/Applet.h"
 #include "core/meta/Meta.h"
+#include "ui_currentTrackSettings.h"
 
-#include <ui_currentTrackSettings.h>
-
-#include <QAction>
-#include <QList>
+#include <Plasma/DataEngine>
 
 class TextScrollingWidget;
-class DropPixmapItem;
+class DropPixmapLayoutItem;
 class RatingWidget;
-class QCheckBox;
-class QGraphicsPixmapItem;
+class RecentlyPlayedListWidget;
+class QAction;
 class QGraphicsLinearLayout;
-class QHBoxLayout;
-class QLabel;
-class QSpinBox;
 
 namespace Plasma {
-    class DataEngine;
+    class Label;
 }
 
-static const int MAX_PLAYED_TRACKS = 5;
 static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
 static const KLocalizedString UNKNOWN_ALBUM = ki18n("Unknown Album");
 
@@ -55,7 +47,9 @@ public:
     CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
 
-    virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+    virtual void paintInterface( QPainter *painter,
+                                 const QStyleOptionGraphicsItem *option,
+                                 const QRect &contentsRect );
 
 public slots:
     virtual void init();
@@ -63,26 +57,34 @@ public slots:
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    void createConfigurationInterface(KConfigDialog *parent);
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
-    void changeTrackRating( int rating );
+    void trackRatingChanged( int rating );
     void connectSource( const QString &source );
-    void paletteChanged( const QPalette & palette );
-    void tabChanged( int index );
-    void changeTitleFont();
-    void coverDropped( QPixmap cover );
+    void paletteChanged( const QPalette &palette );
+    void fontChanged();
+    void coverDropped( const QPixmap &cover );
+    void tracksCounted( QString id, QStringList results );
+    void albumsCounted( QString id, QStringList results );
+    void genresCounted( QString id, QStringList results );
+    void queryCollection();
 
 private:
     QList<QAction*> contextualActions();
 
-    void resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
+    void clearTrackActions();
+    void drawStatsBackground( QPainter *const p );
+    void drawStatsTexts( QPainter *const p );
+    void drawSourceEmblem( QPainter *const p );
+    void resizeCover( const QPixmap &cover, qreal width );
+    QPixmap amarokLogo( int dimension ) const;
 
     // aligns the second QGI to be at the same level as the first (the font baseline)
-    void alignBaseLineToFirst( QGraphicsSimpleTextItem *a, TextScrollingWidget *b );
+    void alignBaseLineToFirst( TextScrollingWidget *a, QGraphicsSimpleTextItem *b );
 
-    QBrush normalBrush();
-    QBrush unknownBrush();
+    QBrush normalBrush() const;
+    QBrush unknownBrush() const;
     /**
      * Bug 205038
      * We check if original is an 'invalid' value
@@ -92,46 +94,35 @@ private:
      * If original is 'valid', widget brush is set
      * to normalBrush() and original is returned
      */
-    QString handleUnknown( QString original, TextScrollingWidget *widget, QString replacement );
+    QString handleUnknown( const QString &original,
+                           TextScrollingWidget *widget,
+                           const QString &replacement );
 
-    TextScrollingWidget* m_title;
-    TextScrollingWidget* m_artist;
-    TextScrollingWidget* m_album;
-    QGraphicsSimpleTextItem* m_noTrack;
-    QGraphicsSimpleTextItem* m_byText;
-    QGraphicsSimpleTextItem* m_onText;
+    Plasma::Label *m_collectionLabel;
+    RecentlyPlayedListWidget *m_recentWidget;
+    RatingWidget *m_ratingWidget;
+    DropPixmapLayoutItem *m_albumCover;
+    TextScrollingWidget *m_recentHeader;
+    TextScrollingWidget *m_title;
+    TextScrollingWidget *m_artist;
+    TextScrollingWidget *m_album;
+    QGraphicsSimpleTextItem *m_byText;
+    QGraphicsSimpleTextItem *m_onText;
+    QGraphicsLinearLayout *m_actionsLayout;
+
     int m_rating;
+    int m_score;
     int m_trackLength;
-
-    DropPixmapItem* m_albumCover;
-    QPixmap m_bigCover;
+    int m_playCount;
+    int m_trackCount;
+    int m_albumCount;
+    int m_genreCount;
+    QDateTime m_lastPlayed;
     QString m_sourceEmblemPath;
-
-    RatingWidget* m_ratingWidget;
-
-    QString m_noTrackText;
-    QString m_playCountLabel;
-    QString m_scoreLabel;
-    QString m_lastPlayedLabel;
-    QString m_score;
-    QString m_numPlayed;
-    QString m_playedLast;
-
-    bool m_showStatistics;
-
-    int m_maxTextWidth;
-
-    //keep this safe as we might need it when resizing
-    QVariantMap m_currentInfo;
-
-    TrackWidget *m_tracks[MAX_PLAYED_TRACKS];
-    Meta::TrackList m_lastTracks;
-    Meta::TrackList m_favoriteTracks;
-    int m_tracksToShow;
+    bool m_isStopped;
 
     Ui::currentTrackSettings ui_Settings;
-
-    QList<Plasma::IconWidget*> m_trackActions;
+    const int m_albumWidth;
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )

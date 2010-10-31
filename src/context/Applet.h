@@ -55,7 +55,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          * Truncate the text by adding an ellipsis at the end in order to make the text with the given font
          * rit in the bounding rect.
          */
-        QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+        QString truncateTextToFit( const QString &text, const QFont& font, const QRectF& bounds );
 
         /**
          * Paint the background of an applet, so it fits with all the other applets.

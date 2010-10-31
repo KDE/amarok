@@ -86,4 +86,74 @@ void DropPixmapItem::imageDownloadResult( const KUrl &url, QByteArray data, Netw
         debug() << "not an image";
 }
 
+DropPixmapLayoutItem::DropPixmapLayoutItem( QGraphicsLayoutItem *parent, bool isLayout )
+    : QGraphicsLayoutItem( parent, isLayout )
+{
+    m_pixmap = new DropPixmapItem;
+    m_pixmap->setZValue( 100 );
+    setGraphicsItem( m_pixmap );
+    connect( m_pixmap, SIGNAL(imageDropped(QPixmap)), SIGNAL(imageDropped(QPixmap)) );
+}
+
+DropPixmapLayoutItem::~DropPixmapLayoutItem()
+{
+    delete m_pixmap;
+}
+
+void
+DropPixmapLayoutItem::setGeometry( const QRectF &rect )
+{
+    QGraphicsLayoutItem::setGeometry( rect );
+    int width = m_pixmap->pixmap().width();
+    int height = m_pixmap->pixmap().height();
+    QPointF pos = rect.topLeft();
+    pos.rx() += (rect.width() - width) / 2;
+    pos.ry() += (rect.height() - height) / 2;
+    m_pixmap->setPos( pos );
+}
+
+QSizeF
+DropPixmapLayoutItem::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    Q_UNUSED( which )
+    Q_UNUSED( constraint )
+    return m_pixmap->boundingRect().size();
+}
+
+qreal
+DropPixmapLayoutItem::opacity() const
+{
+    return m_pixmap->opacity();
+}
+
+void
+DropPixmapLayoutItem::setOpacity( qreal value )
+{
+    m_pixmap->setOpacity( value );
+}
+
+QPixmap
+DropPixmapLayoutItem::pixmap() const
+{
+    return m_pixmap->pixmap();
+}
+
+void
+DropPixmapLayoutItem::setPixmap( const QPixmap &pixmap )
+{
+    m_pixmap->setPixmap( pixmap );
+}
+
+void
+DropPixmapLayoutItem::show()
+{
+    m_pixmap->show();
+}
+
+void
+DropPixmapLayoutItem::hide()
+{
+    m_pixmap->hide();
+}
+
 #include "DropPixmapItem.moc"

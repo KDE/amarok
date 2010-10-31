@@ -344,7 +344,7 @@ set( libcontextview_SRCS
     context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/appletexplorer/AppletExplorer.cpp
     context/widgets/appletexplorer/AppletIcon.cpp
-    context/widgets/TrackWidget.cpp
+    context/widgets/RecentlyPlayedListWidget.cpp
 )
 
 #####################################################################
