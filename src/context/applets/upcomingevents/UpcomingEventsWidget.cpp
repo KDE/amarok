@@ -47,6 +47,8 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
     , m_image( new QLabel )
     , m_event( event )
 {
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+
     m_image->setText( i18n("Loading picture...") );
     m_image->setAttribute( Qt::WA_NoSystemBackground );
     m_image->setAlignment( Qt::AlignCenter );
