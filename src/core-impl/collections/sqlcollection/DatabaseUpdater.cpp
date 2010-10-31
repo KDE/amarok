@@ -318,9 +318,8 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
     columns.insert( "years", vcpair( "name", 255 ) );
 
-    QMultiMap<QString, vcpair>::const_iterator i;
-
-    for( i = columns.begin(); i != columns.end(); ++i )
+    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
@@ -346,7 +345,7 @@ DatabaseUpdater::upgradeVersion4to5()
     m_storage->query( "DROP INDEX url_podchannel ON podcastchannels" );
     m_storage->query( "DROP INDEX url_podepisode ON podcastepisodes" );
     m_storage->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
-    for( i = columns.begin(); i != columns.end(); ++i )
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
@@ -398,9 +397,9 @@ DatabaseUpdater::upgradeVersion5to6()
     columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
     columns.insert( "statistics_tag", vcpair( "album", 108 ) );
 
-    QMultiMap<QString, vcpair>::const_iterator i;
+    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
 
-    for( i = columns.begin(); i != columns.end(); ++i )
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") " );
 
     m_storage->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
@@ -419,9 +418,9 @@ DatabaseUpdater::upgradeVersion6to7()
     columns.insert( "urls", vcpair( "rpath", 324 ) );
     columns.insert( "statistics_permanent", vcpair( "url", 324 ) );
 
-    QMultiMap<QString, vcpair>::const_iterator i;
+    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
 
-    for( i = columns.begin(); i != columns.end(); ++i )
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
             " VARCHAR(" + QString::number( i.value().second ) + ") COLLATE utf8_bin NOT NULL" );
@@ -547,9 +546,9 @@ DatabaseUpdater::upgradeVersion9to10()
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
     columns.insert( "years", vcpair( "name", 255 ) );
 
-    QMultiMap<QString, vcpair>::const_iterator i;
+    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
 
-    for( i = columns.begin(); i != columns.end(); ++i )
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
@@ -580,7 +579,7 @@ DatabaseUpdater::upgradeVersion9to10()
     m_storage->query( "DROP INDEX url_podchannel ON podcastchannels" );
     m_storage->query( "DROP INDEX url_podepisode ON podcastepisodes" );
     m_storage->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
-    for( i = columns.begin(); i != columns.end(); ++i )
+    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
         m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL" );

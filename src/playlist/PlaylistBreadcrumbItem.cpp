@@ -41,7 +41,8 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     QStringList usedBreadcrumbLevels = qobject_cast< SortWidget * >( parent )->levels();
 
     QMap< QString, QPair< KIcon, QString > > siblings = level->siblings();
-    for( QMap< QString, QPair< KIcon, QString > >::const_iterator i = siblings.begin(); i != siblings.end(); ++i )
+    for( QMap< QString, QPair< KIcon, QString > >::const_iterator
+         i = siblings.constBegin(), end = siblings.constEnd(); i != end; ++i )
     {
         QAction *action = menu->addAction( i.value().first, i.value().second );
         action->setData( i.key() );

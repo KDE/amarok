@@ -317,11 +317,11 @@ UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
 {
     m_events << event;
     UpcomingEventsWidget *widget = new UpcomingEventsWidget( event );
-    QMap<uint, UpcomingEventsWidget*>::const_iterator insertIt, indexIt;
-    insertIt = m_sortMap.insertMulti( event->date().toTime_t(), widget );
-    indexIt = m_sortMap.constBegin();
-    int index( 0 );
-    while( indexIt++ != insertIt )
+    const uint eventTime = event->date().toTime_t();
+    QMap<uint, UpcomingEventsWidget*>::const_iterator iBound( m_sortMap.insertMulti( eventTime, widget ) );
+    QMap<uint, UpcomingEventsWidget*>::const_iterator i( m_sortMap.constBegin() );
+    int index = 0;
+    while( i++ != iBound )
         ++index; // find the right index to insert the widget
     index *= 2;  // take separators into account
     m_layout->insertItem( index, widget );
