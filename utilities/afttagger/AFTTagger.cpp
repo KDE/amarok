@@ -21,9 +21,11 @@
 #include "SafeFileSaver.h"
 
 //Taglib
+#include <apetag.h>
 #include <fileref.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
+#include <mp4tag.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
@@ -65,11 +67,11 @@ AFTTagger::AFTTagger( int &argc, char **argv )
     , m_time()
     , m_textStream( stderr )
 {
-    
+
     setObjectName( "amarok_afttagger" );
-    
+
     readArgs();
-        
+
     QString terms;
     if( !m_quiet )
     {
@@ -94,7 +96,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
             ::exit( 1 );
         }
     }
-    
+
     qsrand(QDateTime::currentDateTime().toTime_t());
     m_time.start();
 
@@ -138,16 +140,16 @@ AFTTagger::processPath( const QString &path )
     {
         QString filePath = info.absoluteFilePath();
 
-        
+
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t *encodedName = reinterpret_cast< const wchar_t *>(filePath.utf16());
 #else
     QByteArray fileName = QFile::encodeName( filePath );
     const char *encodedName = fileName.constData();
 #endif
-    
+
         TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-        
+
         if( fileRef.isNull() )
         {
             if( m_verbose )
@@ -186,10 +188,14 @@ AFTTagger::processPath( const QString &path )
             saveNecessary = handleOgg( file );
         else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( tempFileRef.file() ) )
             saveNecessary = handleFLAC( file );
+        else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( tempFileRef.file() ) )
+            saveNecessary = handleMPC( file );
+        else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( tempFileRef.file() ) )
+            saveNecessary = handleMP4( file );
         else
         {
             if( m_verbose )
-                m_textStream << tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG, Ogg, and FLAC files), cleaning up temp file" ) << endl;
+                m_textStream << tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG, Ogg MP4, MPC, and FLAC files), cleaning up temp file" ) << endl;
             if( !sfs.cleanupSave() )
                 m_textStream << tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) << endl;
             return;
@@ -217,7 +223,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
         m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
-    
+
     QString uid;
     bool newUid = false;
     bool nothingfound = true;
@@ -332,7 +338,7 @@ AFTTagger::handleOgg( TagLib::Ogg::File *file )
         m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
-    
+
     TagLib::Ogg::XiphComment *comment = 0;
     TagLib::Ogg::FLAC::File* flacFile;
     TagLib::Ogg::Speex::File* speexFile;
@@ -352,7 +358,7 @@ AFTTagger::handleOgg( TagLib::Ogg::File *file )
         file->save();
         return true;
     }
-    
+
     return false;
 }
 
@@ -364,7 +370,7 @@ AFTTagger::handleFLAC( TagLib::FLAC::File *file )
         m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
         return false;
     }
-    
+
     TagLib::Ogg::XiphComment *comment = file->xiphComment( true );
     if( !comment )
         return false;
@@ -374,7 +380,7 @@ AFTTagger::handleFLAC( TagLib::FLAC::File *file )
         file->save();
         return true;
     }
-    
+
     return false;
 }
 
@@ -401,10 +407,10 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
         if( m_verbose )
             m_textStream << tr( "INFO: Found existing XiphComment frames, parsing" )  << endl;
         TagLib::Ogg::FieldListMap fieldListMap = comment->fieldListMap();
-        
+
         if( m_verbose )
             m_textStream << tr( "INFO: fieldListMap size is %1" ).arg( fieldListMap.size() ) << endl;
-        
+
         TagLib::Ogg::FieldListMap::Iterator iter;
         for( iter = fieldListMap.begin(); iter != fieldListMap.end(); ++iter )
         {
@@ -413,7 +419,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
             if( qkey.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
             {
                 nothingfound = false;
-                
+
                 if( m_verbose )
                     m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( qkey ) << endl;
 
@@ -424,7 +430,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
             else if( qkey.startsWith( "AMAROK 2 AFT" ) )
             {
                 nothingfound = false;
-                
+
                 if( m_verbose )
                     m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( qkey ) << endl;
 
@@ -464,7 +470,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
                     }
                 }
             }
-        }        
+        }
         for( TagLib::StringList::ConstIterator iter = toRemove.begin(); iter != toRemove.end(); ++iter )
             comment->removeField( *iter );
     }
@@ -480,7 +486,220 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
     }
     else if( toRemove.size() )
         return true;
-    
+
+    return false;
+}
+
+bool
+AFTTagger::handleMPC( TagLib::MPC::File *file )
+{
+    if( file->readOnly() )
+    {
+        m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
+        return false;
+    }
+
+    QString uid;
+    bool newUid = false;
+    bool nothingfound = true;
+    TagLib::StringList toRemove;
+    if( m_verbose )
+        m_textStream << tr( "INFO: File is a MPC file, opening..." ) << endl;
+
+    if( file->APETag() )
+    {
+        const TagLib::APE::ItemListMap &itemsMap = file->APETag()->itemListMap();
+        if( itemsMap.isEmpty() )
+        {
+          m_textStream << tr( "INFO: No fields found in APE tags." ) << endl;
+
+          if( m_delete )
+              return false;
+        }
+
+        for( TagLib::APE::ItemListMap::ConstIterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
+        {
+            TagLib::String key = it->first;
+            QString qkey = TStringToQString( key ).toUpper();
+            if( qkey.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+            {
+                nothingfound = false;
+
+                if( m_verbose )
+                    m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( qkey ) << endl;
+
+                toRemove.append( key );
+                if( !m_delete )
+                    newUid = true;
+            }
+            else if( qkey.startsWith( "AMAROK 2 AFT" ) )
+            {
+                nothingfound = false;
+
+                if( m_verbose )
+                    m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( qkey ) << endl;
+
+                if( m_delete )
+                {
+                    toRemove.append( key );
+                    if( m_verbose )
+                        m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
+                }
+                else
+                {
+                    int version = qkey.at( 13 ).digitValue();
+                    if( m_verbose )
+                        m_textStream << tr( "INFO: AFT identifier is version %1" ).arg( version ) << endl;
+                    if( version < s_currentVersion )
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) << endl;
+                        uid = upgradeUID( version, TStringToQString( itemsMap[ key ].toString() ) );
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else if( version == s_currentVersion && m_newid )
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: New IDs specified to be generated, doing so" ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: ID is current" ) << endl;
+                        return false;
+                    }
+                }
+            }
+        }
+        for( TagLib::StringList::ConstIterator it = toRemove.begin(); it != toRemove.end(); ++it )
+            file->APETag()->removeItem( *it );
+    }
+
+    if( newUid || ( nothingfound && !m_delete ) )
+    {
+        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        if( uid.isEmpty() )
+            uid = createCurrentUID( file );
+        if( m_verbose )
+            m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
+        file->APETag()->addValue( Qt4QStringToTString( ourId.toUpper() ), Qt4QStringToTString( uid ) );
+        file->save();
+        return true;
+    }
+    else if( toRemove.size() )
+    {
+        file->save();
+        return true;
+    }
+
+    return false;
+}
+
+bool
+AFTTagger::handleMP4( TagLib::MP4::File *file )
+{
+    if( file->readOnly() )
+    {
+        m_textStream << tr( "ERROR: File is read-only or could not be opened" ) << endl;
+        return false;
+    }
+
+    QString uid;
+    bool newUid = false;
+    bool nothingfound = true;
+    TagLib::StringList toRemove;
+    if( m_verbose )
+        m_textStream << tr( "INFO: File is a MP4 file, opening..." ) << endl;
+
+    TagLib::MP4::ItemListMap &itemsMap = file->tag()->itemListMap();
+    if( !itemsMap.isEmpty() )
+    {
+        for( TagLib::MP4::ItemListMap::Iterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
+        {
+            TagLib::String key = it->first;
+            TagLib::String ukey = key.upper();
+            if( ukey.find( "AMAROK - REDISCOVER YOUR MUSIC" ) != -1 )
+            {
+                nothingfound = false;
+
+                if( m_verbose )
+                    m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( key.toCString() ) << endl;
+
+                toRemove.append( key );
+                if( !m_delete )
+                    newUid = true;
+            }
+            else if( ukey.find( "AMAROK 2 AFT" ) != -1 )
+            {
+                nothingfound = false;
+
+                if( m_verbose )
+                    m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( key.toCString() ) << endl;
+
+                if( m_delete )
+                {
+                    toRemove.append( key );
+                    if( m_verbose )
+                        m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
+                }
+                else
+                {
+                    int version = TStringToQString( ukey ).at( 13 ).digitValue();
+                    if( m_verbose )
+                        m_textStream << tr( "INFO: AFT identifier is version %1" ).arg( version ) << endl;
+                    if( version < s_currentVersion )
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) << endl;
+                        uid = upgradeUID( version, TStringToQString( itemsMap[ key ].toStringList().toString() ) );
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else if( version == s_currentVersion && m_newid )
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: New IDs specified to be generated, doing so" ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else
+                    {
+                        if( m_verbose )
+                            m_textStream << tr( "INFO: ID is current" ) << endl;
+                        return false;
+                    }
+                }
+            }
+        }
+        for( TagLib::StringList::ConstIterator it = toRemove.begin(); it != toRemove.end(); ++it )
+            itemsMap.erase( *it );
+    }
+
+    if( newUid || ( nothingfound && !m_delete ) )
+    {
+        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        if( uid.isEmpty() )
+            uid = createCurrentUID( file );
+        if( m_verbose )
+            m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
+        itemsMap.insert( Qt4QStringToTString( QString( "----:com.apple.iTunes:" + ourId ) ),
+                         TagLib::StringList( Qt4QStringToTString( uid ) ) );
+        file->save();
+        return true;
+    }
+    else if( toRemove.size() )
+    {
+        file->save();
+        return true;
+    }
+
     return false;
 }
 
@@ -566,7 +785,7 @@ AFTTagger::readArgs()
                     m_verbose = true;
                 else
                     displayHelp();
-                
+
                 ++pos;
             }
         }

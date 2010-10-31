@@ -21,7 +21,9 @@
 #define AFTTAGGER_H
 
 #include <flacfile.h>
+#include <mp4file.h>
 #include <mpegfile.h>
+#include <mpcfile.h>
 #include <oggfile.h>
 #include <tfile.h>
 #include <xiphcomment.h>
@@ -46,6 +48,8 @@ public:
 
     void processPath( const QString &path );
     bool handleMPEG( TagLib::MPEG::File *file );
+    bool handleMPC( TagLib::MPC::File *file );
+    bool handleMP4( TagLib::MP4::File *file );
     bool handleOgg( TagLib::Ogg::File *file );
     bool handleFLAC( TagLib::FLAC::File *file );
     bool handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *file );

@@ -100,8 +100,11 @@ const QString
 AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
     int currentVersion = 1; //TODO: Make this more global?
-    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion )
+                             + " - amarok.kde.org" );
+    TagLib::String AFT_ID = Qt4QStringToTString( ourId.toUpper() );     //Used in Vorbis comments and APE tags.
     QString mbId = QString( "http://musicbrainz.org" );
+    TagLib::String mbTID = TagLib::String( "MUSICBRAINZ_TRACKID" );     //Used in Vorbis comments and APE tags.
     QString storedMBId;
     QString mbDefaultUUID = QString( "[mb track uuid]" );
     QRegExp aftPattern( "[a-f0-9]+", Qt::CaseInsensitive );
@@ -140,19 +143,44 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         const TagLib::MP4::ItemListMap &itemsMap = file->tag()->itemListMap();
-        TagLib::Map<TagLib::String, TagLib::MP4::Item>::ConstIterator it = itemsMap.begin();
-        TagLib::Map<TagLib::String, TagLib::MP4::Item>::ConstIterator itEnd = itemsMap.end();
-        while( it != itEnd )
+        for( TagLib::MP4::ItemListMap::ConstIterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
         {
-            // TODO: read embedded AFT ids too (although AFTTagger doesn't support mp4 files yet)
-            const TagLib::String &key = (*it).first;
-            if( key.find("MusicBrainz Track Id") != -1 )
+            const TagLib::String &key = it->first;
+            if( key.find( Qt4QStringToTString( ourId ) ) != -1 )
             {
-                const QString &mbid = TStringToQString((*it).second.toStringList().toString());
-                if( !mbid.isEmpty() && ( mbid != mbDefaultUUID ) && mbIdPattern.exactMatch( mbid ) )
-                    return QString( "mb-%1" ).arg( mbid );
+                QString identifier = TStringToQString( it->second.toStringList().toString() );
+                if( !identifier.isEmpty() && aftPattern.exactMatch( identifier ) )
+                    return identifier;
             }
-            ++it;
+            else if( key.find( "MusicBrainz Track Id" ) != -1 )
+            {
+                QString identifier = TStringToQString( it->second.toStringList().toString() );
+                if( !identifier.isEmpty() && ( identifier != mbDefaultUUID )
+                    && mbIdPattern.exactMatch( identifier ) )
+                    return QString( "mb-" ) + identifier;
+            }
+        }
+    }
+    else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        if( file->APETag() )
+        {
+            const TagLib::APE::ItemListMap &itemsMap = file->APETag()->itemListMap();
+            for( TagLib::APE::ItemListMap::ConstIterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
+            {
+                if( it->first == AFT_ID )
+                {
+                    QString identifier = TStringToQString( it->second.toString() );
+                    if( !identifier.isEmpty() && aftPattern.exactMatch( identifier ) )
+                        return identifier;
+                }
+                else if( it->first == mbTID )
+                {
+                    QString identifier = TStringToQString( it->second.toString() );
+                    if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) && mbIdPattern.exactMatch( identifier ) )
+                        return QString( "mb-" ) + identifier;
+                }
+            }
         }
     }
 
@@ -173,19 +201,17 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     if( !comment )
         return QString();
 
-    mbId = QString( "musicbrainz_trackid" );
-
-    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
+    if( comment->contains( AFT_ID ) )
     {
-        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
+        QString identifier = TStringToQString( comment->fieldListMap()[ AFT_ID ].front()).toLower();
         if( aftPattern.exactMatch( identifier ) )
             return identifier;
         else
             return QString();
     }
-    else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
+    else if( comment->contains( mbTID ) )
     {
-        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
+        QString identifier = TStringToQString( comment->fieldListMap()[ mbTID ].front() ).toLower();
         if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) &&
             mbIdPattern.exactMatch( identifier ) )
             return QString( "mb-" ) + identifier;
