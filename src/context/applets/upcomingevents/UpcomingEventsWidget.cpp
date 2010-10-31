@@ -246,6 +246,13 @@ UpcomingEventsWidget::setDate( const KDateTime &date )
 {
     QLabel *dateLabel = static_cast<QLabel*>( m_date->widget() );
     dateLabel->setText( KGlobal::locale()->formatDateTime( date, KLocale::FancyLongDate ) );
+    KDateTime currentDT = KDateTime::currentLocalDateTime();
+    if( currentDT.compare(date) == KDateTime::Before )
+    {
+        int daysTo = currentDT.daysTo( date );
+        dateLabel->setToolTip( i18ncp( "@info:tooltip Number of days till an event",
+                                       "Tomorrow", "In <strong>%1</strong> days", daysTo ) );
+    }
 }
 
 void
