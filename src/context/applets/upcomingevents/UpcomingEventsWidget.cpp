@@ -158,13 +158,13 @@ UpcomingEventsWidget::setImage( const KUrl &url )
         return;
     }
 
+    m_imageUrl = url;
     QPixmap pixmap;
     if( QPixmapCache::find(url.url(), &pixmap) )
     {
         m_image->setPixmap( pixmap );
         return;
     }
-    m_imageUrl = url;
     QNetworkReply *reply = The::networkAccessManager()->get( QNetworkRequest(url) );
     connect( reply, SIGNAL(finished()), SLOT(loadImage()), Qt::QueuedConnection );
 }

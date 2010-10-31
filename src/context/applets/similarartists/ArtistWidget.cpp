@@ -168,6 +168,9 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
 
 ArtistWidget::~ArtistWidget()
 {
+    QString photoUrl = m_artist->urlImage().url();
+    if( !photoUrl.isEmpty() )
+        QPixmapCache::remove( photoUrl );
 }
 
 void
@@ -190,7 +193,9 @@ ArtistWidget::fetchPhoto()
 void
 ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    Q_UNUSED( url );
+    if( url != m_artist->urlImage() )
+        return;
+
     if( e.code != QNetworkReply::NoError )
     {
         m_image->clear();
