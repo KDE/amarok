@@ -1573,8 +1573,10 @@ SqlAlbum::setImage( const QImage &image )
         path += "_"; // not that nice but it shouldn't happen that often.
 
     image.save( path, "JPG" );
+    setImage( path );
+
     locker.unlock();
-    setImage( path ); // setImage notifies observers
+    notifyObservers();
 }
 
 void
@@ -1787,16 +1789,19 @@ SqlAlbum::largeImagePath()
     return QString();
 }
 
+// note: we won't notify the observers. we are a private function. the caller must do that.
 void
 SqlAlbum::setImage( const QString &path )
 {
+    QString imagePath = path;
+
     QMutexLocker locker( &m_mutex );
-    debug() << "SqlAlbum::setImage" << m_name << "path:" << path;
+    debug() << "SqlAlbum::setImage" << m_name << "path:" << imagePath;
 
     // --- embedded cover
     {
         // -- check if we have a track with the given path as uid
-        QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( path );
+        QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( imagePath );
         QStringList result = m_collection->sqlStorage()->query( query );
         if( !result.isEmpty() )
         {
@@ -1810,20 +1815,25 @@ SqlAlbum::setImage( const QString &path )
             if( image.isNull() )
                 return;
 
-            setImage( image );
-            return;
+            // -- compute the large image cache path and save the image there.
+            imagePath = largeDiskCachePath();
+            // make sure not to overwrite existing images
+            while( QFile(imagePath).exists() )
+                imagePath += "_"; // not that nice but it shouldn't happen that often.
+
+            image.save( imagePath, "JPG" );
         }
     }
 
     // --- a normal path
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    query = query.arg( m_collection->sqlStorage()->escape( path ) );
+    query = query.arg( m_collection->sqlStorage()->escape( imagePath ) );
     QStringList res = m_collection->sqlStorage()->query( query );
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                            .arg( m_collection->sqlStorage()->escape( path ) );
+                            .arg( m_collection->sqlStorage()->escape( imagePath ) );
         m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
@@ -1835,14 +1845,11 @@ SqlAlbum::setImage( const QString &path )
                     .arg( QString::number( m_imageId ), QString::number( m_id ) );
         m_collection->sqlStorage()->query( query );
 
-        m_imagePath = path;
+        m_imagePath = imagePath;
         m_hasImage = true;
         m_hasImageChecked = true;
         m_pixmapCacheDirty = true;
     }
-
-    locker.unlock();
-    notifyObservers();
 }
 
 void
