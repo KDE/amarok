@@ -22,32 +22,8 @@ AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt:
     : QDockWidget( title, parent, flags )
     , m_polished( false )
 {
-    m_dummyTitleBarWidget = new QWidget();
+    m_dummyTitleBarWidget = new QWidget( this );
     connect( this, SIGNAL( visibilityChanged( bool ) ), SLOT( slotVisibilityChanged( bool ) ) );
-}
-
-void AmarokDockWidget::closeEvent( QCloseEvent* event )
-{
-    QDockWidget::closeEvent( event );
-    emit( layoutChanged() );
-}
-
-void AmarokDockWidget::resizeEvent( QResizeEvent* event )
-{
-    QWidget::resizeEvent( event );
-    emit( layoutChanged() );
-}
-
-void AmarokDockWidget::showEvent( QShowEvent* event )
-{
-    QWidget::showEvent( event );
-    emit( layoutChanged() );
-}
-
-void AmarokDockWidget::hideEvent( QHideEvent* event )
-{
-    QWidget::hideEvent( event );
-    emit( layoutChanged() );
 }
 
 void AmarokDockWidget::slotVisibilityChanged( bool visible )
