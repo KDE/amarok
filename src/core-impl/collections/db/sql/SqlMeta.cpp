@@ -2158,7 +2158,7 @@ bool
 SqlAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( m_name.isEmpty() )
-        return 0;
+        return false;
 
     return m_collection->albumCapabilityDelegate() &&
         m_collection->albumCapabilityDelegate()->hasCapabilityInterface( type, this );
