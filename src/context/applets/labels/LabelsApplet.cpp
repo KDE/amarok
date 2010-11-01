@@ -228,7 +228,7 @@ LabelsApplet::updateLabels()
             finalLabelsMap[ it_infos.key() ] = it_infos.value().toInt();
             webCounts += it_infos.value().toInt();
         }
-        debug() << "web label:" << it_infos.key() << "count:" << it_infos.value().toInt();
+        // debug() << "web label:" << it_infos.key() << "count:" << it_infos.value().toInt();
     }
     // then sort the values of the temp map
     QList < int > tempLabelsValues = tempLabelsMap.values();
@@ -268,7 +268,7 @@ LabelsApplet::updateLabels()
     // now make the label cloud nicer by determinating the quality of the web labels
     // 0.7 / 0.3 is a pretty moderate choice; 0.5 / 0.5 would be more extreme
     const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * webCounts.toSet().count()/webCounts.count() : 1.0;
-    debug() << "qualityFactor:" << qualityFactor;
+    // debug() << "qualityFactor:" << qualityFactor;
     // and finally create the LabelGraphicsItems
     QMapIterator < QString, int > it_final ( finalLabelsMap );
     while( it_final.hasNext() )
@@ -285,7 +285,7 @@ LabelsApplet::updateLabels()
         
         const qreal f_size = qMax( adjustedCount / 10.0 - 5.0, -2.0 );
 
-        debug() << "final label:" << it_final.key() << "count:" << adjustedCount;
+        // debug() << "final label:" << it_final.key() << "count:" << adjustedCount;
 
         LabelGraphicsItem *labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
         if( m_userLabels.contains( it_final.key() ) )
@@ -400,18 +400,18 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "state" ) && data["state"].toString().contains("started") )
     {
-        debug() << "started";
+        // debug() << "started";
         setStoppedState( false );
     }
     else if ( data.contains( "state" ) && data["state"].toString().contains("stopped") )
     {
-        debug() << "stopped";
+        // debug() << "stopped";
         setStoppedState( true );
     }
     
     if ( data.contains( "message" ) && data["message"].toString().contains("fetching") )
     {
-        debug() << "fetching";
+        // debug() << "fetching";
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
@@ -423,7 +423,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     }
     else if ( data.contains( "message" ) )
     {
-        debug() << "message:" << data[ "message" ].toString();
+        // debug() << "message:" << data[ "message" ].toString();
         m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
@@ -435,25 +435,25 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "artist" ) )
     {
-        debug() << "artist";
+        // debug() << "artist";
         m_artist = data[ "artist" ].toString();
     }
     
     if ( data.contains( "title" ) )
     {
-        debug() << "title";
+        // debug() << "title";
         m_title = data[ "title" ].toString();
     }
     
     if ( data.contains( "album" ) )
     {
-        debug() << "album";
+        // debug() << "album";
         m_title = data[ "album" ].toString();
     }
 
     if ( data.contains( "all" ) )
     {
-        debug() << "all";
+        // debug() << "all";
         m_allLabels = data[ "all" ].toStringList();
         m_allLabels.sort();
 
@@ -466,7 +466,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if ( data.contains( "user" ) )
     {
-        debug() << "user";
+        // debug() << "user";
         if( !m_stoppedstate ) // otherwise there's been an error
         {
             m_userLabels = data[ "user" ].toStringList();
@@ -479,7 +479,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     
     if ( data.contains( "web" ) )
     {
-        debug() << "web";
+        // debug() << "web";
         if( !m_stoppedstate ) // otherwise there's been an error
         {
             if( !data.contains( "message" ) )

@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Playdar::Controller"
+
 #include "Controller.h"
 
 #include "Query.h"
@@ -109,7 +111,7 @@ namespace Playdar {
     void
     Controller::status()
     {
-        DEBUG_BLOCK
+        // DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=stat" );
         KUrl statusUrl( baseUrl );
@@ -122,7 +124,7 @@ namespace Playdar {
     Controller::processStatus( KJob *statusJob )
     {
         if( statusJob->error() != 0 ) {
-            debug() << "Error getting status from Playdar";
+            // debug() << "Error getting status from Playdar";
             emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );
             return;
         }
