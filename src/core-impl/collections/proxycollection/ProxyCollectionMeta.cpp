@@ -64,6 +64,7 @@ public:
     void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
     void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
     void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
+    void setAlbumArtist( const QString &newAlbumArtist ) { FORWARD( setAlbumArtist ( newAlbumArtist ) ) }
     void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
     void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
     void setYear( const QString &newYear ) { FORWARD( setYear( newYear ) ) }

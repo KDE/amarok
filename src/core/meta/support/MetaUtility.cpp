@@ -69,7 +69,11 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
     if( track->artist() && !track->artist()->name().isEmpty() )
         map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
     if( track->album() && !track->album()->name().isEmpty() )
+    {
         map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
+        if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
+            map.insert( Meta::Field::ALBUMARTIST, QVariant( track->album()->albumArtist()->name() ) );
+    }
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, QVariant( track->filesize() ) );
     if( track->genre() && !track->genre()->name().isEmpty() )

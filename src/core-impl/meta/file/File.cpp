@@ -55,6 +55,7 @@ class EditCapabilityImpl : public Capabilities::EditCapability
 
         virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
@@ -333,6 +334,19 @@ Track::setAlbum( const QString &newAlbum )
     if( !d->batchUpdate )
     {
         d->m_data.album = newAlbum;
+        d->writeMetaData();
+        notifyObservers();
+    }
+}
+
+void
+Track::setAlbumArtist( const QString &newAlbumArtist )
+{
+    DEBUG_BLOCK
+    d->changes.insert( Meta::Field::ALBUMARTIST, QVariant( newAlbumArtist ) );
+    if( !d->batchUpdate )
+    {
+        d->m_data.albumArtist = newAlbumArtist;
         d->writeMetaData();
         notifyObservers();
     }

@@ -76,6 +76,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual YearPtr year() const;
 
         virtual void setAlbum ( const QString &newAlbum );
+        virtual void setAlbumArtist( const QString &newAlbumArtist );
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );

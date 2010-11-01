@@ -89,6 +89,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual Meta::AlbumPtr album() const;
         virtual void setAlbum( const QString &newAlbum );
         virtual void setAlbum( int albumId );
+
+        virtual void setAlbumArtist( const QString &newAlbumArtist );
+
         virtual void setArtist( const QString &newArtist );
         virtual Meta::ArtistPtr artist() const;
         virtual Meta::ComposerPtr composer() const;

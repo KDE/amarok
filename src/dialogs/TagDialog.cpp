@@ -1673,7 +1673,8 @@ TagDialog::saveTags()
              data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
              data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
              data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) ||
-             data.contains( Meta::Field::BPM ) || data.contains( Meta::Field::UNIQUEID )
+             data.contains( Meta::Field::BPM ) || data.contains( Meta::Field::UNIQUEID ) ||
+             data.contains( Meta::Field::ALBUMARTIST )
              )
         {
 
@@ -1702,6 +1703,8 @@ TagDialog::saveTags()
                 ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
             if( data.contains( Meta::Field::UNIQUEID ) )
                 ec->setUidUrl( data.value( Meta::Field::UNIQUEID ).toString() );
+            if( data.contains( Meta::Field::ALBUMARTIST ) )
+                ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
             ec->endMetaDataUpdate();
         }
     }

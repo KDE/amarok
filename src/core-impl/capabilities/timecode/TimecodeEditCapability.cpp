@@ -35,6 +35,12 @@ TimecodeEditCapability::setAlbum( const QString &newAlbum )
 }
 
 void
+TimecodeEditCapability::setAlbumArtist( const QString &newAlbumArtist )
+{
+    Q_UNUSED( newAlbumArtist );
+}
+
+void
 TimecodeEditCapability::setArtist( const QString &newArtist )
 {
      m_track->setArtist( newArtist );

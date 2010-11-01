@@ -56,6 +56,7 @@ namespace MetaProxy
 
             virtual Meta::AlbumPtr album() const;
             virtual void setAlbum( const QString &album );
+            virtual void setAlbumArtist( const QString &artist );
             virtual Meta::ArtistPtr artist() const;
             virtual void setArtist( const QString &artist );
             virtual Meta::GenrePtr genre() const;

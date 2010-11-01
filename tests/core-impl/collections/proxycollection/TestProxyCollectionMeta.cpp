@@ -437,6 +437,7 @@ public:
             , endCallcount(0) {}
     virtual bool isEditable() const { return true; }
     virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
+    virtual void setAlbumArtist( const QString &newAlbumArtist ) { Q_UNUSED( newAlbumArtist ) }
     virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
     virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ) };
     virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ) };

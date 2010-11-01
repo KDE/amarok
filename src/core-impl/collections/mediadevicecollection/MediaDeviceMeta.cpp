@@ -48,6 +48,7 @@ class EditCapabilityMediaDevice : public Capabilities::EditCapability
 
         virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
@@ -464,6 +465,41 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 }
 
 void
+MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
+{
+    DEBUG_BLOCK
+
+    if( m_album.isNull() || newAlbumArtist.isEmpty() )
+        return;
+
+    MediaDeviceArtistPtr artistPtr;
+    ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
+    artistPtr = MediaDeviceArtistPtr::staticCast( m_album->albumArtist() );
+
+    if( !artistPtr.isNull() )
+    {
+        artistPtr->remAlbum( m_album );
+        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
+            artistMap.remove( artistPtr->name() );
+    }
+
+    if( artistMap.contains( newAlbumArtist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( newAlbumArtist ) );
+    else
+    {
+        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( newAlbumArtist ) );
+        artistMap.insert( newAlbumArtist, ArtistPtr::staticCast( artistPtr ) );
+    }
+
+    artistPtr->addAlbum( m_album );
+    m_album->setAlbumArtist( artistPtr );
+
+    m_collection.data()->memoryCollection()->acquireWriteLock();
+    m_collection.data()->memoryCollection()->setArtistMap( artistMap );
+    m_collection.data()->memoryCollection()->releaseLock();
+}
+
+void
 MediaDeviceTrack::setArtist( const QString &newArtist )
 {
     DEBUG_BLOCK
@@ -480,7 +516,7 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
     {
         artistPtr->remTrack( track );
         // if artist's tracklist is empty, remove artist from artistmap
-        if( artistPtr->tracks().isEmpty() )
+        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
             artistMap.remove( artistPtr->name() );
     }
 

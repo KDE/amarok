@@ -520,6 +520,17 @@ SqlTrack::score() const
 }
 
 void
+SqlTrack::setAlbumArtist( const QString &newAlbumArtist )
+{
+    if( m_album.isNull() )
+        return;
+
+    m_cache.insert( Meta::Field::ALBUMARTIST, ArtistHelper::realTrackArtist( newAlbumArtist ) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+void
 SqlTrack::setScore( double newScore )
 {
     QWriteLocker locker( &m_lock );
@@ -854,14 +865,17 @@ SqlTrack::commitMetaDataChanges()
         // new artist.
         if( m_album &&
             m_album->hasAlbumArtist() &&
-            !m_cache.contains( Meta::Field::ALBUM ) )
+            !m_cache.contains( Meta::Field::ALBUM ) &&
+            !m_cache.contains( Meta::Field::ALBUM_ID ) &&
+            !m_cache.contains( Meta::Field::ALBUMARTIST ) )
             m_cache.insert( Meta::Field::ALBUM, m_album->name() );
 
         collectionChanged = true;
     }
 
     if( m_cache.contains( Meta::Field::ALBUM ) ||
-        m_cache.contains( Meta::Field::ALBUM_ID ) )
+        m_cache.contains( Meta::Field::ALBUM_ID ) ||
+        m_cache.contains( Meta::Field::ALBUMARTIST ) )
     {
         oldAlbum = static_cast<SqlAlbum*>(m_album.data());
 
@@ -871,12 +885,22 @@ SqlTrack::commitMetaDataChanges()
         {
             //the album should remain a compilation after renaming it
             int artistId = 0;
-            if( m_album->hasAlbumArtist() )
+            if( m_cache.contains( Meta::Field::ALBUMARTIST ) )
             {
-                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+                QString albumArtist = m_cache.value( Meta::Field::ALBUMARTIST ).toString();
+                if( !albumArtist.isEmpty() && albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) )
+                    artistId = KSharedPtr< SqlArtist >::staticCast(
+                                           m_collection->registry()->getArtist( albumArtist )
+                                                                  )->id();
             }
-            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
+            else if( m_album->hasAlbumArtist() )
+                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+
+            m_album = m_collection->registry()->getAlbum( m_cache.contains( Meta::Field::ALBUM )
+                                                                  ? m_cache.value( Meta::Field::ALBUM ).toString()
+                                                                  : m_album->name(), -1, artistId );
         }
+
         newAlbum = static_cast<SqlAlbum*>(m_album.data());
 
         // copy the image BUG: 203211
@@ -984,7 +1008,8 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         if( fields.contains( Meta::Field::ARTIST ) )
             tags += QString( ",artist=%1" ).arg( QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() ) );
         if( fields.contains( Meta::Field::ALBUM ) ||
-            fields.contains( Meta::Field::ALBUM_ID ) )
+            fields.contains( Meta::Field::ALBUM_ID ) ||
+            fields.contains( Meta::Field::ALBUMARTIST ) )
             tags += QString( ",album=%1" ).arg( QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() ) );
         if( fields.contains( Meta::Field::GENRE ) )
             tags += QString( ",genre=%1" ).arg( QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() ) );
@@ -1674,7 +1699,7 @@ SqlAlbum::isCompilation() const
 bool
 SqlAlbum::hasAlbumArtist() const
 {
-    return albumArtist();
+    return !albumArtist().isNull();
 }
 
 Meta::ArtistPtr
