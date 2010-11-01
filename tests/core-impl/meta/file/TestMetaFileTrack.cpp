@@ -384,36 +384,36 @@ void TestMetaFileTrack::testBitrate()
 
 void TestMetaFileTrack::testSetGetLastPlayed()
 {
-    QCOMPARE( m_track->lastPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_track->lastPlayed(), QDateTime() ); // portability?
 
-    m_track->setLastPlayed( 0 );
-    QCOMPARE( m_track->lastPlayed(), 0U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(0) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 0U );
 
-    m_track->setLastPlayed( 1 );
-    QCOMPARE( m_track->lastPlayed(), 1U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(1) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 1U );
 
-    m_track->setLastPlayed( 23 );
-    QCOMPARE( m_track->lastPlayed(), 23U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(23) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 23U );
 
-    m_track->setLastPlayed( 4294967295U );
-    QCOMPARE( m_track->lastPlayed(), 4294967295U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(4294967295U) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 4294967295U );
 }
 
 void TestMetaFileTrack::testSetGetFirstPlayed()
 {
-    QCOMPARE( m_track->firstPlayed(), 4294967295U );
+    QCOMPARE( m_track->firstPlayed(), QDateTime() );
 
-    m_track->setFirstPlayed( 0 );
-    QCOMPARE( m_track->firstPlayed(), 0U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(0) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 0U );
 
-    m_track->setFirstPlayed( 1 );
-    QCOMPARE( m_track->firstPlayed(), 1U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(1) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 1U );
 
-    m_track->setFirstPlayed( 23 );
-    QCOMPARE( m_track->firstPlayed(), 23U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(23) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 23U );
 
-    m_track->setFirstPlayed( 4294967295U );
-    QCOMPARE( m_track->firstPlayed(), 4294967295U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(4294967295U) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 4294967295U );
 }
 
 void TestMetaFileTrack::testSetGetPlayCount()

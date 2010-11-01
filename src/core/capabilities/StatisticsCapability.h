@@ -20,6 +20,8 @@
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
+#include <QDateTime>
+
 namespace Capabilities
 {
     class AMAROK_CORE_EXPORT StatisticsCapability : public Capabilities::Capability
@@ -32,8 +34,8 @@ namespace Capabilities
 
             virtual void setScore( const int score ) = 0;
             virtual void setRating( const int rating ) = 0;
-            virtual void setFirstPlayed( const uint time ) = 0;
-            virtual void setLastPlayed( const uint time ) = 0;
+            virtual void setFirstPlayed( const QDateTime &time ) = 0;
+            virtual void setLastPlayed( const QDateTime &time ) = 0;
             virtual void setPlayCount( const int playcount ) = 0;
 
             /** The track object should not store changed meta data immediately but cache the

@@ -141,7 +141,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+        virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
@@ -164,7 +164,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
         virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
         virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed );
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );

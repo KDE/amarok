@@ -183,7 +183,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual void setComposer( const QString &newComposer );
 
         virtual YearPtr year() const;
-        virtual void setYear( const QString &newYear );
+        virtual void setYear( int newYear );
 
         virtual void setTitle( const QString &newTitle );
 
@@ -213,8 +213,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
-        virtual uint firstPlayed() const;
+        virtual QDateTime lastPlayed() const;
+        virtual QDateTime firstPlayed() const;
         virtual int playCount() const;
 
         virtual void finishedPlaying( double playedFraction );

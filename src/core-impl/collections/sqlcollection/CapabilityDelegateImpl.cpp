@@ -87,7 +87,7 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
@@ -116,11 +116,11 @@ class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
             if( rating > 0 ) // don't reset it
                 m_track->setRating( rating );
         }
-        virtual void setFirstPlayed( const uint time ) {
+        virtual void setFirstPlayed( const QDateTime &time ) {
             if( time < m_track->firstPlayed() ) // only update if older
                 m_track->setFirstPlayed( time );
         }
-        virtual void setLastPlayed( const uint time ) {
+        virtual void setLastPlayed( const QDateTime &time ) {
             if( time > m_track->lastPlayed() ) // only update if newer
                 m_track->setLastPlayed( time );
         }

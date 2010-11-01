@@ -22,11 +22,11 @@
 
 #include "core/capabilities/Capability.h"
 
-#include <QDateTime>
 #include <QList>
 #include <QMetaType>
 #include <QImage>
 #include <QPixmap>
+#include <QDateTime>
 #include <QSet>
 #include <QSharedData>
 #include <QString>
@@ -235,16 +235,16 @@ namespace Meta
             /** Returns the bitrate o this track */
             virtual int bitrate() const = 0;
             /** Returns the time when the track was added to the collection,
-                or an invalid QDateTime instance if the time is not known */
+                or an invalid QDateTime if the time is not known. */
             virtual QDateTime createDate() const;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
-            /** Returns the time the song was last played, or 0 if it has not been played yet */
-            virtual uint lastPlayed() const = 0;
-            /** Returns the time the song was first played, or 0 if it has not been played yet */
-            virtual uint firstPlayed() const;
+            /** Returns the time the song was last played, or an invalid QDateTime if it has not been played yet */
+            virtual QDateTime lastPlayed() const;
+            /** Returns the time the song was first played, or an invalid QDateTime if it has not been played yet */
+            virtual QDateTime firstPlayed() const;
             /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
             /**
@@ -440,6 +440,12 @@ namespace Meta
         public:
 
             virtual ~Year() {}
+
+            /** Returns the year this object represents.
+                A number of 0 is considered unset.
+            */
+            virtual int year() const { return name().toInt(); }
+
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
 

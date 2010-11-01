@@ -51,7 +51,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         QString cachedName;
         QString cachedGenre;
         QString cachedComposer;
-        QString cachedYear;
+        int cachedYear;
         qint64 cachedLength;
         qreal  cachedBpm;
         int cachedTrackNumber;
@@ -388,7 +388,7 @@ public:
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->name();
         else if( d )
-            return d->cachedYear;
+            return QString::number(d->cachedYear);
         else
             return QString();
     }

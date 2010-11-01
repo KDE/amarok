@@ -59,7 +59,7 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
@@ -83,8 +83,8 @@ class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
 
         virtual void setScore( const int score ) { m_track->setScore( score ); }
         virtual void setRating( const int rating ) { m_track->setRating( rating ); }
-        virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
-        virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
+        virtual void setFirstPlayed( const QDateTime &time ) { m_track->setFirstPlayed( time ); }
+        virtual void setLastPlayed( const QDateTime &time ) { m_track->setLastPlayed( time ); }
         virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
         virtual void beginStatisticsUpdate() {};
         virtual void endStatisticsUpdate() {};
@@ -388,12 +388,12 @@ Track::setComposer( const QString& newComposer )
 }
 
 void
-Track::setYear( const QString& newYear )
+Track::setYear( int newYear )
 {
     d->changes.insert( Meta::Field::YEAR, QVariant( newYear ) );
     if( !d->batchUpdate )
     {
-        d->m_data.year = newYear.toInt();
+        d->m_data.year = newYear;
         d->writeMetaData();
         notifyObservers();
     }
@@ -556,39 +556,42 @@ Track::bitrate() const
 QDateTime
 Track::createDate() const
 {
-    return d->m_data.created;
+    if( d->m_data.created > 0 )
+        return QDateTime::fromTime_t(d->m_data.created);
+    else
+        return QDateTime();
 }
 
-uint
+QDateTime
 Track::lastPlayed() const
 {
     if( d->provider )
-        return d->provider->lastPlayed().toTime_t();
+        return d->provider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void
-Track::setLastPlayed( uint newTime )
+Track::setLastPlayed( const QDateTime &newTime )
 {
     if( d->provider )
-        d->provider->setLastPlayed( QDateTime::fromTime_t( newTime ) );
+        d->provider->setLastPlayed( newTime );
 }
 
-uint
+QDateTime
 Track::firstPlayed() const
 {
     if( d->provider )
-        return d->provider->firstPlayed().toTime_t();
+        return d->provider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void
-Track::setFirstPlayed( uint newTime )
+Track::setFirstPlayed( const QDateTime &newTime )
 {
     if( d->provider )
-        d->provider->setFirstPlayed( QDateTime::fromTime_t( newTime ) );
+        d->provider->setFirstPlayed( newTime );
 }
 
 int

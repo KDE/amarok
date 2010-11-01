@@ -242,7 +242,7 @@ ConstraintTypes::TagMatch::Comparer::compareStr( const QString& test,
 
 
 double
-ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
+ConstraintTypes::TagMatch::Comparer::compareDate( const QDateTime test,
                                                   const int comparison,
                                                   const QVariant& targetVar,
                                                   const double strictness ) const
@@ -250,30 +250,30 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
     const double weight = m_dateWeight;
 
     int comp = comparison;
-    uint target = 0;
+    QDateTime target;
     if ( comparison == CompareDateWithin ) {
         comp = CompareDateAfter;
         QDateTime now = QDateTime::currentDateTime();
         DateRange r = targetVar.value<DateRange>();
         switch ( r.second ) {
             case 0:
-                target = now.addDays( -1 * r.first ).toTime_t();
+                target = now.addDays( -1 * r.first );
                 break;
             case 1:
-                target = now.addMonths( -1 * r.first ).toTime_t();
+                target = now.addMonths( -1 * r.first );
                 break;
             case 2:
-                target = now.addYears( -1 * r.first ).toTime_t();
+                target = now.addYears( -1 * r.first );
                 break;
             default:
                 break;
         }
     } else {
-        target = targetVar.value<uint>();
+        target = QDateTime::fromTime_t(targetVar.value<uint>());
     }
 
-    const double dte = static_cast<double>(test);
-    const double dta = static_cast<double>(target);
+    const double dte = static_cast<double>(test.toTime_t());
+    const double dta = static_cast<double>(target.toTime_t());
     if ( comp == CompareDateOn ) {
         // fuzzy equals -- within 1%, or within 10.0
         if ( ( abs( dte - dta ) < ( abs( dte + dta ) / 200.0 ) ) || ( abs( dte - dta ) < 10.0 ) ) {

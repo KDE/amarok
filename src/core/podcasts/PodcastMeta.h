@@ -136,7 +136,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ); }
         virtual int discNumber() const { return 0; }
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
-        virtual uint lastPlayed() const { return 0; }
+        virtual QDateTime lastPlayed() const { return QDateTime(); }
         virtual int playCount() const { return 0; }
         virtual QString mimeType() const { return m_mimeType; }
 

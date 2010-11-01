@@ -97,7 +97,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual Meta::ComposerPtr composer() const;
         virtual void setComposer( const QString &newComposer );
         virtual Meta::YearPtr year() const;
-        virtual void setYear( const QString &newYear );
+        virtual void setYear( int newYear );
         virtual Meta::GenrePtr genre() const;
         virtual void setGenre( const QString &newGenre );
 
@@ -141,11 +141,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual uint firstPlayed() const;
-        virtual void setFirstPlayed( const uint newTime );
+        virtual QDateTime firstPlayed() const;
+        virtual void setFirstPlayed( const QDateTime &newTime );
 
-        virtual uint lastPlayed() const;
-        virtual void setLastPlayed( const uint newTime );
+        virtual QDateTime lastPlayed() const;
+        virtual void setLastPlayed( const QDateTime &newTime );
 
         virtual int playCount() const;
         virtual void setPlayCount( const int newCount );
@@ -236,8 +236,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         qint64 m_filesize;
         int m_trackNumber;
         int m_discNumber;
-        uint m_lastPlayed;
-        uint m_firstPlayed;
+        QDateTime m_lastPlayed;
+        QDateTime m_firstPlayed;
         int m_playCount;
         int m_bitrate;
         int m_sampleRate;

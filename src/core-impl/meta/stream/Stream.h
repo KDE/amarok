@@ -54,7 +54,7 @@ namespace MetaStream
             virtual void setArtist( const QString &newArtist );
             virtual void setGenre( const QString &newGenre );
             virtual void setComposer( const QString &newComposer );
-            virtual void setYear( const QString &newYear );
+            virtual void setYear( int newYear );
 
             virtual void setTitle( const QString &newTitle );
 
@@ -80,7 +80,6 @@ namespace MetaStream
             virtual int sampleRate() const;
             virtual int bitrate() const;
 
-            virtual uint lastPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;

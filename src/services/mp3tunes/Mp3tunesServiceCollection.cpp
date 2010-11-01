@@ -121,7 +121,7 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
     serviceTrack->setDownloadableUrl( track.downloadUrl() );
     serviceTrack->setLength( track.trackLength() );
     serviceTrack->setTrackNumber( track.trackNumber() );
-    serviceTrack->setYear( QString::number( track.albumYear() ) );
+    serviceTrack->setYear( track.albumYear() );
 
     //Building a Meta::Album
     title = track.albumTitle().isEmpty() ? "Unknown" :  track.albumTitle();

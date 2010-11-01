@@ -52,7 +52,7 @@ class EditCapabilityMediaDevice : public Capabilities::EditCapability
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
@@ -105,7 +105,6 @@ MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collecti
     , m_samplerate( 0 )
     , m_trackNumber( 0 )
     , m_playCount( 0 )
-    , m_lastPlayed( 0 )
     , m_rating( 0 )
     , m_bpm( 0 )
     , m_playableUrl()
@@ -323,14 +322,14 @@ MediaDeviceTrack::setPlayCount( const int newCount )
     m_playCount = newCount;
 }
 
-uint
+QDateTime
 MediaDeviceTrack::lastPlayed() const
 {
     return m_lastPlayed;
 }
 
 void
-MediaDeviceTrack::setLastPlayed( const uint newTime )
+MediaDeviceTrack::setLastPlayed( const QDateTime &newTime )
 {
     m_lastPlayed = newTime;
 }
@@ -638,7 +637,7 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
 }
 
 void
-MediaDeviceTrack::setYear( const QString &newYear )
+MediaDeviceTrack::setYear( int newYear )
 {
     DEBUG_BLOCK
 
@@ -655,7 +654,7 @@ MediaDeviceTrack::setYear( const QString &newYear )
         yearPtr->remTrack( track );
         // if year's tracklist is empty, remove year from yearmap
         if( yearPtr->tracks().isEmpty() )
-            yearMap.remove( yearPtr->name() );
+            yearMap.remove( yearPtr->year() );
     }
 
     // change to a new year
@@ -669,7 +668,7 @@ MediaDeviceTrack::setYear( const QString &newYear )
     }
     else
     {
-        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( newYear ) );
+        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( QString::number(newYear) ) );
         yearMap.insert( newYear, YearPtr::staticCast( yearPtr ) );
     }
 

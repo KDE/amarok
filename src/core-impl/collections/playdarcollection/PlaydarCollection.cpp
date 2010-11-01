@@ -326,9 +326,9 @@ namespace Collections
             track->setComposer( composerPtr );
             
             Meta::PlaydarYearPtr yearPtr;
-            if( m_memoryCollection->yearMap().contains( track->year()->name() ) )
+            if( m_memoryCollection->yearMap().contains( track->year()->year() ) )
             {
-                Meta::YearPtr year = m_memoryCollection->yearMap().value( track->year()->name() );
+                Meta::YearPtr year = m_memoryCollection->yearMap().value( track->year()->year() );
                 yearPtr = Meta::PlaydarYearPtr::staticCast( year );
             }
             else

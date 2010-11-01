@@ -80,7 +80,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+        virtual void setYear ( int newYear );
 
         virtual QString title() const;
         virtual void setTitle( const QString &newTitle );
@@ -114,8 +114,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
-        void setLastPlayed( const uint newTime );
+        virtual QDateTime lastPlayed() const;
+        void setLastPlayed( const QDateTime &newTime );
 
         virtual int playCount() const;
         void setPlayCount( const int newCount );
@@ -172,7 +172,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         int m_samplerate;
         int m_trackNumber;
         int m_playCount;
-        uint m_lastPlayed;
+        QDateTime m_lastPlayed;
         int m_rating;
         qreal m_bpm;
         QString m_displayUrl;

@@ -64,7 +64,7 @@ namespace MetaProxy
             virtual Meta::ComposerPtr composer() const;
             virtual void setComposer( const QString &composer );
             virtual Meta::YearPtr year() const;
-            virtual void setYear( const QString &year );
+            virtual void setYear( int year );
 
             virtual qreal bpm() const;
             virtual void setBpm( const qreal bpm );
@@ -88,8 +88,8 @@ namespace MetaProxy
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
 
-            virtual uint firstPlayed() const;
-            virtual uint lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
+            virtual QDateTime lastPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;

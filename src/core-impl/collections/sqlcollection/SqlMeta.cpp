@@ -163,12 +163,12 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_length = (*(iter++)).toInt();
     m_filesize = (*(iter++)).toInt();
     m_sampleRate = (*(iter++)).toInt();
-    m_firstPlayed = (*(iter++)).toInt();
-    m_lastPlayed = (*(iter++)).toUInt();
+    m_firstPlayed = QDateTime::fromTime_t((*(iter++)).toUInt());
+    m_lastPlayed = QDateTime::fromTime_t((*(iter++)).toUInt());
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     m_bpm = (*(iter++)).toFloat();
-    m_createDate = QDateTime::fromTime_t( (*(iter++)).toUInt() );
+    m_createDate = QDateTime::fromTime_t((*(iter++)).toUInt());
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain
@@ -410,11 +410,11 @@ SqlTrack::year() const
 }
 
 void
-SqlTrack::setYear( const QString &newYear )
+SqlTrack::setYear( int newYear )
 {
     QWriteLocker locker( &m_lock );
 
-    if ( m_year && m_year->name() == newYear )
+    if ( m_year && m_year->year() == newYear )
         return;
 
     m_cache.insert( Meta::Field::YEAR, newYear );
@@ -677,7 +677,7 @@ SqlTrack::setDiscNumber( int newDiscNumber )
         commitMetaDataChanges();
 }
 
-uint
+QDateTime
 SqlTrack::lastPlayed() const
 {
     QReadLocker locker( &m_lock );
@@ -685,7 +685,7 @@ SqlTrack::lastPlayed() const
 }
 
 void
-SqlTrack::setLastPlayed( const uint newTime )
+SqlTrack::setLastPlayed( const QDateTime &newTime )
 {
     QWriteLocker locker( &m_lock );
 
@@ -700,7 +700,7 @@ SqlTrack::setLastPlayed( const uint newTime )
     }
 }
 
-uint
+QDateTime
 SqlTrack::firstPlayed() const
 {
     QReadLocker locker( &m_lock );
@@ -708,7 +708,7 @@ SqlTrack::firstPlayed() const
 }
 
 void
-SqlTrack::setFirstPlayed( const uint newTime )
+SqlTrack::setFirstPlayed( const QDateTime &newTime )
 {
     QWriteLocker locker( &m_lock );
 
@@ -837,9 +837,9 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
         m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
     if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
-        m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
+        m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toDateTime();
     if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
-        m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
+        m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toDateTime();
     if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
         m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
     if( m_cache.contains( Meta::Field::DISCNUMBER ) )
@@ -1049,15 +1049,15 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
     QStringList count = m_collection->sqlStorage()->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
     if( count[0].toInt() == 0 )
     {
-        m_firstPlayed = QDateTime::currentDateTime().toTime_t();
+        m_firstPlayed = QDateTime::currentDateTime();
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
         data = data.arg( QString::number( urlId )
                 , QString::number( m_rating )
                 , QString::number( m_score )
                 , QString::number( m_playCount )
-                , QString::number( m_lastPlayed )
-                , QString::number( m_firstPlayed ) );
+                , QString::number( m_lastPlayed.toTime_t() )
+                , QString::number( m_firstPlayed.toTime_t() ) );
         insert = insert.arg( data );
         m_collection->sqlStorage()->insert( insert, "statistics" );
     }
@@ -1072,10 +1072,10 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
         if( fields.contains( Meta::Field::PLAYCOUNT ) )
             stats += QString( ",playcount=%1" ).arg( QString::number( m_playCount ) );
         if( fields.contains( Meta::Field::LAST_PLAYED ) )
-            stats += QString( ",accessdate=%1" ).arg( QString::number( m_lastPlayed ) );
+            stats += QString( ",accessdate=%1" ).arg( QString::number( m_lastPlayed.toTime_t() ) );
 
         if( m_writeAllStatisticsFields )
-            stats += QString(",createdate=%1").arg( QString::number( m_firstPlayed ) );
+            stats += QString(",createdate=%1").arg( QString::number( m_firstPlayed.toTime_t() ) );
 
         update = update.arg( stats, QString::number( urlId ) );
 
@@ -1099,9 +1099,9 @@ SqlTrack::finishedPlaying( double playedFraction )
     if( doUpdate )
     {
         setPlayCount( playCount() + 1 );
-        if( firstPlayed() == 0 )
-            setFirstPlayed( QDateTime::currentDateTime().toTime_t() );
-        setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+        if( !firstPlayed().isValid() )
+            setFirstPlayed( QDateTime::currentDateTime() );
+        setLastPlayed( QDateTime::currentDateTime() );
     }
 
     setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );

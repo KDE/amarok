@@ -150,7 +150,7 @@ MtpReadCapability::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
     return m_handler.data()->libGetPlayCount( track );
 }
 
-uint
+QDateTime
 MtpReadCapability::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler.data()->libGetLastPlayed( track );

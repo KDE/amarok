@@ -269,16 +269,16 @@ NepomukTrack::discNumber() const
     return m_discNumber;
 }
 
-uint
+QDateTime
 NepomukTrack::firstPlayed() const
 {
-    return m_firstPlayed.toTime_t();
+    return m_firstPlayed;
 }
 
-uint
+QDateTime
 NepomukTrack::lastPlayed() const
 {
-    return m_lastPlayed.toTime_t();
+    return m_lastPlayed;
 }
 
 int

@@ -102,8 +102,6 @@ namespace Meta
             QDateTime createDate() const;
             int trackNumber() const;
             int discNumber() const;
-            uint lastPlayed() const;
-            uint firstPlayed() const;
             int playCount() const;
             
             QString type() const;

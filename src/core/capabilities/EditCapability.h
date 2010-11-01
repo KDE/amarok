@@ -44,7 +44,7 @@ namespace Capabilities
 
             virtual void setGenre( const QString &newGenre ) = 0;
 
-            virtual void setYear( const QString &newYear ) = 0;
+            virtual void setYear( int newYear ) = 0;
 
             virtual void setTitle( const QString &newTitle ) = 0;
 

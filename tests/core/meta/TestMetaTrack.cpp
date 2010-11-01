@@ -172,12 +172,12 @@ void TestMetaTrack::testDiscNumber()
 
 void TestMetaTrack::testLastPlayed()
 {
-    QCOMPARE( m_testTrack1->lastPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->lastPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testFirstPlayed()
 {
-    QCOMPARE( m_testTrack1->firstPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->firstPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testPlayCount()

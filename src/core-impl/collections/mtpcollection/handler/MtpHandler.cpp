@@ -1063,12 +1063,13 @@ MtpHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_mtpTrackHash.value( track )->usecount;
 }
-uint
+
+QDateTime
 MtpHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track );
     // NOTE: defaulting, since not provided
-    return 0;
+    return QDateTime();
 }
 
 // TODO: implement rating
@@ -1205,8 +1206,9 @@ MtpHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 {
     m_mtpTrackHash.value( track )->usecount = playcount;
 }
+
 void
-MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
     Q_UNUSED( track )
     Q_UNUSED( lastplayed )

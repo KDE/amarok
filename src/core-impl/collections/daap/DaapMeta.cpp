@@ -145,7 +145,7 @@ DaapTrack::setGenre( const QString &newGenre )
 }
 
 void
-DaapTrack::setYear( const QString &newYear )
+DaapTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -247,12 +247,6 @@ DaapTrack::setDiscNumber( int newDiscNumber )
 
 int
 DaapTrack::playCount() const
-{
-    return 0;
-}
-
-uint
-DaapTrack::lastPlayed() const
 {
     return 0;
 }

@@ -201,14 +201,14 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( track->discNumber() )
             map["xesam:discNumber"] = track->discNumber();
 
-        if( track->firstPlayed() > 0 )
-            map["xesam:firstUsed"] = QDateTime::fromTime_t(track->firstPlayed()).toString(Qt::ISODate);
+        if( track->firstPlayed().isValid() )
+            map["xesam:firstUsed"] = track->firstPlayed().toString(Qt::ISODate);
 
         if( track->genre() )
             map["xesam:genre"] = QStringList() << track->genre()->name();
 
-        if( track->lastPlayed() > 0 )
-            map["xesam:lastUsed"] = QDateTime::fromTime_t(track->lastPlayed()).toString(Qt::ISODate);
+        if( track->lastPlayed().isValid() )
+            map["xesam:lastUsed"] = track->lastPlayed().toString(Qt::ISODate);
 
         map["xesam:title"] = track->prettyName();
 
@@ -258,8 +258,8 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     QString composer = metadata.contains( Meta::Field::COMPOSER ) ?
                             metadata.value( Meta::Field::COMPOSER ).toString() : QString();
     ec->setComposer( composer );
-    QString year = metadata.contains( Meta::Field::YEAR ) ?
-                            metadata.value( Meta::Field::YEAR ).toString() : QString();
+    int year = metadata.contains( Meta::Field::YEAR ) ?
+                            metadata.value( Meta::Field::YEAR ).toInt() : 0;
     ec->setYear( year );
 
     ec->endMetaDataUpdate();

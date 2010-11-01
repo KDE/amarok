@@ -29,6 +29,7 @@
 #include <kio/jobclasses.h>
 
 #include <QFile>
+#include <QDateTime>
 
 ITunesImporterWorker::ITunesImporterWorker()
     : ThreadWeaver::Job()
@@ -41,7 +42,8 @@ void
 ITunesImporterWorker::readTrackElement()
 {
     QString title, artist, album, url;
-    int year = -1, bpm = -1, playcount = -1, rating = -1, lastplayed = -1;
+    int year = -1, bpm = -1, playcount = -1, rating = -1;
+    QDateTime lastplayed;
     
     while( !( isEndElement() && name() == "dict" ) )
     {
@@ -79,7 +81,7 @@ ITunesImporterWorker::readTrackElement()
         } else if( name() == "key" && text == "Play Date" )
         { 
             readNext(); // skip past the </key> and to the data tag
-            lastplayed = readElementText().toInt(); // itunes rates 0-100
+            lastplayed = QDateTime::fromTime_t(readElementText().toInt());
         } else if( name() == "key" && text == "Location" )
         {
             readNext(); // skip past the </key> and to the data tag
@@ -102,7 +104,7 @@ ITunesImporterWorker::readTrackElement()
             ec->beginStatisticsUpdate();
             if( rating != -1 ) 
                 ec->setRating( rating );
-            if( lastplayed > 0 )
+            if( lastplayed.isValid() )
                 ec->setLastPlayed( lastplayed );
             if( playcount != -1 ) 
                 ec->setPlayCount( playcount );

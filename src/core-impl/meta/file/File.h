@@ -59,7 +59,7 @@ namespace MetaFile
             virtual void setArtist( const QString &newArtist );
             virtual void setGenre( const QString &newGenre );
             virtual void setComposer( const QString &newComposer );
-            virtual void setYear( const QString &newYear );
+            virtual void setYear( int newYear );
 
             virtual void setTitle( const QString &newTitle );
 
@@ -86,10 +86,10 @@ namespace MetaFile
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
-            virtual uint lastPlayed() const;
-            virtual void setLastPlayed( uint newTime );
-            virtual uint firstPlayed() const;
-            virtual void setFirstPlayed( uint newTime );
+            virtual QDateTime lastPlayed() const;
+            virtual void setLastPlayed( const QDateTime &newTime );
+            virtual QDateTime firstPlayed() const;
+            virtual void setFirstPlayed( const QDateTime &newTime );
             virtual int playCount() const;
             virtual void setPlayCount( int newCount );
 

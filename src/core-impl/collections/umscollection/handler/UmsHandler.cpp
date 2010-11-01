@@ -1062,7 +1062,7 @@ UmsHandler::updateTrack( Meta::MediaDeviceTrackPtr &track )
     if ( track->genre() )
         metafile->setGenre( track->genre()->name() );
     if ( track->year() )
-        metafile->setYear( track->year()->name() );
+        metafile->setYear( track->year()->year() );
     metafile->setTrackNumber( track->trackNumber() );
     metafile->setComment( track->comment() );
     metafile->setDiscNumber( track->discNumber() );

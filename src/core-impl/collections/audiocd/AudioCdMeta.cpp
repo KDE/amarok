@@ -141,7 +141,7 @@ AudioCdTrack::setGenre( const QString &newGenre )
 }
 
 void
-AudioCdTrack::setYear( const QString &newYear )
+AudioCdTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -238,12 +238,6 @@ AudioCdTrack::setDiscNumber( int newDiscNumber )
 
 int
 AudioCdTrack::playCount() const
-{
-    return 0;
-}
-
-uint
-AudioCdTrack::lastPlayed() const
 {
     return 0;
 }

@@ -22,7 +22,6 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QDateTime>
 #include <QObject>
 #include <QWeakPointer>
 #include <QTimer>
@@ -51,7 +50,7 @@ class EditCapabilityProxy : public Capabilities::EditCapability
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
@@ -250,6 +249,7 @@ MetaProxy::Track::setComposer( const QString &composer )
 {
     d->cachedComposer = composer;
 }
+
 Meta::YearPtr
 MetaProxy::Track::year() const
 {
@@ -257,7 +257,7 @@ MetaProxy::Track::year() const
 }
 
 void
-MetaProxy::Track::setYear( const QString &year )
+MetaProxy::Track::setYear( int year )
 {
     d->cachedYear = year;
 }
@@ -384,20 +384,20 @@ MetaProxy::Track::createDate() const
     return QDateTime();
 }
 
-uint
+QDateTime
 MetaProxy::Track::firstPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->firstPlayed();
-    return 0;
+    return QDateTime();
 }
 
-uint
+QDateTime
 MetaProxy::Track::lastPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->lastPlayed();
-    return 0;
+    return QDateTime();
 }
 
 int

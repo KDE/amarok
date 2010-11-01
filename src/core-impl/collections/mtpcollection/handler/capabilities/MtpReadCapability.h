@@ -63,7 +63,7 @@ class MtpReadCapability : public ReadCapability
         virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+        virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );

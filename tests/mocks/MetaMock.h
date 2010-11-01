@@ -20,6 +20,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
+#include <QDateTime>
 #include <QVariantMap>
 
 /**
@@ -55,8 +56,8 @@ public:
     QDateTime createDate() const { return QDateTime(); }    //field missing
     int trackNumber() const { return m_data.value( Meta::Field::TRACKNUMBER ).toInt(); }
     int discNumber() const { return m_data.value( Meta::Field::DISCNUMBER ).toInt(); }
-    uint firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime().toTime_t(); }
-    uint lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime().toTime_t(); }
+    QDateTime firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
+    QDateTime lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
     int playCount() const { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }
     QString type() const { return "Mock"; }
     double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }

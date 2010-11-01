@@ -793,7 +793,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                     break;
                 }
             case Year:
-                ec->setYear( value );
+                ec->setYear( value.toInt() );
                 break;
             case Bpm:
                 ec->setBpm( value.toFloat() );

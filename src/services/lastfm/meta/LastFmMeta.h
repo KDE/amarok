@@ -80,8 +80,8 @@ namespace LastFm
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
-            virtual uint lastPlayed() const;
-            virtual uint firstPlayed() const;
+            virtual QDateTime lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;

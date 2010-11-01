@@ -167,7 +167,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
             {
                 Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
                 if( ec )
-                    ec->setYear( value.toString() );
+                    ec->setYear( value.toInt() );
                 delete ec;
             }
             emit dataChanged( index, index );

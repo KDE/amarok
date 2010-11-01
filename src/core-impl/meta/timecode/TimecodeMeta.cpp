@@ -196,12 +196,6 @@ TimecodeTrack::discNumber() const
     return m_discNumber;
 }
 
-uint
-TimecodeTrack::lastPlayed() const
-{
-    return 0;
-}
-
 int
 TimecodeTrack::playCount() const
 {
@@ -243,10 +237,10 @@ TimecodeTrack::setGenre( const QString &newGenre )
 }
 
 void
-TimecodeTrack::setYear( const QString &newYear )
+TimecodeTrack::setYear( int newYear )
 {
     m_updatedFields |= YEAR_UPDATED;
-    m_fields.insert( YEAR_UPDATED, newYear );
+    m_fields.insert( YEAR_UPDATED, QString::number( newYear ) );
 }
 
 void

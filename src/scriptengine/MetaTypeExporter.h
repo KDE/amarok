@@ -49,7 +49,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( QString artist WRITE setArtist READ artist )
     Q_PROPERTY( QString composer WRITE setComposer READ composer )
     Q_PROPERTY( QString genre WRITE setGenre READ genre )
-    Q_PROPERTY( QString year WRITE setYear READ year )
+    Q_PROPERTY( int year WRITE setYear READ year )
     Q_PROPERTY( QString comment WRITE setComment READ comment )
     Q_PROPERTY( QString path READ path )
     Q_PROPERTY( bool isValid READ isValid )
@@ -83,7 +83,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         QString artist() const;
         QString composer() const;
         QString genre() const;
-        QString year() const;
+        int year() const;
         QString comment() const;
         QString path() const;
         bool isValid() const;
@@ -102,7 +102,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         void setArtist( QString artist );
         void setComposer( QString composer );
         void setGenre( QString genre );
-        void setYear( QString year );
+        void setYear( int year );
         void setComment( QString comment );
         void setLyrics( QString lyrics );
         void setTitle( const QString& name );

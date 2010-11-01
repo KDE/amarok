@@ -441,7 +441,7 @@ public:
     virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
     virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ) };
     virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ) };
-    virtual void setYear( const QString &newYear ) { Q_UNUSED( newYear ) };
+    virtual void setYear( int newYear ) { Q_UNUSED( newYear ) };
     virtual void setTitle( const QString &newTitle ) { Q_UNUSED( newTitle ) };
     virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ) };
     virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ) };

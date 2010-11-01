@@ -74,7 +74,9 @@ public:
     virtual int bitrate() const { return m_currentTrack->bitrate(); }
     virtual int trackNumber() const { return m_currentTrack->trackNumber(); }
     virtual int discNumber() const { return m_currentTrack->discNumber(); }
-    virtual uint lastPlayed() const { return m_currentTrack->lastPlayed(); }
+    // The logic is broken here. The playlist itself is last played at the earlies lastPlayed date of all tracks.
+    virtual QDateTime lastPlayed() const { return m_currentTrack->lastPlayed(); }
+    virtual QDateTime firstPlayed() const { return m_currentTrack->firstPlayed(); }
     virtual int playCount() const { return m_currentTrack->playCount(); }
 
     virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }

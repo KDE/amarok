@@ -252,9 +252,9 @@ TrackList YearMatcher::match( Collections::MemoryCollection *memColl )
     if( !m_year || !memColl )
         return TrackList();
     YearMap yearMap = memColl->yearMap();
-    if ( yearMap.contains( m_year->name() ) )
+    if ( yearMap.contains( m_year->year() ) )
     {
-        YearPtr year = yearMap.value( m_year->name() );
+        YearPtr year = yearMap.value( m_year->year() );
         TrackList matchingTracks = year->tracks();
         if ( isLast() )
             return matchingTracks;
@@ -270,9 +270,9 @@ TrackList YearMatcher::match( const TrackList &tracks )
     if( !m_year )
         return TrackList();
     TrackList matchingTracks;
-    QString name = m_year->name();
+    int year = m_year->year();
     foreach( TrackPtr track, tracks )
-        if ( track->year()->name() == name )
+        if ( track->year()->year() == year )
             matchingTracks.append( track );
     if ( isLast() || matchingTracks.count() == 0)
         return matchingTracks;

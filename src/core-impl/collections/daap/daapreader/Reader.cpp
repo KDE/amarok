@@ -331,7 +331,7 @@ Reader::parseSongList( const QByteArray &data )
     QString comment;
     QString album;
     QString genre;
-    QString year;
+    int year;
     qint32 trackNumber=0;
     qint32 songTime=0;
 
@@ -359,7 +359,7 @@ Reader::parseSongList( const QByteArray &data )
                 if ( QString( tag ) == "astn" )
                     trackNumber = shortData;
                 else if ( QString( tag ) == "asyr" )
-                     year = QString::number(shortData);
+                     year = shortData;
                 break;
             }
             case LONG:
@@ -451,7 +451,7 @@ Reader::parseSongList( const QByteArray &data )
 
 void
 Reader::addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
-                  const QString& comment, const QString& album, const QString& genre, const QString& year, const QString& format,
+                  const QString& comment, const QString& album, const QString& genre, int year, const QString& format,
                   qint32 trackNumber, qint32 songTime )
 {
     DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
@@ -499,7 +499,7 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
         yearPtr = DaapYearPtr::staticCast( m_yearMap.value( year ) );
     else
     {
-        yearPtr = DaapYearPtr( new DaapYear( year ) );
+        yearPtr = DaapYearPtr( new DaapYear( QString::number(year) ) );
         m_yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
     yearPtr->addTrack( track );

@@ -21,6 +21,8 @@
 #include "ReadCapabilityBase.h"
 #include "../../MediaDeviceMeta.h"
 
+#include <QDateTime>
+
 namespace Handler
 {
 
@@ -49,7 +51,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
         virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;

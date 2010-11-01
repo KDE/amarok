@@ -90,10 +90,10 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
 
             case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
             {
-                uint lastPlayed = m_model->trackAt( row )->lastPlayed();
-                if ( lastPlayed )
+                QDateTime lastPlayed = m_model->trackAt( row )->lastPlayed();
+                if( lastPlayed.isValid() )
                 {
-                    weight = QDateTime::fromTime_t( lastPlayed ).secsTo( QDateTime::currentDateTime() );
+                    weight = lastPlayed.secsTo( QDateTime::currentDateTime() );
                     if ( weight < 0 )    // If 'lastPlayed()' is nonsense, or the system clock has been set back:
                         weight = 1 * 60 * 60;    // "Nonsense" weight: 1 hour.
                 }

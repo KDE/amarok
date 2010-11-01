@@ -378,7 +378,7 @@ SqlPodcastEpisode::writeTagsToFile()
     ec->setAlbum( m_channel->title() );
     ec->setArtist( m_channel->author() );
     ec->setGenre( i18n( "Podcast" ) );
-    ec->setYear( QString::number( m_pubDate.date().year() ) );
+    ec->setYear( m_pubDate.date().year() );
     ec->endMetaDataUpdate();
 
     notifyObservers();

@@ -1052,8 +1052,8 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Rating:"), QString::number( static_cast<double>(m_currentTrack->rating())/2.0) );
 
     summaryText += body2cols.arg( i18n("Play Count:"), QString::number( m_currentTrack->playCount() ) );
-    QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
-    QDate lastPlayed = QDateTime::fromTime_t( m_currentTrack->lastPlayed() ).date();
+    QDate firstPlayed = m_currentTrack->firstPlayed().date();
+    QDate lastPlayed = m_currentTrack->lastPlayed().date();
     summaryText += body2cols.arg( i18n("First Played:"),
                    m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18nc( "When this track was first played", "Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
@@ -1694,7 +1694,7 @@ TagDialog::saveTags()
             if( data.contains( Meta::Field::COMPOSER ) )
                 ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
             if( data.contains( Meta::Field::YEAR ) )
-                ec->setYear( data.value( Meta::Field::YEAR ).toString() );
+                ec->setYear( data.value( Meta::Field::YEAR ).toInt() );
             if( data.contains( Meta::Field::TRACKNUMBER ) )
                 ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
             if( data.contains( Meta::Field::DISCNUMBER ) )

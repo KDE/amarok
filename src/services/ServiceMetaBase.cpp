@@ -344,7 +344,7 @@ ServiceTrack::setGenre( const QString &newGenre )
 }
 
 void
-ServiceTrack::setYear( const QString &newYear )
+ServiceTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -469,22 +469,22 @@ ServiceTrack::playCount() const
         return 0;
 }
 
-uint
+QDateTime
 ServiceTrack::lastPlayed() const
 {
     if( m_provider )
-        return m_provider->lastPlayed().toTime_t();
+        return m_provider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
-uint
+QDateTime
 ServiceTrack::firstPlayed() const
 {
     if( m_provider )
-        return m_provider->firstPlayed().toTime_t();
+        return m_provider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void

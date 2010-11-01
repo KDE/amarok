@@ -27,7 +27,7 @@ typedef QMap<QString, Meta::ArtistPtr> ArtistMap;
 typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 typedef QMap<QString, Meta::GenrePtr> GenreMap;
 typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
-typedef QMap<QString, Meta::YearPtr> YearMap;
+typedef QMap<int, Meta::YearPtr> YearMap;
 typedef QMap<QString, Meta::LabelPtr> LabelMap;
 typedef QHash<Meta::LabelPtr, Meta::TrackList> LabelToTrackMap;
 
@@ -60,7 +60,7 @@ class MemoryCollection
         void setComposerMap( const ComposerMap &map ) { m_composerMap = map; }
         void addComposer( Meta::ComposerPtr composerPtr ) { m_composerMap.insert( composerPtr->name(), composerPtr ); }
         void setYearMap( const YearMap &map ) { m_yearMap = map; }
-        void addYear( Meta::YearPtr yearPtr ) { m_yearMap.insert( yearPtr->name(), yearPtr ); }
+        void addYear( Meta::YearPtr yearPtr ) { m_yearMap.insert( yearPtr->year(), yearPtr ); }
         void clearLabels()
         {
             m_labelMap = LabelMap();

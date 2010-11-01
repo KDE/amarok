@@ -248,18 +248,6 @@ Meta::PlaydarTrack::discNumber() const
     return m_discNumber;
 }
 
-uint
-Meta::PlaydarTrack::lastPlayed() const
-{
-    return 0;
-}
-
-uint
-Meta::PlaydarTrack::firstPlayed() const
-{
-    return 0;
-}
-
 int
 Meta::PlaydarTrack::playCount() const
 {

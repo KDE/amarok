@@ -192,7 +192,7 @@ MtpWriteCapability::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playc
 }
 
 void
-MtpWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed )
+MtpWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed )
 {
     m_handler->libSetLastPlayed( track, lastplayed );
 }

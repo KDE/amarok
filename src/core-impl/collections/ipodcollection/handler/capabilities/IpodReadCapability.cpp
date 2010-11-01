@@ -145,7 +145,7 @@ IpodReadCapability::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayCount( track );
 }
 
-uint
+QDateTime
 IpodReadCapability::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetLastPlayed( track );

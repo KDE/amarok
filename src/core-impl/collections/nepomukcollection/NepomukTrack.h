@@ -80,8 +80,8 @@ class NepomukTrack : public Track
 
         virtual int discNumber() const;
 
-        virtual uint firstPlayed() const;
-        virtual uint lastPlayed() const;
+        virtual QDateTime firstPlayed() const;
+        virtual QDateTime lastPlayed() const;
         virtual int playCount() const;
 
         virtual QString type() const;

@@ -560,7 +560,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
         data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ),
-                    QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
+                    QString::number( track->playCount() ), QString::number( track->lastPlayed().toTime_t() ), QString::number( track->firstPlayed().toTime_t() ) );
         m_collection->sqlStorage()->insert( insert.arg( data ), "statistics" );
     }
 }

@@ -66,7 +66,7 @@ class MtpWriteCapability : public WriteCapability
     virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
     virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
     virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed );
     virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
     virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
     virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );

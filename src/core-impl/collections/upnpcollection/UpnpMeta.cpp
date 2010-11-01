@@ -141,7 +141,7 @@ UpnpTrack::setGenre( const QString &newGenre )
 }
 
 void
-UpnpTrack::setYear( const QString &newYear )
+UpnpTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }

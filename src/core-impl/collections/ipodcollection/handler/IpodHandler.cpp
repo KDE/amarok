@@ -1614,10 +1614,10 @@ IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->playcount;
 }
-uint
+QDateTime
 IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_itdbtrackhash[ track ]->time_played;
+    return QDateTime::fromTime_t(m_itdbtrackhash[ track ]->time_played);
 }
 int
 IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
@@ -1756,7 +1756,7 @@ IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
     setDatabaseChanged();
 }
 void
-IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
     Q_UNUSED( track )
     Q_UNUSED( lastplayed )

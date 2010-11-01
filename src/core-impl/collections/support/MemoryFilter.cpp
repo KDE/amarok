@@ -546,7 +546,7 @@ FirstPlayedFilter::~FirstPlayedFilter()
 qint64
 FirstPlayedFilter::value( Meta::TrackPtr track ) const
 {
-    return track->firstPlayed();
+    return track->firstPlayed().toTime_t();
 }
 
 LastPlayedFilter::LastPlayedFilter()
@@ -561,7 +561,7 @@ LastPlayedFilter::~LastPlayedFilter()
 qint64
 LastPlayedFilter::value( Meta::TrackPtr track ) const
 {
-    return track->lastPlayed();
+    return track->lastPlayed().toTime_t();
 }
 
 LengthFilter::LengthFilter()

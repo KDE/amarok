@@ -547,7 +547,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareNum( track->filesize(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valCreateDate:
-                v = m_comparer->compareDate( track->createDate().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->createDate(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valScore:
                 v = m_comparer->compareNum( track->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );

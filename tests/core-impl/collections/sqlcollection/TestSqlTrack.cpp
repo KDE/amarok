@@ -391,7 +391,7 @@ TestSqlTrack::testChangeYearToExisting()
     MetaNotificationSpy metaSpy;
     metaSpy.subscribeTo( track );
 
-    sqlTrack->setYear( "2" );
+    sqlTrack->setYear( 2 );
 
     QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
@@ -400,7 +400,7 @@ TestSqlTrack::testChangeYearToExisting()
     QCOMPARE( rs.count(), 1);
     QCOMPARE( rs.first(), QString( "2" ) );
 
-    QCOMPARE( track->year()->name(), QString( "2" ) );
+    QCOMPARE( track->year()->year(), 2 );
     QCOMPARE( originalYear->tracks().count(), 2 );
     QCOMPARE( track->year(), targetYear ); //track returns the new object, not the old one
     QCOMPARE( targetYear->tracks().count(), 1 );
@@ -421,11 +421,11 @@ TestSqlTrack::testChangeYearToNew()
     MetaNotificationSpy metaSpy;
     metaSpy.subscribeTo( track );
 
-    sqlTrack->setYear( "2000" );
+    sqlTrack->setYear( 2000 );
 
     QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
-    QCOMPARE( track->year()->name(), QString( "2000" ) );
+    QCOMPARE( track->year()->year(), 2000 );
     QCOMPARE( originalYear->tracks().count(), 2 );
 
     QVERIFY( track->year() != originalYear );

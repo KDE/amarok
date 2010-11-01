@@ -158,7 +158,7 @@ Track::setComposer( const QString& newComposer )
 }
 
 void
-Track::setYear( const QString& newYear )
+Track::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -258,12 +258,6 @@ Track::sampleRate() const
 
 int
 Track::bitrate() const
-{
-    return 0;
-}
-
-uint
-Track::lastPlayed() const
 {
     return 0;
 }

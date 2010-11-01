@@ -59,7 +59,7 @@ TimecodeEditCapability::setGenre( const QString &newGenre )
 }
 
 void
-TimecodeEditCapability::setYear( const QString &newYear )
+TimecodeEditCapability::setYear( int newYear )
 {
      m_track->setYear( newYear );
 }

@@ -57,8 +57,8 @@ namespace Meta {
             void setScore( double newScore );
             int rating() const;
             void setRating( int newRating );
-            uint firstPlayed() const;
-            uint lastPlayed() const;
+            QDateTime firstPlayed() const;
+            QDateTime lastPlayed() const;
             int playCount() const;
             void finishedPlaying( double playedFraction );
 

@@ -144,7 +144,7 @@ Amarok::TrayIcon::setupToolTip( bool updateIcon )
             tooltip << QString( "%1: %2" ).arg( i18n( "Play Count" ) ).arg( QString::number( count ) );
         }
 
-        const uint lastPlayed = m_track->lastPlayed();
+        const QDateTime lastPlayed = m_track->lastPlayed();
         tooltip << QString( "%1: %2" ).arg( i18n( "Last played" ) ).arg( Amarok::verboseTimeSince( lastPlayed ) );
 
         setToolTipSubTitle( tooltip.join("<br>") );

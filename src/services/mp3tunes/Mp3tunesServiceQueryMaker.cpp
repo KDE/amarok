@@ -433,7 +433,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         serviceTrack->setTrackNumber( track.trackNumber() );
 
-        serviceTrack->setYear( QString::number( track.albumYear() ) );
+        serviceTrack->setYear( track.albumYear() );
 
         debug() << "setting type: " << Amarok::extension( track.trackFileName() );
         serviceTrack->setType( Amarok::extension( track.trackFileName() ) );

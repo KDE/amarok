@@ -167,8 +167,8 @@ FastForwardWorker::run()
         QString url      = query.value( index++ ).toString();
         QString uniqueId = query.value( index++ ).toString();
 
-        uint firstPlayed = query.value( index++ ).toUInt();
-        uint lastPlayed  = query.value( index++ ).toUInt();
+        QDateTime firstPlayed = QDateTime::fromTime_t(query.value( index++ ).toUInt());
+        QDateTime lastPlayed  = QDateTime::fromTime_t(query.value( index++ ).toUInt());
         double score     = query.value( index++ ).toDouble();
         int rating       = query.value( index++ ).toInt();
         int playCount    = query.value( index++ ).toInt();
@@ -359,7 +359,7 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 
 void
 FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rating,
-                                        uint firstPlayed, uint lastPlayed, int playCount )
+                                        QDateTime firstPlayed, QDateTime lastPlayed, int playCount )
 {
     /* import statistics. ec may be different object for different track types.
      * StatisticsCapability for MetaFile::Track only caches info (thus we need to call

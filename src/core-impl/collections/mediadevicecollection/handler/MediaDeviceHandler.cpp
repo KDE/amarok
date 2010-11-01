@@ -121,7 +121,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setBitrate( srcTrack->bitrate() );
     destTrack->setSamplerate( srcTrack->sampleRate() );
     destTrack->setFileSize( srcTrack->filesize() );
-    destTrack->setPlayCount( srcTrack->lastPlayed() );
+    destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
     destTrack->setRating( srcTrack->rating() );
 
@@ -270,7 +270,7 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
     if( year->tracks().isEmpty() )
     {
-        yearMap.remove( year->name() );
+        yearMap.remove( year->year() );
         m_memColl->memoryCollection()->acquireWriteLock();
         m_memColl->memoryCollection()->setYearMap( yearMap );
         m_memColl->memoryCollection()->releaseLock();
@@ -801,14 +801,13 @@ MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerM
 void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
-    QString year;
-    year = year.setNum( m_rcb->libGetYear( track ) );
+    int year = m_rcb->libGetYear( track );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
     else
     {
-        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( year ) );
+        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( QString::number(year) ) );
         yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
     yearPtr->addTrack( track );

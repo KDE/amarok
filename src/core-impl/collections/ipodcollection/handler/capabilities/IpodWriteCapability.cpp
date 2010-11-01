@@ -170,7 +170,7 @@ IpodWriteCapability::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int play
 }
 
 void
-IpodWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed )
+IpodWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed )
 {
     m_handler->libSetLastPlayed( track, lastplayed );
 }

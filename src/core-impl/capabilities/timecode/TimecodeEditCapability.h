@@ -37,7 +37,7 @@ public:
     virtual void setArtist( const QString &newArtist );
     virtual void setComposer( const QString &newComposer );
     virtual void setGenre( const QString &newGenre );
-    virtual void setYear( const QString &newYear );
+    virtual void setYear( int newYear );
     virtual void setBpm( const qreal Bpm );
     virtual void setTitle( const QString &newTitle );
     virtual void setComment( const QString &newComment );

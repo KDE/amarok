@@ -69,7 +69,8 @@ namespace MetaFile
 struct MetaData
 {
     MetaData()
-        : discNumber( 0 )
+        : created( 0 )
+        , discNumber( 0 )
         , trackNumber( 0 )
         , length( 0 )
         , fileSize( 0 )
@@ -90,7 +91,7 @@ struct MetaData
     QString comment;
     QString composer;
     QString genre;
-    QDateTime created;
+    uint created;
     int discNumber;
     int trackNumber;
     qint64 length;
@@ -144,7 +145,7 @@ private:
 void Track::Private::readMetaData()
 {
     QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
-    m_data.created = fi.created();
+    m_data.created = fi.created().toTime_t();
 
 #define strip( x ) TStringToQString( x ).trimmed()
     TagLib::FileRef fileRef = track->getFileRef( url );

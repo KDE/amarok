@@ -304,34 +304,22 @@ Track::bitrate() const
     return 0; //does the engine deliver this??
 }
 
-uint
+QDateTime
 Track::lastPlayed() const
 {
     if( d->statisticsProvider )
-    {
-        QDateTime dt = d->statisticsProvider->lastPlayed();
-        if( dt.isValid() )
-            return dt.toTime_t();
-        else
-            return 0;
-    }
+        return d->statisticsProvider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
-uint
+QDateTime
 Track::firstPlayed() const
 {
     if( d->statisticsProvider )
-    {
-        QDateTime dt = d->statisticsProvider->firstPlayed();
-        if( dt.isValid() )
-            return dt.toTime_t();
-        else
-            return 0;
-    }
+        return d->statisticsProvider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 int

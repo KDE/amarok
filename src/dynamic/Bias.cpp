@@ -640,9 +640,9 @@ Dynamic::NormalBias::relevantField( Meta::TrackPtr track ) const
     if( m_field == Meta::valRating )
         return (double)track->rating();
     if( m_field == Meta::valFirstPlayed )
-        return (double)track->firstPlayed();
+        return (double)track->firstPlayed().toTime_t();
     if( m_field == Meta::valLastPlayed )
-        return (double)track->lastPlayed();
+        return (double)track->lastPlayed().toTime_t();
     if( m_field == Meta::valPlaycount )
         return (double)track->playCount();
 

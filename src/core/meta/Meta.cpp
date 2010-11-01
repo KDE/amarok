@@ -299,6 +299,7 @@ Meta::Track::createDate() const
 {
     return QDateTime();
 }
+
 qreal
 Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
 {
@@ -333,10 +334,16 @@ Meta::Track::notifyObservers() const
     }
 }
 
-uint
+QDateTime
+Meta::Track::lastPlayed() const
+{
+    return QDateTime();
+}
+
+QDateTime
 Meta::Track::firstPlayed() const
 {
-    return 0;
+    return QDateTime();
 }
 
 bool

@@ -149,11 +149,11 @@ MetaTrackPrototype::genre() const
     return ( track && track->genre() ) ? track->genre()->prettyName() : QString();
 }
 
-QString
+int
 MetaTrackPrototype::year() const
 {
     GET_TRACK
-    return ( track && track->year() ) ? track->year()->prettyName() : QString();
+    return ( track && track->year() ) ? track->year()->year() : 0;
 }
 
 QString
@@ -284,7 +284,7 @@ MetaTrackPrototype::setGenre( QString genre )
 }
 
 void
-MetaTrackPrototype::setYear( QString year )
+MetaTrackPrototype::setYear( int year )
 {
     GET_TRACK_EC( ec->setYear( year ) )
 }
