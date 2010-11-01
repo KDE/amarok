@@ -125,9 +125,48 @@ MusicBrainzTagger::search()
 void
 MusicBrainzTagger::saveAndExit()
 {
-    QMap < Meta::TrackPtr, QVariantMap > result = q_resultsModel->getAllChecked();
+    QMap < Meta::TrackPtr, QVariantMap > result, tracksToSave = q_resultsModel->getAllChecked();
+    foreach( Meta::TrackPtr track, tracksToSave.keys() )
+    {
+        QVariantMap tags = tracksToSave.value( track );
+
+        if( track->name() == tags.value( Meta::Field::TITLE ).toString() )
+            tags.remove( Meta::Field::TITLE );
+
+        if( !track->artist().isNull() && tags.contains( Meta::Field::ARTIST ) &&
+            track->artist()->name() == tags.value( Meta::Field::ARTIST ).toString() )
+            tags.remove( Meta::Field::ARTIST );
+
+        if( !track->album().isNull() )
+        {
+            if( tags.contains( Meta::Field::ALBUM ) &&
+                track->album()->name() == tags.value( Meta::Field::ALBUM ).toString() )
+                tags.remove( Meta::Field::ALBUM );
+
+            if( tags.contains( Meta::Field::ALBUMARTIST ) &&
+                track->album()->hasAlbumArtist() && track->album()->albumArtist()->name()
+                == tags.value( Meta::Field::ALBUMARTIST ).toString() )
+                tags.remove( Meta::Field::ALBUMARTIST );
+        }
+
+        if( !track->year().isNull() && tags.contains( Meta::Field::YEAR ) &&
+            track->year()->name() == tags.value( Meta::Field::YEAR ).toString() )
+            tags.remove( Meta::Field::YEAR );
+
+        if( tags.contains( Meta::Field::TRACKNUMBER ) &&
+            track->trackNumber() == tags.value( Meta::Field::TRACKNUMBER ).toInt() )
+            tags.remove( Meta::Field::TRACKNUMBER );
+
+        if( track->uidUrl().indexOf( tags.value( Meta::Field::UNIQUEID ).toString() ) != -1 )
+            tags.remove( Meta::Field::UNIQUEID );
+
+        if( !tags.isEmpty() )
+            result.insert( track, tags );
+    }
+
     if( !result.isEmpty() )
         emit sendResult( result );
+
     accept();
 }
 

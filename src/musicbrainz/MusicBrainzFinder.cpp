@@ -464,10 +464,16 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &inf
         }
     }
 
-    tags.remove( MusicBrainz::RELEASELIST );
-    tags.remove( MusicBrainz::TRACKOFFSET );
-    tags.remove( Meta::Field::SCORE );
     tags.insert( Meta::Field::UNIQUEID, tags.value( MusicBrainz::TRACKID ).toString().prepend( "mb-" ) );
+
+    //Clean metadata from unused fields
+    tags.remove( Meta::Field::LENGTH );
+    tags.remove( Meta::Field::SCORE );
+    tags.remove( MusicBrainz::ARTISTID );
+    tags.remove( MusicBrainz::RELEASEID );
+    tags.remove( MusicBrainz::RELEASELIST );
+    tags.remove( MusicBrainz::TRACKID );
+    tags.remove( MusicBrainz::TRACKOFFSET );
 
     emit trackFound( track, tags );
 }

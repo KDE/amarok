@@ -231,7 +231,7 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
             }
             else if( elementName == "track-list" && dElement.hasAttribute( "offset" ) )
             {
-                int offset = dElement.attribute( "offset" ).toInt();
+                int offset = dElement.attribute( "offset" ).toInt() + 1;
                 if( offset > 0 )
                     currentTrackOffsets.insert( id, offset );
             }
