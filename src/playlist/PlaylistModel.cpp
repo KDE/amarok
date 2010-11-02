@@ -379,10 +379,10 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case LastPlayed:
             {
-                if( m_items.at( row )->track()->lastPlayed().toTime_t() > 0 )
+                if( m_items.at( row )->track()->lastPlayed().isValid() )
                     return Amarok::verboseTimeSince( m_items.at( row )->track()->lastPlayed() );
                 else
-                    return i18n( "Never" );
+                    return i18nc( "The amount of time since last played", "Never" );
             }
             case Length:
             {

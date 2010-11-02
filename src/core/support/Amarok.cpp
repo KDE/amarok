@@ -39,6 +39,9 @@ namespace Amarok
 
     QString verboseTimeSince( const QDateTime &datetime )
     {
+        if( !datetime.toTime_t() )
+            return i18nc( "The amount of time since last played", "Never" );
+
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 
