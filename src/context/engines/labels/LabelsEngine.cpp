@@ -116,25 +116,32 @@ LabelsEngine::update()
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    QString title;
-    Meta::ArtistPtr artist;
-    QStringList labels;
-
-    if( track )
+    if( !track )
     {
-        title = track->name();
-        artist = track->artist();
-        foreach( const Meta::LabelPtr &label, track->labels() )
-            labels += label->name();
+        removeAllData( "labels" );
+        m_artist.clear();
+        m_title.clear();
+        m_album.clear();
+        m_userLabels.clear();
+        m_webLabels.clear();
+        setData( "labels", "state", "stopped" );
+        return;
     }
 
-    labels.sort();
+    const QString title = track->name();
+    Meta::ArtistPtr artist = track->artist();
+    QStringList userLabels;
+
+    foreach( const Meta::LabelPtr &label, track->labels() )
+        userLabels += label->name();
+
+    userLabels.sort();
     m_userLabels.sort();
 
     // -- check if really something changed
-    if( artist->name() == m_artist &&
+    if( artist && artist->name() == m_artist &&
         title == m_title &&
-        labels == m_userLabels )
+        userLabels == m_userLabels )
         return; // nothing to do
 
     removeAllData( "labels" );
@@ -142,7 +149,12 @@ LabelsEngine::update()
 
     m_artist = artist->name();
     m_title = title;
-    m_userLabels = labels;
+    if( track->album() )
+        m_album = track->album()->name();
+    else
+        m_album.clear();
+    
+    m_userLabels = userLabels;
 
     QVariant varUser;
     varUser.setValue< QStringList >( m_userLabels );
@@ -158,7 +170,7 @@ LabelsEngine::update()
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        debug()  << "LabelsEngine:" << "current track is invalid, returning";
+        debug() << "current track is invalid, returning";
         return;
     }
     else
@@ -181,7 +193,7 @@ LabelsEngine::fetchLastFm()
         // stop timeout timer
         m_timeoutTimer.stop();
         setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        debug()  << "LabelsEngine:" << "current track is invalid, returning";
+        debug() << "current track is invalid, returning";
         return;
     }
     
@@ -242,7 +254,7 @@ LabelsEngine::fetchLastFm()
             // stop timeout timer
             m_timeoutTimer.stop();
             setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-            debug()  << "LabelsEngine:" << "try 3: artist and title are the same, returning";
+            debug() << "try 3: artist and title are the same, returning";
             return;
         }
     }
@@ -255,8 +267,6 @@ LabelsEngine::fetchLastFm()
         debug() << "try > 2, returning";
         return;
     }
-
-    debug()  << "LabelsEngine:" << "currentArtist:" << currentArtist << "currentTitle:" << currentTitle;
 
     if ( !currentArtist.isEmpty() && !currentTitle.isEmpty() )
     {
@@ -277,7 +287,6 @@ LabelsEngine::fetchLastFm()
         lastFmUrl.addQueryItem( "track", currentTitle.toLocal8Bit() );
         m_lastFmUrl = lastFmUrl;
         
-        debug() << "last.fm : " << lastFmUrl.toMimeDataString();
         QNetworkRequest req( lastFmUrl );
         The::networkAccessManager()->get( req );
         The::networkAccessManager()->getData( lastFmUrl, this,

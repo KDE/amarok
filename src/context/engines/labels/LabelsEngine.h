@@ -48,6 +48,8 @@ protected:
 
 private slots:
 
+    void update();
+
     /**
      *   This slots will handle last.fm result for this query:
      *   API key is : 402d3ca8e9bc9d3cf9b85e1202944ca5
@@ -66,7 +68,6 @@ private:
    *   Engine was updated, so we check if the songs is different, and if it is, we delete every and start
    *   all the query/ fetching stuff
    */
-    void update();
     void fetchLastFm();
     void updateLocal();
 
