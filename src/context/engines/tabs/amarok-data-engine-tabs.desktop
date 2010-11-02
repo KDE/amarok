@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Tabs Data Engine
+Name[de]=Tabulatoren-Datenmodul
+Name[en_GB]=Tabs Data Engine
+X-KDE-ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=Tabs
+X-KDE-Library=amarok_data_engine_tabs
+X-KDE-PluginInfo-Name=amarok-tabs
+X-KDE-ParentApp=Amarok
+

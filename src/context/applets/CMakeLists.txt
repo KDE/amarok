@@ -6,6 +6,7 @@ add_subdirectory( wikipedia )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( labels )
+add_subdirectory( tabs )
 
 if( LIBLASTFM_FOUND )
     add_subdirectory( upcomingevents )
