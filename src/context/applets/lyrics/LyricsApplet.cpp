@@ -68,6 +68,7 @@ public:
     void setEditing( const bool isEditing );
     void collapseToMin();
     void determineActionIconsState();
+    void clearLyrics();
     void showLyrics( const QString &text, bool isRichText );
     void showSuggested( const QVariantList &suggestions );
 
@@ -190,9 +191,15 @@ LyricsAppletPrivate::determineActionIconsState()
 }
 
 void
-LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
+LyricsAppletPrivate::clearLyrics()
 {
     browser->nativeWidget()->clear();
+}
+
+void
+LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
+{
+    clearLyrics();
     if( isRichText )
         browser->nativeWidget()->setHtml( text );
     else
@@ -252,7 +259,7 @@ void
 LyricsAppletPrivate::_editLyrics()
 {
     if( !hasLyrics )
-        browser->nativeWidget()->clear();
+        clearLyrics();
 
     setEditing( true );
     determineActionIconsState();
@@ -281,7 +288,7 @@ LyricsAppletPrivate::_closeLyrics()
     }
     else
     {
-        browser->nativeWidget()->clear();
+        clearLyrics();
     }
 
     setEditing( false );
@@ -519,10 +526,14 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     if( data.contains( "noscriptrunning" ) )
     {
         d->titleText = i18n( "Lyrics: No script is running" );
+        d->infoLabel->setText( i18n( "Lyrics can not be fetched as no script is running" ) );
+        d->showInfoLabel = true;
+        d->showBrowser = false;
     }
     else if( data.contains( "stopped" ) )
     {
         d->titleText = i18n( "Lyrics" );
+        d->showBrowser = false;
     }
     else if( data.contains( "fetching" ) )
     {
@@ -531,7 +542,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->titleText = i18n( "Lyrics: Fetching ..." );
         d->infoLabel->setText( i18n( "Lyrics are being fetched" ) );
         d->showInfoLabel = true;
-        d->showSuggestions = false;
         d->showBrowser = false;
     }
     else if( data.contains( "error" ) )
@@ -542,7 +552,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                                      "Error message:\n"
                                      "%1", data["error"].toString() ) );
         d->showInfoLabel = true;
-        d->showSuggestions = false;
         d->showBrowser = false;
     }
     else if( data.contains( "suggested" ) )
@@ -582,7 +591,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->titleText = i18n( "Lyrics: Not found" );
         d->infoLabel->setText( i18n( "There were no lyrics found for this track" ) );
         d->showInfoLabel = true;
-        d->showSuggestions = false;
         d->showBrowser = false;
     }
 
