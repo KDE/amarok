@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_BLOCK "VerticalAppletLayout"
+
 #include "VerticalAppletLayout.h"
 
 #include "Containment.h"
@@ -122,7 +124,7 @@ Context::VerticalAppletLayout::totalSize()
 void
 Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 {
-    debug() << " ask for show applet " << applet->name();
+    debug() << "showing applet " << applet->name();
     showAtIndex( m_appletList.indexOf( applet ) );
 }
 

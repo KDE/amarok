@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistDock"
+
 #include "PlaylistDock.h"
 
 #include "ActionClasses.h"
