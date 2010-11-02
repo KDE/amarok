@@ -444,8 +444,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         // debug() << "title";
         m_title = data[ "title" ].toString();
     }
-    
-    if ( data.contains( "album" ) )
+    else if ( data.contains( "album" ) )
     {
         // debug() << "album";
         m_title = data[ "album" ].toString();
