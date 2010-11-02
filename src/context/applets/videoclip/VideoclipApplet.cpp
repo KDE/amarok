@@ -539,4 +539,3 @@ VideoclipApplet::saveSettings()
 }
 
 #include "VideoclipApplet.moc"
-#include "../../../core/support/SmartPointerList.moc"
