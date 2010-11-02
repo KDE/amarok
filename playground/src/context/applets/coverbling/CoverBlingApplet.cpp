@@ -48,7 +48,7 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <KStandardDirs>
-#include <QDesktopWidget
+#include <QDesktopWidget>
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
