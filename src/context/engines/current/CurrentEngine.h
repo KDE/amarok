@@ -58,7 +58,7 @@ public:
 private slots:
     void metadataChanged( Meta::AlbumPtr album );
     void metadataChanged( Meta::TrackPtr track );
-    void trackChanged( Meta::TrackPtr track );
+    void trackPlaying( Meta::TrackPtr track );
     void stopped();
 
 protected:

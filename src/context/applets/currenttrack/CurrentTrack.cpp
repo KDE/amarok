@@ -131,10 +131,6 @@ CurrentTrack::init()
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
         m_tracks[i] = new TrackWidget( this );
 
-    connectSource( "current" );
-    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
-
     // figure out the size we want to be, in order to be able to squeeze in all that we want
     // depends on the current font size,  basically
     // height should be increased for larger point sizes. here, the layout works correctly with size 8, which has the fontMetrics height of 13
@@ -146,6 +142,10 @@ CurrentTrack::init()
     // hide the items while we startup. as soon as the query is done, they'll be shown.
     foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
         childItem->hide();
+
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    connectSource( "current" );
 }
 
 void

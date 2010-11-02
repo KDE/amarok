@@ -49,8 +49,8 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( trackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
              this, SLOT( stopped() ) );
 
@@ -82,7 +82,6 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
 
-    removeAllData( name ); // unneeded?
     m_requested[ name ] = true;
     update( The::engineController()->currentTrack() );
     return true;
@@ -105,7 +104,7 @@ CurrentEngine::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-CurrentEngine::trackChanged( Meta::TrackPtr track )
+CurrentEngine::trackPlaying( Meta::TrackPtr track )
 {
     update( track );
 }
@@ -199,7 +198,6 @@ CurrentEngine::update( Meta::TrackPtr track )
 
     if( m_requested[ "current" ] )
     {
-
         QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
 
         const int width = m_coverWidth;
@@ -228,7 +226,7 @@ CurrentEngine::update( Meta::TrackPtr track )
             delete sic;
         }
         else
-                setData( "current", "source_emblem",  QVariant( QPixmap() ) );
+            setData( "current", "source_emblem",  QVariant( QPixmap() ) );
     }
 
     if( m_requested[ "albums" ] )
