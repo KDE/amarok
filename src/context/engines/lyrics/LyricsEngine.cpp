@@ -97,6 +97,9 @@ void LyricsEngine::update()
     }
     else
     {
+        m_title.clear();
+        m_artist.clear();
+
         removeAllData( "lyrics" );
         setData( "lyrics", "stopped" ,"stopped" );
         return;
@@ -135,22 +138,13 @@ void LyricsEngine::update()
     // -- really need new lyrics
     m_title = title;
     m_artist = artist;
+    m_prevLyrics = m_currentLyrics;
+    m_prevLyricsList = m_currentLyricsList;
+    m_prevSuggestionsList = m_currentSuggestionsList;
 
-    if( title.isEmpty() || artist.isEmpty() )
-    {
-        m_prevLyrics = m_currentLyrics;
-        m_prevLyricsList = m_currentLyricsList;
-        m_prevSuggestionsList = m_currentSuggestionsList;
-
-        m_currentLyrics.clear();
-        m_currentLyricsList.clear();
-        m_currentSuggestionsList.clear();
-
-        removeAllData( "lyrics" );
-        setData( "lyrics", "fetching", "fetching" );
-        m_currentLyrics = "Lyrics Unavailable";
-        return;
-    }
+    m_currentLyrics.clear();
+    m_currentLyricsList.clear();
+    m_currentSuggestionsList.clear();
 
     QString lyrics = currentTrack->cachedLyrics();
 
@@ -174,14 +168,12 @@ void LyricsEngine::update()
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
-        m_currentLyrics = "Lyrics  Unavailable";
     }
     else
     {
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        m_currentLyrics = "Lyrics Unavailable";
         ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
     }
 }
