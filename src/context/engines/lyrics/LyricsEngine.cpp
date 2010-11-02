@@ -95,6 +95,12 @@ void LyricsEngine::update()
         if( currentArtist )
             artist = currentArtist->name();
     }
+    else
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "stopped" ,"stopped" );
+        return;
+    }
 
     // -- clean up title
     if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
