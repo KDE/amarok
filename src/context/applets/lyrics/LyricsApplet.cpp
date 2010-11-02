@@ -66,7 +66,7 @@ public:
 
     // member functions
     void setEditing( const bool isEditing );
-    void collaspeToMin();
+    void collapseToMin();
     void determineActionIconsState();
     void showLyrics( const QString &text, bool isRichText );
     void showSuggested( const QVariantList &suggestions );
@@ -118,7 +118,7 @@ LyricsAppletPrivate::setEditing( const bool isEditing )
 }
 
 void
-LyricsAppletPrivate::collaspeToMin()
+LyricsAppletPrivate::collapseToMin()
 {
     Q_Q( LyricsApplet );
     KTextBrowser *textBrowser = browser->nativeWidget();
@@ -245,7 +245,7 @@ LyricsAppletPrivate::_changeLyricsFont()
     config.writeEntry( "Font", font.toString() );
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
     // resize with new font
-    // collaspeToMin();
+    // collapseToMin();
 }
 
 void
