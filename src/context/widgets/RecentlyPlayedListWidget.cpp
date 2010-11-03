@@ -84,7 +84,9 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
     lastPlayed->nativeWidget()->setWordWrap( false );
 
     Plasma::IconWidget *icon = new Plasma::IconWidget( this );
-    icon->setMaximumIconSize( icon->sizeFromIconSize(fm.height()) );
+    QSizeF iconSize = icon->sizeFromIconSize( fm.height() );
+    icon->setMinimumSize( iconSize );
+    icon->setMaximumSize( iconSize );
     icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     icon->setIcon( KIcon( QLatin1String("media-album-track") ) );
 
