@@ -132,54 +132,7 @@ CollectionTreeItem::child( int row )
 QVariant
 CollectionTreeItem::data( int role ) const
 {
-    if( !m_data.isNull() )
-    {
-        if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
-        {
-            QString name = m_data->fixedName();
-
-            Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
-            if( track )
-            {
-                QString name = track->fixedName();
-
-                Meta::AlbumPtr album = track->album();
-                if( album && album->isCompilation() )
-                    name.prepend( QString("%1 - ").arg(track->artist()->prettyName()) );
-
-                if( AmarokConfig::showTrackNumbers() )
-                {
-                    int trackNum = track->trackNumber();
-                    if( trackNum > 0 )
-                        name.prepend( QString("%1 - ").arg(trackNum) );
-                }
-
-                if( AmarokConfig::showYears() )
-                {
-                    Meta::YearPtr year = track->year();
-                    if( year )
-                        name.prepend( QString("%1 - ").arg(year->name()) );
-                }
-            }
-
-            // Check empty after track logic and before album logic
-            if( name.isEmpty() )
-                name = i18nc( "The Name is not known", "Unknown" );
-
-            return name;
-        }
-        else if( role == CustomRoles::SortRole )
-            return m_data->sortableName();
-
-        return QVariant();
-    }
-    else if( isVariousArtistItem() )
-    {
-        if( role == Qt::DisplayRole )
-            return i18n( "Various Artists" );
-        return QVariant();
-    }
-    else if( isNoLabelItem() )
+    if( isNoLabelItem() )
     {
         if( role == Qt::DisplayRole )
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );

@@ -197,57 +197,117 @@ QVariant
 CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
 {
     // -- do the decoration and the size hint role
-    if( item->isDataItem() )
+    if( role == Qt::SizeHintRole )
+    {
+        QSize size( 1, d->rowHeight );
+        if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+        {
+            if( d->rowHeight < 34 )
+                size.setHeight( 34 );
+        }
+        return size;
+    }
+
+    if( level == -1 )
+        level = item->level();
+
+    if( item->isTrackItem() )
+    {
+        Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( item->data() );
+        switch( role )
+        {
+        case Qt::DisplayRole:
+        case CustomRoles::FilterRole:
+            {
+                QString name = track->prettyName();
+                Meta::AlbumPtr album = track->album();
+
+                if( album && album->isCompilation() )
+                    name.prepend( QString("%1 - ").arg(track->artist()->prettyName()) );
+
+                if( AmarokConfig::showTrackNumbers() )
+                {
+                    int trackNum = track->trackNumber();
+                    if( trackNum > 0 )
+                        name.prepend( QString("%1. ").arg(trackNum) );
+                }
+
+                // Check empty after track logic and before album logic
+                if( name.isEmpty() )
+                    name = i18nc( "The Name is not known", "Unknown" );
+                return name;
+            }
+
+        case Qt::DecorationRole:
+            return KIcon( "media-album-track" );
+        case CustomRoles::SortRole:
+            return track->sortableName();
+        }
+    }
+    else if( item->isAlbumItem() )
+    {
+        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+        switch( role )
+        {
+        case Qt::DisplayRole:
+            {
+                QString name = album->prettyName();
+                if( AmarokConfig::showYears() )
+                {
+                    Meta::YearPtr year = album->tracks().first()->year();
+                    if( year )
+                        name.prepend( QString("%1 - ").arg( year->name() ) );
+                }
+                return name;
+            }
+
+        case Qt::DecorationRole:
+            if( AmarokConfig::showAlbumArt() )
+                return The::svgHandler()->imageWithBorder( album, 32, 2 );
+            else
+                return iconForLevel( level );
+
+        case CustomRoles::SortRole:
+            return album->sortableName();
+        }
+    }
+    else if( item->isDataItem() )
     {
         switch( role )
         {
+        case Qt::DisplayRole:
+        case CustomRoles::FilterRole:
+            {
+                QString name = item->data()->prettyName();
+                if( name.isEmpty() )
+                    name = i18nc( "The Name is not known", "Unknown" );
+                return name;
+            }
+
         case Qt::DecorationRole:
             {
-                if( level == -1 )
-                    level = item->level();
-
                 if( d->childQueries.values().contains( item ) )
                 {
                     if( level < m_levelType.count() )
                         return m_currentAnimPixmap;
                 }
-
-                if( level < m_levelType.count() )
-                {
-                    if( m_levelType[level] == CategoryId::Album && AmarokConfig::showAlbumArt() )
-                    {
-                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                        if( album )
-                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                    }
-                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
-                    {
-                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
-                                                                KIconLoader::Toolbar,
-                                                                KIconLoader::SizeSmall );
-                    }
-                    return iconForLevel( level );
-                }
-                else if( level == m_levelType.count() )
-                {
-                    return KIconLoader::global()->loadIcon( "media-album-track",
-                                                            KIconLoader::Toolbar,
-                                                            KIconLoader::SizeSmall );
-                }
+                return iconForLevel( level );
             }
-            break;
 
+        case CustomRoles::SortRole:
+            return item->data()->sortableName();
+        }
+    }
+    else if( item->isVariousArtistItem() )
+    {
+        switch( role )
+        {
+        case Qt::DecorationRole:
+            return KIcon( "similarartists-amarok" );
         case Qt::SizeHintRole:
-            {
-                QSize size( 1, d->rowHeight );
-                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
-                {
-                    if( d->rowHeight < 34 )
-                        size.setHeight( 34 );
-                }
-                return size;
-            }
-            break;
+            return QSize( 1, d->rowHeight );
+        case Qt::DisplayRole:
+            return i18n( "Various Artists" );
         }
     }
 
