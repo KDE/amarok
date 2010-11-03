@@ -18,7 +18,6 @@
 #include "AmarokLyricsScript.h"
 
 #include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
@@ -86,10 +85,7 @@ AmarokLyricsScript::escape( const QString& str )
 void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
-    DEBUG_BLOCK
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
-    if( track )
-        track->setCachedLyrics( lyrics );
+    LyricsManager::self()->setLyricsForTrack( trackUrl, lyrics );
 }
 
 QString

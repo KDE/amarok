@@ -25,6 +25,8 @@
 
 class LyricsAppletPrivate;
 
+using namespace Plasma;
+
 class LyricsApplet : public Context::Applet
 {
     Q_OBJECT
@@ -60,6 +62,9 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
     Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
+    Q_PRIVATE_SLOT( d_ptr, void _trackDataChanged( Meta::TrackPtr ) )
+    Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed( const MessageButton ) )
+    Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed( const MessageButton ) )
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )

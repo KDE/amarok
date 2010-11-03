@@ -44,6 +44,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
     , m_collapsed( false )
     , m_transient( 0 )
+    , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
     , m_textBackground( 0 )
 {
@@ -390,9 +391,50 @@ Context::Applet::paletteChanged( const QPalette & palette )
     Q_UNUSED( palette )
 }
 
+void
+Context::Applet::plasmaMessageHidden()
+{
+    // Disconnect from the messageButtonPressed() signal so the next
+    // dialog can be shown.
+    disconnect( SIGNAL( messageButtonPressed( const MessageButton ) ) );
+
+    // No dialog is shown anymore.
+    m_isMessageShown = false;
+}
+
 bool Context::Applet::canAnimate()
 {
     return m_canAnimate;
+}
+
+void
+Context::Applet::showWarning( const QString &message, const char *slot )
+{
+    // Show a message with the "warning" icon.
+    showMessage( message, slot, KIcon( "dialog-warning" ) );
+}
+
+void
+Context::Applet::showMessage( const QString &message, const char *slot, const KIcon &icon )
+{
+    DEBUG_BLOCK
+
+    // Only show the message if none is shown yet.
+    if( !m_isMessageShown )
+    {
+        // Make sure no one else can show a dialog.
+        m_isMessageShown = true;
+
+        // Get the "Yes" and "No" buttons.
+        Plasma::MessageButtons plasmaYesNoButtons = Plasma::ButtonYes | Plasma::ButtonNo;
+
+        // Connect Plasma's messageButtonPressed SIGNAL to the given slot.
+        connect( this, SIGNAL( messageButtonPressed( const MessageButton ) ), slot );
+        connect( this, SIGNAL( messageButtonPressed( const MessageButton ) ), SLOT( plasmaMessageHidden() ) );
+
+        // Show a dialog and ask the user what to do.
+        Plasma::Applet::showMessage( icon, message, plasmaYesNoButtons );
+    }
 }
 
 #include "Applet.moc"

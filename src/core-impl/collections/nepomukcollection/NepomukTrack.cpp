@@ -327,6 +327,8 @@ void
 NepomukTrack::setCachedLyrics ( const QString& value )
 {
     m_nepores.setProperty( QUrl( "http://amarok.kde.org/metadata/1.0/track#lyrics" ), value );
+
+    notifyObservers();
 }
 
 void

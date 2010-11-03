@@ -26,6 +26,8 @@
 #include <QString>
 #include <QWeakPointer>
 
+#include <KIcon>
+
 class QPainter;
 class QPropertyAnimation;
 
@@ -89,6 +91,27 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           */
         qreal animationValue() const;
 
+        /**
+         * Shows a warning dialog which blocks access to the applet.
+         * This gives the user the message and a "Yes" and a "No" button.
+         * NOTE: Only one message/warning can be shown at a time.
+         *
+         * @param message The warning message.
+         * @param slot The slot which is called after either "Yes" or "No" has been clicked.
+         */
+        void showWarning( const QString &message, const char *slot );
+
+        /**
+         * Shows a message dialog which blocks access to the applet.
+         * This gives the user the message and a "Yes" and a "No" button.
+         * NOTE: Only one message/warning can be shown at a time.
+         *
+         * @param message The warning message.
+         * @param slot The slot which is called after either "Yes" or "No" has been clicked.
+         * @param icon The icon which will be shown.
+         */
+        void showMessage( const QString &message, const char *slot, const KIcon &icon );
+
     public Q_SLOTS:
         virtual void destroy();
 
@@ -98,6 +121,13 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     private slots:
         void paletteChanged( const QPalette & palette );
+
+        /**
+         * A private slot used to cleanup internal things like
+         * signals/slots and the flag if a dialog is shown.
+         * This is needed to avoid duplicate code in the applets.
+         */
+        void plasmaMessageHidden();
 
     protected:
         /**
@@ -121,6 +151,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void cleanUpAndDelete();
 
         bool m_transient;
+        bool m_isMessageShown;
         qreal m_standardPadding;
         Plasma::FrameSvg *m_textBackground;
         QWeakPointer<QPropertyAnimation> m_animation;

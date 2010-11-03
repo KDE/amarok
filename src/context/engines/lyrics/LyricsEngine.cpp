@@ -65,7 +65,7 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
         if( m_prevLyricsList.size() > 0 )
             setData( "lyrics", "lyrics", m_prevLyricsList );
 
-        else if( !m_prevLyrics.isEmpty() )
+        else if( !LyricsManager::self()->isEmpty( m_prevLyrics ) )
             setData( "lyrics", "html", m_prevLyrics );
 
         if( m_prevSuggestionsList.size() > 0 )
@@ -79,6 +79,38 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     // the script manager is running and a lyrics script is loaded first.
     QTimer::singleShot( 0, this, SLOT(update()) );
     return true;
+}
+
+bool LyricsEngine::testLyricsChanged( const QString& newLyrics,
+                                      const QString& oldHtmlLyrics,
+                                      QStringList oldPlainLyrics ) const
+{
+    DEBUG_BLOCK
+
+    bool retVal = false;
+
+    if ( LyricsManager::self()->isHtmlLyrics( newLyrics ) )
+        // Compare the old HTML lyrics with the new lyrics.
+        retVal = newLyrics != oldHtmlLyrics;
+    else
+    {
+        // If the given oldPlainLyrics list has >= 3 items
+        // then plaintext lyrics were provided.
+        bool hasPlainLyrics = oldPlainLyrics.count() >= 3;
+
+        if ( hasPlainLyrics )
+            // Previously we got plaintext lyrics -> compare them with
+            // the new ones.
+            retVal = newLyrics != oldPlainLyrics[ 3 ];
+        else
+            // There were no old lyrics -> if the new lyrics are
+            // non-empty they have changed.
+            retVal = !LyricsManager::self()->isEmpty( newLyrics );
+    }
+
+    debug() << "compared lyrics are the same = " << retVal;
+
+    return retVal;
 }
 
 void LyricsEngine::update()
@@ -145,8 +177,9 @@ void LyricsEngine::update()
     }
 
     // Check if the title, the artist and the lyrics are still the same.
-    // -- check if something changed for the previous fetched lyrics
-    if( title == m_title && artist == m_artist )
+    if( title == m_title &&
+        artist == m_artist &&
+        !testLyricsChanged( currentTrack->cachedLyrics(), m_currentLyrics, m_currentLyricsList ) )
         return; // nothing changed
 
     // -- really need new lyrics
@@ -163,13 +196,12 @@ void LyricsEngine::update()
     QString lyrics = currentTrack->cachedLyrics();
 
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
+    const bool cached = !LyricsManager::self()->isEmpty( lyrics ) &&
+                        !The::engineController()->isStream();
 
     if( cached )
     {
-        // check if the lyrics data contains "<html" (note the missing closing bracket,
-        // this enables XHTML lyrics to be recognized)
-        if( lyrics.contains( "<html" , Qt::CaseInsensitive ) )
+        if( LyricsManager::self()->isHtmlLyrics( lyrics ) )
             newLyricsHtml( lyrics );
         else
         {

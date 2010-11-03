@@ -54,6 +54,19 @@ private slots:
     void update();
 
 private:
+    /**
+      * Tests if the lyrics have changed.
+      *
+      * @param newLyrics The new lyrics.
+      * @param oldHtmlLyrics The old (unchanged) HTML lyrics.
+      * @param oldPlainLyrics The old plain lyrics (as provided by the LyricsEngine).
+      *
+      * @return true if the lyrics for the current track have changed, otherwise false.
+      */
+    bool testLyricsChanged( const QString& newLyrics,
+                            const QString& oldHtmlLyrics,
+                            QStringList oldPlainLyrics ) const;
+
     // stores is we have been disabled (disconnected)
     bool m_requested;
 

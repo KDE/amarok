@@ -848,6 +848,9 @@ TagDialog::metadataChanged( Meta::AlbumPtr album )
     // If the metadata of the current album has changed, reload the cover
     if( album == m_currentTrack->album() )
         loadCover();
+
+    // TODO: if the lyrics changed: should we show a warning and ask the user
+    // if he wants to use the new lyrics?
 }
 
 void

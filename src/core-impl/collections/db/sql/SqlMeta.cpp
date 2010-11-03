@@ -1352,6 +1352,8 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
                                   m_collection->sqlStorage()->escape( m_rpath ) );
         m_collection->sqlStorage()->query( update );
     }
+
+    notifyObservers();
 }
 
 bool

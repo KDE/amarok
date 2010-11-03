@@ -26,6 +26,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "dialogs/ScriptManager.h"
+#include "context/LyricsManager.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -56,6 +57,8 @@ public:
         , editIcon( 0 )
         , reloadIcon( 0 )
         , closeIcon( 0 )
+        , currentTrack( 0 )
+        , modifiedLyrics( QString() )
         , hasLyrics( false )
         , isRichText( true )
         , showBrowser( false )
@@ -69,8 +72,11 @@ public:
     void collapseToMin();
     void determineActionIconsState();
     void clearLyrics();
+    void refetchLyrics();
     void showLyrics( const QString &text, bool isRichText );
     void showSuggested( const QVariantList &suggestions );
+    void showUnsavedChangesWarning( Meta::TrackPtr );
+    const QString currentText();
 
     // private slots
     void _editLyrics();
@@ -79,6 +85,9 @@ public:
     void _saveLyrics();
     void _suggestionChosen( const QModelIndex &index );
     void _unsetCursor();
+    void _trackDataChanged( Meta::TrackPtr );
+    void _lyricsChangedMessageButtonPressed( const MessageButton );
+    void _refetchMessageButtonPressed( const MessageButton );
 
     // data / widgets
     QString titleText;
@@ -97,6 +106,10 @@ public:
     Plasma::Label *infoLabel;
 
     Ui::lyricsSettings ui_settings;
+
+    Meta::TrackPtr currentTrack;
+    Meta::TrackPtr modifiedTrack;
+    QString modifiedLyrics;
 
     bool hasLyrics;
     bool isRichText;
@@ -243,6 +256,75 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     showSuggestions = true;
 }
 
+const QString
+LyricsAppletPrivate::currentText()
+{
+    return isRichText ? browser->nativeWidget()->toHtml() : browser->nativeWidget()->toPlainText();
+}
+
+void
+LyricsAppletPrivate::refetchLyrics()
+{
+    ScriptManager::instance()->notifyFetchLyrics( currentTrack->artist()->name(),
+                                                  currentTrack->name() );
+}
+
+void
+LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
+{
+    Q_Q( LyricsApplet );
+
+    // Set the track which was modified and store the current
+    // lyircs from the UI.
+    modifiedTrack = currentTrack;
+    modifiedLyrics = currentText();
+
+    QString artistName = modifiedTrack->artist() ? modifiedTrack->artist()->name() : i18nc( "Used if the current track has no artist.", "Unknown" );
+    QString warningMessage;
+
+    // Check if the track has changed.
+    if( newTrack != modifiedTrack )
+    {
+        // Show a warning that the track has changed while the user was editing the lyrics for the current track.
+        warningMessage = i18n( "While you were editing the lyrics of <b>%1 - %2</b> the track has changed. Do you want to save your changes?",
+                                artistName,
+                                modifiedTrack->prettyName() );
+    }
+    else
+    {
+        // Show a warning that the lyrics for the track were modified (for example by a script).
+        warningMessage = i18n( "The lyrics of <b>%1 - %2</b> changed while you were editing them. Do you want to save your changes?",
+                               artistName,
+                               modifiedTrack->prettyName() );
+    }
+
+    // Show the warning message.
+    q->showWarning( warningMessage, SLOT( _lyricsChangedMessageButtonPressed( MessageButton ) ) );
+
+    // Make the contents readonly again.
+    // Since the applet is now blocked the user can not enable this again.
+    // Thus we can make sure that we won't overwrite modifiedTrack.
+    setEditing( false );
+}
+
+void
+LyricsAppletPrivate::_refetchMessageButtonPressed( const MessageButton button )
+{
+    // Check if the user pressed "Yes".
+    if( button == Plasma::ButtonYes )
+        // Refetch the lyrics.
+        refetchLyrics();
+}
+
+void
+LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const MessageButton button )
+{
+    // Check if the user pressed "Yes".
+    if( button == Plasma::ButtonYes )
+        // Update the lyrics of the track.
+        modifiedTrack->setCachedLyrics( modifiedLyrics );
+}
+
 void
 LyricsAppletPrivate::_changeLyricsFont()
 {
@@ -275,9 +357,9 @@ LyricsAppletPrivate::_closeLyrics()
         int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
 
         if( isRichText )
-            browser->nativeWidget()->setHtml( The::engineController()->currentTrack()->cachedLyrics() );
+            browser->nativeWidget()->setHtml( currentTrack->cachedLyrics() );
         else
-            browser->nativeWidget()->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
+            browser->nativeWidget()->setPlainText( currentTrack->cachedLyrics() );
 
         vbar->setSliderPosition( savedPosition );
 
@@ -298,19 +380,16 @@ LyricsAppletPrivate::_closeLyrics()
 void
 LyricsAppletPrivate::_saveLyrics()
 {
-    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-
-    if( curtrack )
+    if( currentTrack )
     {
-        if( !browser->nativeWidget()->toPlainText().isEmpty() )
+        if( !LyricsManager::self()->isEmpty( browser->nativeWidget()->toPlainText() ) )
         {
-            const QString lyrics = isRichText ? browser->nativeWidget()->toHtml() : browser->nativeWidget()->toPlainText();
-            curtrack->setCachedLyrics( lyrics );
+            currentTrack->setCachedLyrics( currentText() );
             hasLyrics = true;
         }
         else
         {
-            curtrack->setCachedLyrics( QString() );
+            currentTrack->setCachedLyrics( QString() );
             hasLyrics = false;
         }
         // emit sizeHintChanged(Qt::MaximumSize);
@@ -347,12 +426,39 @@ LyricsAppletPrivate::_unsetCursor()
         suggestView->unsetCursor();
 }
 
+void
+LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+
+    // Check if we previously had a track.
+    // If the lyrics currently shown in the browser (which
+    // additionally is in edit mode) are different from the
+    // lyrics of the track we have to show a warning.
+    if( currentTrack &&
+        currentTrack->cachedLyrics() != currentText() &&
+        !browser->nativeWidget()->isReadOnly() )
+    {
+        showUnsavedChangesWarning( track );
+    }
+
+    // Update the current track.
+    currentTrack = track;
+}
+
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , d_ptr( new LyricsAppletPrivate( this ) )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    EngineController* engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
 }
 
 LyricsApplet::~LyricsApplet()
@@ -628,20 +734,21 @@ void
 LyricsApplet::refreshLyrics()
 {
     Q_D( LyricsApplet );
-    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-
-    if( !curtrack || !curtrack->artist() )
+    if( !d->currentTrack || !d->currentTrack->artist() )
         return;
 
-    bool refetch = true;
     if( d->hasLyrics )
     {
+        // Ask the user if he really wants to refetch the lyrics.
         const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track? All changes you may have made will be lost.") );
-        refetch = KMessageBox::warningContinueCancel( 0, text, i18n( "Refetch lyrics" ) ) == KMessageBox::Continue;
+        showWarning( text, SLOT( _refetchMessageButtonPressed( MessageButton ) ) );
     }
-
-    if( refetch )
-        ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
+    else
+    {
+        // As we don't have lyrics yet we will
+        // refetch without asking the user.
+        d->refetchLyrics();
+    }
 }
 
 void
