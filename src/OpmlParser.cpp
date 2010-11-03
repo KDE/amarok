@@ -167,10 +167,7 @@ OpmlParser::StaticData::StaticData()
             &OpmlParser::beginText,
             &OpmlParser::endTitle,
             &OpmlParser::readCharacters )
-    , bodyAction(
-            bodyMap,
-            &OpmlParser::beginOutline,
-            &OpmlParser::endOutline )
+    , bodyAction( bodyMap )
     , outlineAction(
             outlineMap,
             &OpmlParser::beginOutline,
@@ -404,8 +401,6 @@ void
 OpmlParser::endHead()
 {
     // done parsing all info of the root in <head>
-    // HACK: <head> elements are passed to the user as attributes of a "root outline"
-    emit outlineParsed( m_rootOutline );
 }
 
 void

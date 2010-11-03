@@ -58,41 +58,27 @@ public:
 
     void polish();
 
-    virtual Collections::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return 0; }
 
 private slots:
-
-    void updateButtonClicked();
     void subscribe();
-    void listDownloadComplete( KJob* downloadJob);
-    void listDownloadCancelled();
-    void doneParsing();
-    void outlineParsed( OpmlOutline *outline );
-    void countTransaction();
 
     /**
     * Checks if subscribe button should be enabled
     * @param selection the new selection
     */
-    void itemSelected( CollectionTreeItem * selectedItem );
+    void itemSelected( CollectionTreeItem *selectedItem );
 
 
 private:
 
     QPushButton *m_updateListButton;
     QPushButton *m_subscribeButton;
-    KIO::FileCopyJob * m_listDownloadJob;
-    OpmlDirectoryDatabaseHandler * m_dbHandler;
-    Collections::ServiceSqlCollection * m_collection;
-    Meta::OpmlDirectoryFeed * m_currentFeed;
-    QString m_tempFileName;
+
     int m_currentCategoryId;
 
     int m_numberOfFeeds;
     int m_numberOfCategories;
-
-    int n_numberOfTransactions;
-    int n_maxNumberOfTransactions;
 };
 
 #endif

@@ -16,6 +16,7 @@
             OpmlDirectoryMeta.cpp
             OpmlDirectoryDatabaseHandler.cpp
             OpmlDirectoryInfoParser.cpp
+            OpmlDirectoryModel.cpp
         )
 
         kde4_add_plugin(amarok_service_opmldirectory ${amarok_service_opmldirectory_PART_SRCS})
