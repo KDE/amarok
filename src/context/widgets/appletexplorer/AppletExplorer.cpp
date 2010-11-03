@@ -31,9 +31,12 @@
 
 #include <KIcon>
 #include <Plasma/Applet>
+#include <Plasma/Label>
 #include <Plasma/ScrollWidget>
 
 #include <QGraphicsLinearLayout>
+#include <QGraphicsScene>
+#include <QGraphicsSceneWheelEvent>
 #include <QStyleOptionGraphicsItem>
 #include <QSignalMapper>
 
@@ -87,21 +90,53 @@ AppletExplorer::init()
         connect( widget, SIGNAL(clicked()), iconTriggerMapper, SLOT(map()) );
         iconTriggerMapper->setMapping( widget, widget->pluginName() );
     }
-
     connect( iconTriggerMapper, SIGNAL(mapped(QString)), SLOT(addApplet(QString)) );
 
-    m_hideIcon = new Plasma::IconWidget( this );
-    
-    m_hideIcon->setIcon( KIcon( "window-close" ) );
-    m_hideIcon->setToolTip( i18n( "Hide menu" ) );
+    Plasma::IconWidget *appletIcon = new Plasma::IconWidget( this );
+    appletIcon->setIcon( KIcon( "preferences-plugin" ) );
+    const QSizeF iconSize = appletIcon->sizeFromIconSize( 22 );
+    appletIcon->setMinimumSize( iconSize );
+    appletIcon->setMaximumSize( iconSize );
 
-    connect( m_hideIcon, SIGNAL( clicked() ), this, SLOT( hideMenu() ) );
-    m_hideIcon->setMinimumSize( m_hideIcon->sizeFromIconSize( 16 ) );
-    m_hideIcon->setMaximumSize( m_hideIcon->sizeFromIconSize( 16 ) );
+    Plasma::IconWidget *hideIcon = new Plasma::IconWidget( this );
+    hideIcon->setIcon( KIcon( "window-close" ) );
+    hideIcon->setToolTip( i18n( "Hide menu" ) );
+    hideIcon->setMinimumSize( iconSize );
+    hideIcon->setMaximumSize( iconSize );
+    connect( hideIcon, SIGNAL(clicked()), this, SLOT(hideMenu()) );
+
+    Plasma::IconWidget *forwardIcon = new Plasma::IconWidget( this );
+    forwardIcon->setIcon( KIcon( "go-next" ) );
+    forwardIcon->setMinimumSize( iconSize );
+    forwardIcon->setMaximumSize( iconSize );
+    connect( forwardIcon, SIGNAL(clicked()), this, SLOT(scrollRight()) );
+
+    Plasma::IconWidget *backIcon = new Plasma::IconWidget( this );
+    backIcon->setIcon( KIcon( "go-previous" ) );
+    backIcon->setMinimumSize( iconSize );
+    backIcon->setMaximumSize( iconSize );
+    connect( backIcon, SIGNAL(clicked()), this, SLOT(scrollLeft()) );
+
+    Plasma::Label *titleLabel = new Plasma::Label( this );
+    titleLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+    titleLabel->setText( i18n("<strong>Applet Explorer</strong>") );
+    titleLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+
+    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
+    headerLayout->addItem( appletIcon );
+    headerLayout->addItem( titleLabel );
+    headerLayout->addItem( backIcon );
+    headerLayout->addItem( forwardIcon );
+    headerLayout->addItem( hideIcon );
+    headerLayout->setAlignment( appletIcon, Qt::AlignLeft );
+    headerLayout->setAlignment( titleLabel, Qt::AlignLeft );
+    headerLayout->setAlignment( backIcon, Qt::AlignRight );
+    headerLayout->setAlignment( forwardIcon, Qt::AlignRight );
+    headerLayout->setAlignment( hideIcon, Qt::AlignRight );
     
-    layout->addItem( m_hideIcon );
+    layout->addItem( headerLayout );
     layout->addItem( m_scrollWidget );
-    layout->setAlignment( m_hideIcon, Qt::AlignRight );
+    layout->setAlignment( headerLayout, Qt::AlignRight );
     
     setMaximumHeight( HEIGHT );
     setMinimumHeight( HEIGHT );
@@ -150,6 +185,22 @@ Containment *
 AppletExplorer::containment() const
 {
     return m_containment;
+}
+
+void
+AppletExplorer::scrollLeft()
+{
+    QGraphicsSceneWheelEvent event( QEvent::GraphicsSceneWheel );
+    event.setDelta( 480 );
+    scene()->sendEvent( m_scrollWidget, &event );
+}
+
+void
+AppletExplorer::scrollRight()
+{
+    QGraphicsSceneWheelEvent event( QEvent::GraphicsSceneWheel );
+    event.setDelta( -480 );
+    scene()->sendEvent( m_scrollWidget, &event );
 }
 
 QList<AppletIconWidget*>

@@ -62,14 +62,15 @@ signals:
 private slots:
     void addApplet( const QString &name );
     void hideMenu();
+    void scrollLeft();
+    void scrollRight();
 
 private:
     void init();
     QList<AppletIconWidget*> listAppletWidgets();
-
     Containment *m_containment;
-    Plasma::IconWidget *m_hideIcon;
     Plasma::ScrollWidget *m_scrollWidget;
+    Q_DISABLE_COPY( AppletExplorer )
 };
 
 } // namespace Context
