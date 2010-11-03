@@ -19,6 +19,13 @@
 
 #include <QtGlobal>
 
-#define JSONQT_EXPORT Q_DECL_EXPORT
+#ifndef JSONQT_EXPORT
+  #ifdef MAKING_JSONQT_DLL
+    #define JSONQT_EXPORT Q_DECL_EXPORT
+  #else
+    #define JSONQT_EXPORT Q_DECL_IMPORT
+  #endif
+#endif
+  
 
 #endif

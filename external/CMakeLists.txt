@@ -17,5 +17,5 @@ QT4_AUTOMOC(
 ADD_LIBRARY(amarokqtjson SHARED ${amarokqtjson_LIB_SRCS})
 target_link_libraries(amarokqtjson ${QT_QTCORE_LIBRARY})
 
-set_target_properties(amarokqtjson PROPERTIES VERSION 1.0.0 SOVERSION 1 )
+set_target_properties(amarokqtjson PROPERTIES VERSION 1.0.0 SOVERSION 1 COMPILE_FLAGS "-DMAKING_JSONQT_DLL"  )
 install(TARGETS amarokqtjson ${INSTALL_TARGETS_DEFAULT_ARGS} )
