@@ -89,7 +89,7 @@ TabsApplet::init()
     m_titleLabel = new TextScrollingWidget( this );
     m_titleLabel.data()->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_titleLabel.data()->setFont( labelFont );
-    m_titleLabel.data()->setText( i18n( "Tabs" ) );
+    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
     m_titleLabel.data()->setDrawBackground( true );
     m_titleLabel.data()->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
@@ -111,7 +111,7 @@ TabsApplet::init()
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
-    reloadAction->setText( i18n( "Reload tabs" ) );
+    reloadAction->setText( i18nc( "Guitar tablature", "Reload tabs" ) );
     m_reloadIcon = addAction( reloadAction );
     m_reloadIcon.data()->setEnabled( false );
     connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reloadTabs() ) );
@@ -205,7 +205,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     if (  data.empty() )
     {
-        m_titleLabel.data()->setText( i18n( "Tabs" ) );
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
         updateInterface ( InitState );
         return;
     }
@@ -216,9 +216,9 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     // update artist and title in the headerlabel
     if ( !artistName.isEmpty()  && !titleName.isEmpty() )
-        m_titleLabel.data()->setText( i18n( "Tabs : %1 - %2", titleName, artistName ) );
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
     else
-        m_titleLabel.data()->setText( i18n( "Tabs" ) );
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
 
     if ( data.contains( "message" ) && message.contains( "Fetching" ) )
     {
@@ -227,13 +227,13 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     }
     else if ( data.contains( "message" ) && message.contains( "Stopped") )
     {
-        m_titleLabel.data()->setText( i18n( "Tabs" ).append( QString( " : " ) ).append( i18n( "No track playing" ) ) );
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
         updateInterface( StoppedState );
         return;
     }
     else if ( data.contains( "message" ) && message.contains( "noTabs") )
     {
-        m_titleLabel.data()->setText( i18n( "No tabs for" ).append( " " ).append( titleName ).append( QString( " " ) ).append( i18n( "by" ).append( QString( " " ) ).append( artistName ) ) );
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
         updateInterface( NoTabsState );
         return;
     }
@@ -345,7 +345,7 @@ TabsApplet::createConfigurationInterface( KConfigDialog *parent )
     if ( m_fetchBass )
         ui_Settings.cbFetchBass->setChecked( true );
 
-    parent->addPage( settings, i18n( "Tabs Settings" ), "preferences-system");
+    parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system");
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
