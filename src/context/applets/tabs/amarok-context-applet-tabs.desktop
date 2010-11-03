@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=Tabs
-Name[de]=Tabs
-Name[en_GB]=Tabs
+Name[x-test]=xxTabsxx
 Type=Service
 Icon=filename-genre-amarok
 ServiceTypes=Plasma/Applet

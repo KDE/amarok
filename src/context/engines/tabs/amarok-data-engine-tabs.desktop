@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=Tabs Data Engine
-Name[de]=Tabulatoren-Datenmodul
-Name[en_GB]=Tabs Data Engine
+Name[x-test]=xxTabs Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=Tabs
