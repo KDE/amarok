@@ -22,7 +22,7 @@
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/meta/Meta.h"
-#include "core/meta/support/MetaUtility.h"
+#include "core/meta/support/MetaKeys.h"
 
 #include <QString>
 #include <QHash>
@@ -61,10 +61,10 @@ namespace Collections {
 
         //ProxyCollection::Collection methods
 
-        void removeTrack( const TrackKey &key );
+        void removeTrack( const Meta::TrackKey &key );
         Meta::ProxyTrack* getTrack( Meta::TrackPtr track );
         void setTrack( Meta::ProxyTrack *track );
-        bool hasTrack( const TrackKey &key );
+        bool hasTrack( const Meta::TrackKey &key );
 
         void removeAlbum( const QString &album, const QString &albumArtist );
         Meta::ProxyAlbum* getAlbum( Meta::AlbumPtr album );
@@ -112,8 +112,8 @@ namespace Collections {
         QHash<QString, KSharedPtr<Meta::ProxyGenre> > m_genreMap;
         QHash<QString, KSharedPtr<Meta::ProxyComposer> > m_composerMap;
         QHash<QString, KSharedPtr<Meta::ProxyArtist> > m_artistMap;
-        QHash<AlbumKey, KSharedPtr<Meta::ProxyAlbum> > m_albumMap;
-        QHash<TrackKey, KSharedPtr<Meta::ProxyTrack> > m_trackMap;
+        QHash<Meta::AlbumKey, KSharedPtr<Meta::ProxyAlbum> > m_albumMap;
+        QHash<Meta::TrackKey, KSharedPtr<Meta::ProxyTrack> > m_trackMap;
         QHash<QString, KSharedPtr<Meta::ProxyLabel> > m_labelMap;
 
         QReadWriteLock m_yearLock;

@@ -74,7 +74,6 @@ private slots:
     void testSetGetFirstPlayed();
     void testSetGetPlayCount();
     void testReplayGain();
-    void testReplayPeakGain();
     void testType();
     void testCreateDate();
 

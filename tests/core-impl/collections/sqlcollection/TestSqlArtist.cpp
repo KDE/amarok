@@ -16,11 +16,13 @@
 
 #include "TestSqlArtist.h"
 
+#include "core/support/Debug.h"
+#include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/DefaultSqlQueryMakerFactory.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
+#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "SqlCollection.h"
 #include "SqlMountPointManagerMock.h"
+// #include "SqlMeta.h"
 
 #include <qtest_kde.h>
 
@@ -39,18 +41,8 @@ TestSqlArtist::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
-    m_collection->setMountPointManager( new SqlMountPointManagerMock() );
-
-    SqlRegistry *registry = new SqlRegistry( m_collection );
-    registry->setStorage( m_storage );
-    m_collection->setRegistry( registry );
-
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
+    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
+    m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }
 
 void
@@ -95,10 +87,10 @@ TestSqlArtist::cleanup()
 void
 TestSqlArtist::testSortableName()
 {
-    Meta::ArtistPtr artistWithThe( new Meta::SqlArtist( (Collections::SqlCollection*)0, 1, "The Foo" ) );
+    Meta::ArtistPtr artistWithThe = m_collection->registry()->getArtist( 1 );
     QCOMPARE( artistWithThe->sortableName(), QString( "Foo, The" ) );
 
-    Meta::ArtistPtr artistWithoutThe( new Meta::SqlArtist( (Collections::SqlCollection*)0, 1, "No The Foo" ) );
+    Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( 2 );
     QCOMPARE( artistWithoutThe->sortableName(), QString( "No The Foo" ) );
 }
 

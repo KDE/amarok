@@ -52,7 +52,6 @@ private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
-    SqlRegistry *m_registry;
 };
 
 #endif // TESTSQLCOLLECTIONLOCATION_H

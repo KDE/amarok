@@ -18,10 +18,6 @@
 #define TESTSCANRESULTPROCESSORFULL_H
 
 #include <QtTest/QTest>
-#include <QList>
-#include <QPair>
-#include <QString>
-#include <QVariantMap>
 
 #include <KTempDir>
 
@@ -30,8 +26,6 @@ class SqlStorage;
 namespace Collections {
     class SqlCollection;
 }
-
-typedef QPair<QString, uint> DirMtime;
 
 class TestScanResultProcessorFull : public QObject
 {
@@ -51,16 +45,11 @@ private slots:
 
     void testLargeInsert();
     void testIdentifyCompilationInMultipleDirectories();
-    void testAFeatBDetectionInSingleDirectory();
 
 private:
-
-    QList<DirMtime> setupFileSystem( const QList<QVariantMap> &trackData );
-
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
-
 };
 
 #endif // TESTSCANRESULTPROCESSORFULL_H

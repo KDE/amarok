@@ -17,20 +17,20 @@
 #ifndef SQLMOUNTPOINTMANAGERMOCK_H
 #define SQLMOUNTPOINTMANAGERMOCK_H
 
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/MountPointManager.h>
+#include <core-impl/collections/db/sql/SqlCollection.h>
+#include <core-impl/collections/db/sql/MountPointManager.h>
 
 #include <QMap>
 #include <QString>
 
 //Note: this class will probably break horribly on win32
 
-class SqlMountPointManagerMock : public SqlMountPointManager
+class SqlMountPointManagerMock : public MountPointManager
 {
 public:
 
-    SqlMountPointManagerMock()
-        : SqlMountPointManager()
+    SqlMountPointManagerMock( QObject *parent, SqlStorage *storage )
+        : MountPointManager( parent, storage )
     {
     }
 

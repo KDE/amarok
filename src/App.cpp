@@ -681,9 +681,6 @@ App::continueInit()
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
     Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
 
-    if( AmarokConfig::monitorChanges() )
-        CollectionManager::instance()->checkCollectionChanges();
-
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
 
@@ -773,8 +770,6 @@ App::continueInit()
         }
     }
 
-    // Using QTimer, so that we won't block the GUI
-    QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
 
     if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
@@ -782,6 +777,11 @@ App::continueInit()
         The::engineController()->restoreSession();
     }
 
+    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        The::engineController()->restoreSession();
+    }
     //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
     foreach( const QString& urlString, s_delayedAmarokUrls )
     {
@@ -789,37 +789,6 @@ App::continueInit()
         aUrl.run();
     }
     s_delayedAmarokUrls.clear();
-}
-
-
-void App::checkCollectionScannerVersion()  // SLOT
-{
-    DEBUG_BLOCK
-
-    QProcess scanner;
-
-    scanner.start( collectionScannerLocation(), QStringList( "--version" ) );
-    scanner.waitForFinished();
-
-    const QString version = scanner.readAllStandardOutput().trimmed();
-
-    if( version != AMAROK_VERSION  )
-    {
-        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
-                                     "does not match your Amarok version.</p>"
-                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
-    }
-}
-
-QString App::collectionScannerLocation()  // static
-{
-    QString scannerPath = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
-
-    // If the binary is not in $PATH, then search in the application folder too
-    if( scannerPath.isEmpty() )
-        scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
-
-    return scannerPath;
 }
 
 void App::slotConfigAmarok( const QString& page )

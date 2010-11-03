@@ -171,19 +171,22 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void prepareRemove( const Meta::TrackList &tracks );
         void prepareRemove( Collections::QueryMaker *qm );
 
-        /**
-           remove the track from the collection.
-           Return true if the removal was successful, false otherwise.
-        */
-
+        /** Removes a track from the collection (not from disk)
+         * Removes a track from the database ONLY if the file does NOT exist on disk.
+         * Do not call this method directly. Use the prepareRemove() method.
+         * @param track a track that does not exist on disk to be removed from the database
+         * @return true if the database entry was removed, false otherwise
+         */
         virtual bool remove( const Meta::TrackPtr &track );
 
-        /**
-           convenience method for removing multiple tracks,
-           @see remove( const Meta::TrackPtr &track )
-        */
-
-        bool remove( const Meta::TrackList &tracks );
+        /** Adds or merges a track to the collection (not to the disk)
+         * In
+         * Inserts a set of TrackPtrs directly into the database without needing to actual move any files
+         * This is a hack required by the DatabaseImporter
+         * TODO: Remove this hack
+         * @return true if the database entry was inserted, false otherwise
+         */
+        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
 
         /**
           explicitly inform the source collection of successful transfer.
@@ -196,13 +199,6 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         * tells the source location that an error occurred during the transfer of the file
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
-
-        /**
-         * Inserts a set of TrackPtrs directly into the database without needing to actuall move any files
-         * This is a hack required by the DatabaseImporter
-         */
-        virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
-        virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
 
     signals:
         void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );

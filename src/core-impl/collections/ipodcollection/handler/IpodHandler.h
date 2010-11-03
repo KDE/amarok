@@ -241,7 +241,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
-        virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
+        virtual QImage  libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;

@@ -28,8 +28,6 @@ class VolumeDial;
 namespace Amarok { class TimeSlider; }
 
 #include "core/meta/Meta.h"
-#include <Phonon/Global>
-
 #include <QToolBar>
 
 class MainToolbar : public QToolBar
@@ -119,8 +117,6 @@ private:
     int m_trackBarAnimationTimer;
 
     QString m_promoString;
-
-    Phonon::State m_currentEngineState;
 };
 
 #endif

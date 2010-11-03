@@ -37,12 +37,12 @@ namespace Capabilities
     {
         Q_OBJECT
         public:
-            
+
             /**
              * Constructor
              */
             CustomActionsCapability();
-            
+
             /**
              * Constructor
              * @param actions A list of actions to use.
@@ -55,6 +55,7 @@ namespace Capabilities
 
             /**
              * Get the custom actions for this capablility
+             * The caller must free the actions.
              * @return The list of custom actions
              */
             virtual QList<QAction *> customActions() const;

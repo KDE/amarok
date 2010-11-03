@@ -47,7 +47,6 @@ public:
     Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection );
     ~Mp3tunesServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
 
    // virtual void runQuery();

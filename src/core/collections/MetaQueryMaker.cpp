@@ -69,15 +69,6 @@ MetaQueryMaker::~MetaQueryMaker()
         delete b;
 }
 
-QueryMaker*
-MetaQueryMaker::reset()
-{
-    m_queryDoneCount = 0;
-    foreach( QueryMaker *b, builders )
-        b->reset();
-    return this;
-}
-
 void
 MetaQueryMaker::run()
 {

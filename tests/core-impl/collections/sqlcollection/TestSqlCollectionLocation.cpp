@@ -16,20 +16,18 @@
 
 #include "TestSqlCollectionLocation.h"
 
-#include "core/meta/Meta.h"
+#include "DatabaseUpdater.h"
+#include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/collections/MockCollectionLocationDelegate.h"
-#include <core-impl/logger/ProxyLogger.h>
-#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
-#include <core-impl/collections/sqlcollection/DefaultSqlQueryMakerFactory.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/SqlCollectionLocation.h>
-#include <core-impl/collections/sqlcollection/SqlRegistry.h>
-#include <core-impl/collections/sqlcollection/ScanManager.h>
-
+#include "core-impl/logger/ProxyLogger.h"
+#include "DefaultSqlQueryMakerFactory.h"
+#include "core/meta/Meta.h"
+#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "SqlCollection.h"
+#include "SqlCollectionLocation.h"
+#include "SqlRegistry.h"
 #include "SqlMountPointManagerMock.h"
-#include "IScanManagerMock.h"
+#include "core/collections/MockCollectionLocationDelegate.h"
 
 #include "config-amarok-test.h"
 
@@ -48,13 +46,16 @@ using ::testing::AnyNumber;
 using ::testing::Return;
 using ::testing::_;
 
+/** A SqlCollectionLocation that claims writing is possible even though it doesn't have
+ *  a valid directory.
+ */
 class MySqlCollectionLocation : public Collections::SqlCollectionLocation
 {
 public:
     MySqlCollectionLocation( Collections::SqlCollection *coll ) : Collections::SqlCollectionLocation( coll ) {}
     virtual ~MySqlCollectionLocation() {}
 
-    //bool isWritable() const { return true; }
+    bool isWritable() const { return true; }
 };
 
 class MyOrganizeCollectionDelegate : public OrganizeCollectionDelegate
@@ -101,7 +102,6 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
     , m_collection( 0 )
     , m_storage( 0 )
     , m_tmpDir( 0 )
-    , m_registry( 0 )
 {
     KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
     ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
@@ -113,19 +113,22 @@ TestSqlCollectionLocation::initTestCase()
     Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
-    SqlMountPointManagerMock *mock = new SqlMountPointManagerMock();
-    mock->folders << "/"; //assume that there is enough free space somewhere on *nix
+    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
+    SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
+    mock->folders << m_tmpDir->name(); // the target folder needs to have enough space and be writable
     m_collection->setMountPointManager( mock );
-    m_collection->setQueryMakerFactory( new Collections::DefaultSqlQueryMakerFactory( m_collection ) );
-    m_collection->setScanManager( new ScanManager( m_collection ) );
-    DatabaseUpdater *updater = new DatabaseUpdater();
-    updater->setStorage( m_storage );
-    updater->setCollection( m_collection );
-    updater->update();
-    m_collection->setUpdater( updater );
-    qDebug() << m_tmpDir->name();
+
+    // I just need the table and not the whole playlist manager
+    m_storage->query( QString( "CREATE TABLE playlist_tracks ("
+            " id " + m_storage->idType() +
+            ", playlist_id INTEGER "
+            ", track_num INTEGER "
+            ", url " + m_storage->exactTextColumnType() +
+            ", title " + m_storage->textColumnType() +
+            ", album " + m_storage->textColumnType() +
+            ", artist " + m_storage->textColumnType() +
+            ", length INTEGER "
+            ", uniqueid " + m_storage->textColumnType(128) + ") ENGINE = MyISAM;" ) );
 }
 
 void
@@ -134,28 +137,13 @@ TestSqlCollectionLocation::cleanupTestCase()
     delete m_collection;
     delete Amarok::Components::setLogger( 0 );
     //m_storage is deleted by SqlCollection
-    //m_registry is deleted by SqlCollection
     delete m_tmpDir;
 }
 
 void
 TestSqlCollectionLocation::init()
 {
-    m_registry = new SqlRegistry( m_collection );
-    m_registry->setStorage( m_storage );
-    m_collection->setRegistry( m_registry );
-
     //setup base data
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE labels;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
-
     m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'artist2');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
@@ -183,16 +171,23 @@ TestSqlCollectionLocation::init()
     m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                       "VALUES(3,3,'track3','comment3',2,3,1,1,1);" );
 
-
+    m_collection->registry()->emptyCache();
 }
 
 void
 TestSqlCollectionLocation::cleanup()
 {
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
-    delete m_registry;
-    m_collection->setRegistry( 0 );
-    m_collection->setScanManager( 0 );
+    m_storage->query( "TRUNCATE TABLE years;" );
+    m_storage->query( "TRUNCATE TABLE genres;" );
+    m_storage->query( "TRUNCATE TABLE composers;" );
+    m_storage->query( "TRUNCATE TABLE albums;" );
+    m_storage->query( "TRUNCATE TABLE artists;" );
+    m_storage->query( "TRUNCATE TABLE tracks;" );
+    m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE labels;" );
+    m_storage->query( "TRUNCATE TABLE urls_labels;" );
+    m_storage->query( "TRUNCATE TABLE directories;" );
 }
 
 void
@@ -202,56 +197,47 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
         Collections::MockCollectionLocationDelegate *d = new Collections::MockCollectionLocationDelegate();
         EXPECT_CALL( *d, reallyMove( _, _ ) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
         Amarok::Components::setCollectionLocationDelegate( d );
-
-        IScanManagerMock *s = new IScanManagerMock();
-        //will be called once when copying files to the destination and once when removing from the source
-        ON_CALL( *s, isDirInCollection( _ ) ).WillByDefault( Return( false ) );
-        EXPECT_CALL( *s, setBlockScan( true ) ).Times( 2 );
-        EXPECT_CALL( *s, setBlockScan( false ) ).Times( 2 );
-        m_collection->setScanManager( s );
     }
 
-    Meta::TrackPtr track = m_registry->getTrackFromUid( "uid://1" );
-    QVERIFY( track );
-    QVERIFY( track->playableUrl().path().endsWith( "ab/IDoNotExist.mp3" ) );
-
-    QCOMPARE( m_collection->knownUIDsInDirectory( m_tmpDir->name() + "b/" ).count(), 1 );
-
-    track->addLabel( "test" );
-
-    QCOMPARE( track->labels().count(), 1 );
-
-    Collections::SqlCollectionLocation *source = new MySqlCollectionLocation( m_collection );
-    Collections::SqlCollectionLocation *dest = new MySqlCollectionLocation( m_collection );
-    
     {
-        MyOrganizeCollectionDelegate *delegate = new MyOrganizeCollectionDelegate();
-        delegate->overwrite = true;
-        delegate->migrate = true;
-        delegate->dests.insert( track, m_tmpDir->name() + "b/IDoNotExist.mp3" );
-        dest->setOrganizeCollectionDelegateFactory( new MyOrganizeCollectionDelegateFactory( delegate ) );
+        Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( "uid://1" );
+        QVERIFY( track );
+        QVERIFY( track->playableUrl().path().endsWith( "ab/IDoNotExist.mp3" ) );
+
+        track->addLabel( "test" );
+
+        QCOMPARE( track->labels().count(), 1 );
+
+        Collections::SqlCollectionLocation *source = new MySqlCollectionLocation( m_collection );
+        Collections::SqlCollectionLocation *dest = new MySqlCollectionLocation( m_collection );
+
+        {
+            MyOrganizeCollectionDelegate *delegate = new MyOrganizeCollectionDelegate();
+            delegate->overwrite = true;
+            delegate->migrate = true;
+            delegate->dests.insert( track, m_tmpDir->name() + "b/IDoNotExist.mp3" );
+            dest->setOrganizeCollectionDelegateFactory( new MyOrganizeCollectionDelegateFactory( delegate ) );
+        }
+
+        source->prepareMove( track, dest );
+
+        QTest::kWaitForSignal( source, SIGNAL( destroyed(QObject*) ), 1000 );
+
+        QCOMPARE( track->labels().count(), 1 );
+        QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
     }
-    
-    source->prepareMove( track, dest );
 
-    QTest::kWaitForSignal( source, SIGNAL( destroyed(QObject*) ), 1000 );
+    //force a reload from the database
+    m_collection->registry()->emptyCache();
 
-    QCOMPARE( track->labels().count(), 1 );
-    QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
-
-    track.clear();
-
-    //force a reload from the database later
-    QVERIFY( QMetaObject::invokeMethod( m_registry, "emptyCache" ) );
-
-    track = m_registry->getTrack( m_tmpDir->name() + "b/IDoNotExist.mp3" );
-    QVERIFY( track );
-    QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
-    QCOMPARE( track->labels().count(), 1 );
-
-    QCOMPARE( m_collection->knownUIDsInDirectory( m_tmpDir->name() + "b/" ).count(), 2 );
-
-    delete m_collection->scanManager();
+    {
+        // Meta::TrackPtr track = m_collection->registry()->getTrack( m_tmpDir->name() + "b/IDoNotExist.mp3" );
+        Meta::TrackPtr track = m_collection->registry()->getTrack(1);
+        QVERIFY( track );
+        QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
+        // TODO: check that the db urls entry really specifies the exiting directories entry
+        QCOMPARE( track->labels().count(), 1 );
+    }
 }
 
 void

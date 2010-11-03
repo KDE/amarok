@@ -111,7 +111,7 @@ NepomukRegistry::trackForBindingSet( const Soprano::BindingSet &set )
         Meta::NepomukTrackPtr tp( new Meta::NepomukTrack( m_collection, this, set ) );
         if ( tp->uid().isEmpty() )
         {
-            tp->setUid( createUuid() );
+            tp->setUidUrl( createUuid() );
             ThreadWeaver::Job *job =
                     new NepomukWriteJob( tp->resource() , QUrl( "http://amarok.kde.org/metadata/1.0/track#uid" ), Nepomuk::Variant( tp->uid() ) );
             m_weaver->enqueue( job );

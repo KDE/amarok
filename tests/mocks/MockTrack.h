@@ -65,8 +65,7 @@ class MockTrack : public Meta::Track
     MOCK_CONST_METHOD0( lastPlayed, QDateTime() );
     MOCK_CONST_METHOD0( firstPlayed, QDateTime() );
     MOCK_CONST_METHOD0( playCount, int() );
-    MOCK_CONST_METHOD1( replayGain, qreal(Meta::Track::ReplayGainMode mode) );
-    MOCK_CONST_METHOD1( replayPeakGain, qreal(Meta::Track::ReplayGainMode mode) );
+    MOCK_CONST_METHOD1( replayGain, qreal(Meta::ReplayGainTag mode) );
     MOCK_CONST_METHOD0( type, QString() );
     MOCK_METHOD0( prepareToPlay, void() );
     MOCK_METHOD1( finishedPlaying, void( double playedFraction ) );

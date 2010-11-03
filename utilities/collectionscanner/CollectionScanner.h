@@ -22,111 +22,85 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+/*
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+*/
 
 #include <QCoreApplication>
-#include <QCryptographicHash>
-#include <QDateTime>
-#include <QDBusInterface>
 #include <QHash>
 #include <QSet>
 #include <QStringList>
 
-//Taglib includes..
-#include <audioproperties.h>
-#include <fileref.h>
+class QSettings;
 
-typedef QHash<QString, QString> AttributeHash;
+namespace CollectionScanner
+{
 
 /**
- * @class CollectionScanner
+ * @class Scanner
  * @short Scans directories and builds the Collection
  */
 
-class CollectionScanner : public QCoreApplication
+class Scanner : public QCoreApplication
 {
     Q_OBJECT
 
 public:
-    CollectionScanner( int &argc, char **argv );
+    Scanner( int &argc, char **argv );
+    ~Scanner();
 
-    ~CollectionScanner();
-    int newInstance() { return 0; }
+    /** Reads the batch file and adds the content to m_folders and m_Times */
+    void readBatchFile( const QString &path );
+
+    /** Get's the modified time from the given file and set's m_newerTime according */
+    void readNewerTime( const QString &path );
 
 private slots:
     void doJob();
 
 private:
-    bool readBatchIncrementalFile();
-    bool readMtimeFile();
+    void addDir( const QString& dir, QSet<QString> *entries );
 
-    void readDir( const QString& dir, QStringList& entries );
-    void scanFiles( const QStringList& entries );
-    
-    /**
-     * Read metadata tags of a given file.
-     * @track Track for the file.
-     * @return QMap containing tags, or empty QMap on failure.
+    /** Returns true if the track is modified.
+     *  Modification is determined first by m_mTimes and (if not found)
+     *  then by m_newerTime
      */
-    AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
+    bool isModified( const QString& dir );
 
-    /**
-     * Helper method for writing XML elements to stdout.
-     * @name Name of the element.
-     * @attributes Key/value map of attributes.
-     */
-    void writeElement( const QString& name, const AttributeHash& attributes );
-
-    /**
-     * @return the LOWERCASE file extension without the preceding '.', r "" if there is none
-     */
-    inline QString extension( const QString &fileName )
-    {
-        return fileName.contains( '.' ) ? fileName.mid( fileName.lastIndexOf( '.' ) + 1 ).toLower() : "";
-    }
-
-    /**
-     * @return the last directory in @param fileName
-     */
-    inline QString directory( const QString &fileName )
-    {
-        return fileName.section( '/', 0, -2 );
-    }
-
-    QString escape( const QString &plain );
     void readArgs();
-    void printVersionAndExit();
-    void displayHelp();
 
-    QString                     m_collectionId;
-    QString                     m_amarokPid;
-    bool                        m_batch;
-    bool                        m_charset;
-    bool                        m_importPlaylists;
-    QStringList                 m_folders;
-    QHash<QString, uint>        m_mTimeMap;
-    QSet<QString>               m_scannedDirs;
-    QDateTime                   m_batchFolderTime;
-    bool                        m_recursively;
-    bool                        m_incremental;
-    bool                        m_restart;
-    bool                        m_idlePriority;
-    QString                     m_saveLocation;
-    QString                     m_logfile;
-    QString                     m_rpath;
-    QString                     m_mtimeFile;
-    QStringList                 m_scannedFolders;
-    QDBusInterface             *m_amarokCollectionInterface;
-    QStringList                 m_images;
+    /** Displays the error message and exits */
+    void error( const QString &str );
+
+    /** Displays the version and exits */
+    void displayVersion();
+
+    /** Displays the help and an optional error message and exits */
+    void displayHelp( const QString &error = QString() );
+
+    bool                  m_charset;
+    QStringList           m_folders;
+
+    uint                  m_newerTime;
+    QHash<QString, uint>  m_mTimes;
+
+    bool                  m_incremental;
+    bool                  m_recursively;
+    bool                  m_restart;
+    bool                  m_idlePriority;
+
+    QString               m_mtimeFile;
+
+    QSettings*            m_settings;
+
 
     // Disable copy constructor and assignment
-    CollectionScanner( const CollectionScanner& );
-    CollectionScanner& operator= ( const CollectionScanner& );
-
+    Scanner( const Scanner& );
+    Scanner& operator= ( const Scanner& );
 };
 
+}
 
 #endif // COLLECTIONSCANNER_H
-

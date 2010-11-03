@@ -196,6 +196,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 QVariant
 CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
 {
+    // -- do the decoration and the size hint role
     if( item->isDataItem() )
     {
         switch( role )
@@ -249,6 +250,8 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             break;
         }
     }
+
+    // -- all other roles are handled by item
     return item->data( role );
 }
 
@@ -437,26 +440,39 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
-    if ( qm && parent )
+    if( qm && parent )
     {
-        //this check should not hurt anyone... needs to check if single... needs it
+        // this check should not hurt anyone... needs to check if single... needs it
         if( d->runningQueries.contains( parent ) )
             return;
 
-        if( level > m_levelType.count() || parent->isVariousArtistItem() || parent->isNoLabelItem() )
+        // - check if we are finished
+        if( level > m_levelType.count() ||
+            parent->isVariousArtistItem() ||
+            parent->isNoLabelItem() )
         {
             qm->deleteLater();
             return;
         }
 
+        // - the last level are always the tracks
         if ( level == m_levelType.count() )
             qm->setQueryType( Collections::QueryMaker::Track );
+
+        // - all other levels are more complicate
         else
         {
+            Collections::QueryMaker::QueryType nextLevel;
+            if( level + 1 >= m_levelType.count() )
+                nextLevel = Collections::QueryMaker::Track;
+            else
+                nextLevel = mapCategoryToQueryType( m_levelType [ level + 1 ] );
+
+            qm->setQueryType( mapCategoryToQueryType( m_levelType[ level ] ) );
+
             switch( m_levelType[level] )
             {
                 case CategoryId::Album :
-                    qm->setQueryType( Collections::QueryMaker::Album );
                     //restrict query to normal albums if the previous level
                     //was the artist category. in that case we handle compilations below
                     if( level > 0 && m_levelType[level-1] == CategoryId::Artist && !parent->isVariousArtistItem() )
@@ -464,48 +480,32 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
                         qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
+
                 case CategoryId::Artist :
-                    qm->setQueryType( Collections::QueryMaker::Artist );
                     //handle compilations only if the next level ist CategoryId::Album
-                    if( level + 1 < m_levelType.count() && m_levelType[level+1] == CategoryId::Album )
+                    if( nextLevel == Collections::QueryMaker::Album )
                     {
                         handleCompilations( parent );
                         qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
+
                 case CategoryId::Label:
-                    qm->setQueryType( Collections::QueryMaker::Label );
-                    //we do not have to restrict to OnlqWithLabels here, as these obviously cannot be returned when querying for labels
-                    //but we need to handle tracks without labels
-                    Collections::QueryMaker::QueryType nextLevel;
-                    if( level +1 == m_levelType.count() )
-                    {
-                        nextLevel = Collections::QueryMaker::Track;
-                    }
-                    else
-                    {
-                        nextLevel = mapCategoryToQueryType( m_levelType [ level + 1 ] );
-                    }
                     handleTracksWithoutLabels( nextLevel, parent );
                     break;
 
                 default : //TODO handle error condition. return tracks?
-                    qm->setQueryType( mapCategoryToQueryType( m_levelType[ level ] ) );
                     break;
             }
         }
-        CollectionTreeItem *tmpItem = parent;
-        while( tmpItem->isDataItem() )
-        {
-            //ignore Various artists node (which will not have a data pointer)
-            if( tmpItem->isVariousArtistItem() )
-            {
-                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-            }
-            else
-                qm->addMatch( tmpItem->data() );
 
-            tmpItem = tmpItem->parent();
+        for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
+        {
+            // a various artist item means we are looking for compilations here
+            if( tmpItem->isVariousArtistItem() )
+                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+            else if( tmpItem->data() )
+                qm->addMatch( tmpItem->data() );
         }
         addFilters( qm );
         qm->setReturnResultAsDataPtrs( true );
@@ -566,15 +566,15 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
         foreach ( const expression_element &elem, orList )
         {
 #define ADD_OR_EXCLUDE_FILTER( VALUE, FILTER, MATCHBEGIN, MATCHEND ) \
-            if( elem.negate ) \
+            { if( elem.negate ) \
                 qm->excludeFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND ); \
             else \
-                qm->addFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND );
+                qm->addFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND ); }
 #define ADD_OR_EXCLUDE_NUMBER_FILTER( VALUE, FILTER, COMPARE ) \
-            if( elem.negate ) \
+            { if( elem.negate ) \
                 qm->excludeNumberFilter( VALUE, FILTER, COMPARE ); \
             else \
-                qm->addNumberFilter( VALUE, FILTER, COMPARE );
+                qm->addNumberFilter( VALUE, FILTER, COMPARE ); }
             if( elem.negate )
                 qm->beginAnd();
             else
@@ -582,55 +582,26 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
 
             if ( elem.field.isEmpty() )
             {
-                foreach ( int level, m_levelType )
-                {
-                    qint64 value;
-                    switch ( level )
-                    {
-                        case CategoryId::Album:
-                            if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
-                            value = Meta::valAlbum;
-                            break;
-                        case CategoryId::Artist:
-                            if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
-                            value = Meta::valArtist;
-                            break;
-                        case CategoryId::Composer:
-                            if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
-                            value = Meta::valComposer;
-                            break;
-                        case CategoryId::Genre:
-                            if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
-                            value = Meta::valGenre;
-                            break;
-                        case CategoryId::Year:
-                            if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
-                            value = Meta::valYear;
-                            break;
-                        case CategoryId::Label:
-                            value = Meta::valLabel;
-                            break;
-                        default:
-                            value = -1;
-                            break;
-                    }
-                    qm->beginOr();
-                    ADD_OR_EXCLUDE_FILTER( value, elem.text, false, false );
-                    qm->endAndOr();
-                }
+                qm->beginOr();
 
-                //always add track filter ( if supported..)
-                if ( ( validFilters & Collections::QueryMaker::TitleFilter ) != 0 ) {
-                    qm->beginOr();
-                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false ); //always filter for track title too
-                    qm->endAndOr();
-                }
-                if ( ( validFilters & Collections::QueryMaker::UrlFilter ) != 0 ) {
-                    qm->beginOr();
-                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false ); //always filter for track URL
-                    qm->endAndOr();
-                }
+                if( ( validFilters & Collections::QueryMaker::TitleFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::UrlFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::AlbumFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::ArtistFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::ComposerFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::GenreFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::YearFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
 
+                ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
+
+                qm->endAndOr();
             }
             else
             {
@@ -650,6 +621,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                         break;
                 }
 
+                // TODO: Once we have MetaConstants.cpp use those functions here
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
@@ -854,6 +826,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
+    DEBUG_BLOCK
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -896,17 +869,13 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         return;
 
     if( d->childQueries.contains( qm ) )
-    {
         handleNormalQueryResult( qm, data );
-    }
+
     else if( d->compilationQueries.contains( qm ) )
-    {
         handleSpecialQueryResult( CollectionTreeItem::VariousArtist, qm, data );
-    }
+
     else if( d->noLabelsQueries.contains( qm ) )
-    {
         handleSpecialQueryResult( CollectionTreeItem::NoLabel, qm, data );
-    }
 }
 
 void
@@ -915,8 +884,10 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
     DEBUG_BLOCK
     debug() << "Received special data: " << dataList.count();
     CollectionTreeItem *parent = 0;
+
     if( type == CollectionTreeItem::VariousArtist )
         parent = d->compilationQueries.value( qm );
+
     else if( type == CollectionTreeItem::NoLabel )
         parent = d->noLabelsQueries.value( qm );
 
@@ -1004,25 +975,11 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
         }
 
         //if the special node exists, check if it has to be expanded
-        if( specialNode)
+        if( specialNode )
         {
-            CollectionTreeItem *tmp = parent;
-            while( tmp->isDataItem() )
-                tmp = tmp->parent();
-
-            if( type == CollectionTreeItem::VariousArtist )
+            if( m_expandedSpecialNodes.contains( parent->parentCollection() ) )
             {
-                if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
-                {
-                    emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the vaItem at row 0
-                }
-            }
-            else if( type == CollectionTreeItem::NoLabel )
-            {
-                if( m_expandedNoLabelsNodes.contains( tmp->parentCollection() ) )
-                {
-                    emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the special node at row 0
-                }
+                emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the vaItem at row 0
             }
         }
     }
@@ -1158,19 +1115,19 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 void
 CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) const
 {
+    DEBUG_BLOCK
+
     //this method will be called when we retrieve a list of artists from the database.
     //we have to query for all compilations, and then add a "Various Artists" node if at least
     //one compilation exists
     Collections::QueryMaker *qm = parent->queryMaker();
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
     qm->setQueryType( Collections::QueryMaker::Album );
-    CollectionTreeItem *tmpItem = parent;
-    while( tmpItem->isDataItem()  )
+    for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
     {
-        //ignore Various artists node (which will not have a data pointer)
-        if( !tmpItem->isVariousArtistItem() && !tmpItem->isNoLabelItem() )
+        //ignore special nodes that do not have a data pointer
+        if( tmpItem->data() )
             qm->addMatch( tmpItem->data() );
-        tmpItem = tmpItem->parent();
     }
     addFilters( qm );
     qm->setReturnResultAsDataPtrs( true );
@@ -1189,15 +1146,11 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     qm->setQueryType( queryType );
     qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
     qm->setReturnResultAsDataPtrs( true );
-    CollectionTreeItem *tmpItem = parent;
-    while( tmpItem->isDataItem() )
+    for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
     {
         //ignore special nodes that do not have a data pointer
-        if( !tmpItem->isVariousArtistItem() && !tmpItem->isNoLabelItem() )
-        {
+        if( tmpItem->data() )
             qm->addMatch( tmpItem->data() );
-        }
-        tmpItem = tmpItem->parent();
     }
     addFilters( qm );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
@@ -1336,29 +1289,23 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
     if ( index.isValid() )      //probably unnecessary, but let's be safe
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        if ( item->isDataItem() && !item->isVariousArtistItem() )
-        {
-            m_expandedItems.remove( item->data() );
-        }
-        else if( item->isVariousArtistItem() ) //Various artists nodes
-        {
-            CollectionTreeItem *tmp = item->parent();
-            while( tmp->isDataItem() )
-                tmp = tmp->parent();
 
-            m_expandedVariousArtistsNodes.remove( tmp->parentCollection() );
-        }
-        else if( item->isNoLabelItem() )
+        switch( item->type() )
         {
-            CollectionTreeItem *tmp = item->parent();
-            while( tmp->isDataItem() )
-                tmp = tmp->parent();
+        case CollectionTreeItem::Root:
+            break; // nothing to do
 
-            m_expandedNoLabelsNodes.remove( tmp->parentCollection() );
-        }
-        else
-        {
+        case CollectionTreeItem::Collection:
             m_expandedCollections.remove( item->parentCollection() );
+            break;
+
+        case CollectionTreeItem::VariousArtist:
+        case CollectionTreeItem::NoLabel:
+            m_expandedSpecialNodes.remove( item->parentCollection() );
+            break;
+        case CollectionTreeItem::Data:
+            m_expandedItems.remove( item->data() );
+            break;
         }
     }
 }
@@ -1373,21 +1320,14 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
         //we have to remember whether the user expanded a various artists/no labels node or not.
         //otherwise we won't be able to automatically expand the special node after filtering again
         //there is exactly one special node per type per collection, so use the collection to store that information
-        if( item->isVariousArtistItem() )
+        switch( item->type() )
         {
-            CollectionTreeItem *tmp = item->parent();
-            while( tmp->isDataItem() )
-                tmp = tmp->parent();
-
-            m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
-        }
-        else if( item->isNoLabelItem() )
-        {
-            CollectionTreeItem *tmp = item->parent();
-            while( tmp->isDataItem() )
-                tmp = tmp->parent();
-
-            m_expandedNoLabelsNodes.insert( tmp->parentCollection() );
+        case CollectionTreeItem::VariousArtist:
+        case CollectionTreeItem::NoLabel:
+            m_expandedSpecialNodes.insert( item->parentCollection() );
+            break;
+        default:
+            break;
         }
     }
 }

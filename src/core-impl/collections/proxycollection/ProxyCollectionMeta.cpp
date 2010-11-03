@@ -649,8 +649,8 @@ ProxyTrack::metadataChanged( Meta::TrackPtr track )
         return;
     }
 
-    const TrackKey myKey = Meta::keyFromTrack( Meta::TrackPtr( this ) );
-    const TrackKey otherKey = Meta::keyFromTrack( track );
+    const TrackKey myKey( Meta::TrackPtr( this ) );
+    const TrackKey otherKey( track );
     if( myKey == otherKey )
     {
         //no key relevant metadata did change

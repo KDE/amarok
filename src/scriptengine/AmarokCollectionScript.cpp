@@ -20,7 +20,7 @@
 #include "App.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core-impl/collections/sqlcollection/SqlCollectionLocation.h"
+#include "core-impl/collections/db/sql/SqlCollectionLocation.h"
 #include "core/support/Debug.h"
 
 

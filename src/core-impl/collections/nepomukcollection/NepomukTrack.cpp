@@ -374,7 +374,7 @@ NepomukTrack::uid() const
 }
 
 void
-NepomukTrack::setUid ( const QString& value )
+NepomukTrack::setUidUrl( const QString& value )
 {
     // do not write it to nepomuk, it's nepomukregistrys job
     m_uid = value;

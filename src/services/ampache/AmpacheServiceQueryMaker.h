@@ -33,7 +33,6 @@ public:
     AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId );
     ~AmpacheServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
     virtual void abortQuery();
 

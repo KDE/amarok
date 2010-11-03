@@ -21,6 +21,7 @@
 #include "CollectionSetup.h"
 
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
@@ -32,8 +33,6 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QDBusInterface>
-#include <QDBusReply>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
@@ -58,13 +57,23 @@ void
 CollectionSetupTreeView::slotPressed( const QModelIndex &index )
 {
     DEBUG_BLOCK
+    // --- show context menu on right mouse button
     if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
     {
-        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
+        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );
         debug() << "Setting current dir to " << m_currDir;
-        QDBusInterface interface( "org.kde.amarok", "/SqlCollection" );
-        QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
-        if( reply.isValid() && reply.value() )
+
+        // check if there is an sql collection covering the directory
+        bool covered = false;
+        QList<Collections::Collection*> queryableCollections = CollectionManager::instance()->queryableCollections();
+        foreach( Collections::Collection *collection, queryableCollections )
+        {
+            if( collection->isDirInCollection( m_currDir ) )
+                covered = true;
+        }
+
+        // it's covered, so we can show the rescan option
+        if( covered )
         {
             m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
             QMenu menu;

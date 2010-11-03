@@ -41,7 +41,6 @@ class XmlQueryWriter : public QueryMaker
         QDomElement getDomElement() const;
         QueryMaker* getEmbeddedQueryMaker() const;
 
-        QueryMaker* reset();
         void run();
         void abortQuery();
         int resultCount() const;

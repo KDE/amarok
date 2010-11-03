@@ -106,6 +106,10 @@ link_database_test( testsqlquerymaker )
 
 set( testscanresultprocessorfull_SRCS
         TestScanResultProcessorFull.cpp
+        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Directory.cpp
+        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Playlist.cpp
+        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Album.cpp
+        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Track.cpp
     )
 
 
@@ -117,7 +121,7 @@ link_database_test( testscanresultprocessorfull )
 
 set( testartisthelper_SRCS
         TestArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/ArtistHelper.cpp
     )
 
 

@@ -36,7 +36,6 @@ class ServiceSqlQueryMaker : public QueryMaker
        ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
         virtual ~ServiceSqlQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void abortQuery();
         virtual void run();
 

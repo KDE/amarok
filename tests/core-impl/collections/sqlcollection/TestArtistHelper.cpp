@@ -16,7 +16,7 @@
 
 #include "TestArtistHelper.h"
 
-#include <core-impl/collections/sqlcollection/ArtistHelper.h>
+#include <core-impl/collections/support/ArtistHelper.h>
 
 #include <qtest_kde.h>
 

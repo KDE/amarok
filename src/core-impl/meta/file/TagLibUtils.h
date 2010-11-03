@@ -19,10 +19,9 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
 
-#include <QMap>
 #include <QString>
-#include <QVariant>
 
 namespace TagLib
 {
@@ -33,8 +32,8 @@ namespace Meta
 {
     namespace Field
     {
-        AMAROK_EXPORT void writeFields( const QString &filename, const QVariantMap &changes );
-        AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const QVariantMap &changes );
+        AMAROK_EXPORT void writeFields( const QString &filename, const FieldHash &changes );
+        AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const FieldHash &changes );
     }
 }
 

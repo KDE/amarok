@@ -29,15 +29,6 @@ LastFmServiceQueryMaker::~LastFmServiceQueryMaker()
 {
 }
 
-
-QueryMaker *
-LastFmServiceQueryMaker::reset()
-{
-    m_resultAsDataPtrs = false;
-    return this;
-}
-
-    
 void 
 LastFmServiceQueryMaker::run()
 {

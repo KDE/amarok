@@ -172,7 +172,7 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
         return lessThanString( leftData.toString(), rightData.toString() );
    
-    warning() << "failed: an unexpected comparison was made";
+    warning() << "failed: an unexpected comparison was made between"<<left.data(Qt::DisplayRole)<<"and"<<right.data(Qt::DisplayRole);
     
     //Just in case
     return QSortFilterProxyModel::lessThan( left, right );

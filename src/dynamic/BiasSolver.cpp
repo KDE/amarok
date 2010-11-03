@@ -613,7 +613,12 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     {
         int n = m_n;
         while( n-- )
-            playlist += getRandomTrack( TrackSet(s_universe) );
+        {
+            Meta::TrackPtr track = getRandomTrack( TrackSet(s_universe) );
+            if( !track )
+                break;
+            playlist.append( track );
+        }
 
         debug() << "No collection filters, returning random initial playlist";
         return playlist;
@@ -703,7 +708,10 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         }
 
         // choose a track at random from our final subset
-        playlist.append( getRandomTrack(currentSet) );
+        Meta::TrackPtr track = getRandomTrack(currentSet);
+        if( !track )
+            break;
+        playlist.append( track );
     }
     delete[] addedSongsForFilter;
 
@@ -752,7 +760,14 @@ Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 {
     const KUrl url = QString( s_universeCollection->uidUrlProtocol() + "://" + uid );
-    return s_universeCollection->trackForUrl( url );
+    Meta::TrackPtr track = s_universeCollection->trackForUrl( url );
+    // try the same without the protocol
+    if( !track )
+         track = s_universeCollection->trackForUrl( KUrl(uid) );
+
+    if( !track )
+        warning() << "trackForUid returned no track for "<<uid<<"with protocol: "<< s_universeCollection->uidUrlProtocol();
+    return track;
 }
 
 

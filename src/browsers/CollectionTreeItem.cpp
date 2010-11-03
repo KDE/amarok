@@ -24,6 +24,7 @@
 #include "core/capabilities/DecoratorCapability.h"
 
 #include <KLocale>
+#include <KIcon>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -128,26 +129,6 @@ CollectionTreeItem::child( int row )
     return m_childItems.value( row );
 }
 
-QString
-CollectionTreeItem::albumYear() const
-{
-    if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
-    {
-        const Meta::TrackList tracks = album->tracks();
-        if( !tracks.isEmpty() )
-        {
-            Meta::TrackPtr track = tracks.at( 0 );
-            if( track && track->year() )
-            {
-                const QString year = track->year()->prettyName();
-                if( year != "0" )
-                    return year;
-            }
-        }
-    }
-    return QString();
-}
-
 QVariant
 CollectionTreeItem::data( int role ) const
 {
@@ -155,31 +136,36 @@ CollectionTreeItem::data( int role ) const
     {
         if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
         {
+            QString name = m_data->fixedName();
+
             Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
-            QString name = track ? track->fixedName() : m_data->fixedName();
-
-            if ( track && track->album()->isCompilation() )
+            if( track )
             {
-                name.prepend( QString("%1 - ").arg(track->artist()->prettyName()) );
-            }
+                QString name = track->fixedName();
 
-            if( AmarokConfig::showTrackNumbers() && track )
-            {
-                int trackNum = track->trackNumber();
-                if( trackNum > 0 )
-                    name.prepend( QString("%1 - ").arg(trackNum) );
+                Meta::AlbumPtr album = track->album();
+                if( album && album->isCompilation() )
+                    name.prepend( QString("%1 - ").arg(track->artist()->prettyName()) );
+
+                if( AmarokConfig::showTrackNumbers() )
+                {
+                    int trackNum = track->trackNumber();
+                    if( trackNum > 0 )
+                        name.prepend( QString("%1 - ").arg(trackNum) );
+                }
+
+                if( AmarokConfig::showYears() )
+                {
+                    Meta::YearPtr year = track->year();
+                    if( year )
+                        name.prepend( QString("%1 - ").arg(year->name()) );
+                }
             }
 
             // Check empty after track logic and before album logic
             if( name.isEmpty() )
                 name = i18nc( "The Name is not known", "Unknown" );
 
-            if( AmarokConfig::showYears() )
-            {
-                const QString year = albumYear();
-                if( !year.isEmpty() )
-                    name.prepend( QString("%1 - ").arg(year) );
-            }
             return name;
         }
         else if( role == CustomRoles::SortRole )
@@ -296,13 +282,13 @@ CollectionTreeItem::level() const
 bool
 CollectionTreeItem::isDataItem() const
 {
-    return m_type == Data || m_type == VariousArtist || m_type == NoLabel;
+    return m_type == Data;
 }
 
 bool
 CollectionTreeItem::isVariousArtistItem() const
 {
-    return m_type == VariousArtist;
+    return m_type == CollectionTreeItem::VariousArtist;
 }
 
 bool
@@ -314,28 +300,22 @@ CollectionTreeItem::isNoLabelItem() const
 bool
 CollectionTreeItem::isAlbumItem() const
 {
-    return m_type == Data && m_type != VariousArtist && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
 }
 
 bool
 CollectionTreeItem::isTrackItem() const
 {
-    return m_type == Data && m_type != VariousArtist && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 Collections::QueryMaker*
 CollectionTreeItem::queryMaker() const
 {
-    if ( m_parentCollection )
-        return m_parentCollection->queryMaker();
-
-    CollectionTreeItem *tmp = m_parent;
-    while( tmp->isDataItem() )
-        tmp = tmp->parent();
-    Collections::QueryMaker *qm = 0;
-    if( tmp->parentCollection() )
-        qm = tmp->parentCollection()->queryMaker();
-    return qm;
+    Collections::Collection* coll = parentCollection();
+    if( coll )
+        return coll->queryMaker();
+    return 0;
 }
 
 KUrl::List

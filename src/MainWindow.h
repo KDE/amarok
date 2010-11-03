@@ -27,6 +27,7 @@
 #include <KMainWindow>
 #include <KVBox>
 #include <Phonon/Global>
+#include <Phonon/Global>
 
 #include <QWeakPointer>
 

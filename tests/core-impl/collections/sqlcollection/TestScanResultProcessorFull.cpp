@@ -18,27 +18,26 @@
 #include "TestScanResultProcessorFull.h"
 
 #include "core/support/Debug.h"
-#include <QDebug>
 
 #include "core/meta/support/MetaConstants.h"
-#include "core/collections/support/SqlStorage.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
-#include <core-impl/collections/sqlcollection/ScanResultProcessor.h>
-#include <core-impl/collections/sqlcollection/SqlRegistry.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
-
+#include "SqlCollection.h"
+#include <collectionscanner/Directory.h>
+#include <collectionscanner/Album.h>
+#include <collectionscanner/Track.h>
+#include <collectionscanner/Playlist.h>
+#include "core-impl/collections/db/sql/SqlScanResultProcessor.h"
+// #include "DatabaseUpdater.h"
+#include "core/collections/support/SqlStorage.h"
+#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/collections/db/sql/SqlRegistry.h"
 
 #include "config-amarok-test.h"
 #include "SqlMountPointManagerMock.h"
 
-#include <QDir>
-#include <QFileInfo>
-#include <QList>
-#include <QPair>
-#include <QProcess>
-#include <QVariantMap>
+#include <QTest>
+#include <QString>
+#include <QXmlStreamReader>
 
 #include <qtest_kde.h>
 
@@ -54,22 +53,21 @@ TestScanResultProcessorFull::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
-    SqlMountPointManager *mpm = new SqlMountPointManagerMock();
-    m_collection->setMountPointManager( mpm );
+    m_collection = new Collections::SqlCollection( "testId", "testcollectionscanner", m_storage );
+    m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 
-    // registry needed when updating urls and nobody checks for NULL
-    SqlRegistry *registry = new SqlRegistry( m_collection );
-    registry->setStorage( m_storage );
-    m_collection->setRegistry( registry );
+    // I just need the table and not the whole playlist manager
+    m_storage->query( QString( "CREATE TABLE playlist_tracks ("
+            " id " + m_storage->idType() +
+            ", playlist_id INTEGER "
+            ", track_num INTEGER "
+            ", url " + m_storage->exactTextColumnType() +
+            ", title " + m_storage->textColumnType() +
+            ", album " + m_storage->textColumnType() +
+            ", artist " + m_storage->textColumnType() +
+            ", length INTEGER "
+            ", uniqueid " + m_storage->textColumnType(128) + ") ENGINE = MyISAM;" ) );
 
-    DatabaseUpdater *updater = new DatabaseUpdater();
-    updater->setStorage( m_storage );
-    updater->setCollection( m_collection );
-    updater->update();
-
-    m_collection->setUpdater( updater );
 }
 
 void
@@ -77,7 +75,6 @@ TestScanResultProcessorFull::cleanupTestCase()
 {
     delete m_collection;
     //m_storage is deleted by SqlCollection
-    //m_registry is deleted by SqlCollection
     delete m_tmpDir;
 }
 
@@ -94,6 +91,7 @@ TestScanResultProcessorFull::cleanup()
     m_storage->query( "TRUNCATE TABLE urls;" );
     m_storage->query( "TRUNCATE TABLE directories;" );
     m_storage->query( "COMMIT" );
+    m_collection->registry()->emptyCache();
 }
 
 /**
@@ -102,150 +100,160 @@ TestScanResultProcessorFull::cleanup()
 void
 TestScanResultProcessorFull::testSingleInsert()
 {
-    QString mockMountPoint = ".";
+    QXmlStreamReader reader(
+    "<directory>"
+    "<path>/home/ralf/Musik/Musical/</path>"
+    "<mtime>1234</mtime>"
+    "<rpath>../../../../Musik/Musical</rpath>"
+    "<album>"
+    "<name>Grease</name>"
+    "<track>"
+    "<uniqueid>amarok-sqltrackuid://ab1059a2407fed7d0597526ddd1fd630</uniqueid>"
+    "<path>/home/Musik/Musical/John Travolta - You're The One That I Want.mp3</path>"
+    "<rpath>../../../Musik/Musical/John Travolta - You're The One That I Want.mp3</rpath>"
+    "<filetype>1</filetype>"
+    "<title>You're The One That I Want</title>"
+    "<artist>John Travolta</artist>"
+    "<albumArtist>Grease Cast</albumArtist>"
+    "<composer>Warren Casey, Jim Jacobs</composer>"
+    "<compilation/>"
+    "<hasCover/>"
+    "<comment>Hitparade Nummer Eins Hit</comment>"
+    "<genre>Musical</genre>"
+    "<year>1978</year>"
+    "<disc>1</disc>"
+    "<track>4</track>"
+    "<bpm>60</bpm>"
+    "<bitrate>160</bitrate>"
+    "<length>167000</length>"
+    "<samplerate>44100</samplerate>"
+    "<filesize>3362816</filesize>"
+    "<trackGain>1.0</trackGain>"
+    "<trackPeakGain>2.0</trackPeakGain>"
+    "<albumGain>3.0</albumGain>"
+    "<albumPeakGain>4.0</albumPeakGain>"
+    "</track>"
+    "</album>"
+    "</directory>"
+    );
+    reader.readNext();
+    reader.readNext();
 
-    QVariantMap track;
-    track.insert( Meta::Field::TITLE, "The Morning After" );
-    track.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://459234596663341");
-    track.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Maureen Mcgovern - The Morning After.mp3" );
-    track.insert( Meta::Field::ALBUM, "The Poseidon Adventure Soundtrack");
-    track.insert( Meta::Field::ARTIST, "Maureen McGovern" );
-    track.insert( Meta::Field::COMPOSER, "Al Kasha and Joel Hirshorn" );
-    track.insert( Meta::Field::GENRE, "Soundtrack" );
-    track.insert( Meta::Field::YEAR, "1972" );
-    track.insert( Meta::Field::COMMENT, "Academy Award 1972" );
-    track.insert( Meta::Field::TRACKNUMBER, "2" );
-    track.insert( Meta::Field::DISCNUMBER, "1" );
-    track.insert( Meta::Field::BITRATE, "128" );
-    track.insert( Meta::Field::LENGTH, "321" );
-    track.insert( Meta::Field::SAMPLERATE, "44000" );
-    track.insert( Meta::Field::FILESIZE, "123456" );
-    track.insert( Meta::Field::BPM, "100" );
-    track.insert( Meta::Field::ALBUMGAIN, "1" );
-    track.insert( Meta::Field::ALBUMPEAKGAIN, "5" );
-    track.insert( Meta::Field::TRACKGAIN, "-1" );
-    track.insert( Meta::Field::TRACKPEAKGAIN, "-5" );
+    CollectionScanner::Directory *csDir = new CollectionScanner::Directory(&reader);
 
-    QList<QVariantMap> tracksInDir;
-    tracksInDir << track;
+    // -- check that the directory structure is parsed ok
+    QCOMPARE( csDir->path(), QString("/home/ralf/Musik/Musical/") );
+    QCOMPARE( int(csDir->mtime()), 1234 );
+    CollectionScanner::Album album = csDir->albums().first();
+    QCOMPARE( album.name(), QString("Grease") );
+    QCOMPARE( album.isCompilation(), true );
+    CollectionScanner::Track track = album.tracks().first();
+    QCOMPARE( track.artist(), QString("John Travolta") );
+    QCOMPARE( track.hasCover(), true );
+    QCOMPARE( track.bpm(), 60 );
 
     // -- scan the track
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
-
-    scp.processDirectory( tracksInDir );
+    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+    scp.addDirectory( csDir );
     scp.commit();
 
+    // m_collection->dumpDatabaseContent();
+
     // -- check the commit
-    QStringList result;
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
-    QString urlId = result.first();
+    m_collection->registry()->emptyCache(); // -- everything needs to be re-read from database
 
-    result = m_storage->query( QString("SELECT uniqueid FROM urls WHERE id='%1';").arg(urlId));
-    QCOMPARE( track.value(Meta::Field::UNIQUEID).toString(), result.first() );
+    Meta::AlbumPtr albumPtr = m_collection->registry()->getAlbum( 1 );
+    QVERIFY( albumPtr );
+    QCOMPARE( albumPtr->name(), QString("Grease") );
+    QCOMPARE( albumPtr->isCompilation(), true );
+    // QCOMPARE( albumPtr->hasImage(), true ); // the new SqlAlbum tries to extract the image before adding it. As we don't have the requested file we also don't have an image
 
-    result = m_storage->query( QString("SELECT title, comment, tracknumber, discnumber, artist, album, genre, composer, year, bitrate, length, filesize, "
-                "samplerate, albumgain, albumpeakgain, trackgain, trackpeakgain FROM tracks WHERE url='%1';").arg(urlId));
-    QCOMPARE( track.value(Meta::Field::TITLE).toString(), result.at(0) );
-    QCOMPARE( track.value(Meta::Field::COMMENT).toString(), result.at(1) );
-    QCOMPARE( track.value(Meta::Field::TRACKNUMBER).toString(), result.at(2) );
-    QCOMPARE( track.value(Meta::Field::DISCNUMBER).toString(), result.at(3) );
-    QString artistId = result.at(4);
-    QString albumId = result.at(5);
-    QString genreId = result.at(6);
-    QString composerId = result.at(7);
-    QString yearId = result.at(8);
-    QCOMPARE( track.value(Meta::Field::BITRATE).toString(), result.at(9) );
-    QCOMPARE( track.value(Meta::Field::LENGTH).toString(), result.at(10) );
-    QCOMPARE( track.value(Meta::Field::FILESIZE).toString(), result.at(11) );
+    Meta::TrackList tracks = albumPtr->tracks();
+    QCOMPARE( tracks.count(), 1 );
 
-    result = m_storage->query( QString("SELECT name FROM artists WHERE id='%1';").arg(artistId));
-    QCOMPARE( track.value(Meta::Field::ARTIST).toString(), result.at(0) );
-
-    result = m_storage->query( QString("SELECT name FROM albums WHERE id='%1';").arg(albumId));
-    QCOMPARE( track.value(Meta::Field::ALBUM).toString(), result.at(0) );
-
-    result = m_storage->query( QString("SELECT name FROM genres WHERE id='%1';").arg(genreId));
-    QCOMPARE( track.value(Meta::Field::GENRE).toString(), result.at(0) );
+    Meta::TrackPtr trackPtr = tracks.first();
+    QVERIFY( trackPtr );
+    QCOMPARE( trackPtr->name(), QString("You're The One That I Want"));
+    QCOMPARE( trackPtr->artist()->name(), QString("John Travolta") );
+    QCOMPARE( trackPtr->bpm(), 60.0 );
 }
 
 
 /**
- * After adding a directory all NOT scanned files should be considered removed.
- * New directories should be added to the table.
+ *  Test adding a whole directory
  */
 void
 TestScanResultProcessorFull::testAddDirectory()
 {
-#ifdef Q_OS_WIN32
-    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
-#endif
+    QXmlStreamReader reader(
+        "    <directory>"
+        "        <path>/tmp/nosuchdir/Punk/</path>"
+        "        <rpath>../../tmp/nosuchdir/Punk</rpath>"
+        "        <mtime>1202491675</mtime>"
+        "        <album>"
+        "            <name>ANThology</name>"
+        "            <track>"
+        "                <uniqueid>amarok-sqltrackuid://729c5ab527080254307fb03588f750a5</uniqueid>"
+        "                <path>/tmp/nosuchdir/Punk/Alien Ant Farm-Smooth Criminal.mp3</path>"
+        "                <rpath>../../tmp/nosuchdir/Punk/Alien Ant Farm-Smooth Criminal.mp3</rpath>"
+        "                <filetype>1</filetype>"
+        "                <title>Smooth Criminal</title>"
+        "                <artist>Alien Ant Farm</artist>"
+        "                <album>ANThology</album>"
+        "            </track>"
+        "        </album>"
+        "        <album>"
+        "            <name></name>"
+        "            <track>"
+        "                <uniqueid>amarok-sqltrackuid://99aa5e1590eb0bd3d0480afcb905a707</uniqueid>"
+        "                <path>/tmp/nosuchdir/Punk/Bums - Punkrock Bier Und Hanf.mp3</path>"
+        "                <rpath>../../tmp/nosuchdir/Punk/Bums - Punkrock Bier Und Hanf.mp3</rpath>"
+        "                <filetype>1</filetype>"
+        "                <title>Punkrock Bier und Hanf</title>"
+        "                <artist>Bums</artist>"
+        "            </track>"
+        "            <track>"
+        "                <uniqueid>amarok-sqltrackuid://13b98335a0741eba341426d65e6ce249</uniqueid>"
+        "                <path>/tmp/nosuchdir/Punk/Korn - Here To Stay.mp3</path>"
+        "                <rpath>../../tmp/nosuchdir/Punk/Korn - Here To Stay.mp3</rpath>"
+        "                <filetype>1</filetype>"
+        "                <title>Here To Stay (R-Rated)</title>"
+        "                <artist>Korn</artist>"
+        "            </track>"
+        "        </album>"
+        "    </directory>"
+        );
 
-    QString mockMountPoint = ".";
-    KTempDir tempDir;
+    reader.readNext();
+    reader.readNext();
+    CollectionScanner::Directory *csDir = new CollectionScanner::Directory(&reader);
 
-    QVariantMap track1;
-    track1.insert( Meta::Field::TITLE, "The Morning After" );
-    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567891");
-    track1.insert( Meta::Field::URL, tempDir.name() + "Maureen Mcgovern - The Morning After.mp3" );
-
-    QVariantMap track2;
-    track2.insert( Meta::Field::TITLE, "The Ectasy of Gold" );
-    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567892");
-    track2.insert( Meta::Field::URL, tempDir.name() + "Ennio Morricone - The Ecstasy of Gold.mp3" );
-
-    QVariantMap track3;
-    track3.insert( Meta::Field::TITLE, "Hot Night" );
-    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567893");
-    track3.insert( Meta::Field::URL, tempDir.name() + "/home/ralf/songs/Audio Einzeln/Soundtrack/Ghostbusters - Laura Branigan - Hot Night.mp3" );
-
-
-    QList<QVariantMap> tracksInDir;
-    tracksInDir << track1 << track2;
-
-    // -- create the original entries
-    cleanup();
-
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
-
-    scp.addDirectory( tempDir.name(), 1000 /*time*/ );
-    scp.processDirectory( tracksInDir );
+    // -- scan the directory
+    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+    scp.addDirectory( csDir );
     scp.commit();
 
-    // now two tracks
-    QStringList result;
-    result = m_storage->query( "select count(*) from tracks" );
-    QCOMPARE( result.first().toInt(), 2 );
-
-    // -- now overwrite track 2 and add track 3
-
-    tracksInDir.clear();
-    tracksInDir << track2 << track3;
-
-    // -- Overwrite here
-    // TODO: make it possible to re-use the old processor. It does seem to delete it's temporary tables upon commit
-    ScanResultProcessor scp2( m_collection );
-    scp2.setSqlStorage( m_storage );
-    scp2.setScanType( ScanResultProcessor::FullScan );
-
-    scp2.addDirectory( tempDir.name(), 2000 /*time*/ );
-    scp2.processDirectory( tracksInDir );
-    scp2.commit();
-
     // -- check the commit
-    // Now we should have two tracks. Track 2 and 3. Track 1 should have been removed
-    result = m_storage->query( "select count(*) from tracks" );
-    QCOMPARE( result.first().toInt(), 2 );
+    m_collection->registry()->emptyCache(); // -- everything needs to be re-read from database
 
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
+    Meta::TrackPtr trackPtr;
+    Meta::AlbumPtr albumPtr;
 
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track3.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
+    trackPtr = m_collection->registry()->getTrackFromUid( "amarok-sqltrackuid://729c5ab527080254307fb03588f750a5" );
+    QVERIFY( trackPtr );
+    QCOMPARE( trackPtr->name(), QString("Smooth Criminal"));
+    albumPtr = trackPtr->album();
+    QVERIFY( albumPtr );
+    QCOMPARE( albumPtr->name(), QString("ANThology") );
+
+    // -- the following tracks are in no specific album
+    trackPtr = m_collection->registry()->getTrackFromUid( "amarok-sqltrackuid://99aa5e1590eb0bd3d0480afcb905a707" );
+    QVERIFY( trackPtr );
+    QCOMPARE( trackPtr->name(), QString("Punkrock Bier und Hanf"));
+
+    trackPtr = m_collection->registry()->getTrackFromUid( "amarok-sqltrackuid://13b98335a0741eba341426d65e6ce249" );
+    QVERIFY( trackPtr );
+    QCOMPARE( trackPtr->name(), QString("Here To Stay (R-Rated)"));
 }
 
 
@@ -257,424 +265,172 @@ TestScanResultProcessorFull::testAddDirectory()
 void
 TestScanResultProcessorFull::testMerges()
 {
-    QString mockMountPoint = ".";
-
-    QVariantMap track1;
-    track1.insert( Meta::Field::TITLE, "The Morning After" );
-    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567891");
-    track1.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Maureen Mcgovern - The Morning After.mp3" );
-    track1.insert( Meta::Field::ALBUM, "The Poseidon Adventure Soundtrack");
-    track1.insert( Meta::Field::ARTIST, "Maureen McGovern" );
-
-    QVariantMap track2;
-    track2.insert( Meta::Field::TITLE, "The Ectasy of Gold" );
-    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567892");
-    track2.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ennio Morricone - The Ecstasy of Gold.mp3" );
-    track2.insert( Meta::Field::ALBUM, "Kill Bill 2 Soundtrack");
-    track2.insert( Meta::Field::ARTIST, "Ennio Morricone" );
-
-    QVariantMap track3;
-    track3.insert( Meta::Field::TITLE, "Hot Night" );
-    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1234567893");
-    track3.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ghostbusters - Laura Branigan - Hot Night.mp3" );
-    track3.insert( Meta::Field::ALBUM, "Ghostbusters Soundtrack");
-    track3.insert( Meta::Field::ARTIST, "Laura Branigan" );
-
-    QList<QVariantMap> tracksInDir;
-    tracksInDir << track1;
-    tracksInDir << track2;
-
-    QStringList result;
-
-    // -- create the original entries
-    cleanup();
-
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
-
-    scp.processDirectory( tracksInDir );
-    scp.commit();
-
-    result = m_storage->query( "select count(*) from tracks" );
-    QCOMPARE( result.first().toInt(), 2 );
-
-    // -- create statistics. They must not be modified
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
-    QString urlId = result.first();
-
-    // result = m_storage->query( QString("INSERT id FROM statistics WHERE rpath='%1';").arg(mockMountPoint+track1.value(Meta::Field::URL).toString()));
-
-    // -- now overwrite track 2 and add track 3
-
-    track2.insert( Meta::Field::TITLE, "The Ecstasy of Gold" );
-    track2.insert( Meta::Field::ALBUM, "The Good the Bad and the Ugly Soundtrack");
-    // changing the path should not be a problem as long as the unique id stays the same
-    track2.insert( Meta::Field::URL, "/home/ralf/songs/Audio Einzeln/Soundtrack/Ennio Morricone - The Good The Bad and The Ugly Soundtrack - The Ecstasy of Gold.mp3" );
-
-    tracksInDir.clear();
-    tracksInDir << track2 << track3;
-
-    // -- Overwrite here
-    // TODO: make it possible to re-use the old processor. It does seem to delete it's temporary tables upon commit
-    ScanResultProcessor scp2( m_collection );
-    scp2.setSqlStorage( m_storage );
-    scp2.setScanType( ScanResultProcessor::IncrementalScan);
-
-    scp2.processDirectory( tracksInDir );
-    scp2.commit();
-
-    // -- check the commit
-
-    // now three tracks
-    result = m_storage->query( "select count(*) from tracks" );
-    QCOMPARE( result.first().toInt(), 3 );
-
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track2.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
-    urlId = result.first();
-
-    // --- check that the changed informations are really changed.
-    // --- note that overwriting with empty information is undefined
-    result = m_storage->query( QString("SELECT title, album FROM tracks WHERE url='%1';").arg(urlId));
-    QCOMPARE( result.count(), 2 );
-    QCOMPARE( track2.value(Meta::Field::TITLE).toString(), result.at(0) );
-    QString albumId = result.at(1);
-
-    result = m_storage->query( QString("SELECT name FROM albums WHERE id='%1';").arg(albumId));
-    QCOMPARE( result.count(), 1 );
-    QCOMPARE( track2.value(Meta::Field::ALBUM).toString(), result.at(0) );
-
-    result = m_storage->query( QString("SELECT id FROM urls WHERE rpath='%1';").arg(mockMountPoint+track3.value(Meta::Field::URL).toString()));
-    QCOMPARE( result.count(), 1 );
-    urlId = result.first();
-
+    // songs from same album but different directory
+    // check that images are merged
+    // check that old image is not overwritten
 }
-
 
 void
 TestScanResultProcessorFull::testLargeInsert()
 {
-#ifdef Q_OS_WIN32
-    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
-#endif
-
     const int TRACK_COUNT = AMAROK_SQLCOLLECTION_STRESS_TEST_TRACK_COUNT;
 
+    qDebug() << "Please be patient, this test simulates the scan of"<<TRACK_COUNT<<"files and might take a while";
 
-    qDebug() << "Please be patient, this test simulates the scan of " << TRACK_COUNT << " files and might take a while";
+    // -- setup test data
+    QList<CollectionScanner::Directory> directories;
 
-    KTempDir collection;
-
-    //setup test data
-
-    QList<QPair<QString, uint> > directories;
-
-    QList<QList<QVariantMap> > tracks;
-
-    QList<QVariantMap> tracksInDir;
-
+    int currentDir = 0;
     int currentArtist = 0;
     int currentAlbum = 0;
     int currentGenre = 0;
     int currentYear = 0;
     int currentComposer = 0;
+    int currentTrack = 0;
 
-    QDir currentDir;
-
-    QStringList currentFileNames;
-
-    for( int i = 0; i < TRACK_COUNT; i++ )
+    for( int dirNr = 0; currentTrack < TRACK_COUNT; dirNr++ )
     {
-        if( i % 20 == 0 )
+        currentDir++;
+        QString xmlStr = QString("<directory>"
+                                 "<path>/%1</path>"
+                                 "<rpath>../%2</rpath>"
+                                 "<mtime>%3</mtime>").arg( currentDir ).arg( currentDir ).
+                                 arg( QDateTime::currentDateTime().toTime_t() );
+
+        for( int albumNr = 0; currentTrack < TRACK_COUNT && albumNr < 20; albumNr++ )
         {
-            if( !currentFileNames.isEmpty() )
+            // There should be a realistic number of doublicates for the following values
+            currentAlbum = (currentAlbum+1) % 893;
+            currentArtist = (currentArtist+1) % 123;
+            currentGenre = (currentGenre+1) % 13;
+            currentYear = (currentYear+1) % 47;
+            currentComposer = (currentComposer+1) % 31;
+
+            xmlStr += QString( "<album>"
+                               "<name>%1</name>" ).arg( currentAlbum );
+
+            for( int trackNr = 0; currentTrack < TRACK_COUNT && trackNr < 20; trackNr++ )
             {
-                QVERIFY( !QProcess::execute( "touch", currentFileNames ) );
-                currentFileNames.clear();
+                currentTrack++;
+
+                xmlStr += QString(
+                   "<track>"
+                   "<uniqueid>amarok-sqltrackuid://%1</uniqueid>"
+                   "<path>%2</path>"
+                   "<rpath>./%3</rpath>"
+                   "<filetype>1</filetype>"
+                   "<title>%4</title>"
+                   "<artist>%5</artist>"
+                   "<album>%6</album>"
+                   "<genre>%7</genre>"
+                   "<year>%8</year>"
+                   "<composer>%9</composer>"
+                   "</track>" ).arg( currentTrack ).arg( currentTrack ).arg( currentTrack ).arg( currentTrack ).
+                    arg( currentArtist ).arg( currentAlbum ).arg( currentGenre ).arg( currentYear ).arg( currentComposer );
             }
-            currentAlbum++;
-            currentDir = QDir( collection.name() );
-            QVERIFY( currentDir.mkdir( QString::number( currentAlbum ) ) );
 
-            QVERIFY( currentDir.cd( QString::number( currentAlbum ) ) );
-            QFileInfo fi( currentDir, "." );
-            QPair<QString, uint> dirData( currentDir.absolutePath(), fi.lastModified().toTime_t() );
-
-            if( !tracksInDir.isEmpty() )
-            {
-                tracks << tracksInDir;
-                tracksInDir.clear();
-            }
-
+            xmlStr += "</album>";
         }
-        if( i % 100 == 0 ) currentArtist++;
-        if( i % 40 == 0 ) currentGenre++;
-        if( i % 500 == 0 ) currentYear++;
-        if( i % 25 == 0 ) currentComposer++;
 
+        xmlStr += "</directory>";
 
-        QString url =currentDir.filePath( QString::number( i ) + ".mp3" );
-        currentFileNames << url;
-
-        QVariantMap track;
-        track.insert( Meta::Field::TITLE, QString::number( i ) );
-        track.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://" + QString::number( i ) );
-        track.insert( Meta::Field::URL, url );
-        track.insert( Meta::Field::ALBUM, "album" + QString::number( currentAlbum ) );
-        track.insert( Meta::Field::ARTIST, "artist" + QString::number( currentArtist ) );
-        track.insert( Meta::Field::COMPOSER, "composer" + QString::number( currentComposer ) );
-        track.insert( Meta::Field::GENRE, "genre" + QString::number( currentGenre ) );
-        track.insert( Meta::Field::YEAR, QString::number( currentYear ) );
-        track.insert( Meta::Field::COMMENT, "comment" + QString::number( i ) );
-
-        tracksInDir << track;
-    }
-    QVERIFY( !QProcess::execute( "touch", currentFileNames ) );
-
-    if( !tracksInDir.isEmpty() )
-    {
-        tracks << tracksInDir;
-        tracksInDir.clear();
+        QXmlStreamReader reader(xmlStr);
+        reader.readNext();
+        reader.readNext();
+        directories.append( CollectionScanner::Directory(&reader) );
     }
 
+    //here we go...
     for( int i = 0; i < 5; i++ )
     {
-    //here we go...
-    QBENCHMARK
-    {
-        cleanup();
+        QBENCHMARK
+        {
+            cleanup();
 
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
+            SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
 
-    typedef QPair<QString, uint> DirMtime;
+            foreach( const CollectionScanner::Directory &dir, directories )
+            {
+                CollectionScanner::Directory *dirPtr = new CollectionScanner::Directory(dir);
+                scp.addDirectory( dirPtr );
+            }
+            scp.commit();
 
-    foreach( const DirMtime &dir, directories )
-    {
-        scp.addDirectory( dir.first, dir.second );
+            QStringList result;
+            result = m_storage->query( "select count(*) from urls" );
+            QCOMPARE( result.first(), QString::number( TRACK_COUNT ) );
+
+            result = m_storage->query( "select count(*) from tracks" );
+            QCOMPARE( result.first(), QString::number( TRACK_COUNT ) );
+
+            result = m_storage->query( "select count(*) from years" );
+            QCOMPARE( result.first(), QString( "47" ) );
+
+            result = m_storage->query( "select count(*) from composers" );
+            QCOMPARE( result.first(), QString( "31" ) );
+
+            result = m_storage->query( "select count(*) from genres" );
+            QCOMPARE( result.first(), QString( "13" ) );
+
+            result = m_storage->query( "select count(*) from albums" );
+            QCOMPARE( result.first(), QString( "1000" ) ); // although there are only 893 different album names, there are the full 1000 combinations of album and artist
+
+            result = m_storage->query( "select count(*) from artists" );
+            QCOMPARE( result.first(), QString( "123" ) );
+        }
     }
-
-    foreach( const QList<QVariantMap> &dir, tracks )
-    {
-        scp.processDirectory( dir );
-    }
-    scp.commit();
-
-    QStringList rs1 = m_storage->query( "select count(*) from urls" );
-    QCOMPARE( rs1.first(), QString::number( TRACK_COUNT ) );
-
-    QStringList rs2 = m_storage->query( "select count(*) from tracks" );
-    QCOMPARE( rs2.first(), QString::number( TRACK_COUNT ) );
-
-    QStringList rs3 = m_storage->query( "select count(*) from years" );
-    QCOMPARE( rs3.first(), QString::number( (int) TRACK_COUNT / 500 ) );
-
-    QStringList rs4 = m_storage->query( "select count(*) from composers" );
-    QCOMPARE( rs4.first(), QString::number( (int) TRACK_COUNT / 25 ) );
-
-    QStringList rs5 = m_storage->query( "select count(*) from genres" );
-    QCOMPARE( rs5.first(), QString::number( (int) TRACK_COUNT / 40 ) );
-
-    QStringList rs6 = m_storage->query( "select count(*) from albums" );
-    QCOMPARE( rs6.first(), QString::number( (int) TRACK_COUNT / 20 ) );
-
-    QStringList rs7 = m_storage->query( "select count(*) from artists" );
-    QCOMPARE( rs7.first(), QString::number( (int) TRACK_COUNT / 100 ) );
-    }
-}
 }
 
 void
 TestScanResultProcessorFull::testIdentifyCompilationInMultipleDirectories()
 {
-    //Compilations where each is track is from a different artist
-    //are often stored as one track per directory, e.g.
+    // Compilations where each is track is from a different artist
+    // are often stored as one track per directory, e.g.
     // /artistA/compilation/track1
     // /artistB/compilation/track2
     //
-    //this is how Amarok 1 (after using Organize Collection) and iTunes are storing
-    //these albums on disc
-#ifdef Q_OS_WIN32
-    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
-#endif
+    // this is how Amarok 1 (after using Organize Collection) and iTunes are storing
+    // these albums on disc
+    // the bad thing is that Amarok 1 (as far as I know) didn't set the id3 tags
 
-    KTempDir collection;
+    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
 
-    QVariantMap dataTemplate;
-    dataTemplate.insert( Meta::Field::COMPOSER, "composer" );
-    dataTemplate.insert( Meta::Field::GENRE, "genre" );
-    dataTemplate.insert( Meta::Field::YEAR, "year" );
-    dataTemplate.insert( Meta::Field::ALBUM, "album" );
-
-    QVariantMap file1 = dataTemplate;
-    file1.insert( Meta::Field::TITLE, "track1" );
-    file1.insert( Meta::Field::ARTIST, "artist1" );
-    file1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1" );
-    file1.insert( Meta::Field::URL, collection.name() + "subdir1/file1.mp3" );
-
-    QVariantMap file2 = dataTemplate;
-    file2.insert( Meta::Field::TITLE, "track2" );
-    file2.insert( Meta::Field::ARTIST, "artist2" );
-    file2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://2" );
-    file2.insert( Meta::Field::URL, collection.name() + "subdir2/file2.mp3" );
-
-    QVariantMap file3 = dataTemplate;
-    file3.insert( Meta::Field::TITLE, "track3" );
-    file3.insert( Meta::Field::ARTIST, "artist3" );
-    file3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://3" );
-    file3.insert( Meta::Field::URL, collection.name() + "subdir3/file3.mp3" );
-
-    QList<QVariantMap> allTracks;
-    allTracks << file1 << file2 << file3;
-
-    QList<DirMtime> mtimes = setupFileSystem( allTracks );
-
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
-    foreach( const DirMtime &mtime, mtimes )
+    for( int artistNr = 0; artistNr < 3; artistNr ++ )
     {
-        scp.addDirectory( mtime.first, mtime.second );
+        QString xmlStr = QString("<directory>"
+                                 "<path>/%1/compilation/</path>"
+                                 "<rpath>../%2/compilation/</rpath>"
+                                 "<mtime>1234</mtime>"
+                                 " <album>"
+                                 "  <name>compilation</name>"
+                                 "  <track>"
+                                 "   <uniqueid>amarok-sqltrackuid://%3</uniqueid>"
+                                 "   <path>/%4/compilation/track</path>"
+                                 "   <rpath>../%5/compilation/track</rpath>"
+                                 "   <artist>%6</artist>"
+                                 "   <album>compilation</album>"
+                                 "  </track>"
+                                 " </album>"
+                                 "</directory>" ).
+                                 arg( artistNr ).arg( artistNr ).
+                                 arg( artistNr ).arg( artistNr ).
+                                 arg( artistNr ).arg( artistNr );
+
+        QXmlStreamReader reader(xmlStr);
+        reader.readNext();
+        reader.readNext();
+        scp.addDirectory( new CollectionScanner::Directory(&reader) );
     }
-    QList<QVariantMap> tracks;
-    tracks << file1;
-    scp.processDirectory( tracks );
-    tracks.clear();
-    tracks << file2;
-    scp.processDirectory( tracks );
-    tracks.clear();
-    tracks << file3;
-    scp.processDirectory( tracks );
 
     scp.commit();
 
-    QStringList rs = m_storage->query( "select artist from albums where name = 'album'" );
-    QCOMPARE( rs.count(), 1 );
-    QVERIFY( rs.first().isEmpty() ); //albums.artist should be null for compilations
+    // -- check the commit
+    m_collection->registry()->emptyCache(); // -- everything needs to be re-read from database
 
-    QStringList count = m_storage->query( "select count(*) from albums" );
-    QCOMPARE( count.count(), 1 );
-    QCOMPARE( count.first(), QString( "1" ) );
+    Meta::AlbumPtr albumPtr = m_collection->registry()->getAlbum( "compilation", QString() );
+    QVERIFY( albumPtr );
+    QCOMPARE( albumPtr->name(), QString("compilation") );
+    QCOMPARE( albumPtr->isCompilation(), true );
+    QCOMPARE( albumPtr->tracks().count(), 3 );
 }
 
-QList<DirMtime>
-TestScanResultProcessorFull::setupFileSystem( const QList<QVariantMap> &trackData )
-{
-    QList<DirMtime> result;
-    QStringList files;
-    int count = 0;
-    foreach( const QVariantMap &map, trackData )
-    {
-        QString url = map.value( Meta::Field::URL ).toString();
-        if( url.isEmpty() )
-        {
-            qDebug() << "Warning: track " << map.value( Meta::Field::TITLE ).toString() << " has empty url";
-            continue;
-        }
-        files << url;
-        QFileInfo track( url );
-        QDir dir = track.dir();
-        if( !dir.exists() )
-        {
-            dir.mkpath( "." );
-            QFileInfo dirInfo( dir, "." );
-            DirMtime mtime( dir.absolutePath(), dirInfo.lastModified().toTime_t() );
-            result << mtime;
-        }
-
-        count++;
-        if( ( count % 50 == 0) && !files.isEmpty() )
-        {
-            QProcess::execute( "touch", files );
-            files.clear();
-        }
-    }
-
-    if( !files.isEmpty() )
-    {
-        QProcess::execute( "touch", files );
-        files.clear();
-    }
-
-    return result;
-}
-
-void
-TestScanResultProcessorFull::testAFeatBDetectionInSingleDirectory()
-{
-    //test whether tracks with the same album name and with artists
-    //similar to A featuring B are detected as belonging to one album
-    //with the album artist A.
-
-    //Please note: this does not check all variants that Amarok supports
-    //like A ft. B or A feat. C. This detection should be extracted into
-    //a strategy and tested separately.
-
-#ifdef Q_OS_WIN32
-    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
-#endif
-
-    KTempDir collection;
-
-    QVariantMap dataTemplate;
-    dataTemplate.insert( Meta::Field::COMPOSER, "composer" );
-    dataTemplate.insert( Meta::Field::GENRE, "genre" );
-    dataTemplate.insert( Meta::Field::YEAR, "year" );
-    dataTemplate.insert( Meta::Field::ALBUM, "album" );
-
-    QList<QVariantMap> tracks;
-
-    QVariantMap track1 = dataTemplate;
-    track1.insert( Meta::Field::TITLE, "track1" );
-    track1.insert( Meta::Field::ARTIST, "artistA feat. artistB" );
-    track1.insert( Meta::Field::URL, collection.name() + "dir/track1.mp3" );
-    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1" );
-    tracks << track1;
-
-    QVariantMap track2 = dataTemplate;
-    track2.insert( Meta::Field::TITLE, "track2" );
-    track2.insert( Meta::Field::ARTIST, "artistA" );
-    track2.insert( Meta::Field::URL, collection.name() + "dir/track2.mp3" );
-    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://2" );
-    tracks << track2;
-
-    QVariantMap track3 = dataTemplate;
-    track3.insert( Meta::Field::TITLE, "track3" );
-    track3.insert( Meta::Field::ARTIST, "artistA featuring artistC" );
-    track3.insert( Meta::Field::URL, collection.name() + "dir/track3.mp3" );
-    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://3" );
-    tracks << track3;
-
-    QList<DirMtime> mtimes = setupFileSystem( tracks );
-
-    ScanResultProcessor scp( m_collection );
-    scp.setSqlStorage( m_storage );
-    scp.setScanType( ScanResultProcessor::FullScan );
-
-    foreach( const DirMtime &mtime, mtimes )
-    {
-        scp.addDirectory( mtime.first, mtime.second );
-    }
-    scp.processDirectory( tracks );
-    scp.commit();
-
-    //there should be three artists (A feat. B, A, A featuring B) in the artists table
-    //and one entry (album) with artistA as albumartist in the albums table
-
-    QStringList artists = m_storage->query( "select name from artists" );
-    QCOMPARE( artists.count(), 3 );
-    QVERIFY( artists.contains( track1.value( Meta::Field::ARTIST ).toString() ) );
-    QVERIFY( artists.contains( track2.value( Meta::Field::ARTIST ).toString() ) );
-    QVERIFY( artists.contains( track3.value( Meta::Field::ARTIST ).toString() ) );
-
-    QStringList albums = m_storage->query( "select albums.name, albums.artist, artists.name "
-                                           "from albums inner join artists on albums.artist = artists.id" );
-
-    QCOMPARE( albums.count(), 3 );
-    QCOMPARE( albums.value( 0 ), QString( "album" ) );
-    QCOMPARE( albums.value( 2 ), QString( "artistA" ) );
-    QVERIFY( albums.value( 1 ).toInt() != 0 ); //not NULL and not 0; both values result in QString::toInt == 0
-}

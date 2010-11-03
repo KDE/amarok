@@ -893,15 +893,15 @@ MediaDeviceAlbum::image( int size )
     if( m_artworkCapability )
     {
         MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
-        QPixmap cover = m_artworkCapability->getCover( track );
+        QImage cover = m_artworkCapability->getCover( track );
 
         if( !cover.isNull() )
         {
             m_hasImage = true;
-            m_image = cover.toImage();
+            m_image = cover;
             if( !size )
-                return cover;
-            return cover.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+                return QPixmap::fromImage(cover);
+            return QPixmap::fromImage(cover.scaled( QSize( size, size ), Qt::KeepAspectRatio ));
         }
         else
             m_hasImage = false;

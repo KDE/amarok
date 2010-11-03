@@ -127,7 +127,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
+        /** Initiates a special search for albums without artists */
         void handleCompilations( CollectionTreeItem *parent ) const;
+
+        /** Initiates a special search for tracks without label */
         void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         QString m_headerText;
@@ -144,9 +147,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collections::Collection*> m_expandedCollections;
-        QSet<Collections::Collection*> m_expandedVariousArtistsNodes;
-        QSet<Collections::Collection*> m_expandedNoLabelsNodes;
-        
+        QSet<Collections::Collection*> m_expandedSpecialNodes;
+
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();

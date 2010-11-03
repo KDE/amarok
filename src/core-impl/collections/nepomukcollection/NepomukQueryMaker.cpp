@@ -83,31 +83,17 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
     , m_model( model )
 {
     m_worker = 0;
-    reset();
-}
-
-NepomukQueryMaker::~NepomukQueryMaker()
-{
-    
-}
-
-QueryMaker*
-NepomukQueryMaker::reset()
-{
     m_used=false;
-    m_data.clear();
     m_queryType = None;
-    m_queryMatch.clear();
-    m_queryFilter.clear();
-    if( m_worker && m_worker->isFinished() )
-        delete m_worker;   //TODO error handling
     this->m_resultAsDataPtrs = false;
     m_queryOrderBy.clear();
     m_queryLimit = 0;
     m_blocking = false;
-    m_andStack.clear();
     m_andStack.push( true );   //and is default
-    return this;
+}
+
+NepomukQueryMaker::~NepomukQueryMaker()
+{
 }
 
 void
@@ -134,6 +120,7 @@ NepomukQueryMaker::run()
     {
         m_worker = new NepomukWorkerThread(this);
         connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ), m_worker, SLOT( deleteLater()) ); // an auto-delete worker :)
         ThreadWeaver::Weaver::instance()->enqueue( m_worker );
     }
     else
@@ -461,7 +448,6 @@ void
 NepomukQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
     m_worker = 0;
     emit queryDone();
 }

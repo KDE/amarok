@@ -64,6 +64,11 @@ add_definitions( "-DUTILITIES_BUILD" )
 
 set(amarokcollectionscanner_SRCS
     CollectionScanner.cpp
+    Directory.cpp
+    Album.cpp
+    Track.cpp
+    Playlist.cpp
+    BatchFile.cpp
     AFTUtility.cpp
     ../../shared/MetaReplayGain.cpp
 )

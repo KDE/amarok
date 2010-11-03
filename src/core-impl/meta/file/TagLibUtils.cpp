@@ -17,6 +17,7 @@
 #include "TagLibUtils.h"
 
 #include "core/meta/support/MetaConstants.h"
+#include <core/support/Debug.h>
 
 #include <QFile>
 
@@ -29,27 +30,282 @@
 #include <tstringlist.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
-#include <apetag.h>
-#include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
+#include <speexfile.h>
 #include <oggflacfile.h>
 #include <vorbisfile.h>
-#include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
-#include <xiphcomment.h>
 #include <mp4file.h>
 #include <mp4item.h>
 #include <mp4tag.h>
 #include <asftag.h>
+
+#include <popularimeterframe.h>
+#include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
+#include <attachedpictureframe.h>
+#include <commentsframe.h>
+#include <xiphcomment.h>
 
 // Local version of taglib's QStringToTString macro. It is here, because taglib's one is
 // not Qt3Support clean (uses QString::utf8()). Once taglib will be clean of qt3support
 // it is safe to use QStringToTString again
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
+static void
+replaceField( TagLib::FileRef fileref,
+              const char* id3v2TagId, const char* xiphTagId, const char* mp4TagId,
+              const QString &value )
+{
+    TagLib::String tValue = Qt4QStringToTString( value );
+
+    // id3v2
+    if( id3v2TagId )
+    {
+        if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+        {
+            TagLib::ID3v2::Tag *tag = file->ID3v2Tag( true ); // true ^= create
+            if( value.isEmpty() )
+            {
+                tag->removeFrames( id3v2TagId );
+            }
+            else
+            {
+                TagLib::ID3v2::TextIdentificationFrame *frame = 0;
+                if( !tag->frameListMap()[id3v2TagId].isEmpty() )
+                {
+                    frame = dynamic_cast<TagLib::ID3v2::TextIdentificationFrame*>(tag->frameListMap()[id3v2TagId].front());
+                }
+
+                if( !frame )
+                {
+                    frame = new TagLib::ID3v2::TextIdentificationFrame(id3v2TagId);
+                    tag->addFrame(frame);
+                }
+
+                // note: TagLib is smart enough to automatically set UTF8 encoding if needed.
+                frame->setText(tValue);
+            }
+        }
+    }
+
+    if( xiphTagId )
+    {
+        // ogg
+        if( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+        {
+            file->tag()->addField(xiphTagId,  Qt4QStringToTString( value ), true);
+        }
+
+        // flac
+        else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+        {
+            file->xiphComment()->addField(xiphTagId, tValue, true);
+        }
+
+        // speex
+        else if( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
+        {
+            file->tag()->addField(xiphTagId, tValue, true);
+        }
+    }
+
+    // mp4
+    if( mp4TagId )
+    {
+        if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+        {
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            mp4tag->itemListMap()[mp4TagId] = TagLib::StringList( tValue );
+        }
+    }
+}
+
+static void
+replaceFMPS( TagLib::FileRef fileref, const QString &name, const QString &value )
+{
+    TagLib::String tName  = Qt4QStringToTString( name );
+    TagLib::String tUpperName  = Qt4QStringToTString( name.toUpper() );
+    TagLib::String tValue = Qt4QStringToTString( value );
+
+    // id3v2
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        // search for an already existing comment frame
+        if ( file->ID3v2Tag() )
+        {
+            for( TagLib::ID3v2::FrameList::ConstIterator it = file->ID3v2Tag()->frameList().begin(); it != file->ID3v2Tag()->frameList().end(); ++it)
+            {
+                TagLib::String name  = TagLib::String((*it)->frameID());
+                if( name == "TXXX" )
+                {
+                    TagLib::ID3v2::UserTextIdentificationFrame* frame = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(*it);
+                    if( !frame )
+                        continue;
+
+                    if( frame->description() == tName )
+                    {
+                        if ( !value.isEmpty() )
+                            frame->setText( tValue );
+                        else
+                            file->ID3v2Tag()->removeFrame(frame, true);
+                       return; // finished
+                    }
+                }
+            }
+        }
+
+        // else, create a new comment frame
+        if ( !value.isEmpty() )
+        {
+            TagLib::ID3v2::UserTextIdentificationFrame* frame = new TagLib::ID3v2::UserTextIdentificationFrame( "TXXX" );
+
+            frame->setDescription( tName );
+            frame->setText( tValue );
+            file->ID3v2Tag( true )->addFrame( frame );
+        }
+    }
+
+    // ogg
+    if( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        file->tag()->addField(tUpperName, tValue, true);
+    }
+
+    // flac
+    if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        file->xiphComment()->addField(tUpperName, tValue, true);
+    }
+
+    // mp4
+    if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        QString qName = QString("----:com.apple.iTunes:") + name;
+        TagLib::String tNewName = Qt4QStringToTString( qName );
+
+        TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+        mp4tag->itemListMap()[tNewName] = TagLib::StringList( tValue );
+    }
+}
+
+
+static void
+id3v2SetPOPM( TagLib::FileRef fileref, int rating, int playcount )
+{
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        TagLib::ID3v2::Tag *tag = file->ID3v2Tag( true ); // true ^= create
+
+        TagLib::ID3v2::PopularimeterFrame* frame = 0;
+        if(!tag->frameListMap()["POPM"].isEmpty())
+        {
+            frame = dynamic_cast<TagLib::ID3v2::PopularimeterFrame*>(tag->frameListMap()["POPM"].front());
+        }
+
+        if( !frame )
+        {
+            frame = new TagLib::ID3v2::PopularimeterFrame("POPM");
+            tag->addFrame(frame);
+        }
+
+        if( rating >= 0 )
+            frame->setRating( rating );
+        if( playcount >= 0 )
+            frame->setCounter( playcount );
+    }
+}
+
+/** When we say uid we really mean url. It should be something like "some-service://123459" */
+static void
+replaceUid( TagLib::FileRef fileref, const QString &uid )
+{
+    QString owner;
+    QString newUid = uid;
+
+    if( uid.startsWith( "amarok-sqltrackuid://" ) )
+    {
+        newUid = uid.mid( 20 );
+        if( newUid.startsWith( "mb-" ) )
+        {
+            owner = "http://musicbrainz.org";
+            newUid = newUid.mid( 3 );
+        }
+        else
+        {
+            int currentVersion = 1; //TODO: Make this more global?
+            owner = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+        }
+    }
+    else if( int index = uid.lastIndexOf("://") > 0 )
+    {
+        owner = uid.left( index );
+        newUid = uid.mid( index+3 );
+    }
+    else
+    {
+        return;
+    }
+
+debug() << "TagLibUtils writing uid with owner:" << owner << "uid:" << newUid;
+
+    if( owner.isEmpty() )
+    {
+        warning() << "Could not determine owner of uid"<<uid;
+        return;
+    }
+
+    TagLib::String tOwner  = Qt4QStringToTString( owner );
+    TagLib::ByteVector tUid( newUid.toAscii().data() );
+
+    // id3v2
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        // search for an already existing uid frame
+        if ( file->ID3v2Tag() )
+        {
+            for( TagLib::ID3v2::FrameList::ConstIterator it = file->ID3v2Tag()->frameList().begin(); it != file->ID3v2Tag()->frameList().end(); ++it)
+            {
+                TagLib::String name  = TagLib::String((*it)->frameID());
+                if( name == "UIDF" )
+                {
+                    TagLib::ID3v2::UniqueFileIdentifierFrame* frame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*it);
+                    if( !frame )
+                        continue;
+
+                    if( frame->owner() == tOwner )
+                    {
+                        if ( !newUid.isEmpty() )
+                            frame->setIdentifier( tUid );
+                        else
+                            file->ID3v2Tag()->removeFrame(frame, true);
+                       return; // finished
+                    }
+                }
+            }
+        }
+
+        // else, create a new uid frame
+        if ( !newUid.isEmpty() )
+        {
+            TagLib::ID3v2::UniqueFileIdentifierFrame* frame = new TagLib::ID3v2::UniqueFileIdentifierFrame( tOwner, tUid );
+            file->ID3v2Tag( true )->addFrame( frame );
+        }
+    }
+
+    // the rest
+    if( uid.startsWith( "mb-" ) )
+        replaceField( fileref, 0, "MUSICBRAINZ_TRACKID", "----:com.apple.iTunes:MusicBrainz Track Id", newUid);
+
+    else if( uid.startsWith( "amarok-sqltrackuid://" ) )
+        replaceField( fileref, 0, "AMAROK_TRACKID", "----:com.apple.iTunes:Amarok Track Id", newUid);
+}
+
+
+
 void
-Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
+Meta::Field::writeFields( const QString &filename, const FieldHash &changes )
 {
     #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t* encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
@@ -63,7 +319,7 @@ Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
 }
 
 void
-Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
+Meta::Field::writeFields( TagLib::FileRef fileref, const Meta::FieldHash &changes )
 {
     if( fileref.isNull() || changes.isEmpty() )
         return;
@@ -73,414 +329,141 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
         return;
 
     // We should avoid rewriting files to disk if there haven't been any changes to the actual data tags
-    // This method could be called when there are only non-tag attributes to change, like score and rating
+    // This method could be called when there are only non-tag attributes to change
     bool shouldSave = false;
 
-    if( changes.contains( Meta::Field::TITLE ) )
+    if( changes.contains( Meta::valTitle ) )
     {
         shouldSave = true;
-        const TagLib::String title = Qt4QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
+        const TagLib::String title = Qt4QStringToTString( changes.value( Meta::valTitle ).toString() );
         tag->setTitle( title );
     }
 
-    if( changes.contains( Meta::Field::ALBUM ) )
+    if( changes.contains( Meta::valAlbum ) )
     {
         shouldSave = true;
-        const TagLib::String album = Qt4QStringToTString( changes.value( Meta::Field::ALBUM ).toString() );
+        const TagLib::String album = Qt4QStringToTString( changes.value( Meta::valAlbum ).toString() );
         tag->setAlbum( album );
     }
 
-    if( changes.contains( Meta::Field::ARTIST ) )
+    if( changes.contains( Meta::valArtist ) )
     {
         shouldSave = true;
-        const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ARTIST ).toString() );
+        const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::valArtist ).toString() );
         tag->setArtist( artist );
     }
 
-    if( changes.contains( Meta::Field::COMMENT ) )
+    if( changes.contains( Meta::valComment ) )
     {
         shouldSave = true;
-        const TagLib::String comment = Qt4QStringToTString( changes.value( Meta::Field::COMMENT ).toString() );
+        const TagLib::String comment = Qt4QStringToTString( changes.value( Meta::valComment ).toString() );
         tag->setComment( comment );
     }
 
-    if( changes.contains( Meta::Field::GENRE ) )
+    if( changes.contains( Meta::valGenre ) )
     {
         shouldSave = true;
-        const TagLib::String genre = Qt4QStringToTString( changes.value( Meta::Field::GENRE ).toString() );
+        const TagLib::String genre = Qt4QStringToTString( changes.value( Meta::valGenre ).toString() );
         tag->setGenre( genre );
     }
-    if( changes.contains( Meta::Field::YEAR ) )
+    if( changes.contains( Meta::valYear ) )
     {
         shouldSave = true;
-        const unsigned int year = changes.value( Meta::Field::YEAR ).toUInt();
+        const unsigned int year = changes.value( Meta::valYear ).toUInt();
         tag->setYear( year );
     }
-    if( changes.contains( Meta::Field::TRACKNUMBER ) )
+    if( changes.contains( Meta::valTrackNr ) )
     {
         shouldSave = true;
-        const unsigned int trackNumber = changes.value( Meta::Field::TRACKNUMBER ).toUInt();
+        const unsigned int trackNumber = changes.value( Meta::valTrackNr ).toUInt();
         tag->setTrack( trackNumber );
     }
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    if( changes.contains( Meta::valComposer ) )
     {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
-        {
-            shouldSave = true;
-            if( file->ID3v2Tag() )
-                file->ID3v2Tag()->removeFrames( "TPE2" );
-
-            QString artist = changes.value( Meta::Field::ALBUMARTIST ).toString();
-            if( !artist.isEmpty() )
-            {
-                TagLib::ID3v2::TextIdentificationFrame* frame =
-                        new TagLib::ID3v2::TextIdentificationFrame( "TPE2" );
-                frame->setText( Qt4QStringToTString( artist ) );
-                file->ID3v2Tag(true)->addFrame( frame );
-            }
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            if ( file->ID3v2Tag() )
-            {
-                file->ID3v2Tag()->removeFrames( "TCOM" );
-            }
-            QString composer = changes.value( Meta::Field::COMPOSER ).toString();
-            if ( !composer.isEmpty() )
-            {
-                TagLib::ID3v2::TextIdentificationFrame* frame =
-                        new TagLib::ID3v2::TextIdentificationFrame( "TCOM" );
-                frame->setText( Qt4QStringToTString( composer ) );
-                file->ID3v2Tag(true)->addFrame( frame );
-            }
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            if( file->ID3v2Tag() )
-                file->ID3v2Tag()->removeFrames( "TPOS" );
-            const QString discNumber = changes.value( Meta::Field::DISCNUMBER ).toString();
-            if( !discNumber.isEmpty() )
-            {
-                TagLib::ID3v2::TextIdentificationFrame *frame =
-                        new TagLib::ID3v2::TextIdentificationFrame( "TPOS" );
-                frame->setText( Qt4QStringToTString( discNumber ) );
-                file->ID3v2Tag(true)->addFrame( frame );
-            }
-        }
-        if( changes.contains( Meta::Field::BPM ) )
-        {
-            shouldSave = true;
-            if( file->ID3v2Tag() )
-                file->ID3v2Tag()->removeFrames( "TBPM" );
-            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
-                const QString bpm = changes.value( Meta::Field::BPM ).toString();
-                TagLib::ID3v2::TextIdentificationFrame *frame =
-                        new TagLib::ID3v2::TextIdentificationFrame( "TBPM" );
-                frame->setText( Qt4QStringToTString( bpm ) );
-                file->ID3v2Tag(true)->addFrame( frame );
-            }
-        }
-        if( changes.contains( Meta::Field::UNIQUEID ) )
-        {
-            shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
-            TagLib::String uidOwner;
-            TagLib::ByteVector uid;
-
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "http://musicbrainz.org" );
-                uid = url.mid( 3 ).toAscii().data();
-            }
-            else
-            {
-                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = url.toAscii().data();
-            }
-
-            TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
-            TagLib::ID3v2::FrameList::Iterator iter;
-            for( iter = frameList.begin(); iter != frameList.end(); ++iter )
-            {
-                TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-                if( currFrame && uidOwner == currFrame->owner() )
-                {
-                    file->ID3v2Tag()->removeFrame( currFrame );
-                    break;
-                }
-            }
-
-            TagLib::ID3v2::UniqueFileIdentifierFrame *uidFrame = new TagLib::ID3v2::UniqueFileIdentifierFrame( uidOwner, uid );
-            file->ID3v2Tag( true )->addFrame( uidFrame );
-        }
+        shouldSave = true;
+        replaceField( fileref, "TCOM", "COMPOSER", "\xA9wrt",
+                      changes.value( Meta::valComposer ).toString());
     }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    if( changes.contains( Meta::valAlbumArtist ) )
     {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
-        {
-            shouldSave = true;
-            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
-            file->tag()->addField("ALBUMARTIST", artist);
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            file->tag()->addField("COMPOSER", composer);
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
-            file->tag()->addField("DISCNUMBER", disc);
-        }
-        if( changes.contains( Meta::Field::BPM ) )
-        {
-            shouldSave = true;
-            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
-                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
-                file->tag()->addField("BPM", bpm);
-            } else {
-                file->tag()->removeField("BPM");
-            }
-        }
-        if( changes.contains( Meta::Field::UNIQUEID ) )
-        {
-            shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
-            TagLib::String uidOwner;
-            TagLib::String uid;
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
-                uid = Qt4QStringToTString( url.mid( 3 ) );
-            }
-            else
-            {
-                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = Qt4QStringToTString( url );
-            }
-
-            file->tag()->addField( uidOwner, uid );
-        }
+        shouldSave = true;
+        replaceField( fileref, "TPE2", "ALBUM ARTIST", "aART",
+                      changes.value( Meta::valAlbumArtist ).toString());
     }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    if( changes.contains( Meta::valDiscNr ) )
     {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
-        {
-            shouldSave = true;
-            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
-            file->tag()->addField("ALBUMARTIST", artist);
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            file->tag()->addField("COMPOSER", composer);
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
-            file->tag()->addField("DISCNUMBER", disc);
-        }
-        if( changes.contains( Meta::Field::BPM ) )
-        {
-            shouldSave = true;
-            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
-                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
-                file->tag()->addField("BPM", bpm);
-            } else {
-                file->tag()->removeField("BPM");
-            }
-        }
-        if( changes.contains( Meta::Field:: UNIQUEID ) )
-        {
-            shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
-            TagLib::String uidOwner;
-            TagLib::String uid;
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
-                uid = Qt4QStringToTString( url.mid( 3 ) );
-            }
-            else
-            {
-                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = Qt4QStringToTString( url );
-            }
-
-            file->tag()->addField( uidOwner, uid );
-        }
+        shouldSave = true;
+        replaceField( fileref, "TPOS", "DISCNUMBER", 0,
+                      changes.value( Meta::valDiscNr ).toString());
     }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    if( changes.contains( Meta::valBpm ) )
     {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
-        {
-            shouldSave = true;
-            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
-            file->xiphComment()->addField("ALBUMARTIST", artist);
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            file->xiphComment()->addField("COMPOSER", composer);
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
-            file->xiphComment()->addField("DISCNUMBER", disc);
-        }
-        if( changes.contains( Meta::Field::BPM ) )
-        {
-            shouldSave = true;
-            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
-                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
-                file->xiphComment()->addField("BPM", bpm);
-            } else {
-                file->xiphComment()->removeField("BPM");
-            }
-        }
-        if( changes.contains( Meta::Field::UNIQUEID ) )
-        {
-            shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
-            TagLib::String uidOwner;
-            TagLib::String uid;
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
-                uid = Qt4QStringToTString( url.mid( 3 ) );
-            }
-            else
-            {
-                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = Qt4QStringToTString( url );
-            }
-
-            file->xiphComment()->addField( uidOwner, uid );
-        }
+        shouldSave = true;
+        replaceField( fileref, "TBPM", "BPM", 0,
+                      changes.value( Meta::valBpm ).toString());
     }
+    if( changes.contains( Meta::valCompilation ) )
+    {
+        shouldSave = true;
+        replaceField( fileref, "TCMP", "COMPILATION", 0,
+                      changes.value( Meta::valCompilation ).toString());
+    }
+    if( changes.contains( Meta::valRating ) )
+    {
+        shouldSave = true;
+        replaceFMPS( fileref, "FMPS_Rating",
+                     QString::number(changes.value( Meta::valRating ).toFloat() / 10.0));
+
+        id3v2SetPOPM( fileref,
+                      changes.value( Meta::valRating ).toFloat() / 10.0 * 255,
+                      -1 );
+    }
+    if( changes.contains( Meta::valScore ) )
+    {
+        shouldSave = true;
+        replaceFMPS( fileref, "FMPS_Rating_Amarok_Score",
+                     QString::number(changes.value( Meta::valScore ).toFloat() / 100.0));
+    }
+    if( changes.contains( Meta::valPlaycount ) )
+    {
+        shouldSave = true;
+        replaceFMPS( fileref, "FMPS_Playcount",
+                     QString::number(changes.value( Meta::valPlaycount ).toInt()));
+        id3v2SetPOPM( fileref,
+                      -1,
+                      changes.value( Meta::valPlaycount ).toInt() );
+    }
+    if( changes.contains( Meta::valUniqueId ) )
+    {
+        shouldSave = true;
+        replaceUid( fileref,
+                    changes.value( Meta::valUniqueId ).toString() );
+    }
+
+
+    // MP4 has a special handling for numbers
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
+        if( changes.contains( Meta::valDiscNr ) )
         {
             shouldSave = true;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
-            mp4tag->itemListMap()["aART"] = TagLib::StringList( artist );
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            mp4tag->itemListMap()["\xa9wrt"] = TagLib::StringList( composer );
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            int discnumber = changes.value( Meta::Field::DISCNUMBER ).toInt();
+            int discnumber = changes.value( Meta::valDiscNr ).toInt();
             mp4tag->itemListMap()["disk"] = TagLib::MP4::Item( discnumber, 0 );
         }
-        if( changes.contains( Meta::Field::BPM ) )
+        if( changes.contains( Meta::valBpm ) )
         {
             shouldSave = true;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            int bpm = changes.value( Meta::Field::BPM ).toInt();
+            int bpm = changes.value( Meta::valBpm ).toInt();
             mp4tag->itemListMap()["bpm"] = TagLib::MP4::Item( bpm, 0 );
         }
-        if( changes.contains( Meta::Field::UNIQUEID ) )
+        if( changes.contains( Meta::valCompilation ) )
         {
             shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            TagLib::String uidOwner;
-            TagLib::String uid;
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "----:com.apple.iTunes:MusicBrainz Track Id" );
-                uid = Qt4QStringToTString( url.mid( 3 ) );
-            }
-            else
-            {
-                uidOwner = TagLib::String( "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = Qt4QStringToTString( url );
-            }
-            mp4tag->itemListMap()[uidOwner] = TagLib::StringList( uid );
-        }
-    }
-    else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
-    {
-        if( changes.contains( Meta::Field::ALBUMARTIST ) )
-        {
-            shouldSave = true;
-            const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ALBUMARTIST ).toString() );
-            file->APETag()->addValue( "Album Artist", artist );
-        }
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            file->APETag()->addValue( "Composer", composer );
-        }
-        if( changes.contains( Meta::Field::DISCNUMBER ) )
-        {
-            shouldSave = true;
-            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
-            file->APETag()->addValue( "Disc", disc );
-        }
-        if( changes.contains( Meta::Field::BPM ) )
-        {
-            if (changes.value( Meta::Field::BPM ).toDouble() > 0)
-            {
-                shouldSave = true;
-                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
-                file->APETag()->addValue( "BPM", bpm );
-            }
-        }
-        if( changes.contains( Meta::Field::UNIQUEID ) )
-        {
-            shouldSave = true;
-
-            QString url = changes.value( Meta::Field::UNIQUEID ).toString().startsWith( "amarok-" )
-                          ? QString( changes.value( Meta::Field::UNIQUEID ).toString() ).remove( QRegExp( "^(amarok-\\w+://).+$" ) )
-                          : changes.value( Meta::Field::UNIQUEID ).toString();
-            TagLib::String uidOwner;
-            TagLib::String uid;
-            if( url.startsWith( "mb-" ) )
-            {
-                uidOwner = TagLib::String( "MUSICBRAINZ_TRACKID" );
-                uid = Qt4QStringToTString( url.mid( 3 ) );
-            }
-            else
-            {
-                uidOwner = TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" );
-                uid = Qt4QStringToTString( url );
-            }
-
-            file->APETag()->addValue( uidOwner, uid );
+            bool compilation = changes.value( Meta::valCompilation ).toInt();
+            mp4tag->itemListMap()["cpil"] = TagLib::MP4::Item( compilation );
         }
     }
     if( shouldSave )

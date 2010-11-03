@@ -209,25 +209,6 @@ Track::name() const
     return "This is a bug!";
 }
 
-QString
-Track::prettyName() const
-{
-    return name();
-}
-
-QString
-Track::fullPrettyName() const
-{
-    return name();
-}
-
-QString
-Track::sortableName() const
-{
-    return name();
-}
-
-
 KUrl
 Track::playableUrl() const
 {
@@ -254,12 +235,12 @@ Track::uidUrl() const
 }
 
 void
-Track::setUidUrl( const QString &newUidUrl ) const
+Track::setUidUrl( const QString &newUid ) const
 {
-    if( newUidUrl.isEmpty() )
+    if( newUid.isEmpty() )
         return;
 
-    d->changes.insert( Meta::Field::UNIQUEID, newUidUrl );
+    d->changes.insert( Meta::valUniqueId, QVariant( newUid ) );
     if( !d->batchUpdate )
     {
         d->writeMetaData();
@@ -329,7 +310,7 @@ void
 Track::setAlbum( const QString &newAlbum )
 {
     DEBUG_BLOCK
-    d->changes.insert( Meta::Field::ALBUM, QVariant( newAlbum ) );
+    d->changes.insert( Meta::valAlbum, QVariant( newAlbum ) );
     debug() << "CHANGES HERE: " << d->changes;
     if( !d->batchUpdate )
     {
@@ -343,7 +324,7 @@ void
 Track::setAlbumArtist( const QString &newAlbumArtist )
 {
     DEBUG_BLOCK
-    d->changes.insert( Meta::Field::ALBUMARTIST, QVariant( newAlbumArtist ) );
+    d->changes.insert( Meta::valAlbumArtist, QVariant( newAlbumArtist ) );
     if( !d->batchUpdate )
     {
         d->m_data.albumArtist = newAlbumArtist;
@@ -355,7 +336,7 @@ Track::setAlbumArtist( const QString &newAlbumArtist )
 void
 Track::setArtist( const QString& newArtist )
 {
-    d->changes.insert( Meta::Field::ARTIST, QVariant( newArtist ) );
+    d->changes.insert( Meta::valArtist, QVariant( newArtist ) );
     if( !d->batchUpdate )
     {
         d->m_data.artist = newArtist;
@@ -367,7 +348,7 @@ Track::setArtist( const QString& newArtist )
 void
 Track::setGenre( const QString& newGenre )
 {
-    d->changes.insert( Meta::Field::GENRE, QVariant( newGenre ) );
+    d->changes.insert( Meta::valGenre, QVariant( newGenre ) );
     if( !d->batchUpdate )
     {
         d->writeMetaData();
@@ -378,7 +359,7 @@ Track::setGenre( const QString& newGenre )
 void
 Track::setComposer( const QString& newComposer )
 {
-    d->changes.insert( Meta::Field::COMPOSER, QVariant( newComposer ) );
+    d->changes.insert( Meta::valComposer, QVariant( newComposer ) );
     if( !d->batchUpdate )
     {
         d->m_data.composer = newComposer;
@@ -390,7 +371,7 @@ Track::setComposer( const QString& newComposer )
 void
 Track::setYear( int newYear )
 {
-    d->changes.insert( Meta::Field::YEAR, QVariant( newYear ) );
+    d->changes.insert( Meta::valYear, QVariant( newYear ) );
     if( !d->batchUpdate )
     {
         d->m_data.year = newYear;
@@ -402,7 +383,7 @@ Track::setYear( int newYear )
 void
 Track::setTitle( const QString &newTitle )
 {
-    d->changes.insert( Meta::Field::TITLE, QVariant( newTitle ) );
+    d->changes.insert( Meta::valTitle, QVariant( newTitle ) );
     if( !d->batchUpdate )
     {
         d->m_data.title = newTitle;
@@ -414,7 +395,7 @@ Track::setTitle( const QString &newTitle )
 void
 Track::setBpm( const qreal newBpm )
 {
-    d->changes.insert( Meta::Field::BPM, QVariant( newBpm ) );
+    d->changes.insert( Meta::valBpm, QVariant( newBpm ) );
     if( !d->batchUpdate )
     {
         d->m_data.bpm = newBpm;
@@ -442,7 +423,7 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
-    d->changes.insert( Meta::Field::COMMENT, QVariant( newComment ) );
+    d->changes.insert( Meta::valComment, QVariant( newComment ) );
     if( !d->batchUpdate )
     {
         d->m_data.comment = newComment;
@@ -493,7 +474,7 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    d->changes.insert( Meta::Field::TRACKNUMBER, QVariant( newTrackNumber ) );
+    d->changes.insert( Meta::valTrackNr, QVariant( newTrackNumber ) );
     if( !d->batchUpdate )
     {
         d->m_data.trackNumber = newTrackNumber;
@@ -511,7 +492,7 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    d->changes.insert( Meta::Field::DISCNUMBER, QVariant ( newDiscNumber ) );
+    d->changes.insert( Meta::valDiscNr, QVariant ( newDiscNumber ) );
     if( !d->batchUpdate )
     {
         d->m_data.discNumber = newDiscNumber;
@@ -611,19 +592,20 @@ Track::setPlayCount( int newCount )
 }
 
 qreal
-Track::replayGain( Meta::Track::ReplayGainMode mode ) const
+Track::replayGain( Meta::ReplayGainTag mode ) const
 {
-    if ( mode == Meta::Track::AlbumReplayGain )
+    switch( mode )
+    {
+    case Meta::ReplayGain_Track_Gain:
         return d->m_data.trackGain;
-    return d->m_data.albumGain;
-}
-
-qreal
-Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
-{
-    if ( mode == Meta::Track::AlbumReplayGain )
+    case Meta::ReplayGain_Track_Peak:
         return d->m_data.trackPeak;
-    return d->m_data.albumPeak;
+    case Meta::ReplayGain_Album_Gain:
+        return d->m_data.albumGain;
+    case Meta::ReplayGain_Album_Peak:
+        return d->m_data.albumPeak;
+    }
+    return 0.0;
 }
 
 QString
@@ -782,6 +764,12 @@ debug() << "Track::getEmbeddedCover found apics" << apicList.size();
     for( iter = apicList.begin(); iter != apicList.end(); ++iter )
     {
         TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
+
+        // ignore images that are too small
+        if( currFrame->picture().size() <= 1024 )
+            continue;
+
+        // TODO: we need a better algorithm to find the best image
         if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover )
             frameToUse = currFrame;
         else if( !frameToUse && currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )

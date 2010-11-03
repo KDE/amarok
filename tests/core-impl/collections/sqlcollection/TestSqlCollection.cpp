@@ -17,9 +17,9 @@
 #include "TestSqlCollection.h"
 
 #include <core/collections/Collection.h>
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
+#include <core-impl/collections/db/sql/SqlCollection.h>
+#include <core-impl/collections/db/sql/DatabaseUpdater.h>
+#include <core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h>
 
 #include "SqlMountPointManagerMock.h"
 
@@ -38,14 +38,9 @@ TestSqlCollection::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
-    m_mpmMock = new SqlMountPointManagerMock();
+    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
+    m_mpmMock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( m_mpmMock );
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
 
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (1, 1, './IDoNotExist.mp3');" );
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (2, 2, './IDoNotExistAsWell.mp3');" );
@@ -59,7 +54,6 @@ TestSqlCollection::cleanupTestCase()
     delete m_collection;
     //m_mpMock is deleted by SqlCollection
     //m_storage is deleted by SqlCollection
-    //m_registry is deleted by SqlCollection
     delete m_tmpDir;
 
 }

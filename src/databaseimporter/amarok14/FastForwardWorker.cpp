@@ -267,13 +267,17 @@ FastForwardWorker::run()
             i.next();
             Collections::CollectionLocation* location = i.key();
             QMap<Meta::TrackPtr, QString>* tracks = i.value();
-
             debug() << "Adding new tracks to collection";
             emit showMessage( i18np( "Adding <b>1 new track</b> to Amarok collection <b>%2</b>.",
                                      "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
                                      tracks->size(), location->prettyLocation() ) );
-            location->insertTracks( *tracks );
-            location->insertStatistics( *tracks );
+
+            QMapIterator<Meta::TrackPtr, QString> j(*tracks);
+            while (j.hasNext()) {
+                j.next();
+                location->insert( j.key(), j.value() );
+            }
+
             delete tracks; // location is deleted by QSharedPointer
         }
     }

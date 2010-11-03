@@ -91,7 +91,7 @@ class CollectionTreeItem : public QObject
         bool operator<( const CollectionTreeItem& other ) const;
 
         const Meta::DataPtr data() const { return m_data; }
-        Collections::Collection* parentCollection() const { return m_parentCollection; }
+        Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : 0); }
 
         KUrl::List urls() const;
         QList<Meta::TrackPtr> descendentTracks();
@@ -112,7 +112,6 @@ class CollectionTreeItem : public QObject
         void collectionUpdated();
 
     private:
-        QString albumYear() const;
         QList<QAction*> decoratorActions() const;
         void prepareForRemoval();
 

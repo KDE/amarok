@@ -492,43 +492,6 @@ CollectionManager::trackForUrl( const KUrl &url )
 }
 
 void
-CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
-{
-    if( !artist )
-        return;
-
-    m_maxArtists = maxArtists;
-    SqlStorage *sql = sqlStorage();
-    QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
-               .arg( sql->escape( artist->name() ), sql->randomFunc(), QString::number( maxArtists ) );
-
-    QStringList artistNames = sql->query( query );
-    //TODO: figure out a way to retrieve similar artists from last.fm here
-    /*if( artistNames.isEmpty() )
-    {
-        artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
-    }*/
-    Collections::QueryMaker *qm = queryMaker();
-    foreach( const QString &artistName, artistNames )
-    {
-        qm->addFilter( Meta::valArtist, artistName, true, true );
-    }
-    qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->limitMaxResultSize( maxArtists );
-
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueRelatedArtists() ) );
-
-    m_resultEmitted = false;
-    m_resultArtistList.clear();
-    m_artistNameSet.clear();
-
-    qm->run();
-}
-
-void
 CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists )
 {
     Q_UNUSED(collectionId);
@@ -552,23 +515,6 @@ CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList
         m_resultEmitted = true;
         emit( foundRelatedArtists( m_resultArtistList ) );
     }
-}
-
-void
-CollectionManager::slotContinueRelatedArtists() //SLOT
-{
-    disconnect( this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    disconnect( this, SLOT( slotContinueRelatedArtists() ) );
-
-    if( !m_resultEmitted )
-    {
-        m_resultEmitted = true;
-        emit( foundRelatedArtists( m_resultArtistList ) );
-    }
-    QObject *s = sender();
-    if( s )
-        s->deleteLater();
 }
 
 void

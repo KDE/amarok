@@ -77,7 +77,7 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
     updateHeaderText();
     m_expandedItems.clear();
-    m_expandedVariousArtistsNodes.clear();
+    m_expandedSpecialNodes.clear();
     d->runningQueries.clear();
     d->childQueries.clear();
     d->compilationQueries.clear();

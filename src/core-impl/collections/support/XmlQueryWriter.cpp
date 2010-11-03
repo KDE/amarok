@@ -75,21 +75,6 @@ XmlQueryWriter::getEmbeddedQueryMaker() const
     return m_qm;
 }
 
-
-QueryMaker*
-XmlQueryWriter::reset()
-{
-    QDomNode child = m_element.firstChild();
-    while( !child.isNull() )
-    {
-        m_element.removeChild( child );
-        child = m_element.firstChild();
-    }
-
-    m_qm->reset();
-    return this;
-}
-
 void
 XmlQueryWriter::run()
 {

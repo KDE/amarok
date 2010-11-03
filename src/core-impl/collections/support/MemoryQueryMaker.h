@@ -47,7 +47,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
 

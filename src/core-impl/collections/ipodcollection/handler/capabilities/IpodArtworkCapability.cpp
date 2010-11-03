@@ -30,7 +30,7 @@ IpodArtworkCapability::~IpodArtworkCapability()
     // nothing to do here
 }
 
-QPixmap IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track )
+QImage IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetCoverArt( track );
 }

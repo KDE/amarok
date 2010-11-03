@@ -27,14 +27,16 @@ namespace FilterFactory
         MemoryFilter *result = 0;
         switch( value )
         {
+            case Meta::valUrl:
+            {
+                UrlMemoryFilter *umf = new UrlMemoryFilter();
+                umf->setFilter( filter, matchBegin, matchEnd );
+                result = umf;
+                break;
+            }
             case Meta::valTitle:
             {
                 result = new TitleMemoryFilter( filter, matchBegin, matchEnd );
-                break;
-            }
-            case Meta::valAlbum:
-            {
-                result = new AlbumMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
             case Meta::valArtist:
@@ -42,14 +44,24 @@ namespace FilterFactory
                 result = new ArtistMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case Meta::valYear:
+            case Meta::valAlbum:
             {
-                result = new YearMemoryFilter( filter, matchBegin, matchEnd );
+                result = new AlbumMemoryFilter( filter, matchBegin, matchEnd );
+                break;
+            }
+            case Meta::valGenre:
+            {
+                result = new GenreMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
             case Meta::valComposer:
             {
                 result = new ComposerMemoryFilter( filter, matchBegin, matchEnd );
+                break;
+            }
+            case Meta::valYear:
+            {
+                result = new YearMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
             case Meta::valComment:
@@ -72,13 +84,6 @@ namespace FilterFactory
                 LastPlayedFilter *lpf = new LastPlayedFilter();
                 lpf->setFilter( (qint64)filter.toInt(), Collections::QueryMaker::Equals );
                 result = lpf;
-                break;
-            }
-            case Meta::valUrl:
-            {
-                UrlMemoryFilter *umf = new UrlMemoryFilter();
-                umf->setFilter( filter, matchBegin, matchEnd );
-                result = umf;
                 break;
             }
         }
@@ -406,7 +411,10 @@ YearMemoryFilter::~YearMemoryFilter()
 QString
 YearMemoryFilter::value( Meta::TrackPtr track ) const
 {
-    return track->year()->name();
+    if( track->year() )
+        return track->year()->name();
+    else
+        return QString();
 }
 
 CommentMemoryFilter::CommentMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )

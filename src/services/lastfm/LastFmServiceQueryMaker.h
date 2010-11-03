@@ -31,7 +31,6 @@ public:
     LastFmServiceQueryMaker( LastFmServiceCollection *collection );
     virtual ~LastFmServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
     virtual void abortQuery();
 

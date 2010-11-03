@@ -34,7 +34,6 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
         ~MetaQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
         virtual int resultCount() const;

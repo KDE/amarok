@@ -21,6 +21,7 @@
 
 #include <KTempDir>
 
+class QApplication;
 class SqlStorage;
 class SqlRegistry;
 
@@ -33,6 +34,7 @@ class TestSqlAlbum : public QObject
     Q_OBJECT
 public:
     TestSqlAlbum();
+    ~TestSqlAlbum();
 
 private slots:
     void initTestCase();
@@ -40,6 +42,11 @@ private slots:
 
     void init();
     void cleanup();
+
+    void testTracks();
+    void testIsCompilation();
+    void testAlbumArtist();
+    void testImage();
 
     void testCapabilities();
 
@@ -52,17 +59,11 @@ private slots:
     void testUnsetCompilationWithArtistAFeaturingB();
     void testUnsetCompilationWithMultipleArtists();
 
-    //void testSetCompilationWithoutExistingCompilationWithMultipleTracks();
-    //void testSetCompilationWithExistingComiplationWithMultipleTracks();
-    //void testUnsetCompilationWithoutExistingAlbumWithMultipleTracks();
-    //void testUnsetCompilationWithExistingAlbumWithMultipleTracks();
-    //void testUnsetCompilationWithMultipleExistingAlbumsWithMultipleTracks();
-
 private:
+    QApplication *m_app;
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
-    SqlRegistry *m_registry;
 };
 
 #endif // TESTSQLALBUM_H

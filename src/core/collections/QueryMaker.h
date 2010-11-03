@@ -75,12 +75,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual ~QueryMaker();
 
         /**
-            resets all internal data to the default values. Calling this method is the same
-            as creating a new QueryMaker.
-            @return this
-        */
-        virtual QueryMaker* reset() = 0;
-        /**
             starts the query. This method returns immediately. All processing is done in one or more
             separate worker thread(s). One of the newResultReady signals will be emitted at least once,
             followed by the queryDone() signal exactly once.

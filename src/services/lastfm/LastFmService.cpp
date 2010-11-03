@@ -242,7 +242,7 @@ LastFmService::init()
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
-    const QString authToken = md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
+    const QString authToken = md5( m_userName.toUtf8() ) + md5( password.toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we don't have one
     if( sessionKey.isEmpty() )

@@ -44,7 +44,6 @@ namespace Collections
             PlaydarQueryMaker( PlaydarCollection *collection );
             ~PlaydarQueryMaker();
             
-            QueryMaker* reset();
             void run();
             void abortQuery();
             

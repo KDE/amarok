@@ -362,6 +362,7 @@ EngineController::play() //SLOT
         else
         {
             m_media.data()->play();
+            emit trackPlaying( m_currentTrack );
             return;
         }
     }
@@ -550,6 +551,8 @@ EngineController::stop( bool forceInstant ) //SLOT
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
+        m_currentTrack = 0;
+        emit trackChanged( Meta::TrackPtr( 0 ) );
         m_currentTrack = 0;
         m_currentAlbum = 0;
         emit trackChanged( m_currentTrack );
@@ -777,6 +780,8 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     }
 }
 
+/*
+*/
 bool
 EngineController::isStream()
 {
@@ -1084,13 +1089,18 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
             m_path.insertEffect( m_preamp.data() );
         }
 
-        Meta::Track::ReplayGainMode mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
-                                         ? Meta::Track::TrackReplayGain
-                                         : Meta::Track::AlbumReplayGain;
+        Meta::ReplayGainTag mode;
         // gain is usually negative (but may be positive)
+        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
+            ? Meta::ReplayGain_Track_Gain
+            : Meta::ReplayGain_Album_Gain;
         qreal gain = m_currentTrack->replayGain( mode );
+
         // peak is usually positive and smaller than gain (but may be negative)
-        qreal peak = m_currentTrack->replayPeakGain( mode );
+        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
+            ? Meta::ReplayGain_Track_Peak
+            : Meta::ReplayGain_Album_Peak;
+        qreal peak = m_currentTrack->replayGain( mode );
         if ( gain + peak > 0.0 )
         {
             debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;

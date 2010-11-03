@@ -61,7 +61,6 @@ private slots:
     void testFirstPlayed();
     void testPlayCount();
     void testReplayGain();
-    void testReplayPeakGain();
     void testType();
 
     void testInCollection();

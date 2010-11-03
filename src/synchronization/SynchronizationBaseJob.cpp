@@ -202,17 +202,10 @@ void
 SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::AlbumList &albums )
 {
     DEBUG_BLOCK
-    QSet<AlbumKey> albumSet;
+    QSet<Meta::AlbumKey> albumSet;
     foreach( const Meta::AlbumPtr &albumPtr, albums )
     {
-        QString album;
-        QString albumArtist;
-        if( albumPtr )
-            album = albumPtr->name();
-        if( albumPtr && albumPtr->hasAlbumArtist() )
-            albumArtist = albumPtr->albumArtist()->name();
-
-        albumSet.insert( AlbumKey( albumArtist, album ) );
+        albumSet.insert( Meta::AlbumKey( albumPtr ) );
     }
     if( id == m_collectionA->collectionId() )
     {
@@ -239,7 +232,7 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::TrackLis
 
         foreach( const Meta::TrackPtr &track, tracks )
         {
-            TrackKey key = Meta::keyFromTrack( track );
+            Meta::TrackKey key( track );
             m_tracksA.insert( key );
             m_keyToTrackA.insert( key, track );
         }
@@ -249,7 +242,7 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::TrackLis
     {
         foreach( const Meta::TrackPtr &track, tracks )
         {
-            TrackKey key = Meta::keyFromTrack( track );
+            Meta::TrackKey key( track );
             m_tracksB.insert( key );
             m_keyToTrackB.insert( key, track );
         }
@@ -311,19 +304,19 @@ void
 SynchronizationBaseJob::handleAlbumResult()
 {
     DEBUG_BLOCK
-    QSet<AlbumKey> albumsOnlyInA = m_albumsA - m_albumsB;
-    QSet<AlbumKey> albumsOnlyInB = m_albumsB - m_albumsA;
-    QSet<AlbumKey> albumsInBoth = m_albumsA & m_albumsB;
+    QSet<Meta::AlbumKey> albumsOnlyInA = m_albumsA - m_albumsB;
+    QSet<Meta::AlbumKey> albumsOnlyInB = m_albumsB - m_albumsA;
+    QSet<Meta::AlbumKey> albumsInBoth = m_albumsA & m_albumsB;
 
-    foreach( const AlbumKey &album, albumsOnlyInA )
+    foreach( const Meta::AlbumKey &album, albumsOnlyInA )
     {
         m_albumResult.insert( album, OnlyInA );
     }
-    foreach( const AlbumKey &album, albumsOnlyInB )
+    foreach( const Meta::AlbumKey &album, albumsOnlyInB )
     {
         m_albumResult.insert( album, OnlyInB );
     }
-    foreach( const AlbumKey &album, albumsInBoth )
+    foreach( const Meta::AlbumKey &album, albumsInBoth )
     {
         m_albumResult.insert( album, InBoth );
     }
@@ -349,24 +342,24 @@ SynchronizationBaseJob::handleAlbumResult()
         }
     }
     {
-        QHashIterator<AlbumKey, InSet> iter( m_albumResult );
+        QHashIterator<Meta::AlbumKey, InSet> iter( m_albumResult );
         while( iter.hasNext() )
         {
             iter.next();
-            AlbumKey album = iter.key();
+            Meta::AlbumKey album = iter.key();
             InSet currentStatus = iter.value();
             if( currentStatus == OnlyInA )
             {
                 qmA->beginOr();
-                qmA->excludeFilter( Meta::valAlbum, album.albumName, true, true );
-                qmA->excludeFilter( Meta::valAlbumArtist, album.artistName, true, true );
+                qmA->excludeFilter( Meta::valAlbum, album.albumName(), true, true );
+                qmA->excludeFilter( Meta::valAlbumArtist, album.artistName(), true, true );
                 qmA->endAndOr();
             }
             if( currentStatus == OnlyInB )
             {
                 qmB->beginOr();
-                qmB->excludeFilter( Meta::valAlbum, album.albumName, true, true );
-                qmB->excludeFilter( Meta::valAlbumArtist, album.artistName, true, true );
+                qmB->excludeFilter( Meta::valAlbum, album.albumName(), true, true );
+                qmB->excludeFilter( Meta::valAlbumArtist, album.artistName(), true, true );
                 qmB->endAndOr();
             }
         }
@@ -382,14 +375,14 @@ void
 SynchronizationBaseJob::handleTrackResult()
 {
     DEBUG_BLOCK
-    QSet<TrackKey> tracksOnlyInA = m_tracksA - m_tracksB;
-    QSet<TrackKey> tracksOnlyInB = m_tracksB - m_tracksA;
+    QSet<Meta::TrackKey> tracksOnlyInA = m_tracksA - m_tracksB;
+    QSet<Meta::TrackKey> tracksOnlyInB = m_tracksB - m_tracksA;
 
-    foreach( const TrackKey &key, tracksOnlyInA )
+    foreach( const Meta::TrackKey &key, tracksOnlyInA )
     {
         m_trackResultOnlyInA << m_keyToTrackA.value( key );
     }
-    foreach( const TrackKey &key, tracksOnlyInB )
+    foreach( const Meta::TrackKey &key, tracksOnlyInB )
     {
         m_trackResultOnlyInB << m_keyToTrackB.value( key );
     }
@@ -426,25 +419,25 @@ SynchronizationBaseJob::handleTrackResult()
         }
     }
     {
-        QHashIterator<AlbumKey, InSet> iter( m_albumResult );
+        QHashIterator<Meta::AlbumKey, InSet> iter( m_albumResult );
         while( iter.hasNext() )
         {
             iter.next();
-            AlbumKey album = iter.key();
+            Meta::AlbumKey album = iter.key();
             InSet currentStatus = iter.value();
             if( currentStatus == OnlyInA )
             {
                 qmA->beginAnd();
-                qmA->addFilter( Meta::valAlbum, album.albumName, true, true );
-                qmA->addFilter( Meta::valAlbumArtist, album.artistName, true, true );
+                qmA->addFilter( Meta::valAlbum, album.albumName(), true, true );
+                qmA->addFilter( Meta::valAlbumArtist, album.artistName(), true, true );
                 qmA->endAndOr();
                 haveToStartQueryA = true;
             }
             if( currentStatus == OnlyInB )
             {
                 qmB->beginAnd();
-                qmB->addFilter( Meta::valAlbum, album.albumName, true, true );
-                qmB->addFilter( Meta::valAlbumArtist, album.artistName, true, true );
+                qmB->addFilter( Meta::valAlbum, album.albumName(), true, true );
+                qmB->addFilter( Meta::valAlbumArtist, album.artistName(), true, true );
                 qmB->endAndOr();
                 haveToStartQueryB = true;
             }

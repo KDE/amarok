@@ -752,17 +752,22 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
-    const int size = m_items.size();
-    for ( int i = 0; i < size; i++ )
+    int row = 0;
+    foreach( Item* i, m_items )
     {
-        if ( m_items.at( i )->track() == track )
+        if ( i->track() == track )
         {
-            emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
+            // ensure that we really have the correct album subscribed (in case it changed)
+            Meta::AlbumPtr album = track->album();
+            if( album )
+                subscribeTo( album );
+
+            emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
             debug()<<"Metadata updated for track"<<track->prettyName();
-            break;
         }
+        row++;
     }
 }
 
@@ -770,16 +775,24 @@ void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
     // Mainly to get update about changed covers
+
+    // -- search for all the tracks having this album
+    bool found = false;
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
         if ( m_items.at( i )->track()->album() == album )
         {
             emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
+            found = true;
             debug()<<"Metadata updated for album"<<album->prettyName();
-            break;
         }
     }
+
+    // -- unsubscribe if we don't have a track from that album left.
+    // this can happen if the album of a track changed
+    if( !found )
+        unsubscribeFrom( album );
 }
 
 bool

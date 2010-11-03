@@ -92,7 +92,19 @@ MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QSt
     d->collectionId = collectionId;
     d->matcher = 0;
     d->job = 0;
-    reset();
+    d->type = QueryMaker::None;
+    d->returnDataPtrs = false;
+    d->job = 0;
+    d->job = 0;
+    d->maxsize = -1;
+    d->containerFilters.push( new AndContainerMemoryFilter() );
+    d->usingFilters = false;
+    d->randomize = false;
+    d->orderByField = 0;
+    d->orderDescending = false;
+    d->orderByNumberField = false;
+    d->albumQueryMode = AllAlbums;
+    d->labelQueryMode = QueryMaker::NoConstraint;
 }
 
 MemoryQueryMaker::~MemoryQueryMaker()
@@ -102,33 +114,6 @@ MemoryQueryMaker::~MemoryQueryMaker()
     if( !d->containerFilters.isEmpty() )
         delete d->containerFilters.first();
     delete d;
-}
-
-QueryMaker*
-MemoryQueryMaker::reset()
-{
-    d->type = QueryMaker::None;
-    d->returnDataPtrs = false;
-    delete d->matcher;
-    delete d->job;
-    d->job = 0;
-    d->maxsize = -1;
-    if( !d->containerFilters.isEmpty() )
-        delete d->containerFilters.first();
-    d->containerFilters.clear();
-    d->containerFilters.push( new AndContainerMemoryFilter() );
-    d->usingFilters = false;
-    d->randomize = false;
-    qDeleteAll( d->returnFunctions );
-    d->returnFunctions.clear();
-    qDeleteAll( d->returnValues );
-    d->returnValues.clear();
-    d->orderByField = 0;
-    d->orderDescending = false;
-    d->orderByNumberField = false;
-    d->albumQueryMode = AllAlbums;
-    d->labelQueryMode = QueryMaker::NoConstraint;
-    return this;
 }
 
 void

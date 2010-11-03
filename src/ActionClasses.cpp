@@ -26,7 +26,6 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
-#include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 

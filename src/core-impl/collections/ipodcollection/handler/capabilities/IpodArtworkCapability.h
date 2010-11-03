@@ -34,7 +34,7 @@ namespace Handler
             IpodArtworkCapability( Meta::IpodHandler *handler );
             virtual ~IpodArtworkCapability();
 
-            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
+            virtual QImage getCover( const Meta::MediaDeviceTrackPtr &track );
 
             virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image );
 

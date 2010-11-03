@@ -60,7 +60,7 @@ extern "C" {
 #include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
-#include <QPixmap>
+#include <QImage>
 #include <QProcess>
 #include <QRegExp>
 #include <QString>
@@ -1862,34 +1862,34 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     return m_tempdir->name() + imageKey + ".png";
 }
 
-QPixmap
+QImage
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDKPIXBUF_FOUND
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
-        return QPixmap();
+        return QImage();
 
     if( ipodtrack->has_artwork == 0x02 ) // has_artwork: True if set to 0x01, false if set to 0x02.
-        return QPixmap();
+        return QImage();
 
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
-        return QPixmap(filename);
+        return QImage(filename);
 
     GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
     if( !pixbuf )
-        return QPixmap();
+        return QImage();
 
     gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
     gdk_pixbuf_unref( pixbuf );
 
     m_coverArt.insert( filename );
-    return QPixmap( filename );
+    return QImage( filename );
 #else
     Q_UNUSED( track );
-    return QPixmap();
+    return QImage();
 #endif
 }
 

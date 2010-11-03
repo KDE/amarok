@@ -27,6 +27,9 @@ class SqlRegistry;
 namespace Collections {
     class SqlCollection;
 }
+namespace Meta {
+    class SqlTrack;
+}
 
 class TestSqlTrack : public QObject
 {
@@ -42,27 +45,28 @@ private slots:
     void init();
     void cleanup();
 
+    void testGetTrack();
+
+    void testSetAllValuesSingleNotExisting();
+    void testSetAllValuesSingleExisting();
+    void testSetAllValuesBatch();
+
+    void testUnsetValues();
+
+    void testFinishedPlaying();
+
     void testAlbumRemainsCompilationAfterChangingAlbumName();
     void testAlbumRemaingsNonCompilationAfterChangingAlbumName();
-    void testAddNonExistingLabelToTrack();
-    void testAddExistingLabelToTrack();
     void testRemoveLabelFromTrack();
     void testRemoveLabelFromTrackWhenNotInCache();
 
-    void testChangeGenreToExisting();
-    void testChangeGenreToNew();
-    void testChangeComposerToExisting();
-    void testChangeComposerToNew();
-    void testChangeYearToExisting();
-    void testChangeYearToNew();
-    void testChangeAlbumToExisting();
-
 private:
+    void setAllValues( Meta::SqlTrack *track );
+    void getAllValues( Meta::SqlTrack *track );
+
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
-    SqlRegistry *m_registry;
-
 };
 
 #endif // TESTSQLTRACK_H

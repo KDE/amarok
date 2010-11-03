@@ -28,6 +28,7 @@
 #include <QPixmapCache>
 
 #include <KStandardDirs>
+#include <KLocale>
 
 //Meta::Observer
 
@@ -300,15 +301,9 @@ Meta::Track::createDate() const
     return QDateTime();
 }
 
-qreal
-Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
-{
-    Q_UNUSED( mode )
-    return 0.0;
-}
 
 qreal
-Meta::Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
+Meta::Track::replayGain( Meta::ReplayGainTag mode ) const
 {
     Q_UNUSED( mode )
     return 0.0;
@@ -401,6 +396,14 @@ Meta::Artist::addMatchTo( Collections::QueryMaker *qm )
     qm->addMatch( ArtistPtr( this ) );
 }
 
+QString
+Meta::Artist::prettyName() const
+{
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Artist");
+}
+
 void
 Meta::Artist::notifyObservers() const
 {
@@ -442,6 +445,14 @@ void
 Meta::Album::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( AlbumPtr( this ) );
+}
+
+QString
+Meta::Album::prettyName() const
+{
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Album");
 }
 
 void
@@ -493,6 +504,14 @@ Meta::Album::operator==( const Meta::Album &album ) const
 
 //Meta::Genre
 
+QString
+Meta::Genre::prettyName() const
+{
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Genre");
+}
+
 void
 Meta::Genre::addMatchTo( Collections::QueryMaker *qm )
 {
@@ -523,6 +542,14 @@ void
 Meta::Composer::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( ComposerPtr( this ) );
+}
+
+QString
+Meta::Composer::prettyName() const
+{
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Composer");
 }
 
 void

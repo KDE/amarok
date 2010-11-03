@@ -66,25 +66,6 @@ ProxyQueryMaker::~ProxyQueryMaker()
     qDeleteAll( m_builders );
 }
 
-QueryMaker*
-ProxyQueryMaker::reset()
-{
-    m_queryDoneCount = 0;
-    m_returnDataPointers = false;
-    m_maxResultSize = -1;
-    m_randomize = false;
-    m_queryType = QueryMaker::None;
-    m_orderDescending = false;
-    m_orderField = 0;
-    qDeleteAll( m_returnFunctions );
-    m_returnFunctions.clear();
-    qDeleteAll( m_returnValues );
-    m_returnValues.clear();
-    foreach( QueryMaker *b, m_builders )
-        b->reset();
-    return this;
-}
-
 void
 ProxyQueryMaker::run()
 {

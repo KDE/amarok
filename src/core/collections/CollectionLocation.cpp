@@ -228,17 +228,13 @@ CollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 bool
-CollectionLocation::remove( const Meta::TrackList &tracks )
+CollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
-    bool success = true;
-
-    foreach( const Meta::TrackPtr &track, tracks )
-        if( !remove( track ) )
-            success = false;
-
-    return success;
-
+    Q_UNUSED( track )
+    Q_UNUSED( url )
+    return false;
 }
+
 
 void
 CollectionLocation::abort()

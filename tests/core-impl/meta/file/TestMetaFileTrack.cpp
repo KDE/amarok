@@ -435,15 +435,10 @@ void TestMetaFileTrack::testSetGetPlayCount()
 
 void TestMetaFileTrack::testReplayGain()
 {
-    // HACK: double fails even with fuzzy compare :(
-    QCOMPARE( static_cast<float>( m_track->replayGain( Meta::Track::TrackReplayGain ) ), -6.655f );
-    QCOMPARE( static_cast<float>( m_track->replayGain( Meta::Track::AlbumReplayGain ) ), -6.655f );
-}
-
-void TestMetaFileTrack::testReplayPeakGain()
-{
-    QCOMPARE( static_cast<float>( m_track->replayPeakGain( Meta::Track::TrackReplayGain ) ), 4.1263f );
-    QCOMPARE( static_cast<float>( m_track->replayPeakGain( Meta::Track::AlbumReplayGain ) ), 4.1263f );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Track_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Album_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Track_Peak ) * 10000), 41263 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Album_Peak ) * 10000), 41263 );
 }
 
 void TestMetaFileTrack::testType()

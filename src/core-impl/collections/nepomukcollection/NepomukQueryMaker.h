@@ -41,7 +41,6 @@ class NepomukQueryMaker : public QueryMaker
 	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Model* model);
 	    virtual ~NepomukQueryMaker();
 	
-	    virtual QueryMaker* reset();
 	    virtual void abortQuery();
 	    virtual void run();
 	

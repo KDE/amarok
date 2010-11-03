@@ -19,6 +19,7 @@
 #define AMAROK_META_H
 
 #include "shared/amarok_export.h"
+#include "shared/MetaReplayGain.h"
 
 #include "core/capabilities/Capability.h"
 
@@ -94,6 +95,9 @@ namespace Meta
             virtual void metadataChanged( YearPtr year );
             virtual ~Observer();
 
+            // TODO: we really need a deleted notification.
+            // TODO: Why not change this Java-like observer pattern to a normal QObject
+
         private:
             QSet<TrackPtr> m_trackSubscriptions;
             QSet<ArtistPtr> m_artistSubscriptions;
@@ -148,11 +152,29 @@ namespace Meta
         public:
             MetaBase() {}
             virtual ~MetaBase() {}
+
+            /** The textual label for this object.
+                For a track this is the track title, for an album it is the
+                album name.
+                If the name is unknown or unset then this returns an empty string.
+            */
             virtual QString name() const = 0;
 
-            virtual QString prettyName() const = 0;
+            /** This is a nicer representation of the object.
+                We will try to prevent this name from being empty.
+                E.g. a track will fall back to the filename if possible.
+            */
+            virtual QString prettyName() const { return name(); };
+
+            /** A exact representation of the object.
+                This might include the artist name for a track or album.
+            */
             virtual QString fullPrettyName() const { return prettyName(); }
-            virtual QString sortableName() const { return prettyName(); }
+
+            /** A name that can be used for sorting.
+                This should usually mean that "The Beatles" is returned as "Beatles The"
+            */
+            virtual QString sortableName() const { return name(); }
 
             /**used for showing a fixed name in the tree view. Needed for items that change
              * their name occasionally such as some streams. These should overwrite this
@@ -179,28 +201,22 @@ namespace Meta
     {
         public:
 
-            /**
-             * The Replay Gain mode.
-             */
-            enum ReplayGainMode
-            {
-                /** All tracks should be equally loud.  Also known as Radio mode. */
-                TrackReplayGain,
-                /** All albums should be equally loud.  Also known as Audiophile mode. */
-                AlbumReplayGain
-            };
-
             virtual ~Track() {}
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
-            virtual QString prettyName() const = 0;
+            virtual QString prettyName() const;
             /** an url which can be played by the engine backends */
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
-            /** an url which is unique for this track. Use this if you need a key for the track */
+            /** an url which is unique for this track. Use this if you need a key for the track.
+                Actually this is not guaranteed to be an url at all and could be something like
+                mb-f5a3456bb0 for a MusicBrainz id.
+            */
             virtual QString uidUrl() const = 0;
 
-            /** Returns whether playableUrl() will return a playable Url */
+            /** Returns whether playableUrl() will return a playable Url
+                In principle this means that the url is valid.
+             */
             virtual bool isPlayable() const = 0;
             /** Returns the album this track belongs to */
             virtual AlbumPtr album() const = 0;
@@ -255,9 +271,7 @@ namespace Meta
              * Should return the track replay gain if the album gain is requested but
              * is not available.
              */
-            virtual qreal replayGain( ReplayGainMode mode ) const;
-            /** Returns the peak (after gain adjustment) for a given replay gain mode */
-            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
+            virtual qreal replayGain( ReplayGainTag mode ) const;
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
             virtual QString type() const = 0;
@@ -320,6 +334,9 @@ namespace Meta
         public:
 
             virtual ~Artist() {}
+
+            virtual QString prettyName() const;
+
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
@@ -352,6 +369,9 @@ namespace Meta
         public:
             Album() {}
             virtual ~Album() {}
+
+            virtual QString prettyName() const;
+
             virtual bool isCompilation() const = 0;
 
             /** Returns true if this album has an album artist */
@@ -406,6 +426,7 @@ namespace Meta
         public:
 
             virtual ~Composer() {}
+            virtual QString prettyName() const;
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
@@ -423,6 +444,7 @@ namespace Meta
         public:
 
             virtual ~Genre() {}
+            virtual QString prettyName() const;
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 

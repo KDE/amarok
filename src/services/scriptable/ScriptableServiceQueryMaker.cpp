@@ -52,7 +52,12 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
 
     connect( collection, SIGNAL( updateComplete() ), this, SLOT( slotScriptComplete() ) );
 
-    reset();
+    d->type = Private::NONE;
+    d->closestParent = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
+    d->parentId = -1;
+    d->albumMode = AllAlbums;
 }
 
 ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
@@ -60,20 +65,6 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
     delete d;
 }
 
-Collections::QueryMaker * ScriptableServiceQueryMaker::reset()
-{
-    d->type = Private::NONE;
-    d->closestParent = Private::NONE;
-    d->maxsize = -1;
-    d->returnDataPtrs = false;
-    d->callbackString.clear();
-    d->parentId = -1;
-    d->albumMode = AllAlbums;
-    d->filter.clear();
-    d->lastFilter.clear();
-
-    return this;
-}
 
 Collections::QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {

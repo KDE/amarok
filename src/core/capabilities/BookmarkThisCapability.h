@@ -38,6 +38,11 @@ public:
     virtual QString browserName() = 0;
     virtual QString collectionName() = 0;
     virtual bool simpleFiltering() { return false; }
+
+    /**
+       The caller has to free the action after usage.
+       @return the bookmarkAction itself (or 0).
+    */
     virtual QAction * bookmarkAction() = 0;
 
     /**

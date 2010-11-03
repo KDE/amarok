@@ -129,6 +129,13 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
         virtual QueryMaker * queryMaker() = 0;
 
         /**
+            Checks if the given path is covered by this collection.
+            Not all collections cover directories or even know what a path is.
+            @returns true if it is covered.
+        */
+        virtual bool isDirInCollection(const QString &path) { Q_UNUSED( path ); return false; }
+
+        /**
             Begin a full scan on the collection.  This is not valid for all collections.
         */
         virtual void startFullScan() {}

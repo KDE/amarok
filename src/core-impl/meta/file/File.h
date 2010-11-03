@@ -35,9 +35,6 @@ namespace MetaFile
 
         //methods inherited from Meta::MetaBase
             virtual QString name() const;
-            virtual QString prettyName() const;
-            virtual QString fullPrettyName() const;
-            virtual QString sortableName() const;
 
         //methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
@@ -93,8 +90,7 @@ namespace MetaFile
             virtual int playCount() const;
             virtual void setPlayCount( int newCount );
 
-            virtual qreal replayGain( ReplayGainMode mode ) const;
-            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
+            virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
 

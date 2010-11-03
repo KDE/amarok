@@ -330,9 +330,7 @@ ProxyCollection::hasArtist( const QString &artist )
 void
 ProxyCollection::removeAlbum( const QString &album, const QString &albumartist )
 {
-    AlbumKey key;
-    key.albumName = album;
-    key.artistName = albumartist;
+    Meta::AlbumKey key( album, albumartist );
     m_albumLock.lockForWrite();
     m_albumMap.remove( key );
     m_albumLock.unlock();
@@ -341,10 +339,7 @@ ProxyCollection::removeAlbum( const QString &album, const QString &albumartist )
 Meta::ProxyAlbum*
 ProxyCollection::getAlbum( Meta::AlbumPtr album )
 {
-    AlbumKey key;
-    key.albumName = album->name();
-    if( album->albumArtist() )
-        key.artistName = album->albumArtist()->name();
+    Meta::AlbumKey key( album );
     m_albumLock.lockForRead();
     if( m_albumMap.contains( key ) )
     {
@@ -369,27 +364,21 @@ ProxyCollection::getAlbum( Meta::AlbumPtr album )
 void
 ProxyCollection::setAlbum( Meta::ProxyAlbum *album )
 {
-    AlbumKey key;
-    key.albumName = album->name();
-    if( album->albumArtist() )
-        key.artistName = album->albumArtist()->name();
     m_albumLock.lockForWrite();
-    m_albumMap.insert( key, KSharedPtr<Meta::ProxyAlbum>( album ) );
+    m_albumMap.insert( Meta::AlbumKey( Meta::AlbumPtr( album ) ),
+                       KSharedPtr<Meta::ProxyAlbum>( album ) );
     m_albumLock.unlock();
 }
 
 bool
 ProxyCollection::hasAlbum( const QString &album, const QString &albumArtist )
 {
-    AlbumKey key;
-    key.albumName = album;
-    key.artistName = albumArtist;
     QReadLocker locker( &m_albumLock );
-    return m_albumMap.contains( key );
+    return m_albumMap.contains( Meta::AlbumKey( album, albumArtist ) );
 }
 
 void
-ProxyCollection::removeTrack( const TrackKey &key )
+ProxyCollection::removeTrack( const Meta::TrackKey &key )
 {
     m_trackLock.lockForWrite();
     m_trackMap.remove( key );
@@ -399,7 +388,7 @@ ProxyCollection::removeTrack( const TrackKey &key )
 Meta::ProxyTrack*
 ProxyCollection::getTrack( Meta::TrackPtr track )
 {
-    const TrackKey key = Meta::keyFromTrack( track );
+    const Meta::TrackKey key( track );
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
@@ -425,14 +414,14 @@ void
 ProxyCollection::setTrack( Meta::ProxyTrack *track )
 {
     Meta::TrackPtr ptr( track );
-    const TrackKey key = Meta::keyFromTrack( ptr );
+    const Meta::TrackKey key( ptr );
     m_trackLock.lockForWrite();
     m_trackMap.insert( key, KSharedPtr<Meta::ProxyTrack>( track ) );
     m_trackLock.unlock();
 }
 
 bool
-ProxyCollection::hasTrack( const TrackKey &key )
+ProxyCollection::hasTrack( const Meta::TrackKey &key )
 {
     QReadLocker locker( &m_trackLock );
     return m_trackMap.contains( key );
@@ -516,9 +505,9 @@ ProxyCollection::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackKey, KSharedPtr<Meta::ProxyTrack>, 2, m_trackMap )
+        foreachCollectGarbage( Meta::TrackKey, KSharedPtr<Meta::ProxyTrack>, 2, m_trackMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( AlbumKey, KSharedPtr<Meta::ProxyAlbum>, 2, m_albumMap )
+        foreachCollectGarbage( Meta::AlbumKey, KSharedPtr<Meta::ProxyAlbum>, 2, m_albumMap )
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyArtist>, 2, m_artistMap )
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyGenre>, 2, m_genreMap )
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyComposer>, 2, m_composerMap )

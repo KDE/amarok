@@ -84,32 +84,8 @@ namespace Collections
         
         delete m_memoryQueryMaker;
     }
-    
-    QueryMaker*
-    PlaydarQueryMaker::reset()
-    {
-        DEBUG_BLOCK
-        
-        if( !m_queryMakerFunctions.isEmpty() )
-        {
-            qDeleteAll( m_queryMakerFunctions.begin(), m_queryMakerFunctions.end() );
-            m_queryMakerFunctions.clear();
-        }
-        
-        m_controller->disconnect( this );
-        m_autoDelete = false;
-        m_shouldQueryCollection = true;
-        m_collectionUpdated = false;
-        m_memoryQueryIsRunning = false;
-        m_queryType = QueryMaker::QueryType( None );
-        m_activeQueryCount = 0;
-        m_filterMap.clear();
 
-        m_memoryQueryMaker = m_memoryQueryMaker->reset();
-        
-        return this;
-    }
-    
+
     void
     PlaydarQueryMaker::run()
     {

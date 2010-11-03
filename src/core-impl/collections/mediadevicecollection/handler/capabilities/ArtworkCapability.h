@@ -30,7 +30,7 @@ namespace Handler
         public:
             virtual ~ArtworkCapability();
 
-            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
+            virtual QImage getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
             virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image ) = 0;
 

@@ -37,7 +37,6 @@ public:
     ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
     ~ScriptableServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
     virtual void abortQuery();
 

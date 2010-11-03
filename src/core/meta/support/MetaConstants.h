@@ -17,10 +17,20 @@
 #ifndef AMAROK_METACONSTANTS_H
 #define AMAROK_METACONSTANTS_H
 
-#include <QtGlobal>
+#include <QString>
+#include <QHash>
+#include <QVariant>
 
 namespace Meta
 {
+    /** This type can be used when a number of fields need to
+     *  be given to some functions.
+     */
+    typedef QHash<qint64, QVariant> FieldHash;
+
+    // the following constants are used at a number of places,
+    // Most importantly the QueryMaker
+
     //track metadata
     static const qint64 valUrl          = 1LL << 0;
     static const qint64 valTitle        = 1LL << 1;
@@ -56,6 +66,15 @@ namespace Meta
     static const qint64 valAlbumArtist  = 1LL << 27;
     static const qint64 valLabel        = 1LL << 28;
 
+    // currently only used for writeFields. Not supported for queryMaker
+    // TODO: support for queryMaker
+    static const qint64 valCompilation  = 1LL << 29;
+
+    // start for custom numbers
+    static const qint64 valCustom       = 1LL << 60;
+
+    /** The Field variables can be used in cases where a key for metadate is needed.
+     */
     namespace Field
     {
         //actual string values are not final yet
@@ -88,6 +107,10 @@ namespace Meta
         static const QString LAST_PLAYED    = "xesam:lastUsed";
 
         static const QString UNIQUEID       = "xesam:id";
+
+        // new
+        static const QString ALBUM_ARTIST   = "xesam:albumArtist";
+        static const QString COMPILATION    = "xesam:compilation";
     }
 }
 

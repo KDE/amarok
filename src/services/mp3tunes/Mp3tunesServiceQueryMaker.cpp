@@ -48,38 +48,30 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
     : DynamicServiceQueryMaker()
         , m_storedTransferJob( 0 )
         , d( new Private )
-
 {
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
     m_locker = locker;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker * Mp3tunesServiceQueryMaker::reset()
-{
-    DEBUG_BLOCK
-    d->type = Private::NONE;
-    d->maxsize = -1;
-    d->returnDataPtrs = false;
-    m_parentArtistId.clear();
-    m_parentAlbumId.clear();
-    m_artistFilter.clear();
-
-    return this;
 }
 
 QueryMaker*

@@ -96,33 +96,19 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
     d->worker = 0;
-    reset();
+
+    d->queryType = Private::NONE;
+    d->linkedTables = 0;
+    d->returnDataPtrs = false;
+    d->withoutDuplicates = false;
+    d->maxResultSize = -1;
+    d->andStack.push( true );
 }
 
 ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
 {
+    // what about d->worker?
     delete d;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::reset()
-{
-    d->query.clear();
-    d->queryType = Private::NONE;
-    d->queryReturnValues.clear();
-    d->queryFrom.clear();
-    d->queryMatch.clear();
-    d->queryFilter.clear();
-    d->queryOrderBy.clear();
-    d->linkedTables = 0;
-    if( d->worker && d->worker->isFinished() )
-        delete d->worker;   //TODO error handling
-    d->returnDataPtrs = false;
-    d->withoutDuplicates = false;
-    d->maxResultSize = -1;
-    d->andStack.clear();
-    d->andStack.push( true );
-    return this;
 }
 
 void

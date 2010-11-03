@@ -45,7 +45,6 @@ public:
     virtual ~DynamicServiceQueryMaker() {};
 
     //this is the stuff that must be implmeneted
-    virtual QueryMaker* reset() = 0;
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 

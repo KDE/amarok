@@ -96,7 +96,7 @@ class NepomukTrack : public Track
         QUrl resourceUri() const;
         void valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue& );
 
-        void setUid ( const QString& value );
+        void setUidUrl( const QString& value );
         QString uid() const;
 
          Nepomuk::Resource& resource();

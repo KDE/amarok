@@ -148,7 +148,7 @@ ITunesImporterWorker::run()
         return;
     }
     setDevice( file );
-  
+
     //debug() << "got element:" << name().toString();
 
     while( !atEnd() )
@@ -157,9 +157,9 @@ ITunesImporterWorker::run()
             return;
 
         readNext();
-         
+
         if ( name() == "key" && readElementText() == "Tracks" ) // ok, we're at the start
-        {  
+        {
             readNext();
             readNext();
             readNext(); // this skips the first all-encompassing <dict> tag 
@@ -182,10 +182,14 @@ ITunesImporterWorker::run()
     if( m_tracksForInsert.size() > 0 )
     {
         Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-        location->insertTracks( m_tracksForInsert );
-        location->insertStatistics( m_tracksForInsert );
+
+        QMapIterator<Meta::TrackPtr, QString> j(m_tracksForInsert);
+        while (j.hasNext()) {
+            j.next();
+            location->insert( j.key(), j.value() );
+        }
     }
-     
+
     debug() << "done importing xml file";
 }
 

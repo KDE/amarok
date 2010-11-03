@@ -132,7 +132,7 @@ public:
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
 
     void readMetaData();
-    QVariantMap changes;
+    Meta::FieldHash changes;
 
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( track->getFileRef( url ), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;

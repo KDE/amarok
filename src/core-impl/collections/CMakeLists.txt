@@ -13,7 +13,7 @@ add_subdirectory( audiocd )
 add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
-add_subdirectory( sqlcollection )
+add_subdirectory( db )
 
 # needs things from playground/base/nepomuk-kde
 #if (SOPRANO_FOUND AND NEPOMUK_FOUND)

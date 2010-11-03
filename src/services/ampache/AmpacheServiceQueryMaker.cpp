@@ -47,29 +47,18 @@ AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * c
     , m_dateFilter( -1 )
 {
     // DEBUG_BLOCK
-    m_collection = collection;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = 0;
+    d->urls.clear();
+    d->returnDataPtrs = false;
+    m_dateFilter = 0;
+    //m_lastArtistFilter = QString(); this one really should survive a reset....
 }
 
 AmpacheServiceQueryMaker::~AmpacheServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker *
-AmpacheServiceQueryMaker::reset()
-{
-    d->type = Private::NONE;
-    d->maxsize = 0;
-    d->urls.clear();
-    d->returnDataPtrs = false;
-    m_parentArtistId.clear();
-    m_parentAlbumId.clear();
-    m_artistFilter.clear();
-    m_dateFilter = 0;
-    //m_lastArtistFilter = QString(); this one really should survive a reset....
-
-    return this;
 }
 
 QueryMaker*

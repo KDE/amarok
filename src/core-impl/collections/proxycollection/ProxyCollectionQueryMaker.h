@@ -45,7 +45,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         ProxyQueryMaker( Collections::ProxyCollection *collection, const QList<QueryMaker*> &queryMakers );
         ~ProxyQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
         virtual int resultCount() const;

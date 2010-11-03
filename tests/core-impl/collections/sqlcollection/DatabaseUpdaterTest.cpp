@@ -16,13 +16,15 @@
 
 #include "DatabaseUpdaterTest.h"
 
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
-#include "SqlMountPointManagerMock.h"
+// #include "core/support/Debug.h"
+// #include "core/meta/support/MetaConstants.h"
+#include "SqlCollection.h"
+#include "DatabaseUpdater.h"
+#include "mysqlecollection/MySqlEmbeddedStorage.h"
 
 #include <KTempDir>
 
+// #include <QMutex>
 #include <QString>
 #include <QStringList>
 
@@ -41,13 +43,7 @@ DatabaseUpdaterTest::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
-    m_collection->setMountPointManager( new SqlMountPointManagerMock() );
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
+    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
 }
 
 void
@@ -76,27 +72,24 @@ DatabaseUpdaterTest::cleanup()
 void
 DatabaseUpdaterTest::testNeedsUpdate()
 {
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
+    // SqlCollection updates the table by itself
+    DatabaseUpdater updater( m_collection );
 
     m_storage->query( QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( updater.expectedDatabaseVersion() - 1 ) );
 
     QVERIFY( updater.needsUpdate() );
-    updater.update();
+    QVERIFY( updater.update() );
     QVERIFY( !updater.needsUpdate() );
 }
 
 void
 DatabaseUpdaterTest::testNeedsNoUpdate()
 {
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-    updater.update();
+    // SqlCollection updates the table by itself
+    DatabaseUpdater updater( m_collection );
 
     QVERIFY( !updater.needsUpdate() );
+    QVERIFY( !updater.update() );
 }
 
 void
@@ -123,10 +116,7 @@ DatabaseUpdaterTest::testDeleteAllRedundant()
     m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
                       "VALUES (1,1,'track1',1,1,1,1,1 );" );
 
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-
+    DatabaseUpdater updater( m_collection );
     updater.deleteAllRedundant("album");
     updater.deleteAllRedundant("artist");
     updater.deleteAllRedundant("genre");
@@ -138,7 +128,7 @@ DatabaseUpdaterTest::testDeleteAllRedundant()
     count = m_storage->query( "SELECT COUNT(*) FROM albums;" );
     QCOMPARE( count.first().toInt(), 1 );
     count = m_storage->query( "SELECT COUNT(*) FROM artists;" );
-    QCOMPARE( count.first().toInt(), 1 );
+    QCOMPARE( count.first().toInt(), 2 );
     count = m_storage->query( "SELECT COUNT(*) FROM genres;" );
     QCOMPARE( count.first().toInt(), 1 );
     count = m_storage->query( "SELECT COUNT(*) FROM composers;" );
@@ -152,10 +142,7 @@ DatabaseUpdaterTest::testDeleteAllRedundant()
 void
 DatabaseUpdaterTest::testCheckTables()
 {
-    DatabaseUpdater updater;
-    updater.setStorage( m_storage );
-    updater.setCollection( m_collection );
-
+    DatabaseUpdater updater( m_collection );
     updater.checkTables(); // just execute it to get test coverage
 }
 
@@ -163,10 +150,10 @@ void
 DatabaseUpdaterTest::testCreatePermanentTables()
 {
     // actually the collection will call updater.update itself
-    // after the update we should have 18 tables (current count is at 23.)
+    // after the update we should have 18 tables
 
     QStringList tables = m_storage->query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
-    QVERIFY( tables.count() >= 18 );
+    QCOMPARE( tables.count(), 18 );
 }
 
 #include "DatabaseUpdaterTest.moc"

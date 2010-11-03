@@ -41,6 +41,7 @@ class CollectionSetupTreeView : public QTreeView
         ~CollectionSetupTreeView();
 
     protected slots:
+        /** Shows a context menu if the right mouse button is pressed over a directory. */
         void slotPressed( const QModelIndex &index );
         void slotRescanDirTriggered();
 

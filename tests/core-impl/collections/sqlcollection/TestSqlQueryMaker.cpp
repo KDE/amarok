@@ -19,11 +19,11 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/TagLibUtils.h"
 
-#include <core-impl/collections/sqlcollection/DatabaseUpdater.h>
-#include <core-impl/collections/sqlcollection/SqlCollection.h>
-#include <core-impl/collections/sqlcollection/SqlQueryMaker.h>
-#include <core-impl/collections/sqlcollection/SqlRegistry.h>
-#include <core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.h>
+#include "DatabaseUpdater.h"
+#include "SqlCollection.h"
+#include "SqlQueryMaker.h"
+#include "SqlRegistry.h"
+#include "mysqlecollection/MySqlEmbeddedStorage.h"
 
 #include "SqlMountPointManagerMock.h"
 
@@ -72,38 +72,16 @@ TestSqlQueryMaker::initTestCase()
 {
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    m_collection = new Collections::SqlCollection( "testId", "testcollection" );
-    m_collection->setSqlStorage( m_storage );
+    m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
 
     QMap<int,QString> mountPoints;
     mountPoints.insert( 1, "/foo" );
     mountPoints.insert( 2, "/bar" );
 
-    m_mpm = new SqlMountPointManagerMock();
+    m_mpm = new SqlMountPointManagerMock( this, m_storage );
     m_mpm->mountPoints = mountPoints;
 
     m_collection->setMountPointManager( m_mpm );
-    SqlRegistry *registry = new SqlRegistry( m_collection );
-    registry->setStorage( m_storage );
-    m_collection->setRegistry( registry );
-
-    DatabaseUpdater *updater = new DatabaseUpdater();
-    updater->setStorage( m_storage );
-    updater->setCollection( m_collection );
-    updater->update();
-
-    m_collection->setUpdater( updater );
-
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE labels;" );
-    m_storage->query( "TRUNCATE TABLE statistics;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
 
     //setup test data
     m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
@@ -166,6 +144,7 @@ TestSqlQueryMaker::cleanupTestCase()
     delete m_collection;
     //m_storage is deleted by SqlCollection
     delete m_tmpDir;
+
 }
 
 void
@@ -755,11 +734,11 @@ TestSqlQueryMaker::testMatch_data()
     SqlRegistry *r = m_collection->registry();
 
     QTest::newRow( "track matches artist" ) << Collections::QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
-    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1", 1, 1 ) ) << 1;
+    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1", "artist1" ) ) << 1;
     QTest::newRow( "track matches genre" ) << Collections::QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
     QTest::newRow( "track matches composer" ) << Collections::QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
-    QTest::newRow( "track matches year" ) << Collections::QueryMaker::Track << asList( r->getYear("1")) << 3;
-    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1", 1, 1 )) << 1;
+    QTest::newRow( "track matches year" ) << Collections::QueryMaker::Track << asList( r->getYear(1)) << 3;
+    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1", "artist1" )) << 1;
     QTest::newRow( "artist matches genre" ) << Collections::QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
 }
 
@@ -789,7 +768,7 @@ void
 TestSqlQueryMaker::testDynamicCollection()
 {
     //this will not crash as we reset the correct mock in cleanup()
-    SqlMountPointManagerMock mpm;
+    SqlMountPointManagerMock mpm( this, m_storage );
 
     QMap<int, QString> mountPoints;
 
@@ -981,7 +960,7 @@ TestSqlQueryMaker::testReturnFunctions()
 void
 TestSqlQueryMaker::testLabelMatch()
 {
-    Meta::LabelPtr label = m_collection->registry()->getLabel( "labelB", -1 );
+    Meta::LabelPtr label = m_collection->registry()->getLabel( "labelB" );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
@@ -994,8 +973,8 @@ TestSqlQueryMaker::testLabelMatch()
 void
 TestSqlQueryMaker::testMultipleLabelMatches()
 {
-    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
-    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB" );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA" );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
@@ -1028,8 +1007,8 @@ TestSqlQueryMaker::testQueryTypesWithLabelMatching()
     QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( int, result );
 
-    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
-    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB" );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA" );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setReturnResultAsDataPtrs( true );
