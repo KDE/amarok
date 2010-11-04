@@ -78,15 +78,7 @@ PrettyItemDelegate::rowsForItem( const QModelIndex &index )
 QSize
 PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-    int height = 0;
-
-
-    QFontMetricsF nfm( option.font );
-    QFont boldfont( option.font );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
-
-    s_fontHeight = bfm.height();
+    s_fontHeight = option.fontMetrics.height();
 
     // -- calculate the item height
     int rowCount = rowsForItem( index );
@@ -104,11 +96,7 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
     // force re-layouts or overlap
     // on the other hand we squeeze the line edits quite a lot.
     int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    int verticalSpace = style->pixelMetric( QStyle::PM_LayoutVerticalSpacing );
-    verticalSpace = frameVMargin; // margin works for Oxygen too. Spacing not.
-
-    height = frameVMargin * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * verticalSpace;
-
+    int height = rowCount * s_fontHeight + ( rowCount + 1 ) * frameVMargin;
     return QSize( s_fontHeight * 20, height );
 }
 
@@ -230,10 +218,7 @@ PrettyItemDelegate::headerHeight() const
         style = QApplication::style();
 
     int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    int verticalSpace = style->pixelMetric( QStyle::PM_LayoutVerticalSpacing );
-    verticalSpace = frameVMargin; // margin works for Oxygen too. Spacing not.
-
-    return frameVMargin + headRows * s_fontHeight + ( headRows - 1 ) * verticalSpace;
+    return headRows * ( s_fontHeight + frameVMargin );
 }
 
 QPointF
@@ -524,12 +509,10 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
                 painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment, text );
             }
-
             currentItemX += itemWidth;
         }
         rowOffsetY += rowHeight;
     }
-
 }
 
 void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
@@ -798,7 +781,6 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                 ec->setBpm( value.toFloat() );
                 break;
         }
-
     }
 }
 
@@ -821,4 +803,4 @@ Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
     emit commitData( editor );
 }
 
-
+#include "PrettyItemDelegate.moc"
