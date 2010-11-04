@@ -389,7 +389,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
         "-s, --restart           : After a crash, restart the scanner in its last position\n"
         "    --idlepriority      : Run at idle priority\n"
         "    --newer <path>      : Only scan directories if modification time is new than <path>\n"
-        "                          Only usefull in incremental scan mode\n"
+        "                          Only useful in incremental scan mode\n"
         "    --batch <path>      : Add the directories from the batch xml file\n"
         "                          batch file format should look like this:\n"
         "   <batch>\n"

@@ -160,7 +160,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual void endMetaDataUpdate();
 
         /** Enables or disables writing changes to the file.
-         *  This function can be usefull when changes are imported from the file.
+         *  This function can be useful when changes are imported from the file.
          *  In such a case writing the changes back again is stupid.
          */
         virtual void setWriteFile( const bool enable )

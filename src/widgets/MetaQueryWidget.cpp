@@ -854,7 +854,7 @@ QString MetaQueryWidget::Filter::fieldToString()
     case Meta::valPlaycount:
         return i18n( "playcount" );
 
-        /* missing here because not usefull:
+        /* missing here because not useful:
            unique id,
            track gain,
            track gain peak

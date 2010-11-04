@@ -123,7 +123,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Capabilities::TrackCapabilityDelegate *trackCapabilityDelegate() const
         { return m_trackCapabilityDelegate; }
 
-        /** This set's the mount point manager which is actually only usefull for testing.
+        /** This set's the mount point manager which is actually only useful for testing.
          *  Note: The old MountPointManager is not deleted when the new one is set.
          */
         void setMountPointManager( MountPointManager *mpm );
