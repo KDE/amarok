@@ -41,6 +41,10 @@ const QStringList tg_schemes( QStringList()
     << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"
         +Meta::Field::ALBUM+"%)\\W*-\\W*(%"+Meta::Field::TRACKNUMBER+"%)\\W*-\\W*(%"
         +Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
+    // Artist - Album - Title.ext
+    << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"
+        +Meta::Field::ALBUM+"%)\\W*-\\W*(%"
+        +Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
     //Artist - Title.ext
     << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"+Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
     //Title.ext
@@ -128,7 +132,6 @@ MusicBrainzFinder::run( const Meta::TrackList &tracks )
         m_requests.append( qMakePair( track, compileRequest( track ) ) );
     }
 
-    m_singleTrackSearch = tracks.count() == 1;
     _timer->start();
 }
 
@@ -215,7 +218,6 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
     if( m_parsers.contains( parser ) )
     {
         Meta::TrackPtr trackPtr = m_parsers.take( parser );
-        QVariantMap curTrack;
 
         emit progressStep();
         if( parser->type() == MusicBrainzXmlParser::TrackList && !parser->tracks.isEmpty() )
@@ -223,25 +225,23 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
             if( m_parsedMetaData.contains( trackPtr ) )
             {
                 QVariantMap metadata = m_parsedMetaData.value( trackPtr );
-                QVariantMap chosenTrack;
-                float maxSimilarity = 0.0;
                 foreach( QVariantMap track, parser->tracks.values() )
                 {
                     if( track.value( Meta::Field::SCORE ).toInt() < 50 )
                         continue;
 
-                    int s = 0;
+                    float s = 0;
                     int maxPossibleScore = 0;
 
                     QString release;
                     if( metadata.contains( Meta::Field::ALBUM ) && track.contains( MusicBrainz::RELEASELIST ) )
                     {
-                        int releaseScore = 0;
-                        int score = 0;
+                        float releaseScore = 0;
+                        float score = 0;
 
                         foreach( QString releaseID, track.value( MusicBrainz::RELEASELIST ).toStringList() )
                         {
-                            if( ( score =  12*similarity( metadata.value( Meta::Field::ALBUM ).toString().toLower(),
+                            if( ( score =  12.0 * similarity( metadata.value( Meta::Field::ALBUM ).toString().toLower(),
                                   parser->releases.value( releaseID ).value( Meta::Field::TITLE )
                                   .toString().toLower() ) ) > releaseScore )
                             {
@@ -249,7 +249,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                                 release = releaseID;
                             }
                         }
-                        s += score;
+                        s += releaseScore;
                         maxPossibleScore += 12;
                     }
 
@@ -265,14 +265,14 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
 
                     if( metadata.contains( Meta::Field::ARTIST ) && track.contains( Meta::Field::ARTIST ) )
                     {
-                        s += 6*similarity( metadata.value( Meta::Field::ARTIST ).toString().toLower(),
+                        s += 6.0 * similarity( metadata.value( Meta::Field::ARTIST ).toString().toLower(),
                                             track.value( Meta::Field::ARTIST ).toString().toLower() );
                         maxPossibleScore += 6;
                     }
 
                     if( metadata.contains( Meta::Field::TITLE ) && track.contains( Meta::Field::TITLE ) )
                     {
-                        s += 22*similarity( metadata.value( Meta::Field::TITLE).toString().toLower(),
+                        s += 22.0 * similarity( metadata.value( Meta::Field::TITLE).toString().toLower(),
                                             track.value( Meta::Field::TITLE ).toString().toLower() );
                         maxPossibleScore += 22;
                     }
@@ -286,67 +286,45 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
 
                     if( track.contains( Meta::Field::LENGTH ) )
                     {
-                        s += 8 * ( 1.0 - qMin( qAbs( trackPtr->length() - track.value( Meta::Field::LENGTH ).toInt() ),
-                                               Q_INT64_C( 30000 ) ) / 30000 );
+                        s += 8.0 * ( 1.0 - float( qMin( qAbs( trackPtr->length() -
+                                     track.value( Meta::Field::LENGTH ).toLongLong() ),
+                                     Q_INT64_C( 30000 ) ) ) / 30000 );
                         maxPossibleScore += 8;
                     }
 
-                    float sim = float( s ) / maxPossibleScore;
-
-                    if( sim < 0.6 )
-                        continue;
-
-                    if( m_singleTrackSearch )
+                    float sim = s / maxPossibleScore;
+                    if( sim > MusicBrainz::MINSIMILARITY )
                     {
+                        track.insert( MusicBrainz::SIMILARITY, sim );
+                        track.insert( MusicBrainz::MUSICBRAINZ, true );
                         sendTrack( trackPtr, track );
-                        continue;
-                    }
-
-                    if( sim > maxSimilarity )
-                    {
-                        maxSimilarity = sim;
-                        chosenTrack = track;
                     }
                 }
-
                 m_parsedMetaData.remove( trackPtr );
-                if( chosenTrack.isEmpty() || m_singleTrackSearch )
-                {
-                    parser->deleteLater();
-                    checkDone();
-                    return;
-                }
-                curTrack = chosenTrack;
             }
             else
             {
-                if( m_singleTrackSearch )
+                foreach( QString trackID, parser->tracks.keys() )
                 {
-                    foreach( QString trackID, parser->tracks.keys() )
+                    QVariantMap track = parser->grabTrackByID( trackID );
+                    float sim = 1.0 - float( qMin( qAbs( trackPtr->length() -
+                                track.value( Meta::Field::LENGTH ).toLongLong() ),
+                                Q_INT64_C( 10000 ) ) ) / 10000;
+                    if( sim > MusicBrainz::MINSIMILARITY )
                     {
-                        QVariantMap track = parser->grabTrackByID( trackID );
-                        if( track.contains( Meta::Field::SCORE ) )
-                        {
-                            if( track.value( Meta::Field::SCORE ).toInt() >= 50 )
-                                sendTrack( trackPtr, track );
-                        }
-                        else
-                            sendTrack( trackPtr, track );
+                        track.insert( MusicBrainz::SIMILARITY, sim );
+                        track.insert( MusicBrainz::MUSICDNS, true );
+                        sendTrack( trackPtr, track );
                     }
-
-                    parser->deleteLater();
-                    checkDone();
-                    return;
                 }
-                else
-                    curTrack = parser->grabTrackByLength( trackPtr->length() );
             }
-
-            sendTrack( trackPtr, curTrack );
         }
         else if( parser->type() == MusicBrainzXmlParser::Track && !parser->tracks.isEmpty() )
         {
-            curTrack = parser->grabTrackByLength( trackPtr->length() );
+            emit progressStep();
+            QVariantMap curTrack = parser->grabTrackByLength( trackPtr->length() );
+            curTrack.insert( MusicBrainz::SIMILARITY, 1.0 );
+            curTrack.insert( MusicBrainz::MUSICBRAINZ, true );
             sendTrack( trackPtr, curTrack );
         }
         else
@@ -469,10 +447,7 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &inf
     //Clean metadata from unused fields
     tags.remove( Meta::Field::LENGTH );
     tags.remove( Meta::Field::SCORE );
-    tags.remove( MusicBrainz::ARTISTID );
-    tags.remove( MusicBrainz::RELEASEID );
     tags.remove( MusicBrainz::RELEASELIST );
-    tags.remove( MusicBrainz::TRACKID );
     tags.remove( MusicBrainz::TRACKOFFSET );
 
     emit trackFound( track, tags );
@@ -481,7 +456,7 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &inf
 QNetworkRequest
 MusicBrainzFinder::compileRequest( const Meta::TrackPtr &track )
 {
-    QString query = QString( "qdur:(%1)" ).arg( int( track->length() / 2000 ) );
+    QString query = QString( "dur:(%1)" ).arg( track->length() );
     QVariantMap metadata = guessMetadata( track );
 
     if( metadata.contains( Meta::Field::TITLE ) )

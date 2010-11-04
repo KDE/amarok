@@ -20,29 +20,53 @@
 #include <KLocalizedString>
 #include <core/meta/Meta.h>
 #include <QAbstractItemModel>
+#include <QReadWriteLock>
+#include <QStyledItemDelegate>
+#include <QTreeView>
 
 class MusciBrainzTagsItem
 {
     public:
-        MusciBrainzTagsItem( Meta::TrackPtr track,  const QVariantMap tags = QVariantMap() );
-        MusciBrainzTagsItem() {}
+        MusciBrainzTagsItem( MusciBrainzTagsItem *parent = 0,
+                             const Meta::TrackPtr track = Meta::TrackPtr(),
+                             const QVariantMap tags = QVariantMap() );
 
-        Meta::TrackPtr track();
+        ~MusciBrainzTagsItem();
 
-        Qt::ItemFlags flags();
+        MusciBrainzTagsItem *parent() const;
+        MusciBrainzTagsItem *child( const int row ) const;
+        void appendChild( MusciBrainzTagsItem *child );
+        int childCount() const;
+        int row() const;
 
-        QVariant data( int column );
-        QVariantMap data();
+        Qt::ItemFlags flags() const;
+
+        Meta::TrackPtr track() const;
+        QVariant data( int column ) const;
+        QVariantMap data() const;
+        QVariant dataValue( const QString &key ) const;
+        bool dataContains( const QString &key );
         void setData( QVariantMap tags );
 
-        bool checked();
+        MusciBrainzTagsItem *checkedItem() const;
+        void checkFirst();
+        void uncheckAll();
+        bool checked() const;
         void setChecked( bool checked );
 
     private:
+        void setDataValue( const QString &key, const QVariant &value );
+        void setParent( MusciBrainzTagsItem *parent );
+        MusciBrainzTagsItem *m_parent;
+        QList< MusciBrainzTagsItem * > m_childItems;
+
         Meta::TrackPtr m_track;
         QVariantMap m_data;
-
         bool m_checked;
+
+        mutable QReadWriteLock m_dataLock;
+        mutable QReadWriteLock m_childrenLock;
+        mutable QReadWriteLock m_parentLock;
 };
 
 class MusicBrainzTagsModel : public QAbstractItemModel
@@ -50,7 +74,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
     Q_OBJECT
 
     public:
-        MusicBrainzTagsModel( Meta::TrackList tracks, QObject *parent = 0 );
+        MusicBrainzTagsModel( QObject *parent = 0 );
         ~MusicBrainzTagsModel();
 
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
@@ -62,7 +86,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        int columnCount( const QModelIndex & ) const;
+        int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
         QMap < Meta::TrackPtr, QVariantMap > getAllChecked(); 
 
@@ -71,9 +95,37 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         void selectAll( int section );
 
     private:
-        QList < MusciBrainzTagsItem > m_items;
-
-        bool m_singleTrackMode;
+        MusciBrainzTagsItem *m_rootItem;
 };
 
+class MusicBrainzTagsModelDelegate : public QStyledItemDelegate
+{
+    public:
+        explicit MusicBrainzTagsModelDelegate( QObject *parent = 0 );
+    protected:
+        virtual void drawCheck( QPainter* painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, Qt::CheckState state ) const;
+};
+
+class MusicBrainzTagsView : public QTreeView
+{
+    Q_OBJECT
+    public:
+        explicit MusicBrainzTagsView( QWidget *parent = 0 );
+
+        ~MusicBrainzTagsView();
+
+    protected:
+        virtual void contextMenuEvent( QContextMenuEvent *event );
+
+    private slots:
+        void openArtistPage();
+        void openReleasePage();
+        void openTrackPage();
+
+    private:
+        QIcon *artistIcon;
+        QIcon *releaseIcon;
+        QIcon *trackIcon;
+};
 #endif // MUSICBRAINZTAGSMODEL_H

@@ -1111,11 +1111,18 @@ void TagDialog::readTags()
     ui->ratingWidget->setEnabled( true );
     ui->qSpinBox_score->setEnabled( true );
     ui->pushButton_guessTags->setEnabled( editable );
+    ui->pushButton_musicbrainz->setEnabled( editable );
 
     if( local )
+    {
         ui->pushButton_guessTags->show();
+        ui->pushButton_musicbrainz->show();
+    }
     else
+    {
        ui->pushButton_guessTags->hide();
+       ui->pushButton_musicbrainz->hide();
+    }
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( local )
@@ -1854,7 +1861,19 @@ TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > res
     if( result.isEmpty() )
         return;
     foreach( Meta::TrackPtr track, result.keys() )
-            storeTags( track, TagDialog::TAGSCHANGED, result.value( track ) );
+    {
+        QVariantMap data = result.value( track );
+        foreach( QString key, data.keys() )
+        {
+            if( key == Meta::Field::ALBUM )
+                m_fieldEdited[ "album" ] = true;
+            else if( key == Meta::Field::ARTIST )
+                m_fieldEdited[ "artist" ] = true;
+            else if( key == Meta::Field::YEAR )
+                m_fieldEdited[ "year" ] = true;
+        }
+        storeTags( track, TagDialog::TAGSCHANGED, data );
+    }
 
     if( m_perTrack )
     {

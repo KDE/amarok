@@ -20,13 +20,12 @@
 #include <config-amarok.h>
 #include <KDialog>
 #include "core/meta/Meta.h"
-#include "MusicBrainzFinder.h"
-#include "MusicBrainzTagsModel.h"
-#include "MusicBrainzTrackListModel.h"
+#include "musicbrainz/MusicBrainzFinder.h"
+#include "musicbrainz/MusicBrainzTags.h"
 #include <QItemSelectionModel>
 
 #ifdef HAVE_LIBOFA
-    #include "MusicDNSFinder.h"
+    #include "musicbrainz/MusicDNSFinder.h"
 #endif
 
 namespace Ui
@@ -58,8 +57,6 @@ class MusicBrainzTagger : public KDialog
 #ifdef HAVE_LIBOFA
         void mdnsSearchDone();
 #endif
-
-        void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
         void progressStep();
 
     private:
@@ -68,18 +65,14 @@ class MusicBrainzTagger : public KDialog
         Ui::MusicBrainzTagger *ui;
 
         Meta::TrackList m_tracks;
-        Meta::TrackList m_failedTracks;
 
         MusicBrainzFinder *mb_finder;
 #ifdef HAVE_LIBOFA
         MusicDNSFinder *mdns_finder;
-        bool mdns_used;
         bool mdns_searchDone;
-        bool mb_searchDone;
 #endif
-
-        MusicBrainzTrackListModel *q_trackListModel;
         MusicBrainzTagsModel *q_resultsModel;
+        MusicBrainzTagsModelDelegate *q_resultsModelDelegate;
 };
 
 #endif // MUSICBRAINZTAGGER_H

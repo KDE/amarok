@@ -124,16 +124,23 @@ void
 MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
 {
     DEBUG_BLOCK
+
     MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
     disconnect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), this, SLOT( parsingDone( ThreadWeaver::Job * ) ) );
     if( m_parsers.contains( parser ) )
     {
+        bool found = false;
         foreach( QString PUID, parser->puid() )
             if( PUID != "00000000-0000-0000-0000-000000000000" )
             {
+                found = true;
                 emit trackFound( m_parsers.value( parser ), PUID );
                 break;
             }
+
+        if( !found )
+            emit progressStep();
+
         m_parsers.remove( parser );
     }
 

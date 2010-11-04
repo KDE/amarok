@@ -41,6 +41,7 @@ class MusicDNSFinder: public QObject
 
     signals:
         void trackFound( const Meta::TrackPtr &track, const QString &puid );
+        void progressStep();
         void done();
 
     private slots:

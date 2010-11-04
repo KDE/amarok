@@ -26,6 +26,13 @@ namespace MusicBrainz
     static const QString RELEASELIST= "mb:ReleaseList";
     static const QString TRACKID    = "mb:TrackID";
     static const QString TRACKOFFSET= "mb:TrackOffset";
+
+    static const QString SIMILARITY = "mb:similarity";
+
+    static const QString MUSICBRAINZ= "mb:musicbrainz";
+    static const QString MUSICDNS   = "mb:musicdns";
+
+    static const qreal MINSIMILARITY= 0.6;
 }
 
 #endif //MUSICBRAINZMETA_H

@@ -73,8 +73,6 @@ class MusicBrainzFinder : public QObject
         QString mb_username;
         QString mb_password;
 
-        bool m_singleTrackSearch;
-
         QMap < Meta::TrackPtr, QVariantMap > m_parsedMetaData;
 
         QNetworkAccessManager *net;

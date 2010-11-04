@@ -22,6 +22,9 @@ install(
         lastfm-default-cover.png
         loading1.png
         loading2.png
+        mb_aicon.png
+        mb_licon.png
+        mb_ticon.png
         navigation_arrows.svg
         nocover.png
         playlist-bookmark-16.png

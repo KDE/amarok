@@ -38,7 +38,6 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
             m_tracks << track;
     }
     ui->setupUi( mainWidget() );
-    resize( QSize( 640, 480 ) );
 
     init();
     search();
@@ -63,20 +62,17 @@ MusicBrainzTagger::init()
     ui->progressBar->hide();
 
     mb_finder = new MusicBrainzFinder( this );
-    q_resultsModel = new MusicBrainzTagsModel( m_tracks, this );
-    q_trackListModel = new MusicBrainzTrackListModel( m_tracks, this );
+    q_resultsModel = new MusicBrainzTagsModel( this );
+    q_resultsModelDelegate = new MusicBrainzTagsModelDelegate( this );
     ui->treeView_Result->setModel( q_resultsModel );
-    ui->treeView_Tracks->setModel( q_trackListModel );
+    ui->treeView_Result->setItemDelegateForColumn( 0, q_resultsModelDelegate );
     ui->treeView_Result->header()->setClickable( true );
-    ui->treeView_Result->header()->setResizeMode( 0, QHeaderView::Fixed );
-    ui->treeView_Result->header()->resizeSection( 0, 23 );
-    ui->treeView_Result->header()->setToolTip( i18n( "Click on the first column header to check all tracks" ) );
 
 #ifdef HAVE_LIBOFA
-    mdns_used = mdns_searchDone = mb_searchDone= false;
     mdns_finder = new MusicDNSFinder( this );
     connect( mdns_finder, SIGNAL( trackFound( Meta::TrackPtr, QString ) ),
              mb_finder, SLOT( lookUpByPUID( Meta::TrackPtr, QString ) ) );
+    connect( mdns_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
     connect( mdns_finder, SIGNAL( done() ), this, SLOT( mdnsSearchDone() ) );
 #endif
     connect( mb_finder, SIGNAL( trackFound( const Meta::TrackPtr, const QVariantMap ) ),
@@ -87,7 +83,6 @@ MusicBrainzTagger::init()
     connect( mb_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
     connect( ui->treeView_Result->header(), SIGNAL( sectionClicked( int ) ),
              q_resultsModel, SLOT( selectAll( int ) ) );
-    connect( ui->pushButton_StartSearch, SIGNAL( clicked() ), SLOT( search() ) );
     connect( ui->pushButton_saveAndClose, SIGNAL( clicked( bool ) ), SLOT( saveAndExit() ) );
     connect( ui->pushButton_cancel, SIGNAL( clicked( bool ) ), SLOT( reject() ) );
 }
@@ -95,31 +90,15 @@ MusicBrainzTagger::init()
 void
 MusicBrainzTagger::search()
 {
-    m_failedTracks.clear();
-
-    if( ui->treeView_Tracks->selectionModel()->selectedRows().isEmpty() )
-        ui->treeView_Tracks->selectAll();
-
-    foreach( QModelIndex index, ui->treeView_Tracks->selectionModel()->selectedRows() )
-    {
-        Meta::TrackPtr track;
-        if( !( track = q_trackListModel->getTrack( index ) ).isNull() )
-            m_failedTracks << track;
-    }
-    ui->pushButton_StartSearch->setEnabled( false );
-    ui->progressBar->setRange( 0, m_failedTracks.count() );
+    ui->progressBar->setRange( 0, m_tracks.count() * 2 );
     ui->progressBar->setValue( 0 );
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
     ui->progressBar->show();
+    mb_finder->run( m_tracks );
 #ifdef HAVE_LIBOFA
-    if( mb_searchDone )
-    {
-        mdns_used = true;
-        mdns_finder->run( m_failedTracks );
-        return;
-    }
+    mdns_searchDone = false;
+    mdns_finder->run( m_tracks );
 #endif
-    mb_finder->run( m_failedTracks );
 }
 
 void
@@ -175,24 +154,11 @@ MusicBrainzTagger::searchDone()
 {
     DEBUG_BLOCK
 #ifdef HAVE_LIBOFA
-    if( mdns_used && !mdns_searchDone )
+    if( !mdns_searchDone )
         return;
-    if( !m_failedTracks.isEmpty() && !mdns_used )
-        if( KMessageBox::questionYesNo( this, i18n( "There are tracks that MusicBrainz didn't find. \
-Try to find them with MusicDNS service?" ), windowTitle() ) == KMessageBox::Yes )
-        {
-            mdns_used = true;
-            mdns_searchDone = false;
-            ui->progressBar->setRange( 0, m_failedTracks.count() );
-            ui->progressBar->setValue( 0 );
-            mdns_finder->run( m_failedTracks );
-            return;
-        }
-    mb_searchDone = true;
 #endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
-    ui->pushButton_StartSearch->setEnabled( true );
 }
 
 #ifdef HAVE_LIBOFA
@@ -205,14 +171,6 @@ MusicBrainzTagger::mdnsSearchDone()
         searchDone();
 }
 #endif
-
-void
-MusicBrainzTagger::trackFound( const Meta::TrackPtr track, const QVariantMap tags )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( tags );
-    m_failedTracks.removeOne( track );
-}
 
 void
 MusicBrainzTagger::progressStep()

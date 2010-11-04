@@ -666,8 +666,7 @@ set(amaroklib_LIB_SRCS
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
     musicbrainz/MusicBrainzFinder.cpp
-    musicbrainz/MusicBrainzTagsModel.cpp
-    musicbrainz/MusicBrainzTrackListModel.cpp
+    musicbrainz/MusicBrainzTags.cpp
     musicbrainz/MusicBrainzXmlParser.cpp
     OpmlOutline.cpp
     OpmlParser.cpp
