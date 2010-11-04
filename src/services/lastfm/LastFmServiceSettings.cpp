@@ -104,9 +104,9 @@ LastFmServiceSettings::testLogin()
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
-
-    const QString authToken = QString( md5( m_configDialog->kcfg_ScrobblerUsername->text().toUtf8() ) +
-                                       md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) );
+    
+    const QString authToken = md5( QString( "%1%2" ).arg( m_configDialog->kcfg_ScrobblerUsername->text() )
+                                                    .arg( md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key
     QMap<QString, QString> query;
