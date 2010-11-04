@@ -378,10 +378,10 @@ void Amarok::TimeSlider::slotTriangleFocused( int seconds )
 
 void Amarok::TimeSlider::clearTriangles()
 {
-    DEBUG_BLOCK
-    debug() << "number of triangles: " << m_triangles.count();
+    // DEBUG_BLOCK
+    // debug() << "number of triangles: " << m_triangles.count();
     qDeleteAll( m_triangles );
-    debug() << "deleted them all...";
+    // debug() << "deleted them all...";
     m_triangles.clear();
 }
 

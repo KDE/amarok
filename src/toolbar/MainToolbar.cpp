@@ -553,7 +553,7 @@ MainToolbar::updatePrevAndNext()
 void
 MainToolbar::updateBookmarks( const QString *BookmarkName )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     m_slider->clearTriangles();
     if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
     {
@@ -561,7 +561,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
         {
             Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
-            debug() << "found " << list.count() << " timecodes on this track";
+            // debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
             {
                 if ( url->command() == "play" && url->args().keys().contains( "pos" ) )
@@ -707,8 +707,6 @@ MainToolbar::trackPositionChanged( qint64 position, bool /*userSeek*/ )
 void
 MainToolbar::showEvent( QShowEvent *ev )
 {
-    DEBUG_BLOCK
-
     EngineController *engine = The::engineController();
 
     connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
@@ -752,8 +750,6 @@ MainToolbar::showEvent( QShowEvent *ev )
 void
 MainToolbar::hideEvent( QHideEvent *ev )
 {
-    DEBUG_BLOCK
-
     QToolBar::hideEvent( ev );
 
     disconnect( The::engineController(), 0, this, 0 );

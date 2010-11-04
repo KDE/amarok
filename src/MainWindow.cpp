@@ -480,9 +480,6 @@ MainWindow::saveLayout()  //SLOT
 void
 MainWindow::closeEvent( QCloseEvent *e )
 {
-    DEBUG_BLOCK
-
-    debug() << "Saving layout before minimizing the MainWindow";
     saveLayout();
 
 #ifdef Q_WS_MAC
@@ -512,18 +509,14 @@ MainWindow::closeEvent( QCloseEvent *e )
 void
 MainWindow::showEvent(QShowEvent* e)
 {
-    DEBUG_BLOCK
-
     static bool windowEverShown = false;
     if ( !windowEverShown )
     {
         windowEverShown = true;
         QTimer::singleShot( 250, this, SLOT( resizeWindowHack() ) );
     }
-
     QWidget::showEvent(e);
 }
-
 
 bool
 MainWindow::queryExit()
@@ -535,7 +528,6 @@ MainWindow::queryExit()
     
     return true; // KMainWindow API expects us to always return true
 }
-
 
 void
 MainWindow::exportPlaylist() const //SLOT
