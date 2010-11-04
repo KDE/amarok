@@ -79,14 +79,18 @@ CollectionScanner::Scanner::Scanner( int &argc, char **argv )
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
 
+    QString env = qgetenv( "KDEHOME" );
+    if( env.isEmpty() || !QDir(env).isReadable() )
+        env = QString( "%1/.kde" ).arg( QDir::homePath() );
+    QString path = env + QLatin1String("/share/apps");
+
     // give two different settings.
     // prevent the possibility that an incremental and a non-incremental scan clash
-    QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, "$HOME/.kde/share/apps" );
+    QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, path );
     if( m_incremental )
         m_settings = new QSettings( "amarok", "CollectionScannerIncremental", this );
     else
         m_settings = new QSettings( "amarok", "CollectionScanner", this );
-
 }
 
 
