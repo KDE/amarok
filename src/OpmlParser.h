@@ -70,7 +70,7 @@ public:
     bool read( const KUrl &url );
     bool read( QIODevice *device );
 
-    // TODO: title, dateCreated, dateModified, ownerName, ownerEmail, ownerId, etc. getters.
+    QMap<QString,QString> headerData() { return m_headerData; }
 
     /**
      * Get the result of the parsing as a list of OpmlOutlines.
@@ -82,9 +82,16 @@ public:
     QList<OpmlOutline *> results() const { return m_outlines; }
 
 signals:
+
+    /**
+     * Emitted when <head> has been completely parsed.
+     */
+    void headerDone();
+
     /**
      * Signal emmited when parsing is complete.
-     * The data is complete now, children of the outlines are available via OpmlOutline::children()
+     * The data is complete now and accesible via results().
+     * Children of all the outlines are available via OpmlOutline::children().
      */
     void doneParsing();
 
@@ -246,8 +253,7 @@ private:
 
     QString m_buffer;
 
-    // a hack to pass <head> elements as attributes of a "root outline".
-    OpmlOutline *m_rootOutline;
+    QMap<QString,QString> m_headerData;
     // the top level outlines of <body>.
     QList<OpmlOutline *> m_outlines;
 

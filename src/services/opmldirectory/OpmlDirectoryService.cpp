@@ -65,7 +65,7 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 
 
 OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName )
- : ServiceBase( name, parent, true, prettyName )
+ : ServiceBase( name, parent, false, prettyName )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "view-services-opml-amarok" ) );
@@ -93,11 +93,18 @@ void OpmlDirectoryService::polish()
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
 
-    KHBox * bottomPanelLayout = new KHBox;
-    bottomPanelLayout->setParent( m_bottomPanel );
+    Amarok::PrettyTreeView* view = new Amarok::PrettyTreeView( this );
+    view->setHeaderHidden( true );
+    view->setFrameShape( QFrame::NoFrame );
+    view->setDragEnabled ( true );
+    view->setSortingEnabled( false );
+    view->setDragDropMode ( QAbstractItemView::DragOnly );
+    setView( view );
+    setModel( new OpmlDirectoryModel( KUrl( "http://kollide.net/~stecchino/amarok_podcasts.opml"),
+                                      this ) );
 
     m_subscribeButton = new QPushButton();
-    m_subscribeButton->setParent( bottomPanelLayout );
+    m_subscribeButton->setParent( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
     m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
@@ -107,15 +114,6 @@ void OpmlDirectoryService::polish()
     connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
 
     setInfoParser( new OpmlDirectoryInfoParser() );
-
-    Amarok::PrettyTreeView* view = new Amarok::PrettyTreeView( this );
-    view->setHeaderHidden( true );
-    view->setFrameShape( QFrame::NoFrame );
-    view->setDragEnabled ( true );
-    view->setSortingEnabled( false );
-    view->setDragDropMode ( QAbstractItemView::DragOnly );
-    setView( view );
-    setModel( new OpmlDirectoryModel( KUrl( "file:///home/bart/tmp/amarok_podcasts.opml"), this ) );
 
     m_polished = true;
 }

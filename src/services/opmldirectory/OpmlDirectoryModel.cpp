@@ -17,6 +17,7 @@
 #include "OpmlDirectoryModel.h"
 
 #include "OpmlParser.h"
+#include "core/support/Debug.h"
 
 #include <ThreadWeaver/Weaver>
 
@@ -24,8 +25,7 @@ OpmlDirectoryModel::OpmlDirectoryModel( KUrl outlineUrl, QObject *parent )
     : QAbstractItemModel( parent )
     , m_rootOpmlUrl( outlineUrl )
 {
-    //init
-    fetchMore( QModelIndex() );
+    //fetchMore will be called by the view
 }
 
 OpmlDirectoryModel::~OpmlDirectoryModel()
@@ -63,7 +63,11 @@ OpmlDirectoryModel::parent( const QModelIndex &idx ) const
         return QModelIndex();
 
     OpmlOutline *parentOutline = outline->parent();
-    int childIndex = parentOutline->children().indexOf( outline );
+    int childIndex;
+    if( parentOutline->isRootItem() )
+        childIndex = m_rootOutlines.indexOf( parentOutline );
+    else
+        childIndex = parentOutline->parent()->children().indexOf( outline );
     return createIndex( childIndex, 0, parentOutline );
 }
 
@@ -84,12 +88,19 @@ OpmlDirectoryModel::rowCount( const QModelIndex &parent ) const
 bool
 OpmlDirectoryModel::hasChildren( const QModelIndex &parent ) const
 {
+    debug() << parent;
     if( !parent.isValid() )
         return !m_rootOutlines.isEmpty();
 
     OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
 
-    return outline && outline->hasChildren();
+    if( !outline )
+        return false;
+
+    if( outline->hasChildren() )
+        return true;
+
+    return outline->attributes().value( "type" ) == "include";
 }
 
 int
@@ -120,28 +131,32 @@ OpmlDirectoryModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-//bool
-//OpmlDirectoryModel::canFetchMore( const QModelIndex &parent ) const
-//{
-//    if( !parent.isValid() && !!m_rootOutlines.isEmpty() )
-//        return true;
+bool
+OpmlDirectoryModel::canFetchMore( const QModelIndex &parent ) const
+{
+    debug() << parent;
+    //already fetching?
+    if( m_currentFetchingMap.values().contains( parent ) )
+        return false;
+    if( !parent.isValid() )
+        return m_rootOutlines.isEmpty();
 
-//    OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
-//    if( !outline )
-//        return false;
+    OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
 
-//    if( outline->attributes().contains("link") &&
-//        outline->attributes()["link"].endsWith("opml", Qt::CaseInsensitive ) )
-//        return true;
-
-//    return false;
-//}
+    return outline && ( outline->attributes().value( "type" ) == "include" );
+}
 
 void
 OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
 {
+    debug() << parent;
+    if( m_currentFetchingMap.values().contains( parent ) )
+    {
+        error() << "trying to start second fetch job for same item";
+        return;
+    }
     KUrl urlToFetch;
-    if( !parent.isValid() && !!m_rootOutlines.isEmpty() )
+    if( !parent.isValid() )
     {
         urlToFetch = m_rootOpmlUrl;
     }
@@ -150,32 +165,44 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
         OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
         if( !outline )
             return;
-        if( !outline->attributes().contains("link") )
+        if( outline->attributes().value( "type" ) != "include" )
             return;
-        urlToFetch = KUrl( outline->attributes()["link"] );
+        urlToFetch = KUrl( outline->attributes()["url"] );
     }
 
     if( !urlToFetch.isValid() )
         return;
-
-    m_currentFetchingIndex = parent;
 
     OpmlParser *parser = new OpmlParser( urlToFetch );
     connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
              SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
     connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
+    m_currentFetchingMap.insert( parser, parent );
+
+//    ThreadWeaver::Weaver::instance()->enqueue( parser );
+    parser->run();
 }
 
 void
 OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
 {
-    if( !m_currentFetchingIndex.isValid() )
+    OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
+    QModelIndex idx = m_currentFetchingMap.value( parser );
+    if( !idx.isValid() )
         m_rootOutlines << outline;
+    else
+    {
+        //children need to be manually added to include outlines
+        OpmlOutline *parentOutline = static_cast<OpmlOutline *>( idx.internalPointer() );
+        if( !parentOutline )
+            return;
+        parentOutline->addChild( outline );
+        parentOutline->setHasChildren( true );
+    }
 
-    beginInsertRows( m_currentFetchingIndex, rowCount( m_currentFetchingIndex ),
-                     rowCount( m_currentFetchingIndex ) + 1 );
+    int beginRow = rowCount( idx );
+    beginInsertRows( idx, beginRow, beginRow );
     endInsertRows();
 }
 
@@ -183,7 +210,6 @@ void
 OpmlDirectoryModel::slotOpmlParsingDone()
 {
     OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
-    m_currentFetchingIndex = QModelIndex();
+    m_currentFetchingMap.remove( parser );
     parser->deleteLater();
 }
-
