@@ -23,6 +23,8 @@
 
 #include <QAbstractItemModel>
 
+class OpmlParser;
+
 class OpmlDirectoryModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -42,7 +44,7 @@ signals:
 public slots:
 
 protected:
-//    virtual bool canFetchMore( const QModelIndex &parent ) const;
+    virtual bool canFetchMore( const QModelIndex &parent ) const;
     virtual void fetchMore( const QModelIndex &parent );
 
 private slots:
@@ -53,7 +55,7 @@ private:
     KUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 
-    QModelIndex m_currentFetchingIndex;
+    QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;
 };
 
 #endif // OPMLDIRECTORYMODEL_H

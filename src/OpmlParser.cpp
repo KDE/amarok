@@ -359,8 +359,7 @@ OpmlParser::stopWithError( const QString &message )
 void
 OpmlParser::beginOpml()
 {
-    m_rootOutline = new OpmlOutline();
-    m_current = m_rootOutline;
+    m_current = 0;
 }
 
 void
@@ -374,7 +373,7 @@ OpmlParser::beginOutline()
 {
     DEBUG_BLOCK
     // TODO: should push a new outline on the stack and make it m_current now.
-    OpmlOutline *outline = new OpmlOutline( 0 );
+    OpmlOutline *outline = new OpmlOutline( m_current );
 
     foreach( QXmlStreamAttribute attribute, attributes() )
         outline->addAttribute( attribute.name().toString(), attribute.value().toString() );
@@ -386,8 +385,7 @@ void
 OpmlParser::beginNoElement()
 {
     DEBUG_BLOCK
-    debug() << "no element expected here, but got element: "
-    << QXmlStreamReader::name();
+    debug() << "no element expected here, but got element: " << QXmlStreamReader::name();
 }
 
 void
@@ -400,13 +398,13 @@ OpmlParser::endDocument()
 void
 OpmlParser::endHead()
 {
-    // done parsing all info of the root in <head>
+    emit headerDone();
 }
 
 void
 OpmlParser::endTitle()
 {
-    m_rootOutline->addAttribute( "title", m_buffer.trimmed() );
+    m_headerData.insert( "title", m_buffer.trimmed() );
 }
 
 void
