@@ -190,6 +190,8 @@ MainWindow::MainWindow()
              this, SLOT( slotNewTrackPlaying() ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+
+    KGlobal::locale()->insertCatalog( "libplasma" );
 }
 
 MainWindow::~MainWindow()
