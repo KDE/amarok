@@ -1,5 +1,9 @@
 [Desktop Entry]
 Name=Tabs Data Engine
+Name[it]=Motore dati delle schede
+Name[pt]=Motor de Dados de Tablaturas
+Name[pt_BR]=Mecanismo de dados das tablaturas
+Name[uk]=Рушій даних акордів
 Name[x-test]=xxTabs Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
