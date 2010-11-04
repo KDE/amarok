@@ -349,7 +349,9 @@ SqlRegistry::deleteTrack( int trackId )
         TrackId id(deviceId, rpath);
         m_trackMap.remove( id );
 
+        locker.unlock(); // prevent deadlock
         sqlTrack->remove();
+        return;
     }
 
     // --- delete the track only from database
