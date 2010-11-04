@@ -39,7 +39,6 @@ RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
     QGraphicsWidget *content = new QGraphicsWidget( this );
     content->setLayout( m_layout );
     setWidget( content );
-    startQuery();
 
     EngineController *ec = The::engineController();
     m_currentTrack = ec->currentTrack();

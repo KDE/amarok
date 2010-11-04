@@ -34,6 +34,7 @@ public:
 
     void clear();
 
+    void startQuery();
     void addTrack( const Meta::TrackPtr &track );
     void removeLast();
 
@@ -43,7 +44,6 @@ private slots:
     void setupTracksData();
 
 private:
-    void startQuery();
     Meta::TrackPtr m_currentTrack;
     Meta::TrackList m_recentTracks;
     QGraphicsLinearLayout *m_layout;
