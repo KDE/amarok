@@ -98,12 +98,12 @@ void CompoundProgressBar::setProgress( const QObject * owner, int steps )
     m_progressMap.value( owner )->setValue( steps );
 }
 
-void CompoundProgressBar::incrementProgressTotalSteps( const QObject * owner, int inc )
+void CompoundProgressBar::setProgressTotalSteps( const QObject * owner, int value )
 {
     if ( !m_progressMap.contains( owner ) )
         return ;
 
-    m_progressMap.value( owner )->setMaximum( m_progressMap.value( owner )->maximum() + inc );
+    m_progressMap.value( owner )->setMaximum( value );
 }
 
 void CompoundProgressBar::setProgressStatus( const QObject * owner, const QString & text )

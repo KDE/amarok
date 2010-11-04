@@ -128,7 +128,7 @@ void APG::Preset::queueSolver() {
     The::statusBar()->newProgressOperation( s, i18n("Generating a new playlist") )->setAbortSlot( s, SLOT( requestAbort() ) );
     connect( s, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ) );
     connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    The::statusBar()->incrementProgressTotalSteps( s, s->iterationCount() );
+    The::statusBar()->setProgressTotalSteps( s, s->iterationCount() );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 

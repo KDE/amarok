@@ -91,9 +91,9 @@ public slots:
 
     //this stuff we just forward to the compound progress bar:
 
-    void incrementProgressTotalSteps( const QObject *owner, int inc = 1 )
+    void setProgressTotalSteps( const QObject *owner, int value )
     {
-        m_progressBar->incrementProgressTotalSteps( owner, inc );
+        m_progressBar->setProgressTotalSteps( owner, value );
     }
     void incrementProgress( const QObject *owner )
     {

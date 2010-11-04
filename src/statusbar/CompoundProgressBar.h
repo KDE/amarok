@@ -39,7 +39,7 @@ public:
     void addProgressBar( ProgressBar * progressBar, QObject *owner );
 
     void incrementProgress( const QObject *owner );
-    void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
+    void setProgressTotalSteps( const QObject *owner, int value );
     void setProgressStatus( const QObject *owner, const QString &text );
     void setProgress( const QObject *owner, int steps );
 

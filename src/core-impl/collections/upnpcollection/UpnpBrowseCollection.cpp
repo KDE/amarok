@@ -111,11 +111,12 @@ UpnpBrowseCollection::startFullScan()
 {
     DEBUG_BLOCK;
 
-    startIncrementalScan( "/" );
-
     // TODO probably set abort slot
+    // TODO figure out what to do with the total steps
     if( The::statusBar() )
         The::statusBar()->newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
+
+    startIncrementalScan( "/" );
 
     connect( this, SIGNAL(incrementProgress()), The::statusBar(), SLOT(incrementProgress()), Qt::QueuedConnection );
 
@@ -134,14 +135,16 @@ void
 UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
     DEBUG_BLOCK;
+    int count = 0;
     KIO::SimpleJob *sj = static_cast<KIO::SimpleJob *>( job );
     foreach( KIO::UDSEntry entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
             && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
             createTrack( entry, sj->url().prettyUrl() );
         }
+        count++;
         if( The::statusBar() )
-            The::statusBar()->incrementProgressTotalSteps( this );
+            The::statusBar()->setProgressTotalSteps( this, count );
         emit incrementProgress();
     }
     updateMemoryCollection();
