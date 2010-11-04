@@ -217,6 +217,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         switch( role )
         {
         case Qt::DisplayRole:
+        case Qt::ToolTipRole:
         case CustomRoles::FilterRole:
             {
                 QString name = track->prettyName();
@@ -250,6 +251,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         switch( role )
         {
         case Qt::DisplayRole:
+        case Qt::ToolTipRole:
             {
                 QString name = album->prettyName();
                 if( AmarokConfig::showYears() )
@@ -276,6 +278,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         switch( role )
         {
         case Qt::DisplayRole:
+        case Qt::ToolTipRole:
         case CustomRoles::FilterRole:
             {
                 QString name = item->data()->prettyName();
