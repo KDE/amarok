@@ -1,7 +1,6 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 include_directories( ${Amarok_SRC_DIR}/src,
-                     ${CMAKE_BUILD_DIR},
                      ${KDE4_INCLUDE_DIR},
                      ${QT_INCLUDES} )
 
