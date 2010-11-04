@@ -182,9 +182,8 @@ CurrentTrack::init()
     m_artist->setAlignment( Qt::AlignLeft );
     m_album->setAlignment( Qt::AlignLeft );
 
-    connectSource( "current" );
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_albumWidth );
-    connect( dataEngine("amarok-current"), SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    dataEngine( "amarok-current" )->connectSource( "current", this );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 
     // figure out the size we want to be, in order to be able to squeeze in all that we want
@@ -197,16 +196,6 @@ CurrentTrack::init()
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(queryCollection()), Qt::QueuedConnection );
     queryCollection();
-}
-
-void
-CurrentTrack::connectSource( const QString &source )
-{
-    if( source == "current" )
-    {
-        dataEngine( "amarok-current" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-current" )->query( "current" ) ); // get data initially
-    }
 }
 
 void

@@ -66,13 +66,13 @@ protected:
 
 private:
     void update( Meta::TrackPtr track );
+    void update( Meta::ArtistPtr artist );
 
     int m_coverWidth;
     QStringList m_sources;
-    QMap< QString, bool > m_requested;
-
+    QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
-    Meta::ArtistPtr m_currentArtist;
+    QWeakPointer<Collections::QueryMaker> m_recentAlbumsQm;
 
 private slots:
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );

@@ -61,7 +61,6 @@ protected:
 
 private slots:
     void trackRatingChanged( int rating );
-    void connectSource( const QString &source );
     void paletteChanged( const QPalette &palette );
     void fontChanged();
     void coverDropped( const QPixmap &cover );

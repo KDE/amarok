@@ -23,9 +23,9 @@
 #include "AlbumItem.h"
 #include "AlbumsView.h"
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/meta/Meta.h"
@@ -99,8 +99,6 @@ void Albums::init()
     setLayout( layout );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
-    connect( dataEngine( "amarok-current" ), SIGNAL(sourceAdded(QString)),
-             this, SLOT(connectSource(QString)) );
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
@@ -259,15 +257,6 @@ void Albums::setRightAlignLength( int state )
 {
     m_rightAlignLength = (state == Qt::Checked );
     m_albumsView->setLengthAlignment( m_rightAlignLength ? Qt::AlignRight : Qt::AlignLeft );
-}
-
-void Albums::connectSource( const QString &source )
-{
-    if( source == "albums" )
-    {
-        dataEngine( "amarok-current" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initially
-    }
 }
 
 void Albums::saveConfiguration()

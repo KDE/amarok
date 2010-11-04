@@ -47,7 +47,6 @@ protected:
 
 private slots:
     void collectionDataChanged( Collections::Collection *collection );
-    void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
     void setRightAlignLength( int state );
