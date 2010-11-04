@@ -308,6 +308,8 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             return QSize( 1, d->rowHeight );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
+        case CustomRoles::SortRole:
+            return QString(); // so that we can compare it against other strings
         }
     }
 
