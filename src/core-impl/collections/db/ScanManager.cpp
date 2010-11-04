@@ -194,9 +194,11 @@ void ScanManager::startScanner()
             ->setAbortSlot( this, SLOT( abort() ) );
 
         connect( m_parser, SIGNAL( totalSteps(const QObject*, int) ),
-                 The::statusBar(), SLOT( incrementProgressTotalSteps(const QObject*, int) ) );
+                 The::statusBar(), SLOT( setProgressTotalSteps(const QObject*, int) ),
+                 Qt::QueuedConnection );
         connect( m_parser, SIGNAL( step(const QObject*) ),
-                 The::statusBar(), SLOT( incrementProgress(const QObject*) ) );
+                 The::statusBar(), SLOT( incrementProgress(const QObject*) ),
+                 Qt::QueuedConnection );
     }
 
     // -- Create the scanner process
@@ -277,30 +279,6 @@ ScanManager::slotReadReady()
     if( !m_scanner || !m_parser )
         return;
 
-    QByteArray buffer;
-
-    // read line wise because we don't want to split end tags. It would be a big hassle otherwise
-    QByteArray line;
-    line = m_scanner->readLine();
-
-    while( !line.isEmpty() )
-    {
-        buffer += line;
-        line = m_scanner->readLine();
-    }
-
-    // amarokcollectionscanner outputs UTF-8 regardless of local encoding
-    m_parser->addNewXmlData( QTextCodec::codecForName( "UTF-8" )->toUnicode( buffer ) );
-}
-
-void
-ScanManager::slotReadReadyAll()
-{
-    QMutexLocker locker( &m_mutex );
-
-    if( !m_scanner || !m_parser )
-        return;
-
     QByteArray buffer = m_scanner->readAll();
 
     m_parser->addNewXmlData( QTextCodec::codecForName( "UTF-8" )->toUnicode( buffer ) );
@@ -318,7 +296,7 @@ ScanManager::slotFinished(int exitCode, QProcess::ExitStatus exitStatus)
         return;
     }
 
-    slotReadReadyAll(); //make sure that we read the complete buffer
+    slotReadReady(); //make sure that we read the complete buffer
 
     {
         QMutexLocker locker( &m_mutex );
@@ -427,7 +405,7 @@ ScanManager::handleRestart()
         m_restartCount++;
         debug() << "Collection scanner crashed, restart count is " << m_restartCount;
 
-        slotReadReadyAll(); //make sure that we read the complete buffer
+        slotReadReady(); //make sure that we read the complete buffer
 
         disconnect( m_scanner, 0, this, 0 );
         m_scanner->deleteLater();
@@ -472,13 +450,7 @@ XmlParseJob::XmlParseJob( QObject *parent, Collections::DatabaseCollection *coll
     , m_collection( collection )
     , m_scanType( scanType )
     , m_abortRequested( false )
-    , m_directoryEndElements( 0 )
-    , m_scannerEndElements( 0 )
-{
-    if( The::statusBar() )
-        The::statusBar()->newProgressOperation( this, i18n( "Scanning music" ) )
-            ->setAbortSlot( parent, SLOT( abort() ) );
-}
+{ }
 
 XmlParseJob::~XmlParseJob()
 { }
@@ -488,20 +460,18 @@ XmlParseJob::run()
 {
     ScanResultProcessor *processor = m_collection->getNewScanResultProcessor( m_scanType );
 
-int count = 0;
+    bool finished = false;
+    int count = 0;
     do
     {
         // -- check if we were aborted, have finished or need to wait for new data
         m_mutex.lock();
-        if( m_abortRequested ||
-            ( m_directoryEndElements == 0 && m_scannerEndElements > 0 ) )
+        if( m_abortRequested )
         {
             m_mutex.unlock();
             break;
         }
-
-        if( m_directoryEndElements == 0 && m_scannerEndElements == 0 )
-            m_wait.wait( &m_mutex );
+        m_wait.wait( &m_mutex );
 
         // -- scan as many directory tags as we added to the data
         while( !m_reader.atEnd() )
@@ -512,6 +482,7 @@ int count = 0;
                 QStringRef name = m_reader.name();
                 if( name == "scanner" )
                 {
+                debug() << "XmlParseJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
                     emit totalSteps( this,
                                      m_reader.attributes().value( "count" ).toString().toInt() );
                 }
@@ -519,23 +490,25 @@ int count = 0;
                 {
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    debug() << "XmlParseJob: run: "<<count<<"elements:"<<m_directoryEndElements<<","<<m_scannerEndElements<<"current path"<<dir->rpath();
+                    debug() << "XmlParseJob: run: "<<count<<"current path"<<dir->rpath();
                     count++;
 
                     emit step( this );
-
-                    // check if we can continue reading another directory
-                    m_directoryEndElements--;
-                    if( m_directoryEndElements == 0 )
-                    {
-                        break;
-                    }
                 }
             }
+            else if( m_reader.isEndElement() )
+            {
+                if( m_reader.name() == "scanner" ) // ok. finished
+                    finished = true;
+            }
+            else
+            {
+                debug() << "XmlParseJob: strage element" << m_reader.name();
+            }
         }
-
         m_mutex.unlock();
-    } while( true );
+
+    } while( !finished );
 
     if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
     {
@@ -554,21 +527,32 @@ int count = 0;
 void
 XmlParseJob::addNewXmlData( const QString &data )
 {
-    m_mutex.lock();
+    QMutexLocker locker(&m_mutex);
 
-    // append new data (we need to be locked. the reader is probalby not thread save)
-    m_reader.addData( data );
+    m_incompleteTagBuffer += data;
 
-    // count the full directory and scanner tags so that we later know how much we can read
-    m_directoryEndElements += data.count("</directory>");
-    m_scannerEndElements += data.count("</scanner>");
+    int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
+    if( index >= 0 )
+    {
+        // append new data (we need to be locked. the reader is probalby not thread save)
+        m_reader.addData( m_incompleteTagBuffer.left( index + 10 ) );
+        m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 10 );
+    }
+    else
+    {
+        index = m_incompleteTagBuffer.lastIndexOf( "</directory>" );
+        if( index >= 0 )
+        {
+            // append new data (we need to be locked. the reader is probalby not thread save)
+            m_reader.addData( m_incompleteTagBuffer.left( index + 12 ) );
+            m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 12 );
+        }
+    }
 
-    // debug() << "XmlParseJob: addNewXm.Data:"<<m_directoryEndElements<<","<<m_scannerEndElements<<"\n";
+    debug() << "XmlParseJob: addNewXm.Data";
 
-    if( m_directoryEndElements > 0 || m_scannerEndElements > 0 )
+    if( index >= 0 )
         m_wait.wakeOne();
-
-    m_mutex.unlock();
 }
 
 void

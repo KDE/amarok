@@ -82,9 +82,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** Called when the scanner process has outputted some data. */
         void slotReadReady();
 
-        /** Called when the remainder of the scanner process should be read. */
-        void slotReadReadyAll();
-
         /** Called when the scanner process is finished. */
         void slotFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
@@ -169,15 +166,7 @@ class XmlParseJob : public ThreadWeaver::Job
         ScanResultProcessor::ScanType m_scanType;
 
         bool m_abortRequested;
-
-        /** This variable holds the number of full directory tags the parser can read from the xml stream. */
-        int m_directoryEndElements;
-
-        /** This variable holds the number of full scanner tags the parser can read from the xml stream.
-            Actually a value >0 means that a scanner end tag was read and that we are
-            finished scanning.
-         */
-        int m_scannerEndElements;
+        QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
 
         QXmlStreamReader m_reader;
 

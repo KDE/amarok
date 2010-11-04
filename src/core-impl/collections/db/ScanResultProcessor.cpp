@@ -63,8 +63,8 @@ ScanResultProcessor::commit()
     {
         commitDirectory( dir );
 
-        // release the block every second. Maybe not really needed, but still nice
-        if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 1 )
+        // release the block every 3 second. Maybe not really needed, but still nice
+        if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 3 )
         {
             m_collection->unblockUpdatedSignal();
             blockedTime = QDateTime::currentDateTime();

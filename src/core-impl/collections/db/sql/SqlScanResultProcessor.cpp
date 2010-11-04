@@ -207,8 +207,6 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     metaTrack->endMetaDataUpdate();
     metaTrack->setWriteFile( true );
 
-    debug() << "SRP::commitTrack finished for " << track->path() << "id:" << metaTrack->id() << "for album" << albumId;
-
     m_foundTracks.insert( metaTrack->id() );
 }
 
