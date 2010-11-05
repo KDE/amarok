@@ -933,8 +933,11 @@ SqlTrack::commitMetaDataChanges()
                 newArtistName = m_cache.value( Meta::valAlbumArtist ).toString();
             else if( oldAlbum && oldAlbum->isCompilation() && !oldAlbum->name().isEmpty() )
                 newArtistName = QString();
-            else if( m_artist )
-                newArtistName = m_artist->name();
+            else if( oldAlbum && oldAlbum->hasAlbumArtist() )
+                newArtistName = oldAlbum->albumArtist()->name();
+
+            if( newArtistName.compare( "Various Artists", Qt::CaseInsensitive ) == 0 )
+                newArtistName.clear();
 
             m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::valAlbum ).toString(),
                                                           newArtistName );
