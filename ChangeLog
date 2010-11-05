@@ -28,6 +28,8 @@ VERSION 2.4-Beta 1
       to music provided by a running local Playdar service.
 
   CHANGES:
+    * Current track applet: added "show in media sources" actions for current
+      track's artist, album, composer, genre, and year if available.
     * Current track applet: added action to open the tag dialog.
     * Improved appearance of current track applet when playback is stopped.
     * Better scrolling in the applet explorer.

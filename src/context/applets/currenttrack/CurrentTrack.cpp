@@ -28,6 +28,7 @@
 #include "CollectionManager.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
@@ -51,10 +52,13 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QPixmapCache>
+#include <QScopedPointer>
+#include <QSignalMapper>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_actionsLayout( 0 )
+    , m_findInSourceSignalMapper( 0 )
     , m_rating( -1 )
     , m_score( 0 )
     , m_trackLength( 0 )
@@ -148,6 +152,7 @@ CurrentTrack::init()
     titlesLayout->addItem( m_artist );
     titlesLayout->addItem( m_album );
     titlesLayout->addItem( m_actionsLayout );
+    titlesLayout->setItemSpacing( 2, 4 ); // a bit more spacing for the actions row
 
     const qreal pad = standardPadding();
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout( this );
@@ -328,47 +333,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     resizeCover( data[ "albumart" ].value<QPixmap>(), m_albumWidth );
     m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track )
-    {
-        //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
-        foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
-        {
-            Plasma::IconWidget *icon = addAction( action, 24 );
-            icon->setText( QString() );
-            m_actionsLayout->addItem( icon );
-        }
-
-        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
-        {
-            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-            if( cac )
-            {
-                QList<QAction*> actions = cac->customActions();
-                foreach( QAction *action, actions )
-                {
-                    Plasma::IconWidget *icon = addAction( action, 24 );
-                    icon->setText( QString() );
-                    m_actionsLayout->addItem( icon );
-                }
-                delete cac;
-            }
-        }
-
-        if( track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
-        {
-            Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
-            if( ec && ec->isEditable() )
-            {
-                QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
-                                                   i18n("&Edit Track Details"), this );
-                Plasma::IconWidget *icon = addAction( editAction, 24 );
-                connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
-                m_actionsLayout->addItem( icon );
-                delete ec;
-            }
-        }
-    }
+    setupLayoutActions( The::engineController()->currentTrack() );
 
     // without that the rating doesn't get update for a playing track
     updateConstraints();
@@ -742,6 +707,119 @@ CurrentTrack::handleUnknown( const QString &original,
         widget->setBrush( normalBrush() );
         return original;
     }
+}
+
+void
+CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
+{
+    if( !track )
+        return;
+
+    QList<QAction *> actions;
+
+    //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
+    actions << The::globalCurrentTrackActions()->actions();
+
+    using namespace Capabilities;
+
+    if( track->hasCapabilityInterface( Capability::CurrentTrackActions ) )
+    {
+        QScopedPointer<CurrentTrackActionsCapability> cac( track->create<CurrentTrackActionsCapability>() );
+        if( cac )
+            actions << cac->customActions();
+    }
+
+    if( track->hasCapabilityInterface( Capability::Editable ) )
+    {
+        QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
+        if( ec && ec->isEditable() )
+        {
+            QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+                                               i18n("Edit Track Details"), this );
+            connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
+            actions << editAction;
+        }
+    }
+
+    if( track->hasCapabilityInterface( Capability::FindInSource ) )
+    {
+        if( !m_findInSourceSignalMapper )
+        {
+            m_findInSourceSignalMapper = new QSignalMapper( this );
+            connect( m_findInSourceSignalMapper, SIGNAL(mapped(QString)), SLOT(findInSource(QString)) );
+        }
+
+        Meta::AlbumPtr album       = track->album();
+        Meta::ArtistPtr artist     = track->artist();
+        Meta::ComposerPtr composer = track->composer();
+        Meta::GenrePtr genre       = track->genre();
+        Meta::YearPtr year         = track->year();
+        QAction *act( 0 );
+
+        if( album && !album->name().isEmpty() )
+        {
+            act = new QAction( KIcon("current-track-amarok"), i18n("Show Album In Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("album") );
+            actions << act;
+        }
+        if( artist && !artist->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist In Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
+            actions << act;
+        }
+        if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
+        {
+            act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer In Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("composer") );
+            actions << act;
+        }
+        if( genre && !genre->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre In Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("genre") );
+            actions << act;
+        }
+        if( year && !year->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year In Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("year") );
+            actions << act;
+        }
+    }
+
+    foreach( QAction* action, actions )
+    {
+        Plasma::IconWidget *icon = addAction( action, 24 );
+        icon->setText( QString() );
+        m_actionsLayout->addItem( icon );
+    }
+}
+
+void
+CurrentTrack::findInSource( const QString &name )
+{
+    using namespace Capabilities;
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    QScopedPointer<FindInSourceCapability> fis( track->create<FindInSourceCapability>() );
+    if( !fis )
+        return;
+
+    if( name == QLatin1String("album") )
+        fis->findInSource( FindInSourceCapability::Album );
+    else if( name == QLatin1String("artist") )
+        fis->findInSource( FindInSourceCapability::Artist );
+    else if( name == QLatin1String("composer") )
+        fis->findInSource( FindInSourceCapability::Composer );
+    else if( name == QLatin1String("genre") )
+        fis->findInSource( FindInSourceCapability::Genre );
+    else if( name == QLatin1String("year") )
+        fis->findInSource( FindInSourceCapability::Year );
 }
 
 #include "CurrentTrack.moc"

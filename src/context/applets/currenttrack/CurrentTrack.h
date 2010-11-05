@@ -31,6 +31,7 @@ class RatingWidget;
 class RecentlyPlayedListWidget;
 class QAction;
 class QGraphicsLinearLayout;
+class QSignalMapper;
 
 namespace Plasma {
     class Label;
@@ -67,6 +68,7 @@ private slots:
     void tracksCounted( QString id, QStringList results );
     void albumsCounted( QString id, QStringList results );
     void genresCounted( QString id, QStringList results );
+    void findInSource( const QString &name );
     void queryCollection();
     void editTrack();
 
@@ -78,6 +80,7 @@ private:
     void drawStatsTexts( QPainter *const p );
     void drawSourceEmblem( QPainter *const p );
     void resizeCover( const QPixmap &cover, qreal width );
+    void setupLayoutActions( Meta::TrackPtr track );
     QPixmap amarokLogo( int dimension ) const;
 
     // aligns the second QGI to be at the same level as the first (the font baseline)
@@ -109,6 +112,7 @@ private:
     QGraphicsSimpleTextItem *m_byText;
     QGraphicsSimpleTextItem *m_onText;
     QGraphicsLinearLayout *m_actionsLayout;
+    QSignalMapper *m_findInSourceSignalMapper;
 
     int m_rating;
     int m_score;
