@@ -256,9 +256,13 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 QString name = album->prettyName();
                 if( AmarokConfig::showYears() )
                 {
-                    Meta::YearPtr year = album->tracks().first()->year();
-                    if( year )
-                        name.prepend( QString("%1 - ").arg( year->name() ) );
+                    Meta::TrackList tracks = album->tracks();
+                    if( !tracks.isEmpty() )
+                    {
+                        Meta::YearPtr year = tracks.first()->year();
+                        if( year )
+                            name.prepend( QString("%1 - ").arg( year->name() ) );
+                    }
                 }
                 return name;
             }
