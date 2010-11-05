@@ -102,6 +102,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
     connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
+    connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)), SLOT(slotExpandIndex(QModelIndex)) );
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
@@ -599,6 +600,15 @@ CollectionTreeView::slotExpanded( const QModelIndex &index )
         m_treeModel->slotExpanded( m_filterModel->mapToSource( index ));
     else
         m_treeModel->slotExpanded( index );
+}
+
+void
+CollectionTreeView::slotExpandIndex( const QModelIndex &index )
+{
+    if( !m_treeModel )
+        return;
+    if( m_filterModel )
+        expand( m_filterModel->mapFromSource( index ) );
 }
 
 void
