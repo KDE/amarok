@@ -147,12 +147,11 @@ TabsApplet::init()
     dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchGuitar:" ).append( QString::number( m_fetchGuitar ) ) );
     dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchBass:" ).append( QString::number( m_fetchBass ) ) );
 
+    updateInterface( InitState );
+
     // connect to the tabs data-engine
     connectSource( "tabs" );
     connect( dataEngine( "amarok-tabs" ), SIGNAL( sourceAdded( const QString & ) ), this, SLOT( connectSource( const QString & ) ) );
-
-    updateConstraints();
-    update();
 }
 
 /**
@@ -328,7 +327,8 @@ TabsApplet::updateInterface( AppletState appletState )
             break;
     }
     emit sizeHintChanged( Qt::PreferredSize );
-    updateConstraints();
+
+    constraintsEvent();
 }
 
 void
