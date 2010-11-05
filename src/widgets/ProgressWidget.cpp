@@ -115,87 +115,33 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     if ( !isVisible() )
         return;
-    
-    int seconds = ms / 1000;
-    int seconds2 = seconds; // for the second label
 
     const qint64 trackLength = The::engineController()->trackLength();
 
-    QString s1;
-    QString s2;
-
     //sometimes the engine gives negative position and track length values for streams
     //which causes the time sliders to show 'interesting' values like -322:0-35:0-59
-    if( ( ms > 1 ) && ( trackLength > 1 ) )
+    int seconds = qMax(0, ms / 1000);
+    int remainingSeconds = qMax(0, int((trackLength - ms) / 1000));
+
+    QString sSeconds = Meta::secToPrettyTime( seconds );
+    QString sRemainingSeconds = "-" + Meta::secToPrettyTime( remainingSeconds );
+
+    if( AmarokConfig::leftTimeDisplayRemaining() )
     {
+        m_timeLabelLeft->setText( sRemainingSeconds );
+        m_timeLabelLeft->setEnabled( remainingSeconds > 0 );
 
-        // when the left label shows the remaining time and it's not a stream
-        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-        {
-            seconds2 = seconds;
-            seconds = ( trackLength / 1000 ) - seconds;
-        }
-
-        // when the left label shows the remaining time and it's a stream
-        else if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-        {
-            seconds2 = seconds;
-            seconds = 0; // for streams
-        }
-
-        // when the right label shows the remaining time and it's not a stream
-        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-        {
-            seconds2 = ( trackLength / 1000 ) - seconds;
-        }
-
-        // when the right label shows the remaining time and it's a stream
-        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-        {
-            seconds2 = 0;
-        }
-
-        //put Utility functions somewhere
-        s1 = Meta::secToPrettyTime( seconds );
-        s2 = Meta::secToPrettyTime( seconds2 );
-
-        // when the left label shows the remaining time and it's not a stream
-        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-            s1.prepend( '-' );
-
-        // when the right label shows the remaining time and it's not a stream
-        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-            s2.prepend( '-' );
-
-        m_timeLabelLeft->setText( s1 );
-        m_timeLabelRight->setText( s2 );
-
-
-        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength < 1 )
-        {
-            m_timeLabelLeft->setEnabled( false );
-            m_timeLabelRight->setEnabled( true );
-        }
-        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength < 1 )
-        {
-            m_timeLabelLeft->setEnabled( true );
-            m_timeLabelRight->setEnabled( false );
-        }
-        else
-        {
-            m_timeLabelLeft->setEnabled( true );
-            m_timeLabelRight->setEnabled( true );
-        }
-    
+        m_timeLabelRight->setText( sSeconds );
+        m_timeLabelRight->setEnabled( seconds > 0 );
     }
     else
     {
-       m_timeLabelLeft->setEnabled( false );
-       m_timeLabelRight->setEnabled( false );
+        m_timeLabelRight->setText( sRemainingSeconds );
+        m_timeLabelRight->setEnabled( remainingSeconds > 0 );
+
+        m_timeLabelLeft->setText( sSeconds );
+        m_timeLabelLeft->setEnabled( seconds > 0 );
     }
-    
-
-
 }
 
 void
@@ -248,7 +194,7 @@ ProgressWidget::trackLengthChanged( qint64 milliseconds )
     debug() << "new length: " << milliseconds;
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( milliseconds );
-    m_slider->setEnabled( milliseconds > 0 );
+    m_slider->setEnabled( (milliseconds > 0) && The::engineController()->isSeekable() );
     debug() << "slider enabled!";
 
     const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time

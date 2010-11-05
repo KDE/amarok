@@ -387,7 +387,7 @@ void Amarok::TimeSlider::clearTriangles()
 
 void Amarok::TimeSlider::mousePressEvent( QMouseEvent *event )
 {
-    if( !The::engineController()->phononMediaObject()->isSeekable() )
+    if( !The::engineController()->isSeekable() )
         return; // Eat the event,, it's not possible to seek
     Amarok::Slider::mousePressEvent( event );
 }
