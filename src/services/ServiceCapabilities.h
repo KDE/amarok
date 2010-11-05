@@ -116,7 +116,7 @@ class AMAROK_EXPORT ServiceFindInSourceCapability : public Capabilities::FindInS
     Q_OBJECT
     public:
         ServiceFindInSourceCapability( Meta::ServiceTrack *track );
-        virtual void findInSource();
+        virtual void findInSource( QFlags<TargetTag> tag );
 
     private:
         Meta::ServiceTrack * m_track;

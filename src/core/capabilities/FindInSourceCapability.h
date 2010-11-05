@@ -31,18 +31,34 @@ This capability exposes a method that shows this track (or the closest possible 
 class AMAROK_CORE_EXPORT FindInSourceCapability : public Capabilities::Capability
 {
     Q_OBJECT
+    Q_FLAGS( TargetTag TargetTags )
+
 public: 
+    enum TargetTag
+    {
+        Artist   = 0x01,
+        Album    = 0x02,
+        Composer = 0x04,
+        Genre    = 0x08,
+        Track    = 0x10,
+        Year     = 0x20
+    };
+
     virtual ~FindInSourceCapability();
 
-    virtual void findInSource() = 0;
+    virtual void findInSource( QFlags<TargetTag> tag = Album ) = 0;
 
     /**
      * Get the capabilityInterfaceType of this capability
      * @return The capabilityInterfaceType ( always Capabilities::Capability::FindInSource; )
      */
     static Type capabilityInterfaceType() { return Capabilities::Capability::FindInSource; }
+
+    Q_DECLARE_FLAGS( TargetTags, TargetTag )
 };
 
-}
+} // namespace Capabilities
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( Capabilities::FindInSourceCapability::TargetTags )
 
 #endif // FINDINSOURCECAPABILITY_H

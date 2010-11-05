@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CapabilityDelegateImpl"
+
 #include "CapabilityDelegateImpl.h"
 
 #include "core/support/Debug.h"
@@ -235,18 +237,37 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
             : Capabilities::FindInSourceCapability()
             , m_track( track ) {}
 
-        virtual void findInSource()
+        virtual void findInSource( QFlags<TargetTag> tag )
         {
             DEBUG_BLOCK
-            if( m_track->artist() && m_track->album() )
-            {
-                QString artist = m_track->artist()->prettyName();
-                QString album = m_track->album()->prettyName();
 
+            QStringList filters;
+            Meta::AlbumPtr album       = m_track->album();
+            Meta::ArtistPtr artist     = m_track->artist();
+            Meta::ComposerPtr composer = m_track->composer();
+            Meta::GenrePtr genre       = m_track->genre();
+            Meta::YearPtr year         = m_track->year();
+            QString name;
+
+            if( tag.testFlag(Artist) && !(name = artist ? artist->prettyName() : QString()).isEmpty() )
+                filters << QString( "artist:\"%1\"" ).arg( name );
+            if( tag.testFlag(Album) && !(name = album ? album->prettyName() : QString()).isEmpty() )
+                filters << QString( "album:\"%1\"" ).arg( name );
+            if( tag.testFlag(Composer) && !(name = composer ? composer->prettyName() : QString()).isEmpty() )
+                filters << QString( "composer:\"%1\"" ).arg( name );
+            if( tag.testFlag(Genre) && !(name = genre ? genre->prettyName() : QString()).isEmpty() )
+                filters << QString( "genre:\"%1\"" ).arg( name );
+            if( tag.testFlag(Track) && !(name = m_track ? m_track->prettyName() : QString()).isEmpty() )
+                filters << QString( "title:\"%1\"" ).arg( name );
+            if( tag.testFlag(Year) && !(name = year ? year->name() : QString()).isEmpty() )
+                filters << QString( "year:%1" ).arg( name );
+
+            if( !filters.isEmpty() )
+            {
                 AmarokUrl url;
                 url.setCommand( "navigate" );
                 url.setPath( "collections" );
-                url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
+                url.appendArg( "filter", filters.join( QLatin1String(" AND ") ) );
                 url.appendArg( "levels", "artist-album" );
 
                 debug() << "running url: " << url.url();

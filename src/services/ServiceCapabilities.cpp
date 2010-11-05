@@ -142,8 +142,9 @@ ServiceFindInSourceCapability::ServiceFindInSourceCapability( Meta::ServiceTrack
     , m_track( track )
 {}
 
-void ServiceFindInSourceCapability::findInSource()
+void ServiceFindInSourceCapability::findInSource( QFlags<TargetTag> tag )
 {
+    Q_UNUSED( tag )
     DEBUG_BLOCK
     if( m_track->artist() && m_track->album() && !m_track->collectionName().isEmpty() )
     {

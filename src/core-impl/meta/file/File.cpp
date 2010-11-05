@@ -151,8 +151,9 @@ public:
         , m_track( track )
         {}
 
-    virtual void findInSource()
+    virtual void findInSource( QFlags<TargetTag> tag )
     {
+        Q_UNUSED( tag )
         //first show the filebrowser
         AmarokUrl url;
         url.setCommand( "navigate" );
