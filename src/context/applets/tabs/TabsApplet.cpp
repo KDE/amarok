@@ -301,42 +301,34 @@ TabsApplet::updateInterface( AppletState appletState )
         case StoppedState:
             m_tabsView->hide();
             setCollapseOn();
-            emit sizeHintChanged( Qt::PreferredSize );
             m_reloadIcon.data()->setEnabled( false );
             break;
         case NoTabsState:
             m_tabsView->hide();
             setCollapseOn();
-            emit sizeHintChanged( Qt::PreferredSize );
             m_reloadIcon.data()->setEnabled( true );
             break;
         case MsgState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->hide();
             m_reloadIcon.data()->setEnabled( true );
             break;
         case FetchingState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->show();
             m_reloadIcon.data()->setEnabled( false );
             break;
         case TabState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->show();
             m_reloadIcon.data()->setEnabled( true );
             break;
     }
+    emit sizeHintChanged( Qt::PreferredSize );
     updateConstraints();
-    update();
 }
 
 void
