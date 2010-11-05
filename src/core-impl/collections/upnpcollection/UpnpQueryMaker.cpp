@@ -594,6 +594,7 @@ bool UpnpQueryMaker::postFilter( const KIO::UDSEntry &entry )
         else if( ( filter.compare == LessThan ) && ( filter.value <= aValue ) )
             return false;
     }
+    return true;
 }
 
 } //namespace Collections
