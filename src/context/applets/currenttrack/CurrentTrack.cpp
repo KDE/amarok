@@ -495,19 +495,32 @@ CurrentTrack::drawStatsTexts( QPainter *const p )
 void
 CurrentTrack::drawSourceEmblem( QPainter *const p )
 {
-    if( m_sourceEmblemPath.isEmpty() )
+    if( m_isStopped )
         return;
 
     p->save();
     p->setOpacity( 0.19 );
-    QSvgRenderer svg( m_sourceEmblemPath );
 
-    // paint the emblem half as tall as the applet, anchored at the top-right
-    // assume it is a square emblem
-    qreal height = boundingRect().height() / 2;
-    QRectF rect( boundingRect().width() - standardPadding() - height, standardPadding(),
-                 height, height );
-    svg.render( p, rect );
+    if( m_sourceEmblemPath.isEmpty() )
+    {
+        QPixmap logo = amarokLogo( m_albumWidth );
+        QRect rect = logo.rect();
+        int y = standardPadding();
+        int x = boundingRect().width() - rect.width() - y;
+        rect.moveTo( x, y );
+        p->drawPixmap( rect, logo );
+    }
+    else
+    {
+        QSvgRenderer svg( m_sourceEmblemPath );
+        // paint the emblem half as tall as the applet, anchored at the top-right
+        // assume it is a square emblem
+        qreal height = boundingRect().height() / 2;
+        int y = standardPadding();
+        int x = boundingRect().width() - y - height;
+        QRectF rect( x, y, height, height );
+        svg.render( p, rect );
+    }
     p->restore();
 }
 
