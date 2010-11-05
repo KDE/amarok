@@ -34,16 +34,17 @@ class QXmlStreamWriter;
 namespace CollectionScanner
 {
 
+class ScanningState;
+
 /**
  * @class Directory
  * @short Represents a scanned directory and it's contents
  */
-
 class Directory
 {
 public:
 #ifdef UTILITIES_BUILD
-    Directory( const QString &path, QSettings *settings, bool skip = false );
+    Directory( const QString &path, ScanningState *state, bool skip );
 #endif // UTILITIES_BUILD
 
     /** Reads a directory from an xml stream.

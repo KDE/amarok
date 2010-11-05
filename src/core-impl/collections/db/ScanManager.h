@@ -35,6 +35,7 @@
 #include <threadweaver/Job.h>
 
 class XmlParseJob;
+class QSharedMemory;
 
 class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 {
@@ -110,12 +111,15 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         void handleRestart();
 
+        void stopScanner();
         void stopParser();
 
     private:
         Collections::DatabaseCollection *m_collection;
 
         AmarokProcess *m_scanner;
+        QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
+        QString       m_sharedMemoryKey;
         XmlParseJob *m_parser;
 
         int m_restartCount;

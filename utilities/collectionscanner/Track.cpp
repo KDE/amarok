@@ -129,7 +129,7 @@ CollectionScanner::Track::Track( const QString &path)
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
-        if ( tag )
+        if( tag )
         {
             m_title = strip( tag->title() );
             m_artist = strip( tag->artist() );
@@ -404,7 +404,7 @@ CollectionScanner::Track::Track( const QString &path)
 
     m_filesize = QFile( path ).size();
 
-    if( m_uniqueid.isEmpty() )
+    if( m_valid && m_uniqueid.isEmpty() )
     {
         AFTUtility aftutil;
         m_uniqueid = "amarok-sqltrackuid://" + aftutil.readUniqueId( path );

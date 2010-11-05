@@ -33,10 +33,48 @@
 #include <QSet>
 #include <QStringList>
 
-class QSettings;
+class QSharedMemory;
 
 namespace CollectionScanner
 {
+
+/** A class used to store the current scanning state in a shared memory segment.
+    Storing the state of the scanner shouldn't cause a file access.
+    We are using a shared memory that the amarok process holds open until the scanning
+    is finished to store the state.
+ */
+class ScanningState
+{
+    public:
+        ScanningState();
+        ~ScanningState();
+
+        void setKey( const QString &key );
+        bool isValid() const;
+
+        QString lastDirectory() const;
+        void setLastDirectory( const QString &dir );
+        QStringList directories() const;
+        void setDirectories( const QStringList &directories );
+
+        QStringList badFiles() const;
+        void setBadFiles( const QStringList &badFiles );
+        QString lastFile() const;
+        void setLastFile( const QString &file );
+
+    private:
+        void readFull();
+        void writeFull();
+
+        QSharedMemory *m_sharedMemory;
+
+        QString m_lastDirectory;
+        QStringList m_directories;
+        QStringList m_badFiles;
+        QString m_lastFile;
+        qint64 m_lastFilePos;
+};
+
 
 /**
  * @class Scanner
@@ -92,8 +130,7 @@ private:
     bool                  m_idlePriority;
 
     QString               m_mtimeFile;
-
-    QSettings*            m_settings;
+    ScanningState         m_scanningState;
 
 
     // Disable copy constructor and assignment

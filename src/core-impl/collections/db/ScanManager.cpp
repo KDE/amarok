@@ -41,6 +41,7 @@
 #include <QListIterator>
 #include <QStringList>
 #include <QTextCodec>
+#include <QSharedMemory>
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -53,12 +54,14 @@ static const int MAX_RESTARTS = 80;
 static const int MAX_FAILURE_PERCENTAGE = 5;
 static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
+static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
 ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *parent )
     : QObject( parent )
     , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
     , m_scanner( 0 )
     , m_parser( 0 )
+    , m_scannerStateMemory( 0 )
     , m_restartCount( 0 )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
@@ -218,6 +221,20 @@ ScanManager::startScannerProcess( bool restart )
     Q_ASSERT( m_parser );
     Q_ASSERT( !m_scanner );
 
+    // -- create the shared memory
+    if( !m_scannerStateMemory && !restart )
+    {
+        m_sharedMemoryKey = "AmarokScannerMemory"+QDateTime::current().toString();
+        m_scannerStateMemory = new QSharedMemory( m_sharedMemoryKey, this );
+        if( !m_scannerStateMemory.create( SHARED_MEMORY_SIZE ) )
+        {
+            warning() << "Unable to create shared memory for collection scanner";
+            delete m_scannerStateMemory;
+            m_scannerStateMemory = 0;
+        }
+    }
+
+    // -- create the scanner process
     m_scanner = new AmarokProcess( this );
     *m_scanner << scannerPath() << "--idlepriority";
     if( !m_fullScanRequested )
@@ -231,6 +248,9 @@ ScanManager::startScannerProcess( bool restart )
 
     if( restart )
         *m_scanner << "-s";
+
+    if( m_scannerStateMemory )
+        *m_scanner << "--sharedmemory" << m_sharedMemoryKey;
 
     *m_scanner << "--batch" << m_batchfilePath;
 
@@ -300,15 +320,14 @@ ScanManager::slotFinished(int exitCode, QProcess::ExitStatus exitStatus)
 
     {
         QMutexLocker locker( &m_mutex );
-        m_scanner->terminate();
-        m_scanner->deleteLater();
-        m_scanner = 0;
-        m_restartCount = 0;
+        if( m_scanner )
+        {
+            stopScanner();
 
-        m_fullScan = false;
-        m_scanDirs.clear();
-
-        QFile::remove( m_batchfilePath );
+            m_restartCount = 0;
+            m_fullScan = false;
+            m_scanDirs.clear();
+        }
     }
 }
 
@@ -337,15 +356,10 @@ ScanManager::abort( const QString &reason )
         QMutexLocker locker( &m_mutex );
         if( m_scanner )
         {
-            disconnect( m_scanner, 0, this, 0 );
-            m_scanner->terminate();
-            m_scanner->deleteLater();
-            m_scanner = 0;
+            stopScanner();
 
             m_fullScan = false;
             m_scanDirs.clear();
-
-            QFile::remove( m_batchfilePath );
         }
     }
 
@@ -421,6 +435,23 @@ ScanManager::handleRestart()
     }
 
     startScannerProcess( true );
+}
+
+void
+ScanManager::stopParser()
+{
+    // stop the scanner
+    disconnect( m_scanner, 0, this, 0 );
+    m_scanner->terminate();
+    m_scanner->deleteLater();
+    m_scanner = 0;
+
+    // free it's shared memory.
+    delete m_scannerStateMemory;
+    m_scannerStateMemory = 0;
+
+    // remove the batch file
+    QFile::remove( m_batchfilePath );
 }
 
 void

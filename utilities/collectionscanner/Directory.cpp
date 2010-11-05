@@ -37,7 +37,9 @@
 
 #ifdef UTILITIES_BUILD
 
-CollectionScanner::Directory::Directory( const QString &path, QSettings *settings, bool skip )
+CollectionScanner::Directory::Directory( const QString &path,
+                                         CollectionScanner::ScanningState *state,
+                                         bool skip )
     : m_ignored( false )
 {
     m_path = path;
@@ -55,26 +57,26 @@ CollectionScanner::Directory::Directory( const QString &path, QSettings *setting
         return;
     }
 
-
-    QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg" << "bmp";
-    QStringList validPlaylists; validPlaylists << "m3u" << "pls" << "xspf";
+    QStringList validImages;
+    validImages << "jpg" << "png" << "gif" << "jpeg" << "bmp" << "svg" << "xpm";
+    QStringList validPlaylists;
+    validPlaylists << "m3u" << "pls" << "xspf";
 
     // --- check if we were restarted and failed at a file
     QStringList badFiles;
 
-    QString lastEntry = settings->value( "lastDirectory" ).toString();
-    if( lastEntry == path )
+    if( state->lastDirectory() == path )
     {
-        badFiles << settings->value( "lastFile" ).toString();
-        badFiles << settings->value( "badFiles" ).toStringList();
+        badFiles << state->badFiles();
+        badFiles << state->lastFile();
 
-        settings->setValue( "badFiles", badFiles );
+        state->setBadFiles( badFiles );
     }
     else
     {
-        settings->setValue( "lastDirectory", path );
-        settings->setValue( "lastFile", QString() );
-        settings->setValue( "badFiles", QStringList() );
+        state->setLastDirectory( path );
+        state->setLastFile( QString() );
+        state->setBadFiles( badFiles );
     }
 
     QStringList covers;
@@ -92,10 +94,6 @@ CollectionScanner::Directory::Directory( const QString &path, QSettings *setting
         if( badFiles.contains( f.absoluteFilePath() ) )
             continue;
 
-        // remember the last file before it get's dangerous. Before starting taglib
-        settings->setValue( "lastFile", f.absoluteFilePath() );
-        settings->sync();
-
         const QString suffix  = fi.suffix().toLower();
         const QString filePath = f.absoluteFilePath();
 
@@ -103,8 +101,8 @@ CollectionScanner::Directory::Directory( const QString &path, QSettings *setting
         if( validImages.contains( suffix ) )
         {
             covers += filePath;
-
         }
+
         // -- playlist ?
         else if( validPlaylists.contains( suffix ) )
         {
@@ -114,6 +112,9 @@ CollectionScanner::Directory::Directory( const QString &path, QSettings *setting
         // -- audio track ?
         else
         {
+            // remember the last file before it get's dangerous. Before starting taglib
+            state->setLastFile( f.absoluteFilePath() );
+
             CollectionScanner::Track newTrack( filePath );
             if( newTrack.isValid() )
             {

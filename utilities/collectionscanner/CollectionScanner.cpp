@@ -36,10 +36,13 @@
 #include <QStringList>
 #include <QDir>
 #include <QFile>
-#include <QSettings>
 #include <QDateTime>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QSharedMemory>
+#include <QByteArray>
+#include <QTextStream>
+#include <QDebug>
 
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
@@ -53,6 +56,157 @@ main( int argc, char *argv[] )
     CollectionScanner::Scanner scanner( argc, argv );
     return scanner.exec();
 }
+
+
+// ------------ the scanning state -----------
+
+CollectionScanner::ScanningState::ScanningState()
+        : m_sharedMemory(0)
+{
+}
+
+CollectionScanner::ScanningState::~ScanningState()
+{
+    delete m_sharedMemory;
+}
+
+void
+CollectionScanner::ScanningState::setKey( const QString &key )
+{
+    delete m_sharedMemory;
+    m_sharedMemory = new QSharedMemory( key );
+    if( m_sharedMemory->attach() )
+        readFull();
+}
+
+bool
+CollectionScanner::ScanningState::isValid() const
+{
+    return m_sharedMemory && m_sharedMemory->isAttached();
+}
+
+QString
+CollectionScanner::ScanningState::lastDirectory() const
+{ return m_lastDirectory; }
+
+void
+CollectionScanner::ScanningState::setLastDirectory( const QString &dir )
+{
+    if( dir == m_lastDirectory )
+        return;
+
+    m_lastDirectory = dir;
+    writeFull();
+}
+
+QStringList
+CollectionScanner::ScanningState::directories() const
+{ return m_directories; }
+
+void
+CollectionScanner::ScanningState::setDirectories( const QStringList &directories )
+{
+    if( directories == m_directories )
+        return;
+
+    m_directories = directories;
+    writeFull();
+}
+
+QStringList
+CollectionScanner::ScanningState::badFiles() const
+{ return m_badFiles; }
+
+void
+CollectionScanner::ScanningState::setBadFiles( const QStringList &badFiles )
+{
+    if( badFiles == m_badFiles )
+        return;
+
+    m_badFiles = badFiles;
+    writeFull();
+}
+
+QString
+CollectionScanner::ScanningState::lastFile() const
+{ return m_lastFile; }
+
+void
+CollectionScanner::ScanningState::setLastFile( const QString &file )
+{
+    if( file == m_lastFile )
+        return;
+
+    m_sharedMemory->lock();
+    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
+    QTextStream out( &data );
+    out.seek( m_lastFilePos );
+    out << m_lastFile;
+    m_sharedMemory->unlock();
+}
+
+void
+CollectionScanner::ScanningState::readFull()
+{
+    if( !isValid() )
+        return;
+
+    m_sharedMemory->lock();
+    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
+    QTextStream in(&data, QIODevice::ReadOnly);
+
+    int count;
+
+    in >> m_lastDirectory;
+
+    m_directories.clear();
+    in >> count;
+    for( int i=0; i<count; i++ )
+    {
+        QString s;
+        in >> s;
+        m_directories.append( s );
+    }
+
+    m_badFiles.clear();
+    in >> count;
+    for( int i=0; i<count; i++ )
+    {
+        QString s;
+        in >> s;
+        m_badFiles.append( s );
+    }
+
+    m_lastFilePos = in.pos();
+    in >> m_lastFile;
+
+    m_sharedMemory->unlock();
+}
+
+void
+CollectionScanner::ScanningState::writeFull()
+{
+    if( !isValid() )
+        return;
+
+    m_sharedMemory->lock();
+    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
+    QTextStream out( &data );
+    out << m_lastDirectory;
+    out << m_directories.count();
+    foreach( const QString &s, m_directories )
+        out << s;
+    out << m_badFiles.count();
+    foreach( const QString &s, m_badFiles )
+        out << s;
+    m_lastFilePos = out.pos();
+    out << m_lastFile;
+    qWarning("shared memory at %d of %d", out.pos(), m_sharedMemory->size());
+    m_sharedMemory->unlock();
+}
+
+
+// ------------ the scanner -----------
 
 CollectionScanner::Scanner::Scanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
@@ -78,19 +232,6 @@ CollectionScanner::Scanner::Scanner( int &argc, char **argv )
     TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
-
-    QString env = qgetenv( "KDEHOME" );
-    if( env.isEmpty() || !QDir(env).isReadable() )
-        env = QString( "%1/.kde" ).arg( QDir::homePath() );
-    QString path = env + QLatin1String("/share/apps");
-
-    // give two different settings.
-    // prevent the possibility that an incremental and a non-incremental scan clash
-    QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, path );
-    if( m_incremental )
-        m_settings = new QSettings( "amarok", "CollectionScannerIncremental", this );
-    else
-        m_settings = new QSettings( "amarok", "CollectionScanner", this );
 }
 
 
@@ -144,11 +285,11 @@ CollectionScanner::Scanner::doJob() //SLOT
     // --- determine the directories we have to scan
     QStringList entries;
 
-    // -- when restarting read them from the settings
-    if( m_restart )
+    // -- when restarting read them from the shared memory
+    if( m_restart && m_scanningState.isValid() )
     {
-        QString lastEntry = m_settings->value( "lastDirectory" ).toString();
-        entries = m_settings->value( "directories" ).toStringList();
+        QString lastEntry = m_scanningState.lastDirectory();
+        entries = m_scanningState.directories();
 
         // remove the entries we already scanned
         while( entries.front() != lastEntry && !entries.empty() )
@@ -180,8 +321,8 @@ CollectionScanner::Scanner::doJob() //SLOT
         }
 
         entries = entriesSet.toList();
-        m_settings->setValue( "lastDirectory", QString() );
-        m_settings->setValue( "directories", entries );
+        m_scanningState.setLastDirectory( QString() );
+        m_scanningState.setDirectories( entries );
     }
 
     if( !m_restart )
@@ -194,7 +335,7 @@ CollectionScanner::Scanner::doJob() //SLOT
     // --- now do the scanning
     foreach( QString path, entries )
     {
-        CollectionScanner::Directory dir( path, m_settings,
+        CollectionScanner::Directory dir( path, &m_scanningState,
                                           m_incremental && !isModified( path ) );
 
         xmlWriter.writeStartElement( "directory" );
@@ -291,6 +432,14 @@ CollectionScanner::Scanner::readArgs()
             {
                 if( argslist.count() > argnum + 1 )
                     readBatchFile( argslist.at( argnum + 1 ) );
+                else
+                    missingArg = true;
+                argnum++;
+            }
+            else if( myarg == "sharedmemory" )
+            {
+                if( argslist.count() > argnum + 1 )
+                    m_scanningState.setKey( argslist.at( argnum + 1 ) );
                 else
                     missingArg = true;
                 argnum++;
@@ -392,6 +541,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
         "-i, --incremental       : Incremental scan (modified folders only)\n"
         "-s, --restart           : After a crash, restart the scanner in its last position\n"
         "    --idlepriority      : Run at idle priority\n"
+        "    --sharedmemory <key> : A shared memory segment to be used for restarting a scan\n"
         "    --newer <path>      : Only scan directories if modification time is new than <path>\n"
         "                          Only useful in incremental scan mode\n"
         "    --batch <path>      : Add the directories from the batch xml file\n"
