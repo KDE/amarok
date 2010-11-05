@@ -531,6 +531,7 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
     url.addQueryItem( QLatin1String("srsearch"), title );
     url.addQueryItem( QLatin1String("srprop"), QLatin1String("size") );
     url.addQueryItem( QLatin1String("srredirects"), QString::number(1) );
+    url.addQueryItem( QLatin1String("srlimit"), QString::number(20) );
     url.addQueryItem( QLatin1String("format"), QLatin1String("xml") );
     urls << url;
     debug() << "Fetching listing:" << url;
