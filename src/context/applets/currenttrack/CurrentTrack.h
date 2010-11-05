@@ -63,7 +63,7 @@ protected:
 private slots:
     void trackRatingChanged( int rating );
     void paletteChanged( const QPalette &palette );
-    void fontChanged();
+    void settingsAccepted();
     void coverDropped( const QPixmap &cover );
     void tracksCounted( QString id, QStringList results );
     void albumsCounted( QString id, QStringList results );
@@ -127,6 +127,8 @@ private:
     bool m_isStopped;
 
     Ui::currentTrackSettings ui_Settings;
+    bool m_showEditTrackDetailsAction;
+    bool m_showFindInSourceAction;
     const int m_albumWidth;
 };
 

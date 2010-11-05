@@ -67,6 +67,8 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_albumCount( 0 )
     , m_genreCount( 0 )
     , m_isStopped( true )
+    , m_showEditTrackDetailsAction( true )
+    , m_showFindInSourceAction( false )
     , m_albumWidth( 135 )
 {
     setHasConfigurationInterface( true );
@@ -182,6 +184,9 @@ CurrentTrack::init()
         font.fromString( fontDesc );
     else
         font.setPointSize( font.pointSize() + 3 );
+
+    m_showEditTrackDetailsAction = config.readEntry( "ShowEditTrackAction", true );
+    m_showFindInSourceAction = config.readEntry( "ShowFindInSourceAction", false );
 
     m_title->setFont( font );
     m_artist->setFont( font );
@@ -562,9 +567,11 @@ CurrentTrack::amarokLogo( int dim ) const
 }
 
 void
-CurrentTrack::fontChanged()
+CurrentTrack::settingsAccepted()
 {
-    QFont font = ui_Settings.fontChooser->font();
+    QFont font = ui_Settings.fontRequester->font();
+    m_showEditTrackDetailsAction = (ui_Settings.editTrackDetailsCheckBox->checkState() == Qt::Checked);
+    m_showFindInSourceAction = (ui_Settings.findInSourceCheckBox->checkState() == Qt::Checked);
 
     m_title->setFont( font );
     m_artist->setFont( font );
@@ -572,9 +579,11 @@ CurrentTrack::fontChanged()
 
     KConfigGroup config = Amarok::config("Current Track Applet");
     config.writeEntry( "Font", font.toString() );
+    config.writeEntry( "ShowEditTrackAction", m_showEditTrackDetailsAction );
+    config.writeEntry( "ShowFindInSourceAction", m_showFindInSourceAction );
 
-    updateConstraints();
-    update();
+    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "current" );
+    dataUpdated( QLatin1String("current"), data );
 }
 
 void
@@ -636,11 +645,13 @@ CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
-    ui_Settings.fontChooser->setFont( m_title->font() );
+    ui_Settings.fontRequester->setFont( m_title->font() );
+    ui_Settings.editTrackDetailsCheckBox->setCheckState( m_showEditTrackDetailsAction ? Qt::Checked : Qt::Unchecked );
+    ui_Settings.findInSourceCheckBox->setCheckState( m_showFindInSourceAction ? Qt::Checked : Qt::Unchecked );
 
     parent->addPage( settings, i18n( "Current Track Settings" ), "preferences-system");
 
-    connect( parent, SIGNAL( accepted() ), this, SLOT( fontChanged() ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(settingsAccepted()) );
 }
 
 void
@@ -726,7 +737,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             m_customActions << cac->customActions();
     }
 
-    if( track->hasCapabilityInterface( Capability::Editable ) )
+    if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )
     {
         QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
         if( ec && ec->isEditable() )
@@ -738,7 +749,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         }
     }
 
-    if( track->hasCapabilityInterface( Capability::FindInSource ) )
+    if( m_showFindInSourceAction && track->hasCapabilityInterface( Capability::FindInSource ) )
     {
         if( !m_findInSourceSignalMapper )
         {
