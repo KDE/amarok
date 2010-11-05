@@ -238,7 +238,11 @@
          <widget class="KUrlLabel" name="urlValue"/>
         </item>
         <item row="6" column="1">
-         <widget class="KUrlLabel" name="websiteValue"/>
+         <widget class="KUrlLabel" name="websiteValue">
+          <property name="useTips">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item row="3" column="1">
          <widget class="QLabel" name="countryValue">

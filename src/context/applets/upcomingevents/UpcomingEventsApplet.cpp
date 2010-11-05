@@ -366,7 +366,8 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
 
     if( url.isValid() )
     {
-        ui_VenueSettings.urlValue->setText( i18n("link") );
+        ui_VenueSettings.urlValue->setText( i18nc("@label:textbox Url label", "link") );
+        ui_VenueSettings.urlValue->setTipText( url.url() );
         ui_VenueSettings.urlValue->setUrl( url.url() );
     }
     else
@@ -374,7 +375,8 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
 
     if( website.isValid() )
     {
-        ui_VenueSettings.websiteValue->setText( i18n("link") );
+        ui_VenueSettings.websiteValue->setText( i18nc("@label:textbox Url label", "link") );
+        ui_VenueSettings.websiteValue->setTipText( website.url() );
         ui_VenueSettings.websiteValue->setUrl( website.url() );
     }
     else
