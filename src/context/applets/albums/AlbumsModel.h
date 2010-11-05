@@ -60,6 +60,15 @@ public:
     void setMode( Mode mode );
 
 protected:
+    /**
+     * Determine if album @param left is less than album @param right.
+     *
+     * If @param left and @param right both reference albums and @c m_mode
+     * is set to @c SortByCreateDate, @c lessThan will return @c true if
+     * and only the album referenced by @param left has a track that was
+     * added <em>more recently</em> than all of the tracks in the album
+     * referenced by @param right.
+     */
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 private:

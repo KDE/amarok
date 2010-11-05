@@ -129,16 +129,14 @@ AlbumsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) 
     {
         const AlbumItem *leftAlbum = static_cast<const AlbumItem *>( leftItem );
         const AlbumItem *rightAlbum = static_cast<const AlbumItem *>( model->itemFromIndex( right ) );
-        Meta::TrackList leftTracks = leftAlbum->album()->tracks();
-        Meta::TrackList rightTracks = rightAlbum->album()->tracks();
-        QVector<QDateTime> leftCreateDates, rightCreateDates;
-        foreach( Meta::TrackPtr track, leftTracks )
-            leftCreateDates << track->createDate();
-        foreach( Meta::TrackPtr track, rightTracks )
-            rightCreateDates << track->createDate();
-        qStableSort( leftCreateDates );
-        qStableSort( rightCreateDates );
-        return leftCreateDates.last() > rightCreateDates.last(); // greater than for reverse listing
+        QDateTime leftMaxCreateDate, rightMaxCreateDate;
+        foreach( Meta::TrackPtr track, leftAlbum->album()->tracks() )
+            if( track->createDate() > leftMaxCreateDate )
+                leftMaxCreateDate = track->createDate();
+        foreach( Meta::TrackPtr track, rightAlbum->album()->tracks() )
+            if( track->createDate() > rightMaxCreateDate )
+                rightMaxCreateDate = track->createDate();
+        return leftMaxCreateDate > rightMaxCreateDate;
     }
     else if( type == AlbumType || type == TrackType )
         return leftItem->operator<( *model->itemFromIndex( right ) );
