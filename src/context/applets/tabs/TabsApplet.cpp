@@ -223,6 +223,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     const QString artistName = data[ "artist" ].toString();
     const QString titleName  = data[ "title" ].toString();
+    const QString state      = data[ "state" ].toString();
     const QString message    = data[ "message" ].toString();
 
     // update artist and title in the headerlabel
@@ -231,28 +232,36 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     else
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
 
-    if( data.contains( "message" ) && message.contains( "Fetching" ) )
+    if( data.contains( "state" ) && state.contains( "Fetching" ) )
     {
         updateInterface( FetchingState );
         return;
     }
-    else if( data.contains( "message" ) && message.contains( "noTabs") )
+    else if( data.contains( "state" ) && state.contains( "Stopped") )
     {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
-        updateInterface( NoTabsState );
+        stopped();
+        return;
+    }
+    else if( data.contains( "state" ) && state.contains( "noTabs") )
+    {
+        if( data.contains( "message" ) )
+        {
+            // if we've found no tabs and got a message from the engine (e.g. connectivity issues)
+            m_tabsView->setTabTextContent( message );
+            updateInterface( MsgState );
+        }
+        else
+        {
+            // no tabs for the current song were found
+            m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
+            updateInterface( NoTabsState );
+        }
         return;
     }
     else if( data.contains( "message" ) )
     {
         // if(we get a message, show it
         m_tabsView->setTabTextContent( message );
-        updateInterface( MsgState );
-        return;
-    }
-    else if( artistName.isEmpty() && titleName.isEmpty() )
-    {
-        // special case for incomplete artists and title names
-        m_tabsView->setTabTextContent( i18n( "No valid artist and titlename found for the current track." ) );
         updateInterface( MsgState );
         return;
     }

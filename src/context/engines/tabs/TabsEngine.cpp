@@ -118,7 +118,7 @@ TabsEngine::sourceRequestEvent( const QString& name )
     // a new track is playing.
     removeAllData( name );
     setData( name, QVariant() );
-    requestTab();
+    update();
 
     return true;
 }
@@ -133,41 +133,44 @@ TabsEngine::update()
 
     // get the current track
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track )
+    if( !track )
     {
-        m_currentTrack = track;
-        Meta::ArtistPtr artistPtr = track->artist();
-        QString newArtist;
-        if( artistPtr )
-        {
-            if(( track->playableUrl().protocol() == "lastfm" ) ||
-                ( track->playableUrl().protocol() == "daap" ) ||
-                !The::engineController()->isStream() )
-                newArtist = artistPtr->name();
-            else
-                newArtist = artistPtr->prettyName();
-        }
-
-        QString newTitle = track->name();
-
-        // check if something changed
-        if( newTitle == m_titleName && newArtist == m_artistName )
-            return; // nothing changed
-
-        // Sends the artist name if exists, "Unkown artist" if not
-        if( newArtist.isEmpty() )
-            setData( "tabs", "artist", "Unknown artist" );
-
-        // Sends the title name if exists, "Unkown title" if not
-        if( newTitle.isEmpty() )
-            setData( "tabs", "title", "Unknown title" );
-
-        // stop fetching for unknown artists or titles
-         if( newTitle.isEmpty() || newArtist.isEmpty() )
-             return;
-
-         requestTab( newArtist, newTitle );
+        debug() << "no track";
+        m_titleName.clear();
+        m_artistName.clear();
+        removeAllData( "tabs" );
+        setData( "tabs", "state", "Stopped" );
+        return;
     }
+    m_currentTrack = track;
+    Meta::ArtistPtr artistPtr = track->artist();
+    QString newArtist;
+    if( artistPtr )
+    {
+        if(( track->playableUrl().protocol() == "lastfm" ) ||
+            ( track->playableUrl().protocol() == "daap" ) ||
+            !The::engineController()->isStream() )
+            newArtist = artistPtr->name();
+        else
+            newArtist = artistPtr->prettyName();
+    }
+
+    QString newTitle = track->name();
+
+    // check if something changed
+    if( newTitle == m_titleName && newArtist == m_artistName )
+    {
+        debug() << "nothing changed";
+        return; // nothing changed
+    }
+
+    // stop fetching for unknown artists or titles
+    if( newTitle.isEmpty() || newArtist.isEmpty() )
+    {
+        setData("tabs", "message", i18n( "No valid artist or titlename found for the current track." ) );
+        return;
+    }
+    requestTab( newArtist, newTitle );
 }
 
 /**
@@ -177,6 +180,7 @@ void
 TabsEngine::requestTab( QString artist, QString title )
 {
     DEBUG_BLOCK
+    debug() << "request tabs for artis: " << artist << " and title " << title;
 
     // clean all previously allocated stuff
     foreach( TabsInfo *tab, m_tabs )
@@ -189,7 +193,7 @@ TabsEngine::requestTab( QString artist, QString title )
     m_titleName = title;
 
     // status update
-    setData( "tabs", "message", "Fetching" );
+    setData( "tabs", "state", "Fetching" );
     setData( "tabs", "title", m_titleName );
     setData( "tabs", "artist", m_artistName );
 
@@ -220,8 +224,6 @@ TabsEngine::requestTab( QString artist, QString title )
 void
 TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
-
     // specific job has finished -> remove from queue
     if( !m_urls.contains( url ) )
         return;
@@ -320,8 +322,6 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
 void
 TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
-
     // specific tab search job has finished -> remove from queue
     if( !m_urls.contains( url ) )
         return;
@@ -426,20 +426,19 @@ TabsEngine::resultFinalize()
     if( m_urls.count() > 0 )
         return;
 
-    // remove previous messages
-    removeData( "tabs", "message" );
+    // reset the fetching state
+    removeData( "tabs", "state" );
+
+            // else if all the parallel jobs have finished and they have been called
+    debug() << "Total # of fetched tabs: " << m_tabs.size();
 
     if( m_tabs.size() == 0 )
     {
-        debug() << "No tabs found";
-        setData( "tabs", "message", "noTabs" );
+        setData( "tabs", "state", "noTabs" );
         return;
     }
     else
     {
-        // else if all the parallel jobs have finished and they have been called
-        debug() << "Total # of fetched tabs: " << m_tabs.size();
-
         // sort against tabtype
         QList < QPair < TabsInfo::TabType, KUrl > > sorting;
         foreach ( TabsInfo *item, m_tabs )
