@@ -646,7 +646,7 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     QList < QAction * > actions;
     if( data.contains( MusicBrainz::ARTISTID ) )
     {
-        QAction *action = new QAction( *artistIcon, i18n( "Atrist page" ), menu );
+        QAction *action = new QAction( *artistIcon, i18n( "Artist page" ), menu );
         connect( action, SIGNAL( triggered() ), SLOT( openArtistPage() ) );
         actions << action;
     }
