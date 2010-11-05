@@ -113,6 +113,7 @@ private:
     QGraphicsSimpleTextItem *m_onText;
     QGraphicsLinearLayout *m_actionsLayout;
     QSignalMapper *m_findInSourceSignalMapper;
+    QList<QAction*> m_customActions; // for storing non global actions
 
     int m_rating;
     int m_score;

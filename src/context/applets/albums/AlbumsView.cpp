@@ -159,20 +159,7 @@ AlbumsView::scrollTo( QStandardItem *album )
 void
 AlbumsView::clear()
 {
-    QList< QStandardItem * > items = m_model->takeColumn( 0 );
-    while( !items.isEmpty() )
-    {
-        QStandardItem *item = items.takeFirst();
-        QList< QStandardItem * > kids = item->takeColumn( 0 );
-        while( !kids.isEmpty() )
-        {
-            QStandardItem *kidItem = kids.takeFirst();
-            QList< QStandardItem * > kidskids = kidItem->takeColumn( 0 );
-            qDeleteAll( kidskids );
-        }
-        qDeleteAll( kids );
-    }
-    qDeleteAll( items );
+    qDeleteAll( m_model->findItems(QLatin1String("*"), Qt::MatchWildcard) );
     m_model->clear();
 }
 

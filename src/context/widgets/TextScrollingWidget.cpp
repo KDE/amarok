@@ -65,7 +65,7 @@ public:
 
         if( !textBackground )
         {
-            textBackground = new Plasma::FrameSvg();
+            textBackground = new Plasma::FrameSvg( q );
             textBackground->setImagePath( QLatin1String("widgets/text-background") );
             textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
         }

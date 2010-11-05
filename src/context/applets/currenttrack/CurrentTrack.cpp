@@ -272,10 +272,10 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 void
 CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     if( data.isEmpty() || name != QLatin1String("current") )
         return;
 
+    DEBUG_BLOCK
     clearTrackActions();
     if( data.contains( QLatin1String("notrack" ) ) )
     {
@@ -516,6 +516,8 @@ CurrentTrack::clearTrackActions()
         m_actionsLayout->removeItem( child );
         delete child;
     }
+    qDeleteAll( m_customActions );
+    m_customActions.clear();
 }
 
 void
@@ -712,10 +714,8 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     if( !track )
         return;
 
-    QList<QAction *> actions;
-
     //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
-    actions << The::globalCurrentTrackActions()->actions();
+    QList<QAction *> actions = The::globalCurrentTrackActions()->actions();
 
     using namespace Capabilities;
 
@@ -723,7 +723,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     {
         QScopedPointer<CurrentTrackActionsCapability> cac( track->create<CurrentTrackActionsCapability>() );
         if( cac )
-            actions << cac->customActions();
+            m_customActions << cac->customActions();
     }
 
     if( track->hasCapabilityInterface( Capability::Editable ) )
@@ -734,7 +734,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
                                                i18n("Edit Track Details"), this );
             connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
-            actions << editAction;
+            m_customActions << editAction;
         }
     }
 
@@ -758,38 +758,39 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             act = new QAction( KIcon("current-track-amarok"), i18n("Show Album In Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("album") );
-            actions << act;
+            m_customActions << act;
         }
         if( artist && !artist->name().isEmpty() )
         {
             act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist In Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
-            actions << act;
+            m_customActions << act;
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
             act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer In Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("composer") );
-            actions << act;
+            m_customActions << act;
         }
         if( genre && !genre->name().isEmpty() )
         {
             act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre In Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("genre") );
-            actions << act;
+            m_customActions << act;
         }
         if( year && !year->name().isEmpty() )
         {
             act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year In Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("year") );
-            actions << act;
+            m_customActions << act;
         }
     }
 
+    actions << m_customActions;
     foreach( QAction* action, actions )
     {
         Plasma::IconWidget *icon = addAction( action, 24 );
