@@ -39,8 +39,6 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_fetchGuitar( true )
         , m_fetchBass( true )
 {
-    m_sources << "UltimateGuitar" << "fretplay";
-
     EngineController *engine = The::engineController();
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
@@ -66,7 +64,10 @@ TabsEngine::~TabsEngine()
 QStringList
 TabsEngine::sources() const
 {
-    return m_sources;
+    // one source within the tabs-engine
+    QStringList sources;
+    sources << "tabs";
+    return sources;
 }
 
 /**

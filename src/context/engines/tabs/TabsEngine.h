@@ -102,16 +102,16 @@ class TabsEngine : public DataEngine
 
 
     private:
+
+        /**
+         * available tab sites
+         */
+        enum Source { UltimateGuitar, FretPlay };
+
         /**
          * starts a new tab-search
          */
         void requestTab( QString artist = "", QString title = "" );
-
-        /**
-         * list of our information sources for the tabs
-         */
-        QStringList m_sources;
-        enum Source { UltimateGuitar, FretPlay };
 
         /**
          * The currently playing track
