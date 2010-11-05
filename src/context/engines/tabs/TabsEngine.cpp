@@ -74,21 +74,6 @@ TabsEngine::sources() const
  * When a source that does not currently exist is requested by the
  * consumer, this method is called to give the DataEngine the
  * opportunity to create one.
- *
- * The name of the data source (e.g. the source parameter passed into
- * setData) must be the same as the name passed to sourceRequestEvent
- * otherwise the requesting visualization may not receive notice of a
- * data update.
- *
- * If the source can not be populated with data immediately (e.g. due to
- * an asynchronous data acquisition method such as an HTTP request)
- * the source must still be created, even if it is empty. This can
- * be accomplished in these cases with the follow line:
- *
- *      setData(name, DataEngine::Data());
- *
- * \param source : the name of the source that has been requested
- * \return true if a DataContainer was set up, false otherwise
  */
 bool
 TabsEngine::sourceRequestEvent( const QString& name )
