@@ -113,6 +113,7 @@ class TabsApplet : public Context::Applet
     private slots:
         void connectSource( const QString &source );
         void reloadTabs();
+        void stopped();
 
     private:
         QStandardItemModel *m_model;

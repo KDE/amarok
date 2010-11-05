@@ -56,6 +56,11 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
 }
 
 TabsApplet::~TabsApplet()
@@ -194,6 +199,13 @@ TabsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 }
 
 void
+TabsApplet::stopped()
+{
+    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
+    updateInterface( StoppedState );
+}
+
+void
 TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
@@ -203,7 +215,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     m_model->clear();
     m_tabsView->setTabTextContent( "" );
 
-    if (  data.empty() )
+    if ( data.empty() )
     {
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
         updateInterface ( InitState );
@@ -223,12 +235,6 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     if ( data.contains( "message" ) && message.contains( "Fetching" ) )
     {
         updateInterface( FetchingState );
-        return;
-    }
-    else if ( data.contains( "message" ) && message.contains( "Stopped") )
-    {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
-        updateInterface( StoppedState );
         return;
     }
     else if ( data.contains( "message" ) && message.contains( "noTabs") )

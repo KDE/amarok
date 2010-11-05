@@ -36,13 +36,14 @@ using namespace Context;
  */
 TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
-        , ContextObserver( ContextView::self() )
-        , m_requested( true )
         , m_fetchGuitar( true )
         , m_fetchBass( true )
 {
     m_sources << "UltimateGuitar" << "fretplay";
-    update();
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
 }
 
 /**
@@ -91,9 +92,6 @@ TabsEngine::sources() const
 bool
 TabsEngine::sourceRequestEvent( const QString& name )
 {
-    // someone is asking for data
-    m_requested = true;
-
     QStringList tokens = name.split( ':' );
 
     // data coming from the applet configuration dialogue
@@ -112,7 +110,7 @@ TabsEngine::sourceRequestEvent( const QString& name )
             QString title = tokens.at( 2 );
             removeAllData( name );
             setData( name, QVariant());
-            update( artist, title );
+            requestTab( artist, title );
             return true;
         }
     }
@@ -120,39 +118,63 @@ TabsEngine::sourceRequestEvent( const QString& name )
     // a new track is playing.
     removeAllData( name );
     setData( name, QVariant() );
-    update();
+    requestTab();
 
     return true;
-}
-
-void
-TabsEngine::message( const ContextState& state )
-{
-    if ( state == Current && m_requested )
-        update();
-    else if( state == Home )
-   {
-       removeAllData( "tabs" );
-       setData( "tabs", "message" ,"Stopped" );
-   }
 }
 
 /**
  * called whenever metadata of the current track has changed
  */
 void
-TabsEngine::metadataChanged( Meta::TrackPtr track )
+TabsEngine::update()
 {
-    const bool hasChanged = track->name() != m_titleName || track->artist()->name() != m_artistName;
-    if ( hasChanged )
-        update();
+    DEBUG_BLOCK
+
+    // get the current track
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track )
+    {
+        m_currentTrack = track;
+        Meta::ArtistPtr artistPtr = track->artist();
+        QString newArtist;
+        if( artistPtr )
+        {
+            if (( track->playableUrl().protocol() == "lastfm" ) ||
+                ( track->playableUrl().protocol() == "daap" ) ||
+                !The::engineController()->isStream() )
+                newArtist = artistPtr->name();
+            else
+                newArtist = artistPtr->prettyName();
+        }
+
+        QString newTitle = track->name();
+
+        // check if something changed
+        if( newTitle == m_titleName && newArtist == m_artistName )
+            return; // nothing changed
+
+        // Sends the artist name if exists, "Unkown artist" if not
+        if ( newArtist.isEmpty() )
+            setData( "tabs", "artist", "Unknown artist" );
+
+        // Sends the title name if exists, "Unkown title" if not
+        if ( newTitle.isEmpty() )
+            setData( "tabs", "title", "Unknown title" );
+
+        // stop fetching for unknown artists or titles
+         if ( newTitle.isEmpty() || newArtist.isEmpty() )
+             return;
+
+         requestTab( newArtist, newTitle );
+    }
 }
 
 /**
  * starts a new tab-search
  */
 void
-TabsEngine::update( QString artist, QString title )
+TabsEngine::requestTab( QString artist, QString title )
 {
     DEBUG_BLOCK
 
@@ -163,58 +185,16 @@ TabsEngine::update( QString artist, QString title )
     m_urls.clear();
     removeAllData( "tabs" );
 
-    // get the current track
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
+    m_artistName = artist;
+    m_titleName = title;
 
-    if ( !currentTrack )
-        return;
-
-    if ( artist.isEmpty() )
-    {
-        if ( currentTrack->artist() )
-        {
-            if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
-                   ( currentTrack->playableUrl().protocol() == "daap" ) ||
-                      !The::engineController()->isStream() )
-                m_artistName = currentTrack->artist()->name();
-            else
-                m_artistName = currentTrack->artist()->prettyName();
-        }
-    }
-    else
-    {
-        m_artistName = artist;
-    }
-
-    if ( title.isEmpty() )
-        m_titleName = currentTrack->prettyName();
-    else
-        m_titleName = title;
-
-    // Sends the artist name if exists, "Unkown artist" if not
-    if ( m_artistName.isEmpty() )
-        setData( "tabs", "artist", "Unknown artist" );
-    else
-        setData( "tabs", "artist", m_artistName );
-
-    // Sends the title name if exists, "Unkown title" if not
-    if ( m_titleName.isEmpty() )
-        setData( "tabs", "title", "Unknown title" );
-    else
-        setData( "tabs", "title", m_titleName );
-
-    // stop fetching for unknown artists or titles
-     if ( m_titleName.isEmpty() || m_artistName.isEmpty() )
-         return;
-
-    // send status message "Fetching" to the applet
+    // status update
     setData( "tabs", "message", "Fetching" );
+    setData( "tabs", "title", m_titleName );
+    setData( "tabs", "artist", m_artistName );
 
-    QString searchArtist = QString( m_artistName ).trimmed().replace( " ", "+");
-    QString searchTitle = QString( m_titleName ).trimmed().replace( " ", "+");
+    QString searchArtist = QString( artist ).trimmed().replace( " ", "+");
+    QString searchTitle = QString( title ).trimmed().replace( " ", "+");
 
     // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
     if ( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
@@ -226,7 +206,6 @@ TabsEngine::update( QString artist, QString title )
                                   QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );  // this is a filter for guitar (tabs and chords) + bass
     The::networkAccessManager()->getData( ultimateGuitarUrl, this, SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
     m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
-
 
     // Query fretplay.com (search for song name and filter afterwards according to artist)
     // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
