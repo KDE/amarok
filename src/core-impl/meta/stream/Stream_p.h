@@ -56,8 +56,10 @@ class MetaStream::Track::Private : public QObject
             }
         }
 
+    public Q_SLOTS:
         void currentMetadataChanged( QVariantMap metaData )
         {
+            DEBUG_BLOCK
             if( metaData.value( Meta::Field::URL ) == url.url() )
             {
                 DEBUG_BLOCK

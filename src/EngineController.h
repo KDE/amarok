@@ -549,7 +549,6 @@ private:
     int m_volume;
     bool m_currentIsAudioCd;
 
-    QVariantMap m_currentMetadata;
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
 
     /**

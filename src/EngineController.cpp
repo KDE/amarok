@@ -1151,38 +1151,17 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         {
             Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
             error() << "Stopping playlist.";
+            stop();
             // don't request a new track
         }
         else
         {
-            // request a new track
-            if( m_multiPlayback )
-            {
-                DEBUG_LINE_INFO
-                    m_mutex.lock();
-                m_playWhenFetched = true;
-                m_mutex.unlock();
-                m_multiPlayback->fetchNext();
-                debug() << "The queue has: " << m_media.data()->queue().size() << " tracks in it";
-            }
-            else if( m_multiSource )
-            {
-                debug() << "source error, lets get the next one";
-                KUrl nextSource = m_multiSource->next();
-
-                if ( !nextSource.isEmpty() )
-                { //more sources
-                    m_mutex.lock();
-                    m_playWhenFetched = false;
-                    m_mutex.unlock();
-                    debug() << "playing next source: " << nextSource;
-                    slotPlayableUrlFetched( nextSource );
-                }
-                else if( m_media.data()->queue().isEmpty() )
-                    The::playlistActions()->requestNextTrack();
-            }
-            else if( m_media.data()->queue().isEmpty() )
-                The::playlistActions()->requestNextTrack();
+            // stopping apparently is needed to reset the error.
+            stop();
+            // somehow this still seems to jump over an additional song
+            // but for now at least Amarok continues without further problems.
+            play();
+            slotAboutToFinish();
         }
 
     }
@@ -1280,12 +1259,13 @@ EngineController::slotMetaDataChanged()
         trackChanged = true;
         m_lastTrack = m_currentTrack;
     }
-    debug() << "Track changed: " << trackChanged;
+    debug() << "Track changed: " << trackChanged << "current:" << m_currentTrack.data() << "url"<<m_media.data()->currentSource().url().toString();
 
-    if( isMetadataSpam( m_currentMetadata ) )
+    if( isMetadataSpam( meta ) )
         return;
 
-    emit currentMetadataChanged( m_currentMetadata );
+    debug() << "no spam";
+    emit currentMetadataChanged( meta );
 }
 
 void
@@ -1432,7 +1412,7 @@ EngineController::trackData( Meta::TrackPtr track )
         meta.insert( Meta::Field::ARTIST, track->artist()->prettyName() );
     if( track->album() )
         meta.insert( Meta::Field::ALBUM, track->album()->name() );
-    m_currentMetadata.insert( Meta::Field::TITLE, track->prettyName() );
+    meta.insert( Meta::Field::TITLE, track->prettyName() );
     if( track->genre() )
         meta.insert( Meta::Field::GENRE, track->genre()->prettyName() );
     meta.insert( Meta::Field::TRACKNUMBER, track->trackNumber() );
