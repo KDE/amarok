@@ -68,6 +68,7 @@ private slots:
     void albumsCounted( QString id, QStringList results );
     void genresCounted( QString id, QStringList results );
     void queryCollection();
+    void editTrack();
 
 private:
     QList<QAction*> contextualActions();

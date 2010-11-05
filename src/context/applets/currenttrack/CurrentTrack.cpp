@@ -26,6 +26,7 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "CollectionManager.h"
+#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PaletteHandler.h"
@@ -35,6 +36,7 @@
 #include "context/widgets/DropPixmapItem.h"
 #include "context/widgets/RecentlyPlayedListWidget.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "dialogs/TagDialog.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -45,6 +47,8 @@
 #include <QFont>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QPixmapCache>
 
@@ -350,11 +354,32 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                 delete cac;
             }
         }
+
+        if( track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
+        {
+            Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+            if( ec && ec->isEditable() )
+            {
+                QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+                                                   i18n("&Edit Track Details"), this );
+                Plasma::IconWidget *icon = addAction( editAction, 24 );
+                connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
+                m_actionsLayout->addItem( icon );
+                delete ec;
+            }
+        }
     }
 
     // without that the rating doesn't get update for a playing track
     updateConstraints();
     update();
+}
+
+void
+CurrentTrack::editTrack()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    new TagDialog( track, scene()->views().first() );
 }
 
 void

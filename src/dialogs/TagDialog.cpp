@@ -77,22 +77,19 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
 TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()
-    , m_tracks()
+    , m_tracks( Meta::TrackList() << track )
     , m_trackIterator( m_tracks )   //makes the compiler happy
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
 
-    setCurrentTrack( m_tracks.first() );
-
-    m_tracks.append( track );
-    //we changed the list after creating the iterator, so create a new iterator
-    m_trackIterator = QListIterator< Meta::TrackPtr >( m_tracks );
+    setCurrentTrack( track );
     ui->setupUi( mainWidget() );
     resize( minimumSizeHint() );
     init();
     startDataQuery();
+    QTimer::singleShot( 0, this, SLOT(show()) );
 }
 
 TagDialog::TagDialog( Collections::QueryMaker *qm )
@@ -707,7 +704,7 @@ void TagDialog::init()
     m_removedLabels.clear();
     m_labels.clear();
 
-    m_labelModel = new LabelListModel( m_labels );
+    m_labelModel = new LabelListModel( m_labels, this );
 
     ui->labelsList->setModel( m_labelModel );
     ui->labelsTab->setEnabled( true );
