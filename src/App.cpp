@@ -776,12 +776,6 @@ App::continueInit()
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
     }
-
-    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        The::engineController()->restoreSession();
-    }
     //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
     foreach( const QString& urlString, s_delayedAmarokUrls )
     {

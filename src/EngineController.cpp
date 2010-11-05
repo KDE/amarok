@@ -311,14 +311,14 @@ EngineController::restoreSession()
     if( AmarokConfig::resumePlayback() )
     {
         const KUrl url = AmarokConfig::resumeTrack();
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
-        // Only resume local files, because resuming remote protocols can have weird side effects.
+        // Only give a resume time for local files, because resuming remote protocols can have weird side effects.
         // See: http://bugs.kde.org/show_bug.cgi?id=172897
         if( url.isLocalFile() )
-        {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
             play( track, AmarokConfig::resumeTime() );
-        }
+        else
+            play( track );
     }
 }
 
