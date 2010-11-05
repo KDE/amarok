@@ -19,7 +19,7 @@
 
 #include "core/meta/Meta.h"
 
-#include <Plasma/Label>
+#include <KIcon>
 #include <Plasma/ScrollWidget>
 
 class QGraphicsLinearLayout;
@@ -36,7 +36,6 @@ public:
 
     void startQuery();
     void addTrack( const Meta::TrackPtr &track );
-    void removeLast();
 
 private slots:
     void tracksReturned( QString id, Meta::TrackList );
@@ -44,6 +43,10 @@ private slots:
     void setupTracksData();
 
 private:
+    void removeLast();
+    void removeItem( QGraphicsLayoutItem *item );
+
+    KIcon m_trackIcon;
     Meta::TrackPtr m_currentTrack;
     Meta::TrackList m_recentTracks;
     QGraphicsLinearLayout *m_layout;

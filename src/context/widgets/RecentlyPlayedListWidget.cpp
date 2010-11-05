@@ -25,6 +25,7 @@
 #include <KIcon>
 #include <KSqueezedTextLabel>
 #include <Plasma/IconWidget>
+#include <Plasma/Label>
 
 #include <QDateTime>
 #include <QFontMetricsF>
@@ -34,15 +35,16 @@
 
 RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
+    , m_trackIcon( KIcon( QLatin1String("media-album-track") ) )
 {
-    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     QGraphicsWidget *content = new QGraphicsWidget( this );
-    content->setLayout( m_layout );
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical, content );
     setWidget( content );
 
     EngineController *ec = The::engineController();
     m_currentTrack = ec->currentTrack();
     connect( ec, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
+    startQuery();
 }
 
 RecentlyPlayedListWidget::~RecentlyPlayedListWidget()
@@ -53,13 +55,15 @@ RecentlyPlayedListWidget::~RecentlyPlayedListWidget()
 void
 RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 {
+    if( !track )
+        return;
+
     const QString &name = track->prettyName();
     if( name.isEmpty() )
         return;
 
     QFont font;
     QFontMetricsF fm( font );
-    QGraphicsLinearLayout *itemLayout = new QGraphicsLinearLayout;
 
     QString labelText;
     Meta::ArtistPtr artist = track->artist();
@@ -84,41 +88,36 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 
     Plasma::IconWidget *icon = new Plasma::IconWidget( this );
     QSizeF iconSize = icon->sizeFromIconSize( fm.height() );
+    icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     icon->setMinimumSize( iconSize );
     icon->setMaximumSize( iconSize );
-    icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    icon->setIcon( KIcon( QLatin1String("media-album-track") ) );
+    icon->setIcon( m_trackIcon );
 
+    QGraphicsLinearLayout *itemLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    itemLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     itemLayout->addItem( icon );
     itemLayout->addItem( labelWidget );
     itemLayout->addItem( lastPlayed );
 
     uint time = track->lastPlayed().toTime_t();
-    QMap<uint, QGraphicsLayoutItem*>::const_iterator iBound( m_items.insertMulti( time, itemLayout ) );
-    QMap<uint, QGraphicsLayoutItem*>::const_iterator i = m_items.constEnd();
-    int index = m_layout->count() - 1;
-    while( i-- != iBound )
-        --index;
-    m_layout->insertItem( index, itemLayout );
-}
-
-void
-RecentlyPlayedListWidget::removeLast()
-{
-    if( m_items.isEmpty() )
-        return;
-
-    QGraphicsLayoutItem *item = *m_items.end();
-    m_items.erase( m_items.end() );
-    m_layout->removeItem( item );
-    delete item;
+    m_items.insertMulti( time, itemLayout );
+    int index = 0;
+    QMapIterator<uint, QGraphicsLayoutItem*> i( m_items );
+    while( i.hasNext() )
+    {
+        i.next();
+        if( i.key() == time )
+            break;
+        ++index;
+    }
+    m_layout->insertItem( m_layout->count() - index, itemLayout );
 }
 
 void
 RecentlyPlayedListWidget::startQuery()
 {
     DEBUG_BLOCK
-    m_recentTracks.clear();
+    clear();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     connect( qm, SIGNAL(newResultReady(QString, Meta::TrackList)),
@@ -136,13 +135,11 @@ RecentlyPlayedListWidget::startQuery()
 void
 RecentlyPlayedListWidget::trackChanged( Meta::TrackPtr track )
 {
-    if( !track )
+    // "track" is the new song being played, so it hasn't finished yet.
+    if( track == m_currentTrack )
         return;
-    if( track != m_currentTrack )
-        return;
-
+    addTrack( m_currentTrack );
     m_currentTrack = track;
-    addTrack( track );
     removeLast();
 }
 
@@ -151,12 +148,10 @@ RecentlyPlayedListWidget::clear()
 {
     int count = m_layout->count();
     while( --count >= 0 )
-    {
-        QGraphicsLayoutItem *child = m_layout->itemAt( 0 );
-        m_layout->removeItem( child );
-        delete child;
-    }
+        removeItem( m_layout->itemAt( 0 ) );
     m_items.clear();
+    m_currentTrack.clear();
+    m_recentTracks.clear();
 }
 
 void
@@ -173,6 +168,28 @@ RecentlyPlayedListWidget::setupTracksData()
     foreach( const Meta::TrackPtr &track, m_recentTracks )
         addTrack( track );
     m_recentTracks.clear();
+}
+
+void
+RecentlyPlayedListWidget::removeLast()
+{
+    if( m_items.isEmpty() )
+        return;
+
+    QGraphicsLayoutItem *item = m_items.begin().value();
+    m_items.erase( m_items.begin() );
+    removeItem( item );
+}
+
+void
+RecentlyPlayedListWidget::removeItem( QGraphicsLayoutItem *item )
+{
+    QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout*>( item );
+    m_layout->removeItem( layout );
+    int count = layout->count();
+    while( --count >= 0 )
+        delete layout->itemAt( 0 );
+    delete layout;
 }
 
 #include "RecentlyPlayedListWidget.moc"

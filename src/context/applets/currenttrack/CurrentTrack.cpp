@@ -294,7 +294,6 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_album->hide();
         m_recentWidget->show();
         m_recentHeader->show();
-        m_recentWidget->startQuery();
         m_albumCover->setPixmap( amarokLogo(m_albumWidth) );
         m_albumCover->graphicsItem()->setAcceptDrops( false );
         updateConstraints();
