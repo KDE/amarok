@@ -11,7 +11,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ * this program.  if not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "TabsApplet"
@@ -215,7 +215,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     m_model->clear();
     m_tabsView->setTabTextContent( "" );
 
-    if ( data.empty() )
+    if( data.empty() )
     {
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
         updateInterface ( InitState );
@@ -227,30 +227,30 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     const QString message    = data[ "message" ].toString();
 
     // update artist and title in the headerlabel
-    if ( !artistName.isEmpty()  && !titleName.isEmpty() )
+    if( !artistName.isEmpty()  && !titleName.isEmpty() )
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
     else
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
 
-    if ( data.contains( "message" ) && message.contains( "Fetching" ) )
+    if( data.contains( "message" ) && message.contains( "Fetching" ) )
     {
         updateInterface( FetchingState );
         return;
     }
-    else if ( data.contains( "message" ) && message.contains( "noTabs") )
+    else if( data.contains( "message" ) && message.contains( "noTabs") )
     {
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
         updateInterface( NoTabsState );
         return;
     }
-    else if ( data.contains( "message" ) )
+    else if( data.contains( "message" ) )
     {
-        // if we get a message, show it
+        // if(we get a message, show it
         m_tabsView->setTabTextContent( message );
         updateInterface( MsgState );
         return;
     }
-    else if ( artistName.isEmpty() && titleName.isEmpty() )
+    else if( artistName.isEmpty() && titleName.isEmpty() )
     {
         // special case for incomplete artists and title names
         m_tabsView->setTabTextContent( i18n( "No valid artist and titlename found for the current track." ) );
@@ -263,16 +263,16 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     for ( int i = 0; i < data.size(); i++ )
     {
         const QString tabId = QString( "tabs:" ).append( QString::number( i ) );
-        if ( data.contains( tabId ) )
+        if( data.contains( tabId ) )
         {
             TabsInfo *item = data[ tabId ].value<TabsInfo *>() ;
-            if ( item )
+            if( item )
             {
                 TabsItem *tabsItem = new TabsItem();
                 tabsItem->setTab( item );
 
                 m_model->appendRow( tabsItem );
-                if ( !tabFound )
+                if( !tabFound )
                 {
                     // update the applet and display the first tab in list
                     m_tabsView->showTab( tabsItem );
@@ -290,7 +290,7 @@ TabsApplet::updateInterface( AppletState appletState )
     DEBUG_BLOCK
     m_currentState = appletState;
 
-    if ( appletState == FetchingState )
+    if( appletState == FetchingState )
         setBusy( true );
     else
         setBusy( false );
@@ -338,9 +338,9 @@ TabsApplet::createConfigurationInterface( KConfigDialog *parent )
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
 
-    if ( m_fetchGuitar )
+    if( m_fetchGuitar )
         ui_Settings.cbFetchGuitar->setChecked( true );
-    if ( m_fetchBass )
+    if( m_fetchBass )
         ui_Settings.cbFetchBass->setChecked( true );
 
     parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system");
@@ -380,7 +380,7 @@ TabsApplet::reloadTabs()
     {
         artistName = ui_reloadDialog.artistLineEdit->text();
         titleName = ui_reloadDialog.titleLineEdit->text();
-        if ( !artistName.isEmpty() && !titleName.isEmpty() )
+        if( !artistName.isEmpty() && !titleName.isEmpty() )
             dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:" ).append( artistName ).append( QString( ":AMAROK_TOKEN:").append( titleName ) ) );
     }
 }

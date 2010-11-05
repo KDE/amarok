@@ -95,16 +95,16 @@ TabsEngine::sourceRequestEvent( const QString& name )
     QStringList tokens = name.split( ':' );
 
     // data coming from the applet configuration dialogue
-    if ( tokens.contains( "fetchGuitar" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "fetchGuitar" ) )  && ( tokens.size() > 2 ) )
+    if( tokens.contains( "fetchGuitar" ) && tokens.size() > 1 )
+        if( ( tokens.at( 1 ) == QString( "fetchGuitar" ) )  && ( tokens.size() > 2 ) )
             m_fetchGuitar = tokens.at( 2 ).toInt();
-    if ( tokens.contains( "fetchBass" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "fetchBass" ) )  && ( tokens.size() > 2 ) )
+    if( tokens.contains( "fetchBass" ) && tokens.size() > 1 )
+        if( ( tokens.at( 1 ) == QString( "fetchBass" ) )  && ( tokens.size() > 2 ) )
             m_fetchBass = tokens.at( 2 ).toInt();
-    if ( name.contains( ":AMAROK_TOKEN:" ) && tokens.size() == 5 )
+    if( name.contains( ":AMAROK_TOKEN:" ) && tokens.size() == 5 )
     {
         tokens = name.split( ":AMAROK_TOKEN:" );
-        if ( tokens.size() == 3 )
+        if( tokens.size() == 3 )
         {
             QString artist = tokens.at( 1 );
             QString title = tokens.at( 2 );
@@ -140,7 +140,7 @@ TabsEngine::update()
         QString newArtist;
         if( artistPtr )
         {
-            if (( track->playableUrl().protocol() == "lastfm" ) ||
+            if(( track->playableUrl().protocol() == "lastfm" ) ||
                 ( track->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
                 newArtist = artistPtr->name();
@@ -155,15 +155,15 @@ TabsEngine::update()
             return; // nothing changed
 
         // Sends the artist name if exists, "Unkown artist" if not
-        if ( newArtist.isEmpty() )
+        if( newArtist.isEmpty() )
             setData( "tabs", "artist", "Unknown artist" );
 
         // Sends the title name if exists, "Unkown title" if not
-        if ( newTitle.isEmpty() )
+        if( newTitle.isEmpty() )
             setData( "tabs", "title", "Unknown title" );
 
         // stop fetching for unknown artists or titles
-         if ( newTitle.isEmpty() || newArtist.isEmpty() )
+         if( newTitle.isEmpty() || newArtist.isEmpty() )
              return;
 
          requestTab( newArtist, newTitle );
@@ -197,7 +197,7 @@ TabsEngine::requestTab( QString artist, QString title )
     QString searchTitle = QString( title ).trimmed().replace( " ", "+");
 
     // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
-    if ( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
+    if( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
         searchArtist.remove( "The+", Qt::CaseInsensitive );
 
     // Query UltimateGuitar.com
@@ -239,7 +239,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
     // get and parse the result
     const QString result( data );
     const QString resultsTable = subStringBetween( result, "class=\"tresults\">", "</table>" );
-    if ( !resultsTable.isEmpty() )
+    if( !resultsTable.isEmpty() )
     {
         const QStringList results = resultsTable.split( "</tr>" );
         foreach ( QString result, results )
@@ -247,7 +247,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
             // lastIndex on purpose (due to the fact that tabledata for the first result contains two hrefs)
             // get the link to the actual tab
             const QString tabUrl = subStringBetween( result, "a href=\"", "\" class", true );
-            if ( !tabUrl.isEmpty() )
+            if( !tabUrl.isEmpty() )
             {
                 // fetch the the actual tab
                 const KUrl tabFetchUrl = KUrl( tabUrl );
@@ -281,7 +281,7 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
     // TODO: is this valid in all cases?
     // without fromLatin1, umlauts in german tabs are not displayed correctly
     QString result;
-    if ( QTextCodec::codecForUtfText( data )->name().contains( "ISO-8859-1" ) )
+    if( QTextCodec::codecForUtfText( data )->name().contains( "ISO-8859-1" ) )
         result = QString::fromLatin1( data );
     else
         result = QString( data );
@@ -293,12 +293,12 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
 
     TabsInfo::TabType tabType = TabsInfo::GUITAR;
     const QString tabTypeString = subStringBetween( result, "<title>", " by " );
-    if ( tabTypeString.contains( "bass", Qt::CaseInsensitive ) )
+    if( tabTypeString.contains( "bass", Qt::CaseInsensitive ) )
         tabType = TabsInfo::BASS;
 
-    if ( !tabs.isEmpty() )
+    if( !tabs.isEmpty() )
     {
-        if ( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
+        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
         {
             TabsInfo *item = new TabsInfo;
             item->url      = url;
@@ -339,17 +339,17 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
     // get and parse the result, we searched for song name, so filter out the artist
     const QString result ( data );
     const QString resultsTable = subStringBetween( result, "<H2>Matching guitar tabs and chords</H2>", "</div>" );
-    if ( !resultsTable.isEmpty() )
+    if( !resultsTable.isEmpty() )
     {
         QStringList results = resultsTable.split( "<BR>" );
         foreach ( QString result, results )
         {
             const QString artist = subStringBetween( result, "\">", "</a>" );
-            if ( artist.compare( m_artistName, Qt::CaseInsensitive ) == 0 )
+            if( artist.compare( m_artistName, Qt::CaseInsensitive ) == 0 )
             {
                 // lastIndex on purpose (due to the fact that tabledata for the first url contains the artist tabs, second the title tab
                 const KUrl tabFetchUrl = KUrl( subStringBetween( result,  "a href=\"", "\" title", true ) );
-                if ( !tabFetchUrl.url().isEmpty() )
+                if( !tabFetchUrl.url().isEmpty() )
                 {
                     // Query fretplay.com for the specific tab using the url found in the results
                     The::networkAccessManager()->getData( tabFetchUrl, this, SLOT( resultFretplayTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
@@ -383,7 +383,7 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
     // TODO: is this valid in all cases?
     // without fromLatin1, umlauts in german tabs are not displayed correctly
     QString result;
-    if ( QTextCodec::codecForUtfText( data )->name().contains( "ISO-8859-1" ) )
+    if( QTextCodec::codecForUtfText( data )->name().contains( "ISO-8859-1" ) )
         result = QString::fromLatin1( data );
     else
         result = QString( data );
@@ -394,14 +394,14 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
     tabs.replace( "</span>", "");
 
     TabsInfo::TabType tabType = TabsInfo::GUITAR;
-    if ( title.contains( "Bass", Qt::CaseInsensitive ) )
+    if( title.contains( "Bass", Qt::CaseInsensitive ) )
         tabType = TabsInfo::BASS;
 
     title.replace( "Bass tabs", "");
     title.replace( "Guitar tabs", "");
-    if ( !tabs.isEmpty() )
+    if( !tabs.isEmpty() )
     {
-        if ( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
+        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
         {
             TabsInfo *item = new TabsInfo;
             item->url      = url;
@@ -423,13 +423,13 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
 void
 TabsEngine::resultFinalize()
 {
-    if ( m_urls.count() > 0 )
+    if( m_urls.count() > 0 )
         return;
 
     // remove previous messages
     removeData( "tabs", "message" );
 
-    if ( m_tabs.size() == 0 )
+    if( m_tabs.size() == 0 )
     {
         debug() << "No tabs found";
         setData( "tabs", "message", "noTabs" );
@@ -451,7 +451,7 @@ TabsEngine::resultFinalize()
             debug() << " Title: " << item->title << " (" << item->url << ")";
 
         // if the song hasn't change while fetching, we sent the data
-        if ( m_currentTrack != The::engineController()->currentTrack() )
+        if( m_currentTrack != The::engineController()->currentTrack() )
             return;
 
         // otherwise send the fetched data to the subscribed applets
@@ -461,7 +461,7 @@ TabsEngine::resultFinalize()
         {
             foreach ( TabsInfo *item, m_tabs)
             {
-                if ( (*i).second == item->url )
+                if( (*i).second == item->url )
                 {
                     QVariant var;
                     var.setValue<TabsInfo *>( item );
@@ -481,17 +481,17 @@ TabsEngine::subStringBetween( const QString src, const QString from, const QStri
 {
     int startIdx;
 
-    if ( lastIndexForFrom )
+    if( lastIndexForFrom )
         startIdx = src.lastIndexOf( from );
     else
         startIdx = src.indexOf( from );
 
-    if ( startIdx == -1 )
+    if( startIdx == -1 )
         return QString();
     startIdx += from.length();
 
     int endIdx = src.indexOf( to, startIdx );
-    if ( endIdx == -1 )
+    if( endIdx == -1 )
         return QString();
 
     return src.mid( startIdx, endIdx - startIdx );
