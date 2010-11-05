@@ -66,7 +66,7 @@ class UpnpTrack : public Meta::Track
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+        virtual void setYear ( int year );
 
         virtual void setTitle( const QString &newTitle );
 
@@ -95,7 +95,7 @@ class UpnpTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
+        virtual QDateTime lastPlayed() const;
         virtual int playCount() const;
 
         virtual QString type() const;
@@ -244,7 +244,7 @@ class UpnpComposer : public Meta::Composer
 class UpnpYear : public Meta::Year
 {
     public:
-        UpnpYear( const QString &name );
+        UpnpYear( int year );
         virtual ~UpnpYear();
 
         virtual QString name() const;

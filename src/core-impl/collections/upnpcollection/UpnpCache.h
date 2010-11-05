@@ -26,7 +26,7 @@ typedef QMap<QString, Meta::TrackPtr> TrackMap;
 typedef QMap<QString, Meta::ArtistPtr> ArtistMap;
 typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 typedef QMap<QString, Meta::GenrePtr> GenreMap;
-typedef QMap<QString, Meta::YearPtr> YearMap;
+typedef QMap<int, Meta::YearPtr> YearMap;
 
 namespace Collections {
 
@@ -41,7 +41,7 @@ public:
     Meta::ArtistPtr getArtist( const QString &name );
     Meta::AlbumPtr getAlbum( const QString& name, const QString& artist = QString() );
     Meta::GenrePtr getGenre( const QString &name );
-    Meta::YearPtr getYear( const QString &name );
+    Meta::YearPtr getYear( int name );
 
     void removeTrack( Meta::TrackPtr track );
 

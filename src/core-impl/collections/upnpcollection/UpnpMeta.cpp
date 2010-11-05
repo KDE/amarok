@@ -262,10 +262,10 @@ UpnpTrack::playCount() const
     return 0;
 }
 
-uint
+QDateTime
 UpnpTrack::lastPlayed() const
 {
-    return 0;
+    return QDateTime::fromTime_t(0);
 }
 
 QString
@@ -634,7 +634,7 @@ UpnpComposer::removeTrack( UpnpTrackPtr track )
 
 //UpnpYear
 
-UpnpYear::UpnpYear( const QString &name )
+UpnpYear::UpnpYear( int name )
     : Meta::Year()
     , m_name( name )
     , m_tracks()

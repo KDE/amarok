@@ -164,7 +164,7 @@ Meta::GenrePtr UpnpCache::getGenre(const QString& name)
     return m_genreMap[name];
 }
 
-Meta::YearPtr UpnpCache::getYear(const QString& name)
+Meta::YearPtr UpnpCache::getYear(int name)
 {
     if( m_yearMap.contains( name ) )
         return m_yearMap[name];
@@ -181,7 +181,7 @@ void UpnpCache::removeTrack( Meta::TrackPtr t )
     DOWNCAST( Artist, m_artistMap[ track->artist()->name() ] )->removeTrack( track );
     DOWNCAST( Album, m_albumMap[ track->album()->name() ] )->removeTrack( track );
     DOWNCAST( Genre, m_genreMap[ track->genre()->name() ] )->removeTrack( track );
-    DOWNCAST( Year, m_yearMap[ track->year()->name() ] )->removeTrack( track );
+    DOWNCAST( Year, m_yearMap[ track->year()->year() ] )->removeTrack( track );
 #undef DOWNCAST
     m_trackMap.remove( track->uidUrl() );
 }

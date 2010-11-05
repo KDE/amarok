@@ -499,7 +499,7 @@ DEBUG_BLOCK
         Meta::DataList ret;
         Meta::UpnpTrack *fake = new Meta::UpnpTrack( m_collection );
         fake->setTitle( "No results" );
-        fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( "2010" ) ) );
+        fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( 2010 ) ) );
         Meta::DataPtr ptr( fake );
         ret << ptr;
         //emit newResultReady( m_collection->collectionId(), ret );
