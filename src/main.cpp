@@ -116,6 +116,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, bug squashing (Mamarok)"), "myriam@kde.org" );
         ocsData.addCredit( "Mamarok", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Nikhil Marathe"), ki18n("UPnP support and patches (nsm)"), "nsm.nikhil@gmail.com" );
+        ocsData.addCredit( "nikhilm", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n("Artwork"), "nuno@oxygen-icons.org" );
         ocsData.addCredit( "nunopinheirokde", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Olivier Bédard"), ki18n("Website hosting"), "paleo@pwsp.net" );
