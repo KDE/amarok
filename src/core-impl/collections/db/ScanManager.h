@@ -161,9 +161,12 @@ class XmlParseJob : public ThreadWeaver::Job
         void addNewXmlData( const QString &data );
         void requestAbort();
 
-    signals:
+    Q_SIGNALS:
         void totalSteps( const QObject *o, int totalSteps );
         void step( const QObject *o );
+
+    private Q_SLOTS:
+        void trackCommitted();
 
     private:
         Collections::DatabaseCollection *m_collection;

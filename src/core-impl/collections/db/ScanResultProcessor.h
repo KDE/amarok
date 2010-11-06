@@ -19,6 +19,8 @@
 #ifndef AMAROK_DATABASE_SCANRESULTPROCESSOR_H
 #define AMAROK_DATABASE_SCANRESULTPROCESSOR_H
 
+#include "core/meta/Meta.h"
+
 #include <QFileInfo>
 #include <QList>
 #include <QMap>
@@ -89,21 +91,28 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         virtual ~ScanResultProcessor();
 
         /** Submits a new directory for processing.
-         *  ScanResulProcessor takes ownership of the pointer.
-         */
+            ScanResulProcessor takes ownership of the pointer.
+        */
         void addDirectory( CollectionScanner::Directory *dir );
 
         void commit();
         void rollback();
 
+    Q_SIGNALS:
+        /** This signal is emitted after a track was written to the database.
+        */
+        void trackCommitted( Meta::TrackPtr track );
+
     protected:
         virtual void commitAlbum( const CollectionScanner::Album *album, int directoryId ) = 0;
         virtual void commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId = -1 ) = 0;
 
-        /** Deletes all directories (and its tracks) not contained in m_foundDirectories */
+        /** Deletes all directories (and its tracks) not contained in m_foundDirectories
+        */
         virtual void deleteDeletedDirectories() = 0;
 
-        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
+        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks.
+        */
         virtual void deleteDeletedTracks( int dirId ) = 0;
 
         Collections::DatabaseCollection *m_collection;

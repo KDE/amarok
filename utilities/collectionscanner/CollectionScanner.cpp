@@ -28,7 +28,6 @@
 
 #include "shared/Version.h"  // for AMAROK_VERSION
 
-#include <QTextStream>
 #include <QTimer>
 #include <QThread>
 
@@ -42,6 +41,8 @@
 #include <QSharedMemory>
 #include <QByteArray>
 #include <QTextStream>
+#include <QDataStream>
+#include <QBuffer>
 #include <QDebug>
 
 #include <audiblefiletyperesolver.h>
@@ -62,6 +63,7 @@ main( int argc, char *argv[] )
 
 CollectionScanner::ScanningState::ScanningState()
         : m_sharedMemory(0)
+        , m_lastFilePos(0)
 {
 }
 
@@ -75,8 +77,7 @@ CollectionScanner::ScanningState::setKey( const QString &key )
 {
     delete m_sharedMemory;
     m_sharedMemory = new QSharedMemory( key );
-    if( m_sharedMemory->attach() )
-        readFull();
+    m_sharedMemory->attach();
 }
 
 bool
@@ -137,11 +138,24 @@ CollectionScanner::ScanningState::setLastFile( const QString &file )
     if( file == m_lastFile )
         return;
 
-    m_sharedMemory->lock();
-    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
-    QTextStream out( &data );
-    out.seek( m_lastFilePos );
+    if( !isValid() )
+        return;
+
+    QBuffer buffer;
+    QDataStream out(&buffer);
+
+    buffer.open(QBuffer::WriteOnly);
+
     out << m_lastFile;
+    int size = buffer.size();
+
+    if( size + m_lastFilePos < m_sharedMemory->size() )
+    {
+        char *to = (char*)m_sharedMemory->data();
+        const char *from = buffer.data().data();
+        memcpy(to + m_lastFilePos, from, size);
+    }
+
     m_sharedMemory->unlock();
 }
 
@@ -151,33 +165,17 @@ CollectionScanner::ScanningState::readFull()
     if( !isValid() )
         return;
 
-    m_sharedMemory->lock();
-    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
-    QTextStream in(&data, QIODevice::ReadOnly);
+    QBuffer buffer;
+    QDataStream in(&buffer);
 
-    int count;
+    m_sharedMemory->lock();
+    buffer.setData((char*)m_sharedMemory->constData(), m_sharedMemory->size());
+    buffer.open(QBuffer::ReadOnly);
 
     in >> m_lastDirectory;
-
-    m_directories.clear();
-    in >> count;
-    for( int i=0; i<count; i++ )
-    {
-        QString s;
-        in >> s;
-        m_directories.append( s );
-    }
-
-    m_badFiles.clear();
-    in >> count;
-    for( int i=0; i<count; i++ )
-    {
-        QString s;
-        in >> s;
-        m_badFiles.append( s );
-    }
-
-    m_lastFilePos = in.pos();
+    in >> m_directories;
+    in >> m_badFiles;
+    m_lastFilePos = buffer.pos();
     in >> m_lastFile;
 
     m_sharedMemory->unlock();
@@ -189,19 +187,26 @@ CollectionScanner::ScanningState::writeFull()
     if( !isValid() )
         return;
 
+    QBuffer buffer;
+    QDataStream out(&buffer);
+
     m_sharedMemory->lock();
-    QByteArray data = QByteArray::fromRawData((char*)m_sharedMemory->data(), m_sharedMemory->size());
-    QTextStream out( &data );
+    buffer.open(QBuffer::WriteOnly);
+
     out << m_lastDirectory;
-    out << m_directories.count();
-    foreach( const QString &s, m_directories )
-        out << s;
-    out << m_badFiles.count();
-    foreach( const QString &s, m_badFiles )
-        out << s;
-    m_lastFilePos = out.pos();
+    out << m_directories;
+    out << m_badFiles;
+    m_lastFilePos = buffer.pos();
     out << m_lastFile;
-    qWarning("shared memory at %d of %d", out.pos(), m_sharedMemory->size());
+    int size = buffer.size();
+
+    if( size < m_sharedMemory->size() )
+    {
+        char *to = (char*)m_sharedMemory->data();
+        const char *from = buffer.data().data();
+        memcpy(to, from, size);
+    }
+
     m_sharedMemory->unlock();
 }
 
@@ -288,6 +293,7 @@ CollectionScanner::Scanner::doJob() //SLOT
     // -- when restarting read them from the shared memory
     if( m_restart && m_scanningState.isValid() )
     {
+        m_scanningState.readFull();
         QString lastEntry = m_scanningState.lastDirectory();
         entries = m_scanningState.directories();
 

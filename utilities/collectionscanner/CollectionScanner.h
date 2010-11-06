@@ -51,6 +51,7 @@ class ScanningState
 
         void setKey( const QString &key );
         bool isValid() const;
+        void readFull();
 
         QString lastDirectory() const;
         void setLastDirectory( const QString &dir );
@@ -63,7 +64,6 @@ class ScanningState
         void setLastFile( const QString &file );
 
     private:
-        void readFull();
         void writeFull();
 
         QSharedMemory *m_sharedMemory;

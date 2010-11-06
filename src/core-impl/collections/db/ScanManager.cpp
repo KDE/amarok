@@ -60,12 +60,13 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
     : QObject( parent )
     , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
     , m_scanner( 0 )
-    , m_parser( 0 )
     , m_scannerStateMemory( 0 )
+    , m_parser( 0 )
     , m_restartCount( 0 )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
     , m_fullScan( false )
+    , m_mutex( QMutex::Recursive )
 {
    // Using QTimer, so that we won't block the GUI
     QTimer::singleShot( WATCH_INTERVAL / 2, this, SLOT( slotCheckScannerVersion() ) );
@@ -204,6 +205,8 @@ void ScanManager::startScanner()
                  Qt::QueuedConnection );
     }
 
+    m_restartCount = 0;
+
     // -- Create the scanner process
     startScannerProcess( false );
 
@@ -224,9 +227,9 @@ ScanManager::startScannerProcess( bool restart )
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )
     {
-        m_sharedMemoryKey = "AmarokScannerMemory"+QDateTime::current().toString();
+        m_sharedMemoryKey = "AmarokScannerMemory"+QDateTime::currentDateTime().toString();
         m_scannerStateMemory = new QSharedMemory( m_sharedMemoryKey, this );
-        if( !m_scannerStateMemory.create( SHARED_MEMORY_SIZE ) )
+        if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {
             warning() << "Unable to create shared memory for collection scanner";
             delete m_scannerStateMemory;
@@ -438,7 +441,7 @@ ScanManager::handleRestart()
 }
 
 void
-ScanManager::stopParser()
+ScanManager::stopScanner()
 {
     // stop the scanner
     disconnect( m_scanner, 0, this, 0 );
@@ -490,6 +493,8 @@ void
 XmlParseJob::run()
 {
     ScanResultProcessor *processor = m_collection->getNewScanResultProcessor( m_scanType );
+    connect( processor, SIGNAL( trackCommitted( Meta::TrackPtr ) ),
+             this, SLOT( trackCommitted() ) );
 
     bool finished = false;
     int count = 0;
@@ -515,7 +520,7 @@ XmlParseJob::run()
                 {
                 debug() << "XmlParseJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
                     emit totalSteps( this,
-                                     m_reader.attributes().value( "count" ).toString().toInt() );
+                                     m_reader.attributes().value( "count" ).toString().toInt() * 2);
                 }
                 else if( name == "directory" )
                 {
@@ -531,10 +536,6 @@ XmlParseJob::run()
             {
                 if( m_reader.name() == "scanner" ) // ok. finished
                     finished = true;
-            }
-            else
-            {
-                debug() << "XmlParseJob: strage element" << m_reader.name();
             }
         }
         m_mutex.unlock();
@@ -593,6 +594,12 @@ XmlParseJob::requestAbort()
     m_abortRequested = true;
     m_wait.wakeOne();
     m_mutex.unlock();
+}
+
+void
+XmlParseJob::trackCommitted()
+{
+    emit step( this );
 }
 
 
