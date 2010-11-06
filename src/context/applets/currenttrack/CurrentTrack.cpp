@@ -41,7 +41,6 @@
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
-#include <KIconEffect>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
 
@@ -51,7 +50,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
-#include <QPixmapCache>
 #include <QScopedPointer>
 #include <QSignalMapper>
 
@@ -294,7 +292,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_album->hide();
         m_recentWidget->show();
         m_recentHeader->show();
-        m_albumCover->setPixmap( amarokLogo(m_albumWidth) );
+        m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
         m_albumCover->graphicsItem()->setAcceptDrops( false );
         updateConstraints();
         update();
@@ -502,7 +500,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p )
 
     if( m_sourceEmblemPath.isEmpty() )
     {
-        QPixmap logo = amarokLogo( m_albumWidth );
+        QPixmap logo = Amarok::semiTransparentLogo( m_albumWidth );
         QRect rect = logo.rect();
         int y = standardPadding();
         int x = boundingRect().width() - rect.width() - y;
@@ -559,23 +557,6 @@ CurrentTrack::resizeCover( const QPixmap &cover, qreal width )
     }
     m_albumCover->setPixmap( coverWithBorders );
     m_albumCover->graphicsItem()->setAcceptDrops( true );
-}
-
-QPixmap
-CurrentTrack::amarokLogo( int dim ) const
-{
-    QPixmap logo;
-    #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokGraySemiTransparentIcon")
-    if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
-    {
-        QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
-        KIconEffect::toGray( amarokIcon, 1 );
-        KIconEffect::semiTransparent( amarokIcon );
-        logo = QPixmap::fromImage( amarokIcon );
-        QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
-    }
-    #undef AMAROK_LOGO_CACHE_KEY
-    return logo;
 }
 
 void

@@ -193,6 +193,13 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
 
+    /**
+     * Creates a semi-transparent Amarok logo for suitable for painting.
+     * @param dim width of the logo
+     * @return A QPixmap of the logo
+     */
+    AMAROK_CORE_EXPORT QPixmap semiTransparentLogo( int dim );
+
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
     inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }

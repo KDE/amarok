@@ -18,6 +18,7 @@
 #define DEBUG_PREFIX "UpcomingEventsWidget"
 
 #include "UpcomingEventsWidget.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 
@@ -152,21 +153,19 @@ UpcomingEventsWidget::createLabel( const QString &text, QSizePolicy::Policy hPol
 void
 UpcomingEventsWidget::setImage( const KUrl &url )
 {
-    if( !url.isValid() )
+    if( url.isValid() )
     {
-        m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 120 ) );
-        return;
+        m_imageUrl = url;
+        QPixmap pixmap;
+        if( QPixmapCache::find(url.url(), &pixmap) )
+        {
+            m_image->setPixmap( pixmap );
+            return;
+        }
+        QNetworkReply *reply = The::networkAccessManager()->get( QNetworkRequest(url) );
+        connect( reply, SIGNAL(finished()), SLOT(loadImage()), Qt::QueuedConnection );
     }
-
-    m_imageUrl = url;
-    QPixmap pixmap;
-    if( QPixmapCache::find(url.url(), &pixmap) )
-    {
-        m_image->setPixmap( pixmap );
-        return;
-    }
-    QNetworkReply *reply = The::networkAccessManager()->get( QNetworkRequest(url) );
-    connect( reply, SIGNAL(finished()), SLOT(loadImage()), Qt::QueuedConnection );
+    m_image->setPixmap( Amarok::semiTransparentLogo( 120 ) );
 }
 
 void

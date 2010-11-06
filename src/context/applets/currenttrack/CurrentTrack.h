@@ -81,7 +81,6 @@ private:
     void drawSourceEmblem( QPainter *const p );
     void resizeCover( const QPixmap &cover, qreal width );
     void setupLayoutActions( Meta::TrackPtr track );
-    QPixmap amarokLogo( int dimension ) const;
 
     // aligns the second QGI to be at the same level as the first (the font baseline)
     void alignBaseLineToFirst( TextScrollingWidget *a, QGraphicsSimpleTextItem *b );

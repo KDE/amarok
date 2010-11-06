@@ -24,6 +24,7 @@
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PaletteHandler.h"
@@ -178,7 +179,6 @@ ArtistWidget::fetchPhoto()
 {
     // display a message for the user while the fetch of the picture
     m_image->clear();
-    m_image->setText( i18n( "Loading the picture..." ) );
 
     QPixmap image;
     if( QPixmapCache::find( m_artist->urlImage().url(), &image ) )
@@ -186,6 +186,7 @@ ArtistWidget::fetchPhoto()
         m_image->setPixmap( image );
         return;
     }
+    m_image->setPixmap( Amarok::semiTransparentLogo( 120 ) );
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
          SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)), Qt::QueuedConnection );
 }
@@ -263,7 +264,7 @@ ArtistWidget::setDescription( const QString &description )
     if( description.isEmpty() )
     {
         m_descLayout.clearLayout();
-        m_descLayout.setText( i18n( "No description available in your language" ) );
+        m_descLayout.setText( i18n( "No description available." ) );
     }
     else
     {

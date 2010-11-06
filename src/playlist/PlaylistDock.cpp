@@ -52,6 +52,27 @@ Playlist::Dock::Dock( QWidget* parent )
     setAllowedAreas( Qt::AllDockWidgetAreas );
 }
 
+Playlist::PrettyListView *
+Playlist::Dock::currentView()
+{
+    ensurePolish();
+    return m_playlistView;
+}
+
+Playlist::SortWidget *
+Playlist::Dock::sortWidget()
+{
+    ensurePolish();
+    return m_sortWidget;
+}
+
+Playlist::ProgressiveSearchWidget *
+Playlist::Dock::searchWidget()
+{
+    ensurePolish();
+    return m_searchWidget;
+}
+
 void
 Playlist::Dock::polish()
 {

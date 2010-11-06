@@ -422,7 +422,7 @@ Playlist::Actions::normalizeDynamicPlaylist()
 void
 Playlist::Actions::repaintPlaylist()
 {
-    The::mainWindow()->playlistDock().data()->currentView()->repaint();
+    The::mainWindow()->playlistDock()->currentView()->repaint();
 }
 
 void

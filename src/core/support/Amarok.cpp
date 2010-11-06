@@ -21,15 +21,18 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/playlists/PlaylistFormat.h"
 
-#include <QDateTime>
-#include <QTextDocument>
-
 #include <KCalendarSystem>
 #include <KConfigGroup>
 #include <KDirLister>
 #include <KGlobalSettings>
+#include <KIcon>
+#include <KIconEffect>
 #include <KStandardDirs>
 #include <KUniqueApplication>
+
+#include <QDateTime>
+#include <QPixmapCache>
+#include <QTextDocument>
 
 QWeakPointer<KActionCollection> Amarok::actionCollectionObject;
 QMutex Amarok::globalDirsMutex;
@@ -323,6 +326,22 @@ namespace Amarok
         }
 
         return s;
+    }
+
+    QPixmap semiTransparentLogo( int dim )
+    {
+        QPixmap logo;
+        #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokSemiTransparentLogo")+QString::number(dim)
+        if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
+        {
+            QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
+            KIconEffect::toGray( amarokIcon, 1 );
+            KIconEffect::semiTransparent( amarokIcon );
+            logo = QPixmap::fromImage( amarokIcon );
+            QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
+        }
+        #undef AMAROK_LOGO_CACHE_KEY
+        return logo;
     }
 
 } // End namespace Amarok
