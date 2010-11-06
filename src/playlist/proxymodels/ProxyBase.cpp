@@ -290,7 +290,7 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchF
 
     QStringList searchList = searchTerms.split(" ", QString::SkipEmptyParts);
 
-    foreach( const QString searchTerm, searchList )
+    foreach( const QString& searchTerm, searchList )
     {
         bool match = false;
 
