@@ -35,8 +35,12 @@ TabsItem::TabsItem()
 void
 TabsItem::setTab( TabsInfo *tab )
 {
-    m_tabsInfo = tab;
-    setTabIcon( tab->tabType );
+    if( tab )
+    {
+        m_tabsInfo = tab;
+        setTabIcon( tab->tabType );
+        setToolTip( m_tabsInfo->title );
+    }
 }
 
 void
