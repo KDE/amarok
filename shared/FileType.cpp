@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  * Copyright (c) 2010 Stefan Derkits <stefan@derkits.at>                                *
  * Copyright (c) 2010 Christian Wagner <christian.wagner86@gmx.at>                      *
  *                                                                                      *
@@ -16,37 +15,44 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SHARED_FILETYPE_H
-#define SHARED_FILETYPE_H
+#include "FileType.h"
 
-#include <QStringList>
-#include <QString>
+#ifndef UTILITIES_BUILD
+#include <KLocale>
+#endif
 
-namespace Amarok
+using namespace Amarok;
+
+QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
+#ifndef UTILITIES_BUILD
+        << i18n( "Other" )
+#else
+        << QLatin1String( "Other" )
+#endif
+        << QLatin1String( "mp3" )
+        << QLatin1String( "ogg" )
+        << QLatin1String( "flac" )
+        << QLatin1String( "mp4" )
+        << QLatin1String( "wma" );
+
+
+QString FileTypeSupport::toString( Amarok::FileType ft )
 {
-
-//New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
-enum FileType
-{
-    Unknown = 0,
-    Mp3     = 1,
-    Ogg     = 2,
-    Flac    = 3,
-    Mp4     = 4,
-    Wma     = 5
-};
-
-
-class FileTypeSupport
-{
-public:
-    static QString toString( Amarok::FileType ft );
-    static QStringList possibleFileTypes();
-    static Amarok::FileType fileType( const QString& extension );
-private:
-    static QStringList s_fileTypeStrings;
-};
-
+    return s_fileTypeStrings.at( ft );
 }
 
-#endif /* SHARED_FILETYPE_H */
+QStringList FileTypeSupport::possibleFileTypes()
+{
+    return s_fileTypeStrings;
+}
+
+Amarok::FileType Amarok::FileTypeSupport::fileType( const QString& extension )
+{
+    QString ext = extension.toLower();
+    for( int i = 1; i < s_fileTypeStrings.size(); i++ )
+    {
+        if( s_fileTypeStrings.at( i ).compare( ext ) == 0 )
+            return Amarok::FileType( i );
+    }
+    return Amarok::Unknown;
+}

@@ -113,7 +113,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = album->tracks();
-        if( tracks.size() > 0 )
+        if( !tracks.isEmpty() )
         {
             foreach( Meta::TrackPtr track, tracks )
             {
@@ -128,7 +128,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = artist->tracks();
-        if( tracks.size() > 0 )
+        if( !tracks.isEmpty() )
         {
             foreach( Meta::TrackPtr track, tracks )
             {
@@ -144,7 +144,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     else if( Meta::GenrePtr genre = Meta::GenrePtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = genre->tracks();
-        if( tracks.size() > 0 )
+        if( !tracks.isEmpty() )
         {
             foreach( Meta::TrackPtr track, tracks )
             {
@@ -160,7 +160,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     else if( Meta::YearPtr year = Meta::YearPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = year->tracks();
-        if( tracks.size() > 0 )
+        if( !tracks.isEmpty() )
         {
             foreach( Meta::TrackPtr track, tracks )
             {
@@ -176,7 +176,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = composer->tracks();
-        if( tracks.size() > 0 )
+        if( !tracks.isEmpty() )
         {
             foreach( Meta::TrackPtr track, tracks )
             {
@@ -795,16 +795,8 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     // NOTE: possible keywords that could be considered: codec, filetype, etc.
                     const QString &ftStr = elem.text;
-                    Amarok::FileType ft = Amarok::Unknown;
-                    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
-                        ft = Amarok::Flac;
-                    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
-                        ft = Amarok::Mp3;
-                    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
-                        ft = Amarok::Mp4;
-                    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
-                        ft = Amarok::Ogg;
-
+                    Amarok::FileType ft = Amarok::FileTypeSupport::fileType(ftStr);
+                    
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
                 }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )

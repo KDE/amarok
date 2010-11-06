@@ -29,6 +29,7 @@ set( testmasterslave_SRCS
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/../shared/FileType.cpp
     )
 
 kde4_add_unit_test( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
@@ -67,6 +68,7 @@ set( testunion_SRCS
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/../shared/FileType.cpp
     )
 
 kde4_add_unit_test( testunionjob  ${testunion_SRCS} )
@@ -105,6 +107,7 @@ set( testonewaysynchronization_SRCS
         ${AMAROK_SOURCE_TREE}/core/meta/support/MetaUtility.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/EditCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/../shared/FileType.cpp
     )
 
 kde4_add_unit_test( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )

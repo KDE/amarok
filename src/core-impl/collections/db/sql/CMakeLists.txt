@@ -41,6 +41,7 @@ set(amarok_collection-sqlcollection_SRCS
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
+    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
     ${CMAKE_SOURCE_DIR}/src/core-impl/collections/support/ArtistHelper.cpp
     ${extra_src}
  )

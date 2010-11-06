@@ -590,12 +590,12 @@ MetaQueryWidget::makeFormatComboSelection()
 {
     KComboBox* combo = new KComboBox( this );
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
-
-    combo->addItem( "mp3", (int)Amarok::Mp3 );
-    combo->addItem( "flac", (int)Amarok::Flac );
-    combo->addItem( "mp4", (int)Amarok::Mp4 );
-    combo->addItem( "ogg", (int)Amarok::Ogg );
-
+    QStringList filetypes = Amarok::FileTypeSupport::possibleFileTypes();
+    for (int listpos=0;listpos<filetypes.size();listpos++)
+    {
+        combo->addItem(filetypes.at(listpos),listpos);
+    }
+    
     int index = m_fieldSelection->findData( (int)m_filter.numValue );
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
@@ -883,14 +883,7 @@ QString MetaQueryWidget::Filter::toString( bool invert )
 
     if( field == Meta::valFormat )
     {
-        if( numValue == (int)Amarok::Mp3 )
-            strValue1 = "mp3";
-        else if( numValue == (int)Amarok::Flac )
-            strValue1 = "flac";
-        else if( numValue == (int)Amarok::Mp4 )
-            strValue1 = "mp4";
-        else if( numValue == (int)Amarok::Ogg )
-            strValue1 = "ogg";
+        strValue1 = Amarok::FileTypeSupport::toString( Amarok::FileType( numValue ));
     }
     else if( MetaQueryWidget::isDate(field) )
     {

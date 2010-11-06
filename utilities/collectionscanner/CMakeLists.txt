@@ -71,6 +71,7 @@ set(amarokcollectionscanner_SRCS
     BatchFile.cpp
     AFTUtility.cpp
     ../../shared/MetaReplayGain.cpp
+    ../../shared/FileType.cpp
 )
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})

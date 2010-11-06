@@ -393,6 +393,12 @@ CollectionScanner::Track::Track( const QString &path)
                 }
             }
         }
+        //we didn't set a FileType till now, let's look it up via FileExtension
+        if ( m_filetype == Amarok::Unknown )
+        {
+            QString ext = path.mid( path.lastIndexOf( '.' ) + 1 ); 
+            m_filetype = Amarok::FileTypeSupport::fileType( ext );
+        }
     }
 
     if( m_valid && fileref.audioProperties() )

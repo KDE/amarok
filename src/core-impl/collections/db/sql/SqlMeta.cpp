@@ -74,7 +74,8 @@ SqlTrack::getTrackReturnValues()
            "albums.name, albums.id, albums.artist, " // TODO: again here
            "genres.name, genres.id, " // TODO: again here
            "composers.name, composers.id, " // TODO: again here
-           "years.name, years.id"; // TODO: again here
+           "years.name, years.id, " // TODO: again here
+           "tracks.filetype";
 }
 
 QString
@@ -220,6 +221,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     int yearId = (*(iter++)).toInt();
     if( yearId > 0 ) // sanity check
     m_year = registry->getYear( year.toInt(), yearId );
+    m_filetype = Amarok::FileType( (*(iter++)).toInt());
     //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( Collections::SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
 }
 
@@ -428,7 +430,7 @@ SqlTrack::type() const
     QReadLocker locker( &m_lock );
 
     return m_url.isLocalFile()
-           ? Amarok::extension( m_url.fileName() )
+           ? Amarok::FileTypeSupport::toString( m_filetype )
            : "stream"; // don't localize. This is used in different files to identify streams.
 }
 

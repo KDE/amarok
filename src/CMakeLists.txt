@@ -721,6 +721,7 @@ set(amaroklib_LIB_SRCS
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
+    ../shared/FileType.cpp
 )
 
 if( BUILD_MYSQLE_COLLECTION )

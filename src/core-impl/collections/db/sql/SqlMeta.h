@@ -22,6 +22,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "amarok_sqlcollection_export.h"
+#include "FileType.h"
 
 #include <QByteArray>
 #include <QMutex>
@@ -283,6 +284,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         Meta::GenrePtr m_genre;
         Meta::ComposerPtr m_composer;
         Meta::YearPtr m_year;
+        
+        Amarok::FileType m_filetype;
 
         bool m_batchUpdate;
         bool m_writeFile;
