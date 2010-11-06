@@ -1645,10 +1645,11 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image )
+SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QPixmap pixmap )
 {
     DEBUG_BLOCK
     debug() << "channel: " << channel->title();
+    QImage image( pixmap.toImage() );
     if( image.isNull() )
         return;
 
