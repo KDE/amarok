@@ -89,9 +89,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showDock( AmarokDockId dockId );
 
         BrowserDock *browserDock() const { return m_browserDock.data(); }
-        QWeakPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
-        QWeakPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        QWeakPointer<Playlist::Dock> playlistDock() const { return m_playlistDock; }
+        KMenu *ToolsMenu() const { return m_toolsMenu.data(); }
+        KMenu *SettingsMenu() const { return m_settingsMenu.data(); }
+        Playlist::Dock *playlistDock() const { return m_playlistDock.data(); }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */

@@ -49,10 +49,9 @@ class Dock : public AmarokDockWidget
 
 public:
     Dock( QWidget* parent );
-    PrettyListView* currentView() { return m_playlistView; }
-
-    SortWidget * sortWidget() { return m_sortWidget; }
-    ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
+    PrettyListView *currentView();
+    SortWidget *sortWidget();
+    ProgressiveSearchWidget *searchWidget();
     void showActiveTrack();
 
     void polish();
