@@ -142,21 +142,18 @@ public:
  */
 class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
 {
-Q_OBJECT
-
+    Q_OBJECT
 
 public:
     MountPointManager( QObject *parent, SqlStorage *storage );
     ~MountPointManager();
-    //the methods of this class a called *very* often. make sure they are as fast as possible
-    // (inline them?)
 
     /**
      *
      * @param url
      * @return
      */
-    virtual AMAROK_SQLCOLLECTION_EXPORT int getIdForUrl( const KUrl &url );
+    virtual int getIdForUrl( const KUrl &url );
 
     /**
      *
@@ -172,7 +169,7 @@ public:
      * @param relativePath relative path on the medium
      * @return the absolute path
      */
-    virtual AMAROK_SQLCOLLECTION_EXPORT QString getAbsolutePath( const int deviceId, const QString& relativePath ) const;
+    virtual QString getAbsolutePath( const int deviceId, const QString& relativePath ) const;
 
     /**
      * calculates a file's/directory's relative path on a given device.
@@ -180,15 +177,15 @@ public:
      * @param absolutePath the file's/directory's absolute path
      * @param relativePath the calculated relative path
      */
-    virtual AMAROK_SQLCOLLECTION_EXPORT QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
+    virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
 
     /**
      * allows calling code to access the ids of all active devices
      * @return the ids of all devices which are currently mounted or otherwise accessible
      */
-    virtual AMAROK_SQLCOLLECTION_EXPORT IdList getMountedDeviceIds() const;
+    virtual IdList getMountedDeviceIds() const;
 
-    virtual AMAROK_SQLCOLLECTION_EXPORT QStringList collectionFolders() const;
+    virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
 public slots:
