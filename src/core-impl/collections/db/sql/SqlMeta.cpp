@@ -1375,6 +1375,7 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
             {
                 m_labelsCache.append( Meta::LabelPtr::staticCast( sqlLabel ) );
             }
+            locker.unlock();
             notifyObservers();
             sqlLabel->invalidateCache();
             sqlLabel->notifyObservers();
