@@ -295,7 +295,10 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 void
 TabsApplet::updateInterface( AppletState appletState )
 {
-    DEBUG_BLOCK
+    if( m_currentState == appletState )
+        return;
+
+    debug() << "updating interface from state " << m_currentState << " to " << appletState;
     m_currentState = appletState;
 
     if( appletState == FetchingState )
