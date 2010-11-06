@@ -176,7 +176,7 @@ QueryMaker*
 XmlQueryWriter::orderBy( qint64 value, bool descending )
 {
     QDomElement e = m_doc.createElement( "order" );
-    e.setAttribute( "field", fieldName( value ) );
+    e.setAttribute( "field", Meta::nameForField( value ) );
     e.setAttribute( "value", descending ? "descending" : "ascending" );
     m_element.appendChild( e );
 
@@ -394,7 +394,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", value );
 
     return e;
@@ -404,7 +404,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", numValue );
     e.setAttribute( "compare", compareName( compare ) );
 
@@ -422,38 +422,6 @@ XmlQueryWriter::insertRetValue( QString val )
 
     QDomElement retval = m_doc.createElement( val );
     m_retvalElement.appendChild( retval );
-}
-
-
-QString
-XmlQueryWriter::fieldName( qint64 val )
-{
-    switch( val )
-    {
-        case Meta::valUrl:         return "url";
-        case Meta::valTitle:       return "title";
-        case Meta::valArtist:      return "artist";
-        case Meta::valAlbum:       return "album";
-        case Meta::valGenre:       return "genre";
-        case Meta::valComposer:    return "composer";
-        case Meta::valYear:        return "year";
-        case Meta::valComment:     return "comment";
-        case Meta::valTrackNr:     return "tracknr";
-        case Meta::valDiscNr:      return "discnr";
-        case Meta::valLength:      return "length";
-        case Meta::valBitrate:     return "bitrate";
-        case Meta::valSamplerate:  return "samplerate";
-        case Meta::valFilesize:    return "filesize";
-        case Meta::valFormat:      return "format";
-        case Meta::valCreateDate:  return "createdate";
-        case Meta::valScore:       return "score";
-        case Meta::valRating:      return "rating";
-        case Meta::valFirstPlayed: return "firstplay";
-        case Meta::valLastPlayed:  return "lastplay";
-        case Meta::valPlaycount:   return "playcount";
-        case Meta::valLabel:       return "label";
-        default:                   return "";
-    }
 }
 
 QString

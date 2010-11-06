@@ -21,6 +21,7 @@
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/EditCapability.h"
 
+#include <QTime>
 #include <QChar>
 #include <QFile>
 
@@ -379,26 +380,33 @@ Meta::msToPrettyTime( qint64 ms )
 QString
 Meta::secToPrettyTime( int seconds )
 {
-    int minutes = ( seconds / 60 ) % 60;
-    int hours = seconds / 3600;
-    QString s = QChar( ':' );
-    s.append( ( seconds % 60 ) < 10 ? QString( "0%1" ).arg( seconds % 60 ) : QString::number( seconds % 60 ) ); //seconds
-
-    if( hours )
-    {
-        s.prepend( minutes < 10 ? QString( "0%1" ).arg( minutes ) : QString::number( minutes ) );
-        s.prepend( ':' );
-    }
+    if( seconds < 60 * 60 ) // one hour
+        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
     else
-    {
-        s.prepend( QString::number( minutes ) );
-        return s;
-    }
+        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
+}
 
-    //don't zeroPad the last one, as it can be greater than 2 digits
-    s.prepend( QString::number( hours ) );
+QString
+Meta::secToPrettyTimeLong( int seconds )
+{
+    int minutes = seconds / 60;
+    int hours = minutes / 60;
+    int days = hours / 24;
+    int months = days / 30; // a short month
+    int years = months / 12;
 
-    return s;
+    if( months > 24 || (((months % 12) == 0) && years > 0) )
+        return i18ncp("number of years for the pretty time", "%1 year", "%1 years", years);
+    if( days > 60 || (((days % 30) == 0) && months > 0) )
+        return i18ncp("number of months for the pretty time", "%1 month", "%1 months", months);
+    if( hours > 24  || (((hours % 24) == 0) && days > 0) )
+        return i18ncp("number of days for the pretty time", "%1 day", "%1 days", days);
+    if( minutes > 120 || (((minutes % 60) == 0) && hours > 0) )
+        return i18ncp("number of hours for the pretty time", "%1 hour", "%1 hours", hours);
+    if( seconds > 120 || (((seconds % 60) == 0) && minutes > 0) )
+        return i18ncp("number of minutes for the pretty time", "%1 minute", "%1 minutes", hours);
+
+    return i18ncp("number of seconds for the pretty time", "%1 second", "%1 seconds", hours);
 }
 
 QString
@@ -417,27 +425,4 @@ Meta::prettyBitrate( int bitrate )
     return (bitrate >=0 && bitrate <= 256 && bitrate % 32 == 0)
                 ? bitrateStore[ bitrate / 32 ]
     : QString( "%1" ).arg( bitrate );
-}
-
-QString
-Meta::prettyRating( int rating )
-{
-    // Use the graphical star rating widget instead -- stharward
-    // I would remove this entirely, but I'm not sure if it would break the A2 string freeze
-    AMAROK_DEPRECATED
-    switch( rating )
-    {
-        case 1: return i18nc( "The quality of music", "Awful" );
-        case 2: return i18nc( "The quality of music", "Bad" );
-        case 3: return i18nc( "The quality of music", "Barely tolerable" );
-        case 4: return i18nc( "The quality of music", "Tolerable" );
-        case 5: return i18nc( "The quality of music", "Okay" );
-        case 6: return i18nc( "The quality of music", "Good" );
-        case 7: return i18nc( "The quality of music", "Very good" );
-        case 8: return i18nc( "The quality of music", "Excellent" );
-        case 9: return i18nc( "The quality of music", "Amazing" );
-        case 10: return i18nc( "The quality of music", "Favorite" );
-        case 0: default: return i18nc( "The quality of music", "Not rated" ); // assume weird values as not rated
-    }
-    return "if you can see this, then that's a bad sign.";
 }

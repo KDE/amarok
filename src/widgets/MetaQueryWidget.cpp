@@ -124,6 +124,7 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     : QWidget( parent )
     , m_onlyNumeric( onlyNumeric )
     , m_noCondition( noCondition )
+    , m_apgMode( false )
     , m_settingFilter( false )
     , m_andLabel(0)
     , m_compareSelection(0)
@@ -175,19 +176,20 @@ MetaQueryWidget::filter() const
 }
 
 void
+MetaQueryWidget::setAPGMode( bool value )
+{
+    m_apgMode = value;
+    makeValueSelection();
+    setValueSelection();
+}
+
+void
 MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
 {
     m_settingFilter = true;
     m_filter = value;
 
-    // correct filter
-    if( !isNumeric( m_filter.field ) )
-        m_filter.condition = Contains;
-    else
-        if( m_filter.condition == Contains )
-            m_filter.condition = Equals;
-
-    int index = m_fieldSelection->findData( (int)m_filter.field );
+    int index = m_fieldSelection->findData( int(m_filter.field) );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
 
     if( !m_noCondition )
@@ -199,6 +201,16 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
     emit changed(m_filter);
 }
 
+static void addIconItem( KComboBox *box, qint64 field )
+{
+    QString icon = Meta::iconForField( field );
+    QString text = Meta::i18nForField( field );
+    if( icon.isEmpty() )
+        box->addItem( text, field );
+    else
+        box->addItem( KIcon( icon ), text, field );
+}
+
 void
 MetaQueryWidget::makeFieldSelection()
 {
@@ -206,35 +218,35 @@ MetaQueryWidget::makeFieldSelection()
     if (!m_onlyNumeric)
     {
         m_fieldSelection->addItem( i18n( "Simple Search" ), 0 );
-        m_fieldSelection->addItem( KIcon("filename-space-amarok"), i18nc( "The name of the file this track is stored in", "File Name" ), Meta::valUrl );
+        addIconItem( m_fieldSelection, Meta::valUrl );
         // note: what about directory?
-        m_fieldSelection->addItem( KIcon("filename-title-amarok"), i18n( "Title" ), Meta::valTitle );
+        addIconItem( m_fieldSelection, Meta::valTitle );
         // note: album artist is not handled here. could be added
-        m_fieldSelection->addItem( KIcon("filename-artist-amarok"), i18n( "Artist" ), Meta::valArtist );
-        m_fieldSelection->addItem( KIcon("filename-album-amarok"), i18n( "Album" ), Meta::valAlbum );
-        m_fieldSelection->addItem( KIcon("filename-genre-amarok"), i18n( "Genre" ), Meta::valGenre );
-        m_fieldSelection->addItem( KIcon("filename-composer-amarok"),i18n( "Composer" ), Meta::valComposer );
+        addIconItem( m_fieldSelection, Meta::valArtist );
+        addIconItem( m_fieldSelection, Meta::valAlbum );
+        addIconItem( m_fieldSelection, Meta::valGenre );
+        addIconItem( m_fieldSelection, Meta::valComposer );
     }
-    m_fieldSelection->addItem( KIcon("filename-year-amarok"), i18n( "Year" ), Meta::valYear );
+    addIconItem( m_fieldSelection, Meta::valYear );
     if (!m_onlyNumeric)
-        m_fieldSelection->addItem( KIcon("filename-comment-amarok"), i18n( "Comment" ), Meta::valComment );
-    m_fieldSelection->addItem( KIcon("filename-track-amarok"), i18n( "Track Number" ), Meta::valTrackNr );
-    m_fieldSelection->addItem( KIcon("filename-discnumber-amarok"), i18n( "Disc Number" ), Meta::valDiscNr );
-    m_fieldSelection->addItem( KIcon("filename-bpm-amarok"), i18n( "BPM" ), Meta::valBpm );
-    m_fieldSelection->addItem( KIcon("filename-group-length"), i18n( "Track Length" ), Meta::valLength );
-    m_fieldSelection->addItem( KIcon("application-octet-stream"), i18n( "Bit Rate" ), Meta::valBitrate );
-    m_fieldSelection->addItem( KIcon("filename-sample-rate"), i18n( "Sample Rate" ), Meta::valSamplerate );
-    m_fieldSelection->addItem( i18n( "File Size" ), Meta::valFilesize );
+        addIconItem( m_fieldSelection, Meta::valComment );
+    addIconItem( m_fieldSelection, Meta::valTrackNr );
+    addIconItem( m_fieldSelection, Meta::valDiscNr );
+    addIconItem( m_fieldSelection, Meta::valBpm );
+    addIconItem( m_fieldSelection, Meta::valLength );
+    addIconItem( m_fieldSelection, Meta::valBitrate );
+    addIconItem( m_fieldSelection, Meta::valSamplerate );
+    addIconItem( m_fieldSelection, Meta::valFilesize );
     if (!m_onlyNumeric)
-        m_fieldSelection->addItem( KIcon("filename-filetype-amarok"), i18n( "Format" ), Meta::valFormat );
-    m_fieldSelection->addItem( i18n( "Added" ), Meta::valCreateDate );
-    m_fieldSelection->addItem( KIcon("emblem-favorite"), i18n( "Score" ), Meta::valScore );
-    m_fieldSelection->addItem( KIcon("rating"), i18n( "Rating" ), Meta::valRating );
-    m_fieldSelection->addItem( i18n( "First Played" ), Meta::valFirstPlayed );
-    m_fieldSelection->addItem( KIcon("filename-last-played"), i18n( "Last Played" ), Meta::valLastPlayed );
-    m_fieldSelection->addItem( KIcon("filename-comment-amarok"), i18n( "Play Count" ), Meta::valPlaycount );
+        addIconItem( m_fieldSelection, Meta::valFormat );
+    addIconItem( m_fieldSelection, Meta::valCreateDate );
+    addIconItem( m_fieldSelection, Meta::valScore );
+    addIconItem( m_fieldSelection, Meta::valRating );
+    addIconItem( m_fieldSelection, Meta::valFirstPlayed );
+    addIconItem( m_fieldSelection, Meta::valLastPlayed );
+    addIconItem( m_fieldSelection, Meta::valPlaycount );
     if (!m_onlyNumeric)
-        m_fieldSelection->addItem( KIcon("label-amarok"), i18n( "Label" ), Meta::valLabel );
+        addIconItem( m_fieldSelection, Meta::valLabel );
     connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(fieldChanged(int)) );
 }
 
@@ -244,7 +256,19 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_settingFilter )
         return;
 
-    qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
+    qint64 field = Contains;
+    if( m_fieldSelection->count() == 0 )
+    {
+        if( isNumeric( field ) )
+            m_filter.condition = Equals;
+        else if( !isNumeric( field ) )
+            m_filter.condition = Contains;
+    }
+    else if( i<0 || i>=m_fieldSelection->count() )
+        field = m_fieldSelection->itemData( 0 ).toInt();
+    else
+        field = m_fieldSelection->itemData( i ).toInt();
+
     if( m_filter.field == field )
         return; // nothing to do
 
@@ -254,11 +278,6 @@ MetaQueryWidget::fieldChanged( int i )
     m_filter.numValue2 = 0;
 
     m_filter.field = field;
-
-    if( isNumeric( field ) && m_filter.condition == Contains )
-        m_filter.condition = Equals;
-    else if( !isNumeric( field ) && m_filter.condition != Contains )
-        m_filter.condition = Contains;
 
     // in the fieldChanged slot we assume that the field was really changed,
     // so we don't have a problem with throwing away all the old widgets
@@ -275,7 +294,7 @@ MetaQueryWidget::fieldChanged( int i )
 void
 MetaQueryWidget::compareChanged( int index )
 {
-    FilterCondition condition = (FilterCondition) m_compareSelection->itemData( index ).toInt();
+    FilterCondition condition = FilterCondition( m_compareSelection->itemData( index ).toInt() );
 
     if( m_filter.condition == condition )
         return; // nothing to do
@@ -429,34 +448,49 @@ MetaQueryWidget::makeCompareSelection()
 
     qint64 field = m_filter.field;
 
-    // no compare selection for text fields
-    if( !isNumeric(field) || field == Meta::valFormat )
-        return;
+    if( field == Meta::valFormat )
+        return; // the field is fixed
 
-    m_compareSelection = new KComboBox();
-    m_compareSelection->addItem( i18n( "Smaller Than" ), (int)LessThan );
-    m_compareSelection->addItem( i18n( "Equal To" ), (int)Equals );
-    m_compareSelection->addItem( i18n( "Larger Than" ), (int)GreaterThan );
-    m_compareSelection->addItem( i18n( "Between" ), (int)Between );
+    else if( isDate(field) )
+    {
+        m_compareSelection = new KComboBox();
+        m_compareSelection->addItem( conditionToString( LessThan, true ), (int)LessThan );
+        m_compareSelection->addItem( conditionToString( Equals, true ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( GreaterThan, true ), (int)GreaterThan );
+        if( !m_apgMode )
+        {
+            m_compareSelection->addItem( conditionToString( Between, true ), (int)Between );
+            m_compareSelection->addItem( conditionToString( OlderThan, true ), (int)OlderThan );
+        }
+        else
+            m_compareSelection->addItem( conditionToString( Within, true ), (int)Within );
+    }
+    else if( isNumeric(field) )
+    {
+        m_compareSelection = new KComboBox();
+        m_compareSelection->addItem( conditionToString( LessThan ), (int)LessThan );
+        m_compareSelection->addItem( conditionToString( Equals ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( GreaterThan ), (int)GreaterThan );
+        if( !m_apgMode )
+            m_compareSelection->addItem( conditionToString( Between ), (int)Between );
+    }
+    else
+    {
+        if( !m_apgMode )
+            return; // no compare selection for text fields
 
-    if( isDate( field ) )
-        m_compareSelection->addItem( i18nc( "The date lies before the given one", "Older Than" ), (int)OlderThan );
+        m_compareSelection = new KComboBox();
+        m_compareSelection->addItem( conditionToString( Matches ), (int)Matches );
+        m_compareSelection->addItem( conditionToString( StartsWith ), (int)StartsWith );
+        m_compareSelection->addItem( conditionToString( EndsWith ), (int)EndsWith );
+        m_compareSelection->addItem( conditionToString( Contains ), (int)Contains );
+    }
+
+    int index = m_compareSelection->findData( int(m_filter.condition) );
+    m_compareSelection->setCurrentIndex( index == -1 ? 0 : index );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
             SLOT(compareChanged(int)) );
-
-    FilterCondition condition = m_filter.condition;
-
-    if( condition == LessThan )
-        m_compareSelection->setCurrentIndex( 0 );
-    else if( condition == Equals )
-        m_compareSelection->setCurrentIndex( 1 );
-    else if( condition == GreaterThan )
-        m_compareSelection->setCurrentIndex( 2 );
-    else if( condition == Between )
-        m_compareSelection->setCurrentIndex( 3 );
-    else if( condition == OlderThan )
-        m_compareSelection->setCurrentIndex( 4 );
 }
 
 void
@@ -495,7 +529,7 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valSamplerate )
         makeGenericNumberSelection( 8000, 48000, 44000 );
     else if( field == Meta::valFilesize )
-        makeGenericNumberSelection( 0, 200000, 1000 );
+        makeGenericNumberSelection( 0, 20000000, 1000 );
     else if( field == Meta::valFormat )
         makeFormatComboSelection();
     else if( field == Meta::valCreateDate )
@@ -722,7 +756,8 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def )
 void
 MetaQueryWidget::makeDateTimeSelection()
 {
-    if( m_filter.condition != OlderThan )
+    if( m_filter.condition != OlderThan &&
+        m_filter.condition != Within )
     {
         KDateCombo* dateSelection = new KDateCombo();
         QDateTime dt;
@@ -803,75 +838,58 @@ bool MetaQueryWidget::isDate( qint64 field )
     }
 }
 
-QString MetaQueryWidget::Filter::fieldToString()
+QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
 {
-    // see also src/browsers/CollectionTreeItemModelBase.cpp
-
-    switch( field )
+    if( isDate )
     {
-    case Meta::valUrl:
-        return i18nc( "The name of the file this track is stored in", "filename" );
-    case Meta::valTitle:
-        return i18n( "title" );
-    case Meta::valArtist:
-        return i18n( "artist" );
-    case Meta::valAlbum:
-        return i18n( "album" );
-    case Meta::valGenre:
-        return i18n( "genre" );
-    case Meta::valComposer:
-        return i18n( "composer" );
-    case Meta::valYear:
-        return i18n( "year" );
-    case Meta::valComment:
-        return i18n( "comment" );
-    case Meta::valTrackNr:
-        return i18n( "tracknumber" );
-    case Meta::valDiscNr:
-        return i18n( "discnumber" );
-    case Meta::valBpm:
-        return i18n( "bpm" );
-    case Meta::valLength:
-        return i18n( "length" );
-    case Meta::valBitrate:
-        return i18n( "bitrate" );
-    case Meta::valSamplerate:
-        return i18n( "samplerate" );
-    case Meta::valFilesize:
-        return i18n( "filesize" );
-    case Meta::valFormat:
-        return i18n( "format" );
-    case Meta::valCreateDate:
-        return i18n( "added" );
-    case Meta::valScore:
-        return i18n( "score" );
-    case Meta::valRating:
-        return i18n( "rating" );
-    case Meta::valFirstPlayed:
-        return i18n( "first" );
-    case Meta::valLastPlayed:
-        return i18n( "played" );
-    case Meta::valPlaycount:
-        return i18n( "playcount" );
-
-        /* missing here because not useful:
-           unique id,
-           track gain,
-           track gain peak
-           album gain
-           album gain peak
-           album artist
-
-           see src/core/meta/support/MetaConstants.h
-           */
-    case Meta::valLabel:
-        return i18n( "label" );
-
-    default:
-        return "";
+        switch( condition )
+        {
+        case LessThan:
+            return i18nc( "The date lies before the given fixed date", "before" );
+        case Equals:
+            return i18nc( "The date is the same as the given fixed date", "on" );
+        case GreaterThan:
+            return i18nc( "The date is after the given fixed date", "after" );
+        case Between:
+            return i18nc( "The date is between the given fixed dates", "between" );
+        case OlderThan:
+            return i18nc( "The date lies before the given time interval", "older than" );
+        case Within:
+            return i18nc( "The date lies after the given time interval", "within" );
+        default:
+            ; // fall through
+        }
     }
+    else
+    {
+        switch( condition )
+        {
+        case LessThan:
+            return i18n("less than");
+        case Equals:
+            return i18nc("a numerical tag (like year or track number) equals a value","equals");
+        case GreaterThan:
+            return i18n("greater than");
+        case Between:
+            return i18nc( "a numerical tag (like year or track number) is between two values", "between" );
+        case Contains:
+            return i18nc("an alphabetical tag (like title or artist name) contains some string", "contains");
+        case Matches:
+            return i18nc("an alphabetical tag (like title or artist name) equals some string","matches");
+        case StartsWith:
+            return i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with");
+        case EndsWith:
+            return i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with");
+        default:
+            ; // fall through
+        }
+    }
+    return QString( i18n("unknown comparison") );
+}
 
-    return QString();
+QString MetaQueryWidget::Filter::fieldToString() const
+{
+    return Meta::i18nForField( field );
 }
 
 QString MetaQueryWidget::Filter::toString( bool invert )
@@ -887,6 +905,7 @@ QString MetaQueryWidget::Filter::toString( bool invert )
     }
     else if( MetaQueryWidget::isDate(field) )
     {
+        // here we are handling only the date. relative times are handled below
         const QDateTime &today = KDateTime::currentLocalDateTime().dateTime();
         strValue1 = QString::number( QDateTime::fromTime_t( numValue  ).daysTo( today )) + 'd';
         strValue2 = QString::number( QDateTime::fromTime_t( numValue2 ).daysTo( today )) + 'd';
@@ -935,6 +954,7 @@ QString MetaQueryWidget::Filter::toString( bool invert )
         }
 
     case OlderThan:
+    case Within:
         {
             // a human readable time..
             int unit = 0;
@@ -961,7 +981,10 @@ QString MetaQueryWidget::Filter::toString( bool invert )
             else if( unit==3 )
                 strUnit = 'd';
 
-            result = strField + ":>" + QString::number(val) + strUnit;
+            if( condition == OlderThan )
+                result = strField + ":>" + QString::number(val) + strUnit;
+            else
+                result = strField + ":<" + QString::number(val) + strUnit;
             if( invert )
                 result.prepend( QChar('-') );
             break;
@@ -970,6 +993,27 @@ QString MetaQueryWidget::Filter::toString( bool invert )
     case Contains:
         {
             result = value;
+            if( invert )
+                result.prepend( QChar('-') );
+            break;
+        }
+    case Matches:
+        {
+            result = '"'+value+'"';
+            if( invert )
+                result.prepend( QChar('-') );
+            break;
+        }
+    case StartsWith:
+        {
+            result = '"'+value+"*\"";
+            if( invert )
+                result.prepend( QChar('-') );
+            break;
+        }
+    case EndsWith:
+        {
+            result = "\"*"+value+'"';
             if( invert )
                 result.prepend( QChar('-') );
             break;

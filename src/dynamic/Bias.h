@@ -297,7 +297,6 @@ namespace Dynamic
 
         private:
             double sigmaFromScale( double scale );
-            double relevantField( Meta::TrackPtr t ) const;
             void setDefaultMu();
 
             double m_scale;
