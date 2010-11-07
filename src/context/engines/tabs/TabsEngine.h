@@ -111,7 +111,7 @@ class TabsEngine : public DataEngine
         /**
          * starts a new tab-search
          */
-        void requestTab( QString artist = "", QString title = "" );
+        void requestTab( QString artist, QString title );
 
         /**
          * The currently playing track

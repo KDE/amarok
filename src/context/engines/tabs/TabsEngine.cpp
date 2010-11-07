@@ -114,9 +114,12 @@ TabsEngine::sourceRequestEvent( const QString& name )
         {
             QString artist = tokens.at( 1 );
             QString title = tokens.at( 2 );
-            removeAllData( name );
-            setData( name, QVariant());
-            requestTab( artist, title );
+            if ( m_artistName != artist || m_titleName != title )
+            {
+                removeAllData( name );
+                setData( name, QVariant());
+                requestTab( artist, title );
+            }
         }
     }
     return true;
