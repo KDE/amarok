@@ -26,7 +26,7 @@
 #include <KLocale>
 
 BrowserDock::BrowserDock( QWidget * parent )
-    : AmarokDockWidget( i18n( "Media Sources" ), parent )
+    : AmarokDockWidget( i18n( "&Media Sources" ), parent )
 {
     DEBUG_BLOCK
 

@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 
 ContextDock::ContextDock( QWidget *parent )
-    :AmarokDockWidget(  i18n( "Context" ), parent )
+    : AmarokDockWidget( i18n( "&Context" ), parent )
 {
     setObjectName( "Context dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
