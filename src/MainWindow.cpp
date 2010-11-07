@@ -775,10 +775,6 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon( "media-album-sync-manager-amarok" ), i18n( "Sync Manager" ), this );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowSyncManager() ) );
-    ac->addAction( "sync_manager", action );
-
     action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
