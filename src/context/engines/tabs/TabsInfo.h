@@ -16,31 +16,16 @@
 #ifndef AMAROK_TABS_INFO
 #define AMAROK_TABS_INFO
 
-#include <QString>
 #include <KUrl>
 
-//!  Struct TabsInfo contain all the infos for a tabs
-class TabsInfo {
-
-public:
-
-    TabsInfo()
-    {
-        title = QString();
-        tabs = QString();
-        source = QString();
-        url.clear();
-    }
-
-    ~TabsInfo()
-    {
-    }
-
+//  struct TabsInfo contains all the data for a tab
+struct TabsInfo
+{
     enum TabType { GUITAR, BASS, DRUM, PIANO };
 
     QString title;    // Name of the specific tab
     QString tabs;     // Data for the tab
-    QString source;   // origin from the tab
+    QString source;   // origin for the tab
     TabType tabType;  // TabType for the tab
     KUrl url;         // Url of the specific tab
 };
