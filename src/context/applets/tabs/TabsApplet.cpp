@@ -31,6 +31,7 @@
 
 #include <KConfigGroup>
 #include <KConfigDialog>
+#include <KDialog>
 
 #include <QGraphicsProxyWidget>
 #include <QScrollBar>
@@ -377,21 +378,36 @@ void
 TabsApplet::reloadTabs()
 {
     DEBUG_BLOCK
+    KDialog reloadDialog;
+    QWidget *reloadWidget = new QWidget( &reloadDialog );
 
-    QString artistName = dataEngine( "amarok-tabs" )->query( "tabs")[ "artist" ].toString();
-    QString titleName = dataEngine( "amarok-tabs" )->query( "tabs")[ "title" ].toString();
+    Ui::ReloadEditDialog *reloadUI = new Ui::ReloadEditDialog();
+    reloadUI->setupUi( reloadWidget );
 
-    QDialog *reloadDialogWidget = new QDialog();
-    ui_reloadDialog.setupUi( reloadDialogWidget );
-    ui_reloadDialog.artistLineEdit->setText( artistName );
-    ui_reloadDialog.titleLineEdit->setText( titleName );
+    reloadDialog.setCaption( i18n( "Reload Tabs" ) );
+    reloadDialog.setButtons( KDialog::Ok|KDialog::Cancel );
+    reloadDialog.setDefaultButton( KDialog::Ok );
+    reloadDialog.setMainWidget( reloadWidget );
 
-    if( reloadDialogWidget->exec() == QDialog::Accepted )
+    // query engine for current artist and title
+    Plasma::DataEngine::Data data = dataEngine( "amarok-tabs" )->query( "tabs" );
+    QString artistName;
+    QString titleName;
+    if ( data.contains( "artist" ) )
+        artistName = data[ "artist" ].toString();
+    if ( data.contains( "title" ) )
+        titleName  = data[ "title" ].toString();
+
+    // update ui
+    reloadUI->artistLineEdit->setText( artistName );
+    reloadUI->titleLineEdit->setText( titleName );
+
+    if( reloadDialog.exec() == KDialog::Accepted )
     {
-        artistName = ui_reloadDialog.artistLineEdit->text();
-        titleName = ui_reloadDialog.titleLineEdit->text();
+        artistName = reloadUI->artistLineEdit->text();
+        titleName = reloadUI->titleLineEdit->text();
         if( !artistName.isEmpty() && !titleName.isEmpty() )
-            dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:" ).append( artistName ).append( QString( ":AMAROK_TOKEN:").append( titleName ) ) );
+            dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:%1:AMAROK_TOKEN:%2").arg( artistName ).arg( titleName ) );
     }
 }
 

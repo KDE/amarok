@@ -133,7 +133,6 @@ class TabsApplet : public Context::Applet
         bool m_fetchGuitar;
         bool m_fetchBass;
         Ui::TabsSettings ui_Settings;
-        Ui::ReloadEditDialog ui_reloadDialog;
 };
 
 K_EXPORT_AMAROK_APPLET( tabs, TabsApplet )
