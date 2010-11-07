@@ -147,7 +147,7 @@ void ScanManager::startScanner()
     if( !m_fullScanRequested && m_scanDirsRequested.isEmpty() )
         return; // nothing to do
 
-    if( m_parser )
+    if( m_parser || m_scanner )
     {
         debug() << "scanner already running";
         return;
@@ -412,6 +412,7 @@ ScanManager::slotJobDone()
     QMutexLocker locker( &m_mutex );
     m_parser->deleteLater();
     m_parser = 0;
+    stopScanner();
 }
 
 void
@@ -443,6 +444,9 @@ ScanManager::handleRestart()
 void
 ScanManager::stopScanner()
 {
+    if( !m_scanner )
+        return;
+
     // stop the scanner
     disconnect( m_scanner, 0, this, 0 );
     m_scanner->terminate();
@@ -513,7 +517,11 @@ XmlParseJob::run()
         while( !m_reader.atEnd() )
         {
             m_reader.readNext();
-            if( m_reader.isStartElement() )
+            if( m_reader.hasError() )
+            {
+                break;
+            }
+            else if( m_reader.isStartElement() )
             {
                 QStringRef name = m_reader.name();
                 if( name == "scanner" )
@@ -526,10 +534,15 @@ XmlParseJob::run()
                 {
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    debug() << "XmlParseJob: run: "<<count<<"current path"<<dir->rpath();
+                    debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
                     emit step( this );
+                }
+                else
+                {
+                    warning() << "Unexpected xml start element"<<name<<"in input";
+                    m_reader.skipCurrentElement();
                 }
             }
             else if( m_reader.isEndElement() )
@@ -540,9 +553,15 @@ XmlParseJob::run()
         }
         m_mutex.unlock();
 
-    } while( !finished );
+    } while( !finished &&
+             (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
 
-    if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
+    if( m_reader.hasError() )
+    {
+        warning() << "Aborting ScanManager XmlParseJob with error"<<m_reader.errorString();
+        processor->rollback();
+    }
+    else if( m_abortRequested )
     {
         debug() << "Aborting ScanManager XmlParseJob";
         processor->rollback();
