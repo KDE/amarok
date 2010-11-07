@@ -508,6 +508,10 @@ CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
         int y = standardPadding();
         int x = contentsRect.right() - rect.width() - y;
         rect.moveTo( x, y );
+        QRectF clipRect( rect );
+        qreal clipY = m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8;
+        clipRect.setBottom( clipY );
+        p->setClipRect( clipRect );
         p->drawPixmap( rect, logo );
     }
     else
