@@ -21,7 +21,7 @@
 #include <core/meta/Meta.h>
 #include <QAbstractItemModel>
 #include <QReadWriteLock>
-#include <QStyledItemDelegate>
+#include <QItemDelegate>
 #include <QTreeView>
 
 class MusciBrainzTagsItem
@@ -98,12 +98,12 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         MusciBrainzTagsItem *m_rootItem;
 };
 
-class MusicBrainzTagsModelDelegate : public QStyledItemDelegate
+class MusicBrainzTagsModelDelegate : public QItemDelegate
 {
     public:
         explicit MusicBrainzTagsModelDelegate( QObject *parent = 0 );
     protected:
-        virtual void drawCheck( QPainter* painter, const QStyleOptionViewItem &option,
+        virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
                                 const QRect &rect, Qt::CheckState state ) const;
 };
 

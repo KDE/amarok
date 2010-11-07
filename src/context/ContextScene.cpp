@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ContextScene"
+
 #include "ContextScene.h"
 
 #include "core/support/Amarok.h"
@@ -33,6 +35,7 @@ namespace Context
 ContextScene::ContextScene( QObject * parent )
     : Plasma::Corona( parent )
 {
+    DEBUG_BLOCK
     setBackgroundBrush( Qt::NoBrush );
 }
 
@@ -43,6 +46,7 @@ ContextScene::~ContextScene()
 
 void ContextScene::loadDefaultSetup()
 {
+    DEBUG_BLOCK
     // WORKAROUND for a bug in KDE 4.5.0 and 4.5.1:
     // Delete amarok-appletsrc config file (created by Plasma), because Plasma tries
     // to load all applets listed in there, which can lead to crashes due to applets

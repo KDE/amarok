@@ -18,7 +18,6 @@
  ****************************************************************************************/
 
 #include "PixmapViewer.h"
-#include "core/support/Debug.h"
 
 #include <KApplication>
 
@@ -30,7 +29,7 @@
 #include <QWheelEvent>
 
 
-PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap pix, int screenNumber)
+PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap &pix, int screenNumber )
     : QWidget( parent )
     , m_pixmap( pix )
 {
@@ -45,6 +44,10 @@ PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap pix, int screenNumber
         m_zoomFactor = qMin( zoomFactorX, zoomFactorY ) * 0.8;
     }
     setMinimumSize( m_pixmap.width() * m_zoomFactor, m_pixmap.height() * m_zoomFactor );
+}
+
+PixmapViewer::~PixmapViewer()
+{
 }
 
 void

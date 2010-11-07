@@ -31,11 +31,8 @@ class RatingWidget;
 class RecentlyPlayedListWidget;
 class QAction;
 class QGraphicsLinearLayout;
+class QGraphicsProxyWidget;
 class QSignalMapper;
-
-namespace Plasma {
-    class Label;
-}
 
 static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
 static const KLocalizedString UNKNOWN_ALBUM = ki18n("Unknown Album");
@@ -76,9 +73,9 @@ private:
     QList<QAction*> contextualActions();
 
     void clearTrackActions();
-    void drawStatsBackground( QPainter *const p );
-    void drawStatsTexts( QPainter *const p );
-    void drawSourceEmblem( QPainter *const p );
+    void drawStatsBackground( QPainter *const p, const QRect &rect );
+    void drawStatsTexts( QPainter *const p, const QRect &rect );
+    void drawSourceEmblem( QPainter *const p, const QRect &rect );
     void resizeCover( const QPixmap &cover, qreal width );
     void setupLayoutActions( Meta::TrackPtr track );
 
@@ -100,7 +97,7 @@ private:
                            TextScrollingWidget *widget,
                            const QString &replacement );
 
-    Plasma::Label *m_collectionLabel;
+    QGraphicsProxyWidget *m_collectionLabel;
     RecentlyPlayedListWidget *m_recentWidget;
     RatingWidget *m_ratingWidget;
     DropPixmapLayoutItem *m_albumCover;

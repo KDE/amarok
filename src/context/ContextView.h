@@ -115,11 +115,6 @@ private slots:
 
 private:
     static ContextView* s_self;
-
-    /**
-    * Set all containments geometry in the scene with the same geometry as the Context View widget 
-    */
-    void updateContainmentsGeometry();
       
     void loadConfig();
 

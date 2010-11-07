@@ -44,7 +44,7 @@
 #include <QHBoxLayout>
 
 Playlist::Dock::Dock( QWidget* parent )
-    : AmarokDockWidget( i18n( "Playlist" ), parent )
+    : AmarokDockWidget( i18n( "&Playlist" ), parent )
 {
     DEBUG_BLOCK
 

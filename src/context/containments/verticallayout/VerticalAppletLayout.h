@@ -46,17 +46,13 @@ class VerticalAppletLayout : public QGraphicsWidget
         VerticalAppletLayout( QGraphicsItem* parent = 0 );
         ~VerticalAppletLayout();
         
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        
         void addApplet( Plasma::Applet*, int location = -1 );
         
         virtual void saveToConfig( KConfigGroup &conf );
         
-
         QSizeF totalSize();
 
         void showAtIndex( int index );
-        
         
     signals:
         void appletAdded( Plasma::Applet* applet, int location );
@@ -71,6 +67,7 @@ class VerticalAppletLayout : public QGraphicsWidget
     protected:
         // reimplemented from QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+
     private:
         int minIndexWithAppletOnScreen( int loc );
         

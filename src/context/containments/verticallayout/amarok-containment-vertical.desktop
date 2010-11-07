@@ -91,7 +91,7 @@ Comment[zh_TW]=提供給 Amarok 內容的垂直容器
 
 Icon=
 Type=Service
-ServiceTypes=Plasma/Applet,Plasma/Containment
+ServiceTypes=Plasma/Containment
 
 X-KDE-Library=amarok_containment_vertical
 X-KDE-PluginInfo-Author=Leo Franchi

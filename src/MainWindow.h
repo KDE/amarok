@@ -146,7 +146,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
-        void resizeWindowHack();
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
 #endif // DEBUG_BUILD_TYPE
@@ -163,7 +162,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        virtual void showEvent( QShowEvent* event );
         virtual void paletteChange( const QPalette & oldPalette );
         virtual bool queryExit(); 
 

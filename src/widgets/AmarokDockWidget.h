@@ -21,7 +21,6 @@
 #include <QDockWidget>
 #include <QString>
 
-
 class AmarokDockWidget : public QDockWidget
 {
     Q_OBJECT

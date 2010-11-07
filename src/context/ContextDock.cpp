@@ -14,26 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ContextDock.h"
+#define DEBUG_PREFIX "ContextDock"
 
+#include "ContextDock.h"
 
 #include "amarokconfig.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
-
 #include "core/support/Debug.h"
 
+#include <KVBox>
+
 ContextDock::ContextDock( QWidget *parent )
-    :AmarokDockWidget(  i18n( "Context" ), parent )
+    : AmarokDockWidget( i18n( "&Context" ), parent )
 {
     setObjectName( "Context dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
-}
-
-QSize ContextDock::sizeHint() const
-{
-    return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
 }
 
 void ContextDock::polish()
@@ -41,13 +38,9 @@ void ContextDock::polish()
     DEBUG_BLOCK
 
     m_mainWidget = new KVBox( this );
-
     m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_mainWidget->setSpacing( 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
-    m_mainWidget->setFrameShadow( QFrame::Sunken );
-    m_mainWidget->setMinimumSize( 100, 100 );
-
     setWidget( m_mainWidget );
 
     m_corona = new Context::ContextScene( this );
@@ -55,7 +48,6 @@ void ContextDock::polish()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     m_corona.data()->loadDefaultSetup(); // this method adds our containment to the scene
-
 }
 
 
@@ -65,18 +57,19 @@ ContextDock::createContextView( Plasma::Containment *containment )
     DEBUG_BLOCK
     disconnect( m_corona.data(), SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
+
+    debug() << "Creating context view on containmend" << containment->name();
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_corona.data(), m_mainWidget );
     m_contextView.data()->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona.data(), m_mainWidget );
     m_contextToolbarView.data()->setFrameShape( QFrame::NoFrame );
 
+    connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );
     connect( m_contextToolbarView.data(), SIGNAL( hideAppletExplorer() ), m_contextView.data(), SLOT( hideAppletExplorer() ) );
     connect( m_contextToolbarView.data(), SIGNAL( showAppletExplorer() ), m_contextView.data(), SLOT( showAppletExplorer() ) );
     m_contextView.data()->showHome();
-    m_contextView.data()->resize( size() );
     PERF_LOG( "ContexView created" )
-
 }
 
 #include "ContextDock.moc"

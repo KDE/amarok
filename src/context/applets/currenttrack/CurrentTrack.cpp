@@ -47,6 +47,7 @@
 #include <QFont>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
@@ -92,10 +93,11 @@ CurrentTrack::init()
     m_ratingWidget->hide();
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
 
-    m_collectionLabel = new Plasma::Label( this );
-    m_collectionLabel->setAlignment( Qt::AlignCenter );
-    m_collectionLabel->setText( i18n( "Local Collection" ) );
-    m_collectionLabel->show();
+    QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
+    collectionLabel->setAttribute( Qt::WA_NoSystemBackground );
+    collectionLabel->setAlignment( Qt::AlignCenter );
+    m_collectionLabel = new QGraphicsProxyWidget( this );
+    m_collectionLabel->setWidget( collectionLabel );
 
     m_title  = new TextScrollingWidget( this );
     m_artist = new TextScrollingWidget( this );
@@ -259,6 +261,7 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     alignBaseLineToFirst( m_artist, m_byText );
     alignBaseLineToFirst( m_album, m_onText );
 
+    update(); // ensure the stats bg is repainted with correct geometry
     if( m_isStopped )
     {
         m_recentHeader->setScrollingText( i18n("Recently Played Tracks") );
@@ -295,7 +298,6 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
         m_albumCover->graphicsItem()->setAcceptDrops( false );
         updateConstraints();
-        update();
         return;
     }
 
@@ -333,10 +335,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
     setupLayoutActions( The::engineController()->currentTrack() );
-
-    // without that the rating doesn't get update for a playing track
     updateConstraints();
-    update();
 }
 
 void
@@ -353,25 +352,27 @@ CurrentTrack::paintInterface( QPainter *p,
 {
     Context::Applet::paintInterface( p, option, contentsRect );
     addGradientToAppletBackground( p );
-    drawStatsBackground( p );
-    drawStatsTexts( p );
-    drawSourceEmblem( p );
+    drawSourceEmblem( p, contentsRect );
+    drawStatsBackground( p, contentsRect );
+    drawStatsTexts( p, contentsRect );
 }
 
 void
-CurrentTrack::drawStatsBackground( QPainter *const p )
+CurrentTrack::drawStatsBackground( QPainter *const p, const QRect &rect )
 {
     // draw the complete outline. lots of little steps :) at each corner, leave
     // a 6x6 box. draw a quad bezier curve from the two ends of the lines,
     // through  the original corner
 
     const qreal leftEdge = m_ratingWidget->boundingRect().right() + standardPadding();
-    const qreal rightEdge = boundingRect().size().width() - standardPadding();
+    const qreal rightEdge = rect.right() - standardPadding() / 2;
     const qreal ratingWidgetX = m_ratingWidget->pos().x();
     const qreal ratingWidgetY = m_ratingWidget->pos().y();
     const qreal ratingWidgetH = m_ratingWidget->boundingRect().height();
-    QColor bottomColor( 255, 255, 255, 90 );
-    QColor topColor( 255, 255, 255, 120 );
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor bottomColor = topColor;
+    topColor.setAlpha( 200 );
+    bottomColor.setAlpha( 100 );
 
     QPainterPath statsPath;
     statsPath.moveTo( leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 ); // top left position of the rect, right below the album
@@ -409,6 +410,7 @@ CurrentTrack::drawStatsBackground( QPainter *const p )
                        leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 );
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     p->fillPath( statsPath, bottomColor );
     p->fillPath( headerPath, topColor );
     p->restore();
@@ -416,10 +418,10 @@ CurrentTrack::drawStatsBackground( QPainter *const p )
 }
 
 void
-CurrentTrack::drawStatsTexts( QPainter *const p )
+CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
 {
     const qreal leftEdge       = m_ratingWidget->boundingRect().right() + standardPadding();
-    const qreal maxTextWidth   = size().width() - standardPadding() * 2 - leftEdge;
+    const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
     const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
     const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
@@ -437,6 +439,8 @@ CurrentTrack::drawStatsTexts( QPainter *const p )
                  m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    p->setPen( normalBrush().color() );
 
     // labels
     QString playCountLabel = fm.elidedText( column1Label, Qt::ElideRight, rect.width() );
@@ -490,7 +494,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p )
 }
 
 void
-CurrentTrack::drawSourceEmblem( QPainter *const p )
+CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
 {
     if( m_isStopped )
         return;
@@ -503,7 +507,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p )
         QPixmap logo = Amarok::semiTransparentLogo( m_albumWidth );
         QRect rect = logo.rect();
         int y = standardPadding();
-        int x = boundingRect().width() - rect.width() - y;
+        int x = contentsRect.right() - rect.width() - y;
         rect.moveTo( x, y );
         p->drawPixmap( rect, logo );
     }
@@ -514,7 +518,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p )
         // assume it is a square emblem
         qreal height = boundingRect().height() / 2;
         int y = standardPadding();
-        int x = boundingRect().width() - y - height;
+        int x = contentsRect.right() - y - height;
         QRectF rect( x, y, height, height );
         svg.render( p, rect );
     }
@@ -664,10 +668,8 @@ CurrentTrack::coverDropped( const QPixmap &cover )
 }
 
 void
-CurrentTrack::paletteChanged( const QPalette & palette )
+CurrentTrack::paletteChanged( const QPalette &palette )
 {
-    DEBUG_BLOCK
-
     m_title->setBrush( palette.text() );
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );

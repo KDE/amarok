@@ -41,7 +41,7 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
             createViewer( album->image(), parent );
         }
 
-        CoverViewDialog( QPixmap pixmap, QWidget *parent )
+        CoverViewDialog( const QPixmap &pixmap, QWidget *parent )
             : QDialog( parent )
         {
             init();

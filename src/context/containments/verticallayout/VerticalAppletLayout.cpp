@@ -37,16 +37,7 @@ Context::VerticalAppletLayout::VerticalAppletLayout( QGraphicsItem* parent )
 Context::VerticalAppletLayout::~VerticalAppletLayout()
 {
     DEBUG_BLOCK
-
     qDeleteAll( m_appletList );
-}
-
-void
-Context::VerticalAppletLayout::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-    Q_UNUSED( painter )
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
 }
 
 void
@@ -61,7 +52,7 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
 void
 Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
-    debug() << "layout told to add applet at" << location;
+    debug() << "layout told to add applet" << applet->name() << "at" << location;
     if( m_appletList.size() == 0 )
         emit noApplets( false );
 
@@ -81,7 +72,6 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     // every time the geometry change, we will call showapplet ;)
     connect( applet, SIGNAL( sizeHintChanged( Qt::SizeHint ) ), SLOT( refresh() ) );
 }
-
 
 void
 Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
@@ -238,13 +228,9 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     m_showingIndex = index;
 }
 
-
-
-
 int
 Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
 {
-    DEBUG_BLOCK
     qreal height = 0.0;
     int index = -1;
     if( boundingRect().height() < 30||
