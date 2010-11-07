@@ -291,7 +291,7 @@ ScanManager::slotWatchFolders()
     if( !AmarokConfig::monitorChanges() )
         return;
 
-    startScanner();
+    requestIncrementalScan();
 }
 
 void
@@ -581,7 +581,7 @@ XmlParseJob::addNewXmlData( const QString &data )
         }
     }
 
-    debug() << "XmlParseJob: addNewXm.Data";
+    debug() << "XmlParseJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
 
     if( index >= 0 )
         m_wait.wakeOne();
