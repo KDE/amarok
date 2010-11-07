@@ -80,33 +80,39 @@ TabsEngine::sourceRequestEvent( const QString& name )
 {
     QStringList tokens = name.split( ':' );
 
-    // data coming from the applet configuration dialogue
-    bool forceUpdate = false;
-    if( tokens.contains( "fetchGuitar" ) && tokens.size() > 1 )
-        if( ( tokens.at( 1 ) == QString( "fetchGuitar" ) )  && ( tokens.size() > 2 ) )
+    // data coming from the applet configuration dialog
+    if( ( tokens.contains( "fetchGuitar" ) || tokens.contains( "fetchBass" ) ) && tokens.size() > 2 )
+    {
+        bool forceUpdate = false;
+        if ( tokens.at( 1 ) == QString( "fetchGuitar" ) )
+        {
             if( m_fetchGuitar != tokens.at( 2 ).toInt() )
             {
                 m_fetchGuitar = tokens.at( 2 ).toInt();
                 forceUpdate = true;
             }
-    if( tokens.contains( "fetchBass" ) && tokens.size() > 1 )
-        if( ( tokens.at( 1 ) == QString( "fetchBass" ) )  && ( tokens.size() > 2 ) )
+        }
+        if ( tokens.at( 1 ) == QString( "fetchBass" ) )
+        {
             if( m_fetchBass != tokens.at( 2 ).toInt() )
             {
                 m_fetchBass = tokens.at( 2 ).toInt();
                 forceUpdate = true;
             }
-    // check if settings have changed
-    if ( forceUpdate )
-    {
-        m_titleName.clear();
-        m_artistName.clear();
-        removeAllData( name );
-        setData( name, QVariant() );
-        update();
+        }
+        // check if settings have changed
+        if ( forceUpdate )
+        {
+            m_titleName.clear();
+            m_artistName.clear();
+            removeAllData( name );
+            setData( name, QVariant() );
+            update();
+        }
+        return true;
     }
 
-    // handle reload of a spefic artist and title
+    // handle reload of a specific artist and title
     if( name.contains( ":AMAROK_TOKEN:" ) && tokens.size() == 5 )
     {
         tokens = name.split( ":AMAROK_TOKEN:" );
@@ -121,7 +127,13 @@ TabsEngine::sourceRequestEvent( const QString& name )
                 requestTab( artist, title );
             }
         }
+        return true;
     }
+
+    // update on initial request
+    removeAllData( name );
+    setData( name, QVariant() );
+    update();
     return true;
 }
 
