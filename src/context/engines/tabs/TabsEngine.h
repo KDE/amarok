@@ -136,11 +136,11 @@ class TabsEngine : public DataEngine
         QHash < const KUrl, Source> m_urls;
 
         /**
-         * Controls wether guitar-tabs will be fetched
+         * Controls whether guitar-tabs will be fetched
          */
         bool m_fetchGuitar;
         /**
-         * Controls wether bass-tabs will be fetched
+         * Controls whether bass-tabs will be fetched
          */
         bool m_fetchBass;
 

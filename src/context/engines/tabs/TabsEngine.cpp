@@ -215,7 +215,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
         return;
     m_urls.remove( url );
 
-    // an error occured during the HTTP-request
+    // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
         setData( "tabs", "message", i18n( "Unable to retrieve tab information from Ultimate Guitar: %1", e.description ) );
@@ -258,7 +258,7 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
         return;
     m_urls.remove( url );
 
-    // an error occured during the HTTP-request
+    // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
         debug() << "Unable to retrieve Ultimate Guitar information: " << e.description;
@@ -313,7 +313,7 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
         return;
     m_urls.remove( url );
 
-    // an error occured during the HTTP-request
+    // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
         setData( "tabs", "message", i18n( "Unable to retrieve tab information from fretplay.com: %1", e.description ) );
@@ -358,7 +358,7 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
         return;
     m_urls.remove( url );
 
-    // an error occured during the HTTP-request
+    // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
         debug() << "Unable to retrieve fretplay information: " << e.description;
@@ -404,7 +404,7 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
 }
 
 /**
- * checks wether all fetching jobs have finished and send the tab-data to the applet afterwards
+ * checks if all fetching jobs have finished and send the tab-data to the applet afterwards
  */
 void
 TabsEngine::resultFinalize()
