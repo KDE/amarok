@@ -31,11 +31,8 @@ class RatingWidget;
 class RecentlyPlayedListWidget;
 class QAction;
 class QGraphicsLinearLayout;
+class QGraphicsProxyWidget;
 class QSignalMapper;
-
-namespace Plasma {
-    class Label;
-}
 
 static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
 static const KLocalizedString UNKNOWN_ALBUM = ki18n("Unknown Album");
@@ -100,7 +97,7 @@ private:
                            TextScrollingWidget *widget,
                            const QString &replacement );
 
-    Plasma::Label *m_collectionLabel;
+    QGraphicsProxyWidget *m_collectionLabel;
     RecentlyPlayedListWidget *m_recentWidget;
     RatingWidget *m_ratingWidget;
     DropPixmapLayoutItem *m_albumCover;

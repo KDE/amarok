@@ -47,6 +47,7 @@
 #include <QFont>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
@@ -92,10 +93,11 @@ CurrentTrack::init()
     m_ratingWidget->hide();
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
 
-    m_collectionLabel = new Plasma::Label( this );
-    m_collectionLabel->setAlignment( Qt::AlignCenter );
-    m_collectionLabel->setText( i18n( "Local Collection" ) );
-    m_collectionLabel->show();
+    QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
+    collectionLabel->setAttribute( Qt::WA_NoSystemBackground );
+    collectionLabel->setAlignment( Qt::AlignCenter );
+    m_collectionLabel = new QGraphicsProxyWidget( this );
+    m_collectionLabel->setWidget( collectionLabel );
 
     m_title  = new TextScrollingWidget( this );
     m_artist = new TextScrollingWidget( this );
@@ -350,9 +352,9 @@ CurrentTrack::paintInterface( QPainter *p,
 {
     Context::Applet::paintInterface( p, option, contentsRect );
     addGradientToAppletBackground( p );
+    drawSourceEmblem( p, contentsRect );
     drawStatsBackground( p, contentsRect );
     drawStatsTexts( p, contentsRect );
-    drawSourceEmblem( p, contentsRect );
 }
 
 void
@@ -363,12 +365,14 @@ CurrentTrack::drawStatsBackground( QPainter *const p, const QRect &rect )
     // through  the original corner
 
     const qreal leftEdge = m_ratingWidget->boundingRect().right() + standardPadding();
-    const qreal rightEdge = rect.right() - standardPadding();
+    const qreal rightEdge = rect.right() - standardPadding() / 2;
     const qreal ratingWidgetX = m_ratingWidget->pos().x();
     const qreal ratingWidgetY = m_ratingWidget->pos().y();
     const qreal ratingWidgetH = m_ratingWidget->boundingRect().height();
-    QColor bottomColor( 255, 255, 255, 90 );
-    QColor topColor( 255, 255, 255, 120 );
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor bottomColor = topColor;
+    topColor.setAlpha( 200 );
+    bottomColor.setAlpha( 100 );
 
     QPainterPath statsPath;
     statsPath.moveTo( leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 ); // top left position of the rect, right below the album
@@ -406,6 +410,7 @@ CurrentTrack::drawStatsBackground( QPainter *const p, const QRect &rect )
                        leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 );
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     p->fillPath( statsPath, bottomColor );
     p->fillPath( headerPath, topColor );
     p->restore();
@@ -434,6 +439,8 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
                  m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    p->setPen( normalBrush().color() );
 
     // labels
     QString playCountLabel = fm.elidedText( column1Label, Qt::ElideRight, rect.width() );
@@ -661,10 +668,8 @@ CurrentTrack::coverDropped( const QPixmap &cover )
 }
 
 void
-CurrentTrack::paletteChanged( const QPalette & palette )
+CurrentTrack::paletteChanged( const QPalette &palette )
 {
-    DEBUG_BLOCK
-
     m_title->setBrush( palette.text() );
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
