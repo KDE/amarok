@@ -230,7 +230,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
     if( !resultsTable.isEmpty() )
     {
         const QStringList results = resultsTable.split( "</tr>" );
-        foreach ( QString result, results )
+        foreach ( const QString &result, results )
         {
             // lastIndex on purpose (due to the fact that tabledata for the first result contains two hrefs)
             // get the link to the actual tab
@@ -328,7 +328,7 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
     if( !resultsTable.isEmpty() )
     {
         QStringList results = resultsTable.split( "<BR>" );
-        foreach ( QString result, results )
+        foreach ( const QString &result, results )
         {
             const QString artist = subStringBetween( result, "\">", "</a>" );
             if( artist.compare( m_artistName, Qt::CaseInsensitive ) == 0 )
