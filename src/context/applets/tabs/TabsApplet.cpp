@@ -192,8 +192,6 @@ TabsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect )
-
-    p->setRenderHint( QPainter::Antialiasing );
     addGradientToAppletBackground( p );
 }
 

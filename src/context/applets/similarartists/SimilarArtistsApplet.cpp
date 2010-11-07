@@ -169,16 +169,6 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
 }
 
 void
-SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
-                                      const QRect &contentsRect )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( contentsRect )
-    p->setRenderHint( QPainter::Antialiasing );
-    addGradientToAppletBackground( p );
-}
-
-void
 SimilarArtistsApplet::configure()
 {
     showConfigurationInterface();

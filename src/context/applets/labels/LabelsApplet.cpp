@@ -363,17 +363,6 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
-LabelsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( p );
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
-    p->setRenderHint( QPainter::Antialiasing );
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-}
-
-void
 LabelsApplet::connectSource( const QString &source )
 {
     if ( source == "labels" )

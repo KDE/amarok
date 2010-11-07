@@ -208,31 +208,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     update();
 }
 
-void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-
-    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
-    //context view has been minimized completely
-    if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
-            childItem->hide();
-        return;
-    }
-    else
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();
-    }
-
-
-    p->setRenderHint( QPainter::Antialiasing );
-
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-}
-
 void Albums::createConfigurationInterface( KConfigDialog *parent )
 {
     QSpinBox *spinBox = new QSpinBox;

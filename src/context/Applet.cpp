@@ -97,25 +97,37 @@ Context::Applet::truncateTextToFit( const QString &text, const QFont& font, cons
 }
 
 void
+Context::Applet::paintInterface( QPainter *p,
+                                 const QStyleOptionGraphicsItem *option,
+                                 const QRect &contentsRect )
+{
+    Plasma::Applet::paintInterface( p, option, contentsRect );
+    addGradientToAppletBackground( p );
+}
+
+void
 Context::Applet::addGradientToAppletBackground( QPainter* p )
 {
-        // tint the whole applet
+    // tint the whole applet
     // draw non-gradient backround. going for elegance and style
+    const QRectF roundRect = boundingRect().adjusted( 0, 1, -1, -1 );
+
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 4, 4 );
-    //p->fillPath( path, gradient );
+    path.addRoundedRect( roundRect, 4, 4 );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
     p->fillPath( path, highlight );
     p->restore();
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     p->translate( 0.5, 0.5 );
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 4, 4 );
+    p->drawRoundedRect( roundRect, 4, 4 );
     p->restore();
 }
 

@@ -283,18 +283,6 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
     m_label->setPos( ( size().width() - m_label->boundingRect().width() ) / 2, m_label->y() );
 }
 
-void
-CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( p );
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
-
-    p->setRenderHint( QPainter::Antialiasing );
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-}
-
 void CoverBlingApplet::toggleFullscreen()
 {
     if ( m_fullsize )

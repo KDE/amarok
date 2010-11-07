@@ -57,12 +57,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          */
         QString truncateTextToFit( const QString &text, const QFont& font, const QRectF& bounds );
 
-        /**
-         * Paint the background of an applet, so it fits with all the other applets.
-         *  Background is *no longer a gradient*. However, please use this to
-         *  stay consistent with other applets.
-         */
-        void addGradientToAppletBackground( QPainter* p );
+        void paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
         /**
           * Returns a standard CV-wide padding that applets can use for consistency.
@@ -105,6 +100,13 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void paletteChanged( const QPalette & palette );
 
     protected:
+        /**
+         * Paint the background of an applet, so it fits with all the other applets.
+         *  Background is *no longer a gradient*. However, please use this to
+         *  stay consistent with other applets.
+         */
+        void addGradientToAppletBackground( QPainter* p );
+
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
         bool canAnimate();
 

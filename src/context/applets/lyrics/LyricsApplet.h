@@ -36,8 +36,6 @@ public:
     bool hasHeightForWidth() const;
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );    
     
 public slots:
     virtual void init();

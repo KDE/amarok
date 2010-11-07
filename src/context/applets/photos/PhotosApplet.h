@@ -46,15 +46,13 @@ class PhotosApplet : public Context::Applet
         PhotosApplet( QObject* parent, const QVariantList& args );
         ~PhotosApplet();
 
-        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-        void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+        void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     public slots:
         virtual void init();
-        void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-        void    connectSource( const QString &source );
-        void    saveSettings();
+        void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+        void connectSource( const QString &source );
+        void saveSettings();
 
     protected slots:
         void trackPlaying();

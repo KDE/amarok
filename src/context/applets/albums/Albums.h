@@ -35,8 +35,6 @@ public:
     Albums( QObject* parent, const QVariantList& args );
     ~Albums();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
 public slots:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );

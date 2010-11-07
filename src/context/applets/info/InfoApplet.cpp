@@ -141,8 +141,6 @@ void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
             childItem->show();
     }
 
-    p->setRenderHint( QPainter::Antialiasing );
-
     addGradientToAppletBackground( p );
 }
 

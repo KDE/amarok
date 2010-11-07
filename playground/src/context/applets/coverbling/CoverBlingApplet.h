@@ -46,7 +46,6 @@ class CoverBlingApplet : public Context::Applet
         ~CoverBlingApplet();
 
         void init();
-        void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     public slots:
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);

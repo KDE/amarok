@@ -160,17 +160,6 @@ PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void 
-PhotosApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( p );
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
-    p->setRenderHint( QPainter::Antialiasing );
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-}
-
-void 
 PhotosApplet::connectSource( const QString &source )
 {
     if ( source == "photos" )

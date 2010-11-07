@@ -697,14 +697,6 @@ WikipediaApplet::loadWikipediaUrl( const QString &url )
 }
 
 void
-WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( contentsRect )
-    addGradientToAppletBackground( p );
-}
-
-void
 WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( WikipediaApplet );

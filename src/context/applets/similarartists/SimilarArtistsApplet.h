@@ -61,9 +61,6 @@ public:
      */
     ~SimilarArtistsApplet();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option,
-                         const QRect& contentsRect );
-
     /**
      * This method puts the widgets in the layout, in the initialization
      */

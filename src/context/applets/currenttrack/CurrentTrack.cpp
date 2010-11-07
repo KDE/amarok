@@ -351,7 +351,6 @@ CurrentTrack::paintInterface( QPainter *p,
                               const QRect &contentsRect )
 {
     Context::Applet::paintInterface( p, option, contentsRect );
-    addGradientToAppletBackground( p );
     drawSourceEmblem( p, contentsRect );
     drawStatsBackground( p, contentsRect );
     drawStatsTexts( p, contentsRect );
