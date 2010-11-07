@@ -67,6 +67,9 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     m_deleteIcon->hide();
 
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    paletteChanged( palette() );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
@@ -131,6 +134,11 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event 
     emit geometryChanged();
 }
 
+void
+Context::AppletToolbarAppletItem::paletteChanged( const QPalette &palette )
+{
+    m_label->setDefaultTextColor( palette.text().color() );
+}
 
 QVariant
 Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const QVariant &value )
