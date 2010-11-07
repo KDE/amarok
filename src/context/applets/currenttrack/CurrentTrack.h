@@ -76,9 +76,9 @@ private:
     QList<QAction*> contextualActions();
 
     void clearTrackActions();
-    void drawStatsBackground( QPainter *const p );
-    void drawStatsTexts( QPainter *const p );
-    void drawSourceEmblem( QPainter *const p );
+    void drawStatsBackground( QPainter *const p, const QRect &rect );
+    void drawStatsTexts( QPainter *const p, const QRect &rect );
+    void drawSourceEmblem( QPainter *const p, const QRect &rect );
     void resizeCover( const QPixmap &cover, qreal width );
     void setupLayoutActions( Meta::TrackPtr track );
 
