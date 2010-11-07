@@ -81,12 +81,32 @@ TabsEngine::sourceRequestEvent( const QString& name )
     QStringList tokens = name.split( ':' );
 
     // data coming from the applet configuration dialogue
+    bool forceUpdate = false;
     if( tokens.contains( "fetchGuitar" ) && tokens.size() > 1 )
         if( ( tokens.at( 1 ) == QString( "fetchGuitar" ) )  && ( tokens.size() > 2 ) )
-            m_fetchGuitar = tokens.at( 2 ).toInt();
+            if( m_fetchGuitar != tokens.at( 2 ).toInt() )
+            {
+                m_fetchGuitar = tokens.at( 2 ).toInt();
+                forceUpdate = true;
+            }
     if( tokens.contains( "fetchBass" ) && tokens.size() > 1 )
         if( ( tokens.at( 1 ) == QString( "fetchBass" ) )  && ( tokens.size() > 2 ) )
-            m_fetchBass = tokens.at( 2 ).toInt();
+            if( m_fetchBass != tokens.at( 2 ).toInt() )
+            {
+                m_fetchBass = tokens.at( 2 ).toInt();
+                forceUpdate = true;
+            }
+    // check if settings have changed
+    if ( forceUpdate )
+    {
+        m_titleName.clear();
+        m_artistName.clear();
+        removeAllData( name );
+        setData( name, QVariant() );
+        update();
+    }
+
+    // handle reload of a spefic artist and title
     if( name.contains( ":AMAROK_TOKEN:" ) && tokens.size() == 5 )
     {
         tokens = name.split( ":AMAROK_TOKEN:" );
@@ -97,15 +117,8 @@ TabsEngine::sourceRequestEvent( const QString& name )
             removeAllData( name );
             setData( name, QVariant());
             requestTab( artist, title );
-            return true;
         }
     }
-
-    // a new track is playing.
-    removeAllData( name );
-    setData( name, QVariant() );
-    update();
-
     return true;
 }
 
