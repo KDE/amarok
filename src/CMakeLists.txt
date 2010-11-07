@@ -327,8 +327,6 @@ set( libcontextview_SRCS
     context/ContextView.cpp
     context/LyricsManager.cpp
     context/ToolbarView.cpp
-    context/layouts/ContextLayout.cpp
-    context/layouts/VerticalLayout.cpp
     context/toolbar/AppletItemOverlay.cpp
     context/toolbar/AppletToolbar.cpp
     context/toolbar/AppletToolbarAddItem.cpp
