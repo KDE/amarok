@@ -41,17 +41,14 @@ class VerticalToolbarContainment : public Containment
 
         QList<QAction*> contextualActions();
 
-        virtual void paintInterface(QPainter *painter,
-                                    const QStyleOptionGraphicsItem *option,
-                                    const QRect& contentsRect);
-
         virtual void saveToConfig( KConfigGroup &conf );
         virtual void loadConfig( const KConfigGroup &conf );
         
         virtual void setView( ContextView* view);
         virtual ContextView *view();
 
-        QRectF boundingRect () const;
+        QRectF boundingRect() const;
+
     public slots:
         Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );
@@ -61,6 +58,7 @@ class VerticalToolbarContainment : public Containment
         
     protected:
         virtual void wheelEvent( QGraphicsSceneWheelEvent* event );
+
     signals:
         void updatedContainment( Containment* );
         void appletAdded( Plasma::Applet*, int );

@@ -107,21 +107,8 @@
 
 #define AMAROK_CAPTION "Amarok"
 
-
 extern KAboutData aboutData;
 extern OcsData ocsData;
-
-class ContextWidget : public KVBox
-{
-    // Set a useful size default of the center tab.
-    public:
-        ContextWidget( QWidget *parent ) : KVBox( parent ) {}
-
-        QSize sizeHint() const
-        {
-            return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
-        }
-};
 
 QWeakPointer<MainWindow> MainWindow::s_instance;
 
@@ -506,18 +493,6 @@ MainWindow::closeEvent( QCloseEvent *e )
     e->accept();
     kapp->quit();
 #endif
-}
-
-void
-MainWindow::showEvent(QShowEvent* e)
-{
-    static bool windowEverShown = false;
-    if ( !windowEverShown )
-    {
-        windowEverShown = true;
-        QTimer::singleShot( 250, this, SLOT( resizeWindowHack() ) );
-    }
-    QWidget::showEvent(e);
 }
 
 bool
@@ -1371,16 +1346,6 @@ MainWindow::isWaitingForCd() const
     DEBUG_BLOCK
     debug() << "waiting?: " << m_waitingForCd;
     return m_waitingForCd;
-}
-
-void
-MainWindow::resizeWindowHack()
-{
-    // HACK
-    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
-    // with a wrong initial size. Remove when this bug is fixed in Plasma.
-    resize( width(), height() - 1 );
-    resize( width(), height() + 1 );
 }
 
 #include "MainWindow.moc"
