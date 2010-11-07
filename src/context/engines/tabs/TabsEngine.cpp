@@ -183,8 +183,8 @@ TabsEngine::requestTab( QString artist, QString title )
     setData( "tabs", "title", m_titleName );
     setData( "tabs", "artist", m_artistName );
 
-    QString searchArtist = QString( artist ).trimmed().replace( " ", "+");
-    QString searchTitle = QString( title ).trimmed().replace( " ", "+");
+    QString searchArtist = artist.trimmed().replace( ' ', '+' );
+    QString searchTitle  = title.trimmed().replace( ' ', '+' );
 
     // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
     if( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
