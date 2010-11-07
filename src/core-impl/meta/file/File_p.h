@@ -195,17 +195,17 @@ void Track::Private::readMetaData()
         if( file->ID3v2Tag() )
         {
             const TagLib::ID3v2::FrameListMap flm = file->ID3v2Tag()->frameListMap();
-            if( !flm[ "TPOS" ].isEmpty() )
-                disc = strip( flm[ "TPOS" ].front()->toString() );
+            if( !flm[ fieldName( Meta::valDiscNr, MPEG ) ].isEmpty() )
+                disc = strip( flm[ fieldName( Meta::valDiscNr, MPEG ) ].front()->toString() );
 
-            if( !flm[ "TCOM" ].isEmpty() )
-                m_data.composer = strip( flm[ "TCOM" ].front()->toString() );
+            if( !flm[ fieldName( Meta::valComposer, MPEG ) ].isEmpty() )
+                m_data.composer = strip( flm[ fieldName( Meta::valComposer, MPEG ) ].front()->toString() );
 
-            if( !flm[ "TPE2" ].isEmpty() )
-                m_data.albumArtist = strip( flm[ "TPE2" ].front()->toString() );
+            if( !flm[ fieldName( Meta::valAlbumArtist, MPEG ) ].isEmpty() )
+                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, MPEG ) ].front()->toString() );
 
-            if( !flm[ "TBPM" ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ "TBPM" ].front()->toString() ).toFloat();
+            if( !flm[ fieldName( Meta::valBpm, MPEG ) ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, MPEG ) ].front()->toString() ).toFloat();
 
             if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
             {
@@ -268,14 +268,14 @@ void Track::Private::readMetaData()
         if( file->tag() )
         {
             const TagLib::Ogg::FieldListMap flm = file->tag()->fieldListMap();
-            if( !flm[ "ALBUMARTIST" ].isEmpty() )
-                m_data.albumArtist = strip( flm[ "ALBUMARTIST" ].front() );
-            if( !flm[ "COMPOSER" ].isEmpty() )
-                m_data.composer = strip( flm[ "COMPOSER" ].front() );
-            if( !flm[ "DISCNUMBER" ].isEmpty() )
-                disc = strip( flm[ "DISCNUMBER" ].front() );
-            if( !flm[ "BPM" ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ "BPM" ].front() ).toFloat();
+            if( !flm[ fieldName( Meta::valAlbumArtist, OGG ) ].isEmpty() )
+                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, OGG ) ].front() );
+            if( !flm[ fieldName( Meta::valComposer, OGG ) ].isEmpty() )
+                m_data.composer = strip( flm[ fieldName( Meta::valComposer, OGG ) ].front() );
+            if( !flm[ fieldName( Meta::valDiscNr, OGG ) ].isEmpty() )
+                disc = strip( flm[ fieldName( Meta::valDiscNr, OGG ) ].front() );
+            if( !flm[ fieldName( Meta::valBpm, OGG ) ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, OGG ) ].front() ).toFloat();
         }
     }
 
@@ -284,14 +284,14 @@ void Track::Private::readMetaData()
         if( file->xiphComment() )
         {
             const TagLib::Ogg::FieldListMap flm = file->xiphComment()->fieldListMap();
-            if( !flm[ "ALBUMARTIST" ].isEmpty() )
-                m_data.albumArtist = strip( flm[ "ALBUMARTIST" ].front() );
-            if( !flm[ "COMPOSER" ].isEmpty() )
-                m_data.composer = strip( flm[ "COMPOSER" ].front() );
-            if( !flm[ "DISCNUMBER" ].isEmpty() )
-                disc = strip( flm[ "DISCNUMBER" ].front() );
-            if( !flm[ "BPM" ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ "BPM" ].front() ).toFloat();
+            if( !flm[ fieldName( Meta::valAlbumArtist, FLAC ) ].isEmpty() )
+                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, FLAC ) ].front() );
+            if( !flm[ fieldName( Meta::valComposer, FLAC ) ].isEmpty() )
+                m_data.composer = strip( flm[ fieldName( Meta::valComposer, FLAC ) ].front() );
+            if( !flm[ fieldName( Meta::valDiscNr, FLAC ) ].isEmpty() )
+                disc = strip( flm[ fieldName( Meta::valDiscNr, FLAC ) ].front() );
+            if( !flm[ fieldName( Meta::valBpm, FLAC ) ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, FLAC ) ].front() ).toFloat();
         }
     }
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
@@ -299,17 +299,17 @@ void Track::Private::readMetaData()
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
-            if ( mp4tag->itemListMap().contains( "aART" ) )
-                m_data.albumArtist = strip( mp4tag->itemListMap()["aART"].toStringList().front() );
+            if ( mp4tag->itemListMap().contains( fieldName( Meta::valAlbumArtist, MP4 ) ) )
+                m_data.albumArtist = strip( mp4tag->itemListMap()[fieldName( Meta::valAlbumArtist, MP4 )].toStringList().front() );
 
-            if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
-                m_data.composer = strip( mp4tag->itemListMap()["\xA9wrt"].toStringList().front() );
+            if ( mp4tag->itemListMap().contains( fieldName( Meta::valComposer, MP4 ) ) )
+                m_data.composer = strip( mp4tag->itemListMap()[fieldName( Meta::valComposer, MP4 )].toStringList().front() );
 
-            if ( mp4tag->itemListMap().contains( "disk" ) )
-                disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
+            if ( mp4tag->itemListMap().contains( fieldName( Meta::valDiscNr, MP4 ) ) )
+                disc = QString::number( mp4tag->itemListMap()[fieldName( Meta::valDiscNr, MP4 )].toIntPair().first );
 
-            if ( mp4tag->itemListMap().contains( "tmpo" ) )
-                m_data.bpm = mp4tag->itemListMap()["tmpo"].toIntPair().first;
+            if ( mp4tag->itemListMap().contains( fieldName( Meta::valBpm, MP4 ) ) )
+                m_data.bpm = mp4tag->itemListMap()[fieldName( Meta::valBpm, MP4 )].toIntPair().first;
         }
     }
     else if( TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File *>( fileRef.file() ) )
@@ -317,14 +317,14 @@ void Track::Private::readMetaData()
         if( file->APETag() )
         {
             const TagLib::APE::ItemListMap &itemsMap = file->APETag()->itemListMap();
-            if( itemsMap.contains( "Album Artist" ) )
-                m_data.albumArtist = strip( itemsMap[ "Album Artist" ].toString() );
-            if( itemsMap.contains( "Composer" ) )
-                m_data.composer = strip( itemsMap[ "Composer" ].toString() );
-            if( itemsMap.contains( "Disc" ) )
-                disc = strip( itemsMap[ "Disc" ].toString() );
-            if( itemsMap.contains( "BPM" ) )
-                m_data.bpm = TStringToQString( itemsMap[ "BPM" ].toString() ).toFloat();
+            if( itemsMap.contains( fieldName( Meta::valAlbumArtist, MPC ) ) )
+                m_data.albumArtist = strip( itemsMap[ fieldName( Meta::valAlbumArtist, MPC ) ].toString() );
+            if( itemsMap.contains( fieldName( Meta::valComposer, MPC ) ) )
+                m_data.composer = strip( itemsMap[ fieldName( Meta::valComposer, MPC ) ].toString() );
+            if( itemsMap.contains( fieldName( Meta::valDiscNr, MPC ) ) )
+                disc = strip( itemsMap[ fieldName( Meta::valDiscNr, MPC ) ].toString() );
+            if( itemsMap.contains( fieldName( Meta::valBpm, MPC ) ) )
+                m_data.bpm = TStringToQString( itemsMap[ fieldName( Meta::valBpm, MPC ) ].toString() ).toFloat();
         }
     }
     if( !disc.isEmpty() )
@@ -351,15 +351,9 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
-    /* we can't do this. there is a difference between a track artist and an album artist.
-       also the auto test breaks.
     if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
         m_data.artist = m_data.albumArtist;
-    else if( !m_data.artist.isEmpty() && m_data.albumArtist.isEmpty() )
-        m_data.albumArtist = m_data.artist;
-        */
 
-    // debug() << "Read metadata from file for: " + m_data.title;
 }
 
 // internal helper classes
