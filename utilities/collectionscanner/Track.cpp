@@ -377,7 +377,7 @@ CollectionScanner::Track::Track( const QString &path)
                     else if( name == "----:com.apple.iTunes:MusicBrainz Track Id" )
                         m_uniqueid = "mb-" + value;
 
-                    else if( name == "----:com.apple.iTunes:Amarok Track Id" )
+                    else if( name == "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" )
                         m_uniqueid = "amarok-sqltrackuid://" + value;
 
                     else
@@ -622,7 +622,7 @@ CollectionScanner::Track::decodeXiph( const QString &name, const QString &value 
     if( name == "COMPOSER" )
         m_composer = value;
 
-    else if( name == "ALBUM ARTIST" ) // MediaMonkey but it makes sense
+    else if( name == "ALBUMARTIST" )
         m_albumArtist = value;
 
     else if( name == "BPM" )
@@ -642,7 +642,7 @@ CollectionScanner::Track::decodeXiph( const QString &name, const QString &value 
     {
         m_uniqueid = "mb-" + value;
     }
-    else if( name == "AMAROK_TRACKID" )
+    else if( name == "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" )
     {
         m_uniqueid = "amarok-sqltrackuid://" + value;
     }

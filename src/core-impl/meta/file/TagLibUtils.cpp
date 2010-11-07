@@ -73,11 +73,11 @@ fieldName( const qint64 &field, const FileTypes &type )
         case Meta::valDiscNr:
             return "DISCNUMBER";
         case Meta::valPlaycount:
-            return "PLAYCOUNT:amarok@kde.org";
+            return "FMPS_PLAYCOUNT";
         case Meta::valRating:
-            return "RATING:amarok@kde.org";
+            return "FMPS_RATING";
         case Meta::valScore:
-            return "AMAROK_SCORE";
+            return "FMPS_RATING_AMAROK_SCORE";
         }
     }
     else if( type == MPEG )
@@ -119,9 +119,11 @@ fieldName( const qint64 &field, const FileTypes &type )
         case Meta::valDiscNr:
             return "disk";
         case Meta::valRating:
-            return "rtng";
+            return "----:com.apple.iTunes:FMPS_Rating";
         case Meta::valScore:
-            return "----:com.apple.iTunes:Amarok Score";
+            return "----:com.apple.iTunes:FMPS_Rating_Amarok_Score";
+        case Meta::valPlaycount:
+            return "----:com.apple.iTunes:FMPS_Playcount";
         }
     }
     else if( type == MPC )
@@ -139,11 +141,11 @@ fieldName( const qint64 &field, const FileTypes &type )
         case Meta::valDiscNr:
             return "Disc";
         case Meta::valPlaycount:
-            return "PlayCount";
+            return "FMPS_PLAYCOUNT";
         case Meta::valRating:
-            return "Rating";
+            return "FMPS_RATING";
         case Meta::valScore:
-            return "AMAROK_SCORE";
+            return "FMPS_RATING_AMAROK_SCORE";
         }
     }
 
@@ -235,9 +237,46 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                 tag->addFrame( frame );
             }
         }
-        else if( field == Meta::valScore )
+        else if( field == Meta::valScore || field == Meta::valRating || field == Meta::valPlaycount )
         {
-            tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
+            TagLib::String description;
+            if( field == Meta::valScore )
+            {
+                description = "FMPS_Rating_Amarok_Score";
+                tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
+            }
+            else if( field == Meta::valRating )
+            {
+                description = "FMPS_Rating";
+                tValue = Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) );
+            }
+            else if( field == Meta::valPlaycount )
+            {
+                description = "FMPS_Playcount";
+                tValue = Qt4QStringToTString( QString::number( value.toInt() ) );
+            }
+
+            if( field == Meta::valRating || field == Meta::valPlaycount )       //tName == "POPM"
+            {
+                TagLib::ID3v2::PopularimeterFrame* popFrame = 0;
+                if( !tag->frameListMap()[tName].isEmpty() )
+                    popFrame = dynamic_cast<TagLib::ID3v2::PopularimeterFrame*>( tag->frameListMap()[tName].front() );
+
+                if( !popFrame )
+                {
+                    popFrame = new TagLib::ID3v2::PopularimeterFrame( tName );
+                    tag->addFrame( popFrame );
+                }
+
+                if( field == Meta::valRating )
+                    popFrame->setRating( value.toInt() / 10.0 * 255 );
+                else
+                    popFrame->setCounter( value.toInt() );
+
+                tName = "TXXX";
+            }
+
+            //Now only FMPS frames left. tName == "TXXX"
             for( TagLib::ID3v2::FrameList::ConstIterator it = tag->frameList().begin(); it != tag->frameList().end(); ++it )
             {
                 if( (*it)->frameID() == tName )
@@ -246,7 +285,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                     if( !frame )
                         continue;
 
-                    if( frame->description() == "Amarok_Score" )
+                    if( frame->description() == description )
                     {
                         if( value.toBool() )
                             frame->setText( tValue );
@@ -262,27 +301,10 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             {
                 TagLib::ID3v2::UserTextIdentificationFrame* frame = new TagLib::ID3v2::UserTextIdentificationFrame( tName );
 
-                frame->setDescription( "Amarok_Score" );
+                frame->setDescription( description );
                 frame->setText( tValue );
                 tag->addFrame( frame );
             }
-        }
-        else if( field == Meta::valRating || field == Meta::valPlaycount )
-        {
-            TagLib::ID3v2::PopularimeterFrame* frame = 0;
-            if( !tag->frameListMap()[tName].isEmpty() )
-                frame = dynamic_cast<TagLib::ID3v2::PopularimeterFrame*>( tag->frameListMap()[tName].front() );
-
-            if( !frame )
-            {
-                frame = new TagLib::ID3v2::PopularimeterFrame( tName );
-                tag->addFrame( frame );
-            }
-
-            if( field == Meta::valRating )
-                frame->setRating( value.toInt() / 10.0 * 255 );
-            else
-                frame->setCounter( value.toInt() );
         }
         else
         {
@@ -385,7 +407,8 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
 
         TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
         if( field == Meta::valBpm || field == Meta::valDiscNr ||
-            field == Meta::valRating || field == Meta::valScore )
+            field == Meta::valRating || field == Meta::valScore ||
+            field == Meta::valPlaycount )
             mp4tag->itemListMap()[tName] = TagLib::MP4::Item( value.toInt(), 0 );
         else if( field == Meta::valCompilation )
             mp4tag->itemListMap()[tName] = TagLib::MP4::Item( value.toBool() );
@@ -395,7 +418,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     //MPC
     else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, MP4 );
+        tName = fieldName( field, MPC );
 
         if( field == Meta::valUniqueId )
         {
