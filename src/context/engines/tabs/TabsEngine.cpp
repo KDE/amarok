@@ -276,8 +276,8 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
 
     const QString title = subStringBetween( result, "<strong>", "</strong>");
     QString tabs = subStringBetween( result, "<pre>", "</pre>" );
-    tabs.replace( "<span>", "");
-    tabs.replace( "</span>", "");
+    tabs.remove( "<span>", Qt::CaseInsensitive );
+    tabs.remove( "</span>", Qt::CaseInsensitive );
 
     TabsInfo::TabType tabType = TabsInfo::GUITAR;
     const QString tabTypeString = subStringBetween( result, "<title>", " by " );
@@ -376,15 +376,15 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
 
     QString title = subStringBetween( result, "title\" content=\"", ". Accurate and free" );
     QString tabs = subStringBetween( result, "<pre>", "</pre>" );
-    tabs.replace( "<span>", "");
-    tabs.replace( "</span>", "");
+    tabs.remove( "<span>", Qt::CaseInsensitive );
+    tabs.remove( "</span>", Qt::CaseInsensitive );
 
     TabsInfo::TabType tabType = TabsInfo::GUITAR;
     if( title.contains( "Bass", Qt::CaseInsensitive ) )
         tabType = TabsInfo::BASS;
 
-    title.replace( "Bass tabs", "");
-    title.replace( "Guitar tabs", "");
+    title.remove( "Bass tabs", Qt::CaseInsensitive );
+    title.remove( "Guitar tabs", Qt::CaseInsensitive );
     if( !tabs.isEmpty() )
     {
         if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
