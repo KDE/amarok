@@ -345,7 +345,6 @@ TabsApplet::updateInterface( AppletState appletState )
 void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
 
@@ -354,7 +353,7 @@ TabsApplet::createConfigurationInterface( KConfigDialog *parent )
     if( m_fetchBass )
         ui_Settings.cbFetchBass->setChecked( true );
 
-    parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system");
+    parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system" );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
