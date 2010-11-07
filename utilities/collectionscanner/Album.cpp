@@ -20,6 +20,7 @@
 #include "Album.h"
 #include "Track.h"
 
+#include <QDebug>
 #include <QFileInfo>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -50,7 +51,10 @@ CollectionScanner::Album::Album( QXmlStreamReader *reader )
             else if( name == "cover" )
                 m_covers.append( reader->readElementText() );
             else
-                reader->readElementText(QXmlStreamReader::SkipChildElements); // just read over the element
+            {
+                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                reader->skipCurrentElement();
+            }
         }
 
         else if( reader->isEndElement() )

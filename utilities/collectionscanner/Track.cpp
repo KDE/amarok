@@ -24,6 +24,7 @@
 #include "Track.h"
 #include "AFTUtility.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -533,7 +534,10 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
                 m_playcount = reader->readElementText().toInt();
 
             else
-                reader->readElementText(); // just read over the element
+            {
+                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                reader->skipCurrentElement();
+            }
         }
 
         else if( reader->isEndElement() )
