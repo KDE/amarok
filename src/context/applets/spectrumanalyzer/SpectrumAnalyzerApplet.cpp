@@ -121,7 +121,7 @@ SpectrumAnalyzerApplet::init()
 {
     m_glLabel = new QGraphicsPixmapItem( this );
 
-    resize( 500, 300 );
+    resize( 500, -1 );
 
     // Label
     QFont labelFont;
@@ -130,12 +130,15 @@ SpectrumAnalyzerApplet::init()
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Spectrum-Analyzer" ) );
+    m_headerText->setDrawBackground( true );
+
 
     // Error Text
     m_errorText = new QGraphicsTextItem( this );
     m_errorText->setDefaultTextColor( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_errorText->setFont( labelFont );
     m_errorText->setPlainText( m_glErrorText );
+
 
     // Set the collapse size
     if( !m_glError )
@@ -228,7 +231,6 @@ SpectrumAnalyzerApplet::toggleFullscreen()
         else
         {
             attach();
-            sleep( 2 );
             detach( true );
         }
     }
@@ -345,7 +347,7 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
     
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
-    m_headerText->setScrollingText( m_headerText->text(), rect );
+    m_headerText->setScrollingText( m_headerText->text() );
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     if ( ( !m_detached ) && ( m_power ) && ( m_running ) )
@@ -595,10 +597,6 @@ SpectrumAnalyzerApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsI
     
     // tint the whole applet
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title (only if not animating )
-    if ( !m_headerText->isAnimating() )
-        drawRoundedRectAroundText( p, m_headerText );
 }
 
 void
