@@ -238,7 +238,7 @@ LastFmService::init()
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
-    if( !lastfm::nam() )
+    if( lastfm::nam() != The::networkAccessManager() )
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
