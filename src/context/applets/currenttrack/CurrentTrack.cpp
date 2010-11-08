@@ -758,7 +758,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     {
         QScopedPointer<CurrentTrackActionsCapability> cac( track->create<CurrentTrackActionsCapability>() );
         if( cac )
-            m_customActions << cac->customActions();
+            actions << cac->customActions();
     }
 
     if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )
