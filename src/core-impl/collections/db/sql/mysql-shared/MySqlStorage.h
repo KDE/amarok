@@ -68,7 +68,7 @@ class MySqlStorage: public SqlStorage
 
         MYSQL* m_db;
 
-        QMutex m_mutex;
+        mutable QMutex m_mutex;
 
         QString m_debugIdent;
 
