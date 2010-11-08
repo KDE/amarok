@@ -69,21 +69,29 @@ AlbumItem::setShowArtist( const bool showArtist )
 void
 AlbumItem::metadataChanged( Meta::AlbumPtr album )
 {
-    if( !album )
+    Q_UNUSED( album );
+    QMetaObject::invokeMethod(this, "update", Qt::QueuedConnection);
+}
+
+void
+AlbumItem::update()
+{
+    if( !m_album )
         return;
 
-    Meta::TrackList tracks = album->tracks();
+    Meta::TrackList tracks = m_album->tracks();
     if( !tracks.isEmpty() )
     {
         Meta::TrackPtr first = tracks.first();
-        int year = first->year()->name().toInt();
-        setData( year, AlbumYearRole );
+        Meta::YearPtr year = first->year();
+        if( year )
+            setData( year->year(), AlbumYearRole );
     }
 
-    QString albumName = album->name();
+    QString albumName = m_album->name();
     albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
-    QString name = ( m_showArtist && album->hasAlbumArtist() )
-                 ? QString( "%1 - %2" ).arg( album->albumArtist()->name(), albumName )
+    QString name = ( m_showArtist && m_album->hasAlbumArtist() )
+                 ? QString( "%1 - %2" ).arg( m_album->albumArtist()->name(), albumName )
                  : albumName;
     setData( name, AlbumNameRole );
 
@@ -95,7 +103,7 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
     QString lengthText = QString( "%1, %2" ).arg( trackCount, Meta::msToPrettyTime( totalTime ) );
     setData( lengthText, AlbumLengthRole );
 
-    QPixmap cover = The::svgHandler()->imageWithBorder( album, m_iconSize, 3 );
+    QPixmap cover = The::svgHandler()->imageWithBorder( m_album, m_iconSize, 3 );
     setIcon( QIcon( cover ) );
 }
 
@@ -122,3 +130,5 @@ AlbumItem::operator<( const QStandardItem &other ) const
     else
         return false;
 }
+
+#include "AlbumItem.moc"
