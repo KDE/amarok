@@ -180,10 +180,8 @@ void
 LastFmTreeModel::appendUserStations ( LastFmTreeItem* item, const QString &user )
 {
     LastFmTreeItem* personal = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildPersonal, user ), LastFm::UserChildPersonal, i18n ( "Personal Radio" ), item );
-    LastFmTreeItem* loved = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildLoved, user ), LastFm::UserChildLoved, i18n ( "Loved Tracks" ), item );
     LastFmTreeItem* neigh = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildNeighborhood, user ), LastFm::UserChildNeighborhood, i18n ( "Neighborhood" ), item );
     item->appendChild ( personal );
-    item->appendChild ( loved );
     item->appendChild ( neigh );
 }
 void
@@ -370,8 +368,8 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             return i18n ( "My Recommendations" );
         case PersonalRadio:
             return i18n ( "My Radio Station" );
-        case LovedTracksRadio:
-            return i18n ( "My Loved Tracks" );
+        case MixRadio:
+            return i18n ( "My Mix Radio" );
         case NeighborhoodRadio:
             return i18n ( "My Neighborhood" );
             //             case RecentlyPlayed:      return tr("Recently Played");
@@ -394,7 +392,6 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
         case FriendsChild:
         case ArtistsChild:
         case NeighborsChild:
-        case UserChildLoved:
         case UserChildPersonal:
         case UserChildNeighborhood:
         case MyTagsChild:
@@ -412,8 +409,8 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
         case TopArtists:
         case PersonalRadio:
             return KIcon ( "lastfm-personal-radio-amarok" );
-        case LovedTracksRadio:
-            return KIcon ( "lastfm-loved-radio-amarok" );
+        case MixRadio:
+            return KIcon ( "lastfm-mix-radio-amarok" );
         case NeighborhoodRadio:
             return KIcon ( "lastfm-neighbour-radio-amarok" );
             //             case RecentlyPlayed:      return KIcon( "lastfm-recent-tracks-amarok" );
@@ -440,8 +437,6 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
 
             return KIcon ( "filename-artist-amarok" );
         }
-        case UserChildLoved:
-            return KIcon ( "lastfm-loved-radio-amarok" );
         case UserChildPersonal:
             return KIcon ( "lastfm-personal-radio-amarok" );
         case UserChildNeighborhood:
@@ -468,13 +463,12 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             {
                 case LastFm::MyRecommendations:
                 case LastFm::PersonalRadio:
-                case LastFm::LovedTracksRadio:
+                case LastFm::MixRadio:
                 case LastFm::NeighborhoodRadio:
                 case LastFm::FriendsChild:
                 case LastFm::NeighborsChild:
                 case LastFm::MyTagsChild:
                 case LastFm::ArtistsChild:
-                case LastFm::UserChildLoved:
                 case LastFm::UserChildPersonal:
                 case LastFm::UserChildNeighborhood:
                     return QVariant::fromValue( i->track() );
@@ -500,7 +494,7 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
     {
     case MyRecommendations:
     case PersonalRadio:
-    case LovedTracksRadio:
+    case MixRadio:
     case NeighborhoodRadio:
     case RecentlyPlayedTrack:
     case RecentlyLovedTrack:
@@ -510,7 +504,6 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
     case ArtistsChild:
     case NeighborsChild:
     case HistoryStation:
-    case UserChildLoved:
     case UserChildPersonal:
     case UserChildNeighborhood:
         flags |= Qt::ItemIsSelectable;
@@ -522,14 +515,13 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
 
     switch ( i->type() )
     {
-    case UserChildLoved:
     case UserChildPersonal:
     case UserChildNeighborhood:
     case MyTagsChild:
     case ArtistsChild:
     case MyRecommendations:
     case PersonalRadio:
-    case LovedTracksRadio:
+    case MixRadio:
     case NeighborhoodRadio:
         flags |= Qt::ItemIsDragEnabled;
 
@@ -608,7 +600,7 @@ void LastFmTreeModel::setupModelData ( LastFmTreeItem *parent )
 
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::MyRecommendations ), LastFm::MyRecommendations, parents.last() ) );
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::PersonalRadio ), LastFm::PersonalRadio, parents.last() ) );
-    parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::LovedTracksRadio ), LastFm::LovedTracksRadio, parents.last() ) );
+    parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::MixRadio ), LastFm::MixRadio, parents.last() ) );
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborhoodRadio ), LastFm::NeighborhoodRadio, parents.last() ) );
 
     m_myTopArtists = new LastFmTreeItem ( LastFm::TopArtists, parents.last() );
@@ -635,8 +627,8 @@ QString LastFmTreeModel::mapTypeToUrl ( LastFm::Type type, const QString &key )
         return "lastfm://user/" + encoded_username + "/recommended";
     case PersonalRadio:
         return "lastfm://user/" + encoded_username + "/personal";
-    case LovedTracksRadio:
-        return "lastfm://user/" + encoded_username + "/loved";
+    case MixRadio:
+        return "lastfm://user/" + encoded_username + "/mix";
     case NeighborhoodRadio:
         return "lastfm://user/" + encoded_username + "/neighbours";
     case MyTagsChild:
@@ -649,8 +641,6 @@ QString LastFmTreeModel::mapTypeToUrl ( LastFm::Type type, const QString &key )
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/personal";
     case UserChildPersonal:
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/personal";
-    case UserChildLoved:
-        return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/loved";
     case UserChildNeighborhood:
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/neighbours";
     default:

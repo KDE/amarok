@@ -97,13 +97,12 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
     {
         case LastFm::MyRecommendations:
         case LastFm::PersonalRadio:
-        case LastFm::LovedTracksRadio:
+        case LastFm::MixRadio:
         case LastFm::NeighborhoodRadio:
         case LastFm::FriendsChild:
         case LastFm::NeighborsChild:
         case LastFm::MyTagsChild:
         case LastFm::ArtistsChild:
-        case LastFm::UserChildLoved:
         case LastFm::UserChildPersonal:
         case LastFm::UserChildNeighborhood:
         {
