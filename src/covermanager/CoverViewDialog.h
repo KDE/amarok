@@ -59,13 +59,18 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
             #endif
         }
 
-        void createViewer( const QPixmap &pixmap, const QWidget *widget = 0 )
+        void createViewer( const QPixmap &pixmap, const QWidget *widget )
         {
             int screenNumber = KApplication::desktop()->screenNumber( widget );
             PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap, screenNumber );
             QHBoxLayout *layout = new QHBoxLayout( this );
             layout->addWidget( pixmapViewer );
             layout->setSizeConstraint( QLayout::SetFixedSize );
+            layout->setContentsMargins( 0, 0, 0, 0 );
+
+            QPoint topLeft = mapFromParent( widget->geometry().center() );
+            topLeft -= QPoint( pixmap.width() / 2, pixmap.height() / 2 );
+            move( topLeft );
         }
 };
 

@@ -31,6 +31,7 @@
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/support/MetaUtility.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
@@ -253,7 +254,7 @@ CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
         if( item == m_albumCover->graphicsItem() )
         {
             Meta::AlbumPtr album = The::engineController()->currentTrack()->album();
-            ( new CoverViewDialog( album, view ) )->show();
+            ( new CoverViewDialog( album, The::mainWindow() ) )->show();
             return;
         }
     }
