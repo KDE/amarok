@@ -84,24 +84,29 @@ TabsEngine::sourceRequestEvent( const QString& name )
     if( ( tokens.contains( "fetchGuitar" ) || tokens.contains( "fetchBass" ) ) && tokens.size() > 2 )
     {
         bool forceUpdate = false;
-        if ( tokens.at( 1 ) == QString( "fetchGuitar" ) )
+        QString tokenName = tokens.at( 1 );
+        int tokenValue    = tokens.at( 2 ).toInt();
+
+        if( tokenName == QString( "fetchGuitar" ) )
         {
-            if( m_fetchGuitar != tokens.at( 2 ).toInt() )
+            // check if setting has changed
+            if( m_fetchGuitar != tokenValue )
             {
-                m_fetchGuitar = tokens.at( 2 ).toInt();
+                m_fetchGuitar = tokenValue;
                 forceUpdate = true;
             }
         }
-        if ( tokens.at( 1 ) == QString( "fetchBass" ) )
+        if( tokenName == QString( "fetchBass" ) )
         {
-            if( m_fetchBass != tokens.at( 2 ).toInt() )
+            // check if setting has changed
+            if( m_fetchBass != tokenValue )
             {
-                m_fetchBass = tokens.at( 2 ).toInt();
+                m_fetchBass = tokenValue;
                 forceUpdate = true;
             }
         }
-        // check if settings have changed
-        if ( forceUpdate )
+        // update if needed
+        if( forceUpdate )
         {
             m_titleName.clear();
             m_artistName.clear();
