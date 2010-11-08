@@ -117,10 +117,12 @@ Context::VerticalToolbarContainment::view()
     return m_view;
 }
 
-QRectF
-Context::VerticalToolbarContainment::boundingRect () const
+void
+Context::VerticalToolbarContainment::updateGeometry()
 {
-    return QRectF( QPointF( 0, 0), m_applets->totalSize() );
+    Context::Containment::updateGeometry();
+    QRectF rect = scene()->sceneRect();
+    setGeometry( rect );
 }
 
 Plasma::Applet*

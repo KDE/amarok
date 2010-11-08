@@ -255,13 +255,14 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     Q_UNUSED( event )
 
+    Plasma::View::resizeEvent( event );
     if ( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
-    QRectF rect( QRectF(QPointF(0, 0), maximumViewportSize()) );
+    QRectF rect( QRectF(pos(), maximumViewportSize()) );
     containment()->setGeometry( rect );
     scene()->setSceneRect( rect );
     scene()->update( rect );

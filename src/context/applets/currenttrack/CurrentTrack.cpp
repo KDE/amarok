@@ -48,6 +48,7 @@
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
@@ -116,7 +117,6 @@ CurrentTrack::init()
     m_title->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_artist->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_album->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_ratingWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_collectionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_recentHeader->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_recentWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -167,7 +167,7 @@ CurrentTrack::init()
     l->addAnchor( m_albumCover, Qt::AnchorHorizontalCenter, m_ratingWidget, Qt::AnchorHorizontalCenter );
     l->addAnchor( titlesLayout, Qt::AnchorTop, l, Qt::AnchorTop )->setSpacing( 18 );
     l->addAnchor( titlesLayout, Qt::AnchorRight, l, Qt::AnchorRight )->setSpacing( pad );
-    l->addAnchor( m_recentHeader, Qt::AnchorLeft, titlesLayout, Qt::AnchorLeft );
+    l->addAnchors( m_recentWidget, m_recentHeader, Qt::Horizontal );
     l->addAnchor( m_recentWidget, Qt::AnchorTop, m_recentHeader, Qt::AnchorBottom );
     l->addAnchor( m_recentWidget, Qt::AnchorRight, m_recentHeader, Qt::AnchorRight );
     l->addAnchor( m_recentWidget, Qt::AnchorLeft, m_ratingWidget, Qt::AnchorRight )->setSpacing( pad * 2 );
@@ -199,14 +199,6 @@ CurrentTrack::init()
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_albumWidth );
     dataEngine( "amarok-current" )->connectSource( "current", this );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
-
-    // figure out the size we want to be, in order to be able to squeeze in all that we want
-    // depends on the current font size,  basically
-    // height should be increased for larger point sizes. here, the layout works correctly with size 8, which has the fontMetrics height of 13
-    // a size too big, like font size 12, has a fontMetrics height of 19. So we add some height if it's too big
-    int additional = ( QApplication::fontMetrics().height()-13 ) * 2;
-    resize( 500, 180 + additional );
-
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(queryCollection()), Qt::QueuedConnection );
     queryCollection();
@@ -273,6 +265,40 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setScrollingText( m_title->text() );
     m_artist->setScrollingText( artist );
     m_album->setScrollingText( album );
+}
+
+void
+CurrentTrack::updateGeometry()
+{
+    Context::Applet::updateGeometry();
+    if( !scene() )
+        return;
+
+    // Work around odd layout resizing by setting the width to the same as the
+    // scene. The applets are resized by VerticalToolbarContainment; while this
+    // applet receives the correct size in a resizeEvent a subsequent
+    // resizeEvent messes up the width. It might have something to do with QGAL
+    // not supporting the Expanding size policy.
+    const QRectF &sceneRect = scene()->sceneRect();
+    if( geometry().width() != sceneRect.width() )
+    {
+        QRectF geom = geometry();
+        geom.setWidth( sceneRect.width() );
+        setGeometry( geom );
+    }
+}
+
+QSizeF
+CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    // figure out the size we want to be, in order to be able to squeeze in all
+    // that we want depends on the current font size,  basically height should
+    // be increased for larger point sizes. here, the layout works correctly
+    // with size 8, which has the fontMetrics height of 13 a size too big, like
+    // font size 12, has a fontMetrics height of 19. So we add some height if
+    // it's too big
+    int height = ( QApplication::fontMetrics().height() - 13 ) * 2 + 180;
+    return QSizeF( Context::Applet::sizeHint(which, constraint).width(), height );
 }
 
 void

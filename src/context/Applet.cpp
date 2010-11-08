@@ -184,7 +184,7 @@ Context::Applet::cleanUpAndDelete()
 QSizeF
 Context::Applet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_heightCurrent );
+    return QSizeF( Plasma::Applet::sizeHint( which, constraint ).width(), m_heightCurrent );
 }
 
 void

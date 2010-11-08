@@ -47,8 +47,6 @@ class VerticalToolbarContainment : public Containment
         virtual void setView( ContextView* view);
         virtual ContextView *view();
 
-        QRectF boundingRect() const;
-
     public slots:
         Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );
@@ -58,6 +56,7 @@ class VerticalToolbarContainment : public Containment
         
     protected:
         virtual void wheelEvent( QGraphicsSceneWheelEvent* event );
+        virtual void updateGeometry();
 
     signals:
         void updatedContainment( Containment* );
