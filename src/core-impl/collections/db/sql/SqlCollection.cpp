@@ -30,15 +30,17 @@
 #include "SqlScanResultProcessor.h"
 #include "SvgHandler.h"
 
-#ifdef Q_OS_WIN32
-class XesamCollectionBuilder
-{
-public:
-    XesamCollectionBuilder(Collections::SqlCollection *collection) {}
-};
-#else
-#include "XesamCollectionBuilder.h"
-#endif
+/*
+ * #ifdef Q_OS_WIN32
+ * class XesamCollectionBuilder
+ * {
+ * public:
+ *     XesamCollectionBuilder(Collections::SqlCollection *collection) {}
+ * };
+ * #else
+ * #include "XesamCollectionBuilder.h"
+ * #endif
+ */
 
 #include <klocale.h>
 #include <KIcon>
@@ -129,7 +131,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
-    , m_xesamBuilder( 0 )
+    // , m_xesamBuilder( 0 )
     , m_blockUpdatedSignalCount( 0 )
     , m_updatedSignalRequested( false )
 {
@@ -170,7 +172,7 @@ SqlCollection::~SqlCollection()
 void
 SqlCollection::init()
 {
-    QTimer::singleShot( 0, this, SLOT( initXesam() ) );
+    // QTimer::singleShot( 0, this, SLOT( initXesam() ) );
 
     // note: do not start scanning here.
     // on first start up the application will ask the user and then initiate a scan
@@ -415,11 +417,13 @@ SqlCollection::setCollectionFolders( const QStringList &folders )
     mountPointManager()->setCollectionFolders( folders );
 }
 
-void
-SqlCollection::initXesam() //SLOT
-{
-    m_xesamBuilder = new XesamCollectionBuilder( this );
-}
+/*
+ * void
+ * SqlCollection::initXesam() //SLOT
+ * {
+ *     m_xesamBuilder = new XesamCollectionBuilder( this );
+ * }
+ */
 
 void
 SqlCollection::slotDeviceAdded( int id )

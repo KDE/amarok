@@ -38,7 +38,7 @@ namespace Capabilities {
 }
 
 class ScanManager;
-class XesamCollectionBuilder;
+// class XesamCollectionBuilder;
 
 namespace Collections {
 
@@ -148,7 +148,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         void dumpDatabaseContent();
 
     private slots:
-        void initXesam();
+        // void initXesam();
         void slotDeviceAdded( int id );
         void slotDeviceRemoved( int id );
 
@@ -167,7 +167,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         QString m_collectionId;
         QString m_prettyName;
 
-        XesamCollectionBuilder *m_xesamBuilder;
+        // XesamCollectionBuilder *m_xesamBuilder;
 
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;

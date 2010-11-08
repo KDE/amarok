@@ -25,9 +25,9 @@ add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 
-if( STRIGI_FOUND )
-    add_subdirectory( strigi )
-endif( STRIGI_FOUND )
+# if( STRIGI_FOUND )
+    # add_subdirectory( strigi )
+# endif( STRIGI_FOUND )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}

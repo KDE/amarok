@@ -5,17 +5,17 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
     ${KDE4_INCLUDE_DIR}
-    ${STRIGI_INCLUDE_DIR}
+    # ${STRIGI_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${TAGLIB_INCLUDES}
     ${TAGLIB-EXTRAS_INCLUDES}
 )
 
-if (NOT WIN32)
- set (extra_src
-    ../sql/XesamDbus.cpp
-    ../sql/XesamCollectionBuilder.cpp)
-endif (NOT WIN32)
+# if (NOT WIN32)
+ # set (extra_src
+    # ../sql/XesamDbus.cpp
+    # ../sql/XesamCollectionBuilder.cpp)
+# endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_SRCS
     CapabilityDelegateImpl.cpp
