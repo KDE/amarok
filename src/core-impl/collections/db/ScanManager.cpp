@@ -497,8 +497,8 @@ void
 XmlParseJob::run()
 {
     ScanResultProcessor *processor = m_collection->getNewScanResultProcessor( m_scanType );
-    connect( processor, SIGNAL( trackCommitted( Meta::TrackPtr ) ),
-             this, SLOT( trackCommitted() ) );
+    connect( processor, SIGNAL( directoryCommitted() ),
+             this, SLOT( directoryCommitted() ) );
 
     bool finished = false;
     int count = 0;
@@ -511,8 +511,12 @@ XmlParseJob::run()
             m_mutex.unlock();
             break;
         }
-        m_wait.wait( &m_mutex );
+        debug() << "Waiting";
+        if( m_reader.atEnd() )
+            m_wait.wait( &m_mutex );
+        m_mutex.unlock();
 
+        debug() << "Scanning";
         // -- scan as many directory tags as we added to the data
         while( !m_reader.atEnd() )
         {
@@ -544,6 +548,7 @@ XmlParseJob::run()
                     warning() << "Unexpected xml start element"<<name<<"in input";
                     m_reader.skipCurrentElement();
                 }
+
             }
             else if( m_reader.isEndElement() )
             {
@@ -551,7 +556,6 @@ XmlParseJob::run()
                     finished = true;
             }
         }
-        m_mutex.unlock();
 
     } while( !finished &&
              (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
@@ -600,7 +604,11 @@ XmlParseJob::addNewXmlData( const QString &data )
         }
     }
 
+    debug() << "Adding";
+    /*
     debug() << "XmlParseJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
+    debug() << "             "<<m_incompleteTagBuffer<<"*";
+    */
 
     if( index >= 0 )
         m_wait.wakeOne();
@@ -616,7 +624,7 @@ XmlParseJob::requestAbort()
 }
 
 void
-XmlParseJob::trackCommitted()
+XmlParseJob::directoryCommitted()
 {
     emit step( this );
 }

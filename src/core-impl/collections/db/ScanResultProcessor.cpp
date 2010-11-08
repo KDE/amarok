@@ -111,6 +111,8 @@ ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
         commitPlaylist( &playlist );
 
     deleteDeletedTracks( dirId );
+
+    emit directoryCommitted();
 }
 
 void

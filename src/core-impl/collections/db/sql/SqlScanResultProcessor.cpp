@@ -208,8 +208,6 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     metaTrack->setWriteFile( true );
 
     m_foundTracks.insert( metaTrack->id() );
-
-    emit trackCommitted( Meta::TrackPtr(metaTrack.data()) );
 }
 
 

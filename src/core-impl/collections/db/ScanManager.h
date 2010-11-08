@@ -166,7 +166,7 @@ class XmlParseJob : public ThreadWeaver::Job
         void step( const QObject *o );
 
     private Q_SLOTS:
-        void trackCommitted();
+        void directoryCommitted();
 
     private:
         Collections::DatabaseCollection *m_collection;
