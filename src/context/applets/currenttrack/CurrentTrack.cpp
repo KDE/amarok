@@ -26,6 +26,7 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "CollectionManager.h"
+#include "covermanager/CoverViewDialog.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
@@ -241,6 +242,25 @@ CurrentTrack::contextualActions()
 }
 
 void
+CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    if( !m_isStopped
+        && event->modifiers() == Qt::NoModifier
+        && event->button() != Amarok::contextMouseButton() )
+    {
+        QGraphicsView *view = scene()->views().first();
+        QGraphicsItem *item = view->itemAt( view->mapFromScene(event->scenePos()) );
+        if( item == m_albumCover->graphicsItem() )
+        {
+            Meta::AlbumPtr album = The::engineController()->currentTrack()->album();
+            ( new CoverViewDialog( album, view ) )->show();
+            return;
+        }
+    }
+    Context::Applet::mousePressEvent( event );
+}
+
+void
 CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
@@ -323,6 +343,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_recentHeader->show();
         m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
         m_albumCover->graphicsItem()->setAcceptDrops( false );
+        m_albumCover->graphicsItem()->unsetCursor();
         updateConstraints();
         return;
     }
@@ -337,6 +358,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_album->show();
     m_recentWidget->hide();
     m_recentHeader->hide();
+    m_albumCover->graphicsItem()->setCursor( Qt::PointingHandCursor );
 
     const QVariantMap &currentInfo = data[ QLatin1String("current") ].toMap();
     QString title = currentInfo.value( Meta::Field::TITLE ).toString();

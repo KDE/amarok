@@ -32,6 +32,7 @@ class RecentlyPlayedListWidget;
 class QAction;
 class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
+class QGraphicsSceneMouseEvent;
 class QSignalMapper;
 
 static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
@@ -54,6 +55,7 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
     virtual void updateGeometry();
