@@ -189,14 +189,6 @@ TabsApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
-TabsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect )
-    addGradientToAppletBackground( p );
-}
-
-void
 TabsApplet::stopped()
 {
     m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );

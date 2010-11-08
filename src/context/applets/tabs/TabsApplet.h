@@ -61,18 +61,6 @@ class TabsApplet : public Context::Applet
         ~TabsApplet();
 
         /**
-         * \brief Paints the interface
-         *
-         * This method is called when the interface should be painted
-         *
-         * \param painter      : the QPainter to use to do the paintiner
-         * \param option       : the style options object
-         * \param contentsRect : the rect to paint within; automatically adjusted for
-         *                       the background, if any
-         */
-        void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-        /**
          * Called when any of the geometry constraints have been updated.
          *
          * This is always called prior to painting and should be used as an
