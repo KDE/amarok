@@ -94,7 +94,7 @@ namespace Collections
             QString m_collectionId;
             
             QSharedPointer< MemoryCollection > m_memoryCollection;
-            QList< QPointer< Playdar::ProxyResolver > > m_proxyResolverList;
+            QList< QWeakPointer< Playdar::ProxyResolver > > m_proxyResolverList;
     };
 }
 

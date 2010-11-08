@@ -47,29 +47,29 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = new MemoryQueryMaker( m_collection->memoryCollection().toWeakRef(),
-                                                   m_collection->collectionId() );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+        m_memoryQueryMaker = new MemoryQueryMaker( m_collection.data()->memoryCollection().toWeakRef(),
+                                                   m_collection.data()->collectionId() );
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::TrackList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::TrackList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::GenreList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::GenreList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::ComposerList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::YearList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::YearList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::YearList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::DataList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::DataList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::DataList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, QStringList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, QStringList ) ),
                  this, SIGNAL( newResultReady( QString, QStringList) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::LabelList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::LabelList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::LabelList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( queryDone() ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( queryDone() ),
                  this, SLOT( memoryQueryDone() ) );
-        m_memoryQueryMaker->setAutoDelete( true );
+        m_memoryQueryMaker.data()->setAutoDelete( true );
     }
 
     PlaydarQueryMaker::~PlaydarQueryMaker()
@@ -82,7 +82,7 @@ namespace Collections
             m_queryMakerFunctions.clear();
         }
         
-        delete m_memoryQueryMaker;
+        delete m_memoryQueryMaker.data();
     }
 
 
@@ -93,9 +93,9 @@ namespace Collections
         
         if( m_shouldQueryCollection && !m_filterMap.isEmpty() )
         {
-            connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+            connect( m_controller.data(), SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                      this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
-            connect( m_controller, SIGNAL( queryReady( Playdar::Query* ) ),
+            connect( m_controller.data(), SIGNAL( queryReady( Playdar::Query* ) ),
                     this, SLOT( collectQuery( Playdar::Query* ) ) );
 
             QString artist( "" );
@@ -112,13 +112,13 @@ namespace Collections
             if( !artist.isEmpty() && !title.isEmpty() )
             {
                 m_activeQueryCount++;
-                m_controller->resolve( artist, album, title );
+                m_controller.data()->resolve( artist, album, title );
             }
         }
 
         m_activeQueryCount++;
         m_memoryQueryIsRunning = true;
-        m_memoryQueryMaker->run();
+        m_memoryQueryMaker.data()->run();
     }
 
     void
@@ -126,9 +126,9 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker->abortQuery();
+        m_memoryQueryMaker.data()->abortQuery();
 
-        m_controller->disconnect( this );
+        m_controller.data()->disconnect( this );
     }
     
     int
@@ -136,7 +136,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        return m_memoryQueryMaker->resultCount();
+        return m_memoryQueryMaker.data()->resultCount();
     }
     
     QueryMaker*
@@ -148,7 +148,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< QueryType >( funPtr, type );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
 
         m_queryType = type;
         
@@ -164,7 +164,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< bool >( funPtr, resultAsDataPtrs );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -178,7 +178,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< qint64 >( funPtr, value );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -192,7 +192,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedBinaryQMFunction< ReturnFunction, qint64 >( funPtr, function, value );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -206,7 +206,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedBinaryQMFunction< qint64, bool >( funPtr, value, descending );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -220,7 +220,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -234,9 +234,9 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const QString& >( funPtr, collectionId );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
-        if( m_collection->collectionId() == collectionId )
+        if( m_collection.data()->collectionId() == collectionId )
             m_shouldQueryCollection = true;
         
         return this;
@@ -251,9 +251,9 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const QString& >( funPtr, collectionId );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
-        if( m_collection->collectionId() == collectionId )
+        if( m_collection.data()->collectionId() == collectionId )
             m_shouldQueryCollection = false;
         
         return this;
@@ -268,7 +268,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::TrackPtr& >( funPtr, track );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -282,7 +282,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
 
         if( artist )
             m_filterMap.insert( Meta::valArtist, artist->name() );
@@ -299,7 +299,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::AlbumPtr& >( funPtr, album );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         if( album )
             m_filterMap.insert( Meta::valAlbum, album->name() );
@@ -316,7 +316,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ComposerPtr& >( funPtr, composer );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -330,7 +330,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::GenrePtr& >( funPtr, genre );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -344,7 +344,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::YearPtr& >( funPtr, year );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -368,7 +368,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::LabelPtr& >( funPtr, label );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -383,7 +383,7 @@ namespace Collections
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         if( !m_filterMap.isEmpty() && m_filterMap.contains( value ) )
         {
@@ -407,7 +407,7 @@ namespace Collections
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         if( m_filterMap.contains( value ) && m_filterMap.value( value ).contains( filter ) )
         {
@@ -432,7 +432,7 @@ namespace Collections
             );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -450,7 +450,7 @@ namespace Collections
             );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -464,7 +464,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< int >( funPtr, size );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -478,7 +478,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< AlbumQueryMode >( funPtr, mode );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -492,7 +492,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< LabelQueryMode >( funPtr, mode );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -506,7 +506,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
 
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -520,7 +520,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -534,7 +534,7 @@ namespace Collections
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
         
-        (*curriedFun)( m_memoryQueryMaker );
+        (*curriedFun)( m_memoryQueryMaker.data() );
         
         return this;
     }
@@ -557,7 +557,7 @@ namespace Collections
         return QueryMaker::ValidFilters( ArtistFilter ) |
                QueryMaker::ValidFilters( AlbumFilter ) |
                QueryMaker::ValidFilters( TitleFilter ) |
-               m_memoryQueryMaker->validFilterMask();
+               m_memoryQueryMaker.data()->validFilterMask();
     }
 
     void
@@ -584,8 +584,8 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        track->addToCollection( m_collection );
-        if( m_collection->trackForUrl( track->uidUrl() ) == Meta::TrackPtr::staticCast( track ) )
+        track->addToCollection( m_collection.data() );
+        if( m_collection.data()->trackForUrl( track->uidUrl() ) == Meta::TrackPtr::staticCast( track ) )
             m_collectionUpdated = true;
     }
     
@@ -637,38 +637,38 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        if( m_memoryQueryMaker )
+        if( m_memoryQueryMaker.data() )
             return;
         
-        m_memoryQueryMaker = new MemoryQueryMaker( m_collection->memoryCollection().toWeakRef(),
-                                                   m_collection->collectionId() );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+        m_memoryQueryMaker = new MemoryQueryMaker( m_collection.data()->memoryCollection().toWeakRef(),
+                                                   m_collection.data()->collectionId() );
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::TrackList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::TrackList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::GenreList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::GenreList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::ComposerList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::YearList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::YearList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::YearList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::DataList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::DataList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::DataList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, QStringList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, QStringList ) ),
                  this, SIGNAL( newResultReady( QString, QStringList) ) );
-        connect( m_memoryQueryMaker, SIGNAL( newResultReady( QString, Meta::LabelList ) ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( QString, Meta::LabelList ) ),
                  this, SIGNAL( newResultReady( QString, Meta::LabelList ) ) );
-        connect( m_memoryQueryMaker, SIGNAL( queryDone() ),
+        connect( m_memoryQueryMaker.data(), SIGNAL( queryDone() ),
                  this, SLOT( memoryQueryDone() ) );
-        m_memoryQueryMaker->setAutoDelete( true );
+        m_memoryQueryMaker.data()->setAutoDelete( true );
 
         foreach( CurriedQMFunction *funPtr, m_queryMakerFunctions )
-            (*funPtr)( m_memoryQueryMaker );
+            (*funPtr)( m_memoryQueryMaker.data() );
         
         m_activeQueryCount++;
         m_memoryQueryIsRunning = true;
-        m_memoryQueryMaker->run();
+        m_memoryQueryMaker.data()->run();
     }
 }

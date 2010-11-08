@@ -50,10 +50,10 @@ namespace Playdar
         if( m_waitForSolution )
         {
             m_recievedFirstResults = true;
-            m_controller->getResultsLongPoll( this );
+            m_controller.data()->getResultsLongPoll( this );
         }
         else
-            m_controller->getResults( this );
+            m_controller.data()->getResults( this );
     }
     
     Query::~Query()
@@ -178,7 +178,7 @@ namespace Playdar
         {
             QVariantMap result = resultVariant.toMap();
             Meta::PlaydarTrackPtr aTrack;
-            KUrl resultUrl( m_controller->urlForSid( result.value( "sid" ).toString() ) );
+            KUrl resultUrl( m_controller.data()->urlForSid( result.value( "sid" ).toString() ) );
             
             QString trackSid = result.value( "sid" ).toString();
             QString trackUrl = resultUrl.url();
@@ -230,7 +230,7 @@ namespace Playdar
         else
         {
             m_recievedFirstResults = true;
-            m_controller->getResultsLongPoll( this );
+            m_controller.data()->getResultsLongPoll( this );
         }
     }
 }
