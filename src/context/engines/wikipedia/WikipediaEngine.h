@@ -48,9 +48,6 @@ public:
 
     virtual void init();
 
-protected slots:
-    void update( Meta::TrackPtr track );
-
 protected:
     bool sourceRequestEvent( const QString &source );
 
@@ -58,6 +55,7 @@ private:
     WikipediaEnginePrivate *const d_ptr;
     Q_DECLARE_PRIVATE( WikipediaEngine )
 
+    Q_PRIVATE_SLOT( d_ptr, void _checkRequireUpdate(Meta::TrackPtr) )
     Q_PRIVATE_SLOT( d_ptr, void _dataContainerUpdated(const QString&,const Plasma::DataEngine::Data&) )
     Q_PRIVATE_SLOT( d_ptr, void _wikiResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
     Q_PRIVATE_SLOT( d_ptr, void _parseLangLinksResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
