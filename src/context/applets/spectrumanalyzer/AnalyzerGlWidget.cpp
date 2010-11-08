@@ -35,8 +35,8 @@ AnalyzerGlWidget::~AnalyzerGlWidget()
 
 void AnalyzerGlWidget::initializeGLScene()
 {
-    // If you wonder where the values came from: trial and error
-    glClearColor( m_fillColor.redF() * 1.2, m_fillColor.greenF() * 1.077, m_fillColor.blueF(), m_fillColor.alphaF() * 0.5 );
+    // If you wonder where these values come from: trial and error
+    glClearColor( m_fillColor.redF() * 1.4, m_fillColor.greenF() * 1.18, m_fillColor.blueF() * 1.01, m_fillColor.alphaF() );
     glDisable( GL_DEPTH_TEST );
     glEnable( GL_CULL_FACE );
     glDisable( GL_BLEND );
@@ -432,6 +432,16 @@ void AnalyzerGlWidget::keyPressEvent( QKeyEvent* event )
 {
     emit keyPressed( event->key() );
     QWidget::keyPressEvent( event );
+}
+
+void AnalyzerGlWidget::hideEvent(QHideEvent* event)
+{
+    if ( ( event->type() == QEvent::Hide ) || ( event->type() == QEvent::Close ) )
+    {
+        emit hidden();
+    }
+    
+    QWidget::hideEvent(event);
 }
 
 

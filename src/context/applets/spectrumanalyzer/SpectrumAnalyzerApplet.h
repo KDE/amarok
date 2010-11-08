@@ -22,7 +22,6 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "core/engine/EngineObserver.h"
 #include "FastFourierTransformation.h"
 
 #include <phonon/audiodataoutput.h>
@@ -42,7 +41,7 @@ namespace Plasma
     class IconWidget;
 }
 
-class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObserver
+class SpectrumAnalyzerApplet: public Context::Applet
 {
     Q_OBJECT
 
@@ -65,16 +64,6 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         void init();
 
         /**
-        *   Called by the applet controller to inform of playback
-        */
-        virtual void engineNewTrackPlaying();
-
-        /**
-        *   Called by the applet controller to inform of playback end
-        */
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-
-        /**
         *   paints the applet
         *   @arg painter painter to paint with
         *   @arg option painting options
@@ -95,6 +84,16 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         *   @arg data The data received
         */
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
+
+        /**
+        *   Slot to inform the applet of a new track playing
+        */
+        virtual void started();
+
+        /**
+        *   Slot to inform the applet that playback has been stopped
+        */
+        virtual void stopped();
 
         /**
         *   connects the applet to the source as data engine
@@ -121,12 +120,13 @@ class SpectrumAnalyzerApplet: public Context::Applet, public Engine::EngineObser
         void createConfigurationInterface( KConfigDialog *parent );
 
     private:
+        qreal                                                           m_visualHeight;         //!< Height of the applet if the analyzer is running
         TextScrollingWidget                                            *m_headerText;           //!< Header of the applet
         QGraphicsTextItem                                              *m_errorText;            //!< Error text for OpenGL errors
         bool                                                            m_running;              //!< is the playback running
         int                                                             m_numChannels;          //!< Channel count
         QMap< Phonon::AudioDataOutput::Channel, QVector< qint16 > >     m_audioData;            //!< audio data for each channel
-        QGraphicsPixmapItem                                            *m_glLabel;              //!< Graphics item to paint the OpenGL scene into
+        QPixmap                                                         m_glPixmap;             //!< Pixmap to paint the OpenGL scene into
         QGLFormat                                                       m_glFormat;             //!< Format settings of the OpenGL contexts
         AnalyzerGlWidget                                               *m_glWidget;             //!< VSXu OpenGL Widget
         QGLPixelBuffer                                                 *m_glBuffer;             //!< OpenGL Pixel buffer for attached rendering

@@ -16,14 +16,17 @@
 
 #include "SpectrumAnalyzerApplet.h"
 
+#include <qgraphicslinearlayout.h>
+
 #include "EngineController.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "App.h"
+#include <qlabel.h>
 
 SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , Engine::EngineObserver( The::engineController() )
+    , m_visualHeight( 500 )  //Fixed value for now
     , m_running( false )
     , m_glBuffer( NULL )
     , m_settingsIcon( 0 )
@@ -51,7 +54,7 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
         m_glFormat.setAccum( true );
         m_glFormat.setDirectRendering( true );
 
-        m_glWidget = new AnalyzerGlWidget( m_glFormat ,PaletteHandler::highlightColor( 0.4, 1.05 ) );
+        m_glWidget = new AnalyzerGlWidget( m_glFormat, PaletteHandler::highlightColor( 0.4, 1.05 ) );
 
         const QGLContext *context = m_glWidget->context();
 
@@ -87,7 +90,12 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
         }
     }
 
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ), this, SLOT( started() ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ), this, SLOT( stopped() ) );
+
     connect( m_glWidget, SIGNAL( keyPressed(int) ), this, SLOT( keyPressed(int) ) );
+    connect( m_glWidget, SIGNAL( hidden() ), this, SLOT( toggleDetach() ) );
 
     QTimer *timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateOpenGLScene() ) );
@@ -96,8 +104,6 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
 
 SpectrumAnalyzerApplet::~SpectrumAnalyzerApplet()
 {
-    delete( m_glLabel );
-    
     if ( !m_glError )
         delete( m_glWidget );
 }
@@ -115,13 +121,12 @@ SpectrumAnalyzerApplet::keyPressed( int key )
     }
 }
 
-
 void
 SpectrumAnalyzerApplet::init()
 {
-    m_glLabel = new QGraphicsPixmapItem( this );
+    Context::Applet::init();
 
-    resize( 500, -1 );
+    resize( m_visualHeight, -1 );
 
     // Label
     QFont labelFont;
@@ -129,9 +134,9 @@ SpectrumAnalyzerApplet::init()
     m_headerText = new TextScrollingWidget( this );
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Spectrum-Analyzer" ) );
+    m_headerText->setScrollingText( i18n( "Spectrum-Analyzer" ) );
     m_headerText->setDrawBackground( true );
-
+    m_headerText->setMinimumWidth( 170 );
 
     // Error Text
     m_errorText = new QGraphicsTextItem( this );
@@ -139,19 +144,10 @@ SpectrumAnalyzerApplet::init()
     m_errorText->setFont( labelFont );
     m_errorText->setPlainText( m_glErrorText );
 
-
-    // Set the collapse size
-    if( !m_glError )
-    {
-        setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
-    }
-    else
-    {
-        setCollapseHeight( m_headerText->boundingRect().height() + 5 * standardPadding() + m_errorText->boundingRect().height() );
-    }
-
     if ( !m_glError )
     {
+        setCollapseHeight( m_headerText->maximumHeight() + 3.0 * standardPadding() );
+        
         // Config Icon
         QAction* settingsAction = new QAction( this );
         settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -208,8 +204,10 @@ SpectrumAnalyzerApplet::init()
         m_detached = config.readEntry<bool>( "detached", false );
         m_fullscreen = config.readEntry<bool>( "fullscreen", false );
     }
-
-    constraintsEvent();
+    else
+    {
+        setCollapseHeight( m_headerText->maximumHeight() + 5.0 * standardPadding() + m_errorText->boundingRect().height() );
+    }
 
     connectSource( "spectrum-analyzer" );
     connect( dataEngine( "amarok-spectrum-analyzer" ), SIGNAL( sourceAdded( const QString & ) ), this, SLOT( connectSource( const QString & ) ) );
@@ -217,6 +215,8 @@ SpectrumAnalyzerApplet::init()
   //  dataEngine( "amarok-visualization" )->query( QString( "visualization:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
   //  dataEngine( "amarok-visualization" )->query( QString( "visualization:keywords:" ) + m_KeyWords );
     setCollapseOn();
+    setMinimumHeight( 0 );
+    emit sizeHintChanged( Qt::MinimumSize );
 }
 
 void
@@ -263,9 +263,10 @@ void SpectrumAnalyzerApplet::togglePower()
     {
         m_powerIcon->action()->setIcon(  KIcon( "system-run" ) );
         m_glWidget->hide();
-        m_glLabel->hide();
         m_power = false;
         setCollapseOn();
+        setMinimumHeight( 0 );
+        emit sizeHintChanged( Qt::MinimumSize );
     }
     else
     {
@@ -276,8 +277,9 @@ void SpectrumAnalyzerApplet::togglePower()
         {
             if( !m_detached )
             {
-                m_glLabel->show();
                 setCollapseOff();
+                setMinimumHeight( m_visualHeight );
+                emit sizeHintChanged( Qt::MinimumSize );
             }
             else
             {
@@ -338,17 +340,17 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
     
-    qreal widmax = boundingRect().width();
+    qreal widmax = rect().width();
 
     if ( !m_glError )
     {
         widmax -= 2 * m_settingsIcon->size().width() + 2 * m_powerIcon->size().width() + 2 * m_detachIcon->size().width() + 2 * m_fullscreenIcon->size().width() + 2 * m_modeIcon->size().width() + 8 * standardPadding();
     }
     
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+    QRectF recto( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
     m_headerText->setScrollingText( m_headerText->text() );
-    m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
+    m_headerText->setPos( ( size().width() - m_headerText->rect().width() - standardPadding() * 2.0 ) / 2 , standardPadding() + 3 );
 
     if ( ( !m_detached ) && ( m_power ) && ( m_running ) )
     {
@@ -361,15 +363,14 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
             if( ( size().width() > 0 ) && ( size().height() > 0 ) && ( standardPadding() > 0 ) )
             {
                 QGLPixelBuffer *oldBuffer = m_glBuffer;
-                m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20, m_glFormat );
+                m_glBuffer = new QGLPixelBuffer( size().width() - 2 * standardPadding(), size().height() - recto.bottom() - 2 * standardPadding() - 20, m_glFormat );
                 if ( oldBuffer )
                     delete( oldBuffer );
 
                 m_glBuffer->makeCurrent();
                 m_glWidget->initializeGLScene();
-                m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - rect.bottom() - 2 * standardPadding() - 20 );
+                m_glWidget->resizeGLScene( size().width() - 2 * standardPadding(), size().height() - recto.bottom() - 2 * standardPadding() - 20 );
                 m_glBuffer->doneCurrent();
-                m_glLabel->setPos( standardPadding(), 20 + rect.bottom() + standardPadding() );
             }
             else
             {
@@ -461,6 +462,8 @@ SpectrumAnalyzerApplet::dataUpdated( const QString& name, const Plasma::DataEngi
     else
     {
         setCollapseOn();
+        setMinimumHeight( 0 );
+        emit sizeHintChanged( Qt::MinimumSize );
     }
 }
 
@@ -470,10 +473,14 @@ SpectrumAnalyzerApplet::attach()
 {
     if( ( !m_glError ) && ( m_power ) && ( !m_glError ) )
     {
-        m_glLabel->show();
+        //TODO: Show Pixmap
         m_glWidget->hide();
         if ( m_running )
+        {
             setCollapseOff();
+            setMinimumHeight( m_visualHeight );
+            emit sizeHintChanged( Qt::MinimumSize );
+        }
         m_detached = false;
         m_detachIcon->action()->setIcon(  KIcon( "go-up" ) );
         m_fullscreen = false;
@@ -490,7 +497,6 @@ SpectrumAnalyzerApplet::detach( bool fullscreen )
     if( ( !m_glError ) && ( m_power ) )
     {
         m_fullscreen = fullscreen;
-        m_glLabel->hide();
         if ( m_fullscreen )
             m_glWidget->showFullScreen();
         else
@@ -500,6 +506,8 @@ SpectrumAnalyzerApplet::detach( bool fullscreen )
         m_glWidget->initializeGLScene();
         m_glWidget->doneCurrent();
         setCollapseOn();
+        setMinimumHeight( 0 );
+        emit sizeHintChanged( Qt::MinimumSize );
         m_detached = true;
         m_detachIcon->action()->setIcon(  KIcon( "go-down" ) );
 
@@ -577,7 +585,7 @@ SpectrumAnalyzerApplet::updateOpenGLScene()
             m_glBuffer->makeCurrent();
             m_glWidget->paintGLScene();
             m_glBuffer->doneCurrent();
-            m_glLabel->setPixmap( QPixmap::fromImage( m_glBuffer->toImage() ) );
+            m_glPixmap = QPixmap::fromImage( m_glBuffer->toImage() );
         }
         else
         {
@@ -594,14 +602,18 @@ SpectrumAnalyzerApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsI
     Q_UNUSED( contentsRect );
 
     p->setRenderHint( QPainter::Antialiasing );
-    
+    QRect target( standardPadding(), m_headerText->maximumHeight() + 2.0 * standardPadding(), rect().width() - 2.0 * standardPadding(), rect().height() - m_headerText->maximumHeight() - 3.0 * standardPadding() );
+    p->drawPixmap( target, m_glPixmap, m_glPixmap.rect() );
+
     // tint the whole applet
     addGradientToAppletBackground( p );
 }
 
 void
-SpectrumAnalyzerApplet::engineNewTrackPlaying( )
+SpectrumAnalyzerApplet::started()
 {
+    DEBUG_BLOCK
+
     m_running = true;
     dataEngine( "amarok-spectrum-analyzer" )->query( QString( "data" ) );
 
@@ -610,7 +622,8 @@ SpectrumAnalyzerApplet::engineNewTrackPlaying( )
         if( !m_detached )
         {
             setCollapseOff();
-            m_glLabel->show();
+            setMinimumHeight( m_visualHeight );
+            emit sizeHintChanged( Qt::MinimumSize );
         }
         else
         {
@@ -620,21 +633,22 @@ SpectrumAnalyzerApplet::engineNewTrackPlaying( )
 }
 
 void
-SpectrumAnalyzerApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
+SpectrumAnalyzerApplet::stopped()
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-
+    DEBUG_BLOCK
+    
     m_running = false;
 
     if( m_power )
     {
-        if( !m_detached )
-            m_glLabel->hide();
-        else
+        if( m_detached )
             m_glWidget->hide();
-        
+        else
+            //TODO: Hide Pixmap
+
         setCollapseOn();
+        setMinimumHeight( 0 );
+        emit sizeHintChanged( Qt::MinimumSize );
     }
 
     dataEngine( "amarok-spectrum-analyzer" )->query( QString( "spectrum-analyzer:stopped" ) );

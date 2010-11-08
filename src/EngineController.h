@@ -208,12 +208,6 @@ public:
      */
     QString prettyNowPlaying() const;
 
-signals:
-    /**
-    *   Is emitted when new audio Data is ready
-    */
-    void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
-    
 public slots:
     /**
      * Plays the current track, if there is one
@@ -455,6 +449,12 @@ Q_SIGNALS:
      * Called when playback state changes to PlayingState, StoppedState or PausedState.
      */
     void playbackStateChanged();
+    
+    /**
+    *   Is emitted when new audio Data is ready
+    *   @param audioData The audio data that is available
+    */
+    void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
 
 private slots:
     /**

@@ -126,6 +126,11 @@ class AnalyzerGlWidget: public QGLWidget
         */
         void keyPressed( int key );
 
+        /**
+        *   Is emitted when the widget is hidden
+        */
+        void hidden();
+
     private:
         QColor                          m_fillColor;                //!< Color to fill the scene with
         AnalyzerMode                    m_mode;                     //!< Analyzer mode \see AnalyzerMode
@@ -194,6 +199,12 @@ class AnalyzerGlWidget: public QGLWidget
         *   @arg event key press event
         */
         void keyPressEvent( QKeyEvent * event );
+
+        /**
+        *   Overrides the normal hidden handling of QWidget
+        *   @arg event hide event
+        */
+        void hideEvent ( QHideEvent * event );
 };
 
 #endif
