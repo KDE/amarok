@@ -28,7 +28,6 @@
 #include <kdebug.h>
 
 #include <QMutex>
-#include <QTime>
 
 // Platform specific macros
 #ifdef _WIN32
@@ -130,6 +129,8 @@ using Debug::fatal;
 /// Performance logging
 #define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
 
+class BlockPrivate;
+
 namespace Debug
 {
     /**
@@ -157,13 +158,11 @@ namespace Debug
     class Block
     {
     public:
-        AMAROK_CORE_EXPORT Block(const char* name);
+        AMAROK_CORE_EXPORT Block( const char *name );
         AMAROK_CORE_EXPORT ~Block();
 
     private:
-        QTime m_startTime;
-        const char *m_label;
-        int m_color;
+       BlockPrivate *const d;
     };
 
     /**

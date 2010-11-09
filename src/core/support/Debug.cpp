@@ -142,30 +142,43 @@ void Debug::perfLog( const QString &message, const QString &func )
 #endif
 }
 
-Block::Block( const char *label )
-    : m_label( label )
-    , m_color( s_colorIndex )
+BlockPrivate::BlockPrivate( const char *text )
+    : label( text )
+    , color( s_colorIndex )
 {
     if( !debugEnabled() )
         return;
 
-    m_startTime = QTime::currentTime();
+#if QT_VERSION >= 0x040700
+    startTime.start();
+#else
+    startTime = QTime::currentTime();
+#endif
 
     mutex.lock();
     s_colorIndex = (s_colorIndex + 1) % 5;
     dbgstream()
-        << qPrintable( colorize( QLatin1String( "BEGIN:" ), m_color ) )
+        << qPrintable( colorize( QLatin1String( "BEGIN:" ), color ) )
         << label;
     IndentPrivate::instance()->m_string += QLatin1String("  ");
     mutex.unlock();
 }
 
+Block::Block( const char *label )
+    : d( debugEnabled() ? new BlockPrivate( label ) : 0 )
+{
+}
+
 Block::~Block()
 {
-    if( !debugEnabled() )
+    if( !d )
         return;
 
-    const double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / (double)1000.0;
+#if QT_VERSION >= 0x040700
+    const double duration = d->startTime.elapsed() / 1000.0;
+#else
+    const double duration = (double)d->startTime.msecsTo( QTime::currentTime() ) / 1000.0;
+#endif
 
     mutex.lock();
     IndentPrivate::instance()->m_string.truncate( Debug::indent().length() - 2 );
@@ -174,14 +187,16 @@ Block::~Block()
     // Print timing information, and a special message (DELAY) if the method took longer than 5s
     if( duration < 5.0 )
         dbgstream()
-            << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
-            << m_label
-            << qPrintable( colorize( QString( "[Took: %3s]").arg( QString::number(duration, 'g', 2) ), m_color ) );
+            << qPrintable( colorize( QLatin1String( "END__:" ), d->color ) )
+            << d->label
+            << qPrintable( colorize( QString( "[Took: %3s]").arg( QString::number(duration, 'g', 2) ), d->color ) );
     else
         dbgstream()
-            << qPrintable( colorize( QString( "END__:" ), m_color ) )
-            << m_label
+            << qPrintable( colorize( QString( "END__:" ), d->color ) )
+            << d->label
             << qPrintable( reverseColorize( QString( "[DELAY Took (quite long) %3s]").arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
+
+    delete d;
 }
 
 void Debug::stamp()
