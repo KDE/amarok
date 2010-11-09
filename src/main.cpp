@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "App.h"
 #include "aboutdialog/OcsData.h"
 
@@ -217,6 +218,12 @@ int main( int argc, char *argv[] )
 
     KUniqueApplication::StartFlag startFlag;
     startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
+
+    const bool debugColorsEnabled = !args->isSet( "coloroff" );
+    const bool debugEnabled = args->isSet( "debug" );
+
+    Debug::setDebugEnabled( debugEnabled );
+    Debug::setColoredDebug( debugColorsEnabled );
 
     if( !KUniqueApplication::start( startFlag ) ) {
         QList<QByteArray> instanceOptions;

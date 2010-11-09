@@ -87,7 +87,9 @@ namespace Debug
 
     AMAROK_CORE_EXPORT kdbgstream dbgstream( DebugLevel level = KDEBUG_INFO );
     AMAROK_CORE_EXPORT bool debugEnabled();
-    AMAROK_CORE_EXPORT bool debugColorDisabled();
+    AMAROK_CORE_EXPORT bool debugColorEnabled();
+    AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
+    AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
     AMAROK_CORE_EXPORT const QString &indent();
 
     static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {

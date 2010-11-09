@@ -42,6 +42,9 @@ AMAROK_CORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
 
 using namespace Debug;
 
+static bool s_debugEnabled = false;
+static bool s_debugColorsEnabled = false;
+
 IndentPrivate::IndentPrivate(QObject* parent)
     : QObject(parent)
 {
@@ -80,21 +83,18 @@ static QString toString( DebugLevel level )
 
 static QString colorize( const QString &text, int color = s_colorIndex )
 {
-    if( !debugColorDisabled() )
-        return QString( "\x1b[00;3%1m%2\x1b[00;39m" )
-            .arg( QString::number( s_colors[color] ) )
-            .arg( text );
-    else
+    if( !debugColorEnabled() )
         return text;
+
+    return QString( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(s_colors[color]), text );
 }
 
 static QString reverseColorize( const QString &text, int color )
 {
-    if( !debugColorDisabled() )
-        return QString( "\x1b[07;3%1m%2\x1b[00;39m" )
-            .arg( QString::number(color), text );
-    else
+    if( !debugColorEnabled() )
         return text;
+
+    return QString( "\x1b[07;3%1m%2\x1b[00;39m" ).arg( QString::number(color), text );
 }
 
 const QString& Debug::indent()
@@ -104,12 +104,22 @@ const QString& Debug::indent()
 
 bool Debug::debugEnabled()
 {
-    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Enabled"), false );
+    return s_debugEnabled;
 }
 
-bool Debug::debugColorDisabled()
+bool Debug::debugColorEnabled()
 {
-    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Colorization Disabled"), false );
+    return s_debugColorsEnabled;
+}
+
+void Debug::setDebugEnabled( bool enable )
+{
+    s_debugEnabled = enable;
+}
+
+void Debug::setColoredDebug( bool enable )
+{
+    s_debugColorsEnabled = enable;
 }
 
 kdbgstream Debug::dbgstream( DebugLevel level )
