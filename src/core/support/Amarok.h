@@ -119,6 +119,8 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
+    AMAROK_CORE_EXPORT QString defaultPlaylistPath();
+
     AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
     AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
     AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t );

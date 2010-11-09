@@ -211,6 +211,11 @@ namespace Amarok
         return result;
     }
 
+    QString defaultPlaylistPath()
+    {
+        return Amarok::saveLocation() + QLatin1String("current.xspf");
+    }
+
     QString cleanPath( const QString &path )
     {
         /* Unicode uses combining characters to form accented versions of other characters.

@@ -162,7 +162,7 @@ Playlist::Model::~Model()
     DEBUG_BLOCK
 
     // Save current playlist
-    exportPlaylist( defaultPlaylistPath() );
+    exportPlaylist( Amarok::defaultPlaylistPath() );
 
     qDeleteAll( m_items );
 }
