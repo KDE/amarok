@@ -34,7 +34,6 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
         void zoomFactorChanged( float value );
 
     private:
-        void init();
         void createViewer( const QPixmap &pixmap, const QWidget *widget );
 
         QString m_title;

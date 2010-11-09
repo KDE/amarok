@@ -33,7 +33,7 @@ CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     , m_size( album->image().size() )
     , m_zoom( 100 )
 {
-    init();
+    setAttribute( Qt::WA_DeleteOnClose );
     updateCaption();
     createViewer( album->image(), parent );
 }
@@ -44,7 +44,7 @@ CoverViewDialog::CoverViewDialog( const QPixmap &pixmap, QWidget *parent )
     , m_size( pixmap.size() )
     , m_zoom( 100 )
 {
-    init();
+    setAttribute( Qt::WA_DeleteOnClose );
     updateCaption();
     createViewer( pixmap, parent );
 }
@@ -68,16 +68,6 @@ CoverViewDialog::zoomFactorChanged( float value )
 }
 
 void
-CoverViewDialog::init()
-{
-    setAttribute( Qt::WA_DeleteOnClose );
-    kapp->setTopWidget( this );
-#ifdef Q_WS_X11
-    KWindowSystem::setType( winId(), NET::Utility );
-#endif
-}
-
-void
 CoverViewDialog::createViewer( const QPixmap &pixmap, const QWidget *widget )
 {
     int screenNumber = KApplication::desktop()->screenNumber( widget );
@@ -91,6 +81,8 @@ CoverViewDialog::createViewer( const QPixmap &pixmap, const QWidget *widget )
     QPoint topLeft = mapFromParent( widget->geometry().center() );
     topLeft -= QPoint( pixmap.width() / 2, pixmap.height() / 2 );
     move( topLeft );
+    activateWindow();
+    raise();
 }
 
 #include "CoverViewDialog.moc"
