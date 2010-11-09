@@ -19,6 +19,7 @@
 #include "UpcomingEventsStackItem.h"
 #include "UpcomingEventsStack.h"
 #include "core/support/Debug.h"
+#include "context/widgets/TextScrollingWidget.h"
 
 #include <KIconLoader>
 #include <Plasma/FrameSvg>
@@ -123,7 +124,7 @@ public:
     QString title;
     QString iconName;
     QWeakPointer<QGraphicsWidget> widget;
-    Plasma::Label *titleLabel;
+    TextScrollingWidget *titleLabel;
     UpcomingEventsStack *stack;
     UpcomingEventsStackItemToolBox *toolbox;
 
@@ -293,8 +294,7 @@ UpcomingEventsStackItem::UpcomingEventsStackItem( const QString &name,
 
     d->collapseButton = new Plasma::IconWidget( d->toolbox );
     d->collapseButton->setCursor( Qt::ArrowCursor );
-    d->titleLabel = new Plasma::Label( d->toolbox );
-    d->titleLabel->nativeWidget()->setWordWrap( false );
+    d->titleLabel = new TextScrollingWidget( d->toolbox );
     d->titleLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
 
     d->toolboxLayout->addItem( d->collapseButton );

@@ -86,7 +86,6 @@ UpcomingEventsApplet::init()
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_headerLabel = new TextScrollingWidget( this );
-    m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
     m_headerLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );

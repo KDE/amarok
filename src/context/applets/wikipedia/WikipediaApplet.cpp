@@ -511,7 +511,6 @@ WikipediaApplet::init()
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
-    d->wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     d->wikipediaLabel->setFont( labelFont );
     d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     d->wikipediaLabel->setDrawBackground( true );

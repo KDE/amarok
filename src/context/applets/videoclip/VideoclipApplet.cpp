@@ -124,7 +124,6 @@ VideoclipApplet::init()
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_headerText = new TextScrollingWidget( this );
-    m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Video Clip" ) );
     m_headerText->setDrawBackground( true );

@@ -98,7 +98,6 @@ TabsApplet::init()
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_titleLabel = new TextScrollingWidget( this );
-    m_titleLabel.data()->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_titleLabel.data()->setFont( labelFont );
     m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
     m_titleLabel.data()->setDrawBackground( true );
