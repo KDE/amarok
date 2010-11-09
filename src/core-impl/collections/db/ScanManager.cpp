@@ -514,7 +514,6 @@ XmlParseJob::run()
         debug() << "Waiting";
         if( m_reader.atEnd() )
             m_wait.wait( &m_mutex );
-        m_mutex.unlock();
 
         debug() << "Scanning";
         // -- scan as many directory tags as we added to the data
@@ -536,8 +535,10 @@ XmlParseJob::run()
                 }
                 else if( name == "directory" )
                 {
+                    m_mutex.unlock();
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
+                    m_mutex.lock();
                     debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
@@ -555,7 +556,12 @@ XmlParseJob::run()
                 if( m_reader.name() == "scanner" ) // ok. finished
                     finished = true;
             }
+            else if( m_reader.isEndDocument() )
+            {
+                finished = true;
+            }
         }
+        m_mutex.unlock();
 
     } while( !finished &&
              (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
