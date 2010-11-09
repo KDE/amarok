@@ -223,11 +223,11 @@ CollectionScanner::Directory::Directory( const QString &path,
         {
             QStringRef name = reader->name();
             if( name == "path" )
-                m_path = reader->readElementText();
+                m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "rpath" )
-                m_rpath = reader->readElementText();
+                m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "mtime" )
-                m_mtime = reader->readElementText().toUInt();
+                m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
             else if( name == "skipped" )
             {
                 m_skipped = true;

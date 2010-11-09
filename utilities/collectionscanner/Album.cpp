@@ -45,11 +45,11 @@ CollectionScanner::Album::Album( QXmlStreamReader *reader )
             QStringRef name = reader->name();
 
             if( name == "name" )
-                m_name = reader->readElementText();
+                m_name = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "track" )
                 m_tracks.append( CollectionScanner::Track( reader ) );
             else if( name == "cover" )
-                m_covers.append( reader->readElementText() );
+                m_covers.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
             {
                 qDebug() << "Unexpected xml start element"<<name<<"in input";

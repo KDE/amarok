@@ -462,76 +462,76 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
         {
             QStringRef name = reader->name();
             if( name == "uniqueid" )
-                m_uniqueid = reader->readElementText();
+                m_uniqueid = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "path" )
-                m_path = reader->readElementText();
+                m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "rpath" )
-                m_rpath = reader->readElementText();
+                m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
             else if( name == "filetype" )
-                m_filetype = (Amarok::FileType)reader->readElementText().toInt();
+                m_filetype = (Amarok::FileType)reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "title" )
-                m_title = reader->readElementText();
+                m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "artist" )
-                m_artist = reader->readElementText();
+                m_artist = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "albumArtist" )
-                m_albumArtist = reader->readElementText();
+                m_albumArtist = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "album" )
                 m_album = reader->readElementText();
             else if( name == "compilation" )
             {
                 m_compilation = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "noCompilation" )
             {
                 m_noCompilation = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "hasCover" )
             {
                 m_hasCover = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "comment" )
-                m_comment = reader->readElementText();
+                m_comment = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "genre" )
-                m_genre = reader->readElementText();
+                m_genre = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "year" )
-                m_year = reader->readElementText().toInt();
+                m_year = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "disc" )
-                m_disc = reader->readElementText().toInt();
+                m_disc = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "track" )
-                m_track = reader->readElementText().toInt();
+                m_track = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "bpm" )
-                m_bpm = reader->readElementText().toFloat();
+                m_bpm = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "bitrate" )
-                m_bitrate = reader->readElementText().toInt();
+                m_bitrate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "length" )
-                m_length = reader->readElementText().toLong();
+                m_length = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
             else if( name == "samplerate" )
-                m_samplerate = reader->readElementText().toInt();
+                m_samplerate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "filesize" )
-                m_filesize = reader->readElementText().toLong();
+                m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
 
             else if( name == "trackGain" )
-                m_trackGain = reader->readElementText().toFloat();
+                m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "trackPeakGain" )
-                m_trackPeakGain = reader->readElementText().toFloat();
+                m_trackPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "albumGain" )
-                m_albumGain = reader->readElementText().toFloat();
+                m_albumGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "albumPeakGain" )
-                m_albumPeakGain = reader->readElementText().toFloat();
+                m_albumPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
 
             else if( name == "composer" )
-                m_composer = reader->readElementText();
+                m_composer = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
             else if( name == "rating" )
-                m_rating = reader->readElementText().toFloat();
+                m_rating = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "score" )
-                m_score = reader->readElementText().toFloat();
+                m_score = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "playcount" )
-                m_playcount = reader->readElementText().toInt();
+                m_playcount = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
 
             else
             {
