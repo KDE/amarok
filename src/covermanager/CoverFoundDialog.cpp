@@ -32,6 +32,7 @@
 #include <KFileDialog>
 #include <KLineEdit>
 #include <KListWidget>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KPushButton>
 #include <KSaveFile>

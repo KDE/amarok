@@ -17,26 +17,26 @@
 #define DEBUG_PREFIX "CoverFetchingActions"
 
 #include "CoverFetchingActions.h"
+
 #include "core/support/Debug.h"
 #include "MainWindow.h"
+#include "CoverFetcher.h"
+#include "CoverManager.h"
+#include "CoverViewDialog.h"
 
-#include <QDesktopWidget>
-
+#include <KApplication>
 #include <KDirOperator>
 #include <KFile>
 #include <KFileDialog>
 #include <KFileWidget>
 #include <KIcon>
 #include <KImageIO>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KTempDir>
-#include <kio/netaccess.h>
-#include <ksharedptr.h>
+#include <KIO/NetAccess>
 
-#include "CoverFetcher.h"
-#include "CoverManager.h"
-#include "CoverViewDialog.h"
+#include <QDesktopWidget>
 
 /////////////////////////////////////
 //  FetchCoverAction

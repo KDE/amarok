@@ -637,6 +637,7 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFetchUnit.cpp
     covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
+    covermanager/CoverViewDialog.cpp
     databaseimporter/DatabaseImporter.cpp
     databaseimporter/amarok14/FastForwardImporter.cpp
     databaseimporter/amarok14/FastForwardImporterConfig.cpp
