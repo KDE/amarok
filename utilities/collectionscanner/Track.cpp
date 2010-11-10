@@ -549,74 +549,88 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
 
 #ifdef UTILITIES_BUILD
 
+/** Escapes all control characters in the string.
+    We need this because the Qt 4.6 xml scanner is behaving very badly
+    when encountering such characters in the input.
+    */
+QString
+CollectionScanner::Track::escape( QString str ) const
+{
+    for( int i = 0; i < str.length(); ++i )
+    {
+        if( !str.at(i).isPrint() )
+            str[i] = '?';
+    }
+    return str;
+}
+
+void
+CollectionScanner::Track::write( QXmlStreamWriter *writer,
+                                 const QString &tag, const QString &str ) const
+{
+    if( !str.isEmpty() )
+        writer->writeTextElement( tag, escape(str) );
+}
+
+
 void
 CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
 {
     if( !m_valid )
         return;
 
-    if( !m_uniqueid.isEmpty() )
-        writer->writeTextElement( "uniqueid", m_uniqueid );
-    if( !m_path.isEmpty() )
-        writer->writeTextElement( "path", m_path );
-    if( !m_rpath.isEmpty() )
-        writer->writeTextElement( "rpath", m_rpath );
+    write( writer, "uniqueid", m_uniqueid );
+    write( writer, "path", m_path );
+    write( writer, "rpath", m_rpath );
 
-    writer->writeTextElement( "filetype", QString::number( (int)m_filetype ) );
+    write(writer, "filetype", QString::number( (int)m_filetype ) );
 
-    if( !m_title.isEmpty() )
-        writer->writeTextElement( "title", m_title);
-    if( !m_artist.isEmpty() )
-        writer->writeTextElement( "artist", m_artist);
-    if( !m_albumArtist.isEmpty() )
-        writer->writeTextElement( "albumArtist", m_albumArtist);
-    if( !m_album.isEmpty() )
-        writer->writeTextElement( "album", m_album);
+    write( writer, "title", m_title);
+    write( writer, "artist", m_artist);
+    write( writer, "albumArtist", m_albumArtist);
+    write( writer, "album", m_album);
     if( m_compilation )
         writer->writeEmptyElement( "compilation" );
     if( m_noCompilation )
         writer->writeEmptyElement( "noCompilation" );
     if( m_hasCover )
         writer->writeEmptyElement( "hasCover" );
-    if( !m_comment.isEmpty() )
-        writer->writeTextElement( "comment", m_comment);
-    if( !m_genre.isEmpty() )
-        writer->writeTextElement( "genre", m_genre);
+    write( writer, "comment", m_comment);
+    write( writer, "genre", m_genre);
     if( m_year != -1 )
-        writer->writeTextElement( "year", QString::number( m_year ) );
+        write(writer, "year", QString::number( m_year ) );
     if( m_disc != -1 )
-        writer->writeTextElement( "disc", QString::number( m_disc ) );
+        write(writer, "disc", QString::number( m_disc ) );
     if( m_track != -1 )
-        writer->writeTextElement( "track", QString::number( m_track ) );
+        write(writer, "track", QString::number( m_track ) );
     if( m_bpm != -1 )
-        writer->writeTextElement( "bpm", QString::number( m_bpm ) );
+        write(writer, "bpm", QString::number( m_bpm ) );
     if( m_bitrate != -1 )
-        writer->writeTextElement( "bitrate", QString::number( m_bitrate ) );
+        write(writer, "bitrate", QString::number( m_bitrate ) );
     if( m_length != -1 )
-        writer->writeTextElement( "length", QString::number( m_length ) );
+        write(writer, "length", QString::number( m_length ) );
     if( m_samplerate != -1 )
-        writer->writeTextElement( "samplerate", QString::number( m_samplerate ) );
+        write(writer, "samplerate", QString::number( m_samplerate ) );
     if( m_filesize != -1 )
-        writer->writeTextElement( "filesize", QString::number( m_filesize ) );
+        write(writer, "filesize", QString::number( m_filesize ) );
 
     if( m_trackGain != 0 )
-        writer->writeTextElement( "trackGain", QString::number( m_trackGain ) );
+        write(writer, "trackGain", QString::number( m_trackGain ) );
     if( m_trackPeakGain != 0 )
-        writer->writeTextElement( "trackPeakGain", QString::number( m_trackPeakGain ) );
+        write(writer, "trackPeakGain", QString::number( m_trackPeakGain ) );
     if( m_albumGain != 0 )
-        writer->writeTextElement( "albumGain", QString::number( m_albumGain ) );
+        write(writer, "albumGain", QString::number( m_albumGain ) );
     if( m_albumPeakGain != 0 )
-        writer->writeTextElement( "albumPeakGain", QString::number( m_albumPeakGain ) );
+        write(writer, "albumPeakGain", QString::number( m_albumPeakGain ) );
 
-    if( !m_composer.isEmpty() )
-        writer->writeTextElement( "composer", m_composer);
+    write( writer, "composer", m_composer);
 
     if( m_rating != -1 )
-        writer->writeTextElement( "rating", QString::number( m_rating ) );
+        write(writer, "rating", QString::number( m_rating ) );
     if( m_score != -1 )
-        writer->writeTextElement( "score", QString::number( m_score ) );
+        write(writer, "score", QString::number( m_score ) );
     if( m_playcount != -1 )
-        writer->writeTextElement( "playcount", QString::number( m_playcount ) );
+        write(writer, "playcount", QString::number( m_playcount ) );
 
 }
 
