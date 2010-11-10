@@ -139,6 +139,8 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_albumPeakGain = 0.0;
 
     m_batchUpdate = false;
+
+    m_filetype = Amarok::Unknown;
 }
 
 SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
