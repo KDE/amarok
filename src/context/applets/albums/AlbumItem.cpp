@@ -40,8 +40,7 @@ AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
         unsubscribeFrom( m_album );
     m_album = albumPtr;
     subscribeTo( m_album );
-
-    metadataChanged( m_album );
+    update();
 }
 
 void
