@@ -64,6 +64,7 @@ ContextDock::createContextView( Plasma::Containment *containment )
     m_contextView.data()->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona.data(), m_mainWidget );
     m_contextToolbarView.data()->setFrameShape( QFrame::NoFrame );
+    PERF_LOG( "Created ContexToolbarView" )
 
     connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );
     connect( m_contextToolbarView.data(), SIGNAL( hideAppletExplorer() ), m_contextView.data(), SLOT( hideAppletExplorer() ) );

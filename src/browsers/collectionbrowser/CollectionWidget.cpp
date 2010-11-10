@@ -157,6 +157,7 @@ void
 CollectionWidget::init()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Begin init" );
     d->levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( d->levels.isEmpty() )
         d->levels << CategoryId::Artist << CategoryId::Album;

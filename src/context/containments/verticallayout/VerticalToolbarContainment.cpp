@@ -93,6 +93,7 @@ Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
 
     foreach( const QString& plugin, plugins )
     {
+        PERF_LOG( qPrintable( QString("Adding applet: %1").arg( plugin ) ) )
         debug() << "Adding applet: " << plugin;
         addApplet( plugin, -1 );
     }

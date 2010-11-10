@@ -119,6 +119,7 @@ void
 RecentlyPlayedListWidget::startQuery()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Start query recently played tracks" );
     clear();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
@@ -170,6 +171,7 @@ RecentlyPlayedListWidget::setupTracksData()
     foreach( const Meta::TrackPtr &track, m_recentTracks )
         addTrack( track );
     m_recentTracks.clear();
+    PERF_LOG( "Done setting up recently played tracks" );
 }
 
 void

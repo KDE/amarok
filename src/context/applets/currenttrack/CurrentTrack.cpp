@@ -85,6 +85,7 @@ void
 CurrentTrack::init()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Begin init" );
 
     // Call the base implementation.
     Context::Applet::init();
@@ -204,6 +205,8 @@ CurrentTrack::init()
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(queryCollection()), Qt::QueuedConnection );
     queryCollection();
+
+    PERF_LOG( "Finished init" );
 }
 
 void
@@ -772,6 +775,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     if( !track )
         return;
 
+    PERF_LOG( "Begin actions layout setup" );
     //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
     QList<QAction *> actions = The::globalCurrentTrackActions()->actions();
 
@@ -855,6 +859,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         icon->setText( QString() );
         m_actionsLayout->addItem( icon );
     }
+    PERF_LOG( "Finished actions layout setup" );
 }
 
 void

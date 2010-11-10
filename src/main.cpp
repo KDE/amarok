@@ -31,7 +31,6 @@ extern AMAROK_EXPORT class OcsData ocsData;
 
 int main( int argc, char *argv[] )
 {
-
     //Authors
     aboutData.addAuthor( ki18n("Alejandro Wainzinger"),
             ki18n("Developer (xevix)"), "aikawarazuni@gmail.com", "http://awainzin-foss.blogspot.com" );

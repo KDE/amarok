@@ -189,6 +189,7 @@ ContextView::loadConfig()
 {
     contextScene()->clearContainments();
 
+    PERF_LOG( "Start to load config" );
     int numContainments = contextScene()->containments().size();
     KConfig conf( "amarok_homerc", KConfig::FullConfig );
     for( int i = 0; i < numContainments; i++ )
@@ -200,6 +201,7 @@ ContextView::loadConfig()
             containment->loadConfig( cg );
         }
     }
+    PERF_LOG( "Done loading config" );
 }
 
 Plasma::Applet*
