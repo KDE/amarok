@@ -847,7 +847,7 @@ WikipediaEngine::init()
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
              this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update( Meta::TrackPtr ) ) );
+             this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
 }
 
 bool
