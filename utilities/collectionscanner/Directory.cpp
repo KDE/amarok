@@ -231,12 +231,12 @@ CollectionScanner::Directory::Directory( const QString &path,
             else if( name == "skipped" )
             {
                 m_skipped = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "ignored" )
             {
                 m_ignored = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "album" )
             {

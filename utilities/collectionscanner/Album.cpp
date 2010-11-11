@@ -92,6 +92,9 @@ CollectionScanner::Album::name() const
 bool
 CollectionScanner::Album::isCompilation() const
 {
+    if( m_name.isEmpty() )
+        return false;
+
     bool isCompilation = false;
     bool isNoCompilation = false;
     foreach( const Track &track, m_tracks )
@@ -128,6 +131,9 @@ CollectionScanner::Album::isCompilation() const
 bool
 CollectionScanner::Album::isNoCompilation() const
 {
+    if( m_name.isEmpty() )
+        return true;
+
     bool isCompilation = false;
     bool isNoCompilation = false;
     foreach( const Track &track, m_tracks )
