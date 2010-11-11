@@ -448,6 +448,19 @@ SqlTrack::type() const
 }
 
 void
+SqlTrack::setType( Amarok::FileType newType )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_filetype == newType )
+        return;
+
+    m_cache.insert( Meta::valFiletype, int(newType) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+void
 SqlTrack::setTitle( const QString &newTitle )
 {
     QWriteLocker locker( &m_lock );
@@ -856,6 +869,8 @@ SqlTrack::commitMetaDataChanges()
     KSharedPtr<SqlYear>     oldYear;
     KSharedPtr<SqlYear>     newYear;
 
+    if( m_cache.contains( Meta::valFiletype ) )
+        m_filetype = Amarok::FileType(m_cache.value( Meta::valFiletype ).toInt());
     if( m_cache.contains( Meta::valTitle ) )
         m_title = m_cache.value( Meta::valTitle ).toString();
     if( m_cache.contains( Meta::valComment ) )
@@ -1116,6 +1131,8 @@ SqlTrack::writeMetaDataToDb( const FieldHash &fields )
         tags += QString( ",albumpeakgain=%1" ).arg( m_albumPeakGain );
     if( fields.contains( Meta::valFilesize ) )
         tags += QString( ",filesize=%1" ).arg( m_filesize );
+    if( fields.contains( Meta::valFiletype ) )
+        tags += QString( ",filetype=%1" ).arg( int(m_filetype) );
 
     if( !tags.isEmpty() )
     {

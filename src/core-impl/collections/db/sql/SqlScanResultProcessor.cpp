@@ -125,7 +125,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     QString rpath = m_sqlCollection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrackFromUid( track->uniqueid() ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( track->uniqueid() ) );
 
     if( metaTrack )
     {
@@ -180,8 +180,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
         !track->genre().isEmpty() )
         metaTrack->setGenre( track->genre() );
 
-    // the filetype is not set or in the database.
-    // Meta::SqlTrack uses the file extension.
+    metaTrack->setFileType( track->fileType() );
 
     if( m_type == FullScan ||
         !track->bpm() >= 0 )
