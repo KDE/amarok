@@ -2098,7 +2098,7 @@ void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;
-    const QString key(m_currtrack->ipod_path);
+    const QString key( QString( m_currtrack->ipod_path ).toLower() );
     if( m_files.value(key) )
        debug() << "duplicate track" << key;
     else
