@@ -260,12 +260,8 @@ CollectionScanner::Track::Track( const QString &path)
                         QString identifier = TStringToQString( TagLib::String( frame->identifier() ) );
                         if( owner == "http://musicbrainz.org" )
                             m_uniqueid = "amarok-sqltrackuid://mb-" + identifier;
-
                         else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )
                             m_uniqueid = "amarok-sqltrackuid://" + identifier;
-
-                        else
-                            m_uniqueid = owner+"://"+identifier;
                     }
                 }
             }
