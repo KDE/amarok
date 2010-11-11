@@ -170,7 +170,7 @@ void
 IpodHandler::init()
 {
     bool isMounted = m_deviceInfo->wasMounted();
-    if( !isMounted && !m_deviceInfo->deviceUid().isEmpty() )
+    if( !isMounted )
     {
         QStringList args;
         if( !m_deviceInfo->deviceUid().isEmpty() )

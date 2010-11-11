@@ -215,18 +215,23 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     else if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
     {
         const QMap<QString, QVariant> properties = generic->allProperties();
-        if( !properties.contains("info.capabilities") )
-        {
-            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
-            return;
-        }
-
-        const QStringList capabilities = properties["info.capabilities"].toStringList();
-        if( !capabilities.contains("afc") )
-        {
-            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
-            return;
-        }
+        // iPods touch 3G (and maybe upper) do not have AFC capabilities. 
+        // Due to the return, iPod Touch are not known as media device and the code which execute the ifuse command is then not called!
+	if ( !device.product().contains("iPod") )
+	{
+            if( !properties.contains("info.capabilities") )
+            {
+                debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+                return;
+            }
+    
+            const QStringList capabilities = properties["info.capabilities"].toStringList();
+            if( !capabilities.contains("afc") )
+            {
+                debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+                return;
+            }
+	}
 
         debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;

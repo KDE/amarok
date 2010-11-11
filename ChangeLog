@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * Permit the use of iPod Touch 3G and possibly newer devices. Thanks to
+      Aurélien Croc for the patch!
     * Match space-separated search terms in the playlist filter var individually. Thanks
       Thomas Karpiniec for the patch!
     * Added new context applet for displaying song tab information. Thanks
