@@ -105,8 +105,15 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 
     private:
         // only SqlTrack can change this
-        void updateCachedUrl( const QString &oldUrl, const QString &newUrl );
-        void updateCachedUid( const QString &oldUid, const QString &newUid );
+        /** Updates the uid of an already cached track.
+            @return true if the update was successfull.
+        */
+        bool updateCachedUrl( const QString &oldUrl, const QString &newUrl );
+
+        /** Updates the uid of an already cached track.
+            @return true if the update was successfull.
+        */
+        bool updateCachedUid( const QString &oldUid, const QString &newUid );
 
         friend class Meta::SqlTrack;
 

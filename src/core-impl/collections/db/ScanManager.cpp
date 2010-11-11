@@ -106,6 +106,12 @@ ScanManager::unblockScan()
     startScanner();
 }
 
+bool
+ScanManager::isRunning()
+{
+    return m_parser || m_scanner;
+}
+
 
 void
 ScanManager::requestFullScan()
@@ -147,7 +153,7 @@ void ScanManager::startScanner()
     if( !m_fullScanRequested && m_scanDirsRequested.isEmpty() )
         return; // nothing to do
 
-    if( m_parser || m_scanner )
+    if( isRunning() )
     {
         debug() << "scanner already running";
         return;

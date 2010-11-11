@@ -42,6 +42,7 @@
 #include <QWriteLocker>
 #include <QMutexLocker>
 #include <QPixmapCache>
+#include <QCryptographicHash>
 
 #include <KCodecs>
 #include <KLocale>
@@ -110,7 +111,17 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_trackId = -1; // this will be set with the first database write
     m_statisticsId = -1;
 
+    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath ) );
+    if( !m_batchUpdate )
     setUrl( deviceId, rpath, directoryId );
+
+    // set a random uid to start with in case the "real" one will be already taken.
+    QCryptographicHash md5( QCryptographicHash::Md5 );
+    md5.addData( rpath.toAscii() );
+    md5.addData( QString::number(directoryId).toAscii() );
+    md5.addData( QString::number(qrand()).toAscii() );
+    m_uid = "amarok-sqltrackuid://" + md5.result().toHex();
+    // and that will be set once we commit the data.
     setUidUrl( uidUrl );
 
     // ensure that these values get a correct database id
@@ -887,16 +898,19 @@ SqlTrack::commitMetaDataChanges()
         // At least the ScanResultProcessor handles this problem
 
         KUrl oldUrl = m_url;
-        m_url = m_cache.value( Meta::valUrl ).toString();
         // debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
-        m_collection->registry()->updateCachedUrl( oldUrl.path(), m_url.path() );
+        KUrl newUrl = m_cache.value( Meta::valUrl ).toString();
+        if( oldUrl != newUrl &&
+            m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() ) )
+            m_url = newUrl;
     }
 
     // Use the latest uid here
     if( m_cache.contains( Meta::valUniqueId ) )
     {
-        m_uid = m_cache.value( Meta::valUniqueId ).toString();
-        m_collection->registry()->updateCachedUid( oldUid, m_uid );
+        QString newUid = m_cache.value( Meta::valUniqueId ).toString();
+        if( m_collection->registry()->updateCachedUid( oldUid, newUid ) )
+            m_uid = newUid;
     }
 
     if( m_cache.contains( Meta::valArtist ) )

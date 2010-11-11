@@ -19,6 +19,7 @@
 
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
+#include "../ScanManager.h"
 
 #include <QMutableHashIterator>
 #include <QMutexLocker>
@@ -41,7 +42,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     databaseUpdater.deleteAllRedundant( "year" );
 
     m_timer = new QTimer( this );
-    m_timer->setInterval( 300 * 1000 );  //try to clean up every 300 seconds, change if necessary
+    m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
     m_timer->setSingleShot( false );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
     m_timer->start();
@@ -246,32 +247,46 @@ SqlRegistry::getTrack( int trackId, const QStringList &rowData )
     }
 }
 
-void
+bool
 SqlRegistry::updateCachedUrl( const QString &oldUrl, const QString &newUrl )
 {
     QMutexLocker locker( &m_trackMutex );
     int deviceId = m_collection->mountPointManager()->getIdForUrl( oldUrl );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldUrl );
-    TrackId id(deviceId, rpath);
-    if( m_trackMap.contains( id ) )
+    TrackId oldId(deviceId, rpath);
+
+    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
+    QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
+    TrackId newId( newdeviceId, newRpath );
+
+    if( m_trackMap.contains( newId ) )
+        warning() << "updating path to an already existing path.";
+    else if( !m_trackMap.contains( oldId ) )
+        warning() << "updating path from a non existing path.";
+    else
     {
-        Meta::TrackPtr track = m_trackMap.take( id );
-        int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
-        QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
-        TrackId newId( newdeviceId, newRpath );
+        Meta::TrackPtr track = m_trackMap.take( oldId );
         m_trackMap.insert( newId, track );
+        return true;
     }
+    return false;
 }
 
-void
+bool
 SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
 {
     QMutexLocker locker( &m_trackMutex );
-    if( m_uidMap.contains( oldUid ) )
+    if( m_uidMap.contains( newUid ) )
+        warning() << "updating uid to an already existing uid.";
+    else if( !m_uidMap.contains( oldUid ) )
+        warning() << "updating uid from a non existing uid.";
+    else
     {
         Meta::TrackPtr track = m_uidMap.take(oldUid);
         m_uidMap.insert( newUid, track );
+        return true;
     }
+    return false;
 }
 
 Meta::TrackPtr
@@ -736,6 +751,9 @@ SqlRegistry::getLabel( int id, const QString &label )
 void
 SqlRegistry::emptyCache()
 {
+    if( m_collection->scanManager() && m_collection->scanManager()->isRunning() )
+        return; // don't clean the cache if a scan is done
+
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasLabel;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasLabel = false;
 
@@ -748,6 +766,24 @@ SqlRegistry::emptyCache()
          && ( hasComposer = m_composerMutex.tryLock() )
          && ( hasLabel = m_labelMutex.tryLock() ) )
     {
+        debug() << "SqlRegistry::emptyCache is running";
+
+        QString query = QString( "SELECT COUNT(*) FROM albums;" );
+        QStringList res = m_collection->sqlStorage()->query( query );
+        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM artists;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM genres;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
+
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
         //by invalidating the tracks cache on all objects
@@ -774,16 +810,34 @@ SqlRegistry::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap )
-        foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap )
+        foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap );
+        foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap );
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap )
-        foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap )
-        foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap )
-        foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap )
-        foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap )
-        foreachCollectGarbage( int, Meta::LabelPtr, 2, m_labelMap )
+        foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap );
+        foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap );
+        foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap );
+        foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap );
+        foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap );
+        foreachCollectGarbage( int, Meta::LabelPtr, 2, m_labelMap );
         #undef foreachCollectGarbage
+
+        debug() << "--- after run: ---";
+
+        query = QString( "SELECT COUNT(*) FROM albums;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM artists;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM genres;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
     }
 
     //make sure to unlock all necessary locks

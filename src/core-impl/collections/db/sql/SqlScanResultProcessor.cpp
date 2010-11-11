@@ -17,6 +17,7 @@
  ****************************************************************************************/
 
 #include "SqlScanResultProcessor.h"
+#include "SqlQueryMaker.h"
 
 #include "playlistmanager/PlaylistManager.h"
 
@@ -37,6 +38,37 @@ SqlScanResultProcessor::SqlScanResultProcessor( Collections::DatabaseCollection 
 SqlScanResultProcessor::~SqlScanResultProcessor()
 {
 }
+
+void
+SqlScanResultProcessor::commit()
+{
+    // -- fill the registry cache with all the tracks
+    // count the non skipped directories to find out if we should buffer all tracks before committing.
+    int nonSkippedDirectories = 0;
+    foreach( const CollectionScanner::Directory* dir, m_directories )
+        if( !dir->isSkipped() )
+        {
+            debug() << "in commit, dir not skipped" << dir->path();
+            nonSkippedDirectories++;
+        }
+
+    if( nonSkippedDirectories > 50 )
+    {
+        // ok. enough directories changed. Use the query manager to read
+        // all the tracks into the cache in one go.
+        // that saves us a lot of single database queries later
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->setBlocking( true );
+        qm->run();
+        qm->tracks( m_collection->collectionId() );
+        delete qm;
+    }
+
+    // -- call the base implementation
+    ScanResultProcessor::commit();
+}
+
 
 void
 SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int directoryId )
@@ -142,7 +174,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 
     if( m_type == FullScan ||
         track->year() >= 0 )
-        metaTrack->setYear( track->year() );
+        metaTrack->setYear( (track->year() >= 0) ? track->year() : 0 );
 
     if( m_type == FullScan ||
         !track->genre().isEmpty() )

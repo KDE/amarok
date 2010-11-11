@@ -71,6 +71,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         SqlScanResultProcessor( Collections::DatabaseCollection *collection, ScanType type, QObject *parent = 0 );
         virtual ~SqlScanResultProcessor();
 
+        virtual void commit();
+
     protected:
         void commitAlbum( const CollectionScanner::Album *album, int directoryId );
         void commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId = -1 );
@@ -80,7 +82,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         void deleteDeletedTracks( int dirId );
-        
+
     private:
         Collections::SqlCollection* m_sqlCollection;
 };
