@@ -259,7 +259,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                     if( !tracks.isEmpty() )
                     {
                         Meta::YearPtr year = tracks.first()->year();
-                        if( year )
+                        if( year && (year->year() != 0) )
                             name.prepend( QString("%1 - ").arg( year->name() ) );
                     }
                 }
