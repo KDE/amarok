@@ -155,16 +155,16 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             TrackItem *trackItem = new TrackItem();
             trackItem->setTrack( trackPtr );
 
-            // Italicise the current track to make it more visible
+            // bold the current track to make it more visible
             if( currentTrack == trackPtr )
-                trackItem->italicise();
+                trackItem->bold();
 
-            // If compilation and same artist, then make bold, but only if there's a current track
+            // If compilation and same artist, then highlight, but only if there's a current track
             if( currentTrack
                 && (currentTrack->artist() == trackPtr->artist())
                 && albumPtr->isCompilation() )
             {
-                trackItem->bold();
+                trackItem->italicise();
             }
             trackItems.insert( trackPtr->discNumber(), trackItem );
         }

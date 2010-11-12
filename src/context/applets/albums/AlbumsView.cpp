@@ -523,14 +523,6 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
         lengthRect = QRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
     }
     p->drawText( textRect, Qt::AlignVCenter, middle );
-
-    // use a nonbold font for drawing track numbers and lengths
-    if( vopt.font.bold() )
-    {
-        QFont font = vopt.font;
-        font.setBold( false );
-        p->setFont( font );
-    }
     p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
     p->drawText( lengthRect, m_lengthAlignment | Qt::AlignVCenter, length );
     p->restore();
