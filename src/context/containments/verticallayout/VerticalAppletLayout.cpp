@@ -46,7 +46,7 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
     // update all the applet widths
     foreach( Plasma::Applet* applet, m_appletList )
         applet->resize( event->newSize().width(), applet->size().height() );
-    showAtIndex( m_showingIndex );
+    refresh();
 }
 
 void
@@ -66,6 +66,7 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
         m_appletList.insert( location, applet );
         showAtIndex( minIndexWithAppletOnScreen ( location ) );
     }
+
     debug() << "emitting addApplet with location" << location;
     emit appletAdded( applet, location );
 
@@ -95,7 +96,6 @@ Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
 void
 Context::VerticalAppletLayout::refresh()
 {
-//    DEBUG_BLOCK
     showAtIndex( m_showingIndex );
 }
 
