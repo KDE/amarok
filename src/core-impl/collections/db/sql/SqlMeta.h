@@ -213,7 +213,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
             returnIndex_urlDeviceId = 1,
             returnIndex_urlRPath = 2,
             returnIndex_urlUid = 3,
-            returnIndex_trackId = 4
+            returnIndex_trackId = 5
         };
 
         // SqlDatabase specific values

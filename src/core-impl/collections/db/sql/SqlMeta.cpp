@@ -60,7 +60,7 @@ QString
 SqlTrack::getTrackReturnValues()
 {
     //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
-    return "urls.id, urls.deviceid, urls.rpath, urls.uniqueid, "
+    return "urls.id, urls.deviceid, urls.rpath, urls.directory, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
            "statistics.score, statistics.rating, "
@@ -111,16 +111,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_trackId = -1; // this will be set with the first database write
     m_statisticsId = -1;
 
-    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath ) );
     setUrl( deviceId, rpath, directoryId );
-
-    // set a random uid to start with in case the "real" one will be already taken.
-    QCryptographicHash md5( QCryptographicHash::Md5 );
-    md5.addData( rpath.toAscii() );
-    md5.addData( QString::number(directoryId).toAscii() );
-    md5.addData( QString::number(qrand()).toAscii() );
-    m_uid = "amarok-sqltrackuid://" + md5.result().toHex();
-    // and that will be set once we commit the data.
     setUidUrl( uidUrl );
 
     // ensure that these values get a correct database id
@@ -164,7 +155,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     m_urlId = (*(iter++)).toInt();
     m_deviceId = (*(iter++)).toInt();
     m_rpath = *(iter++);
-    m_directoryId = -1;
+    m_directoryId = (*(iter++)).toInt();
     m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
@@ -476,6 +467,11 @@ void
 SqlTrack::setUrl( int deviceId, const QString &rpath, int directoryId )
 {
     QWriteLocker locker( &m_lock );
+
+    if( m_deviceId == deviceId &&
+        m_rpath == rpath &&
+        m_directoryId == directoryId )
+        return;
 
     m_deviceId = deviceId;
     m_rpath = rpath;
