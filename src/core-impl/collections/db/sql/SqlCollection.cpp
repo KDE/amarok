@@ -277,25 +277,33 @@ SqlCollection::unblockUpdatedSignal()
 {
     {
         QMutexLocker locker( &m_mutex );
+
+        Q_ASSERT( m_blockUpdatedSignalCount > 0 );
         m_blockUpdatedSignalCount --;
+
+        // check if meanwhile somebody had updated the collection
+        if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == false )
+        {
+            m_updatedSignalRequested = false;
+            locker.unlock();
+            emit updated();
+        }
     }
-    collectionUpdated();
 }
 
 void
 SqlCollection::collectionUpdated()
 {
-    m_mutex.lock();
+    QMutexLocker locker( &m_mutex );
     if( m_blockUpdatedSignalCount == 0 )
     {
         m_updatedSignalRequested = false;
-        m_mutex.unlock();
+        locker.unlock();
         emit updated();
     }
     else
     {
         m_updatedSignalRequested = true;
-        m_mutex.unlock();
     }
 }
 
