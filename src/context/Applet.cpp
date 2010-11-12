@@ -217,9 +217,7 @@ Context::Applet::addAction( QAction *action, const int size )
 void
 Context::Applet::setCollapseOn()
 {
-
-    resize( size().width(), m_heightCollapseOn );
-    return;
+    DEBUG_BLOCK
 
     // We are asked to collapse, but the applet is already animating to collapse, do nothing
     QPropertyAnimation *animation = m_animation.data();
@@ -268,9 +266,6 @@ void
 Context::Applet::setCollapseOff()
 {
     DEBUG_BLOCK
-
-    resize( size().width(), m_heightCollapseOff );
-    return;
 
     // We are asked to extend, but the applet is already animating to extend, do nothing
     QPropertyAnimation *animation = m_animation.data();
