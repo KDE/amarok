@@ -322,6 +322,7 @@ MainWindow::init()
     }
 
     The::amarokUrlHandler(); //Instantiate
+    The::coverFetcher(); //Instantiate
 
     // Runtime check for Qt 4.6 here.
     // We delete the layout file once, because of binary incompatibility with older Qt version.

@@ -96,7 +96,7 @@ public slots:
     void remove( const Meta::AlbumPtr album );
 
 signals:
-    void fetchUnitAdded( const CoverFetchUnit::Ptr );
+    void fetchUnitAdded( CoverFetchUnit::Ptr );
 
 private:
     void add( const CoverFetchUnit::Ptr unit );

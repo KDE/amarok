@@ -18,6 +18,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetcher"
+#include "core/support/Debug.h"
+
 #include "CoverFetcher.h"
 
 #include "core/support/Amarok.h"
@@ -26,12 +29,10 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
+#include "CoverFetchUnit.h"
 
 #include <KLocale>
 #include <KUrl>
-
-#define DEBUG_PREFIX "CoverFetcher"
-#include "core/support/Debug.h"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -54,11 +55,13 @@ CoverFetcher::CoverFetcher()
     : QObject()
     , m_limit( 10 )
 {
+    DEBUG_BLOCK
     setObjectName( "CoverFetcher" );
+    qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
     m_queue = new CoverFetchQueue( this );
-    connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
-                      SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
+    connect( m_queue, SIGNAL(fetchUnitAdded(CoverFetchUnit::Ptr)),
+                      SLOT(slotFetch(CoverFetchUnit::Ptr)) );
     s_instance = this;
 }
 
@@ -128,7 +131,7 @@ CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
 }
 
 void
-CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
+CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 {
     if( !unit )
         return;

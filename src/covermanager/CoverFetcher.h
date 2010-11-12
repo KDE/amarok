@@ -59,7 +59,7 @@ signals:
 private slots:
 
     /// Fetch a cover
-    void slotFetch( const CoverFetchUnit::Ptr unit );
+    void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
     void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );

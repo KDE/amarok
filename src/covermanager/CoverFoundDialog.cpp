@@ -20,6 +20,9 @@
 
 #include "CoverFoundDialog.h"
 
+#define DEBUG_PREFIX "CoverFoundDialog"
+#include "core/support/Debug.h"
+
 #include "AlbumBreadcrumbWidget.h"
 #include "core/support/Amarok.h"
 #include "CoverViewDialog.h"
@@ -49,9 +52,6 @@
 #include <QSplitter>
 #include <QTabWidget>
 
-#define DEBUG_PREFIX "CoverFoundDialog"
-#include "core/support/Debug.h"
-
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata &data,
                                     QWidget *parent )
@@ -62,6 +62,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_unit( unit )
     , m_queryPage( 0 )
 {
+    DEBUG_BLOCK
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
 

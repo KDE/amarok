@@ -56,7 +56,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void setLevel( int level, int type );
 
         void setModel( QAbstractItemModel *model );
-        void contextMenuEvent(QContextMenuEvent *event);
 
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
@@ -72,6 +71,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotFilterNow();
 
     protected:
+        void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );

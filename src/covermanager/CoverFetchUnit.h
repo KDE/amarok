@@ -224,4 +224,6 @@ private:
 };
 
 
+Q_DECLARE_METATYPE( CoverFetchUnit::Ptr );
+
 #endif /* AMAROK_COVERFETCHUNIT_H */
