@@ -17,6 +17,7 @@
 #include "DatabaseImporterDialog.h"
 
 #include "core/support/Debug.h"
+#include "databaseimporter/sqlbatch/SqlBatchImporter.h"
 #include "databaseimporter/amarok14/FastForwardImporter.h"
 #include "databaseimporter/itunes/ITunesImporter.h"
 
@@ -50,11 +51,13 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     m_buttons = new QButtonGroup( importerBox );
     m_buttons->setExclusive( true );
 
+    QRadioButton *scanner = new QRadioButton( i18n("Amarok collection scanner"), importerBox );
     QRadioButton *amarok = new QRadioButton( i18n("Amarok 1.4"), importerBox );
     QRadioButton *itunes = new QRadioButton( i18n("iTunes"), importerBox );
     QRadioButton *banshee = new QRadioButton( i18n("Banshee"), importerBox );
     QRadioButton *rhythmbox = new QRadioButton( i18n("Rhythmbox"), importerBox );
 
+    scanner->setChecked( true );
     amarok->setChecked( true );
     itunes->setEnabled( true );
     banshee->setEnabled( false );
@@ -63,11 +66,13 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     banshee->setHidden( true );
     rhythmbox->setHidden( true );
 
+    m_buttons->addButton( scanner );
     m_buttons->addButton( amarok );
     m_buttons->addButton( itunes );
     m_buttons->addButton( banshee );
     m_buttons->addButton( rhythmbox );
 
+    m_buttonHash.insert( scanner, SqlBatchImporter::name() );
     m_buttonHash.insert( amarok, FastForwardImporter::name() );
     m_buttonHash.insert( itunes, ITunesImporter::name() );
     m_buttonHash.insert( banshee, "" );

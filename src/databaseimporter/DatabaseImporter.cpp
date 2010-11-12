@@ -17,12 +17,15 @@
 #include "DatabaseImporter.h"
 #include "core/support/Debug.h"
 
+#include "sqlbatch/SqlBatchImporter.h"
 #include "amarok14/FastForwardImporter.h"
 #include "itunes/ITunesImporter.h"
 
 DatabaseImporter*
 DatabaseImporterFactory::createImporter( const QString &name, QObject *parent )
 {
+   if( name == SqlBatchImporter::name() )
+       return new SqlBatchImporter( parent );
    if( name == FastForwardImporter::name() )
        return new FastForwardImporter( parent );
    if( name == ITunesImporter::name() )

@@ -121,12 +121,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     KHBox* buttonBox = new KHBox( this );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Fully Rescan Entire Collection" ), buttonBox );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), buttonBox );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Statistics" ), buttonBox );
-    import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), buttonBox );
+    import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
