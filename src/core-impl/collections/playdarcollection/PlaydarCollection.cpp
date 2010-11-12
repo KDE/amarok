@@ -225,10 +225,9 @@ namespace Collections
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
             proxyTrack->setName( url.queryItem( "title" ) );
-            QWeakPointer< Playdar::ProxyResolver > proxyResolver
-                = new Playdar::ProxyResolver( this, url, proxyTrack );
+            Playdar::ProxyResolver *proxyResolver = new Playdar::ProxyResolver( this, url, proxyTrack );
 
-            connect( proxyResolver.data(), SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
+            connect( proxyResolver, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                      this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
                 
             return Meta::TrackPtr::staticCast( proxyTrack );

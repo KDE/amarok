@@ -121,10 +121,7 @@ Meta::PlaydarTrack::sid() const
 bool
 Meta::PlaydarTrack::isPlayable() const
 {
-    if( m_collection.data() )
-        return true;
-    else
-        return false;
+    return m_collection.data();
 }
 
 Meta::AlbumPtr
@@ -285,10 +282,7 @@ Meta::PlaydarTrack::finishedPlaying( double playedFraction )
 bool
 Meta::PlaydarTrack::inCollection() const
 {
-    if( m_collection.data() )
-        return true;
-    else
-        return false;
+    return m_collection.data();
 }
 
 Collections::Collection*
