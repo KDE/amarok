@@ -139,19 +139,19 @@ LyricsAppletPrivate::collapseToMin()
     DEBUG_BLOCK
     Q_Q( LyricsApplet );
 
-    if ( !browser || !suggestView || !infoLabel )
+    // Simply drop out if one of the conditions is met:
+    // -The applet is currently not visible.
+    // -One of the widgets is 0.
+    if ( !q->isVisible() || !browser || !suggestView || !infoLabel )
         return;
 
     KTextBrowser *textBrowser = browser->nativeWidget();
     QTreeView *treeView = suggestView->nativeWidget();
     QLabel *label = infoLabel->nativeWidget();
 
-    if( !textBrowser || !treeView || !label )
-        return;
+    qreal contentItemHeight = 0;
 
-    qreal testItemHeight = 0;
-
-    if( showBrowser )
+    if( showBrowser && textBrowser )
     {
         // use a dummy item to get the lyrics layout being displayed
         QGraphicsTextItem testItem;
@@ -160,31 +160,32 @@ LyricsAppletPrivate::collapseToMin()
         testItem.setHtml( textBrowser->toHtml() );
 
         // Add the height of the test item to the calculated height.
-        testItemHeight += testItem.boundingRect().height();
+        contentItemHeight += testItem.boundingRect().height();
     }
 
-    if( showSuggestions )
+    if( showSuggestions && treeView )
     {
         // Add the height of the suggestion view to the
         // calculated test item height.
-        testItemHeight += treeView->geometry().height();
+        contentItemHeight += treeView->sizeHint().height();
     }
 
-    if( showInfoLabel )
+    if( showInfoLabel && label )
     {
         QGraphicsTextItem testItem;
         testItem.setPlainText( label->text() );
+        testItem.setFont( label->font() );
 
         // Add the height of the test item to the calculated height.
         // We multiply the height with 2 as there's some spacing between
         // the text and the header.
-        testItemHeight += testItem.boundingRect().height() * 2;
+        contentItemHeight += testItem.boundingRect().height() * 2;
     }
 
     const qreal padding        = q->standardPadding();
     const qreal frameWidth     = textBrowser->frameWidth();
     const qreal headerHeight   = titleLabel->pos().y() + titleLabel->boundingRect().height() + padding;
-    const qreal contentHeight  = headerHeight + frameWidth + testItemHeight + frameWidth + padding;
+    const qreal contentHeight  = headerHeight + frameWidth + contentItemHeight + frameWidth + padding;
 
     // only show vertical scrollbar if there are lyrics and is needed
     textBrowser->setVerticalScrollBarPolicy( hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
@@ -196,6 +197,7 @@ LyricsAppletPrivate::collapseToMin()
     const qreal containerOffset = q->mapToView( q->containment()->view(), q->boundingRect() ).topLeft().y();
     const qreal containerHeight = q->containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
+
     q->setCollapseHeight( collapsedHeight );
     q->setCollapseOn();
     q->updateConstraints();
