@@ -713,7 +713,7 @@ CollectionScanner::Track::splitNumber( const QString str ) const
     // guard against b0rked tags
     if ( i != -1 )
         // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-        res = str.left( i ).toInt( &ok );
+        res = str.left( i-1 ).toInt( &ok );
     else
         res = str.toInt( &ok );
 
