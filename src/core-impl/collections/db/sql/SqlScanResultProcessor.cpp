@@ -42,6 +42,7 @@ SqlScanResultProcessor::~SqlScanResultProcessor()
 void
 SqlScanResultProcessor::commit()
 {
+    DEBUG_BLOCK
     // -- fill the registry cache with all the tracks
     // count the non skipped directories to find out if we should buffer all tracks before committing.
     int nonSkippedDirectories = 0;
@@ -114,18 +115,20 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     Q_ASSERT( directoryId );
     Q_ASSERT( albumId ); // no track without album
 
-    if( track->uniqueid().isEmpty() )
+    QString uid = track->uniqueid();
+    if( uid.isEmpty() )
     {
         warning() << "got track with no unique id from the scanner, not adding";
         return;
     }
-    debug() << "SRP::commitTrack on " << track->path() << "for album" << albumId;
+    uid = m_collection->uidUrlProtocol() + "://" + uid;
+    debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
 
     int deviceId = m_sqlCollection->mountPointManager()->getIdForUrl( track->path() );
     QString rpath = m_sqlCollection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( track->uniqueid() ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( uid ) );
 
     if( metaTrack )
     {
@@ -142,12 +145,17 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     }
     else
     {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrack( deviceId, rpath, directoryId, track->uniqueid() ) );
+        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrack( deviceId, rpath, directoryId, uid ) );
 
         metaTrack->setWriteFile( false ); // no need to write the tags back
         metaTrack->beginMetaDataUpdate();
 
-        metaTrack->setUidUrl( track->uniqueid() );
+        metaTrack->setUidUrl( uid );
+    }
+
+    if( m_foundTracks.contains( metaTrack->id() ) )
+    {
+    warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
     }
 
     // TODO: we need to check the modified date of the file agains the last updated of the file
@@ -180,7 +188,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
         !track->genre().isEmpty() )
         metaTrack->setGenre( track->genre() );
 
-    metaTrack->setFileType( track->fileType() );
+    metaTrack->setType( track->filetype() );
 
     if( m_type == FullScan ||
         !track->bpm() >= 0 )

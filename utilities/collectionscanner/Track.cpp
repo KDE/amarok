@@ -259,9 +259,9 @@ CollectionScanner::Track::Track( const QString &path)
                         QString owner = TStringToQString( frame->owner() );
                         QString identifier = TStringToQString( TagLib::String( frame->identifier() ) );
                         if( owner == "http://musicbrainz.org" )
-                            m_uniqueid = "amarok-sqltrackuid://mb-" + identifier;
+                            m_uniqueid = "mb-" + identifier;
                         else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )
-                            m_uniqueid = "amarok-sqltrackuid://" + identifier;
+                            m_uniqueid = identifier;
                     }
                 }
             }
@@ -375,7 +375,7 @@ CollectionScanner::Track::Track( const QString &path)
                         m_uniqueid = "mb-" + value;
 
                     else if( name == "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" )
-                        m_uniqueid = "amarok-sqltrackuid://" + value;
+                        m_uniqueid = value;
 
                     else
                     {
@@ -410,8 +410,11 @@ CollectionScanner::Track::Track( const QString &path)
     if( m_valid && m_uniqueid.isEmpty() )
     {
         AFTUtility aftutil;
-        m_uniqueid = "amarok-sqltrackuid://" + aftutil.readUniqueId( path );
+        m_uniqueid = aftutil.readUniqueId( path );
     }
+    // remove leading slashes. They cause problems
+    while( m_uniqueid.startsWith('/') )
+        m_uniqueid = m_uniqueid.mid(1);
 
     // TODO:
     // --- if no tags could be found. Invent something from the filename
@@ -662,7 +665,7 @@ CollectionScanner::Track::decodeXiph( const QString &name, const QString &value 
     }
     else if( name == "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" )
     {
-        m_uniqueid = "amarok-sqltrackuid://" + value;
+        m_uniqueid = value;
     }
     else
         decodeFMPS( name, value, false );

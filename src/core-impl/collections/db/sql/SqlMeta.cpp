@@ -112,7 +112,6 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_statisticsId = -1;
 
     m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath ) );
-    if( !m_batchUpdate )
     setUrl( deviceId, rpath, directoryId );
 
     // set a random uid to start with in case the "real" one will be already taken.
