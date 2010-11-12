@@ -475,7 +475,11 @@ ScriptManager::slotRunScript( QString name, bool silent )
     m_scripts[name].running = true;
     m_scripts[name].evaluating = true;
     if( m_scripts[name].info.category() == "Lyrics" )
+    {
         m_lyricsScript = name;
+        debug() << "lyrics script started:" << name;
+        emit lyricsScriptStarted();
+    }
 
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 100 );

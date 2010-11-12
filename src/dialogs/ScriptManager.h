@@ -104,6 +104,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog
     signals:
         // needed so the lyrics script can connect to this
         void fetchLyrics( const QString&, const QString&, const QString& url );
+        void lyricsScriptStarted();
 
     private slots:
         bool slotInstallScript( const QString& path = QString() );

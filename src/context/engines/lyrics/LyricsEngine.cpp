@@ -38,9 +38,9 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     EngineController* engine = The::engineController();
 
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+             this, SLOT( update() ), Qt::QueuedConnection );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+             this, SLOT( update() ), Qt::QueuedConnection );
 }
 
 QStringList LyricsEngine::sources() const
@@ -83,6 +83,17 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
 
 void LyricsEngine::update()
 {
+    DEBUG_BLOCK
+    if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
+    {
+        debug() << "no lyrics script running";
+        removeAllData( "lyrics" );
+        setData( "lyrics", "noscriptrunning", "noscriptrunning" );
+        disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
+        connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()), Qt::QueuedConnection );
+        return;
+    }
+
     // -- get current title and artist
     QString title;
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -94,9 +105,11 @@ void LyricsEngine::update()
         currentArtist = currentTrack->artist();
         if( currentArtist )
             artist = currentArtist->name();
+        debug() << "current track is" << title;
     }
     else
     {
+        debug() << "no current track";
         m_title.clear();
         m_artist.clear();
 
@@ -131,6 +144,7 @@ void LyricsEngine::update()
         }
     }
 
+    // Check if the title, the artist and the lyrics are still the same.
     // -- check if something changed for the previous fetched lyrics
     if( title == m_title && artist == m_artist )
         return; // nothing changed
@@ -163,11 +177,6 @@ void LyricsEngine::update()
             info << m_title << m_artist << QString() <<  lyrics;
             newLyrics( info );
         }
-    }
-    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "noscriptrunning", "noscriptrunning" );
     }
     else
     {
