@@ -422,7 +422,7 @@ Playlist::Actions::normalizeDynamicPlaylist()
 void
 Playlist::Actions::repaintPlaylist()
 {
-    The::mainWindow()->playlistDock().data()->currentView()->repaint();
+    The::mainWindow()->playlistDock()->currentView()->repaint();
 }
 
 void
@@ -434,7 +434,7 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
+    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
     if ( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();

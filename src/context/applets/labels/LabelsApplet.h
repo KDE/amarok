@@ -40,8 +40,6 @@ public:
     LabelsApplet( QObject *parent, const QVariantList &args );
     ~LabelsApplet();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
 public slots:

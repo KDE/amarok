@@ -25,7 +25,6 @@
 #include <KIcon>
 #include <KSqueezedTextLabel>
 #include <Plasma/IconWidget>
-#include <Plasma/Label>
 
 #include <QDateTime>
 #include <QFontMetricsF>
@@ -80,11 +79,14 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
     labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     labelWidget->setWidget( squeezer );
 
-    Plasma::Label *lastPlayed = new Plasma::Label( this );
-    lastPlayed->setText( Amarok::verboseTimeSince( track->lastPlayed() ) );
-    lastPlayed->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->lastPlayed() ) );
+    lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
     lastPlayed->setAlignment( Qt::AlignRight );
-    lastPlayed->nativeWidget()->setWordWrap( false );
+    lastPlayed->setWordWrap( false );
+
+    QGraphicsProxyWidget *lastPlayedWidget = new QGraphicsProxyWidget( this );
+    lastPlayedWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    lastPlayedWidget->setWidget( lastPlayed );
 
     Plasma::IconWidget *icon = new Plasma::IconWidget( this );
     QSizeF iconSize = icon->sizeFromIconSize( fm.height() );
@@ -97,7 +99,7 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
     itemLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     itemLayout->addItem( icon );
     itemLayout->addItem( labelWidget );
-    itemLayout->addItem( lastPlayed );
+    itemLayout->addItem( lastPlayedWidget );
 
     uint time = track->lastPlayed().toTime_t();
     m_items.insertMulti( time, itemLayout );
@@ -117,6 +119,7 @@ void
 RecentlyPlayedListWidget::startQuery()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Start query recently played tracks" );
     clear();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
@@ -168,6 +171,7 @@ RecentlyPlayedListWidget::setupTracksData()
     foreach( const Meta::TrackPtr &track, m_recentTracks )
         addTrack( track );
     m_recentTracks.clear();
+    PERF_LOG( "Done setting up recently played tracks" );
 }
 
 void

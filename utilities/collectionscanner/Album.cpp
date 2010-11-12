@@ -20,6 +20,7 @@
 #include "Album.h"
 #include "Track.h"
 
+#include <QDebug>
 #include <QFileInfo>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -44,13 +45,16 @@ CollectionScanner::Album::Album( QXmlStreamReader *reader )
             QStringRef name = reader->name();
 
             if( name == "name" )
-                m_name = reader->readElementText();
+                m_name = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "track" )
                 m_tracks.append( CollectionScanner::Track( reader ) );
             else if( name == "cover" )
-                m_covers.append( reader->readElementText() );
+                m_covers.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
-                reader->readElementText(QXmlStreamReader::SkipChildElements); // just read over the element
+            {
+                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                reader->skipCurrentElement();
+            }
         }
 
         else if( reader->isEndElement() )
@@ -88,6 +92,9 @@ CollectionScanner::Album::name() const
 bool
 CollectionScanner::Album::isCompilation() const
 {
+    if( m_name.isEmpty() )
+        return false;
+
     bool isCompilation = false;
     bool isNoCompilation = false;
     foreach( const Track &track, m_tracks )
@@ -124,6 +131,9 @@ CollectionScanner::Album::isCompilation() const
 bool
 CollectionScanner::Album::isNoCompilation() const
 {
+    if( m_name.isEmpty() )
+        return true;
+
     bool isCompilation = false;
     bool isNoCompilation = false;
     foreach( const Track &track, m_tracks )
@@ -196,7 +206,7 @@ CollectionScanner::Album::cover() const
         // IMPROVEMENT: skip covers that have a strange aspect ratio or are
         // unrealistically small, or do not resolve to a valid image
         if( track.hasCover() )
-            return track.uniqueid();
+            return "amarok-sqltrackuid://" + track.uniqueid();
     }
 
     // ok. Now we have to figure out which of the cover images is

@@ -38,9 +38,6 @@
 
 #include <QWheelEvent>
 
-
-#define DEBUG_PREFIX "ContextView"
-
 namespace Context
 {
 
@@ -192,6 +189,7 @@ ContextView::loadConfig()
 {
     contextScene()->clearContainments();
 
+    PERF_LOG( "Start to load config" );
     int numContainments = contextScene()->containments().size();
     KConfig conf( "amarok_homerc", KConfig::FullConfig );
     for( int i = 0; i < numContainments; i++ )
@@ -203,6 +201,7 @@ ContextView::loadConfig()
             containment->loadConfig( cg );
         }
     }
+    PERF_LOG( "Done loading config" );
 }
 
 Plasma::Applet*
@@ -242,7 +241,8 @@ ContextView::showAppletExplorer()
                  cont, SLOT(addApplet(QString, const int)) );
 
         connect( m_appletExplorer.data(), SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
-        updateContainmentsGeometry();
+        m_appletExplorer.data()->resize( rect().width(), m_appletExplorer.data()->size().height() );
+        m_appletExplorer.data()->setPos( 0, rect().height() - m_appletExplorer.data()->size().height() - 5 );
     }
     m_appletExplorer.data()->show();
 }
@@ -257,25 +257,17 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
+    // DEBUG_BLOCK
     Q_UNUSED( event )
 
+    Plasma::View::resizeEvent( event );
     if ( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
-   updateContainmentsGeometry();
-}
-
-
-void
-ContextView::updateContainmentsGeometry()
-{
-    containment()->resize( rect().size() );
-    containment()->setPos( rect().topLeft() );
-    if( m_appletExplorer )
-    {
-        m_appletExplorer.data()->resize( rect().width(), m_appletExplorer.data()->size().height() );
-        m_appletExplorer.data()->setPos( 0, rect().height() - m_appletExplorer.data()->size().height() - 5 );
-    }
+    QRectF rect( QRectF(pos(), maximumViewportSize()) );
+    containment()->setGeometry( rect );
+    scene()->setSceneRect( rect );
+    scene()->update( rect );
 }
 
 void

@@ -117,8 +117,8 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
-        : KUniqueApplication()
-        , m_tray(0)
+    : KUniqueApplication()
+    , m_tray(0)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -355,30 +355,16 @@ App::handleCliArgs() //static
         haveArgs = false;
 
     static bool firstTime = true;
-    const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
-    const bool debugIsDisabled = !args->isSet( "debug" );
+
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
     const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
 
-    Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
-    Amarok::config().writeEntry( "Debug Colorization Disabled", args->isSet( "coloroff" ) );
-
-    // Debug output will only work from this point on. If Amarok was run without debug output before,
-    // then a part of the output (until this point) will be missing. Inform the user about this:
-    if( debugWasJustEnabled || forceDebug )
+    if( firstTime && !Debug::debugEnabled() && !forceDebug )
     {
-        debug() << "************************************************************************************************************";
-        debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
-        debug() << "************************************************************************************************************";
-    }
-    else if( firstTime && debugIsDisabled )
-    {
-        Amarok::config().writeEntry( "Debug Enabled", true );
-        debug() << "**********************************************************************************************";
-        debug() << "** AMAROK WAS STARTED IN NORMAL MODE. IF YOU WANT TO SEE DEBUGGING INFORMATION, PLEASE USE: **";
-        debug() << "** amarok --debug                                                                           **";
-        debug() << "**********************************************************************************************";
-        Amarok::config().writeEntry( "Debug Enabled", false );
+        qDebug() << "**********************************************************************************************";
+        qDebug() << "** AMAROK WAS STARTED IN NORMAL MODE. IF YOU WANT TO SEE DEBUGGING INFORMATION, PLEASE USE: **";
+        qDebug() << "** amarok --debug                                                                           **";
+        qDebug() << "**********************************************************************************************";
     }
 
     if( !firstTime && !haveArgs )
@@ -822,6 +808,7 @@ void App::slotTrashResult( KJob *job )
 
 void App::quit()
 {
+    DEBUG_BLOCK
     The::playlistManager()->completePodcastDownloads();
 
     emit prepareToQuit();

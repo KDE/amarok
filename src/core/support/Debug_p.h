@@ -20,7 +20,12 @@
 #include "Debug.h"
 
 #include <QString>
-#include <QTime>
+
+#if QT_VERSION >= 0x040700
+# include <QElapsedTimer>
+#else
+# include <QTime>
+#endif
 
 class IndentPrivate
     : public QObject
@@ -37,11 +42,15 @@ public:
 class BlockPrivate
 {
 public:
-    BlockPrivate(const char* label);
+    BlockPrivate( const char *text );
 
-    QTime m_startTime;
-    const char *m_label;
-    int m_color;
+#if QT_VERSION >= 0x040700
+    QElapsedTimer startTime;
+#else
+    QTime startTime;
+#endif
+    const char *label;
+    int color;
 };
 
 #endif // DEBUGPRIVATE_H

@@ -107,21 +107,8 @@
 
 #define AMAROK_CAPTION "Amarok"
 
-
 extern KAboutData aboutData;
 extern OcsData ocsData;
-
-class ContextWidget : public KVBox
-{
-    // Set a useful size default of the center tab.
-    public:
-        ContextWidget( QWidget *parent ) : KVBox( parent ) {}
-
-        QSize sizeHint() const
-        {
-            return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
-        }
-};
 
 QWeakPointer<MainWindow> MainWindow::s_instance;
 
@@ -508,18 +495,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 #endif
 }
 
-void
-MainWindow::showEvent(QShowEvent* e)
-{
-    static bool windowEverShown = false;
-    if ( !windowEverShown )
-    {
-        windowEverShown = true;
-        QTimer::singleShot( 250, this, SLOT( resizeWindowHack() ) );
-    }
-    QWidget::showEvent(e);
-}
-
 bool
 MainWindow::queryExit()
 {
@@ -799,10 +774,6 @@ MainWindow::createActions()
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
-
-    action = new KAction( KIcon( "media-album-sync-manager-amarok" ), i18n( "Sync Manager" ), this );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowSyncManager() ) );
-    ac->addAction( "sync_manager", action );
 
     action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
@@ -1371,16 +1342,6 @@ MainWindow::isWaitingForCd() const
     DEBUG_BLOCK
     debug() << "waiting?: " << m_waitingForCd;
     return m_waitingForCd;
-}
-
-void
-MainWindow::resizeWindowHack()
-{
-    // HACK
-    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
-    // with a wrong initial size. Remove when this bug is fixed in Plasma.
-    resize( width(), height() - 1 );
-    resize( width(), height() + 1 );
 }
 
 #include "MainWindow.moc"

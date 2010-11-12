@@ -1157,10 +1157,8 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         else
         {
             // stopping apparently is needed to reset the error.
-            stop();
-            // somehow this still seems to jump over an additional song
-            // but for now at least Amarok continues without further problems.
-            play();
+            m_media.data()->stop();
+            // and start the next song
             slotAboutToFinish();
         }
 

@@ -1,8 +1,12 @@
 [Desktop Entry]
 Name=Tabs Data Engine
+Name[ca]=Motor de dades de pestanyes
+Name[de]=Datenmodul für Gitarrengriffe
 Name[it]=Motore dati delle schede
+Name[nl]=Tabbladen-gegevensengine
 Name[pt]=Motor de Dados de Tablaturas
 Name[pt_BR]=Mecanismo de dados das tablaturas
+Name[sv]=Datagränssnitt för flikar
 Name[uk]=Рушій даних акордів
 Name[x-test]=xxTabs Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine

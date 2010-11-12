@@ -28,13 +28,13 @@ class QPainter;
 class QGraphicsSceneMouseEvent;
 class QGraphicsTextItem;
 class QPropertyAnimation;
+class QPalette;
 
 namespace Plasma
 {
     class Animation;
     class Applet;
     class IconWidget;
-    class Label;
 }
 
 namespace Context
@@ -75,6 +75,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
 
     private slots:
         void deleteApplet();
+        void paletteChanged( const QPalette &palette );
 
     private:
         Plasma::IconWidget* addAction( QAction *action, int size );

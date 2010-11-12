@@ -37,4 +37,16 @@ namespace Meta
     }
 }
 
+enum FileTypes
+{
+    FLAC,
+    MPEG,
+    MP4,
+    MPC,
+    OGG,
+    SPEEX
+};
+
+const char *fieldName( const qint64 &field, const FileTypes &type );
+
 #endif // TAGLIBUTILS_H

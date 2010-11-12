@@ -24,6 +24,7 @@
 #include "Track.h"
 #include "AFTUtility.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -258,13 +259,9 @@ CollectionScanner::Track::Track( const QString &path)
                         QString owner = TStringToQString( frame->owner() );
                         QString identifier = TStringToQString( TagLib::String( frame->identifier() ) );
                         if( owner == "http://musicbrainz.org" )
-                            m_uniqueid = "amarok-sqltrackuid://mb-" + identifier;
-
+                            m_uniqueid = "mb-" + identifier;
                         else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )
-                            m_uniqueid = "amarok-sqltrackuid://" + identifier;
-
-                        else
-                            m_uniqueid = owner+"://"+identifier;
+                            m_uniqueid = identifier;
                     }
                 }
             }
@@ -377,8 +374,8 @@ CollectionScanner::Track::Track( const QString &path)
                     else if( name == "----:com.apple.iTunes:MusicBrainz Track Id" )
                         m_uniqueid = "mb-" + value;
 
-                    else if( name == "----:com.apple.iTunes:Amarok Track Id" )
-                        m_uniqueid = "amarok-sqltrackuid://" + value;
+                    else if( name == "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" )
+                        m_uniqueid = value;
 
                     else
                     {
@@ -413,8 +410,11 @@ CollectionScanner::Track::Track( const QString &path)
     if( m_valid && m_uniqueid.isEmpty() )
     {
         AFTUtility aftutil;
-        m_uniqueid = "amarok-sqltrackuid://" + aftutil.readUniqueId( path );
+        m_uniqueid = aftutil.readUniqueId( path );
     }
+    // remove leading slashes. They cause problems
+    while( m_uniqueid.startsWith('/') )
+        m_uniqueid = m_uniqueid.mid(1);
 
     // TODO:
     // --- if no tags could be found. Invent something from the filename
@@ -461,79 +461,82 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
         {
             QStringRef name = reader->name();
             if( name == "uniqueid" )
-                m_uniqueid = reader->readElementText();
+                m_uniqueid = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "path" )
-                m_path = reader->readElementText();
+                m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "rpath" )
-                m_rpath = reader->readElementText();
+                m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
             else if( name == "filetype" )
-                m_filetype = (Amarok::FileType)reader->readElementText().toInt();
+                m_filetype = (Amarok::FileType)reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "title" )
-                m_title = reader->readElementText();
+                m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "artist" )
-                m_artist = reader->readElementText();
+                m_artist = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "albumArtist" )
-                m_albumArtist = reader->readElementText();
+                m_albumArtist = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "album" )
                 m_album = reader->readElementText();
             else if( name == "compilation" )
             {
                 m_compilation = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "noCompilation" )
             {
                 m_noCompilation = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "hasCover" )
             {
                 m_hasCover = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "comment" )
-                m_comment = reader->readElementText();
+                m_comment = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "genre" )
-                m_genre = reader->readElementText();
+                m_genre = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "year" )
-                m_year = reader->readElementText().toInt();
+                m_year = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "disc" )
-                m_disc = reader->readElementText().toInt();
+                m_disc = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "track" )
-                m_track = reader->readElementText().toInt();
+                m_track = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "bpm" )
-                m_bpm = reader->readElementText().toFloat();
+                m_bpm = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "bitrate" )
-                m_bitrate = reader->readElementText().toInt();
+                m_bitrate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "length" )
-                m_length = reader->readElementText().toLong();
+                m_length = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
             else if( name == "samplerate" )
-                m_samplerate = reader->readElementText().toInt();
+                m_samplerate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == "filesize" )
-                m_filesize = reader->readElementText().toLong();
+                m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
 
             else if( name == "trackGain" )
-                m_trackGain = reader->readElementText().toFloat();
+                m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "trackPeakGain" )
-                m_trackPeakGain = reader->readElementText().toFloat();
+                m_trackPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "albumGain" )
-                m_albumGain = reader->readElementText().toFloat();
+                m_albumGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "albumPeakGain" )
-                m_albumPeakGain = reader->readElementText().toFloat();
+                m_albumPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
 
             else if( name == "composer" )
-                m_composer = reader->readElementText();
+                m_composer = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
             else if( name == "rating" )
-                m_rating = reader->readElementText().toFloat();
+                m_rating = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "score" )
-                m_score = reader->readElementText().toFloat();
+                m_score = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
             else if( name == "playcount" )
-                m_playcount = reader->readElementText().toInt();
+                m_playcount = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
 
             else
-                reader->readElementText(); // just read over the element
+            {
+                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                reader->skipCurrentElement();
+            }
         }
 
         else if( reader->isEndElement() )
@@ -545,74 +548,92 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
 
 #ifdef UTILITIES_BUILD
 
+/** Removes all characters not allowed by xml 1.0 specification.
+    We need this because the Qt 4.6 xml scanner is behaving very badly
+    when encountering such characters in the input.
+    see http://en.wikipedia.org/wiki/Valid_Characters_in_XML
+    */
+QString
+CollectionScanner::Track::escape( QString str ) const
+{
+    for( int i = 0; i < str.length(); ++i )
+    {
+        ushort c = str.at(i).unicode();
+        if( (c < 0x20 && c != 0x09 && c != 0x0A && c != 0x0D) ||
+            (c > 0xD7FF && c < 0xE000) ||
+            (c > 0xFFFD) )
+            str[i] = '?';
+    }
+    return str;
+}
+
+void
+CollectionScanner::Track::write( QXmlStreamWriter *writer,
+                                 const QString &tag, const QString &str ) const
+{
+    if( !str.isEmpty() )
+        writer->writeTextElement( tag, escape(str) );
+}
+
+
 void
 CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
 {
     if( !m_valid )
         return;
 
-    if( !m_uniqueid.isEmpty() )
-        writer->writeTextElement( "uniqueid", m_uniqueid );
-    if( !m_path.isEmpty() )
-        writer->writeTextElement( "path", m_path );
-    if( !m_rpath.isEmpty() )
-        writer->writeTextElement( "rpath", m_rpath );
+    write( writer, "uniqueid", m_uniqueid );
+    write( writer, "path", m_path );
+    write( writer, "rpath", m_rpath );
 
-    writer->writeTextElement( "filetype", QString::number( (int)m_filetype ) );
+    write(writer, "filetype", QString::number( (int)m_filetype ) );
 
-    if( !m_title.isEmpty() )
-        writer->writeTextElement( "title", m_title);
-    if( !m_artist.isEmpty() )
-        writer->writeTextElement( "artist", m_artist);
-    if( !m_albumArtist.isEmpty() )
-        writer->writeTextElement( "albumArtist", m_albumArtist);
-    if( !m_album.isEmpty() )
-        writer->writeTextElement( "album", m_album);
+    write( writer, "title", m_title);
+    write( writer, "artist", m_artist);
+    write( writer, "albumArtist", m_albumArtist);
+    write( writer, "album", m_album);
     if( m_compilation )
         writer->writeEmptyElement( "compilation" );
     if( m_noCompilation )
         writer->writeEmptyElement( "noCompilation" );
     if( m_hasCover )
         writer->writeEmptyElement( "hasCover" );
-    if( !m_comment.isEmpty() )
-        writer->writeTextElement( "comment", m_comment);
-    if( !m_genre.isEmpty() )
-        writer->writeTextElement( "genre", m_genre);
+    write( writer, "comment", m_comment);
+    write( writer, "genre", m_genre);
     if( m_year != -1 )
-        writer->writeTextElement( "year", QString::number( m_year ) );
+        write(writer, "year", QString::number( m_year ) );
     if( m_disc != -1 )
-        writer->writeTextElement( "disc", QString::number( m_disc ) );
+        write(writer, "disc", QString::number( m_disc ) );
     if( m_track != -1 )
-        writer->writeTextElement( "track", QString::number( m_track ) );
+        write(writer, "track", QString::number( m_track ) );
     if( m_bpm != -1 )
-        writer->writeTextElement( "bpm", QString::number( m_bpm ) );
+        write(writer, "bpm", QString::number( m_bpm ) );
     if( m_bitrate != -1 )
-        writer->writeTextElement( "bitrate", QString::number( m_bitrate ) );
+        write(writer, "bitrate", QString::number( m_bitrate ) );
     if( m_length != -1 )
-        writer->writeTextElement( "length", QString::number( m_length ) );
+        write(writer, "length", QString::number( m_length ) );
     if( m_samplerate != -1 )
-        writer->writeTextElement( "samplerate", QString::number( m_samplerate ) );
+        write(writer, "samplerate", QString::number( m_samplerate ) );
     if( m_filesize != -1 )
-        writer->writeTextElement( "filesize", QString::number( m_filesize ) );
+        write(writer, "filesize", QString::number( m_filesize ) );
 
     if( m_trackGain != 0 )
-        writer->writeTextElement( "trackGain", QString::number( m_trackGain ) );
+        write(writer, "trackGain", QString::number( m_trackGain ) );
     if( m_trackPeakGain != 0 )
-        writer->writeTextElement( "trackPeakGain", QString::number( m_trackPeakGain ) );
+        write(writer, "trackPeakGain", QString::number( m_trackPeakGain ) );
     if( m_albumGain != 0 )
-        writer->writeTextElement( "albumGain", QString::number( m_albumGain ) );
+        write(writer, "albumGain", QString::number( m_albumGain ) );
     if( m_albumPeakGain != 0 )
-        writer->writeTextElement( "albumPeakGain", QString::number( m_albumPeakGain ) );
+        write(writer, "albumPeakGain", QString::number( m_albumPeakGain ) );
 
-    if( !m_composer.isEmpty() )
-        writer->writeTextElement( "composer", m_composer);
+    write( writer, "composer", m_composer);
 
     if( m_rating != -1 )
-        writer->writeTextElement( "rating", QString::number( m_rating ) );
+        write(writer, "rating", QString::number( m_rating ) );
     if( m_score != -1 )
-        writer->writeTextElement( "score", QString::number( m_score ) );
+        write(writer, "score", QString::number( m_score ) );
     if( m_playcount != -1 )
-        writer->writeTextElement( "playcount", QString::number( m_playcount ) );
+        write(writer, "playcount", QString::number( m_playcount ) );
 
 }
 
@@ -622,7 +643,7 @@ CollectionScanner::Track::decodeXiph( const QString &name, const QString &value 
     if( name == "COMPOSER" )
         m_composer = value;
 
-    else if( name == "ALBUM ARTIST" ) // MediaMonkey but it makes sense
+    else if( name == "ALBUMARTIST" )
         m_albumArtist = value;
 
     else if( name == "BPM" )
@@ -642,9 +663,9 @@ CollectionScanner::Track::decodeXiph( const QString &name, const QString &value 
     {
         m_uniqueid = "mb-" + value;
     }
-    else if( name == "AMAROK_TRACKID" )
+    else if( name == "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" )
     {
-        m_uniqueid = "amarok-sqltrackuid://" + value;
+        m_uniqueid = value;
     }
     else
         decodeFMPS( name, value, false );
@@ -692,7 +713,7 @@ CollectionScanner::Track::splitNumber( const QString str ) const
     // guard against b0rked tags
     if ( i != -1 )
         // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-        res = str.left( i ).toInt( &ok );
+        res = str.left( i-1 ).toInt( &ok );
     else
         res = str.toInt( &ok );
 

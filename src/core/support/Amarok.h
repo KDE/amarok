@@ -119,6 +119,8 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
+    AMAROK_CORE_EXPORT QString defaultPlaylistPath();
+
     AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
     AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
     AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t );
@@ -192,6 +194,13 @@ namespace Amarok
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
     AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
+
+    /**
+     * Creates a semi-transparent Amarok logo for suitable for painting.
+     * @param dim width of the logo
+     * @return A QPixmap of the logo
+     */
+    AMAROK_CORE_EXPORT QPixmap semiTransparentLogo( int dim );
 
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }

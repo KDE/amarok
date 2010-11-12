@@ -32,7 +32,6 @@
 
 class KPluginInfo;
 class QPainter;
-class QGraphicsSceneMouseEvent;
 
 namespace Context
 {

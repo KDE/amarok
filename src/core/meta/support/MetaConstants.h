@@ -70,6 +70,8 @@ namespace Meta
     // currently only used for writeFields. Not supported for queryMaker
     // TODO: support for queryMaker
     static const qint64 valCompilation  = 1LL << 29;
+    static const qint64 valHasCover     = (1LL << 29) + 1;
+    static const qint64 valFiletype     = (1LL << 29) + 2;
 
     // start for custom numbers
     static const qint64 valCustom       = 1LL << 60;

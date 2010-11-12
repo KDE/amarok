@@ -59,12 +59,13 @@ ScanResultProcessor::commit()
     QDateTime blockedTime = QDateTime::currentDateTime();
     m_collection->blockUpdatedSignal();
 
+    // -- now commit the directories
     foreach( const CollectionScanner::Directory* dir, m_directories )
     {
         commitDirectory( dir );
 
-        // release the block every 3 second. Maybe not really needed, but still nice
-        if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 3 )
+        // release the block every 5 second. Maybe not really needed, but still nice
+        if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
         {
             m_collection->unblockUpdatedSignal();
             blockedTime = QDateTime::currentDateTime();
@@ -72,6 +73,7 @@ ScanResultProcessor::commit()
         }
     }
 
+    // -- delete all not-found directories
     if( m_type != PartialUpdateScan )
         deleteDeletedDirectories();
 
@@ -111,6 +113,8 @@ ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
         commitPlaylist( &playlist );
 
     deleteDeletedTracks( dirId );
+
+    emit directoryCommitted();
 }
 
 void

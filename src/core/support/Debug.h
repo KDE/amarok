@@ -28,7 +28,6 @@
 #include <kdebug.h>
 
 #include <QMutex>
-#include <QTime>
 
 // Platform specific macros
 #ifdef _WIN32
@@ -88,7 +87,9 @@ namespace Debug
 
     AMAROK_CORE_EXPORT kdbgstream dbgstream( DebugLevel level = KDEBUG_INFO );
     AMAROK_CORE_EXPORT bool debugEnabled();
-    AMAROK_CORE_EXPORT bool debugColorDisabled();
+    AMAROK_CORE_EXPORT bool debugColorEnabled();
+    AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
+    AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
     AMAROK_CORE_EXPORT const QString &indent();
 
     static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {
@@ -130,6 +131,8 @@ using Debug::fatal;
 /// Performance logging
 #define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
 
+class BlockPrivate;
+
 namespace Debug
 {
     /**
@@ -157,13 +160,11 @@ namespace Debug
     class Block
     {
     public:
-        AMAROK_CORE_EXPORT Block(const char* name);
+        AMAROK_CORE_EXPORT Block( const char *name );
         AMAROK_CORE_EXPORT ~Block();
 
     private:
-        QTime m_startTime;
-        const char *m_label;
-        int m_color;
+       BlockPrivate *const d;
     };
 
     /**

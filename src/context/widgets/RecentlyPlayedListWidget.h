@@ -29,7 +29,7 @@ class RecentlyPlayedListWidget : public Plasma::ScrollWidget
     Q_OBJECT
 
 public:
-    RecentlyPlayedListWidget( QGraphicsWidget *parent = 0 );
+    explicit RecentlyPlayedListWidget( QGraphicsWidget *parent = 0 );
     virtual ~RecentlyPlayedListWidget();
 
     void clear();

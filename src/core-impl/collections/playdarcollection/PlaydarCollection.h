@@ -44,9 +44,6 @@ namespace Collections
             
             virtual void init();
             
-        signals:
-            void newCollection( Collections::Collection *newCollection );
-
         private Q_SLOTS:
             void checkStatus();
             void playdarReady();
@@ -90,10 +87,6 @@ namespace Collections
             void addNewTrack( Meta::PlaydarTrackPtr track );
             QSharedPointer< MemoryCollection > memoryCollection();
             
-        signals:
-            void remove();
-            void updated();
-
         private Q_SLOTS:
             void slotPlaydarError( Playdar::Controller::ErrorState error );
             
@@ -101,7 +94,7 @@ namespace Collections
             QString m_collectionId;
             
             QSharedPointer< MemoryCollection > m_memoryCollection;
-            QList< QPointer< Playdar::ProxyResolver > > m_proxyResolverList;
+            QList< QWeakPointer< Playdar::ProxyResolver > > m_proxyResolverList;
     };
 }
 

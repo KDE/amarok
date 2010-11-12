@@ -24,6 +24,7 @@
 #include "CollectionScanner.h"
 #include "Directory.h"
 
+#include <QDebug>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
@@ -222,20 +223,20 @@ CollectionScanner::Directory::Directory( const QString &path,
         {
             QStringRef name = reader->name();
             if( name == "path" )
-                m_path = reader->readElementText();
+                m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "rpath" )
-                m_rpath = reader->readElementText();
+                m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "mtime" )
-                m_mtime = reader->readElementText().toUInt();
+                m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
             else if( name == "skipped" )
             {
                 m_skipped = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "ignored" )
             {
                 m_ignored = true;
-                reader->readNext(); // this is an empty element and I read over the end element here
+                reader->skipCurrentElement();
             }
             else if( name == "album" )
             {
@@ -249,7 +250,10 @@ CollectionScanner::Directory::Directory( const QString &path,
             else if( name == "playlist" )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
             else
-                reader->readElementText(QXmlStreamReader::SkipChildElements); // just read over the element
+            {
+                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                reader->skipCurrentElement();
+            }
         }
 
         else if( reader->isEndElement() )

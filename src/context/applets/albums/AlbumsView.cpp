@@ -397,7 +397,8 @@ AlbumsItemDelegate::paint( QPainter *p,
                            const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const
 {
-    QStyledItemDelegate::paint( p, option, index );
+    QStyleOptionViewItem sepOption = option;
+    QStyledItemDelegate::paint( p, sepOption, index );
     const QAbstractProxyModel *xyModel = qobject_cast<const QAbstractProxyModel *>( index.model() );
     const QStandardItemModel *stdModel = qobject_cast<const QStandardItemModel *>( xyModel->sourceModel() );
     const QStandardItem *item = stdModel->itemFromIndex( xyModel->mapToSource(index) );

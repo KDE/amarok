@@ -373,6 +373,13 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
 {
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
     // pass event to parent widget
     if( event->buttons() || event->modifiers() )
     {
@@ -457,6 +464,9 @@ void
 CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return;
 
     //setSelectionMode( QAbstractItemView::NoSelection );
 
@@ -475,7 +485,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
     if( m_pd && m_pd->isHidden() )
     {
-        QModelIndexList indices = selectedIndexes();
         if( m_filterModel )
         {
             QModelIndexList tmp;

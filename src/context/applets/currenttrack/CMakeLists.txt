@@ -9,6 +9,7 @@ include_directories(
 set( currenttrack_SRCS
      CurrentTrack.cpp
      ${Amarok_SOURCE_DIR}/src/context/widgets/RecentlyPlayedListWidget.cpp
+     ${Amarok_SOURCE_DIR}/src/widgets/PixmapViewer.cpp
      )
 
 kde4_add_ui_files( currenttrack_SRCS currentTrackSettings.ui )

@@ -89,9 +89,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showDock( AmarokDockId dockId );
 
         BrowserDock *browserDock() const { return m_browserDock.data(); }
-        QWeakPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
-        QWeakPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        QWeakPointer<Playlist::Dock> playlistDock() const { return m_playlistDock; }
+        KMenu *ToolsMenu() const { return m_toolsMenu.data(); }
+        KMenu *SettingsMenu() const { return m_settingsMenu.data(); }
+        Playlist::Dock *playlistDock() const { return m_playlistDock.data(); }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -146,7 +146,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
-        void resizeWindowHack();
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
 #endif // DEBUG_BUILD_TYPE
@@ -163,7 +162,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        virtual void showEvent( QShowEvent* event );
         virtual void paletteChange( const QPalette & oldPalette );
         virtual bool queryExit(); 
 

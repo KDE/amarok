@@ -104,9 +104,19 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         void emptyCache();
 
     private:
+
+        typedef QPair<QString, QString> AlbumKey;
+
         // only SqlTrack can change this
-        void updateCachedUrl( const QString &oldUrl, const QString &newUrl );
-        void updateCachedUid( const QString &oldUid, const QString &newUid );
+        /** Updates the uid of an already cached track.
+            @return true if the update was successfull.
+        */
+        bool updateCachedUrl( const QString &oldUrl, const QString &newUrl );
+
+        /** Updates the uid of an already cached track.
+            @return true if the update was successfull.
+        */
+        bool updateCachedUid( const QString &oldUid, const QString &newUid );
 
         friend class Meta::SqlTrack;
 
@@ -123,12 +133,12 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         //we don't care about the ordering so use the faster QHash
         QHash<TrackId, Meta::TrackPtr > m_trackMap;
         QHash<QString, Meta::TrackPtr > m_uidMap;
-        QHash<int, Meta::ArtistPtr > m_artistMap;
-        QHash<int, Meta::ComposerPtr > m_composerMap;
-        QHash<int, Meta::GenrePtr > m_genreMap;
+        QHash<QString, Meta::ArtistPtr > m_artistMap;
+        QHash<QString, Meta::ComposerPtr > m_composerMap;
+        QHash<QString, Meta::GenrePtr > m_genreMap;
         QHash<int, Meta::YearPtr > m_yearMap;
-        QHash<int, Meta::AlbumPtr > m_albumMap;
-        QHash<int, Meta::LabelPtr > m_labelMap;
+        QHash<AlbumKey, Meta::AlbumPtr > m_albumMap;
+        QHash<QString, Meta::LabelPtr > m_labelMap;
 
         QMutex m_trackMutex;
         QMutex m_artistMutex;

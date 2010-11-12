@@ -106,6 +106,12 @@ ScanManager::unblockScan()
     startScanner();
 }
 
+bool
+ScanManager::isRunning()
+{
+    return m_parser || m_scanner;
+}
+
 
 void
 ScanManager::requestFullScan()
@@ -147,7 +153,7 @@ void ScanManager::startScanner()
     if( !m_fullScanRequested && m_scanDirsRequested.isEmpty() )
         return; // nothing to do
 
-    if( m_parser )
+    if( isRunning() )
     {
         debug() << "scanner already running";
         return;
@@ -291,7 +297,7 @@ ScanManager::slotWatchFolders()
     if( !AmarokConfig::monitorChanges() )
         return;
 
-    startScanner();
+    requestIncrementalScan();
 }
 
 void
@@ -412,6 +418,7 @@ ScanManager::slotJobDone()
     QMutexLocker locker( &m_mutex );
     m_parser->deleteLater();
     m_parser = 0;
+    stopScanner();
 }
 
 void
@@ -443,6 +450,9 @@ ScanManager::handleRestart()
 void
 ScanManager::stopScanner()
 {
+    if( !m_scanner )
+        return;
+
     // stop the scanner
     disconnect( m_scanner, 0, this, 0 );
     m_scanner->terminate();
@@ -493,8 +503,8 @@ void
 XmlParseJob::run()
 {
     ScanResultProcessor *processor = m_collection->getNewScanResultProcessor( m_scanType );
-    connect( processor, SIGNAL( trackCommitted( Meta::TrackPtr ) ),
-             this, SLOT( trackCommitted() ) );
+    connect( processor, SIGNAL( directoryCommitted() ),
+             this, SLOT( directoryCommitted() ) );
 
     bool finished = false;
     int count = 0;
@@ -507,13 +517,20 @@ XmlParseJob::run()
             m_mutex.unlock();
             break;
         }
-        m_wait.wait( &m_mutex );
+        debug() << "Waiting";
+        if( m_reader.atEnd() )
+            m_wait.wait( &m_mutex );
 
+        debug() << "Scanning";
         // -- scan as many directory tags as we added to the data
         while( !m_reader.atEnd() )
         {
             m_reader.readNext();
-            if( m_reader.isStartElement() )
+            if( m_reader.hasError() )
+            {
+                break;
+            }
+            else if( m_reader.isStartElement() )
             {
                 QStringRef name = m_reader.name();
                 if( name == "scanner" )
@@ -524,25 +541,43 @@ XmlParseJob::run()
                 }
                 else if( name == "directory" )
                 {
+                    m_mutex.unlock();
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    debug() << "XmlParseJob: run: "<<count<<"current path"<<dir->rpath();
+                    m_mutex.lock();
+                    debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
                     emit step( this );
                 }
+                else
+                {
+                    warning() << "Unexpected xml start element"<<name<<"in input";
+                    m_reader.skipCurrentElement();
+                }
+
             }
             else if( m_reader.isEndElement() )
             {
                 if( m_reader.name() == "scanner" ) // ok. finished
                     finished = true;
             }
+            else if( m_reader.isEndDocument() )
+            {
+                finished = true;
+            }
         }
         m_mutex.unlock();
 
-    } while( !finished );
+    } while( !finished &&
+             (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
 
-    if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
+    if( m_reader.hasError() )
+    {
+        warning() << "Aborting ScanManager XmlParseJob with error"<<m_reader.errorString();
+        processor->rollback();
+    }
+    else if( m_abortRequested )
     {
         debug() << "Aborting ScanManager XmlParseJob";
         processor->rollback();
@@ -581,7 +616,11 @@ XmlParseJob::addNewXmlData( const QString &data )
         }
     }
 
-    debug() << "XmlParseJob: addNewXm.Data";
+    debug() << "Adding";
+    /*
+    debug() << "XmlParseJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
+    debug() << "             "<<m_incompleteTagBuffer<<"*";
+    */
 
     if( index >= 0 )
         m_wait.wakeOne();
@@ -597,7 +636,7 @@ XmlParseJob::requestAbort()
 }
 
 void
-XmlParseJob::trackCommitted()
+XmlParseJob::directoryCommitted()
 {
     emit step( this );
 }

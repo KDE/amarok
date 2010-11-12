@@ -615,15 +615,6 @@ LyricsApplet::hasHeightForWidth() const
 }
 
 void
-LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
-    p->setRenderHint( QPainter::Antialiasing );
-    addGradientToAppletBackground( p );
-}
-
-void
 LyricsApplet::paletteChanged( const QPalette &palette )
 {
     Q_UNUSED( palette )

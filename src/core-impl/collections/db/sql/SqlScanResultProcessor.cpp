@@ -17,6 +17,7 @@
  ****************************************************************************************/
 
 #include "SqlScanResultProcessor.h"
+#include "SqlQueryMaker.h"
 
 #include "playlistmanager/PlaylistManager.h"
 
@@ -37,6 +38,38 @@ SqlScanResultProcessor::SqlScanResultProcessor( Collections::DatabaseCollection 
 SqlScanResultProcessor::~SqlScanResultProcessor()
 {
 }
+
+void
+SqlScanResultProcessor::commit()
+{
+    DEBUG_BLOCK
+    // -- fill the registry cache with all the tracks
+    // count the non skipped directories to find out if we should buffer all tracks before committing.
+    int nonSkippedDirectories = 0;
+    foreach( const CollectionScanner::Directory* dir, m_directories )
+        if( !dir->isSkipped() )
+        {
+            debug() << "in commit, dir not skipped" << dir->path();
+            nonSkippedDirectories++;
+        }
+
+    if( nonSkippedDirectories > 50 )
+    {
+        // ok. enough directories changed. Use the query manager to read
+        // all the tracks into the cache in one go.
+        // that saves us a lot of single database queries later
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->setBlocking( true );
+        qm->run();
+        qm->tracks( m_collection->collectionId() );
+        delete qm;
+    }
+
+    // -- call the base implementation
+    ScanResultProcessor::commit();
+}
+
 
 void
 SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int directoryId )
@@ -82,18 +115,20 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     Q_ASSERT( directoryId );
     Q_ASSERT( albumId ); // no track without album
 
-    if( track->uniqueid().isEmpty() )
+    QString uid = track->uniqueid();
+    if( uid.isEmpty() )
     {
         warning() << "got track with no unique id from the scanner, not adding";
         return;
     }
-    debug() << "SRP::commitTrack on " << track->path() << "for album" << albumId;
+    uid = m_collection->uidUrlProtocol() + "://" + uid;
+    debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
 
     int deviceId = m_sqlCollection->mountPointManager()->getIdForUrl( track->path() );
     QString rpath = m_sqlCollection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrackFromUid( track->uniqueid() ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( uid ) );
 
     if( metaTrack )
     {
@@ -110,12 +145,17 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     }
     else
     {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrack( deviceId, rpath, directoryId, track->uniqueid() ) );
+        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrack( deviceId, rpath, directoryId, uid ) );
 
         metaTrack->setWriteFile( false ); // no need to write the tags back
         metaTrack->beginMetaDataUpdate();
 
-        metaTrack->setUidUrl( track->uniqueid() );
+        metaTrack->setUidUrl( uid );
+    }
+
+    if( m_foundTracks.contains( metaTrack->id() ) )
+    {
+    warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
     }
 
     // TODO: we need to check the modified date of the file agains the last updated of the file
@@ -142,14 +182,13 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 
     if( m_type == FullScan ||
         track->year() >= 0 )
-        metaTrack->setYear( track->year() );
+        metaTrack->setYear( (track->year() >= 0) ? track->year() : 0 );
 
     if( m_type == FullScan ||
         !track->genre().isEmpty() )
         metaTrack->setGenre( track->genre() );
 
-    // the filetype is not set or in the database.
-    // Meta::SqlTrack uses the file extension.
+    metaTrack->setType( track->filetype() );
 
     if( m_type == FullScan ||
         !track->bpm() >= 0 )
@@ -208,8 +247,6 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     metaTrack->setWriteFile( true );
 
     m_foundTracks.insert( metaTrack->id() );
-
-    emit trackCommitted( Meta::TrackPtr(metaTrack.data()) );
 }
 
 

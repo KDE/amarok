@@ -121,10 +121,10 @@ namespace Collections
             typedef QMap< qint64, QString > FilterMap;
             FilterMap m_filterMap;
             
-            QPointer< PlaydarCollection > m_collection;
-            QPointer< QueryMaker > m_memoryQueryMaker;
+            QWeakPointer< PlaydarCollection > m_collection;
+            QWeakPointer< QueryMaker > m_memoryQueryMaker;
             
-            QPointer< Playdar::Controller > m_controller;
+            QWeakPointer< Playdar::Controller > m_controller;
             
             void runMemoryQueryAgain();
     };

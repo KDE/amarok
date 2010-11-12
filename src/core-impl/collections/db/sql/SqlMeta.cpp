@@ -42,6 +42,7 @@
 #include <QWriteLocker>
 #include <QMutexLocker>
 #include <QPixmapCache>
+#include <QCryptographicHash>
 
 #include <KCodecs>
 #include <KLocale>
@@ -59,7 +60,7 @@ QString
 SqlTrack::getTrackReturnValues()
 {
     //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
-    return "urls.id, urls.deviceid, urls.rpath, urls.uniqueid, "
+    return "urls.id, urls.deviceid, urls.rpath, urls.directory, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
            "statistics.score, statistics.rating, "
@@ -139,6 +140,8 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_albumPeakGain = 0.0;
 
     m_batchUpdate = false;
+
+    m_filetype = Amarok::Unknown;
 }
 
 SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
@@ -152,7 +155,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     m_urlId = (*(iter++)).toInt();
     m_deviceId = (*(iter++)).toInt();
     m_rpath = *(iter++);
-    m_directoryId = -1;
+    m_directoryId = (*(iter++)).toInt();
     m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
@@ -435,6 +438,19 @@ SqlTrack::type() const
 }
 
 void
+SqlTrack::setType( Amarok::FileType newType )
+{
+    QWriteLocker locker( &m_lock );
+
+    if ( m_filetype == newType )
+        return;
+
+    m_cache.insert( Meta::valFiletype, int(newType) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
+}
+
+void
 SqlTrack::setTitle( const QString &newTitle )
 {
     QWriteLocker locker( &m_lock );
@@ -451,6 +467,11 @@ void
 SqlTrack::setUrl( int deviceId, const QString &rpath, int directoryId )
 {
     QWriteLocker locker( &m_lock );
+
+    if( m_deviceId == deviceId &&
+        m_rpath == rpath &&
+        m_directoryId == directoryId )
+        return;
 
     m_deviceId = deviceId;
     m_rpath = rpath;
@@ -843,6 +864,8 @@ SqlTrack::commitMetaDataChanges()
     KSharedPtr<SqlYear>     oldYear;
     KSharedPtr<SqlYear>     newYear;
 
+    if( m_cache.contains( Meta::valFiletype ) )
+        m_filetype = Amarok::FileType(m_cache.value( Meta::valFiletype ).toInt());
     if( m_cache.contains( Meta::valTitle ) )
         m_title = m_cache.value( Meta::valTitle ).toString();
     if( m_cache.contains( Meta::valComment ) )
@@ -885,16 +908,19 @@ SqlTrack::commitMetaDataChanges()
         // At least the ScanResultProcessor handles this problem
 
         KUrl oldUrl = m_url;
-        m_url = m_cache.value( Meta::valUrl ).toString();
         // debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
-        m_collection->registry()->updateCachedUrl( oldUrl.path(), m_url.path() );
+        KUrl newUrl = m_cache.value( Meta::valUrl ).toString();
+        if( oldUrl != newUrl &&
+            m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() ) )
+            m_url = newUrl;
     }
 
     // Use the latest uid here
     if( m_cache.contains( Meta::valUniqueId ) )
     {
-        m_uid = m_cache.value( Meta::valUniqueId ).toString();
-        m_collection->registry()->updateCachedUid( oldUid, m_uid );
+        QString newUid = m_cache.value( Meta::valUniqueId ).toString();
+        if( m_collection->registry()->updateCachedUid( oldUid, newUid ) )
+            m_uid = newUid;
     }
 
     if( m_cache.contains( Meta::valArtist ) )
@@ -941,7 +967,9 @@ SqlTrack::commitMetaDataChanges()
             if( newArtistName.compare( "Various Artists", Qt::CaseInsensitive ) == 0 )
                 newArtistName.clear();
 
-            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::valAlbum ).toString(),
+            m_album = m_collection->registry()->getAlbum( m_cache.contains( Meta::valAlbum)
+                                                          ? m_cache.value( Meta::valAlbum ).toString()
+                                                          : oldAlbum->name(),
                                                           newArtistName );
         }
 
@@ -1098,6 +1126,8 @@ SqlTrack::writeMetaDataToDb( const FieldHash &fields )
         tags += QString( ",albumpeakgain=%1" ).arg( m_albumPeakGain );
     if( fields.contains( Meta::valFilesize ) )
         tags += QString( ",filesize=%1" ).arg( m_filesize );
+    if( fields.contains( Meta::valFiletype ) )
+        tags += QString( ",filetype=%1" ).arg( int(m_filetype) );
 
     if( !tags.isEmpty() )
     {

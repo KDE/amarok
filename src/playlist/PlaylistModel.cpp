@@ -114,7 +114,7 @@ breakLongLinesHTML(const QString& text)
 static QString
 HTMLLine( const Playlist::Column& column, const QString& value, bool force = false )
 {
-    if ( (!value.isEmpty()) || (force) )
+    if( !value.isEmpty() || force )
     {
         QString line;
         line += "<tr><td align=\"right\">";
@@ -138,7 +138,7 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
 static QString
 HTMLLine( const Playlist::Column& column, const int value, bool force = false )
 {
-    if ( (value != 0) || (force) )
+    if( (value != 0) || force )
     {
         return HTMLLine( column, QString::number( value ) );
     }
@@ -162,7 +162,7 @@ Playlist::Model::~Model()
     DEBUG_BLOCK
 
     // Save current playlist
-    exportPlaylist( defaultPlaylistPath() );
+    exportPlaylist( Amarok::defaultPlaylistPath() );
 
     qDeleteAll( m_items );
 }
@@ -197,13 +197,13 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     Meta::YearPtr year = track->year();
 
     if( s_tooltipColumns[Playlist::Title] )
-        text += HTMLLine( Playlist::Title, track->prettyName() );
+        text += HTMLLine( Playlist::Title, track->name() );
 
     if( s_tooltipColumns[Playlist::Artist] && artist )
-        text += HTMLLine( Playlist::Artist, artist->prettyName() );
+        text += HTMLLine( Playlist::Artist, artist->name() );
 
     if( s_tooltipColumns[Playlist::Album] && album )
-        text += HTMLLine( Playlist::Album, album->prettyName() );
+        text += HTMLLine( Playlist::Album, album->name() );
 
     if( s_tooltipColumns[Playlist::DiscNumber] )
         text += HTMLLine( Playlist::DiscNumber, track->discNumber() );
@@ -212,22 +212,22 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
         text += HTMLLine( Playlist::TrackNumber, track->trackNumber() );
 
     if( s_tooltipColumns[Playlist::Composer] && composer )
-        text += HTMLLine( Playlist::Composer, composer->prettyName() );
+        text += HTMLLine( Playlist::Composer, composer->name() );
 
     if( s_tooltipColumns[Playlist::Genre] && genre )
-        text += HTMLLine( Playlist::Genre, genre->prettyName() );
+        text += HTMLLine( Playlist::Genre, genre->name() );
 
-    if( s_tooltipColumns[Playlist::Year] && year )
-        text += HTMLLine( Playlist::Year, year->name().toInt() );
+    if( s_tooltipColumns[Playlist::Year] && year && year->year() > 0 )
+        text += HTMLLine( Playlist::Year, year->year() );
 
     if( s_tooltipColumns[Playlist::Comment])
         text += HTMLLine( Playlist::Comment, track->comment() );
 
     if( s_tooltipColumns[Playlist::Score] )
-        text += HTMLLine( Playlist::Score, QString::number( static_cast<int>( track->score() ) ), true );
+        text += HTMLLine( Playlist::Score, track->score() );
 
     if( s_tooltipColumns[Playlist::Rating] )
-        text += HTMLLine( Playlist::Rating, QString::number( static_cast<double>(track->rating())/2.0 ), true );
+        text += HTMLLine( Playlist::Rating, QString::number( static_cast<double>(track->rating())/2.0 ) );
 
     if( s_tooltipColumns[Playlist::PlayCount] )
         text += HTMLLine( Playlist::PlayCount, track->playCount(), true );

@@ -209,7 +209,10 @@ MySqlStorage::escape( QString text ) const
     const int length = utfText.length() * 2 + 1;
     QVarLengthArray<char, 1000> outputBuffer( length );
 
-    mysql_real_escape_string( m_db, outputBuffer.data(), utfText.constData(), utfText.length() );
+    {
+        QMutexLocker locker( &m_mutex );
+        mysql_real_escape_string( m_db, outputBuffer.data(), utfText.constData(), utfText.length() );
+    }
 
     return QString::fromUtf8( outputBuffer.constData() );
 }
@@ -271,6 +274,7 @@ MySqlStorage::longTextColumnType() const
 void
 MySqlStorage::reportError( const QString& message )
 {
+    QMutexLocker locker( &m_mutex );
     QString errorMessage( "GREPME " + m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message );
     error() << errorMessage;
 }
@@ -285,6 +289,7 @@ MySqlStorage::initThreadInitializer()
 void
 MySqlStorage::sharedInit( const QString &databaseName )
 {
+    QMutexLocker locker( &m_mutex );
     if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
         reportError( "SET NAMES 'utf8' died" );
     if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )

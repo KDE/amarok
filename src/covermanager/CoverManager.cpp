@@ -37,8 +37,9 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/LineEdit.h"
 
+#include <KApplication>
 #include <KIO/NetAccess>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMenu>    //showCoverMenu()
 #include <KPushButton>
 #include <KSqueezedTextLabel> //status label

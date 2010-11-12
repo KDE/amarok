@@ -95,13 +95,13 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         */
         void addDirectory( CollectionScanner::Directory *dir );
 
-        void commit();
-        void rollback();
+        virtual void commit();
+        virtual void rollback();
 
     Q_SIGNALS:
-        /** This signal is emitted after a track was written to the database.
+        /** This signal is emitted after a directory was written to the database.
         */
-        void trackCommitted( Meta::TrackPtr track );
+        void directoryCommitted();
 
     protected:
         virtual void commitAlbum( const CollectionScanner::Album *album, int directoryId ) = 0;

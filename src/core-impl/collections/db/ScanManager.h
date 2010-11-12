@@ -54,6 +54,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         virtual void unblockScan();
 
+        virtual bool isRunning();
+
     public slots:
         /** Requests the scanner to do a full scan at the next possibility.
          *  The full scan will clear the whole database and re-create all data.
@@ -166,7 +168,7 @@ class XmlParseJob : public ThreadWeaver::Job
         void step( const QObject *o );
 
     private Q_SLOTS:
-        void trackCommitted();
+        void directoryCommitted();
 
     private:
         Collections::DatabaseCollection *m_collection;

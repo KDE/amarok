@@ -53,7 +53,6 @@ public:
     };
 
     // functions
-    void checkRequireUpdate( Meta::TrackPtr track );
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
     void fetchLangLinks( const QString &title, const QString &hostLang, const QString &llcontinue = QString() );
     void fetchListing( const QString &title, const QString &hostLang );
@@ -76,6 +75,7 @@ public:
     QSet< QUrl > urls;
 
     // private slots
+    void _checkRequireUpdate( Meta::TrackPtr track );
     void _dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data );
     void _parseLangLinksResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _parseListingResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
@@ -436,40 +436,40 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 }
 
 void
-WikipediaEnginePrivate::checkRequireUpdate( Meta::TrackPtr track )
+WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
 {
-    if( !track )
-        return;
+    Meta::DataPtr oldData;
+    Meta::DataPtr newData;
 
-    bool needUpdate( false );
-    if( !currentTrack )
+    switch( currentSelection )
+    {
+    case WikipediaEnginePrivate::Artist:
+        if( track )
+            newData = track->artist().data();
+        if( currentTrack )
+            oldData = currentTrack->artist().data();
+        break;
+    case WikipediaEnginePrivate::Album:
+        if( track )
+            newData = track->album().data();
+        if( currentTrack )
+            oldData = currentTrack->album().data();
+        break;
+    case WikipediaEnginePrivate::Track:
+        if( track )
+            newData = track.data();
+        if( currentTrack )
+            oldData = currentTrack.data();
+        break;
+    }
+
+    if( (oldData ? oldData->name() : QString()) !=
+        (newData ? newData->name() : QString()) )
     {
         currentTrack = track;
-        needUpdate = true;
+        urls.clear();
+        updateEngine();
     }
-    else
-    {
-        switch( currentSelection )
-        {
-        case WikipediaEnginePrivate::Artist:
-            needUpdate = track->artist()->name() != currentTrack->artist()->name();
-            break;
-
-        case WikipediaEnginePrivate::Album:
-            needUpdate = track->album()->name() != currentTrack->album()->name();
-            break;
-
-        case WikipediaEnginePrivate::Track:
-            needUpdate = track->name() != currentTrack->name();
-            break;
-        }
-    }
-
-    currentTrack = track;
-    if( !needUpdate )
-        return;
-    urls.clear();
-    updateEngine();
 }
 
 void
@@ -488,7 +488,6 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     pageUrl.addQueryItem( QLatin1String("redirects"), QString::number(1) );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
-    q->setData( QLatin1String("wikipedia"), QLatin1String("busy"), true );
     The::networkAccessManager()->getData( pageUrl, q,
          SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -513,7 +512,6 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
         url.addQueryItem( QLatin1String("llcontinue"), llcontinue );
     urls << url;
     debug() << "Fetching langlinks:" << url;
-    q->setData( QLatin1String("wikipedia"), QLatin1String("busy"), true );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -535,7 +533,6 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
     url.addQueryItem( QLatin1String("format"), QLatin1String("xml") );
     urls << url;
     debug() << "Fetching listing:" << url;
-    q->setData( QLatin1String("wikipedia"), QLatin1String("busy"), true );
     The::networkAccessManager()->getData( url, q,
          SLOT(_parseListingResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
@@ -848,9 +845,9 @@ WikipediaEngine::init()
     d->currentTrack = engine->currentTrack();
 
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update( Meta::TrackPtr ) ) );
+             this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update( Meta::TrackPtr ) ) );
+             this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
 }
 
 bool
@@ -869,12 +866,4 @@ WikipediaEngine::sourceRequestEvent( const QString &source )
     return false;
 }
 
-void
-WikipediaEngine::update( Meta::TrackPtr track )
-{
-    Q_D( WikipediaEngine );
-    d->checkRequireUpdate( track );
-}
-
 #include "WikipediaEngine.moc"
-

@@ -24,7 +24,6 @@
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
 #include "PaletteHandler.h"
 #include "widgets/TextScrollingWidget.h"
 
@@ -694,14 +693,6 @@ WikipediaApplet::loadWikipediaUrl( const QString &url )
 {
     Q_D( WikipediaApplet );
     d->_linkClicked( QUrl(url) );
-}
-
-void
-WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( contentsRect )
-    addGradientToAppletBackground( p );
 }
 
 void

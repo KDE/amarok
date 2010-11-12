@@ -41,7 +41,7 @@ enum Type
     Root = 0,
     MyRecommendations,
     PersonalRadio,
-    LovedTracksRadio,
+    MixRadio,
     NeighborhoodRadio,
     //         RecentlyPlayed,
     //         RecentlyLoved,
@@ -64,7 +64,6 @@ enum Type
     RecentlyLovedTrack,
     HistoryStation,
 
-    UserChildLoved,
     UserChildPersonal,
     UserChildNeighborhood,
 

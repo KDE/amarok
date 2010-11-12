@@ -282,7 +282,7 @@ PlaylistFileProvider::import( const KUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == ModelStack::instance()->bottom()->defaultPlaylistPath() )
+    if( path == Amarok::defaultPlaylistPath() )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;

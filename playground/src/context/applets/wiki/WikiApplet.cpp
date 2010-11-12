@@ -1158,13 +1158,11 @@ void WikiApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
-    p->setRenderHint( QPainter::Antialiasing );
 
     addGradientToAppletBackground( p );
 
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_wikipediaLabel );
-
 
     //draw background of wiki text
     p->save();

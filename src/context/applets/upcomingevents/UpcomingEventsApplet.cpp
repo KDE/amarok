@@ -252,8 +252,6 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
-
-    p->setRenderHint( QPainter::Antialiasing );
     addGradientToAppletBackground( p );
 }
 

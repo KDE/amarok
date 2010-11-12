@@ -20,10 +20,13 @@
 #include "core/meta/Meta.h"
 
 #include <QSize>
+#include <QObject>
 #include <QStandardItem>
 
-class AlbumItem : public QStandardItem, public Meta::Observer
+class AlbumItem : public QObject, public QStandardItem, public Meta::Observer
 {
+    Q_OBJECT
+
     public:
         AlbumItem();
         ~AlbumItem() {}
@@ -63,6 +66,12 @@ class AlbumItem : public QStandardItem, public Meta::Observer
         virtual int type() const;
 
         virtual bool operator<( const QStandardItem &other ) const;
+
+    private Q_SLOTS:
+        /** Updates the item after metadataChanged was called.
+            We need this indirection to get executed by the UI thread.
+        */
+        void update();
 
     private:
         Meta::AlbumPtr m_album;

@@ -11,7 +11,7 @@
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ * this program.  if not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "TabsApplet"
@@ -31,6 +31,7 @@
 
 #include <KConfigGroup>
 #include <KConfigDialog>
+#include <KDialog>
 
 #include <QGraphicsProxyWidget>
 #include <QScrollBar>
@@ -56,6 +57,11 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
 }
 
 TabsApplet::~TabsApplet()
@@ -142,12 +148,11 @@ TabsApplet::init()
     dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchGuitar:" ).append( QString::number( m_fetchGuitar ) ) );
     dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchBass:" ).append( QString::number( m_fetchBass ) ) );
 
+    updateInterface( InitState );
+
     // connect to the tabs data-engine
     connectSource( "tabs" );
     connect( dataEngine( "amarok-tabs" ), SIGNAL( sourceAdded( const QString & ) ), this, SLOT( connectSource( const QString & ) ) );
-
-    updateConstraints();
-    update();
 }
 
 /**
@@ -188,9 +193,14 @@ TabsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect )
-
-    p->setRenderHint( QPainter::Antialiasing );
     addGradientToAppletBackground( p );
+}
+
+void
+TabsApplet::stopped()
+{
+    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
+    updateInterface( StoppedState );
 }
 
 void
@@ -203,7 +213,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     m_model->clear();
     m_tabsView->setTabTextContent( "" );
 
-    if (  data.empty() )
+    if( data.empty() )
     {
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
         updateInterface ( InitState );
@@ -212,42 +222,45 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     const QString artistName = data[ "artist" ].toString();
     const QString titleName  = data[ "title" ].toString();
+    const QString state      = data[ "state" ].toString();
     const QString message    = data[ "message" ].toString();
 
     // update artist and title in the headerlabel
-    if ( !artistName.isEmpty()  && !titleName.isEmpty() )
+    if( !artistName.isEmpty()  && !titleName.isEmpty() )
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
     else
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
 
-    if ( data.contains( "message" ) && message.contains( "Fetching" ) )
+    if( data.contains( "state" ) && state.contains( "Fetching" ) )
     {
         updateInterface( FetchingState );
         return;
     }
-    else if ( data.contains( "message" ) && message.contains( "Stopped") )
+    else if( data.contains( "state" ) && state.contains( "Stopped") )
     {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
-        updateInterface( StoppedState );
+        stopped();
         return;
     }
-    else if ( data.contains( "message" ) && message.contains( "noTabs") )
+    else if( data.contains( "state" ) && state.contains( "noTabs") )
     {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
-        updateInterface( NoTabsState );
+        if( data.contains( "message" ) )
+        {
+            // if we've found no tabs and got a message from the engine (e.g. connectivity issues)
+            m_tabsView->setTabTextContent( message );
+            updateInterface( MsgState );
+        }
+        else
+        {
+            // no tabs for the current song were found
+            m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
+            updateInterface( NoTabsState );
+        }
         return;
     }
-    else if ( data.contains( "message" ) )
+    else if( data.contains( "message" ) )
     {
-        // if we get a message, show it
+        // if(we get a message, show it
         m_tabsView->setTabTextContent( message );
-        updateInterface( MsgState );
-        return;
-    }
-    else if ( artistName.isEmpty() && titleName.isEmpty() )
-    {
-        // special case for incomplete artists and title names
-        m_tabsView->setTabTextContent( i18n( "No valid artist and titlename found for the current track." ) );
         updateInterface( MsgState );
         return;
     }
@@ -257,16 +270,16 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     for ( int i = 0; i < data.size(); i++ )
     {
         const QString tabId = QString( "tabs:" ).append( QString::number( i ) );
-        if ( data.contains( tabId ) )
+        if( data.contains( tabId ) )
         {
             TabsInfo *item = data[ tabId ].value<TabsInfo *>() ;
-            if ( item )
+            if( item )
             {
                 TabsItem *tabsItem = new TabsItem();
                 tabsItem->setTab( item );
 
                 m_model->appendRow( tabsItem );
-                if ( !tabFound )
+                if( !tabFound )
                 {
                     // update the applet and display the first tab in list
                     m_tabsView->showTab( tabsItem );
@@ -281,10 +294,13 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 void
 TabsApplet::updateInterface( AppletState appletState )
 {
-    DEBUG_BLOCK
+    if( m_currentState == appletState )
+        return;
+
+    debug() << "updating interface from state " << m_currentState << " to " << appletState;
     m_currentState = appletState;
 
-    if ( appletState == FetchingState )
+    if( appletState == FetchingState )
         setBusy( true );
     else
         setBusy( false );
@@ -295,57 +311,49 @@ TabsApplet::updateInterface( AppletState appletState )
         case StoppedState:
             m_tabsView->hide();
             setCollapseOn();
-            emit sizeHintChanged( Qt::PreferredSize );
             m_reloadIcon.data()->setEnabled( false );
             break;
         case NoTabsState:
             m_tabsView->hide();
             setCollapseOn();
-            emit sizeHintChanged( Qt::PreferredSize );
             m_reloadIcon.data()->setEnabled( true );
             break;
         case MsgState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->hide();
             m_reloadIcon.data()->setEnabled( true );
             break;
         case FetchingState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->show();
             m_reloadIcon.data()->setEnabled( false );
             break;
         case TabState:
+            m_tabsView->show();
             resize( 500, -1 );
             setCollapseOff();
-            emit sizeHintChanged( Qt::PreferredSize );
-            m_tabsView->show();
-            m_tabsView->tabsListView()->show();
             m_reloadIcon.data()->setEnabled( true );
             break;
     }
-    updateConstraints();
-    update();
+    emit sizeHintChanged( Qt::PreferredSize );
+
+    constraintsEvent();
 }
 
 void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
 
-    if ( m_fetchGuitar )
+    if( m_fetchGuitar )
         ui_Settings.cbFetchGuitar->setChecked( true );
-    if ( m_fetchBass )
+    if( m_fetchBass )
         ui_Settings.cbFetchBass->setChecked( true );
 
-    parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system");
+    parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system" );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -369,21 +377,36 @@ void
 TabsApplet::reloadTabs()
 {
     DEBUG_BLOCK
+    KDialog reloadDialog;
+    QWidget *reloadWidget = new QWidget( &reloadDialog );
 
-    QString artistName = dataEngine( "amarok-tabs" )->query( "tabs")[ "artist" ].toString();
-    QString titleName = dataEngine( "amarok-tabs" )->query( "tabs")[ "title" ].toString();
+    Ui::ReloadEditDialog *reloadUI = new Ui::ReloadEditDialog();
+    reloadUI->setupUi( reloadWidget );
 
-    QDialog *reloadDialogWidget = new QDialog();
-    ui_reloadDialog.setupUi( reloadDialogWidget );
-    ui_reloadDialog.artistLineEdit->setText( artistName );
-    ui_reloadDialog.titleLineEdit->setText( titleName );
+    reloadDialog.setCaption( i18n( "Reload Tabs" ) );
+    reloadDialog.setButtons( KDialog::Ok|KDialog::Cancel );
+    reloadDialog.setDefaultButton( KDialog::Ok );
+    reloadDialog.setMainWidget( reloadWidget );
 
-    if( reloadDialogWidget->exec() == QDialog::Accepted )
+    // query engine for current artist and title
+    Plasma::DataEngine::Data data = dataEngine( "amarok-tabs" )->query( "tabs" );
+    QString artistName;
+    QString titleName;
+    if ( data.contains( "artist" ) )
+        artistName = data[ "artist" ].toString();
+    if ( data.contains( "title" ) )
+        titleName  = data[ "title" ].toString();
+
+    // update ui
+    reloadUI->artistLineEdit->setText( artistName );
+    reloadUI->titleLineEdit->setText( titleName );
+
+    if( reloadDialog.exec() == KDialog::Accepted )
     {
-        artistName = ui_reloadDialog.artistLineEdit->text();
-        titleName = ui_reloadDialog.titleLineEdit->text();
-        if ( !artistName.isEmpty() && !titleName.isEmpty() )
-            dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:" ).append( artistName ).append( QString( ":AMAROK_TOKEN:").append( titleName ) ) );
+        artistName = reloadUI->artistLineEdit->text();
+        titleName = reloadUI->titleLineEdit->text();
+        if( !artistName.isEmpty() && !titleName.isEmpty() )
+            dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:%1:AMAROK_TOKEN:%2").arg( artistName ).arg( titleName ) );
     }
 }
 

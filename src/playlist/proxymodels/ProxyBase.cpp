@@ -281,57 +281,67 @@ ProxyBase::tracks() const
 //protected:
 
 bool
-ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerm, int searchFields ) const
+ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchFields ) const
 {
     if ( !m_belowModel )
         return false;
 
     Meta::TrackPtr track = m_belowModel->trackAt( sourceModelRow );
 
-    if ( searchFields & MatchTrack &&
-        track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
+    QStringList searchList = searchTerms.split(" ", QString::SkipEmptyParts);
 
-    if ( searchFields & MatchArtist &&
-         track->artist() &&
-         track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchAlbum &&
-         track->album() &&
-         track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchGenre &&
-         track->genre() &&
-         track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchComposer &&
-         track->composer() &&
-         track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchYear &&
-         track->year() &&
-         track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if( searchFields & MatchRating )
+    foreach( const QString& searchTerm, searchList )
     {
-        bool ok;
-        int rating = QString( searchTerm ).remove( "rating:" ).toInt( &ok );
-        if( ok && ( track->rating() == rating ) )
-            return true;
+        bool match = false;
+
+        if ( searchFields & MatchTrack &&
+            track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if ( searchFields & MatchArtist &&
+            track->artist() &&
+            track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if ( searchFields & MatchAlbum &&
+            track->album() &&
+            track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if ( searchFields & MatchGenre &&
+            track->genre() &&
+            track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if ( searchFields & MatchComposer &&
+            track->composer() &&
+            track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if ( searchFields & MatchYear &&
+            track->year() &&
+            track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+        )
+            match = true;
+
+        if( searchFields & MatchRating )
+        {
+            bool ok;
+            int rating = QString( searchTerm ).remove( "rating:" ).toInt( &ok );
+            if( ok && ( track->rating() == rating ) )
+                match = true;
+        }
+
+        if( !match )
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 int

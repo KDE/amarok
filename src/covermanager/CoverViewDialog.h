@@ -18,55 +18,27 @@
 #define AMAROK_COVERVIEWDIALOG_H
 
 #include "core/meta/Meta.h"
-#include "widgets/PixmapViewer.h"
 
-#include <KApplication>
-#include <KDialog> //baseclass
-#include <KLocale>
-#include <KWindowSystem>
-
-#include <QHBoxLayout>
-#include <QDesktopWidget>
+#include <QDialog>
 
 class AMAROK_EXPORT CoverViewDialog : public QDialog
 {
-    public:
-        CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
-            : QDialog( parent )
-        {
-            init();
-            setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2",
-                            album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
-                            album->prettyName() ) ) );
-            createViewer( album->image(), parent );
-        }
+    Q_OBJECT
 
-        CoverViewDialog( QPixmap pixmap, QWidget *parent )
-            : QDialog( parent )
-        {
-            init();
-            setWindowTitle( KDialog::makeStandardCaption( i18n( "Cover View" ) ) );
-            createViewer( pixmap, parent );
-        }
+    public:
+        CoverViewDialog( Meta::AlbumPtr album, QWidget *parent );
+        CoverViewDialog( const QPixmap &pixmap, QWidget *parent );
+
+    private slots:
+        void updateCaption();
+        void zoomFactorChanged( float value );
 
     private:
-        void init()
-        {
-            setAttribute( Qt::WA_DeleteOnClose );
-            kapp->setTopWidget( this );
-            #ifdef Q_WS_X11
-            KWindowSystem::setType( winId(), NET::Utility );
-            #endif
-        }
+        void createViewer( const QPixmap &pixmap, const QWidget *widget );
 
-        void createViewer( const QPixmap &pixmap, const QWidget *widget = 0 )
-        {
-            int screenNumber = KApplication::desktop()->screenNumber( widget );
-            PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap, screenNumber );
-            QHBoxLayout *layout = new QHBoxLayout( this );
-            layout->addWidget( pixmapViewer );
-            layout->setSizeConstraint( QLayout::SetFixedSize );
-        }
+        QString m_title;
+        QSize m_size;
+        int m_zoom;
 };
 
 #endif

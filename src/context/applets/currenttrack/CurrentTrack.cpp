@@ -26,10 +26,12 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "CollectionManager.h"
+#include "covermanager/CoverViewDialog.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/support/MetaUtility.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
@@ -41,17 +43,17 @@
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
-#include <KIconEffect>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
 
 #include <QFont>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
-#include <QPixmapCache>
 #include <QScopedPointer>
 #include <QSignalMapper>
 
@@ -83,6 +85,7 @@ void
 CurrentTrack::init()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Begin init" );
 
     // Call the base implementation.
     Context::Applet::init();
@@ -94,10 +97,11 @@ CurrentTrack::init()
     m_ratingWidget->hide();
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
 
-    m_collectionLabel = new Plasma::Label( this );
-    m_collectionLabel->setAlignment( Qt::AlignCenter );
-    m_collectionLabel->setText( i18n( "Local Collection" ) );
-    m_collectionLabel->show();
+    QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
+    collectionLabel->setAttribute( Qt::WA_NoSystemBackground );
+    collectionLabel->setAlignment( Qt::AlignCenter );
+    m_collectionLabel = new QGraphicsProxyWidget( this );
+    m_collectionLabel->setWidget( collectionLabel );
 
     m_title  = new TextScrollingWidget( this );
     m_artist = new TextScrollingWidget( this );
@@ -116,7 +120,6 @@ CurrentTrack::init()
     m_title->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_artist->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_album->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_ratingWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_collectionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_recentHeader->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_recentWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -167,7 +170,7 @@ CurrentTrack::init()
     l->addAnchor( m_albumCover, Qt::AnchorHorizontalCenter, m_ratingWidget, Qt::AnchorHorizontalCenter );
     l->addAnchor( titlesLayout, Qt::AnchorTop, l, Qt::AnchorTop )->setSpacing( 18 );
     l->addAnchor( titlesLayout, Qt::AnchorRight, l, Qt::AnchorRight )->setSpacing( pad );
-    l->addAnchor( m_recentHeader, Qt::AnchorLeft, titlesLayout, Qt::AnchorLeft );
+    l->addAnchors( m_recentWidget, m_recentHeader, Qt::Horizontal );
     l->addAnchor( m_recentWidget, Qt::AnchorTop, m_recentHeader, Qt::AnchorBottom );
     l->addAnchor( m_recentWidget, Qt::AnchorRight, m_recentHeader, Qt::AnchorRight );
     l->addAnchor( m_recentWidget, Qt::AnchorLeft, m_ratingWidget, Qt::AnchorRight )->setSpacing( pad * 2 );
@@ -199,17 +202,11 @@ CurrentTrack::init()
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_albumWidth );
     dataEngine( "amarok-current" )->connectSource( "current", this );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
-
-    // figure out the size we want to be, in order to be able to squeeze in all that we want
-    // depends on the current font size,  basically
-    // height should be increased for larger point sizes. here, the layout works correctly with size 8, which has the fontMetrics height of 13
-    // a size too big, like font size 12, has a fontMetrics height of 19. So we add some height if it's too big
-    int additional = ( QApplication::fontMetrics().height()-13 ) * 2;
-    resize( 500, 180 + additional );
-
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(queryCollection()), Qt::QueuedConnection );
     queryCollection();
+
+    PERF_LOG( "Finished init" );
 }
 
 void
@@ -249,6 +246,25 @@ CurrentTrack::contextualActions()
 }
 
 void
+CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    if( !m_isStopped
+        && event->modifiers() == Qt::NoModifier
+        && event->button() != Amarok::contextMouseButton() )
+    {
+        QGraphicsView *view = scene()->views().first();
+        QGraphicsItem *item = view->itemAt( view->mapFromScene(event->scenePos()) );
+        if( item == m_albumCover->graphicsItem() )
+        {
+            Meta::AlbumPtr album = The::engineController()->currentTrack()->album();
+            ( new CoverViewDialog( album, The::mainWindow() ) )->show();
+            return;
+        }
+    }
+    Context::Applet::mousePressEvent( event );
+}
+
+void
 CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
@@ -261,6 +277,7 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     alignBaseLineToFirst( m_artist, m_byText );
     alignBaseLineToFirst( m_album, m_onText );
 
+    update(); // ensure the stats bg is repainted with correct geometry
     if( m_isStopped )
     {
         m_recentHeader->setScrollingText( i18n("Recently Played Tracks") );
@@ -272,6 +289,40 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setScrollingText( m_title->text() );
     m_artist->setScrollingText( artist );
     m_album->setScrollingText( album );
+}
+
+void
+CurrentTrack::updateGeometry()
+{
+    Context::Applet::updateGeometry();
+    if( !scene() )
+        return;
+
+    // Work around odd layout resizing by setting the width to the same as the
+    // scene. The applets are resized by VerticalToolbarContainment; while this
+    // applet receives the correct size in a resizeEvent a subsequent
+    // resizeEvent messes up the width. It might have something to do with QGAL
+    // not supporting the Expanding size policy.
+    const QRectF &sceneRect = scene()->sceneRect();
+    if( geometry().width() != sceneRect.width() )
+    {
+        QRectF geom = geometry();
+        geom.setWidth( sceneRect.width() );
+        setGeometry( geom );
+    }
+}
+
+QSizeF
+CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    // figure out the size we want to be, in order to be able to squeeze in all
+    // that we want depends on the current font size,  basically height should
+    // be increased for larger point sizes. here, the layout works correctly
+    // with size 8, which has the fontMetrics height of 13 a size too big, like
+    // font size 12, has a fontMetrics height of 19. So we add some height if
+    // it's too big
+    int height = ( QApplication::fontMetrics().height() - 13 ) * 2 + 180;
+    return QSizeF( Context::Applet::sizeHint(which, constraint).width(), height );
 }
 
 void
@@ -294,10 +345,10 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_album->hide();
         m_recentWidget->show();
         m_recentHeader->show();
-        m_albumCover->setPixmap( amarokLogo(m_albumWidth) );
+        m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
         m_albumCover->graphicsItem()->setAcceptDrops( false );
+        m_albumCover->graphicsItem()->unsetCursor();
         updateConstraints();
-        update();
         return;
     }
 
@@ -311,6 +362,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_album->show();
     m_recentWidget->hide();
     m_recentHeader->hide();
+    m_albumCover->graphicsItem()->setCursor( Qt::PointingHandCursor );
 
     const QVariantMap &currentInfo = data[ QLatin1String("current") ].toMap();
     QString title = currentInfo.value( Meta::Field::TITLE ).toString();
@@ -335,10 +387,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
     setupLayoutActions( The::engineController()->currentTrack() );
-
-    // without that the rating doesn't get update for a playing track
     updateConstraints();
-    update();
 }
 
 void
@@ -354,26 +403,27 @@ CurrentTrack::paintInterface( QPainter *p,
                               const QRect &contentsRect )
 {
     Context::Applet::paintInterface( p, option, contentsRect );
-    addGradientToAppletBackground( p );
-    drawStatsBackground( p );
-    drawStatsTexts( p );
-    drawSourceEmblem( p );
+    drawSourceEmblem( p, contentsRect );
+    drawStatsBackground( p, contentsRect );
+    drawStatsTexts( p, contentsRect );
 }
 
 void
-CurrentTrack::drawStatsBackground( QPainter *const p )
+CurrentTrack::drawStatsBackground( QPainter *const p, const QRect &rect )
 {
     // draw the complete outline. lots of little steps :) at each corner, leave
     // a 6x6 box. draw a quad bezier curve from the two ends of the lines,
     // through  the original corner
 
     const qreal leftEdge = m_ratingWidget->boundingRect().right() + standardPadding();
-    const qreal rightEdge = boundingRect().size().width() - standardPadding();
+    const qreal rightEdge = rect.right() - standardPadding() / 2;
     const qreal ratingWidgetX = m_ratingWidget->pos().x();
     const qreal ratingWidgetY = m_ratingWidget->pos().y();
     const qreal ratingWidgetH = m_ratingWidget->boundingRect().height();
-    QColor bottomColor( 255, 255, 255, 90 );
-    QColor topColor( 255, 255, 255, 120 );
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor bottomColor = topColor;
+    topColor.setAlpha( 200 );
+    bottomColor.setAlpha( 100 );
 
     QPainterPath statsPath;
     statsPath.moveTo( leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 ); // top left position of the rect, right below the album
@@ -411,6 +461,7 @@ CurrentTrack::drawStatsBackground( QPainter *const p )
                        leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 );
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     p->fillPath( statsPath, bottomColor );
     p->fillPath( headerPath, topColor );
     p->restore();
@@ -418,10 +469,10 @@ CurrentTrack::drawStatsBackground( QPainter *const p )
 }
 
 void
-CurrentTrack::drawStatsTexts( QPainter *const p )
+CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
 {
     const qreal leftEdge       = m_ratingWidget->boundingRect().right() + standardPadding();
-    const qreal maxTextWidth   = size().width() - standardPadding() * 2 - leftEdge;
+    const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
     const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
     const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
@@ -439,6 +490,8 @@ CurrentTrack::drawStatsTexts( QPainter *const p )
                  m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    p->setPen( normalBrush().color() );
 
     // labels
     QString playCountLabel = fm.elidedText( column1Label, Qt::ElideRight, rect.width() );
@@ -492,7 +545,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p )
 }
 
 void
-CurrentTrack::drawSourceEmblem( QPainter *const p )
+CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
 {
     if( m_isStopped )
         return;
@@ -502,11 +555,15 @@ CurrentTrack::drawSourceEmblem( QPainter *const p )
 
     if( m_sourceEmblemPath.isEmpty() )
     {
-        QPixmap logo = amarokLogo( m_albumWidth );
+        QPixmap logo = Amarok::semiTransparentLogo( m_albumWidth );
         QRect rect = logo.rect();
         int y = standardPadding();
-        int x = boundingRect().width() - rect.width() - y;
+        int x = contentsRect.right() - rect.width() - y;
         rect.moveTo( x, y );
+        QRectF clipRect( rect );
+        qreal clipY = m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8;
+        clipRect.setBottom( clipY );
+        p->setClipRect( clipRect );
         p->drawPixmap( rect, logo );
     }
     else
@@ -516,7 +573,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p )
         // assume it is a square emblem
         qreal height = boundingRect().height() / 2;
         int y = standardPadding();
-        int x = boundingRect().width() - y - height;
+        int x = contentsRect.right() - y - height;
         QRectF rect( x, y, height, height );
         svg.render( p, rect );
     }
@@ -559,23 +616,6 @@ CurrentTrack::resizeCover( const QPixmap &cover, qreal width )
     }
     m_albumCover->setPixmap( coverWithBorders );
     m_albumCover->graphicsItem()->setAcceptDrops( true );
-}
-
-QPixmap
-CurrentTrack::amarokLogo( int dim ) const
-{
-    QPixmap logo;
-    #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokGraySemiTransparentIcon")
-    if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
-    {
-        QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
-        KIconEffect::toGray( amarokIcon, 1 );
-        KIconEffect::semiTransparent( amarokIcon );
-        logo = QPixmap::fromImage( amarokIcon );
-        QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
-    }
-    #undef AMAROK_LOGO_CACHE_KEY
-    return logo;
 }
 
 void
@@ -683,10 +723,8 @@ CurrentTrack::coverDropped( const QPixmap &cover )
 }
 
 void
-CurrentTrack::paletteChanged( const QPalette & palette )
+CurrentTrack::paletteChanged( const QPalette &palette )
 {
-    DEBUG_BLOCK
-
     m_title->setBrush( palette.text() );
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
@@ -737,6 +775,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     if( !track )
         return;
 
+    PERF_LOG( "Begin actions layout setup" );
     //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
     QList<QAction *> actions = The::globalCurrentTrackActions()->actions();
 
@@ -746,7 +785,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     {
         QScopedPointer<CurrentTrackActionsCapability> cac( track->create<CurrentTrackActionsCapability>() );
         if( cac )
-            m_customActions << cac->customActions();
+            actions << cac->customActions();
     }
 
     if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )
@@ -820,6 +859,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         icon->setText( QString() );
         m_actionsLayout->addItem( icon );
     }
+    PERF_LOG( "Finished actions layout setup" );
 }
 
 void

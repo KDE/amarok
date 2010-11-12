@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ActionClasses"
+
 #include "ActionClasses.h"
 
 #include <config-amarok.h>

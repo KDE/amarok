@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "../PlaydarMeta.h"
 
-#include <QPointer>
+#include <QWeakPointer>
 
 class KJob;
 
@@ -103,7 +103,7 @@ namespace Playdar
             void playdarError( Playdar::Controller::ErrorState );
             
         private:
-            QPointer< Playdar::Controller > m_controller;
+            QWeakPointer< Playdar::Controller > m_controller;
             bool m_waitForSolution;
             
             QString m_qid;

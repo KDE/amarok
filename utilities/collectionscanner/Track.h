@@ -111,6 +111,8 @@ public:
 private:
 
 #ifdef UTILITIES_BUILD
+    QString escape( QString str ) const;
+    void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
 
     void decodeXiph( const QString &name, const QString &value );
 

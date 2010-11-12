@@ -19,6 +19,7 @@
 
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
+#include "../ScanManager.h"
 
 #include <QMutableHashIterator>
 #include <QMutexLocker>
@@ -41,7 +42,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     databaseUpdater.deleteAllRedundant( "year" );
 
     m_timer = new QTimer( this );
-    m_timer->setInterval( 300 * 1000 );  //try to clean up every 300 seconds, change if necessary
+    m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
     m_timer->setSingleShot( false );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
     m_timer->start();
@@ -246,32 +247,46 @@ SqlRegistry::getTrack( int trackId, const QStringList &rowData )
     }
 }
 
-void
+bool
 SqlRegistry::updateCachedUrl( const QString &oldUrl, const QString &newUrl )
 {
     QMutexLocker locker( &m_trackMutex );
     int deviceId = m_collection->mountPointManager()->getIdForUrl( oldUrl );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldUrl );
-    TrackId id(deviceId, rpath);
-    if( m_trackMap.contains( id ) )
+    TrackId oldId(deviceId, rpath);
+
+    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
+    QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
+    TrackId newId( newdeviceId, newRpath );
+
+    if( m_trackMap.contains( newId ) )
+        warning() << "updating path to an already existing path.";
+    else if( !m_trackMap.contains( oldId ) )
+        warning() << "updating path from a non existing path.";
+    else
     {
-        Meta::TrackPtr track = m_trackMap.take( id );
-        int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
-        QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
-        TrackId newId( newdeviceId, newRpath );
+        Meta::TrackPtr track = m_trackMap.take( oldId );
         m_trackMap.insert( newId, track );
+        return true;
     }
+    return false;
 }
 
-void
+bool
 SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
 {
     QMutexLocker locker( &m_trackMutex );
-    if( m_uidMap.contains( oldUid ) )
+    if( m_uidMap.contains( newUid ) )
+        warning() << "updating uid to an already existing uid.";
+    else if( !m_uidMap.contains( oldUid ) )
+        warning() << "updating uid from a non existing uid.";
+    else
     {
         Meta::TrackPtr track = m_uidMap.take(oldUid);
         m_uidMap.insert( newUid, track );
+        return true;
     }
+    return false;
 }
 
 Meta::TrackPtr
@@ -374,6 +389,9 @@ SqlRegistry::getArtist( const QString &name )
 {
     QMutexLocker locker( &m_artistMutex );
 
+    if( m_artistMap.contains( name ) )
+        return m_artistMap.value( name );
+
     int id;
 
     QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
@@ -386,12 +404,10 @@ SqlRegistry::getArtist( const QString &name )
     else
     {
         id = res[0].toInt();
-        if( m_artistMap.contains( id ) )
-            return m_artistMap.value( id );
     }
 
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
-    m_artistMap.insert( id, artist );
+    m_artistMap.insert( name, artist );
     return artist;
 }
 
@@ -400,9 +416,6 @@ SqlRegistry::getArtist( int id )
 {
     QMutexLocker locker( &m_artistMutex );
 
-    if( m_artistMap.contains( id ) )
-        return m_artistMap.value( id );
-
     QString query = QString( "SELECT name FROM artists WHERE id = %1;" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
@@ -410,7 +423,7 @@ SqlRegistry::getArtist( int id )
 
     QString name = res[0];
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
-    m_artistMap.insert( id, artist );
+    m_artistMap.insert( name, artist );
     return artist;
 }
 
@@ -420,11 +433,11 @@ SqlRegistry::getArtist( int id, const QString &name )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_artistMutex );
 
-    if( m_artistMap.contains( id ) )
-        return m_artistMap.value( id );
+    if( m_artistMap.contains( name ) )
+        return m_artistMap.value( name );
 
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
-    m_artistMap.insert( id, artist );
+    m_artistMap.insert( name, artist );
     return artist;
 }
 
@@ -434,6 +447,9 @@ Meta::GenrePtr
 SqlRegistry::getGenre( const QString &name )
 {
     QMutexLocker locker( &m_genreMutex );
+
+    if( m_genreMap.contains( name ) )
+        return m_genreMap.value( name );
 
     int id;
 
@@ -447,12 +463,10 @@ SqlRegistry::getGenre( const QString &name )
     else
     {
         id = res[0].toInt();
-        if( m_genreMap.contains( id ) )
-            return m_genreMap.value( id );
     }
 
     Meta::GenrePtr genre( new Meta::SqlGenre( m_collection, id, name ) );
-    m_genreMap.insert( id, genre );
+    m_genreMap.insert( name, genre );
     return genre;
 }
 
@@ -461,9 +475,6 @@ SqlRegistry::getGenre( int id )
 {
     QMutexLocker locker( &m_genreMutex );
 
-    if( m_genreMap.contains( id ) )
-        return m_genreMap.value( id );
-
     QString query = QString( "SELECT name FROM genres WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
@@ -471,7 +482,7 @@ SqlRegistry::getGenre( int id )
 
     QString name = res[0];
     Meta::GenrePtr genre( new Meta::SqlGenre( m_collection, id, name ) );
-    m_genreMap.insert( id, genre );
+    m_genreMap.insert( name, genre );
     return genre;
 }
 
@@ -481,11 +492,11 @@ SqlRegistry::getGenre( int id, const QString &name )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_genreMutex );
 
-    if( m_genreMap.contains( id ) )
-        return m_genreMap.value( id );
+    if( m_genreMap.contains( name ) )
+        return m_genreMap.value( name );
 
     Meta::GenrePtr genre( new Meta::SqlGenre( m_collection, id, name ) );
-    m_genreMap.insert( id, genre );
+    m_genreMap.insert( name, genre );
     return genre;
 }
 
@@ -495,6 +506,9 @@ Meta::ComposerPtr
 SqlRegistry::getComposer( const QString &name )
 {
     QMutexLocker locker( &m_composerMutex );
+
+    if( m_composerMap.contains( name ) )
+        return m_composerMap.value( name );
 
     int id;
 
@@ -508,12 +522,10 @@ SqlRegistry::getComposer( const QString &name )
     else
     {
         id = res[0].toInt();
-        if( m_composerMap.contains( id ) )
-            return m_composerMap.value( id );
     }
 
     Meta::ComposerPtr composer( new Meta::SqlComposer( m_collection, id, name ) );
-    m_composerMap.insert( id, composer );
+    m_composerMap.insert( name, composer );
     return composer;
 }
 
@@ -525,9 +537,6 @@ SqlRegistry::getComposer( int id )
 
     QMutexLocker locker( &m_composerMutex );
 
-    if( m_composerMap.contains( id ) )
-        return m_composerMap.value( id );
-
     QString query = QString( "SELECT name FROM composers WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
@@ -535,7 +544,7 @@ SqlRegistry::getComposer( int id )
 
     QString name = res[0];
     Meta::ComposerPtr composer( new Meta::SqlComposer( m_collection, id, name ) );
-    m_composerMap.insert( id, composer );
+    m_composerMap.insert( name, composer );
     return composer;
 }
 
@@ -545,11 +554,11 @@ SqlRegistry::getComposer( int id, const QString &name )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_composerMutex );
 
-    if( m_composerMap.contains( id ) )
-        return m_composerMap.value( id );
+    if( m_composerMap.contains( name ) )
+        return m_composerMap.value( name );
 
     Meta::ComposerPtr composer( new Meta::SqlComposer( m_collection, id, name ) );
-    m_composerMap.insert( id, composer );
+    m_composerMap.insert( name, composer );
     return composer;
 }
 
@@ -559,6 +568,9 @@ Meta::YearPtr
 SqlRegistry::getYear( int year, int yearId )
 {
     QMutexLocker locker( &m_yearMutex );
+
+    if( m_yearMap.contains( year ) )
+        return m_yearMap.value( year );
 
     // don't know the id yet
     if( yearId <= 0 )
@@ -575,11 +587,8 @@ SqlRegistry::getYear( int year, int yearId )
             yearId = res[0].toInt();
         }
     }
-    if( m_yearMap.contains( yearId ) )
-        return m_yearMap.value( yearId );
-
     Meta::YearPtr yearPtr( new Meta::SqlYear( m_collection, yearId, year ) );
-    m_yearMap.insert( yearId, yearPtr );
+    m_yearMap.insert( year, yearPtr );
     return yearPtr;
 }
 
@@ -593,6 +602,11 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
         albumArtist.clear();
 
     QMutexLocker locker( &m_albumMutex );
+
+    AlbumKey key(name, artist);
+    if( m_albumMap.contains( key ) )
+        return m_albumMap.value( key );
+
     int albumId = -1;
     int artistId = -1;
 
@@ -623,13 +637,11 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
     else
     {
         albumId = res[0].toInt();
-        if( m_albumMap.contains( albumId ) )
-            return m_albumMap.value( albumId );
     }
 
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, albumId, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
-    m_albumMap.insert( albumId, album );
+    m_albumMap.insert( key, album );
     return album;
 }
 
@@ -638,9 +650,6 @@ SqlRegistry::getAlbum( int id )
 {
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_albumMutex );
-
-    if( m_albumMap.contains( id ) )
-        return m_albumMap.value( id );
 
     QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
@@ -652,7 +661,10 @@ SqlRegistry::getAlbum( int id )
 
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
-    m_albumMap.insert( id, album );
+
+    Meta::ArtistPtr artist = getArtist( artistId );
+    AlbumKey key(name, artist ? artist->name() : QString() );
+    m_albumMap.insert( key, album );
     return album;
 }
 
@@ -662,12 +674,14 @@ SqlRegistry::getAlbum( int id, const QString &name, int artistId )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_albumMutex );
 
-    if( m_albumMap.contains( id ) )
-        return m_albumMap.value( id );
+    Meta::ArtistPtr artist = getArtist( artistId );
+    AlbumKey key(name, artist ? artist->name() : QString() );
+    if( m_albumMap.contains( key ) )
+        return m_albumMap.value( key );
 
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
-    m_albumMap.insert( id, album );
+    m_albumMap.insert( key, album );
     return album;
 }
 
@@ -677,6 +691,9 @@ Meta::LabelPtr
 SqlRegistry::getLabel( const QString &label )
 {
     QMutexLocker locker( &m_labelMutex );
+
+    if( m_labelMap.contains( label ) )
+        return m_labelMap.value( label );
 
     int id;
 
@@ -690,12 +707,10 @@ SqlRegistry::getLabel( const QString &label )
     else
     {
         id = res[0].toInt();
-        if( m_labelMap.contains( id ) )
-            return m_labelMap.value( id );
     }
 
     Meta::LabelPtr labelPtr( new Meta::SqlLabel( m_collection, id, label ) );
-    m_labelMap.insert( id, labelPtr );
+    m_labelMap.insert( label, labelPtr );
     return labelPtr;
 }
 
@@ -705,9 +720,6 @@ SqlRegistry::getLabel( int id )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_labelMutex );
 
-    if( m_labelMap.contains( id ) )
-        return m_labelMap.value( id );
-
     QString query = QString( "SELECT label FROM labels WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
@@ -715,7 +727,7 @@ SqlRegistry::getLabel( int id )
 
     QString label = res[0];
     Meta::LabelPtr labelPtr( new Meta::SqlLabel( m_collection, id, label ) );
-    m_labelMap.insert( id, labelPtr );
+    m_labelMap.insert( label, labelPtr );
     return labelPtr;
 }
 
@@ -725,17 +737,20 @@ SqlRegistry::getLabel( int id, const QString &label )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_labelMutex );
 
-    if( m_labelMap.contains( id ) )
-        return m_labelMap.value( id );
+    if( m_labelMap.contains( label ) )
+        return m_labelMap.value( label );
 
     Meta::LabelPtr labelPtr( new Meta::SqlLabel( m_collection, id, label ) );
-    m_labelMap.insert( id, labelPtr );
+    m_labelMap.insert( label, labelPtr );
     return labelPtr;
 }
 
 void
 SqlRegistry::emptyCache()
 {
+    if( m_collection->scanManager() && m_collection->scanManager()->isRunning() )
+        return; // don't clean the cache if a scan is done
+
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasLabel;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasLabel = false;
 
@@ -748,19 +763,37 @@ SqlRegistry::emptyCache()
          && ( hasComposer = m_composerMutex.tryLock() )
          && ( hasLabel = m_labelMutex.tryLock() ) )
     {
+        debug() << "SqlRegistry::emptyCache is running";
+
+        QString query = QString( "SELECT COUNT(*) FROM albums;" );
+        QStringList res = m_collection->sqlStorage()->query( query );
+        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM artists;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM genres;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
+
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
         //by invalidating the tracks cache on all objects
-        #define foreachInvalidateCache( Type, RealType, x ) \
-        for( QMutableHashIterator<int,Type > iter(x); iter.hasNext(); ) \
+        #define foreachInvalidateCache( Key, Type, RealType, x ) \
+        for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
 
-        foreachInvalidateCache( Meta::AlbumPtr, KSharedPtr<Meta::SqlAlbum>, m_albumMap );
-        foreachInvalidateCache( Meta::ArtistPtr, KSharedPtr<Meta::SqlArtist>, m_artistMap );
-        foreachInvalidateCache( Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
-        foreachInvalidateCache( Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
-        foreachInvalidateCache( Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
-        foreachInvalidateCache( Meta::LabelPtr, KSharedPtr<Meta::SqlLabel>, m_labelMap );
+        foreachInvalidateCache( AlbumKey, Meta::AlbumPtr, KSharedPtr<Meta::SqlAlbum>, m_albumMap );
+        foreachInvalidateCache( QString, Meta::ArtistPtr, KSharedPtr<Meta::SqlArtist>, m_artistMap );
+        foreachInvalidateCache( QString, Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
+        foreachInvalidateCache( QString, Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
+        foreachInvalidateCache( int, Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
+        foreachInvalidateCache( QString, Meta::LabelPtr, KSharedPtr<Meta::SqlLabel>, m_labelMap );
         #undef foreachInvalidateCache
 
         //elem.count() == 2 is correct because elem is one pointer to the object
@@ -774,16 +807,34 @@ SqlRegistry::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap )
-        foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap )
+        foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap );
+        foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap );
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap )
-        foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap )
-        foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap )
-        foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap )
-        foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap )
-        foreachCollectGarbage( int, Meta::LabelPtr, 2, m_labelMap )
+        foreachCollectGarbage( AlbumKey, Meta::AlbumPtr, 2, m_albumMap );
+        foreachCollectGarbage( QString, Meta::ArtistPtr, 2, m_artistMap );
+        foreachCollectGarbage( QString, Meta::GenrePtr, 2, m_genreMap );
+        foreachCollectGarbage( QString, Meta::ComposerPtr, 2, m_composerMap );
+        foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap );
+        foreachCollectGarbage( QString, Meta::LabelPtr, 2, m_labelMap );
         #undef foreachCollectGarbage
+
+        debug() << "--- after run: ---";
+
+        query = QString( "SELECT COUNT(*) FROM albums;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM artists;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+
+        query = QString( "SELECT COUNT(*) FROM genres;" );
+        res = m_collection->sqlStorage()->query( query );
+        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
     }
 
     //make sure to unlock all necessary locks

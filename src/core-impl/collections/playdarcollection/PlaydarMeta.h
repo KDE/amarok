@@ -23,7 +23,7 @@
 #include <QList>
 #include <QPixmap>
 #include <QString>
-#include <QPointer>
+#include <QWeakPointer>
 
 #include <KSharedPtr>
 #include <KUrl>
@@ -139,7 +139,7 @@ namespace Meta
             PlaydarLabelList playdarLabels();
 
         private:
-            QPointer< Collections::PlaydarCollection > m_collection;
+            QWeakPointer< Collections::PlaydarCollection > m_collection;
             
             PlaydarAlbumPtr m_album;
             PlaydarArtistPtr m_artist;

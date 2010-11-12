@@ -35,8 +35,12 @@ TabsItem::TabsItem()
 void
 TabsItem::setTab( TabsInfo *tab )
 {
-    m_tabsInfo = tab;
-    setTabIcon( tab->tabType );
+    if( tab )
+    {
+        m_tabsInfo = tab;
+        setTabIcon( tab->tabType );
+        setToolTip( m_tabsInfo->title );
+    }
 }
 
 void
@@ -78,7 +82,7 @@ TabsItem::setTabIcon( TabsInfo::TabType tabtype )
 const QString
 TabsItem::getTabData()
 {
-    if ( m_tabsInfo )
+    if( m_tabsInfo )
         return m_tabsInfo->tabs;
     else
         return QString();
@@ -87,7 +91,7 @@ TabsItem::getTabData()
 const QString
 TabsItem::getTabTitle()
 {
-    if ( m_tabsInfo )
+    if( m_tabsInfo )
         return m_tabsInfo->title;
     else
         return QString();
@@ -96,7 +100,7 @@ TabsItem::getTabTitle()
 const QString
 TabsItem::getTabUrl()
 {
-    if ( m_tabsInfo )
+    if( m_tabsInfo )
         return m_tabsInfo->url.url();
     else
         return QString();
@@ -106,7 +110,7 @@ TabsItem::getTabUrl()
 const QString
 TabsItem::getTabSource()
 {
-    if ( m_tabsInfo )
+    if( m_tabsInfo )
         return m_tabsInfo->source;
     else
         return QString();

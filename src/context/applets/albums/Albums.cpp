@@ -112,9 +112,10 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     m_headerText->setScrollingText( m_headerText->text() );
 }
 
-void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( name );
+    if( name != QLatin1String("albums") )
+        return;
 
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     m_headerText->setScrollingText( data[ "headerText" ].toString() );
@@ -131,6 +132,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
+        Meta::TrackList tracks = albumPtr->tracks();
+        if( tracks.isEmpty() )
+            continue;
+
         AlbumItem *albumItem = new AlbumItem();
         albumItem->setIconSize( 50 );
         albumItem->setAlbum( albumPtr );
@@ -139,7 +144,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         int numberOfDiscs = 0;
         int childRow = 0;
 
-        Meta::TrackList tracks = albumPtr->tracks();
         qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
         QMultiHash< int, TrackItem* > trackItems; // hash of tracks items for each disc
@@ -156,9 +160,12 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
                 trackItem->italicise();
 
             // If compilation and same artist, then make bold, but only if there's a current track
-            if( currentTrack && currentTrack->artist() == trackPtr->artist() && albumPtr->isCompilation() )
+            if( currentTrack
+                && (currentTrack->artist() == trackPtr->artist())
+                && albumPtr->isCompilation() )
+            {
                 trackItem->bold();
-
+            }
             trackItems.insert( trackPtr->discNumber(), trackItem );
         }
 
@@ -201,31 +208,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     update();
 }
 
-void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-
-    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
-    //context view has been minimized completely
-    if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
-            childItem->hide();
-        return;
-    }
-    else
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();
-    }
-
-
-    p->setRenderHint( QPainter::Antialiasing );
-
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-}
-
 void Albums::createConfigurationInterface( KConfigDialog *parent )
 {
     QSpinBox *spinBox = new QSpinBox;
@@ -263,13 +245,15 @@ void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
     Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
-    dataEngine( "amarok-current" )->query( "albums" );
+    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
+    dataUpdated( QLatin1String("albums"), data );
 }
 
 void Albums::collectionDataChanged( Collections::Collection *collection )
 {
     Q_UNUSED( collection )
-    dataEngine( "amarok-current" )->query( "albums" );
+    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
+    dataUpdated( QLatin1String("albums"), data );
 }
 
 #include "Albums.moc"

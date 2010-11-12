@@ -569,13 +569,13 @@ MusicBrainzTagsModel::getAllChecked()
 #define DEBUG_PREFIX "MusicBrainzTagsModelDelegate"
 
 MusicBrainzTagsModelDelegate::MusicBrainzTagsModelDelegate( QObject *parent )
-                            : QStyledItemDelegate( parent )
+                            : QItemDelegate( parent )
 {
 }
 
 void
-MusicBrainzTagsModelDelegate::drawCheck( QPainter* painter, const QStyleOptionViewItem &option,
-                                              const QRect &rect, Qt::CheckState state ) const
+MusicBrainzTagsModelDelegate::drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
+                                         const QRect &rect, Qt::CheckState state ) const
 {
     if( !rect.isValid() )
         return;

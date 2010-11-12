@@ -121,10 +121,7 @@ Meta::PlaydarTrack::sid() const
 bool
 Meta::PlaydarTrack::isPlayable() const
 {
-    if( m_collection.isNull() )
-        return false;
-    else
-        return true;
+    return m_collection.data();
 }
 
 Meta::AlbumPtr
@@ -285,16 +282,13 @@ Meta::PlaydarTrack::finishedPlaying( double playedFraction )
 bool
 Meta::PlaydarTrack::inCollection() const
 {
-    if( m_collection )
-        return true;
-    else
-        return false;
+    return m_collection.data();
 }
 
 Collections::Collection*
 Meta::PlaydarTrack::collection() const
 {
-    return m_collection;
+    return m_collection.data();
 }
 
 QString
@@ -348,10 +342,10 @@ void
 Meta::PlaydarTrack::addToCollection( Collections::PlaydarCollection *collection )
 {
     m_collection = collection;
-    if( m_collection )
+    if( m_collection.data() )
     {
         PlaydarTrackPtr sharedThis( this );
-        m_collection->addNewTrack( sharedThis );
+        m_collection.data()->addNewTrack( sharedThis );
     }
 }
 

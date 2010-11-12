@@ -110,6 +110,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual void setGenre( const QString &newGenre );
 
         virtual QString type() const;
+        virtual void setType( Amarok::FileType newType );
 
         virtual void setTitle( const QString &newTitle );
 
@@ -212,7 +213,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
             returnIndex_urlDeviceId = 1,
             returnIndex_urlRPath = 2,
             returnIndex_urlUid = 3,
-            returnIndex_trackId = 4
+            returnIndex_trackId = 5
         };
 
         // SqlDatabase specific values
@@ -284,7 +285,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         Meta::GenrePtr m_genre;
         Meta::ComposerPtr m_composer;
         Meta::YearPtr m_year;
-        
+
         Amarok::FileType m_filetype;
 
         bool m_batchUpdate;

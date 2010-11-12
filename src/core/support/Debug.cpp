@@ -42,6 +42,9 @@ AMAROK_CORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
 
 using namespace Debug;
 
+static bool s_debugEnabled = false;
+static bool s_debugColorsEnabled = false;
+
 IndentPrivate::IndentPrivate(QObject* parent)
     : QObject(parent)
 {
@@ -80,21 +83,18 @@ static QString toString( DebugLevel level )
 
 static QString colorize( const QString &text, int color = s_colorIndex )
 {
-    if( !debugColorDisabled() )
-        return QString( "\x1b[00;3%1m%2\x1b[00;39m" )
-            .arg( QString::number( s_colors[color] ) )
-            .arg( text );
-    else
+    if( !debugColorEnabled() )
         return text;
+
+    return QString( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(s_colors[color]), text );
 }
 
 static QString reverseColorize( const QString &text, int color )
 {
-    if( !debugColorDisabled() )
-        return QString( "\x1b[07;3%1m%2\x1b[00;39m" )
-            .arg( QString::number(color), text );
-    else
+    if( !debugColorEnabled() )
         return text;
+
+    return QString( "\x1b[07;3%1m%2\x1b[00;39m" ).arg( QString::number(color), text );
 }
 
 const QString& Debug::indent()
@@ -104,12 +104,22 @@ const QString& Debug::indent()
 
 bool Debug::debugEnabled()
 {
-    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Enabled"), false );
+    return s_debugEnabled;
 }
 
-bool Debug::debugColorDisabled()
+bool Debug::debugColorEnabled()
 {
-    return KGlobal::config()->group( QLatin1String("General") ).readEntry( QLatin1String("Debug Colorization Disabled"), false );
+    return s_debugColorsEnabled;
+}
+
+void Debug::setDebugEnabled( bool enable )
+{
+    s_debugEnabled = enable;
+}
+
+void Debug::setColoredDebug( bool enable )
+{
+    s_debugColorsEnabled = enable;
 }
 
 kdbgstream Debug::dbgstream( DebugLevel level )
@@ -142,30 +152,43 @@ void Debug::perfLog( const QString &message, const QString &func )
 #endif
 }
 
-Block::Block( const char *label )
-    : m_label( label )
-    , m_color( s_colorIndex )
+BlockPrivate::BlockPrivate( const char *text )
+    : label( text )
+    , color( s_colorIndex )
 {
     if( !debugEnabled() )
         return;
 
-    m_startTime = QTime::currentTime();
+#if QT_VERSION >= 0x040700
+    startTime.start();
+#else
+    startTime = QTime::currentTime();
+#endif
 
     mutex.lock();
     s_colorIndex = (s_colorIndex + 1) % 5;
     dbgstream()
-        << qPrintable( colorize( QLatin1String( "BEGIN:" ), m_color ) )
+        << qPrintable( colorize( QLatin1String( "BEGIN:" ), color ) )
         << label;
     IndentPrivate::instance()->m_string += QLatin1String("  ");
     mutex.unlock();
 }
 
+Block::Block( const char *label )
+    : d( debugEnabled() ? new BlockPrivate( label ) : 0 )
+{
+}
+
 Block::~Block()
 {
-    if( !debugEnabled() )
+    if( !d )
         return;
 
-    const double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / (double)1000.0;
+#if QT_VERSION >= 0x040700
+    const double duration = d->startTime.elapsed() / 1000.0;
+#else
+    const double duration = (double)d->startTime.msecsTo( QTime::currentTime() ) / 1000.0;
+#endif
 
     mutex.lock();
     IndentPrivate::instance()->m_string.truncate( Debug::indent().length() - 2 );
@@ -174,14 +197,16 @@ Block::~Block()
     // Print timing information, and a special message (DELAY) if the method took longer than 5s
     if( duration < 5.0 )
         dbgstream()
-            << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
-            << m_label
-            << qPrintable( colorize( QString( "[Took: %3s]").arg( QString::number(duration, 'g', 2) ), m_color ) );
+            << qPrintable( colorize( QLatin1String( "END__:" ), d->color ) )
+            << d->label
+            << qPrintable( colorize( QString( "[Took: %3s]").arg( QString::number(duration, 'g', 2) ), d->color ) );
     else
         dbgstream()
-            << qPrintable( colorize( QString( "END__:" ), m_color ) )
-            << m_label
+            << qPrintable( colorize( QString( "END__:" ), d->color ) )
+            << d->label
             << qPrintable( reverseColorize( QString( "[DELAY Took (quite long) %3s]").arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
+
+    delete d;
 }
 
 void Debug::stamp()

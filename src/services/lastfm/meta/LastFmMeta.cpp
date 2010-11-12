@@ -411,9 +411,9 @@ Track::streamName() const
                 else if( elements[3] == "personal" )
                     return i18n( "%1's Personal Radio", elements[2] );
 
-                // lastfm://user/<user>/loved
-                else if( elements[3] == "loved" )
-                    return i18n( "%1's Loved Radio", elements[2] );
+                // lastfm://user/<user>/mix
+                else if( elements[3] == "mix" )
+                    return i18n( "%1's Mix Radio", elements[2] );
 
                 // lastfm://user/<user>/recommended
                 else if( elements.size() < 5 && elements[3] == "recommended" )

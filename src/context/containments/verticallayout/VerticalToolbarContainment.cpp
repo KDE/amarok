@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "VerticalToolbarContainment"
+
 #include "VerticalToolbarContainment.h"
 
 #include "ContextView.h"
@@ -25,11 +27,9 @@
 
 #include <QGraphicsLinearLayout>
 
-#define TOOLBAR_X_OFFSET 2000
-
-
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
+    , m_view( 0 )
     , m_applets( 0 )
     , m_noAppletText( 0 )
 {
@@ -42,13 +42,12 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     debug() << "applet containment has corona:" << corona();
     m_applets = new VerticalAppletLayout( this );
 
-    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SLOT( appletRemoved( Plasma::Applet* ) ) );
-    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SIGNAL( geometryChanged() ) );
+    connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SLOT(appletRemoved(Plasma::Applet*)) );
+    connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SIGNAL(geometryChanged()) );
 
-    connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), SIGNAL( appletAdded( Plasma::Applet*, int) ) ); // goes out to applet toolbar
-    connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), SIGNAL( geometryChanged() ) );
-
-    connect( m_applets, SIGNAL( noApplets( bool ) ), SLOT( showEmptyText( bool ) ) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(appletAdded(Plasma::Applet*, int)) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(geometryChanged()) );
+    connect( m_applets, SIGNAL(noApplets(bool)), SLOT(showEmptyText(bool)) );
 
 }
 
@@ -60,8 +59,8 @@ Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints const
 {
     Q_UNUSED( constraints )
 
-    debug() << "setting applets geom to" << contentsRect();
-    m_applets->setGeometry( contentsRect() );
+    if( m_view )
+        m_applets->setGeometry( QRectF(QPointF(0, 0), m_view->maximumViewportSize()) );
     
     if( m_noAppletText )
     {
@@ -76,14 +75,6 @@ QList<QAction*>
 Context::VerticalToolbarContainment::contextualActions()
 {
     return QList< QAction* >();
-}
-
-void
-Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect)
-{
-    Q_UNUSED( painter );
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
 }
 
 void
@@ -102,6 +93,7 @@ Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
 
     foreach( const QString& plugin, plugins )
     {
+        PERF_LOG( qPrintable( QString("Adding applet: %1").arg( plugin ) ) )
         debug() << "Adding applet: " << plugin;
         addApplet( plugin, -1 );
     }
@@ -126,10 +118,12 @@ Context::VerticalToolbarContainment::view()
     return m_view;
 }
 
-QRectF
-Context::VerticalToolbarContainment::boundingRect () const
+void
+Context::VerticalToolbarContainment::updateGeometry()
 {
-    return QRectF( QPointF( 0, 0), m_applets->totalSize() );
+    Context::Containment::updateGeometry();
+    QRectF rect = scene()->sceneRect();
+    setGeometry( rect );
 }
 
 Plasma::Applet*

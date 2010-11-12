@@ -20,7 +20,6 @@
 #include "TabsInfo.h"
 
 #include "context/DataEngine.h"
-#include "ContextObserver.h"
 #include "NetworkAccessManagerProxy.h"
 #include "core/meta/Meta.h"
 
@@ -34,7 +33,7 @@ using namespace Context;
    *   @author Rainer Sigle
    *   @version 0.1
    */
-class TabsEngine : public DataEngine, public ContextObserver, public Meta::Observer
+class TabsEngine : public DataEngine
 {
     Q_OBJECT
     public:
@@ -56,18 +55,6 @@ class TabsEngine : public DataEngine, public ContextObserver, public Meta::Obser
          * Returns the sources
          */
         QStringList sources() const;
-
-        /**
-         * Overriden from Context::Observer
-         */
-        virtual void message( const ContextState& state );
-
-        /**
-         * This method is called when the metadata of a track has changed.
-         * The called class may not cache the pointer
-         */
-        using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track );
 
     protected:
         /**
@@ -115,16 +102,16 @@ class TabsEngine : public DataEngine, public ContextObserver, public Meta::Obser
 
 
     private:
+
+        /**
+         * available tab sites
+         */
+        enum Source { UltimateGuitar, FretPlay };
+
         /**
          * starts a new tab-search
          */
-        void update( QString artist = "", QString title = "" );
-
-        /**
-         * list of our information sources for the tabs
-         */
-        QStringList m_sources;
-        enum Source { UltimateGuitar, FretPlay };
+        void requestTab( QString artist, QString title );
 
         /**
          * The currently playing track
@@ -138,11 +125,6 @@ class TabsEngine : public DataEngine, public ContextObserver, public Meta::Obser
         QString m_artistName;
 
         /**
-         * True if a request has been done, otherwise false
-         */
-        bool m_requested;
-
-        /**
          * Data strucuture which contains all tab-information for
          * the current song. After fetching this data will be send to the applet
          */
@@ -154,11 +136,11 @@ class TabsEngine : public DataEngine, public ContextObserver, public Meta::Obser
         QHash < const KUrl, Source> m_urls;
 
         /**
-         * Controls wether guitar-tabs will be fetched
+         * Controls whether guitar-tabs will be fetched
          */
         bool m_fetchGuitar;
         /**
-         * Controls wether bass-tabs will be fetched
+         * Controls whether bass-tabs will be fetched
          */
         bool m_fetchBass;
 
@@ -166,6 +148,13 @@ class TabsEngine : public DataEngine, public ContextObserver, public Meta::Obser
          * Helper function which returns the intermediate string between two strings
          */
         QString subStringBetween(const QString src, const QString from, const QString to, bool lastIndexForFrom = false );
+
+    private slots:
+        /**
+         * Prepare the calling of the requestTab method.
+         * Launched when the track played on amarok has changed.
+         */
+        void update();
 };
 
 Q_DECLARE_METATYPE ( TabsInfo * )

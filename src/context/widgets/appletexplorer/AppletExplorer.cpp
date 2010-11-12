@@ -31,12 +31,13 @@
 
 #include <KIcon>
 #include <Plasma/Applet>
-#include <Plasma/Label>
 #include <Plasma/ScrollWidget>
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>
 #include <QGraphicsSceneWheelEvent>
+#include <QGraphicsProxyWidget>
+#include <QLabel>
 #include <QStyleOptionGraphicsItem>
 #include <QSignalMapper>
 
@@ -117,19 +118,22 @@ AppletExplorer::init()
     backIcon->setMaximumSize( iconSize );
     connect( backIcon, SIGNAL(clicked()), this, SLOT(scrollLeft()) );
 
-    Plasma::Label *titleLabel = new Plasma::Label( this );
+    QLabel *titleLabel = new QLabel( i18n("<strong>Applet Explorer</strong>") );
     titleLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-    titleLabel->setText( i18n("<strong>Applet Explorer</strong>") );
-    titleLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    titleLabel->setAttribute( Qt::WA_NoSystemBackground );
+    titleLabel->setWordWrap( false );
+    QGraphicsProxyWidget *titleWidget = new QGraphicsProxyWidget( this );
+    titleWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    titleWidget->setWidget( titleLabel );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
     headerLayout->addItem( appletIcon );
-    headerLayout->addItem( titleLabel );
+    headerLayout->addItem( titleWidget );
     headerLayout->addItem( backIcon );
     headerLayout->addItem( forwardIcon );
     headerLayout->addItem( hideIcon );
     headerLayout->setAlignment( appletIcon, Qt::AlignLeft );
-    headerLayout->setAlignment( titleLabel, Qt::AlignLeft );
+    headerLayout->setAlignment( titleWidget, Qt::AlignLeft );
     headerLayout->setAlignment( backIcon, Qt::AlignRight );
     headerLayout->setAlignment( forwardIcon, Qt::AlignRight );
     headerLayout->setAlignment( hideIcon, Qt::AlignRight );
@@ -148,9 +152,8 @@ AppletExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option
     Q_UNUSED( option )
     Q_UNUSED( widget )
 
-    painter->setRenderHint( QPainter::Antialiasing );
     painter->save();
-    
+    painter->setRenderHint( QPainter::Antialiasing );
     painter->setOpacity( 0.9 );
     
     QLinearGradient gradient( boundingRect().topLeft().x(), boundingRect().topLeft().y(),

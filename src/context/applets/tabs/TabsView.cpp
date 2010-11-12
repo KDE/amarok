@@ -125,11 +125,11 @@ TabsView::setTabTextContent(const QString tabText )
 void
 TabsView::showTab( TabsItem *tab )
 {
-    if ( tab )
+    if( tab )
     {
         const QString htmlCr =  "<br></br>";
         QString tabText = tab->getTabData();
-        if ( tabText.length() > 0 )
+        if( tabText.length() > 0 )
         {
             tabText.replace( "\n", htmlCr, Qt::CaseInsensitive);
 

@@ -56,7 +56,7 @@ namespace AmarokScript
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
     {
-        QString savePath = Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath();
+        QString savePath = Amarok::defaultPlaylistPath();
         The::playlist()->exportPlaylist( savePath );
         return savePath;
     }
@@ -143,7 +143,7 @@ namespace AmarokScript
     {
         DEBUG_BLOCK
 
-        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock().data()->currentView() );
+        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock()->currentView() );
         return list->selectedRows();
     }
 

@@ -32,6 +32,7 @@
 #include <KFileDialog>
 #include <KLineEdit>
 #include <KListWidget>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KPushButton>
 #include <KSaveFile>
@@ -700,11 +701,11 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
 {
     m_cover = new QLabel( this );
     m_tabs  = new QTabWidget( this );
-    m_notes = new QLabel( m_tabs );
-    m_metaTable = new QWidget( m_tabs );
-    m_metaTable->setLayout( new QFormLayout() );
+    m_notes = new QLabel;
+    QScrollArea *metaArea = new QScrollArea;
+    m_metaTable = new QWidget( metaArea );
+    m_metaTable->setLayout( new QFormLayout );
     m_metaTable->setMinimumSize( QSize( 150, 200 ) );
-    QScrollArea *metaArea = new QScrollArea( m_tabs );
     metaArea->setFrameShape( QFrame::NoFrame );
     metaArea->setWidget( m_metaTable );
     m_notes->setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -803,7 +804,7 @@ void CoverFoundSideBar::updateMetaTable()
 
             if( !name.isEmpty() )
             {
-                QLabel *label = new QLabel( value, this );
+                QLabel *label = new QLabel( value, 0 );
                 label->setToolTip( value );
                 layout->addRow( QString("<b>%1:</b>").arg(name), label );
             }
@@ -840,7 +841,7 @@ void CoverFoundSideBar::updateMetaTable()
                                     .arg( decoded )
                                     .arg( i18nc("@item::intable URL", "link") );
 
-        QLabel *label = new QLabel( url, this );
+        QLabel *label = new QLabel( url, 0 );
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );
