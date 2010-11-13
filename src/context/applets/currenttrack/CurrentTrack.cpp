@@ -291,27 +291,6 @@ CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_album->setScrollingText( album );
 }
 
-void
-CurrentTrack::updateGeometry()
-{
-    Context::Applet::updateGeometry();
-    if( !scene() )
-        return;
-
-    // Work around odd layout resizing by setting the width to the same as the
-    // scene. The applets are resized by VerticalToolbarContainment; while this
-    // applet receives the correct size in a resizeEvent a subsequent
-    // resizeEvent messes up the width. It might have something to do with QGAL
-    // not supporting the Expanding size policy.
-    const QRectF &sceneRect = scene()->sceneRect();
-    if( geometry().width() != sceneRect.width() )
-    {
-        QRectF geom = geometry();
-        geom.setWidth( sceneRect.width() );
-        setGeometry( geom );
-    }
-}
-
 QSizeF
 CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {

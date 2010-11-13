@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Context::Applet"
+
 #include "Applet.h"
 
 #include "App.h"
@@ -339,7 +341,6 @@ Context::Applet::isAppletExtended()
     return ( m_heightCollapseOff == m_heightCurrent );
 }
 
-
 void
 Context::Applet::animate( qreal progress )
 {
@@ -426,6 +427,23 @@ Context::Applet::showMessage( const QString &message, const char *slot, const KI
 
         // Show a dialog and ask the user what to do.
         Plasma::Applet::showMessage( icon, message, plasmaYesNoButtons );
+    }
+}
+
+void
+Context::Applet::updateGeometry()
+{
+    Plasma::Applet::updateGeometry();
+    if( !scene() )
+        return;
+
+    const QRectF &sceneRect = scene()->sceneRect();
+    if( geometry().width() != sceneRect.width() )
+    {
+        // should really be handled by VerticalAppletLayout
+        QRectF geom = geometry();
+        geom.setWidth( sceneRect.width() );
+        setGeometry( geom );
     }
 }
 
