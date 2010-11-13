@@ -58,7 +58,6 @@ protected:
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
-    virtual void updateGeometry();
     void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
