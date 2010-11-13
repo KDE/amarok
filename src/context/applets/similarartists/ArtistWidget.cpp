@@ -320,29 +320,31 @@ void
 ArtistWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
     QGraphicsWidget::paint( p, option, widget );
-    m_descLayout.draw( p, m_desc->geometry().topLeft() );
 
-    // fade out the last bit of text if not all of the description is shown
-    if( m_descCropped && m_descLayout.lineCount() > 0 )
+    p->save();
+    QFontMetricsF fm( m_desc->font() );
+    QPointF pos = m_desc->geometry().topLeft();
+    const int maxLines = floor( m_desc->size().height() / fm.lineSpacing() );
+    for( int i = 0, lines = m_descLayout.lineCount(); i < lines; ++i )
     {
-        QFontMetricsF fm( m_desc->font() );
-        QRectF rect = fm.boundingRect( m_desc->geometry(), Qt::AlignCenter, "placeholder" );
-        rect.moveTo( m_desc->geometry().bottomRight() );
-        QTextLine lastLine = m_descLayout.lineAt( m_descLayout.lineCount() - 1 );
-        qreal xoffset = lastLine.naturalTextWidth() - lastLine.width() - rect.width();
-        rect = rect.translated( xoffset, -rect.height() );
-
-        QColor bgColor = The::paletteHandler()->highlightColor( 0.4, 1.05 );
-        bgColor.setAlphaF( bgColor.alphaF() * 0.5 );
-        QColor winColor = The::paletteHandler()->palette().window().color();
-        QColor fadeColor = KColorUtils::overlayColors( winColor, bgColor );
-
-        QLinearGradient alphaGradient( 0, 0, 1, 0 );
-        alphaGradient.setCoordinateMode( QGradient::ObjectBoundingMode );
-        alphaGradient.setColorAt( 0, QColor(0, 0, 0, 0) );
-        alphaGradient.setColorAt( 1, fadeColor );
-        p->fillRect( rect, alphaGradient );
+        const QTextLine &line = m_descLayout.lineAt( i );
+        if( m_descCropped && (i == (maxLines - 1)) )
+        {
+            // fade out the last bit of text if not all of the description is shown
+            QLinearGradient alphaGradient( 0, 0, 1, 0 );
+            alphaGradient.setCoordinateMode( QGradient::ObjectBoundingMode );
+            const QColor &textColor = The::paletteHandler()->palette().text().color();
+            alphaGradient.setColorAt( 0, textColor );
+            alphaGradient.setColorAt( 0.85, textColor );
+            alphaGradient.setColorAt( 1, Qt::transparent );
+            QPen pen = p->pen();
+            pen.setBrush( alphaGradient );
+            p->setPen( pen );
+        }
+        line.draw( p, pos );
+        pos.ry() += line.leading();
     }
+    p->restore();
 }
 
 void
