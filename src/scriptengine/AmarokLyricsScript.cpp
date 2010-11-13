@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmarokLyricsScript"
+
 #include "AmarokLyricsScript.h"
 
 #include "core/support/Amarok.h"
@@ -56,6 +58,7 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 void
 AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
@@ -65,6 +68,7 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 void
 AmarokLyricsScript::showLyricsError( const QString& error ) const
 {
+    DEBUG_BLOCK
     LyricsManager::self()->lyricsError( error );
 }
 
@@ -72,6 +76,7 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 void
 AmarokLyricsScript::showLyricsNotFound( const QString& msg ) const
 {
+    DEBUG_BLOCK
     LyricsManager::self()->lyricsNotFound( msg );
 }
  

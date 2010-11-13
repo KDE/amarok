@@ -441,6 +441,7 @@ LyricsAppletPrivate::_saveLyrics()
 void
 LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
 {
+    DEBUG_BLOCK
     Q_Q( LyricsApplet );
     if( !index.isValid() )
         return;
@@ -452,6 +453,7 @@ LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
     const QString &url    = model->item( row, 0 )->data().toString();
     if( !url.isEmpty() )
     {
+        debug() << "clicked suggestion" << url;
         ScriptManager::instance()->notifyFetchLyricsByUrl( artist, title, url );
         suggestView->setCursor( Qt::BusyCursor );
         QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
