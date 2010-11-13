@@ -14,20 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-//Plamsa applet for showing videoclip in the context view
+#define DEBUG_PREFIX "VideoItemButton"
 
 #include "VideoItemButton.h"
-
-#define DEBUG_PREFIX "VideoItemButton"
 
 #include "SvgHandler.h"
 #include "core/support/Debug.h"
 
-#include <QPixmap>
-
 #include <KAction>
 #include <KIcon>
 #include <KMenu>
+
+#include <QPixmapCache>
 
 VideoItemButton::VideoItemButton()
     : QToolButton()
@@ -36,7 +34,6 @@ VideoItemButton::VideoItemButton()
 
 VideoItemButton::~VideoItemButton()
 {
-    DEBUG_BLOCK
 }
 
 void VideoItemButton::setVideoInfo( VideoInfo *info )
@@ -45,17 +42,22 @@ void VideoItemButton::setVideoInfo( VideoInfo *info )
     m_videoInfo = info;
     
     // Create a pixmap with nice border    
-    QPixmap pix( The::svgHandler()->addBordersToPixmap( info->cover, 3, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
+    QPixmap pix;
+    QString key = QString( "%1_%2" ).arg( info->url, QString::number(100) );
+    if( !QPixmapCache::find( key, &pix ) )
+    {
+        pix = info->cover.scaledToHeight( 100, Qt::SmoothTransformation );
+        pix = The::svgHandler()->addBordersToPixmap( pix, 5, QString(), true );
+        QPixmapCache::insert( key, pix );
+    }
 
     // then add info
-    setText( "" );
     setToolButtonStyle( Qt::ToolButtonIconOnly );
     setAutoRaise( true );
     setIcon( QIcon( pix ) );
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    resize( pix.size() );
     setIconSize( pix.size() ) ;
-    setToolTip( QString( "<html><body>" ) + info->desc + QString( "</body></html>" ) );
+    setToolTip( info->title );
     setContextMenuPolicy( Qt::CustomContextMenu );
     connect(this, SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( myMenu( QPoint ) ) );
 }
