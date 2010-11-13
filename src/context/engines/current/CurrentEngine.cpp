@@ -113,6 +113,7 @@ CurrentEngine::metadataChanged( Meta::TrackPtr track )
 void
 CurrentEngine::trackPlaying( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
     if( m_recentAlbumsQm )
         m_recentAlbumsQm.data()->abortQuery();
     if( m_requested.value( QLatin1String("current") ) )
@@ -124,12 +125,16 @@ CurrentEngine::trackPlaying( Meta::TrackPtr track )
 void
 CurrentEngine::stopped()
 {
-    removeAllData( "current" );
-    removeAllData( "albums" );
-    setData( "current", "notrack", i18n( "No track playing") );
+    if( m_requested.value( QLatin1String("current") ) )
+    {
+        removeAllData( "current" );
+        setData( "current", "notrack", i18n( "No track playing") );
+    }
 
     if( m_requested.value( QLatin1String("albums") ) )
     {
+        removeAllData( "albums" );
+
         // Collect data for the recently added albums
         setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
         m_albums.clear();
