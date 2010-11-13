@@ -213,7 +213,7 @@ UpcomingEventsStackItemPrivate::_updateToolbox()
             {
                 if( !button )
                 {
-                    button = new Plasma::PushButton( q );
+                    button = new Plasma::PushButton;
                     button->setAction( action );
                 }
                 button->setMinimumHeight( widgetSize.height() );
@@ -225,7 +225,7 @@ UpcomingEventsStackItemPrivate::_updateToolbox()
             {
                 if( !icon )
                 {
-                    icon = new Plasma::IconWidget( q );
+                    icon = new Plasma::IconWidget;
                     icon->setAction( action );
                 }
                 if( action->icon().isNull() )

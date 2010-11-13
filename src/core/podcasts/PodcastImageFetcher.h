@@ -36,8 +36,8 @@ public:
     static KUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
 signals:
-    void imageReady( Podcasts::PodcastChannelPtr channel, QPixmap image );
-    void imageReady( Podcasts::PodcastEpisodePtr episode, QPixmap image );
+    void imageReady( Podcasts::PodcastChannelPtr channel, QImage image );
+    void imageReady( Podcasts::PodcastEpisodePtr episode, QImage image );
     void done( PodcastImageFetcher * );
 
 private slots:

@@ -71,8 +71,8 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plug
     signals:
         //These signals have to be defined in subclasses!
         void updated();
-        void playlistAdded( PlaylistPtr playlist );
-        void playlistRemoved( PlaylistPtr playlist );
+        void playlistAdded( Playlists::PlaylistPtr playlist );
+        void playlistRemoved( Playlists::PlaylistPtr playlist );
 
 };
 

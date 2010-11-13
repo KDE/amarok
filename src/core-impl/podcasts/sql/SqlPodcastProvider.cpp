@@ -1632,8 +1632,8 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
     {
         m_podcastImageFetcher = new PodcastImageFetcher();
         connect( m_podcastImageFetcher,
-                 SIGNAL( imageReady( Podcasts::PodcastChannelPtr, QPixmap ) ),
-                 SLOT( channelImageReady( Podcasts::PodcastChannelPtr, QPixmap ) )
+                 SIGNAL( imageReady( Podcasts::PodcastChannelPtr, QImage ) ),
+                 SLOT( channelImageReady( Podcasts::PodcastChannelPtr, QImage ) )
                );
         connect( m_podcastImageFetcher,
                  SIGNAL( done( PodcastImageFetcher * ) ),
@@ -1645,11 +1645,10 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QPixmap pixmap )
+SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image )
 {
     DEBUG_BLOCK
     debug() << "channel: " << channel->title();
-    QImage image( pixmap.toImage() );
     if( image.isNull() )
         return;
 

@@ -60,12 +60,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual QModelIndex addEmptyGroup( const ColumnVariantMap &data );
         virtual bool removeGroup( const QModelIndex &idx );
 
-    signals:
-        void rowsInserted( const QModelIndex&, int, int );
-        void rowsRemoved( const QModelIndex&, int, int );
-        void layoutAboutToBeChanged();
-        void layoutChanged();
-
     protected slots:
         virtual void buildTree();
 

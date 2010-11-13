@@ -31,6 +31,7 @@
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "PlaylistsInFoldersProxy.h"
+#include "PlaylistsByProviderProxy.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -77,8 +78,13 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    connect( model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
-    Amarok::PrettyTreeView::setModel( model );
+    QAbstractItemModel *srcModel = static_cast<QAbstractProxyModel*>( model )->sourceModel();
+    if( qobject_cast<PlaylistsByProviderProxy*>( srcModel )
+        || qobject_cast<PlaylistsInFoldersProxy*>( srcModel ) )
+    {
+        connect( srcModel, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
+        Amarok::PrettyTreeView::setModel( model );
+    }
 }
 
 void

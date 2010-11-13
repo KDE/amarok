@@ -86,7 +86,7 @@ namespace Collections
             //PlaydarCollection-specific
             void addNewTrack( Meta::PlaydarTrackPtr track );
             QSharedPointer< MemoryCollection > memoryCollection();
-            
+
         private Q_SLOTS:
             void slotPlaydarError( Playdar::Controller::ErrorState error );
             

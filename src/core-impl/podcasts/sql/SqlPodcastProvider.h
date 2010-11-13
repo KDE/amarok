@@ -106,7 +106,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void totalPodcastDownloadProgress( int progress );
 
     private slots:
-        void channelImageReady( Podcasts::PodcastChannelPtr, QPixmap );
+        void channelImageReady( Podcasts::PodcastChannelPtr, QImage );
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();
 

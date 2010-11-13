@@ -87,6 +87,10 @@ class AMAROK_EXPORT App : public KUniqueApplication
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
+        // stub to avoid warning. Fixed in kde 4.6
+        // http://reviewboard.kde.org/r/4278/, BUG:241435
+        void loadCommandLineOptionsForNewInstance() {}
+
     protected:
         virtual bool event( QEvent *event );
 

@@ -63,9 +63,6 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
                 { Q_UNUSED( playlist ) Q_UNUSED(newName) }
         virtual bool deletePlaylists( Playlists::PlaylistList playlistlist )
                 { Q_UNUSED( playlistlist ) return false; }
-
-    signals:
-            void updated();
 };
 
 } //namespace Playlists

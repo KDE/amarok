@@ -67,17 +67,6 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
-    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
-
-    m_filterProxy = new QSortFilterProxyModel( this );
-    m_filterProxy->setDynamicSortFilter( true );
-    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
-
-    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
-    m_defaultItemDelegate = m_playlistView->itemDelegate();
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
-
     //a QWidget with minimumExpanding makes the next button right aligned.
     QWidget *spacerWidget = new QWidget( this );
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
@@ -107,7 +96,20 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    toggleView( toggleAction->isChecked() );
+    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
+    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
+
+    QtGroupingProxy *filterSourceModel = toggleAction->isChecked()
+        ? static_cast<QtGroupingProxy*>(m_byFolderProxy)
+        : static_cast<QtGroupingProxy*>(m_byProviderProxy);
+    m_filterProxy = new QSortFilterProxyModel( this );
+    m_filterProxy->setSourceModel( filterSourceModel );
+    m_filterProxy->setDynamicSortFilter( true );
+    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
+
+    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
+    m_defaultItemDelegate = m_playlistView->itemDelegate();
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
@@ -120,6 +122,8 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistView->setDragEnabled( true );
     m_playlistView->setAcceptDrops( true );
     m_playlistView->setDropIndicatorShown( true );
+
+    toggleView( toggleAction->isChecked() );
 
     foreach( const Playlists::PlaylistProvider *provider,
              The::playlistManager()->providersForCategory( m_playlistCategory ) )
