@@ -42,12 +42,24 @@ TrackItem::setTrack( Meta::TrackPtr trackPtr )
 void
 TrackItem::metadataChanged( Meta::TrackPtr track )
 {
+    if( !track )
+        return;
+
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr  album = track->album();
+
     setData( track->prettyName(), TrackNameRole );
-    setData( track->artist()->prettyName(), TrackArtistRole );
     setData( track->trackNumber(), TrackNumberRole );
     setData( track->length(), TrackLengthRole );
-    setData( track->album()->isCompilation(), AlbumCompilationRole );
-    setData( track->album()->tracks().count(), AlbumTrackCountRole );
+
+    if( artist )
+        setData( artist->prettyName(), TrackArtistRole );
+
+    if( album )
+    {
+        setData( album->isCompilation(), AlbumCompilationRole );
+        setData( album->tracks().count(), AlbumTrackCountRole );
+    }
     setToolTip( QString( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
 }
 
