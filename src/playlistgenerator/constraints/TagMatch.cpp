@@ -236,12 +236,23 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18n("Match tag:%1 %2 %3 %4") );
-    v = v.arg( ( m_invert ? i18n(" not") : "" ), m_filter.fieldToString(),
-               MetaQueryWidget::conditionToString( m_filter.condition,
-                                                   m_filter.isDate()) );
-
-    return v.arg( valueToString() );
+    if( m_filter.field == 0 ) // simple search
+    {
+        return i18n("Match tag:%2 %3 %4 anywhere").
+            arg( MetaQueryWidget::conditionToString( m_filter.condition,
+                                                     m_filter.isDate()),
+                 ( m_invert ? i18n(" not") : "" ),
+                 valueToString() );
+    }
+    else
+    {
+        return i18n("Match tag:%1 %2 %3 %4").
+            arg( m_filter.fieldToString(),
+                 MetaQueryWidget::conditionToString( m_filter.condition,
+                                                     m_filter.isDate()),
+                 ( m_invert ? i18n(" not") : "" ),
+                 valueToString() );
+    }
 }
 
 Collections::QueryMaker*
@@ -635,6 +646,7 @@ ConstraintTypes::TagMatchEditWidget::~TagMatchEditWidget()
 void
 ConstraintTypes::TagMatchEditWidget::slotUpdateStrictness()
 {
+    ui.label_Strictness->setEnabled( ui.attributeQuery->filter().isNumeric() );
     ui.label_Fuzzy->setEnabled( ui.attributeQuery->filter().isNumeric() );
     ui.slider_Strictness->setEnabled( ui.attributeQuery->filter().isNumeric() );
     ui.label_Exact->setEnabled( ui.attributeQuery->filter().isNumeric() );

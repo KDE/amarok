@@ -59,6 +59,7 @@ TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
     m_unitSelection->addItem( i18np( "minute", "minutes", 0 ) );
     m_unitSelection->addItem( i18np( "hour", "hours", 0 ) );
     m_unitSelection->addItem( i18np( "day", "days", 0 ) );
+    m_unitSelection->addItem( i18np( "month", "months", 0 ) );
 
     QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->setContentsMargins(0, 0, 0, 0);
@@ -71,6 +72,8 @@ qint64 TimeDistanceWidget::timeDistance() const
     qint64 time = m_timeEdit->value();
     switch( m_unitSelection->currentIndex() )
     {
+    case 4:
+        time *= 30; // months
     case 3:
         time *= 24; // days
     case 2:
@@ -84,6 +87,7 @@ qint64 TimeDistanceWidget::timeDistance() const
 
 void TimeDistanceWidget::setTimeDistance( qint64 value )
 {
+    // as we don't store the time unit we try to reconstuct it
     int unit = 0;
     if( value > 600 || !(value % 60) ) {
         unit++;
@@ -96,6 +100,11 @@ void TimeDistanceWidget::setTimeDistance( qint64 value )
             if( value > 600 || !(value % 24) ) {
                 unit++;
                 value /= 24;
+
+                if( value > 89 || !(value % 30) ) {
+                    unit++;
+                    value /= 30;
+                }
             }
         }
     }
@@ -117,6 +126,7 @@ void TimeDistanceWidget::slotUpdateComboBoxLabels( int value )
     m_unitSelection->setItemText(1, i18np("minute", "minutes", value));
     m_unitSelection->setItemText(2, i18np("hour", "hours", value));
     m_unitSelection->setItemText(3, i18np("day", "days", value));
+    m_unitSelection->setItemText(4, i18np("month", "months", value));
 }
 
 
@@ -272,10 +282,19 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_filter.field == field )
         return; // nothing to do
 
+    // -- if the field was changed, reset the values (but not always)
     if( isNumeric( m_filter.field ) != isNumeric( field ) )
         m_filter.value.clear();
-    m_filter.numValue = 0;
-    m_filter.numValue2 = 0;
+    if( !isDate( m_filter.field ) && isDate( field ) )
+    {
+        m_filter.numValue = QDateTime::currentDateTime().toTime_t();
+        m_filter.numValue2 = QDateTime::currentDateTime().toTime_t();
+    }
+    else
+    {
+        m_filter.numValue = 0;
+        m_filter.numValue2 = 0;
+    }
 
     m_filter.field = field;
 
@@ -454,8 +473,8 @@ MetaQueryWidget::makeCompareSelection()
     else if( isDate(field) )
     {
         m_compareSelection = new KComboBox();
-        m_compareSelection->addItem( conditionToString( LessThan, true ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( Equals, true ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( LessThan, true ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan, true ), (int)GreaterThan );
         if( !m_apgMode )
         {
@@ -468,8 +487,8 @@ MetaQueryWidget::makeCompareSelection()
     else if( isNumeric(field) )
     {
         m_compareSelection = new KComboBox();
-        m_compareSelection->addItem( conditionToString( LessThan ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( Equals ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( LessThan ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan ), (int)GreaterThan );
         if( !m_apgMode )
             m_compareSelection->addItem( conditionToString( Between ), (int)Between );
@@ -480,13 +499,20 @@ MetaQueryWidget::makeCompareSelection()
             return; // no compare selection for text fields
 
         m_compareSelection = new KComboBox();
+        m_compareSelection->addItem( conditionToString( Contains ), (int)Contains );
         m_compareSelection->addItem( conditionToString( Matches ), (int)Matches );
         m_compareSelection->addItem( conditionToString( StartsWith ), (int)StartsWith );
         m_compareSelection->addItem( conditionToString( EndsWith ), (int)EndsWith );
-        m_compareSelection->addItem( conditionToString( Contains ), (int)Contains );
     }
 
+    // -- select the correct entry (even if the condition is not one of the selection)
     int index = m_compareSelection->findData( int(m_filter.condition) );
+    if( index == -1 )
+    {
+        index = 0;
+        m_filter.condition = FilterCondition(m_compareSelection->itemData( index ).toInt());
+        compareChanged(index);
+    }
     m_compareSelection->setCurrentIndex( index == -1 ? 0 : index );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
