@@ -67,7 +67,7 @@ bool
 LabelsEngine::sourceRequestEvent( const QString &name )
 {
     DEBUG_BLOCK
-    Q_UNUSED( name )
+//     Q_UNUSED( name )
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( coll )
@@ -84,7 +84,7 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->run();
     }
 
-    update();
+    update( name == "reload" );
 
     return true;
 }
@@ -111,7 +111,7 @@ LabelsEngine::dataQueryDone()
 }
 
 void
-LabelsEngine::update()
+LabelsEngine::update( bool reload )
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -130,6 +130,13 @@ LabelsEngine::update()
 
     const QString title = track->name();
     Meta::ArtistPtr artist = track->artist();
+    if( !artist )
+    {
+        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        debug() << "track has no artist, returning";
+        return;
+    }
+
     QStringList userLabels;
 
     foreach( const Meta::LabelPtr &label, track->labels() )
@@ -138,11 +145,21 @@ LabelsEngine::update()
     userLabels.sort();
     m_userLabels.sort();
 
-    // -- check if really something changed
-    if( artist && artist->name() == m_artist &&
-        title == m_title &&
-        userLabels == m_userLabels )
-        return; // nothing to do
+    // check what changed
+    if( !reload && artist->name() == m_artist && title == m_title && userLabels == m_userLabels )
+    {
+        // nothing important changed
+        return;
+    }
+    else if( !reload && artist->name() == m_artist && title == m_title )
+    {
+        // only the labels changed - no download necessary
+        debug() << "only the labels changed - no download necessary";
+        QVariant varUser;
+        varUser.setValue< QStringList >( userLabels );
+        setData( "labels", "user", varUser );
+        return;
+    }
 
     removeAllData( "labels" );
     setData( "labels", "state", "started" );
@@ -155,6 +172,7 @@ LabelsEngine::update()
         m_album.clear();
     
     m_userLabels = userLabels;
+    m_webLabels.clear();
 
     QVariant varUser;
     varUser.setValue< QStringList >( m_userLabels );
@@ -162,22 +180,11 @@ LabelsEngine::update()
 
     // send the web labels too, because the labels applet clears all web labels if user labels arrive
     QVariant varWeb;
-    varWeb.setValue< QMap< QString, QVariant > > ( m_webLabels );
+    varWeb.setValue< QMap< QString, QVariant > >( m_webLabels );
     setData( "labels", "web", varWeb );
 
-    if( m_title.isEmpty() || m_artist.isEmpty() )
-    {
-        // stop timeout timer
-        m_timeoutTimer.stop();
-        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
-        debug() << "current track is invalid, returning";
-        return;
-    }
-    else
-    {
-        m_try = 0;
-        fetchLastFm();
-    }
+    m_try = 0;
+    fetchLastFm();
 }
 
 void
@@ -197,13 +204,13 @@ LabelsEngine::fetchLastFm()
         return;
     }
     
-    if ( m_try == 0 )
+    if( m_try == 0 )
     {
         currentArtist = m_artist;
         currentTitle = m_title;
         m_timeoutTimer.start();
     }
-    else if ( m_try == 1 )
+    else if( m_try == 1 )
     {
         currentArtist = m_artist;
         currentTitle = m_title;
@@ -225,7 +232,7 @@ LabelsEngine::fetchLastFm()
             return;
         }
     }
-    else if ( m_try == 2 )
+    else if( m_try == 2 )
     {
         currentArtist = m_artist;
         currentTitle = m_title;
@@ -249,7 +256,7 @@ LabelsEngine::fetchLastFm()
                 break;
             }
         }
-        if ( currentArtist == m_artist ) // the title got modified the same way as on the last try
+        if( currentArtist == m_artist ) // the title got modified the same way as on the last try
         {
             // stop timeout timer
             m_timeoutTimer.stop();
@@ -268,7 +275,7 @@ LabelsEngine::fetchLastFm()
         return;
     }
 
-    if ( !currentArtist.isEmpty() && !currentTitle.isEmpty() )
+    if( !currentArtist.isEmpty() && !currentTitle.isEmpty() )
     {
         setData( "labels", "message", "fetching");
         // send the atist and title actually used for searching labels
@@ -288,6 +295,7 @@ LabelsEngine::fetchLastFm()
         m_lastFmUrl = lastFmUrl;
         
         QNetworkRequest req( lastFmUrl );
+//         req.setAttribute( QNetworkRequest::ConnectionEncryptedAttribute, QNetworkRequest::AlwaysNetwork );
         The::networkAccessManager()->get( req );
         The::networkAccessManager()->getData( lastFmUrl, this,
             SLOT(resultLastFm(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
@@ -311,7 +319,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         return;
     }
 
-    if ( e.code != QNetworkReply::NoError )
+    if( e.code != QNetworkReply::NoError )
     {
         // stop timeout timer
         m_timeoutTimer.stop();
@@ -322,21 +330,21 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
 
     QDomDocument xmlDoc;
     xmlDoc.setContent( data );
-    QDomElement topElement = xmlDoc.elementsByTagName("toptags").at(0).toElement();
-    QDomNodeList xmlNodeList = topElement.elementsByTagName( "tag" );
+    const QDomElement topElement = xmlDoc.elementsByTagName("toptags").at(0).toElement();
+    const QDomNodeList xmlNodeList = topElement.elementsByTagName( "tag" );
 
-    for ( uint i = 0; i < xmlNodeList.length(); i++ )
+    for( uint i = 0; i < xmlNodeList.length(); i++ )
     {
         // Get all the information
-        QDomElement nd = xmlNodeList.at( i ).toElement();
-        QDomElement nameElement = nd.elementsByTagName("name").at(0).toElement();
-        QString name = nameElement.text().toLower();
-        QDomElement countElement = nd.elementsByTagName("count").at(0).toElement();
-        int count = countElement.text().toInt();
+        const QDomElement nd = xmlNodeList.at( i ).toElement();
+        const QDomElement nameElement = nd.elementsByTagName("name").at(0).toElement();
+        const QString name = nameElement.text().toLower();
+        const QDomElement countElement = nd.elementsByTagName("count").at(0).toElement();
+        const int count = countElement.text().toInt();
         m_webLabels.insert( name, count );
     }
 
-    if ( m_webLabels.isEmpty() )
+    if( m_webLabels.isEmpty() )
     {
         if( m_try < 2 )
         {

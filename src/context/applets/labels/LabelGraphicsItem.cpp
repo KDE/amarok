@@ -24,7 +24,7 @@
 #include <KIconLoader>
 
 // Qt
-#include <QFont>
+#include <QApplication>
 #include <QGraphicsSceneHoverEvent>
 #include <QPropertyAnimation>
 
@@ -74,9 +74,10 @@ LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize,
 LabelGraphicsItem::~LabelGraphicsItem()
 {}
 
-void LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
+void
+LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
 {
-    QFont f = font();
+    QFont f = qApp->font();
     f.setPointSize( f.pointSizeF() + deltaPointSize );
     setFont( f );
 
@@ -105,15 +106,24 @@ void LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
     m_blacklistLabelItem.data()->setEnabled( iconsCount >= 3 );
 }
 
-void LabelGraphicsItem::setSelected( bool selected )
+void
+LabelGraphicsItem::setSelected( bool selected )
 {
     m_selected = selected;
-    setHoverValue( 0.0 );
-    
+    setHoverValue( (float)isUnderMouse() );
     update();
 }
 
-void LabelGraphicsItem::updateHoverStatus()
+void
+LabelGraphicsItem::setSelectedColor( QColor color )
+{
+    m_selectedColor = color;
+    setSelected( m_selected );
+    update();
+}
+
+void
+LabelGraphicsItem::updateHoverStatus()
 {
     if( m_addLabelAnimation.data()->state() != QAbstractAnimation::Stopped )
         m_addLabelAnimation.data()->stop();
@@ -164,7 +174,8 @@ void LabelGraphicsItem::updateHoverStatus()
     }
 }
 
-void LabelGraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
+void
+LabelGraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
 
@@ -206,7 +217,8 @@ void LabelGraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     update();
 }
 
-void LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
+void
+LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
     
@@ -248,7 +260,8 @@ void LabelGraphicsItem::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     update();
 }
 
-void LabelGraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
+void
+LabelGraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( m_addLabelItem.data()->boundingRect().contains( mapToItem( m_addLabelItem.data(), event->pos() ) ) ||
         m_removeLabelItem.data()->boundingRect().contains( mapToItem( m_removeLabelItem.data(), event->pos() ) ) )
@@ -259,17 +272,19 @@ void LabelGraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
         emit blacklisted( toPlainText() );
 }
 
-qreal LabelGraphicsItem::hoverValue()
+qreal
+LabelGraphicsItem::hoverValue()
 {
     return m_hoverValue;
 }
 
-void LabelGraphicsItem::setHoverValue( qreal value )
+void
+LabelGraphicsItem::setHoverValue( qreal value )
 {
     m_hoverValue = value;
     const QPalette p;
     const QColor c = p.color( QPalette::WindowText );
-    const QColor defaultColor = m_selected ? QColor(0, 110, 0) : c;
+    const QColor defaultColor = m_selected ? m_selectedColor : c;
 
     const int red   = defaultColor.red()   + ( m_hoverColor.red()   - defaultColor.red()   ) * m_hoverValue;
     const int green = defaultColor.green() + ( m_hoverColor.green() - defaultColor.green() ) * m_hoverValue;

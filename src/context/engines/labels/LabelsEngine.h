@@ -48,7 +48,7 @@ protected:
 
 private slots:
 
-    void update();
+    void update( bool reload = false );
 
     /**
      *   This slots will handle last.fm result for this query:

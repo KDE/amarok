@@ -31,6 +31,7 @@ class LabelGraphicsItem : public QGraphicsTextItem
 {
     Q_OBJECT
     Q_PROPERTY( qreal hoverValue READ hoverValue WRITE setHoverValue )
+    Q_PROPERTY( QPointF pos READ pos WRITE setPos )
 
 public:
     LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem *parent );
@@ -38,6 +39,7 @@ public:
 
     void setDeltaPointSize( qreal deltaPointSize );
     void setSelected( bool selected );
+    void setSelectedColor( QColor color );
     void updateHoverStatus();
     
 protected:
@@ -51,9 +53,9 @@ private:
 
     qreal                            m_hoverValue;
     QColor                           m_hoverColor;
-    
-    bool                             m_selected;
     QWeakPointer<QPropertyAnimation> m_hoverValueAnimation;
+    bool                             m_selected;
+    QColor                           m_selectedColor;
     
     QWeakPointer<LabelOverlayButton> m_addLabelItem;
     QWeakPointer<LabelOverlayButton> m_removeLabelItem;

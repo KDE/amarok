@@ -69,8 +69,16 @@ private:
     QStringList                     m_allLabels;
     QStringList                     m_userLabels;
     QMap < QString, QVariant >      m_webLabels;
-    QList < LabelGraphicsItem * >   m_labelItems;
 
+    // the list of the active label items and their animations - both lists have to be in sync
+    QList < LabelGraphicsItem * >   m_labelItems;
+    QList < QPropertyAnimation * >  m_labelAnimations;
+
+    // the list of the label items that are about to be delete and are "flying out" and their animations - both lists have to be in sync
+    QList < LabelGraphicsItem * >   m_labelItemsToDelete;
+    QList < QPropertyAnimation * >  m_labelAnimationsToDelete;
+
+    // configuration values
     int                     m_numLabels;
     int                     m_minCount;
     int                     m_personalCount;
@@ -80,16 +88,21 @@ private:
     bool                    m_matchTitle;
     bool                    m_matchAlbum;
     QStringList             m_blacklist;
+    QColor                  m_selectedColor;
     
     bool                    m_stoppedstate;
     QString                 m_artist;
     QString                 m_title;
     QString                 m_album;
 
+    // if the user adds a label through the combobox, the animation should start at the bottom
+    bool                    m_selfAdded;
+    
     Ui::labelsSettings      ui_Settings;
 
 private slots:
     void reload();
+    void animationFinished();
 
 };
 

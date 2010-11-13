@@ -38,7 +38,8 @@ LabelOverlayButton::~LabelOverlayButton()
         delete m_iconEffect;
 }
 
-void LabelOverlayButton::setPixmap( const QPixmap& pixmap )
+void
+LabelOverlayButton::setPixmap( const QPixmap& pixmap )
 {
     m_pixmap = pixmap;
 
@@ -48,12 +49,14 @@ void LabelOverlayButton::setPixmap( const QPixmap& pixmap )
         m_scaledPixmap = m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation );
 }
 
-QPixmap LabelOverlayButton::pixmap()
+QPixmap
+LabelOverlayButton::pixmap()
 {
     return m_pixmap;
 }
 
-void LabelOverlayButton::setSize( int size )
+void
+LabelOverlayButton::setSize( int size )
 {
     m_size = size;
     
@@ -63,12 +66,14 @@ void LabelOverlayButton::setSize( int size )
         m_scaledPixmap = m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation );
 }
 
-int LabelOverlayButton::size()
+int
+LabelOverlayButton::size()
 {
     return m_size;
 }
 
-void LabelOverlayButton::updateHoverStatus()
+void
+LabelOverlayButton::updateHoverStatus()
 {
     if( isUnderMouse() )
         m_scaledPixmap = m_iconEffect->apply( m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation ), KIconLoader::Desktop, KIconLoader::ActiveState );
@@ -76,7 +81,8 @@ void LabelOverlayButton::updateHoverStatus()
         m_scaledPixmap = m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation );
 }
 
-void LabelOverlayButton::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
+void
+LabelOverlayButton::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
     
@@ -84,7 +90,8 @@ void LabelOverlayButton::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     update();
 }
 
-void LabelOverlayButton::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
+void
+LabelOverlayButton::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
     
@@ -92,12 +99,14 @@ void LabelOverlayButton::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     update();
 }
 
-QRectF LabelOverlayButton::boundingRect() const
+QRectF
+LabelOverlayButton::boundingRect() const
 {
     return QRectF( QPointF( 0, 0 ), m_scaledPixmap.size() );
 }
 
-void LabelOverlayButton::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+void
+LabelOverlayButton::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
     Q_UNUSED( option )
     Q_UNUSED( widget )
