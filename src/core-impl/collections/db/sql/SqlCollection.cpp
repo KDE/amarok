@@ -282,7 +282,7 @@ SqlCollection::unblockUpdatedSignal()
         m_blockUpdatedSignalCount --;
 
         // check if meanwhile somebody had updated the collection
-        if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == false )
+        if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
         {
             m_updatedSignalRequested = false;
             locker.unlock();
