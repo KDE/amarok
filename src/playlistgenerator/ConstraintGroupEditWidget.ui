@@ -11,9 +11,6 @@
     <height>106</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string comment="KDE::DoNotExtract">Form</string>
-  </property>
   <property name="whatsThis">
    <string>An editor for Constraint Groups.  You can set the group type to &quot;match all&quot; or &quot;match any&quot;.  When the group type is set to &quot;match all&quot;, the Generator will try to have the playlist match all the constraints within the group.  When the group type is set to &quot;match any&quot;, the Generator will try to have the playlist match any of the constraints within the group.</string>
   </property>

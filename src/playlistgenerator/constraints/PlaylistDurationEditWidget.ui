@@ -11,9 +11,6 @@
     <height>113</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string comment="KDE::DoNotExtract">Form</string>
-  </property>
   <property name="whatsThis">
    <string>An editor for a PlaylistDuration constraint.  The user can set the name of the constraint; the target duration and whether the playlist should be less than, equal to, or greater than that duration; and the strictness with which the APG should match that duration.</string>
   </property>

@@ -11,9 +11,6 @@
     <height>113</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string comment="KDE::DoNotExtract">Form</string>
-  </property>
   <property name="whatsThis">
    <string>An editor for a CheckPoint constraint.  The user can set the track, album, or artist to be placed at a certain position in the playlist.</string>
   </property>
