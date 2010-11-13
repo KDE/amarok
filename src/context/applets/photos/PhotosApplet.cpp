@@ -48,12 +48,7 @@ PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
-
-    EngineController *engine = The::engineController();
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying() ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
+    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 void
@@ -61,9 +56,6 @@ PhotosApplet::init()
 {
     // Call the base implementation.
     Context::Applet::init();
-
-    setBackgroundHints( Plasma::Applet::NoBackground );
-    resize( 500, -1 );
     
     // Create label
     QFont labelFont;
@@ -73,10 +65,11 @@ PhotosApplet::init()
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Photos" ) );
     m_headerText->setDrawBackground( true );
+    m_headerText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
     // Set the collapse size
-    setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
-    
+    setCollapseHeight( m_headerText->boundingRect().height() + 2 * standardPadding() + 2 );
+
     // Icon
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -98,6 +91,7 @@ PhotosApplet::init()
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( headerLayout );
     layout->addItem( m_widget );
+    layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
@@ -114,15 +108,20 @@ PhotosApplet::init()
     if ( m_Animation == i18n( "Fading" ) )
         m_widget->setMode( 2 );
   
-    constraintsEvent();
-
     connectSource( "photos" );
     connect( dataEngine( "amarok-photos" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
     dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
-    setCollapseOn();
+    stopped();
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
+    connect( engine, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
+
+    updateConstraints();
+    update();
 }
 
 PhotosApplet::~PhotosApplet()
@@ -131,7 +130,7 @@ PhotosApplet::~PhotosApplet()
 }
 
 void
-PhotosApplet::trackPlaying( )
+PhotosApplet::trackPlaying()
 {
     DEBUG_BLOCK
     m_stoppedstate = false;
@@ -144,12 +143,16 @@ PhotosApplet::stopped()
     DEBUG_BLOCK
 
     m_stoppedstate = true;
-    m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
+    m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
     m_widget->clear();
     m_widget->hide();
     setBusy( false );
-    setCollapseOn();
     dataEngine( "amarok-photos" )->query( QString( "photos:stopped" ) );
+    setMinimumHeight( 0 );
+    emit sizeHintChanged( Qt::MinimumSize );
+    setCollapseOn();
+    updateConstraints();
+    update();
 }
 
 void 
@@ -169,30 +172,22 @@ PhotosApplet::connectSource( const QString &source )
 void 
 PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-//    DEBUG_BLOCK
     Q_UNUSED( name )
 
     if ( data.empty() )
         return;
 
+   DEBUG_BLOCK
     if ( m_stoppedstate )
     {
-        m_headerText->setText( i18n( "Photos" )  );
-        updateConstraints();
-        update();
-        m_widget->clear();
-        m_widget->hide();
-        setBusy( false );
-        setCollapseOn();
+        stopped();
         return;
     }
     // if we get a message, show it
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
         //FIXME: This should use i18n( "blah %1 blah", foo ). 
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "Fetching ..." ) );
-        updateConstraints();
-        update();
+        m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + i18n( "Fetching ..." ) );
         setCollapseOff();
         m_widget->clear();
         m_widget->hide();
@@ -201,8 +196,6 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if ( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
     {
-        updateConstraints();
-        update();
         setCollapseOn();
         m_widget->clear();
         m_widget->hide();
@@ -211,9 +204,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else if ( data.contains( "message" ) )
     {
         //FIXME: This should use i18n( "blah %1 blah", foo ). 
-        m_headerText->setText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
-        updateConstraints();
-        update();
+        m_headerText->setScrollingText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
         m_widget->hide();
         setCollapseOn();
         setBusy( false );
@@ -226,9 +217,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         if ( isAppletExtended() )
         {
             //FIXME: This should use i18n( "blah %1 blah", foo ). 
-            m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
-            updateConstraints();
-            update();
+            m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
             setCollapseOff();
             // Send the data to the scrolling widget
             m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
@@ -281,6 +270,4 @@ PhotosApplet::saveSettings()
     dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
 }
 
-
 #include "PhotosApplet.moc"
-
