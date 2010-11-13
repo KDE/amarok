@@ -33,7 +33,7 @@
 
 // Define Application wide prefix
 #ifndef APP_PREFIX
-#define APP_PREFIX QLatin1String( "amarok" )
+#define APP_PREFIX QLatin1String( "amarok:" )
 #endif
 
 #define DEBUG_INDENT_OBJECTNAME QLatin1String("Debug_Indent_object")
@@ -97,7 +97,7 @@ static QString reverseColorize( const QString &text, int color )
     return QString( "\x1b[07;3%1m%2\x1b[00;39m" ).arg( QString::number(color), text );
 }
 
-const QString& Debug::indent()
+QString Debug::indent()
 {
     return IndentPrivate::instance()->m_string;
 }
@@ -128,7 +128,7 @@ kdbgstream Debug::dbgstream( DebugLevel level )
         return kDebugDevNull();
 
     mutex.lock();
-    const QString &currentIndent = indent();
+    const QString currentIndent = indent();
     mutex.unlock();
 
     QString text = QString("%1%2")

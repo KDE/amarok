@@ -90,7 +90,7 @@ namespace Debug
     AMAROK_CORE_EXPORT bool debugColorEnabled();
     AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
     AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
-    AMAROK_CORE_EXPORT const QString &indent();
+    AMAROK_CORE_EXPORT QString indent();
 
     static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {
 #ifdef DEBUG_PREFIX
