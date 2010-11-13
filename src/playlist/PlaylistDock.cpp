@@ -111,7 +111,7 @@ Playlist::Dock::polish()
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
-    m_playlistView = new PrettyListView( m_mainWidget );
+    m_playlistView = new PrettyListView();
     m_playlistView->show();
 
     connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int, bool ) ), m_playlistView, SLOT( find( const QString &, int, bool ) ) );
