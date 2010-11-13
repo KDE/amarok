@@ -134,6 +134,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QHash<TrackId, Meta::TrackPtr > m_trackMap;
         QHash<QString, Meta::TrackPtr > m_uidMap;
         QHash<QString, Meta::ArtistPtr > m_artistMap;
+        QHash<int, Meta::ArtistPtr > m_artistIdMap;
         QHash<QString, Meta::ComposerPtr > m_composerMap;
         QHash<QString, Meta::GenrePtr > m_genreMap;
         QHash<int, Meta::YearPtr > m_yearMap;

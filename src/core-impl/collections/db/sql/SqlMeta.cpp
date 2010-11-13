@@ -1531,6 +1531,8 @@ SqlTrack::remove()
     m_composer = 0;
     m_genre = 0;
     m_year = 0;
+
+    m_collection->collectionUpdated();
 }
 
 //---------------------- class Artist --------------------------

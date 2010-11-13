@@ -112,8 +112,8 @@ CollectionScanner::BatchFile::write( const QString &path )
     foreach( const TimeDefinition &pair, m_timeDefinitions )
     {
         writer.writeStartElement( "mtime" );
-        if( pair.second > 0 )
-            writer.writeAttribute( "time", QString::number( pair.second ) );
+        // note: some file systems return an mtime of 0
+        writer.writeAttribute( "time", QString::number( pair.second ) );
 
         writer.writeCharacters( pair.first );
         writer.writeEndElement();

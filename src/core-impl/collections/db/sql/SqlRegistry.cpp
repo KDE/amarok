@@ -84,7 +84,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
         // update old one
         dirId = res[0].toUInt();
         uint oldMtime = res[1].toUInt();
-        if( mtime != 0 && oldMtime != mtime )
+        if( oldMtime != mtime )
         {
             QString update = QString( "UPDATE directories SET changedate = %1 "
                                       "WHERE id = %2;" )
@@ -408,6 +408,7 @@ SqlRegistry::getArtist( const QString &name )
 
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
     m_artistMap.insert( name, artist );
+    m_artistIdMap.insert( id, artist );
     return artist;
 }
 
@@ -415,6 +416,9 @@ Meta::ArtistPtr
 SqlRegistry::getArtist( int id )
 {
     QMutexLocker locker( &m_artistMutex );
+
+    if( m_artistIdMap.contains( id ) )
+        return m_artistIdMap.value( id );
 
     QString query = QString( "SELECT name FROM artists WHERE id = %1;" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
@@ -424,6 +428,7 @@ SqlRegistry::getArtist( int id )
     QString name = res[0];
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
     m_artistMap.insert( name, artist );
+    m_artistIdMap.insert( id, artist );
     return artist;
 }
 
@@ -438,6 +443,7 @@ SqlRegistry::getArtist( int id, const QString &name )
 
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
     m_artistMap.insert( name, artist );
+    m_artistIdMap.insert( id, artist );
     return artist;
 }
 
@@ -811,7 +817,8 @@ SqlRegistry::emptyCache()
         foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap );
         //run before artist so that album artist pointers can be garbage collected
         foreachCollectGarbage( AlbumKey, Meta::AlbumPtr, 2, m_albumMap );
-        foreachCollectGarbage( QString, Meta::ArtistPtr, 2, m_artistMap );
+        foreachCollectGarbage( QString, Meta::ArtistPtr, 3, m_artistMap );
+        foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistIdMap );
         foreachCollectGarbage( QString, Meta::GenrePtr, 2, m_genreMap );
         foreachCollectGarbage( QString, Meta::ComposerPtr, 2, m_composerMap );
         foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap );
