@@ -133,26 +133,35 @@ TabsView::showTab( TabsItem *tab )
         {
             tabText.replace( "\n", htmlCr, Qt::CaseInsensitive);
 
-            QString linkColor =The::paletteHandler()->palette().link().color().name();
-            int fontSize = QFont().pointSize();
-            int captionWeight = 600;
+            QFont tabFont( "monospace");
+            tabFont.setStyleHint( QFont::Courier );
+            tabFont.setStyleStrategy( QFont::PreferAntialias );
+            tabFont.setWeight( QFont::Normal );
+            tabFont.setPointSize( QFont().pointSize() );
+
+            QFont headingFont( "sans-serif" );
+            headingFont.setPointSize( tabFont.pointSize() + 2 );
+            headingFont.setStyleHint( QFont::SansSerif );
+            headingFont.setStyleStrategy( QFont::PreferAntialias );
+            headingFont.setWeight( QFont::Black );
+            QString linkColor = The::paletteHandler()->palette().link().color().name();
+            int headingWeight = 600;
 
             QString htmlData = "<html>";
-                    htmlData += "<body style=\" font-family:'Monospace'; font-size:" + QString::number( fontSize ) + "pt;";
-                    htmlData += "font-weight:" + QString::number( QFont::Normal ) + "; font-style:normal;\">";
+                    htmlData += "<body style=\"font-family:'" + tabFont.family() + "';font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
+                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ";\">";
 
                     // tab heading + tab source
-                    htmlData += "<p><span style=\" font-family:'Sans Serif';";
-                    htmlData += "font-size:" + QString::number( fontSize + 2 ) + "pt;";
-                    htmlData += "font-weight:" + QString::number( captionWeight ) + ";\">";
+                    htmlData += "<p><span style=\"font-family:'" + headingFont.family() + "';font-size:" + QString::number( headingFont.pointSize() ) + "pt;";
+                    htmlData += "font-weight:" + QString::number( headingWeight ) + ";\">";
                     htmlData += tab->getTabTitle();
-                    htmlData += " (" + i18n( "tab provided from: ") + "<a href=\"" + tab->getTabUrl() + "\">";
-                    htmlData += "<span style=\" text-decoration: underline; color:" + linkColor + ";\">";
+                    htmlData += " (" + i18n( "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";
+                    htmlData += "<span style=\"text-decoration: underline; color:" + linkColor + ";\">";
                     htmlData += tab->getTabSource() + "</a>";
                     htmlData += ")</span></p>";
 
                     // tab data
-                    htmlData += tabText + "</p></body></html>";
+                    htmlData += tabText + "</body></html>";
 
             m_tabTextBrowser->nativeWidget()->setHtml( htmlData );
         }
