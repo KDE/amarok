@@ -672,7 +672,6 @@ App::continueInit()
     }
 
     PERF_LOG( "App init done" )
-    KConfigGroup config = KGlobal::config()->group( "General" );
 
     // NOTE: First Run Tutorial disabled for 2.1-beta1 release (too buggy / unfinished)
 #if 0
@@ -711,44 +710,7 @@ App::continueInit()
     else
 #endif
     {
-        if( config.readEntry( "First Run", true ) )
-        {
-            const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-            const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
-            const QDir dir( musicDir );
-
-            int result = KMessageBox::No;
-            if( dir.exists() && dir.isReadable() )
-            {
-                result = KMessageBox::questionYesNoCancel(
-                    mainWindow(),
-                    i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
-                    );
-            }
-
-            KConfigGroup folderConf = Amarok::config( "Collection Folders" );
-            bool useMusicLocation( false );
-            switch( result )
-            {
-            case KMessageBox::Yes:
-                if( CollectionManager::instance()->primaryCollection() )
-                {
-                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
-                    CollectionManager::instance()->startFullScan();
-                    useMusicLocation = true;
-                }
-                break;
-
-            case KMessageBox::No:
-                slotConfigAmarok( "CollectionConfig" );
-                break;
-
-            default:
-                break;
-            }
-            folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
-            config.writeEntry( "First Run", false );
-        }
+        handleFirstRun();
     }
 
 
@@ -863,6 +825,47 @@ int App::newInstance()
     return 0;
 }
 
+void App::handleFirstRun()
+{
+    KConfigGroup config = KGlobal::config()->group( "General" );
+    if( !config.readEntry( "First Run", true ) )
+        return;
+
+    const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+    const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+    const QDir dir( musicDir );
+
+    int result = KMessageBox::No;
+    if( dir.exists() && dir.isReadable() )
+    {
+        result = KMessageBox::questionYesNoCancel(
+            mainWindow(),
+            i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
+            );
+    }
+
+    KConfigGroup folderConf = Amarok::config( "Collection Folders" );
+    bool useMusicLocation( false );
+    switch( result )
+    {
+    case KMessageBox::Yes:
+        if( CollectionManager::instance()->primaryCollection() )
+        {
+            CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+            CollectionManager::instance()->startFullScan();
+            useMusicLocation = true;
+        }
+        break;
+
+    case KMessageBox::No:
+        slotConfigAmarok( "CollectionConfig" );
+        break;
+
+    default:
+        break;
+    }
+    folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
+    config.writeEntry( "First Run", false );
+}
 
 #include "App.moc"
-

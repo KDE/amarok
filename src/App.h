@@ -98,6 +98,8 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void slotTrashResult( KJob *job );
 
     private:
+        void handleFirstRun();
+
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
         QWeakPointer<MainWindow>    m_mainWindow;
