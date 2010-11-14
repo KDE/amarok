@@ -67,6 +67,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         out << "loose-innodb = 0" << endl;
         out << "skip-grant-tables = 1" << endl;
         out << "myisam-recover = FORCE" << endl;
+        out << "key_buffer_size = 16777216" << endl; // (16Mb)
         out << "character-set-server = utf8" << endl;
         out << "collation-server = utf8_bin" << endl;
         //If the file is world-writable MySQL won't even read it
@@ -118,13 +119,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
 }
 
 MySqlEmbeddedStorage::~MySqlEmbeddedStorage()
-{
-    if( m_db != 0 )
-    {
-        mysql_close( m_db );
-        m_db = 0;
-    }
-}
+{}
 
 QString
 MySqlEmbeddedStorage::type() const
