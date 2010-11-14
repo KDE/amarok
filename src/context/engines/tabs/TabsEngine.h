@@ -29,9 +29,7 @@ class KJob;
 using namespace Context;
 
  /**
-   *   This class provides tabs infromation for usage in context applets
-   *   @author Rainer Sigle
-   *   @version 0.1
+   *   This engine provides tab-data for the current song
    */
 class TabsEngine : public DataEngine
 {
@@ -57,26 +55,6 @@ class TabsEngine : public DataEngine
         QStringList sources() const;
 
     protected:
-        /**
-         * When a source that does not currently exist is requested by the
-         * consumer, this method is called to give the DataEngine the
-         * opportunity to create one.
-         *
-         * The name of the data source (e.g. the source parameter passed into
-         * setData) must be the same as the name passed to sourceRequestEvent
-         * otherwise the requesting visualization may not receive notice of a
-         * data update.
-         *
-         * If the source can not be populated with data immediately (e.g. due to
-         * an asynchronous data acquisition method such as an HTTP request)
-         * the source must still be created, even if it is empty. This can
-         * be accomplished in these cases with the follow line:
-         *
-         *      setData(name, DataEngine::Data());
-         *
-         * \param source : the name of the source that has been requested
-         * \return true if a DataContainer was set up, false otherwise
-         */
         bool sourceRequestEvent( const QString& name );
 
     private slots:
@@ -148,6 +126,16 @@ class TabsEngine : public DataEngine
          * Helper function which returns the intermediate string between two strings
          */
         QString subStringBetween(const QString src, const QString from, const QString to, bool lastIndexForFrom = false );
+
+        /**
+         * returns a list of possible search criteria for the current artist
+         */
+        QStringList defineArtistSearchCriteria( QString artist );
+
+        /**
+         * returns a list of possible search criteria for the current title
+         */
+        QStringList defineTitleSearchCriteria( QString title );
 
     private slots:
         /**

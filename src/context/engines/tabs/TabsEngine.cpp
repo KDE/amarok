@@ -26,6 +26,7 @@
 
 // Qt
 #include <QTextCodec>
+#include <QRegExp>
 
 using namespace Context;
 
@@ -125,7 +126,7 @@ TabsEngine::sourceRequestEvent( const QString& name )
         {
             QString artist = tokens.at( 1 );
             QString title = tokens.at( 2 );
-            if ( m_artistName != artist || m_titleName != title )
+            if( m_artistName != artist || m_titleName != title )
             {
                 removeAllData( name );
                 setData( name, QVariant());
@@ -216,26 +217,31 @@ TabsEngine::requestTab( QString artist, QString title )
     setData( "tabs", "title", m_titleName );
     setData( "tabs", "artist", m_artistName );
 
-    QString searchArtist = artist.trimmed().replace( ' ', '+' );
-    QString searchTitle  = title.trimmed().replace( ' ', '+' );
+    // define search criteria for the current artist/track
+    QStringList artistSearchList = defineArtistSearchCriteria( artist );
+    QStringList titleSearchList = defineTitleSearchCriteria( title );
+    foreach( const QString &searchArtist, artistSearchList )
+    {
+        foreach( const QString &searchTitle, titleSearchList )
+        {
+            // Query UltimateGuitar.com
+            const KUrl ultimateGuitarUrl( QString( "http://www.ultimate-guitar.com/search.php?view_state=advanced" ) +
+                                          QString( "&band_name=" ) + searchArtist + QString( "&song_name=") + searchTitle +
+                                          QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );  // this is a filter for guitar (tabs and chords) + bass
+            The::networkAccessManager()->getData( ultimateGuitarUrl, this, SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+            m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
 
-    // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
-    if( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
-        searchArtist.remove( "The+", Qt::CaseInsensitive );
-
-    // Query UltimateGuitar.com
-    const KUrl ultimateGuitarUrl( QString( "http://www.ultimate-guitar.com/search.php?view_state=advanced" ) +
-                                  QString( "&band_name=" ) + searchArtist + QString( "&song_name=") + searchTitle +
-                                  QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );  // this is a filter for guitar (tabs and chords) + bass
-    The::networkAccessManager()->getData( ultimateGuitarUrl, this, SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-    m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
-
-    // Query fretplay.com (search for song name and filter afterwards according to artist)
-    // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
-    const KUrl fretplayUrl( QString( "http://www.fretplay.com/search-tabs?search=" ) + searchTitle );
-    The::networkAccessManager()->getData( fretplayUrl, this, SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-    m_urls.insert( fretplayUrl, FretPlay );
+            // Query fretplay.com (search for song name and filter afterwards according to artist)
+            // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
+            const KUrl fretplayUrl( QString( "http://www.fretplay.com/search-tabs?search=" ) + searchTitle );
+            The::networkAccessManager()->getData( fretplayUrl, this, SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+            m_urls.insert( fretplayUrl, FretPlay );
+        }
+    }
 }
+
+
+
 
 /**
  * * starts a tab-search on UltimateGuitar.com
@@ -513,6 +519,48 @@ TabsEngine::subStringBetween( const QString src, const QString from, const QStri
         return QString();
 
     return src.mid( startIdx, endIdx - startIdx );
+}
+
+/**
+ * modifications on the artist to get more results
+ */
+QStringList
+TabsEngine::defineArtistSearchCriteria( QString artist )
+{
+    QStringList artists;
+
+    QString searchArtist = artist.trimmed().replace( ' ', '+' );
+    artists << searchArtist;
+
+    // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
+    if( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
+        artists << searchArtist.remove( "The+", Qt::CaseInsensitive );
+
+    return artists;
+}
+
+
+/**
+ * modifications on the title to get more results
+ */
+QStringList
+TabsEngine::defineTitleSearchCriteria( QString title )
+{
+    QStringList titles;
+
+    QString searchTitle  = title.trimmed().replace( ' ', '+' );
+    titles << searchTitle;
+
+    // remove trailing "The"
+    if( searchTitle.startsWith( "The+", Qt::CaseInsensitive ) )
+        titles << searchTitle.remove( "The+", Qt::CaseInsensitive );
+
+    // remove anything like (live), (demo-tape), ...
+    QRegExp regex = QRegExp( "\\+*\\([A-Za-z0-9\\+]*\\)", Qt::CaseInsensitive );
+    if( regex.indexIn( searchTitle ) > 0 )
+        titles << searchTitle.remove( regex );
+
+    return titles;
 }
 
 #include "TabsEngine.moc"
