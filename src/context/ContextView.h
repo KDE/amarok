@@ -112,6 +112,7 @@ protected:
 private slots:
     void slotTrackChanged( Meta::TrackPtr track );
     void slotMetadataChanged( Meta::TrackPtr track );
+    void slotPositionAppletExplorer();
 
 private:
     static ContextView* s_self;

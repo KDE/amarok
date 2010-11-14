@@ -233,18 +233,28 @@ ContextView::showAppletExplorer()
         Context::Containment *cont = qobject_cast<Context::Containment*>( containment() );
         m_appletExplorer = new AppletExplorer( cont );
         m_appletExplorer.data()->setContainment( cont );
-        m_appletExplorer.data()->setPos( 0, containment()->size().height() - m_appletExplorer.data()->size().height() );
         m_appletExplorer.data()->setZValue( m_appletExplorer.data()->zValue() + 1000 );
         m_appletExplorer.data()->setFlag( QGraphicsItem::ItemIsSelectable );
 
         connect( m_appletExplorer.data(), SIGNAL(addAppletToContainment(QString, const int)),
                  cont, SLOT(addApplet(QString, const int)) );
-
         connect( m_appletExplorer.data(), SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
-        m_appletExplorer.data()->resize( rect().width(), m_appletExplorer.data()->size().height() );
-        m_appletExplorer.data()->setPos( 0, rect().height() - m_appletExplorer.data()->size().height() - 5 );
+        connect( m_appletExplorer.data(), SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
+
+        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer.data()->resize( rect().width() - 2, height );
+        m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
     }
     m_appletExplorer.data()->show();
+}
+
+void
+ContextView::slotPositionAppletExplorer()
+{
+    if( !m_appletExplorer )
+        return;
+    qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+    m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
 }
 
 
@@ -261,13 +271,20 @@ ContextView::resizeEvent( QResizeEvent* event )
     Q_UNUSED( event )
 
     Plasma::View::resizeEvent( event );
-    if ( testAttribute( Qt::WA_PendingResizeEvent ) )
+    if( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
     QRectF rect( QRectF(pos(), maximumViewportSize()) );
     containment()->setGeometry( rect );
     scene()->setSceneRect( rect );
     scene()->update( rect );
+
+    if( m_appletExplorer )
+    {
+        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer.data()->resize( rect.width() - 2, height );
+        m_appletExplorer.data()->setPos( 0, rect.height() - height - 2 );
+    }
 }
 
 void

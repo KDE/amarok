@@ -38,7 +38,6 @@ namespace Plasma
 namespace Context
 {
 
-class AppletItemOverlay;
 class AppletToolbarAddItem;    
 class AppletToolbarConfigItem;
 class Containment;

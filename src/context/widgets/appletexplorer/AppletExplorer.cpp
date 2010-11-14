@@ -41,8 +41,6 @@
 #include <QStyleOptionGraphicsItem>
 #include <QSignalMapper>
 
-#define HEIGHT 120
-
 namespace Context
 {
     
@@ -80,12 +78,15 @@ AppletExplorer::init()
     QGraphicsWidget *scrollView = new QGraphicsWidget( this );
     m_scrollWidget = new Plasma::ScrollWidget( this );
     m_scrollWidget->setWidget( scrollView );
-    m_scrollWidget->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    // m_scrollWidget->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    m_scrollWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     QGraphicsLinearLayout *scrollLayout = new QGraphicsLinearLayout( scrollView );
+    m_scrollWidget->setMinimumHeight( 0 );
 
     foreach( AppletIconWidget *widget, listAppletWidgets() )
     {
         scrollLayout->addItem( widget );
+        scrollLayout->setAlignment( widget, Qt::AlignCenter );
         widget->setMinimumSize( widget->sizeFromIconSize( 48 ) );
         widget->setMaximumSize( widget->sizeFromIconSize( 48 ) );
         connect( widget, SIGNAL(clicked()), iconTriggerMapper, SLOT(map()) );
@@ -119,7 +120,6 @@ AppletExplorer::init()
     connect( backIcon, SIGNAL(clicked()), this, SLOT(scrollLeft()) );
 
     QLabel *titleLabel = new QLabel( i18n("<strong>Applet Explorer</strong>") );
-    titleLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
     titleLabel->setAttribute( Qt::WA_NoSystemBackground );
     titleLabel->setWordWrap( false );
     QGraphicsProxyWidget *titleWidget = new QGraphicsProxyWidget( this );
@@ -132,18 +132,26 @@ AppletExplorer::init()
     headerLayout->addItem( backIcon );
     headerLayout->addItem( forwardIcon );
     headerLayout->addItem( hideIcon );
-    headerLayout->setAlignment( appletIcon, Qt::AlignLeft );
-    headerLayout->setAlignment( titleWidget, Qt::AlignLeft );
-    headerLayout->setAlignment( backIcon, Qt::AlignRight );
-    headerLayout->setAlignment( forwardIcon, Qt::AlignRight );
-    headerLayout->setAlignment( hideIcon, Qt::AlignRight );
+    headerLayout->setAlignment( appletIcon, Qt::AlignLeft | Qt::AlignTop );
+    headerLayout->setAlignment( titleWidget, Qt::AlignLeft | Qt::AlignTop );
+    headerLayout->setAlignment( backIcon, Qt::AlignRight | Qt::AlignTop );
+    headerLayout->setAlignment( forwardIcon, Qt::AlignRight | Qt::AlignTop );
+    headerLayout->setAlignment( hideIcon, Qt::AlignRight | Qt::AlignTop );
+    headerLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     
     layout->addItem( headerLayout );
     layout->addItem( m_scrollWidget );
-    layout->setAlignment( headerLayout, Qt::AlignRight );
-    
-    setMaximumHeight( HEIGHT );
-    setMinimumHeight( HEIGHT );
+    layout->setAlignment( headerLayout, Qt::AlignTop );
+    layout->setAlignment( m_scrollWidget, Qt::AlignCenter );
+}
+
+QSizeF
+AppletExplorer::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    QSizeF sz = QGraphicsWidget::sizeHint( which, constraint );
+    qreal height = layout()->itemAt( 0 )->geometry().height();
+    height += layout()->itemAt( 1 )->geometry().height();
+    return QSizeF( sz.width(), sz.height() + 2 );
 }
 
 void
@@ -170,6 +178,7 @@ AppletExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option
 
     // draw border
     painter->save();
+    painter->setRenderHint( QPainter::Antialiasing );
     painter->translate( 0.5, 0.5 );
     QPen pen( PaletteHandler::highlightColor().lighter( 140 ) );
     pen.setWidth( 3 );

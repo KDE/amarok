@@ -52,12 +52,14 @@ public:
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     void setContainment( Containment *containment );
-    QSizePolicy sizePolicy() const;
     Containment *containment() const;
 
 signals:
     void addAppletToContainment( const QString &pluginName, const int loc );
     void appletExplorerHid();
+
+protected:
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
 private slots:
     void addApplet( const QString &name );
