@@ -919,7 +919,8 @@ SqlTrack::commitMetaDataChanges()
     if( m_cache.contains( Meta::valUniqueId ) )
     {
         QString newUid = m_cache.value( Meta::valUniqueId ).toString();
-        if( m_collection->registry()->updateCachedUid( oldUid, newUid ) )
+        if( oldUid != newUid &&
+            m_collection->registry()->updateCachedUid( oldUid, newUid ) )
             m_uid = newUid;
     }
 
