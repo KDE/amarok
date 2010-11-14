@@ -30,7 +30,7 @@
 #include <KLocale>
 #include <KMessageBox>
 #include <kdatetime.h>
-#include <kio/upnptypes.h>
+#include "upnptypes.h"
 #include <kio/scheduler.h>
 #include <kio/jobclasses.h>
 

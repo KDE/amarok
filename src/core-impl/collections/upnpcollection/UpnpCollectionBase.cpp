@@ -18,7 +18,7 @@
 
 #include "UpnpCollectionBase.h"
 
-#include <kio/upnptypes.h>
+#include "upnptypes.h"
 #include <kio/scheduler.h>
 #include <kio/jobclasses.h>
 #include <kio/slave.h>
