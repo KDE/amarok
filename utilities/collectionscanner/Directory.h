@@ -89,8 +89,7 @@ private:
     bool m_skipped;
     bool m_ignored; // the directory was ingored e.g. because of "fmps_ignore"
 
-    // The keys for this hashtable are album name, artist (artist is empty for compilations)
-    QHash<QString, QHash<QString, Album> > m_albums;
+    QList<Album> m_albums;
     QList<Playlist> m_playlists;
 };
 

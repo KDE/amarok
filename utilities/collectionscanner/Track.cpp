@@ -258,6 +258,9 @@ CollectionScanner::Track::Track( const QString &path)
 
                         QString owner = TStringToQString( frame->owner() );
                         QString identifier = TStringToQString( TagLib::String( frame->identifier() ) );
+                        if( identifier.isEmpty() )
+                            continue;
+
                         if( owner == "http://musicbrainz.org" )
                             m_uniqueid = "mb-" + identifier;
                         else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )

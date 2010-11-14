@@ -82,6 +82,12 @@ CollectionScanner::Directory::Directory( const QString &path,
 
     QStringList covers;
 
+    // The keys for this hashtable are album name, artist (artist is empty for compilations)
+    typedef QPair<QString, QString> AlbumKey;
+    QHash<AlbumKey, Album> albumHash;
+    QSet<QString> albumNames;
+    QSet<QString> artistNames;
+
     dir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
     QFileInfoList fileInfos = dir.entryInfoList();
 
@@ -126,68 +132,62 @@ CollectionScanner::Directory::Directory( const QString &path,
                 if( newTrack.isCompilation() )
                     aArtist.clear();
 
+                AlbumKey key( newTrack.album(), aArtist );
+
                 // hash of a hash
-                if( ! m_albums.contains( newTrack.album() ) )
-                    m_albums.insert( newTrack.album(),
-                                     QHash<QString, CollectionScanner::Album>() );
+                if( !albumHash.contains( key ) )
+                    albumHash.insert( key,
+                                      CollectionScanner::Album( newTrack.album() ) );
 
-                if( ! m_albums.value( newTrack.album() ).contains( aArtist ) )
-                    m_albums[ newTrack.album() ].insert( aArtist,
-                                                         CollectionScanner::Album( newTrack.album() ) );
-
-                m_albums[ newTrack.album() ][aArtist].append( newTrack );
+                albumHash[key].append( newTrack );
+                albumNames.insert( newTrack.album() );
+                artistNames.insert( aArtist );
             }
         }
     }
 
     // -- if all tracks in the directory are in the same album but have different artists,
-    //    then it's definitely a collection
-    if( m_albums.count() == 1 ) // only one album name
+    //    then it's definitely a compilation
+    if( albumNames.count() == 1 &&
+        artistNames.count() > 1 )
     {
-        QHash<QString, CollectionScanner::Album> albums = m_albums.values().first();
-        if( albums.count() > 1 ) // several artists
+        QHash<AlbumKey, Album>::const_iterator j = albumHash.constBegin();
+
+        // - create the new album and copy it
+        CollectionScanner::Album newAlbum( j->name() );
+        while (j != albumHash.constEnd())
         {
-            QHash<QString, Album>::const_iterator j = albums.constBegin();
-
-            // - create the new album and copy it
-            CollectionScanner::Album newAlbum( j->name() );
-            while (j != albums.constEnd())
-            {
-                newAlbum.merge( *j );
-                ++j;
-            }
-
-            // - upated the albums
-            m_albums.clear();
-            m_albums.insert( newAlbum.name(),
-                             QHash<QString, CollectionScanner::Album>() );
-            m_albums[ newAlbum.name() ].insert( newAlbum.artist(), newAlbum );
+            newAlbum.merge( *j );
+            ++j;
         }
+
+        // - upated the albums
+        albumHash.clear();
+        albumHash.insert( AlbumKey( newAlbum.name(), newAlbum.artist() ),
+                          newAlbum );
+        artistNames.clear();
+        artistNames.insert( newAlbum.artist() );
     }
 
     // -- use the directory name as album name if not a single track in the director
     //    has an album name
     // Note: this is just a heuristic.
-    if( m_albums.count() == 1 ) // only one album name
+    if( albumHash.count() == 1 )
     {
-        // remember again. m_albums is a hash of a hash
-        QHash<QString, CollectionScanner::Album> albums = m_albums.values().first();
-        if( albums.count() == 1 ) // only one artist (or no artist at all)
+        CollectionScanner::Album oldAlbum = albumHash.values().first();
+        if( oldAlbum.name().isEmpty() && // no album name
+            oldAlbum.tracks().count() < 20 ) // more than 20 songs make it unlikely that it's an album
         {
-            CollectionScanner::Album oldAlbum = albums.values().first();
-            if( oldAlbum.name().isEmpty() &&
-                oldAlbum.tracks().count() < 20 ) // more than 20 songs make it unlikely that it's an album
-            {
-                // - create the new album and copy it
-                CollectionScanner::Album newAlbum( QDir( path ).dirName() );
-                newAlbum.merge( oldAlbum );
+            // - create the new album and copy it
+            CollectionScanner::Album newAlbum( QDir( path ).dirName() );
+            newAlbum.merge( oldAlbum );
 
-                // - upated the albums
-                m_albums.clear();
-                m_albums.insert( newAlbum.name(),
-                                 QHash<QString, CollectionScanner::Album>() );
-                m_albums[ newAlbum.name() ].insert( newAlbum.artist(), newAlbum );
-            }
+            // - upated the albums
+            m_albums.clear();
+            albumHash.insert( AlbumKey( newAlbum.name(), newAlbum.artist() ),
+                              newAlbum );
+            albumNames.clear();
+            albumNames.insert( newAlbum.name() );
         }
     }
 
@@ -195,18 +195,18 @@ CollectionScanner::Directory::Directory( const QString &path,
     // if the directory contains only one album
     // (or several albums with the same name that did not recognize as a collection)
     // set the images found inside the directory as cover for this album.
-    if( m_albums.count() == 1 ) // only one album name
+    if( albumNames.count() == 1 ) // only one album name
     {
-        // again, hash of a has. a little inconvinient.
-        QHash<QString, CollectionScanner::Album> albums = m_albums.values().first();
-
-        QHash<QString, Album>::iterator j = albums.begin();
-        while (j != albums.end())
+        QHash<AlbumKey, Album>::iterator j = albumHash.begin();
+        while( j != albumHash.end() )
         {
             j.value().addCovers( covers );
+        qDebug() << "Adding cover to" << j.value().name();
             ++j;
         }
     }
+
+    m_albums = albumHash.values();
 }
 #endif // UTILITIES_BUILD
 
@@ -240,12 +240,7 @@ CollectionScanner::Directory::Directory( const QString &path,
             }
             else if( name == "album" )
             {
-                CollectionScanner::Album album = CollectionScanner::Album( reader );
-                // hash of a hash
-                if( ! m_albums.contains( album.name() ) )
-                    m_albums.insert( album.name(),
-                                     QHash<QString, CollectionScanner::Album>() );
-                m_albums[ album.name() ].insert( album.artist(), album );
+                m_albums.append(CollectionScanner::Album( reader ));
             }
             else if( name == "playlist" )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
@@ -290,22 +285,7 @@ CollectionScanner::Directory::isSkipped() const
 QList<CollectionScanner::Album>
 CollectionScanner::Directory::albums() const
 {
-    QList<CollectionScanner::Album> albums;
-
-    // again, hash of a has. a little inconvinient.
-    QHash<QString, QHash<QString, Album> >::const_iterator i = m_albums.constBegin();
-    while (i != m_albums.constEnd())
-    {
-        QHash<QString, Album>::const_iterator j = i.value().constBegin();
-        while (j != i.value().constEnd())
-        {
-            albums.append( j.value() );
-            ++j;
-        }
-        ++i;
-    }
-
-    return albums;
+    return m_albums;
 }
 
 QList<CollectionScanner::Playlist>
@@ -326,8 +306,7 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
     if( m_ignored )
         writer->writeEmptyElement( "ignored" );
 
-    QList<CollectionScanner::Album> allAlbums = albums();
-    foreach( const CollectionScanner::Album &album, allAlbums )
+    foreach( const CollectionScanner::Album &album, m_albums )
     {
         writer->writeStartElement( "album" );
         album.toXml( writer );
