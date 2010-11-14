@@ -155,7 +155,6 @@ class AMAROK_EXPORT SvgHandler : public QObject
         bool lowThreshold(const QColor &color) const;
 
         KPixmapCache * m_cache;
-        KPixmapCache * m_sliderHandleCache;
 
         QHash<QString,QSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;

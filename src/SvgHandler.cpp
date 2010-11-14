@@ -54,23 +54,18 @@ namespace The {
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
     , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
-    , m_sliderHandleCache( new KPixmapCache( "Amarok-Slider-pixmaps" ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
     DEBUG_BLOCK
+    m_cache->setCacheLimit( 10 * 1024 );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( discardCache() ) );
 }
 
 SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
-
-    m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
-    m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
-    delete m_sliderHandleCache;
-
     qDeleteAll( m_renderers );
     m_renderers.clear();
 
