@@ -546,20 +546,6 @@ void App::applySettings( bool firstTime )
     if( !firstTime ) // prevent OSD from popping up during startup
         Amarok::OSD::instance()->applySettings();
 
-    //on startup we need to show the window, but only if it wasn't hidden on exit
-    //and always if the trayicon isn't showing
-    if( m_mainWindow )
-    {
-
-        if( ( firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) )
-            || !AmarokConfig::showTrayIcon() )
-        {
-            PERF_LOG( "showing main window again" )
-            m_mainWindow.data()->show();
-            PERF_LOG( "after showing mainWindow" )
-        }
-    }
-
     if( !firstTime )
         emit settingsChanged();
 }
@@ -669,6 +655,15 @@ App::continueInit()
 
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
+
+    //on startup we need to show the window, but only if it wasn't hidden on exit
+    //and always if the trayicon isn't showing
+    if( !Amarok::config().readEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
+    {
+        PERF_LOG( "showing main window again" )
+        m_mainWindow.data()->show();
+        PERF_LOG( "after showing mainWindow" )
+    }
 
     if( splash ) // close splash correctly
     {
