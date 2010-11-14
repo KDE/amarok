@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,42 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlBatchImporterConfig.h"
+#include "core/capabilities/ActionsCapability.h"
 
-#include "core/support/Amarok.h"
-
-#include <KLocale>
-
-#include <QComboBox>
-#include <QCompleter>
-#include <QDirModel>
-#include <QGridLayout>
-#include <QLabel>
-#include <QLineEdit>
-
-SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
-    : DatabaseImporterConfig( parent )
+Capabilities::ActionsCapability::ActionsCapability()
+    : Capabilities::Capability()
 {
-    QWidget *gridHolder = new QWidget( this );
-
-    QGridLayout *databaseLayout = new QGridLayout( gridHolder );
-
-    QLabel *label = new QLabel( i18n( "Input file" ), gridHolder );
-    m_inputFilePathInput = new QLineEdit( gridHolder );
-    QCompleter *completer = new QCompleter( this );
-    completer->setModel( new QDirModel( completer ) );
-    m_inputFilePathInput->setCompleter( completer );
-    m_inputFilePathInput->setText( QDir::homePath() + "/result.xml" );
-    label->setBuddy( m_inputFilePathInput );
-
-    databaseLayout->addWidget( label, 0, 0 );
-    databaseLayout->addWidget( m_inputFilePathInput, 0, 1 );
-
-    gridHolder->setLayout( databaseLayout );
-
-    QWidget *spacer = new QWidget( this );
-    spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    //nothing to do
 }
 
-#include "SqlBatchImporterConfig.moc"
+Capabilities::ActionsCapability::ActionsCapability( const QList<QAction*> &actions )
+    : Capabilities::Capability()
+    , m_actions( actions )
+{
+    //nothing to do
+}
 
+Capabilities::ActionsCapability::~ActionsCapability()
+{
+    //nothing to do.
+}
+
+QList<QAction *>
+Capabilities::ActionsCapability::actions() const
+{
+    return m_actions;
+}
+
+#include "CustomActionsCapability.moc"

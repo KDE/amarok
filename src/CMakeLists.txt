@@ -643,6 +643,8 @@ set(amaroklib_LIB_SRCS
     databaseimporter/itunes/ITunesImporterConfig.cpp
     databaseimporter/itunes/ITunesImporter.cpp
     databaseimporter/itunes/ITunesImporterWorker.cpp
+    databaseimporter/sqlbatch/SqlBatchImporter.cpp
+    databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp

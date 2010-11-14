@@ -14,30 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_SQLBATCH_IMPORTER_CONFIG_H
-#define AMAROK_SQLBATCH_IMPORTER_CONFIG_H
+#ifndef AMAROK_COLLECTIONSIMPORTCAPABILITY_H
+#define AMAROK_COLLECTIONSIMPORTCAPABILITY_H
 
-#include "SqlBatchImporter.h"
-#include "databaseimporter/DatabaseImporter.h"
+#include "shared/amarok_export.h"
+#include "core/capabilities/Capability.h"
 
-#include <QCheckBox>
-#include <QLineEdit>
+#include <QList>
 
-class QComboBox;
-class QLabel;
-
-class SqlBatchImporterConfig : public DatabaseImporterConfig
+namespace Capabilities
 {
-    Q_OBJECT
+    /**
+     * This capability allows the collection to import it's content form a file.
+     * Currently this is only used by the SqlCollection and it's scanner
+     *
+     * @author Ralf Engels <ralf-engels@gmx.de>
+     */
 
-    public:
-        SqlBatchImporterConfig( QWidget *parent = 0 );
-        virtual ~SqlBatchImporterConfig() { };
+    class AMAROK_CORE_EXPORT CollectionImportCapability : public Capabilities::Capability
+    {
+        Q_OBJECT
+        public:
 
-        QString inputFilePath() const { return m_inputFilePathInput->text(); }
+            /**
+             * Constructor
+             */
+            CollectionImportCapability( QObject *parent = 0 );
 
-    private:
-        QLineEdit *m_inputFilePathInput;
-};
+            /**
+             * Destructor
+             */
+            virtual ~CollectionImportCapability();
+
+            /** Starts importing the given file into the collection.
+             * @return A QObject that can be used to connect several status signals from.
+             */
+            virtual QObject *import( const QString &importFilePath );
+
+            /**
+             * Get the capabilityInterfaceType of this capability
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::CollectionImport; )
+             */
+            static Type capabilityInterfaceType() { return Capabilities::Capability::CollectionImport; }
+
+    };
+}
 
 #endif

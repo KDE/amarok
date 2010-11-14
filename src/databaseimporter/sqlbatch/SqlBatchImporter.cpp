@@ -16,28 +16,23 @@
 
 #include "SqlBatchImporter.h"
 #include "SqlBatchImporterConfig.h"
-#include "core-impl/collections/support/CollectionManager.h"
+
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/ScanManager.h"
 
 #include <KLocale>
 
 SqlBatchImporter::SqlBatchImporter( QObject *parent )
     : DatabaseImporter( parent )
     , m_config( 0 )
-    //, m_worker( 0 )
 {
 }
 
 SqlBatchImporter::~SqlBatchImporter()
 {
     DEBUG_BLOCK
-    /*
-    if( m_worker )
-    {
-        m_worker->abort();
-        //m_worker->deleteLater();
-    }
-    */
 }
 
 DatabaseImporterConfig*
@@ -52,11 +47,23 @@ void
 SqlBatchImporter::import()
 {
     DEBUG_BLOCK
-    // We've already started
-    /*
-    if( m_worker )
+
+    // as the collections are dynamically loaded I decided to go via the meta object.
+/*
+
+    Collections::SqlCollection *dbColl = 0;
+    foreach( Collections::Collection *coll , CollectionManager::instance()->queryableCollections() )
+    {
+        dbColl = qobject_cast<Collections::SqlCollection*>(coll);
+        if( dbColl )
+            break;
+    }
+
+    if( !dbColl )
+    {
+        warning() << "No database collection found. Cannot import";
         return;
-        */
+    }
 
     Q_ASSERT( m_config );
     if( !m_config )
@@ -64,6 +71,28 @@ SqlBatchImporter::import()
         error() << "No configuration exists, bailing out of import";
         return;
     }
+
+    QString retVal;
+    QMetaObject::invokeMethod(obj, "compute", Qt::DirectConnection,
+                           Q_RETURN_ARG(QString, retVal),
+                           Q_ARG(QString, "sqrt"),
+                           Q_ARG(int, 42),
+                           Q_ARG(double, 9.7));
+    ScanManager *scanManager = dbColl->scanManager();
+    if( !dbColl )
+    {
+        warning() << "The database has no scan manager";
+        return;
+    }
+
+    connect( scanManager, SIGNAL( finished() ),
+             this, SLOT( finishUp() ), Qt::QueuedConnection );
+    connect( scanManager, SIGNAL( message( QString ) ),
+             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
+
+    // scanManager->requestImport( url );
+    */
+
 /*
     connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
              this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
