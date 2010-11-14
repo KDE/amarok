@@ -132,6 +132,9 @@ MainWindow::MainWindow()
     GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
 
+    PERF_LOG( "Instantiate Collection Manager" )
+    CollectionManager::instance();
+    PERF_LOG( "Started Collection Manager instance" )
 
     /* The ServicePluginManager needs to be loaded before the playlist model
     * (which gets started by "statusBar" below up so that it can handle any
@@ -140,11 +143,14 @@ MainWindow::MainWindow()
     * Magnatune service needs to be initialized before the playlist is loaded
     * here. */
 
+    PERF_LOG( "Instantiate Service Plugin Manager" )
     ServicePluginManager::instance();
+    PERF_LOG( "Started Service Plugin Manager instance" )
 
+    PERF_LOG( "Set Status Bar" )
     StatusBar * statusBar = new StatusBar( this );
-
     setStatusBar( statusBar );
+    PERF_LOG( "Created Status Bar" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
 //     kapp->setTopWidget( this );
