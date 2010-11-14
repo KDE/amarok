@@ -206,7 +206,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     // remove previously fetched stuff
     m_model->clear();
-    m_tabsView->setTabTextContent( "" );
+    m_tabsView->clearTabBrowser();
     setBusy( false );
 
     if( data.empty() )

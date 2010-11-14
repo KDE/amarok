@@ -112,9 +112,9 @@ TabsView::tabsListView() const
 }
 
 void
-TabsView::setTabTextContent(const QString &tabText )
+TabsView::clearTabBrowser()
 {
-    m_tabTextBrowser->nativeWidget()->setPlainText( tabText );
+    m_tabTextBrowser->nativeWidget()->clear();
 }
 
 void

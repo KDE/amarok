@@ -51,9 +51,9 @@ public:
     QAbstractItemModel *model();
 
     /**
-     * sets the content of the tab textbrowser
+     * clears the content of the tab textbrowser
      */
-    void setTabTextContent( const QString &tabText );
+    void clearTabBrowser();
 
     /**
      * @return the native widget wrapped by this TabsView
@@ -62,7 +62,6 @@ public:
 
 public slots:
     /**
-    * ----
     * \param tab :
     */
     void showTab( TabsItem *tab );
