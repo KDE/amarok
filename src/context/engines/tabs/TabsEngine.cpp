@@ -587,6 +587,11 @@ TabsEngine::defineTitleSearchCriteria( const QString &title )
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 
+    // remove anything like [xxxx].
+    regex = QRegExp( "\\+*\\[[A-Za-z0-9\\+]*\\]", Qt::CaseInsensitive );
+    if( regex.indexIn( searchTitle ) > 0 )
+        titles << searchTitle.remove( regex );
+
     return titles;
 }
 
