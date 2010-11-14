@@ -179,6 +179,8 @@ TabsEngine::update()
     }
 
     QString newTitle = track->name();
+    if( newTitle.isEmpty() )
+        newTitle = track->prettyName();
 
     // check if something changed
     if( newTitle == m_titleName && newArtist == m_artistName )
