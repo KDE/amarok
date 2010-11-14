@@ -55,14 +55,18 @@ class TabsEngine : public DataEngine
         QStringList sources() const;
 
     protected:
-        bool sourceRequestEvent( const QString& name );
+        bool sourceRequestEvent( const QString &name );
 
     private slots:
 
         /**
          *   parses the HTML-result from UltimateGuitar.com and extracts the tab-information
-         *   http://www.ultimate-guitar.com/search.php?view_state=advanced&band_name=red+hot+chili+peppers&song_name=californication&type[]=200&type[]=400&type[]=300&version_la=
+         *   http://www.ultimate-guitar.com/search.php?view_state=advanced&
+                        band_name=red+hot+chili+peppers&
+                        song_name=californication&
+                        type[]=200&type[]=400&type[]=300&version_la=
          */
+        void queryUltimateGuitar( const QString &artist, const QString &title );
         void resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
@@ -70,6 +74,7 @@ class TabsEngine : public DataEngine
          *   queries fretplay.com and extracts the tab-information
          *   fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
          */
+        void queryFretplay( const QString &artist, const QString &title );
         void resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
@@ -77,7 +82,6 @@ class TabsEngine : public DataEngine
        *   This method will send the info to the applet and order them if every jobs are finished
        */
         void resultFinalize();
-
 
     private:
 
@@ -89,7 +93,7 @@ class TabsEngine : public DataEngine
         /**
          * starts a new tab-search
          */
-        void requestTab( QString artist, QString title );
+        void requestTab( const QString &artist, const QString &title );
 
         /**
          * The currently playing track
@@ -106,12 +110,12 @@ class TabsEngine : public DataEngine
          * Data strucuture which contains all tab-information for
          * the current song. After fetching this data will be send to the applet
          */
-        QList < TabsInfo *> m_tabs;
+        QList < TabsInfo * > m_tabs;
 
         /**
          * Hashtable containing the currently active jobs
          */
-        QHash < const KUrl, Source> m_urls;
+        QHash < const KUrl, Source > m_urls;
 
         /**
          * Controls whether guitar-tabs will be fetched
@@ -125,17 +129,18 @@ class TabsEngine : public DataEngine
         /**
          * Helper function which returns the intermediate string between two strings
          */
-        QString subStringBetween(const QString src, const QString from, const QString to, bool lastIndexForFrom = false );
+        QString subStringBetween( const QString &src, const QString &from, const QString &to,
+                                  bool lastIndexForFrom = false );
 
         /**
          * returns a list of possible search criteria for the current artist
          */
-        QStringList defineArtistSearchCriteria( QString artist );
+        QStringList defineArtistSearchCriteria( const QString &artist );
 
         /**
          * returns a list of possible search criteria for the current title
          */
-        QStringList defineTitleSearchCriteria( QString title );
+        QStringList defineTitleSearchCriteria( const QString &title );
 
     private slots:
         /**

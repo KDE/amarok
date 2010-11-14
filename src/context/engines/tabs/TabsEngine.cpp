@@ -26,7 +26,8 @@
 
 // Qt
 #include <QTextCodec>
-#include <QRegExp>
+
+class QRegExp;
 
 using namespace Context;
 
@@ -41,8 +42,10 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_fetchBass( true )
 {
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( update() ) );
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+            this, SLOT( update() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ) );
 }
 
 /**
@@ -53,7 +56,7 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 TabsEngine::~TabsEngine()
 {
     DEBUG_BLOCK
-    foreach ( TabsInfo *info, m_tabs )
+    foreach( TabsInfo *info, m_tabs )
         delete info;
     m_tabs.clear();
     m_urls.clear();
@@ -77,7 +80,7 @@ TabsEngine::sources() const
  * opportunity to create one.
  */
 bool
-TabsEngine::sourceRequestEvent( const QString& name )
+TabsEngine::sourceRequestEvent( const QString &name )
 {
     QStringList tokens = name.split( ':' );
 
@@ -129,7 +132,7 @@ TabsEngine::sourceRequestEvent( const QString& name )
             if( m_artistName != artist || m_titleName != title )
             {
                 removeAllData( name );
-                setData( name, QVariant());
+                setData( name, QVariant() );
                 requestTab( artist, title );
             }
         }
@@ -167,7 +170,7 @@ TabsEngine::update()
     QString newArtist;
     if( artistPtr )
     {
-        if(( track->playableUrl().protocol() == "lastfm" ) ||
+        if( ( track->playableUrl().protocol() == "lastfm" ) ||
             ( track->playableUrl().protocol() == "daap" ) ||
             !The::engineController()->isStream() )
             newArtist = artistPtr->name();
@@ -197,7 +200,7 @@ TabsEngine::update()
  * starts a new tab-search
  */
 void
-TabsEngine::requestTab( QString artist, QString title )
+TabsEngine::requestTab( const QString &artist, const QString &title )
 {
     DEBUG_BLOCK
     debug() << "request tabs for artis: " << artist << " and title " << title;
@@ -224,27 +227,29 @@ TabsEngine::requestTab( QString artist, QString title )
     {
         foreach( const QString &searchTitle, titleSearchList )
         {
-            // Query UltimateGuitar.com
-            const KUrl ultimateGuitarUrl( QString( "http://www.ultimate-guitar.com/search.php?view_state=advanced" ) +
-                                          QString( "&band_name=" ) + searchArtist + QString( "&song_name=") + searchTitle +
-                                          QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );  // this is a filter for guitar (tabs and chords) + bass
-            The::networkAccessManager()->getData( ultimateGuitarUrl, this, SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-            m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
-
-            // Query fretplay.com (search for song name and filter afterwards according to artist)
-            // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
-            const KUrl fretplayUrl( QString( "http://www.fretplay.com/search-tabs?search=" ) + searchTitle );
-            The::networkAccessManager()->getData( fretplayUrl, this, SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-            m_urls.insert( fretplayUrl, FretPlay );
+            queryUltimateGuitar( searchArtist, searchTitle );
+            queryFretplay( searchArtist, searchTitle );
         }
     }
 }
 
-
-
-
 /**
  * * starts a tab-search on UltimateGuitar.com
+ */
+void
+TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
+{
+    // Query UltimateGuitar.com (filtering guitar (tabs + chords) and bass tabs)
+    const KUrl ultimateGuitarUrl( QString( "http://www.ultimate-guitar.com/search.php?view_state=advanced" ) +
+                                  QString( "&band_name=" ) + artist + QString( "&song_name=") + title +
+                                  QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );
+    The::networkAccessManager()->getData( ultimateGuitarUrl, this,
+        SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+    m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
+}
+
+/**
+ *  parses the tab search results from UltimateGuitar
  */
 void
 TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
@@ -278,7 +283,8 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
             {
                 // fetch the the actual tab
                 const KUrl tabFetchUrl = KUrl( tabUrl );
-                The::networkAccessManager()->getData( tabFetchUrl, this, SLOT( resultUltimateGuitarTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+                The::networkAccessManager()->getData( tabFetchUrl, this,
+                    SLOT( resultUltimateGuitarTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
                 m_urls.insert( tabFetchUrl, UltimateGuitar );
             }
         }
@@ -290,7 +296,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
  * * retrieves the information for a single tab from UltimateGuitar.com
  */
 void
-TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e  )
+TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     // specific tab search job has finished -> remove from queue
     if( !m_urls.contains( url ) )
@@ -325,7 +331,8 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
 
     if( !tabs.isEmpty() )
     {
-        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
+        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) ||
+            ( m_fetchBass && tabType == TabsInfo::BASS ) )
         {
             TabsInfo *item = new TabsInfo;
             item->url      = url;
@@ -342,7 +349,23 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
 }
 
 /**
- * * starts a tab-search on fretplay.com
+ * * starts a tab-search on Fretplay.com
+ */
+void
+TabsEngine::queryFretplay( const QString &artist, const QString &title )
+{
+    Q_UNUSED( artist );
+
+    // Query fretplay.com (search for song name and filter afterwards according to artist)
+    // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
+    const KUrl fretplayUrl( QString( "http://www.fretplay.com/search-tabs?search=" ) + title );
+    The::networkAccessManager()->getData( fretplayUrl, this,
+        SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+    m_urls.insert( fretplayUrl, FretPlay );
+}
+
+/**
+ *  parses the tab search results from Fretplay.com
  */
 void
 TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
@@ -362,22 +385,24 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
     }
 
     // get and parse the result, we searched for song name, so filter out the artist
-    const QString result ( data );
+    const QString result( data );
     const QString resultsTable = subStringBetween( result, "<H2>Matching guitar tabs and chords</H2>", "</div>" );
     if( !resultsTable.isEmpty() )
     {
         QStringList results = resultsTable.split( "<BR>" );
-        foreach ( const QString &result, results )
+        foreach( const QString &result, results )
         {
             const QString artist = subStringBetween( result, "\">", "</a>" );
             if( artist.compare( m_artistName, Qt::CaseInsensitive ) == 0 )
             {
-                // lastIndex on purpose (due to the fact that tabledata for the first url contains the artist tabs, second the title tab
+                // lastIndex on purpose (due to the fact that tabledata for the first url
+                // contains the artist tabs, second the title tab
                 const KUrl tabFetchUrl = KUrl( subStringBetween( result,  "a href=\"", "\" title", true ) );
                 if( !tabFetchUrl.url().isEmpty() )
                 {
                     // Query fretplay.com for the specific tab using the url found in the results
-                    The::networkAccessManager()->getData( tabFetchUrl, this, SLOT( resultFretplayTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+                    The::networkAccessManager()->getData( tabFetchUrl, this,
+                        SLOT( resultFretplayTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
                     m_urls.insert( tabFetchUrl, FretPlay );
                 }
             }
@@ -426,7 +451,8 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
     title.remove( "Guitar tabs", Qt::CaseInsensitive );
     if( !tabs.isEmpty() )
     {
-        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) || ( m_fetchBass && tabType == TabsInfo::BASS ) )
+        if( ( m_fetchGuitar && tabType == TabsInfo::GUITAR ) ||
+            ( m_fetchBass && tabType == TabsInfo::BASS ) )
         {
             TabsInfo *item = new TabsInfo;
             item->url      = url;
@@ -466,12 +492,12 @@ TabsEngine::resultFinalize()
     {
         // sort against tabtype
         QList < QPair < TabsInfo::TabType, KUrl > > sorting;
-        foreach ( TabsInfo *item, m_tabs )
+        foreach( TabsInfo *item, m_tabs )
             sorting << QPair < TabsInfo::TabType, KUrl> ( item->tabType, item->url) ;
         qSort(sorting.begin(), sorting.end(), qLess<QPair < TabsInfo::TabType, KUrl> >() );
 
         // debug info
-        foreach ( TabsInfo *item, m_tabs )
+        foreach( TabsInfo *item, m_tabs )
             debug() << " Title: " << item->title << " (" << item->url << ")";
 
         // if the song hasn't change while fetching, we sent the data
@@ -481,9 +507,9 @@ TabsEngine::resultFinalize()
         // otherwise send the fetched data to the subscribed applets
         QList < QPair <TabsInfo::TabType, KUrl > >::iterator i;
         int pos = 0;
-        for (i = sorting.begin(); i != sorting.end(); ++i)
+        for(i = sorting.begin(); i != sorting.end(); ++i)
         {
-            foreach ( TabsInfo *item, m_tabs)
+            foreach( TabsInfo *item, m_tabs)
             {
                 if( (*i).second == item->url )
                 {
@@ -501,7 +527,8 @@ TabsEngine::resultFinalize()
  * helper-function for html-parsing
  */
 QString
-TabsEngine::subStringBetween( const QString src, const QString from, const QString to, bool lastIndexForFrom )
+TabsEngine::subStringBetween( const QString &src, const QString &from, const QString &to,
+                              bool lastIndexForFrom )
 {
     int startIdx;
 
@@ -525,7 +552,7 @@ TabsEngine::subStringBetween( const QString src, const QString from, const QStri
  * modifications on the artist to get more results
  */
 QStringList
-TabsEngine::defineArtistSearchCriteria( QString artist )
+TabsEngine::defineArtistSearchCriteria( const QString &artist )
 {
     QStringList artists;
 
@@ -544,7 +571,7 @@ TabsEngine::defineArtistSearchCriteria( QString artist )
  * modifications on the title to get more results
  */
 QStringList
-TabsEngine::defineTitleSearchCriteria( QString title )
+TabsEngine::defineTitleSearchCriteria( const QString &title )
 {
     QStringList titles;
 

@@ -59,7 +59,7 @@ void
 TabsItem::setTabIcon( TabsInfo::TabType tabtype )
 {
     QPixmap pix;
-    switch ( tabtype )
+    switch( tabtype )
     {
         case TabsInfo::GUITAR:
             pix = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-tabs-guitar.png" ) );

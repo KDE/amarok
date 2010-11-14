@@ -21,14 +21,13 @@
 #include "widgets/PrettyTreeView.h"
 #include "PaletteHandler.h"
 
+#include <KTextBrowser>
 #include <Plasma/TextBrowser>
 
-#include <QHeaderView>
-#include <QTreeView>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsLinearLayout>
-
-#include <KTextBrowser>
+#include <QHeaderView>
+#include <QTreeView>
 
 // Subclassed to override the access level of some methods.
 // The TabsTreeView and the TabsView are so highly coupled that this is acceptable, imo.
@@ -49,7 +48,7 @@ class TabsTreeView : public Amarok::PrettyTreeView
             setAnimated( true );
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
             setFixedWidth( 48 );
         }
     protected:
@@ -65,7 +64,8 @@ TabsView::TabsView( QGraphicsWidget *parent )
 {
     // tree view which holds the collection of fetched tabs
     m_treeView = new TabsTreeView( 0 );
-    connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
+    connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ),
+             this, SLOT( itemClicked( const QModelIndex & ) ) );
 
     m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeProxy->setWidget( m_treeView );
@@ -93,11 +93,6 @@ TabsView::TabsView( QGraphicsWidget *parent )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 }
 
-TabsView::~TabsView()
-{
-
-}
-
 void
 TabsView::setModel( QAbstractItemModel *model )
 {
@@ -117,7 +112,7 @@ TabsView::tabsListView() const
 }
 
 void
-TabsView::setTabTextContent(const QString tabText )
+TabsView::setTabTextContent(const QString &tabText )
 {
     m_tabTextBrowser->nativeWidget()->setPlainText( tabText );
 }
@@ -148,11 +143,13 @@ TabsView::showTab( TabsItem *tab )
             int headingWeight = 600;
 
             QString htmlData = "<html>";
-                    htmlData += "<body style=\"font-family:'" + tabFont.family() + "';font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
+                    htmlData += "<body style=\"font-family:'" + tabFont.family() + "';";
+                    htmlData += "font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
                     htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ";\">";
 
                     // tab heading + tab source
-                    htmlData += "<p><span style=\"font-family:'" + headingFont.family() + "';font-size:" + QString::number( headingFont.pointSize() ) + "pt;";
+                    htmlData += "<p><span style=\"font-family:'" + headingFont.family() + "';";
+                    htmlData += "font-size:" + QString::number( headingFont.pointSize() ) + "pt;";
                     htmlData += "font-weight:" + QString::number( headingWeight ) + ";\">";
                     htmlData += tab->getTabTitle();
                     htmlData += " (" + i18n( "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";

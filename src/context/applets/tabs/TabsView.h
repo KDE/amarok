@@ -36,7 +36,7 @@ class TabsView : public QGraphicsProxyWidget
 
 public:
     explicit TabsView( QGraphicsWidget *parent = 0 );
-    ~TabsView();
+    ~TabsView() { };
 
     /**
      * Sets a model for this view
@@ -53,7 +53,7 @@ public:
     /**
      * sets the content of the tab textbrowser
      */
-    void setTabTextContent( const QString tabText );
+    void setTabTextContent( const QString &tabText );
 
     /**
      * @return the native widget wrapped by this TabsView
@@ -65,7 +65,7 @@ public slots:
     * ----
     * \param tab :
     */
-    void showTab( TabsItem *tab  );
+    void showTab( TabsItem *tab );
 
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );

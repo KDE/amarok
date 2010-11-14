@@ -26,9 +26,9 @@
 #include <ui_ReloadEditDialog.h>
 
 // Qt
-#include <QWeakPointer>
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
+#include <QWeakPointer>
 
 class TabsView;
 
@@ -110,7 +110,7 @@ class TabsApplet : public Context::Applet
 
         enum AppletState { InitState, StoppedState, FetchingState, TabState, MsgState, NoTabsState  };
         AppletState m_currentState;
-        void updateInterface( AppletState appletState );
+        void updateInterface( const AppletState appletState );
 
         /**
          * Layout for the formatting of the applet contents

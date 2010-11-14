@@ -26,13 +26,13 @@
 #include "context/widgets/TextScrollingWidget.h"
 #include "PaletteHandler.h"
 
-#include <Plasma/Theme>
+
+#include <KConfigDialog>
+#include <KConfigGroup>
+#include <KDialog>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
-
-#include <KConfigGroup>
-#include <KConfigDialog>
-#include <KDialog>
+#include <Plasma/Theme>
 
 #include <QGraphicsProxyWidget>
 #include <QScrollBar>
@@ -53,9 +53,9 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     , m_currentState( InitState )
     , m_layout( 0 )
     , m_fetchGuitar( true )
-    , m_fetchBass ( true )
-    , m_showInfoLabel (false )
-    , m_showTabBrowser (false )
+    , m_fetchBass( true )
+    , m_showInfoLabel( false )
+    , m_showTabBrowser( false )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
@@ -213,7 +213,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     if( data.empty() )
     {
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
-        updateInterface ( InitState );
+        updateInterface( InitState );
         return;
     }
 
@@ -230,7 +230,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
         updateInterface( FetchingState );
         return;
     }
-    else if( data.contains( "state" ) && state.contains( "Stopped") )
+    else if( data.contains( "state" ) && state.contains( "Stopped" ) )
     {
         stopped();
         return;
@@ -264,7 +264,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     // getting the tab-data from the engine
     bool tabFound = false;
-    for ( int i = 0; i < data.size(); i++ )
+    for( int i = 0; i < data.size(); i++ )
     {
         const QString tabId = QString( "tabs:" ).append( QString::number( i ) );
         if( data.contains( tabId ) )
@@ -283,7 +283,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
                     // update artist and title in the headerlabel
                     m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
-                    updateInterface ( TabState );
+                    updateInterface( TabState );
                     tabFound = true;
                 }
             }
@@ -292,12 +292,12 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 }
 
 void
-TabsApplet::updateInterface( AppletState appletState )
+TabsApplet::updateInterface( const AppletState appletState )
 {
     if( m_currentState == appletState && appletState != InitState )
         return;
 
-    if (m_currentState == StoppedState)
+    if( m_currentState == StoppedState )
     {
         resize( 500, -1 );
         setCollapseOff();
@@ -308,7 +308,7 @@ TabsApplet::updateInterface( AppletState appletState )
     debug() << "updating interface from state " << m_currentState << " to " << appletState;
     m_currentState = appletState;
 
-    switch ( m_currentState )
+    switch( m_currentState )
     {
         case InitState:
         case StoppedState:
@@ -342,7 +342,7 @@ TabsApplet::updateInterface( AppletState appletState )
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
     lo->insertItem( 1, m_infoLabel.data() );
 
-    m_showInfoLabel  ? lo->insertItem( 1,  m_infoLabel.data() ) : lo->removeItem(  m_infoLabel.data() );
+    m_showInfoLabel  ? lo->insertItem( 1, m_infoLabel.data() ) : lo->removeItem(  m_infoLabel.data() );
     m_showInfoLabel  ? m_infoLabel.data()->show() : m_infoLabel.data()->hide();
 
     m_showTabBrowser ? lo->addItem( m_tabsView ) : lo->removeItem( m_tabsView );
@@ -364,7 +364,7 @@ TabsApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.cbFetchBass->setChecked( true );
 
     parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system" );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
 }
 
 void
@@ -402,9 +402,9 @@ TabsApplet::reloadTabs()
     Plasma::DataEngine::Data data = dataEngine( "amarok-tabs" )->query( "tabs" );
     QString artistName;
     QString titleName;
-    if ( data.contains( "artist" ) )
+    if( data.contains( "artist" ) )
         artistName = data[ "artist" ].toString();
-    if ( data.contains( "title" ) )
+    if( data.contains( "title" ) )
         titleName  = data[ "title" ].toString();
 
     // update ui
