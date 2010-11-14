@@ -81,7 +81,7 @@ Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
 
     for( int i = 0; i < m_appletList.size(); i++ )
     {
-        Plasma::Applet *applet = m_appletList[ i ];
+        Plasma::Applet *applet = m_appletList.at(i);
         if( applet != 0 )
         {
             debug() << "saving applet" << applet->name();
@@ -166,16 +166,16 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     //debug() << "using applet width of " << width;
     for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
-        //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
-        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
+        //debug() << "UPWARDS dealing with" << m_appletList.at(i)->name();
+        currentHeight = m_appletList.at(i)->effectiveSizeHint( Qt::PreferredSize ).height();
         if( currentHeight < 15 )
             currentHeight = 250; // if it is one of the expanding applets, give it room for its header
         runningHeight -= currentHeight;
-        m_appletList[ i ]->setPos( 0, runningHeight );
+        m_appletList.at(i)->setPos( 0, runningHeight );
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
-        m_appletList[ i ]->resize( width, currentHeight );
-        m_appletList[ i ]->hide();
+        m_appletList.at(i)->resize( width, currentHeight );
+        m_appletList.at(i)->hide();
     }
     runningHeight = currentHeight = 2.0; // there is a fixed 2px padding on the left and right sides that we can't get rid of, so to keep it
                                          // consistent and pretty, show it on the top too (that's probably from Plasma::Containment (Ralf))
@@ -188,26 +188,26 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     int lastShown = m_appletList.size();
     for( int i = index; i < lastShown; i++ ) // now lay out desired item at top and rest below it
     {
-        //debug() << "dealing with" << m_appletList[ i ]->name();
+        //debug() << "dealing with" << m_appletList.at(i)->name();
         //debug() << "putting applet #" << i << " at" << 0 << runningHeight;
-        m_appletList[ i ]->setPos( 0, runningHeight );
-        qreal height = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
-        //debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
-        bool startsInCV = m_appletList[ i ]->pos().y() > 0 && m_appletList[ i ]->pos().y() < boundingRect().height();
-        bool fitsInCV = startsInCV && ( ( m_appletList[ i ]->pos().y() + height ) < boundingRect().height() );
+        m_appletList.at(i)->setPos( 0, runningHeight );
+        qreal height = m_appletList.at(i)->effectiveSizeHint( Qt::PreferredSize ).height();
+        //debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList.at(i)->preferredHeight() ;
+        bool startsInCV = m_appletList.at(i)->pos().y() > 0 && m_appletList.at(i)->pos().y() < boundingRect().height();
+        bool fitsInCV = startsInCV && ( ( m_appletList.at(i)->pos().y() + height ) < boundingRect().height() );
         if( height < 15 || ( startsInCV && !fitsInCV ) ) // maximise its space, or it wants more than it can get and shrink it to fit
         {
             qreal heightLeft = boundingRect().height() - runningHeight;
             //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
-            m_appletList[ i ]->resize( width, heightLeft );
-            m_appletList[ i ]->show();
+            m_appletList.at(i)->resize( width, heightLeft );
+            m_appletList.at(i)->show();
             lastShown = i;
         } else
         {
             //debug() << "normal applet, moving on with the next one";
             runningHeight += height;
-            m_appletList[ i ]->resize( width, height );
-            m_appletList[ i ]->show();
+            m_appletList.at(i)->resize( width, height );
+            m_appletList.at(i)->show();
 
             //debug() << "next applet will go at:" << runningHeight;
             //debug() << "got applet sizehint height:" << currentHeight;
@@ -221,8 +221,8 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         // so in order to make sure that the applet is not visible,
         // in the case of misbehaving applets, we also move them out of the way.
 
-        m_appletList[ i ]->hide();
-        m_appletList[ i ]->setPos( 0, boundingRect().height() );
+        m_appletList.at(i)->hide();
+        m_appletList.at(i)->setPos( 0, boundingRect().height() );
     }
 
     m_showingIndex = index;
@@ -240,7 +240,7 @@ Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
     {
         index = i;
         //debug() << "height:" << height;
-        qreal curHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
+        qreal curHeight = m_appletList.at(i)->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
         //debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
         if( ( curHeight + height ) > boundingRect().height() )
             break;

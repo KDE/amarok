@@ -196,7 +196,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                 }
                 name = description = provider->prettyName();
                 icon = provider->icon();
-                playlistCount = provider->playlists().count();
+                playlistCount = provider->playlistCount();
                 providerActions << provider->providerActions();
             }
 

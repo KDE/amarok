@@ -33,7 +33,6 @@ class QPropertyAnimation;
 
 namespace Plasma
 {
-    class FrameSvg;
     class IconWidget;
 }
 
@@ -155,7 +154,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         bool m_transient;
         bool m_isMessageShown;
         qreal m_standardPadding;
-        Plasma::FrameSvg *m_textBackground;
         QWeakPointer<QPropertyAnimation> m_animation;
 };
 

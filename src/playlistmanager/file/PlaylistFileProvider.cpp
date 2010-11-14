@@ -98,7 +98,7 @@ PlaylistFileProvider::playlists()
         loadPlaylists();
 
     Playlists::PlaylistList playlists;
-    foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
+    foreach( const Playlists::PlaylistFilePtr &playlistFile, m_playlists )
     {
         Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistFile );
         if( !playlist.isNull() )

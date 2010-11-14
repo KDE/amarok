@@ -424,11 +424,11 @@ QString
 Meta::Artist::sortableName() const
 {
     if( m_sortableName.isEmpty() && !name().isEmpty() ) {
-        if( name().startsWith( "the ", Qt::CaseInsensitive ) ) {
+        if( name().startsWith( QLatin1String("the "), Qt::CaseInsensitive ) ) {
             QString begin = name().left( 3 );
             m_sortableName = QString( "%1, %2" ).arg( name(), begin );
             m_sortableName = m_sortableName.mid( 4 );
-        } else if( name().startsWith( "dj ", Qt::CaseInsensitive ) ) {
+        } else if( name().startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) ) {
             QString begin = name().left( 2 );
             m_sortableName = QString( "%1, %2" ).arg( name(), begin );
             m_sortableName = m_sortableName.mid( 3 );

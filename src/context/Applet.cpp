@@ -22,7 +22,6 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <Plasma/FrameSvg>
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
 
@@ -46,16 +45,14 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_transient( 0 )
     , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
-    , m_textBackground( 0 )
 {
     setBackgroundHints(NoBackground);
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
-Context::Applet::~Applet( )
+Context::Applet::~Applet()
 {
-    delete m_textBackground;
 }
 
 QFont

@@ -178,15 +178,8 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     return QSortFilterProxyModel::lessThan( left, right );
 }
 
-// This method tries to do a smart comparison where a lexographical sort might not be the
-// most intelligent sort method. For example the following output would be sorted natually:
-//   Symphony 1         Symphony 1
-//   Symphony 10        Symphony 2
-//   Symphony 11  -->   Symphony 10
-//   Symphony 2         Symphony 11
-//   Symphony 21        Symphony 21
 bool
 CollectionSortFilterProxyModel::lessThanString( const QString &a, const QString &b ) const
 {
-    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) <= 0;
+    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) < 0;
 }

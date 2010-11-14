@@ -26,8 +26,6 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core/playlists/Playlist.h"
 
-#include <Plasma/FrameSvg>
- 
 #include <KDialog>
 
 #include <QGraphicsProxyWidget>

@@ -62,14 +62,7 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
         setAnimated( true );
 
     The::paletteHandler()->updateItemView( this );
-
-    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
-    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 }
-
 
 PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 {

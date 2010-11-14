@@ -48,10 +48,16 @@ CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
 
     m_bigFont.setBold( true );
     m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
+
+    m_bigFm = new QFontMetrics( m_bigFont );
+    m_smallFm = new QFontMetrics( m_smallFont );
 }
 
 CollectionTreeItemDelegate::~CollectionTreeItemDelegate()
-{}
+{
+    delete m_bigFm;
+    delete m_smallFm;
+}
 
 void
 CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
@@ -125,8 +131,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data( CustomRoles::ByLineRole ).toString();
-    QFontMetrics bigFm( m_bigFont );
-    QFontMetrics smallFm( m_smallFont );
 
     const int actionsRectWidth = actionCount > 0 ?
                                  (ACTIONICON_SIZE * actionCount + 2*2/*margin*/) : 0;
@@ -141,7 +145,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     titleRect.setLeft( infoRectLeft );
     titleRect.setTop( option.rect.top() + iconYPadding );
     titleRect.setWidth( titleRectWidth );
-    titleRect.setHeight( bigFm.boundingRect( collectionName ).height() );
+    titleRect.setHeight( m_bigFm->boundingRect( collectionName ).height() );
 
     painter->setFont( m_bigFont );
     painter->drawText( titleRect, Qt::AlignLeft, collectionName );
@@ -150,7 +154,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     textRect.setLeft( infoRectLeft );
     textRect.setTop( titleRect.bottom() );
     textRect.setWidth( titleRectWidth );
-    textRect.setHeight( smallFm.boundingRect( bylineText ).height() );
+    textRect.setHeight( m_smallFm->boundingRect( bylineText ).height() );
 
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText );
@@ -233,13 +237,10 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option,
     int height;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
 
-    QFontMetrics bigFm( m_bigFont );
-    QFontMetrics smallFm( m_smallFont );
-
-    height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft,
-                                 index.data( Qt::DisplayRole ).toString() ).height()
-           + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft,
-                                   index.data( CustomRoles::ByLineRole ).toString() ).height()
+    height = m_bigFm->boundingRect( 0, 0, width, 50, Qt::AlignLeft,
+                                    index.data( Qt::DisplayRole ).toString() ).height()
+           + m_smallFm->boundingRect( 0, 0, width, 50, Qt::AlignLeft,
+                                      index.data( CustomRoles::ByLineRole ).toString() ).height()
            + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
            + 20;
 

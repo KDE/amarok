@@ -26,6 +26,8 @@
 #include <QStyledItemDelegate>
 #include <QTreeView>
 
+class QFontMetrics;
+
 class CollectionTreeItemDelegate : public QStyledItemDelegate
 {
     public:
@@ -41,6 +43,9 @@ class CollectionTreeItemDelegate : public QStyledItemDelegate
         QTreeView *m_view;
         QFont m_bigFont;
         QFont m_smallFont;
+
+        QFontMetrics *m_bigFm;
+        QFontMetrics *m_smallFm;
 
         static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
 };
