@@ -35,6 +35,7 @@ class TabsView;
 namespace Plasma
 {
     class IconWidget;
+    class Label;
 }
 
 class TextScrollingWidget;
@@ -117,9 +118,13 @@ class TabsApplet : public Context::Applet
         QGraphicsLinearLayout *m_layout;
         QWeakPointer<TextScrollingWidget> m_titleLabel;
         QWeakPointer<Plasma::IconWidget>  m_reloadIcon;
+        QWeakPointer<Plasma::Label>       m_infoLabel;
 
         bool m_fetchGuitar;
         bool m_fetchBass;
+
+        bool m_showInfoLabel;
+        bool m_showTabBrowser;
         Ui::TabsSettings ui_Settings;
 };
 
