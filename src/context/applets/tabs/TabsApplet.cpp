@@ -348,9 +348,6 @@ TabsApplet::updateInterface( AppletState appletState )
     m_showTabBrowser ? lo->addItem( m_tabsView ) : lo->removeItem( m_tabsView );
     m_showTabBrowser ? m_tabsView->show() : m_tabsView->hide();
 
-    // (stupid) fix for incorrect width of tablist after stopping and restarting
-    m_tabsView->tabsListView()->verticalScrollBar()->hide();
-
     constraintsEvent();
     update();
 }
