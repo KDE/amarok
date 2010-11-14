@@ -50,6 +50,7 @@ class TabsTreeView : public Amarok::PrettyTreeView
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+            setFixedWidth( 48 );
         }
     protected:
 
@@ -65,7 +66,6 @@ TabsView::TabsView( QGraphicsWidget *parent )
     // tree view which holds the collection of fetched tabs
     m_treeView = new TabsTreeView( 0 );
     connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
-    m_treeView->setFixedWidth( 48 );
 
     m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeProxy->setWidget( m_treeView );

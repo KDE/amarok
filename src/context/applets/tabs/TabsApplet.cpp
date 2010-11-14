@@ -184,13 +184,7 @@ TabsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints )
     prepareGeometryChange();
 
-    const qreal padding = standardPadding();
-    const qreal scrollWidth  = size().width() - padding;
-    const qreal scrollHeight = size().height() - m_titleLabel.data()->boundingRect().bottom() - 2 * padding;
-
     m_titleLabel.data()->setScrollingText( m_titleLabel.data()->text() );
-    const QSizeF scrollSize( scrollWidth, scrollHeight );
-    m_tabsView->setMaximumSize( scrollSize );
 
     // increase list-width when scrollbar is shown
     const QScrollBar *vTabListScrollBar = m_tabsView->tabsListView()->verticalScrollBar();
@@ -349,10 +343,13 @@ TabsApplet::updateInterface( AppletState appletState )
     lo->insertItem( 1, m_infoLabel.data() );
 
     m_showInfoLabel  ? lo->insertItem( 1,  m_infoLabel.data() ) : lo->removeItem(  m_infoLabel.data() );
-    m_showInfoLabel  ?  m_infoLabel.data()->show() :  m_infoLabel.data()->hide();
+    m_showInfoLabel  ? m_infoLabel.data()->show() : m_infoLabel.data()->hide();
 
     m_showTabBrowser ? lo->addItem( m_tabsView ) : lo->removeItem( m_tabsView );
-    m_showTabBrowser ? m_tabsView->show() :  m_tabsView->hide();
+    m_showTabBrowser ? m_tabsView->show() : m_tabsView->hide();
+
+    // (stupid) fix for incorrect width of tablist after stopping and restarting
+    m_tabsView->tabsListView()->verticalScrollBar()->hide();
 
     constraintsEvent();
     update();
