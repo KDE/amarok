@@ -98,6 +98,7 @@ public:
                 }
             }
         }
+        qDeleteAll( callbacks );
         urlMap.remove( url );
         reply->deleteLater();
     }
