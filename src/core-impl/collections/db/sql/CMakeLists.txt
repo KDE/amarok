@@ -34,7 +34,6 @@ set(amarok_collection-sqlcollection_SRCS
     SqlMeta.cpp
     SqlWriteLabelCapability.cpp
     SqlScanResultProcessor.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/AFTUtility.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp

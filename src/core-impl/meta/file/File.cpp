@@ -702,81 +702,13 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
-TagLib::FileRef //static
-Track::getFileRef( const KUrl &url )
-{
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName;
-    if(url.isLocalFile())
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.toLocalFile().utf16());
-    }
-    else
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
-    }
-#else
-    QByteArray fileName;
-    if(url.isLocalFile())
-    {
-        fileName = QFile::encodeName( url.toLocalFile() );
-    }
-    else
-    {
-        fileName = QFile::encodeName( url.path() );
-    }
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-    return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-}
-
 QImage
 Track::getEmbeddedCover() const
 {
     if( d->m_data.embeddedImage )
-        return getEmbeddedCover( d->url.path()  );
+        return Meta::Tag::getEmbeddedCover( d->url.path()  );
 
     return QImage();
-}
-
-QImage
-Track::getEmbeddedCover( const QString &path ) //static
-{
-    TagLib::FileRef fileref = getFileRef( path );
-debug() << "Track::getEmbeddedCover" << path;
-
-    if( fileref.isNull() )
-        return QImage();
-
-    TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() );
-    if( !file || !file->ID3v2Tag() || file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
-        return QImage();
-
-    TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
-    TagLib::ID3v2::FrameList::ConstIterator iter;
-    TagLib::ID3v2::AttachedPictureFrame* frameToUse = 0;
-debug() << "Track::getEmbeddedCover found apics" << apicList.size();
-    for( iter = apicList.begin(); iter != apicList.end(); ++iter )
-    {
-        TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
-
-        // ignore images that are too small
-        if( currFrame->picture().size() <= 1024 )
-            continue;
-
-        // TODO: we need a better algorithm to find the best image
-        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover )
-            frameToUse = currFrame;
-        else if( !frameToUse && currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
-            frameToUse = currFrame;
-    }
-debug() << "Track::getEmbeddedCover frameToUse" << frameToUse;
-    if( !frameToUse )
-        return QImage();
-
-debug() << "Track::getEmbeddedCover size:" << frameToUse->picture().size();
-
-    return QImage::fromData((uchar*)(frameToUse->picture().data()), frameToUse->picture().size());
 }
 
 #include "File.moc"

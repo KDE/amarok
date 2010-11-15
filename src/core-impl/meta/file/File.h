@@ -108,7 +108,6 @@ namespace MetaFile
             static TagLib::FileRef getFileRef( const KUrl &url );
 
             virtual QImage getEmbeddedCover() const;
-            static QImage getEmbeddedCover( const QString &path );
 
             class Private;
 

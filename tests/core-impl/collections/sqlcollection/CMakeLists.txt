@@ -59,7 +59,6 @@ link_database_test( testsqldatabaseupdater )
 
 set( testsqlalbum_SRCS
         TestSqlAlbum.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 
@@ -71,7 +70,6 @@ link_database_test( testsqlalbum )
 
 set( testsqlartist_SRCS
         TestSqlArtist.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 
@@ -82,7 +80,6 @@ link_database_test( testsqlartist )
 
 set( testsqlcollection_SRCS
         TestSqlCollection.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 
@@ -94,7 +91,6 @@ link_database_test( testsqlcollection )
 
 set( testsqlquerymaker_SRCS
         TestSqlQueryMaker.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
 
 
@@ -140,7 +136,6 @@ target_link_libraries( testartisthelper
 
 set( testsqltrack_SRCS
         TestSqlTrack.cpp
-        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
         ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
     )
 

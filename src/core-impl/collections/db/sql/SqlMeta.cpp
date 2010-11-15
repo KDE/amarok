@@ -25,8 +25,7 @@
 #include "CapabilityDelegate.h"
 #include <core/support/Debug.h>
 #include <core/meta/support/MetaUtility.h>
-#include <core-impl/meta/file/File.h> // for getting an embedded cover
-#include <core-impl/meta/file/TagLibUtils.h>
+#include <shared/MetaTagLib.h> // for getting an embedded cover
 #include <core-impl/collections/support/ArtistHelper.h>
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
@@ -1083,7 +1082,7 @@ SqlTrack::commitMetaDataChanges()
 void
 SqlTrack::writeMetaDataToFile()
 {
-    Meta::Field::writeFields( m_url.path(), m_cache );
+    Meta::Tag::writeTags( m_url.path(), m_cache );
 }
 
 void
@@ -2101,7 +2100,7 @@ SqlAlbum::setImage( const QString &path )
             // -- find the track with the cover
             QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
 
-            QImage image = MetaFile::Track::getEmbeddedCover( finalPath );
+            QImage image = Meta::Tag::getEmbeddedCover( finalPath );
             if( image.isNull() )
                 return;
 
@@ -2176,7 +2175,7 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Field::writeFields( sqlTrack->playableUrl().path(), changes );
+                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
             }
             /* TODO: delete all old tracks albums */
         }
@@ -2203,7 +2202,7 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Field::writeFields( sqlTrack->playableUrl().path(), changes );
+                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
             }
             /* TODO //step 5: delete the original album, if necessary */
         }
