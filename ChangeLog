@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * LyricsApplet: the lyrics in are now updated when they were changed in a
+      different place (for example in TagDialog). Conflicts have to be resolved
+      by the user (therefore a message is shown which asks the user which changes
+      should be kept).
     * Permit the use of iPod Touch 3G and possibly newer devices. Thanks to
       Aurélien Croc for the patch!
     * Match space-separated search terms in the playlist filter var individually. Thanks
@@ -32,6 +36,10 @@ VERSION 2.4-Beta 1
       to music provided by a running local Playdar service.
 
   CHANGES:
+    * Tracks might contain lyrics in the HTML format, where there's no user-visible
+      content in the HTML. Those lyrics are now regarded as "empty".
+    * LyricsApplet: changed the layout of the "Do you really want to refetch lyrics"
+      message.
     * Current track applet: added "show in media sources" actions for current
       track's artist, album, composer, genre, and year if available.
     * Current track applet: added action to open the tag dialog.
@@ -61,6 +69,10 @@ VERSION 2.4-Beta 1
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Title labels incorrectly used the text color from the plasma theme.
+      This caused trouble with the fixed plasma theme and light color schemes.
+    * Fixed a data-loss bug where the user could lose changes he made to the current
+      track's lyrics. (BR 207621)
     * Fixed covers of Ampache tracks not available through DBus
     * Scanning stale and orphaned songs on iPod results in song duplication. (BR 235696)
     * Applets' settings dialogs were partly untranslatable. (BR 255971)
