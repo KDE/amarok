@@ -65,10 +65,10 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
              this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
 }
 
-
 ScrobblerAdapter::~ScrobblerAdapter()
-{}
-
+{
+    delete m_scrobbler;
+}
 
 void
 ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )

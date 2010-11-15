@@ -38,7 +38,7 @@ namespace Collections
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
     
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
-        : m_controller( new Playdar::Controller() )
+        : m_controller( new Playdar::Controller(this) )
         , m_collection( 0 )
         , m_collectionIsManaged( false )
     {
@@ -51,7 +51,6 @@ namespace Collections
     PlaydarCollectionFactory::~PlaydarCollectionFactory()
     {
         DEBUG_BLOCK
-
     }
 
     void
