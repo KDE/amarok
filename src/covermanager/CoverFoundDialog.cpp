@@ -216,12 +216,7 @@ CoverFoundDialog::~CoverFoundDialog()
     m_album->setSuppressImageAutoFetch( false );
 
     const QList<QListWidgetItem*> &viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
-    foreach( QListWidgetItem *item, viewItems )
-    {
-        CoverFoundItem* cfi = dynamic_cast<CoverFoundItem*>( item );
-        if( cfi )
-            delete cfi;
-    }
+    qDeleteAll( viewItems );
     delete m_dialog.data();
 }
 
@@ -239,11 +234,11 @@ void CoverFoundDialog::add( const QImage &cover,
     if( cover.isNull() )
         return;
 
-    CoverFoundItem *item = new CoverFoundItem( QPixmap::fromImage(cover), metadata, imageSize );
-    if( !contains( item ) )
+    if( !contains( metadata ) )
+    {
+        CoverFoundItem *item = new CoverFoundItem( QPixmap::fromImage(cover), metadata, imageSize );
         addToView( item );
-    else
-        delete item;
+    }
 }
 
 void CoverFoundDialog::addToView( CoverFoundItem *item )
@@ -273,18 +268,15 @@ void CoverFoundDialog::addToView( CoverFoundItem *item )
     updateGui();
 }
 
-bool CoverFoundDialog::contains( const CoverFoundItem *item ) const
+bool CoverFoundDialog::contains( const CoverFetch::Metadata &metadata ) const
 {
-    bool hasItem( false );
     for( int i = 0, count = m_view->count(); i < count; ++i )
     {
-        CoverFoundItem *vItem = dynamic_cast<CoverFoundItem*>( m_view->item(i) );
-        if( vItem )
-            hasItem = (*vItem == *item);
-        if( hasItem )
+        CoverFoundItem *item = static_cast<CoverFoundItem*>( m_view->item(i) );
+        if( item->metadata() == metadata )
             return true;
     }
-    return hasItem;
+    return false;
 }
 
 void CoverFoundDialog::addToCustomSearch( const QString &text )
@@ -333,13 +325,14 @@ void CoverFoundDialog::insertComboText( const QString &text )
 
 void CoverFoundDialog::itemSelected()
 {
-    CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( it )
-    {
-        QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-        m_image = pixmap.toImage();
-        m_sideBar->setPixmap( pixmap, it->metadata() );
-    }
+    QListWidgetItem *item = m_view->currentItem();
+    if( !item )
+        return;
+
+    CoverFoundItem *it = static_cast< CoverFoundItem* >( item );
+    QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+    m_image = pixmap.toImage();
+    m_sideBar->setPixmap( pixmap, it->metadata() );
 }
 
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
@@ -356,7 +349,7 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     if( !index.isValid() )
         return;
 
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->item( index.row() ) );
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->item( index.row() ) );
     item->setSelected( true );
 
     QMenu menu( this );
@@ -373,10 +366,7 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 
 void CoverFoundDialog::saveAs()
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     if( !item->hasBigPix() && !fetchBigPix() )
         return;
 
@@ -434,9 +424,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 {
     if( button == KDialog::Ok )
     {
-        CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-        if( !item )
-            return;
+        CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
 
         bool gotBigPix( true );
         if( !item->hasBigPix() )
@@ -477,10 +465,7 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
 bool CoverFoundDialog::fetchBigPix()
 {
     DEBUG_BLOCK
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return false;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     const KUrl url( item->metadata().value( "normalarturl" ) );
     if( !url.isValid() )
         return false;
@@ -523,10 +508,7 @@ void CoverFoundDialog::downloadProgressed( qint64 bytesReceived, qint64 bytesTot
 
 void CoverFoundDialog::display()
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     const bool success = item->hasBigPix() ? true : fetchBigPix();
     if( !success )
         return;
@@ -907,23 +889,23 @@ bool CoverFoundItem::operator!=( const CoverFoundItem &other ) const
 void CoverFoundItem::setCaption()
 {
     QStringList captions;
-    const QString width = m_metadata.value( "width" );
-    const QString height = m_metadata.value( "height" );
+    const QString &width = m_metadata.value( QLatin1String("width") );
+    const QString &height = m_metadata.value( QLatin1String("height") );
     if( !width.isEmpty() && !height.isEmpty() )
         captions << QString( "%1 x %2" ).arg( width ).arg( height );
 
-    int size = m_metadata.value( "size" ).toInt();
+    int size = m_metadata.value( QLatin1String("size") ).toInt();
     if( size )
     {
-        const QString source = m_metadata.value( "source" );
-        if( source == "Yahoo!" )
+        const QString source = m_metadata.value( QLatin1String("source") );
+        if( source == QLatin1String("Yahoo!") )
             size /= 1024;
 
-        captions << ( QString::number( size ) + 'k' );
+        captions << ( QString::number( size ) + QLatin1Char('k') );
     }
 
     if( !captions.isEmpty() )
-        setText( captions.join( QString( " - " ) ) );
+        setText( captions.join( QLatin1String( " - " ) ) );
 }
 
 #include "CoverFoundDialog.moc"

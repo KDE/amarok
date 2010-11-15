@@ -102,7 +102,7 @@ private slots:
 
 private:
     void addToView( CoverFoundItem *item );
-    bool contains( const CoverFoundItem *item ) const;
+    bool contains( const CoverFetch::Metadata &metadata ) const;
     bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
     void sortCoversBySize();
     void updateGui();
@@ -183,6 +183,8 @@ private:
     CoverFetch::Metadata m_metadata;
     QPixmap m_thumb;
     QPixmap m_bigPix;
+
+    Q_DISABLE_COPY( CoverFoundItem )
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */
