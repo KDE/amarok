@@ -25,8 +25,6 @@
 
 class LyricsAppletPrivate;
 
-using namespace Plasma;
-
 class LyricsApplet : public Context::Applet
 {
     Q_OBJECT

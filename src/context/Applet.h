@@ -37,6 +37,8 @@ namespace Plasma
     class IconWidget;
 }
 
+using Plasma::MessageButton;
+
 namespace Context
 {
 
