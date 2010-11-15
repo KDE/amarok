@@ -20,14 +20,15 @@
 
 #include "core/support/Debug.h"
 
-#include "core/collections/Collection.h"
 #include "EngineController.h"
+#include "core/capabilities/CollectionScanCapability.h"
+#include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
-#include "core-impl/meta/file/File.h"
-#include "core-impl/meta/stream/Stream.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core/plugins/PluginManager.h"
 #include "core/support/SmartPointerList.h"
-#include "core/collections/support/SqlStorage.h"
+#include "core-impl/meta/file/File.h"
+#include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
 #include <QList>
@@ -235,7 +236,9 @@ CollectionManager::startFullScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startFullScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startFullScan();
     }
 }
 
@@ -244,7 +247,9 @@ CollectionManager::startIncrementalScan( const QString &directory )
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startIncrementalScan( directory );
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startIncrementalScan( directory );
     }
 }
 
@@ -253,19 +258,16 @@ CollectionManager::stopScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->stopScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->stopScan();
     }
 }
 
 void
 CollectionManager::checkCollectionChanges()
 {
-    DEBUG_BLOCK
-
-    foreach( const CollectionPair &pair, d->collections )
-    {
-        pair.first->startIncrementalScan();
-    }
+    startIncrementalScan( QString() );
 }
 
 Collections::QueryMaker*

@@ -472,36 +472,6 @@ AlbumCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
     }
 }
 
-ActionsCapabilityDelegateImpl::ActionsCapabilityDelegateImpl()
-    : ActionsCapabilityDelegate()
-{
-}
-
-bool ActionsCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const
-{
-    if( !collection )
-        return 0;
-
-    switch( type )
-    {
-        default:
-            return false;
-    }
-}
-
-Capabilities::Capability*
-ActionsCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection )
-{
-    if( !collection )
-        return 0;
-
-    switch( type )
-    {
-        default:
-            return 0;
-    }
-}
-
 } //namespace Capabilities
 
 #include "CapabilityDelegateImpl.moc"

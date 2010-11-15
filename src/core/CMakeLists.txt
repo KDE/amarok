@@ -34,9 +34,10 @@ set(libcore_statistics_SRCS
 
 set(libcore_capabilities_SRCS
     capabilities/Capability.cpp
+    capabilities/ActionsCapability.cpp
     capabilities/BookmarkThisCapability.cpp
     capabilities/BoundedPlaybackCapability.cpp
-    capabilities/ActionsCapability.cpp
+    capabilities/CollectionScanCapability.cpp
     capabilities/EditCapability.cpp
     capabilities/EditablePlaylistCapability.cpp
     capabilities/FindInSourceCapability.cpp

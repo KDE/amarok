@@ -19,6 +19,7 @@
 
 #include "UpnpCollectionBase.h"
 #include "MemoryCollection.h"
+#include "core/capabilities/CollectionScanCapability.h"
 
 #include <QMap>
 #include <QHash>
@@ -50,8 +51,10 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     UpnpBrowseCollection( const DeviceInfo& );
     virtual ~UpnpBrowseCollection();
 
-    virtual void startIncrementalScan( const QString &directory = QString() );
     virtual QueryMaker* queryMaker();
+
+    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     Meta::TrackPtr trackForUrl( const KUrl &url );
     virtual KIcon icon() const { return KIcon("network-server"); }
@@ -63,6 +66,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 
   public slots:
     virtual void startFullScan();
+    virtual void startIncrementalScan( const QString &directory = QString() );
 
   private slots:
     void entries( KIO::Job *, const KIO::UDSEntryList& );
@@ -92,6 +96,22 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 
     UpnpCache *m_cache;
 };
+
+class UpnpBrowseCollectionScanCapability : public Capabilities::CollectionScanCapability
+{
+    Q_OBJECT
+    public:
+        UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection );
+        virtual ~UpnpBrowseCollectionScanCapability();
+
+        virtual void startFullScan();
+        virtual void startIncrementalScan( const QString &directory = QString() );
+        virtual void stopScan();
+
+    private:
+        UpnpBrowseCollection *m_collection;
+};
+
 
 } //namespace Collections
 

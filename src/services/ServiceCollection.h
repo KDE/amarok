@@ -49,7 +49,6 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName );
         virtual ~ServiceCollection();
 
-        virtual void startFullScan();
         virtual Collections::QueryMaker* queryMaker();
 
         virtual QString collectionId() const;

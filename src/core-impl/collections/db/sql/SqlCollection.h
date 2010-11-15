@@ -19,6 +19,7 @@
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
 #include "amarok_sqlcollection_export.h"
+#include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -30,7 +31,6 @@
 #include <KIcon>
 
 namespace Capabilities {
-    class ActionsCapabilityDelegate;
     class AlbumCapabilityDelegate;
     class ArtistCapabilityDelegate;
     class TrackCapabilityDelegate;
@@ -70,9 +70,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         //this method MUST be called before using the collection
         void init();
 
-        virtual void startFullScan();
-        virtual void startIncrementalScan( const QString &directory = QString() );
-        virtual void stopScan();
         virtual QueryMaker* queryMaker();
 
         /** Returns the protocol for the uid urls of this collection.
@@ -156,7 +153,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 
     private:
         SqlRegistry *m_registry;
-        Capabilities::ActionsCapabilityDelegate *m_capabilityDelegate;
         Capabilities::AlbumCapabilityDelegate *m_albumCapabilityDelegate;
         Capabilities::ArtistCapabilityDelegate *m_artistCapabilityDelegate;
         Capabilities::TrackCapabilityDelegate *m_trackCapabilityDelegate;
@@ -176,6 +172,23 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         bool m_updatedSignalRequested;
         QMutex m_mutex;
 };
+
+class SqlCollectionScanCapability : public Capabilities::CollectionScanCapability
+{
+    Q_OBJECT
+    public:
+
+        SqlCollectionScanCapability( ScanManager* scanManager );
+        virtual ~SqlCollectionScanCapability();
+
+        virtual void startFullScan();
+        virtual void startIncrementalScan( const QString &directory = QString() );
+        virtual void stopScan();
+
+    private:
+        ScanManager *m_scanManager;
+};
+
 
 }
 

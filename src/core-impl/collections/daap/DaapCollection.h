@@ -80,7 +80,6 @@ class DaapCollection : public Collections::Collection
         DaapCollection( const QString &host, const QString &ip, quint16 port );
         virtual ~DaapCollection();
 
-        virtual void startFullScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;

@@ -119,7 +119,6 @@ using namespace Collections;
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlStorage* storage )
     : DatabaseCollection( id, prettyName )
     , m_registry( 0 )
-    , m_capabilityDelegate( 0 )
     , m_albumCapabilityDelegate( 0 )
     , m_artistCapabilityDelegate( 0 )
     , m_trackCapabilityDelegate( 0 )
@@ -147,7 +146,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     updater.cleanupDatabase();
 
     m_registry = new SqlRegistry( this );
-    m_capabilityDelegate = new Capabilities::ActionsCapabilityDelegateImpl();
     m_albumCapabilityDelegate = new Capabilities::AlbumCapabilityDelegateImpl();
     m_artistCapabilityDelegate = new Capabilities::ArtistCapabilityDelegateImpl();
     m_trackCapabilityDelegate = new Capabilities::TrackCapabilityDelegateImpl();
@@ -160,7 +158,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
 SqlCollection::~SqlCollection()
 {
     delete m_registry;
-    delete m_capabilityDelegate;
     delete m_albumCapabilityDelegate;
     delete m_artistCapabilityDelegate;
     delete m_trackCapabilityDelegate;
@@ -178,27 +175,6 @@ SqlCollection::init()
     // note: do not start scanning here.
     // on first start up the application will ask the user and then initiate a scan
     // else the ScanManager will continuously scan for updates
-}
-
-void
-SqlCollection::startFullScan()
-{
-    if( m_scanManager )
-        m_scanManager->requestFullScan();
-}
-
-void
-SqlCollection::startIncrementalScan( const QString &directory )
-{
-    if( m_scanManager )
-        m_scanManager->requestIncrementalScan( directory );
-}
-
-void
-SqlCollection::stopScan()
-{
-    if( m_scanManager )
-        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
 }
 
 QString
@@ -479,13 +455,16 @@ SqlCollection::slotDeviceRemoved( int id )
 bool
 SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
+    return ( type == Capabilities::Capability::CollectionScan);
 }
 
 Capabilities::Capability*
 SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this ) : 0 );
+    if( type == Capabilities::Capability::CollectionScan)
+        return new SqlCollectionScanCapability( m_scanManager );
+    else
+        return 0;
 }
 
 void
@@ -507,6 +486,38 @@ SqlCollection::getNewScanResultProcessor( ScanResultProcessor::ScanType type )
 {
     return new SqlScanResultProcessor( this, type );
 }
+
+
+// --------- SqlCollectionScanCapability -------------
+
+SqlCollectionScanCapability::SqlCollectionScanCapability( ScanManager* scanManager )
+    : m_scanManager( scanManager )
+{ }
+
+SqlCollectionScanCapability::~SqlCollectionScanCapability()
+{ }
+
+void
+SqlCollectionScanCapability::startFullScan()
+{
+    if( m_scanManager )
+        m_scanManager->requestFullScan();
+}
+
+void
+SqlCollectionScanCapability::startIncrementalScan( const QString &directory )
+{
+    if( m_scanManager )
+        m_scanManager->requestIncrementalScan( directory );
+}
+
+void
+SqlCollectionScanCapability::stopScan()
+{
+    if( m_scanManager )
+        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
+}
+
 
 #include "SqlCollection.moc"
 

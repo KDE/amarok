@@ -249,12 +249,6 @@ DaapCollection::~DaapCollection()
 {
 }
 
-void
-DaapCollection::startFullScan()
-{
-    //ignore
-}
-
 QueryMaker*
 DaapCollection::queryMaker()
 {

@@ -53,12 +53,6 @@ ServiceCollection::~ServiceCollection()
 {
 }
 
-void
-ServiceCollection::startFullScan()
-{
-    //ignore
-}
-
 Collections::QueryMaker*
 ServiceCollection::queryMaker()
 {

@@ -136,20 +136,6 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
         virtual bool isDirInCollection(const QString &path) { Q_UNUSED( path ); return false; }
 
         /**
-            Begin a full scan on the collection.  This is not valid for all collections.
-        */
-        virtual void startFullScan() {}
-        /**
-            Begin an incremental scan on the collection.  This is not valid for all collections.
-            @p directory An optional specification of which directory to scan.
-        */
-        virtual void startIncrementalScan( const QString &directory = QString() ) { Q_UNUSED( directory ) }
-        /**
-            Stop a scan on this collection.  This is not valid for all collections
-        */
-        virtual void stopScan() {}
-
-        /**
             The protocol of uids coming from this collection.
             @return A string of the protocol, without the ://
         */

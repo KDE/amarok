@@ -142,12 +142,6 @@ QString MediaDeviceCollection::collectionId() const
     return m_udi;
 }
 
-
-void
-MediaDeviceCollection::startFullScan()
-{
-}
-
 void
 MediaDeviceCollection::startFullScanDevice()
 {

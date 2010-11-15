@@ -21,8 +21,6 @@
 #include "amarok_sqlcollection_export.h"
 #include "core/capabilities/Capability.h"
 
-#include <QAction>
-
 namespace Collections {
     class SqlCollection;
 }
@@ -59,16 +57,6 @@ public:
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Meta::SqlAlbum *album ) const;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album );
 
-};
-
-class ActionsCapabilityDelegateImpl : public ActionsCapabilityDelegate
-{
-public:
-    ActionsCapabilityDelegateImpl();
-    virtual ~ ActionsCapabilityDelegateImpl() {};
-
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection );
 };
 
 } //namespace Capabilities

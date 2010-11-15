@@ -98,7 +98,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
-        virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
         virtual void startFullScanDevice();
 
         // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though

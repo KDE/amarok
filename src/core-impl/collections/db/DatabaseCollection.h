@@ -68,9 +68,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
         //this method MUST be called before using the collection
         virtual void init() = 0;
 
-        virtual void startFullScan() = 0;
-        virtual void startIncrementalScan( const QString &directory = QString() ) = 0;
-        virtual void stopScan() = 0;
         virtual QueryMaker* queryMaker() = 0;
 
         virtual QString uidUrlProtocol() const = 0;

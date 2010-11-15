@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,26 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ACTIONSCAPABILITY_H
-#define AMAROK_ACTIONSCAPABILITY_H
+#ifndef AMAROK_COLLECTIONSSCANCAPABILITY_H
+#define AMAROK_COLLECTIONSSCANCAPABILITY_H
 
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-#include <QAction>
-#include <QList>
-
 namespace Capabilities
 {
     /**
-     * This capability allows different meta types to display custom actions in the right click menu in the tree view
-     * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
-     * banning a genre or whatever we can think of in the future
+     * This capability allows to initiate a scan on a collection.
+     * Currently only a few collections have this capablitity and even then it's unclear
+     * Which collections uses the collection folders.
      *
-     * @author Nikolaj Hald Nielsen <nhn@kde.org>
+     * @author Ralf Engels <ralf-engels@gmx.de>
      */
 
-    class AMAROK_CORE_EXPORT ActionsCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT CollectionScanCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
@@ -41,35 +38,31 @@ namespace Capabilities
             /**
              * Constructor
              */
-            ActionsCapability();
-
-            /**
-             * Constructor
-             * Note: The actions are not freed after usage
-             * @param actions A list of actions to use.
-             */
-            ActionsCapability( const QList< QAction* > &actions );
+            CollectionScanCapability();
 
             /**
              * Destructor
              */
-            virtual ~ActionsCapability();
+            virtual ~CollectionScanCapability();
 
-            /**
-             * Get the custom actions for this capablility
-             * The caller must not free the actions.
-             * @return The list of actions
-             */
-            virtual QList<QAction *> actions() const;
+            /** Begin a full scan on the collection.
+              */
+            virtual void startFullScan() = 0;
+
+            /** Begin an incremental scan on the collection.
+              @p directory An optional specification of which directory to scan. If empty the scanner will check all the collections directories set in the Amarok settings
+              */
+            virtual void startIncrementalScan( const QString &directory = QString() ) = 0;
+
+            /** Stop a scan on this collection.
+              */
+            virtual void stopScan() = 0;
 
             /**
              * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Capabilities::Capability::Actions; )
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::CollectionScan; )
              */
-            static Type capabilityInterfaceType() { return Capabilities::Capability::Actions; }
-
-        protected:
-            QList< QAction* > m_actions;
+            static Type capabilityInterfaceType() { return Capabilities::Capability::CollectionScan; }
     };
 }
 

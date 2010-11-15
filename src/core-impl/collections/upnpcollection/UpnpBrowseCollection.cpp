@@ -90,8 +90,8 @@ void UpnpBrowseCollection::invalidateTracksIn( const QString &dir )
     debug() << "INVALIDATING" << m_tracksInContainer[dir].length();
 
     /*
-     * when we get dir as /a/b we also have to invalidate
-     * any tracks in /a/b/* so we need to iterate over keys
+     * when we get dir as / a / b we also have to invalidate
+     * any tracks in / a / b / * so we need to iterate over keys
      * If performance is really affected we can use some
      * kind of a prefix tree instead of a hash.
      */
@@ -129,6 +129,28 @@ UpnpBrowseCollection::startFullScan()
                  SLOT(updateMemoryCollection()) )
         );
     m_fullScanTimer->start(5000);
+}
+
+void
+UpnpBrowseCollection::startIncrementalScan( const QString &directory )
+{
+    if( m_fullScanInProgress ) {
+        debug() << "Full scan in progress, aborting";
+        return;
+    }
+    debug() << "Scanning directory" << directory;
+    KUrl url;
+    url.setScheme( "upnp-ms" );
+    url.setHost( m_device.uuid() );
+    url.setPath( directory );
+    KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
+    addJob( listJob );
+    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )),
+                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
+                       this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
+    listJob->start();
+
 }
 
 void
@@ -203,26 +225,19 @@ DEBUG_BLOCK
     processUpdates();
 }
 
-void
-UpnpBrowseCollection::startIncrementalScan( const QString &directory )
+bool
+UpnpBrowseCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    if( m_fullScanInProgress ) {
-        debug() << "Full scan in progress, aborting";
-        return;
-    }
-    debug() << "Scanning directory" << directory;
-    KUrl url;
-    url.setScheme( "upnp-ms" );
-    url.setHost( m_device.uuid() );
-    url.setPath( directory );
-    KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
-    addJob( listJob );
-    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )),
-                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
-    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
-                       this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
-    listJob->start();
+    return ( type == Capabilities::Capability::CollectionScan );
+}
 
+Capabilities::Capability*
+UpnpBrowseCollection::createCapabilityInterface( Capabilities::Capability::Type type )
+{
+    if( type == Capabilities::Capability::CollectionScan )
+        return new UpnpBrowseCollectionScanCapability( this );
+    else
+        return 0;
 }
 
 QueryMaker*
@@ -243,6 +258,34 @@ UpnpBrowseCollection::trackForUrl( const KUrl &url )
     debug() << "NONE FOUND";
     return Collection::trackForUrl( url );
 }
+
+// ---------- CollectionScanCapability ------------
+
+UpnpBrowseCollectionScanCapability::UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection )
+    : m_collection( collection )
+{ }
+
+UpnpBrowseCollectionScanCapability::~UpnpBrowseCollectionScanCapability()
+{ }
+
+void
+UpnpBrowseCollectionScanCapability::startFullScan()
+{
+    m_collection->startFullScan();
+}
+
+void
+UpnpBrowseCollectionScanCapability::startIncrementalScan( const QString &directory )
+{
+    m_collection->startIncrementalScan( directory );
+}
+
+void
+UpnpBrowseCollectionScanCapability::stopScan()
+{
+    // the UpnpBrowseCollection does not yet know how to stop a scan
+}
+
 } //~ namespace
 #include "UpnpBrowseCollection.moc"
 
