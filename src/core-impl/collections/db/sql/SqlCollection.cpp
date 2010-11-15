@@ -455,7 +455,8 @@ SqlCollection::slotDeviceRemoved( int id )
 bool
 SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return ( type == Capabilities::Capability::CollectionScan);
+    return ( type == Capabilities::Capability::CollectionScan) ||
+        ( type == Capabilities::Capability::CollectionImport);
 }
 
 Capabilities::Capability*
@@ -463,6 +464,8 @@ SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( type == Capabilities::Capability::CollectionScan)
         return new SqlCollectionScanCapability( m_scanManager );
+    else if( type == Capabilities::Capability::CollectionScan)
+        return new SqlCollectionImportCapability( m_scanManager );
     else
         return 0;
 }
@@ -518,6 +521,24 @@ SqlCollectionScanCapability::stopScan()
         m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
 }
 
+// --------- SqlCollectionImportCapability -------------
+
+SqlCollectionImportCapability::SqlCollectionImportCapability( ScanManager* scanManager )
+    : m_scanManager( scanManager )
+{ }
+
+SqlCollectionImportCapability::~SqlCollectionImportCapability()
+{ }
+
+QObject *
+SqlCollectionImportCapability::import( const QString &importFilePath )
+{
+    if( m_scanManager ) {
+        m_scanManager->requestImport( importFilePath );
+        return m_scanManager;
+    }
+    return 0;
+}
 
 #include "SqlCollection.moc"
 

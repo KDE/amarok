@@ -18,9 +18,8 @@
 #include "SqlBatchImporterConfig.h"
 
 #include "core/support/Debug.h"
+#include "core/capabilities/CollectionImportCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/ScanManager.h"
 
 #include <KLocale>
 
@@ -48,23 +47,6 @@ SqlBatchImporter::import()
 {
     DEBUG_BLOCK
 
-    // as the collections are dynamically loaded I decided to go via the meta object.
-/*
-
-    Collections::SqlCollection *dbColl = 0;
-    foreach( Collections::Collection *coll , CollectionManager::instance()->queryableCollections() )
-    {
-        dbColl = qobject_cast<Collections::SqlCollection*>(coll);
-        if( dbColl )
-            break;
-    }
-
-    if( !dbColl )
-    {
-        warning() << "No database collection found. Cannot import";
-        return;
-    }
-
     Q_ASSERT( m_config );
     if( !m_config )
     {
@@ -72,25 +54,27 @@ SqlBatchImporter::import()
         return;
     }
 
-    QString retVal;
-    QMetaObject::invokeMethod(obj, "compute", Qt::DirectConnection,
-                           Q_RETURN_ARG(QString, retVal),
-                           Q_ARG(QString, "sqrt"),
-                           Q_ARG(int, 42),
-                           Q_ARG(double, 9.7));
-    ScanManager *scanManager = dbColl->scanManager();
-    if( !dbColl )
+    // search for a collection with the CollectionImportCapability
+    foreach( Collections::Collection *coll, CollectionManager::instance()->queryableCollections() )
     {
-        warning() << "The database has no scan manager";
-        return;
+        QScopedPointer<Capabilities::CollectionImportCapability> cic( coll->create<Capabilities::CollectionImportCapability>());
+
+        if( cic ) {
+            QObject *importObject = cic->import( m_config->inputFilePath() );
+            connect( importObject, SIGNAL( finished() ),
+                     this, SLOT( finishUp() ), Qt::QueuedConnection );
+            connect( importObject, SIGNAL( message( QString ) ),
+                     this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
+
+        }
     }
 
-    connect( scanManager, SIGNAL( finished() ),
-             this, SLOT( finishUp() ), Qt::QueuedConnection );
-    connect( scanManager, SIGNAL( message( QString ) ),
-             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
-
-    // scanManager->requestImport( url );
+    /*
+    if( !dbColl )
+    {
+        warning() << "No database collection found. Cannot import";
+        return;
+    }
     */
 
 /*
@@ -115,14 +99,5 @@ SqlBatchImporter::import()
 
 void
 SqlBatchImporter::finishUp()
-{
-    DEBUG_BLOCK
-    /*
-    m_worker->failed() ?
-        emit( importFailed() ) :
-        emit( importSucceeded() );
-
-    delete m_worker;
-    */
-}
+{ }
 

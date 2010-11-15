@@ -20,6 +20,7 @@
 
 #include "amarok_sqlcollection_export.h"
 #include "core/capabilities/CollectionScanCapability.h"
+#include "core/capabilities/CollectionImportCapability.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -184,6 +185,20 @@ class SqlCollectionScanCapability : public Capabilities::CollectionScanCapabilit
         virtual void startFullScan();
         virtual void startIncrementalScan( const QString &directory = QString() );
         virtual void stopScan();
+
+    private:
+        ScanManager *m_scanManager;
+};
+
+class SqlCollectionImportCapability : public Capabilities::CollectionImportCapability
+{
+    Q_OBJECT
+    public:
+
+        SqlCollectionImportCapability( ScanManager* scanManager );
+        virtual ~SqlCollectionImportCapability();
+
+        virtual QObject *import( const QString &importFilePath );
 
     private:
         ScanManager *m_scanManager;

@@ -67,7 +67,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         /** Requests the scanner to do a full scan using the given import file.
          */
-        virtual void requestImport( const KUrl &url );
+        virtual void requestImport( const QString &importFilePath );
 
         /** Requests the scanner to do an incremental scan.
          *  The incremental scan will check for new files or sub-folders.

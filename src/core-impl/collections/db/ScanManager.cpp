@@ -128,7 +128,7 @@ ScanManager::requestFullScan()
 }
 
 void
-ScanManager::requestImport( const KUrl &url )
+ScanManager::requestImport( const QString &importFilePath )
 {
     abort( i18n("Database import requested") );
 
@@ -136,7 +136,7 @@ ScanManager::requestImport( const KUrl &url )
     while( isRunning() )
         qApp->processEvents();
 
-    createParser( ScanResultProcessor::FullScan, url.path() );
+    createParser( ScanResultProcessor::FullScan, importFilePath );
 }
 
 

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,30 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/CollectionImportCapability.h"
 
-Capabilities::ActionsCapability::ActionsCapability()
+Capabilities::CollectionImportCapability::CollectionImportCapability()
     : Capabilities::Capability()
-{
-    //nothing to do
-}
+{ }
 
-Capabilities::ActionsCapability::ActionsCapability( const QList<QAction*> &actions )
-    : Capabilities::Capability()
-    , m_actions( actions )
-{
-    //nothing to do
-}
+Capabilities::CollectionImportCapability::~CollectionImportCapability()
+{ }
 
-Capabilities::ActionsCapability::~ActionsCapability()
-{
-    //nothing to do.
-}
-
-QList<QAction *>
-Capabilities::ActionsCapability::actions() const
-{
-    return m_actions;
-}
-
-#include "CustomActionsCapability.moc"
+#include "CollectionImportCapability.moc"
