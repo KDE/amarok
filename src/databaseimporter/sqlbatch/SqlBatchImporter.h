@@ -21,6 +21,9 @@
 
 class SqlBatchImporterConfig;
 
+/** This importer will use the CollectionImportCapability to import a file.
+    Currently only used for the SqlCollection.
+    */
 class SqlBatchImporter : public DatabaseImporter
 {
     Q_OBJECT
@@ -31,17 +34,9 @@ class SqlBatchImporter : public DatabaseImporter
 
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );
 
-        static QString name() { return QString( "amarok" ); }
-
-        virtual bool canImportArtwork() const { return true; }
-
-        enum ConnectionType { SQLite=1, MySQL=2, PostgreSQL=3 };
-
+        static QString name() { return QString( "sql batch" ); }
     protected:
         virtual void import();
-
-    private slots:
-        void finishUp();
 
     private:
         SqlBatchImporterConfig *m_config;

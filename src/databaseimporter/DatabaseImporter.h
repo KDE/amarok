@@ -47,21 +47,6 @@ class DatabaseImporter : public QObject
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );
 
         /**
-         * Determines whether this importer is able to retrieve artwork
-         */
-        virtual bool canImportArtwork() const = 0;
-
-        /**
-         * Sets the importer to import artwork when available
-         */
-        virtual void setImportArtwork( const bool importArtwork );
-
-        /**
-         * @return whether the importer will import artwork
-         */
-        virtual bool importArtwork() const;
-
-        /**
          * @return whether the importer is running
          */
         virtual bool importing() const;
@@ -97,7 +82,6 @@ class DatabaseImporter : public QObject
          */
         virtual void import() = 0;
 
-        bool m_importArtwork;
         bool m_importing;
 
     private:

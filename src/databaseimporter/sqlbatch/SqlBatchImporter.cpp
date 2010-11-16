@@ -30,9 +30,7 @@ SqlBatchImporter::SqlBatchImporter( QObject *parent )
 }
 
 SqlBatchImporter::~SqlBatchImporter()
-{
-    DEBUG_BLOCK
-}
+{ }
 
 DatabaseImporterConfig*
 SqlBatchImporter::configWidget( QWidget *parent )
@@ -54,50 +52,30 @@ SqlBatchImporter::import()
         return;
     }
 
+    int numStarted = 0;
     // search for a collection with the CollectionImportCapability
-    foreach( Collections::Collection *coll, CollectionManager::instance()->queryableCollections() )
+    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() )
     {
+        debug() << "Collection: "<<coll->prettyName() << "id:"<<coll->collectionId();
         QScopedPointer<Capabilities::CollectionImportCapability> cic( coll->create<Capabilities::CollectionImportCapability>());
 
         if( cic ) {
-            QObject *importObject = cic->import( m_config->inputFilePath() );
-            connect( importObject, SIGNAL( finished() ),
-                     this, SLOT( finishUp() ), Qt::QueuedConnection );
-            connect( importObject, SIGNAL( message( QString ) ),
-                     this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
 
+            QFile *file = new QFile( m_config->inputFilePath() );
+            if( file->open( QIODevice::ReadOnly ) )
+            {
+                debug() << "importing db";
+                cic->import( file, this );
+                numStarted++;
+            } else {
+                debug() << "could not open";
+                emit importError( i18n("Could not open file \"%1\".").arg( m_config->inputFilePath() ) );
+                delete file;
+            }
         }
     }
 
-    /*
-    if( !dbColl )
-    {
-        warning() << "No database collection found. Cannot import";
-        return;
-    }
-    */
-
-/*
-    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
-             this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
-             this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
-             this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
-             this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( importError( QString ) ),
-             this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ),
-             this, SLOT( finishUp() ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( showMessage( QString ) ),
-             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
-
-    ThreadWeaver::Weaver::instance()->enqueue( m_worker );
-    */
+    if( !numStarted )
+        emit importFailed();
 }
-
-void
-SqlBatchImporter::finishUp()
-{ }
 

@@ -29,8 +29,8 @@
 #include <collectionscanner/Track.h>
 #include <collectionscanner/Playlist.h>
 
-SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, ScanType type, QObject *parent )
-    : ScanResultProcessor( type, parent ),
+SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent )
+    : ScanResultProcessor( parent ),
       m_collection( collection )
 {
 }

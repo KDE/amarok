@@ -135,7 +135,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         /** Unblocks one blockUpdatedSignal call. */
         void unblockUpdatedSignal();
 
-        ScanResultProcessor* getNewScanResultProcessor( ScanResultProcessor::ScanType type );
+        ScanResultProcessor* getNewScanResultProcessor();
 
     public slots:
         /** Emit updated if the signal is not blocked by blockUpdatedSignal */
@@ -198,7 +198,7 @@ class SqlCollectionImportCapability : public Capabilities::CollectionImportCapab
         SqlCollectionImportCapability( ScanManager* scanManager );
         virtual ~SqlCollectionImportCapability();
 
-        virtual QObject *import( const QString &importFilePath );
+        virtual void import( QIODevice *input, QObject *listener );
 
     private:
         ScanManager *m_scanManager;

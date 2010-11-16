@@ -153,7 +153,8 @@ TestScanResultProcessorFull::testSingleInsert()
     QCOMPARE( track.bpm(), 60 );
 
     // -- scan the track
-    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+    SqlScanResultProcessor scp( m_collection);
+    scp.setType( ScanResultProcessor::FullScan );
     scp.addDirectory( csDir );
     scp.commit();
 
@@ -229,7 +230,8 @@ TestScanResultProcessorFull::testAddDirectory()
     CollectionScanner::Directory *csDir = new CollectionScanner::Directory(&reader);
 
     // -- scan the directory
-    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+    SqlScanResultProcessor scp( m_collection);
+    scp.setType( ScanResultProcessor::FullScan );
     scp.addDirectory( csDir );
     scp.commit();
 
@@ -347,7 +349,8 @@ TestScanResultProcessorFull::testLargeInsert()
         {
             cleanup();
 
-            SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+            SqlScanResultProcessor scp( m_collection);
+            scp.setType( ScanResultProcessor::FullScan );
 
             foreach( const CollectionScanner::Directory &dir, directories )
             {
@@ -393,7 +396,8 @@ TestScanResultProcessorFull::testIdentifyCompilationInMultipleDirectories()
     // these albums on disc
     // the bad thing is that Amarok 1 (as far as I know) didn't set the id3 tags
 
-    SqlScanResultProcessor scp( m_collection, ScanResultProcessor::FullScan );
+    SqlScanResultProcessor scp( m_collection);
+    scp.setType( ScanResultProcessor::FullScan );
 
     for( int artistNr = 0; artistNr < 3; artistNr ++ )
     {

@@ -338,6 +338,8 @@ CollectionScanner::Scanner::doJob() //SLOT
         xmlWriter.writeStartDocument();
         xmlWriter.writeStartElement("scanner");
         xmlWriter.writeAttribute("count", QString::number( entries.count() ) );
+        if( m_incremental )
+            xmlWriter.writeAttribute("incremental", QString());
     }
 
     // --- now do the scanning
@@ -536,10 +538,8 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
     QTextStream stream( error.isEmpty() ? stdout : stderr );
     stream << error
         << tr( "Amarok Collection Scanner\n"
-        "Note: For debugging purposes this application can be invoked from the command line,\n"
-        "but it will not actually build a collection this way without the Amarok player.\n\n"
-        "IRC: server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-        "feedback: amarok@kde.org\n\n"
+        "Scans directories and outputs a xml file with the results.\n"
+        "For more information see http://amarok.kde.org/wiki/Batch_Mode\n\n"
         "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
         "User-modifiable Options:\n"
         "<Folder(s)>             : list of folders to scan\n"

@@ -87,8 +87,11 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
             PartialUpdateScan = 2
         };
 
-        ScanResultProcessor( ScanType type, QObject *parent = 0 );
+        ScanResultProcessor( QObject *parent = 0 );
         virtual ~ScanResultProcessor();
+
+        void setType( ScanType type )
+        { m_type = type; }
 
         /** Submits a new directory for processing.
             ScanResulProcessor takes ownership of the pointer.

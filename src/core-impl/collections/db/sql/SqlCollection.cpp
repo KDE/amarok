@@ -455,16 +455,16 @@ SqlCollection::slotDeviceRemoved( int id )
 bool
 SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return ( type == Capabilities::Capability::CollectionScan) ||
-        ( type == Capabilities::Capability::CollectionImport);
+    return ( type == Capabilities::Capability::CollectionScan && m_scanManager ) ||
+        ( type == Capabilities::Capability::CollectionImport && m_scanManager );
 }
 
 Capabilities::Capability*
 SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::CollectionScan)
+    if( type == Capabilities::Capability::CollectionScan && m_scanManager )
         return new SqlCollectionScanCapability( m_scanManager );
-    else if( type == Capabilities::Capability::CollectionScan)
+    else if( type == Capabilities::Capability::CollectionImport && m_scanManager )
         return new SqlCollectionImportCapability( m_scanManager );
     else
         return 0;
@@ -485,9 +485,9 @@ SqlCollection::dumpDatabaseContent()
 }
 
 ScanResultProcessor*
-SqlCollection::getNewScanResultProcessor( ScanResultProcessor::ScanType type )
+SqlCollection::getNewScanResultProcessor()
 {
-    return new SqlScanResultProcessor( this, type );
+    return new SqlScanResultProcessor( this );
 }
 
 
@@ -530,14 +530,35 @@ SqlCollectionImportCapability::SqlCollectionImportCapability( ScanManager* scanM
 SqlCollectionImportCapability::~SqlCollectionImportCapability()
 { }
 
-QObject *
-SqlCollectionImportCapability::import( const QString &importFilePath )
+void
+SqlCollectionImportCapability::import( QIODevice *input, QObject *listener )
 {
-    if( m_scanManager ) {
-        m_scanManager->requestImport( importFilePath );
-        return m_scanManager;
+    DEBUG_BLOCK
+    if( m_scanManager )
+    {
+        // ok. connecting of the signals is very specific for the SqlBatchImporter.
+        // For now this works.
+
+        /*
+           connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
+           this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
+           this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
+           this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
+           this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( importError( QString ) ),
+           this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
+           */
+
+        connect( m_scanManager, SIGNAL( finished() ),
+                 listener, SIGNAL( importSucceeded() ) );
+        connect( m_scanManager, SIGNAL( message( QString ) ),
+                 listener, SIGNAL( showMessage( QString ) ) );
+
+        m_scanManager->requestImport( input );
     }
-    return 0;
 }
 
 #include "SqlCollection.moc"

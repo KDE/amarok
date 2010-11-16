@@ -104,7 +104,9 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
         /** Unblocks one blockUpdatedSignal call. */
         virtual void unblockUpdatedSignal() = 0;
 
-        virtual ScanResultProcessor* getNewScanResultProcessor( ScanResultProcessor::ScanType type ) = 0;
+        /** Returns a new ScanResultProcessor for this collection.
+            caller has to free the processor. */
+        virtual ScanResultProcessor* getNewScanResultProcessor() = 0;
 
     public slots:
         /** Emit updated if the signal is not blocked by blockUpdatedSignal */

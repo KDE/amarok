@@ -33,7 +33,7 @@
 
 ScanResultProcessor::ScanResultProcessor( ScanType type, QObject *parent )
     : QObject( parent )
-    , m_type( type )
+    , m_type( PartialUpdateScan )
 {
 }
 

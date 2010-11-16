@@ -20,7 +20,7 @@
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 
-#include <QList>
+#include <QIODevice>
 
 namespace Capabilities
 {
@@ -40,13 +40,22 @@ namespace Capabilities
             virtual ~CollectionImportCapability();
 
             /** Starts importing the given file into the collection.
-             * @return A QObject that can be used to connect several status signals from.
-             */
-            virtual QObject *import( const QString &importFilePath ) = 0;
+                @param input is an already opened input device. The importer will take ownership.
+                @param listener An object that will listen on import signals.
+                Those signals are:
+                  trackAdded( Meta::TrackPtr )
+                  trackDiscarded( QString )
+                  trackMatchFound( Meta::TrackPtr, QString )
+                  trackMatchMultiple( Meta::TrackList, QString )
+                  importError( QString )
+                  done( ThreadWeaver::Job* )
+                  showMessage( QString )
+                @return A QObject that can be used to connect several status signals from.
+                */
+            virtual void import( QIODevice *input, QObject *listener ) = 0;
 
-            /**
-             * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Capabilities::Capability::CollectionImport; )
+            /** Get the capabilityInterfaceType of this capability
+                @return The capabilityInterfaceType ( always Capabilities::Capability::CollectionImport; )
              */
             static Type capabilityInterfaceType() { return Capabilities::Capability::CollectionImport; }
     };

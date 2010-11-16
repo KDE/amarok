@@ -35,7 +35,6 @@ DatabaseImporterFactory::createImporter( const QString &name, QObject *parent )
 
 DatabaseImporter::DatabaseImporter( QObject *parent )
     : QObject( parent )
-    , m_importArtwork( false )
     , m_importing( false )
     , m_count( 0 )
 {
@@ -53,18 +52,6 @@ DatabaseImporterConfig*
 DatabaseImporter::configWidget( QWidget *parent )
 {
     return new DatabaseImporterConfig( parent ); 
-}
-
-void
-DatabaseImporter::setImportArtwork( const bool importArtwork )
-{
-    m_importArtwork = importArtwork;
-}
-
-bool
-DatabaseImporter::importArtwork() const
-{
-    return m_importArtwork;
 }
 
 int

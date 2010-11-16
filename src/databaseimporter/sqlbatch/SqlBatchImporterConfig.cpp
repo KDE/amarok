@@ -34,6 +34,12 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
 
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
 
+    QLabel *explanationLabel = new QLabel( i18n( "Input file produced by amarokcollectionscanner.<br>"
+                                                 "See <a href=\"http://amarok.kde.org/wiki/Batch_Mode\">Batch Mode</a>." ), gridHolder );
+    explanationLabel->setTextFormat( Qt::RichText );
+    explanationLabel->setAlignment( Qt::AlignHCenter );
+    explanationLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ); // Don't stretch vertically
+
     QLabel *label = new QLabel( i18n( "Input file" ), gridHolder );
     m_inputFilePathInput = new QLineEdit( gridHolder );
     QCompleter *completer = new QCompleter( this );
@@ -42,8 +48,9 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     m_inputFilePathInput->setText( QDir::homePath() + "/result.xml" );
     label->setBuddy( m_inputFilePathInput );
 
-    databaseLayout->addWidget( label, 0, 0 );
-    databaseLayout->addWidget( m_inputFilePathInput, 0, 1 );
+    databaseLayout->addWidget( explanationLabel, 0, 0, 1, 2 );
+    databaseLayout->addWidget( label, 1, 0 );
+    databaseLayout->addWidget( m_inputFilePathInput, 1, 1 );
 
     gridHolder->setLayout( databaseLayout );
 

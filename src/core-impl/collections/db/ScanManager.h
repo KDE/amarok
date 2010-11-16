@@ -67,7 +67,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         /** Requests the scanner to do a full scan using the given import file.
          */
-        virtual void requestImport( const QString &importFilePath );
+        virtual void requestImport( QIODevice *input );
 
         /** Requests the scanner to do an incremental scan.
          *  The incremental scan will check for new files or sub-folders.
@@ -111,9 +111,10 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         /** Creates the parser job and connects it to the status bar.
             Enqueue it.
+            @param input Optional parameter that tells the parser to use the given input device instead of listening to addXmlData signals.
         */
         void createParser( ScanResultProcessor::ScanType scanType,
-                           const QString &xmlFilePath = QString() );
+                           QIODevice *input = 0 );
         void startScannerProcess( bool restart );
 
 
@@ -177,7 +178,7 @@ class XmlParseJob : public ThreadWeaver::Job
         */
         XmlParseJob( QObject *parent, Collections::DatabaseCollection *collection,
                      ScanResultProcessor::ScanType scanType,
-                     const QString &xmlFilePath = QString() );
+                     QIODevice *input = 0 );
         ~XmlParseJob();
 
         void run();
@@ -196,6 +197,7 @@ class XmlParseJob : public ThreadWeaver::Job
     private:
         Collections::DatabaseCollection *m_collection;
         ScanResultProcessor::ScanType m_scanType;
+        QScopedPointer< QIODevice > m_input;
 
         bool m_abortRequested;
         QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>

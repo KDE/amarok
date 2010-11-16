@@ -68,7 +68,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
     Q_OBJECT
 
     public:
-        SqlScanResultProcessor( Collections::SqlCollection *collection, ScanType type, QObject *parent = 0 );
+        SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent = 0 );
         virtual ~SqlScanResultProcessor();
 
         virtual void commit();

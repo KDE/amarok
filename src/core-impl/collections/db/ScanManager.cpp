@@ -128,7 +128,7 @@ ScanManager::requestFullScan()
 }
 
 void
-ScanManager::requestImport( const QString &importFilePath )
+ScanManager::requestImport( QIODevice *input )
 {
     abort( i18n("Database import requested") );
 
@@ -136,7 +136,7 @@ ScanManager::requestImport( const QString &importFilePath )
     while( isRunning() )
         qApp->processEvents();
 
-    createParser( ScanResultProcessor::FullScan, importFilePath );
+    createParser( ScanResultProcessor::FullScan, input );
 }
 
 
@@ -221,14 +221,13 @@ void ScanManager::startScanner()
 }
 
 void
-ScanManager::createParser( ScanResultProcessor::ScanType scanType,
-                           const QString &xmlFilePath )
+ScanManager::createParser( ScanResultProcessor::ScanType scanType, QIODevice *input )
 {
     if( m_parser )
         return;
 
     // -- Create the parser job
-    m_parser = new XmlParseJob( this, m_collection, scanType, xmlFilePath );
+    m_parser = new XmlParseJob( this, m_collection, scanType, input );
 
     // - connect the status bar
     if( The::statusBar() )
@@ -518,14 +517,15 @@ ScanManager::stopParser()
 
 XmlParseJob::XmlParseJob( QObject *parent, Collections::DatabaseCollection *collection,
                           ScanResultProcessor::ScanType scanType,
-                          const QString &xmlFilePath )
+                          QIODevice *input )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_scanType( scanType )
+    , m_input( input )
     , m_abortRequested( false )
 {
-    if( !xmlFilePath.isEmpty() )
-        m_reader.setDevice( new QFile( xmlFilePath, this ) );
+    if( input )
+        m_reader.setDevice( input );
 }
 
 XmlParseJob::~XmlParseJob()
@@ -534,7 +534,8 @@ XmlParseJob::~XmlParseJob()
 void
 XmlParseJob::run()
 {
-    ScanResultProcessor *processor = m_collection->getNewScanResultProcessor( m_scanType );
+    ScanResultProcessor *processor = m_collection->getNewScanResultProcessor();
+    processor->setType( m_scanType );
     connect( processor, SIGNAL( directoryCommitted() ),
              this, SLOT( directoryCommitted() ) );
 
@@ -567,8 +568,12 @@ XmlParseJob::run()
                 QStringRef name = m_reader.name();
                 if( name == "scanner" )
                 {
-                debug() << "XmlParseJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
-                    emit message( i18n("Found %1 directories").arg(m_reader.attributes().value( "count" ).toString()) );
+                    if( m_reader.attributes().hasAttribute("incremental") )
+                        processor->setType( ScanResultProcessor::PartialUpdateScan );
+
+                    debug() << "XmlParseJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
+                    emit message( i18np("Found one direcory", "Found %1 directories",
+                                  m_reader.attributes().value( "count" ).toString()) );
                     emit totalSteps( this,
                                      m_reader.attributes().value( "count" ).toString().toInt() * 2);
                 }
@@ -581,7 +586,7 @@ XmlParseJob::run()
                     debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
-                    emit message( i18n("Got directory %1 from scanner.").arg( dir->rpath() ) );
+                    emit message( i18n("Got directory \"%1\" from scanner.").arg( dir->rpath() ) );
                     emit step( this );
                 }
                 else
