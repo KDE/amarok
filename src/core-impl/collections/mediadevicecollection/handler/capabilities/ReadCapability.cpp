@@ -20,4 +20,13 @@ Handler::ReadCapability::~ReadCapability()
 {
     // nothing to do here
 }
+
+bool
+Handler::ReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track )
+    // provide default implementation so that MTP collection doesn't need to override.
+    return false;
+}
+
 #include "ReadCapability.moc"

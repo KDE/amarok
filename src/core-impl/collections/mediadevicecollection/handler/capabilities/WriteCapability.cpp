@@ -21,4 +21,12 @@ Handler::WriteCapability::~WriteCapability()
     // nothing to do here
 }
 
+void
+Handler::WriteCapability::libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation )
+{
+    Q_UNUSED( track )
+    Q_UNUSED( isCompilation )
+    // provide default implementation so that MTP collection doesn't need to override.
+}
+
 #include "WriteCapability.moc"
