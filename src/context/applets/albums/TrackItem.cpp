@@ -28,6 +28,12 @@ TrackItem::TrackItem()
     setEditable( false );
 }
 
+TrackItem::~TrackItem()
+{
+    if( m_track )
+        unsubscribeFrom( m_track );
+}
+
 void
 TrackItem::setTrack( Meta::TrackPtr trackPtr )
 {

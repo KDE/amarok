@@ -25,7 +25,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
 {
     public:
         TrackItem();
-        ~TrackItem() { }
+        ~TrackItem();
 
         /**
          * Sets the TrackPtr for this item to associate with
