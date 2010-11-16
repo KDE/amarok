@@ -190,6 +190,9 @@ AlbumsView::setLengthAlignment( Qt::Alignment alignment )
 void
 AlbumsView::itemClicked( const QModelIndex &index )
 {
+    if( !m_treeView->model()->hasChildren( index ) )
+        return;
+
     bool expanded = m_treeView->isExpanded( index );
     if( expanded )
         m_treeView->setExpanded( index, !expanded );
