@@ -43,7 +43,7 @@ class TestPlaylistModels;
 namespace Playlist
 {
 
-class AMAROK_EXPORT Model : public QAbstractListModel, public Playlist::AbstractModel
+class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, public Playlist::AbstractModel
 {
     friend class InsertTracksCmd;
     friend class RemoveTracksCmd;
@@ -95,6 +95,11 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Playlist::Abstract
         Meta::TrackPtr trackForId( const quint64 id ) const;
         virtual Meta::TrackList tracks() const;
 
+        // Inherited from Meta::Observer
+        using Observer::metadataChanged;
+        void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::AlbumPtr album );
+
         // static member functions
         static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name
 
@@ -107,10 +112,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Playlist::Abstract
 
     protected:
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
-
-    private slots:
-        void metadataChanged( Meta::TrackPtr track );
-        void metadataChanged( Meta::AlbumPtr album );
 
     private:
         QString tooltipFor( Meta::TrackPtr track ) const;
