@@ -201,6 +201,12 @@ IpodWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, co
 }
 
 void
+IpodWriteCapability::libSetIsCompilation(Meta::MediaDeviceTrackPtr& track, bool isCompilation)
+{
+    m_handler->libSetIsCompilation( track, isCompilation );
+}
+
+void
 IpodWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover )
 {
     m_handler->libSetCoverArt( track, cover );

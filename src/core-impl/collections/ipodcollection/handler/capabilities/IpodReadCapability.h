@@ -62,7 +62,8 @@ class IpodReadCapability : public ReadCapability
         virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-        virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;

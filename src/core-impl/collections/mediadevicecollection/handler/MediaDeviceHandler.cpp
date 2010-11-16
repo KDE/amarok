@@ -142,13 +142,16 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     if ( srcTrack->album() )
     {
-        m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+        AlbumPtr album = srcTrack->album();
 
-        if( srcTrack->album()->hasAlbumArtist() )
-            m_wc->libSetAlbumArtist( destTrack, srcTrack->album()->albumArtist()->name() ); Debug::stamp();
+        m_wc->libSetAlbum( destTrack, album->name() );
+        m_wc->libSetIsCompilation( destTrack, album->isCompilation() );
 
-        if( srcTrack->album()->hasImage() )
-            m_wc->libSetCoverArt( destTrack, srcTrack->album()->image() );
+        if( album->hasAlbumArtist() )
+            m_wc->libSetAlbumArtist( destTrack, album->albumArtist()->name() );
+
+        if( album->hasImage() )
+            m_wc->libSetCoverArt( destTrack, album->image() );
     }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
@@ -758,6 +761,12 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
+
+    bool isCompilation = albumPtr->isCompilation();
+    /* if at least one track from album identifies itself as a part of compilation, mark
+     * whole album as such: (we should be deterministic wrt track adding order) */
+    isCompilation |= m_rc->libIsCompilation( track );
+    albumPtr->setIsCompilation( isCompilation );
 
     MediaDeviceArtistPtr artistPtr;
 
