@@ -155,6 +155,10 @@ Playlist::Model::Model( QObject *parent )
         , m_setStateOfItem_batchMinRow( -1 )
 {
     DEBUG_BLOCK
+    connect( The::engineController(), SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged(Meta::TrackPtr)) );
+    connect( The::engineController(), SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
 }
 
 Playlist::Model::~Model()
@@ -759,11 +763,6 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
     {
         if ( i->track() == track )
         {
-            // ensure that we really have the correct album subscribed (in case it changed)
-            Meta::AlbumPtr album = track->album();
-            if( album )
-                subscribeTo( album );
-
             emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
             debug()<<"Metadata updated for track"<<track->prettyName();
         }
@@ -777,22 +776,15 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
     // Mainly to get update about changed covers
 
     // -- search for all the tracks having this album
-    bool found = false;
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
         if ( m_items.at( i )->track()->album() == album )
         {
             emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
-            found = true;
             debug()<<"Metadata updated for album"<<album->prettyName();
         }
     }
-
-    // -- unsubscribe if we don't have a track from that album left.
-    // this can happen if the album of a track changed
-    if( !found )
-        unsubscribeFrom( album );
 }
 
 bool
@@ -880,10 +872,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
         m_totalSize += track->filesize();
-        subscribeTo( track );
-        Meta::AlbumPtr album = track->album();
-        if( album )
-            subscribeTo( album );
 
         Item* newitem = new Item( track );
         m_items.insert( ic.second, newitem );
@@ -970,30 +958,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
         m_totalLength -= track->length();
         m_totalSize -= track->filesize();
-
-        // -- unsubscribe
-        if( !containsTrack( track ) ) // check against same track two times in playlist
-        {
-            unsubscribeFrom( track );
-
-            Meta::AlbumPtr album = track->album();
-            if( album )
-            {
-                // check if we are the last track in playlist with this album
-                bool last = true;
-                const int size = m_items.size();
-                for ( int i = 0; i < size; i++ )
-                {
-                    if( m_items.at( i )->track()->album() == album )
-                    {
-                        last = false;
-                        break;
-                    }
-                }
-                if( last )
-                    unsubscribeFrom( album );
-            }
-        }
     }
 
     qDeleteAll(delitems);
