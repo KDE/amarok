@@ -552,10 +552,13 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
         "                          Only useful in incremental scan mode\n"
         "    --batch <path>      : Add the directories from the batch xml file\n"
         "                          batch file format should look like this:\n"
-        "   <batch>\n"
-        "   <directory>/path/can/also/be/a/local/path</directory>\n"
-        "   <mtime time=\"12345\">/path/of/directory</mtime>\n"
-        "   </batch>\n"
+        "   <scanner>\n"
+        "    <directory>\n"
+        "     <path>/absolute/path/of/directory</path>\n"
+        "     <mtime>1234</mtime>   (this is optional)\n"
+        "    </directory>\n"
+        "   </scanner>\n"
+        "                          You can also use a previous scan result for that.\n"
         )
         << endl;
     stream.flush();

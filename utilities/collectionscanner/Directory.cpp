@@ -148,6 +148,7 @@ CollectionScanner::Directory::Directory( const QString &path,
 
     // -- if all tracks in the directory are in the same album but have different artists,
     //    then it's definitely a compilation
+    // TODO: check if some of the tracks have noCompilation
     if( albumNames.count() == 1 &&
         artistNames.count() > 1 )
     {
@@ -201,7 +202,6 @@ CollectionScanner::Directory::Directory( const QString &path,
         while( j != albumHash.end() )
         {
             j.value().addCovers( covers );
-        qDebug() << "Adding cover to" << j.value().name();
             ++j;
         }
     }

@@ -23,22 +23,25 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <QDebug>
 CollectionScanner::BatchFile::BatchFile()
 {
 }
 
-CollectionScanner::BatchFile::BatchFile( const QString &path )
+CollectionScanner::BatchFile::BatchFile( const QString &batchPath )
 {
-    QFile batchFile( path );
+    QFile batchFile( batchPath );
 
     if( !batchFile.exists() ||
         !batchFile.open( QIODevice::ReadOnly ) )
         return;
 
+    QString path;
+    uint mtime = 0;
+    bool haveMtime = false;
     QXmlStreamReader reader( &batchFile );
 
     // very simple parser
-    // improve scanner with skipCurrentElement as soon as Amarok requires Qt 4.6
     while (!reader.atEnd()) {
         reader.readNext();
 
@@ -46,26 +49,45 @@ CollectionScanner::BatchFile::BatchFile( const QString &path )
         {
             QStringRef name = reader.name();
 
-            if( name == "directory" )
+            if( name == "scanner" )
             {
-                QString dirPath = reader.readElementText();
-                m_directories.append( dirPath );
+                ; // just recurse into the element
             }
+            else if( name == "directory" )
+            {
+                path.clear();
+                mtime = 0;
+                haveMtime = false;
+            }
+            else if( name == "path" )
+                path = reader.readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "mtime" )
             {
-                uint mTime = 0;
-                if( reader.attributes().hasAttribute( "time" ) )
-                    mTime = reader.attributes().value( "time" ).toString().toUInt();
-
-                QString dirPath = reader.readElementText();
-
-                m_timeDefinitions.append( TimeDefinition( dirPath, mTime ) );
+                mtime = reader.readElementText(QXmlStreamReader::SkipChildElements).toUInt();
+                haveMtime = true;
+            }
+            else
+            {
+                reader.skipCurrentElement();
+            }
+        }
+        else if( reader.isEndElement() )
+        {
+            QStringRef name = reader.name();
+            if( name == "directory" )
+            {
+                if( !path.isEmpty() )
+                {
+                    if( haveMtime )
+                        m_timeDefinitions.append( TimeDefinition( path, mtime ) );
+                    else
+                        m_directories.append( path );
+                }
             }
         }
     }
 
 }
-
 const QStringList&
 CollectionScanner::BatchFile::directories() const
 {
@@ -91,9 +113,9 @@ CollectionScanner::BatchFile::setTimeDefinitions( const QList<TimeDefinition> &v
 }
 
 bool
-CollectionScanner::BatchFile::write( const QString &path )
+CollectionScanner::BatchFile::write( const QString &batchPath )
 {
-    QFile batchFile( path );
+    QFile batchFile( batchPath );
     if( !batchFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
         return false;
 
@@ -101,21 +123,24 @@ CollectionScanner::BatchFile::write( const QString &path )
     writer.setAutoFormatting( true );
 
     writer.writeStartDocument();
-    writer.writeStartElement( "batch" );
+    writer.writeStartElement( "scanner" );
 
     foreach( const QString &dir, m_directories )
     {
         writer.writeStartElement( "directory" );
-        writer.writeCharacters( dir );
+        writer.writeTextElement( "path", dir );
         writer.writeEndElement();
     }
+
     foreach( const TimeDefinition &pair, m_timeDefinitions )
     {
-        writer.writeStartElement( "mtime" );
-        // note: some file systems return an mtime of 0
-        writer.writeAttribute( "time", QString::number( pair.second ) );
+        QString path( pair.first );
+        uint mtime = pair.second;
 
-        writer.writeCharacters( pair.first );
+        writer.writeStartElement( "directory" );
+        writer.writeTextElement( "path", path );
+        // note: some file systems return an mtime of 0
+        writer.writeTextElement( "mtime", QString::number( mtime ) );
         writer.writeEndElement();
     }
 

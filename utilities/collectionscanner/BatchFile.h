@@ -47,6 +47,7 @@ public:
     /** This type is a pair of directory path and modification time */
     typedef QPair<QString, uint> TimeDefinition;
 
+    /** Those are the directories that should be added to the scanning list */
     const QStringList &directories() const;
     void setDirectories( const QStringList &value );
 
