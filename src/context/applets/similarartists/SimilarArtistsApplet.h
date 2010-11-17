@@ -90,8 +90,6 @@ private:
      */
     void artistsUpdate();
 
-    QString m_descriptionPreferredLang;
-
     /**
      * This scrollArea contents the artists widgets
      */
@@ -132,7 +130,6 @@ private slots:
      * Show the settings windows
      */
     void configure();
-    void switchToLang(const QString &lang);
     void saveSettings();
 };
 

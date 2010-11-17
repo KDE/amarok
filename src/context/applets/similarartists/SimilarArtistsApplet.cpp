@@ -106,6 +106,7 @@ SimilarArtistsApplet::init()
 
     Plasma::DataEngine *engine = dataEngine( "amarok-similarArtists" );
     connect( engine, SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    engine->setProperty( "maximumArtists", m_maxArtists );
     engine->query( "similarArtists" );
 
     updateConstraints();
@@ -174,52 +175,16 @@ SimilarArtistsApplet::configure()
 }
 
 void
-SimilarArtistsApplet::switchToLang(const QString &lang)
-{
-    DEBUG_BLOCK
-    if (lang == i18n("English") )
-        m_descriptionPreferredLang = "en";
-    else if (lang == i18n("French") )
-        m_descriptionPreferredLang = "fr";
-    else if (lang == i18n("German") )
-        m_descriptionPreferredLang = "de";
-    else if (lang == i18n("Italian") )
-        m_descriptionPreferredLang = "it";
-    else if (lang == i18n("Spanish") )
-        m_descriptionPreferredLang = "es";
-    else
-        m_descriptionPreferredLang = "aut";
-
-    KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
-}
-
-void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
 
-    if ( m_descriptionPreferredLang == "aut" )
-        ui_Settings.comboBox->setCurrentIndex( 0 );
-    else if ( m_descriptionPreferredLang == "en" )
-        ui_Settings.comboBox->setCurrentIndex( 1 );
-    else if ( m_descriptionPreferredLang == "fr" )
-        ui_Settings.comboBox->setCurrentIndex( 2 );
-    else if ( m_descriptionPreferredLang == "de" )
-        ui_Settings.comboBox->setCurrentIndex( 3 );
-    else if ( m_descriptionPreferredLang == "it" )
-        ui_Settings.comboBox->setCurrentIndex( 4 );
-    else if ( m_descriptionPreferredLang == "es" )
-        ui_Settings.comboBox->setCurrentIndex( 5 );
-
     ui_Settings.spinBox->setValue( m_maxArtists );
 
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system" );
 
-    connect( ui_Settings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(switchToLang(QString)) );
     connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
 }
 
@@ -229,7 +194,8 @@ SimilarArtistsApplet::saveSettings()
     DEBUG_BLOCK
     m_maxArtists = ui_Settings.spinBox->value();
     Amarok::config( "SimilarArtists Applet" ).writeEntry( "maxArtists", m_maxArtists );
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:%1" ).arg( m_maxArtists ) );
+    dataEngine( "amarok-similarArtists" )->setProperty( "maximumArtists", m_maxArtists );
+    dataEngine( "amarok-similarArtists" )->query( "similarArtists:forceUpdate" );
 }
 
 void

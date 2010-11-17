@@ -24,8 +24,6 @@
 #include "context/applets/similarartists/SimilarArtist.h"
 #include "core/meta/Meta.h"
 
-#include <QLocale>
-
 using namespace Context;
 
 /**
@@ -35,6 +33,7 @@ using namespace Context;
 class SimilarArtistsEngine : public DataEngine
 {
     Q_OBJECT
+    Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
 
 public:
 
@@ -50,30 +49,31 @@ public:
     virtual ~SimilarArtistsEngine();
 
     /**
-    * Fetches the similar artists for an artist thanks to the LastFm WebService
-    * @param artistName the name of the artist
-    * @return a map with the names of the artists with their match rate
-    */
-    QMap<int, QString> similarArtists( const QString &artistName );
-
-    /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
      * @param artistName the name of the artist
      */
     void similarArtistsRequest( const QString &artistName );
 
+    /**
+     * The maximum number of similar artists
+     * @return number of similar artists
+     */
+    int maximumArtists() const;
+
+    /**
+     * Set the maximum number of similar artists
+     * @param number The maximum number of similar artists
+     */
+    void setMaximumArtists( int number );
+
 protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
-    QString descriptionLocale() const;
-
     bool m_isDelayingSetData;
     QList<Plasma::DataEngine::Data> m_descriptions;
     QList<Plasma::DataEngine::Data> m_topTracks;
-    QLocale m_descriptionLang;
-    QString m_descriptionWideLang;
 
     /**
      * Fetches the description of the artist artistName on the LastFM API.
@@ -102,7 +102,7 @@ private slots:
      * Prepare the calling of the similarArtistsRequest method.
      * Launch when the track played on amarok has changed.
      */
-    void update();
+    void update( bool force = false );
 
     /**
      * Parse the xml fetched on the lastFM API.

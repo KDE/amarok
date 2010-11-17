@@ -22,12 +22,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "ContextView.h"
 #include "EngineController.h"
-
-#include <lastfm/Artist>
-
-#include <KConfigGroup>
 
 #include <QTimer>
 #include <QXmlStreamReader>
@@ -39,90 +34,53 @@ using namespace Context;
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , m_isDelayingSetData( false )
+    , m_maxArtists( 5 )
 {
-    m_descriptionWideLang = "aut";
-    m_maxArtists = Amarok::config( "SimilarArtists Applet" ).readEntry( "maxArtists", "5" ).toInt();
-
     EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(update()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(update()) );
 }
-
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
 }
 
-QMap<int, QString>
-SimilarArtistsEngine::similarArtists( const QString &artistName )
-{
-    lastfm::Artist artist( artistName );
-    return artist.getSimilar( artist.getSimilar() );
-}
-
 bool
 SimilarArtistsEngine::sourceRequestEvent( const QString &name )
 {
-    if( name == "similarArtists" )
-    {
-        ; // just update
-    }
-    else
-    {
-        QStringList tokens = name.split( ':' );
-        if( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
-        {
-            // user has changed the maximum artists returned.
-            if( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
-            {
-                int artistCount = tokens.at( 2 ).toInt();
-                if( artistCount == m_maxArtists )
-                    return false;
-                m_maxArtists = artistCount;
-            }
-        }
-        else if( tokens.contains( "lang" ) && tokens.size() > 1 )
-        {
-            // user has selected is favorite language.
-            if( ( tokens.at( 1 ) == QString( "lang" ) )  && ( tokens.size() > 2 ) )
-                m_descriptionWideLang = tokens.at( 2 );
-        }
-    }
-    update();
+    if( !name.startsWith( "similarArtists" ) )
+        return false;
+
+    bool force( false );
+    QStringList tokens = name.split( QLatin1Char(':'), QString::SkipEmptyParts );
+    if( tokens.contains( QLatin1String("forceUpdate") ) )
+        force = true;
+
+    update( force );
     return true;
 }
 
 void
-SimilarArtistsEngine::update()
+SimilarArtistsEngine::update( bool force )
 {
     QString newArtist;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track ) {
-        Meta::ArtistPtr artistPtr = track->artist();
-        if( artistPtr )
-        {
-            if (( track->playableUrl().protocol() == "lastfm" ) ||
-                ( track->playableUrl().protocol() == "daap" ) ||
-                !The::engineController()->isStream() )
-                newArtist = artistPtr->name();
-            else
-                newArtist = artistPtr->prettyName();
-        }
+    if( track )
+    {
+        if( Meta::ArtistPtr artistPtr = track->artist() )
+            newArtist = artistPtr->name();
     }
 
-    if( newArtist.isEmpty() )   // Unknown artist
+    if( newArtist.isEmpty() )
     {
-        m_artist = "Unknown artist";
+        m_artist.clear();
         removeAllData( "similarArtists" );
     }
     else   //valid artist
     {
         // wee make a request only if the artist is different
-        if( newArtist != m_artist )   // we update the data only
+        if( force || (newArtist != m_artist) )
         {
             // if the artist has changed
             m_artist = newArtist;
@@ -156,10 +114,9 @@ SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "artist.getinfo" );
+    url.addQueryItem( "method", "artist.getInfo" );
     url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
     url.addQueryItem( "artist", artistName );
-    url.addQueryItem( "lang", descriptionLocale() );
 
     The::networkAccessManager()->getData( url, this,
          SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
@@ -382,19 +339,16 @@ SimilarArtistsEngine::delayedSetData()
     }
 }
 
-inline QString
-SimilarArtistsEngine::descriptionLocale() const
+int
+SimilarArtistsEngine::maximumArtists() const
 {
-    // if there is no language set (QLocale::C) then return english as default
-    if ( m_descriptionWideLang == "aut" )
-    {
-        if ( m_descriptionLang.language() == QLocale::C )
-            return "en";
-        else
-            return m_descriptionLang.name().split( '_' )[0];
-    }
-    else
-        return m_descriptionWideLang;
+    return m_maxArtists;
+}
+
+void
+SimilarArtistsEngine::setMaximumArtists( int number )
+{
+    m_maxArtists = number;
 }
 
 #include "SimilarArtistsEngine.moc"
