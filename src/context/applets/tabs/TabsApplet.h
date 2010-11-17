@@ -27,7 +27,6 @@
 
 // Qt
 #include <QGraphicsLinearLayout>
-#include <QStandardItemModel>
 #include <QWeakPointer>
 
 class TabsView;
@@ -105,7 +104,6 @@ class TabsApplet : public Context::Applet
         void stopped();
 
     private:
-        QStandardItemModel *m_model;
         TabsView *m_tabsView;
 
         enum AppletState { InitState, StoppedState, FetchingState, TabState, MsgState, NoTabsState  };

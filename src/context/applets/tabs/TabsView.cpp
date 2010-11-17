@@ -69,6 +69,10 @@ TabsView::TabsView( QGraphicsWidget *parent )
     connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ),
              this, SLOT( itemClicked( const QModelIndex & ) ) );
 
+    m_model = new QStandardItemModel();
+    m_model->setColumnCount( 1 );
+    m_treeView->setModel( m_model );
+
     m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeProxy->setWidget( m_treeView );
 
@@ -90,7 +94,7 @@ TabsView::TabsView( QGraphicsWidget *parent )
     m_scrollBar->setFocusPolicy( Qt::NoFocus );
 
     // synchronize scrollbars
-    connect( treeScrollBar, SIGNAL( rangeChanged( int, int ) ), SLOT( slotScrollBarRangeChanged( int,int ) ) );
+    connect( treeScrollBar, SIGNAL( rangeChanged( int, int ) ), SLOT( slotScrollBarRangeChanged( int, int ) ) );
     connect( treeScrollBar, SIGNAL( valueChanged( int ) ), m_scrollBar, SLOT( setValue( int ) ) );
     connect( m_scrollBar, SIGNAL( valueChanged( int ) ), treeScrollBar, SLOT( setValue( int ) ) );
     m_scrollBar->setRange( treeScrollBar->minimum(), treeScrollBar->maximum() );
@@ -109,10 +113,24 @@ TabsView::TabsView( QGraphicsWidget *parent )
     updateScrollBarVisibility();
 }
 
-void
-TabsView::setModel( QAbstractItemModel *model )
+TabsView::~TabsView()
 {
-    m_treeView->setModel( model );
+    delete m_model;
+    delete m_treeProxy;
+}
+
+void
+TabsView::appendTab( TabsItem *tabsItem  )
+{
+    if( tabsItem )
+        m_model->appendRow( tabsItem );
+}
+
+void
+TabsView::clear()
+{
+    qDeleteAll( m_model->findItems(QLatin1String("*"), Qt::MatchWildcard) );
+    m_model->clear();
 }
 
 void

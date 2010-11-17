@@ -26,7 +26,6 @@
 #include "context/widgets/TextScrollingWidget.h"
 #include "PaletteHandler.h"
 
-
 #include <KConfigDialog>
 #include <KConfigGroup>
 #include <KDialog>
@@ -36,7 +35,6 @@
 
 #include <QGraphicsProxyWidget>
 #include <QScrollBar>
-#include <QTreeView>
 
 /**
  * \brief Constructor
@@ -48,7 +46,6 @@
  */
 TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_model( 0 )
     , m_tabsView( 0 )
     , m_currentState( InitState )
     , m_layout( 0 )
@@ -70,7 +67,6 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
 TabsApplet::~TabsApplet()
 {
     DEBUG_BLOCK
-    delete m_model;
     delete m_tabsView;
     if( m_reloadIcon )
         delete m_reloadIcon.data();
@@ -106,12 +102,8 @@ TabsApplet::init()
     // defines the collapse size for the context applet
     setCollapseHeight( m_titleLabel.data()->size().height() + 3 * standardPadding() );
 
-    // creates the basic tab view and the corresponding model
-    m_model = new QStandardItemModel();
-    m_model->setColumnCount( 1 );
-
+    // creates the tab view
     m_tabsView = new TabsView( this );
-    m_tabsView->setModel( m_model );
 
     // Set the collapse size
     setCollapseHeight( m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3 );
@@ -200,7 +192,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     Q_UNUSED( name )
 
     // remove previously fetched stuff
-    m_model->clear();
+    m_tabsView->clear();
     m_tabsView->clearTabBrowser();
     setBusy( false );
 
@@ -269,7 +261,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
                 TabsItem *tabsItem = new TabsItem();
                 tabsItem->setTab( item );
 
-                m_model->appendRow( tabsItem );
+                m_tabsView->appendTab( tabsItem );
                 if( !tabFound )
                 {
                     // update the applet and display the first tab in list
