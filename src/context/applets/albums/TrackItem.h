@@ -20,6 +20,7 @@
 #include "core/meta/Meta.h"
 
 #include <QStandardItem>
+#include <QMutex>
 
 class TrackItem : public QStandardItem, public Meta::Observer
 {
@@ -61,6 +62,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
     private:
         Meta::TrackPtr m_track;
+        QMutex m_mutex;
 };
 
 #endif // multiple inclusion guard

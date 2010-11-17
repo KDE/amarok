@@ -21,6 +21,7 @@
 #include <KStringHandler>
 
 #include <QFont>
+#include <QMutexLocker>
 
 TrackItem::TrackItem()
     : QStandardItem()
@@ -30,6 +31,7 @@ TrackItem::TrackItem()
 
 TrackItem::~TrackItem()
 {
+    QMutexLocker locker( &m_mutex );
     if( m_track )
         unsubscribeFrom( m_track );
 }
@@ -48,6 +50,7 @@ TrackItem::setTrack( Meta::TrackPtr trackPtr )
 void
 TrackItem::metadataChanged( Meta::TrackPtr track )
 {
+    QMutexLocker locker( &m_mutex );
     if( !track )
         return;
 
