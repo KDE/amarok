@@ -59,11 +59,6 @@ public:
      */
     void clearTabBrowser();
 
-    /**
-     * @return the native widget wrapped by this TabsView
-     */
-    QTreeView* tabsListView() const;
-
 public slots:
     /**
     * \param tab :

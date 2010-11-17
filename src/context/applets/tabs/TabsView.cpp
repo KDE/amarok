@@ -112,19 +112,7 @@ TabsView::TabsView( QGraphicsWidget *parent )
 void
 TabsView::setModel( QAbstractItemModel *model )
 {
-    tabsListView()->setModel( model );
-}
-
-QAbstractItemModel*
-TabsView::model()
-{
-    return tabsListView()->model();
-}
-
-QTreeView*
-TabsView::tabsListView() const
-{
-    return static_cast<QTreeView*>( m_treeView );
+    m_treeView->setModel( model );
 }
 
 void
@@ -184,7 +172,7 @@ TabsView::showTab( TabsItem *tab )
 void
 TabsView::itemClicked( const QModelIndex &index )
 {
-    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( const_cast<TabsView*>( this )->model() );
+    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( m_treeView->model() );
 
     QStandardItem *item = itemModel->itemFromIndex( index );
     TabsItem *tab = dynamic_cast<TabsItem*>( item );
