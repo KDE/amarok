@@ -87,9 +87,6 @@ TabsApplet::init()
     // applet base initializtation
     Context::Applet::init();
 
-    // defining the initial height of the context view (full height)
-    resize( 500, -1 );
-
     // create the header label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -280,10 +277,12 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 void
 TabsApplet::updateInterface( const AppletState appletState )
 {
+    // return if state has not changed (except for init state)
     if( m_currentState == appletState && appletState != InitState )
         return;
 
-    if( m_currentState == StoppedState )
+    // coming from stopped or init state, resize applet to full height
+    if( m_currentState == StoppedState || m_currentState == InitState )
     {
         resize( 500, -1 );
         setCollapseOff();
