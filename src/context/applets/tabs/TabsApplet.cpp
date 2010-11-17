@@ -184,11 +184,6 @@ TabsApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     m_titleLabel.data()->setScrollingText( m_titleLabel.data()->text() );
-
-    // increase list-width when scrollbar is shown
-    const QScrollBar *vTabListScrollBar = m_tabsView->tabsListView()->verticalScrollBar();
-    const qreal vTabListScrollBarWidthOffset = vTabListScrollBar->isVisible() ?  vTabListScrollBar->width() : 0;
-    m_tabsView->tabsListView()->setFixedWidth( 48 + vTabListScrollBarWidthOffset );
 }
 
 void

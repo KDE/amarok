@@ -29,6 +29,10 @@ class TabsTreeView;
 class QTreeView;
 class QAbstractItemModel;
 class QModelIndex;
+namespace Plasma
+{
+    class ScrollBar;
+}
 
 class TabsView : public QGraphicsProxyWidget
 {
@@ -71,11 +75,15 @@ protected:
 
 private slots:
     void itemClicked( const QModelIndex &index );
+    void slotScrollBarRangeChanged( int min, int max );
 
 private:
     Plasma::TextBrowser *m_tabTextBrowser;
     TabsTreeView *m_treeView;
     QGraphicsProxyWidget *m_treeProxy;
+
+    void updateScrollBarVisibility();
+    Plasma::ScrollBar *m_scrollBar;
 };
 
 #endif // multiple inclusion guard
